@@ -1,0 +1,124 @@
+@font-face {
+  font-family: 'Icons';
+  src: url('../fonts/icons.eot');
+  src: url('../fonts/icons.eot#iefix') format('embedded-opentype'),
+       url('../fonts/icons.woff2') format('woff2'),
+       url('../fonts/icons.woff') format('woff'),
+       url('../fonts/icons.ttf') format('truetype'),
+       url('../fonts/icons.svg#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^='i-']::before,
+[class*=' i-']::before {
+    display: inline-block;
+    width: 1.25em;
+    text-decoration: inherit;
+    text-transform: none;
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-family: 'Icons';
+    line-height: 1em;
+}
+
+.i-align-center::before { content: '\e800'; }
+.i-align-justify::before { content: '\e801'; }
+.i-align-left::before { content: '\e802'; }
+.i-align-right::before { content: '\e803'; }
+.i-archive::before { content: '\e804'; }
+.i-arrow-circle-down::before { content: '\e805'; }
+.i-arrow-circle-left::before { content: '\e806'; }
+.i-arrow-circle-right::before { content: '\e807'; }
+.i-arrow-circle-up::before { content: '\e808'; }
+.i-arrow-down::before { content: '\e809'; }
+.i-arrow-left::before { content: '\e80a'; }
+.i-arrow-right::before { content: '\e80b'; }
+.i-arrow-up::before { content: '\e80c'; }
+.i-at::before { content: '\e80d'; }
+.i-bars::before { content: '\e80e'; }
+.i-bold::before { content: '\e80f'; }
+.i-check::before { content: '\e810'; }
+.i-chevron-down::before { content: '\e811'; }
+.i-chevron-left::before { content: '\e812'; }
+.i-chevron-right::before { content: '\e813'; }
+.i-chevron-up::before { content: '\e814'; }
+.i-circle-o::before { content: '\e815'; }
+.i-circle::before { content: '\e816'; }
+.i-clipboard::before { content: '\e817'; }
+.i-code::before { content: '\e818'; }
+.i-cog::before { content: '\e819'; }
+.i-copy::before { content: '\e81a'; }
+.i-crop::before { content: '\e81b'; }
+.i-cut::before { content: '\e81c'; }
+.i-desktop::before { content: '\e81d'; }
+.i-download::before { content: '\e81e'; }
+.i-edit::before { content: '\e81f'; }
+.i-ellipsis::before { content: '\e820'; }
+.i-envelope::before { content: '\e821'; }
+.i-error::before { content: '\e822'; }
+.i-external-link-alt::before { content: '\e823'; }
+.i-eye-slash::before { content: '\e824'; }
+.i-eye::before { content: '\e825'; }
+.i-file-archive::before { content: '\e826'; }
+.i-file-audio::before { content: '\e827'; }
+.i-file-code::before { content: '\e828'; }
+.i-file-image::before { content: '\e829'; }
+.i-file-pdf::before { content: '\e82a'; }
+.i-file-text::before { content: '\e82b'; }
+.i-file-video::before { content: '\e82c'; }
+.i-file::before { content: '\e82d'; }
+.i-filter::before { content: '\e82e'; }
+.i-folder-open::before { content: '\e82f'; }
+.i-folder::before { content: '\e830'; }
+.i-font::before { content: '\e831'; }
+.i-hashtag::before { content: '\e832'; }
+.i-heading::before { content: '\e833'; }
+.i-i-cursor::before { content: '\e834'; }
+.i-image::before { content: '\e835'; }
+.i-images::before { content: '\e836'; }
+.i-inbox::before { content: '\e837'; }
+.i-info::before { content: '\e838'; }
+.i-language::before { content: '\e839'; }
+.i-link::before { content: '\e83a'; }
+.i-list-ol::before { content: '\e83b'; }
+.i-list-ul::before { content: '\e83c'; }
+.i-list::before { content: '\e83d'; }
+.i-location-arrow::before { content: '\e83e'; }
+.i-markdown::before { content: '\e83f'; }
+.i-minus-circle::before { content: '\e840'; }
+.i-minus::before { content: '\e841'; }
+.i-mobile::before { content: '\e842'; }
+.i-paperclip::before { content: '\e843'; }
+.i-paste::before { content: '\e844'; }
+.i-pencil::before { content: '\e845'; }
+.i-plus-circle::before { content: '\e846'; }
+.i-plus::before { content: '\e847'; }
+.i-print::before { content: '\e848'; }
+.i-question::before { content: '\e849'; }
+.i-quote-left::before { content: '\e84a'; }
+.i-quote-right::before { content: '\e84b'; }
+.i-read-more-alt::before { content: '\e84c'; }
+.i-read-more::before { content: '\e84d'; }
+.i-redo::before { content: '\e84e'; }
+.i-search-minus::before { content: '\e84f'; }
+.i-search-plus::before { content: '\e850'; }
+.i-search::before { content: '\e851'; }
+.i-subscript::before { content: '\e852'; }
+.i-superscript::before { content: '\e853'; }
+.i-tablet::before { content: '\e854'; }
+.i-tag::before { content: '\e855'; }
+.i-tags::before { content: '\e856'; }
+.i-tasks::before { content: '\e857'; }
+.i-times-circle::before { content: '\e858'; }
+.i-times::before { content: '\e859'; }
+.i-trash::before { content: '\e85a'; }
+.i-underline::before { content: '\e85b'; }
+.i-undo::before { content: '\e85c'; }
+.i-unlink::before { content: '\e85d'; }
+.i-user-circle::before { content: '\e85e'; }
+.i-user::before { content: '\e85f'; }
+.i-users::before { content: '\e860'; }
+.i-warning::before { content: '\e861'; }
+.i-italic::before { content: '\e862'; }

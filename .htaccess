@@ -1,0 +1,19 @@
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+	## Enable rewrite rules
+	RewriteEngine on
+
+	## Prevent direct access to Formwork folders
+	RewriteRule ^(cache|config|formwork|templates|vendor)/.* index.php [L]
+	RewriteRule ^(.*)\.(yml|md)$ - [R=404,L]
+
+	RewriteRule ^admin/(accounts|languages|logs|schemes|src|views)/.* admin/index.php [L]
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^admin/.* admin/index.php [L]
+
+	## Let all URI be processed by index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^.* index.php
+</IfModule>

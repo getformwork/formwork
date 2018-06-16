@@ -1,0 +1,94 @@
+button,
+.button {
+    display: inline-block;
+    margin-right: $button-margin-right;
+    margin-bottom: $button-margin-bottom;
+    padding: $button-padding-v $button-padding-h;
+    min-width: 2rem;
+    outline: none;
+    border: $button-border-width solid $color-gray-xlight;
+    border-radius: $button-border-radius;
+    background-color: $color-gray-xlight;
+    color: #444;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: $button-font-size;
+    font-family: $base-font-family;
+    line-height: $button-line-height;
+    cursor: default;
+    transition: border-color 150ms, color 150ms, background-color 150ms;
+
+    @include user-select-none;
+    &:hover {
+        border-color: $color-gray-light;
+        background-color: $color-gray-light;
+        color: #444;
+    }
+    &:focus {
+        @extend .focused;
+    }
+    &[disabled],
+    &[disabled]:hover {
+        border-color: $color-gray-xxlight;
+        background-color: $color-gray-xxlight;
+        color: lighten(#444, 50%);
+    }
+}
+
+a.button {
+    text-align: center;
+}
+
+.button-accent {
+    border: 1px solid $color-accent;
+    background-color: $color-accent;
+    color: #fff;
+    &:hover,
+    &:focus {
+        border-color: $color-accent-dark;
+        background-color: $color-accent-dark;
+        color: #fff;
+    }
+}
+
+.button-success {
+    border: 1px solid $color-success;
+    background-color: $color-success;
+    color: #fff;
+    &:hover,
+    &:focus {
+        border-color: $color-success-dark;
+        background-color: $color-success-dark;
+        color: #fff;
+    }
+}
+
+.button-warning {
+    border: 1px solid $color-warning;
+    background-color: $color-warning;
+    color: #fff;
+    &:hover,
+    &:focus {
+        border-color: $color-warning-dark;
+        background-color: $color-warning-dark;
+        color: #fff;
+    }
+}
+
+.button-error {
+    border: 1px solid $color-error;
+    background-color: $color-error;
+    color: #fff;
+    &:hover,
+    &:focus {
+        border-color: $color-error-dark;
+        background-color: $color-error-dark;
+        color: #fff;
+    }
+}
+
+.button-right {
+    float: right;
+    margin-right: 0;
+    margin-left: 0.25rem;
+}

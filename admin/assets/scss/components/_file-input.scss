@@ -1,0 +1,23 @@
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    clear: both;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: $color-gray-xxlight;
+    &.drag span {
+        background-color: #fff;
+    }
+}
+
+.file-input-label span {
+    display: block;
+    padding: 1.5rem 1rem;
+    border: 2px dashed #cacaca;
+    color: #444;
+    text-align: center;
+    transition: background-color 250ms;
+}

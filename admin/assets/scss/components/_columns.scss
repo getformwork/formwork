@@ -1,0 +1,56 @@
+.container,
+.container-full,
+.container-no-margin {
+    clear: both;
+    margin: 0 auto;
+    padding-right: $columns-gutter / 2;
+    padding-left: $columns-gutter / 2;
+
+    @include clearfix;
+}
+
+.container {
+    max-width: map-get($responsive-breakpoints, 'l');
+}
+
+.container-no-margin {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.row {
+    margin-right: -($columns-gutter / 2);
+    margin-left: -($columns-gutter / 2);
+
+    @include clearfix;
+}
+
+@media (max-width: 768px) {
+    .container-no-margin .row {
+        margin: 0;
+    }
+
+    .container-no-margin div[class^=col-] {
+        padding: 0;
+    }
+}
+
+@include make-columns-globals($columns-count, $responsive-breakpoints);
+
+@include make-breakpoint-columns($columns-count, 'xs');
+@include make-breakpoint-columns-offsets($columns-count, 'xs');
+
+@media (min-width: map-get($responsive-breakpoints, 's')) {
+    @include make-breakpoint-columns($columns-count, 's');
+    @include make-breakpoint-columns-offsets($columns-count, 's');
+}
+
+@media (min-width: map-get($responsive-breakpoints, 'm')) {
+    @include make-breakpoint-columns($columns-count, 'm');
+    @include make-breakpoint-columns-offsets($columns-count, 'm');
+}
+
+@media (min-width: map-get($responsive-breakpoints, 'l')) {
+    @include make-breakpoint-columns($columns-count, 'l');
+    @include make-breakpoint-columns-offsets($columns-count, 'l');
+}

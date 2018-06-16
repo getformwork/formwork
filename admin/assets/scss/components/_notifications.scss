@@ -1,0 +1,53 @@
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 11;
+    margin-bottom: 0.5rem;
+    padding: 1.5rem 2.5rem;
+    width: 350px;
+    border-radius: 3px;
+    background-color: $color-gray-xlight;
+    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
+    transition: top 0.3s ease-in;
+    animation: fadeInRight 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.notification.fadeout {
+    opacity: 0;
+    animation: fadeOutRight 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.notification-error,
+.notification-success {
+    padding-left: 3.25rem;
+}
+
+.notification-error {
+    background-color: $color-error;
+    color: #fff;
+}
+
+.notification-success {
+    background-color: $color-success-dark;
+    color: #fff;
+}
+
+.notification-error::before,
+.notification-success::before {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    display: block;
+    font-size: 1.25rem;
+    font-family: Icons;
+    transform: translate(0, -50%);
+}
+
+.notification-error::before {
+    content: '\e822';
+}
+
+.notification-success::before {
+    content: '\e810';
+}

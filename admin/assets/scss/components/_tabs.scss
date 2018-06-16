@@ -1,0 +1,25 @@
+.tabs {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $color-gray-light;
+}
+
+.tabs-tab {
+    display: inline-block;
+    margin-bottom: -1px;
+    padding: 0.5rem 1.25rem;
+    color: #000;
+    cursor: pointer;
+}
+
+.tabs-tab:hover {
+    color: #000;
+}
+
+.tabs-tab.active {
+    border-bottom: 3px solid $color-accent;
+    font-weight: 600;
+}
+
+.caption + .tabs {
+    margin-top: -0.5rem;
+}

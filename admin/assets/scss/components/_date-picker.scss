@@ -1,0 +1,91 @@
+.date-input {
+    position: relative;
+}
+
+.calendar {
+    position: absolute;
+    top: 100%;
+    z-index: 4;
+    display: block;
+    display: none;
+    margin: 3px 1rem 1rem;
+    padding: 0.5rem;
+    width: 18rem;
+    border: 1px solid $color-gray;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
+    color: #000;
+}
+
+.calendar-header {
+    margin-bottom: 0.5rem;
+}
+
+.calendar-buttons {
+    margin: 0 -0.5rem;
+    font-size: 0;
+}
+
+.calendar-buttons button {
+    margin: 0;
+    padding: 0 0.5rem;
+    width: 33.3%;
+    outline: none;
+    border: 0;
+    background-color: transparent;
+    color: #000;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.calendar button:hover {
+    color: $color-accent;
+}
+
+.calendar button:focus {
+    box-shadow: none;
+}
+
+.calendar-table {
+    width: 100%;
+}
+
+.calendar-table td {
+    width: 14%;
+    text-align: center;
+    line-height: 23px;
+    cursor: default;
+
+    @include user-select-none;
+}
+
+.calendar-header-day {
+    font-size: 14px;
+}
+
+.calendar-day {
+    border-radius: 3px;
+    transition: all 100ms;
+}
+
+.calendar-day.selected {
+    background-color: $color-accent;
+    color: #fff;
+}
+
+.calendar-day:hover {
+    background-color: $color-accent-dark;
+    color: #fff;
+}
+
+.calendar-prev-month-day,
+.calendar-next-month-day {
+    color: $color-gray-dark;
+}
+
+.calendar-separator {
+    margin: 0.5rem -0.5rem;
+    height: 0;
+    border-top: 1px solid $color-gray;
+}

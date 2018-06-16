@@ -1,0 +1,155 @@
+input,
+select,
+textarea {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: $button-margin-bottom;
+    padding: $input-padding-v $input-padding-h;
+    width: 100%;
+    border: $input-border-width solid $color-gray;
+    border-radius: $input-border-radius;
+    vertical-align: middle;
+    font-size: $input-font-size;
+    font-family: $base-font-family;
+    line-height: $input-line-height;
+
+    @include appearance-none;
+    &:focus {
+        outline: none;
+
+        @extend .focused;
+    }
+}
+
+input[type=checkbox],
+input[type=radio] {
+    margin-bottom: 0;
+    width: auto;
+    height: inherit;
+    vertical-align: text-top;
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+input[type=file] {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+input[disabled],
+select[disabled] {
+    background-color: $color-gray-xxlight;
+    color: #444;
+}
+
+select {
+    padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+    background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
+    background-color: #fff;
+    background-size: 8px 6px;
+    line-height: 1.5;
+}
+
+label {
+    @include appearance-none;
+}
+
+[readonly] {
+    /* Safari Mobile bug */
+    @include user-select-none;
+}
+
+:invalid {
+    box-shadow: none;
+}
+
+:-moz-submit-invalid {
+    box-shadow: none;
+}
+
+:-moz-ui-invalid {
+    box-shadow: none;
+}
+
+:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+input,
+textarea {
+    @include appearance-none;
+}
+
+select[multiple],
+textarea {
+    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
+}
+
+textarea {
+    min-height: 2 * $input-line-height * $input-font-size + $input-padding-v * 2;
+    max-height: 12 * $input-line-height * $input-font-size + $input-padding-v * 2;
+    resize: vertical;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: $label-margin-bottom;
+    font-size: $label-font-size;
+
+    @include user-select-none;
+}
+
+.input-accent {
+    border-color: $color-accent;
+}
+
+.input-success {
+    border-color: $color-success;
+}
+
+.input-warning {
+    border-color: $color-warning;
+}
+
+.input-error {
+    border-color: $color-error;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap input {
+    padding-right: 1.5rem;
+}
+
+.input-reset {
+    position: absolute;
+    top: 0.25rem;
+    top: calc(0.25rem + 1px);
+    right: 0.25rem;
+    color: #444;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.label-suggestion {
+    color: $color-gray-dark;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.label-required::after {
+    display: inline-block;
+    margin-left: 0.125rem;
+    color: $color-error;
+    content: '*';
+}
+
+.system-options-form .checkbox-label {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}

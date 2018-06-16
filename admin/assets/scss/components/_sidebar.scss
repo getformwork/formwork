@@ -1,0 +1,105 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 8;
+    display: none;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    background: linear-gradient(to bottom, #fcfcfc 0%, #f9f9f9 100%);
+    background-color: #fcfcfc;
+    box-shadow: rgba(240, 240, 240, 0.25) 1px 0 9px 3px;
+}
+
+.sidebar.show {
+    display: block;
+}
+
+@media (min-width: map-get($responsive-breakpoints, 's')) {
+    .sidebar {
+        display: block;
+        width: 15rem;
+    }
+}
+
+.logo {
+    margin-bottom: 2rem;
+    color: #000;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.184rem;
+    @media (min-width: map-get($responsive-breakpoints, 's')) {
+        text-align: left;
+    }
+    & a, & a:hover {
+        color: #000;
+    }
+}
+
+.sidebar-navigation {
+    margin: 0;
+    margin-bottom: 1rem;
+    padding: 0;
+    list-style-type: none;
+    &:last-child {
+        margin-bottom: 0;
+    }
+    & > li {
+        position: relative;
+        margin: 0.5rem 0;
+        padding: 0.25rem 0;
+        padding-left: 1rem;
+        &.active {
+            font-weight: 600;
+            &::before {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: 3px;
+                background-color: $color-accent;
+                content: ' ';
+            }
+        }
+        & a {
+            color: #000;
+        }
+    }
+}
+
+.admin-user-card {
+    display: table;
+    margin-bottom: 2rem;
+    table-layout: fixed;
+    cursor: pointer;
+    &:hover img {
+        box-shadow: #e4e4e4 0 0 0 0.5rem;
+    }
+}
+
+.admin-user-avatar {
+    display: table-cell;
+    width: 48px;
+    vertical-align: middle;
+    & img {
+        width: 48px;
+        border-radius: 50%;
+        transition: box-shadow ease-out 300ms;
+    }
+}
+
+.admin-user-details {
+    display: table-cell;
+    padding: 0 0.75rem;
+    vertical-align: middle;
+}
+
+.admin-user-fullname {
+    color: #000;
+}
+
+.admin-user-username {
+    color: $color-gray-dark;
+    font-size: 0.875rem;
+}

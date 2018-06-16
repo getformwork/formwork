@@ -1,0 +1,78 @@
+$responsive-breakpoints: (
+	xs: 568px,
+	s: 768px,
+	m: 992px,
+	l: 1200px
+);
+
+$color-gray: #cacaca;
+$color-gray-xdark: darken($color-gray, 30%);
+$color-gray-dark: darken($color-gray, 20%);
+$color-gray-light: lighten($color-gray, 10%);
+$color-gray-xlight: lighten($color-gray, 15%);
+$color-gray-xxlight: lighten($color-gray, 18%);
+
+$color-accent: #3498da;
+$color-accent-dark: darken($color-accent, 10%);
+$color-accent-xdark: darken($color-accent, 20%);
+
+$color-success: #2ecc70;
+$color-success-dark: darken($color-success, 10%);
+
+$color-warning: #f39c11;
+$color-warning-dark: darken($color-warning, 10%);
+
+$color-error: #e74c3b;
+$color-error-dark: darken($color-error, 10%);
+
+$base-font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+$mono-font-family: 'Roboto Mono', Menlo, Courier, monospace;
+
+$base-font-size: 16px;
+
+$base-line-height: 1.5;
+$headings-line-height: 1.2;
+
+$headings-margin-top: 1rem;
+$headings-margin-bottom: 0.5rem;
+
+$h1-font-size: 2.369rem;
+$h2-font-size: 2.104rem;
+$h3-font-size: 1.777rem;
+$h4-font-size: 1.579rem;
+$h5-font-size: 1.184rem;
+$h6-font-size: 1rem;
+
+$large-headings-letter-spacing: -0.027rem;
+
+$paragraph-margin-top: 0;
+$paragraph-margin-bottom: 0.5rem;
+
+$list-margin-top: 0;
+$list-margin-bottom: 0.5rem;
+$list-margin-left: 1.25rem;
+
+$columns-count: 12;
+$columns-gutter: 30px;
+
+$button-padding-v: 0.375rem;
+$button-padding-h: 0.5rem;
+
+$button-margin-bottom: 0.5rem;
+$button-margin-right: 0.25rem;
+
+$button-font-size: 0.875rem;
+$button-line-height: 1.15;
+$button-border-width: 1px;
+$button-border-radius: 3px;
+
+$input-padding-v: 0.25rem;
+$input-padding-h: 0.5rem;
+
+$input-font-size: 0.875rem;
+$input-line-height: $base-line-height;
+$input-border-width: 1px;
+$input-border-radius: 3px;
+
+$label-font-size: 0.875rem;
+$label-margin-bottom: 0.25rem;

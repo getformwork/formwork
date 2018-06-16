@@ -1,0 +1,19 @@
+.info-data {
+    margin-bottom: 1rem;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.info-data td {
+    overflow: hidden;
+    padding: 0.5rem;
+    vertical-align: top;
+}
+
+.info-data-key {
+    width: 25%;
+}
+
+.info-data-value {
+    width: 75%;
+}

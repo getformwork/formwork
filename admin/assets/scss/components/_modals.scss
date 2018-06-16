@@ -1,0 +1,57 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    display: none;
+    align-items: center;
+    outline: 0;
+}
+
+.modal.show {
+    display: block;
+    display: flex;
+}
+
+.modal-content {
+    margin: 3rem auto;
+    padding: 2rem;
+    max-width: 26rem;
+    border-radius: 3px;
+    background-color: #fff;
+    @media (max-width: 26rem) {
+        margin: 3rem 0.5rem;
+    }
+}
+
+.modal-size-large {
+    max-width: 40rem;
+    width: 40rem;
+    @media (max-width: 40rem) {
+        margin: 3rem 0.5rem;
+    }
+}
+
+.modal-error {
+    margin: -2rem -2rem 1rem -2rem;
+    padding: 1rem;
+    background-color: $color-error;
+    color: #fff;
+}
+
+.modal-text {
+    margin-bottom: 2.5rem;
+}

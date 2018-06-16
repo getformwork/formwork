@@ -1,0 +1,42 @@
+.image-picker-thumbnails {
+    overflow: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    height: 15rem;
+}
+
+.image-picker-thumbnail {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0.25rem;
+    padding: 0.5rem;
+    width: 8rem;
+    height: 8rem;
+    border: 1px solid #cacaca;
+    background-position: center;
+    background-origin: content-box;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.image-picker-thumbnail::after {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.5rem;
+    left: 0.75rem;
+    display: block;
+    padding: 0 0.375rem;
+    border-radius: 3px;
+    background-color: rgba(228, 228, 228, 0.9);
+    content: attr(data-text);
+    text-align: center;
+    font-size: 0.75rem;
+
+    @include ellipsis;
+}
+
+.image-picker-thumbnail.selected {
+    border-color: $color-accent;
+    box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3);
+}

@@ -1,0 +1,88 @@
+.users-list {
+    border-top: 1px solid #e4e4e4;
+
+    @include user-select-none;
+}
+
+.users-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.users-item-cell {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+
+    @include ellipsis;
+}
+
+.users-item .user-fullname,
+.user-username {
+    font-size: 1rem;
+}
+
+.user-status-label::before {
+    display: inline-block;
+    margin-right: 0.25rem;
+    content: '\e816';
+    font-family: Icons;
+}
+
+.user-status-enabled .user-status-label::before {
+    color: $color-success;
+}
+
+.user-status-disabled .user-status-label::before {
+    color: $color-error;
+}
+
+@media (min-width: map-get($responsive-breakpoints, 'xs')) {
+    .users-item {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        line-height: 1.5;
+    }
+    .users-item-cell {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .users-item .user-fullname {
+        width: 30%;
+    }
+
+    .user-last-access,
+    .user-actions {
+        text-align: center;
+    }
+
+    .user-actions {
+        width: 10%;
+    }
+}
+
+.users-item:hover {
+    background-color: $color-gray-xxlight;
+}
+
+.user-actions button,
+.user-actions .button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.user-actions button:focus,
+.user-actions .button:focus {
+    box-shadow: none;
+}
+
+.user-actions button:hover,
+.user-actions .button:hover {
+    color: $color-accent;
+}

@@ -1,0 +1,57 @@
+.ct-chart {
+    position: relative;
+    display: block;
+    width: 100%;
+
+    @include user-select-none;
+}
+
+.ct-chart::before {
+    display: block;
+    float: left;
+    padding-bottom: 33.3333333333%;
+    width: 0;
+    height: 0;
+    content: '';
+}
+
+.ct-chart::after {
+    display: table;
+    clear: both;
+    content: '';
+}
+
+.ct-chart > svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+.ct-series-a .ct-line,
+.ct-series-a .ct-point {
+    stroke: $color-accent;
+}
+
+.ct-series-a .ct-area {
+    fill: $color-accent;
+}
+
+.ct-series-b .ct-line,
+.ct-series-b .ct-point {
+    stroke: $color-warning; //#f07a2b
+}
+
+.ct-series-b .ct-area {
+    fill: $color-warning;
+}
+
+.ct-label.ct-horizontal,
+.ct-label.ct-horizontal.ct-end {
+    display: inline-block;
+    min-width: 3rem;
+    width: auto !important;
+    color: #000;
+    text-align: center;
+    transform: translateX(-50%);
+}

@@ -1,0 +1,63 @@
+.login-modal-container {
+    margin: 3rem 0.5rem;
+    padding: 2rem;
+    max-width: 24rem;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+@media (min-width: 24rem) {
+    .login-modal-container {
+        margin: 3rem auto;
+    }
+}
+
+.login-modal-error,
+.login-modal-success,
+.login-modal-warning {
+    position: relative;
+    margin: -2rem -2rem 1rem -2rem;
+    padding: 1rem 2rem 1rem 3.5rem;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    & a {
+        display: block;
+        color: #fff;
+        text-decoration: underline;
+
+        @include ellipsis;
+    }
+    &::before {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        display: block;
+        font-size: 1.25rem;
+        font-family: Icons;
+        transform: translate(0, -50%);
+    }
+}
+
+.login-modal-error {
+    background-color: $color-error;
+    color: #fff;
+    &::before {
+        content: '\e822';
+    }
+}
+
+.login-modal-success {
+    background-color: $color-success-dark;
+    color: #fff;
+    &::before {
+        content: '\e810';
+    }
+}
+
+.login-modal-warning {
+    background-color: $color-warning;
+    color: #fff;
+    &::before {
+        content: '\e861';
+    }
+}

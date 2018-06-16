@@ -1,0 +1,25 @@
+---
+title: Home
+---
+# Formwork is Installed!
+If you can see this page your Formwork installation is working.
+Now you can add some content and customize the website as you want.
+
+### Discover the Administration Panel
+The [Administration Panel](/admin) makes easy editing pages, changing options and creating users. At the first access you’ll be requested to register a new user.
+
+![](/assets/images/admin.png)
+
+### Manage Pages Manually
+If you prefer to manage the content manually, just locate the pages in the subdirectories of `content` folder. Each subfolder is named by its slug optionally prepended by an ordering number, e.g., `01-about`. Page content is stored in [Markdown](http://daringfireball.net/projects/markdown/syntax) text files named with its template followed by `.md` extension. For example, a page called *About*, using the `page` template and accessibile from `http://yourdomain/about/` would result in a `/content/01-about/page.md` file.
+
+As you'll see, each page is structured in this way:
+
+```
+---
+title: Page Title
+---
+Page content here, using Markdown syntax.
+```
+
+Code between `---` characters defines the page [YAML](http://yaml.org) Frontmatter containing the fields and metadata of the page. In the example above `title` is a field with `"Page Title"` as value.

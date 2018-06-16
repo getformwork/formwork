@@ -1,0 +1,76 @@
+section1:
+    type: header
+    label:
+        en: Info
+        it: Informazioni
+
+rows1:
+    type: rows
+    fields:
+        row1:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label:
+                        en: Language
+                        it: Lingua
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        lang:
+                            type: select
+                            translate: false
+                            import:
+                                options: 'Formwork\Admin\Utils\Language::names'
+
+        row2:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label:
+                        en: Title
+                        it: Titolo
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        title:
+                            type: text
+                            required: true
+
+        row3:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label:
+                        en: Author
+                        it: Autore
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        author:
+                            type: text
+
+        row4:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label:
+                        en: Description
+                        it: Descrizione
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        description:
+                            type: textarea

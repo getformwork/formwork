@@ -1,0 +1,49 @@
+title: Blog Post
+pages: false
+num: date
+fields:
+    image:
+        type: image
+        default: null
+        label:
+            en: Image
+            it: Immagine
+        placeholder:
+            en: No Image
+            it: Nessuna immagine
+    published:
+        type: checkbox
+        default: true
+        label:
+            en: Published
+            it: Pubblicato
+    publish-date:
+        type: date
+        default: null
+        label:
+            en: Publish Date
+            it: Data di pubblicazione
+        placeholder:
+            en: No Date
+            it: Nessuna data
+    unpublish-date:
+        type: date
+        default: null
+        label:
+            en: Unpublish Date
+            it: Data di rimozione
+        placeholder:
+            en: No Date
+            it: Nessuna data
+    routable:
+        type: checkbox
+        default: true
+        label:
+            en: Routable
+            it: Raggiungibile
+    cacheable:
+        type: checkbox
+        default: true
+        label:
+            en: Cacheable
+            it: Abilita cache

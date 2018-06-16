@@ -1,0 +1,54 @@
+title: Blog
+pages:
+    - post
+    - blog
+reverse: true
+sortable-children: false
+fields:
+    posts-per-page:
+        type: select
+        options:
+            5: 5
+            10: 10
+            15: 15
+            20: 20
+        default: 5
+        label:
+            en: Posts per page
+            it: Post per pagina
+    published:
+        type: checkbox
+        default: true
+        label:
+            en: Published
+            it: Pubblicato
+    publish-date:
+        type: date
+        default: null
+        label:
+            en: Publish Date
+            it: Data di pubblicazione
+        placeholder:
+            en: No Date
+            it: Nessuna data
+    unpublish-date:
+        type: date
+        default: null
+        label:
+            en: Unpublish Date
+            it: Data di rimozione
+        placeholder:
+            en: No Date
+            it: Nessuna data
+    routable:
+        type: checkbox
+        default: true
+        label:
+            en: Routable
+            it: Raggiungibile
+    cacheable:
+        type: checkbox
+        default: true
+        label:
+            en: Cacheable
+            it: Cache

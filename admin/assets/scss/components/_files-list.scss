@@ -1,0 +1,87 @@
+.files-list {
+    margin: 0;
+    margin-bottom: 1rem;
+    padding: 0;
+    list-style-type: none;
+
+    @include user-select-none;
+}
+
+.file-name::before {
+    margin-right: 0.5rem;
+    color: #444;
+    content: '\e82d';
+    font-family: Icons;
+}
+
+.file-type-image::before {
+    content: '\e829';
+}
+
+.file-type-document::before {
+    content: '\e82b';
+}
+
+.file-type-audio::before {
+    content: '\e827';
+}
+
+.file-type-video::before {
+    content: '\e82c';
+}
+
+.files-item-cell {
+    display: table-cell;
+    padding: 0.25rem;
+    vertical-align: middle;
+}
+
+.files-item-cell {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.files-item {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.files-item-row {
+    display: table-row;
+}
+
+.file-name {
+    width: 60%;
+    font-size: 0.9375rem;
+
+    @include ellipsis;
+}
+
+.file-actions {
+    width: 40%;
+    text-align: right;
+    font-size: 0.875rem;
+}
+
+.file-actions button,
+.file-actions .button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.file-actions button:focus,
+.file-actions .button:focus {
+    box-shadow: none;
+}
+
+.file-actions button:hover,
+.file-actions .button:hover {
+    box-shadow: none;
+    color: $color-accent;
+}
