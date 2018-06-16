@@ -39,8 +39,9 @@ class Dashboard extends AbstractController {
                 array(
                     'pages' => $site->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
                     'subpages' => false,
-                    'class' => array('pages-list-top'),
-                    'sortable' => false
+                    'class' => 'pages-list-top',
+                    'parent' => null,
+                    'sortable' => 'false'
                 ),
                 false
             ),

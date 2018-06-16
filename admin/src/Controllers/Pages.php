@@ -39,8 +39,9 @@ class Pages extends AbstractController {
             array(
                 'pages' => $this->site->pages(),
                 'subpages' => true,
-                'templates' => $this->site->templates(),
-                'class' => array('pages-list-top')
+                'class' => 'pages-list-top',
+                'parent' => '.',
+                'sortable' => 'true'
             ),
             false
         );
