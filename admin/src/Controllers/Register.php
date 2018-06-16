@@ -12,44 +12,44 @@ use Spyc;
 
 class Register extends AbstractController {
 
-	public function register() {
-		CSRFToken::generate();
+    public function register() {
+        CSRFToken::generate();
 
-		switch (HTTPRequest::method()) {
-			case 'GET':
-				$this->view('register.register', array('csrfToken' => CSRFToken::get()));
-				break;
+        switch (HTTPRequest::method()) {
+            case 'GET':
+                $this->view('register.register', array('csrfToken' => CSRFToken::get()));
+                break;
 
-			case 'POST':
-				$this->data = new DataGetter(HTTPRequest::postData());
+            case 'POST':
+                $this->data = new DataGetter(HTTPRequest::postData());
 
-				foreach (array('username', 'fullname', 'password', 'email') as $var) {
-					if (!$this->data->has($var)) {
-						$this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
-						$this->redirect('/', 302, true);
-					}
-				}
+                foreach (array('username', 'fullname', 'password', 'email') as $var) {
+                    if (!$this->data->has($var)) {
+                        $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
+                        $this->redirect('/', 302, true);
+                    }
+                }
 
-				$userdata = array(
-					'username' => $this->data->get('username'),
-					'fullname' => $this->data->get('fullname'),
-					'hash'     => Password::hash($this->data->get('password')),
-					'email'    => $this->data->get('email'),
-					'avatar'   => null,
-					'language' => $this->data->get('language')
-				);
+                $userdata = array(
+                    'username' => $this->data->get('username'),
+                    'fullname' => $this->data->get('fullname'),
+                    'hash'     => Password::hash($this->data->get('password')),
+                    'email'    => $this->data->get('email'),
+                    'avatar'   => null,
+                    'language' => $this->data->get('language')
+                );
 
-				$fileContent = Spyc::YAMLdump($userdata, false, 0, true);
+                $fileContent = Spyc::YAMLdump($userdata, false, 0, true);
 
-				FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
+                FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
 
-				Session::set('FORMWORK_USERNAME', $this->data->get('username'));
-				$time = $this->log('access')->set($this->data->get('username'));
-				$this->registry('lastAccess')->set($this->data->get('username'), $time);
+                Session::set('FORMWORK_USERNAME', $this->data->get('username'));
+                $time = $this->log('access')->set($this->data->get('username'));
+                $this->registry('lastAccess')->set($this->data->get('username'), $time);
 
-				$this->redirect('/', 302, true);
-				break;
-		}
-	}
+                $this->redirect('/', 302, true);
+                break;
+        }
+    }
 
 }

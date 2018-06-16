@@ -257,14 +257,14 @@ class Page {
     }
 
     public function get($key, $default = null) {
-		if (isset($this->$key)) return $this->$key;
+        if (isset($this->$key)) return $this->$key;
         if (method_exists($this, $key)) return $this->$key();
-		return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
-	}
+        return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+    }
 
-	public function has($key) {
-		return isset($this->$key) || array_key_exists($key, $this->data);
-	}
+    public function has($key) {
+        return isset($this->$key) || array_key_exists($key, $this->data);
+    }
 
     public function set($key, $value) {
         $this->data[$key] = $value;

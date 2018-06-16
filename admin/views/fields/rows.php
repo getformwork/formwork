@@ -1,3 +1,3 @@
 <div class="container-full">
-	<?= $this->fields($field->get('fields')) ?>
+    <?= $this->fields($field->get('fields')) ?>
 </div>

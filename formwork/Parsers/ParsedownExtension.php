@@ -7,42 +7,42 @@ use ParsedownExtra;
 
 class ParsedownExtension extends ParsedownExtra {
 
-	protected $page;
+    protected $page;
 
-	public function setPage(Page $page) {
-		$this->page = $page;
-	}
+    public function setPage(Page $page) {
+        $this->page = $page;
+    }
 
-	protected function inlineImage($excerpt) {
-		$image = parent::inlineImage($excerpt);
-		if (!isset($image)) return null;
+    protected function inlineImage($excerpt) {
+        $image = parent::inlineImage($excerpt);
+        if (!isset($image)) return null;
 
-		$src = $image['element']['attributes']['src'];
+        $src = $image['element']['attributes']['src'];
 
-		if (strlen($src) > 0) {
-			if ($src[0] == '/') {
-				$image['element']['attributes']['src'] = Formwork::instance()->site()->uri($src);
-			} else {
-				$image['element']['attributes']['src'] = $this->page->uri() . $src;
-			}
-		}
+        if (strlen($src) > 0) {
+            if ($src[0] == '/') {
+                $image['element']['attributes']['src'] = Formwork::instance()->site()->uri($src);
+            } else {
+                $image['element']['attributes']['src'] = $this->page->uri() . $src;
+            }
+        }
 
-		return $image;
-	}
+        return $image;
+    }
 
-	protected function inlineLink($excerpt) {
-		$link = parent::inlineLink($excerpt);
-		if (!isset($link)) return null;
+    protected function inlineLink($excerpt) {
+        $link = parent::inlineLink($excerpt);
+        if (!isset($link)) return null;
 
-		$href = $link['element']['attributes']['href'];
+        $href = $link['element']['attributes']['href'];
 
-		if (!empty($href)) {
-			if ($href[0] == '/') {
-				$link['element']['attributes']['href'] = Formwork::instance()->site()->uri($href);
-			}
-		}
+        if (!empty($href)) {
+            if ($href[0] == '/') {
+                $link['element']['attributes']['href'] = Formwork::instance()->site()->uri($href);
+            }
+        }
 
-		return $link;
-	}
+        return $link;
+    }
 
 }

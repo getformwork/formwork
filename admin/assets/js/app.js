@@ -52,21 +52,21 @@ $(function() {
     });
 
     $('#expand-all-pages').click(function() {
-    	$(this).blur();
-    	$('.pages-children').show();
-    	$('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+        $(this).blur();
+        $('.pages-children').show();
+        $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
     });
 
     $('#collapse-all-pages').click(function() {
-    	$(this).blur();
-    	$('.pages-children').hide();
-    	$('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+        $(this).blur();
+        $('.pages-children').hide();
+        $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
     });
 
     $('.page-search').focus(function() {
-    	$('.pages-children').each(function() {
-    		$(this).data('visible', $(this).is(':visible'));
-    	});
+        $('.pages-children').each(function() {
+            $(this).data('visible', $(this).is(':visible'));
+        });
     });
 
     $('.page-search').keyup(Utils.debounce(function() {
@@ -98,36 +98,36 @@ $(function() {
     });
 
     $('#page-title', '#newPageModal').keyup(function() {
-		$('#page-slug', '#newPageModal').val(Utils.slug($(this).val()));
-	});
+        $('#page-slug', '#newPageModal').val(Utils.slug($(this).val()));
+    });
 
-	$('#page-slug', '#newPageModal').keyup(function() {
-		$(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
-	}).blur(function() {
-		if ($(this).val() == '') $('#page-title', '#newPageModal').trigger('keyup');
-	});
+    $('#page-slug', '#newPageModal').keyup(function() {
+        $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+    }).blur(function() {
+        if ($(this).val() == '') $('#page-title', '#newPageModal').trigger('keyup');
+    });
 
-	$('#page-parent', '#newPageModal').change(function() {
-		var $option = $(this).find('option:selected');
-		var $pageTemplate = $('#page-template', '#newPageModal');
-		var allowedTemplates = $option.data('allowed-templates');
-		if (allowedTemplates) {
-			allowedTemplates = allowedTemplates.split(', ');
-			$pageTemplate
-				.data('previous-value', $pageTemplate.val())
-				.val(allowedTemplates[0])
-				.find('option').each(function () {
-					if (allowedTemplates.indexOf($(this).val()) == -1) {
-						$(this).attr('disabled', true);
-					}
-				});
-		} else if ($pageTemplate.find('option[disabled]').length) {
-			$pageTemplate
-				.val($pageTemplate.data('previous-value'))
-				.removeData('previous-value')
-				.find('option').removeAttr('disabled');
-		}
-	});
+    $('#page-parent', '#newPageModal').change(function() {
+        var $option = $(this).find('option:selected');
+        var $pageTemplate = $('#page-template', '#newPageModal');
+        var allowedTemplates = $option.data('allowed-templates');
+        if (allowedTemplates) {
+            allowedTemplates = allowedTemplates.split(', ');
+            $pageTemplate
+                .data('previous-value', $pageTemplate.val())
+                .val(allowedTemplates[0])
+                .find('option').each(function () {
+                    if (allowedTemplates.indexOf($(this).val()) == -1) {
+                        $(this).attr('disabled', true);
+                    }
+                });
+        } else if ($pageTemplate.find('option[disabled]').length) {
+            $pageTemplate
+                .val($pageTemplate.data('previous-value'))
+                .removeData('previous-value')
+                .find('option').removeAttr('disabled');
+        }
+    });
 
     $(document).keyup(function(event) {
         // ESC key
@@ -169,14 +169,14 @@ $(function() {
     });
 
     $('.pages-list').each(function() {
-    	var $this = $(this);
+        var $this = $(this);
 
-    	if ($this.data('sortable') === false) return;
+        if ($this.data('sortable') === false) return;
 
-    	var sortable = Sortable.create(this, {
-    		filter: '.no-reorder',
+        var sortable = Sortable.create(this, {
+            filter: '.no-reorder',
             forceFallback: true,
-    		onStart: function(event) {
+            onStart: function(event) {
                 $('.pages-children').each(function() {
                     $(this).data('visible', $(this).is(':visible')).hide();
                 });
@@ -185,11 +185,11 @@ $(function() {
                     $(this).data('expanded', $(this).hasClass('toggle-expanded'));
                     $(this).removeClass('toggle-expanded').addClass('toggle-collapsed');
                 }).css('opacity', '0.5');
-    		},
-    		onMove: function(event) {
-    			return !$(event.related).hasClass('no-reorder');
-    		},
-    		onEnd: function (event) {
+            },
+            onMove: function(event) {
+                return !$(event.related).hasClass('no-reorder');
+            },
+            onEnd: function (event) {
                 $('.pages-children').each(function() {
                     $(this).toggle($(this).data('visible'));
                 });
@@ -200,36 +200,36 @@ $(function() {
                     }
                 }).css('opacity', '');
 
-    			if (event.newIndex == event.oldIndex) return;
+                if (event.newIndex == event.oldIndex) return;
 
-    			sortable.option('disabled', true);
+                sortable.option('disabled', true);
 
-    			var data = {
-    				'csrf-token': $('body').data('csrf-token'),
-    				parent: $(this.el).data('parent'),
-    				from: event.oldIndex,
-    				to: event.newIndex
-    			};
+                var data = {
+                    'csrf-token': $('body').data('csrf-token'),
+                    parent: $(this.el).data('parent'),
+                    from: event.oldIndex,
+                    to: event.newIndex
+                };
 
-    			new Request({
-    				method: 'POST',
-    				url: Utils.uriPrependBase(location.pathname, '/admin/pages/reorder/'),
-    				data: data
-    			}, function(response) {
+                new Request({
+                    method: 'POST',
+                    url: Utils.uriPrependBase(location.pathname, '/admin/pages/reorder/'),
+                    data: data
+                }, function(response) {
                     if (response.status) {
                         Notification(response.message, response.status, 5000);
                     }
-    				if (!response.status || response.status == 'error') {
-    					sortable.sort($(event.from).data('originalOrder'));
-    				}
-    				sortable.option('disabled', false);
+                    if (!response.status || response.status == 'error') {
+                        sortable.sort($(event.from).data('originalOrder'));
+                    }
+                    sortable.option('disabled', false);
                     $(event.from).data('originalOrder', sortable.toArray());
-    			});
+                });
 
-    		}
-    	});
+            }
+        });
 
-    	$this.data('originalOrder', sortable.toArray());
+        $this.data('originalOrder', sortable.toArray());
     });
 
     $('#clear-cache').click(function() {
@@ -249,111 +249,111 @@ $(function() {
 });
 
 var Editor = function(id) {
-	textarea = $('#' + id)[0];
-	var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
+    textarea = $('#' + id)[0];
+    var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
 
-	disableSummaryCommand();
-	$(textarea).keyup(Utils.debounce(disableSummaryCommand, 1000));
+    disableSummaryCommand();
+    $(textarea).keyup(Utils.debounce(disableSummaryCommand, 1000));
 
-	$('[data-command=bold]', toolbarSel).click(function() {
-		var pos = insertAtCursor(textarea, '**');
-	});
+    $('[data-command=bold]', toolbarSel).click(function() {
+        var pos = insertAtCursor(textarea, '**');
+    });
 
-	$('[data-command=italic]', toolbarSel).click(function() {
-		var pos = insertAtCursor(textarea, '_');
-	});
+    $('[data-command=italic]', toolbarSel).click(function() {
+        var pos = insertAtCursor(textarea, '_');
+    });
 
-	$('[data-command=ul]', toolbarSel).click(function() {
-		var prevChar = prevCursorChar(textarea);
-		var prepend = prevChar === "\n" ? "\n" : "\n\n";
-		insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
-	});
+    $('[data-command=ul]', toolbarSel).click(function() {
+        var prevChar = prevCursorChar(textarea);
+        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
+    });
 
-	$('[data-command=ol]', toolbarSel).click(function() {
-		var prevChar = prevCursorChar(textarea);
-		var prepend = prevChar === "\n" ? "\n" : "\n\n";
-		var num = /^\d+\./.exec(lastLine(textarea.value));
-		if (num) {
-			insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
-		} else {
-			insertAtCursor(textarea, prevChar === undefined ? '1. ' : prepend + '1. ', '');
-		}
-	});
+    $('[data-command=ol]', toolbarSel).click(function() {
+        var prevChar = prevCursorChar(textarea);
+        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var num = /^\d+\./.exec(lastLine(textarea.value));
+        if (num) {
+            insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
+        } else {
+            insertAtCursor(textarea, prevChar === undefined ? '1. ' : prepend + '1. ', '');
+        }
+    });
 
-	$('[data-command=quote]', toolbarSel).click(function() {
-		var prevChar = prevCursorChar(textarea);
-		var prepend = prevChar === "\n" ? "\n" : "\n\n";
-		insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
-	});
+    $('[data-command=quote]', toolbarSel).click(function() {
+        var prevChar = prevCursorChar(textarea);
+        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
+    });
 
-	$('[data-command=link]', toolbarSel).click(function() {
-		var startPos = textarea.selectionStart;
-		var endPos = textarea.selectionEnd;
-		var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
-		var left = textarea.value.substring(0, startPos);
-		var right = textarea.value.substring(endPos, textarea.value.length);
-		if (/^(https?:\/\/|mailto:)/i.test(selection)) {
-			textarea.value = left + '[](' + selection + ')' + right;
-			textarea.focus();
-			textarea.setSelectionRange(startPos + 1, startPos + 1);
-		} else if (selection !== '') {
-			textarea.value = left + '[' + selection + '](http://)' + right;
-			textarea.focus();
-			textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
-		} else {
-			insertAtCursor(textarea, '[', '](http://)');
-		}
-	});
+    $('[data-command=link]', toolbarSel).click(function() {
+        var startPos = textarea.selectionStart;
+        var endPos = textarea.selectionEnd;
+        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
+        var left = textarea.value.substring(0, startPos);
+        var right = textarea.value.substring(endPos, textarea.value.length);
+        if (/^(https?:\/\/|mailto:)/i.test(selection)) {
+            textarea.value = left + '[](' + selection + ')' + right;
+            textarea.focus();
+            textarea.setSelectionRange(startPos + 1, startPos + 1);
+        } else if (selection !== '') {
+            textarea.value = left + '[' + selection + '](http://)' + right;
+            textarea.focus();
+            textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
+        } else {
+            insertAtCursor(textarea, '[', '](http://)');
+        }
+    });
 
-	$('[data-command=image]', toolbarSel).click(function() {
-		var prevChar = prevCursorChar(textarea);
-		var prepend = '\n\n';
-		if (prevChar === '\n') {
-			prepend = '\n';
-		} else if (prevChar === undefined) {
-			prepend = '';
-		}
-		insertAtCursor(textarea, prepend + '![](', ')');
-	});
+    $('[data-command=image]', toolbarSel).click(function() {
+        var prevChar = prevCursorChar(textarea);
+        var prepend = '\n\n';
+        if (prevChar === '\n') {
+            prepend = '\n';
+        } else if (prevChar === undefined) {
+            prepend = '';
+        }
+        insertAtCursor(textarea, prepend + '![](', ')');
+    });
 
-	$('[data-command=summary]', toolbarSel).click(function() {
-		var prevChar = prevCursorChar(textarea);
-		if (!hasSummarySequence()) {
-			console.log(prevChar);
-			var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
-			insertAtCursor(textarea, prepend + '\n===\n\n', '');
-			$(this).attr('disabled', true);
-		}
-	});
+    $('[data-command=summary]', toolbarSel).click(function() {
+        var prevChar = prevCursorChar(textarea);
+        if (!hasSummarySequence()) {
+            console.log(prevChar);
+            var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
+            insertAtCursor(textarea, prepend + '\n===\n\n', '');
+            $(this).attr('disabled', true);
+        }
+    });
 
-	function hasSummarySequence() {
-		return /\n+===\n+/.test(textarea.value);
-	}
+    function hasSummarySequence() {
+        return /\n+===\n+/.test(textarea.value);
+    }
 
-	function disableSummaryCommand() {
-		$('[data-command=summary]', toolbarSel).attr('disabled', hasSummarySequence());
-	}
+    function disableSummaryCommand() {
+        $('[data-command=summary]', toolbarSel).attr('disabled', hasSummarySequence());
+    }
 
-	function lastLine(text) {
-		var index = text.lastIndexOf('\n');
-		if (index == -1) return text;
-		return text.substring(index + 1);
-	}
+    function lastLine(text) {
+        var index = text.lastIndexOf('\n');
+        if (index == -1) return text;
+        return text.substring(index + 1);
+    }
 
-	function prevCursorChar(field) {
-		var startPos = field.selectionStart;
-		return startPos === 0 ? undefined : field.value.substring(startPos - 1, startPos);
-	}
+    function prevCursorChar(field) {
+        var startPos = field.selectionStart;
+        return startPos === 0 ? undefined : field.value.substring(startPos - 1, startPos);
+    }
 
-	function insertAtCursor(field, leftValue, rightValue) {
-		if (rightValue === undefined) rightValue = leftValue;
-		var startPos = field.selectionStart;
-		var endPos = field.selectionEnd;
-		var selection = startPos === endPos ? '' : field.value.substring(startPos, endPos);
-		field.value = field.value.substring(0, startPos) + leftValue + selection + rightValue + field.value.substring(endPos, field.value.length);
-		field.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-		$(field).blur().focus();
-	}
+    function insertAtCursor(field, leftValue, rightValue) {
+        if (rightValue === undefined) rightValue = leftValue;
+        var startPos = field.selectionStart;
+        var endPos = field.selectionEnd;
+        var selection = startPos === endPos ? '' : field.value.substring(startPos, endPos);
+        field.value = field.value.substring(0, startPos) + leftValue + selection + rightValue + field.value.substring(endPos, field.value.length);
+        field.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
+        $(field).blur().focus();
+    }
 }
 
 var Form = function(form) {
@@ -435,307 +435,89 @@ var Notification = function(text, type, interval) {
 };
 
 var Request = function(options, callback) {
-	var request = $.ajax(options);
-	if (typeof callback === 'function') {
-		request.always(function() {
-			var response = request.responseJSON || {};
-			var code = response.code || request.status;
-			if (code == 403) {
-				location.reload();
-			} else {
-				callback(response, request);
-			}
-		});
-	}
-	return request;
+    var request = $.ajax(options);
+    if (typeof callback === 'function') {
+        request.always(function() {
+            var response = request.responseJSON || {};
+            var code = response.code || request.status;
+            if (code == 403) {
+                location.reload();
+            } else {
+                callback(response, request);
+            }
+        });
+    }
+    return request;
 };
 
 var Tooltip = function(referenceElement, text, options) {
-	var defaults = {
-		container: document.body,
-		position: 'top',
-		offset: {x: 0, y: 0},
-		delay: 500
-	};
+    var defaults = {
+        container: document.body,
+        position: 'top',
+        offset: {x: 0, y: 0},
+        delay: 500
+    };
 
-	options = $.extend({}, defaults, options);
+    options = $.extend({}, defaults, options);
 
-	var $referenceElement = $(referenceElement);
-	var timer;
+    var $referenceElement = $(referenceElement);
+    var timer;
 
-	function _position($tooltip) {
-		var offset = Utils.offset($referenceElement[0]);
+    function _position($tooltip) {
+        var offset = Utils.offset($referenceElement[0]);
 
-		var top = offset.top;
-		var left = offset.left;
+        var top = offset.top;
+        var left = offset.left;
 
-		var hw = ($referenceElement.outerWidth() - $tooltip.outerWidth()) / 2;
-		var hh = ($referenceElement.outerHeight() - $tooltip.outerHeight()) / 2;
-		switch (options.position) {
-			case 'top':
-				return {
-					top: Math.round(top - $tooltip.outerHeight() + options.offset.y),
-					left: Math.round(left + hw + options.offset.x)
-				};
-			case 'right':
-				return {
-					top: Math.round(top + hh + options.offset.y),
-					left: Math.round(left+ $referenceElement.outerWidth() + options.offset.x)
-				};
-			case 'bottom':
-				return {
-					top: Math.round(top + $referenceElement.outerHeight() + options.offset.y),
-					left: Math.round(left + hw + options.offset.x)
-				};
-			case 'left':
-				return {
-					top: Math.round(top + hh + options.offset.y),
-					left: Math.round(left - $tooltip.outerWidth() + options.offset.x)
-				};
-		}
-	}
+        var hw = ($referenceElement.outerWidth() - $tooltip.outerWidth()) / 2;
+        var hh = ($referenceElement.outerHeight() - $tooltip.outerHeight()) / 2;
+        switch (options.position) {
+            case 'top':
+                return {
+                    top: Math.round(top - $tooltip.outerHeight() + options.offset.y),
+                    left: Math.round(left + hw + options.offset.x)
+                };
+            case 'right':
+                return {
+                    top: Math.round(top + hh + options.offset.y),
+                    left: Math.round(left+ $referenceElement.outerWidth() + options.offset.x)
+                };
+            case 'bottom':
+                return {
+                    top: Math.round(top + $referenceElement.outerHeight() + options.offset.y),
+                    left: Math.round(left + hw + options.offset.x)
+                };
+            case 'left':
+                return {
+                    top: Math.round(top + hh + options.offset.y),
+                    left: Math.round(left - $tooltip.outerWidth() + options.offset.x)
+                };
+        }
+    }
 
-	function _show() {
-		timer = setTimeout(function() {
-			var $tooltip = $('<div class="tooltip" role="tooltip">');
-			$tooltip.appendTo(options.container);
-			$tooltip.text(text);
-			$tooltip.css(_position($tooltip)).fadeIn(200);
-		}, options.delay);
-	}
+    function _show() {
+        timer = setTimeout(function() {
+            var $tooltip = $('<div class="tooltip" role="tooltip">');
+            $tooltip.appendTo(options.container);
+            $tooltip.text(text);
+            $tooltip.css(_position($tooltip)).fadeIn(200);
+        }, options.delay);
+    }
 
-	function _remove() {
-		clearTimeout(timer);
-		$('.tooltip').fadeOut(100, function() {
-			$(this).remove();
-		});
-	}
+    function _remove() {
+        clearTimeout(timer);
+        $('.tooltip').fadeOut(100, function() {
+            $(this).remove();
+        });
+    }
 
-	$referenceElement.on('mouseout', _remove);
+    $referenceElement.on('mouseout', _remove);
 
-	_show();
+    _show();
 
-	return {show: _show};
+    return {show: _show};
 
 };
-
-var Chart = (function(element, data) {
-	var options = {
-		showArea: true,
-		fullWidth: true,
-		scaleMinSpace: 20,
-		divisor: 5,
-		chartPadding: 20,
-		lineSmooth: false,
-		low: 0,
-		axisX: {
-			showGrid: false,
-			labelOffset: {x: 0, y: 10}
-		},
-		axisY: {
-			onlyInteger: true,
-			offset: 15,
-			labelOffset: {x: 0, y: 5}
-		}
-	};
-
-	new Chartist.Line(element, data, options);
-});
-
-$(function() {
-	$('[data-chart-data]').each(function() {
-		new Chart(this, $(this).data('chart-data'));
-	});
-	$('.ct-chart').on('mouseover', '.ct-point', function() {
-		new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
-	});
-});
-
-var ImagePicker = (function() {
-	$(function() {
-		$('.image-input').click(function() {
-	        var $this = $(this);
-	        var value = $this.val();
-	        Modal.show('imagesModal', null, function($modal) {
-	            $modal.find('.image-picker-confirm').data('target', $this);
-	            $modal.find('.image-picker-thumbnail').each(function() {
-	                if ($(this).data('text') == value) {
-	                    $(this).addClass('selected');
-	                    return false;
-	                }
-	            });
-	        });
-	    });
-
-	    $('.image-picker').each(function() {
-	        var $this = $(this);
-	        var options = $this.children('option');
-	        var container = $('<div>', {class: 'image-picker-thumbnails'});
-	        for (var i = 0; i < options.length; i++) {
-	            $('<div>', {
-	                class: 'image-picker-thumbnail',
-	                'data-value': options[i].value,
-	                'data-text': options[i].text
-	            }).css({
-	                'background-image': 'url(' + options[i].value + ')'
-	            }).appendTo(container);
-	        }
-	        $this.before(container);
-	        $this.hide();
-	    });
-
-	    $('.image-picker-confirm').click(function() {
-	        $(this).data('target').val($(this).parent().find('.image-picker-thumbnail.selected').data('text'));
-	    });
-
-	    $('.image-picker-thumbnail').click(function() {
-	        $(this).siblings().removeClass('selected');
-	        $(this).addClass('selected');
-	        $(this).parent().siblings('.image-input').val($(this).data('value'));
-	    });	
-	});
-})();
-
-var Modal = (function() {
-    $(function() {
-        $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Modal.validate($(this).data('dismiss'));
-                if (!valid) return;
-            }
-            Modal.hide($(this).data('dismiss'));
-        });
-        $('.modal').click(function(event) {
-            if (event.target === this) Modal.hide();
-        });
-    });
-
-    return {
-        show: function (id, action, callback) {
-            var $modal = $('#' + id);
-            $modal.addClass('show');
-            if (action !== null) {
-                $modal.find('form').attr('action', action);
-            }
-            $modal.find('[autofocus]').first().focus(); // Firefox bug
-            if (typeof callback === 'function') callback($modal);
-            this.createBackdrop();
-        },
-        hide: function(id) {
-            var $modal = id === undefined ? $('.modal') : $('#' + id);
-            $modal.removeClass('show');
-            this.removeBackdrop();
-        },
-        createBackdrop: function() {
-            if (!$('.modal-backdrop').length) {
-                $('<div>', {
-                    class: 'modal-backdrop'
-                }).appendTo('body');    
-            }
-        },
-        removeBackdrop: function() {
-            $('.modal-backdrop').remove();
-        },
-        validate: function(id) {
-            var valid = false;
-            var $modal = $('#' + id);
-            $modal.find('[required]').each(function() {
-                if ($(this).val() === '') {
-                    $(this).addClass('animated shake');
-                    $(this).focus();
-                    $modal.find('.modal-error').show();
-                    valid = false;
-                    return false;
-                }
-                valid = true;
-            });
-            return valid;
-        }
-    };
-})();
-
-var Utils = (function() {
-    return {
-        debounce: function(callback, delay, leading) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) clearTimeout(timer);
-
-                if (leading && !timer) callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    if (!leading) callback.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        escapeRegExp: function(string) {
-            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        },
-        offset: function(element) {
-            var rect = element.getBoundingClientRect();
-            var doc = document.documentElement;
-            var body = document.body;
-
-            var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
-            var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
-
-            return {
-                top: rect.top + YOffset,
-                left: rect.left + XOffset
-            };
-        },
-        slug: function(string) {
-            var translate = {"\t": "", "\r": "", "!": "", "\"": "", "#": "", "$": "", "%": "", "'": "", "(": "", ")": "", "*": "", "+": "", ",": "", ".": "", ":": "", ";": "", "<": "", "=": "", ">": "", "?": "", "@": "", "[": "", "]": "", "^": "", "`": "", "{": "", "|": "", "}": "", "¡": "", "£": "", "¤": "", "¥": "", "¦": "", "§": "", "«": "", "°": "", "»": "", "‘": "", "’": "", "“": "", "”": "", "\n": "-", " ": "-", "-": "-", "–": "-", "—": "-", "\/": "-", "\\": "-", "_": "-", "~": "-", "À": "A", "Á": "A", "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Æ": "Ae", "Ç": "C", "Ð": "D", "È": "E", "É": "E", "Ê": "E", "Ë": "E", "Ì": "I", "Í": "I", "Î": "I", "Ï": "I", "Ñ": "N", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O", "Ø": "O", "Œ": "Oe", "Š": "S", "Þ": "Th", "Ù": "U", "Ú": "U", "Û": "U", "Ü": "U", "Ý": "Y", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "ae", "å": "a", "æ": "ae", "¢": "c", "ç": "c", "ð": "d", "è": "e", "é": "e", "ê": "e", "ë": "e", "ì": "i", "í": "i", "î": "i", "ï": "i", "ñ": "n", "ò": "o", "ó": "o", "ô": "o", "õ": "o", "ö": "oe", "ø": "o", "œ": "oe", "š": "s", "ß": "ss", "þ": "th", "ù": "u", "ú": "u", "û": "u", "ü": "ue", "ý": "y", "ÿ": "y", "Ÿ": "y"};
-            var char;
-            string = string.toLowerCase();
-            for (char in translate) {
-                string = string.split(char).join(translate[char]);
-            }
-            return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
-        },
-        throttle: function(callback, delay) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) return;
-
-                callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    wrapper.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        uriPrependBase: function(base, path) {
-            var regexp = /^\/+|\/+$/im;
-            base = base.replace(regexp, '').split('/');
-            path = path.replace(regexp, '').split('/');
-            for (i = 0; i < base.length; i++) {
-                if (base[i] === path[0] && base[i + 1] !== path[0]) {
-                    base = base.slice(0, i);
-                }
-            }
-            return '/' + base.concat(path).join('/') + '/';
-        }
-    };
-})();
 
 (function($) {
     $.fn.datePicker = function(options) {
@@ -1190,3 +972,221 @@ var Utils = (function() {
         });
     };
 }(jQuery));
+
+var Chart = (function(element, data) {
+    var options = {
+        showArea: true,
+        fullWidth: true,
+        scaleMinSpace: 20,
+        divisor: 5,
+        chartPadding: 20,
+        lineSmooth: false,
+        low: 0,
+        axisX: {
+            showGrid: false,
+            labelOffset: {x: 0, y: 10}
+        },
+        axisY: {
+            onlyInteger: true,
+            offset: 15,
+            labelOffset: {x: 0, y: 5}
+        }
+    };
+
+    new Chartist.Line(element, data, options);
+});
+
+$(function() {
+    $('[data-chart-data]').each(function() {
+        new Chart(this, $(this).data('chart-data'));
+    });
+    $('.ct-chart').on('mouseover', '.ct-point', function() {
+        new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
+    });
+});
+
+var ImagePicker = (function() {
+    $(function() {
+        $('.image-input').click(function() {
+            var $this = $(this);
+            var value = $this.val();
+            Modal.show('imagesModal', null, function($modal) {
+                $modal.find('.image-picker-confirm').data('target', $this);
+                $modal.find('.image-picker-thumbnail').each(function() {
+                    if ($(this).data('text') == value) {
+                        $(this).addClass('selected');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        $('.image-picker').each(function() {
+            var $this = $(this);
+            var options = $this.children('option');
+            var container = $('<div>', {class: 'image-picker-thumbnails'});
+            for (var i = 0; i < options.length; i++) {
+                $('<div>', {
+                    class: 'image-picker-thumbnail',
+                    'data-value': options[i].value,
+                    'data-text': options[i].text
+                }).css({
+                    'background-image': 'url(' + options[i].value + ')'
+                }).appendTo(container);
+            }
+            $this.before(container);
+            $this.hide();
+        });
+
+        $('.image-picker-confirm').click(function() {
+            $(this).data('target').val($(this).parent().find('.image-picker-thumbnail.selected').data('text'));
+        });
+
+        $('.image-picker-thumbnail').click(function() {
+            $(this).siblings().removeClass('selected');
+            $(this).addClass('selected');
+            $(this).parent().siblings('.image-input').val($(this).data('value'));
+        });
+    });
+})();
+
+var Modal = (function() {
+    $(function() {
+        $('.modal [data-dismiss]').click(function() {
+            if ($(this).is('[data-validate]')) {
+                var valid = Modal.validate($(this).data('dismiss'));
+                if (!valid) return;
+            }
+            Modal.hide($(this).data('dismiss'));
+        });
+        $('.modal').click(function(event) {
+            if (event.target === this) Modal.hide();
+        });
+    });
+
+    return {
+        show: function (id, action, callback) {
+            var $modal = $('#' + id);
+            $modal.addClass('show');
+            if (action !== null) {
+                $modal.find('form').attr('action', action);
+            }
+            $modal.find('[autofocus]').first().focus(); // Firefox bug
+            if (typeof callback === 'function') callback($modal);
+            this.createBackdrop();
+        },
+        hide: function(id) {
+            var $modal = id === undefined ? $('.modal') : $('#' + id);
+            $modal.removeClass('show');
+            this.removeBackdrop();
+        },
+        createBackdrop: function() {
+            if (!$('.modal-backdrop').length) {
+                $('<div>', {
+                    class: 'modal-backdrop'
+                }).appendTo('body');    
+            }
+        },
+        removeBackdrop: function() {
+            $('.modal-backdrop').remove();
+        },
+        validate: function(id) {
+            var valid = false;
+            var $modal = $('#' + id);
+            $modal.find('[required]').each(function() {
+                if ($(this).val() === '') {
+                    $(this).addClass('animated shake');
+                    $(this).focus();
+                    $modal.find('.modal-error').show();
+                    valid = false;
+                    return false;
+                }
+                valid = true;
+            });
+            return valid;
+        }
+    };
+})();
+
+var Utils = (function() {
+    return {
+        debounce: function(callback, delay, leading) {
+            var timer = null;
+            var context;
+            var args;
+
+            function wrapper() {
+                context = this;
+                args = arguments;
+
+                if (timer) clearTimeout(timer);
+
+                if (leading && !timer) callback.apply(context, args);
+
+                timer = setTimeout(function() {
+                    if (!leading) callback.apply(context, args);
+                    timer = null;
+                }, delay);
+            }
+
+            return wrapper;
+        },
+        escapeRegExp: function(string) {
+            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        },
+        offset: function(element) {
+            var rect = element.getBoundingClientRect();
+            var doc = document.documentElement;
+            var body = document.body;
+
+            var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
+            var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
+
+            return {
+                top: rect.top + YOffset,
+                left: rect.left + XOffset
+            };
+        },
+        slug: function(string) {
+            var translate = {"\t": "", "\r": "", "!": "", "\"": "", "#": "", "$": "", "%": "", "'": "", "(": "", ")": "", "*": "", "+": "", ",": "", ".": "", ":": "", ";": "", "<": "", "=": "", ">": "", "?": "", "@": "", "[": "", "]": "", "^": "", "`": "", "{": "", "|": "", "}": "", "¡": "", "£": "", "¤": "", "¥": "", "¦": "", "§": "", "«": "", "°": "", "»": "", "‘": "", "’": "", "“": "", "”": "", "\n": "-", " ": "-", "-": "-", "–": "-", "—": "-", "\/": "-", "\\": "-", "_": "-", "~": "-", "À": "A", "Á": "A", "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Æ": "Ae", "Ç": "C", "Ð": "D", "È": "E", "É": "E", "Ê": "E", "Ë": "E", "Ì": "I", "Í": "I", "Î": "I", "Ï": "I", "Ñ": "N", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O", "Ø": "O", "Œ": "Oe", "Š": "S", "Þ": "Th", "Ù": "U", "Ú": "U", "Û": "U", "Ü": "U", "Ý": "Y", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "ae", "å": "a", "æ": "ae", "¢": "c", "ç": "c", "ð": "d", "è": "e", "é": "e", "ê": "e", "ë": "e", "ì": "i", "í": "i", "î": "i", "ï": "i", "ñ": "n", "ò": "o", "ó": "o", "ô": "o", "õ": "o", "ö": "oe", "ø": "o", "œ": "oe", "š": "s", "ß": "ss", "þ": "th", "ù": "u", "ú": "u", "û": "u", "ü": "ue", "ý": "y", "ÿ": "y", "Ÿ": "y"};
+            var char;
+            string = string.toLowerCase();
+            for (char in translate) {
+                string = string.split(char).join(translate[char]);
+            }
+            return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
+        },
+        throttle: function(callback, delay) {
+            var timer = null;
+            var context;
+            var args;
+
+            function wrapper() {
+                context = this;
+                args = arguments;
+
+                if (timer) return;
+
+                callback.apply(context, args);
+
+                timer = setTimeout(function() {
+                    wrapper.apply(context, args);
+                    timer = null;
+                }, delay);
+            }
+
+            return wrapper;
+        },
+        uriPrependBase: function(base, path) {
+            var regexp = /^\/+|\/+$/im;
+            base = base.replace(regexp, '').split('/');
+            path = path.replace(regexp, '').split('/');
+            for (i = 0; i < base.length; i++) {
+                if (base[i] === path[0] && base[i + 1] !== path[0]) {
+                    base = base.slice(0, i);
+                }
+            }
+            return '/' + base.concat(path).join('/') + '/';
+        }
+    };
+})();

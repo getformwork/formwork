@@ -52,21 +52,21 @@ $(function() {
     });
 
     $('#expand-all-pages').click(function() {
-    	$(this).blur();
-    	$('.pages-children').show();
-    	$('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+        $(this).blur();
+        $('.pages-children').show();
+        $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
     });
 
     $('#collapse-all-pages').click(function() {
-    	$(this).blur();
-    	$('.pages-children').hide();
-    	$('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+        $(this).blur();
+        $('.pages-children').hide();
+        $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
     });
 
     $('.page-search').focus(function() {
-    	$('.pages-children').each(function() {
-    		$(this).data('visible', $(this).is(':visible'));
-    	});
+        $('.pages-children').each(function() {
+            $(this).data('visible', $(this).is(':visible'));
+        });
     });
 
     $('.page-search').keyup(Utils.debounce(function() {
@@ -98,36 +98,36 @@ $(function() {
     });
 
     $('#page-title', '#newPageModal').keyup(function() {
-		$('#page-slug', '#newPageModal').val(Utils.slug($(this).val()));
-	});
+        $('#page-slug', '#newPageModal').val(Utils.slug($(this).val()));
+    });
 
-	$('#page-slug', '#newPageModal').keyup(function() {
-		$(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
-	}).blur(function() {
-		if ($(this).val() == '') $('#page-title', '#newPageModal').trigger('keyup');
-	});
+    $('#page-slug', '#newPageModal').keyup(function() {
+        $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+    }).blur(function() {
+        if ($(this).val() == '') $('#page-title', '#newPageModal').trigger('keyup');
+    });
 
-	$('#page-parent', '#newPageModal').change(function() {
-		var $option = $(this).find('option:selected');
-		var $pageTemplate = $('#page-template', '#newPageModal');
-		var allowedTemplates = $option.data('allowed-templates');
-		if (allowedTemplates) {
-			allowedTemplates = allowedTemplates.split(', ');
-			$pageTemplate
-				.data('previous-value', $pageTemplate.val())
-				.val(allowedTemplates[0])
-				.find('option').each(function () {
-					if (allowedTemplates.indexOf($(this).val()) == -1) {
-						$(this).attr('disabled', true);
-					}
-				});
-		} else if ($pageTemplate.find('option[disabled]').length) {
-			$pageTemplate
-				.val($pageTemplate.data('previous-value'))
-				.removeData('previous-value')
-				.find('option').removeAttr('disabled');
-		}
-	});
+    $('#page-parent', '#newPageModal').change(function() {
+        var $option = $(this).find('option:selected');
+        var $pageTemplate = $('#page-template', '#newPageModal');
+        var allowedTemplates = $option.data('allowed-templates');
+        if (allowedTemplates) {
+            allowedTemplates = allowedTemplates.split(', ');
+            $pageTemplate
+                .data('previous-value', $pageTemplate.val())
+                .val(allowedTemplates[0])
+                .find('option').each(function () {
+                    if (allowedTemplates.indexOf($(this).val()) == -1) {
+                        $(this).attr('disabled', true);
+                    }
+                });
+        } else if ($pageTemplate.find('option[disabled]').length) {
+            $pageTemplate
+                .val($pageTemplate.data('previous-value'))
+                .removeData('previous-value')
+                .find('option').removeAttr('disabled');
+        }
+    });
 
     $(document).keyup(function(event) {
         // ESC key
@@ -169,14 +169,14 @@ $(function() {
     });
 
     $('.pages-list').each(function() {
-    	var $this = $(this);
+        var $this = $(this);
 
-    	if ($this.data('sortable') === false) return;
+        if ($this.data('sortable') === false) return;
 
-    	var sortable = Sortable.create(this, {
-    		filter: '.no-reorder',
+        var sortable = Sortable.create(this, {
+            filter: '.no-reorder',
             forceFallback: true,
-    		onStart: function(event) {
+            onStart: function(event) {
                 $('.pages-children').each(function() {
                     $(this).data('visible', $(this).is(':visible')).hide();
                 });
@@ -185,11 +185,11 @@ $(function() {
                     $(this).data('expanded', $(this).hasClass('toggle-expanded'));
                     $(this).removeClass('toggle-expanded').addClass('toggle-collapsed');
                 }).css('opacity', '0.5');
-    		},
-    		onMove: function(event) {
-    			return !$(event.related).hasClass('no-reorder');
-    		},
-    		onEnd: function (event) {
+            },
+            onMove: function(event) {
+                return !$(event.related).hasClass('no-reorder');
+            },
+            onEnd: function (event) {
                 $('.pages-children').each(function() {
                     $(this).toggle($(this).data('visible'));
                 });
@@ -200,36 +200,36 @@ $(function() {
                     }
                 }).css('opacity', '');
 
-    			if (event.newIndex == event.oldIndex) return;
+                if (event.newIndex == event.oldIndex) return;
 
-    			sortable.option('disabled', true);
+                sortable.option('disabled', true);
 
-    			var data = {
-    				'csrf-token': $('body').data('csrf-token'),
-    				parent: $(this.el).data('parent'),
-    				from: event.oldIndex,
-    				to: event.newIndex
-    			};
+                var data = {
+                    'csrf-token': $('body').data('csrf-token'),
+                    parent: $(this.el).data('parent'),
+                    from: event.oldIndex,
+                    to: event.newIndex
+                };
 
-    			new Request({
-    				method: 'POST',
-    				url: Utils.uriPrependBase(location.pathname, '/admin/pages/reorder/'),
-    				data: data
-    			}, function(response) {
+                new Request({
+                    method: 'POST',
+                    url: Utils.uriPrependBase(location.pathname, '/admin/pages/reorder/'),
+                    data: data
+                }, function(response) {
                     if (response.status) {
                         Notification(response.message, response.status, 5000);
                     }
-    				if (!response.status || response.status == 'error') {
-    					sortable.sort($(event.from).data('originalOrder'));
-    				}
-    				sortable.option('disabled', false);
+                    if (!response.status || response.status == 'error') {
+                        sortable.sort($(event.from).data('originalOrder'));
+                    }
+                    sortable.option('disabled', false);
                     $(event.from).data('originalOrder', sortable.toArray());
-    			});
+                });
 
-    		}
-    	});
+            }
+        });
 
-    	$this.data('originalOrder', sortable.toArray());
+        $this.data('originalOrder', sortable.toArray());
     });
 
     $('#clear-cache').click(function() {

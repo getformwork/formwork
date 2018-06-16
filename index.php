@@ -15,6 +15,6 @@ $formwork = new Formwork();
 $formwork->run();
 
 if (class_exists('Formwork\Admin\Statistics')) {
-	$statistics = new Statistics();
-	$statistics->trackVisit();
+    $statistics = new Statistics();
+    $statistics->trackVisit();
 }

@@ -99,7 +99,7 @@ class Admin {
                 CSRFToken::validate();
             } catch (Exception $e) {
                 CSRFToken::destroy();
-        		Session::remove('FORMWORK_USERNAME');
+                Session::remove('FORMWORK_USERNAME');
                 Notification::send(Language::get('login.suspicious-request-detected'), 'warning');
                 if (HTTPRequest::isXHR()) {
                     JSONResponse::error('Not authorized!', 403)->send();
