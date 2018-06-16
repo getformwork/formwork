@@ -13,33 +13,17 @@ class ParsedownExtension extends ParsedownExtra {
         $this->page = $page;
     }
 
-    protected function inlineImage($excerpt) {
-        $image = parent::inlineImage($excerpt);
-        if (!isset($image)) return null;
-
-        $src = $image['element']['attributes']['src'];
-
-        if (strlen($src) > 0) {
-            if ($src[0] == '/') {
-                $image['element']['attributes']['src'] = Formwork::instance()->site()->uri($src);
-            } else {
-                $image['element']['attributes']['src'] = $this->page->uri() . $src;
-            }
-        }
-
-        return $image;
-    }
-
     protected function inlineLink($excerpt) {
         $link = parent::inlineLink($excerpt);
-        if (!isset($link)) return null;
 
-        $href = $link['element']['attributes']['href'];
+        if (!isset($link)) return;
 
-        if (!empty($href)) {
-            if ($href[0] == '/') {
-                $link['element']['attributes']['href'] = Formwork::instance()->site()->uri($href);
-            }
+        $href = &$link['element']['attributes']['href'];
+
+        if ($href[0] == '/' && strpos($href, '//') === false) {
+            $href = Formwork::instance()->site()->uri($href);
+        } elseif (!preg_match('~^([a-z]+:)?//~i', $href)) {
+            $href = $this->page->uri() . $href;
         }
 
         return $link;
