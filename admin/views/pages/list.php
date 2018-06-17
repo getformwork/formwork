@@ -1,13 +1,9 @@
             <ul class="pages-list <?= $class ?>" data-sortable="<?= $sortable ?>" <?php if ($parent): ?>data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
-                if ($page->published()) $status = 'published';
-                if (!$page->routable()) $status = 'not-routable';
-                if (!$page->published()) $status = 'not-published';
-
-                $date = date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $page->lastModifiedTime());
                 $reorder = is_null($page->num()) || $page->template()->scheme()->get('num') == 'date';
                 $routable = $page->published() && $page->routable();
+                $date = date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $page->lastModifiedTime());
 ?>
                 <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if ($reorder): ?> not-sortable<?php endif; ?>">
                     <div class="pages-item">
@@ -29,8 +25,8 @@
                         <div class="pages-item-cell page-date">
                             <div class="page-date-inner overflow-title"><?= $date ?></div>
                         </div>
-                        <div class="pages-item-cell page-status page-status-<?= $status ?>">
-                            <div class="page-status-label overflow-title"><?= $this->label('pages.status.' . $status) ?></div>
+                        <div class="pages-item-cell page-status page-status-<?= $page->status() ?>">
+                            <div class="page-status-label overflow-title"><?= $this->label('pages.status.' . $page->status()) ?></div>
                         </div>
                         <div class="pages-item-cell page-actions">
 <?php
