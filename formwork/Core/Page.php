@@ -34,7 +34,8 @@ class Page extends AbstractPage {
             'published'    => true,
             'routable'     => true,
             'searchable'   => true,
-            'cacheable'    => true
+            'cacheable'    => true,
+            'sortable'     => true
         );
     }
 
@@ -97,6 +98,10 @@ class Page extends AbstractPage {
 
         // If the page isn't published, it won't also be visible
         if (!$this->published()) $this->data['visible'] = false;
+
+        if (is_null($this->num()) || $this->template()->scheme()->get('num') == 'date') {
+            $this->data['sortable'] = false;
+        }
 
         // Prepends the page uri if image uri doesn't start with '/', which means it isn't relative to the root
         if ($this->has('image') && $this->image()[0] != '/') {

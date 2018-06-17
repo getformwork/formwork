@@ -1,11 +1,10 @@
             <ul class="pages-list <?= $class ?>" data-sortable="<?= $sortable ?>" <?php if ($parent): ?>data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
-                $reorder = is_null($page->num()) || $page->template()->scheme()->get('num') == 'date';
                 $routable = $page->published() && $page->routable();
                 $date = date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $page->lastModifiedTime());
 ?>
-                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if ($reorder): ?> not-sortable<?php endif; ?>">
+                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if (!$page->sortable()): ?> not-sortable<?php endif; ?>">
                     <div class="pages-item">
                         <div class="pages-item-cell page-details">
                             <div class="page-title">
