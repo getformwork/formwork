@@ -13,6 +13,10 @@ use Spyc;
 
 class Page {
 
+    const PAGE_STATUS_PUBLISHED = 'published';
+    const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
+    const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
+
     protected static $contentParser;
 
     protected $path;
@@ -245,6 +249,13 @@ class Page {
             return date($format, strtotime($this->data['publish-date']));
         }
         return date($format, $this->lastModifiedTime());
+    }
+
+    public function status() {
+        if ($this->published()) $status = self::PAGE_STATUS_PUBLISHED;
+        if (!$this->routable()) $status = self::PAGE_STATUS_NOT_ROUTABLE;
+        if (!$this->published()) $status = self::PAGE_STATUS_NOT_PUBLISHED;
+        return $status;
     }
 
     public function renderToString($vars = array()) {
