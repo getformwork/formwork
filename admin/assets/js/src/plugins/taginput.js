@@ -42,8 +42,8 @@
                 });
             }
             $(this).data('tags', tags);
-            $(this).on("mousedown", ".tag-remove", false);
-            $(this).on("click", ".tag-remove", function() {
+            $(this).on('mousedown', '.tag-remove', false);
+            $(this).on('click', '.tag-remove', function() {
                 var $tag = $(this).parent();
                 removeTag($input, $tag.text());
                 $tag.remove();
@@ -60,9 +60,9 @@
             $(this).parent().addClass('focused');
         }).blur(function() {
             var value = $(this).val().trim();
-            if (value != "") {
+            if (value != '') {
                 addTag($(this), value);
-                $(this).prop("size", 1);
+                $(this).prop('size', 1);
             }
             $(this).parent().removeClass('focused');
         }).keydown(function(event) {
@@ -75,18 +75,18 @@
                     if (value === '') {
                         removeTag($this, $this.prev().text());
                         $this.prev().remove();
-                        $this.prop("size", 1);
+                        $this.prop('size', 1);
                         return false;
                     }
-                    $this.prop("size", Math.max($this.val().length, 1));
+                    $this.prop('size', Math.max($this.val().length, 1));
                     return true;
                 case 13:
                 case 188:
-                    if (value != "") addTag($this, value);
-                    $this.prop("size", 1);
+                    if (value != '') addTag($this, value);
+                    $this.prop('size', 1);
                     return false;
                 default:
-                    if (value !== "" && options.addKeyCodes.indexOf(event.which) > -1) {
+                    if (value !== '' && options.addKeyCodes.indexOf(event.which) > -1) {
                         addTag($this, value);
                         $this.prop('size', 1);
                         return false;

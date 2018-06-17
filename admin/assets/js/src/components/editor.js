@@ -15,13 +15,13 @@ var Editor = function(id) {
 
     $('[data-command=ul]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
     });
 
     $('[data-command=ol]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
@@ -32,7 +32,7 @@ var Editor = function(id) {
 
     $('[data-command=quote]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
     });
 

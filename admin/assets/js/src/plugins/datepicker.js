@@ -326,7 +326,7 @@
         monthLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
         weekStarts: 0,
         todayLabel: 'Today',
-        format: "YYYY-MM-DD"
+        format: 'YYYY-MM-DD'
     };
 
 }(jQuery));
