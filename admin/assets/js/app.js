@@ -174,7 +174,7 @@ $(function() {
         if ($this.data('sortable') === false) return;
 
         var sortable = Sortable.create(this, {
-            filter: '.no-reorder',
+            filter: '.not-sortable',
             forceFallback: true,
             onStart: function(event) {
                 $('.pages-children').each(function() {
@@ -187,7 +187,7 @@ $(function() {
                 }).css('opacity', '0.5');
             },
             onMove: function(event) {
-                return !$(event.related).hasClass('no-reorder');
+                return !$(event.related).hasClass('not-sortable');
             },
             onEnd: function (event) {
                 $('.pages-children').each(function() {
@@ -518,6 +518,224 @@ var Tooltip = function(referenceElement, text, options) {
     return {show: _show};
 
 };
+
+var Chart = (function(element, data) {
+    var options = {
+        showArea: true,
+        fullWidth: true,
+        scaleMinSpace: 20,
+        divisor: 5,
+        chartPadding: 20,
+        lineSmooth: false,
+        low: 0,
+        axisX: {
+            showGrid: false,
+            labelOffset: {x: 0, y: 10}
+        },
+        axisY: {
+            onlyInteger: true,
+            offset: 15,
+            labelOffset: {x: 0, y: 5}
+        }
+    };
+
+    new Chartist.Line(element, data, options);
+});
+
+$(function() {
+    $('[data-chart-data]').each(function() {
+        new Chart(this, $(this).data('chart-data'));
+    });
+    $('.ct-chart').on('mouseover', '.ct-point', function() {
+        new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
+    });
+});
+
+var ImagePicker = (function() {
+    $(function() {
+        $('.image-input').click(function() {
+            var $this = $(this);
+            var value = $this.val();
+            Modal.show('imagesModal', null, function($modal) {
+                $modal.find('.image-picker-confirm').data('target', $this);
+                $modal.find('.image-picker-thumbnail').each(function() {
+                    if ($(this).data('text') == value) {
+                        $(this).addClass('selected');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        $('.image-picker').each(function() {
+            var $this = $(this);
+            var options = $this.children('option');
+            var container = $('<div>', {class: 'image-picker-thumbnails'});
+            for (var i = 0; i < options.length; i++) {
+                $('<div>', {
+                    class: 'image-picker-thumbnail',
+                    'data-value': options[i].value,
+                    'data-text': options[i].text
+                }).css({
+                    'background-image': 'url(' + options[i].value + ')'
+                }).appendTo(container);
+            }
+            $this.before(container);
+            $this.hide();
+        });
+
+        $('.image-picker-confirm').click(function() {
+            $(this).data('target').val($(this).parent().find('.image-picker-thumbnail.selected').data('text'));
+        });
+
+        $('.image-picker-thumbnail').click(function() {
+            $(this).siblings().removeClass('selected');
+            $(this).addClass('selected');
+            $(this).parent().siblings('.image-input').val($(this).data('value'));
+        });
+    });
+})();
+
+var Modal = (function() {
+    $(function() {
+        $('.modal [data-dismiss]').click(function() {
+            if ($(this).is('[data-validate]')) {
+                var valid = Modal.validate($(this).data('dismiss'));
+                if (!valid) return;
+            }
+            Modal.hide($(this).data('dismiss'));
+        });
+        $('.modal').click(function(event) {
+            if (event.target === this) Modal.hide();
+        });
+    });
+
+    return {
+        show: function (id, action, callback) {
+            var $modal = $('#' + id);
+            $modal.addClass('show');
+            if (action !== null) {
+                $modal.find('form').attr('action', action);
+            }
+            $modal.find('[autofocus]').first().focus(); // Firefox bug
+            if (typeof callback === 'function') callback($modal);
+            this.createBackdrop();
+        },
+        hide: function(id) {
+            var $modal = id === undefined ? $('.modal') : $('#' + id);
+            $modal.removeClass('show');
+            this.removeBackdrop();
+        },
+        createBackdrop: function() {
+            if (!$('.modal-backdrop').length) {
+                $('<div>', {
+                    class: 'modal-backdrop'
+                }).appendTo('body');    
+            }
+        },
+        removeBackdrop: function() {
+            $('.modal-backdrop').remove();
+        },
+        validate: function(id) {
+            var valid = false;
+            var $modal = $('#' + id);
+            $modal.find('[required]').each(function() {
+                if ($(this).val() === '') {
+                    $(this).addClass('animated shake');
+                    $(this).focus();
+                    $modal.find('.modal-error').show();
+                    valid = false;
+                    return false;
+                }
+                valid = true;
+            });
+            return valid;
+        }
+    };
+})();
+
+var Utils = (function() {
+    return {
+        debounce: function(callback, delay, leading) {
+            var timer = null;
+            var context;
+            var args;
+
+            function wrapper() {
+                context = this;
+                args = arguments;
+
+                if (timer) clearTimeout(timer);
+
+                if (leading && !timer) callback.apply(context, args);
+
+                timer = setTimeout(function() {
+                    if (!leading) callback.apply(context, args);
+                    timer = null;
+                }, delay);
+            }
+
+            return wrapper;
+        },
+        escapeRegExp: function(string) {
+            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        },
+        offset: function(element) {
+            var rect = element.getBoundingClientRect();
+            var doc = document.documentElement;
+            var body = document.body;
+
+            var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
+            var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
+
+            return {
+                top: rect.top + YOffset,
+                left: rect.left + XOffset
+            };
+        },
+        slug: function(string) {
+            var translate = {"\t": "", "\r": "", "!": "", "\"": "", "#": "", "$": "", "%": "", "'": "", "(": "", ")": "", "*": "", "+": "", ",": "", ".": "", ":": "", ";": "", "<": "", "=": "", ">": "", "?": "", "@": "", "[": "", "]": "", "^": "", "`": "", "{": "", "|": "", "}": "", "¡": "", "£": "", "¤": "", "¥": "", "¦": "", "§": "", "«": "", "°": "", "»": "", "‘": "", "’": "", "“": "", "”": "", "\n": "-", " ": "-", "-": "-", "–": "-", "—": "-", "\/": "-", "\\": "-", "_": "-", "~": "-", "À": "A", "Á": "A", "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Æ": "Ae", "Ç": "C", "Ð": "D", "È": "E", "É": "E", "Ê": "E", "Ë": "E", "Ì": "I", "Í": "I", "Î": "I", "Ï": "I", "Ñ": "N", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O", "Ø": "O", "Œ": "Oe", "Š": "S", "Þ": "Th", "Ù": "U", "Ú": "U", "Û": "U", "Ü": "U", "Ý": "Y", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "ae", "å": "a", "æ": "ae", "¢": "c", "ç": "c", "ð": "d", "è": "e", "é": "e", "ê": "e", "ë": "e", "ì": "i", "í": "i", "î": "i", "ï": "i", "ñ": "n", "ò": "o", "ó": "o", "ô": "o", "õ": "o", "ö": "oe", "ø": "o", "œ": "oe", "š": "s", "ß": "ss", "þ": "th", "ù": "u", "ú": "u", "û": "u", "ü": "ue", "ý": "y", "ÿ": "y", "Ÿ": "y"};
+            var char;
+            string = string.toLowerCase();
+            for (char in translate) {
+                string = string.split(char).join(translate[char]);
+            }
+            return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
+        },
+        throttle: function(callback, delay) {
+            var timer = null;
+            var context;
+            var args;
+
+            function wrapper() {
+                context = this;
+                args = arguments;
+
+                if (timer) return;
+
+                callback.apply(context, args);
+
+                timer = setTimeout(function() {
+                    wrapper.apply(context, args);
+                    timer = null;
+                }, delay);
+            }
+
+            return wrapper;
+        },
+        uriPrependBase: function(base, path) {
+            var regexp = /^\/+|\/+$/im;
+            base = base.replace(regexp, '').split('/');
+            path = path.replace(regexp, '').split('/');
+            for (i = 0; i < base.length; i++) {
+                if (base[i] === path[0] && base[i + 1] !== path[0]) {
+                    base = base.slice(0, i);
+                }
+            }
+            return '/' + base.concat(path).join('/') + '/';
+        }
+    };
+})();
 
 (function($) {
     $.fn.datePicker = function(options) {
@@ -972,221 +1190,3 @@ var Tooltip = function(referenceElement, text, options) {
         });
     };
 }(jQuery));
-
-var Chart = (function(element, data) {
-    var options = {
-        showArea: true,
-        fullWidth: true,
-        scaleMinSpace: 20,
-        divisor: 5,
-        chartPadding: 20,
-        lineSmooth: false,
-        low: 0,
-        axisX: {
-            showGrid: false,
-            labelOffset: {x: 0, y: 10}
-        },
-        axisY: {
-            onlyInteger: true,
-            offset: 15,
-            labelOffset: {x: 0, y: 5}
-        }
-    };
-
-    new Chartist.Line(element, data, options);
-});
-
-$(function() {
-    $('[data-chart-data]').each(function() {
-        new Chart(this, $(this).data('chart-data'));
-    });
-    $('.ct-chart').on('mouseover', '.ct-point', function() {
-        new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
-    });
-});
-
-var ImagePicker = (function() {
-    $(function() {
-        $('.image-input').click(function() {
-            var $this = $(this);
-            var value = $this.val();
-            Modal.show('imagesModal', null, function($modal) {
-                $modal.find('.image-picker-confirm').data('target', $this);
-                $modal.find('.image-picker-thumbnail').each(function() {
-                    if ($(this).data('text') == value) {
-                        $(this).addClass('selected');
-                        return false;
-                    }
-                });
-            });
-        });
-
-        $('.image-picker').each(function() {
-            var $this = $(this);
-            var options = $this.children('option');
-            var container = $('<div>', {class: 'image-picker-thumbnails'});
-            for (var i = 0; i < options.length; i++) {
-                $('<div>', {
-                    class: 'image-picker-thumbnail',
-                    'data-value': options[i].value,
-                    'data-text': options[i].text
-                }).css({
-                    'background-image': 'url(' + options[i].value + ')'
-                }).appendTo(container);
-            }
-            $this.before(container);
-            $this.hide();
-        });
-
-        $('.image-picker-confirm').click(function() {
-            $(this).data('target').val($(this).parent().find('.image-picker-thumbnail.selected').data('text'));
-        });
-
-        $('.image-picker-thumbnail').click(function() {
-            $(this).siblings().removeClass('selected');
-            $(this).addClass('selected');
-            $(this).parent().siblings('.image-input').val($(this).data('value'));
-        });
-    });
-})();
-
-var Modal = (function() {
-    $(function() {
-        $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Modal.validate($(this).data('dismiss'));
-                if (!valid) return;
-            }
-            Modal.hide($(this).data('dismiss'));
-        });
-        $('.modal').click(function(event) {
-            if (event.target === this) Modal.hide();
-        });
-    });
-
-    return {
-        show: function (id, action, callback) {
-            var $modal = $('#' + id);
-            $modal.addClass('show');
-            if (action !== null) {
-                $modal.find('form').attr('action', action);
-            }
-            $modal.find('[autofocus]').first().focus(); // Firefox bug
-            if (typeof callback === 'function') callback($modal);
-            this.createBackdrop();
-        },
-        hide: function(id) {
-            var $modal = id === undefined ? $('.modal') : $('#' + id);
-            $modal.removeClass('show');
-            this.removeBackdrop();
-        },
-        createBackdrop: function() {
-            if (!$('.modal-backdrop').length) {
-                $('<div>', {
-                    class: 'modal-backdrop'
-                }).appendTo('body');    
-            }
-        },
-        removeBackdrop: function() {
-            $('.modal-backdrop').remove();
-        },
-        validate: function(id) {
-            var valid = false;
-            var $modal = $('#' + id);
-            $modal.find('[required]').each(function() {
-                if ($(this).val() === '') {
-                    $(this).addClass('animated shake');
-                    $(this).focus();
-                    $modal.find('.modal-error').show();
-                    valid = false;
-                    return false;
-                }
-                valid = true;
-            });
-            return valid;
-        }
-    };
-})();
-
-var Utils = (function() {
-    return {
-        debounce: function(callback, delay, leading) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) clearTimeout(timer);
-
-                if (leading && !timer) callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    if (!leading) callback.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        escapeRegExp: function(string) {
-            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        },
-        offset: function(element) {
-            var rect = element.getBoundingClientRect();
-            var doc = document.documentElement;
-            var body = document.body;
-
-            var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
-            var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
-
-            return {
-                top: rect.top + YOffset,
-                left: rect.left + XOffset
-            };
-        },
-        slug: function(string) {
-            var translate = {"\t": "", "\r": "", "!": "", "\"": "", "#": "", "$": "", "%": "", "'": "", "(": "", ")": "", "*": "", "+": "", ",": "", ".": "", ":": "", ";": "", "<": "", "=": "", ">": "", "?": "", "@": "", "[": "", "]": "", "^": "", "`": "", "{": "", "|": "", "}": "", "¡": "", "£": "", "¤": "", "¥": "", "¦": "", "§": "", "«": "", "°": "", "»": "", "‘": "", "’": "", "“": "", "”": "", "\n": "-", " ": "-", "-": "-", "–": "-", "—": "-", "\/": "-", "\\": "-", "_": "-", "~": "-", "À": "A", "Á": "A", "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Æ": "Ae", "Ç": "C", "Ð": "D", "È": "E", "É": "E", "Ê": "E", "Ë": "E", "Ì": "I", "Í": "I", "Î": "I", "Ï": "I", "Ñ": "N", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O", "Ø": "O", "Œ": "Oe", "Š": "S", "Þ": "Th", "Ù": "U", "Ú": "U", "Û": "U", "Ü": "U", "Ý": "Y", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "ae", "å": "a", "æ": "ae", "¢": "c", "ç": "c", "ð": "d", "è": "e", "é": "e", "ê": "e", "ë": "e", "ì": "i", "í": "i", "î": "i", "ï": "i", "ñ": "n", "ò": "o", "ó": "o", "ô": "o", "õ": "o", "ö": "oe", "ø": "o", "œ": "oe", "š": "s", "ß": "ss", "þ": "th", "ù": "u", "ú": "u", "û": "u", "ü": "ue", "ý": "y", "ÿ": "y", "Ÿ": "y"};
-            var char;
-            string = string.toLowerCase();
-            for (char in translate) {
-                string = string.split(char).join(translate[char]);
-            }
-            return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
-        },
-        throttle: function(callback, delay) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) return;
-
-                callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    wrapper.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        uriPrependBase: function(base, path) {
-            var regexp = /^\/+|\/+$/im;
-            base = base.replace(regexp, '').split('/');
-            path = path.replace(regexp, '').split('/');
-            for (i = 0; i < base.length; i++) {
-                if (base[i] === path[0] && base[i + 1] !== path[0]) {
-                    base = base.slice(0, i);
-                }
-            }
-            return '/' + base.concat(path).join('/') + '/';
-        }
-    };
-})();

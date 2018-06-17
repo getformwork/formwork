@@ -9,7 +9,7 @@
                 $reorder = is_null($page->num()) || $page->template()->scheme()->get('num') == 'date';
                 $routable = $page->published() && $page->routable();
 ?>
-                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if ($reorder): ?> no-reorder<?php endif; ?>">
+                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if ($reorder): ?> not-sortable<?php endif; ?>">
                     <div class="pages-item">
                         <div class="pages-item-cell page-details">
                             <div class="page-title">

@@ -174,7 +174,7 @@ $(function() {
         if ($this.data('sortable') === false) return;
 
         var sortable = Sortable.create(this, {
-            filter: '.no-reorder',
+            filter: '.not-sortable',
             forceFallback: true,
             onStart: function(event) {
                 $('.pages-children').each(function() {
@@ -187,7 +187,7 @@ $(function() {
                 }).css('opacity', '0.5');
             },
             onMove: function(event) {
-                return !$(event.related).hasClass('no-reorder');
+                return !$(event.related).hasClass('not-sortable');
             },
             onEnd: function (event) {
                 $('.pages-children').each(function() {
