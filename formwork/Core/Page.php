@@ -114,6 +114,12 @@ class Page extends AbstractPage {
         return is_null($this->filename);
     }
 
+    public function lastModifiedTime() {
+        $pathLastModifiedTime = parent::lastModifiedTime();
+        $fileLastModifiedTime = FileSystem::lastModifiedTime($this->path . $this->filename);
+        return $fileLastModifiedTime > $pathLastModifiedTime ? $fileLastModifiedTime : $pathLastModifiedTime;
+    }
+
     public function relativePath() {
         $parentPath = FileSystem::dirname(Formwork::instance()->option('content.path'));
         return $parentPath == '.' ? DS . $this->path : substr($this->path, strlen($parentPath));
