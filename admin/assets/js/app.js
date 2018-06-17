@@ -265,13 +265,13 @@ var Editor = function(id) {
 
     $('[data-command=ul]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
     });
 
     $('[data-command=ol]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
@@ -282,7 +282,7 @@ var Editor = function(id) {
 
     $('[data-command=quote]', toolbarSel).click(function() {
         var prevChar = prevCursorChar(textarea);
-        var prepend = prevChar === "\n" ? "\n" : "\n\n";
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
     });
 
@@ -678,7 +678,7 @@ var Utils = (function() {
             return wrapper;
         },
         escapeRegExp: function(string) {
-            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
         },
         offset: function(element) {
             var rect = element.getBoundingClientRect();
@@ -694,7 +694,7 @@ var Utils = (function() {
             };
         },
         slug: function(string) {
-            var translate = {"\t": "", "\r": "", "!": "", "\"": "", "#": "", "$": "", "%": "", "'": "", "(": "", ")": "", "*": "", "+": "", ",": "", ".": "", ":": "", ";": "", "<": "", "=": "", ">": "", "?": "", "@": "", "[": "", "]": "", "^": "", "`": "", "{": "", "|": "", "}": "", "¡": "", "£": "", "¤": "", "¥": "", "¦": "", "§": "", "«": "", "°": "", "»": "", "‘": "", "’": "", "“": "", "”": "", "\n": "-", " ": "-", "-": "-", "–": "-", "—": "-", "\/": "-", "\\": "-", "_": "-", "~": "-", "À": "A", "Á": "A", "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Æ": "Ae", "Ç": "C", "Ð": "D", "È": "E", "É": "E", "Ê": "E", "Ë": "E", "Ì": "I", "Í": "I", "Î": "I", "Ï": "I", "Ñ": "N", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O", "Ø": "O", "Œ": "Oe", "Š": "S", "Þ": "Th", "Ù": "U", "Ú": "U", "Û": "U", "Ü": "U", "Ý": "Y", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "ae", "å": "a", "æ": "ae", "¢": "c", "ç": "c", "ð": "d", "è": "e", "é": "e", "ê": "e", "ë": "e", "ì": "i", "í": "i", "î": "i", "ï": "i", "ñ": "n", "ò": "o", "ó": "o", "ô": "o", "õ": "o", "ö": "oe", "ø": "o", "œ": "oe", "š": "s", "ß": "ss", "þ": "th", "ù": "u", "ú": "u", "û": "u", "ü": "ue", "ý": "y", "ÿ": "y", "Ÿ": "y"};
+            var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
             var char;
             string = string.toLowerCase();
             for (char in translate) {
@@ -1065,7 +1065,7 @@ var Utils = (function() {
         monthLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
         weekStarts: 0,
         todayLabel: 'Today',
-        format: "YYYY-MM-DD"
+        format: 'YYYY-MM-DD'
     };
 
 }(jQuery));
@@ -1134,8 +1134,8 @@ var Utils = (function() {
                 });
             }
             $(this).data('tags', tags);
-            $(this).on("mousedown", ".tag-remove", false);
-            $(this).on("click", ".tag-remove", function() {
+            $(this).on('mousedown', '.tag-remove', false);
+            $(this).on('click', '.tag-remove', function() {
                 var $tag = $(this).parent();
                 removeTag($input, $tag.text());
                 $tag.remove();
@@ -1152,9 +1152,9 @@ var Utils = (function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
             var value = $(this).val().trim();
-            if (value != "") {
+            if (value != '') {
                 addTag($(this), value);
-                $(this).prop("size", 1);
+                $(this).prop('size', 1);
             }
             $(this).parent().removeClass('focused');
         }).keydown(function(event) {
@@ -1167,18 +1167,18 @@ var Utils = (function() {
                     if (value === '') {
                         removeTag($this, $this.prev().text());
                         $this.prev().remove();
-                        $this.prop("size", 1);
+                        $this.prop('size', 1);
                         return false;
                     }
-                    $this.prop("size", Math.max($this.val().length, 1));
+                    $this.prop('size', Math.max($this.val().length, 1));
                     return true;
                 case 13:
                 case 188:
-                    if (value != "") addTag($this, value);
-                    $this.prop("size", 1);
+                    if (value != '') addTag($this, value);
+                    $this.prop('size', 1);
                     return false;
                 default:
-                    if (value !== "" && options.addKeyCodes.indexOf(event.which) > -1) {
+                    if (value !== '' && options.addKeyCodes.indexOf(event.which) > -1) {
                         addTag($this, value);
                         $this.prop('size', 1);
                         return false;
