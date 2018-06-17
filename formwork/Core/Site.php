@@ -5,7 +5,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
-class Site extends Page {
+class Site extends AbstractPage {
 
     public static $storage;
 
@@ -28,14 +28,9 @@ class Site extends Page {
         $this->loadTemplates();
     }
 
-    public function uri($path = null) {
-        if (is_null($path)) return $this->uri;
-        return $this->uri . ltrim($path, '/');
-    }
-
     protected function loadTemplates() {
         foreach (FileSystem::list($this->templatesPath) as $item) {
-            $path = $this->templatesPath() . $item;
+            $path = $this->templatesPath . $item;
             if (FileSystem::isFile($path)) {
                 $templates[FileSystem::name($item)] = $path;
             }
@@ -59,12 +54,12 @@ class Site extends Page {
         return null;
     }
 
-    public function parents() {
-        return null;
-    }
-
     public function pages() {
         return $this->children();
+    }
+
+    public function hasPages() {
+        return !$this->children()->empty();
     }
 
     public function alias($uri) {
@@ -86,6 +81,18 @@ class Site extends Page {
 
     public function isSite() {
         return true;
+    }
+
+    public function isIndexPage() {
+        return false;
+    }
+
+    public function isErrorPage() {
+        return false;
+    }
+
+    public function isDeletable() {
+        return false;
     }
 
     public function __toString() {
