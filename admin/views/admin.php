@@ -12,9 +12,7 @@
 </head>
 <body<?php if(isset($csrfToken)): ?> data-csrf-token="<?= $csrfToken ?>"<?php endif; ?>>
     <button class="toggle-navigation"><i class="i-bars"></i></button>
-    <div class="title-bar">
-        <?= $this->label('admin.panel') ?>
-    </div>
+    <div class="title-bar"><?= $this->label('admin.panel') ?></div>
     <div class="sidebar">
         <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>">Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $this->user()->username() . '/profile/') ?>">
