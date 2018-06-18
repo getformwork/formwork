@@ -25,6 +25,7 @@ class Router {
 
     public function __construct($request) {
         $this->request = Uri::normalize($request);
+        $this->params = new RouteParams(array());
     }
 
     protected function compileRoute($route) {
