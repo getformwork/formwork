@@ -37,6 +37,10 @@ class Admin {
         if (!is_null(static::$instance)) throw new Exception('Admin class already instantiated');
         static::$instance = $this;
 
+        if (!Formwork::instance()->option('admin.enabled')) {
+            Header::redirect(rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/');
+        }
+
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 

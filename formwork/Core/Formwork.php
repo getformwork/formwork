@@ -50,6 +50,7 @@ class Formwork {
             'cache.enabled'            => false,
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
+            'admin.enabled'            => true,
             'admin.lang'               => 'en'
         );
     }
