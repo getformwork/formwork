@@ -379,7 +379,7 @@ class Pages extends AbstractController {
                 $num = date(self::DATE_NUM_FORMAT);
             break;
             default:
-                $num = -1;
+                $num = 0;
                 foreach ($parent->children() as $child) {
                     $num = max($num, $child->num());
                 }
