@@ -20,18 +20,14 @@ class Pagination {
         $this->count = $count;
         $this->length = $length;
         $this->pages = $count > 0 ? (int) ceil($count / $length) : 1;
-
         $this->baseUri = Uri::normalize(HTTPRequest::root() . Formwork::instance()->router()->params()->get('page'));
-        $this->currentPage((int) Formwork::instance()->router()->params()->get('paginationPage', 1));
+        $this->currentPage = (int) Formwork::instance()->router()->params()->get('paginationPage', 1);
+        if ($this->currentPage > $this->pages || $this->currentPage < 1) {
+            Formwork::instance()->site()->errorPage(true);
+        }
     }
 
-    public function currentPage($number = null) {
-        if (!is_null($number)) {
-            $this->currentPage = (int) $number;
-            if ($this->currentPage > $this->pages) {
-                Formwork::instance()->site()->errorPage(true);
-            }
-        }
+    public function currentPage() {
         return $this->currentPage;
     }
 
@@ -95,5 +91,5 @@ class Pagination {
             'previousPage' => $this->previousPageUri()
         );
     }
-    
+
 }
