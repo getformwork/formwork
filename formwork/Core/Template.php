@@ -6,9 +6,9 @@ use Exception;
 
 class Template {
 
-    protected $path = '';
+    protected $path;
 
-    protected $name = '';
+    protected $name;
 
     protected $vars;
 
@@ -23,6 +23,12 @@ class Template {
         );
     }
 
+    public function __construct($template) {
+        $this->path = Formwork::instance()->site()->templatesPath();
+        $this->name = $template;
+        $this->vars = $this->defaults();
+    }
+
     public function name() {
         return $this->name;
     }
@@ -32,21 +38,29 @@ class Template {
         return $this->scheme = new Scheme($this->name);
     }
 
-    public function __construct($template) {
-        $this->path = Formwork::instance()->site()->templatesPath();
-        $this->name = $template;
-        $this->vars = $this->defaults();
-    }
-
-    public function is($template) {
-        return $template == $this->name;
-    }
-
     protected function controller() {
         if (static::$rendering) throw new Exception(__METHOD__ . ' not allowed while rendering');
         $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
         if (FileSystem::exists($controllerFile)) return $controllerFile;
         return null;
+    }
+
+    protected function insert($filename, $vars = array()) {
+        extract(array_merge($this->vars, $vars));
+        $extension = Formwork::instance()->option('templates.extension');
+        include $this->path . str_replace('_', 'partials' . DS, $filename) . $extension;
+    }
+
+    protected function render($return = false) {
+        if (static::$rendering) throw new Exception(__METHOD__ . ' not allowed while rendering');
+        ob_start();
+        static::$rendering = true;
+        $this->insert($this->name);
+        static::$rendering = false;
+
+        if ($return) return ob_get_clean();
+
+        ob_end_flush();
     }
 
     public function renderPage(Page $page, $vars, $return = false) {
@@ -60,29 +74,6 @@ class Template {
         }
 
         return $this->render($return);
-    }
-
-    protected function insert($filename, $vars = array()) {
-        extract(array_merge($this->vars, $vars));
-        $extension = Formwork::instance()->option('templates.extension');
-        include $this->path . str_replace('_', 'partials' . DS, $filename) . $extension;
-    }
-
-    protected function render($return = false) {
-        if (static::$rendering) throw new Exception(__METHOD__ . ' not allowed while rendering');
-
-        ob_start();
-        static::$rendering = true;
-        $this->insert($this->name);
-        static::$rendering = false;
-
-        if ($return) {
-            $contents = ob_get_contents();
-            ob_clean();
-            return $contents;
-        }
-
-        ob_end_flush();
     }
 
     public function __toString() {
