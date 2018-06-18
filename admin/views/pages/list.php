@@ -39,13 +39,11 @@
                     </div>
 <?php
                     if ($subpages && $page->hasChildren()):
-                        $children = $page->children();
-
-                        if ($page->template()->scheme()->get('reverse')) $children = $children->reverse();
-                        $sortable = $page->template()->scheme()->get('sortable-children', true);
+                        $scheme = $page->template()->scheme();
+                        $sortable = $scheme->get('sortable-children', true);
 
                         $this->view('pages.list', array(
-                            'pages' => $children,
+                            'pages' => $scheme->get('reverse') ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
                             'class' => 'pages-children',
                             'parent' => $sortable ? $page->slug() : null,
