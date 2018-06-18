@@ -148,7 +148,7 @@ class Page extends AbstractPage {
         if ($this->has('publish-date')) {
             return date($format, strtotime($this->data['publish-date']));
         } else {
-            return parent::date();
+            return parent::date($format);
         }
     }
 
