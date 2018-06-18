@@ -15,8 +15,8 @@ class Site extends AbstractPage {
 
     public function defaults() {
         return array(
-            'lang'          => 'en',
-            'title'         => 'Formwork'
+            'lang'  => 'en',
+            'title' => 'Formwork'
         );
     }
 

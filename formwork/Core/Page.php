@@ -31,11 +31,11 @@ class Page extends AbstractPage {
 
     public function defaults() {
         return array(
-            'published'    => true,
-            'routable'     => true,
-            'searchable'   => true,
-            'cacheable'    => true,
-            'sortable'     => true
+            'published'  => true,
+            'routable'   => true,
+            'searchable' => true,
+            'cacheable'  => true,
+            'sortable'   => true
         );
     }
 
