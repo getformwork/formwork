@@ -156,7 +156,7 @@ class Pages extends AbstractController {
                 foreach (array('title', 'content') as $var) {
                     if (!$this->data->has($var)) {
                         $this->notify($this->label('pages.page.cannot-edit.var-missing', $var), 'error');
-                        $this->redirect(Uri::current(), 302, true);
+                        $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
                     }
                 }
 
