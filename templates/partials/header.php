@@ -4,7 +4,7 @@
     <title><?php if (isset($page)): ?><?= $page->title() ?> | <?php endif; ?><?= $site->title() ?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="<?= $site->uri('/assets/css/style.min.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= $site->uri('/templates/assets/css/style.min.css') ?>">
 </head>
 <body>
     <nav class="menu">
