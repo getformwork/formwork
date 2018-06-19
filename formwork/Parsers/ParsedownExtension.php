@@ -3,6 +3,7 @@
 namespace Formwork\Parsers;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
+use Formwork\Utils\Uri;
 use ParsedownExtra;
 
 class ParsedownExtension extends ParsedownExtra {
@@ -15,17 +16,12 @@ class ParsedownExtension extends ParsedownExtra {
 
     protected function inlineLink($excerpt) {
         $link = parent::inlineLink($excerpt);
-
         if (!isset($link)) return;
-
         $href = &$link['element']['attributes']['href'];
-
-        if ($href[0] == '/' && strpos($href, '//') === false) {
-            $href = Formwork::instance()->site()->uri($href);
-        } elseif (!preg_match('~^([a-z]+:)?//~i', $href)) {
-            $href = $this->page->uri() . $href;
+        if (empty(Uri::host($href)) && $href[0] != '#') {
+            $relativeUri = Uri::resolveRelativeUri($href, $this->page->slug());
+            $href = Formwork::instance()->site()->uri($relativeUri);
         }
-
         return $link;
     }
 
