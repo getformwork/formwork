@@ -5,6 +5,8 @@ AddDefaultCharset UTF-8
     RewriteEngine on
 
     ## Prevent direct access to Formwork folders
+    ## but allow access to template assets
+    RewriteRule ^templates/assets/.* - [L]
     RewriteRule ^(cache|config|formwork|templates|vendor)/.* index.php [L]
     RewriteRule ^(.*)\.(yml|md)$ - [R=404,L]
 
