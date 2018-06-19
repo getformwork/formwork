@@ -9,7 +9,7 @@ class Uri {
     public static $defaultPorts = array(80, 443);
 
     public static function current() {
-        if (is_null(static::$current)) static::$current = static::base() . HTTPRequest::uri();
+        if (is_null(static::$current)) static::$current = static::base() . rtrim(HTTPRequest::root(), '/') . HTTPRequest::uri();
         return static::$current;
     }
 
@@ -130,6 +130,25 @@ class Uri {
     public static function removeFragment($uri = null) {
         if (is_null($uri)) $uri = static::current();
         return static::make(array('fragment' => ''), $uri);
+    }
+
+    function resolveRelativeUri($uri, $base = null) {
+        if (is_null($base)) $base = static::current();
+        if (empty($uri)) return $base;
+        if ($uri[0] == '#') return $base . $uri;
+        if (!empty(static::host($uri))) return $uri;
+        $path = array();
+        if ($uri[0] != '/') $path = explode('/', trim(static::path($base), '/'));
+        if (count($path) > 0 && $base[strlen($base) - 1] != '/') array_pop($path);
+        foreach (explode('/', static::path($uri)) as $segment) {
+            if (empty($segment) || $segment == '.') continue;
+            if ($segment == '..') {
+                if (count($segment) > 0) array_pop($path);
+            } else {
+                array_push($path, $segment);
+            }
+        }
+        return Uri::make(array('path' => implode('/', $path)), $base);
     }
 
 }
