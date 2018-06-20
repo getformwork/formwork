@@ -210,7 +210,7 @@ class Page extends AbstractPage {
         return array(
             'title' => $this->title(),
             'uri' => $this->uri(),
-            'template' => $this->template(),
+            'template' => $this->template()->name(),
             'num' => $this->num(),
             'data' => $this->data()
         );
