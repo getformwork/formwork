@@ -177,28 +177,18 @@ $(function() {
             filter: '.not-sortable',
             forceFallback: true,
             onStart: function(event) {
-                $('.pages-children').each(function() {
-                    $(this).data('visible', $(this).is(':visible')).hide();
-                });
-
-                $('.page-children-toggle').each(function(){
-                    $(this).data('expanded', $(this).hasClass('toggle-expanded'));
-                    $(this).removeClass('toggle-expanded').addClass('toggle-collapsed');
-                }).css('opacity', '0.5');
+                $(event.item).closest('.pages-list').addClass('dragging');
+                $('.pages-children', event.item).hide();
+                $('.page-children-toggle').removeClass('toggle-expanded')
+                .addClass('toggle-collapsed').css('opacity', '0.5');
             },
             onMove: function(event) {
-                return !$(event.related).hasClass('not-sortable');
+                if ($(event.related).hasClass('not-sortable')) return false;
+                $('.pages-children', event.related).hide();
             },
             onEnd: function (event) {
-                $('.pages-children').each(function() {
-                    $(this).toggle($(this).data('visible'));
-                });
-
-                $('.page-children-toggle').each(function() {
-                    if ($(this).data('expanded')) {
-                        $(this).removeClass('toggle-collapsed').addClass('toggle-expanded');
-                    }
-                }).css('opacity', '');
+                $(event.item).closest('.pages-list').removeClass('dragging');
+                $('.page-children-toggle').css('opacity', '');
 
                 if (event.newIndex == event.oldIndex) return;
 
