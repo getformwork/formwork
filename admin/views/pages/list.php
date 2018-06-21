@@ -47,7 +47,7 @@
                             'subpages' => true,
                             'class' => 'pages-children',
                             'parent' => $sortable ? $page->slug() : null,
-                            'sortable' => $sortable ? 'true' : 'false'
+                            'sortable' => 'false'
                         ));
 
                     endif;

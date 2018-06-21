@@ -1945,6 +1945,9 @@ label {
 .sortable-ghost {
   background-color: #fff; }
 
+.dragging .not-sortable .pages-item:hover {
+  background-color: transparent; }
+
 .sidebar {
   position: fixed;
   top: 0;
