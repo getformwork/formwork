@@ -17,3 +17,16 @@
         padding-left: 1.5rem;
     }
 }
+
+.view-site {
+    float: right;
+    color: #444;
+    transition: color 150ms;
+    &:hover {
+        color: $color-accent;
+    }
+}
+
+.view-site i {
+    margin-left: 0.5rem;
+}

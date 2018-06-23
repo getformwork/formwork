@@ -1,5 +1,6 @@
 admin.panel: Administration Panel
 admin.manage: Manage
+admin.view-site: View Site
 cache.clear: Clear Cache
 cache.cleared: Cache cleared
 dashboard.dashboard: Dashboard
