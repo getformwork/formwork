@@ -85,24 +85,6 @@ img {
     font-size: 1rem;
 }
 
-.toggle-navigation {
-    position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 10;
-    display: block;
-    background-color: #fff;
-    border-color: #fff;
-    &:hover,
-    &:focus {
-        background-color: #fff;
-        border-color: #fff;
-    }
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
-        display: none;
-    }
-}
-
 .main {
     margin-top: 4.5rem;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
@@ -110,30 +92,6 @@ img {
         margin-top: 4.5rem;
         margin-left: 16.875rem;
     }
-}
-
-.title-bar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 6;
-    padding: 1rem;
-    padding-left: 4rem;
-    background-color: #f0f0f0;
-    box-shadow: rgba(240, 240, 240, 0.25) 1px 1px 9px 3px;
-
-    @include user-select-none;
-    @include ellipsis;
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
-        left: 15rem;
-        display: block!important;
-        padding-left: 1.5rem;
-    }
-}
-
-.title-bar.hide {
-    display: none;
 }
 
 .logo,
