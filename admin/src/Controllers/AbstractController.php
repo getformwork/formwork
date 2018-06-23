@@ -57,16 +57,20 @@ abstract class AbstractController {
         return Formwork::instance()->option($option);
     }
 
-    public function pageUri($page) {
-        return rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/' . ltrim($page->slug(), '/');
-    }
-
     public function redirect($uri, $code = 302, $exit = false) {
         Admin::instance()->redirect($uri, $code, $exit);
     }
 
     public function uri($subpath) {
         return Admin::instance()->uri($subpath);
+    }
+
+    public function siteUri() {
+        return rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/';
+    }
+
+    public function pageUri($page) {
+        return $this->siteUri() . ltrim($page->slug(), '/');
     }
 
     public function user() {

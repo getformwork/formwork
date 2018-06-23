@@ -11,9 +11,11 @@
     <script src="<?= $this->uri('/assets/js/sortable.min.js') ?>"></script>
 </head>
 <body<?php if(isset($csrfToken)): ?> data-csrf-token="<?= $csrfToken ?>"<?php endif; ?>>
-    <button class="toggle-navigation"><i class="i-bars"></i></button>
-    <div class="title-bar"><?= $this->label('admin.panel') ?></div>
-    <div class="sidebar">
+    <button class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
+    <div class="title-bar"><?= $this->label('admin.panel') ?>
+        <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
+    </div>
+    <div class="sidebar show-from-s">
         <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>">Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $this->user()->username() . '/profile/') ?>">
         <div class="admin-user-card">

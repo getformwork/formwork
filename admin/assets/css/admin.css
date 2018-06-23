@@ -2048,6 +2048,16 @@ label {
       left: 15rem;
       padding-left: 1.5rem; } }
 
+.view-site {
+  float: right;
+  color: #444;
+  transition: color 150ms; }
+  .view-site:hover {
+    color: #3498da; }
+
+.view-site i {
+  margin-left: 0.5rem; }
+
 .tooltip {
   position: absolute;
   z-index: 20;
