@@ -23,6 +23,7 @@
     line-height: 1em;
 }
 
+
 .i-align-center::before { content: '\e800'; }
 .i-align-justify::before { content: '\e801'; }
 .i-align-left::before { content: '\e802'; }
@@ -57,7 +58,7 @@
 .i-edit::before { content: '\e81f'; }
 .i-ellipsis::before { content: '\e820'; }
 .i-envelope::before { content: '\e821'; }
-.i-error::before { content: '\e822'; }
+.i-error-circle::before { content: '\e822'; }
 .i-external-link-alt::before { content: '\e823'; }
 .i-eye-slash::before { content: '\e824'; }
 .i-eye::before { content: '\e825'; }
@@ -79,7 +80,7 @@
 .i-image::before { content: '\e835'; }
 .i-images::before { content: '\e836'; }
 .i-inbox::before { content: '\e837'; }
-.i-info::before { content: '\e838'; }
+.i-info-circle::before { content: '\e838'; }
 .i-language::before { content: '\e839'; }
 .i-link::before { content: '\e83a'; }
 .i-list-ol::before { content: '\e83b'; }
@@ -122,3 +123,6 @@
 .i-users::before { content: '\e860'; }
 .i-warning::before { content: '\e861'; }
 .i-italic::before { content: '\e862'; }
+.i-external-link-square::before { content: '\e863'; }
+.i-exclamation::before { content: '\e864'; }
+.i-info::before { content: '\e865'; }
