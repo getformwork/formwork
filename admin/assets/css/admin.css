@@ -1913,7 +1913,7 @@ label {
   bottom: 0;
   left: 0;
   z-index: 8;
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   width: 15rem;
   background: linear-gradient(to bottom, #fcfcfc 0%, #f9f9f9 100%);
   background-color: #fcfcfc;
@@ -1927,9 +1927,11 @@ label {
   top: 0.75rem;
   left: 0.75rem;
   z-index: 10;
+  margin: 0;
   border: none;
   background-color: transparent;
-  font-size: 1rem; }
+  font-size: 1rem;
+  cursor: pointer; }
   .toggle-navigation:hover {
     background-color: transparent;
     box-shadow: none;

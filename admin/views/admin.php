@@ -28,7 +28,6 @@
             </div>
         </div>
         </a>
-        <div class="separator"></div>
         <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
         <ul class="sidebar-navigation">
             <li class="<?= ($location == 'dashboard') ? 'active' : '' ?>">
