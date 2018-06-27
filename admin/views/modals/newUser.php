@@ -17,7 +17,7 @@
 <?php
             foreach ($this->languages() as $key => $value):
 ?>
-                <option value="<?= $key ?>"<?php if ($key == $this->language()): ?> selected<?php endif; ?>><?= $value ?> (<?= $key ?>)</option>
+                <option value="<?= $key ?>"<?php if ($key == $this->language()): ?> selected<?php endif; ?>><?= $value ?></option>
 <?php
             endforeach;
 ?>
