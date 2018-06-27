@@ -18,34 +18,36 @@
     <div class="sidebar show-from-s">
         <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>">Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $this->user()->username() . '/profile/') ?>">
-        <div class="admin-user-card">
-            <div class="admin-user-avatar">
-                <img src="<?= $this->user()->avatar()->uri() ?>" alt="">
+            <div class="admin-user-card">
+                <div class="admin-user-avatar">
+                    <img src="<?= $this->user()->avatar()->uri() ?>" alt="">
+                </div>
+                <div class="admin-user-details">
+                    <div class="admin-user-fullname"><?= $this->user()->fullname() ?></div>
+                    <div class="admin-user-username"><?= $this->user()->username() ?></div>
+                </div>
             </div>
-            <div class="admin-user-details">
-                <div class="admin-user-fullname"><?= $this->user()->fullname() ?></div>
-                <div class="admin-user-username"><?= $this->user()->username() ?></div>
-            </div>
-        </div>
         </a>
-        <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
-        <ul class="sidebar-navigation">
-            <li class="<?= ($location == 'dashboard') ? 'active' : '' ?>">
-                <a href="<?= $this->uri('/dashboard/') ?>"><?= $this->label('dashboard.dashboard') ?></a>
-            </li>
-            <li class="<?= ($location == 'pages') ? 'active' : '' ?>">
-                <a href="<?= $this->uri('/pages/') ?>"><?= $this->label('pages.pages') ?></a>
-            </li>
-            <li class="<?= ($location == 'options') ? 'active' : '' ?>">
-                <a href="<?= $this->uri('/options/') ?>"><?= $this->label('options.options') ?></a>
-            </li>
-            <li class="<?= ($location == 'users') ? 'active' : '' ?>">
-                <a href="<?= $this->uri('/users/') ?>"><?= $this->label('users.users') ?></a>
-            </li>
-            <li>
-                <a href="<?= $this->uri('/logout/') ?>"><?= $this->label('login.logout') ?></a>
-            </li>
-        </ul>
+        <div class="sidebar-wrapper">
+            <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
+            <ul class="sidebar-navigation">
+                <li class="<?= ($location == 'dashboard') ? 'active' : '' ?>">
+                    <a href="<?= $this->uri('/dashboard/') ?>"><?= $this->label('dashboard.dashboard') ?></a>
+                </li>
+                <li class="<?= ($location == 'pages') ? 'active' : '' ?>">
+                    <a href="<?= $this->uri('/pages/') ?>"><?= $this->label('pages.pages') ?></a>
+                </li>
+                <li class="<?= ($location == 'options') ? 'active' : '' ?>">
+                    <a href="<?= $this->uri('/options/') ?>"><?= $this->label('options.options') ?></a>
+                </li>
+                <li class="<?= ($location == 'users') ? 'active' : '' ?>">
+                    <a href="<?= $this->uri('/users/') ?>"><?= $this->label('users.users') ?></a>
+                </li>
+                <li>
+                    <a href="<?= $this->uri('/logout/') ?>"><?= $this->label('login.logout') ?></a>
+                </li>
+            </ul>
+        </div>
     </div>
     <main class="main">
         <?= $content ?>

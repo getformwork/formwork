@@ -1913,7 +1913,7 @@ label {
   bottom: 0;
   left: 0;
   z-index: 8;
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 1.5rem;
   width: 15rem;
   background: linear-gradient(to bottom, #fcfcfc 0%, #f9f9f9 100%);
   background-color: #fcfcfc;
@@ -1921,6 +1921,10 @@ label {
 
 .sidebar.show {
   display: block; }
+
+.sidebar-wrapper {
+  overflow-y: scroll;
+  height: calc(100% - 9rem); }
 
 .toggle-navigation {
   position: fixed;
@@ -1944,7 +1948,8 @@ label {
   color: #000;
   text-align: center;
   font-weight: 600;
-  font-size: 1.184rem; }
+  font-size: 1.184rem;
+  line-height: 1.5rem; }
   @media (min-width: 768px) {
     .logo {
       text-align: left; } }
