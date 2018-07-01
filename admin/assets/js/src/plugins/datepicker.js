@@ -32,7 +32,7 @@
             },
             nextMonth: function() {
                 this.month = helpers.mod(this.month + 1, 12);
-                if (this.month == 0) this.nextYear();
+                if (this.month === 0) this.nextYear();
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.lastDay();
                 }
@@ -79,7 +79,7 @@
                 return date && !isNaN(Date.parse(date));
             },
             isLeapYear: function(year) {
-                return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+                return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
             },
             daysInMonth: function(month, year) {
                 return month == 1 && this.isLeapYear(year) ? 29 : this._daysInMonth[month];
@@ -120,7 +120,7 @@
                 $this.val(helpers.formatDateTime(value));
             }
             $this.change(function() {
-                if ($(this).val() == '') {
+                if ($(this).val() === '') {
                     $(this).data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
@@ -136,7 +136,9 @@
                         return false;
                     case 8:
                         $this.val('');
-                        // fallthrough
+                        $input.blur();
+                        $calendar.hide();
+                        return false;
                     case 27:
                         $input.blur();
                         $calendar.hide();
@@ -220,8 +222,6 @@
             $input.data('date', date);
             $input.val(helpers.formatDateTime(date));
             $input.blur();
-            //$('.calendar .calendar-day').removeClass('selected');
-            //$(this).addClass('selected');
         });
 
         function generateTable(year, month, day) {
@@ -241,7 +241,7 @@
                 html += '</td>';
             }
             html += '</tr><tr>';
-            for (var i = 0; i < 6; i++) {
+            for (i = 0; i < 6; i++) {
                 for (var j = 0; j < 7; j++) {
                     if (num <= monthLength && (i > 0 || j >= start)) {
                         if (num == day) {
@@ -267,22 +267,6 @@
             $('.calendar-table').replaceWith(html);
         }
 
-        /*$(window).click(function (event) {
-            var $eventTarget = $(event.target);
-            $calendar.hide();
-            if ($eventTarget.is('.calendar-day, .currentMonth')) return;
-            if ($eventTarget.is('.date-input')) {
-                $input = $eventTarget;
-                var date = helpers.isValidDate($input.data('date')) ? new Date($input.data('date')) : new Date();
-                calendar.setDate(date);
-                generateTable(calendar.year, calendar.month, calendar.day);
-            }
-            if ($eventTarget.is('.date-input') || $eventTarget.parents('.calendar').length) {
-                $calendar.show();
-                setPosition();
-            }
-        });*/
-
         $('.date-input').blur(function() {
             $calendar.hide();
         });
@@ -303,7 +287,7 @@
             }
         });
 
-        $(window).on('resize', Utils.throttle(setPosition, 100));
+        $(window).on('resize', Formwork.Utils.throttle(setPosition, 100));
 
         function setPosition() {
             if (!$input || !$calendar.is(':visible')) return;

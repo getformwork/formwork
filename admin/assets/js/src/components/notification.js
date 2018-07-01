@@ -1,25 +1,20 @@
-var Notification = function(text, type, interval) {
-    var top = false;
-
-    function hasNotifications() {
-        return $('.notification').length > 0;
-    }
-
-    if (hasNotifications()) {
-        var $last = $('.notification:last');
-        top = $last.offset().top + $last.outerHeight(true);
-    }
-
+Formwork.Notification = function(text, type, interval) {
     var $notification = $('<div>', {
         class: 'notification'
-    }).text(text).appendTo('body');
+    }).text(text);
 
-    if (top) $notification.css('top', top);
+    if ($('.notification').length > 0) {
+        var $last = $('.notification:last');
+        var top = $last.offset().top + $last.outerHeight(true);
+        $notification.css('top', top);
+    }
 
     if (type) $notification.addClass('notification-' + type);
 
+    $notification.appendTo('body');
+
     setTimeout(function() {
-        offset = $notification.outerHeight(true);
+        var offset = $notification.outerHeight(true);
 
         $('.notification').each(function() {
             var $this = $(this);
@@ -33,6 +28,6 @@ var Notification = function(text, type, interval) {
         setTimeout(function() {
             $notification.remove();
         }, 400);
-        
+
     }, interval);
 };

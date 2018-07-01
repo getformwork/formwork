@@ -1,4 +1,4 @@
-var Request = function(options, callback) {
+Formwork.Request = function(options, callback) {
     var request = $.ajax(options);
     if (typeof callback === 'function') {
         request.always(function() {

@@ -60,7 +60,7 @@
             $(this).parent().addClass('focused');
         }).blur(function() {
             var value = $(this).val().trim();
-            if (value != '') {
+            if (value !== '') {
                 addTag($(this), value);
                 $(this).prop('size', 1);
             }
@@ -82,7 +82,7 @@
                     return true;
                 case 13:
                 case 188:
-                    if (value != '') addTag($this, value);
+                    if (value !== '') addTag($this, value);
                     $this.prop('size', 1);
                     return false;
                 default:

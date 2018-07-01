@@ -1,279 +1,110 @@
-$(function() {
+var Formwork = {
+    init: function() {
+        Formwork.Modals.init();
+        Formwork.Forms.init();
 
-    $('[data-modal]').click(function() {
-        var $this = $(this);
-        var modal = $this.data('modal');
-        var action = $this.data('modal-action');
-        if (action) {
-            Modal.show(modal, action);
-        } else {
-            Modal.show(modal);
-        }
-    });
+        Formwork.Dashboard.init();
+        Formwork.Pages.init();
 
-    $('.input-reset').click(function() {
-        var $target = $('#' + $(this).data('reset'));
-        $target.val('');
-        $target.change();
-    });
-
-    $('[data-auto-upload]').change(function() {
-        $(this).closest('form').submit();
-    });
-
-    $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function(event) {
-        event.preventDefault();
-    }).on('drop', function(event) {
-        var $target = $('#' + $(this).attr('for'));
-        $target.prop('files', event.originalEvent.dataTransfer.files);
-        // Firefox won't trigger a change event, so we explicitly do that
-        $target.change();
-    }).on('dragover dragenter', function() {
-        $(this).addClass('drag');
-    }).on('dragleave drop', function() {
-        $(this).removeClass('drag');
-    });
-
-    $('input:file').change(function() {
-        var files = $(this).prop('files');
-        if (files.length) {
-            $('label[for="' + $(this).attr('id') + '"] span').text(files[0].name);
-        }
-    });
-
-    $('.page-children-toggle').click(function(event) {
-        event.stopPropagation();
-        $(this).closest('li').children('.pages-list').toggle();
-        $(this).toggleClass('toggle-expanded toggle-collapsed');
-    });
-
-    $('.page-details a').click(function(event) {
-        event.stopPropagation();
-    });
-
-    $('#expand-all-pages').click(function() {
-        $(this).blur();
-        $('.pages-children').show();
-        $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
-    });
-
-    $('#collapse-all-pages').click(function() {
-        $(this).blur();
-        $('.pages-children').hide();
-        $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
-    });
-
-    $('.page-search').focus(function() {
-        $('.pages-children').each(function() {
-            $(this).data('visible', $(this).is(':visible'));
+        $('.toggle-navigation').click(function() {
+            $('.sidebar').toggleClass('show');
         });
-    });
 
-    $('.page-search').keyup(Utils.debounce(function() {
-        var value = $(this).val();
-            if (value.length == 0) {
-                $('.pages-children').each(function() {
-                    $(this).toggle($(this).data('visible'));
-                });
-                $('.page-details').css('padding-left', '');
-                $('.pages-item, .page-children-toggle').show();
+        $('.overflow-title').mouseover(function() {
+            var $this = $(this);
+            if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
+                $this.attr('title', $this.text().trim());
             } else {
-                $('.pages-children').show();
-                $('.page-children-toggle').hide();
-                $('.page-details').css('padding-left', '0');
-                var regexp = new RegExp(Utils.escapeRegExp(value), 'i');
-                var matches = 0;
-                $('.page-title a').each(function() {
-                    var $pagesItem = $(this).closest('.pages-item');
-                    var matched = !!$(this).text().match(regexp);
-                    matched && matches++;
-                    $pagesItem.toggle(matched);
-                });
-            }
-    }, 100));
-
-    $('.page-details').click(function() {
-        var $toggle = $(this).find('.page-children-toggle').first();
-        if ($toggle.length) $toggle.click();
-    });
-
-    $('#page-title', '#newPageModal').keyup(function() {
-        $('#page-slug', '#newPageModal').val(Utils.slug($(this).val()));
-    });
-
-    $('#page-slug', '#newPageModal').keyup(function() {
-        $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
-    }).blur(function() {
-        if ($(this).val() == '') $('#page-title', '#newPageModal').trigger('keyup');
-    });
-
-    $('#page-parent', '#newPageModal').change(function() {
-        var $option = $(this).find('option:selected');
-        var $pageTemplate = $('#page-template', '#newPageModal');
-        var allowedTemplates = $option.data('allowed-templates');
-        if (allowedTemplates) {
-            allowedTemplates = allowedTemplates.split(', ');
-            $pageTemplate
-                .data('previous-value', $pageTemplate.val())
-                .val(allowedTemplates[0])
-                .find('option').each(function () {
-                    if (allowedTemplates.indexOf($(this).val()) == -1) {
-                        $(this).attr('disabled', true);
-                    }
-                });
-        } else if ($pageTemplate.find('option[disabled]').length) {
-            $pageTemplate
-                .val($pageTemplate.data('previous-value'))
-                .removeData('previous-value')
-                .find('option').removeAttr('disabled');
-        }
-    });
-
-    $(document).keyup(function(event) {
-        // ESC key
-        if (event.which == 27) Modal.hide();
-    }).keydown(function(event) {
-        if (event.ctrlKey || event.metaKey) {
-            // ctrl/cmd + F
-            if (event.which == 70 && $('.page-search:not(:focus)').length) {
-                $('.page-search').focus();
-                return false;
-            }
-        }
-    });
-
-    $('.tabs-tab[data-tab]').click(function() {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
-
-    $('.tag-input').tagInput();
-
-    $('input[data-enable]').change(function() {
-        var checked = $(this).is(':checked');
-        $.each($(this).data('enable').split(','), function(index, value) {
-            $('input[name="' + value + '"]').attr('disabled', !checked);
-        });
-    });
-
-    $('.toggle-navigation').click(function() {
-        $('.sidebar').toggleClass('show');
-    });
-
-    $('.overflow-title').mouseover(function() {
-        var $this = $(this);
-        if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
-            $this.attr('title', $this.text().trim());
-        } else {
-            $this.removeAttr('title');
-        }
-    });
-
-    $('.pages-list').each(function() {
-        var $this = $(this);
-
-        if ($this.data('sortable') === false) return;
-
-        var sortable = Sortable.create(this, {
-            filter: '.not-sortable',
-            forceFallback: true,
-            onStart: function(event) {
-                $(event.item).closest('.pages-list').addClass('dragging');
-                $('.pages-children', event.item).hide();
-                $('.page-children-toggle').removeClass('toggle-expanded')
-                .addClass('toggle-collapsed').css('opacity', '0.5');
-            },
-            onMove: function(event) {
-                if ($(event.related).hasClass('not-sortable')) return false;
-                $('.pages-children', event.related).hide();
-            },
-            onEnd: function (event) {
-                $(event.item).closest('.pages-list').removeClass('dragging');
-                $('.page-children-toggle').css('opacity', '');
-
-                if (event.newIndex == event.oldIndex) return;
-
-                sortable.option('disabled', true);
-
-                var data = {
-                    'csrf-token': $('body').data('csrf-token'),
-                    parent: $(this.el).data('parent'),
-                    from: event.oldIndex,
-                    to: event.newIndex
-                };
-
-                new Request({
-                    method: 'POST',
-                    url: Utils.uriPrependBase(location.pathname, '/admin/pages/reorder/'),
-                    data: data
-                }, function(response) {
-                    if (response.status) {
-                        Notification(response.message, response.status, 5000);
-                    }
-                    if (!response.status || response.status == 'error') {
-                        sortable.sort($(event.from).data('originalOrder'));
-                    }
-                    sortable.option('disabled', false);
-                    $(event.from).data('originalOrder', sortable.toArray());
-                });
-
+                $this.removeAttr('title');
             }
         });
 
-        $this.data('originalOrder', sortable.toArray());
-    });
-
-    $('#clear-cache').click(function() {
-        new Request({
-            method: 'POST',
-            url: Utils.uriPrependBase(location.pathname, '/admin/cache/clear/'),
-            data: {'csrf-token': $('body').data('csrf-token')}
-        }, function(response) {
-            Notification(response.message, response.status, 5000);
+        $('[data-chart-data]').each(function() {
+            new Formwork.Chart(this, $(this).data('chart-data'));
         });
-    });
+    }
+};
 
-    $('.editor-textarea').each(function() {
-        new Editor($(this).attr('id'));
-    });
-
+$(function() {
+    Formwork.init();
 });
 
-var Editor = function(id) {
-    textarea = $('#' + id)[0];
+Formwork.Chart = function(element, data) {
+    var options = {
+        showArea: true,
+        fullWidth: true,
+        scaleMinSpace: 20,
+        divisor: 5,
+        chartPadding: 20,
+        lineSmooth: false,
+        low: 0,
+        axisX: {
+            showGrid: false,
+            labelOffset: {x: 0, y: 10}
+        },
+        axisY: {
+            onlyInteger: true,
+            offset: 15,
+            labelOffset: {x: 0, y: 5}
+        }
+    };
+    
+    var chart = new Chartist.Line(element, data, options);
+
+    $(chart.container).on('mouseover', '.ct-point', function() {
+        var $this = $(this);
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: {x: 0, y: -8}});
+        tooltip.show();
+    });
+};
+
+Formwork.Dashboard = {
+    init: function() {
+        $('#clear-cache').click(function() {
+            new Formwork.Request({
+                method: 'POST',
+                url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
+                data: {'csrf-token': $('body').data('csrf-token')}
+            }, function(response) {
+                Formwork.Notification(response.message, response.status, 5000);
+            });
+        });
+    }
+};
+
+Formwork.Editor = function(id) {
+    var textarea = $('#' + id)[0];
     var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
 
-    disableSummaryCommand();
-    $(textarea).keyup(Utils.debounce(disableSummaryCommand, 1000));
-
     $('[data-command=bold]', toolbarSel).click(function() {
-        var pos = insertAtCursor(textarea, '**');
+        insertAtCursor('**');
     });
 
     $('[data-command=italic]', toolbarSel).click(function() {
-        var pos = insertAtCursor(textarea, '_');
+        insertAtCursor('_');
     });
 
     $('[data-command=ul]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
+        insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
     });
 
     $('[data-command=ol]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
-            insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
+            insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
         } else {
-            insertAtCursor(textarea, prevChar === undefined ? '1. ' : prepend + '1. ', '');
+            insertAtCursor(prevChar === undefined ? '1. ' : prepend + '1. ', '');
         }
     });
 
     $('[data-command=quote]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
+        insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
     });
 
     $('[data-command=link]', toolbarSel).click(function() {
@@ -291,30 +122,33 @@ var Editor = function(id) {
             textarea.focus();
             textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
         } else {
-            insertAtCursor(textarea, '[', '](http://)');
+            insertAtCursor('[', '](http://)');
         }
     });
 
     $('[data-command=image]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = '\n\n';
         if (prevChar === '\n') {
             prepend = '\n';
         } else if (prevChar === undefined) {
             prepend = '';
         }
-        insertAtCursor(textarea, prepend + '![](', ')');
+        insertAtCursor(prepend + '![](', ')');
     });
 
     $('[data-command=summary]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         if (!hasSummarySequence()) {
             console.log(prevChar);
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
-            insertAtCursor(textarea, prepend + '\n===\n\n', '');
+            insertAtCursor(prepend + '\n===\n\n', '');
             $(this).attr('disabled', true);
         }
     });
+
+    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    disableSummaryCommand();
 
     function hasSummarySequence() {
         return /\n+===\n+/.test(textarea.value);
@@ -330,83 +164,234 @@ var Editor = function(id) {
         return text.substring(index + 1);
     }
 
-    function prevCursorChar(field) {
-        var startPos = field.selectionStart;
-        return startPos === 0 ? undefined : field.value.substring(startPos - 1, startPos);
+    function prevCursorChar() {
+        var startPos = textarea.selectionStart;
+        return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
     }
 
-    function insertAtCursor(field, leftValue, rightValue) {
+    function insertAtCursor(leftValue, rightValue) {
         if (rightValue === undefined) rightValue = leftValue;
-        var startPos = field.selectionStart;
-        var endPos = field.selectionEnd;
-        var selection = startPos === endPos ? '' : field.value.substring(startPos, endPos);
-        field.value = field.value.substring(0, startPos) + leftValue + selection + rightValue + field.value.substring(endPos, field.value.length);
-        field.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(field).blur().focus();
+        var startPos = textarea.selectionStart;
+        var endPos = textarea.selectionEnd;
+        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
+        textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
+        textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
+        $(textarea).blur().focus();
     }
-}
+};
 
-var Form = function(form) {
-
+Formwork.Form = function(form) {
+    var $window = $(window);
     var $form = $(form);
-
-    var hasChanged = function() {
-        return $form.serialize() != $form.data('original-data');
-    }
-
-    //$form[0].reset(); // Prevent form caching
 
     $form.data('original-data', $form.serialize());
 
-    $(window).on('beforeunload', function() {
+    $window.on('beforeunload', function() {
         if (hasChanged()) return true;
     });
 
     $form.submit(function() {
-        $(window).off('beforeunload');
+        $window.off('beforeunload');
     });
 
     $('a[href]:not([href^="#"]):not([target="_blank"])').click(function(event) {
         if (hasChanged()) {
             var link = this;
             event.preventDefault();
-            Modal.show('changesModal', null, function($modal) {
+            Formwork.Modals.show('changesModal', null, function($modal) {
                 $modal.find('.button-continue').click(function() {
-                    $(window).off('beforeunload');
+                    $window.off('beforeunload');
                     window.location.href = $(this).data('href');
                 }).attr('data-href', link.href);
             });
         }
     });
 
-    return {
-        hasChanged: hasChanged
-    };
-
+    function hasChanged() {
+        return $form.serialize() != $form.data('original-data');
+    }
 };
 
-var Notification = function(text, type, interval) {
-    var top = false;
+Formwork.Forms = {
+    init: function() {
+        $('input[data-enable]').change(function() {
+            var checked = $(this).is(':checked');
+            $.each($(this).data('enable').split(','), function(index, value) {
+                $('input[name="' + value + '"]').attr('disabled', !checked);
+            });
+        });
 
-    function hasNotifications() {
-        return $('.notification').length > 0;
+        $('.input-reset').click(function() {
+            var $target = $('#' + $(this).data('reset'));
+            $target.val('');
+            $target.change();
+        });
+
+        $('input:file').change(function() {
+            var files = $(this).prop('files');
+            if (files.length) {
+                $('label[for="' + $(this).attr('id') + '"] span').text(files[0].name);
+            }
+        });
+
+        $('input:file[data-auto-upload]').change(function() {
+            $(this).closest('form').submit();
+        });
+
+        $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function(event) {
+            event.preventDefault();
+        }).on('drop', function(event) {
+            var $target = $('#' + $(this).attr('for'));
+            $target.prop('files', event.originalEvent.dataTransfer.files);
+            // Firefox won't trigger a change event, so we explicitly do that
+            $target.change();
+        }).on('dragover dragenter', function() {
+            $(this).addClass('drag');
+        }).on('dragleave drop', function() {
+            $(this).removeClass('drag');
+        });
+
+        $('.tag-input').tagInput();
+
+        $('.image-input').click(function() {
+            var $this = $(this);
+            var value = $this.val();
+            Formwork.Modals.show('imagesModal', null, function($modal) {
+                $modal.find('.image-picker-confirm').data('target', $this);
+                $modal.find('.image-picker-thumbnail').each(function() {
+                    var $thumbnail = $(this);
+                    if ($thumbnail.data('text') == value) {
+                        $thumbnail.addClass('selected');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        $('.image-picker').each(function() {
+            var $this = $(this);
+            var options = $this.children('option');
+            var container = $('<div>', {class: 'image-picker-thumbnails'});
+            for (var i = 0; i < options.length; i++) {
+                $('<div>', {
+                    class: 'image-picker-thumbnail',
+                    'data-value': options[i].value,
+                    'data-text': options[i].text
+                }).css({
+                    'background-image': 'url(' + options[i].value + ')'
+                }).appendTo(container);
+            }
+            $this.before(container);
+            $this.hide();
+        });
+
+        $('.image-picker-confirm').click(function() {
+            var $this = $(this);
+            $this.data('target').val($this.parent().find('.image-picker-thumbnail.selected').data('text'));
+        });
+
+        $('.image-picker-thumbnail').click(function() {
+            var $this = $(this);
+            $this.siblings().removeClass('selected');
+            $this.addClass('selected');
+            $this.parent().siblings('.image-input').val($this.data('value'));
+        });
+
+        $('.editor-textarea').each(function() {
+            new Formwork.Editor($(this).attr('id'));
+        });
     }
+};
 
-    if (hasNotifications()) {
-        var $last = $('.notification:last');
-        top = $last.offset().top + $last.outerHeight(true);
+Formwork.Modals = {
+    init: function() {
+        $('[data-modal]').click(function() {
+            var $this = $(this);
+            var modal = $this.data('modal');
+            var action = $this.data('modal-action');
+            if (action) {
+                Formwork.Modals.show(modal, action);
+            } else {
+                Formwork.Modals.show(modal);
+            }
+        });
+
+        $('.modal [data-dismiss]').click(function() {
+            if ($(this).is('[data-validate]')) {
+                var valid = Formwork.Modals.validate($(this).data('dismiss'));
+                if (!valid) return;
+            }
+            Formwork.Modals.hide($(this).data('dismiss'));
+        });
+
+        $('.modal').click(function(event) {
+            if (event.target === this) Formwork.Modals.hide();
+        });
+
+        $(document).keyup(function(event) {
+            // ESC key
+            if (event.which == 27) Formwork.Modals.hide();
+        });
+    },
+    show: function (id, action, callback) {
+        var $modal = $('#' + id);
+        $modal.addClass('show');
+        if (action !== null) {
+            $modal.find('form').attr('action', action);
+        }
+        $modal.find('[autofocus]').first().focus(); // Firefox bug
+        if (typeof callback === 'function') callback($modal);
+        this.createBackdrop();
+    },
+    hide: function(id) {
+        var $modal = id === undefined ? $('.modal') : $('#' + id);
+        $modal.removeClass('show');
+        this.removeBackdrop();
+    },
+    createBackdrop: function() {
+        if (!$('.modal-backdrop').length) {
+            $('<div>', {
+                class: 'modal-backdrop'
+            }).appendTo('body');
+        }
+    },
+    removeBackdrop: function() {
+        $('.modal-backdrop').remove();
+    },
+    validate: function(id) {
+        var valid = false;
+        var $modal = $('#' + id);
+        $modal.find('[required]').each(function() {
+            if ($(this).val() === '') {
+                $(this).addClass('animated shake');
+                $(this).focus();
+                $modal.find('.modal-error').show();
+                valid = false;
+                return false;
+            }
+            valid = true;
+        });
+        return valid;
     }
+};
 
+Formwork.Notification = function(text, type, interval) {
     var $notification = $('<div>', {
         class: 'notification'
-    }).text(text).appendTo('body');
+    }).text(text);
 
-    if (top) $notification.css('top', top);
+    if ($('.notification').length > 0) {
+        var $last = $('.notification:last');
+        var top = $last.offset().top + $last.outerHeight(true);
+        $notification.css('top', top);
+    }
 
     if (type) $notification.addClass('notification-' + type);
 
+    $notification.appendTo('body');
+
     setTimeout(function() {
-        offset = $notification.outerHeight(true);
+        var offset = $notification.outerHeight(true);
 
         $('.notification').each(function() {
             var $this = $(this);
@@ -420,11 +405,168 @@ var Notification = function(text, type, interval) {
         setTimeout(function() {
             $notification.remove();
         }, 400);
-        
+
     }, interval);
 };
 
-var Request = function(options, callback) {
+Formwork.Pages = {
+    init: function() {
+        $('.page-children-toggle').click(function(event) {
+            event.stopPropagation();
+            $(this).closest('li').children('.pages-list').toggle();
+            $(this).toggleClass('toggle-expanded toggle-collapsed');
+        });
+
+        $('.page-details a').click(function(event) {
+            event.stopPropagation();
+        });
+
+        $('#expand-all-pages').click(function() {
+            $(this).blur();
+            $('.pages-children').show();
+            $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+        });
+
+        $('#collapse-all-pages').click(function() {
+            $(this).blur();
+            $('.pages-children').hide();
+            $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+        });
+
+        $('.page-search').focus(function() {
+            $('.pages-children').each(function() {
+                var $this = $(this);
+                $this.data('visible', $this.is(':visible'));
+            });
+        });
+
+        $('.page-search').keyup(Formwork.Utils.debounce(function() {
+            var value = $(this).val();
+            if (value.length === 0) {
+                $('.pages-children').each(function() {
+                    $(this).toggle($(this).data('visible'));
+                });
+                $('.page-details').css('padding-left', '');
+                $('.pages-item, .page-children-toggle').show();
+            } else {
+                var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
+                var matches = 0;
+                $('.pages-children').show();
+                $('.page-children-toggle').hide();
+                $('.page-details').css('padding-left', '0');
+                $('.page-title a').each(function() {
+                    var $pagesItem = $(this).closest('.pages-item');
+                    var matched = !!$(this).text().match(regexp);
+                    if (matched) matches++;
+                    $pagesItem.toggle(matched);
+                });
+            }
+        }, 100));
+
+        $('.page-details').click(function() {
+            var $toggle = $(this).find('.page-children-toggle').first();
+            if ($toggle.length) $toggle.click();
+        });
+
+        $('#page-title', '#newPageModal').keyup(function() {
+            $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
+        });
+
+        $('#page-slug', '#newPageModal').keyup(function() {
+            $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+        }).blur(function() {
+            if ($(this).val() === '') $('#page-title', '#newPageModal').trigger('keyup');
+        });
+
+        $('#page-parent', '#newPageModal').change(function() {
+            var $option = $(this).find('option:selected');
+            var $pageTemplate = $('#page-template', '#newPageModal');
+            var allowedTemplates = $option.data('allowed-templates');
+            if (allowedTemplates) {
+                allowedTemplates = allowedTemplates.split(', ');
+                $pageTemplate
+                    .data('previous-value', $pageTemplate.val())
+                    .val(allowedTemplates[0])
+                    .find('option').each(function () {
+                        if (allowedTemplates.indexOf($(this).val()) == -1) {
+                            $(this).attr('disabled', true);
+                        }
+                    });
+            } else if ($pageTemplate.find('option[disabled]').length) {
+                $pageTemplate
+                    .val($pageTemplate.data('previous-value'))
+                    .removeData('previous-value')
+                    .find('option').removeAttr('disabled');
+            }
+        });
+
+        $('.pages-list').each(function() {
+            var $this = $(this);
+
+            if ($this.data('sortable') === false) return;
+
+            var sortable = Sortable.create(this, {
+                filter: '.not-sortable',
+                forceFallback: true,
+                onStart: function(event) {
+                    $(event.item).closest('.pages-list').addClass('dragging');
+                    $('.pages-children', event.item).hide();
+                    $('.page-children-toggle').removeClass('toggle-expanded')
+                    .addClass('toggle-collapsed').css('opacity', '0.5');
+                },
+                onMove: function(event) {
+                    if ($(event.related).hasClass('not-sortable')) return false;
+                    $('.pages-children', event.related).hide();
+                },
+                onEnd: function (event) {
+                    $(event.item).closest('.pages-list').removeClass('dragging');
+                    $('.page-children-toggle').css('opacity', '');
+
+                    if (event.newIndex == event.oldIndex) return;
+
+                    sortable.option('disabled', true);
+
+                    var data = {
+                        'csrf-token': $('body').data('csrf-token'),
+                        parent: $(this.el).data('parent'),
+                        from: event.oldIndex,
+                        to: event.newIndex
+                    };
+
+                    new Formwork.Request({
+                        method: 'POST',
+                        url: Formwork.Utils.uriPrependBase('/admin/pages/reorder/', location.pathname),
+                        data: data
+                    }, function(response) {
+                        if (response.status) {
+                            Formwork.Notification(response.message, response.status, 5000);
+                        }
+                        if (!response.status || response.status == 'error') {
+                            sortable.sort($(event.from).data('originalOrder'));
+                        }
+                        sortable.option('disabled', false);
+                        $(event.from).data('originalOrder', sortable.toArray());
+                    });
+
+                }
+            });
+
+            $this.data('originalOrder', sortable.toArray());
+        });
+
+        $(document).keydown(function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                // ctrl/cmd + F
+                if (event.which == 70 && $('.page-search:not(:focus)').length) {
+                    $('.page-search').focus();
+                    return false;
+                }
+            }
+        });
+    }
+};
+
+Formwork.Request = function(options, callback) {
     var request = $.ajax(options);
     if (typeof callback === 'function') {
         request.always(function() {
@@ -440,21 +582,24 @@ var Request = function(options, callback) {
     return request;
 };
 
-var Tooltip = function(referenceElement, text, options) {
+Formwork.Tooltip = function(text, options) {
     var defaults = {
         container: document.body,
+        referenceElement: document.body,
         position: 'top',
         offset: {x: 0, y: 0},
         delay: 500
     };
+    var $referenceElement = $(options.referenceElement);
+    var $tooltip;
+    var timer;
 
     options = $.extend({}, defaults, options);
 
-    var $referenceElement = $(referenceElement);
-    var timer;
+    $referenceElement.on('mouseout', _remove);
 
-    function _position($tooltip) {
-        var offset = Utils.offset($referenceElement[0]);
+    function _tooltipPosition($tooltip) {
+        var offset = Formwork.Utils.offset($referenceElement[0]);
 
         var top = offset.top;
         var left = offset.left;
@@ -487,245 +632,112 @@ var Tooltip = function(referenceElement, text, options) {
 
     function _show() {
         timer = setTimeout(function() {
-            var $tooltip = $('<div class="tooltip" role="tooltip">');
-            $tooltip.appendTo(options.container);
-            $tooltip.text(text);
-            $tooltip.css(_position($tooltip)).fadeIn(200);
+            $tooltip = $('<div class="tooltip" role="tooltip">')
+            .appendTo(options.container);
+
+            $tooltip.text(text)
+            .css(_tooltipPosition($tooltip))
+            .fadeIn(200);
         }, options.delay);
     }
 
     function _remove() {
         clearTimeout(timer);
-        $('.tooltip').fadeOut(100, function() {
-            $(this).remove();
-        });
+        if ($tooltip !== undefined) {
+            $tooltip.fadeOut(100, function() {
+                $tooltip.remove();
+            });
+        }
     }
 
-    $referenceElement.on('mouseout', _remove);
-
-    _show();
-
-    return {show: _show};
-
+    return {
+        show: _show,
+        remove: _remove
+    };
 };
 
-var Chart = (function(element, data) {
-    var options = {
-        showArea: true,
-        fullWidth: true,
-        scaleMinSpace: 20,
-        divisor: 5,
-        chartPadding: 20,
-        lineSmooth: false,
-        low: 0,
-        axisX: {
-            showGrid: false,
-            labelOffset: {x: 0, y: 10}
-        },
-        axisY: {
-            onlyInteger: true,
-            offset: 15,
-            labelOffset: {x: 0, y: 5}
+Formwork.Utils = {
+    debounce: function(callback, delay, leading) {
+        var timer = null;
+        var context;
+        var args;
+
+        function wrapper() {
+            context = this;
+            args = arguments;
+
+            if (timer) clearTimeout(timer);
+
+            if (leading && !timer) callback.apply(context, args);
+
+            timer = setTimeout(function() {
+                if (!leading) callback.apply(context, args);
+                timer = null;
+            }, delay);
         }
-    };
 
-    new Chartist.Line(element, data, options);
-});
+        return wrapper;
+    },
+    escapeRegExp: function(string) {
+        return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+    offset: function(element) {
+        var rect = element.getBoundingClientRect();
+        var doc = document.documentElement;
+        var body = document.body;
 
-$(function() {
-    $('[data-chart-data]').each(function() {
-        new Chart(this, $(this).data('chart-data'));
-    });
-    $('.ct-chart').on('mouseover', '.ct-point', function() {
-        new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
-    });
-});
+        var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
+        var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
 
-var ImagePicker = (function() {
-    $(function() {
-        $('.image-input').click(function() {
-            var $this = $(this);
-            var value = $this.val();
-            Modal.show('imagesModal', null, function($modal) {
-                $modal.find('.image-picker-confirm').data('target', $this);
-                $modal.find('.image-picker-thumbnail').each(function() {
-                    if ($(this).data('text') == value) {
-                        $(this).addClass('selected');
-                        return false;
-                    }
-                });
-            });
-        });
-
-        $('.image-picker').each(function() {
-            var $this = $(this);
-            var options = $this.children('option');
-            var container = $('<div>', {class: 'image-picker-thumbnails'});
-            for (var i = 0; i < options.length; i++) {
-                $('<div>', {
-                    class: 'image-picker-thumbnail',
-                    'data-value': options[i].value,
-                    'data-text': options[i].text
-                }).css({
-                    'background-image': 'url(' + options[i].value + ')'
-                }).appendTo(container);
-            }
-            $this.before(container);
-            $this.hide();
-        });
-
-        $('.image-picker-confirm').click(function() {
-            $(this).data('target').val($(this).parent().find('.image-picker-thumbnail.selected').data('text'));
-        });
-
-        $('.image-picker-thumbnail').click(function() {
-            $(this).siblings().removeClass('selected');
-            $(this).addClass('selected');
-            $(this).parent().siblings('.image-input').val($(this).data('value'));
-        });
-    });
-})();
-
-var Modal = (function() {
-    $(function() {
-        $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Modal.validate($(this).data('dismiss'));
-                if (!valid) return;
-            }
-            Modal.hide($(this).data('dismiss'));
-        });
-        $('.modal').click(function(event) {
-            if (event.target === this) Modal.hide();
-        });
-    });
-
-    return {
-        show: function (id, action, callback) {
-            var $modal = $('#' + id);
-            $modal.addClass('show');
-            if (action !== null) {
-                $modal.find('form').attr('action', action);
-            }
-            $modal.find('[autofocus]').first().focus(); // Firefox bug
-            if (typeof callback === 'function') callback($modal);
-            this.createBackdrop();
-        },
-        hide: function(id) {
-            var $modal = id === undefined ? $('.modal') : $('#' + id);
-            $modal.removeClass('show');
-            this.removeBackdrop();
-        },
-        createBackdrop: function() {
-            if (!$('.modal-backdrop').length) {
-                $('<div>', {
-                    class: 'modal-backdrop'
-                }).appendTo('body');    
-            }
-        },
-        removeBackdrop: function() {
-            $('.modal-backdrop').remove();
-        },
-        validate: function(id) {
-            var valid = false;
-            var $modal = $('#' + id);
-            $modal.find('[required]').each(function() {
-                if ($(this).val() === '') {
-                    $(this).addClass('animated shake');
-                    $(this).focus();
-                    $modal.find('.modal-error').show();
-                    valid = false;
-                    return false;
-                }
-                valid = true;
-            });
-            return valid;
-        }
-    };
-})();
-
-var Utils = (function() {
-    return {
-        debounce: function(callback, delay, leading) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) clearTimeout(timer);
-
-                if (leading && !timer) callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    if (!leading) callback.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        escapeRegExp: function(string) {
-            return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-        },
-        offset: function(element) {
-            var rect = element.getBoundingClientRect();
-            var doc = document.documentElement;
-            var body = document.body;
-
-            var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
-            var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
-
-            return {
-                top: rect.top + YOffset,
-                left: rect.left + XOffset
-            };
-        },
-        slug: function(string) {
-            var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
-            var char;
-            string = string.toLowerCase();
-            for (char in translate) {
+        return {
+            top: rect.top + YOffset,
+            left: rect.left + XOffset
+        };
+    },
+    slug: function(string) {
+        var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
+        var char;
+        string = string.toLowerCase();
+        for (char in translate) {
+            if (translate.hasOwnProperty(char)) {
                 string = string.split(char).join(translate[char]);
             }
-            return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
-        },
-        throttle: function(callback, delay) {
-            var timer = null;
-            var context;
-            var args;
-
-            function wrapper() {
-                context = this;
-                args = arguments;
-
-                if (timer) return;
-
-                callback.apply(context, args);
-
-                timer = setTimeout(function() {
-                    wrapper.apply(context, args);
-                    timer = null;
-                }, delay);
-            }
-
-            return wrapper;
-        },
-        uriPrependBase: function(base, path) {
-            var regexp = /^\/+|\/+$/im;
-            base = base.replace(regexp, '').split('/');
-            path = path.replace(regexp, '').split('/');
-            for (i = 0; i < base.length; i++) {
-                if (base[i] === path[0] && base[i + 1] !== path[0]) {
-                    base = base.slice(0, i);
-                }
-            }
-            return '/' + base.concat(path).join('/') + '/';
         }
-    };
-})();
+        return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
+    },
+    throttle: function(callback, delay) {
+        var timer = null;
+        var context;
+        var args;
+
+        function wrapper() {
+            context = this;
+            args = arguments;
+
+            if (timer) return;
+
+            callback.apply(context, args);
+
+            timer = setTimeout(function() {
+                wrapper.apply(context, args);
+                timer = null;
+            }, delay);
+        }
+
+        return wrapper;
+    },
+    uriPrependBase: function(path, base) {
+        var regexp = /^\/+|\/+$/im;
+        path = path.replace(regexp, '').split('/');
+        base = base.replace(regexp, '').split('/');
+        for (var i = 0; i < base.length; i++) {
+            if (base[i] === path[0] && base[i + 1] !== path[0]) {
+                base = base.slice(0, i);
+            }
+        }
+        return '/' + base.concat(path).join('/') + '/';
+    }
+};
 
 (function($) {
     $.fn.datePicker = function(options) {
@@ -761,7 +773,7 @@ var Utils = (function() {
             },
             nextMonth: function() {
                 this.month = helpers.mod(this.month + 1, 12);
-                if (this.month == 0) this.nextYear();
+                if (this.month === 0) this.nextYear();
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.lastDay();
                 }
@@ -808,7 +820,7 @@ var Utils = (function() {
                 return date && !isNaN(Date.parse(date));
             },
             isLeapYear: function(year) {
-                return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+                return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
             },
             daysInMonth: function(month, year) {
                 return month == 1 && this.isLeapYear(year) ? 29 : this._daysInMonth[month];
@@ -849,7 +861,7 @@ var Utils = (function() {
                 $this.val(helpers.formatDateTime(value));
             }
             $this.change(function() {
-                if ($(this).val() == '') {
+                if ($(this).val() === '') {
                     $(this).data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
@@ -865,7 +877,9 @@ var Utils = (function() {
                         return false;
                     case 8:
                         $this.val('');
-                        // fallthrough
+                        $input.blur();
+                        $calendar.hide();
+                        return false;
                     case 27:
                         $input.blur();
                         $calendar.hide();
@@ -949,8 +963,6 @@ var Utils = (function() {
             $input.data('date', date);
             $input.val(helpers.formatDateTime(date));
             $input.blur();
-            //$('.calendar .calendar-day').removeClass('selected');
-            //$(this).addClass('selected');
         });
 
         function generateTable(year, month, day) {
@@ -970,7 +982,7 @@ var Utils = (function() {
                 html += '</td>';
             }
             html += '</tr><tr>';
-            for (var i = 0; i < 6; i++) {
+            for (i = 0; i < 6; i++) {
                 for (var j = 0; j < 7; j++) {
                     if (num <= monthLength && (i > 0 || j >= start)) {
                         if (num == day) {
@@ -996,22 +1008,6 @@ var Utils = (function() {
             $('.calendar-table').replaceWith(html);
         }
 
-        /*$(window).click(function (event) {
-            var $eventTarget = $(event.target);
-            $calendar.hide();
-            if ($eventTarget.is('.calendar-day, .currentMonth')) return;
-            if ($eventTarget.is('.date-input')) {
-                $input = $eventTarget;
-                var date = helpers.isValidDate($input.data('date')) ? new Date($input.data('date')) : new Date();
-                calendar.setDate(date);
-                generateTable(calendar.year, calendar.month, calendar.day);
-            }
-            if ($eventTarget.is('.date-input') || $eventTarget.parents('.calendar').length) {
-                $calendar.show();
-                setPosition();
-            }
-        });*/
-
         $('.date-input').blur(function() {
             $calendar.hide();
         });
@@ -1032,7 +1028,7 @@ var Utils = (function() {
             }
         });
 
-        $(window).on('resize', Utils.throttle(setPosition, 100));
+        $(window).on('resize', Formwork.Utils.throttle(setPosition, 100));
 
         function setPosition() {
             if (!$input || !$calendar.is(':visible')) return;
@@ -1061,7 +1057,7 @@ var Utils = (function() {
 }(jQuery));
 
 (function($) {
-    $.fn.longclick = function(func, timeout, interval) {
+    $.fn.longclick = function(callback, timeout, interval) {
         var timer;
         function clear() {
             clearTimeout(timer);
@@ -1071,9 +1067,9 @@ var Utils = (function() {
             if (event.which != 1) {
                 clear();
             } else {
-                func();
+                callback();
                 timer = window.setTimeout(function() {
-                    timer = window.setInterval(func, interval ? interval : 250);
+                    timer = window.setInterval(callback, interval ? interval : 250);
                 }, timeout ? timeout : 500);
             }
         }).mouseout(clear);
@@ -1142,7 +1138,7 @@ var Utils = (function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
             var value = $(this).val().trim();
-            if (value != '') {
+            if (value !== '') {
                 addTag($(this), value);
                 $(this).prop('size', 1);
             }
@@ -1164,7 +1160,7 @@ var Utils = (function() {
                     return true;
                 case 13:
                 case 188:
-                    if (value != '') addTag($this, value);
+                    if (value !== '') addTag($this, value);
                     $this.prop('size', 1);
                     return false;
                 default:
