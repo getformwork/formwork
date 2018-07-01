@@ -9,5 +9,5 @@
     </form>
 </div>
 <script>
-new Form('.site-options-form');
+new Formwork.Form('.site-options-form');
 </script>

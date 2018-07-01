@@ -81,5 +81,5 @@ $('.date-input').datePicker({
     format: <?= json_encode(strtr($this->formwork()->option('date.format'), array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss'))) ?>
 });
 
-new Form('.page-editor-form');
+new Formwork.Form('.page-editor-form');
 </script>
