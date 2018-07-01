@@ -220,6 +220,10 @@ Formwork.Form = function(form) {
 
 Formwork.Forms = {
     init: function() {
+        $('[data-form]').each(function() {
+            new Formwork.Form($(this));
+        });
+
         $('input[data-enable]').change(function() {
             var checked = $(this).is(':checked');
             $.each($(this).data('enable').split(','), function(index, value) {
