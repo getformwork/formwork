@@ -64,7 +64,7 @@ Formwork.Dashboard = {
             new Formwork.Request({
                 method: 'POST',
                 url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
-                data: {'csrf-token': $('body').data('csrf-token')}
+                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function(response) {
                 Formwork.Notification(response.message, response.status, 5000);
             });
@@ -527,7 +527,7 @@ Formwork.Pages = {
                     sortable.option('disabled', true);
 
                     var data = {
-                        'csrf-token': $('body').data('csrf-token'),
+                        'csrf-token': $('meta[name=csrf-token]').attr('content'),
                         parent: $(this.el).data('parent'),
                         from: event.oldIndex,
                         to: event.newIndex

@@ -116,7 +116,7 @@ Formwork.Pages = {
                     sortable.option('disabled', true);
 
                     var data = {
-                        'csrf-token': $('body').data('csrf-token'),
+                        'csrf-token': $('meta[name=csrf-token]').attr('content'),
                         parent: $(this.el).data('parent'),
                         from: event.oldIndex,
                         to: event.newIndex
