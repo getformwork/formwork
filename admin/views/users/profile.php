@@ -74,5 +74,5 @@
             </div>
         </div>
         <script>
-            new Form('.user-profile-form');
+            new Formwork.Form('.user-profile-form');
         </script>

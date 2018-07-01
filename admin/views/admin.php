@@ -55,7 +55,7 @@
 <?php
     if ($notification = $this->notification()):
 ?>
-    <script>Notification('<?= implode("', '", $notification) ?>', 5000);</script>
+    <script>Formwork.Notification('<?= implode("', '", $notification) ?>', 5000);</script>
 <?php
     endif;
 ?>
