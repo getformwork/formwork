@@ -14,7 +14,7 @@
             </div>
             <div class="component">
                 <h3 class="caption"><?= $this->label('users.options') ?></h3>
-                <form class="user-profile-form" method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" data-form="user-profile-form" >
                     <div class="container-full">
                         <div class="row">
                             <div class="col-m-1-3">
@@ -73,6 +73,3 @@
                 </form>
             </div>
         </div>
-        <script>
-            new Formwork.Form('.user-profile-form');
-        </script>

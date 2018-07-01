@@ -1,6 +1,6 @@
 <div class="container-no-margin">
     <div class="row">
-        <form class="page-editor-form" action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" method="post">
+        <form action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" method="post" data-form="page-editor-form">
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
@@ -80,6 +80,4 @@ $('.date-input').datePicker({
     todayLabel: <?= json_encode($this->label('date.today')) ?>,
     format: <?= json_encode(strtr($this->formwork()->option('date.format'), array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss'))) ?>
 });
-
-new Formwork.Form('.page-editor-form');
 </script>
