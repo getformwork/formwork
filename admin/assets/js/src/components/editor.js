@@ -1,39 +1,36 @@
-var Editor = function(id) {
-    textarea = $('#' + id)[0];
+Formwork.Editor = function(id) {
+    var textarea = $('#' + id)[0];
     var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
 
-    disableSummaryCommand();
-    $(textarea).keyup(Utils.debounce(disableSummaryCommand, 1000));
-
     $('[data-command=bold]', toolbarSel).click(function() {
-        var pos = insertAtCursor(textarea, '**');
+        insertAtCursor('**');
     });
 
     $('[data-command=italic]', toolbarSel).click(function() {
-        var pos = insertAtCursor(textarea, '_');
+        insertAtCursor('_');
     });
 
     $('[data-command=ul]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(textarea, prevChar === undefined ? '- ' : prepend + '- ', '');
+        insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
     });
 
     $('[data-command=ol]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
-            insertAtCursor(textarea, '\n' + (parseInt(num) + 1) + '. ', '');
+            insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
         } else {
-            insertAtCursor(textarea, prevChar === undefined ? '1. ' : prepend + '1. ', '');
+            insertAtCursor(prevChar === undefined ? '1. ' : prepend + '1. ', '');
         }
     });
 
     $('[data-command=quote]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(textarea, prevChar === undefined ? '> ' : prepend + '> ', '');
+        insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
     });
 
     $('[data-command=link]', toolbarSel).click(function() {
@@ -51,30 +48,33 @@ var Editor = function(id) {
             textarea.focus();
             textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
         } else {
-            insertAtCursor(textarea, '[', '](http://)');
+            insertAtCursor('[', '](http://)');
         }
     });
 
     $('[data-command=image]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         var prepend = '\n\n';
         if (prevChar === '\n') {
             prepend = '\n';
         } else if (prevChar === undefined) {
             prepend = '';
         }
-        insertAtCursor(textarea, prepend + '![](', ')');
+        insertAtCursor(prepend + '![](', ')');
     });
 
     $('[data-command=summary]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar(textarea);
+        var prevChar = prevCursorChar();
         if (!hasSummarySequence()) {
             console.log(prevChar);
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
-            insertAtCursor(textarea, prepend + '\n===\n\n', '');
+            insertAtCursor(prepend + '\n===\n\n', '');
             $(this).attr('disabled', true);
         }
     });
+
+    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    disableSummaryCommand();
 
     function hasSummarySequence() {
         return /\n+===\n+/.test(textarea.value);
@@ -90,18 +90,18 @@ var Editor = function(id) {
         return text.substring(index + 1);
     }
 
-    function prevCursorChar(field) {
-        var startPos = field.selectionStart;
-        return startPos === 0 ? undefined : field.value.substring(startPos - 1, startPos);
+    function prevCursorChar() {
+        var startPos = textarea.selectionStart;
+        return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
     }
 
-    function insertAtCursor(field, leftValue, rightValue) {
+    function insertAtCursor(leftValue, rightValue) {
         if (rightValue === undefined) rightValue = leftValue;
-        var startPos = field.selectionStart;
-        var endPos = field.selectionEnd;
-        var selection = startPos === endPos ? '' : field.value.substring(startPos, endPos);
-        field.value = field.value.substring(0, startPos) + leftValue + selection + rightValue + field.value.substring(endPos, field.value.length);
-        field.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(field).blur().focus();
+        var startPos = textarea.selectionStart;
+        var endPos = textarea.selectionEnd;
+        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
+        textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
+        textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
+        $(textarea).blur().focus();
     }
-}
+};

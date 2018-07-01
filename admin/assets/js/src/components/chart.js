@@ -1,4 +1,4 @@
-var Chart = (function(element, data) {
+Formwork.Chart = function(element, data) {
     var options = {
         showArea: true,
         fullWidth: true,
@@ -17,15 +17,12 @@ var Chart = (function(element, data) {
             labelOffset: {x: 0, y: 5}
         }
     };
+    
+    var chart = new Chartist.Line(element, data, options);
 
-    new Chartist.Line(element, data, options);
-});
-
-$(function() {
-    $('[data-chart-data]').each(function() {
-        new Chart(this, $(this).data('chart-data'));
+    $(chart.container).on('mouseover', '.ct-point', function() {
+        var $this = $(this);
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: {x: 0, y: -8}});
+        tooltip.show();
     });
-    $('.ct-chart').on('mouseover', '.ct-point', function() {
-        new Tooltip($(this), $(this).attr('ct:value'), {offset: {x: 0, y: -8}});
-    });
-});
+};

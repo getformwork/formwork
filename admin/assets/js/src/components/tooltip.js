@@ -1,18 +1,21 @@
-var Tooltip = function(referenceElement, text, options) {
+Formwork.Tooltip = function(text, options) {
     var defaults = {
         container: document.body,
+        referenceElement: document.body,
         position: 'top',
         offset: {x: 0, y: 0},
         delay: 500
     };
+    var $referenceElement = $(options.referenceElement);
+    var $tooltip;
+    var timer;
 
     options = $.extend({}, defaults, options);
 
-    var $referenceElement = $(referenceElement);
-    var timer;
+    $referenceElement.on('mouseout', _remove);
 
-    function _position($tooltip) {
-        var offset = Utils.offset($referenceElement[0]);
+    function _tooltipPosition($tooltip) {
+        var offset = Formwork.Utils.offset($referenceElement[0]);
 
         var top = offset.top;
         var left = offset.left;
@@ -45,24 +48,26 @@ var Tooltip = function(referenceElement, text, options) {
 
     function _show() {
         timer = setTimeout(function() {
-            var $tooltip = $('<div class="tooltip" role="tooltip">');
-            $tooltip.appendTo(options.container);
-            $tooltip.text(text);
-            $tooltip.css(_position($tooltip)).fadeIn(200);
+            $tooltip = $('<div class="tooltip" role="tooltip">')
+            .appendTo(options.container);
+
+            $tooltip.text(text)
+            .css(_tooltipPosition($tooltip))
+            .fadeIn(200);
         }, options.delay);
     }
 
     function _remove() {
         clearTimeout(timer);
-        $('.tooltip').fadeOut(100, function() {
-            $(this).remove();
-        });
+        if ($tooltip !== undefined) {
+            $tooltip.fadeOut(100, function() {
+                $tooltip.remove();
+            });
+        }
     }
 
-    $referenceElement.on('mouseout', _remove);
-
-    _show();
-
-    return {show: _show};
-
+    return {
+        show: _show,
+        remove: _remove
+    };
 };

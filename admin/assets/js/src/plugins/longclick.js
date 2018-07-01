@@ -1,5 +1,5 @@
 (function($) {
-    $.fn.longclick = function(func, timeout, interval) {
+    $.fn.longclick = function(callback, timeout, interval) {
         var timer;
         function clear() {
             clearTimeout(timer);
@@ -9,9 +9,9 @@
             if (event.which != 1) {
                 clear();
             } else {
-                func();
+                callback();
                 timer = window.setTimeout(function() {
-                    timer = window.setInterval(func, interval ? interval : 250);
+                    timer = window.setInterval(callback, interval ? interval : 250);
                 }, timeout ? timeout : 500);
             }
         }).mouseout(clear);
