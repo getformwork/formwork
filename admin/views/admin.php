@@ -3,6 +3,13 @@
 <head>
     <title>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<?php
+    if(isset($csrfToken)):
+?>
+    <meta name="csrf-token" content="<?= $csrfToken ?>">
+<?php
+    endif;
+?>
     <link rel="shortcut icon" href="<?= $this->uri('/assets/images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->uri('/assets/css/admin.min.css') ?>">
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -10,7 +17,7 @@
     <script src="<?= $this->uri('/assets/js/chartist.min.js') ?>"></script>
     <script src="<?= $this->uri('/assets/js/sortable.min.js') ?>"></script>
 </head>
-<body<?php if(isset($csrfToken)): ?> data-csrf-token="<?= $csrfToken ?>"<?php endif; ?>>
+<body>
     <button class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
     <div class="title-bar"><?= $this->label('admin.panel') ?>
         <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
