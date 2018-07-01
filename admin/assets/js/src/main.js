@@ -22,6 +22,12 @@ var Formwork = {
         $('[data-chart-data]').each(function() {
             new Formwork.Chart(this, $(this).data('chart-data'));
         });
+
+        $('meta[name=notification]').each(function() {
+            var $this = $(this);
+            new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
+            $this.remove();
+        });
     }
 };
 

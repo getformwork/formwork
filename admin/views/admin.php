@@ -10,6 +10,13 @@
 <?php
     endif;
 ?>
+<?php
+    if ($notification = $this->notification()):
+?>
+    <meta name="notification" content="<?= $notification['text']?>" data-type="<?= $notification['type']?>" data-interval="5000">
+<?php
+    endif;
+?>
     <link rel="shortcut icon" href="<?= $this->uri('/assets/images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->uri('/assets/css/admin.min.css') ?>">
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -59,13 +66,6 @@
     <main class="main">
         <?= $content ?>
     </main>
-<?php
-    if ($notification = $this->notification()):
-?>
-    <script>Formwork.Notification('<?= implode("', '", $notification) ?>', 5000);</script>
-<?php
-    endif;
-?>
     <?= isset($modals) ? $modals : '' ?>
 </body>
 </html>
