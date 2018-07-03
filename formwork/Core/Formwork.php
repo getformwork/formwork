@@ -90,7 +90,7 @@ class Formwork {
             '/page/{paginationPage:num}/',
             '/{page}/page/{paginationPage:num}/',
             '/{page}/'
-        ), array($this, 'defaultRoute'));
+        ), $this->defaultRoute());
 
         $this->resource = $this->router->dispatch();
 
@@ -103,27 +103,29 @@ class Formwork {
 
     }
 
-    public function defaultRoute(RouteParams $params) {
-        $path = $params->get('page', $this->option('pages.index'));
+    private function defaultRoute() {
+        return function (RouteParams $params) {
+            $path = $params->get('page', $this->option('pages.index'));
 
-        if ($this->site->has('aliases') && $alias = $this->site->alias($path)) {
-            $path = trim($alias, '/');
-        }
+            if ($this->site->has('aliases') && $alias = $this->site->alias($path)) {
+                $path = trim($alias, '/');
+            }
 
-        if ($page = $this->site->findPage($path)) {
-            if ($params->get('paginationPage') == 1) Header::redirect($page->uri(), 301, true);
-            if ($page->routable() && $page->published()) return $page;
-        } else {
-            $filename = FileSystem::basename($path);
-            $upperLevel = FileSystem::dirname($path);
-            if ($parent = $this->site->findPage($upperLevel)) {
-                if ($file = $parent->file($filename)) {
-                    return Header::file($file);
+            if ($page = $this->site->findPage($path)) {
+                if ($params->get('paginationPage') == 1) Header::redirect($page->uri(), 301, true);
+                if ($page->routable() && $page->published()) return $page;
+            } else {
+                $filename = FileSystem::basename($path);
+                $upperLevel = FileSystem::dirname($path);
+                if ($parent = $this->site->findPage($upperLevel)) {
+                    if ($file = $parent->file($filename)) {
+                        return Header::file($file);
+                    }
                 }
             }
-        }
 
-        return $this->site->errorPage(true);
+            return $this->site->errorPage(true);
+        };
     }
 
     public function option($option) {
