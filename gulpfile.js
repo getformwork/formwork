@@ -23,4 +23,4 @@ gulp.task('js', function() {
         .pipe(gulp.dest('admin/assets/js'));
 });
 
-gulp.task('default', ['css', 'js']);
+gulp.task('default', gulp.series('css', 'js'));
