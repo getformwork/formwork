@@ -1,7 +1,7 @@
 <div class="component">
     <h3 class="caption"><?= $this->label('options.options') ?></h3>
     <?= $tabs ?>
-    <form method="post" data-form="site-options-form">
+    <form method="post" class="options-form" data-form="site-options-form">
         <?= $fields ?>
         <div class="separator-l"></div>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
