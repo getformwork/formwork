@@ -16,7 +16,7 @@ Formwork.Tooltips = {
             tooltip.show();
         });
 
-        $('.overflow-title').mouseover(function() {
+        $('[data-overflow-tooltip="true"]').mouseover(function() {
             var $this = $(this);
             if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
                 var tooltip = new Formwork.Tooltip($this.text().trim(), {
