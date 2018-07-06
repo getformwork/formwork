@@ -1,4 +1,14 @@
 {
+    "name": "giuscris/formwork",
+    "description": "A file-based Content Management System (CMS) to make and manage simple sites",
+    "type": "project",
+    "homepage": "https://github.com/giuscris/formwork",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Giuseppe Criscione"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Formwork\\": "formwork/",
