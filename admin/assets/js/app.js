@@ -2,21 +2,13 @@ var Formwork = {
     init: function() {
         Formwork.Modals.init();
         Formwork.Forms.init();
+        Formwork.Tooltips.init();
 
         Formwork.Dashboard.init();
         Formwork.Pages.init();
 
         $('.toggle-navigation').click(function() {
             $('.sidebar').toggleClass('show');
-        });
-
-        $('.overflow-title').mouseover(function() {
-            var $this = $(this);
-            if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
-                $this.attr('title', $this.text().trim());
-            } else {
-                $this.removeAttr('title');
-            }
         });
 
         $('[data-chart-data]').each(function() {
@@ -664,6 +656,38 @@ Formwork.Tooltip = function(text, options) {
         show: _show,
         remove: _remove
     };
+};
+
+Formwork.Tooltips = {
+    init: function() {
+        $('[title]').each(function() {
+            var $this = $(this);
+            $this.attr('data-tooltip', $this.attr('title'))
+            .removeAttr('title');
+        });
+
+        $('[data-tooltip]').mouseover(function() {
+            var $this = $(this);
+            var tooltip = new Formwork.Tooltip($this.data('tooltip'), {
+                referenceElement: $this,
+                position: 'bottom',
+                offset: {x: 0, y: 4}
+            });
+            tooltip.show();
+        });
+
+        $('.overflow-title').mouseover(function() {
+            var $this = $(this);
+            if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
+                var tooltip = new Formwork.Tooltip($this.text().trim(), {
+                    referenceElement: $this,
+                    position: 'bottom',
+                    offset: {x: 0, y: 4}
+                });
+                tooltip.show();
+            }
+        });
+    }
 };
 
 Formwork.Utils = {
