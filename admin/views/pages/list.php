@@ -22,10 +22,10 @@
                             </div>
                         </div>
                         <div class="pages-item-cell page-date">
-                            <div class="page-date-inner overflow-title"><?= $date ?></div>
+                            <div class="page-date-inner" data-overflow-tooltip="true"><?= $date ?></div>
                         </div>
                         <div class="pages-item-cell page-status page-status-<?= $page->status() ?>">
-                            <div class="page-status-label overflow-title"><?= $this->label('pages.status.' . $page->status()) ?></div>
+                            <div class="page-status-label" data-overflow-tooltip="true"><?= $this->label('pages.status.' . $page->status()) ?></div>
                         </div>
                         <div class="pages-item-cell page-actions">
 <?php
