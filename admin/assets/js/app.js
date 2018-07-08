@@ -206,6 +206,14 @@ Formwork.Form = function(form) {
     });
 
     function hasChanged() {
+        var $fileInputs = $form.find(':file');
+        if ($fileInputs.length > 0) {
+            for (var i = 0; i < $fileInputs.length; i++) {
+                if ($fileInputs[i].files.length > 0) {
+                    return true;
+                }
+            }
+        }
         return $form.serialize() != $form.data('original-data');
     }
 };
@@ -229,10 +237,17 @@ Formwork.Forms = {
             $target.change();
         });
 
-        $('input:file').change(function() {
-            var files = $(this).prop('files');
+        $('input:file').each(function() {
+            var $this = $(this);
+            var labelHTML = $('label[for="' + $(this).attr('id') + '"] span').html();
+            $this.data('originalLabel', labelHTML);
+        }).on('change input', function() {
+            var $this = $(this);
+            var files = $this.prop('files');
             if (files.length) {
-                $('label[for="' + $(this).attr('id') + '"] span').text(files[0].name);
+                $('label[for="' + $this.attr('id') + '"] span').text(files[0].name);
+            } else {
+                $('label[for="' + $this.attr('id') + '"] span').html($this.data('originalLabel'));
             }
         });
 

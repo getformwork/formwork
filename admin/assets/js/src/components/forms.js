@@ -17,10 +17,17 @@ Formwork.Forms = {
             $target.change();
         });
 
-        $('input:file').change(function() {
-            var files = $(this).prop('files');
+        $('input:file').each(function() {
+            var $this = $(this);
+            var labelHTML = $('label[for="' + $(this).attr('id') + '"] span').html();
+            $this.data('originalLabel', labelHTML);
+        }).on('change input', function() {
+            var $this = $(this);
+            var files = $this.prop('files');
             if (files.length) {
-                $('label[for="' + $(this).attr('id') + '"] span').text(files[0].name);
+                $('label[for="' + $this.attr('id') + '"] span').text(files[0].name);
+            } else {
+                $('label[for="' + $this.attr('id') + '"] span').html($this.data('originalLabel'));
             }
         });
 
