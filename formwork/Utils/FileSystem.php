@@ -33,10 +33,17 @@ class FileSystem {
     }
 
     public static function mimeType($file) {
-        if (function_exists('mime_content_type')) {
-            return mime_content_type($file);
+        $mimeType = @mime_content_type($file);
+
+        // Fix wrong type for image/svg+xml
+        if ($mimeType == 'text/html') {
+            $node = @simplexml_load_file($file);
+            if ($node && $node->getName() == 'svg') {
+                $mimeType = MimeType::fromExtension('svg');
+            }
         }
-        return MimeType::fromExtension(static::extension($file));
+
+        return $mimeType ?: MimeType::fromExtension(static::extension($file));
     }
 
     public static function exists($path) {
