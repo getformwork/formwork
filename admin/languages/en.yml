@@ -95,7 +95,7 @@ pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
 uploader.erorr.cannot-write: Failed to write file to disk
-uploader.error: Cannot upload file
+uploader.error: Cannot upload file. %s.
 uploader.error.file-name: Invalid file name
 uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
 uploader.error.mime-type: File type not allowed
