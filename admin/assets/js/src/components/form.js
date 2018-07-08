@@ -26,6 +26,14 @@ Formwork.Form = function(form) {
     });
 
     function hasChanged() {
+        var $fileInputs = $form.find(':file');
+        if ($fileInputs.length > 0) {
+            for (var i = 0; i < $fileInputs.length; i++) {
+                if ($fileInputs[i].files.length > 0) {
+                    return true;
+                }
+            }
+        }
         return $form.serialize() != $form.data('original-data');
     }
 };
