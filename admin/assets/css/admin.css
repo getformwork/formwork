@@ -1601,6 +1601,14 @@ label {
   border-color: #3498da;
   box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3); }
 
+.image-picker-empty-state {
+  margin: 3rem auto 4rem;
+  text-align: center; }
+
+.image-picker-empty-state-icon {
+  color: #cacaca;
+  font-size: 2rem; }
+
 .login-modal-container {
   margin: 3rem 0.5rem;
   padding: 2rem;

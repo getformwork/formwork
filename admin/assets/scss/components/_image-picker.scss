@@ -40,3 +40,13 @@
     border-color: $color-accent;
     box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3);
 }
+
+.image-picker-empty-state {
+    margin: 3rem auto 4rem;
+    text-align: center;
+}
+
+.image-picker-empty-state-icon {
+    color: $color-gray;
+    font-size: 2rem;
+}

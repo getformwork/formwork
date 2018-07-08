@@ -35,7 +35,10 @@ modal.action.cancel: Cancel
 modal.action.continue: Continue
 modal.action.delete: Delete
 modal.action.save: Save
+modal.action.upload-file: Upload a File
 modal.images.title: Select an Image
+modal.images.no-images: There are no images here
+modal.images.no-images.upload: Please upload some images
 options.info: Info
 options.options: Options
 options.site: Site

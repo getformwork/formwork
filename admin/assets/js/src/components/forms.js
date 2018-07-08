@@ -68,17 +68,20 @@ Formwork.Forms = {
         $('.image-picker').each(function() {
             var $this = $(this);
             var options = $this.children('option');
-            var container = $('<div>', {class: 'image-picker-thumbnails'});
-            for (var i = 0; i < options.length; i++) {
-                $('<div>', {
-                    class: 'image-picker-thumbnail',
-                    'data-value': options[i].value,
-                    'data-text': options[i].text
-                }).css({
-                    'background-image': 'url(' + options[i].value + ')'
-                }).appendTo(container);
+            if (options.length > 0) {
+                var container = $('<div>', {class: 'image-picker-thumbnails'});
+                for (var i = 0; i < options.length; i++) {
+                    $('<div>', {
+                        class: 'image-picker-thumbnail',
+                        'data-value': options[i].value,
+                        'data-text': options[i].text
+                    }).css({
+                        'background-image': 'url(' + options[i].value + ')'
+                    }).appendTo(container);
+                }
+                $this.before(container);
+                $('.image-picker-empty-state').hide();
             }
-            $this.before(container);
             $this.hide();
         });
 
@@ -92,6 +95,11 @@ Formwork.Forms = {
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
             $this.parent().siblings('.image-input').val($this.data('value'));
+        });
+
+        $('.image-picker-upload').click(function() {
+            var $target = $('#' + $(this).data('upload-target'));
+            $target.click();
         });
 
         $('.editor-textarea').each(function() {
