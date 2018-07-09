@@ -26,7 +26,8 @@
 </head>
 <body>
     <button class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
-    <div class="title-bar"><?= $this->label('admin.panel') ?>
+    <div class="title-bar">
+        <span class="panel-title"><?= $this->label('admin.panel') ?></span>
         <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
     </div>
     <div class="sidebar show-from-s">
