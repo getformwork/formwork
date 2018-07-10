@@ -2,7 +2,7 @@ title: Blog
 pages:
     - post
     - blog
-reverse: true
+reverse-children: true
 sortable-children: false
 fields:
     posts-per-page:

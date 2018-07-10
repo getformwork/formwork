@@ -1,10 +1,10 @@
-            <ul class="pages-list <?= $class ?>" data-sortable="<?= $sortable ?>" <?php if ($parent): ?>data-parent="<?= $parent ?>"<?php endif; ?>>
+            <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $sortable ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
                 $routable = $page->published() && $page->routable();
                 $date = date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $page->lastModifiedTime());
 ?>
-                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?><?php if (!$page->sortable()): ?> not-sortable<?php endif; ?>">
+                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?>" <?php if (!$page->sortable()): ?>data-sortable="false"<?php endif; ?>>
                     <div class="pages-item">
                         <div class="pages-item-cell page-details">
                             <div class="page-title">
@@ -40,14 +40,15 @@
 <?php
                     if ($subpages && $page->hasChildren()):
                         $scheme = $page->template()->scheme();
-                        $sortable = $scheme->get('sortable-children', true);
+                        $reverseChildren = $page->get('reverse-children', $scheme->get('reverse-children', false));
+                        $sortableChildren = $page->get('sortable-children', $scheme->get('sortable-children', true));
 
                         $this->view('pages.list', array(
-                            'pages' => $scheme->get('reverse') ? $page->children()->reverse() : $page->children(),
+                            'pages' =>  $reverseChildren ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
                             'class' => 'pages-children',
-                            'parent' => $sortable ? $page->slug() : null,
-                            'sortable' => 'false'
+                            'parent' => $sortableChildren ? $page->slug() : null,
+                            'sortable' => $sortableChildren ? 'true' : 'false'
                         ));
 
                     endif;

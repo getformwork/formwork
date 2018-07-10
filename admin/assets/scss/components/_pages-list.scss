@@ -172,6 +172,6 @@
     background-color: #fff;
 }
 
-.dragging .not-sortable .pages-item:hover {
+.dragging [data-sortable=false] .pages-item:hover {
     background-color: transparent;
 }
