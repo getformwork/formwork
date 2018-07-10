@@ -528,10 +528,10 @@ Formwork.Pages = {
         $('.pages-list').each(function() {
             var $this = $(this);
 
-            if ($this.data('sortable') === false) return;
+            if ($this.data('sortable-children') === false) return;
 
             var sortable = Sortable.create(this, {
-                filter: '.not-sortable',
+                filter: '[data-sortable=false]',
                 forceFallback: true,
                 onStart: function(event) {
                     $(event.item).closest('.pages-list').addClass('dragging');
@@ -540,7 +540,7 @@ Formwork.Pages = {
                     .addClass('toggle-collapsed').css('opacity', '0.5');
                 },
                 onMove: function(event) {
-                    if ($(event.related).hasClass('not-sortable')) return false;
+                    if ($(event.related).data('sortable') === false) return false;
                     $('.pages-children', event.related).hide();
                 },
                 onEnd: function (event) {
