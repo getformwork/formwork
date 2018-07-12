@@ -1,14 +1,16 @@
 <?php
 
 namespace Formwork\Admin\Controllers;
+
 use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 
-class Dashboard extends AbstractController {
-
-    public function run() {
+class Dashboard extends AbstractController
+{
+    public function run()
+    {
         Admin::instance()->ensureLogin();
 
         $site = Formwork::instance()->site();
@@ -56,5 +58,4 @@ class Dashboard extends AbstractController {
             'csrfToken' => $csrfToken
         ));
     }
-
 }

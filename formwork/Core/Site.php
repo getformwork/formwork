@@ -1,26 +1,21 @@
 <?php
 
 namespace Formwork\Core;
+
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
-class Site extends AbstractPage {
-
+class Site extends AbstractPage
+{
     public static $storage;
 
     protected $templates;
 
     protected $templatesPath;
 
-    public function defaults() {
-        return array(
-            'lang'  => 'en',
-            'title' => 'Formwork'
-        );
-    }
-
-    public function __construct($data) {
+    public function __construct($data)
+    {
         $this->path = Formwork::instance()->option('content.path');
         $this->templatesPath = Formwork::instance()->option('templates.path');
         $this->uri = HTTPRequest::root();
@@ -28,48 +23,56 @@ class Site extends AbstractPage {
         $this->loadTemplates();
     }
 
-    protected function loadTemplates() {
-        foreach (FileSystem::list($this->templatesPath) as $item) {
-            $path = $this->templatesPath . $item;
-            if (FileSystem::isFile($path)) {
-                $templates[FileSystem::name($item)] = $path;
-            }
-        }
-        $this->templates = $templates;
+    public function defaults()
+    {
+        return array(
+            'lang'  => 'en',
+            'title' => 'Formwork'
+        );
     }
 
-    public function templates() {
+    public function templates()
+    {
         return array_keys($this->templates);
     }
 
-    public function hasTemplate($template) {
+    public function hasTemplate($template)
+    {
         return in_array($template, $this->templates());
     }
 
-    public function modifiedSince($time) {
+    public function modifiedSince($time)
+    {
         return FileSystem::directoryModifiedSince($this->path, $time);
     }
 
-    public function parent() {
+    public function parent()
+    {
         return null;
     }
 
-    public function pages() {
+    public function pages()
+    {
         return $this->children();
     }
 
-    public function hasPages() {
+    public function hasPages()
+    {
         return !$this->children()->empty();
     }
 
-    public function alias($uri) {
+    public function alias($uri)
+    {
         if ($this->has('aliases')) {
             $uri = trim($uri, '/');
-            if (isset($this->data['aliases'][$uri])) return $this->data['aliases'][$uri];
+            if (isset($this->data['aliases'][$uri])) {
+                return $this->data['aliases'][$uri];
+            }
         }
     }
 
-    public function errorPage($render = false) {
+    public function errorPage($render = false)
+    {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
         if ($render) {
             Header::status(404);
@@ -79,28 +82,31 @@ class Site extends AbstractPage {
         return $errorPage;
     }
 
-    public function isSite() {
+    public function isSite()
+    {
         return true;
     }
 
-    public function isIndexPage() {
+    public function isIndexPage()
+    {
         return false;
     }
 
-    public function isErrorPage() {
+    public function isErrorPage()
+    {
         return false;
     }
 
-    public function isDeletable() {
+    public function isDeletable()
+    {
         return false;
     }
 
-    public function __toString() {
-        return 'site';
-    }
-
-    public function findPage($page) {
-        if ($page == '/') return $this->findPage(Formwork::instance()->option('pages.index'));
+    public function findPage($page)
+    {
+        if ($page == '/') {
+            return $this->findPage(Formwork::instance()->option('pages.index'));
+        }
 
         $components = explode('/', trim($page, '/'));
         $path = Formwork::instance()->option('content.path');
@@ -114,7 +120,9 @@ class Site extends AbstractPage {
                     break;
                 }
             }
-            if (!$found) return null;
+            if (!$found) {
+                return null;
+            }
         }
 
         if (isset(static::$storage[$path])) {
@@ -127,4 +135,19 @@ class Site extends AbstractPage {
         return !$page->empty() ? $page : null;
     }
 
+    protected function loadTemplates()
+    {
+        foreach (FileSystem::list($this->templatesPath) as $item) {
+            $path = $this->templatesPath . $item;
+            if (FileSystem::isFile($path)) {
+                $templates[FileSystem::name($item)] = $path;
+            }
+        }
+        $this->templates = $templates;
+    }
+
+    public function __toString()
+    {
+        return 'site';
+    }
 }

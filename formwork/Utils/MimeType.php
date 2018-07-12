@@ -2,8 +2,8 @@
 
 namespace Formwork\Utils;
 
-class MimeType {
-
+class MimeType
+{
     protected static $data = array(
         'js'       => 'application/javascript',
         'doc'      => 'application/msword',
@@ -70,17 +70,20 @@ class MimeType {
         'avi'      => 'video/x-msvideo'
     );
 
-    public static function fromExtension($extension) {
+    public static function fromExtension($extension)
+    {
         $extension = ltrim($extension, '.');
         return isset(static::$data[$extension]) ? static::$data[$extension] : null;
     }
 
-    public static function toExtension($mimeType) {
+    public static function toExtension($mimeType)
+    {
         $results = array();
-        foreach(static::$data as $ext => $mime) {
-            if ($mime == $mimeType) $results[] = $ext;
+        foreach (static::$data as $ext => $mime) {
+            if ($mime == $mimeType) {
+                $results[] = $ext;
+            }
         }
         return count($results) < 2 ? array_shift($results) : $results;
     }
-
 }

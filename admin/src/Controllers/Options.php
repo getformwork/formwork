@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Admin\Controllers;
+
 use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Fields\Validator;
@@ -13,14 +14,16 @@ use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Spyc;
 
-class Options extends AbstractController {
-
-    public function run(RouteParams $params) {
+class Options extends AbstractController
+{
+    public function run(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $this->redirect('/options/system/', 302, true);
     }
 
-    public function system(RouteParams $params) {
+    public function system(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
 
         $fields = new Fields(Spyc::YAMLLoad(SCHEMES_PATH . 'system.yml'));
@@ -57,7 +60,8 @@ class Options extends AbstractController {
         ));
     }
 
-    public function site(RouteParams $params) {
+    public function site(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $fields = new Fields(Spyc::YAMLLoad(SCHEMES_PATH . 'site.yml'));
 
@@ -67,7 +71,9 @@ class Options extends AbstractController {
             $differ = $this->updateOptions('site', $fields->validate($data), $options, array());
 
             // Touch content folder to invalidate cache
-            if ($differ) FileSystem::touch(Formwork::instance()->option('content.path'));
+            if ($differ) {
+                FileSystem::touch(Formwork::instance()->option('content.path'));
+            }
 
             $this->notify($this->label('options.updated'), 'success');
             $this->redirect('/options/site/', 302, true);
@@ -96,7 +102,8 @@ class Options extends AbstractController {
         ));
     }
 
-    public function info(RouteParams $params) {
+    public function info(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $dependencies = $this->getDependencies();
 
@@ -155,7 +162,8 @@ class Options extends AbstractController {
         ));
     }
 
-    protected function updateOptions($type, Fields $fields, $options, $defaults) {
+    protected function updateOptions($type, Fields $fields, $options, $defaults)
+    {
         // Fields to ignore
         $ignore = array('column', 'header', 'row', 'rows');
 
@@ -166,8 +174,12 @@ class Options extends AbstractController {
 
         // Update options with new values
         foreach ($fields as $field) {
-            if (in_array($field->type(), $ignore)) continue;
-            if ($field->get('required') && $field->empty()) continue;
+            if (in_array($field->type(), $ignore)) {
+                continue;
+            }
+            if ($field->get('required') && $field->empty()) {
+                continue;
+            }
             $options[$field->name()] = $field->value();
         }
 
@@ -189,7 +201,8 @@ class Options extends AbstractController {
         return false;
     }
 
-    protected function getDependencies() {
+    protected function getDependencies()
+    {
         $dependencies = array();
         if (FileSystem::exists(ROOT_PATH . 'composer.lock')) {
             $composerLock = json_decode(FileSystem::read(ROOT_PATH . 'composer.lock'), true);
@@ -199,5 +212,4 @@ class Options extends AbstractController {
         }
         return $dependencies;
     }
-
 }

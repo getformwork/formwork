@@ -12,7 +12,7 @@
                 <a class="menu-header" href="<?= $site->uri() ?>"><?= $site->title() ?></a>
                 <div class="menu-list">
 <?php
-                    foreach($site->children()->filter('visible') as $page):
+                    foreach ($site->children()->filter('visible') as $page):
 ?>
                     <a class="menu-item<?php if ($page->current()): ?> active<?php endif; ?>" href="<?= $page->uri() ?>"><?= $page->get('menu', $page->title()) ?></a>
 <?php
