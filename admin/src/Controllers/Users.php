@@ -178,7 +178,7 @@ class Users extends AbstractController
         ));
     }
 
-    protected function deleteAvatar($user)
+    protected function deleteAvatar(User $user)
     {
         $avatar = $user->avatar()->path();
         if (FileSystem::exists($avatar)) {
