@@ -2,8 +2,8 @@
 
 namespace Formwork\Utils;
 
-class Header {
-
+class Header
+{
     public static $statuses = array(
         // Informational
         '100' => 'Continue',
@@ -57,24 +57,34 @@ class Header {
         '505' => 'HTTP Version Not Supported'
     );
 
-    public static function status($code, $send = true, $exit = false) {
-        if (!isset(static::$statuses[$code])) throw new Exception;
+    public static function status($code, $send = true, $exit = false)
+    {
+        if (!isset(static::$statuses[$code])) {
+            throw new Exception();
+        }
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . static::$statuses[$code];
-        if (!$send) return $status;
+        if (!$send) {
+            return $status;
+        }
         header($status);
-        if ($exit) exit;
+        if ($exit) {
+            exit;
+        }
     }
 
-    public static function send($fieldName, $fieldValue) {
+    public static function send($fieldName, $fieldValue)
+    {
         header($fieldName . ': ' . trim($fieldValue));
     }
 
-    public static function contentType($mimeType) {
+    public static function contentType($mimeType)
+    {
         static::send('Content-Type', $mimeType);
     }
 
-    public static function file($file, $download = false) {
+    public static function file($file, $download = false)
+    {
         FileSystem::assert($file);
         $mimeType = FileSystem::mimeType($file);
         static::contentType($mimeType);
@@ -86,17 +96,22 @@ class Header {
         exit;
     }
 
-    public static function download($file) {
+    public static function download($file)
+    {
         static::file($file, true);
     }
 
-    public static function notFound() {
+    public static function notFound()
+    {
         static::status(404);
     }
 
-    public static function redirect($uri, $code = 302, $exit = false) {
+    public static function redirect($uri, $code = 302, $exit = false)
+    {
         static::status($code);
         static::send('Location', $uri);
-        if ($exit) exit;
+        if ($exit) {
+            exit;
+        }
     }
 }

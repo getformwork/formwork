@@ -1,20 +1,24 @@
 <?php
 
 namespace Formwork\Admin\Fields;
+
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use DateTime;
 
-class Validator {
-
+class Validator
+{
     protected static $ignore = array('column', 'header', 'row', 'rows');
 
-    public static function validate(Fields $fields, DataGetter $data) {
+    public static function validate(Fields $fields, DataGetter $data)
+    {
         foreach ($fields as $field) {
             if ($field->has('fields')) {
                 $field->get('fields')->validate($data);
             }
-            if (in_array($field->type(), static::$ignore)) continue;
+            if (in_array($field->type(), static::$ignore)) {
+                continue;
+            }
             $method = 'validate' . ucfirst(strtolower($field->type()));
             if (method_exists(__CLASS__, $method)) {
                 $value = static::$method($data->get($field->name()), $field);
@@ -25,11 +29,13 @@ class Validator {
         }
     }
 
-    public static function validateCheckbox($value) {
+    public static function validateCheckbox($value)
+    {
         return empty($value) ? false : true;
     }
 
-    public static function validateDate($value) {
+    public static function validateDate($value)
+    {
         if (!empty($value)) {
             $format = Formwork::instance()->option('date.format');
             $date = date_create_from_format($format, $value);
@@ -40,7 +46,8 @@ class Validator {
         return $value;
     }
 
-    public static function validateNumber($value, &$field) {
+    public static function validateNumber($value, &$field)
+    {
         $number = static::__parse($value);
         if (!is_null($value)) {
             if ($field->has('min')) {
@@ -53,11 +60,13 @@ class Validator {
         return $number;
     }
 
-    public static function validateSelect($value) {
+    public static function validateSelect($value)
+    {
         return static::__parse($value);
     }
 
-    public static function validateTags($value, &$field) {
+    public static function validateTags($value, &$field)
+    {
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {
             $pattern = $field->get('pattern');
@@ -68,16 +77,21 @@ class Validator {
         return $tags;
     }
 
-    private static function __parse($value) {
+    private static function __parse($value)
+    {
         if (is_numeric($value)) {
-            if ($value == (int) $value) return (int) $value;
-            if ($value == (float) $value) return (float) $value;
+            if ($value == (int) $value) {
+                return (int) $value;
+            }
+            if ($value == (float) $value) {
+                return (float) $value;
+            }
         }
         return $value;
     }
 
-    private static function __regex($value, $regex) {
+    private static function __regex($value, $regex)
+    {
         return (bool) @preg_match('/' . $regex . '/', $value);
     }
-
 }

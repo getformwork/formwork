@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Core;
+
 use Formwork\Cache\Cache;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
@@ -11,8 +12,8 @@ use Formwork\Utils\Uri;
 use Exception;
 use Spyc;
 
-class Formwork {
-
+class Formwork
+{
     const VERSION = '0.6.9';
 
     protected static $instance;
@@ -29,34 +30,11 @@ class Formwork {
 
     protected $resource;
 
-    public static function instance() {
-        if (!is_null(static::$instance)) return static::$instance;
-        return static::$instance = new static;
-    }
-
-    public function defaults() {
-        return array(
-            'date.format'              => 'm/d/Y',
-            'date.hour_format'         => 'h:i A',
-            'date.timezone'            => 'UTC',
-            'date.week_starts'         => 0,
-            'content.path'             => ROOT_PATH . 'content' . DS,
-            'content.extension'        => '.md',
-            'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
-            'templates.path'           => ROOT_PATH . 'templates' . DS,
-            'templates.extension'      => '.php',
-            'pages.index'              => 'index',
-            'pages.error'              => '404',
-            'cache.enabled'            => false,
-            'cache.path'               => ROOT_PATH . 'cache' . DS,
-            'cache.time'               => 604800,
-            'admin.enabled'            => true,
-            'admin.lang'               => 'en'
-        );
-    }
-
-    public function __construct() {
-        if (!is_null(static::$instance)) throw new Exception('Formwork class already instantiated');
+    public function __construct()
+    {
+        if (!is_null(static::$instance)) {
+            throw new Exception('Formwork class already instantiated');
+        }
         static::$instance = $this;
 
         FileSystem::assert(CONFIG_PATH . 'system.yml');
@@ -78,8 +56,38 @@ class Formwork {
         }
     }
 
-    public function run() {
+    public static function instance()
+    {
+        if (!is_null(static::$instance)) {
+            return static::$instance;
+        }
+        return static::$instance = new static();
+    }
 
+    public function defaults()
+    {
+        return array(
+            'date.format'              => 'm/d/Y',
+            'date.hour_format'         => 'h:i A',
+            'date.timezone'            => 'UTC',
+            'date.week_starts'         => 0,
+            'content.path'             => ROOT_PATH . 'content' . DS,
+            'content.extension'        => '.md',
+            'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
+            'templates.path'           => ROOT_PATH . 'templates' . DS,
+            'templates.extension'      => '.php',
+            'pages.index'              => 'index',
+            'pages.error'              => '404',
+            'cache.enabled'            => false,
+            'cache.path'               => ROOT_PATH . 'cache' . DS,
+            'cache.time'               => 604800,
+            'admin.enabled'            => true,
+            'admin.lang'               => 'en'
+        );
+    }
+
+    public function run()
+    {
         if ($this->option('cache.enabled') && $data = $this->cache->fetch($this->cacheKey)) {
             echo $data;
             return;
@@ -100,10 +108,15 @@ class Formwork {
                 $this->cache->save($this->cacheKey, $data);
             }
         }
-
     }
 
-    private function defaultRoute() {
+    public function option($option)
+    {
+        return array_key_exists($option, $this->options) ? $this->options[$option] : null;
+    }
+
+    private function defaultRoute()
+    {
         return function (RouteParams $params) {
             $path = $params->get('page', $this->option('pages.index'));
 
@@ -112,8 +125,12 @@ class Formwork {
             }
 
             if ($page = $this->site->findPage($path)) {
-                if ($params->get('paginationPage') == 1) Header::redirect($page->uri(), 301, true);
-                if ($page->routable() && $page->published()) return $page;
+                if ($params->get('paginationPage') == 1) {
+                    Header::redirect($page->uri(), 301, true);
+                }
+                if ($page->routable() && $page->published()) {
+                    return $page;
+                }
             } else {
                 $filename = FileSystem::basename($path);
                 $upperLevel = FileSystem::dirname($path);
@@ -128,13 +145,11 @@ class Formwork {
         };
     }
 
-    public function option($option) {
-        return array_key_exists($option, $this->options) ? $this->options[$option] : null;
-    }
-
-    public function __call($name, $arguments) {
-        if (property_exists($this, $name)) return $this->$name;
+    public function __call($name, $arguments)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
         throw new Exception('Invalid method');
     }
-
 }

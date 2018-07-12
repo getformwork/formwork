@@ -1,11 +1,12 @@
 <?php
 
 namespace Formwork\Core;
+
 use Formwork\Utils\Uri;
 use Formwork\Utils\HTTPRequest;
 
-class Pagination {
-
+class Pagination
+{
     protected $count = 0;
 
     protected $length = 0;
@@ -16,7 +17,8 @@ class Pagination {
 
     protected $currentPage = 1;
 
-    public function __construct($count, $length) {
+    public function __construct($count, $length)
+    {
         $this->count = $count;
         $this->length = $length;
         $this->pages = $count > 0 ? (int) ceil($count / $length) : 1;
@@ -27,62 +29,78 @@ class Pagination {
         }
     }
 
-    public function currentPage() {
+    public function currentPage()
+    {
         return $this->currentPage;
     }
 
-    public function length() {
+    public function length()
+    {
         return $this->length;
     }
 
-    public function offset() {
+    public function offset()
+    {
         return ($this->currentPage - 1) * $this->length;
     }
 
-    public function hasPage($number) {
-        return ((int) $number > 1 && (int) $number <= $this->pages);
+    public function hasPage($number)
+    {
+        return (int) $number > 1 && (int) $number <= $this->pages;
     }
 
-    public function firstPage() {
-        return ($this->currentPage == 1);
+    public function firstPage()
+    {
+        return $this->currentPage == 1;
     }
 
-    public function lastPage() {
-        return ($this->currentPage == $this->pages);
+    public function lastPage()
+    {
+        return $this->currentPage == $this->pages;
     }
 
-    public function hasPages() {
+    public function hasPages()
+    {
         return $this->pages > 1;
     }
 
-    public function hasPreviousPage() {
+    public function hasPreviousPage()
+    {
         return !$this->firstPage();
     }
 
-    public function hasNextPage() {
+    public function hasNextPage()
+    {
         return !$this->lastPage();
     }
 
-    public function previousPage() {
+    public function previousPage()
+    {
         $previous = $this->currentPage - 1;
-        return ($previous > 0 ? $previous : false);
+        return $previous > 0 ? $previous : false;
     }
 
-    public function nextPage() {
+    public function nextPage()
+    {
         $next = $this->currentPage + 1;
-        return ($next > $this->pages ? false : $next);
+        return $next > $this->pages ? false : $next;
     }
 
-    public function nextPageUri() {
+    public function nextPageUri()
+    {
         return Uri::make(array('path' => $this->baseUri . 'page/' . $this->nextPage()));
     }
 
-    public function previousPageUri() {
-        if ($this->previousPage() == 1) return Uri::make(array('path' => $this->baseUri));
+    public function previousPageUri()
+    {
+        if ($this->previousPage() == 1) {
+            return Uri::make(array('path' => $this->baseUri));
+        }
         return Uri::make(array('path' => $this->baseUri . 'page/' . $this->previousPage()));
     }
 
-    public function __debugInfo() {
+    public function __debugInfo()
+    {
         return array(
             'count' => $this->count,
             'length' => $this->length,
@@ -91,5 +109,4 @@ class Pagination {
             'previousPage' => $this->previousPageUri()
         );
     }
-
 }
