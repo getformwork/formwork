@@ -47,7 +47,7 @@ class Uploader
                 if (is_null($name) || $count > 1) {
                     $name = $file['name'];
                 }
-                $this->__move($file['tmp_name'], $this->destination, $name);
+                $this->move($file['tmp_name'], $this->destination, $name);
             } else {
                 throw new Exception($this->errorMessage($file['error']));
             }
@@ -90,7 +90,7 @@ class Uploader
         }
     }
 
-    private function __move($source, $destination, $filename)
+    private function move($source, $destination, $filename)
     {
         $mimeType = FileSystem::mimeType($source);
 

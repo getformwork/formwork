@@ -48,7 +48,7 @@ class Validator
 
     public static function validateNumber($value, &$field)
     {
-        $number = static::__parse($value);
+        $number = static::parse($value);
         if (!is_null($value)) {
             if ($field->has('min')) {
                 $number = max($number, (int) $field->get('min'));
@@ -62,7 +62,7 @@ class Validator
 
     public static function validateSelect($value)
     {
-        return static::__parse($value);
+        return static::parse($value);
     }
 
     public static function validateTags($value, &$field)
@@ -71,13 +71,13 @@ class Validator
         if ($field->has('pattern')) {
             $pattern = $field->get('pattern');
             $tags = array_filter($tags, function ($item) use ($pattern) {
-                return static::__regex($item, $pattern);
+                return static::regex($item, $pattern);
             });
         }
         return $tags;
     }
 
-    private static function __parse($value)
+    private static function parse($value)
     {
         if (is_numeric($value)) {
             if ($value == (int) $value) {
@@ -90,7 +90,7 @@ class Validator
         return $value;
     }
 
-    private static function __regex($value, $regex)
+    private static function regex($value, $regex)
     {
         return (bool) @preg_match('/' . $regex . '/', $value);
     }

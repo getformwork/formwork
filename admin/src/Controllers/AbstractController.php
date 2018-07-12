@@ -118,7 +118,7 @@ abstract class AbstractController
     {
         $file = ADMIN_PATH . 'views' . DS . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
-        $output = $this->__renderToString($file, $data);
+        $output = $this->renderToString($file, $data);
         if ($render) {
             echo $output;
         } else {
@@ -126,7 +126,7 @@ abstract class AbstractController
         }
     }
 
-    private function __renderToString($file, $data)
+    private function renderToString($file, $data)
     {
         ob_start();
         extract($data);
@@ -134,8 +134,8 @@ abstract class AbstractController
         return ob_get_clean();
     }
 
-    private function __render($file, $data)
+    private function render($file, $data)
     {
-        echo $this->__renderToString($file, $data);
+        echo $this->renderToString($file, $data);
     }
 }
