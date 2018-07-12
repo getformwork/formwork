@@ -3,6 +3,7 @@
 namespace Formwork\Utils;
 
 use Formwork\Utils\MimeType;
+use RuntimeException;
 
 class FileSystem
 {
@@ -61,10 +62,10 @@ class FileSystem
     public static function assert($path, $value = true)
     {
         if ($value === true && !static::exists($path)) {
-            throw new \RuntimeException('File not found: ' . $path);
+            throw new RuntimeException('File not found: ' . $path);
         }
         if ($value === false && static::exists($path)) {
-            throw new \RuntimeException('File ' . $path . ' already exists!');
+            throw new RuntimeException('File ' . $path . ' already exists!');
         }
         return true;
     }
@@ -261,7 +262,7 @@ class FileSystem
         }
         static::assert($path);
         if (!static::isDirectory($path)) {
-            throw new \RuntimeException('Unable to list: ' . $path . '. Specified path is not a directory.');
+            throw new RuntimeException('Unable to list: ' . $path . '. Specified path is not a directory.');
         }
         $items = @scandir($path);
         if (!is_array($items)) {
@@ -301,7 +302,7 @@ class FileSystem
                 return @glob($pattern, $flags);
             }
             $context = static::normalize(func_get_args()[1]);
-            
+
             if (static::isDirectory($context)) {
                 if (func_num_args() == 2) {
                     return @glob($context . $pattern);
@@ -309,7 +310,7 @@ class FileSystem
                 $flags = func_get_args()[2];
                 return @glob($context . $pattern, $flags);
             }
-            throw new \RuntimeException('Invalid glob context');
+            throw new RuntimeException('Invalid glob context');
         }
     }
 
