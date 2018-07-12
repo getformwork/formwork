@@ -338,7 +338,7 @@ class Pages extends AbstractController
         return new Page($path);
     }
 
-    protected function updatePage($page, DataGetter $data)
+    protected function updatePage(Page $page, DataGetter $data)
     {
         // Load current page frontmatter
         $frontmatter = $page->frontmatter();
@@ -395,7 +395,7 @@ class Pages extends AbstractController
         return $page;
     }
 
-    protected function makePageNum($parent, $mode)
+    protected function makePageNum(Page $parent, $mode)
     {
         switch ($mode) {
             case 'date':
@@ -412,7 +412,7 @@ class Pages extends AbstractController
         return $num;
     }
 
-    protected function changePageId($page, $id)
+    protected function changePageId(Page $page, $id)
     {
         $directory = FileSystem::dirname($page->path());
         $destination = $directory . DS . $id . DS;
