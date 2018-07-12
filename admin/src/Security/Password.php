@@ -6,7 +6,7 @@ class Password
 {
     public static function hash($password)
     {
-        if (!static::__legacy()) {
+        if (!static::legacy()) {
             return password_hash($password, PASSWORD_DEFAULT);
         }
 
@@ -22,7 +22,7 @@ class Password
 
     public function verify($password, $hash)
     {
-        if (!static::__legacy()) {
+        if (!static::legacy()) {
             return password_verify($password, $hash);
         }
 
@@ -30,7 +30,7 @@ class Password
         return crypt($password, $hash) === $hash;
     }
 
-    private static function __legacy()
+    private static function legacy()
     {
         return !function_exists('password_hash') || !function_exists('password_verify');
     }
