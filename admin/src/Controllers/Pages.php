@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Admin\Controllers;
+
 use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Security\CSRFToken;
@@ -17,8 +18,8 @@ use Formwork\Utils\Uri;
 use Exception;
 use Spyc;
 
-class Pages extends AbstractController {
-
+class Pages extends AbstractController
+{
     const DATE_NUM_FORMAT = 'Ymd';
 
     protected $site;
@@ -27,12 +28,14 @@ class Pages extends AbstractController {
 
     protected $fields;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->site = Formwork::instance()->site();
     }
 
-    public function list() {
+    public function list()
+    {
         Admin::instance()->ensureLogin();
         $list = $this->view(
             'pages.list',
@@ -81,7 +84,8 @@ class Pages extends AbstractController {
         ));
     }
 
-    public function new(RouteParams $params) {
+    public function new(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $this->data = new DataGetter(HTTPRequest::postData());
 
@@ -121,7 +125,8 @@ class Pages extends AbstractController {
         }
     }
 
-    public function edit(RouteParams $params) {
+    public function edit(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
 
         $this->page = $this->site->findPage($params->get('page'));
@@ -205,7 +210,8 @@ class Pages extends AbstractController {
         $this->view('admin', $adminData);
     }
 
-    public function reorder() {
+    public function reorder()
+    {
         Admin::instance()->ensureLogin();
 
         $this->data = new DataGetter(HTTPRequest::postData());
@@ -229,13 +235,17 @@ class Pages extends AbstractController {
 
         $from = max(0, $this->data->get('from'));
         $to = max(0, $this->data->get('to'));
-        if ($to == $from) return;
+        if ($to == $from) {
+            return;
+        }
 
         array_splice($pages, $to, 0, array_splice($pages, $from, 1));
 
         foreach ($pages as $i => $page) {
             $id = $page->id();
-            if (is_null($id)) continue;
+            if (is_null($id)) {
+                continue;
+            }
             $newId = preg_replace('/^(\d+)-/', $i + 1 . '-', $id);
             if ($newId != $id) {
                 $this->changePageId($page, $newId);
@@ -245,18 +255,22 @@ class Pages extends AbstractController {
         JSONResponse::success($this->label('pages.page.moved'))->send();
     }
 
-    public function delete(RouteParams $params) {
+    public function delete(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         try {
             $page = $this->site->findPage($params->get('page'));
-            if (!$page) throw new Exception($this->label('pages.page.not-found'));
-            if (!$page->isDeletable()) throw new Exception($this->label('pages.page.cannot-delete.not-deletable'));
+            if (!$page) {
+                throw new Exception($this->label('pages.page.not-found'));
+            }
+            if (!$page->isDeletable()) {
+                throw new Exception($this->label('pages.page.cannot-delete.not-deletable'));
+            }
 
             FileSystem::delete($page->path(), true);
 
             $this->notify($this->label('pages.page.deleted'), 'success');
             $this->redirect('/pages/');
-
         } catch (Exception $e) {
             $this->notify($this->label('pages.page.cannot-delete', $e->getMessage()), 'error');
             if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() != HTTPRequest::uri()) {
@@ -267,18 +281,20 @@ class Pages extends AbstractController {
         }
     }
 
-    public function uploadFile(RouteParams $params) {
+    public function uploadFile(RouteParams $params)
+    {
         if (HTTPRequest::hasFiles()) {
             try {
                 $page = $this->site->findPage($params->get('page'));
-                if (!$page) throw new Exception($this->label('pages.page.not-found'));
+                if (!$page) {
+                    throw new Exception($this->label('pages.page.not-found'));
+                }
 
                 $uploader = new Uploader($page->path());
                 $uploader->upload();
 
                 $this->notify($this->label('uploader.uploaded'), 'success');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
-
             } catch (Exception $e) {
                 $this->notify($this->label('uploader.error', $e->getMessage()), 'error');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
@@ -286,25 +302,30 @@ class Pages extends AbstractController {
         }
     }
 
-    public function deleteFile(RouteParams $params) {
+    public function deleteFile(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         try {
             $page = $this->site->findPage($params->get('page'));
-            if (!$page) throw new Exception($this->label('pages.page.not-found'));
-            if (!$page->files()->has($params->get('filename'))) throw new Exception('Invalid file name');
+            if (!$page) {
+                throw new Exception($this->label('pages.page.not-found'));
+            }
+            if (!$page->files()->has($params->get('filename'))) {
+                throw new Exception('Invalid file name');
+            }
 
             FileSystem::delete($page->path() . $params->get('filename'));
 
             $this->notify($this->label('pages.page.file-deleted'), 'success');
             $this->redirect('/pages/' . $params->get('page') . '/edit/');
-
         } catch (Exception $e) {
             $this->notify($this->label('pages.page.cannot-delete-file', $e->getMessage()), 'error');
             $this->redirect('/pages/');
         }
     }
 
-    protected function createPage($path, $template, $title) {
+    protected function createPage($path, $template, $title)
+    {
         FileSystem::createDirectory($path);
         $filename = $template . Formwork::instance()->option('content.extension');
         FileSystem::createFile($path . $filename);
@@ -317,7 +338,8 @@ class Pages extends AbstractController {
         return new Page($path);
     }
 
-    protected function updatePage($page, DataGetter $data) {
+    protected function updatePage($page, DataGetter $data)
+    {
         // Load current page frontmatter
         $frontmatter = $page->frontmatter();
 
@@ -335,7 +357,7 @@ class Pages extends AbstractController {
             if ($empty || $default) {
                 unset($frontmatter[$field->name()]);
                 continue;
-            };
+            }
 
             // Set frontmatter value
             $frontmatter[$field->name()] = $field->value();
@@ -373,8 +395,9 @@ class Pages extends AbstractController {
         return $page;
     }
 
-    protected function makePageNum($parent, $mode) {
-        switch($mode) {
+    protected function makePageNum($parent, $mode)
+    {
+        switch ($mode) {
             case 'date':
                 $num = date(self::DATE_NUM_FORMAT);
             break;
@@ -389,24 +412,25 @@ class Pages extends AbstractController {
         return $num;
     }
 
-    protected function changePageId($page, $id) {
+    protected function changePageId($page, $id)
+    {
         $directory = FileSystem::dirname($page->path());
         $destination = $directory . DS . $id . DS;
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }
 
-    protected function field($fieldName, $render = true) {
+    protected function field($fieldName, $render = true)
+    {
         $field = $this->fields->get($fieldName);
         return parent::field($field, $render);
     }
 
-    protected function resolveParent($parent) {
+    protected function resolveParent($parent)
+    {
         if ($parent == '.') {
             return $this->site;
-        } else {
-            return $this->site->findPage($parent);
         }
+        return $this->site->findPage($parent);
     }
-
 }

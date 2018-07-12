@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Admin\Controllers;
+
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
@@ -14,9 +15,10 @@ use Formwork\Utils\HTTPRequest;
 use Exception;
 use Spyc;
 
-class Users extends AbstractController {
-
-    public function run(RouteParams $params) {
+class Users extends AbstractController
+{
+    public function run(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $content = $this->view(
             'users.index',
@@ -45,7 +47,8 @@ class Users extends AbstractController {
         ));
     }
 
-    public function new(RouteParams $params) {
+    public function new(RouteParams $params)
+    {
         $this->data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
@@ -77,14 +80,18 @@ class Users extends AbstractController {
 
         $this->notify($this->label('users.user.created'), 'success');
         $this->redirect('/users/', 302, true);
-
     }
 
-    public function delete(RouteParams $params) {
+    public function delete(RouteParams $params)
+    {
         try {
             $user = Admin::instance()->users()->get($params->get('user'));
-            if (!$user) throw new Exception($this->label('users.user.not-found'));
-            if ($user->logged()) throw new Exception($this->label('users.user.cannot-delete.logged'));
+            if (!$user) {
+                throw new Exception($this->label('users.user.not-found'));
+            }
+            if ($user->logged()) {
+                throw new Exception($this->label('users.user.cannot-delete.logged'));
+            }
             $this->deleteAvatar($user);
             FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
             $this->registry('lastAccess')->remove($params->get('user'));
@@ -96,7 +103,8 @@ class Users extends AbstractController {
         }
     }
 
-    public function profile(RouteParams $params) {
+    public function profile(RouteParams $params)
+    {
         Admin::instance()->ensureLogin();
         $user = Admin::instance()->users()->get($params->get('user'));
 
@@ -118,7 +126,9 @@ class Users extends AbstractController {
             }
 
             foreach ($postData as $key => $value) {
-                if (!empty($value)) $data[$key] = $value;
+                if (!empty($value)) {
+                    $data[$key] = $value;
+                }
             }
 
             if (HTTPRequest::hasFiles()) {
@@ -166,12 +176,13 @@ class Users extends AbstractController {
             'content' => $content,
             'modals' => $modals
         ));
-
     }
 
-    protected function deleteAvatar($user) {
+    protected function deleteAvatar($user)
+    {
         $avatar = $user->avatar()->path();
-        if (FileSystem::exists($avatar)) FileSystem::delete($avatar);
+        if (FileSystem::exists($avatar)) {
+            FileSystem::delete($avatar);
+        }
     }
-
 }

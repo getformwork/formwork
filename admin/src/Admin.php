@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Admin;
+
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Language;
@@ -18,8 +19,8 @@ use Formwork\Utils\Uri;
 use Exception;
 use Spyc;
 
-class Admin {
-
+class Admin
+{
     public static $instance;
 
     protected static $languages;
@@ -28,13 +29,11 @@ class Admin {
 
     protected $users;
 
-    public static function instance() {
-        if (!is_null(static::$instance)) return static::$instance;
-        return static::$instance = new static;
-    }
-
-    public function __construct() {
-        if (!is_null(static::$instance)) throw new Exception('Admin class already instantiated');
+    public function __construct()
+    {
+        if (!is_null(static::$instance)) {
+            throw new Exception('Admin class already instantiated');
+        }
         static::$instance = $this;
 
         if (!Formwork::instance()->option('admin.enabled')) {
@@ -46,13 +45,26 @@ class Admin {
 
         $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
 
-        if (!FileSystem::exists($languageFile)) throw new Exception();
+        if (!FileSystem::exists($languageFile)) {
+            throw new Exception();
+        }
 
         Language::load($this->language(), Spyc::YAMLLoad($languageFile));
     }
 
-    public static function languages() {
-        if (!is_null(static::$languages)) return static::$languages;
+    public static function instance()
+    {
+        if (!is_null(static::$instance)) {
+            return static::$instance;
+        }
+        return static::$instance = new static();
+    }
+
+    public static function languages()
+    {
+        if (!is_null(static::$languages)) {
+            return static::$languages;
+        }
         foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
             $data = Spyc::YAMLLoad(LANGUAGES_PATH . $file);
             $code = FileSystem::name($file);
@@ -61,43 +73,51 @@ class Admin {
         return static::$languages;
     }
 
-    public function language() {
+    public function language()
+    {
         return Formwork::instance()->option('admin.lang');
     }
 
-    public function loggedUser() {
+    public function loggedUser()
+    {
         $username = Session::get('FORMWORK_USERNAME');
         return $this->users->get($username);
     }
 
-    public function isLoggedIn() {
+    public function isLoggedIn()
+    {
         return !is_null($user = Session::get('FORMWORK_USERNAME')) && $this->users->has($user);
     }
 
-    public function ensureLogin() {
+    public function ensureLogin()
+    {
         if (!$this->isLoggedIn()) {
             $this->redirect('/login/', 302, true);
         }
     }
 
-    public function uri($subpath) {
+    public function uri($subpath)
+    {
         return HTTPRequest::root() . ltrim($subpath, '/');
     }
 
-    public function redirect($uri, $code = 302, $exit = false) {
+    public function redirect($uri, $code = 302, $exit = false)
+    {
         Header::redirect($this->uri($uri), $code, $exit);
     }
 
-    public function registry($name) {
+    public function registry($name)
+    {
         return new Registry(LOGS_PATH . $name . '.json');
     }
 
-    public function log($name) {
+    public function log($name)
+    {
         return new Log(LOGS_PATH . $name . '.json');
     }
 
-    public function run() {
-
+    public function run()
+    {
         if (HTTPRequest::method() == 'POST') {
             try {
                 CSRFToken::validate();
@@ -204,11 +224,13 @@ class Admin {
         $this->router->add(
             'POST',
             '/users/new/',
-            array(new Controllers\Users(), 'new'));
+            array(new Controllers\Users(), 'new')
+        );
         $this->router->add(
             'POST',
             '/users/{user}/delete/',
-            array(new Controllers\Users(), 'delete'));
+            array(new Controllers\Users(), 'delete')
+        );
         $this->router->add(
             array('GET', 'POST'),
             '/users/{user}/profile/',
@@ -228,9 +250,11 @@ class Admin {
         }
     }
 
-    public function __call($name, $arguments) {
-        if (property_exists($this, $name)) return $this->$name;
+    public function __call($name, $arguments)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
         throw new Exception('Invalid method');
     }
-
 }

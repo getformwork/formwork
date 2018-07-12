@@ -8,8 +8,8 @@ use Formwork\Admin\Utils\Registry;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
 
-class Statistics {
-
+class Statistics
+{
     const DATE_FORMAT = 'Ymd';
     const CHART_LIMIT = 7;
 
@@ -39,23 +39,24 @@ class Statistics {
     protected $uniqueVisitsRegistry;
     protected $visitorsRegistry;
 
-    public function __construct() {
+    public function __construct()
+    {
         $base = LOGS_PATH . 'statistics' . DS;
 
-        if (!FileSystem::exists($base)) FileSystem::createDirectory($base);
+        if (!FileSystem::exists($base)) {
+            FileSystem::createDirectory($base);
+        }
 
         $this->visitsRegistry = new Registry($base . self::VISITS_FILENAME);
         $this->uniqueVisitsRegistry = new Registry($base . self::UNIQUE_VISITS_FILENAME);
         $this->visitorsRegistry = new Registry($base . self::VISITORS_FILENAME);
     }
 
-    protected function isBot() {
-        $regex = '/' . implode('|', $this->bots) . '/i';
-        return preg_match($regex, HTTPRequest::userAgent());
-    }
-
-    public function trackVisit() {
-        if ($this->isBot()) return;
+    public function trackVisit()
+    {
+        if ($this->isBot()) {
+            return;
+        }
 
         $date = date(static::DATE_FORMAT);
         $ip = IPAnonymizer::anonymize(HTTPRequest::ip());
@@ -74,7 +75,8 @@ class Statistics {
         $this->visitorsRegistry->save();
     }
 
-    public function getChartData() {
+    public function getChartData()
+    {
         $visits = $this->visitsRegistry->toArray();
         $uniqueVisits = $this->uniqueVisitsRegistry->toArray();
 
@@ -92,7 +94,7 @@ class Statistics {
         $visits = array_slice($visits, -$limit, null, true);
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
-        $label = function($day) {
+        $label = function ($day) {
             $time = strtotime($day);
             $month = Language::get('date.months.short')[date('n', $time) - 1];
             $weekday = Language::get('date.weekdays.short')[date('N', $time) % 7];
@@ -102,7 +104,7 @@ class Statistics {
 
         $labels = array_map($label, $days);
 
-        $interpolate = function($data) use ($days) {
+        $interpolate = function ($data) use ($days) {
             $output = array();
             foreach ($days as $day) {
                 $output[$day] = isset($data[$day]) ? $data[$day] : 0;
@@ -110,13 +112,18 @@ class Statistics {
             return $output;
         };
 
-        return (array(
+        return array(
             'labels' => $labels,
             'series' => array(
                 array_values($interpolate($visits)),
                 array_values($interpolate($uniqueVisits))
             )
-        ));
+        );
     }
 
+    protected function isBot()
+    {
+        $regex = '/' . implode('|', $this->bots) . '/i';
+        return preg_match($regex, HTTPRequest::userAgent());
+    }
 }

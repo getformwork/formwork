@@ -6,8 +6,8 @@ use Formwork\Utils\FileSystem;
 use Exception;
 use Spyc;
 
-class Language {
-
+class Language
+{
     protected static $language = 'en';
 
     protected static $data;
@@ -94,17 +94,22 @@ class Language {
         'zu' => array('name' => 'Zulu', 'native' => 'isiZulu', 'continents' => array('AF')),
     );
 
-    public static function load($language, $data) {
+    public static function load($language, $data)
+    {
         static::$language = $language;
         static::$data = $data;
     }
 
-    public static function language() {
+    public static function language()
+    {
         return static::$language;
     }
 
-    public static function get($key) {
-        if (!isset(static::$data[$key])) throw new Exception('Invalid string');
+    public static function get($key)
+    {
+        if (!isset(static::$data[$key])) {
+            throw new Exception('Invalid string');
+        }
         if (func_num_args() > 1) {
             $args = array_slice(func_get_args(), 1);
             return vsprintf(static::$data[$key], $args);
@@ -112,13 +117,15 @@ class Language {
         return static::$data[$key];
     }
 
-    public static function names($continent = null) {
+    public static function names($continent = null)
+    {
         $result = array();
         foreach (static::$codes as $code => $data) {
-            if (!is_null($continent) && count(array_intersect((array) $continent, $data['continents'])) < 1) continue;
+            if (!is_null($continent) && count(array_intersect((array) $continent, $data['continents'])) < 1) {
+                continue;
+            }
             $result[$code] = $data['native'] . ' (' . $code . ')';
         }
         return $result;
     }
-
 }

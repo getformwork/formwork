@@ -1,30 +1,35 @@
 <?php
 
 namespace Formwork\Core;
+
 use Formwork\Data\Collection;
 use Formwork\Utils\FileSystem;
 
-class PageCollection extends Collection {
-
+class PageCollection extends Collection
+{
     protected $pagination;
 
-    public function pagination() {
+    public function pagination()
+    {
         return $this->pagination;
     }
 
-    public function reverse() {
+    public function reverse()
+    {
         $pageCollection = clone $this;
         $pageCollection->items = array_reverse($pageCollection->items);
         return $pageCollection;
     }
 
-    public function slice($offset, $length = null) {
+    public function slice($offset, $length = null)
+    {
         $pageCollection = clone $this;
         $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
         return $pageCollection;
     }
 
-    public function remove(Page $element) {
+    public function remove(Page $element)
+    {
         $pageCollection = clone $this;
         foreach ($pageCollection->items as $key => $item) {
             if ($item->id() == $element->id()) {
@@ -34,14 +39,16 @@ class PageCollection extends Collection {
         return $pageCollection;
     }
 
-    public function paginate($length) {
+    public function paginate($length)
+    {
         $pagination = new Pagination($this->count(), $length);
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
         $pageCollection->pagination = $pagination;
         return $pageCollection;
     }
 
-    public function filter($property, $value = true, $process = null) {
+    public function filter($property, $value = true, $process = null)
+    {
         $pageCollection = clone $this;
 
         $pageCollection->items = array_filter($pageCollection->items, function ($item) use ($property, $value, $process) {
@@ -53,7 +60,9 @@ class PageCollection extends Collection {
                     $value = $process($value);
                 }
 
-                if (is_array($propertyValue)) return in_array($value, $propertyValue);
+                if (is_array($propertyValue)) {
+                    return in_array($value, $propertyValue);
+                }
                 return $propertyValue == $value;
             }
 
@@ -63,10 +72,13 @@ class PageCollection extends Collection {
         return $pageCollection;
     }
 
-    public function sort($property = 'id', $direction = SORT_ASC) {
+    public function sort($property = 'id', $direction = SORT_ASC)
+    {
         $pageCollection = clone $this;
 
-        if ($pageCollection->count() <= 1) return $pageCollection;
+        if ($pageCollection->count() <= 1) {
+            return $pageCollection;
+        }
 
         if ($direction == SORT_DESC || strtolower($direction) == 'desc' || $direction == -1) {
             $direction = -1;
@@ -81,9 +93,12 @@ class PageCollection extends Collection {
         return $pageCollection;
     }
 
-    public function search($query, $min = 4) {
+    public function search($query, $min = 4)
+    {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
-        if (strlen($query) < $min) return new PageCollection(array());
+        if (strlen($query) < $min) {
+            return new PageCollection(array());
+        }
 
         $keywords = explode(' ', $query);
         $keywords = array_diff($keywords, (array) Formwork::instance()->option('search.stopwords'));
@@ -115,13 +130,16 @@ class PageCollection extends Collection {
                 $score += ($queryMatches * 2 + min($keywordsMatches, 3)) * $scores[$key];
             }
 
-            if ($score > 0) $page->set('score', $score);
+            if ($score > 0) {
+                $page->set('score', $score);
+            }
         }
 
         return $pageCollection->filter('score')->sort('score', SORT_DESC);
     }
 
-    public static function fromPath($path, $recursive = false) {
+    public static function fromPath($path, $recursive = false)
+    {
         $path = FileSystem::normalize($path);
         $pages = array();
 
@@ -129,7 +147,6 @@ class PageCollection extends Collection {
             $pagePath = $path . $dir . DS;
 
             if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
-
                 if (isset(Site::$storage[$pagePath])) {
                     $page = Site::$storage[$pagePath];
                 } else {
@@ -137,7 +154,9 @@ class PageCollection extends Collection {
                     Site::$storage[$pagePath] = $page;
                 }
 
-                if (!$page->empty()) $pages[] = $page;
+                if (!$page->empty()) {
+                    $pages[] = $page;
+                }
 
                 if ($recursive) {
                     $pages = array_merge($pages, self::fromPath($pagePath, true)->toArray());
@@ -149,10 +168,10 @@ class PageCollection extends Collection {
         return $pages->sort();
     }
 
-    public function __debugInfo() {
+    public function __debugInfo()
+    {
         return array(
             'items' => $this->items
         );
     }
-
 }

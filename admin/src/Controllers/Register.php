@@ -1,6 +1,7 @@
 <?php
 
 namespace Formwork\Admin\Controllers;
+
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
@@ -10,9 +11,10 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Spyc;
 
-class Register extends AbstractController {
-
-    public function register() {
+class Register extends AbstractController
+{
+    public function register()
+    {
         CSRFToken::generate();
 
         switch (HTTPRequest::method()) {
@@ -51,5 +53,4 @@ class Register extends AbstractController {
                 break;
         }
     }
-
 }
