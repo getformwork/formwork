@@ -7,8 +7,8 @@ use Formwork\Utils\FileSystem;
 use Exception;
 use ZipArchive;
 
-class Updater {
-
+class Updater
+{
     const REPOSITORY = 'giuscris/formwork';
 
     protected $options;
@@ -30,7 +30,21 @@ class Updater {
 
     protected $upToDate;
 
-    public function defaults() {
+    public function __construct($options = array())
+    {
+        $this->options = array_merge($this->defaults(), $options);
+
+        if (FileSystem::exists($this->options['logFile'])) {
+            $this->data = array_merge($this->data, (array) json_decode(FileSystem::read($this->options['logFile']), true));
+        }
+
+        $this->context = stream_context_create(array(
+            'http' => array('user_agent' => 'PHP Formwork-Updater')
+        ));
+    }
+
+    public function defaults()
+    {
         return array(
             'time' => 3600,
             'force' => false,
@@ -48,55 +62,8 @@ class Updater {
         );
     }
 
-    public function __construct($options = array()) {
-        $this->options = array_merge($this->defaults(), $options);
-
-        if (FileSystem::exists($this->options['logFile'])) {
-            $this->data = array_merge($this->data, (array) json_decode(FileSystem::read($this->options['logFile']), true));
-        }
-
-        $this->context = stream_context_create(array(
-            'http' => array('user_agent' => 'PHP Formwork-Updater')
-        ));
-
-    }
-
-    protected function getRelease() {
-        if (!is_null($this->release)) return;
-
-        $uri = 'https://api.github.com/repos/' . static::REPOSITORY . '/releases/latest';
-        $data = json_decode(FileSystem::retrieve($uri, $this->context), true);
-
-        if (!$data) throw new Exception('Cannot retrieve release data');
-
-        $this->release = array(
-            'name' => $data['name'],
-            'tag'  => $data['tag_name'],
-            'date' => strtotime($data['published_at'])
-        );
-
-        $this->archiveUri = $data['zipball_url'];
-    }
-
-    protected function getHeaders() {
-        if (!is_null($this->headers)) return $this->headers;
-        $this->headers = get_headers($this->archiveUri, 1, $this->context);
-        return $this->headers;
-    }
-
-    protected function isCopiable($file) {
-        foreach ($this->options['ignore'] as $pattern) {
-            if (fnmatch($pattern, $file)) return false;
-        }
-        return true;
-    }
-
-    protected function save() {
-        FileSystem::write($this->options['logFile'], json_encode($this->data));
-    }
-
-    public function checkUpdates() {
-
+    public function checkUpdates()
+    {
         if (time() - $this->data['last-check'] < $this->options['time']) {
             return $this->data['up-to-date'];
         }
@@ -126,16 +93,21 @@ class Updater {
         return false;
     }
 
-    public function update() {
+    public function update()
+    {
         $this->checkUpdates();
 
-        if (!$this->options['force'] && $this->data['up-to-date']) return;
+        if (!$this->options['force'] && $this->data['up-to-date']) {
+            return;
+        }
 
         $this->getRelease();
 
         FileSystem::download($this->archiveUri, $this->options['tempFile'], true, $this->context);
 
-        if (!FileSystem::exists($this->options['tempFile'])) throw new Exception('Cannot update');
+        if (!FileSystem::exists($this->options['tempFile'])) {
+            throw new Exception('Cannot update');
+        }
 
         $zip = new ZipArchive();
         $zip->open($this->options['tempFile']);
@@ -171,4 +143,49 @@ class Updater {
         return true;
     }
 
+    protected function getRelease()
+    {
+        if (!is_null($this->release)) {
+            return;
+        }
+
+        $uri = 'https://api.github.com/repos/' . static::REPOSITORY . '/releases/latest';
+        $data = json_decode(FileSystem::retrieve($uri, $this->context), true);
+
+        if (!$data) {
+            throw new Exception('Cannot retrieve release data');
+        }
+
+        $this->release = array(
+            'name' => $data['name'],
+            'tag'  => $data['tag_name'],
+            'date' => strtotime($data['published_at'])
+        );
+
+        $this->archiveUri = $data['zipball_url'];
+    }
+
+    protected function getHeaders()
+    {
+        if (!is_null($this->headers)) {
+            return $this->headers;
+        }
+        $this->headers = get_headers($this->archiveUri, 1, $this->context);
+        return $this->headers;
+    }
+
+    protected function isCopiable($file)
+    {
+        foreach ($this->options['ignore'] as $pattern) {
+            if (fnmatch($pattern, $file)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected function save()
+    {
+        FileSystem::write($this->options['logFile'], json_encode($this->data));
+    }
 }
