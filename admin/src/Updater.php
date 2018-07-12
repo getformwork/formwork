@@ -143,14 +143,14 @@ class Updater {
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
             $source = substr($zip->getNameIndex($i), strlen($baseFolder));
-            $destination = './' . $source;
+            $destination = ROOT_PATH . $source;
             $destinationDirectory = FileSystem::dirname($destination);
 
             if ($this->isCopiable($source)) {
                 if (!FileSystem::exists($destinationDirectory)) {
                     FileSystem::createDirectory($destinationDirectory);
                 }
-                if (substr($destination, -1) !== '/') {
+                if (substr($destination, -1) !== DS) {
                     FileSystem::write($destination, $zip->getFromIndex($i));
                 }
             }
