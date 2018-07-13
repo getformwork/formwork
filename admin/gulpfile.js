@@ -6,21 +6,21 @@ var cssmin = require('gulp-cssmin');
 var uglify = require('gulp-uglify');
 
 gulp.task('css', function() {
-    return gulp.src('admin/assets/scss/admin.scss')
+    return gulp.src('./assets/scss/admin.scss')
         .pipe(sass())
-        .pipe(gulp.dest('admin/assets/css'))
+        .pipe(gulp.dest('./assets/css'))
         .pipe(rename('admin.min.css'))
         .pipe(cssmin())
-        .pipe(gulp.dest('admin/assets/css'));
+        .pipe(gulp.dest('./assets/css'));
 });
 
 gulp.task('js', function() {
-    return gulp.src('admin/assets/js/src/**/*.js')
+    return gulp.src('./assets/js/src/**/*.js')
         .pipe(concat('app.js'))
-        .pipe(gulp.dest('admin/assets/js'))
+        .pipe(gulp.dest('./assets/js'))
         .pipe(rename('app.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('admin/assets/js'));
+        .pipe(gulp.dest('./assets/js'));
 });
 
 gulp.task('default', gulp.series('css', 'js'));
