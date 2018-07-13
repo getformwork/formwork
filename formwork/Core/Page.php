@@ -12,6 +12,7 @@ use Spyc;
 
 class Page extends AbstractPage
 {
+    const NUM_REGEX = '/^(\d+)-/';
     const PAGE_STATUS_PUBLISHED = 'published';
     const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
     const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
@@ -87,7 +88,7 @@ class Page extends AbstractPage
 
     public function num()
     {
-        preg_match('/^(\d+)-/', $this->id, $matches);
+        preg_match(self::NUM_REGEX, $this->id, $matches);
         return isset($matches[1]) ? $matches[1] : null;
     }
 
@@ -238,7 +239,7 @@ class Page extends AbstractPage
 
     protected function processData()
     {
-        $this->data['visible'] = (bool) preg_match('/^\d+-[\w-]+$/', $this->id);
+        $this->data['visible'] = !is_null($this->num());
 
         if ($this->published() && $this->has('publish-date')) {
             $this->data['published'] = (strtotime($this->get('publish-date')) < time());
