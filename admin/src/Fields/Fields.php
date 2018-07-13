@@ -17,7 +17,7 @@ class Fields extends Collection
 
     public function has($field)
     {
-        return isset($this->items[$field]) ? true : false;
+        return isset($this->items[$field]);
     }
 
     public function get($field)

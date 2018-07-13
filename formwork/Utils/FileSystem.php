@@ -230,7 +230,7 @@ class FileSystem
     public static function write($file, $content, $append = false)
     {
         $flag = $append ? FILE_APPEND : null;
-        return (file_put_contents($file, $content, $flag) !== false) ? true : false;
+        return file_put_contents($file, $content, $flag) !== false;
     }
 
     public static function createFile($file)

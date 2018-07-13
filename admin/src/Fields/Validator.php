@@ -31,7 +31,7 @@ class Validator
 
     public static function validateCheckbox($value)
     {
-        return empty($value) ? false : true;
+        return !empty($value);
     }
 
     public static function validateDate($value)
