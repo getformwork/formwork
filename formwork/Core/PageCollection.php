@@ -106,7 +106,7 @@ class PageCollection extends Collection
             return strlen($item) > $min;
         });
 
-        $queryRegex = '/\b' . preg_quote($query) . '\b/iu';
+        $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';
 
         $scores = array(
