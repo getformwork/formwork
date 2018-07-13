@@ -246,7 +246,7 @@ class Pages extends AbstractController
             if (is_null($id)) {
                 continue;
             }
-            $newId = preg_replace('/^(\d+)-/', $i + 1 . '-', $id);
+            $newId = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $id);
             if ($newId != $id) {
                 $this->changePageId($page, $newId);
             }
@@ -380,7 +380,7 @@ class Pages extends AbstractController
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') == 'date') {
                 if ($page->num() != $page->date(self::DATE_NUM_FORMAT)) {
-                    $newId = preg_replace('/^(\d+-)/', $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
+                    $newId = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
                     try {
                         $this->changePageId($page, $newId);
                     } catch (RuntimeException $e) {
