@@ -4,7 +4,7 @@ namespace Formwork\Files;
 
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
-use Exception;
+use LogicException;
 
 class File
 {
@@ -55,7 +55,7 @@ class File
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 
     public function __toString()

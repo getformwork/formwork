@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Security;
 
 use Formwork\Admin\Utils\Session;
-use Exception;
+use RuntimeException;
 
 class CSRFToken
 {
@@ -30,7 +30,7 @@ class CSRFToken
         }
         if (!$valid) {
             static::destroy();
-            throw new Exception('CSRF token not valid');
+            throw new RuntimeException('CSRF token not valid');
         }
         return $valid;
     }

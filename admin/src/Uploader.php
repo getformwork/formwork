@@ -7,7 +7,7 @@ use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\MimeType;
-use Exception;
+use RuntimeException;
 
 class Uploader
 {
@@ -49,7 +49,7 @@ class Uploader
                 }
                 $this->move($file['tmp_name'], $this->destination, $name);
             } else {
-                throw new Exception($this->errorMessage($file['error']));
+                throw new RuntimeException($this->errorMessage($file['error']));
             }
         }
 
@@ -95,13 +95,13 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new Exception(Language::get('uploader.error.mime-type'));
+            throw new RuntimeException(Language::get('uploader.error.mime-type'));
         }
 
         $destination = FileSystem::normalize($destination);
 
         if (FileSystem::basename($filename)[0] == '.') {
-            throw new Exception(Language::get('uploader.error.hidden-files'));
+            throw new RuntimeException(Language::get('uploader.error.hidden-files'));
         }
 
         $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
@@ -115,7 +115,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new Exception(Language::get('uploader.error.file-name'));
+            throw new RuntimeException(Language::get('uploader.error.file-name'));
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {

@@ -9,7 +9,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Exception;
+use LogicException;
 use Spyc;
 
 class Formwork
@@ -33,7 +33,7 @@ class Formwork
     public function __construct()
     {
         if (!is_null(static::$instance)) {
-            throw new Exception('Formwork class already instantiated');
+            throw new LogicException('Formwork class already instantiated');
         }
         static::$instance = $this;
 
@@ -150,6 +150,6 @@ class Formwork
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

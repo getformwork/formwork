@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Utils;
 
-use Exception;
+use InvalidArgumentException;
 
 class IPAnonymizer
 {
@@ -18,7 +18,7 @@ class IPAnonymizer
             case 16:
                 return static::anonymizeIPv6($ip);
             default:
-                throw new Exception('Invalid IP address');
+                throw new InvalidArgumentException('Invalid IP address');
                 break;
         }
     }

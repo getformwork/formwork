@@ -7,7 +7,7 @@ use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Session;
 use Formwork\Data\DataGetter;
 use Formwork\Utils\FileSystem;
-use Exception;
+use LogicException;
 
 class User extends DataGetter
 {
@@ -59,6 +59,6 @@ class User extends DataGetter
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

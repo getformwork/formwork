@@ -12,7 +12,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
-use Exception;
+use RuntimeException;
 use Spyc;
 
 class Users extends AbstractController
@@ -87,17 +87,17 @@ class Users extends AbstractController
         try {
             $user = Admin::instance()->users()->get($params->get('user'));
             if (!$user) {
-                throw new Exception($this->label('users.user.not-found'));
+                throw new RuntimeException($this->label('users.user.not-found'));
             }
             if ($user->logged()) {
-                throw new Exception($this->label('users.user.cannot-delete.logged'));
+                throw new RuntimeException($this->label('users.user.cannot-delete.logged'));
             }
             $this->deleteAvatar($user);
             FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
             $this->registry('lastAccess')->remove($params->get('user'));
             $this->notify($this->label('users.user.deleted'), 'success');
             $this->redirect('/users/', 302, true);
-        } catch (Exception $e) {
+        } catch (RuntimeException $e) {
             $this->notify($e->getMessage(), 'error');
             $this->redirect('/users/', 302, true);
         }
@@ -142,7 +142,7 @@ class Users extends AbstractController
                         $data['avatar'] = $uploader->uploadedFiles()[0];
                         $this->notify($this->label('user.avatar.uploaded'), 'success');
                     }
-                } catch (Exception $e) {
+                } catch (RuntimeException $e) {
                     $this->notify($this->label('uploader.error', $e->getMessage()), 'error');
                     $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
                 }

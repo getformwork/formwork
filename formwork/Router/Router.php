@@ -4,7 +4,8 @@ namespace Formwork\Router;
 
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Exception;
+use BadMethodCallException;
+use LogicException;
 
 class Router
 {
@@ -59,7 +60,7 @@ class Router
                 list($method, $route, $callback) = func_get_args();
                 break;
             default:
-                throw new Exception('Invalid arguments for ' . __METHOD__);
+                throw new BadMethodCallException('Invalid arguments for ' . __METHOD__);
         }
         if (is_array($method)) {
             foreach ($method as $m) {
@@ -68,10 +69,10 @@ class Router
             return;
         }
         if (!in_array($method, $this->methods)) {
-            throw new Exception('Invalid HTTP method');
+            throw new LogicException('Invalid HTTP method');
         }
         if (!is_null($callback) && !is_callable($callback)) {
-            throw new Exception('Invalid callback');
+            throw new LogicException('Invalid callback');
         }
         if (is_array($route)) {
             foreach ($route as $r) {

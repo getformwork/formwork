@@ -3,7 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
-use Exception;
+use LogicException;
 
 abstract class AbstractPage
 {
@@ -150,6 +150,6 @@ abstract class AbstractPage
         if ($this->has($name)) {
             return $this->get($name);
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

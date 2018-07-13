@@ -65,7 +65,7 @@ class FileSystem
             throw new RuntimeException('File not found: ' . $path);
         }
         if ($value === false && static::exists($path)) {
-            throw new RuntimeException('File ' . $path . ' already exists!');
+            throw new RuntimeException('File ' . $path . ' already exists');
         }
         return true;
     }
@@ -262,7 +262,7 @@ class FileSystem
         }
         static::assert($path);
         if (!static::isDirectory($path)) {
-            throw new RuntimeException('Unable to list: ' . $path . '. Specified path is not a directory.');
+            throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
         }
         $items = @scandir($path);
         if (!is_array($items)) {
