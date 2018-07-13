@@ -6,12 +6,12 @@ php_error.log
 
 /cache
 /logs
-/node_modules
 
 /vendor
 
 /admin/accounts/*
 /admin/avatars/*
 /admin/logs/*
+/admin/node_modules/*
 
 !.gitkeep
