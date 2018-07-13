@@ -2,6 +2,8 @@
 
 namespace Formwork\Utils;
 
+use LogicException;
+
 class Header
 {
     public static $statuses = array(
@@ -60,7 +62,7 @@ class Header
     public static function status($code, $send = true, $exit = false)
     {
         if (!isset(static::$statuses[$code])) {
-            throw new Exception();
+            throw new LogicException('Unknown HTTP status code');
         }
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . static::$statuses[$code];

@@ -7,7 +7,7 @@ use Formwork\Parsers\ParsedownExtension as Parsedown;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Exception;
+use RuntimeException;
 use Spyc;
 
 class Page extends AbstractPage
@@ -224,7 +224,7 @@ class Page extends AbstractPage
     {
         $contents = FileSystem::read($this->path . DS . $this->filename);
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
-            throw new Exception('Invalid page format');
+            throw new RuntimeException('Invalid page format');
         }
         list($match, $frontmatter, $summary, $body) = $matches;
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);

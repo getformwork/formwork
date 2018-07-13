@@ -16,7 +16,8 @@ use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
-use Exception;
+use LogicException;
+use RuntimeException;
 use Spyc;
 
 class Admin
@@ -32,7 +33,7 @@ class Admin
     public function __construct()
     {
         if (!is_null(static::$instance)) {
-            throw new Exception('Admin class already instantiated');
+            throw new LogicException('Admin class already instantiated');
         }
         static::$instance = $this;
 
@@ -46,7 +47,7 @@ class Admin
         $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
 
         if (!FileSystem::exists($languageFile)) {
-            throw new Exception();
+            throw new RuntimeException('Cannot load admin language file');
         }
 
         Language::load($this->language(), Spyc::YAMLLoad($languageFile));
@@ -121,7 +122,7 @@ class Admin
         if (HTTPRequest::method() == 'POST') {
             try {
                 CSRFToken::validate();
-            } catch (Exception $e) {
+            } catch (RuntimeException $e) {
                 CSRFToken::destroy();
                 Session::remove('FORMWORK_USERNAME');
                 Notification::send(Language::get('login.suspicious-request-detected'), 'warning');
@@ -255,6 +256,6 @@ class Admin
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Utils;
 
 use Formwork\Utils\FileSystem;
-use Exception;
+use LogicException;
 use Spyc;
 
 class Language
@@ -108,7 +108,7 @@ class Language
     public static function get($key)
     {
         if (!isset(static::$data[$key])) {
-            throw new Exception('Invalid string');
+            throw new LogicException('Invalid string');
         }
         if (func_num_args() > 1) {
             $args = array_slice(func_get_args(), 1);
