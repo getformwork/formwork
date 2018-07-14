@@ -21,8 +21,7 @@
     <link rel="stylesheet" href="<?= $this->uri('/assets/css/admin.min.css') ?>">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="<?= $this->uri('/assets/js/app.min.js') ?>"></script>
-    <script src="<?= $this->uri('/assets/js/chartist.min.js') ?>"></script>
-    <script src="<?= $this->uri('/assets/js/sortable.min.js') ?>"></script>
+    <script src="<?= $this->uri('/assets/js/vendor.min.js') ?>"></script>
 </head>
 <body>
     <button class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
