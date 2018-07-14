@@ -7,9 +7,9 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Utils\Session;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Spyc;
 
 class Register extends AbstractController
 {
@@ -41,7 +41,7 @@ class Register extends AbstractController
                     'language' => $this->data->get('language')
                 );
 
-                $fileContent = Spyc::YAMLdump($userdata, false, 0, true);
+                $fileContent = YAML::encode($userdata);
 
                 FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
 

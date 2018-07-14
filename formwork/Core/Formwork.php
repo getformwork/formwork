@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Cache\Cache;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
@@ -10,7 +11,6 @@ use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use LogicException;
-use Spyc;
 
 class Formwork
 {
@@ -40,12 +40,12 @@ class Formwork
         FileSystem::assert(CONFIG_PATH . 'system.yml');
         FileSystem::assert(CONFIG_PATH . 'site.yml');
 
-        $config = Spyc::YAMLLoad(CONFIG_PATH . 'system.yml');
+        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
         $this->options = array_merge($this->defaults(), $config);
 
         date_default_timezone_set($this->option('date.timezone'));
 
-        $siteConfig = Spyc::YAMLLoad(CONFIG_PATH . 'site.yml');
+        $siteConfig = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($siteConfig);
 
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));

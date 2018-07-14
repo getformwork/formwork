@@ -10,13 +10,13 @@ use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use RuntimeException;
-use Spyc;
 
 class Pages extends AbstractController
 {
@@ -332,7 +332,8 @@ class Pages extends AbstractController
         $frontmatter = array(
             'title' => $title
         );
-        $fileContent = Spyc::YAMLDump($frontmatter, false, 0);
+        $fileContent = '---' . PHP_EOL;
+        $fileContent .= YAML::encode($frontmatter);
         $fileContent .= '---' . PHP_EOL;
         FileSystem::write($path . $filename, $fileContent);
         return new Page($path);
@@ -368,7 +369,8 @@ class Pages extends AbstractController
         $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent();
 
         if ($differ) {
-            $fileContent = Spyc::YAMLDump($frontmatter, false, 0);
+            $fileContent = '---' . PHP_EOL;
+            $fileContent .= YAML::encode($frontmatter);
             $fileContent .= '---' . PHP_EOL;
             $fileContent .= $data->get('content');
             FileSystem::write($page->path() . $page->filename(), $fileContent);

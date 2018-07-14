@@ -8,12 +8,12 @@ use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use RuntimeException;
-use Spyc;
 
 class Users extends AbstractController
 {
@@ -74,7 +74,7 @@ class Users extends AbstractController
             'language' => $this->data->get('language')
         );
 
-        $fileContent = Spyc::YAMLdump($userdata, false, 0, true);
+        $fileContent = YAML::encode($userdata);
 
         FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
 
@@ -148,7 +148,7 @@ class Users extends AbstractController
                 }
             }
 
-            $fileContent = Spyc::YAMLdump($data, false, 0, true);
+            $fileContent = YAML::encode($data);
 
             FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', $fileContent);
 

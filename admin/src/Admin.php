@@ -10,6 +10,7 @@ use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
+use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Header;
@@ -18,7 +19,6 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
 use LogicException;
 use RuntimeException;
-use Spyc;
 
 class Admin
 {
@@ -50,7 +50,7 @@ class Admin
             throw new RuntimeException('Cannot load admin language file');
         }
 
-        Language::load($this->language(), Spyc::YAMLLoad($languageFile));
+        Language::load($this->language(), YAML::parseFile($languageFile));
     }
 
     public static function instance()
@@ -67,7 +67,7 @@ class Admin
             return static::$languages;
         }
         foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $data = Spyc::YAMLLoad(LANGUAGES_PATH . $file);
+            $data = YAML::parseFile(LANGUAGES_PATH . $file);
             $code = FileSystem::name($file);
             static::$languages[$code] = $data['language.name'] . ' (' . $code . ')';
         }
