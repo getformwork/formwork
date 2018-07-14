@@ -4,7 +4,6 @@ namespace Formwork\Admin\Utils;
 
 use Formwork\Utils\FileSystem;
 use LogicException;
-use Spyc;
 
 class Language
 {

@@ -4,9 +4,9 @@ namespace Formwork\Admin;
 
 use Formwork\Core\Formwork;
 use Formwork\Data\Collection;
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Exception;
-use Spyc;
 
 class Users extends Collection
 {
@@ -26,7 +26,7 @@ class Users extends Collection
     {
         $users = array();
         foreach (FileSystem::listFiles(ACCOUNTS_PATH) as $file) {
-            $parsedData = Spyc::YAMLLoadString(FileSystem::read(ACCOUNTS_PATH . $file));
+            $parsedData = YAML::parseFile(ACCOUNTS_PATH . $file);
             $users[$parsedData['username']] = new User($parsedData);
         }
         return new static($users);
