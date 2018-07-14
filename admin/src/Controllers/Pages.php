@@ -9,12 +9,14 @@ use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
+use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
+use InvalidArgumentException;
 use RuntimeException;
 use Spyc;
 
@@ -395,8 +397,11 @@ class Pages extends AbstractController
         return $page;
     }
 
-    protected function makePageNum(Page $parent, $mode)
+    protected function makePageNum($parent, $mode)
     {
+        if (!($parent instanceof Page || $parent instanceof Site)) {
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of Formwork\Core\Page or Formwork\Core\Site as $parent argument');
+        }
         switch ($mode) {
             case 'date':
                 $num = date(self::DATE_NUM_FORMAT);
