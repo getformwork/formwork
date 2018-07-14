@@ -6,6 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
+use Formwork\Admin\User;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Data\DataGetter;
 use Formwork\Router\RouteParams;
