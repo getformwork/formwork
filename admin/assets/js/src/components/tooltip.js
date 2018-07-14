@@ -15,7 +15,13 @@ Formwork.Tooltip = function(text, options) {
     $referenceElement.on('mouseout', _remove);
 
     function _tooltipPosition($tooltip) {
-        var offset = Formwork.Utils.offset($referenceElement[0]);
+        var offset = $referenceElement.offset();
+
+        if (offset.top === 0 && offset.left === 0) {
+            var rect = $referenceElement[0].getBoundingClientRect();
+            offset.top = rect.top + window.pageYOffset;
+            offset.left = rect.left + window.pageXOffset;
+        }
 
         var top = offset.top;
         var left = offset.left;
