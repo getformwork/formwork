@@ -14,18 +14,24 @@ Formwork.Modals = {
         $('.modal [data-dismiss]').click(function() {
             if ($(this).is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($(this).data('dismiss'));
-                if (!valid) return;
+                if (!valid) {
+                    return;
+                }
             }
             Formwork.Modals.hide($(this).data('dismiss'));
         });
 
         $('.modal').click(function(event) {
-            if (event.target === this) Formwork.Modals.hide();
+            if (event.target === this) {
+                Formwork.Modals.hide();
+            }
         });
 
         $(document).keyup(function(event) {
             // ESC key
-            if (event.which == 27) Formwork.Modals.hide();
+            if (event.which == 27) {
+                Formwork.Modals.hide();
+            }
         });
     },
     show: function (id, action, callback) {
@@ -35,7 +41,9 @@ Formwork.Modals = {
             $modal.find('form').attr('action', action);
         }
         $modal.find('[autofocus]').first().focus(); // Firefox bug
-        if (typeof callback === 'function') callback($modal);
+        if (typeof callback === 'function') {
+            callback($modal);
+        }
         this.createBackdrop();
     },
     hide: function(id) {

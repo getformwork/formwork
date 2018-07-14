@@ -168,7 +168,9 @@ Formwork.Editor = function(id) {
 
     function lastLine(text) {
         var index = text.lastIndexOf('\n');
-        if (index == -1) return text;
+        if (index == -1) {
+            return text;
+        }
         return text.substring(index + 1);
     }
 
@@ -178,7 +180,9 @@ Formwork.Editor = function(id) {
     }
 
     function insertAtCursor(leftValue, rightValue) {
-        if (rightValue === undefined) rightValue = leftValue;
+        if (rightValue === undefined) {
+            rightValue = leftValue;
+        }
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -195,7 +199,9 @@ Formwork.Form = function(form) {
     $form.data('original-data', $form.serialize());
 
     $window.on('beforeunload', function() {
-        if (hasChanged()) return true;
+        if (hasChanged()) {
+            return true;
+        }
     });
 
     $form.submit(function() {
@@ -354,18 +360,24 @@ Formwork.Modals = {
         $('.modal [data-dismiss]').click(function() {
             if ($(this).is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($(this).data('dismiss'));
-                if (!valid) return;
+                if (!valid) {
+                    return;
+                }
             }
             Formwork.Modals.hide($(this).data('dismiss'));
         });
 
         $('.modal').click(function(event) {
-            if (event.target === this) Formwork.Modals.hide();
+            if (event.target === this) {
+                Formwork.Modals.hide();
+            }
         });
 
         $(document).keyup(function(event) {
             // ESC key
-            if (event.which == 27) Formwork.Modals.hide();
+            if (event.which == 27) {
+                Formwork.Modals.hide();
+            }
         });
     },
     show: function (id, action, callback) {
@@ -375,7 +387,9 @@ Formwork.Modals = {
             $modal.find('form').attr('action', action);
         }
         $modal.find('[autofocus]').first().focus(); // Firefox bug
-        if (typeof callback === 'function') callback($modal);
+        if (typeof callback === 'function') {
+            callback($modal);
+        }
         this.createBackdrop();
     },
     hide: function(id) {
@@ -421,7 +435,9 @@ Formwork.Notification = function(text, type, interval) {
         $notification.css('top', top);
     }
 
-    if (type) $notification.addClass('notification-' + type);
+    if (type) {
+        $notification.addClass('notification-' + type);
+    }
 
     $notification.appendTo('body');
 
@@ -492,7 +508,9 @@ Formwork.Pages = {
                 $('.page-title a').each(function() {
                     var $pagesItem = $(this).closest('.pages-item');
                     var matched = !!$(this).text().match(regexp);
-                    if (matched) matches++;
+                    if (matched) {
+                        matches++;
+                    }
                     $pagesItem.toggle(matched);
                 });
             }
@@ -500,7 +518,9 @@ Formwork.Pages = {
 
         $('.page-details').click(function() {
             var $toggle = $(this).find('.page-children-toggle').first();
-            if ($toggle.length) $toggle.click();
+            if ($toggle.length) {
+                $toggle.click();
+            }
         });
 
         $('#page-title', '#newPageModal').keyup(function() {
@@ -510,7 +530,9 @@ Formwork.Pages = {
         $('#page-slug', '#newPageModal').keyup(function() {
             $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
         }).blur(function() {
-            if ($(this).val() === '') $('#page-title', '#newPageModal').trigger('keyup');
+            if ($(this).val() === '') {
+                $('#page-title', '#newPageModal').trigger('keyup');
+            }
         });
 
         $('#page-parent', '#newPageModal').change(function() {
@@ -538,7 +560,9 @@ Formwork.Pages = {
         $('.pages-list').each(function() {
             var $this = $(this);
 
-            if ($this.data('sortable-children') === false) return;
+            if ($this.data('sortable-children') === false) {
+                return;
+            }
 
             var sortable = Sortable.create(this, {
                 filter: '[data-sortable=false]',
@@ -550,14 +574,18 @@ Formwork.Pages = {
                     .addClass('toggle-collapsed').css('opacity', '0.5');
                 },
                 onMove: function(event) {
-                    if ($(event.related).data('sortable') === false) return false;
+                    if ($(event.related).data('sortable') === false) {
+                        return false;
+                    }
                     $('.pages-children', event.related).hide();
                 },
                 onEnd: function (event) {
                     $(event.item).closest('.pages-list').removeClass('dragging');
                     $('.page-children-toggle').css('opacity', '');
 
-                    if (event.newIndex == event.oldIndex) return;
+                    if (event.newIndex == event.oldIndex) {
+                        return;
+                    }
 
                     sortable.option('disabled', true);
 
@@ -739,12 +767,18 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) clearTimeout(timer);
+            if (timer) {
+                clearTimeout(timer);
+            }
 
-            if (leading && !timer) callback.apply(context, args);
+            if (leading && !timer) {
+                callback.apply(context, args);
+            }
 
             timer = setTimeout(function() {
-                if (!leading) callback.apply(context, args);
+                if (!leading) {
+                    callback.apply(context, args);
+                }
                 timer = null;
             }, delay);
         }
@@ -774,7 +808,9 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) return;
+            if (timer) {
+                return;
+            }
 
             callback.apply(context, args);
 

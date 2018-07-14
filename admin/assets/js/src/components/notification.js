@@ -9,7 +9,9 @@ Formwork.Notification = function(text, type, interval) {
         $notification.css('top', top);
     }
 
-    if (type) $notification.addClass('notification-' + type);
+    if (type) {
+        $notification.addClass('notification-' + type);
+    }
 
     $notification.appendTo('body');
 

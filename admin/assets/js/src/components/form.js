@@ -5,7 +5,9 @@ Formwork.Form = function(form) {
     $form.data('original-data', $form.serialize());
 
     $window.on('beforeunload', function() {
-        if (hasChanged()) return true;
+        if (hasChanged()) {
+            return true;
+        }
     });
 
     $form.submit(function() {

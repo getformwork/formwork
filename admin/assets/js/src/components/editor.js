@@ -86,7 +86,9 @@ Formwork.Editor = function(id) {
 
     function lastLine(text) {
         var index = text.lastIndexOf('\n');
-        if (index == -1) return text;
+        if (index == -1) {
+            return text;
+        }
         return text.substring(index + 1);
     }
 
@@ -96,7 +98,9 @@ Formwork.Editor = function(id) {
     }
 
     function insertAtCursor(leftValue, rightValue) {
-        if (rightValue === undefined) rightValue = leftValue;
+        if (rightValue === undefined) {
+            rightValue = leftValue;
+        }
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
