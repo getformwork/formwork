@@ -179,7 +179,9 @@ class FileSystem
     public static function copy($source, $destination, $overwrite = false)
     {
         static::assert($source);
-        static::assert($destination, $overwrite);
+        if (!$overwrite) {
+            static::assert($destination, false);
+        }
         return @copy($source, $destination);
     }
 
