@@ -123,6 +123,7 @@ class Options extends AbstractController
                 'Name' => $_SERVER['SERVER_NAME'],
                 'Software' => $_SERVER['SERVER_SOFTWARE'],
                 'Protocol' => $_SERVER['SERVER_PROTOCOL'],
+                'HTTPS' => $_SERVER['HTTPS']
             ),
             'Client' => array(
                 'IP Address' => HTTPRequest::ip(),
