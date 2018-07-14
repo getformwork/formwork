@@ -8,12 +8,18 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) clearTimeout(timer);
+            if (timer) {
+                clearTimeout(timer);
+            }
 
-            if (leading && !timer) callback.apply(context, args);
+            if (leading && !timer) {
+                callback.apply(context, args);
+            }
 
             timer = setTimeout(function() {
-                if (!leading) callback.apply(context, args);
+                if (!leading) {
+                    callback.apply(context, args);
+                }
                 timer = null;
             }, delay);
         }
@@ -43,7 +49,9 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) return;
+            if (timer) {
+                return;
+            }
 
             callback.apply(context, args);
 
