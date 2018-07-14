@@ -17,12 +17,22 @@ Formwork.Chart = function(element, data) {
             labelOffset: {x: 0, y: 5}
         }
     };
-    
+
     var chart = new Chartist.Line(element, data, options);
+
+    var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
     $(chart.container).on('mouseover', '.ct-point', function() {
         var $this = $(this);
-        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: {x: 0, y: -8}});
+        var tooltipOffset = {x: 0, y: -8};
+
+        if (isFirefox) {
+            var strokeWidth = parseFloat($this.css('stroke-width'));
+            tooltipOffset.x += strokeWidth / 2;
+            tooltipOffset.y += strokeWidth / 2;
+        }
+
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: tooltipOffset});
         tooltip.show();
     });
 };
