@@ -40,8 +40,9 @@ class Formwork
         FileSystem::assert(CONFIG_PATH . 'system.yml');
         FileSystem::assert(CONFIG_PATH . 'site.yml');
 
+        $this->options = $this->defaults();
         $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->defaults(), $config);
+        $this->options = array_merge($this->options, $config);
 
         date_default_timezone_set($this->option('date.timezone'));
 
