@@ -74,6 +74,7 @@ class Formwork
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
             'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
+            'parsers.use_php_yaml'     => 'parse',
             'templates.path'           => ROOT_PATH . 'templates' . DS,
             'templates.extension'      => '.php',
             'pages.index'              => 'index',
