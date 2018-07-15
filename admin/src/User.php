@@ -3,10 +3,8 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Security\Password;
-use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Session;
 use Formwork\Data\DataGetter;
-use Formwork\Utils\FileSystem;
 use LogicException;
 
 class User extends DataGetter

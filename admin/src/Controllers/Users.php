@@ -7,12 +7,10 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\User;
-use Formwork\Admin\Utils\Registry;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use RuntimeException;
 

@@ -4,7 +4,6 @@ namespace Formwork\Cache;
 
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 
 class Cache
 {
