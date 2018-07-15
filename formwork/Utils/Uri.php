@@ -92,7 +92,8 @@ class Uri
 
     public static function base($uri = null)
     {
-        $port = empty(static::port()) || static::defaultPort() ? '' : ':' . static::port();
+        $uriPort = static::port($uri);
+        $port = empty($uriPort) || static::defaultPort($uriPort) ? '' : ':' . $uriPort;
         return static::scheme($uri) . '://' . static::host($uri) . $port;
     }
 
