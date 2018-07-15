@@ -136,3 +136,33 @@
 .title-input {
     font-size: 1.125rem;
 }
+
+.toggle-group {
+    display: inline-block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 1px solid $color-gray;
+    border-radius: 3px;
+    font-size: 0;
+}
+
+.toggle-group label {
+    margin: 0;
+}
+
+.toggle-group input[type=radio] {
+    display: none;
+}
+
+.toggle-group input[type=radio] + span {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.toggle-group input[type=radio]:checked + span {
+    background: $color-accent;
+    color: #fff;
+}
