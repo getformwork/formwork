@@ -1426,8 +1426,8 @@ a.button {
 
 .toggle-group {
   display: inline-block;
-  overflow: hidden;
   margin: 0;
+  margin-bottom: 0.5rem;
   padding: 0;
   border: 1px solid #cacaca;
   border-radius: 3px;
