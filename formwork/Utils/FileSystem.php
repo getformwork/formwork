@@ -2,7 +2,6 @@
 
 namespace Formwork\Utils;
 
-use Formwork\Utils\MimeType;
 use RuntimeException;
 
 class FileSystem

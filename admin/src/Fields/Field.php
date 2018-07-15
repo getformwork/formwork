@@ -4,7 +4,6 @@ namespace Formwork\Admin\Fields;
 use Formwork\Admin\Admin;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataSetter;
-use Formwork\Utils\FileSystem;
 use LogicException;
 
 class Field extends DataSetter

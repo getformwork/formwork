@@ -4,13 +4,8 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
-use Formwork\Admin\Security\Password;
-use Formwork\Admin\Utils\Log;
-use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Uri;
 
 class Authentication extends AbstractController
 {

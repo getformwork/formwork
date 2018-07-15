@@ -6,7 +6,6 @@ use Formwork\Core\Formwork;
 use Formwork\Data\Collection;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
-use Exception;
 
 class Users extends Collection
 {
