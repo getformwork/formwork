@@ -79,6 +79,7 @@ class Pages extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('pages.pages'),
             'location' => 'pages',
             'content' => $content,
             'modals' => implode($modals),
@@ -197,6 +198,7 @@ class Pages extends AbstractController
         );
 
         $adminData = array(
+            'title' => $this->label('pages.edit-page', $this->page->title()),
             'location' => 'pages',
             'content' => $this->view(
                 'pages.editor',

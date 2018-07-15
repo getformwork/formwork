@@ -44,6 +44,7 @@ class Options extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('options.options'),
             'location' => 'options',
             'modals' => $modals,
             'content' => $this->view(
@@ -86,6 +87,7 @@ class Options extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('options.options'),
             'location' => 'options',
             'modals' => $modals,
             'content' => $this->view(
@@ -149,6 +151,7 @@ class Options extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('options.options'),
             'location' => 'options',
             'content' => $this->view(
                 'options.info',

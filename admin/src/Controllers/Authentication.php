@@ -23,7 +23,10 @@ class Authentication extends AbstractController
                 if (is_null(CSRFToken::get())) {
                     CSRFToken::generate();
                 }
-                $this->view('authentication.login', array('csrfToken' => CSRFToken::get()));
+                $this->view('authentication.login', array(
+                    'title' => $this->label('login.login'),
+                    'csrfToken' => CSRFToken::get()
+                ));
                 break;
 
             case 'POST':
