@@ -4,11 +4,11 @@ namespace Formwork\Core;
 
 use Formwork\Files\Files;
 use Formwork\Parsers\ParsedownExtension as Parsedown;
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use RuntimeException;
-use Spyc;
 
 class Page extends AbstractPage
 {
@@ -229,7 +229,7 @@ class Page extends AbstractPage
         }
         list($match, $frontmatter, $summary, $body) = $matches;
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
-        $this->frontmatter = Spyc::YAMLLoadString($frontmatter);
+        $this->frontmatter = YAML::parse($frontmatter);
         $this->data = array_merge($this->defaults(), $this->frontmatter);
         if (!empty($summary)) {
             $this->summary = $this->contentParser()->text($summary);

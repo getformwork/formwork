@@ -11,7 +11,6 @@ use Formwork\Admin\Utils\Session;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Spyc;
 
 class Authentication extends AbstractController
 {

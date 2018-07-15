@@ -8,11 +8,11 @@ use Formwork\Admin\Fields\Validator;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
-use Spyc;
 
 class Options extends AbstractController
 {
@@ -26,7 +26,7 @@ class Options extends AbstractController
     {
         Admin::instance()->ensureLogin();
 
-        $fields = new Fields(Spyc::YAMLLoad(SCHEMES_PATH . 'system.yml'));
+        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
         if (HTTPRequest::method() == 'POST') {
             $data = new DataGetter(HTTPRequest::postDataFromRaw());
@@ -63,7 +63,7 @@ class Options extends AbstractController
     public function site(RouteParams $params)
     {
         Admin::instance()->ensureLogin();
-        $fields = new Fields(Spyc::YAMLLoad(SCHEMES_PATH . 'site.yml'));
+        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
         if (HTTPRequest::method() == 'POST') {
             $data = new DataGetter(HTTPRequest::postDataFromRaw());
@@ -193,7 +193,7 @@ class Options extends AbstractController
 
         // Update config file if options differ
         if ($options !== $old) {
-            $fileContent = Spyc::YAMLdump($options, false, 0, true);
+            $fileContent = YAML::encode($options);
             FileSystem::write(CONFIG_PATH . $type . '.yml', $fileContent);
             return true;
         }
