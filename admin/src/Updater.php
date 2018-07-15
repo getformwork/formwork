@@ -50,6 +50,7 @@ class Updater
             'force' => false,
             'logFile' => LOGS_PATH . 'updates.json',
             'tempFile' => ROOT_PATH . '.formwork-update.zip',
+            'cleanupAfterInstall' => false,
             'ignore' => array(
                 'admin/accounts/*',
                 'admin/avatars/*',
@@ -125,10 +126,20 @@ class Updater
                 if (substr($destination, -1) !== DS) {
                     FileSystem::write($destination, $zip->getFromIndex($i));
                 }
+                $installedFiles[] = $destination;
             }
         }
 
         FileSystem::delete($this->options['tempFile']);
+
+        if ($this->options['cleanupAfterInstall']) {
+            $deletableFiles = $this->findDeletableFiles($installedFiles);
+            if (!empty($deletableFiles)) {
+                foreach ($deletableFiles as $file) {
+                    FileSystem::delete($file);
+                }
+            }
+        }
 
         $this->data['last-update'] = time();
 
@@ -182,6 +193,24 @@ class Updater
             }
         }
         return true;
+    }
+
+    protected function findDeletableFiles($installedFiles)
+    {
+        $list = array();
+        foreach ($installedFiles as $path) {
+            $list[] = $path;
+            if (FileSystem::exists($path) && FileSystem::isDirectory($path)) {
+                foreach (FileSystem::list($path) as $item) {
+                    $item = FileSystem::normalize($path) . $item;
+                    if (FileSystem::isDirectory($item) && !empty(FileSystem::list($item))) {
+                        continue;
+                    }
+                    $list[] = $item;
+                }
+            }
+        }
+        return array_diff($list, $installedFiles);
     }
 
     protected function save()
