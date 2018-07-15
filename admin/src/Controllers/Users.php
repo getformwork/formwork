@@ -40,6 +40,7 @@ class Users extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('users.users'),
             'location' => 'users',
             'content' => $content,
             'modals' => implode($modals)
@@ -171,6 +172,7 @@ class Users extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('users.user-profile', $user->username()),
             'location' => 'users',
             'content' => $content,
             'modals' => $modals

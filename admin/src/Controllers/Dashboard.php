@@ -52,6 +52,7 @@ class Dashboard extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('dashboard.dashboard'),
             'location' => 'dashboard',
             'content' => $this->view('dashboard.index', $data, false),
             'modals' => implode($modals),
