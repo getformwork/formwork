@@ -240,10 +240,10 @@ class FileSystem
         return static::write($file, '');
     }
 
-    public static function createDirectory($directory)
+    public static function createDirectory($directory, $recursive = false)
     {
         static::assert($directory, false);
-        return @mkdir($directory);
+        return @mkdir($directory, 0777, $recursive);
     }
 
     public static function create($file)
