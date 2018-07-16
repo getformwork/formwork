@@ -1443,7 +1443,11 @@ a.button {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
-  line-height: 1.5; }
+  line-height: 1.5;
+  transition: all 150ms; }
+
+.toggle-group input[type=radio]:hover + span {
+  background-color: #f8f8f8; }
 
 .toggle-group input[type=radio]:checked + span {
   background: #3498da;

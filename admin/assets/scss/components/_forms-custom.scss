@@ -160,6 +160,11 @@
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.5;
+    transition: all 150ms;
+}
+
+.toggle-group input[type=radio]:hover + span {
+    background-color: $color-gray-xxlight;
 }
 
 .toggle-group input[type=radio]:checked + span {
