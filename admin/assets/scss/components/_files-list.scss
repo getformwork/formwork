@@ -10,24 +10,24 @@
 .file-name::before {
     margin-right: 0.5rem;
     color: #444;
-    content: '\e82d';
-    font-family: Icons;
+
+    @include icon(file);
 }
 
 .file-type-image::before {
-    content: '\e829';
+    @include icon(file-image);
 }
 
 .file-type-document::before {
-    content: '\e82b';
+    @include icon(file-text);
 }
 
 .file-type-audio::before {
-    content: '\e827';
+    @include icon(file-audio);
 }
 
 .file-type-video::before {
-    content: '\e82c';
+    @include icon(file-video);
 }
 
 .files-item-cell {

@@ -42,7 +42,7 @@
     background-color: $color-error;
     color: #fff;
     &::before {
-        content: '\e822';
+        @include icon(error-circle);
     }
 }
 
@@ -50,7 +50,7 @@
     background-color: $color-success-dark;
     color: #fff;
     &::before {
-        content: '\e810';
+        @include icon(check);
     }
 }
 
@@ -58,6 +58,6 @@
     background-color: $color-warning;
     color: #fff;
     &::before {
-        content: '\e861';
+        @include icon(warning);
     }
 }
