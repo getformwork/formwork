@@ -42,6 +42,7 @@ class Template
         if (static::$rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+        
         $this->vars['page'] = $page;
         $this->vars = array_merge($this->vars, $vars);
 
@@ -85,7 +86,9 @@ class Template
         if (static::$rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+
         ob_start();
+
         static::$rendering = true;
         $this->insert($this->name);
         static::$rendering = false;

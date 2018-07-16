@@ -19,8 +19,7 @@ class Uri
     public static function scheme($uri = null)
     {
         if (is_null($uri)) {
-            if (isset($_SERVER['HTTPS']) && strtoupper($_SERVER['HTTPS']) !== 'OFF' ||
-            $_SERVER['SERVER_PORT'] === '443') {
+            if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
                 return 'https';
             }
             return 'http';
