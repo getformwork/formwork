@@ -1237,6 +1237,7 @@ a.button {
 .file-name::before {
   margin-right: 0.5rem;
   color: #444;
+  font-size: 1rem;
   font-family: Icons; }
 
 .file-type-image::before {
