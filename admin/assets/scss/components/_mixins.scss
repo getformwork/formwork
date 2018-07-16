@@ -30,6 +30,11 @@
     white-space: nowrap;
 }
 
+@mixin icon($name) {
+    font-family: Icons;
+    @extend .i-#{$name}::before;
+}
+
 @mixin make-columns-globals($columns-count, $breakpoints) {
     $selectors: "";
     @each $breakpoint-name in map-keys($breakpoints) {

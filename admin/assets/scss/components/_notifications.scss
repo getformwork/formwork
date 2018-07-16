@@ -40,14 +40,13 @@
     left: 1rem;
     display: block;
     font-size: 1.25rem;
-    font-family: Icons;
     transform: translate(0, -50%);
 }
 
 .notification-error::before {
-    content: '\e822';
+    @include icon(error-circle);
 }
 
 .notification-success::before {
-    content: '\e810';
+    @include icon(check);
 }

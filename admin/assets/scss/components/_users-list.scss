@@ -24,8 +24,8 @@
 .user-status-label::before {
     display: inline-block;
     margin-right: 0.25rem;
-    content: '\e816';
-    font-family: Icons;
+
+    @include icon(circle);
 }
 
 .user-status-enabled .user-status-label::before {
