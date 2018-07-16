@@ -10,6 +10,7 @@
 .file-name::before {
     margin-right: 0.5rem;
     color: #444;
+    font-size: 1rem;
 
     @include icon(file);
 }
