@@ -10,6 +10,8 @@ class Site extends AbstractPage
 {
     public static $storage;
 
+    protected $currentPage;
+
     protected $templates;
 
     protected $templatesPath;
@@ -69,6 +71,18 @@ class Site extends AbstractPage
                 return $this->data['aliases'][$uri];
             }
         }
+    }
+
+    public function currentPage()
+    {
+        if (!empty($this->currentPage)) {
+            return $this->currentPage;
+        }
+        $resource = Formwork::instance()->resource();
+        if ($resource instanceof Page) {
+            return $resource;
+        }
+        return null;
     }
 
     public function errorPage($render = false)
