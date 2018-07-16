@@ -10,11 +10,6 @@ class FileSystem
 
     protected static $units = array('B', 'KB', 'MB', 'GB', 'TB');
 
-    public static function root()
-    {
-        return defined(ROOT_PATH) ? ROOT_PATH : $_SERVER['DOCUMENT_ROOT'];
-    }
-
     public static function dirname($path)
     {
         return dirname($path);
@@ -256,11 +251,8 @@ class FileSystem
         return rtrim($path, DS) . DS;
     }
 
-    public static function list($path = null, $all = false)
+    public static function list($path, $all = false)
     {
-        if (empty($path)) {
-            $path = static::root();
-        }
         static::assert($path);
         if (!static::isDirectory($path)) {
             throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
