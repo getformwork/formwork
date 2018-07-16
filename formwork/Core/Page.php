@@ -99,7 +99,7 @@ class Page extends AbstractPage
 
     public function current()
     {
-        return $this->uri() == Uri::normalize(Uri::path());
+        return Formwork::instance()->site()->currentPage() === $this;
     }
 
     public function date($format = null)
