@@ -16,7 +16,7 @@ class Cache
         $this->path = Formwork::instance()->option('cache.path');
         $this->time = Formwork::instance()->option('cache.time');
         if (!FileSystem::exists($this->path)) {
-            FileSystem::createDirectory($this->path);
+            FileSystem::createDirectory($this->path, true);
         }
     }
 
