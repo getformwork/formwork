@@ -330,7 +330,7 @@ class Pages extends AbstractController
 
     protected function createPage($path, $template, $title)
     {
-        FileSystem::createDirectory($path);
+        FileSystem::createDirectory($path, true);
         $filename = $template . Formwork::instance()->option('content.extension');
         FileSystem::createFile($path . $filename);
         $frontmatter = array(
