@@ -14,7 +14,7 @@
     border: 1px solid $color-gray;
     border-radius: 3px;
     content: ' ';
-    transition: all 150ms;
+    transition: border-color 150ms, background-color 150ms;
 }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
@@ -160,7 +160,7 @@
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.5;
-    transition: all 150ms;
+    transition: background-color 150ms, color 150ms;
 }
 
 .toggle-group input[type=radio]:hover + span {
@@ -168,6 +168,6 @@
 }
 
 .toggle-group input[type=radio]:checked + span {
-    background: $color-accent;
+    background-color: $color-accent;
     color: #fff;
 }
