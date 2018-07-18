@@ -142,7 +142,8 @@ class HTTPRequest
         return static::$files;
     }
 
-    public static function hasHeader($header) {
+    public static function hasHeader($header)
+    {
         return isset(static::headers()[$header]);
     }
 
