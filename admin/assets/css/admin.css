@@ -532,7 +532,7 @@ template {
   animation-name: shake; }
 
 .animated {
-  animation-duration: 0.5s;
+  animation-duration: 500ms;
   animation-fill-mode: both; }
 
 @keyframes fadeInRight {
@@ -574,7 +574,8 @@ body {
 a {
   outline: none;
   color: #3498da;
-  text-decoration: none; }
+  text-decoration: none;
+  transition: color 150ms; }
   a:hover {
     color: #1a608e; }
   a:not([href]) {
@@ -697,7 +698,7 @@ button,
   font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.15;
   cursor: default;
-  transition: border-color 150ms, color 150ms, background-color 150ms;
+  transition: border-color 150ms, background-color 150ms, color 150ms;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -816,20 +817,16 @@ a.button {
   margin: 0 auto;
   padding-right: 15px;
   padding-left: 15px; }
-  .container,
-  .container-full,
-  .container-no-margin {
-    zoom: 1; }
-  .container:before, .container:after,
-  .container-full:before,
-  .container-full:after,
-  .container-no-margin:before,
-  .container-no-margin:after {
+  .container::before, .container::after,
+  .container-full::before,
+  .container-full::after,
+  .container-no-margin::before,
+  .container-no-margin::after {
     display: table;
     content: ' '; }
-  .container:after,
-  .container-full:after,
-  .container-no-margin:after {
+  .container::after,
+  .container-full::after,
+  .container-no-margin::after {
     clear: both; }
 
 .container {
@@ -842,12 +839,10 @@ a.button {
 .row {
   margin-right: -15px;
   margin-left: -15px; }
-  .row {
-    zoom: 1; }
-  .row:before, .row:after {
+  .row::before, .row::after {
     display: table;
     content: ' '; }
-  .row:after {
+  .row::after {
     clear: both; }
 
 @media (max-width: 768px) {
@@ -1141,7 +1136,7 @@ a.button {
 
 .calendar-day {
   border-radius: 3px;
-  transition: all 100ms; }
+  transition: background-color 150ms, color 150ms; }
 
 .calendar-day.selected {
   background-color: #3498da;
@@ -1213,8 +1208,6 @@ a.button {
   margin-bottom: 1rem;
   padding: 0.5rem;
   background-color: #f8f8f8; }
-  .file-input-label.drag span {
-    background-color: #fff; }
 
 .file-input-label span {
   display: block;
@@ -1222,7 +1215,10 @@ a.button {
   border: 2px dashed #cacaca;
   color: #444;
   text-align: center;
-  transition: background-color 250ms; }
+  transition: background-color 300ms; }
+
+.file-input-label.drag span {
+  background-color: #fff; }
 
 .files-list {
   margin: 0;
@@ -1315,7 +1311,7 @@ a.button {
   border: 1px solid #cacaca;
   border-radius: 3px;
   content: ' ';
-  transition: all 150ms; }
+  transition: border-color 150ms, background-color 150ms; }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
 .custom-checkbox:disabled + .custom-checkbox-text::before {
@@ -1444,13 +1440,13 @@ a.button {
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  transition: all 150ms; }
+  transition: background-color 150ms, color 150ms; }
 
 .toggle-group input[type=radio]:hover + span {
   background-color: #f8f8f8; }
 
 .toggle-group input[type=radio]:checked + span {
-  background: #3498da;
+  background-color: #3498da;
   color: #fff; }
 
 input,
@@ -1773,12 +1769,12 @@ label {
   border-radius: 3px;
   background-color: #f0f0f0;
   box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
-  transition: top 0.3s ease-in;
-  animation: fadeInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  transition: top 300ms ease-in;
+  animation: fadeInRight 300ms cubic-bezier(0.4, 0, 0.2, 1); }
 
 .notification.fadeout {
   opacity: 0;
-  animation: fadeOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  animation: fadeOutRight 300ms cubic-bezier(0.4, 0, 0.2, 1); }
 
 .notification-error,
 .notification-success {
@@ -1993,9 +1989,10 @@ label {
   @media (min-width: 768px) {
     .logo {
       text-align: left; } }
-  .logo a,
-  .logo a:hover {
-    color: #000; }
+
+.logo a,
+.logo a:hover {
+  color: #000; }
 
 .sidebar-navigation {
   margin: 0;
@@ -2004,23 +2001,27 @@ label {
   list-style-type: none; }
   .sidebar-navigation:last-child {
     margin-bottom: 0; }
-  .sidebar-navigation > li {
-    position: relative;
-    margin: 0.5rem 0;
-    padding: 0.25rem 0;
-    padding-left: 1rem; }
-    .sidebar-navigation > li.active {
-      font-weight: 600; }
-      .sidebar-navigation > li.active::before {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 3px;
-        background-color: #3498da;
-        content: ' '; }
-    .sidebar-navigation > li a {
-      color: #000; }
+
+.sidebar-navigation > li {
+  position: relative;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0;
+  padding-left: 1rem; }
+
+.sidebar-navigation > li a {
+  color: #000; }
+
+.sidebar-navigation > li.active {
+  font-weight: 600; }
+
+.sidebar-navigation > li.active::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: #3498da;
+  content: ' '; }
 
 .admin-user-card {
   display: table;
@@ -2034,10 +2035,11 @@ label {
   display: table-cell;
   width: 48px;
   vertical-align: middle; }
-  .admin-user-avatar img {
-    width: 48px;
-    border-radius: 50%;
-    transition: box-shadow ease-out 300ms; }
+
+.admin-user-avatar img {
+  width: 48px;
+  border-radius: 50%;
+  transition: box-shadow 300ms ease-out; }
 
 .admin-user-details {
   display: table-cell;
@@ -2100,8 +2102,7 @@ label {
 
 .view-site {
   float: right;
-  color: #444;
-  transition: color 150ms; }
+  color: #444; }
   .view-site:hover {
     color: #3498da; }
 
