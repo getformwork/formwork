@@ -68,21 +68,4 @@
 .file-actions button,
 .file-actions .button {
     margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.file-actions button:focus,
-.file-actions .button:focus {
-    box-shadow: none;
-}
-
-.file-actions button:hover,
-.file-actions .button:hover {
-    box-shadow: none;
-    color: $color-accent;
 }

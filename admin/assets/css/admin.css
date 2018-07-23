@@ -754,6 +754,22 @@ a.button {
     background-color: #d52d1a;
     color: #fff; }
 
+.button-link {
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 1rem;
+  cursor: pointer; }
+  .button-link:hover, .button-link:focus {
+    background-color: transparent; }
+  .button-link:hover {
+    color: #3498da; }
+  .button-link:focus {
+    box-shadow: none; }
+  .button-link[disabled], .button-link[disabled]:hover {
+    background-color: transparent;
+    cursor: default; }
+
 .button-right {
   float: right;
   margin-right: 0;
@@ -1279,22 +1295,7 @@ a.button {
 
 .file-actions button,
 .file-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.file-actions button:focus,
-.file-actions .button:focus {
-  box-shadow: none; }
-
-.file-actions button:hover,
-.file-actions .button:hover {
-  box-shadow: none;
-  color: #3498da; }
+  margin: 0; }
 
 .custom-checkbox {
   position: absolute;
@@ -1918,21 +1919,7 @@ label {
 
 .page-actions button,
 .page-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.page-actions button:focus,
-.page-actions .button:focus {
-  box-shadow: none; }
-
-.page-actions button:hover,
-.page-actions .button:hover {
-  color: #3498da; }
+  margin: 0; }
 
 .page-search {
   padding-right: 1.5rem;
@@ -2241,21 +2228,7 @@ ul {
 
 .user-actions button,
 .user-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.user-actions button:focus,
-.user-actions .button:focus {
-  box-shadow: none; }
-
-.user-actions button:hover,
-.user-actions .button:hover {
-  color: #3498da; }
+  margin: 0; }
 
 /* vietnamese */
 @font-face {
