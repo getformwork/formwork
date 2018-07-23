@@ -76,6 +76,25 @@ Formwork.Editor = function(id) {
     $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
     disableSummaryCommand();
 
+    $(document).keydown(function(event) {
+        if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+            switch (event.which) {
+                case 66: // ctrl/cmd + B
+                    $('[data-command=bold]').click();
+                    return false;
+                case 73: // ctrl/cmd + I
+                    $('[data-command=italic]').click();
+                    return false;
+                case 83: // ctrl/cmd + S
+                    $('[data-command=save]').click();
+                    return false;
+                case 89: //ctrl/cmd + Y
+                case 90: // ctrl/cmd + Z
+                    return false;
+            }
+        }
+    });
+
     function hasSummarySequence() {
         return /\n+===\n+/.test(textarea.value);
     }
