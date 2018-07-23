@@ -141,22 +141,6 @@
 .page-actions button,
 .page-actions .button {
     margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.page-actions button:focus,
-.page-actions .button:focus {
-    box-shadow: none;
-}
-
-.page-actions button:hover,
-.page-actions .button:hover {
-    color: $color-accent;
 }
 
 .page-search {

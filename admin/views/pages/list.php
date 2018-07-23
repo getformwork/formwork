@@ -31,7 +31,7 @@
 <?php
                             if ($page->isDeletable()):
 ?>
-                            <button data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>"><i class="i-trash"></i></button>
+                            <button class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>"><i class="i-trash"></i></button>
 <?php
                             endif;
 ?>

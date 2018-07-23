@@ -87,6 +87,29 @@ a.button {
     }
 }
 
+.button-link {
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+        background-color: transparent;
+    }
+    &:hover {
+        color: $color-accent;
+    }
+    &:focus {
+        box-shadow: none;
+    }
+    &[disabled],
+    &[disabled]:hover {
+        background-color: transparent;
+        cursor: default;
+    }
+}
+
 .button-right {
     float: right;
     margin-right: 0;
