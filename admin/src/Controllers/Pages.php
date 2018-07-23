@@ -184,6 +184,14 @@ class Pages extends AbstractController
         );
 
         $modals[] = $this->view(
+            'modals.deletePage',
+            array(
+                'csrfToken' => CSRFToken::get()
+            ),
+            false
+        );
+
+        $modals[] = $this->view(
             'modals.deleteFile',
             array(
                 'csrfToken' => CSRFToken::get()

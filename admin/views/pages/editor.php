@@ -24,6 +24,7 @@
                     <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= htmlspecialchars($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <button class="button-accent button-save button-right" type="submit" tabindex="4"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
+                    <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
                 </div>
             </div>
             <div class="col-l-1-4">
