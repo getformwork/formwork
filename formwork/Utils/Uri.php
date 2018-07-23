@@ -147,7 +147,7 @@ class Uri
         return $result;
     }
 
-    public function normalize($uri)
+    public static function normalize($uri)
     {
         if (substr($uri, 0, 7) == 'http://' || substr($uri, 0, 8) == 'https://') {
             return static::make(array(), $uri);
@@ -172,7 +172,7 @@ class Uri
         return static::make(array('fragment' => ''), $uri);
     }
 
-    public function resolveRelativeUri($uri, $base = null)
+    public static function resolveRelativeUri($uri, $base = null)
     {
         if (is_null($base)) {
             $base = static::current();
