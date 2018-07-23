@@ -106,7 +106,7 @@ class FileSystem
         return $unit ? static::bytesToSize($bytes) : $bytes;
     }
 
-    public function directorySize($path, $unit = true)
+    public static function directorySize($path, $unit = true)
     {
         $path = static::normalize($path);
         static::assert($path);
