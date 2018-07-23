@@ -9,8 +9,13 @@
     border-radius: 3px;
     background-color: $color-gray-xlight;
     box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
-    transition: top 300ms ease-in;
+    cursor: default;
+    transition: top 300ms ease-in, opacity 150ms;
     animation: fadeInRight 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.notification:hover {
+    opacity: 0.95;
 }
 
 .notification.fadeout {
