@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.11](https://github.com/giuscris/formwork/releases/tag/0.6.11) (2018-07-24)
+
+**Enhancements**
+
+ * Make notifications disappear by clicking on them (closes [#3](https://github.com/giuscris/formwork/issues/3))
+ * Add Delete Page button to Pages editor
+ * Add Pages editor keyboard shortcuts for bold, italic and save commands
+ * Add Preview button to Pages editor
+
+**Bug fixes**
+
+ * Fix unintended non-static methods which triggered a PHP warning
+
 ## [0.6.10](https://github.com/giuscris/formwork/releases/tag/0.6.10) (2018-07-18)
 
 **Enhancements**
