@@ -28,10 +28,13 @@ button,
         @extend .focused;
     }
     &[disabled],
-    &[disabled]:hover {
+    &[disabled]:hover,
+    &.disabled,
+    &.disabled:hover {
         border-color: $color-gray-xxlight;
         background-color: $color-gray-xxlight;
         color: lighten(#444, 50%);
+        pointer-events: none;
     }
 }
 
@@ -104,7 +107,9 @@ a.button {
         box-shadow: none;
     }
     &[disabled],
-    &[disabled]:hover {
+    &[disabled]:hover,
+    &.disabled,
+    &.disabled:hover {
         background-color: transparent;
         cursor: default;
     }
