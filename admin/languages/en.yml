@@ -92,6 +92,7 @@ pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
 pages.pages.search: Search Pages...
+pages.preview: Preview
 pages.preview-file: Preview
 pages.publish: Publish
 pages.save: Save

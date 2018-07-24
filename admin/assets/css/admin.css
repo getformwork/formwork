@@ -708,12 +708,15 @@ button,
     border-color: #e4e4e4;
     background-color: #e4e4e4;
     color: #444; }
-  button[disabled], button[disabled]:hover,
+  button[disabled], button[disabled]:hover, button.disabled, button.disabled:hover,
   .button[disabled],
-  .button[disabled]:hover {
+  .button[disabled]:hover,
+  .button.disabled,
+  .button.disabled:hover {
     border-color: #f8f8f8;
     background-color: #f8f8f8;
-    color: #c4c4c4; }
+    color: #c4c4c4;
+    pointer-events: none; }
 
 a.button {
   text-align: center; }
@@ -766,7 +769,7 @@ a.button {
     color: #3498da; }
   .button-link:focus {
     box-shadow: none; }
-  .button-link[disabled], .button-link[disabled]:hover {
+  .button-link[disabled], .button-link[disabled]:hover, .button-link.disabled, .button-link.disabled:hover {
     background-color: transparent;
     cursor: default; }
 
