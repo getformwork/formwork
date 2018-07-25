@@ -244,6 +244,17 @@ class Admin
             array(new Controllers\Cache(), 'clear')
         );
 
+        $this->router->add(
+            'POST',
+            '/updates/check/',
+            array(new Controllers\Updates(), 'check')
+        );
+        $this->router->add(
+            'POST',
+            '/updates/update/',
+            array(new Controllers\Updates(), 'update')
+        );
+
         $this->router->dispatch();
 
         if (!$this->router->hasDispatched()) {
