@@ -76,7 +76,7 @@ class Updater
 
         $this->data['last-check'] = time();
 
-        if ($this->release['tag'] == Formwork::VERSION) {
+        if (version_compare(Formwork::VERSION, $this->release['tag']) >= 0) {
             $this->data['up-to-date'] = true;
             $this->save();
             return true;
