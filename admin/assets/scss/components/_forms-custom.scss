@@ -14,7 +14,7 @@
     border: 1px solid $color-gray;
     border-radius: 3px;
     content: ' ';
-    transition: all 150ms;
+    transition: border-color 150ms, background-color 150ms;
 }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
@@ -135,4 +135,39 @@
 
 .title-input {
     font-size: 1.125rem;
+}
+
+.toggle-group {
+    display: inline-block;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    border: 1px solid $color-gray;
+    border-radius: 3px;
+    font-size: 0;
+}
+
+.toggle-group label {
+    margin: 0;
+}
+
+.toggle-group input[type=radio] {
+    display: none;
+}
+
+.toggle-group input[type=radio] + span {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    transition: background-color 150ms, color 150ms;
+}
+
+.toggle-group input[type=radio]:hover + span {
+    background-color: $color-gray-xxlight;
+}
+
+.toggle-group input[type=radio]:checked + span {
+    background-color: $color-accent;
+    color: #fff;
 }

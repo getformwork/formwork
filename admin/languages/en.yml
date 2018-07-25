@@ -52,6 +52,7 @@ pages.delete-file: Delete File
 pages.delete-file.prompt: Are you sure you want to delete this file? This action can’t be undone.
 pages.delete-page: Delete Page
 pages.delete-page.prompt: Are you sure you want to delete this page? This action can’t be undone.
+pages.edit-page: Edit Page %s
 pages.editor.bold: Bold
 pages.editor.bullet-list: Bullet list
 pages.editor.image: Image
@@ -91,6 +92,7 @@ pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
 pages.pages.search: Search Pages...
+pages.preview: Preview
 pages.preview-file: Preview
 pages.publish: Publish
 pages.save: Save
@@ -124,6 +126,7 @@ users.new-user.password-suggestion: at least 8 characters
 users.new-user.username-suggestion: between 3-20 letters, digits and dashes
 users.options: Options
 users.user: User
+users.user-profile: '%s User Profile'
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
 users.user.cannot-create.var-missing: 'Cannot create user, missing %s variable'
 users.user.cannot-delete.logged: Cannot delete user, the user is logged

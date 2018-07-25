@@ -22,6 +22,7 @@ a {
     outline: none;
     color: $color-accent;
     text-decoration: none;
+    transition: color 150ms;
     &:hover {
         color: $color-accent-xdark;
     }

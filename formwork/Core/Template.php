@@ -3,7 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
-use Exception;
+use RuntimeException;
 
 class Template
 {
@@ -40,8 +40,9 @@ class Template
     public function renderPage(Page $page, $vars, $return = false)
     {
         if (static::$rendering) {
-            throw new Exception(__METHOD__ . ' not allowed while rendering');
+            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+        
         $this->vars['page'] = $page;
         $this->vars = array_merge($this->vars, $vars);
 
@@ -64,7 +65,7 @@ class Template
     protected function controller()
     {
         if (static::$rendering) {
-            throw new Exception(__METHOD__ . ' not allowed while rendering');
+            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
         $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
         if (FileSystem::exists($controllerFile)) {
@@ -83,9 +84,11 @@ class Template
     protected function render($return = false)
     {
         if (static::$rendering) {
-            throw new Exception(__METHOD__ . ' not allowed while rendering');
+            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+
         ob_start();
+
         static::$rendering = true;
         $this->insert($this->name);
         static::$rendering = false;

@@ -532,7 +532,7 @@ template {
   animation-name: shake; }
 
 .animated {
-  animation-duration: 0.5s;
+  animation-duration: 500ms;
   animation-fill-mode: both; }
 
 @keyframes fadeInRight {
@@ -574,7 +574,8 @@ body {
 a {
   outline: none;
   color: #3498da;
-  text-decoration: none; }
+  text-decoration: none;
+  transition: color 150ms; }
   a:hover {
     color: #1a608e; }
   a:not([href]) {
@@ -697,7 +698,7 @@ button,
   font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.15;
   cursor: default;
-  transition: border-color 150ms, color 150ms, background-color 150ms;
+  transition: border-color 150ms, background-color 150ms, color 150ms;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -707,12 +708,15 @@ button,
     border-color: #e4e4e4;
     background-color: #e4e4e4;
     color: #444; }
-  button[disabled], button[disabled]:hover,
+  button[disabled], button[disabled]:hover, button.disabled, button.disabled:hover,
   .button[disabled],
-  .button[disabled]:hover {
+  .button[disabled]:hover,
+  .button.disabled,
+  .button.disabled:hover {
     border-color: #f8f8f8;
     background-color: #f8f8f8;
-    color: #c4c4c4; }
+    color: #c4c4c4;
+    pointer-events: none; }
 
 a.button {
   text-align: center; }
@@ -752,6 +756,22 @@ a.button {
     border-color: #d52d1a;
     background-color: #d52d1a;
     color: #fff; }
+
+.button-link {
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 1rem;
+  cursor: pointer; }
+  .button-link:hover, .button-link:focus {
+    background-color: transparent; }
+  .button-link:hover {
+    color: #3498da; }
+  .button-link:focus {
+    box-shadow: none; }
+  .button-link[disabled], .button-link[disabled]:hover, .button-link.disabled, .button-link.disabled:hover {
+    background-color: transparent;
+    cursor: default; }
 
 .button-right {
   float: right;
@@ -816,20 +836,16 @@ a.button {
   margin: 0 auto;
   padding-right: 15px;
   padding-left: 15px; }
-  .container,
-  .container-full,
-  .container-no-margin {
-    zoom: 1; }
-  .container:before, .container:after,
-  .container-full:before,
-  .container-full:after,
-  .container-no-margin:before,
-  .container-no-margin:after {
+  .container::before, .container::after,
+  .container-full::before,
+  .container-full::after,
+  .container-no-margin::before,
+  .container-no-margin::after {
     display: table;
     content: ' '; }
-  .container:after,
-  .container-full:after,
-  .container-no-margin:after {
+  .container::after,
+  .container-full::after,
+  .container-no-margin::after {
     clear: both; }
 
 .container {
@@ -842,12 +858,10 @@ a.button {
 .row {
   margin-right: -15px;
   margin-left: -15px; }
-  .row {
-    zoom: 1; }
-  .row:before, .row:after {
+  .row::before, .row::after {
     display: table;
     content: ' '; }
-  .row:after {
+  .row::after {
     clear: both; }
 
 @media (max-width: 768px) {
@@ -1141,7 +1155,7 @@ a.button {
 
 .calendar-day {
   border-radius: 3px;
-  transition: all 100ms; }
+  transition: background-color 150ms, color 150ms; }
 
 .calendar-day.selected {
   background-color: #3498da;
@@ -1213,8 +1227,6 @@ a.button {
   margin-bottom: 1rem;
   padding: 0.5rem;
   background-color: #f8f8f8; }
-  .file-input-label.drag span {
-    background-color: #fff; }
 
 .file-input-label span {
   display: block;
@@ -1222,7 +1234,10 @@ a.button {
   border: 2px dashed #cacaca;
   color: #444;
   text-align: center;
-  transition: background-color 250ms; }
+  transition: background-color 300ms; }
+
+.file-input-label.drag span {
+  background-color: #fff; }
 
 .files-list {
   margin: 0;
@@ -1237,20 +1252,20 @@ a.button {
 .file-name::before {
   margin-right: 0.5rem;
   color: #444;
-  content: '\e82d';
+  font-size: 1rem;
   font-family: Icons; }
 
 .file-type-image::before {
-  content: '\e829'; }
+  font-family: Icons; }
 
 .file-type-document::before {
-  content: '\e82b'; }
+  font-family: Icons; }
 
 .file-type-audio::before {
-  content: '\e827'; }
+  font-family: Icons; }
 
 .file-type-video::before {
-  content: '\e82c'; }
+  font-family: Icons; }
 
 .files-item-cell {
   display: table-cell;
@@ -1283,22 +1298,7 @@ a.button {
 
 .file-actions button,
 .file-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.file-actions button:focus,
-.file-actions .button:focus {
-  box-shadow: none; }
-
-.file-actions button:hover,
-.file-actions .button:hover {
-  box-shadow: none;
-  color: #3498da; }
+  margin: 0; }
 
 .custom-checkbox {
   position: absolute;
@@ -1315,7 +1315,7 @@ a.button {
   border: 1px solid #cacaca;
   border-radius: 3px;
   content: ' ';
-  transition: all 150ms; }
+  transition: border-color 150ms, background-color 150ms; }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
 .custom-checkbox:disabled + .custom-checkbox-text::before {
@@ -1423,6 +1423,35 @@ a.button {
 
 .title-input {
   font-size: 1.125rem; }
+
+.toggle-group {
+  display: inline-block;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  border: 1px solid #cacaca;
+  border-radius: 3px;
+  font-size: 0; }
+
+.toggle-group label {
+  margin: 0; }
+
+.toggle-group input[type=radio] {
+  display: none; }
+
+.toggle-group input[type=radio] + span {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: background-color 150ms, color 150ms; }
+
+.toggle-group input[type=radio]:hover + span {
+  background-color: #f8f8f8; }
+
+.toggle-group input[type=radio]:checked + span {
+  background-color: #3498da;
+  color: #fff; }
 
 input,
 select,
@@ -1652,19 +1681,19 @@ label {
   background-color: #e74c3b;
   color: #fff; }
   .login-modal-error::before {
-    content: '\e822'; }
+    font-family: Icons; }
 
 .login-modal-success {
   background-color: #25a259;
   color: #fff; }
   .login-modal-success::before {
-    content: '\e810'; }
+    font-family: Icons; }
 
 .login-modal-warning {
   background-color: #f39c11;
   color: #fff; }
   .login-modal-warning::before {
-    content: '\e861'; }
+    font-family: Icons; }
 
 .info-data {
   margin-bottom: 1rem;
@@ -1744,12 +1773,16 @@ label {
   border-radius: 3px;
   background-color: #f0f0f0;
   box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
-  transition: top 0.3s ease-in;
-  animation: fadeInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  cursor: default;
+  transition: top 300ms ease-in, opacity 150ms;
+  animation: fadeInRight 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+
+.notification:hover {
+  opacity: 0.95; }
 
 .notification.fadeout {
   opacity: 0;
-  animation: fadeOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  animation: fadeOutRight 300ms cubic-bezier(0.4, 0, 0.2, 1); }
 
 .notification-error,
 .notification-success {
@@ -1770,14 +1803,13 @@ label {
   left: 1rem;
   display: block;
   font-size: 1.25rem;
-  font-family: Icons;
   transform: translate(0, -50%); }
 
 .notification-error::before {
-  content: '\e822'; }
+  font-family: Icons; }
 
 .notification-success::before {
-  content: '\e810'; }
+  font-family: Icons; }
 
 .pages-list {
   margin: 0;
@@ -1798,8 +1830,13 @@ label {
   color: #444;
   font-weight: 400;
   font-size: 0.875rem;
-  font-family: 'Icons';
   line-height: 1.714; }
+
+.toggle-collapsed::before {
+  font-family: Icons; }
+
+.toggle-expanded::before {
+  font-family: Icons; }
 
 .pages-item {
   padding: 0.5rem 0;
@@ -1833,7 +1870,6 @@ label {
 .page-status-label::before {
   display: inline-block;
   margin-right: 0.375rem;
-  content: '\e816';
   font-size: 0.75rem;
   font-family: Icons; }
 
@@ -1886,21 +1922,7 @@ label {
 
 .page-actions button,
 .page-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.page-actions button:focus,
-.page-actions .button:focus {
-  box-shadow: none; }
-
-.page-actions button:hover,
-.page-actions .button:hover {
-  color: #3498da; }
+  margin: 0; }
 
 .page-search {
   padding-right: 1.5rem;
@@ -1961,9 +1983,10 @@ label {
   @media (min-width: 768px) {
     .logo {
       text-align: left; } }
-  .logo a,
-  .logo a:hover {
-    color: #000; }
+
+.logo a,
+.logo a:hover {
+  color: #000; }
 
 .sidebar-navigation {
   margin: 0;
@@ -1972,23 +1995,27 @@ label {
   list-style-type: none; }
   .sidebar-navigation:last-child {
     margin-bottom: 0; }
-  .sidebar-navigation > li {
-    position: relative;
-    margin: 0.5rem 0;
-    padding: 0.25rem 0;
-    padding-left: 1rem; }
-    .sidebar-navigation > li.active {
-      font-weight: 600; }
-      .sidebar-navigation > li.active::before {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 3px;
-        background-color: #3498da;
-        content: ' '; }
-    .sidebar-navigation > li a {
-      color: #000; }
+
+.sidebar-navigation > li {
+  position: relative;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0;
+  padding-left: 1rem; }
+
+.sidebar-navigation > li a {
+  color: #000; }
+
+.sidebar-navigation > li.active {
+  font-weight: 600; }
+
+.sidebar-navigation > li.active::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: #3498da;
+  content: ' '; }
 
 .admin-user-card {
   display: table;
@@ -2002,10 +2029,11 @@ label {
   display: table-cell;
   width: 48px;
   vertical-align: middle; }
-  .admin-user-avatar img {
-    width: 48px;
-    border-radius: 50%;
-    transition: box-shadow ease-out 300ms; }
+
+.admin-user-avatar img {
+  width: 48px;
+  border-radius: 50%;
+  transition: box-shadow 300ms ease-out; }
 
 .admin-user-details {
   display: table-cell;
@@ -2068,8 +2096,7 @@ label {
 
 .view-site {
   float: right;
-  color: #444;
-  transition: color 150ms; }
+  color: #444; }
   .view-site:hover {
     color: #3498da; }
 
@@ -2174,7 +2201,6 @@ ul {
 .user-status-label::before {
   display: inline-block;
   margin-right: 0.25rem;
-  content: '\e816';
   font-family: Icons; }
 
 .user-status-enabled .user-status-label::before {
@@ -2205,28 +2231,14 @@ ul {
 
 .user-actions button,
 .user-actions .button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 1rem;
-  cursor: pointer; }
-
-.user-actions button:focus,
-.user-actions .button:focus {
-  box-shadow: none; }
-
-.user-actions button:hover,
-.user-actions .button:hover {
-  color: #3498da; }
+  margin: 0; }
 
 /* vietnamese */
 @font-face {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 400;
-  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8cceyI9tAcVwob5A.woff2) format("woff2");
+  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8cceyI9tAcVwob5A.woff2) format("woff2");
   unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
 
 /* latin-ext */
@@ -2234,7 +2246,7 @@ ul {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 400;
-  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8ccezI9tAcVwob5A.woff2) format("woff2");
+  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8ccezI9tAcVwob5A.woff2) format("woff2");
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
 /* latin */
@@ -2242,7 +2254,7 @@ ul {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 400;
-  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8cce9I9tAcVwo.woff2) format("woff2");
+  src: local("Nunito Sans Regular"), local("NunitoSans-Regular"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe0qMImSLYBIv1o4X1M8cce9I9tAcVwo.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 /* vietnamese */
@@ -2250,7 +2262,7 @@ ul {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 600;
-  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85iU1ECVZl_86Y.woff2) format("woff2");
+  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85iU1ECVZl_86Y.woff2) format("woff2");
   unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
 
 /* latin-ext */
@@ -2258,7 +2270,7 @@ ul {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 600;
-  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85jU1ECVZl_86Y.woff2) format("woff2");
+  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85jU1ECVZl_86Y.woff2) format("woff2");
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
 /* latin */
@@ -2266,7 +2278,7 @@ ul {
   font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 600;
-  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(http://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85tU1ECVZl_.woff2) format("woff2");
+  src: local("Nunito Sans SemiBold"), local("NunitoSans-SemiBold"), url(https://fonts.gstatic.com/s/nunitosans/v3/pe03MImSLYBIv1o4X1M8cc9iB85tU1ECVZl_.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 /* cyrillic-ext */
@@ -2274,7 +2286,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhGq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhGq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; }
 
 /* cyrillic */
@@ -2282,7 +2294,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhPq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhPq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 
 /* greek-ext */
@@ -2290,7 +2302,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhHq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhHq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+1F00-1FFF; }
 
 /* greek */
@@ -2298,7 +2310,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhIq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhIq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+0370-03FF; }
 
 /* vietnamese */
@@ -2306,7 +2318,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhEq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhEq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
 
 /* latin-ext */
@@ -2314,7 +2326,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhFq3-cXbKDO1w.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhFq3-cXbKDO1w.woff2) format("woff2");
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
 /* latin */
@@ -2322,7 +2334,7 @@ ul {
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(http://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhLq3-cXbKD.woff2) format("woff2");
+  src: local("Roboto Mono"), local("RobotoMono-Regular"), url(https://fonts.gstatic.com/s/robotomono/v5/L0x5DF4xlVMF-BfR8bXMIjhLq3-cXbKD.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 @font-face {
@@ -2392,7 +2404,7 @@ ul {
 .i-bold::before {
   content: '\e80f'; }
 
-.i-check::before {
+.i-check::before, .login-modal-success::before, .notification-success::before {
   content: '\e810'; }
 
 .i-chevron-down::before, .toggle-collapsed::before {
@@ -2410,7 +2422,7 @@ ul {
 .i-circle-o::before {
   content: '\e815'; }
 
-.i-circle::before {
+.i-circle::before, .page-status-label::before, .user-status-label::before {
   content: '\e816'; }
 
 .i-clipboard::before {
@@ -2446,7 +2458,7 @@ ul {
 .i-envelope::before {
   content: '\e821'; }
 
-.i-error-circle::before {
+.i-error-circle::before, .login-modal-error::before, .notification-error::before {
   content: '\e822'; }
 
 .i-external-link-alt::before {
@@ -2458,29 +2470,29 @@ ul {
 .i-eye::before {
   content: '\e825'; }
 
+.i-file::before, .file-name::before {
+  content: '\e82d'; }
+
 .i-file-archive::before {
   content: '\e826'; }
 
-.i-file-audio::before {
+.i-file-audio::before, .file-type-audio::before {
   content: '\e827'; }
 
 .i-file-code::before {
   content: '\e828'; }
 
-.i-file-image::before {
+.i-file-image::before, .file-type-image::before {
   content: '\e829'; }
 
 .i-file-pdf::before {
   content: '\e82a'; }
 
-.i-file-text::before {
+.i-file-text::before, .file-type-document::before {
   content: '\e82b'; }
 
-.i-file-video::before {
+.i-file-video::before, .file-type-video::before {
   content: '\e82c'; }
-
-.i-file::before {
-  content: '\e82d'; }
 
 .i-filter::before {
   content: '\e82e'; }
@@ -2635,7 +2647,7 @@ ul {
 .i-users::before {
   content: '\e860'; }
 
-.i-warning::before {
+.i-warning::before, .login-modal-warning::before {
   content: '\e861'; }
 
 .i-italic::before {

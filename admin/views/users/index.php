@@ -17,7 +17,7 @@
 <?php
                     if (!$user->logged()):
 ?>
-                        <button data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>"><i class="i-trash"></i></button>
+                        <button class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>"><i class="i-trash"></i></button>
 <?php
                     endif;
 ?>

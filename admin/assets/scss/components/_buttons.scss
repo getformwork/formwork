@@ -16,7 +16,7 @@ button,
     font-family: $base-font-family;
     line-height: $button-line-height;
     cursor: default;
-    transition: border-color 150ms, color 150ms, background-color 150ms;
+    transition: border-color 150ms, background-color 150ms, color 150ms;
 
     @include user-select-none;
     &:hover {
@@ -28,10 +28,13 @@ button,
         @extend .focused;
     }
     &[disabled],
-    &[disabled]:hover {
+    &[disabled]:hover,
+    &.disabled,
+    &.disabled:hover {
         border-color: $color-gray-xxlight;
         background-color: $color-gray-xxlight;
         color: lighten(#444, 50%);
+        pointer-events: none;
     }
 }
 
@@ -84,6 +87,31 @@ a.button {
         border-color: $color-error-dark;
         background-color: $color-error-dark;
         color: #fff;
+    }
+}
+
+.button-link {
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+        background-color: transparent;
+    }
+    &:hover {
+        color: $color-accent;
+    }
+    &:focus {
+        box-shadow: none;
+    }
+    &[disabled],
+    &[disabled]:hover,
+    &.disabled,
+    &.disabled:hover {
+        background-color: transparent;
+        cursor: default;
     }
 }
 

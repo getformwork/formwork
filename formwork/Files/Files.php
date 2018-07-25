@@ -19,7 +19,7 @@ class Files extends Collection
 
     public function has($file)
     {
-        return isset($this->items[$file]) ? true : false;
+        return isset($this->items[$file]);
     }
 
     public function path()

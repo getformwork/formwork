@@ -9,18 +9,34 @@ Formwork.Notification = function(text, type, interval) {
         $notification.css('top', top);
     }
 
-    if (type) $notification.addClass('notification-' + type);
+    if (type) {
+        $notification.addClass('notification-' + type);
+    }
 
     $notification.appendTo('body');
 
-    setTimeout(function() {
+    var timer = setTimeout(remove, interval);
+
+    $notification.click(remove);
+
+    $notification.mouseenter(function() {
+        clearTimeout(timer);
+    });
+
+    $notification.mouseleave(function() {
+        timer = setTimeout(remove, 1000);
+    });
+
+    function remove() {
+        var found = false;
         var offset = $notification.outerHeight(true);
 
         $('.notification').each(function() {
             var $this = $(this);
             if ($this.is($notification)) {
+                found = true;
                 $this.addClass('fadeout');
-            } else {
+            } else if (found) {
                 $this.css('top', '-=' + offset);
             }
         });
@@ -29,5 +45,6 @@ Formwork.Notification = function(text, type, interval) {
             $notification.remove();
         }, 400);
 
-    }, interval);
+    }
+
 };

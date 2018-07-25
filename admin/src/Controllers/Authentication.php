@@ -4,14 +4,8 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
-use Formwork\Admin\Security\Password;
-use Formwork\Admin\Utils\Log;
-use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Uri;
-use Spyc;
 
 class Authentication extends AbstractController
 {
@@ -29,7 +23,10 @@ class Authentication extends AbstractController
                 if (is_null(CSRFToken::get())) {
                     CSRFToken::generate();
                 }
-                $this->view('authentication.login', array('csrfToken' => CSRFToken::get()));
+                $this->view('authentication.login', array(
+                    'title' => $this->label('login.login'),
+                    'csrfToken' => CSRFToken::get()
+                ));
                 break;
 
             case 'POST':

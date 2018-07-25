@@ -19,8 +19,7 @@ class Uri
     public static function scheme($uri = null)
     {
         if (is_null($uri)) {
-            if (isset($_SERVER['HTTPS']) && strtoupper($_SERVER['HTTPS']) !== 'OFF' ||
-            $_SERVER['SERVER_PORT'] === '443') {
+            if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
                 return 'https';
             }
             return 'http';
@@ -92,7 +91,8 @@ class Uri
 
     public static function base($uri = null)
     {
-        $port = empty(static::port()) || static::defaultPort() ? '' : ':' . static::port();
+        $uriPort = static::port($uri);
+        $port = empty($uriPort) || static::defaultPort($uriPort) ? '' : ':' . $uriPort;
         return static::scheme($uri) . '://' . static::host($uri) . $port;
     }
 
@@ -147,7 +147,7 @@ class Uri
         return $result;
     }
 
-    public function normalize($uri)
+    public static function normalize($uri)
     {
         if (substr($uri, 0, 7) == 'http://' || substr($uri, 0, 8) == 'https://') {
             return static::make(array(), $uri);
@@ -172,7 +172,7 @@ class Uri
         return static::make(array('fragment' => ''), $uri);
     }
 
-    public function resolveRelativeUri($uri, $base = null)
+    public static function resolveRelativeUri($uri, $base = null)
     {
         if (is_null($base)) {
             $base = static::current();

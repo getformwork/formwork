@@ -4,7 +4,6 @@ namespace Formwork\Cache;
 
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 
 class Cache
 {
@@ -17,7 +16,7 @@ class Cache
         $this->path = Formwork::instance()->option('cache.path');
         $this->time = Formwork::instance()->option('cache.time');
         if (!FileSystem::exists($this->path)) {
-            FileSystem::createDirectory($this->path);
+            FileSystem::createDirectory($this->path, true);
         }
     }
 

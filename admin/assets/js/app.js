@@ -46,12 +46,22 @@ Formwork.Chart = function(element, data) {
             labelOffset: {x: 0, y: 5}
         }
     };
-    
+
     var chart = new Chartist.Line(element, data, options);
+
+    var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
     $(chart.container).on('mouseover', '.ct-point', function() {
         var $this = $(this);
-        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: {x: 0, y: -8}});
+        var tooltipOffset = {x: 0, y: -8};
+
+        if (isFirefox) {
+            var strokeWidth = parseFloat($this.css('stroke-width'));
+            tooltipOffset.x += strokeWidth / 2;
+            tooltipOffset.y += strokeWidth / 2;
+        }
+
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: tooltipOffset});
         tooltip.show();
     });
 };
@@ -148,6 +158,25 @@ Formwork.Editor = function(id) {
     $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
     disableSummaryCommand();
 
+    $(document).keydown(function(event) {
+        if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+            switch (event.which) {
+                case 66: // ctrl/cmd + B
+                    $('[data-command=bold]').click();
+                    return false;
+                case 73: // ctrl/cmd + I
+                    $('[data-command=italic]').click();
+                    return false;
+                case 83: // ctrl/cmd + S
+                    $('[data-command=save]').click();
+                    return false;
+                case 89: //ctrl/cmd + Y
+                case 90: // ctrl/cmd + Z
+                    return false;
+            }
+        }
+    });
+
     function hasSummarySequence() {
         return /\n+===\n+/.test(textarea.value);
     }
@@ -158,7 +187,9 @@ Formwork.Editor = function(id) {
 
     function lastLine(text) {
         var index = text.lastIndexOf('\n');
-        if (index == -1) return text;
+        if (index == -1) {
+            return text;
+        }
         return text.substring(index + 1);
     }
 
@@ -168,7 +199,9 @@ Formwork.Editor = function(id) {
     }
 
     function insertAtCursor(leftValue, rightValue) {
-        if (rightValue === undefined) rightValue = leftValue;
+        if (rightValue === undefined) {
+            rightValue = leftValue;
+        }
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -185,7 +218,9 @@ Formwork.Form = function(form) {
     $form.data('original-data', $form.serialize());
 
     $window.on('beforeunload', function() {
-        if (hasChanged()) return true;
+        if (hasChanged()) {
+            return true;
+        }
     });
 
     $form.submit(function() {
@@ -344,18 +379,24 @@ Formwork.Modals = {
         $('.modal [data-dismiss]').click(function() {
             if ($(this).is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($(this).data('dismiss'));
-                if (!valid) return;
+                if (!valid) {
+                    return;
+                }
             }
             Formwork.Modals.hide($(this).data('dismiss'));
         });
 
         $('.modal').click(function(event) {
-            if (event.target === this) Formwork.Modals.hide();
+            if (event.target === this) {
+                Formwork.Modals.hide();
+            }
         });
 
         $(document).keyup(function(event) {
             // ESC key
-            if (event.which == 27) Formwork.Modals.hide();
+            if (event.which == 27) {
+                Formwork.Modals.hide();
+            }
         });
     },
     show: function (id, action, callback) {
@@ -365,7 +406,9 @@ Formwork.Modals = {
             $modal.find('form').attr('action', action);
         }
         $modal.find('[autofocus]').first().focus(); // Firefox bug
-        if (typeof callback === 'function') callback($modal);
+        if (typeof callback === 'function') {
+            callback($modal);
+        }
         this.createBackdrop();
     },
     hide: function(id) {
@@ -411,18 +454,34 @@ Formwork.Notification = function(text, type, interval) {
         $notification.css('top', top);
     }
 
-    if (type) $notification.addClass('notification-' + type);
+    if (type) {
+        $notification.addClass('notification-' + type);
+    }
 
     $notification.appendTo('body');
 
-    setTimeout(function() {
+    var timer = setTimeout(remove, interval);
+
+    $notification.click(remove);
+
+    $notification.mouseenter(function() {
+        clearTimeout(timer);
+    });
+
+    $notification.mouseleave(function() {
+        timer = setTimeout(remove, 1000);
+    });
+
+    function remove() {
+        var found = false;
         var offset = $notification.outerHeight(true);
 
         $('.notification').each(function() {
             var $this = $(this);
             if ($this.is($notification)) {
+                found = true;
                 $this.addClass('fadeout');
-            } else {
+            } else if (found) {
                 $this.css('top', '-=' + offset);
             }
         });
@@ -431,7 +490,8 @@ Formwork.Notification = function(text, type, interval) {
             $notification.remove();
         }, 400);
 
-    }, interval);
+    }
+
 };
 
 Formwork.Pages = {
@@ -482,7 +542,9 @@ Formwork.Pages = {
                 $('.page-title a').each(function() {
                     var $pagesItem = $(this).closest('.pages-item');
                     var matched = !!$(this).text().match(regexp);
-                    if (matched) matches++;
+                    if (matched) {
+                        matches++;
+                    }
                     $pagesItem.toggle(matched);
                 });
             }
@@ -490,7 +552,9 @@ Formwork.Pages = {
 
         $('.page-details').click(function() {
             var $toggle = $(this).find('.page-children-toggle').first();
-            if ($toggle.length) $toggle.click();
+            if ($toggle.length) {
+                $toggle.click();
+            }
         });
 
         $('#page-title', '#newPageModal').keyup(function() {
@@ -500,7 +564,9 @@ Formwork.Pages = {
         $('#page-slug', '#newPageModal').keyup(function() {
             $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
         }).blur(function() {
-            if ($(this).val() === '') $('#page-title', '#newPageModal').trigger('keyup');
+            if ($(this).val() === '') {
+                $('#page-title', '#newPageModal').trigger('keyup');
+            }
         });
 
         $('#page-parent', '#newPageModal').change(function() {
@@ -528,7 +594,9 @@ Formwork.Pages = {
         $('.pages-list').each(function() {
             var $this = $(this);
 
-            if ($this.data('sortable-children') === false) return;
+            if ($this.data('sortable-children') === false) {
+                return;
+            }
 
             var sortable = Sortable.create(this, {
                 filter: '[data-sortable=false]',
@@ -540,14 +608,18 @@ Formwork.Pages = {
                     .addClass('toggle-collapsed').css('opacity', '0.5');
                 },
                 onMove: function(event) {
-                    if ($(event.related).data('sortable') === false) return false;
+                    if ($(event.related).data('sortable') === false) {
+                        return false;
+                    }
                     $('.pages-children', event.related).hide();
                 },
                 onEnd: function (event) {
                     $(event.item).closest('.pages-list').removeClass('dragging');
                     $('.page-children-toggle').css('opacity', '');
 
-                    if (event.newIndex == event.oldIndex) return;
+                    if (event.newIndex == event.oldIndex) {
+                        return;
+                    }
 
                     sortable.option('disabled', true);
 
@@ -624,7 +696,13 @@ Formwork.Tooltip = function(text, options) {
     $referenceElement.on('mouseout', _remove);
 
     function _tooltipPosition($tooltip) {
-        var offset = Formwork.Utils.offset($referenceElement[0]);
+        var offset = $referenceElement.offset();
+
+        if (offset.top === 0 && offset.left === 0) {
+            var rect = $referenceElement[0].getBoundingClientRect();
+            offset.top = rect.top + window.pageYOffset;
+            offset.left = rect.left + window.pageXOffset;
+        }
 
         var top = offset.top;
         var left = offset.left;
@@ -723,12 +801,18 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) clearTimeout(timer);
+            if (timer) {
+                clearTimeout(timer);
+            }
 
-            if (leading && !timer) callback.apply(context, args);
+            if (leading && !timer) {
+                callback.apply(context, args);
+            }
 
             timer = setTimeout(function() {
-                if (!leading) callback.apply(context, args);
+                if (!leading) {
+                    callback.apply(context, args);
+                }
                 timer = null;
             }, delay);
         }
@@ -737,19 +821,6 @@ Formwork.Utils = {
     },
     escapeRegExp: function(string) {
         return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    },
-    offset: function(element) {
-        var rect = element.getBoundingClientRect();
-        var doc = document.documentElement;
-        var body = document.body;
-
-        var XOffset = window.pageXOffset || doc.scrollLeft || body.scrollLeft;
-        var YOffset = window.pageYOffset || doc.scrollTop || body.scrollTop;
-
-        return {
-            top: rect.top + YOffset,
-            left: rect.left + XOffset
-        };
     },
     slug: function(string) {
         var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
@@ -771,7 +842,9 @@ Formwork.Utils = {
             context = this;
             args = arguments;
 
-            if (timer) return;
+            if (timer) {
+                return;
+            }
 
             callback.apply(context, args);
 

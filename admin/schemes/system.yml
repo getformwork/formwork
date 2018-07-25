@@ -120,15 +120,25 @@ rows3:
         row1:
             type: row
             fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label:
+                        en: Cache
+                        it: Cache
                 column2:
                     type: column
-                    width: 1-1
+                    width: 2-3
                     fields:
                         cache.enabled:
-                            type: checkbox
-                            label:
-                                en: Enable cache
-                                it: Abilita cache
+                            type: togglegroup
+                            options:
+                                en:
+                                    1: Enabled
+                                    0: Disabled
+                                it:
+                                    1: Abilitata
+                                    0: Disabilitata
         row2:
             type: row
             fields:

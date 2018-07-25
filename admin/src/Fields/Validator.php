@@ -31,7 +31,18 @@ class Validator
 
     public static function validateCheckbox($value)
     {
-        return empty($value) ? false : true;
+        return !empty($value);
+    }
+
+    public static function validateTogglegroup($value)
+    {
+        if ($value === '0' || $value === 'false' || $value === '') {
+            return false;
+        }
+        if ($value === '1' || $value === 'true') {
+            return true;
+        }
+        return static::parse($value);
     }
 
     public static function validateDate($value)

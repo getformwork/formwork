@@ -50,10 +50,11 @@
     @media (min-width: map-get($responsive-breakpoints, 's')) {
         text-align: left;
     }
-    & a,
-    & a:hover {
-        color: #000;
-    }
+}
+
+.logo a,
+.logo a:hover {
+    color: #000;
 }
 
 .sidebar-navigation {
@@ -64,27 +65,31 @@
     &:last-child {
         margin-bottom: 0;
     }
-    & > li {
-        position: relative;
-        margin: 0.5rem 0;
-        padding: 0.25rem 0;
-        padding-left: 1rem;
-        &.active {
-            font-weight: 600;
-            &::before {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                width: 3px;
-                background-color: $color-accent;
-                content: ' ';
-            }
-        }
-        & a {
-            color: #000;
-        }
-    }
+}
+
+.sidebar-navigation > li {
+    position: relative;
+    margin: 0.5rem 0;
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+}
+
+.sidebar-navigation > li a {
+    color: #000;
+}
+
+.sidebar-navigation > li.active {
+    font-weight: 600;
+}
+
+.sidebar-navigation > li.active::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background-color: $color-accent;
+    content: ' ';
 }
 
 .admin-user-card {
@@ -101,11 +106,12 @@
     display: table-cell;
     width: 48px;
     vertical-align: middle;
-    & img {
-        width: 48px;
-        border-radius: 50%;
-        transition: box-shadow ease-out 300ms;
-    }
+}
+
+.admin-user-avatar img {
+    width: 48px;
+    border-radius: 50%;
+    transition: box-shadow 300ms ease-out;
 }
 
 .admin-user-details {

@@ -25,7 +25,6 @@
 .view-site {
     float: right;
     color: #444;
-    transition: color 150ms;
     &:hover {
         color: $color-accent;
     }

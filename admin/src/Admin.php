@@ -10,14 +10,15 @@ use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
+use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
-use Exception;
-use Spyc;
+use LogicException;
+use RuntimeException;
 
 class Admin
 {
@@ -32,7 +33,7 @@ class Admin
     public function __construct()
     {
         if (!is_null(static::$instance)) {
-            throw new Exception('Admin class already instantiated');
+            throw new LogicException('Admin class already instantiated');
         }
         static::$instance = $this;
 
@@ -46,10 +47,10 @@ class Admin
         $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
 
         if (!FileSystem::exists($languageFile)) {
-            throw new Exception();
+            throw new RuntimeException('Cannot load admin language file');
         }
 
-        Language::load($this->language(), Spyc::YAMLLoad($languageFile));
+        Language::load($this->language(), YAML::parseFile($languageFile));
     }
 
     public static function instance()
@@ -66,7 +67,7 @@ class Admin
             return static::$languages;
         }
         foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $data = Spyc::YAMLLoad(LANGUAGES_PATH . $file);
+            $data = YAML::parseFile(LANGUAGES_PATH . $file);
             $code = FileSystem::name($file);
             static::$languages[$code] = $data['language.name'] . ' (' . $code . ')';
         }
@@ -121,7 +122,7 @@ class Admin
         if (HTTPRequest::method() == 'POST') {
             try {
                 CSRFToken::validate();
-            } catch (Exception $e) {
+            } catch (RuntimeException $e) {
                 CSRFToken::destroy();
                 Session::remove('FORMWORK_USERNAME');
                 Notification::send(Language::get('login.suspicious-request-detected'), 'warning');
@@ -255,6 +256,6 @@ class Admin
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

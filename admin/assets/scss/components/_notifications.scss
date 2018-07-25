@@ -9,13 +9,18 @@
     border-radius: 3px;
     background-color: $color-gray-xlight;
     box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
-    transition: top 0.3s ease-in;
-    animation: fadeInRight 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    cursor: default;
+    transition: top 300ms ease-in, opacity 150ms;
+    animation: fadeInRight 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.notification:hover {
+    opacity: 0.95;
 }
 
 .notification.fadeout {
     opacity: 0;
-    animation: fadeOutRight 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: fadeOutRight 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .notification-error,
@@ -40,14 +45,13 @@
     left: 1rem;
     display: block;
     font-size: 1.25rem;
-    font-family: Icons;
     transform: translate(0, -50%);
 }
 
 .notification-error::before {
-    content: '\e822';
+    @include icon(error-circle);
 }
 
 .notification-success::before {
-    content: '\e810';
+    @include icon(check);
 }

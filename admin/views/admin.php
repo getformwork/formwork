@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Formwork Admin</title>
+    <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <?php
     if(isset($csrfToken)):
@@ -19,10 +19,9 @@
 ?>
     <link rel="shortcut icon" href="<?= $this->uri('/assets/images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->uri('/assets/css/admin.min.css') ?>">
-    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="<?= $this->uri('/assets/js/app.min.js') ?>"></script>
-    <script src="<?= $this->uri('/assets/js/chartist.min.js') ?>"></script>
-    <script src="<?= $this->uri('/assets/js/sortable.min.js') ?>"></script>
+    <script src="<?= $this->uri('/assets/js/vendor.min.js') ?>"></script>
 </head>
 <body>
     <button class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>

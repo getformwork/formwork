@@ -4,8 +4,7 @@ namespace Formwork\Admin\Fields;
 use Formwork\Admin\Admin;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataSetter;
-use Formwork\Utils\FileSystem;
-use Exception;
+use LogicException;
 
 class Field extends DataSetter
 {
@@ -85,11 +84,11 @@ class Field extends DataSetter
     {
         foreach ((array) $this->data['import'] as $key => $value) {
             if ($key == 'import') {
-                throw new Exception('Invalid key for import');
+                throw new LogicException('Invalid key for import');
             }
             $callback = explode('::', $value, 2);
             if (!is_callable($callback)) {
-                throw new Exception('Invalid import callback');
+                throw new LogicException('Invalid import callback');
             }
             $this->data[$key] = call_user_func($callback);
         }

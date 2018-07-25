@@ -124,6 +124,6 @@ class Statistics
     protected function isBot()
     {
         $regex = '/' . implode('|', $this->bots) . '/i';
-        return preg_match($regex, HTTPRequest::userAgent());
+        return (bool) preg_match($regex, HTTPRequest::userAgent());
     }
 }

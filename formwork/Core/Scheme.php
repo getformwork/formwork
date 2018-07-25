@@ -3,8 +3,8 @@
 namespace Formwork\Core;
 
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
-use Spyc;
 
 class Scheme extends DataGetter
 {
@@ -14,7 +14,7 @@ class Scheme extends DataGetter
         $filename = $path . $template . '.yml';
 
         FileSystem::assert($filename);
-        $this->data = Spyc::YAMLLoad($filename);
+        $this->data = YAML::parseFile($filename);
 
         if (!$this->has('title')) {
             $this->data['title'] = $template;

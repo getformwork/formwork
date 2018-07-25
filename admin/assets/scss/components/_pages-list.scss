@@ -17,16 +17,15 @@
     color: #444;
     font-weight: 400;
     font-size: 0.875rem;
-    font-family: 'Icons';
     line-height: 1.714;
 }
 
 .toggle-collapsed::before {
-    @extend .i-chevron-down::before;
+    @include icon('chevron-down');
 }
 
 .toggle-expanded::before {
-    @extend .i-chevron-up::before;
+    @include icon('chevron-up');
 }
 
 .pages-item {
@@ -67,9 +66,9 @@
 .page-status-label::before {
     display: inline-block;
     margin-right: 0.375rem;
-    content: '\e816';
     font-size: 0.75rem;
-    font-family: Icons;
+
+    @include icon(circle);
 }
 
 .page-status-published .page-status-label::before {
@@ -142,22 +141,6 @@
 .page-actions button,
 .page-actions .button {
     margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.page-actions button:focus,
-.page-actions .button:focus {
-    box-shadow: none;
-}
-
-.page-actions button:hover,
-.page-actions .button:hover {
-    color: $color-accent;
 }
 
 .page-search {

@@ -52,6 +52,7 @@ pages.delete-file: Elimina file
 pages.delete-file.prompt: Si è sicuri di eliminare il file? Questa azione non può essere annullata.
 pages.delete-page: Elimina pagina
 pages.delete-page.prompt: Si è sicuri di eliminare la pagina? Questa azione non può essere annullata.
+pages.edit-page: Modifica pagina %s
 pages.editor.bold: Grassetto
 pages.editor.bullet-list: Elenco puntato
 pages.editor.image: Immagine
@@ -91,6 +92,7 @@ pages.pages: Pagine
 pages.pages.collapse-all: Riduci tutte
 pages.pages.expand-all: Espandi tutte
 pages.pages.search: Cerca pagine...
+pages.preview: Anteprima
 pages.preview-file: Anteprima
 pages.publish: Pubblica
 pages.save: Salva
@@ -124,6 +126,7 @@ users.new-user.password-suggestion: almeno 8 caratteri
 users.new-user.username-suggestion: 'da 3 a 20 lettere, numeri, - e _'
 users.options: Opzioni
 users.user: Utente
+users.user-profile: Profilo utente %s
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
 users.user.cannot-create.var-missing: 'Impossibile creare l’utente, manca la variabile %s'
 users.user.cannot-delete.logged: Impossibile eliminare l’utente, l’utente è connesso

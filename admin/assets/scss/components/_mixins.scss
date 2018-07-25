@@ -1,13 +1,10 @@
 @mixin clearfix {
-    & {
-        zoom: 1;
-    }
-    &:before,
-    &:after {
+    &::before,
+    &::after {
         display: table;
         content: ' ';
     }
-    &:after {
+    &::after {
         clear: both;
     }
 }
@@ -28,6 +25,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+@mixin icon($name) {
+    font-family: Icons;
+    @extend .i-#{$name}::before;
 }
 
 @mixin make-columns-globals($columns-count, $breakpoints) {

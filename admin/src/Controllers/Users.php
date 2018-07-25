@@ -6,14 +6,13 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
-use Formwork\Admin\Utils\Registry;
+use Formwork\Admin\User;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
-use Exception;
-use Spyc;
+use RuntimeException;
 
 class Users extends AbstractController
 {
@@ -41,6 +40,7 @@ class Users extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('users.users'),
             'location' => 'users',
             'content' => $content,
             'modals' => implode($modals)
@@ -74,7 +74,7 @@ class Users extends AbstractController
             'language' => $this->data->get('language')
         );
 
-        $fileContent = Spyc::YAMLdump($userdata, false, 0, true);
+        $fileContent = YAML::encode($userdata);
 
         FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
 
@@ -87,17 +87,17 @@ class Users extends AbstractController
         try {
             $user = Admin::instance()->users()->get($params->get('user'));
             if (!$user) {
-                throw new Exception($this->label('users.user.not-found'));
+                throw new RuntimeException($this->label('users.user.not-found'));
             }
             if ($user->logged()) {
-                throw new Exception($this->label('users.user.cannot-delete.logged'));
+                throw new RuntimeException($this->label('users.user.cannot-delete.logged'));
             }
             $this->deleteAvatar($user);
             FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
             $this->registry('lastAccess')->remove($params->get('user'));
             $this->notify($this->label('users.user.deleted'), 'success');
             $this->redirect('/users/', 302, true);
-        } catch (Exception $e) {
+        } catch (RuntimeException $e) {
             $this->notify($e->getMessage(), 'error');
             $this->redirect('/users/', 302, true);
         }
@@ -142,13 +142,13 @@ class Users extends AbstractController
                         $data['avatar'] = $uploader->uploadedFiles()[0];
                         $this->notify($this->label('user.avatar.uploaded'), 'success');
                     }
-                } catch (Exception $e) {
+                } catch (RuntimeException $e) {
                     $this->notify($this->label('uploader.error', $e->getMessage()), 'error');
                     $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
                 }
             }
 
-            $fileContent = Spyc::YAMLdump($data, false, 0, true);
+            $fileContent = YAML::encode($data);
 
             FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', $fileContent);
 
@@ -172,13 +172,14 @@ class Users extends AbstractController
         );
 
         $this->view('admin', array(
+            'title' => $this->label('users.user-profile', $user->username()),
             'location' => 'users',
             'content' => $content,
             'modals' => $modals
         ));
     }
 
-    protected function deleteAvatar($user)
+    protected function deleteAvatar(User $user)
     {
         $avatar = $user->avatar()->path();
         if (FileSystem::exists($avatar)) {

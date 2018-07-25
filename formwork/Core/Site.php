@@ -10,6 +10,8 @@ class Site extends AbstractPage
 {
     public static $storage;
 
+    protected $currentPage;
+
     protected $templates;
 
     protected $templatesPath;
@@ -71,6 +73,18 @@ class Site extends AbstractPage
         }
     }
 
+    public function currentPage()
+    {
+        if (!empty($this->currentPage)) {
+            return $this->currentPage;
+        }
+        $resource = Formwork::instance()->resource();
+        if ($resource instanceof Page) {
+            return $resource;
+        }
+        return null;
+    }
+
     public function errorPage($render = false)
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
@@ -114,7 +128,7 @@ class Site extends AbstractPage
         foreach ($components as $component) {
             $found = false;
             foreach (FileSystem::listDirectories($path) as $dir) {
-                if (preg_replace('/^\d+-/', '', $dir) === $component) {
+                if (preg_replace(Page::NUM_REGEX, '', $dir) === $component) {
                     $path = $path . $dir . DS;
                     $found = true;
                     break;

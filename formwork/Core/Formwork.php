@@ -3,18 +3,18 @@
 namespace Formwork\Core;
 
 use Formwork\Cache\Cache;
+use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Exception;
-use Spyc;
+use LogicException;
 
 class Formwork
 {
-    const VERSION = '0.6.9';
+    const VERSION = '0.6.11';
 
     protected static $instance;
 
@@ -33,19 +33,20 @@ class Formwork
     public function __construct()
     {
         if (!is_null(static::$instance)) {
-            throw new Exception('Formwork class already instantiated');
+            throw new LogicException('Formwork class already instantiated');
         }
         static::$instance = $this;
 
         FileSystem::assert(CONFIG_PATH . 'system.yml');
         FileSystem::assert(CONFIG_PATH . 'site.yml');
 
-        $config = Spyc::YAMLLoad(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->defaults(), $config);
+        $this->options = $this->defaults();
+        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
+        $this->options = array_merge($this->options, $config);
 
         date_default_timezone_set($this->option('date.timezone'));
 
-        $siteConfig = Spyc::YAMLLoad(CONFIG_PATH . 'site.yml');
+        $siteConfig = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($siteConfig);
 
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
@@ -74,6 +75,7 @@ class Formwork
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
             'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
+            'parsers.use_php_yaml'     => 'parse',
             'templates.path'           => ROOT_PATH . 'templates' . DS,
             'templates.extension'      => '.php',
             'pages.index'              => 'index',
@@ -150,6 +152,6 @@ class Formwork
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new Exception('Invalid method');
+        throw new LogicException('Invalid method');
     }
 }

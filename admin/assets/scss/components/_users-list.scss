@@ -24,8 +24,8 @@
 .user-status-label::before {
     display: inline-block;
     margin-right: 0.25rem;
-    content: '\e816';
-    font-family: Icons;
+
+    @include icon(circle);
 }
 
 .user-status-enabled .user-status-label::before {
@@ -69,20 +69,4 @@
 .user-actions button,
 .user-actions .button {
     margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.user-actions button:focus,
-.user-actions .button:focus {
-    box-shadow: none;
-}
-
-.user-actions button:hover,
-.user-actions .button:hover {
-    color: $color-accent;
 }

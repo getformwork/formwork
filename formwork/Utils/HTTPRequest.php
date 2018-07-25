@@ -35,25 +35,25 @@ class HTTPRequest
 
     public static function ip($strict = false)
     {
-        if (!$strict && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        if (!$strict && static::hasHeader('X-Forwarded-For')) {
+            return static::$headers['X-Forwarded-For'];
         }
         return $_SERVER['REMOTE_ADDR'];
     }
 
     public static function referer()
     {
-        return isset(static::headers()['Referer']) ? static::headers()['Referer'] : null;
+        return static::hasHeader('Referer') ? static::$headers['Referer'] : null;
     }
 
     public static function origin()
     {
-        return isset(static::headers()['Origin']) ? static::headers()['Origin'] : null;
+        return static::hasHeader('Origin') ? static::$headers['Origin'] : null;
     }
 
     public static function userAgent()
     {
-        return isset(static::headers()['User-Agent']) ? static::headers()['User-Agent'] : null;
+        return static::hasHeader('User-Agent') ? static::$headers['User-Agent'] : null;
     }
 
     public static function rawData()
@@ -66,7 +66,7 @@ class HTTPRequest
 
     public static function isXHR()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        return static::hasHeader('X-Requested-With') && strtolower(static::$headers['X-Requested-With']) === 'xmlhttprequest';
     }
 
     public static function hasGetData()
@@ -140,6 +140,11 @@ class HTTPRequest
             }
         }
         return static::$files;
+    }
+
+    public static function hasHeader($header)
+    {
+        return isset(static::headers()[$header]);
     }
 
     public static function headers()

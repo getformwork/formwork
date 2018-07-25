@@ -2,18 +2,13 @@
 
 namespace Formwork\Utils;
 
-use Formwork\Utils\MimeType;
+use RuntimeException;
 
 class FileSystem
 {
     protected static $ignore = array('.', '..');
 
     protected static $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-    public static function root()
-    {
-        return defined(ROOT_PATH) ? ROOT_PATH : $_SERVER['DOCUMENT_ROOT'];
-    }
 
     public static function dirname($path)
     {
@@ -61,10 +56,10 @@ class FileSystem
     public static function assert($path, $value = true)
     {
         if ($value === true && !static::exists($path)) {
-            throw new \RuntimeException('File not found: ' . $path);
+            throw new RuntimeException('File not found: ' . $path);
         }
         if ($value === false && static::exists($path)) {
-            throw new \RuntimeException('File ' . $path . ' already exists!');
+            throw new RuntimeException('File ' . $path . ' already exists');
         }
         return true;
     }
@@ -111,7 +106,7 @@ class FileSystem
         return $unit ? static::bytesToSize($bytes) : $bytes;
     }
 
-    public function directorySize($path, $unit = true)
+    public static function directorySize($path, $unit = true)
     {
         $path = static::normalize($path);
         static::assert($path);
@@ -178,7 +173,9 @@ class FileSystem
     public static function copy($source, $destination, $overwrite = false)
     {
         static::assert($source);
-        static::assert($destination, $overwrite);
+        if (!$overwrite) {
+            static::assert($destination, false);
+        }
         return @copy($source, $destination);
     }
 
@@ -261,7 +258,7 @@ class FileSystem
     public static function write($file, $content, $append = false)
     {
         $flag = $append ? FILE_APPEND : null;
-        return (file_put_contents($file, $content, $flag) !== false) ? true : false;
+        return file_put_contents($file, $content, $flag) !== false;
     }
 
     public static function createFile($file)
@@ -270,10 +267,10 @@ class FileSystem
         return static::write($file, '');
     }
 
-    public static function createDirectory($directory)
+    public static function createDirectory($directory, $recursive = false)
     {
         static::assert($directory, false);
-        return @mkdir($directory);
+        return @mkdir($directory, 0777, $recursive);
     }
 
     public static function create($file)
@@ -286,14 +283,11 @@ class FileSystem
         return rtrim($path, DS) . DS;
     }
 
-    public static function list($path = null, $all = false)
+    public static function list($path, $all = false)
     {
-        if (empty($path)) {
-            $path = static::root();
-        }
         static::assert($path);
         if (!static::isDirectory($path)) {
-            throw new \RuntimeException('Unable to list: ' . $path . '. Specified path is not a directory.');
+            throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
         }
         $items = @scandir($path);
         if (!is_array($items)) {
@@ -333,7 +327,7 @@ class FileSystem
                 return @glob($pattern, $flags);
             }
             $context = static::normalize(func_get_args()[1]);
-            
+
             if (static::isDirectory($context)) {
                 if (func_num_args() == 2) {
                     return @glob($context . $pattern);
@@ -341,7 +335,7 @@ class FileSystem
                 $flags = func_get_args()[2];
                 return @glob($context . $pattern, $flags);
             }
-            throw new \RuntimeException('Invalid glob context');
+            throw new RuntimeException('Invalid glob context');
         }
     }
 

@@ -4,14 +4,15 @@ namespace Formwork\Core;
 
 use Formwork\Files\Files;
 use Formwork\Parsers\ParsedownExtension as Parsedown;
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Exception;
-use Spyc;
+use RuntimeException;
 
 class Page extends AbstractPage
 {
+    const NUM_REGEX = '/^(\d+)-/';
     const PAGE_STATUS_PUBLISHED = 'published';
     const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
     const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
@@ -87,7 +88,7 @@ class Page extends AbstractPage
 
     public function num()
     {
-        preg_match('/^(\d+)-/', $this->id, $matches);
+        preg_match(self::NUM_REGEX, $this->id, $matches);
         return isset($matches[1]) ? $matches[1] : null;
     }
 
@@ -98,7 +99,7 @@ class Page extends AbstractPage
 
     public function current()
     {
-        return $this->uri() == Uri::normalize(Uri::path());
+        return Formwork::instance()->site()->currentPage() === $this;
     }
 
     public function date($format = null)
@@ -224,11 +225,11 @@ class Page extends AbstractPage
     {
         $contents = FileSystem::read($this->path . DS . $this->filename);
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
-            throw new Exception('Invalid page format');
+            throw new RuntimeException('Invalid page format');
         }
         list($match, $frontmatter, $summary, $body) = $matches;
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
-        $this->frontmatter = Spyc::YAMLLoadString($frontmatter);
+        $this->frontmatter = YAML::parse($frontmatter);
         $this->data = array_merge($this->defaults(), $this->frontmatter);
         if (!empty($summary)) {
             $this->summary = $this->contentParser()->text($summary);
@@ -238,7 +239,7 @@ class Page extends AbstractPage
 
     protected function processData()
     {
-        $this->data['visible'] = (bool) preg_match('/^\d+-[\w-]+$/', $this->id);
+        $this->data['visible'] = !is_null($this->num());
 
         if ($this->published() && $this->has('publish-date')) {
             $this->data['published'] = (strtotime($this->get('publish-date')) < time());
