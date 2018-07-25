@@ -13,6 +13,11 @@ class HTTPRequest
         return $_SERVER['REQUEST_METHOD'];
     }
 
+    public static function type()
+    {
+        return static::isXHR() ? 'XHR' : 'HTTP';
+    }
+
     public static function uri()
     {
         $uri = $_SERVER['REQUEST_URI'];
