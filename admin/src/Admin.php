@@ -215,6 +215,10 @@ class Admin
             array(new Controllers\Options(), 'site')
         );
         $this->router->add(
+            '/options/updates/',
+            array(new Controllers\Options(), 'updates')
+        );
+        $this->router->add(
             '/options/info/',
             array(new Controllers\Options(), 'info')
         );

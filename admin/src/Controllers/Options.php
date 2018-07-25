@@ -102,6 +102,24 @@ class Options extends AbstractController
         ));
     }
 
+    public function updates(RouteParams $params)
+    {
+        Admin::instance()->ensureLogin();
+
+        $this->view('admin', array(
+            'title' => $this->label('options.updates'),
+            'location' => 'options',
+            'content' => $this->view(
+                'options.updates',
+                array(
+                    'tabs' => $this->view('options.tabs', array('tab' => 'updates'), false)
+                ),
+                false
+            ),
+            'csrfToken' => CSRFToken::get()
+        ));
+    }
+
     public function info(RouteParams $params)
     {
         Admin::instance()->ensureLogin();

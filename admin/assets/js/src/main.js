@@ -6,6 +6,7 @@ var Formwork = {
 
         Formwork.Dashboard.init();
         Formwork.Pages.init();
+        Formwork.Updates.init();
 
         $('.toggle-navigation').click(function() {
             $('.sidebar').toggleClass('show');
