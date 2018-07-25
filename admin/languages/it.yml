@@ -44,6 +44,7 @@ options.options: Impostazioni
 options.site: Sito
 options.system: Sistema
 options.updated: Opzioni aggiornate
+options.updates: Aggiornamenti
 pages.changes.continue: Continua senza salvare
 pages.changes.detected: Modifiche rilevate
 pages.changes.detected.prompt: Alcune modifiche non sono state salvate. Si è sicuri di voler lasciare la pagina?
@@ -99,6 +100,17 @@ pages.save: Salva
 pages.status.not-published: Non pubblicato
 pages.status.not-routable: Non raggiungibile
 pages.status.published: Pubblicato
+updates.updates: Aggiornamenti
+updates.available-for-install: è disponibile per l'installazione
+updates.latest-version-available: è l'ultima versione disponibile
+updates.install-prompt: Installare l'aggiornamento?
+updates.status.checking: Cerco aggiornamenti...
+updates.status.up-to-date: Aggiornato!
+updates.status.found: Aggiornamento disponibile
+updates.status.installing: Installo aggiornamento...
+updates.status.cannot-install: Impossibile installare l'aggiornamento
+updates.install: Installa
+updates.installed: Aggiornamento installato!
 uploader.erorr.cannot-write: Impossibile salvare il file sul disco
 uploader.error: 'Impossibile caricare il file. %s.'
 uploader.error.file-name: Nome del file non valido

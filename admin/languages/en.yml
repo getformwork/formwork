@@ -44,6 +44,7 @@ options.options: Options
 options.site: Site
 options.system: System
 options.updated: Options updated
+options.updates: Updates
 pages.changes.continue: Continue without Saving
 pages.changes.detected: Changes Detected
 pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
@@ -99,6 +100,17 @@ pages.save: Save
 pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
+updates.updates: Updates
+updates.available-for-install: is available for install
+updates.latest-version-available: is the latest version available
+updates.install-prompt: Would you like to install the update?
+updates.status.checking: Checking for updates...
+updates.status.up-to-date: Up-to-date!
+updates.status.found: Updates found
+updates.status.installing: Installing updates...
+updates.status.cannot-install: Cannot install update
+updates.install: Install
+updates.installed: Update installed!
 uploader.erorr.cannot-write: Failed to write file to disk
 uploader.error: Cannot upload file. %s.
 uploader.error.file-name: Invalid file name
