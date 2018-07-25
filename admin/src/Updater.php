@@ -4,7 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Exception;
+use RuntimeException;
 use ZipArchive;
 
 class Updater
@@ -110,7 +110,7 @@ class Updater
         FileSystem::download($this->archiveUri, $this->options['tempFile'], true, $this->context);
 
         if (!FileSystem::exists($this->options['tempFile'])) {
-            throw new Exception('Cannot update');
+            throw new RuntimeException('Cannot update');
         }
 
         $zip = new ZipArchive();
@@ -172,7 +172,7 @@ class Updater
         $data = json_decode(FileSystem::retrieve($uri, $this->context), true);
 
         if (!$data) {
-            throw new Exception('Cannot retrieve release data');
+            throw new RuntimeException('Cannot retrieve release data');
         }
 
         $this->release = array(
