@@ -17,6 +17,7 @@ class Updater
         'last-check' => null,
         'last-update' => null,
         'etag' => null,
+        'release' => null,
         'up-to-date' => false
     );
 
@@ -69,7 +70,9 @@ class Updater
             return $this->data['up-to-date'];
         }
 
-        $this->getRelease();
+        $this->loadRelease();
+
+        $this->data['release'] = $this->release;
 
         $this->data['last-check'] = time();
 
@@ -102,7 +105,7 @@ class Updater
             return;
         }
 
-        $this->getRelease();
+        $this->loadRelease();
 
         FileSystem::download($this->archiveUri, $this->options['tempFile'], true, $this->context);
 
@@ -154,7 +157,12 @@ class Updater
         return true;
     }
 
-    protected function getRelease()
+    public function latestRelease()
+    {
+        return $this->data['release'];
+    }
+
+    protected function loadRelease()
     {
         if (!is_null($this->release)) {
             return;
