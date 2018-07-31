@@ -37,8 +37,8 @@
                     <img src="<?= $this->user()->avatar()->uri() ?>" alt="">
                 </div>
                 <div class="admin-user-details">
-                    <div class="admin-user-fullname"><?= $this->user()->fullname() ?></div>
-                    <div class="admin-user-username"><?= $this->user()->username() ?></div>
+                    <div class="admin-user-fullname"><?= $this->escape($this->user()->fullname()) ?></div>
+                    <div class="admin-user-username"><?= $this->escape($this->user()->username()) ?></div>
                 </div>
             </div>
         </a>

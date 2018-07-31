@@ -13,7 +13,7 @@
         <div class="col-m-7-12">
             <div class="component">
                 <h3 class="caption"><?= $this->label('dashboard.statistics') ?></h3>
-                <div class="ct-chart" data-chart-data="<?= htmlspecialchars(json_encode($statistics)); ?>"></div>
+                <div class="ct-chart" data-chart-data="<?= $this->escape(json_encode($statistics)); ?>"></div>
             </div>
         </div>
     </div>

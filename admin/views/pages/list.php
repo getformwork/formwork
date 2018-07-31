@@ -15,7 +15,7 @@
 <?php
                     endif;
 ?>
-                                <a href="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" title="<?= htmlspecialchars($page->title()) ?>"><?= $page->title() ?></a>
+                                <a href="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
                             </div>
                             <div class="page-uri">
                                 <a <?php if ($routable): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->slug() ?></a>
