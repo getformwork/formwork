@@ -4,7 +4,7 @@
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
-                    <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= htmlspecialchars($page->title()) ?>" required autocomplete="off">
+                    <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
                     <div class="page-info">
                         <div class="page-uri">
                             <a <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->slug() ?></a>
@@ -21,7 +21,7 @@
                         <button class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>" type="button"><span class="i-image"></span></button>
                         <button class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>" type="button"><span class="i-read-more-alt"></span></button>
                     </div>
-                    <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= htmlspecialchars($page->rawContent()) ?></textarea>
+                    <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <button class="button-accent button-save button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
                     <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>

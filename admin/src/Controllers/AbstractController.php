@@ -94,6 +94,11 @@ abstract class AbstractController
         return Formwork::instance()->option($option);
     }
 
+    protected function escape($string)
+    {
+        return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE);
+    }
+
     protected function field($field, $render = true)
     {
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
