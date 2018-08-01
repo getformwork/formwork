@@ -15,6 +15,7 @@ date.today: Oggi
 date.weekdays.short:  ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 language.name: Italiano
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
+login.logged-out: Sei stato disconnesso
 login.login: Accedi
 login.logout: Esci
 login.password: Password

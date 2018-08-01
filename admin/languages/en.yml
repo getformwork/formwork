@@ -15,6 +15,7 @@ date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 language.name: English
 login.attempt.failed: Login attempt failed! Try again.
+login.logged-out: You have been logged out
 login.login: Login
 login.logout: Logout
 login.password: Password
