@@ -100,8 +100,8 @@ password-reset.passwords-not-matching: La nuova password e la password di confer
 password-reset.reset: Reimposta
 register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
 register.register: Registra nuovo utente
-uploader.erorr.cannot-write: Impossibile salvare il file sul disco
 uploader.error: 'Impossibile caricare il file. %s.'
+uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.file-name: Nome del file non valido
 uploader.error.hidden-files: "Impossibile caricare i file che iniziano con '.'"
 uploader.error.mime-type: Il tipo di file non è consentito
