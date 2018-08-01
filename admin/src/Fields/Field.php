@@ -90,7 +90,7 @@ class Field extends DataSetter
             if (!is_callable($callback)) {
                 throw new LogicException('Invalid import callback');
             }
-            $this->data[$key] = call_user_func($callback);
+            $this->data[$key] = $callback();
         }
     }
 

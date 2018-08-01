@@ -34,11 +34,13 @@ class Authentication extends AbstractController
 
                 $users = Admin::instance()->users();
 
+                $postData = HTTPRequest::postData();
+
                 foreach (array('username', 'password') as $var) {
-                    if (!isset($_POST[$var])) {
+                    if (!isset($postData[$var])) {
                         return $this->error();
                     }
-                    $this->$var = $_POST[$var];
+                    $this->$var = $postData[$var];
                 }
 
                 if ($users->has($this->username) && $users->get($this->username)->authenticate($this->password)) {
