@@ -100,8 +100,8 @@ password-reset.passwords-not-matching: The new password and the confirmation pas
 password-reset.reset: Reset
 register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
 register.register: Register New User
-uploader.erorr.cannot-write: Failed to write file to disk
 uploader.error: Cannot upload file. %s.
+uploader.error.cannot-write: Failed to write file to disk
 uploader.error.file-name: Invalid file name
 uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
 uploader.error.mime-type: File type not allowed
