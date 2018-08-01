@@ -59,6 +59,7 @@ class Authentication extends AbstractController
     {
         CSRFToken::destroy();
         Session::remove('FORMWORK_USERNAME');
+        $this->notify($this->label('login.logged-out'), 'success');
         $this->redirect('/', 302, true);
     }
 
