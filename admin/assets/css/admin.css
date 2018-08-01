@@ -2176,6 +2176,27 @@ ul {
   padding: 0;
   list-style-position: outside; }
 
+.user-summary {
+  display: table;
+  width: 100%;
+  table-layout: fixed; }
+
+.user-summary-avatar {
+  display: table-cell;
+  padding: 0.5rem;
+  width: 20%;
+  vertical-align: middle;
+  text-align: center; }
+
+.user-summary-avatar img {
+  width: 150px;
+  border-radius: 50%; }
+
+.user-summary-data {
+  display: table-cell;
+  padding: 0.5rem;
+  vertical-align: middle; }
+
 .users-list {
   border-top: 1px solid #e4e4e4;
   -webkit-user-select: none;
