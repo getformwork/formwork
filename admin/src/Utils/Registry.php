@@ -2,6 +2,8 @@
 
 namespace Formwork\Admin\Utils;
 
+use Formwork\Utils\FileSystem;
+
 class Registry
 {
     protected $storage = array();
@@ -11,8 +13,8 @@ class Registry
     public function __construct($filename)
     {
         $this->filename = $filename;
-        if (file_exists($this->filename)) {
-            $this->storage = (array) json_decode(file_get_contents($filename), true);
+        if (FileSystem::exists($this->filename)) {
+            $this->storage = (array) json_decode(FileSystem::read($filename), true);
         }
     }
 
@@ -43,7 +45,7 @@ class Registry
 
     public function save()
     {
-        file_put_contents($this->filename, json_encode($this->storage));
+        FileSystem::write($this->filename, json_encode($this->storage));
     }
 
     public function toArray()
