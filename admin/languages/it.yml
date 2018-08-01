@@ -1,44 +1,33 @@
-admin.panel: Pannello di Amministrazione
 admin.manage: Gestione
+admin.panel: Pannello di Amministrazione
 admin.view-site: Visualizza sito
 cache.clear: Svuota cache
 cache.cleared: Cache svuotata
 dashboard.dashboard: Riepilogo
 dashboard.last-modified-pages: Ultime pagine modificate
-dashboard.statistics: Statistiche
 dashboard.online-users: Utenti collegati
 dashboard.quick-actions: Azioni rapide
+dashboard.statistics: Statistiche
 dashboard.welcome: Benvenuto/a
 date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio' ,'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
 date.months.short:  ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 date.today: Oggi
 date.weekdays.short:  ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 language.name: Italiano
-register.register: Registra nuovo utente
-register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
-login.suspicious-request-detected: È stata rilevata una richiesta sospetta e per ragioni di sicurezza si è usciti dalla sessione. Effettua nuovamente l’accesso.
 login.login: Accedi
 login.logout: Esci
 login.password: Password
+login.suspicious-request-detected: È stata rilevata una richiesta sospetta e per ragioni di sicurezza si è usciti dalla sessione. Effettua nuovamente l’accesso.
 login.username: Nome utente
-password-reset.password-reset: Reimposta password
-password-reset.email: Indirizzo e-mail
-password-reset.new-password: Nuova password
-password-reset.confirm-new-password: Conferma password
-password-reset.reset: Reimposta
-password-reset.email-sent: Un’e-mail è stata inviata all’indirizzo %s con le istruzioni per reimpostare la password.
-password-reset.invalid-link: Il link per reimpostare la password è scaduto o non valido. Riprova.
-password-reset.passwords-not-matching: La nuova password e la password di conferma non corrispondono. Riprova.
-password-reset.password-changed: La password è stata cambiata. Accedi ora con le nuove credenziali.
 modal.action.cancel: Annulla
 modal.action.continue: Continua
 modal.action.delete: Elimina
 modal.action.save: Salva
 modal.action.upload-file: Carica file
-modal.images.title: Seleziona immagine
 modal.images.no-images: Qui non ci sono immagini
 modal.images.no-images.upload: Carica qualche immagine
+modal.images.title: Seleziona immagine
 options.info: Informazioni
 options.options: Impostazioni
 options.site: Sito
@@ -66,8 +55,8 @@ pages.files.upload-label: '<strong>Fai click</strong> per selezionare un file da
 pages.new-page: Nuova pagina
 pages.new-page.parent: Pagina superiore
 pages.new-page.title: Titolo
-pages.new-page.uri: URI pagina
 pages.new-page.uri-suggestion: solo lettere, numeri e trattini
+pages.new-page.uri: URI pagina
 pages.not-published: Non pubblicata
 pages.not-routable: Non raggiungibile
 pages.options: Opzioni
@@ -76,8 +65,8 @@ pages.page.cannot-create: Impossibile creare la pagina
 pages.page.cannot-create.already-exists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
 pages.page.cannot-create.invalid-parent: Impossibile creare la pagina, la pagina superiore specificata non è valida
 pages.page.cannot-create.var-missing: 'Impossibile creare la pagina, manca la variabile %s'
-pages.page.cannot-delete: 'Impossibile eliminare la pagina, %s'
 pages.page.cannot-delete-file: Impossibile eliminare il file
+pages.page.cannot-delete: 'Impossibile eliminare la pagina, %s'
 pages.page.cannot-delete.not-deletable: Impossibile eliminare la pagina, la pagina non è eliminabile
 pages.page.cannot-edit.page-missing: Impossibile modificare la pagina, pagina non trovata
 pages.page.cannot-edit.var-missing: 'Impossibile modificare la pagina, manca la variabile %s'
@@ -85,20 +74,31 @@ pages.page.cannot-move: 'Impossibile spostare la pagina'
 pages.page.created: Pagina creata!
 pages.page.deleted: Pagina eliminata
 pages.page.edited: Pagina modificata!
-pages.page.moved: Pagina spostata!
 pages.page.file-deleted: File eliminato
+pages.page.moved: Pagina spostata!
 pages.page.not-found: Pagina non trovata
 pages.pages: Pagine
 pages.pages.collapse-all: Riduci tutte
 pages.pages.expand-all: Espandi tutte
 pages.pages.search: Cerca pagine...
-pages.preview: Anteprima
 pages.preview-file: Anteprima
+pages.preview: Anteprima
 pages.publish: Pubblica
 pages.save: Salva
 pages.status.not-published: Non pubblicato
 pages.status.not-routable: Non raggiungibile
 pages.status.published: Pubblicato
+password-reset.confirm-new-password: Conferma password
+password-reset.email-sent: Un’e-mail è stata inviata all’indirizzo %s con le istruzioni per reimpostare la password.
+password-reset.email: Indirizzo e-mail
+password-reset.invalid-link: Il link per reimpostare la password è scaduto o non valido. Riprova.
+password-reset.new-password: Nuova password
+password-reset.password-changed: La password è stata cambiata. Accedi ora con le nuove credenziali.
+password-reset.password-reset: Reimposta password
+password-reset.passwords-not-matching: La nuova password e la password di conferma non corrispondono. Riprova.
+password-reset.reset: Reimposta
+register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
+register.register: Registra nuovo utente
 uploader.erorr.cannot-write: Impossibile salvare il file sul disco
 uploader.error: 'Impossibile caricare il file. %s.'
 uploader.error.file-name: Nome del file non valido
@@ -125,8 +125,8 @@ users.new-user: Nuovo utente
 users.new-user.password-suggestion: almeno 8 caratteri
 users.new-user.username-suggestion: 'da 3 a 20 lettere, numeri, - e _'
 users.options: Opzioni
-users.user: Utente
 users.user-profile: Profilo utente %s
+users.user: Utente
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
 users.user.cannot-create.var-missing: 'Impossibile creare l’utente, manca la variabile %s'
 users.user.cannot-delete.logged: Impossibile eliminare l’utente, l’utente è connesso
