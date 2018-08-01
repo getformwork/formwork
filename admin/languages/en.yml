@@ -1,44 +1,33 @@
-admin.panel: Administration Panel
 admin.manage: Manage
+admin.panel: Administration Panel
 admin.view-site: View Site
 cache.clear: Clear Cache
 cache.cleared: Cache cleared
 dashboard.dashboard: Dashboard
 dashboard.last-modified-pages: Last Edited Pages
-dashboard.statistics: Statistics
 dashboard.online-users: Online users
 dashboard.quick-actions: Quick Actions
+dashboard.statistics: Statistics
 dashboard.welcome: Welcome
 date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December']
 date.months.short:  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 language.name: English
-register.register: Register New User
-register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
 login.attempt.failed: Login attempt failed! Try again.
-login.suspicious-request-detected: A suspicious request has been detected, and for security reasons you have been logged out. Please log in again.
 login.login: Login
 login.logout: Logout
 login.password: Password
+login.suspicious-request-detected: A suspicious request has been detected, and for security reasons you have been logged out. Please log in again.
 login.username: Username
-password-reset.password-reset: Password Reset
-password-reset.email: E-mail Address
-password-reset.new-password: New Password
-password-reset.confirm-new-password: Confirm New Password
-password-reset.reset: Reset
-password-reset.email-sent: An email has been sent to %s with instructions to reset your password.
-password-reset.invalid-link: The password reset link is either expired or invalid. Please try again.
-password-reset.passwords-not-matching: The new password and the confirmation password do not match. Please try again.
-password-reset.password-changed: The password has been changed. Please log in with your new credentials.
 modal.action.cancel: Cancel
 modal.action.continue: Continue
 modal.action.delete: Delete
 modal.action.save: Save
 modal.action.upload-file: Upload a File
-modal.images.title: Select an Image
 modal.images.no-images: There are no images here
 modal.images.no-images.upload: Please upload some images
+modal.images.title: Select an Image
 options.info: Info
 options.options: Options
 options.site: Site
@@ -66,8 +55,8 @@ pages.files.upload-label: '<strong>Click</strong> to choose a file to upload or 
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
 pages.new-page.title: Title
-pages.new-page.uri: Page URI
 pages.new-page.uri-suggestion: letters, numbers and dashes only
+pages.new-page.uri: Page URI
 pages.not-published: Not published
 pages.not-routable: Non routable
 pages.options: Options
@@ -76,8 +65,8 @@ pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
 pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
 pages.page.cannot-create.var-missing: 'Cannot create page, missing %s variable'
-pages.page.cannot-delete: 'Cannot delete page, %s'
 pages.page.cannot-delete-file: 'Cannot delete file, %s'
+pages.page.cannot-delete: 'Cannot delete page, %s'
 pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
 pages.page.cannot-edit.var-missing: 'Cannot edit page, missing variable %s'
@@ -85,20 +74,31 @@ pages.page.cannot-move: 'Cannot move page'
 pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
-pages.page.moved: Page moved!
 pages.page.file-deleted: File deleted
+pages.page.moved: Page moved!
 pages.page.not-found: Page not found
 pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
 pages.pages.search: Search Pages...
-pages.preview: Preview
 pages.preview-file: Preview
+pages.preview: Preview
 pages.publish: Publish
 pages.save: Save
 pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
+password-reset.confirm-new-password: Confirm New Password
+password-reset.email-sent: An email has been sent to %s with instructions to reset your password.
+password-reset.email: E-mail Address
+password-reset.invalid-link: The password reset link is either expired or invalid. Please try again.
+password-reset.new-password: New Password
+password-reset.password-changed: The password has been changed. Please log in with your new credentials.
+password-reset.password-reset: Password Reset
+password-reset.passwords-not-matching: The new password and the confirmation password do not match. Please try again.
+password-reset.reset: Reset
+register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
+register.register: Register New User
 uploader.erorr.cannot-write: Failed to write file to disk
 uploader.error: Cannot upload file. %s.
 uploader.error.file-name: Invalid file name
@@ -125,8 +125,8 @@ users.new-user: New User
 users.new-user.password-suggestion: at least 8 characters
 users.new-user.username-suggestion: between 3-20 letters, digits and dashes
 users.options: Options
-users.user: User
 users.user-profile: '%s User Profile'
+users.user: User
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
 users.user.cannot-create.var-missing: 'Cannot create user, missing %s variable'
 users.user.cannot-delete.logged: Cannot delete user, the user is logged
