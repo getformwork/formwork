@@ -8,10 +8,10 @@
 ?>
                 <div class="users-item">
                     <div class="users-item-cell user-username">
-                        <a href="<?= $this->uri('/users/' . $user->username() . '/profile/') ?>"><?= $user->username() ?></a>
+                        <a href="<?= $this->uri('/users/' . $user->username() . '/profile/') ?>"><?= $this->escape($user->username()) ?></a>
                     </div>
-                    <div class="users-item-cell user-fullname"><?= $user->fullname() ?></div>
-                    <div class="users-item-cell user-email" data-overflow-tooltip="true"><?= $user->email() ?></div>
+                    <div class="users-item-cell user-fullname"><?= $this->escape($user->fullname()) ?></div>
+                    <div class="users-item-cell user-email" data-overflow-tooltip="true"><?= $this->escape($user->email()) ?></div>
                     <div class="users-item-cell user-last-access" data-overflow-tooltip="true"><?= is_null($user->lastAccess()) ? '&infin;' : date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $user->lastAccess()) ?></div>
                     <div class="users-item-cell user-actions">
 <?php

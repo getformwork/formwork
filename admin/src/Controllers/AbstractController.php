@@ -3,6 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
+use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Notification;
@@ -11,6 +12,7 @@ use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
+use InvalidArgumentException;
 
 abstract class AbstractController
 {
@@ -94,18 +96,24 @@ abstract class AbstractController
         return Formwork::instance()->option($option);
     }
 
+    protected function escape($string)
+    {
+        return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE);
+    }
+
     protected function field($field, $render = true)
     {
+        if (!($field instanceof Field)) {
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of Formwork\Admin\Fields\Field');
+        }
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
     }
 
-    protected function fields($fields, $render = true)
+    protected function fields(Fields $fields, $render = true)
     {
         $output = '';
-        if ($fields instanceof Fields) {
-            foreach ($fields as $field) {
-                $output .= $this->field($field, false);
-            }
+        foreach ($fields as $field) {
+            $output .= $this->field($field, false);
         }
         if ($render) {
             echo $output;

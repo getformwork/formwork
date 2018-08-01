@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Security;
 
+use Formwork\Utils\HTTPRequest;
 use Formwork\Admin\Utils\Session;
 use RuntimeException;
 
@@ -24,7 +25,8 @@ class CSRFToken
     public static function validate($token = null)
     {
         if (is_null($token)) {
-            $valid = isset($_POST['csrf-token']) && $_POST['csrf-token'] === static::get();
+            $postData = HTTPRequest::postData();
+            $valid = isset($postData['csrf-token']) && $postData['csrf-token'] === static::get();
         } else {
             $valid = $token === static::get();
         }

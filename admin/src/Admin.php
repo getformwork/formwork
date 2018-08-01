@@ -160,7 +160,6 @@ class Admin
         );
 
         $this->router->add(
-            array('GET', 'POST'),
             '/dashboard/',
             array(new Controllers\Dashboard(), 'run')
         );
@@ -243,7 +242,7 @@ class Admin
         );
 
         $this->router->add(
-            array('GET', 'POST'),
+            'POST',
             '/cache/clear/',
             array(new Controllers\Cache(), 'clear')
         );
