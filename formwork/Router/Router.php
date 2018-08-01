@@ -108,7 +108,7 @@ class Router
         foreach ($this->routes as $route) {
             if (HTTPRequest::type() == $route['type'] && HTTPRequest::method() == $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
-                return call_user_func($route['callback'], $this->params);
+                return $route['callback']($this->params);
             }
         }
     }

@@ -5,9 +5,9 @@
                         <img src="<?= $user->avatar()->uri() ?>" style="width: 150px; border-radius: 50%;">
                     </div>
                     <div style="display:table-cell; vertical-align: middle; padding: 0.5rem;">
-                        <h3><?= $user->fullname() ?></h3>
-                        <?= $user->username() ?><br>
-                        <a href="mailto:<?= $user->email() ?>"><?= $user->email() ?></a><br>
+                        <h3><?= $this->escape($user->fullname()) ?></h3>
+                        <?= $this->escape($user->username()) ?><br>
+                        <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
                         <?= $this->label('user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $user->lastAccess()) ?>
                     </div>
                 </div>
