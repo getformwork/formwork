@@ -34,6 +34,7 @@ options.options: Options
 options.site: Site
 options.system: System
 options.updated: Options updated
+pages.attributes: Attributes
 pages.changes.continue: Continue without Saving
 pages.changes.detected: Changes Detected
 pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
@@ -83,6 +84,7 @@ pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
 pages.pages.search: Search Pages...
+pages.parent: Parent Page
 pages.preview-file: Preview
 pages.preview: Preview
 pages.publish: Publish
@@ -90,6 +92,7 @@ pages.save: Save
 pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
+pages.template: Template
 password-reset.confirm-new-password: Confirm New Password
 password-reset.email-sent: An email has been sent to %s with instructions to reset your password.
 password-reset.email: E-mail Address

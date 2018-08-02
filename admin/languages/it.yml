@@ -34,6 +34,7 @@ options.options: Impostazioni
 options.site: Sito
 options.system: Sistema
 options.updated: Opzioni aggiornate
+pages.attributes: Attributi
 pages.changes.continue: Continua senza salvare
 pages.changes.detected: Modifiche rilevate
 pages.changes.detected.prompt: Alcune modifiche non sono state salvate. Si è sicuri di voler lasciare la pagina?
@@ -83,6 +84,7 @@ pages.pages: Pagine
 pages.pages.collapse-all: Riduci tutte
 pages.pages.expand-all: Espandi tutte
 pages.pages.search: Cerca pagine...
+pages.parent: Pagina superiore
 pages.preview-file: Anteprima
 pages.preview: Anteprima
 pages.publish: Pubblica
@@ -90,6 +92,7 @@ pages.save: Salva
 pages.status.not-published: Non pubblicato
 pages.status.not-routable: Non raggiungibile
 pages.status.published: Pubblicato
+pages.template: Template
 password-reset.confirm-new-password: Conferma password
 password-reset.email-sent: Un’e-mail è stata inviata all’indirizzo %s con le istruzioni per reimpostare la password.
 password-reset.email: Indirizzo e-mail

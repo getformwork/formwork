@@ -212,7 +212,9 @@ class Pages extends AbstractController
                 'pages.editor',
                 array(
                     'csrfToken' => CSRFToken::get(),
-                    'page' => $this->page
+                    'page' => $this->page,
+                    'templates' => $this->site->templates(),
+                    'parents' => $this->site->descendants()->sort('path')
                 ),
                 false
             ),
@@ -406,6 +408,17 @@ class Pages extends AbstractController
         }
 
         $this->notify($this->label('pages.page.edited'), 'success');
+
+        if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
+            $page = $this->changePageParent($page, $newParent);
+            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/', 302, true);
+        }
+
+        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
+            $this->changePageTemplate($page, $newTemplate);
+            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/', 302, true);
+        }
+
         return $page;
     }
 
@@ -435,6 +448,19 @@ class Pages extends AbstractController
         $destination = $directory . DS . $id . DS;
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
+    }
+
+    protected function changePageParent(Page $page, $parent)
+    {
+        $destination = $parent->path() . FileSystem::basename($page->path()) . DS;
+        FileSystem::moveDirectory($page->path(), $destination);
+        return new Page($destination);
+    }
+
+    protected function changePageTemplate(Page $page, $template)
+    {
+        $destination = $page->path() . $template . Formwork::instance()->option('content.extension');
+        FileSystem::move($page->path() . $page->filename(), $destination);
     }
 
     protected function field($fieldName, $render = true)
