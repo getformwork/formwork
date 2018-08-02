@@ -223,7 +223,7 @@ class Page extends AbstractPage
 
     protected function parse()
     {
-        $contents = FileSystem::read($this->path . DS . $this->filename);
+        $contents = FileSystem::read($this->path . $this->filename);
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
             throw new RuntimeException('Invalid page format');
         }
