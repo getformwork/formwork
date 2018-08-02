@@ -56,6 +56,7 @@ pages.files.upload-label: '<strong>Fai click</strong> per selezionare un file da
 pages.new-page: Nuova pagina
 pages.new-page.parent: Pagina superiore
 pages.new-page.site: Sito
+pages.new-page.template: Template
 pages.new-page.title: Titolo
 pages.new-page.uri-suggestion: solo lettere, numeri e trattini
 pages.new-page.uri: URI pagina

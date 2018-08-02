@@ -20,7 +20,7 @@
                 endforeach;
 ?>
             </select>
-            <label class="label-required" for="page-template">Template:</label>
+            <label class="label-required" for="page-template"><?= $this->label('pages.new-page.template') ?>:</label>
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):
