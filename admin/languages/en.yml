@@ -55,6 +55,7 @@ pages.files: Files
 pages.files.upload-label: '<strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here'
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
+pages.new-page.site: Site
 pages.new-page.title: Title
 pages.new-page.uri-suggestion: letters, numbers and dashes only
 pages.new-page.uri: Page URI
