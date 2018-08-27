@@ -4,7 +4,7 @@
     <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <?php
-    if(isset($csrfToken)):
+    if (isset($csrfToken)):
 ?>
     <meta name="csrf-token" content="<?= $csrfToken ?>">
 <?php

@@ -26,7 +26,7 @@
             foreach ($templates as $template):
                 $scheme = $this->scheme($template);
 ?>
-                <option value="<?= $template ?>"<?php if($scheme->default()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
+                <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php
             endforeach;
 ?>
