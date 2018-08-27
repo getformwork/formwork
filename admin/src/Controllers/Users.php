@@ -47,7 +47,7 @@ class Users extends AbstractController
         ));
     }
 
-    public function new(RouteParams $params)
+    public function create(RouteParams $params)
     {
         $this->data = new DataGetter(HTTPRequest::postData());
 

@@ -60,7 +60,7 @@ class Site extends AbstractPage
 
     public function hasPages()
     {
-        return !$this->children()->empty();
+        return !$this->children()->isEmpty();
     }
 
     public function alias($uri)
@@ -146,12 +146,12 @@ class Site extends AbstractPage
             static::$storage[$path] = $page;
         }
 
-        return !$page->empty() ? $page : null;
+        return !$page->isEmpty() ? $page : null;
     }
 
     protected function loadTemplates()
     {
-        foreach (FileSystem::list($this->templatesPath) as $item) {
+        foreach (FileSystem::scan($this->templatesPath) as $item) {
             $path = $this->templatesPath . $item;
             if (FileSystem::isFile($path)) {
                 $templates[FileSystem::name($item)] = $path;

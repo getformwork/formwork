@@ -179,7 +179,7 @@ class Options extends AbstractController
             if (in_array($field->type(), $ignore)) {
                 continue;
             }
-            if ($field->get('required') && $field->empty()) {
+            if ($field->get('required') && $field->isEmpty()) {
                 continue;
             }
             $options[$field->name()] = $field->value();

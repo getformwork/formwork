@@ -70,7 +70,7 @@ abstract class AbstractPage
 
     public function hasParents()
     {
-        return !$this->parents()->empty();
+        return !$this->parents()->isEmpty();
     }
 
     public function children()
@@ -85,7 +85,7 @@ abstract class AbstractPage
 
     public function hasChildren()
     {
-        return !$this->children()->empty();
+        return !$this->children()->isEmpty();
     }
 
     public function descendants()
