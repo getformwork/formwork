@@ -26,7 +26,7 @@ class Scheme extends DataGetter
         return $this->get('title');
     }
 
-    public function default()
+    public function isDefault()
     {
         return $this->get('default', false);
     }
