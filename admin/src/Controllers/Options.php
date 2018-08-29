@@ -150,6 +150,8 @@ class Options extends AbstractController
             )
         );
 
+        ksort($data['HTTP Request Headers']);
+
         $this->view('admin', array(
             'title' => $this->label('options.options'),
             'location' => 'options',
