@@ -9,10 +9,11 @@ AddDefaultCharset UTF-8
     RewriteRule ^templates/assets/.* - [L]
     RewriteRule ^(cache|config|formwork|templates|vendor)/.* index.php [L]
 
-    RewriteRule ^(.*)\.(md|yml|json)$ - [R=404,L]
-    RewriteRule ^(LICENSE|composer\.lock|gulpfile\.js|\.gitignore)$ - [R=404,L]
+    RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L]
+    RewriteRule ^(LICENSE|composer\.lock|\.gitignore|\.php_cs)/?$ index.php [L]
 
     RewriteRule ^admin/(accounts|languages|logs|schemes|src|views)/.* admin/index.php [L]
+    RewriteRule ^admin/gulpfile\.js/?$ admin/index.php [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^admin/.* admin/index.php [L]
