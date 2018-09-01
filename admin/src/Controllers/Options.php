@@ -10,6 +10,7 @@ use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
 class Options extends AbstractController
@@ -117,6 +118,7 @@ class Options extends AbstractController
                 'Zend Engine Version' => zend_version()
             ),
             'HTTP Request Headers' => HTTPRequest::headers(),
+            'HTTP Response Headers' => Header::responseHeaders(),
             'Server' => array(
                 'IP Address' => $_SERVER['SERVER_ADDR'],
                 'Port' => $_SERVER['SERVER_PORT'],
@@ -151,6 +153,7 @@ class Options extends AbstractController
         );
 
         ksort($data['HTTP Request Headers']);
+        ksort($data['HTTP Response Headers']);
 
         $this->view('admin', array(
             'title' => $this->label('options.options'),
