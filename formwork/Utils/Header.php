@@ -3,6 +3,7 @@
 namespace Formwork\Utils;
 
 use LogicException;
+use RuntimeException;
 
 class Header
 {
@@ -77,6 +78,9 @@ class Header
 
     public static function send($fieldName, $fieldValue)
     {
+        if (headers_sent()) {
+            throw new RuntimeException('HTTP headers already sent');
+        }
         header($fieldName . ': ' . trim($fieldValue));
     }
 
