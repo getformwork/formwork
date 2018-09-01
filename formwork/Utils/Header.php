@@ -103,7 +103,9 @@ class Header
         if ($download) {
             static::send('Content-Disposition', 'attachment; filename="' . FileSystem::basename($file) . '"');
         }
-        ob_end_clean(); // Clean output buffer to prevent displayed file alteration
+        while (ob_get_level()) {
+            ob_end_clean(); // Clean output buffer to prevent displayed file alteration
+        }
         readfile($file);
         exit;
     }
