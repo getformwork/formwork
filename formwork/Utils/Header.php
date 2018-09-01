@@ -80,6 +80,16 @@ class Header
         header($fieldName . ': ' . trim($fieldValue));
     }
 
+    public static function responseHeaders()
+    {
+        $headers = array();
+        foreach (headers_list() as $header) {
+            list($key, $value) = explode(':', $header, 2);
+            $headers[$key] = trim($value);
+        }
+        return $headers;
+    }
+
     public static function contentType($mimeType)
     {
         static::send('Content-Type', $mimeType);
