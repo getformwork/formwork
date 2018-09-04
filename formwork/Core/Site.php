@@ -85,6 +85,10 @@ class Site extends AbstractPage
         return null;
     }
 
+    public function indexPage() {
+        return $this->findPage(Formwork::instance()->option('pages.index'));
+    }
+
     public function errorPage($render = false)
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
@@ -119,11 +123,11 @@ class Site extends AbstractPage
     public function findPage($page)
     {
         if ($page == '/') {
-            return $this->findPage(Formwork::instance()->option('pages.index'));
+            return $this->indexPage();
         }
 
         $components = explode('/', trim($page, '/'));
-        $path = Formwork::instance()->option('content.path');
+        $path = $this->path;
 
         foreach ($components as $component) {
             $found = false;
