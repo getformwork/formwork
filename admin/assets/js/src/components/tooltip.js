@@ -6,6 +6,7 @@ Formwork.Tooltip = function(text, options) {
         offset: {x: 0, y: 0},
         delay: 500
     };
+    
     var $referenceElement = $(options.referenceElement);
     var $tooltip;
     var timer;
