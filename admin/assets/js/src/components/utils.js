@@ -68,7 +68,7 @@ Formwork.Utils = {
     },
 
     uriPrependBase: function(path, base) {
-        var regexp = /^\/+|\/+$/im;
+        var regexp = /^\/+|\/+$/gm;
         path = path.replace(regexp, '').split('/');
         base = base.replace(regexp, '').split('/');
         for (var i = 0; i < base.length; i++) {
