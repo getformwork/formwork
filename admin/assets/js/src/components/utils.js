@@ -26,7 +26,7 @@ Formwork.Utils = {
 
         return wrapper;
     },
-    
+
     escapeRegExp: function(string) {
         return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },

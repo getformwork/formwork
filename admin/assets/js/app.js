@@ -432,7 +432,7 @@ Formwork.Modals = {
     removeBackdrop: function() {
         $('.modal-backdrop').remove();
     },
-    
+
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);
@@ -696,7 +696,7 @@ Formwork.Tooltip = function(text, options) {
         offset: {x: 0, y: 0},
         delay: 500
     };
-    
+
     var $referenceElement = $(options.referenceElement);
     var $tooltip;
     var timer;
@@ -829,7 +829,7 @@ Formwork.Utils = {
 
         return wrapper;
     },
-    
+
     escapeRegExp: function(string) {
         return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },
