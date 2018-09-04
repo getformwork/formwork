@@ -65,7 +65,7 @@ Formwork.Modals = {
     removeBackdrop: function() {
         $('.modal-backdrop').remove();
     },
-    
+
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);
