@@ -56,6 +56,8 @@ pages.files: File
 pages.files.upload-label: '<strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui'
 pages.new-page: Nuova pagina
 pages.new-page.parent: Pagina superiore
+pages.new-page.site: Sito
+pages.new-page.template: Template
 pages.new-page.title: Titolo
 pages.new-page.uri-suggestion: solo lettere, numeri e trattini
 pages.new-page.uri: URI pagina
@@ -103,6 +105,7 @@ updates.status.up-to-date: Aggiornato!
 updates.updates: Aggiornamenti
 uploader.erorr.cannot-write: Impossibile salvare il file sul disco
 uploader.error: 'Impossibile caricare il file. %s.'
+uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.file-name: Nome del file non valido
 uploader.error.hidden-files: "Impossibile caricare i file che iniziano con '.'"
 uploader.error.mime-type: Il tipo di file non è consentito

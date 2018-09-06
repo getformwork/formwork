@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.12](https://github.com/giuscris/formwork/releases/tag/0.6.12) (2018-08-27)
+
+**Enhancements**
+
+ * Add logout notification
+ * Add box shadow to pages list items when sorting pages
+ * Make buttons in Pages list look the same as in Page editor
+
+**Bug fixes**
+
+ * Fix method names which broke PHP ^5.5.0 compatibility
+
 ## [0.6.11](https://github.com/giuscris/formwork/releases/tag/0.6.11) (2018-07-24)
 
 **Enhancements**

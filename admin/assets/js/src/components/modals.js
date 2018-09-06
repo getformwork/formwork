@@ -34,6 +34,7 @@ Formwork.Modals = {
             }
         });
     },
+
     show: function (id, action, callback) {
         var $modal = $('#' + id);
         $modal.addClass('show');
@@ -46,11 +47,13 @@ Formwork.Modals = {
         }
         this.createBackdrop();
     },
+
     hide: function(id) {
         var $modal = id === undefined ? $('.modal') : $('#' + id);
         $modal.removeClass('show');
         this.removeBackdrop();
     },
+
     createBackdrop: function() {
         if (!$('.modal-backdrop').length) {
             $('<div>', {
@@ -58,9 +61,11 @@ Formwork.Modals = {
             }).appendTo('body');
         }
     },
+
     removeBackdrop: function() {
         $('.modal-backdrop').remove();
     },
+
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);

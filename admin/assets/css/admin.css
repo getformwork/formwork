@@ -1940,6 +1940,9 @@ label {
 .sortable-ghost {
   background-color: #fff; }
 
+.sortable-fallback {
+  box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.15); }
+
 .dragging [data-sortable=false] .pages-item:hover {
   background-color: transparent; }
 
@@ -1959,7 +1962,7 @@ label {
   display: block; }
 
 .sidebar-wrapper {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100% - 9rem); }
 
 .toggle-navigation {
@@ -2226,6 +2229,27 @@ ul {
   margin-left: 1.25rem;
   padding: 0;
   list-style-position: outside; }
+
+.user-summary {
+  display: table;
+  width: 100%;
+  table-layout: fixed; }
+
+.user-summary-avatar {
+  display: table-cell;
+  padding: 0.5rem;
+  width: 20%;
+  vertical-align: middle;
+  text-align: center; }
+
+.user-summary-avatar img {
+  width: 150px;
+  border-radius: 50%; }
+
+.user-summary-data {
+  display: table-cell;
+  padding: 0.5rem;
+  vertical-align: middle; }
 
 .users-list {
   border-top: 1px solid #e4e4e4;

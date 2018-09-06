@@ -87,7 +87,7 @@ class FileSystem
         if (static::lastModifiedTime($directory) > $time) {
             return true;
         }
-        foreach (static::list($directory) as $item) {
+        foreach (static::scan($directory) as $item) {
             $path = static::normalize($directory) . $item;
             if (static::lastModifiedTime($path) > $time) {
                 return true;
@@ -111,7 +111,7 @@ class FileSystem
         $path = static::normalize($path);
         static::assert($path);
         $bytes = 0;
-        foreach (static::list($path, true) as $item) {
+        foreach (static::scan($path, true) as $item) {
             if (static::isFile($path . $item)) {
                 $bytes += static::size($path . $item, false);
             } else {
@@ -163,7 +163,7 @@ class FileSystem
             return @unlink($path);
         }
         if ($recursive) {
-            foreach (static::list($path, true) as $file) {
+            foreach (static::scan($path, true) as $file) {
                 static::delete($path . DS . $file, true);
             }
         }
@@ -215,7 +215,7 @@ class FileSystem
         if (!static::exists($destination)) {
             static::createDirectory($destination);
         }
-        foreach (static::list($source, true) as $item) {
+        foreach (static::scan($source, true) as $item) {
             if (static::isFile($source . $item)) {
                 static::move($source . $item, $destination . $item);
             } else {
@@ -283,7 +283,7 @@ class FileSystem
         return rtrim($path, DS) . DS;
     }
 
-    public static function list($path, $all = false)
+    public static function scan($path, $all = false)
     {
         static::assert($path);
         if (!static::isDirectory($path)) {
@@ -303,7 +303,7 @@ class FileSystem
     public static function listFiles($path = null, $all = false)
     {
         $path = static::normalize($path);
-        return array_filter(static::list($path, $all), function ($item) use ($path) {
+        return array_filter(static::scan($path, $all), function ($item) use ($path) {
             return static::isFile($path . $item);
         });
     }
@@ -311,7 +311,7 @@ class FileSystem
     public static function listDirectories($path = null, $all = false)
     {
         $path = static::normalize($path);
-        return array_filter(static::list($path, $all), function ($item) use ($path) {
+        return array_filter(static::scan($path, $all), function ($item) use ($path) {
             return static::isDirectory($path . $item);
         });
     }

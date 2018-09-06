@@ -21,12 +21,928 @@ var Formwork = {
             new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
             $this.remove();
         });
+
+        if ($('[data-command=save]').length > 0) {
+            $(document).keydown(function() {
+                if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+                    if (event.which == 83) { // ctrl/cmd + S
+                        $('[data-command=save]').click();
+                        return false;
+                    }
+                }
+            });
+        }
+
     }
 };
 
 $(function() {
     Formwork.init();
 });
+
+Formwork.Chart = function(element, data) {
+    var options = {
+        showArea: true,
+        fullWidth: true,
+        scaleMinSpace: 20,
+        divisor: 5,
+        chartPadding: 20,
+        lineSmooth: false,
+        low: 0,
+        axisX: {
+            showGrid: false,
+            labelOffset: {x: 0, y: 10}
+        },
+        axisY: {
+            onlyInteger: true,
+            offset: 15,
+            labelOffset: {x: 0, y: 5}
+        }
+    };
+
+    var chart = new Chartist.Line(element, data, options);
+
+    var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+
+    $(chart.container).on('mouseover', '.ct-point', function() {
+        var $this = $(this);
+        var tooltipOffset = {x: 0, y: -8};
+
+        if (isFirefox) {
+            var strokeWidth = parseFloat($this.css('stroke-width'));
+            tooltipOffset.x += strokeWidth / 2;
+            tooltipOffset.y += strokeWidth / 2;
+        }
+
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: tooltipOffset});
+        tooltip.show();
+    });
+};
+
+Formwork.Dashboard = {
+    init: function() {
+        $('#clear-cache').click(function() {
+            new Formwork.Request({
+                method: 'POST',
+                url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
+                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
+            }, function(response) {
+                Formwork.Notification(response.message, response.status, 5000);
+            });
+        });
+    }
+};
+
+Formwork.Editor = function(id) {
+    var textarea = $('#' + id)[0];
+    var $toolbar = '.editor-toolbar[data-for=' + id + ']';
+
+    $('[data-command=bold]', $toolbar).click(function() {
+        insertAtCursor('**');
+    });
+
+    $('[data-command=italic]', $toolbar).click(function() {
+        insertAtCursor('_');
+    });
+
+    $('[data-command=ul]', $toolbar).click(function() {
+        var prevChar = prevCursorChar();
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
+        insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
+    });
+
+    $('[data-command=ol]', $toolbar).click(function() {
+        var prevChar = prevCursorChar();
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
+        var num = /^\d+\./.exec(lastLine(textarea.value));
+        if (num) {
+            insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
+        } else {
+            insertAtCursor(prevChar === undefined ? '1. ' : prepend + '1. ', '');
+        }
+    });
+
+    $('[data-command=quote]', $toolbar).click(function() {
+        var prevChar = prevCursorChar();
+        var prepend = prevChar === '\n' ? '\n' : '\n\n';
+        insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
+    });
+
+    $('[data-command=link]', $toolbar).click(function() {
+        var startPos = textarea.selectionStart;
+        var endPos = textarea.selectionEnd;
+        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
+        var left = textarea.value.substring(0, startPos);
+        var right = textarea.value.substring(endPos, textarea.value.length);
+        if (/^(https?:\/\/|mailto:)/i.test(selection)) {
+            textarea.value = left + '[](' + selection + ')' + right;
+            textarea.focus();
+            textarea.setSelectionRange(startPos + 1, startPos + 1);
+        } else if (selection !== '') {
+            textarea.value = left + '[' + selection + '](http://)' + right;
+            textarea.focus();
+            textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
+        } else {
+            insertAtCursor('[', '](http://)');
+        }
+    });
+
+    $('[data-command=image]', $toolbar).click(function() {
+        var prevChar = prevCursorChar();
+        var prepend = '\n\n';
+        if (prevChar === '\n') {
+            prepend = '\n';
+        } else if (prevChar === undefined) {
+            prepend = '';
+        }
+        insertAtCursor(prepend + '![](', ')');
+    });
+
+    $('[data-command=summary]', $toolbar).click(function() {
+        var prevChar = prevCursorChar();
+        if (!hasSummarySequence()) {
+            console.log(prevChar);
+            var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
+            insertAtCursor(prepend + '\n===\n\n', '');
+            $(this).attr('disabled', true);
+        }
+    });
+
+    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    disableSummaryCommand();
+
+    $(document).keydown(function(event) {
+        if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+            switch (event.which) {
+                case 66: // ctrl/cmd + B
+                    $('[data-command=bold]', $toolbar).click();
+                    return false;
+                case 73: // ctrl/cmd + I
+                    $('[data-command=italic]', $toolbar).click();
+                    return false;
+                case 89: //ctrl/cmd + Y
+                case 90: // ctrl/cmd + Z
+                    return false;
+            }
+        }
+    });
+
+    function hasSummarySequence() {
+        return /\n+===\n+/.test(textarea.value);
+    }
+
+    function disableSummaryCommand() {
+        $('[data-command=summary]', $toolbar).attr('disabled', hasSummarySequence());
+    }
+
+    function lastLine(text) {
+        var index = text.lastIndexOf('\n');
+        if (index == -1) {
+            return text;
+        }
+        return text.substring(index + 1);
+    }
+
+    function prevCursorChar() {
+        var startPos = textarea.selectionStart;
+        return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
+    }
+
+    function insertAtCursor(leftValue, rightValue) {
+        if (rightValue === undefined) {
+            rightValue = leftValue;
+        }
+        var startPos = textarea.selectionStart;
+        var endPos = textarea.selectionEnd;
+        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
+        textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
+        textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
+        $(textarea).blur().focus();
+    }
+};
+
+Formwork.Form = function(form) {
+    var $window = $(window);
+    var $form = $(form);
+
+    $form.data('original-data', $form.serialize());
+
+    $window.on('beforeunload', function() {
+        if (hasChanged()) {
+            return true;
+        }
+    });
+
+    $form.submit(function() {
+        $window.off('beforeunload');
+    });
+
+    $('a[href]:not([href^="#"]):not([target="_blank"])').click(function(event) {
+        if (hasChanged()) {
+            var link = this;
+            event.preventDefault();
+            Formwork.Modals.show('changesModal', null, function($modal) {
+                $modal.find('.button-continue').click(function() {
+                    $window.off('beforeunload');
+                    window.location.href = $(this).data('href');
+                }).attr('data-href', link.href);
+            });
+        }
+    });
+
+    function hasChanged() {
+        var $fileInputs = $form.find(':file');
+        if ($fileInputs.length > 0) {
+            for (var i = 0; i < $fileInputs.length; i++) {
+                if ($fileInputs[i].files.length > 0) {
+                    return true;
+                }
+            }
+        }
+        return $form.serialize() != $form.data('original-data');
+    }
+};
+
+Formwork.Forms = {
+    init: function() {
+        $('[data-form]').each(function() {
+            new Formwork.Form($(this));
+        });
+
+        $('input[data-enable]').change(function() {
+            var checked = $(this).is(':checked');
+            $.each($(this).data('enable').split(','), function(index, value) {
+                $('input[name="' + value + '"]').attr('disabled', !checked);
+            });
+        });
+
+        $('.input-reset').click(function() {
+            var $target = $('#' + $(this).data('reset'));
+            $target.val('');
+            $target.change();
+        });
+
+        $('input:file').each(function() {
+            var $this = $(this);
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
+            var labelHTML = $span.html();
+            $this.data('originalLabel', labelHTML);
+        }).on('change input', function() {
+            var $this = $(this);
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
+            var files = $this.prop('files');
+            if (files.length) {
+                $span.text(files[0].name);
+            } else {
+                $span.html($this.data('originalLabel'));
+            }
+        });
+
+        $('input:file[data-auto-upload]').change(function() {
+            $(this).closest('form').submit();
+        });
+
+        $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function(event) {
+            event.preventDefault();
+        }).on('drop', function(event) {
+            var $target = $('#' + $(this).attr('for'));
+            $target.prop('files', event.originalEvent.dataTransfer.files);
+            // Firefox won't trigger a change event, so we explicitly do that
+            $target.change();
+        }).on('dragover dragenter', function() {
+            $(this).addClass('drag');
+        }).on('dragleave drop', function() {
+            $(this).removeClass('drag');
+        });
+
+        $('.tag-input').tagInput();
+
+        $('.image-input').click(function() {
+            var $this = $(this);
+            var value = $this.val();
+            Formwork.Modals.show('imagesModal', null, function($modal) {
+                $modal.find('.image-picker-confirm').data('target', $this);
+                $modal.find('.image-picker-thumbnail').each(function() {
+                    var $thumbnail = $(this);
+                    if ($thumbnail.data('text') == value) {
+                        $thumbnail.addClass('selected');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        $('.image-picker').each(function() {
+            var $this = $(this);
+            var options = $this.children('option');
+            if (options.length > 0) {
+                var container = $('<div>', {class: 'image-picker-thumbnails'});
+                for (var i = 0; i < options.length; i++) {
+                    $('<div>', {
+                        class: 'image-picker-thumbnail',
+                        'data-value': options[i].value,
+                        'data-text': options[i].text
+                    }).css({
+                        'background-image': 'url(' + options[i].value + ')'
+                    }).appendTo(container);
+                }
+                $this.before(container);
+                $('.image-picker-empty-state').hide();
+            }
+            $this.hide();
+        });
+
+        $('.image-picker-confirm').click(function() {
+            var $this = $(this);
+            $this.data('target').val($this.parent().find('.image-picker-thumbnail.selected').data('text'));
+        });
+
+        $('.image-picker-thumbnail').click(function() {
+            var $this = $(this);
+            $this.siblings().removeClass('selected');
+            $this.addClass('selected');
+            $this.parent().siblings('.image-input').val($this.data('value'));
+        });
+
+        $('.image-picker-upload').click(function() {
+            var $target = $('#' + $(this).data('upload-target'));
+            $target.click();
+        });
+
+        $('.editor-textarea').each(function() {
+            new Formwork.Editor($(this).attr('id'));
+        });
+    }
+};
+
+Formwork.Modals = {
+    init: function() {
+        $('[data-modal]').click(function() {
+            var $this = $(this);
+            var modal = $this.data('modal');
+            var action = $this.data('modal-action');
+            if (action) {
+                Formwork.Modals.show(modal, action);
+            } else {
+                Formwork.Modals.show(modal);
+            }
+        });
+
+        $('.modal [data-dismiss]').click(function() {
+            if ($(this).is('[data-validate]')) {
+                var valid = Formwork.Modals.validate($(this).data('dismiss'));
+                if (!valid) {
+                    return;
+                }
+            }
+            Formwork.Modals.hide($(this).data('dismiss'));
+        });
+
+        $('.modal').click(function(event) {
+            if (event.target === this) {
+                Formwork.Modals.hide();
+            }
+        });
+
+        $(document).keyup(function(event) {
+            // ESC key
+            if (event.which == 27) {
+                Formwork.Modals.hide();
+            }
+        });
+    },
+
+    show: function (id, action, callback) {
+        var $modal = $('#' + id);
+        $modal.addClass('show');
+        if (action !== null) {
+            $modal.find('form').attr('action', action);
+        }
+        $modal.find('[autofocus]').first().focus(); // Firefox bug
+        if (typeof callback === 'function') {
+            callback($modal);
+        }
+        this.createBackdrop();
+    },
+
+    hide: function(id) {
+        var $modal = id === undefined ? $('.modal') : $('#' + id);
+        $modal.removeClass('show');
+        this.removeBackdrop();
+    },
+
+    createBackdrop: function() {
+        if (!$('.modal-backdrop').length) {
+            $('<div>', {
+                class: 'modal-backdrop'
+            }).appendTo('body');
+        }
+    },
+
+    removeBackdrop: function() {
+        $('.modal-backdrop').remove();
+    },
+
+    validate: function(id) {
+        var valid = false;
+        var $modal = $('#' + id);
+        $modal.find('[required]').each(function() {
+            if ($(this).val() === '') {
+                $(this).addClass('animated shake');
+                $(this).focus();
+                $modal.find('.modal-error').show();
+                valid = false;
+                return false;
+            }
+            valid = true;
+        });
+        return valid;
+    }
+};
+
+Formwork.Notification = function(text, type, interval) {
+    var $notification = $('<div>', {
+        class: 'notification'
+    }).text(text);
+
+    if ($('.notification').length > 0) {
+        var $last = $('.notification:last');
+        var top = $last.offset().top + $last.outerHeight(true);
+        $notification.css('top', top);
+    }
+
+    if (type) {
+        $notification.addClass('notification-' + type);
+    }
+
+    $notification.appendTo('body');
+
+    var timer = setTimeout(remove, interval);
+
+    $notification.click(remove);
+
+    $notification.mouseenter(function() {
+        clearTimeout(timer);
+    });
+
+    $notification.mouseleave(function() {
+        timer = setTimeout(remove, 1000);
+    });
+
+    function remove() {
+        var found = false;
+        var offset = $notification.outerHeight(true);
+
+        $('.notification').each(function() {
+            var $this = $(this);
+            if ($this.is($notification)) {
+                found = true;
+                $this.addClass('fadeout');
+            } else if (found) {
+                $this.css('top', '-=' + offset);
+            }
+        });
+
+        setTimeout(function() {
+            $notification.remove();
+        }, 400);
+
+    }
+
+};
+
+Formwork.Pages = {
+    init: function() {
+        $('.page-children-toggle').click(function(event) {
+            event.stopPropagation();
+            $(this).closest('li').children('.pages-list').toggle();
+            $(this).toggleClass('toggle-expanded toggle-collapsed');
+        });
+
+        $('.page-details a').click(function(event) {
+            event.stopPropagation();
+        });
+
+        $('#expand-all-pages').click(function() {
+            $(this).blur();
+            $('.pages-children').show();
+            $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+        });
+
+        $('#collapse-all-pages').click(function() {
+            $(this).blur();
+            $('.pages-children').hide();
+            $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+        });
+
+        $('.page-search').focus(function() {
+            $('.pages-children').each(function() {
+                var $this = $(this);
+                $this.data('visible', $this.is(':visible'));
+            });
+        });
+
+        $('.page-search').keyup(Formwork.Utils.debounce(function() {
+            var value = $(this).val();
+            if (value.length === 0) {
+                $('.pages-children').each(function() {
+                    $(this).toggle($(this).data('visible'));
+                });
+                $('.page-details').css('padding-left', '');
+                $('.pages-item, .page-children-toggle').show();
+            } else {
+                var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
+                var matches = 0;
+                $('.pages-children').show();
+                $('.page-children-toggle').hide();
+                $('.page-details').css('padding-left', '0');
+                $('.page-title a').each(function() {
+                    var $pagesItem = $(this).closest('.pages-item');
+                    var matched = !!$(this).text().match(regexp);
+                    if (matched) {
+                        matches++;
+                    }
+                    $pagesItem.toggle(matched);
+                });
+            }
+        }, 100));
+
+        $('.page-details').click(function() {
+            var $toggle = $(this).find('.page-children-toggle').first();
+            if ($toggle.length) {
+                $toggle.click();
+            }
+        });
+
+        $('#page-title', '#newPageModal').keyup(function() {
+            $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
+        });
+
+        $('#page-slug', '#newPageModal').keyup(function() {
+            $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+        }).blur(function() {
+            if ($(this).val() === '') {
+                $('#page-title', '#newPageModal').trigger('keyup');
+            }
+        });
+
+        $('#page-parent', '#newPageModal').change(function() {
+            var $option = $(this).find('option:selected');
+            var $pageTemplate = $('#page-template', '#newPageModal');
+            var allowedTemplates = $option.data('allowed-templates');
+            if (allowedTemplates) {
+                allowedTemplates = allowedTemplates.split(', ');
+                $pageTemplate
+                    .data('previous-value', $pageTemplate.val())
+                    .val(allowedTemplates[0])
+                    .find('option').each(function () {
+                        if (allowedTemplates.indexOf($(this).val()) == -1) {
+                            $(this).attr('disabled', true);
+                        }
+                    });
+            } else if ($pageTemplate.find('option[disabled]').length) {
+                $pageTemplate
+                    .val($pageTemplate.data('previous-value'))
+                    .removeData('previous-value')
+                    .find('option').removeAttr('disabled');
+            }
+        });
+
+        $('.pages-list').each(function() {
+            var $this = $(this);
+
+            if ($this.data('sortable-children') === false) {
+                return;
+            }
+
+            var sortable = Sortable.create(this, {
+                filter: '[data-sortable=false]',
+                forceFallback: true,
+                onStart: function(event) {
+                    $(event.item).closest('.pages-list').addClass('dragging');
+                    $('.pages-children', event.item).hide();
+                    $('.page-children-toggle').removeClass('toggle-expanded')
+                    .addClass('toggle-collapsed').css('opacity', '0.5');
+                },
+                onMove: function(event) {
+                    if ($(event.related).data('sortable') === false) {
+                        return false;
+                    }
+                    $('.pages-children', event.related).hide();
+                },
+                onEnd: function (event) {
+                    $(event.item).closest('.pages-list').removeClass('dragging');
+                    $('.page-children-toggle').css('opacity', '');
+
+                    if (event.newIndex == event.oldIndex) {
+                        return;
+                    }
+
+                    sortable.option('disabled', true);
+
+                    var data = {
+                        'csrf-token': $('meta[name=csrf-token]').attr('content'),
+                        parent: $(this.el).data('parent'),
+                        from: event.oldIndex,
+                        to: event.newIndex
+                    };
+
+                    new Formwork.Request({
+                        method: 'POST',
+                        url: Formwork.Utils.uriPrependBase('/admin/pages/reorder/', location.pathname),
+                        data: data
+                    }, function(response) {
+                        if (response.status) {
+                            Formwork.Notification(response.message, response.status, 5000);
+                        }
+                        if (!response.status || response.status == 'error') {
+                            sortable.sort($(event.from).data('originalOrder'));
+                        }
+                        sortable.option('disabled', false);
+                        $(event.from).data('originalOrder', sortable.toArray());
+                    });
+
+                }
+            });
+
+            $this.data('originalOrder', sortable.toArray());
+        });
+
+        $(document).keydown(function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                // ctrl/cmd + F
+                if (event.which == 70 && $('.page-search:not(:focus)').length) {
+                    $('.page-search').focus();
+                    return false;
+                }
+            }
+        });
+    }
+};
+
+Formwork.Request = function(options, callback) {
+    var request = $.ajax(options);
+
+    if (typeof callback === 'function') {
+        request.always(function() {
+            var response = request.responseJSON || {};
+            var code = response.code || request.status;
+            if (code == 403) {
+                location.reload();
+            } else {
+                callback(response, request);
+            }
+        });
+    }
+
+    return request;
+};
+
+Formwork.Tooltip = function(text, options) {
+    var defaults = {
+        container: document.body,
+        referenceElement: document.body,
+        position: 'top',
+        offset: {x: 0, y: 0},
+        delay: 500
+    };
+
+    var $referenceElement = $(options.referenceElement);
+    var $tooltip;
+    var timer;
+
+    options = $.extend({}, defaults, options);
+
+    $referenceElement.on('mouseout', _remove);
+
+    function _tooltipPosition($tooltip) {
+        var offset = $referenceElement.offset();
+
+        if (offset.top === 0 && offset.left === 0) {
+            var rect = $referenceElement[0].getBoundingClientRect();
+            offset.top = rect.top + window.pageYOffset;
+            offset.left = rect.left + window.pageXOffset;
+        }
+
+        var top = offset.top;
+        var left = offset.left;
+
+        var hw = ($referenceElement.outerWidth() - $tooltip.outerWidth()) / 2;
+        var hh = ($referenceElement.outerHeight() - $tooltip.outerHeight()) / 2;
+        switch (options.position) {
+            case 'top':
+                return {
+                    top: Math.round(top - $tooltip.outerHeight() + options.offset.y),
+                    left: Math.round(left + hw + options.offset.x)
+                };
+            case 'right':
+                return {
+                    top: Math.round(top + hh + options.offset.y),
+                    left: Math.round(left+ $referenceElement.outerWidth() + options.offset.x)
+                };
+            case 'bottom':
+                return {
+                    top: Math.round(top + $referenceElement.outerHeight() + options.offset.y),
+                    left: Math.round(left + hw + options.offset.x)
+                };
+            case 'left':
+                return {
+                    top: Math.round(top + hh + options.offset.y),
+                    left: Math.round(left - $tooltip.outerWidth() + options.offset.x)
+                };
+        }
+    }
+
+    function _show() {
+        timer = setTimeout(function() {
+            $tooltip = $('<div class="tooltip" role="tooltip">')
+            .appendTo(options.container);
+
+            $tooltip.text(text)
+            .css(_tooltipPosition($tooltip))
+            .fadeIn(200);
+        }, options.delay);
+    }
+
+    function _remove() {
+        clearTimeout(timer);
+        if ($tooltip !== undefined) {
+            $tooltip.fadeOut(100, function() {
+                $tooltip.remove();
+            });
+        }
+    }
+
+    return {
+        show: _show,
+        remove: _remove
+    };
+};
+
+Formwork.Tooltips = {
+    init: function() {
+        $('[title]').each(function() {
+            var $this = $(this);
+            $this.attr('data-tooltip', $this.attr('title'))
+            .removeAttr('title');
+        });
+
+        $('[data-tooltip]').mouseover(function() {
+            var $this = $(this);
+            var tooltip = new Formwork.Tooltip($this.data('tooltip'), {
+                referenceElement: $this,
+                position: 'bottom',
+                offset: {x: 0, y: 4}
+            });
+            tooltip.show();
+        });
+
+        $('[data-overflow-tooltip="true"]').mouseover(function() {
+            var $this = $(this);
+            if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
+                var tooltip = new Formwork.Tooltip($this.text().trim(), {
+                    referenceElement: $this,
+                    position: 'bottom',
+                    offset: {x: 0, y: 4}
+                });
+                tooltip.show();
+            }
+        });
+    }
+};
+
+Formwork.Updates = {
+    init: function() {
+        if ($('#updater-component').length > 0) {
+            setTimeout(function() {
+                var data = {
+                    'csrf-token': $('meta[name=csrf-token]').attr('content')
+                };
+                new Formwork.Request({
+                    method: 'POST',
+                    url: Formwork.Utils.uriPrependBase('/admin/updates/check/', location.pathname),
+                    data: data
+                }, function(response) {
+                    $('.update-status').html(response.message);
+                    if (response.data.uptodate === false) {
+                        $('.spinner').addClass('spinner-info');
+                        $('.new-version-name').text(response.data.release.name);
+                        $('.new-version').show();
+                    } else {
+                        $('.spinner').addClass('spinner-success');
+                        $('.current-version').show();
+                    }
+                });
+            }, 1000);
+
+            $('#updater-component .install-button').click(function() {
+                $('.new-version').hide();
+                $('.spinner').removeClass('spinner-info');
+                $('.update-status').text($('.update-status').data('installing-text'));
+                var data = {
+                    'csrf-token': $('meta[name=csrf-token]').attr('content')
+                };
+                new Formwork.Request({
+                    method: 'POST',
+                    url: Formwork.Utils.uriPrependBase('/admin/updates/update/', location.pathname),
+                    data: data
+                }, function(response) {
+                    $('.update-status').text(response.data.status);
+                    new Formwork.Notification(response.message, response.status, 5000);
+                    if (response.status == 'success') {
+                        $('.spinner').addClass('spinner-success');
+                        $('.current-version-name').text($('.new-version-name').text());
+                        $('.current-version').show();
+                    } else {
+                        $('.spinner').addClass('spinner-error');
+                    }
+                });
+            });
+        }
+    }
+};
+
+Formwork.Utils = {
+    debounce: function(callback, delay, leading) {
+        var timer = null;
+        var context;
+        var args;
+
+        function wrapper() {
+            context = this;
+            args = arguments;
+
+            if (timer) {
+                clearTimeout(timer);
+            }
+
+            if (leading && !timer) {
+                callback.apply(context, args);
+            }
+
+            timer = setTimeout(function() {
+                if (!leading) {
+                    callback.apply(context, args);
+                }
+                timer = null;
+            }, delay);
+        }
+
+        return wrapper;
+    },
+
+    escapeRegExp: function(string) {
+        return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+
+    slug: function(string) {
+        var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
+        var char;
+        string = string.toLowerCase();
+        for (char in translate) {
+            if (translate.hasOwnProperty(char)) {
+                string = string.split(char).join(translate[char]);
+            }
+        }
+        return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
+    },
+
+    throttle: function(callback, delay) {
+        var timer = null;
+        var context;
+        var args;
+
+        function wrapper() {
+            context = this;
+            args = arguments;
+
+            if (timer) {
+                return;
+            }
+
+            callback.apply(context, args);
+
+            timer = setTimeout(function() {
+                wrapper.apply(context, args);
+                timer = null;
+            }, delay);
+        }
+
+        return wrapper;
+    },
+
+    uriPrependBase: function(path, base) {
+        var regexp = /^\/+|\/+$/gm;
+        path = path.replace(regexp, '').split('/');
+        base = base.replace(regexp, '').split('/');
+        for (var i = 0; i < base.length; i++) {
+            if (base[i] === path[0] && base[i + 1] !== path[0]) {
+                base = base.slice(0, i);
+            }
+        }
+        return '/' + base.concat(path).join('/') + '/';
+    }
+};
 
 (function($) {
     $.fn.datePicker = function(options) {
@@ -465,896 +1381,3 @@ $(function() {
         });
     };
 }(jQuery));
-
-Formwork.Chart = function(element, data) {
-    var options = {
-        showArea: true,
-        fullWidth: true,
-        scaleMinSpace: 20,
-        divisor: 5,
-        chartPadding: 20,
-        lineSmooth: false,
-        low: 0,
-        axisX: {
-            showGrid: false,
-            labelOffset: {x: 0, y: 10}
-        },
-        axisY: {
-            onlyInteger: true,
-            offset: 15,
-            labelOffset: {x: 0, y: 5}
-        }
-    };
-
-    var chart = new Chartist.Line(element, data, options);
-
-    var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
-
-    $(chart.container).on('mouseover', '.ct-point', function() {
-        var $this = $(this);
-        var tooltipOffset = {x: 0, y: -8};
-
-        if (isFirefox) {
-            var strokeWidth = parseFloat($this.css('stroke-width'));
-            tooltipOffset.x += strokeWidth / 2;
-            tooltipOffset.y += strokeWidth / 2;
-        }
-
-        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: tooltipOffset});
-        tooltip.show();
-    });
-};
-
-Formwork.Dashboard = {
-    init: function() {
-        $('#clear-cache').click(function() {
-            new Formwork.Request({
-                method: 'POST',
-                url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
-                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
-            }, function(response) {
-                Formwork.Notification(response.message, response.status, 5000);
-            });
-        });
-    }
-};
-
-Formwork.Editor = function(id) {
-    var textarea = $('#' + id)[0];
-    var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
-
-    $('[data-command=bold]', toolbarSel).click(function() {
-        insertAtCursor('**');
-    });
-
-    $('[data-command=italic]', toolbarSel).click(function() {
-        insertAtCursor('_');
-    });
-
-    $('[data-command=ul]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
-    });
-
-    $('[data-command=ol]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        var num = /^\d+\./.exec(lastLine(textarea.value));
-        if (num) {
-            insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
-        } else {
-            insertAtCursor(prevChar === undefined ? '1. ' : prepend + '1. ', '');
-        }
-    });
-
-    $('[data-command=quote]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
-    });
-
-    $('[data-command=link]', toolbarSel).click(function() {
-        var startPos = textarea.selectionStart;
-        var endPos = textarea.selectionEnd;
-        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
-        var left = textarea.value.substring(0, startPos);
-        var right = textarea.value.substring(endPos, textarea.value.length);
-        if (/^(https?:\/\/|mailto:)/i.test(selection)) {
-            textarea.value = left + '[](' + selection + ')' + right;
-            textarea.focus();
-            textarea.setSelectionRange(startPos + 1, startPos + 1);
-        } else if (selection !== '') {
-            textarea.value = left + '[' + selection + '](http://)' + right;
-            textarea.focus();
-            textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
-        } else {
-            insertAtCursor('[', '](http://)');
-        }
-    });
-
-    $('[data-command=image]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = '\n\n';
-        if (prevChar === '\n') {
-            prepend = '\n';
-        } else if (prevChar === undefined) {
-            prepend = '';
-        }
-        insertAtCursor(prepend + '![](', ')');
-    });
-
-    $('[data-command=summary]', toolbarSel).click(function() {
-        var prevChar = prevCursorChar();
-        if (!hasSummarySequence()) {
-            console.log(prevChar);
-            var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
-            insertAtCursor(prepend + '\n===\n\n', '');
-            $(this).attr('disabled', true);
-        }
-    });
-
-    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
-    disableSummaryCommand();
-
-    $(document).keydown(function(event) {
-        if (!event.altKey && (event.ctrlKey || event.metaKey)) {
-            switch (event.which) {
-                case 66: // ctrl/cmd + B
-                    $('[data-command=bold]').click();
-                    return false;
-                case 73: // ctrl/cmd + I
-                    $('[data-command=italic]').click();
-                    return false;
-                case 83: // ctrl/cmd + S
-                    $('[data-command=save]').click();
-                    return false;
-                case 89: //ctrl/cmd + Y
-                case 90: // ctrl/cmd + Z
-                    return false;
-            }
-        }
-    });
-
-    function hasSummarySequence() {
-        return /\n+===\n+/.test(textarea.value);
-    }
-
-    function disableSummaryCommand() {
-        $('[data-command=summary]', toolbarSel).attr('disabled', hasSummarySequence());
-    }
-
-    function lastLine(text) {
-        var index = text.lastIndexOf('\n');
-        if (index == -1) {
-            return text;
-        }
-        return text.substring(index + 1);
-    }
-
-    function prevCursorChar() {
-        var startPos = textarea.selectionStart;
-        return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
-    }
-
-    function insertAtCursor(leftValue, rightValue) {
-        if (rightValue === undefined) {
-            rightValue = leftValue;
-        }
-        var startPos = textarea.selectionStart;
-        var endPos = textarea.selectionEnd;
-        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
-        textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
-        textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(textarea).blur().focus();
-    }
-};
-
-Formwork.Form = function(form) {
-    var $window = $(window);
-    var $form = $(form);
-
-    $form.data('original-data', $form.serialize());
-
-    $window.on('beforeunload', function() {
-        if (hasChanged()) {
-            return true;
-        }
-    });
-
-    $form.submit(function() {
-        $window.off('beforeunload');
-    });
-
-    $('a[href]:not([href^="#"]):not([target="_blank"])').click(function(event) {
-        if (hasChanged()) {
-            var link = this;
-            event.preventDefault();
-            Formwork.Modals.show('changesModal', null, function($modal) {
-                $modal.find('.button-continue').click(function() {
-                    $window.off('beforeunload');
-                    window.location.href = $(this).data('href');
-                }).attr('data-href', link.href);
-            });
-        }
-    });
-
-    function hasChanged() {
-        var $fileInputs = $form.find(':file');
-        if ($fileInputs.length > 0) {
-            for (var i = 0; i < $fileInputs.length; i++) {
-                if ($fileInputs[i].files.length > 0) {
-                    return true;
-                }
-            }
-        }
-        return $form.serialize() != $form.data('original-data');
-    }
-};
-
-Formwork.Forms = {
-    init: function() {
-        $('[data-form]').each(function() {
-            new Formwork.Form($(this));
-        });
-
-        $('input[data-enable]').change(function() {
-            var checked = $(this).is(':checked');
-            $.each($(this).data('enable').split(','), function(index, value) {
-                $('input[name="' + value + '"]').attr('disabled', !checked);
-            });
-        });
-
-        $('.input-reset').click(function() {
-            var $target = $('#' + $(this).data('reset'));
-            $target.val('');
-            $target.change();
-        });
-
-        $('input:file').each(function() {
-            var $this = $(this);
-            var labelHTML = $('label[for="' + $(this).attr('id') + '"] span').html();
-            $this.data('originalLabel', labelHTML);
-        }).on('change input', function() {
-            var $this = $(this);
-            var files = $this.prop('files');
-            if (files.length) {
-                $('label[for="' + $this.attr('id') + '"] span').text(files[0].name);
-            } else {
-                $('label[for="' + $this.attr('id') + '"] span').html($this.data('originalLabel'));
-            }
-        });
-
-        $('input:file[data-auto-upload]').change(function() {
-            $(this).closest('form').submit();
-        });
-
-        $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function(event) {
-            event.preventDefault();
-        }).on('drop', function(event) {
-            var $target = $('#' + $(this).attr('for'));
-            $target.prop('files', event.originalEvent.dataTransfer.files);
-            // Firefox won't trigger a change event, so we explicitly do that
-            $target.change();
-        }).on('dragover dragenter', function() {
-            $(this).addClass('drag');
-        }).on('dragleave drop', function() {
-            $(this).removeClass('drag');
-        });
-
-        $('.tag-input').tagInput();
-
-        $('.image-input').click(function() {
-            var $this = $(this);
-            var value = $this.val();
-            Formwork.Modals.show('imagesModal', null, function($modal) {
-                $modal.find('.image-picker-confirm').data('target', $this);
-                $modal.find('.image-picker-thumbnail').each(function() {
-                    var $thumbnail = $(this);
-                    if ($thumbnail.data('text') == value) {
-                        $thumbnail.addClass('selected');
-                        return false;
-                    }
-                });
-            });
-        });
-
-        $('.image-picker').each(function() {
-            var $this = $(this);
-            var options = $this.children('option');
-            if (options.length > 0) {
-                var container = $('<div>', {class: 'image-picker-thumbnails'});
-                for (var i = 0; i < options.length; i++) {
-                    $('<div>', {
-                        class: 'image-picker-thumbnail',
-                        'data-value': options[i].value,
-                        'data-text': options[i].text
-                    }).css({
-                        'background-image': 'url(' + options[i].value + ')'
-                    }).appendTo(container);
-                }
-                $this.before(container);
-                $('.image-picker-empty-state').hide();
-            }
-            $this.hide();
-        });
-
-        $('.image-picker-confirm').click(function() {
-            var $this = $(this);
-            $this.data('target').val($this.parent().find('.image-picker-thumbnail.selected').data('text'));
-        });
-
-        $('.image-picker-thumbnail').click(function() {
-            var $this = $(this);
-            $this.siblings().removeClass('selected');
-            $this.addClass('selected');
-            $this.parent().siblings('.image-input').val($this.data('value'));
-        });
-
-        $('.image-picker-upload').click(function() {
-            var $target = $('#' + $(this).data('upload-target'));
-            $target.click();
-        });
-
-        $('.editor-textarea').each(function() {
-            new Formwork.Editor($(this).attr('id'));
-        });
-    }
-};
-
-Formwork.Modals = {
-    init: function() {
-        $('[data-modal]').click(function() {
-            var $this = $(this);
-            var modal = $this.data('modal');
-            var action = $this.data('modal-action');
-            if (action) {
-                Formwork.Modals.show(modal, action);
-            } else {
-                Formwork.Modals.show(modal);
-            }
-        });
-
-        $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($(this).data('dismiss'));
-                if (!valid) {
-                    return;
-                }
-            }
-            Formwork.Modals.hide($(this).data('dismiss'));
-        });
-
-        $('.modal').click(function(event) {
-            if (event.target === this) {
-                Formwork.Modals.hide();
-            }
-        });
-
-        $(document).keyup(function(event) {
-            // ESC key
-            if (event.which == 27) {
-                Formwork.Modals.hide();
-            }
-        });
-    },
-    show: function (id, action, callback) {
-        var $modal = $('#' + id);
-        $modal.addClass('show');
-        if (action !== null) {
-            $modal.find('form').attr('action', action);
-        }
-        $modal.find('[autofocus]').first().focus(); // Firefox bug
-        if (typeof callback === 'function') {
-            callback($modal);
-        }
-        this.createBackdrop();
-    },
-    hide: function(id) {
-        var $modal = id === undefined ? $('.modal') : $('#' + id);
-        $modal.removeClass('show');
-        this.removeBackdrop();
-    },
-    createBackdrop: function() {
-        if (!$('.modal-backdrop').length) {
-            $('<div>', {
-                class: 'modal-backdrop'
-            }).appendTo('body');
-        }
-    },
-    removeBackdrop: function() {
-        $('.modal-backdrop').remove();
-    },
-    validate: function(id) {
-        var valid = false;
-        var $modal = $('#' + id);
-        $modal.find('[required]').each(function() {
-            if ($(this).val() === '') {
-                $(this).addClass('animated shake');
-                $(this).focus();
-                $modal.find('.modal-error').show();
-                valid = false;
-                return false;
-            }
-            valid = true;
-        });
-        return valid;
-    }
-};
-
-Formwork.Notification = function(text, type, interval) {
-    var $notification = $('<div>', {
-        class: 'notification'
-    }).text(text);
-
-    if ($('.notification').length > 0) {
-        var $last = $('.notification:last');
-        var top = $last.offset().top + $last.outerHeight(true);
-        $notification.css('top', top);
-    }
-
-    if (type) {
-        $notification.addClass('notification-' + type);
-    }
-
-    $notification.appendTo('body');
-
-    var timer = setTimeout(remove, interval);
-
-    $notification.click(remove);
-
-    $notification.mouseenter(function() {
-        clearTimeout(timer);
-    });
-
-    $notification.mouseleave(function() {
-        timer = setTimeout(remove, 1000);
-    });
-
-    function remove() {
-        var found = false;
-        var offset = $notification.outerHeight(true);
-
-        $('.notification').each(function() {
-            var $this = $(this);
-            if ($this.is($notification)) {
-                found = true;
-                $this.addClass('fadeout');
-            } else if (found) {
-                $this.css('top', '-=' + offset);
-            }
-        });
-
-        setTimeout(function() {
-            $notification.remove();
-        }, 400);
-
-    }
-
-};
-
-Formwork.Pages = {
-    init: function() {
-        $('.page-children-toggle').click(function(event) {
-            event.stopPropagation();
-            $(this).closest('li').children('.pages-list').toggle();
-            $(this).toggleClass('toggle-expanded toggle-collapsed');
-        });
-
-        $('.page-details a').click(function(event) {
-            event.stopPropagation();
-        });
-
-        $('#expand-all-pages').click(function() {
-            $(this).blur();
-            $('.pages-children').show();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
-        });
-
-        $('#collapse-all-pages').click(function() {
-            $(this).blur();
-            $('.pages-children').hide();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
-        });
-
-        $('.page-search').focus(function() {
-            $('.pages-children').each(function() {
-                var $this = $(this);
-                $this.data('visible', $this.is(':visible'));
-            });
-        });
-
-        $('.page-search').keyup(Formwork.Utils.debounce(function() {
-            var value = $(this).val();
-            if (value.length === 0) {
-                $('.pages-children').each(function() {
-                    $(this).toggle($(this).data('visible'));
-                });
-                $('.page-details').css('padding-left', '');
-                $('.pages-item, .page-children-toggle').show();
-            } else {
-                var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
-                var matches = 0;
-                $('.pages-children').show();
-                $('.page-children-toggle').hide();
-                $('.page-details').css('padding-left', '0');
-                $('.page-title a').each(function() {
-                    var $pagesItem = $(this).closest('.pages-item');
-                    var matched = !!$(this).text().match(regexp);
-                    if (matched) {
-                        matches++;
-                    }
-                    $pagesItem.toggle(matched);
-                });
-            }
-        }, 100));
-
-        $('.page-details').click(function() {
-            var $toggle = $(this).find('.page-children-toggle').first();
-            if ($toggle.length) {
-                $toggle.click();
-            }
-        });
-
-        $('#page-title', '#newPageModal').keyup(function() {
-            $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
-        });
-
-        $('#page-slug', '#newPageModal').keyup(function() {
-            $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
-        }).blur(function() {
-            if ($(this).val() === '') {
-                $('#page-title', '#newPageModal').trigger('keyup');
-            }
-        });
-
-        $('#page-parent', '#newPageModal').change(function() {
-            var $option = $(this).find('option:selected');
-            var $pageTemplate = $('#page-template', '#newPageModal');
-            var allowedTemplates = $option.data('allowed-templates');
-            if (allowedTemplates) {
-                allowedTemplates = allowedTemplates.split(', ');
-                $pageTemplate
-                    .data('previous-value', $pageTemplate.val())
-                    .val(allowedTemplates[0])
-                    .find('option').each(function () {
-                        if (allowedTemplates.indexOf($(this).val()) == -1) {
-                            $(this).attr('disabled', true);
-                        }
-                    });
-            } else if ($pageTemplate.find('option[disabled]').length) {
-                $pageTemplate
-                    .val($pageTemplate.data('previous-value'))
-                    .removeData('previous-value')
-                    .find('option').removeAttr('disabled');
-            }
-        });
-
-        $('.pages-list').each(function() {
-            var $this = $(this);
-
-            if ($this.data('sortable-children') === false) {
-                return;
-            }
-
-            var sortable = Sortable.create(this, {
-                filter: '[data-sortable=false]',
-                forceFallback: true,
-                onStart: function(event) {
-                    $(event.item).closest('.pages-list').addClass('dragging');
-                    $('.pages-children', event.item).hide();
-                    $('.page-children-toggle').removeClass('toggle-expanded')
-                    .addClass('toggle-collapsed').css('opacity', '0.5');
-                },
-                onMove: function(event) {
-                    if ($(event.related).data('sortable') === false) {
-                        return false;
-                    }
-                    $('.pages-children', event.related).hide();
-                },
-                onEnd: function (event) {
-                    $(event.item).closest('.pages-list').removeClass('dragging');
-                    $('.page-children-toggle').css('opacity', '');
-
-                    if (event.newIndex == event.oldIndex) {
-                        return;
-                    }
-
-                    sortable.option('disabled', true);
-
-                    var data = {
-                        'csrf-token': $('meta[name=csrf-token]').attr('content'),
-                        parent: $(this.el).data('parent'),
-                        from: event.oldIndex,
-                        to: event.newIndex
-                    };
-
-                    new Formwork.Request({
-                        method: 'POST',
-                        url: Formwork.Utils.uriPrependBase('/admin/pages/reorder/', location.pathname),
-                        data: data
-                    }, function(response) {
-                        if (response.status) {
-                            Formwork.Notification(response.message, response.status, 5000);
-                        }
-                        if (!response.status || response.status == 'error') {
-                            sortable.sort($(event.from).data('originalOrder'));
-                        }
-                        sortable.option('disabled', false);
-                        $(event.from).data('originalOrder', sortable.toArray());
-                    });
-
-                }
-            });
-
-            $this.data('originalOrder', sortable.toArray());
-        });
-
-        $(document).keydown(function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                // ctrl/cmd + F
-                if (event.which == 70 && $('.page-search:not(:focus)').length) {
-                    $('.page-search').focus();
-                    return false;
-                }
-            }
-        });
-    }
-};
-
-Formwork.Request = function(options, callback) {
-    var request = $.ajax(options);
-    if (typeof callback === 'function') {
-        request.always(function() {
-            var response = request.responseJSON || {};
-            var code = response.code || request.status;
-            if (code == 403) {
-                location.reload();
-            } else {
-                callback(response, request);
-            }
-        });
-    }
-    return request;
-};
-
-Formwork.Tooltip = function(text, options) {
-    var defaults = {
-        container: document.body,
-        referenceElement: document.body,
-        position: 'top',
-        offset: {x: 0, y: 0},
-        delay: 500
-    };
-    var $referenceElement = $(options.referenceElement);
-    var $tooltip;
-    var timer;
-
-    options = $.extend({}, defaults, options);
-
-    $referenceElement.on('mouseout', _remove);
-
-    function _tooltipPosition($tooltip) {
-        var offset = $referenceElement.offset();
-
-        if (offset.top === 0 && offset.left === 0) {
-            var rect = $referenceElement[0].getBoundingClientRect();
-            offset.top = rect.top + window.pageYOffset;
-            offset.left = rect.left + window.pageXOffset;
-        }
-
-        var top = offset.top;
-        var left = offset.left;
-
-        var hw = ($referenceElement.outerWidth() - $tooltip.outerWidth()) / 2;
-        var hh = ($referenceElement.outerHeight() - $tooltip.outerHeight()) / 2;
-        switch (options.position) {
-            case 'top':
-                return {
-                    top: Math.round(top - $tooltip.outerHeight() + options.offset.y),
-                    left: Math.round(left + hw + options.offset.x)
-                };
-            case 'right':
-                return {
-                    top: Math.round(top + hh + options.offset.y),
-                    left: Math.round(left+ $referenceElement.outerWidth() + options.offset.x)
-                };
-            case 'bottom':
-                return {
-                    top: Math.round(top + $referenceElement.outerHeight() + options.offset.y),
-                    left: Math.round(left + hw + options.offset.x)
-                };
-            case 'left':
-                return {
-                    top: Math.round(top + hh + options.offset.y),
-                    left: Math.round(left - $tooltip.outerWidth() + options.offset.x)
-                };
-        }
-    }
-
-    function _show() {
-        timer = setTimeout(function() {
-            $tooltip = $('<div class="tooltip" role="tooltip">')
-            .appendTo(options.container);
-
-            $tooltip.text(text)
-            .css(_tooltipPosition($tooltip))
-            .fadeIn(200);
-        }, options.delay);
-    }
-
-    function _remove() {
-        clearTimeout(timer);
-        if ($tooltip !== undefined) {
-            $tooltip.fadeOut(100, function() {
-                $tooltip.remove();
-            });
-        }
-    }
-
-    return {
-        show: _show,
-        remove: _remove
-    };
-};
-
-Formwork.Tooltips = {
-    init: function() {
-        $('[title]').each(function() {
-            var $this = $(this);
-            $this.attr('data-tooltip', $this.attr('title'))
-            .removeAttr('title');
-        });
-
-        $('[data-tooltip]').mouseover(function() {
-            var $this = $(this);
-            var tooltip = new Formwork.Tooltip($this.data('tooltip'), {
-                referenceElement: $this,
-                position: 'bottom',
-                offset: {x: 0, y: 4}
-            });
-            tooltip.show();
-        });
-
-        $('[data-overflow-tooltip="true"]').mouseover(function() {
-            var $this = $(this);
-            if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
-                var tooltip = new Formwork.Tooltip($this.text().trim(), {
-                    referenceElement: $this,
-                    position: 'bottom',
-                    offset: {x: 0, y: 4}
-                });
-                tooltip.show();
-            }
-        });
-    }
-};
-
-Formwork.Updates = {
-    init: function() {
-        if ($('#updater-component').length > 0) {
-            setTimeout(function() {
-                var data = {
-                    'csrf-token': $('meta[name=csrf-token]').attr('content')
-                };
-                new Formwork.Request({
-                    method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/check/', location.pathname),
-                    data: data
-                }, function(response) {
-                    $('.update-status').html(response.message);
-                    if (response.data.uptodate === false) {
-                        $('.spinner').addClass('spinner-info');
-                        $('.new-version-name').text(response.data.release.name);
-                        $('.new-version').show();
-                    } else {
-                        $('.spinner').addClass('spinner-success');
-                        $('.current-version').show();
-                    }
-                });
-            }, 1000);
-
-            $('#updater-component .install-button').click(function() {
-                $('.new-version').hide();
-                $('.spinner').removeClass('spinner-info');
-                $('.update-status').text($('.update-status').data('installing-text'));
-                var data = {
-                    'csrf-token': $('meta[name=csrf-token]').attr('content')
-                };
-                new Formwork.Request({
-                    method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/update/', location.pathname),
-                    data: data
-                }, function(response) {
-                    $('.update-status').text(response.data.status);
-                    new Formwork.Notification(response.message, response.status, 5000);
-                    if (response.status == 'success') {
-                        $('.spinner').addClass('spinner-success');
-                        $('.current-version-name').text($('.new-version-name').text());
-                        $('.current-version').show();
-                    } else {
-                        $('.spinner').addClass('spinner-error');
-                    }
-                });
-            });
-        }
-    }
-};
-
-Formwork.Utils = {
-    debounce: function(callback, delay, leading) {
-        var timer = null;
-        var context;
-        var args;
-
-        function wrapper() {
-            context = this;
-            args = arguments;
-
-            if (timer) {
-                clearTimeout(timer);
-            }
-
-            if (leading && !timer) {
-                callback.apply(context, args);
-            }
-
-            timer = setTimeout(function() {
-                if (!leading) {
-                    callback.apply(context, args);
-                }
-                timer = null;
-            }, delay);
-        }
-
-        return wrapper;
-    },
-    escapeRegExp: function(string) {
-        return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    },
-    slug: function(string) {
-        var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
-        var char;
-        string = string.toLowerCase();
-        for (char in translate) {
-            if (translate.hasOwnProperty(char)) {
-                string = string.split(char).join(translate[char]);
-            }
-        }
-        return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
-    },
-    throttle: function(callback, delay) {
-        var timer = null;
-        var context;
-        var args;
-
-        function wrapper() {
-            context = this;
-            args = arguments;
-
-            if (timer) {
-                return;
-            }
-
-            callback.apply(context, args);
-
-            timer = setTimeout(function() {
-                wrapper.apply(context, args);
-                timer = null;
-            }, delay);
-        }
-
-        return wrapper;
-    },
-    uriPrependBase: function(path, base) {
-        var regexp = /^\/+|\/+$/im;
-        path = path.replace(regexp, '').split('/');
-        base = base.replace(regexp, '').split('/');
-        for (var i = 0; i < base.length; i++) {
-            if (base[i] === path[0] && base[i + 1] !== path[0]) {
-                base = base.slice(0, i);
-            }
-        }
-        return '/' + base.concat(path).join('/') + '/';
-    }
-};

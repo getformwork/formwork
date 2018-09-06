@@ -56,6 +56,8 @@ pages.files: Files
 pages.files.upload-label: '<strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here'
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
+pages.new-page.site: Site
+pages.new-page.template: Template
 pages.new-page.title: Title
 pages.new-page.uri-suggestion: letters, numbers and dashes only
 pages.new-page.uri: Page URI
@@ -103,6 +105,7 @@ updates.status.up-to-date: Up-to-date!
 updates.updates: Updates
 uploader.erorr.cannot-write: Failed to write file to disk
 uploader.error: Cannot upload file. %s.
+uploader.error.cannot-write: Failed to write file to disk
 uploader.error.file-name: Invalid file name
 uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
 uploader.error.mime-type: File type not allowed

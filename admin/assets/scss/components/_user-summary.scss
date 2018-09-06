@@ -1,0 +1,24 @@
+.user-summary {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.user-summary-avatar {
+    display: table-cell;
+    padding: 0.5rem;
+    width: 20%;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.user-summary-avatar img {
+    width: 150px;
+    border-radius: 50%;
+}
+
+.user-summary-data {
+    display: table-cell;
+    padding: 0.5rem;
+    vertical-align: middle;
+}

@@ -60,7 +60,7 @@ class Site extends AbstractPage
 
     public function hasPages()
     {
-        return !$this->children()->empty();
+        return !$this->children()->isEmpty();
     }
 
     public function alias($uri)
@@ -83,6 +83,10 @@ class Site extends AbstractPage
             return $resource;
         }
         return null;
+    }
+
+    public function indexPage() {
+        return $this->findPage(Formwork::instance()->option('pages.index'));
     }
 
     public function errorPage($render = false)
@@ -119,11 +123,11 @@ class Site extends AbstractPage
     public function findPage($page)
     {
         if ($page == '/') {
-            return $this->findPage(Formwork::instance()->option('pages.index'));
+            return $this->indexPage();
         }
 
         $components = explode('/', trim($page, '/'));
-        $path = Formwork::instance()->option('content.path');
+        $path = $this->path;
 
         foreach ($components as $component) {
             $found = false;
@@ -146,12 +150,12 @@ class Site extends AbstractPage
             static::$storage[$path] = $page;
         }
 
-        return !$page->empty() ? $page : null;
+        return !$page->isEmpty() ? $page : null;
     }
 
     protected function loadTemplates()
     {
-        foreach (FileSystem::list($this->templatesPath) as $item) {
+        foreach (FileSystem::scan($this->templatesPath) as $item) {
             $path = $this->templatesPath . $item;
             if (FileSystem::isFile($path)) {
                 $templates[FileSystem::name($item)] = $path;

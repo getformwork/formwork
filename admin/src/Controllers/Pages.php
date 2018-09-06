@@ -36,7 +36,7 @@ class Pages extends AbstractController
         $this->site = Formwork::instance()->site();
     }
 
-    public function list()
+    public function index()
     {
         Admin::instance()->ensureLogin();
         $list = $this->view(
@@ -87,7 +87,7 @@ class Pages extends AbstractController
         ));
     }
 
-    public function new(RouteParams $params)
+    public function create(RouteParams $params)
     {
         Admin::instance()->ensureLogin();
         $this->data = new DataGetter(HTTPRequest::postData());

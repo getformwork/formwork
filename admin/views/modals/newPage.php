@@ -9,7 +9,7 @@
             <input id="page-slug" type="text" required name="slug">
             <label class="label-required" for="page-parent"><?= $this->label('pages.new-page.parent') ?>:</label>
             <select id="page-parent" name="parent">
-                <option value="." selected>Root (/)</option>
+                <option value="." selected><?= $this->label('pages.new-page.site') ?> (/)</option>
 <?php
                 foreach ($pages as $page):
                     $scheme = $this->scheme($page->template()->name());
@@ -20,13 +20,13 @@
                 endforeach;
 ?>
             </select>
-            <label class="label-required" for="page-template">Template:</label>
+            <label class="label-required" for="page-template"><?= $this->label('pages.new-page.template') ?>:</label>
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):
                 $scheme = $this->scheme($template);
 ?>
-                <option value="<?= $template ?>"<?php if($scheme->default()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
+                <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php
             endforeach;
 ?>

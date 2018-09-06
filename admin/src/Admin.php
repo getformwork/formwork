@@ -133,7 +133,7 @@ class Admin
             }
         }
 
-        if ($this->users->empty()) {
+        if ($this->users->isEmpty()) {
             if ($this->router->request() != '/') {
                 $this->redirect('/', 302, true);
             }
@@ -166,12 +166,12 @@ class Admin
 
         $this->router->add(
             '/pages/',
-            array(new Controllers\Pages(), 'list')
+            array(new Controllers\Pages(), 'index')
         );
         $this->router->add(
             'POST',
             '/pages/new/',
-            array(new Controllers\Pages(), 'new')
+            array(new Controllers\Pages(), 'create')
         );
         $this->router->add(
             array('GET', 'POST'),
@@ -228,7 +228,7 @@ class Admin
         $this->router->add(
             'POST',
             '/users/new/',
-            array(new Controllers\Users(), 'new')
+            array(new Controllers\Users(), 'create')
         );
         $this->router->add(
             'POST',

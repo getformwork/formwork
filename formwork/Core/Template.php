@@ -9,6 +9,8 @@ class Template
 {
     protected $path;
 
+    protected $extension;
+
     protected $name;
 
     protected $vars;
@@ -20,6 +22,7 @@ class Template
     public function __construct($template)
     {
         $this->path = Formwork::instance()->site()->templatesPath();
+        $this->extension = Formwork::instance()->option('templates.extension');
         $this->name = $template;
         $this->vars = $this->defaults();
     }
@@ -42,7 +45,7 @@ class Template
         if (static::$rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
-        
+
         $this->vars['page'] = $page;
         $this->vars = array_merge($this->vars, $vars);
 
@@ -77,8 +80,7 @@ class Template
     protected function insert($filename, $vars = array())
     {
         extract(array_merge($this->vars, $vars));
-        $extension = Formwork::instance()->option('templates.extension');
-        include $this->path . str_replace('_', 'partials' . DS, $filename) . $extension;
+        include $this->path . str_replace('_', 'partials' . DS, $filename) . $this->extension;
     }
 
     protected function render($return = false)
