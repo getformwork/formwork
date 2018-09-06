@@ -7,7 +7,7 @@
     "gulp-sass": "^4.0.1",
     "gulp-uglify": "^3.0.1",
     "node-sass": "^4.9.3",
-    "uglify-js": "^3.4.8"
+    "uglify-js": "^3.4.9"
   },
   "devDependencies": {},
   "license": "MIT"
