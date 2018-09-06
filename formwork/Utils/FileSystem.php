@@ -240,7 +240,7 @@ class FileSystem
         return file_get_contents($file);
     }
 
-    public static function retrieve($source, $context = null)
+    public static function fetch($source, $context = null)
     {
         if (!is_null($context)) {
             $valid = is_resource($context) && get_resource_type($context) == 'stream-context';
@@ -250,7 +250,7 @@ class FileSystem
         }
         $data = @file_get_contents($source, false, $context);
         if ($data === false) {
-            throw new \RuntimeException('Cannot retrieve ' . $source);
+            throw new \RuntimeException('Cannot fetch ' . $source);
         }
         return $data;
     }

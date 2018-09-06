@@ -169,10 +169,10 @@ class Updater
         }
 
         $uri = 'https://api.github.com/repos/' . static::REPOSITORY . '/releases/latest';
-        $data = json_decode(FileSystem::retrieve($uri, $this->context), true);
+        $data = json_decode(FileSystem::fetch($uri, $this->context), true);
 
         if (!$data) {
-            throw new RuntimeException('Cannot retrieve release data');
+            throw new RuntimeException('Cannot fetch release data');
         }
 
         $this->release = array(
