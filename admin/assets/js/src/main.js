@@ -20,6 +20,18 @@ var Formwork = {
             new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
             $this.remove();
         });
+
+        if ($('[data-command=save]').length > 0) {
+            $(document).keydown(function() {
+                if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+                    if (event.which == 83) { // ctrl/cmd + S
+                        $('[data-command=save]').click();
+                        return false;
+                    }
+                }
+            });
+        }
+
     }
 };
 
