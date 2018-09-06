@@ -9,6 +9,8 @@ use LogicException;
 
 class Router
 {
+    protected $types = array('HTTP', 'XHR');
+
     protected $methods = array('GET', 'POST', 'PUT', 'PATCH', 'DELETE');
 
     protected $shortcuts = array(
@@ -47,6 +49,7 @@ class Router
 
     public function add()
     {
+        $type = 'HTTP';
         $method = 'GET';
         $callback = null;
         switch (func_num_args()) {
@@ -59,14 +62,26 @@ class Router
             case 3:
                 list($method, $route, $callback) = func_get_args();
                 break;
+            case 4:
+                list($type, $method, $route, $callback) = func_get_args();
+                break;
             default:
                 throw new BadMethodCallException('Invalid arguments for ' . __METHOD__);
         }
-        if (is_array($method)) {
-            foreach ($method as $m) {
-                $this->add($m, $route, $callback);
+        if (is_array($type)) {
+            foreach ($type as $t) {
+                $this->add($t, $method, $route, $callback);
             }
             return;
+        }
+        if (is_array($method)) {
+            foreach ($method as $m) {
+                $this->add($type, $m, $route, $callback);
+            }
+            return;
+        }
+        if (!in_array($type, $this->types)) {
+            throw new LogicException('Invalid request type');
         }
         if (!in_array($method, $this->methods)) {
             throw new LogicException('Invalid HTTP method');
@@ -76,11 +91,12 @@ class Router
         }
         if (is_array($route)) {
             foreach ($route as $r) {
-                $this->add($method, $r, $callback);
+                $this->add($type, $method, $r, $callback);
             }
             return;
         }
         $this->routes[] = array(
+            'type'     => $type,
             'method'   => $method,
             'route'    => $route,
             'callback' => $callback
@@ -90,7 +106,7 @@ class Router
     public function dispatch()
     {
         foreach ($this->routes as $route) {
-            if (HTTPRequest::method() == $route['method'] && $this->match($route['route'])) {
+            if (HTTPRequest::type() == $route['type'] && HTTPRequest::method() == $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
                 return $route['callback']($this->params);
             }
