@@ -20,6 +20,18 @@ var Formwork = {
             new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
             $this.remove();
         });
+
+        if ($('[data-command=save]').length > 0) {
+            $(document).keydown(function() {
+                if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+                    if (event.which == 83) { // ctrl/cmd + S
+                        $('[data-command=save]').click();
+                        return false;
+                    }
+                }
+            });
+        }
+
     }
 };
 
@@ -166,9 +178,6 @@ Formwork.Editor = function(id) {
                     return false;
                 case 73: // ctrl/cmd + I
                     $('[data-command=italic]', $toolbar).click();
-                    return false;
-                case 83: // ctrl/cmd + S
-                    $('[data-command=save]').click();
                     return false;
                 case 89: //ctrl/cmd + Y
                 case 90: // ctrl/cmd + Z
