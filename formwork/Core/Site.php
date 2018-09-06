@@ -85,7 +85,8 @@ class Site extends AbstractPage
         return null;
     }
 
-    public function indexPage() {
+    public function indexPage()
+    {
         return $this->findPage(Formwork::instance()->option('pages.index'));
     }
 
