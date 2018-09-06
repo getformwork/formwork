@@ -4,7 +4,7 @@
     <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <?php
-    if(isset($csrfToken)):
+    if (isset($csrfToken)):
 ?>
     <meta name="csrf-token" content="<?= $csrfToken ?>">
 <?php
@@ -19,7 +19,7 @@
 ?>
     <link rel="shortcut icon" href="<?= $this->uri('/assets/images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->uri('/assets/css/admin.min.css') ?>">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="<?= $this->uri('/assets/js/app.min.js') ?>"></script>
     <script src="<?= $this->uri('/assets/js/vendor.min.js') ?>"></script>
 </head>

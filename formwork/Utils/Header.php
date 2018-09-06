@@ -3,6 +3,7 @@
 namespace Formwork\Utils;
 
 use LogicException;
+use RuntimeException;
 
 class Header
 {
@@ -77,7 +78,20 @@ class Header
 
     public static function send($fieldName, $fieldValue)
     {
+        if (headers_sent()) {
+            throw new RuntimeException('HTTP headers already sent');
+        }
         header($fieldName . ': ' . trim($fieldValue));
+    }
+
+    public static function responseHeaders()
+    {
+        $headers = array();
+        foreach (headers_list() as $header) {
+            list($key, $value) = explode(':', $header, 2);
+            $headers[$key] = trim($value);
+        }
+        return $headers;
     }
 
     public static function contentType($mimeType)
@@ -93,7 +107,9 @@ class Header
         if ($download) {
             static::send('Content-Disposition', 'attachment; filename="' . FileSystem::basename($file) . '"');
         }
-        ob_end_clean(); // Clean output buffer to prevent displayed file alteration
+        while (ob_get_level()) {
+            ob_end_clean(); // Clean output buffer to prevent displayed file alteration
+        }
         readfile($file);
         exit;
     }
