@@ -38,6 +38,7 @@ Formwork.Updates = {
                     new Formwork.Notification(response.message, response.status, 5000);
                     if (response.status == 'success') {
                         $('.spinner').addClass('spinner-success');
+                        $('.current-version-name').text($('.new-version-name').text());
                         $('.current-version').show();
                     } else {
                         $('.spinner').addClass('spinner-error');
