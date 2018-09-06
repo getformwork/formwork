@@ -1,5 +1,6 @@
 Formwork.Request = function(options, callback) {
     var request = $.ajax(options);
+
     if (typeof callback === 'function') {
         request.always(function() {
             var response = request.responseJSON || {};
@@ -11,5 +12,6 @@ Formwork.Request = function(options, callback) {
             }
         });
     }
+
     return request;
 };

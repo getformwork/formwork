@@ -154,7 +154,7 @@ class PageCollection extends Collection
                     Site::$storage[$pagePath] = $page;
                 }
 
-                if (!$page->empty()) {
+                if (!$page->isEmpty()) {
                     $pages[] = $page;
                 }
 

@@ -69,6 +69,14 @@ class HTTPRequest
         return file_get_contents('php://input');
     }
 
+    public static function isHTTPS()
+    {
+        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+            return true;
+        }
+        return false;
+    }
+
     public static function isXHR()
     {
         return static::hasHeader('X-Requested-With') && strtolower(static::$headers['X-Requested-With']) === 'xmlhttprequest';

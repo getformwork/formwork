@@ -1,10 +1,10 @@
         <div class="component">
             <h3 class="caption"><?= $this->label('users.user') ?></h3>
-                <div style="display: table; table-layout: fixed; width: 100%;">
-                    <div style="display: table-cell; width: 20%; vertical-align: middle; padding: 0.5rem; text-align: center;">
-                        <img src="<?= $user->avatar()->uri() ?>" style="width: 150px; border-radius: 50%;">
+                <div class="user-summary">
+                    <div class="user-summary-avatar">
+                        <img src="<?= $user->avatar()->uri() ?>">
                     </div>
-                    <div style="display:table-cell; vertical-align: middle; padding: 0.5rem;">
+                    <div class="user-summary-data">
                         <h3><?= $this->escape($user->fullname()) ?></h3>
                         <?= $this->escape($user->username()) ?><br>
                         <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                        <button class="button-accent button-save button-right" type="submit" tabindex="4"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
+                        <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
                     </div>
                 </form>
             </div>

@@ -42,7 +42,7 @@ class Page extends AbstractPage
         $this->uri = HTTPRequest::root() . ltrim($this->slug, '/');
         $this->id = FileSystem::basename($this->path);
         $this->loadFiles();
-        if (!$this->empty()) {
+        if (!$this->isEmpty()) {
             $this->parse();
             $this->processData();
         }
@@ -68,7 +68,7 @@ class Page extends AbstractPage
         $this->__construct($this->path);
     }
 
-    public function empty()
+    public function isEmpty()
     {
         return is_null($this->filename);
     }
@@ -141,7 +141,7 @@ class Page extends AbstractPage
 
     public function hasSiblings()
     {
-        return !$this->siblings()->empty();
+        return !$this->siblings()->isEmpty();
     }
 
     public function isSite()
@@ -223,7 +223,7 @@ class Page extends AbstractPage
 
     protected function parse()
     {
-        $contents = FileSystem::read($this->path . DS . $this->filename);
+        $contents = FileSystem::read($this->path . $this->filename);
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
             throw new RuntimeException('Invalid page format');
         }

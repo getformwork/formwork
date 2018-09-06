@@ -60,7 +60,7 @@ class Collection implements Iterator
         return $this->items[$this->count() - 1];
     }
 
-    public function empty()
+    public function isEmpty()
     {
         return empty($this->items);
     }

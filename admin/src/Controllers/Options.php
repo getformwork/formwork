@@ -10,6 +10,7 @@ use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
 class Options extends AbstractController
@@ -117,13 +118,14 @@ class Options extends AbstractController
                 'Zend Engine Version' => zend_version()
             ),
             'HTTP Request Headers' => HTTPRequest::headers(),
+            'HTTP Response Headers' => Header::responseHeaders(),
             'Server' => array(
                 'IP Address' => $_SERVER['SERVER_ADDR'],
                 'Port' => $_SERVER['SERVER_PORT'],
                 'Name' => $_SERVER['SERVER_NAME'],
                 'Software' => $_SERVER['SERVER_SOFTWARE'],
                 'Protocol' => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS' => $_SERVER['HTTPS']
+                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off'
             ),
             'Client' => array(
                 'IP Address' => HTTPRequest::ip(),
@@ -149,6 +151,9 @@ class Options extends AbstractController
                 'Spyc Version' => $dependencies['mustangostang/spyc']['version']
             )
         );
+
+        ksort($data['HTTP Request Headers']);
+        ksort($data['HTTP Response Headers']);
 
         $this->view('admin', array(
             'title' => $this->label('options.options'),
@@ -179,7 +184,7 @@ class Options extends AbstractController
             if (in_array($field->type(), $ignore)) {
                 continue;
             }
-            if ($field->get('required') && $field->empty()) {
+            if ($field->get('required') && $field->isEmpty()) {
                 continue;
             }
             $options[$field->name()] = $field->value();
