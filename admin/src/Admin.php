@@ -179,6 +179,7 @@ class Admin
             array(new Controllers\Pages(), 'edit')
         );
         $this->router->add(
+            'XHR',
             'POST',
             '/pages/reorder/',
             array(new Controllers\Pages(), 'reorder')
@@ -238,6 +239,7 @@ class Admin
         );
 
         $this->router->add(
+            'XHR',
             'POST',
             '/cache/clear/',
             array(new Controllers\Cache(), 'clear')
