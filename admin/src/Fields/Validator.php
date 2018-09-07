@@ -71,6 +71,11 @@ class Validator
         return $number;
     }
 
+    public static function validateRange($value, &$field)
+    {
+        return static::validateNumber($value, $field);
+    }
+
     public static function validateSelect($value)
     {
         return static::parse($value);
