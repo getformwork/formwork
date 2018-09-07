@@ -113,6 +113,7 @@ class Options extends AbstractController
                 'Version' => phpversion(),
                 'Operating System' => php_uname(),
                 'Server API' => php_sapi_name(),
+                'Loaded php.ini' => php_ini_loaded_file(),
                 'Loaded Extensions' => implode(', ', get_loaded_extensions()),
                 'Stream Wrappers' => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
