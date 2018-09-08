@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
@@ -13,7 +14,9 @@ class Updater
 
     protected $options;
 
-    protected $data = array(
+    protected $registry;
+
+    protected $registryDefaults = array(
         'last-check' => null,
         'last-update' => null,
         'etag' => null,
@@ -35,8 +38,10 @@ class Updater
     {
         $this->options = array_merge($this->defaults(), $options);
 
-        if (FileSystem::exists($this->options['logFile'])) {
-            $this->data = array_merge($this->data, (array) json_decode(FileSystem::read($this->options['logFile']), true));
+        $this->registry = new Registry($this->options['registryFile']);
+
+        if (empty($this->registry->toArray())) {
+            $this->initializeRegistry();
         }
 
         $this->context = stream_context_create(array(
@@ -49,7 +54,7 @@ class Updater
         return array(
             'time' => 3600,
             'force' => false,
-            'logFile' => LOGS_PATH . 'updates.json',
+            'registryFile' => LOGS_PATH . 'updates.json',
             'tempFile' => ROOT_PATH . '.formwork-update.zip',
             'cleanupAfterInstall' => false,
             'ignore' => array(
@@ -66,34 +71,34 @@ class Updater
 
     public function checkUpdates()
     {
-        if (time() - $this->data['last-check'] < $this->options['time']) {
-            return $this->data['up-to-date'];
+        if (time() - $this->registry->get('last-check') < $this->options['time']) {
+            return $this->registry->get('up-to-date');
         }
 
         $this->loadRelease();
 
-        $this->data['release'] = $this->release;
+        $this->registry->set('release', $this->release);
 
-        $this->data['last-check'] = time();
+        $this->registry->set('last-check', time());
 
         if (version_compare(Formwork::VERSION, $this->release['tag']) >= 0) {
-            $this->data['up-to-date'] = true;
-            $this->save();
+            $this->registry->set('up-to-date', true);
+            $this->registry->save();
             return true;
         }
 
         if (isset($this->getHeaders()['ETag'])) {
             $ETag = trim($this->headers['ETag'], '"');
 
-            if ($this->data['etag'] == $ETag) {
-                $this->data['up-to-date'] = true;
-                $this->save();
+            if ($this->registry->get('etag') == $ETag) {
+                $this->registry->set('up-to-date', true);
+                $this->registry->save();
                 return true;
             }
         }
 
-        $this->data['up-to-date'] = false;
-        $this->save();
+        $this->registry->set('up-to-date', false);
+        $this->registry->save();
         return false;
     }
 
@@ -101,7 +106,7 @@ class Updater
     {
         $this->checkUpdates();
 
-        if (!$this->options['force'] && $this->data['up-to-date']) {
+        if (!$this->options['force'] && $this->registry->get('up-to-date')) {
             return;
         }
 
@@ -144,22 +149,22 @@ class Updater
             }
         }
 
-        $this->data['last-update'] = time();
+        $this->registry->set('last-update', time());
 
         if (isset($this->getHeaders()['ETag'])) {
             $ETag = trim($this->headers['ETag'], '"');
-            $this->data['etag'] = $ETag;
+            $this->registry->set('etag', $ETag);
         }
 
-        $this->data['up-to-date'] = true;
-        $this->save();
+        $this->registry->set('up-to-date', true);
+        $this->registry->save();
 
         return true;
     }
 
     public function latestRelease()
     {
-        return $this->data['release'];
+        return $this->registry->get('release');
     }
 
     protected function loadRelease()
@@ -221,8 +226,11 @@ class Updater
         return array_diff($list, $installedFiles);
     }
 
-    protected function save()
+    protected function initializeRegistry()
     {
-        FileSystem::write($this->options['logFile'], json_encode($this->data));
+        foreach ($this->registryDefaults as $key => $value) {
+            $this->registry->set($key, $value);
+        }
+        $this->registry->save();
     }
 }
