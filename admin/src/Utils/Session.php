@@ -11,7 +11,8 @@ class Session
         $options = array(
             'name' => 'formwork_session',
             'cookie_path' => HTTPRequest::root(),
-            'cookie_httponly' => true
+            'cookie_httponly' => true,
+            'use_strict_mode' => true
         );
         if (session_status() === PHP_SESSION_NONE) {
             session_start($options);
