@@ -10,6 +10,7 @@ use Formwork\Admin\Utils\Notification;
 use Formwork\Core\Scheme;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
@@ -49,6 +50,11 @@ abstract class AbstractController
     public function redirect($uri, $code = 302, $exit = false)
     {
         Admin::instance()->redirect($uri, $code, $exit);
+    }
+
+    public function redirectToSite($code = 302, $exit = false)
+    {
+        Header::redirect($this->siteUri(), $code, $exit);
     }
 
     public function uri($subpath)
