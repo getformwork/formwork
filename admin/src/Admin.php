@@ -107,6 +107,11 @@ class Admin
         Header::redirect($this->uri($uri), $code, $exit);
     }
 
+    public function redirectToReferer($code = 302, $exit = false, $default = null)
+    {
+        Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
+    }
+
     public function registry($name)
     {
         return new Registry(LOGS_PATH . $name . '.json');
@@ -120,6 +125,13 @@ class Admin
     public function run()
     {
         if (HTTPRequest::method() == 'POST') {
+            if (!is_null(HTTPRequest::contentLength())) {
+                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                    Notification::send(Language::get('request.error.post-max-size'), 'error');
+                    $this->redirectToReferer(302, true);
+                }
+            }
             try {
                 CSRFToken::validate();
             } catch (RuntimeException $e) {
