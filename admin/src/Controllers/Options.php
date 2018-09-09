@@ -134,7 +134,8 @@ class Options extends AbstractController
             ),
             'Session' => array(
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Cookie HttpOnly' => ini_get('session.cookie_httponly')
+                'Session Cookie HttpOnly' => ini_get('session.cookie_httponly'),
+                'Session Strict Mode' => ini_get('session.use_strict_mode')
             ),
             'Uploads' => array(
                 'Maximum File Size' => ini_get('upload_max_filesize'),
