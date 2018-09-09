@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                        <button class="button-accent button-save button-right" type="submit" tabindex="4"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
+                        <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
                     </div>
                 </form>
             </div>

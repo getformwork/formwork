@@ -19,15 +19,17 @@ Formwork.Forms = {
 
         $('input:file').each(function() {
             var $this = $(this);
-            var labelHTML = $('label[for="' + $(this).attr('id') + '"] span').html();
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
+            var labelHTML = $span.html();
             $this.data('originalLabel', labelHTML);
         }).on('change input', function() {
             var $this = $(this);
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
             var files = $this.prop('files');
             if (files.length) {
-                $('label[for="' + $this.attr('id') + '"] span').text(files[0].name);
+                $span.text(files[0].name);
             } else {
-                $('label[for="' + $this.attr('id') + '"] span').html($this.data('originalLabel'));
+                $span.html($this.data('originalLabel'));
             }
         });
 
@@ -104,6 +106,11 @@ Formwork.Forms = {
 
         $('.editor-textarea').each(function() {
             new Formwork.Editor($(this).attr('id'));
+        });
+
+        $('input[type=range]').on('change input', function() {
+            var $this = $(this);
+            $this.next('.range-input-value').text($this.val());
         });
     }
 };

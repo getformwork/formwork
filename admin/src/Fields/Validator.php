@@ -23,7 +23,7 @@ class Validator
             if (method_exists(__CLASS__, $method)) {
                 $value = static::$method($data->get($field->name()), $field);
             } else {
-                $value = $data->get($field->name(), $field->default());
+                $value = $data->get($field->name(), $field->get('default'));
             }
             $field->set('value', $value);
         }
@@ -69,6 +69,11 @@ class Validator
             }
         }
         return $number;
+    }
+
+    public static function validateRange($value, &$field)
+    {
+        return static::validateNumber($value, $field);
     }
 
     public static function validateSelect($value)

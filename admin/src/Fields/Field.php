@@ -45,7 +45,7 @@ class Field extends DataSetter
         return $translate;
     }
 
-    public function empty()
+    public function isEmpty()
     {
         return empty($this->value());
     }
@@ -58,11 +58,6 @@ class Field extends DataSetter
     public function type()
     {
         return $this->get('type');
-    }
-
-    public function default()
-    {
-        return $this->get('default');
     }
 
     public function label()

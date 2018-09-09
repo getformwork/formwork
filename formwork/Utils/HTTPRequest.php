@@ -13,6 +13,11 @@ class HTTPRequest
         return $_SERVER['REQUEST_METHOD'];
     }
 
+    public static function type()
+    {
+        return static::isXHR() ? 'XHR' : 'HTTP';
+    }
+
     public static function uri()
     {
         $uri = $_SERVER['REQUEST_URI'];
@@ -41,6 +46,11 @@ class HTTPRequest
         return $_SERVER['REMOTE_ADDR'];
     }
 
+    public static function contentLength()
+    {
+        return isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : null;
+    }
+
     public static function referer()
     {
         return static::hasHeader('Referer') ? static::$headers['Referer'] : null;
@@ -62,6 +72,14 @@ class HTTPRequest
             return parse_url(static::uri(), PHP_URL_QUERY);
         }
         return file_get_contents('php://input');
+    }
+
+    public static function isHTTPS()
+    {
+        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+            return true;
+        }
+        return false;
     }
 
     public static function isXHR()

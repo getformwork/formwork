@@ -14,7 +14,7 @@ use LogicException;
 
 class Formwork
 {
-    const VERSION = '0.6.11';
+    const VERSION = '0.6.12';
 
     protected static $instance;
 
@@ -84,7 +84,8 @@ class Formwork
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
             'admin.enabled'            => true,
-            'admin.lang'               => 'en'
+            'admin.lang'               => 'en',
+            'admin.logout_redirect'    => 'login'
         );
     }
 

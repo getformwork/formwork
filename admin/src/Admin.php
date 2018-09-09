@@ -107,6 +107,11 @@ class Admin
         Header::redirect($this->uri($uri), $code, $exit);
     }
 
+    public function redirectToReferer($code = 302, $exit = false, $default = null)
+    {
+        Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
+    }
+
     public function registry($name)
     {
         return new Registry(LOGS_PATH . $name . '.json');
@@ -120,6 +125,13 @@ class Admin
     public function run()
     {
         if (HTTPRequest::method() == 'POST') {
+            if (!is_null(HTTPRequest::contentLength())) {
+                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                    Notification::send(Language::get('request.error.post-max-size'), 'error');
+                    $this->redirectToReferer(302, true);
+                }
+            }
             try {
                 CSRFToken::validate();
             } catch (RuntimeException $e) {
@@ -133,7 +145,7 @@ class Admin
             }
         }
 
-        if ($this->users->empty()) {
+        if ($this->users->isEmpty()) {
             if ($this->router->request() != '/') {
                 $this->redirect('/', 302, true);
             }
@@ -166,12 +178,12 @@ class Admin
 
         $this->router->add(
             '/pages/',
-            array(new Controllers\Pages(), 'list')
+            array(new Controllers\Pages(), 'index')
         );
         $this->router->add(
             'POST',
             '/pages/new/',
-            array(new Controllers\Pages(), 'new')
+            array(new Controllers\Pages(), 'create')
         );
         $this->router->add(
             array('GET', 'POST'),
@@ -179,6 +191,7 @@ class Admin
             array(new Controllers\Pages(), 'edit')
         );
         $this->router->add(
+            'XHR',
             'POST',
             '/pages/reorder/',
             array(new Controllers\Pages(), 'reorder')
@@ -224,7 +237,7 @@ class Admin
         $this->router->add(
             'POST',
             '/users/new/',
-            array(new Controllers\Users(), 'new')
+            array(new Controllers\Users(), 'create')
         );
         $this->router->add(
             'POST',
@@ -238,6 +251,7 @@ class Admin
         );
 
         $this->router->add(
+            'XHR',
             'POST',
             '/cache/clear/',
             array(new Controllers\Cache(), 'clear')

@@ -20,6 +20,18 @@ var Formwork = {
             new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
             $this.remove();
         });
+
+        if ($('[data-command=save]').length > 0) {
+            $(document).keydown(function() {
+                if (!event.altKey && (event.ctrlKey || event.metaKey)) {
+                    if (event.which == 83) { // ctrl/cmd + S
+                        $('[data-command=save]').click();
+                        return false;
+                    }
+                }
+            });
+        }
+
     }
 };
 
@@ -82,23 +94,23 @@ Formwork.Dashboard = {
 
 Formwork.Editor = function(id) {
     var textarea = $('#' + id)[0];
-    var toolbarSel = '.editor-toolbar[data-for=' + id + ']';
+    var $toolbar = '.editor-toolbar[data-for=' + id + ']';
 
-    $('[data-command=bold]', toolbarSel).click(function() {
+    $('[data-command=bold]', $toolbar).click(function() {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', toolbarSel).click(function() {
+    $('[data-command=italic]', $toolbar).click(function() {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', toolbarSel).click(function() {
+    $('[data-command=ul]', $toolbar).click(function() {
         var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
     });
 
-    $('[data-command=ol]', toolbarSel).click(function() {
+    $('[data-command=ol]', $toolbar).click(function() {
         var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
@@ -109,13 +121,13 @@ Formwork.Editor = function(id) {
         }
     });
 
-    $('[data-command=quote]', toolbarSel).click(function() {
+    $('[data-command=quote]', $toolbar).click(function() {
         var prevChar = prevCursorChar();
         var prepend = prevChar === '\n' ? '\n' : '\n\n';
         insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
     });
 
-    $('[data-command=link]', toolbarSel).click(function() {
+    $('[data-command=link]', $toolbar).click(function() {
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -134,7 +146,7 @@ Formwork.Editor = function(id) {
         }
     });
 
-    $('[data-command=image]', toolbarSel).click(function() {
+    $('[data-command=image]', $toolbar).click(function() {
         var prevChar = prevCursorChar();
         var prepend = '\n\n';
         if (prevChar === '\n') {
@@ -145,7 +157,7 @@ Formwork.Editor = function(id) {
         insertAtCursor(prepend + '![](', ')');
     });
 
-    $('[data-command=summary]', toolbarSel).click(function() {
+    $('[data-command=summary]', $toolbar).click(function() {
         var prevChar = prevCursorChar();
         if (!hasSummarySequence()) {
             console.log(prevChar);
@@ -162,13 +174,10 @@ Formwork.Editor = function(id) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
                 case 66: // ctrl/cmd + B
-                    $('[data-command=bold]').click();
+                    $('[data-command=bold]', $toolbar).click();
                     return false;
                 case 73: // ctrl/cmd + I
-                    $('[data-command=italic]').click();
-                    return false;
-                case 83: // ctrl/cmd + S
-                    $('[data-command=save]').click();
+                    $('[data-command=italic]', $toolbar).click();
                     return false;
                 case 89: //ctrl/cmd + Y
                 case 90: // ctrl/cmd + Z
@@ -182,7 +191,7 @@ Formwork.Editor = function(id) {
     }
 
     function disableSummaryCommand() {
-        $('[data-command=summary]', toolbarSel).attr('disabled', hasSummarySequence());
+        $('[data-command=summary]', $toolbar).attr('disabled', hasSummarySequence());
     }
 
     function lastLine(text) {
@@ -274,15 +283,17 @@ Formwork.Forms = {
 
         $('input:file').each(function() {
             var $this = $(this);
-            var labelHTML = $('label[for="' + $(this).attr('id') + '"] span').html();
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
+            var labelHTML = $span.html();
             $this.data('originalLabel', labelHTML);
         }).on('change input', function() {
             var $this = $(this);
+            var $span = $('label[for="' + $this.attr('id') + '"] span');
             var files = $this.prop('files');
             if (files.length) {
-                $('label[for="' + $this.attr('id') + '"] span').text(files[0].name);
+                $span.text(files[0].name);
             } else {
-                $('label[for="' + $this.attr('id') + '"] span').html($this.data('originalLabel'));
+                $span.html($this.data('originalLabel'));
             }
         });
 
@@ -360,6 +371,11 @@ Formwork.Forms = {
         $('.editor-textarea').each(function() {
             new Formwork.Editor($(this).attr('id'));
         });
+
+        $('input[type=range]').on('change input', function() {
+            var $this = $(this);
+            $this.next('.range-input-value').text($this.val());
+        });
     }
 };
 
@@ -399,6 +415,7 @@ Formwork.Modals = {
             }
         });
     },
+
     show: function (id, action, callback) {
         var $modal = $('#' + id);
         $modal.addClass('show');
@@ -411,11 +428,13 @@ Formwork.Modals = {
         }
         this.createBackdrop();
     },
+
     hide: function(id) {
         var $modal = id === undefined ? $('.modal') : $('#' + id);
         $modal.removeClass('show');
         this.removeBackdrop();
     },
+
     createBackdrop: function() {
         if (!$('.modal-backdrop').length) {
             $('<div>', {
@@ -423,9 +442,11 @@ Formwork.Modals = {
             }).appendTo('body');
         }
     },
+
     removeBackdrop: function() {
         $('.modal-backdrop').remove();
     },
+
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);
@@ -665,6 +686,7 @@ Formwork.Pages = {
 
 Formwork.Request = function(options, callback) {
     var request = $.ajax(options);
+
     if (typeof callback === 'function') {
         request.always(function() {
             var response = request.responseJSON || {};
@@ -676,6 +698,7 @@ Formwork.Request = function(options, callback) {
             }
         });
     }
+
     return request;
 };
 
@@ -687,6 +710,7 @@ Formwork.Tooltip = function(text, options) {
         offset: {x: 0, y: 0},
         delay: 500
     };
+
     var $referenceElement = $(options.referenceElement);
     var $tooltip;
     var timer;
@@ -819,9 +843,11 @@ Formwork.Utils = {
 
         return wrapper;
     },
+
     escapeRegExp: function(string) {
         return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },
+
     slug: function(string) {
         var translate = {'\t': '', '\r': '', '!': '', '"': '', '#': '', '$': '', '%': '', '\'': '', '(': '', ')': '', '*': '', '+': '', ',': '', '.': '', ':': '', ';': '', '<': '', '=': '', '>': '', '?': '', '@': '', '[': '', ']': '', '^': '', '`': '', '{': '', '|': '', '}': '', '¡': '', '£': '', '¤': '', '¥': '', '¦': '', '§': '', '«': '', '°': '', '»': '', '‘': '', '’': '', '“': '', '”': '', '\n': '-', ' ': '-', '-': '-', '–': '-', '—': '-', '\/': '-', '\\': '-', '_': '-', '~': '-', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'Ae', 'Ç': 'C', 'Ð': 'D', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'Oe', 'Š': 'S', 'Þ': 'Th', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'ae', 'å': 'a', 'æ': 'ae', '¢': 'c', 'ç': 'c', 'ð': 'd', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'oe', 'ø': 'o', 'œ': 'oe', 'š': 's', 'ß': 'ss', 'þ': 'th', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'ue', 'ý': 'y', 'ÿ': 'y', 'Ÿ': 'y'};
         var char;
@@ -833,6 +859,7 @@ Formwork.Utils = {
         }
         return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
     },
+
     throttle: function(callback, delay) {
         var timer = null;
         var context;
@@ -856,8 +883,9 @@ Formwork.Utils = {
 
         return wrapper;
     },
+
     uriPrependBase: function(path, base) {
-        var regexp = /^\/+|\/+$/im;
+        var regexp = /^\/+|\/+$/gm;
         path = path.replace(regexp, '').split('/');
         base = base.replace(regexp, '').split('/');
         for (var i = 0; i < base.length; i++) {

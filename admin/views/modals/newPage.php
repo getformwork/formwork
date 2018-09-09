@@ -20,13 +20,13 @@
                 endforeach;
 ?>
             </select>
-            <label class="label-required" for="page-template">Template:</label>
+            <label class="label-required" for="page-template"><?= $this->label('pages.new-page.template') ?>:</label>
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):
                 $scheme = $this->scheme($template);
 ?>
-                <option value="<?= $template ?>"<?php if($scheme->default()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
+                <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php
             endforeach;
 ?>
