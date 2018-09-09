@@ -39,6 +39,34 @@
                     endforeach;
 ?>
                 </div>
+                <div class="component">
+                    <h3 class="caption"><?= $this->label('pages.attributes') ?></h3>
+                    <label for="page-parent"><?= $this->label('pages.parent') ?>:</label>
+                    <select id="page-parent" name="parent">
+                        <option value="." <?php if ($page->parent() === $this->site): ?> selected<?php endif; ?>><?= $this->label('pages.new-page.site') ?> (/)</option>
+<?php
+                        foreach ($parents as $parent):
+                            $scheme = $this->scheme($parent->template()->name());
+                            if (!$scheme->get('pages', true)) continue;
+                            if ($parent === $page) continue;
+?>
+                        <option value="<?= $parent->slug() ?>"<?php if ($page->parent() === $parent): ?> selected<?php endif; ?>><?= str_repeat('— ', $parent->level() - 1) . $parent->title() ?></option>
+<?php
+                        endforeach;
+?>
+                    </select>
+                    <label for="page-template"><?= $this->label('pages.template') ?>:</label>
+                    <select id="page-template" name="template">
+<?php
+                    foreach ($templates as $template):
+                        $scheme = $this->scheme($template);
+?>
+                        <option value="<?= $template ?>"<?php if ($page->template()->name() === $template): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
+<?php
+                    endforeach;
+?>
+                    </select>
+                </div>
             </div>
         </form>
         <div class="col-l-3-4">
