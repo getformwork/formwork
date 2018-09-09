@@ -46,6 +46,11 @@ class HTTPRequest
         return $_SERVER['REMOTE_ADDR'];
     }
 
+    public static function contentLength()
+    {
+        return isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : null;
+    }
+
     public static function referer()
     {
         return static::hasHeader('Referer') ? static::$headers['Referer'] : null;

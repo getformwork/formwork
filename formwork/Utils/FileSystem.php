@@ -322,6 +322,22 @@ class FileSystem
         return round($bytes / pow(1024, $exp), 2) . ' ' . static::$units[$exp];
     }
 
+    public static function shorthandToBytes($shorthand)
+    {
+        $shorthand = trim($shorthand);
+        preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches);
+        $value = (int) $matches[1];
+        $unit = strtoupper($matches[2]);
+        if ($unit == 'K') {
+            $value *= 1024;
+        } elseif ($unit == 'M') {
+            $value *= 1024 * 1024;
+        } elseif ($unit == 'G') {
+            $value *= 1024 * 1024;
+        }
+        return $value;
+    }
+
     public static function temporaryName($prefix = '')
     {
         return $prefix . uniqid();

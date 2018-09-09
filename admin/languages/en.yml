@@ -102,6 +102,7 @@ password-reset.passwords-not-matching: The new password and the confirmation pas
 password-reset.reset: Reset
 register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
 register.register: Register New User
+request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
 uploader.error: Cannot upload file. %s.
 uploader.error.cannot-write: Failed to write file to disk
 uploader.error.file-name: Invalid file name
