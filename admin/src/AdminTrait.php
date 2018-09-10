@@ -45,9 +45,13 @@ trait AdminTrait
         $this->redirect('/', $code, $exit);
     }
 
-    public function redirectToReferer($code = 302, $exit = false, $default = null)
+    public function redirectToReferer($code = 302, $exit = false, $default = '/')
     {
-        Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
+        if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() !== HTTPRequest::uri()) {
+            Header::redirect(HTTPRequest::referer(), $code, $exit);
+        } else {
+            Header::redirect($this->uri($default), $code, $exit);
+        }
     }
 
     public function scheme($template)
