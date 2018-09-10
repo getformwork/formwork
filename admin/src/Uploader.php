@@ -100,7 +100,7 @@ class Uploader
 
         $destination = FileSystem::normalize($destination);
 
-        if (FileSystem::basename($filename)[0] == '.') {
+        if (FileSystem::basename($filename)[0] === '.') {
             throw new RuntimeException(Language::get('uploader.error.hidden-files'));
         }
 

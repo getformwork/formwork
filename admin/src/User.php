@@ -39,7 +39,7 @@ class User extends DataGetter
 
     public function logged()
     {
-        return Session::get('FORMWORK_USERNAME') == $this->username;
+        return Session::get('FORMWORK_USERNAME') === $this->username;
     }
 
     public function lastAccess()

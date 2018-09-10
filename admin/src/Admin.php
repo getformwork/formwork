@@ -78,7 +78,7 @@ class Admin
 
     public function run()
     {
-        if (HTTPRequest::method() == 'POST') {
+        if (HTTPRequest::method() === 'POST') {
             if (!is_null(HTTPRequest::contentLength())) {
                 $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
                 if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
@@ -100,14 +100,14 @@ class Admin
         }
 
         if ($this->users->isEmpty()) {
-            if ($this->router->request() != '/') {
+            if ($this->router->request() !== '/') {
                 $this->redirectToPanel(302, true);
             }
             $controller = new Controllers\Register();
             return $controller->register();
         }
 
-        if (!$this->isLoggedIn() && HTTPRequest::uri() != '/login/') {
+        if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
             $this->redirect('/login/', 302, true);
         }
 

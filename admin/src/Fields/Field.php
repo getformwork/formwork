@@ -78,7 +78,7 @@ class Field extends DataSetter
     protected function importData()
     {
         foreach ((array) $this->data['import'] as $key => $value) {
-            if ($key == 'import') {
+            if ($key === 'import') {
                 throw new LogicException('Invalid key for import');
             }
             $callback = explode('::', $value, 2);

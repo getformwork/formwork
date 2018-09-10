@@ -49,7 +49,7 @@
 <?php
                                 foreach ($this->languages() as $key => $value):
 ?>
-                                    <option value="<?= $key ?>"<?= ($key == $user->language()) ? ' selected' : '' ?>><?= $value ?></option>
+                                    <option value="<?= $key ?>"<?= ($key === $user->language()) ? ' selected' : '' ?>><?= $value ?></option>
 <?php
                                 endforeach;
 ?>
