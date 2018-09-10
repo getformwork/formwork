@@ -425,7 +425,7 @@ class Pages extends AbstractController
     protected function makePageNum($parent, $mode)
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of Formwork\Core\Page or Formwork\Core\Site as $parent argument');
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
         switch ($mode) {
             case 'date':

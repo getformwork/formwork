@@ -7,6 +7,7 @@ use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Formwork;
+use Formwork\Core\Scheme;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
@@ -49,6 +50,11 @@ trait AdminTrait
         Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
     }
 
+    public function scheme($template)
+    {
+        return new Scheme($template);
+    }
+
     public function registry($name)
     {
         return new Registry(LOGS_PATH . $name . '.json');
@@ -59,11 +65,6 @@ trait AdminTrait
         return new Log(LOGS_PATH . $name . '.json');
     }
 
-    public function notification()
-    {
-        return Notification::exists() ? Notification::get() : null;
-    }
-
     public function notify($text, $type)
     {
         Notification::send($text, $type);
@@ -72,6 +73,11 @@ trait AdminTrait
     public function language()
     {
         return Formwork::instance()->option('admin.lang');
+    }
+
+    protected function notification()
+    {
+        return Notification::exists() ? Notification::get() : null;
     }
 
     protected function label($key)
