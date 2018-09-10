@@ -9,8 +9,8 @@ dashboard.online-users: Online users
 dashboard.quick-actions: Quick Actions
 dashboard.statistics: Statistics
 dashboard.welcome: Welcome
-date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December']
-date.months.short:  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 language.name: English
@@ -53,7 +53,7 @@ pages.editor.numbered-list: Ordered list
 pages.editor.quote: Quote
 pages.editor.summary: Summary
 pages.files: Files
-pages.files.upload-label: '<strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here'
+pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
 pages.new-page.site: Site
@@ -68,14 +68,14 @@ pages.page.cannot-change-num: Cannot change page number
 pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
 pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
-pages.page.cannot-create.var-missing: 'Cannot create page, missing %s variable'
-pages.page.cannot-delete-file: 'Cannot delete file. %s.'
+pages.page.cannot-create.var-missing: Cannot create page, missing %s variable
+pages.page.cannot-delete-file: Cannot delete file. %s.
 pages.page.cannot-delete-file.file-not-found: File not found
-pages.page.cannot-delete: 'Cannot delete page. %s.'
+pages.page.cannot-delete: Cannot delete page. %s.
 pages.page.cannot-delete.not-deletable: The page is not deletable
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
-pages.page.cannot-edit.var-missing: 'Cannot edit page, missing variable %s'
-pages.page.cannot-move: 'Cannot move page'
+pages.page.cannot-edit.var-missing: Cannot edit page, missing variable %s
+pages.page.cannot-move: Cannot move page
 pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
@@ -136,7 +136,7 @@ users.options: Options
 users.user-profile: '%s User Profile'
 users.user: User
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
-users.user.cannot-create.var-missing: 'Cannot create user, missing %s variable'
+users.user.cannot-create.var-missing: Cannot create user, missing %s variable
 users.user.cannot-delete.logged: Cannot delete user, the user is logged
 users.user.created: User created
 users.user.deleted: User deleted
