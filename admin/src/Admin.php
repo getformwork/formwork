@@ -5,9 +5,6 @@ namespace Formwork\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Language;
-use Formwork\Admin\Utils\Log;
-use Formwork\Admin\Utils\Notification;
-use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
 use Formwork\Parsers\YAML;
@@ -22,6 +19,8 @@ use RuntimeException;
 
 class Admin
 {
+    use AdminTrait;
+
     public static $instance;
 
     protected static $languages;
@@ -38,7 +37,7 @@ class Admin
         static::$instance = $this;
 
         if (!Formwork::instance()->option('admin.enabled')) {
-            Header::redirect(rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/');
+            $this->redirectToSite(302, true);
         }
 
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
@@ -74,11 +73,6 @@ class Admin
         return static::$languages;
     }
 
-    public function language()
-    {
-        return Formwork::instance()->option('admin.lang');
-    }
-
     public function loggedUser()
     {
         $username = Session::get('FORMWORK_USERNAME');
@@ -97,38 +91,13 @@ class Admin
         }
     }
 
-    public function uri($subpath)
-    {
-        return HTTPRequest::root() . ltrim($subpath, '/');
-    }
-
-    public function redirect($uri, $code = 302, $exit = false)
-    {
-        Header::redirect($this->uri($uri), $code, $exit);
-    }
-
-    public function redirectToReferer($code = 302, $exit = false, $default = null)
-    {
-        Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
-    }
-
-    public function registry($name)
-    {
-        return new Registry(LOGS_PATH . $name . '.json');
-    }
-
-    public function log($name)
-    {
-        return new Log(LOGS_PATH . $name . '.json');
-    }
-
     public function run()
     {
         if (HTTPRequest::method() == 'POST') {
             if (!is_null(HTTPRequest::contentLength())) {
                 $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
                 if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                    Notification::send(Language::get('request.error.post-max-size'), 'error');
+                    $this->notify($this->label('request.error.post-max-size'), 'error');
                     $this->redirectToReferer(302, true);
                 }
             }
@@ -137,7 +106,7 @@ class Admin
             } catch (RuntimeException $e) {
                 CSRFToken::destroy();
                 Session::remove('FORMWORK_USERNAME');
-                Notification::send(Language::get('login.suspicious-request-detected'), 'warning');
+                $this->notify($this->label('login.suspicious-request-detected'), 'warning');
                 if (HTTPRequest::isXHR()) {
                     JSONResponse::error('Not authorized!', 403)->send();
                 }
