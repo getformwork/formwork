@@ -133,7 +133,7 @@ class Uri
             $result = '';
         }
         $result .= empty($parts['path']) ? '' : '/' . trim($parts['path'], '/');
-        if ($parts['path'] != '/' && strrpos(basename($parts['path']), '.') === false) {
+        if ($parts['path'] !== '/' && strrpos(basename($parts['path']), '.') === false) {
             $result .= '/';
         }
         if (!empty($parts['query'])) {
@@ -146,11 +146,11 @@ class Uri
 
     public static function normalize($uri)
     {
-        if (substr($uri, 0, 7) == 'http://' || substr($uri, 0, 8) == 'https://') {
+        if (substr($uri, 0, 7) === 'http://' || substr($uri, 0, 8) === 'https://') {
             return static::make(array(), $uri);
         }
         $normalized = rtrim($uri, '/') . '/';
-        return $normalized[0] == '/' ? $normalized : '/' . $normalized;
+        return $normalized[0] === '/' ? $normalized : '/' . $normalized;
     }
 
     public static function removeQuery($uri = null)
@@ -177,24 +177,24 @@ class Uri
         if (empty($uri)) {
             return $base;
         }
-        if ($uri[0] == '#') {
+        if ($uri[0] === '#') {
             return $base . $uri;
         }
         if (!empty(static::host($uri))) {
             return $uri;
         }
         $path = array();
-        if ($uri[0] != '/') {
+        if ($uri[0] !== '/') {
             $path = explode('/', trim(static::path($base), '/'));
         }
-        if (count($path) > 0 && $base[strlen($base) - 1] != '/') {
+        if (count($path) > 0 && $base[strlen($base) - 1] !== '/') {
             array_pop($path);
         }
         foreach (explode('/', static::path($uri)) as $segment) {
-            if (empty($segment) || $segment == '.') {
+            if (empty($segment) || $segment === '.') {
                 continue;
             }
-            if ($segment == '..') {
+            if ($segment === '..') {
                 if (count($segment) > 0) {
                     array_pop($path);
                 }

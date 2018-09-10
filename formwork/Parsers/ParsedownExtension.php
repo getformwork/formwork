@@ -23,7 +23,7 @@ class ParsedownExtension extends ParsedownExtra
             return;
         }
         $href = &$link['element']['attributes']['href'];
-        if (empty(Uri::host($href)) && $href[0] != '#') {
+        if (empty(Uri::host($href)) && $href[0] !== '#') {
             $relativeUri = Uri::resolveRelativeUri($href, $this->page->slug());
             $href = Formwork::instance()->site()->uri($relativeUri);
         }

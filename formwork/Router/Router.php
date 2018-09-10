@@ -106,7 +106,7 @@ class Router
     public function dispatch()
     {
         foreach ($this->routes as $route) {
-            if (HTTPRequest::type() == $route['type'] && HTTPRequest::method() == $route['method'] && $this->match($route['route'])) {
+            if (HTTPRequest::type() === $route['type'] && HTTPRequest::method() === $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
                 return $route['callback']($this->params);
             }

@@ -32,7 +32,7 @@ class PageCollection extends Collection
     {
         $pageCollection = clone $this;
         foreach ($pageCollection->items as $key => $item) {
-            if ($item->id() == $element->id()) {
+            if ($item->id() === $element->id()) {
                 unset($pageCollection->items[$key]);
             }
         }
@@ -80,7 +80,7 @@ class PageCollection extends Collection
             return $pageCollection;
         }
 
-        if ($direction == SORT_DESC || strtolower($direction) == 'desc' || $direction == -1) {
+        if ($direction === SORT_DESC || strtolower($direction) === 'desc' || $direction === -1) {
             $direction = -1;
         } else {
             $direction = 1;
