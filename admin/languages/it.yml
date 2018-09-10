@@ -69,9 +69,10 @@ pages.page.cannot-create: Impossibile creare la pagina
 pages.page.cannot-create.already-exists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
 pages.page.cannot-create.invalid-parent: Impossibile creare la pagina, la pagina superiore specificata non è valida
 pages.page.cannot-create.var-missing: 'Impossibile creare la pagina, manca la variabile %s'
-pages.page.cannot-delete-file: Impossibile eliminare il file
-pages.page.cannot-delete: 'Impossibile eliminare la pagina, %s'
-pages.page.cannot-delete.not-deletable: Impossibile eliminare la pagina, la pagina non è eliminabile
+pages.page.cannot-delete-file: Impossibile eliminare il file. %s.
+pages.page.cannot-delete-file.file-not-found: File non trovato
+pages.page.cannot-delete: Impossibile eliminare la pagina. %s.
+pages.page.cannot-delete.not-deletable: La pagina non è eliminabile
 pages.page.cannot-edit.page-missing: Impossibile modificare la pagina, pagina non trovata
 pages.page.cannot-edit.var-missing: 'Impossibile modificare la pagina, manca la variabile %s'
 pages.page.cannot-move: 'Impossibile spostare la pagina'

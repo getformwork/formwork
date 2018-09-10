@@ -69,9 +69,10 @@ pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
 pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
 pages.page.cannot-create.var-missing: 'Cannot create page, missing %s variable'
-pages.page.cannot-delete-file: 'Cannot delete file, %s'
-pages.page.cannot-delete: 'Cannot delete page, %s'
-pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
+pages.page.cannot-delete-file: 'Cannot delete file. %s.'
+pages.page.cannot-delete-file.file-not-found: File not found
+pages.page.cannot-delete: 'Cannot delete page. %s.'
+pages.page.cannot-delete.not-deletable: The page is not deletable
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
 pages.page.cannot-edit.var-missing: 'Cannot edit page, missing variable %s'
 pages.page.cannot-move: 'Cannot move page'

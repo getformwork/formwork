@@ -311,7 +311,7 @@ class Pages extends AbstractController
                 throw new RuntimeException($this->label('pages.page.not-found'));
             }
             if (!$page->files()->has($params->get('filename'))) {
-                throw new RuntimeException('Invalid file name');
+                throw new RuntimeException($this->label('pages.page.cannot-delete-file.file-not-found'));
             }
 
             FileSystem::delete($page->path() . $params->get('filename'));
