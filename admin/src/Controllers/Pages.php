@@ -242,7 +242,7 @@ class Pages extends AbstractController
 
         $from = max(0, $this->data->get('from'));
         $to = max(0, $this->data->get('to'));
-        if ($to == $from) {
+        if ($to === $from) {
             return;
         }
 
@@ -254,7 +254,7 @@ class Pages extends AbstractController
                 continue;
             }
             $newId = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $id);
-            if ($newId != $id) {
+            if ($newId !== $id) {
                 $this->changePageId($page, $newId);
             }
         }
@@ -279,11 +279,7 @@ class Pages extends AbstractController
             $this->redirect('/pages/');
         } catch (RuntimeException $e) {
             $this->notify($this->label('pages.page.cannot-delete', $e->getMessage()), 'error');
-            if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() != HTTPRequest::uri()) {
-                Header::redirect(HTTPRequest::referer(), 302, true);
-            } else {
-                $this->redirect('/pages/');
-            }
+            $this->redirectToReferer(302, true, '/pages/');
         }
     }
 
@@ -385,8 +381,8 @@ class Pages extends AbstractController
             $page->reload();
 
             // Check if page number has to change
-            if (!empty($page->date()) && $page->template()->scheme()->get('num') == 'date') {
-                if ($page->num() != $page->date(self::DATE_NUM_FORMAT)) {
+            if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
+                if ($page->num() !== $page->date(self::DATE_NUM_FORMAT)) {
                     $newId = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
                     try {
                         $this->changePageId($page, $newId);
@@ -462,7 +458,7 @@ class Pages extends AbstractController
 
     protected function resolveParent($parent)
     {
-        if ($parent == '.') {
+        if ($parent === '.') {
             return $this->site;
         }
         return $this->site->findPage($parent);

@@ -111,7 +111,7 @@ class Users extends AbstractController
             $this->redirect('/users/', 302, true);
         }
 
-        if (HTTPRequest::method() == 'POST') {
+        if (HTTPRequest::method() === 'POST') {
             $data = $user->toArray();
 
             $postData = HTTPRequest::postData();

@@ -45,16 +45,16 @@
         <div class="sidebar-wrapper">
             <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
             <ul class="sidebar-navigation">
-                <li class="<?= ($location == 'dashboard') ? 'active' : '' ?>">
+                <li class="<?= ($location === 'dashboard') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/dashboard/') ?>"><?= $this->label('dashboard.dashboard') ?></a>
                 </li>
-                <li class="<?= ($location == 'pages') ? 'active' : '' ?>">
+                <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/pages/') ?>"><?= $this->label('pages.pages') ?></a>
                 </li>
-                <li class="<?= ($location == 'options') ? 'active' : '' ?>">
+                <li class="<?= ($location === 'options') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/options/') ?>"><?= $this->label('options.options') ?></a>
                 </li>
-                <li class="<?= ($location == 'users') ? 'active' : '' ?>">
+                <li class="<?= ($location === 'users') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/users/') ?>"><?= $this->label('users.users') ?></a>
                 </li>
                 <li>

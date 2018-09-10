@@ -62,7 +62,7 @@ class Authentication extends AbstractController
         Session::remove('FORMWORK_USERNAME');
         Session::destroy();
 
-        if (Formwork::instance()->option('admin.logout_redirect') == 'home') {
+        if (Formwork::instance()->option('admin.logout_redirect') === 'home') {
             $this->redirectToSite(302, true);
         } else {
             $this->notify($this->label('login.logged-out'), 'success');
