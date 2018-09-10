@@ -43,12 +43,12 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
+        $this->loadLanguages();
         $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
 
-        if (!FileSystem::exists($languageFile)) {
-            throw new RuntimeException('Cannot load admin language file');
+        if (!FileSystem::isReadable($languageFile)) {
+            throw new RuntimeException('Cannot load Admin language file');
         }
-
         Language::load($this->language(), YAML::parseFile($languageFile));
     }
 
@@ -62,21 +62,7 @@ class Admin
 
     public static function languages()
     {
-        if (!is_null(static::$languages)) {
-            return static::$languages;
-        }
-        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $data = YAML::parseFile(LANGUAGES_PATH . $file);
-            $code = FileSystem::name($file);
-            static::$languages[$code] = $data['language.name'] . ' (' . $code . ')';
-        }
         return static::$languages;
-    }
-
-    public function loggedUser()
-    {
-        $username = Session::get('FORMWORK_USERNAME');
-        return $this->users->get($username);
     }
 
     public function isLoggedIn()
@@ -89,6 +75,12 @@ class Admin
         if (!$this->isLoggedIn()) {
             $this->redirect('/login/', 302, true);
         }
+    }
+
+    public function loggedUser()
+    {
+        $username = Session::get('FORMWORK_USERNAME');
+        return $this->users->get($username);
     }
 
     public function run()
@@ -116,7 +108,7 @@ class Admin
 
         if ($this->users->isEmpty()) {
             if ($this->router->request() != '/') {
-                $this->redirect('/', 302, true);
+                $this->redirectToPanel(302, true);
             }
             $controller = new Controllers\Register();
             return $controller->register();
@@ -200,9 +192,10 @@ class Admin
             array(new Controllers\Options(), 'info')
         );
 
-        $this->router->add(array(
-            '/users/'
-        ), array(new Controllers\Users(), 'run'));
+        $this->router->add(
+            '/users/',
+            array(new Controllers\Users(), 'run')
+        );
         $this->router->add(
             'POST',
             '/users/new/',
@@ -233,6 +226,14 @@ class Admin
         }
     }
 
+    protected function loadLanguages()
+    {
+        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
+            $code = FileSystem::name($file);
+            static::$languages[$code] = Language::codeToNativeName($code) . ' (' . $code . ')';
+        }
+    }
+    
     public function __call($name, $arguments)
     {
         if (property_exists($this, $name)) {

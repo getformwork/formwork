@@ -6,7 +6,6 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
-use Formwork\Core\Scheme;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
@@ -21,14 +20,14 @@ abstract class AbstractController
         $this->uri = Uri::path();
     }
 
-    public function user()
+    protected function formwork()
     {
-        return Admin::instance()->loggedUser();
+        return Formwork::instance();
     }
 
-    protected function scheme($template)
+    protected function option($option)
     {
-        return new Scheme($template);
+        return Formwork::instance()->option($option);
     }
 
     protected function languages()
@@ -36,9 +35,9 @@ abstract class AbstractController
         return Admin::languages();
     }
 
-    protected function option($option)
+    protected function user()
     {
-        return Formwork::instance()->option($option);
+        return Admin::instance()->loggedUser();
     }
 
     protected function escape($string)
@@ -49,7 +48,7 @@ abstract class AbstractController
     protected function field($field, $render = true)
     {
         if (!($field instanceof Field)) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of Formwork\Admin\Fields\Field');
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Field::class);
         }
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
     }

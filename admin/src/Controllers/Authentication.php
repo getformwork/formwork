@@ -19,7 +19,7 @@ class Authentication extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
-                    $this->redirect('/', 302, true);
+                    $this->redirectToPanel(302, true);
                 }
                 if (is_null(CSRFToken::get())) {
                     CSRFToken::generate();
@@ -48,7 +48,7 @@ class Authentication extends AbstractController
                     Session::set('FORMWORK_USERNAME', $this->username);
                     $time = $this->log('access')->set($this->username);
                     $this->registry('lastAccess')->set($this->username, $time);
-                    $this->redirect('/', 302, true);
+                    $this->redirectToPanel(302, true);
                 } else {
                     $this->error();
                 }
@@ -66,7 +66,7 @@ class Authentication extends AbstractController
             $this->redirectToSite(302, true);
         } else {
             $this->notify($this->label('login.logged-out'), 'success');
-            $this->redirect('/', 302, true);
+            $this->redirectToPanel(302, true);
         }
     }
 
