@@ -126,4 +126,20 @@ class Language
         }
         return $result;
     }
+
+    public static function codeToName($code)
+    {
+        if (!isset(static::$codes[$code])) {
+            throw new LogicException('Invalid language code');
+        }
+        return static::$codes[$code]['name'];
+    }
+
+    public static function codeToNativeName($code)
+    {
+        if (!isset(static::$codes[$code])) {
+            throw new LogicException('Invalid language code');
+        }
+        return static::$codes[$code]['native'];
+    }
 }
