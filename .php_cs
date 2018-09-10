@@ -30,7 +30,7 @@ return Config::create()
         'no_unneeded_curly_braces' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
-        'ordered_class_elements' => array('constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
+        'ordered_class_elements' => array('use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
         'single_quote' => true
     ))
     ->setFinder($finder);
