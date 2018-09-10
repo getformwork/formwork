@@ -51,12 +51,12 @@ class Pagination
 
     public function firstPage()
     {
-        return $this->currentPage == 1;
+        return $this->currentPage === 1;
     }
 
     public function lastPage()
     {
-        return $this->currentPage == $this->pages;
+        return $this->currentPage === $this->pages;
     }
 
     public function hasPages()
@@ -93,7 +93,7 @@ class Pagination
 
     public function previousPageUri()
     {
-        if ($this->previousPage() == 1) {
+        if ($this->previousPage() === 1) {
             return Uri::make(array('path' => $this->baseUri));
         }
         return Uri::make(array('path' => $this->baseUri . 'page/' . $this->previousPage()));

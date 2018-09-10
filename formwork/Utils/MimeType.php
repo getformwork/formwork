@@ -80,7 +80,7 @@ class MimeType
     {
         $results = array();
         foreach (static::$data as $ext => $mime) {
-            if ($mime == $mimeType) {
+            if ($mime === $mimeType) {
                 $results[] = $ext;
             }
         }

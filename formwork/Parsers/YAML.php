@@ -59,6 +59,6 @@ class YAML
                 }
             }
         }
-        return static::$PHPYAMLmode === $pattern || static::$PHPYAMLmode == 'all';
+        return static::$PHPYAMLmode === $pattern || static::$PHPYAMLmode === 'all';
     }
 }

@@ -123,7 +123,7 @@ class Site extends AbstractPage
 
     public function findPage($page)
     {
-        if ($page == '/') {
+        if ($page === '/') {
             return $this->indexPage();
         }
 
