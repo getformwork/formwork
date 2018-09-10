@@ -70,13 +70,6 @@ class Admin
         return !is_null($user = Session::get('FORMWORK_USERNAME')) && $this->users->has($user);
     }
 
-    public function ensureLogin()
-    {
-        if (!$this->isLoggedIn()) {
-            $this->redirect('/login/', 302, true);
-        }
-    }
-
     public function loggedUser()
     {
         $username = Session::get('FORMWORK_USERNAME');
@@ -114,10 +107,13 @@ class Admin
             return $controller->register();
         }
 
+        if (!$this->isLoggedIn() && HTTPRequest::uri() != '/login/') {
+            $this->redirect('/login/', 302, true);
+        }
+
         $this->router->add(
             '/',
             function (RouteParams $params) {
-                $this->ensureLogin();
                 $this->redirect('/dashboard/', 302, true);
             }
         );
@@ -233,7 +229,7 @@ class Admin
             static::$languages[$code] = Language::codeToNativeName($code) . ' (' . $code . ')';
         }
     }
-    
+
     public function __call($name, $arguments)
     {
         if (property_exists($this, $name)) {

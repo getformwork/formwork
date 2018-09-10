@@ -11,8 +11,6 @@ class Dashboard extends AbstractController
 {
     public function run()
     {
-        Admin::instance()->ensureLogin();
-
         $site = Formwork::instance()->site();
         $csrfToken = CSRFToken::get();
 

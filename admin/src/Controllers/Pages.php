@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Uploader;
@@ -38,7 +37,6 @@ class Pages extends AbstractController
 
     public function index()
     {
-        Admin::instance()->ensureLogin();
         $list = $this->view(
             'pages.list',
             array(
@@ -89,7 +87,6 @@ class Pages extends AbstractController
 
     public function create(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $this->data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
@@ -130,8 +127,6 @@ class Pages extends AbstractController
 
     public function edit(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
-
         $this->page = $this->site->findPage($params->get('page'));
 
         // Ensure the page exists
@@ -226,8 +221,6 @@ class Pages extends AbstractController
 
     public function reorder()
     {
-        Admin::instance()->ensureLogin();
-
         $this->data = new DataGetter(HTTPRequest::postData());
 
         foreach (array('parent', 'from', 'to') as $var) {
@@ -271,7 +264,6 @@ class Pages extends AbstractController
 
     public function delete(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {
@@ -318,7 +310,6 @@ class Pages extends AbstractController
 
     public function deleteFile(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {
