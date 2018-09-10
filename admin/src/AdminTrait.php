@@ -39,6 +39,11 @@ trait AdminTrait
         Header::redirect($this->siteUri(), $code, $exit);
     }
 
+    public function redirectToPanel($code = 302, $exit = false)
+    {
+        $this->redirect('/', $code, $exit);
+    }
+
     public function redirectToReferer($code = 302, $exit = false, $default = null)
     {
         Header::redirect(HTTPRequest::referer() ?: $this->uri($default ?: '/'), $code, $exit);
