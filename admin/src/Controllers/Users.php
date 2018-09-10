@@ -18,7 +18,6 @@ class Users extends AbstractController
 {
     public function run(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $content = $this->view(
             'users.index',
             array(
@@ -105,7 +104,6 @@ class Users extends AbstractController
 
     public function profile(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $user = Admin::instance()->users()->get($params->get('user'));
 
         if (is_null($user)) {

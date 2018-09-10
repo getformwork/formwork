@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
@@ -17,14 +16,11 @@ class Options extends AbstractController
 {
     public function run(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $this->redirect('/options/system/', 302, true);
     }
 
     public function system(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
-
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
         if (HTTPRequest::method() == 'POST') {
@@ -62,7 +58,6 @@ class Options extends AbstractController
 
     public function site(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
         if (HTTPRequest::method() == 'POST') {
@@ -105,7 +100,6 @@ class Options extends AbstractController
 
     public function info(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $dependencies = $this->getDependencies();
 
         $data = @array(
