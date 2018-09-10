@@ -13,7 +13,6 @@ use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
