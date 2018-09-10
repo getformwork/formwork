@@ -124,7 +124,7 @@ class Uri
         if (!$forcePort && static::defaultPort($parts['port'])) {
             $parts['port'] = '';
         }
-        $result  = empty($parts['scheme']) ? 'http' : $parts['scheme'];
+        $result = empty($parts['scheme']) ? 'http' : $parts['scheme'];
         $result .= '://';
         $result .= strtolower($parts['host']);
         $result .= empty($parts['port']) ? '' : ':' . $parts['port'];
