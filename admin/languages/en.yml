@@ -42,6 +42,7 @@ options.options: Options
 options.site: Site
 options.system: System
 options.updated: Options updated
+options.updates: Updates
 pages.attributes: Attributes
 pages.changes.continue: Continue without Saving
 pages.changes.detected: Changes Detected
@@ -115,6 +116,18 @@ password-reset.reset: Reset
 register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
 register.register: Register New User
 request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
+updates.available-for-install: is available for install
+updates.install-prompt: Would you like to install the update?
+updates.install: Install
+updates.installed: Update installed!
+updates.latest-version-available: is the latest version available
+updates.status.cannot-install: Cannot install update
+updates.status.checking: Checking for updates...
+updates.status.found: Updates found
+updates.status.installing: Installing updates...
+updates.status.up-to-date: Up-to-date!
+updates.updates: Updates
+uploader.erorr.cannot-write: Failed to write file to disk
 uploader.error: Cannot upload file. %s.
 uploader.error.cannot-write: Failed to write file to disk
 uploader.error.file-name: Invalid file name
