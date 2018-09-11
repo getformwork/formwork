@@ -97,6 +97,22 @@ class Options extends AbstractController
         ));
     }
 
+    public function updates()
+    {
+        $this->view('admin', array(
+            'title' => $this->label('options.updates'),
+            'location' => 'options',
+            'content' => $this->view(
+                'options.updates',
+                array(
+                    'tabs' => $this->view('options.tabs', array('tab' => 'updates'), false)
+                ),
+                false
+            ),
+            'csrfToken' => CSRFToken::get()
+        ));
+    }
+
     public function info()
     {
         $dependencies = $this->getDependencies();

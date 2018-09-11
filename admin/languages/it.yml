@@ -42,6 +42,7 @@ options.options: Impostazioni
 options.site: Sito
 options.system: Sistema
 options.updated: Opzioni aggiornate
+options.updates: Aggiornamenti
 pages.attributes: Attributi
 pages.changes.continue: Continua senza salvare
 pages.changes.detected: Modifiche rilevate
@@ -115,6 +116,19 @@ password-reset.reset: Reimposta
 register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
 register.register: Registra nuovo utente
 request.error.post-max-size: La richiesta HTTP con metodo POST supera la dimensione massima consentita
+updates.available-for-install: è disponibile per l'installazione
+updates.install-prompt: Installare l'aggiornamento?
+updates.install: Installa
+updates.installed: Aggiornamento installato!
+updates.latest-version-available: è l'ultima versione disponibile
+updates.status.cannot-install: Impossibile installare l'aggiornamento
+updates.status.checking: Cerco aggiornamenti...
+updates.status.found: Aggiornamento disponibile
+updates.status.installing: Installo aggiornamento...
+updates.status.up-to-date: Aggiornato!
+updates.updates: Aggiornamenti
+uploader.erorr.cannot-write: Impossibile salvare il file sul disco
+uploader.error: 'Impossibile caricare il file. %s.'
 uploader.error: Impossibile caricare il file. %s.
 uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.file-name: Nome del file non valido

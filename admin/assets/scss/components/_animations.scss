@@ -46,3 +46,12 @@
                 transform: translate3d(150%, 0, 0);
     }
 }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
