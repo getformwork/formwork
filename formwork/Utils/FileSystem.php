@@ -185,13 +185,13 @@ class FileSystem
             static::assert($destination, false);
         }
         if (!is_null($context)) {
-            $valid = is_resource($context) && get_resource_type($context) == 'stream-context';
+            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
             if (!$valid) {
-                throw new \RuntimeException('Invalid stream context resource');
+                throw new RuntimeException('Invalid stream context resource');
             }
         }
         if (!@copy($source, $destination, $context)) {
-            throw new \RuntimeException('Cannot download ' . $source);
+            throw new RuntimeException('Cannot download ' . $source);
         }
         return true;
     }
@@ -243,14 +243,14 @@ class FileSystem
     public static function fetch($source, $context = null)
     {
         if (!is_null($context)) {
-            $valid = is_resource($context) && get_resource_type($context) == 'stream-context';
+            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
             if (!$valid) {
-                throw new \RuntimeException('Invalid stream context resource');
+                throw new RuntimeException('Invalid stream context resource');
             }
         }
         $data = @file_get_contents($source, false, $context);
         if ($data === false) {
-            throw new \RuntimeException('Cannot fetch ' . $source);
+            throw new RuntimeException('Cannot fetch ' . $source);
         }
         return $data;
     }
