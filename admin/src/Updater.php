@@ -28,8 +28,6 @@ class Updater
 
     protected $release;
 
-    protected $archiveUri;
-
     protected $headers;
 
     protected $upToDate;
@@ -112,7 +110,7 @@ class Updater
 
         $this->loadRelease();
 
-        FileSystem::download($this->archiveUri, $this->options['tempFile'], true, $this->context);
+        FileSystem::download($this->release['archive'], $this->options['tempFile'], true, $this->context);
 
         if (!FileSystem::exists($this->options['tempFile'])) {
             throw new RuntimeException('Cannot update');
@@ -183,10 +181,9 @@ class Updater
         $this->release = array(
             'name' => $data['name'],
             'tag'  => $data['tag_name'],
-            'date' => strtotime($data['published_at'])
+            'date' => strtotime($data['published_at']),
+            'archive' => $data['zipball_url']
         );
-
-        $this->archiveUri = $data['zipball_url'];
     }
 
     protected function getHeaders()
@@ -194,7 +191,7 @@ class Updater
         if (!is_null($this->headers)) {
             return $this->headers;
         }
-        $this->headers = get_headers($this->archiveUri, 1, $this->context);
+        $this->headers = get_headers($this->release['archive'], 1, $this->context);
         return $this->headers;
     }
 
