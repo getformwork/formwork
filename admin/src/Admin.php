@@ -10,7 +10,6 @@ use Formwork\Core\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Router\RouteParams;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
@@ -29,12 +28,16 @@ class Admin
 
     protected $users;
 
+    protected $errors;
+
     public function __construct()
     {
         if (!is_null(static::$instance)) {
             throw new LogicException('Admin class already instantiated');
         }
         static::$instance = $this;
+
+        $this->errors = new Controllers\Errors();
 
         if (!Formwork::instance()->option('admin.enabled')) {
             $this->redirectToSite(302, true);
@@ -50,6 +53,12 @@ class Admin
             throw new RuntimeException('Cannot load Admin language file');
         }
         Language::load($this->language(), YAML::parseFile($languageFile));
+
+        set_exception_handler(function ($exception) {
+            ob_end_clean();
+            $this->errors->internalServerError();
+            throw $exception;
+        });
     }
 
     public static function instance()
@@ -218,7 +227,7 @@ class Admin
         $this->router->dispatch();
 
         if (!$this->router->hasDispatched()) {
-            Header::notFound();
+            $this->errors->notFound();
         }
     }
 
