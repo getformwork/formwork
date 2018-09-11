@@ -10,6 +10,7 @@ return Config::create()
     ->setRules(array(
         '@PSR1' => true,
         '@PSR2' => true,
+        'binary_operator_spaces' => array('default' => 'single_space', 'operators' => array('=>' => null)),
         'cast_spaces' => array('space' => 'single'),
         'concat_space' => array('spacing' => 'one'),
         'escape_implicit_backslashes' => true,
@@ -30,7 +31,7 @@ return Config::create()
         'no_unneeded_curly_braces' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
-        'ordered_class_elements' => array('constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
+        'ordered_class_elements' => array('use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
         'single_quote' => true
     ))
     ->setFinder($finder);

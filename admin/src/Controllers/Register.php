@@ -30,7 +30,7 @@ class Register extends AbstractController
                 foreach (array('username', 'fullname', 'password', 'email') as $var) {
                     if (!$this->data->has($var)) {
                         $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
-                        $this->redirect('/', 302, true);
+                        $this->redirectToPanel(302, true);
                     }
                 }
 
@@ -51,7 +51,7 @@ class Register extends AbstractController
                 $time = $this->log('access')->set($this->data->get('username'));
                 $this->registry('lastAccess')->set($this->data->get('username'), $time);
 
-                $this->redirect('/', 302, true);
+                $this->redirectToPanel(302, true);
                 break;
         }
     }

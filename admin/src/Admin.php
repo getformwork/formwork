@@ -5,15 +5,11 @@ namespace Formwork\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Language;
-use Formwork\Admin\Utils\Log;
-use Formwork\Admin\Utils\Notification;
-use Formwork\Admin\Utils\Registry;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Router\RouteParams;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;
@@ -22,6 +18,8 @@ use RuntimeException;
 
 class Admin
 {
+    use AdminTrait;
+
     public static $instance;
 
     protected static $languages;
@@ -30,6 +28,8 @@ class Admin
 
     protected $users;
 
+    protected $errors;
+
     public function __construct()
     {
         if (!is_null(static::$instance)) {
@@ -37,20 +37,28 @@ class Admin
         }
         static::$instance = $this;
 
+        $this->errors = new Controllers\Errors();
+
         if (!Formwork::instance()->option('admin.enabled')) {
-            Header::redirect(rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/');
+            $this->redirectToSite(302, true);
         }
 
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
+        $this->loadLanguages();
         $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
 
-        if (!FileSystem::exists($languageFile)) {
-            throw new RuntimeException('Cannot load admin language file');
+        if (!FileSystem::isReadable($languageFile)) {
+            throw new RuntimeException('Cannot load Admin language file');
         }
-
         Language::load($this->language(), YAML::parseFile($languageFile));
+
+        set_exception_handler(function ($exception) {
+            ob_end_clean();
+            $this->errors->internalServerError();
+            throw $exception;
+        });
     }
 
     public static function instance()
@@ -63,20 +71,12 @@ class Admin
 
     public static function languages()
     {
-        if (!is_null(static::$languages)) {
-            return static::$languages;
-        }
-        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $data = YAML::parseFile(LANGUAGES_PATH . $file);
-            $code = FileSystem::name($file);
-            static::$languages[$code] = $data['language.name'] . ' (' . $code . ')';
-        }
         return static::$languages;
     }
 
-    public function language()
+    public function isLoggedIn()
     {
-        return Formwork::instance()->option('admin.lang');
+        return !is_null($user = Session::get('FORMWORK_USERNAME')) && $this->users->has($user);
     }
 
     public function loggedUser()
@@ -85,70 +85,76 @@ class Admin
         return $this->users->get($username);
     }
 
-    public function isLoggedIn()
+    public function run()
     {
-        return !is_null($user = Session::get('FORMWORK_USERNAME')) && $this->users->has($user);
+        if (HTTPRequest::method() === 'POST') {
+            $this->validateContentLength();
+            $this->validateCSRFToken();
+        }
+
+        if ($this->users->isEmpty()) {
+            $this->registerAdmin();
+        }
+
+        if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
+            $this->redirect('/login/', 302, true);
+        }
+
+        $this->loadRoutes();
+
+        $this->router->dispatch();
+
+        if (!$this->router->hasDispatched()) {
+            $this->errors->notFound();
+        }
     }
 
-    public function ensureLogin()
+    protected function validateContentLength()
     {
-        if (!$this->isLoggedIn()) {
+        if (!is_null(HTTPRequest::contentLength())) {
+            $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+            if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                $this->notify($this->label('request.error.post-max-size'), 'error');
+                $this->redirectToReferer(302, true);
+            }
+        }
+    }
+
+    protected function validateCSRFToken()
+    {
+        try {
+            CSRFToken::validate();
+        } catch (RuntimeException $e) {
+            CSRFToken::destroy();
+            Session::remove('FORMWORK_USERNAME');
+            $this->notify($this->label('login.suspicious-request-detected'), 'warning');
+            if (HTTPRequest::isXHR()) {
+                JSONResponse::error('Not authorized!', 403)->send();
+            }
             $this->redirect('/login/', 302, true);
         }
     }
 
-    public function uri($subpath)
+    protected function registerAdmin()
     {
-        return HTTPRequest::root() . ltrim($subpath, '/');
-    }
-
-    public function redirect($uri, $code = 302, $exit = false)
-    {
-        Header::redirect($this->uri($uri), $code, $exit);
-    }
-
-    public function registry($name)
-    {
-        return new Registry(LOGS_PATH . $name . '.json');
-    }
-
-    public function log($name)
-    {
-        return new Log(LOGS_PATH . $name . '.json');
-    }
-
-    public function run()
-    {
-        if (HTTPRequest::method() == 'POST') {
-            try {
-                CSRFToken::validate();
-            } catch (RuntimeException $e) {
-                CSRFToken::destroy();
-                Session::remove('FORMWORK_USERNAME');
-                Notification::send(Language::get('login.suspicious-request-detected'), 'warning');
-                if (HTTPRequest::isXHR()) {
-                    JSONResponse::error('Not authorized!', 403)->send();
-                }
-                $this->redirect('/login/', 302, true);
-            }
+        if ($this->router->request() !== '/') {
+            $this->redirectToPanel(302, true);
         }
+        $controller = new Controllers\Register();
+        return $controller->register();
+    }
 
-        if ($this->users->isEmpty()) {
-            if ($this->router->request() != '/') {
-                $this->redirect('/', 302, true);
-            }
-            $controller = new Controllers\Register();
-            return $controller->register();
-        }
-
+    protected function loadRoutes()
+    {
+        // Default route
         $this->router->add(
             '/',
             function (RouteParams $params) {
-                $this->ensureLogin();
                 $this->redirect('/dashboard/', 302, true);
             }
         );
 
+        // Authentication
         $this->router->add(
             array('GET', 'POST'),
             '/login/',
@@ -159,49 +165,24 @@ class Admin
             array(new Controllers\Authentication(), 'logout')
         );
 
+        // Cache
+        $this->router->add(
+            'XHR',
+            'POST',
+            '/cache/clear/',
+            array(new Controllers\Cache(), 'clear')
+        );
+
+        // Dashboard
         $this->router->add(
             '/dashboard/',
-            array(new Controllers\Dashboard(), 'run')
+            array(new Controllers\Dashboard(), 'index')
         );
 
-        $this->router->add(
-            '/pages/',
-            array(new Controllers\Pages(), 'index')
-        );
-        $this->router->add(
-            'POST',
-            '/pages/new/',
-            array(new Controllers\Pages(), 'create')
-        );
-        $this->router->add(
-            array('GET', 'POST'),
-            '/pages/{page}/edit/',
-            array(new Controllers\Pages(), 'edit')
-        );
-        $this->router->add(
-            'POST',
-            '/pages/reorder/',
-            array(new Controllers\Pages(), 'reorder')
-        );
-        $this->router->add(
-            'POST',
-            '/pages/{page}/file/upload/',
-            array(new Controllers\Pages(), 'uploadFile')
-        );
-        $this->router->add(
-            'POST',
-            '/pages/{page}/file/{filename}/delete/',
-            array(new Controllers\Pages(), 'deleteFile')
-        );
-        $this->router->add(
-            'POST',
-            '/pages/{page}/delete/',
-            array(new Controllers\Pages(), 'delete')
-        );
-
+        // Options
         $this->router->add(
             '/options/',
-            array(new Controllers\Options(), 'run')
+            array(new Controllers\Options(), 'index')
         );
         $this->router->add(
             array('GET', 'POST'),
@@ -222,9 +203,60 @@ class Admin
             array(new Controllers\Options(), 'info')
         );
 
-        $this->router->add(array(
-            '/users/'
-        ), array(new Controllers\Users(), 'run'));
+        // Pages
+        $this->router->add(
+            '/pages/',
+            array(new Controllers\Pages(), 'index')
+        );
+        $this->router->add(
+            'POST',
+            '/pages/new/',
+            array(new Controllers\Pages(), 'create')
+        );
+        $this->router->add(
+            array('GET', 'POST'),
+            '/pages/{page}/edit/',
+            array(new Controllers\Pages(), 'edit')
+        );
+        $this->router->add(
+            'XHR',
+            'POST',
+            '/pages/reorder/',
+            array(new Controllers\Pages(), 'reorder')
+        );
+        $this->router->add(
+            'POST',
+            '/pages/{page}/file/upload/',
+            array(new Controllers\Pages(), 'uploadFile')
+        );
+        $this->router->add(
+            'POST',
+            '/pages/{page}/file/{filename}/delete/',
+            array(new Controllers\Pages(), 'deleteFile')
+        );
+        $this->router->add(
+            'POST',
+            '/pages/{page}/delete/',
+            array(new Controllers\Pages(), 'delete')
+        );
+
+        // Updates
+        $this->router->add(
+            'POST',
+            '/updates/check/',
+            array(new Controllers\Updates(), 'check')
+        );
+        $this->router->add(
+            'POST',
+            '/updates/update/',
+            array(new Controllers\Updates(), 'update')
+        );
+
+        // Users
+        $this->router->add(
+            '/users/',
+            array(new Controllers\Users(), 'index')
+        );
         $this->router->add(
             'POST',
             '/users/new/',
@@ -240,28 +272,13 @@ class Admin
             '/users/{user}/profile/',
             array(new Controllers\Users(), 'profile')
         );
+    }
 
-        $this->router->add(
-            'POST',
-            '/cache/clear/',
-            array(new Controllers\Cache(), 'clear')
-        );
-
-        $this->router->add(
-            'POST',
-            '/updates/check/',
-            array(new Controllers\Updates(), 'check')
-        );
-        $this->router->add(
-            'POST',
-            '/updates/update/',
-            array(new Controllers\Updates(), 'update')
-        );
-
-        $this->router->dispatch();
-
-        if (!$this->router->hasDispatched()) {
-            Header::notFound();
+    protected function loadLanguages()
+    {
+        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
+            $code = FileSystem::name($file);
+            static::$languages[$code] = Language::codeToNativeName($code) . ' (' . $code . ')';
         }
     }
 

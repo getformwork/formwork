@@ -372,6 +372,11 @@ Formwork.Forms = {
         $('.editor-textarea').each(function() {
             new Formwork.Editor($(this).attr('id'));
         });
+
+        $('input[type=range]').on('change input', function() {
+            var $this = $(this);
+            $this.next('.range-input-value').text($this.val());
+        });
     }
 };
 

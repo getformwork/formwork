@@ -38,9 +38,9 @@ class FileSystem
         $mimeType = @mime_content_type($file);
 
         // Fix wrong type for image/svg+xml
-        if ($mimeType == 'text/html') {
+        if ($mimeType === 'text/html') {
             $node = @simplexml_load_file($file);
-            if ($node && $node->getName() == 'svg') {
+            if ($node && $node->getName() === 'svg') {
                 $mimeType = MimeType::fromExtension('svg');
             }
         }
@@ -318,7 +318,7 @@ class FileSystem
 
     public static function glob($pattern)
     {
-        if (func_num_args() == 1) {
+        if (func_num_args() === 1) {
             return glob($pattern);
         }
         if (func_num_args() >= 2) {
@@ -329,7 +329,7 @@ class FileSystem
             $context = static::normalize(func_get_args()[1]);
 
             if (static::isDirectory($context)) {
-                if (func_num_args() == 2) {
+                if (func_num_args() === 2) {
                     return @glob($context . $pattern);
                 }
                 $flags = func_get_args()[2];
@@ -352,6 +352,22 @@ class FileSystem
         }
         $exp = min(floor(log($bytes, 1024)), count(static::$units) - 1);
         return round($bytes / pow(1024, $exp), 2) . ' ' . static::$units[$exp];
+    }
+
+    public static function shorthandToBytes($shorthand)
+    {
+        $shorthand = trim($shorthand);
+        preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches);
+        $value = (int) $matches[1];
+        $unit = strtoupper($matches[2]);
+        if ($unit === 'K') {
+            $value *= 1024;
+        } elseif ($unit === 'M') {
+            $value *= 1024 * 1024;
+        } elseif ($unit === 'G') {
+            $value *= 1024 * 1024;
+        }
+        return $value;
     }
 
     public static function temporaryName($prefix = '')

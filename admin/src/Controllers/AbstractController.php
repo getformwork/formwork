@@ -3,82 +3,31 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
+use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Utils\Language;
-use Formwork\Admin\Utils\Notification;
-use Formwork\Core\Scheme;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 
 abstract class AbstractController
 {
+    use AdminTrait;
+
     public function __construct()
     {
         $this->uri = Uri::path();
     }
 
-    public function formwork()
+    protected function formwork()
     {
         return Formwork::instance();
     }
 
-    public function notification()
+    protected function option($option)
     {
-        return Notification::exists() ? Notification::get() : null;
-    }
-
-    public function notify($text, $type)
-    {
-        Notification::send($text, $type);
-    }
-
-    public function registry($name)
-    {
-        return Admin::instance()->registry($name);
-    }
-
-    public function log($name)
-    {
-        return Admin::instance()->log($name);
-    }
-
-    public function redirect($uri, $code = 302, $exit = false)
-    {
-        Admin::instance()->redirect($uri, $code, $exit);
-    }
-
-    public function uri($subpath)
-    {
-        return Admin::instance()->uri($subpath);
-    }
-
-    public function siteUri()
-    {
-        return rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/';
-    }
-
-    public function pageUri($page)
-    {
-        return $this->siteUri() . ltrim($page->slug(), '/');
-    }
-
-    public function user()
-    {
-        return Admin::instance()->loggedUser();
-    }
-
-    protected function scheme($template)
-    {
-        return new Scheme($template);
-    }
-
-    protected function label($key)
-    {
-        return call_user_func_array(array(Language::class, 'get'), func_get_args());
+        return Formwork::instance()->option($option);
     }
 
     protected function languages()
@@ -86,14 +35,9 @@ abstract class AbstractController
         return Admin::languages();
     }
 
-    protected function language()
+    protected function user()
     {
-        return Admin::instance()->language();
-    }
-
-    protected function option($option)
-    {
-        return Formwork::instance()->option($option);
+        return Admin::instance()->loggedUser();
     }
 
     protected function escape($string)
@@ -104,7 +48,7 @@ abstract class AbstractController
     protected function field($field, $render = true)
     {
         if (!($field instanceof Field)) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of Formwork\Admin\Fields\Field');
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Field::class);
         }
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
     }

@@ -10,9 +10,17 @@ dashboard.quick-actions: Azioni rapide
 dashboard.statistics: Statistiche
 dashboard.welcome: Benvenuto/a
 date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio' ,'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
-date.months.short:  ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
+date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 date.today: Oggi
-date.weekdays.short:  ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+errors.action.report-to-github: Segnala un problema su GitHub
+errors.action.return-to-dashboard: Torna al Riepilogo
+errors.error.internal-server-error.description: Formwork Admin ha riscontrato un errore nell’elaborare la richiesta. Controlla la configurazione di Formwork o il registro degli errori.
+errors.error.internal-server-error.heading: Oops, qualcosa è andato storto!
+errors.error.internal-server-error.status: Errore interno del server
+errors.error.not-found.description: La pagina non esiste o la richiesta non è valida.
+errors.error.not-found.heading: Oops, pagina non trovata!
+errors.error.not-found.status: Non trovato
 language.name: Italiano
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
 login.logged-out: Sei stato disconnesso
@@ -35,6 +43,7 @@ options.site: Sito
 options.system: Sistema
 options.updated: Opzioni aggiornate
 options.updates: Aggiornamenti
+pages.attributes: Attributi
 pages.changes.continue: Continua senza salvare
 pages.changes.detected: Modifiche rilevate
 pages.changes.detected.prompt: Alcune modifiche non sono state salvate. Si è sicuri di voler lasciare la pagina?
@@ -53,7 +62,7 @@ pages.editor.numbered-list: Elenco numerato
 pages.editor.quote: Citazione
 pages.editor.summary: Summary
 pages.files: File
-pages.files.upload-label: '<strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui'
+pages.files.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
 pages.new-page: Nuova pagina
 pages.new-page.parent: Pagina superiore
 pages.new-page.site: Sito
@@ -68,13 +77,14 @@ pages.page.cannot-change-num: Impossibile cambiare il numero della pagina
 pages.page.cannot-create: Impossibile creare la pagina
 pages.page.cannot-create.already-exists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
 pages.page.cannot-create.invalid-parent: Impossibile creare la pagina, la pagina superiore specificata non è valida
-pages.page.cannot-create.var-missing: 'Impossibile creare la pagina, manca la variabile %s'
-pages.page.cannot-delete-file: Impossibile eliminare il file
-pages.page.cannot-delete: 'Impossibile eliminare la pagina, %s'
-pages.page.cannot-delete.not-deletable: Impossibile eliminare la pagina, la pagina non è eliminabile
+pages.page.cannot-create.var-missing: Impossibile creare la pagina, manca la variabile %s
+pages.page.cannot-delete-file: Impossibile eliminare il file. %s.
+pages.page.cannot-delete-file.file-not-found: File non trovato
+pages.page.cannot-delete: Impossibile eliminare la pagina. %s.
+pages.page.cannot-delete.not-deletable: La pagina non è eliminabile
 pages.page.cannot-edit.page-missing: Impossibile modificare la pagina, pagina non trovata
-pages.page.cannot-edit.var-missing: 'Impossibile modificare la pagina, manca la variabile %s'
-pages.page.cannot-move: 'Impossibile spostare la pagina'
+pages.page.cannot-edit.var-missing: Impossibile modificare la pagina, manca la variabile %s
+pages.page.cannot-move: Impossibile spostare la pagina
 pages.page.created: Pagina creata!
 pages.page.deleted: Pagina eliminata
 pages.page.edited: Pagina modificata!
@@ -85,6 +95,7 @@ pages.pages: Pagine
 pages.pages.collapse-all: Riduci tutte
 pages.pages.expand-all: Espandi tutte
 pages.pages.search: Cerca pagine...
+pages.parent: Pagina superiore
 pages.preview-file: Anteprima
 pages.preview: Anteprima
 pages.publish: Pubblica
@@ -92,6 +103,19 @@ pages.save: Salva
 pages.status.not-published: Non pubblicato
 pages.status.not-routable: Non raggiungibile
 pages.status.published: Pubblicato
+pages.template: Template
+password-reset.confirm-new-password: Conferma password
+password-reset.email-sent: Un’e-mail è stata inviata all’indirizzo %s con le istruzioni per reimpostare la password.
+password-reset.email: Indirizzo e-mail
+password-reset.invalid-link: Il link per reimpostare la password è scaduto o non valido. Riprova.
+password-reset.new-password: Nuova password
+password-reset.password-changed: La password è stata cambiata. Accedi ora con le nuove credenziali.
+password-reset.password-reset: Reimposta password
+password-reset.passwords-not-matching: La nuova password e la password di conferma non corrispondono. Riprova.
+password-reset.reset: Reimposta
+register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
+register.register: Registra nuovo utente
+request.error.post-max-size: La richiesta HTTP con metodo POST supera la dimensione massima consentita
 updates.available-for-install: è disponibile per l'installazione
 updates.install-prompt: Installare l'aggiornamento?
 updates.install: Installa
@@ -105,14 +129,15 @@ updates.status.up-to-date: Aggiornato!
 updates.updates: Aggiornamenti
 uploader.erorr.cannot-write: Impossibile salvare il file sul disco
 uploader.error: 'Impossibile caricare il file. %s.'
+uploader.error: Impossibile caricare il file. %s.
 uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.file-name: Nome del file non valido
-uploader.error.hidden-files: "Impossibile caricare i file che iniziano con '.'"
+uploader.error.hidden-files: Impossibile caricare i file che iniziano con '.'
 uploader.error.mime-type: Il tipo di file non è consentito
 uploader.error.no-file: Nessun file caricato
 uploader.error.no-temp: Cartella temporanea mancante
 uploader.error.partial: Il file è stato caricato solo parzialmente
-uploader.error.php-extension: "Il caricamento è stato interrotto da un'estensione"
+uploader.error.php-extension: Il caricamento è stato interrotto da un’estensione
 uploader.error.size: Il file caricato supera la dimensione massima consentita
 uploader.error.unknown: Errore di caricamento sconosciuto
 uploader.uploaded: File caricato
@@ -128,12 +153,12 @@ users.delete-user: Elimina utente
 users.delete-user.prompt: Si è sicuri di eliminare l’utente? Questa azione non può essere annullata.
 users.new-user: Nuovo utente
 users.new-user.password-suggestion: almeno 8 caratteri
-users.new-user.username-suggestion: 'da 3 a 20 lettere, numeri, - e _'
+users.new-user.username-suggestion: da 3 a 20 lettere, numeri, - e _
 users.options: Opzioni
 users.user-profile: Profilo utente %s
 users.user: Utente
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
-users.user.cannot-create.var-missing: 'Impossibile creare l’utente, manca la variabile %s'
+users.user.cannot-create.var-missing: Impossibile creare l’utente, manca la variabile %s
 users.user.cannot-delete.logged: Impossibile eliminare l’utente, l’utente è connesso
 users.user.created: Utente creato
 users.user.deleted: Utente eliminato

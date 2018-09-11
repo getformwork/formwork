@@ -24,8 +24,8 @@
 .editor-textarea {
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
-    min-height: 14.625rem;
-    max-height: 21.1875rem;
+    min-height: 16 * 0.875rem * 1.5 + 0.75rem * 2;
+    max-height: 20 * 0.875rem * 1.5 + 0.75rem * 2;
     font-size: 0.875rem;
     font-family: $mono-font-family;
 }

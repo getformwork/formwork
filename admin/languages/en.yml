@@ -9,10 +9,18 @@ dashboard.online-users: Online users
 dashboard.quick-actions: Quick Actions
 dashboard.statistics: Statistics
 dashboard.welcome: Welcome
-date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December']
-date.months.short:  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+errors.action.report-to-github: Report an issue to GitHub
+errors.action.return-to-dashboard: Return to Dashboard
+errors.error.internal-server-error.description: Formwork Admin encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
+errors.error.internal-server-error.heading: Oops, something went wrong!
+errors.error.internal-server-error.status: Internal Server Error
+errors.error.not-found.description: The page does not exist or the request is not valid.
+errors.error.not-found.heading: Oops, page not found!
+errors.error.not-found.status: Not Found
 language.name: English
 login.attempt.failed: Login attempt failed! Try again.
 login.logged-out: You have been logged out
@@ -35,6 +43,7 @@ options.site: Site
 options.system: System
 options.updated: Options updated
 options.updates: Updates
+pages.attributes: Attributes
 pages.changes.continue: Continue without Saving
 pages.changes.detected: Changes Detected
 pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
@@ -53,7 +62,7 @@ pages.editor.numbered-list: Ordered list
 pages.editor.quote: Quote
 pages.editor.summary: Summary
 pages.files: Files
-pages.files.upload-label: '<strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here'
+pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
 pages.new-page.site: Site
@@ -68,13 +77,14 @@ pages.page.cannot-change-num: Cannot change page number
 pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
 pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
-pages.page.cannot-create.var-missing: 'Cannot create page, missing %s variable'
-pages.page.cannot-delete-file: 'Cannot delete file, %s'
-pages.page.cannot-delete: 'Cannot delete page, %s'
-pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
+pages.page.cannot-create.var-missing: Cannot create page, missing %s variable
+pages.page.cannot-delete-file: Cannot delete file. %s.
+pages.page.cannot-delete-file.file-not-found: File not found
+pages.page.cannot-delete: Cannot delete page. %s.
+pages.page.cannot-delete.not-deletable: The page is not deletable
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
-pages.page.cannot-edit.var-missing: 'Cannot edit page, missing variable %s'
-pages.page.cannot-move: 'Cannot move page'
+pages.page.cannot-edit.var-missing: Cannot edit page, missing variable %s
+pages.page.cannot-move: Cannot move page
 pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
@@ -85,6 +95,7 @@ pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
 pages.pages.search: Search Pages...
+pages.parent: Parent Page
 pages.preview-file: Preview
 pages.preview: Preview
 pages.publish: Publish
@@ -92,6 +103,19 @@ pages.save: Save
 pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
+pages.template: Template
+password-reset.confirm-new-password: Confirm New Password
+password-reset.email-sent: An email has been sent to %s with instructions to reset your password.
+password-reset.email: E-mail Address
+password-reset.invalid-link: The password reset link is either expired or invalid. Please try again.
+password-reset.new-password: New Password
+password-reset.password-changed: The password has been changed. Please log in with your new credentials.
+password-reset.password-reset: Password Reset
+password-reset.passwords-not-matching: The new password and the confirmation password do not match. Please try again.
+password-reset.reset: Reset
+register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
+register.register: Register New User
+request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
 updates.available-for-install: is available for install
 updates.install-prompt: Would you like to install the update?
 updates.install: Install
@@ -133,7 +157,7 @@ users.options: Options
 users.user-profile: '%s User Profile'
 users.user: User
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
-users.user.cannot-create.var-missing: 'Cannot create user, missing %s variable'
+users.user.cannot-create.var-missing: Cannot create user, missing %s variable
 users.user.cannot-delete.logged: Cannot delete user, the user is logged
 users.user.created: User created
 users.user.deleted: User deleted

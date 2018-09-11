@@ -13,6 +13,11 @@ class HTTPRequest
         return $_SERVER['REQUEST_METHOD'];
     }
 
+    public static function type()
+    {
+        return static::isXHR() ? 'XHR' : 'HTTP';
+    }
+
     public static function uri()
     {
         $uri = $_SERVER['REQUEST_URI'];
@@ -39,6 +44,11 @@ class HTTPRequest
             return static::$headers['X-Forwarded-For'];
         }
         return $_SERVER['REMOTE_ADDR'];
+    }
+
+    public static function contentLength()
+    {
+        return isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : null;
     }
 
     public static function referer()

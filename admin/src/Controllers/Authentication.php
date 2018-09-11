@@ -5,6 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\Session;
+use Formwork\Core\Formwork;
 use Formwork\Utils\HTTPRequest;
 
 class Authentication extends AbstractController
@@ -18,7 +19,7 @@ class Authentication extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
-                    $this->redirect('/', 302, true);
+                    $this->redirectToPanel(302, true);
                 }
                 if (is_null(CSRFToken::get())) {
                     CSRFToken::generate();
@@ -47,7 +48,7 @@ class Authentication extends AbstractController
                     Session::set('FORMWORK_USERNAME', $this->username);
                     $time = $this->log('access')->set($this->username);
                     $this->registry('lastAccess')->set($this->username, $time);
-                    $this->redirect('/', 302, true);
+                    $this->redirectToPanel(302, true);
                 } else {
                     $this->error();
                 }
@@ -59,8 +60,14 @@ class Authentication extends AbstractController
     {
         CSRFToken::destroy();
         Session::remove('FORMWORK_USERNAME');
-        $this->notify($this->label('login.logged-out'), 'success');
-        $this->redirect('/', 302, true);
+        Session::destroy();
+
+        if (Formwork::instance()->option('admin.logout_redirect') === 'home') {
+            $this->redirectToSite(302, true);
+        } else {
+            $this->notify($this->label('login.logged-out'), 'success');
+            $this->redirectToPanel(302, true);
+        }
     }
 
     protected function error()

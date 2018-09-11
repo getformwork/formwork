@@ -83,7 +83,7 @@ class Page extends AbstractPage
     public function relativePath()
     {
         $parentPath = FileSystem::dirname(Formwork::instance()->option('content.path'));
-        return $parentPath == '.' ? DS . $this->path : substr($this->path, strlen($parentPath));
+        return $parentPath === '.' ? DS . $this->path : substr($this->path, strlen($parentPath));
     }
 
     public function num()
@@ -151,12 +151,12 @@ class Page extends AbstractPage
 
     public function isIndexPage()
     {
-        return trim($this->slug(), '/') == Formwork::instance()->option('pages.index');
+        return trim($this->slug(), '/') === Formwork::instance()->option('pages.index');
     }
 
     public function isErrorPage()
     {
-        return trim($this->slug(), '/') == Formwork::instance()->option('pages.error');
+        return trim($this->slug(), '/') === Formwork::instance()->option('pages.error');
     }
 
     public function isDeletable()
@@ -253,12 +253,12 @@ class Page extends AbstractPage
             $this->data['visible'] = false;
         }
 
-        if (is_null($this->num()) || $this->template()->scheme()->get('num') == 'date') {
+        if (is_null($this->num()) || $this->template()->scheme()->get('num') === 'date') {
             $this->data['sortable'] = false;
         }
 
         // Prepends the page uri if image uri doesn't start with '/', which means it isn't relative to the root
-        if ($this->has('image') && $this->image()[0] != '/') {
+        if ($this->has('image') && $this->image()[0] !== '/') {
             $this->data['image'] = $this->uri($this->image());
         }
     }

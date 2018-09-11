@@ -2,32 +2,27 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
-use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
 class Options extends AbstractController
 {
-    public function run(RouteParams $params)
+    public function index()
     {
-        Admin::instance()->ensureLogin();
         $this->redirect('/options/system/', 302, true);
     }
 
-    public function system(RouteParams $params)
+    public function system()
     {
-        Admin::instance()->ensureLogin();
-
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
-        if (HTTPRequest::method() == 'POST') {
+        if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postDataFromRaw());
             $options = Formwork::instance()->options();
             $defaults = Formwork::instance()->defaults();
@@ -60,12 +55,11 @@ class Options extends AbstractController
         ));
     }
 
-    public function site(RouteParams $params)
+    public function site()
     {
-        Admin::instance()->ensureLogin();
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
-        if (HTTPRequest::method() == 'POST') {
+        if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postDataFromRaw());
             $options = Formwork::instance()->site()->data();
             $differ = $this->updateOptions('site', $fields->validate($data), $options, array());
@@ -121,9 +115,8 @@ class Options extends AbstractController
         ));
     }
 
-    public function info(RouteParams $params)
+    public function info()
     {
-        Admin::instance()->ensureLogin();
         $dependencies = $this->getDependencies();
 
         $data = @array(
@@ -131,6 +124,7 @@ class Options extends AbstractController
                 'Version' => phpversion(),
                 'Operating System' => php_uname(),
                 'Server API' => php_sapi_name(),
+                'Loaded php.ini' => php_ini_loaded_file(),
                 'Loaded Extensions' => implode(', ', get_loaded_extensions()),
                 'Stream Wrappers' => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
@@ -143,7 +137,8 @@ class Options extends AbstractController
                 'Name' => $_SERVER['SERVER_NAME'],
                 'Software' => $_SERVER['SERVER_SOFTWARE'],
                 'Protocol' => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off'
+                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off',
+                'Request Time' => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
             ),
             'Client' => array(
                 'IP Address' => HTTPRequest::ip(),
@@ -151,11 +146,21 @@ class Options extends AbstractController
             ),
             'Session' => array(
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Cookie HttpOnly' => ini_get('session.cookie_httponly')
+                'Session Cookie HttpOnly' => ini_get('session.cookie_httponly'),
+                'Session Strict Mode' => ini_get('session.use_strict_mode')
             ),
             'Uploads' => array(
+                'File Uploads' => ini_get('file_uploads'),
+                'POST Max Size' => ini_get('post_max_size'),
                 'Maximum File Size' => ini_get('upload_max_filesize'),
                 'Maximum File Uploads' => ini_get('max_file_uploads')
+            ),
+            'Script' => array(
+                'Max Execution Time' => ini_get('max_execution_time'),
+                'Max Input Time' => ini_get('max_input_time'),
+                'Memory Limit' => ini_get('memory_limit'),
+                'Default MIME-Type' => ini_get('default_mimetype'),
+                'Default Charset' => ini_get('default_charset')
             ),
             'Formwork' => array(
                 'Formwork Version' => Formwork::VERSION,

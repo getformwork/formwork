@@ -16,9 +16,8 @@ use RuntimeException;
 
 class Users extends AbstractController
 {
-    public function run(RouteParams $params)
+    public function index()
     {
-        Admin::instance()->ensureLogin();
         $content = $this->view(
             'users.index',
             array(
@@ -47,7 +46,7 @@ class Users extends AbstractController
         ));
     }
 
-    public function create(RouteParams $params)
+    public function create()
     {
         $this->data = new DataGetter(HTTPRequest::postData());
 
@@ -105,7 +104,6 @@ class Users extends AbstractController
 
     public function profile(RouteParams $params)
     {
-        Admin::instance()->ensureLogin();
         $user = Admin::instance()->users()->get($params->get('user'));
 
         if (is_null($user)) {
@@ -113,7 +111,7 @@ class Users extends AbstractController
             $this->redirect('/users/', 302, true);
         }
 
-        if (HTTPRequest::method() == 'POST') {
+        if (HTTPRequest::method() === 'POST') {
             $data = $user->toArray();
 
             $postData = HTTPRequest::postData();

@@ -1,0 +1,40 @@
+.error-container {
+    margin: 4rem auto;
+    padding: 1rem;
+    max-width: 32rem;
+    text-align: center;
+}
+
+.error-container h1 {
+    color: $color-gray-dark;
+    @include user-select-none;
+}
+
+.error-container h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.error-container .error-code {
+    display: block;
+    font-weight: 400;
+    font-size: 8rem;
+}
+
+.error-container .error-status {
+    display: block;
+    font-size: 1.75rem;
+}
+
+.error-container a.action {
+    font-size: 1.125rem;
+}
+
+.error-container .logo {
+    margin: 2rem auto;
+    width: 3.5rem;
+    height: 3.5rem;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}

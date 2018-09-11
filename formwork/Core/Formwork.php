@@ -37,6 +37,8 @@ class Formwork
         }
         static::$instance = $this;
 
+        Errors::setHandlers();
+
         FileSystem::assert(CONFIG_PATH . 'system.yml');
         FileSystem::assert(CONFIG_PATH . 'site.yml');
 
@@ -84,7 +86,8 @@ class Formwork
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
             'admin.enabled'            => true,
-            'admin.lang'               => 'en'
+            'admin.lang'               => 'en',
+            'admin.logout_redirect'    => 'login'
         );
     }
 
