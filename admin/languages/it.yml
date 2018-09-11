@@ -13,6 +13,14 @@ date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
 date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 date.today: Oggi
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+errors.action.report-to-github: Segnala un problema su GitHub
+errors.action.return-to-dashboard: Torna al Riepilogo
+errors.error.internal-server-error.description: Formwork Admin ha riscontrato un errore nell’elaborare la richiesta. Controlla la configurazione di Formwork o il registro degli errori.
+errors.error.internal-server-error.heading: Oops, qualcosa è andato storto!
+errors.error.internal-server-error.status: Errore interno del server
+errors.error.not-found.description: La pagina non esiste o la richiesta non è valida.
+errors.error.not-found.heading: Oops, pagina non trovata!
+errors.error.not-found.status: Non trovato
 language.name: Italiano
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
 login.logged-out: Sei stato disconnesso
