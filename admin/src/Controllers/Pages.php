@@ -84,7 +84,7 @@ class Pages extends AbstractController
         ));
     }
 
-    public function create(RouteParams $params)
+    public function create()
     {
         $this->data = new DataGetter(HTTPRequest::postData());
 

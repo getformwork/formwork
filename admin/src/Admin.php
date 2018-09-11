@@ -88,38 +88,65 @@ class Admin
     public function run()
     {
         if (HTTPRequest::method() === 'POST') {
-            if (!is_null(HTTPRequest::contentLength())) {
-                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
-                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                    $this->notify($this->label('request.error.post-max-size'), 'error');
-                    $this->redirectToReferer(302, true);
-                }
-            }
-            try {
-                CSRFToken::validate();
-            } catch (RuntimeException $e) {
-                CSRFToken::destroy();
-                Session::remove('FORMWORK_USERNAME');
-                $this->notify($this->label('login.suspicious-request-detected'), 'warning');
-                if (HTTPRequest::isXHR()) {
-                    JSONResponse::error('Not authorized!', 403)->send();
-                }
-                $this->redirect('/login/', 302, true);
-            }
+            $this->validateContentLength();
+            $this->validateCSRFToken();
         }
 
         if ($this->users->isEmpty()) {
-            if ($this->router->request() !== '/') {
-                $this->redirectToPanel(302, true);
-            }
-            $controller = new Controllers\Register();
-            return $controller->register();
+            $this->registerAdmin();
         }
 
         if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
             $this->redirect('/login/', 302, true);
         }
 
+        $this->loadRoutes();
+
+        $this->router->dispatch();
+
+        if (!$this->router->hasDispatched()) {
+            $this->errors->notFound();
+        }
+    }
+
+    protected function validateContentLength()
+    {
+        if (!is_null(HTTPRequest::contentLength())) {
+            $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+            if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                $this->notify($this->label('request.error.post-max-size'), 'error');
+                $this->redirectToReferer(302, true);
+            }
+        }
+    }
+
+    protected function validateCSRFToken()
+    {
+        try {
+            CSRFToken::validate();
+        } catch (RuntimeException $e) {
+            CSRFToken::destroy();
+            Session::remove('FORMWORK_USERNAME');
+            $this->notify($this->label('login.suspicious-request-detected'), 'warning');
+            if (HTTPRequest::isXHR()) {
+                JSONResponse::error('Not authorized!', 403)->send();
+            }
+            $this->redirect('/login/', 302, true);
+        }
+    }
+
+    protected function registerAdmin()
+    {
+        if ($this->router->request() !== '/') {
+            $this->redirectToPanel(302, true);
+        }
+        $controller = new Controllers\Register();
+        return $controller->register();
+    }
+
+    protected function loadRoutes()
+    {
+        // Default route
         $this->router->add(
             '/',
             function (RouteParams $params) {
@@ -127,6 +154,7 @@ class Admin
             }
         );
 
+        // Authentication
         $this->router->add(
             array('GET', 'POST'),
             '/login/',
@@ -137,11 +165,41 @@ class Admin
             array(new Controllers\Authentication(), 'logout')
         );
 
+        // Cache
         $this->router->add(
-            '/dashboard/',
-            array(new Controllers\Dashboard(), 'run')
+            'XHR',
+            'POST',
+            '/cache/clear/',
+            array(new Controllers\Cache(), 'clear')
         );
 
+        // Dashboard
+        $this->router->add(
+            '/dashboard/',
+            array(new Controllers\Dashboard(), 'index')
+        );
+
+        // Options
+        $this->router->add(
+            '/options/',
+            array(new Controllers\Options(), 'index')
+        );
+        $this->router->add(
+            array('GET', 'POST'),
+            '/options/system/',
+            array(new Controllers\Options(), 'system')
+        );
+        $this->router->add(
+            array('GET', 'POST'),
+            '/options/site/',
+            array(new Controllers\Options(), 'site')
+        );
+        $this->router->add(
+            '/options/info/',
+            array(new Controllers\Options(), 'info')
+        );
+
+        // Pages
         $this->router->add(
             '/pages/',
             array(new Controllers\Pages(), 'index')
@@ -178,28 +236,10 @@ class Admin
             array(new Controllers\Pages(), 'delete')
         );
 
-        $this->router->add(
-            '/options/',
-            array(new Controllers\Options(), 'run')
-        );
-        $this->router->add(
-            array('GET', 'POST'),
-            '/options/system/',
-            array(new Controllers\Options(), 'system')
-        );
-        $this->router->add(
-            array('GET', 'POST'),
-            '/options/site/',
-            array(new Controllers\Options(), 'site')
-        );
-        $this->router->add(
-            '/options/info/',
-            array(new Controllers\Options(), 'info')
-        );
-
+        // Users
         $this->router->add(
             '/users/',
-            array(new Controllers\Users(), 'run')
+            array(new Controllers\Users(), 'index')
         );
         $this->router->add(
             'POST',
@@ -216,19 +256,6 @@ class Admin
             '/users/{user}/profile/',
             array(new Controllers\Users(), 'profile')
         );
-
-        $this->router->add(
-            'XHR',
-            'POST',
-            '/cache/clear/',
-            array(new Controllers\Cache(), 'clear')
-        );
-
-        $this->router->dispatch();
-
-        if (!$this->router->hasDispatched()) {
-            $this->errors->notFound();
-        }
     }
 
     protected function loadLanguages()
