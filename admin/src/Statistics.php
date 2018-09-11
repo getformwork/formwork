@@ -36,7 +36,9 @@ class Statistics
     );
 
     protected $visitsRegistry;
+
     protected $uniqueVisitsRegistry;
+
     protected $visitorsRegistry;
 
     public function __construct()

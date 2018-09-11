@@ -9,7 +9,7 @@ use Formwork\Core\Formwork;
 
 class Dashboard extends AbstractController
 {
-    public function run()
+    public function index()
     {
         $site = Formwork::instance()->site();
         $csrfToken = CSRFToken::get();

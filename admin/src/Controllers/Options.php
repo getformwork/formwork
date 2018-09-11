@@ -7,19 +7,18 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
-use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 
 class Options extends AbstractController
 {
-    public function run(RouteParams $params)
+    public function index()
     {
         $this->redirect('/options/system/', 302, true);
     }
 
-    public function system(RouteParams $params)
+    public function system()
     {
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
@@ -56,7 +55,7 @@ class Options extends AbstractController
         ));
     }
 
-    public function site(RouteParams $params)
+    public function site()
     {
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
@@ -98,7 +97,7 @@ class Options extends AbstractController
         ));
     }
 
-    public function info(RouteParams $params)
+    public function info()
     {
         $dependencies = $this->getDependencies();
 

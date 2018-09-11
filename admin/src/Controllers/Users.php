@@ -16,7 +16,7 @@ use RuntimeException;
 
 class Users extends AbstractController
 {
-    public function run(RouteParams $params)
+    public function index()
     {
         $content = $this->view(
             'users.index',
@@ -46,7 +46,7 @@ class Users extends AbstractController
         ));
     }
 
-    public function create(RouteParams $params)
+    public function create()
     {
         $this->data = new DataGetter(HTTPRequest::postData());
 
