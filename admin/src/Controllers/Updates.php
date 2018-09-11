@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Updater;
 use Formwork\Admin\Utils\JSONResponse;
 use RuntimeException;
