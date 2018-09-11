@@ -242,11 +242,13 @@ class Admin
 
         // Updates
         $this->router->add(
+            'XHR',
             'POST',
             '/updates/check/',
             array(new Controllers\Updates(), 'check')
         );
         $this->router->add(
+            'XHR',
             'POST',
             '/updates/update/',
             array(new Controllers\Updates(), 'update')

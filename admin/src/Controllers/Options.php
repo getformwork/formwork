@@ -97,10 +97,8 @@ class Options extends AbstractController
         ));
     }
 
-    public function updates(RouteParams $params)
+    public function updates()
     {
-        Admin::instance()->ensureLogin();
-
         $this->view('admin', array(
             'title' => $this->label('options.updates'),
             'location' => 'options',

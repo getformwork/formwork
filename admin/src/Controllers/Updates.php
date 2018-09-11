@@ -11,7 +11,6 @@ class Updates extends AbstractController
 {
     public function check()
     {
-        Admin::instance()->ensureLogin();
         $updater = new Updater();
         $upToDate = $updater->checkUpdates();
         if ($upToDate) {
@@ -28,7 +27,6 @@ class Updates extends AbstractController
 
     public function update()
     {
-        Admin::instance()->ensureLogin();
         $updater = new Updater(array('force' => true));
         try {
             $updater->update();
