@@ -37,6 +37,8 @@ class Formwork
         }
         static::$instance = $this;
 
+        Errors::setHandlers();
+
         FileSystem::assert(CONFIG_PATH . 'system.yml');
         FileSystem::assert(CONFIG_PATH . 'site.yml');
 
