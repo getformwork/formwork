@@ -119,7 +119,8 @@ class Options extends AbstractController
                 'Name' => $_SERVER['SERVER_NAME'],
                 'Software' => $_SERVER['SERVER_SOFTWARE'],
                 'Protocol' => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off'
+                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off',
+                'Request Time' => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
             ),
             'Client' => array(
                 'IP Address' => HTTPRequest::ip(),
@@ -131,8 +132,17 @@ class Options extends AbstractController
                 'Session Strict Mode' => ini_get('session.use_strict_mode')
             ),
             'Uploads' => array(
+                'File Uploads' => ini_get('file_uploads'),
+                'POST Max Size' => ini_get('post_max_size'),
                 'Maximum File Size' => ini_get('upload_max_filesize'),
                 'Maximum File Uploads' => ini_get('max_file_uploads')
+            ),
+            'Script' => array(
+                'Max Execution Time' => ini_get('max_execution_time'),
+                'Max Input Time' => ini_get('max_input_time'),
+                'Memory Limit' => ini_get('memory_limit'),
+                'Default MIME-Type' => ini_get('default_mimetype'),
+                'Default Charset' => ini_get('default_charset')
             ),
             'Formwork' => array(
                 'Formwork Version' => Formwork::VERSION,
