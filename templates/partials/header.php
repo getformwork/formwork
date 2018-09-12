@@ -5,12 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="<?= $site->uri('/templates/assets/css/style.min.css') ?>">
+    <script src="<?= $site->uri('/templates/assets/js/script.min.js') ?>"></script>
 </head>
 <body>
     <nav class="menu">
         <div class="container">
                 <a class="menu-header" href="<?= $site->uri() ?>"><?= $site->title() ?></a>
-                <div class="menu-list">
+                <button class="menu-toggle" data-toggle="main-menu" aria-expanded="false">&#9776;</button>
+                <div class="menu-list menu-collapse" id="main-menu">
 <?php
                     foreach ($site->children()->filter('visible') as $page):
 ?>
