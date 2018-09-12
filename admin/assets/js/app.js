@@ -96,6 +96,7 @@ Formwork.Dashboard = {
 Formwork.Editor = function(id) {
     var textarea = $('#' + id)[0];
     var $toolbar = '.editor-toolbar[data-for=' + id + ']';
+    restoreCursorPosition();
 
     $('[data-command=bold]', $toolbar).click(function() {
         insertAtCursor('**');
@@ -186,6 +187,26 @@ Formwork.Editor = function(id) {
             }
         }
     });
+
+    $(window).on('beforeunload', retainCursorPosition);
+    $(textarea).closest('form').on('submit', retainCursorPosition);
+
+    function retainCursorPosition() {
+        var data = [location.pathname, textarea.scrollTop, textarea.selectionEnd].join('#');
+        window.sessionStorage.setItem('formworkEditorCursorPosition', data);
+    }
+
+    function restoreCursorPosition() {
+        var data = window.sessionStorage.getItem('formworkEditorCursorPosition');
+        if (data !== null) {
+            data = data.split('#');
+            if (data[0] === location.pathname) {
+                textarea.scrollTop = data[1];
+                textarea.setSelectionRange(data[2], data[2]);
+                $(textarea).focus();
+            }
+        }
+    }
 
     function hasSummarySequence() {
         return /\n+===\n+/.test(textarea.value);
