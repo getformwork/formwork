@@ -206,5 +206,5 @@ rows4:
                                     login: Login
                                     home: Home Page
                                 it:
-                                    login: Pannello di Amministrazione
+                                    login: Accedi
                                     home: Pagina iniziale
