@@ -14,7 +14,7 @@ use LogicException;
 
 class Formwork
 {
-    const VERSION = '0.6.12';
+    const VERSION = '0.7.0';
 
     protected static $instance;
 

@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.7.0](https://github.com/giuscris/formwork/releases/tag/0.7.0) (2018-09-12)
+
+**Enhancements**
+
+ * **Add Updater feature to automatically download new releases from GitHub repository** ([#4](https://github.com/giuscris/formwork/pull/4))
+ * **Add Attributes component to Pages Editor to change Page Template or Page Parent** ([#6](https://github.com/giuscris/formwork/pull/6))
+ * **Add error and exception handlers displaying a Formwork-styled error page**
+ * Add Typography page to show template styles
+ * Improve default template menus
+ * Retain cursor position in Pages Editor after saving/reloading
+ * Add new entries to Options > Info tab
+ * Add error notification when POST request size is greater than allowed
+ * Display Session Strict Mode information in Options > Info tab
+ * Add `admin.logout_redirect` option to decide where to redirect after logout (Login or Site Home Page)
+ * Display loaded php.ini filename in Options > Info tab
+ * Add `range` field type
+ * Add keyboard shortcut (`CTRL/Cmd + S`) to all views with Save command
+ * Add nginx.conf file with NGINX rewrite rules
+
+**Bug fixes**
+
+ * Fix Tabs component wrapping
+ * Fix session temporary file persistence after logout
+ * Fix long notification text overflow
+ * Fix vertical scrollbar always visible in IE/Edge
+
 ## [0.6.12](https://github.com/giuscris/formwork/releases/tag/0.6.12) (2018-08-27)
 
 **Enhancements**
