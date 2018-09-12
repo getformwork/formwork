@@ -2220,12 +2220,13 @@ label {
   font-family: Icons; }
 
 .tabs {
+  overflow-x: auto;
   margin-bottom: 1rem;
-  border-bottom: 1px solid #e4e4e4; }
+  border-bottom: 1px solid #e4e4e4;
+  white-space: nowrap; }
 
 .tabs-tab {
   display: inline-block;
-  margin-bottom: -1px;
   padding: 0.5rem 1.25rem;
   color: #000;
   cursor: pointer; }
