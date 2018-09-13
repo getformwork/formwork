@@ -117,6 +117,7 @@ register.create-user: Formwork Admin is installed but no users were found. Pleas
 register.register: Register New User
 request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
 updates.available-for-install: is available for install
+updates.check: Check Updates
 updates.install-prompt: Would you like to install the update?
 updates.install: Install
 updates.installed: Update installed!
