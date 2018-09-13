@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.1](https://github.com/giuscris/formwork/releases/tag/0.7.1) (2018-09-13)
+
+**Enhancements**
+
+ * Add Check Updates button to Dashboard quick actions
+ * Change Logout notification type from `success` to `info`
+ * Add new notification types `info` and `warning`
+ * Update icon font
+ * Redirect to the Panel URI requested before login
+
+**Bug fixes**
+
+ * Fix Page Editor textarea always being focused after saving/reloading
+
 ## [0.7.0](https://github.com/giuscris/formwork/releases/tag/0.7.0) (2018-09-12)
 
 **Enhancements**
