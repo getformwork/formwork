@@ -1771,26 +1771,29 @@ label {
   .login-modal-container {
     margin: 3rem auto; } }
 
-.login-modal-error,
+.login-modal-info,
 .login-modal-success,
-.login-modal-warning {
+.login-modal-warning,
+.login-modal-error {
   position: relative;
   margin: -2rem -2rem 1rem -2rem;
   padding: 1rem 2rem 1rem 3.5rem;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px; }
-  .login-modal-error a,
+  .login-modal-info a,
   .login-modal-success a,
-  .login-modal-warning a {
+  .login-modal-warning a,
+  .login-modal-error a {
     display: block;
     color: #fff;
     text-decoration: underline;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; }
-  .login-modal-error::before,
+  .login-modal-info::before,
   .login-modal-success::before,
-  .login-modal-warning::before {
+  .login-modal-warning::before,
+  .login-modal-error::before {
     position: absolute;
     top: 50%;
     left: 1rem;
@@ -1799,10 +1802,10 @@ label {
     font-family: Icons;
     transform: translate(0, -50%); }
 
-.login-modal-error {
-  background-color: #e74c3b;
+.login-modal-info {
+  background-color: #3498da;
   color: #fff; }
-  .login-modal-error::before {
+  .login-modal-info::before {
     font-family: Icons; }
 
 .login-modal-success {
@@ -1815,6 +1818,12 @@ label {
   background-color: #f39c11;
   color: #fff; }
   .login-modal-warning::before {
+    font-family: Icons; }
+
+.login-modal-error {
+  background-color: #e74c3b;
+  color: #fff; }
+  .login-modal-error::before {
     font-family: Icons; }
 
 .info-data {
@@ -1908,20 +1917,7 @@ label {
   opacity: 0;
   animation: fadeOutRight 300ms cubic-bezier(0.4, 0, 0.2, 1); }
 
-.notification-error,
-.notification-success {
-  padding-left: 3.25rem; }
-
-.notification-error {
-  background-color: #e74c3b;
-  color: #fff; }
-
-.notification-success {
-  background-color: #25a259;
-  color: #fff; }
-
-.notification-error::before,
-.notification-success::before {
+.notification::before {
   position: absolute;
   top: 50%;
   left: 1rem;
@@ -1929,10 +1925,38 @@ label {
   font-size: 1.25rem;
   transform: translate(0, -50%); }
 
-.notification-error::before {
+.notification-info,
+.notification-success,
+.notification-warning,
+.notification-error {
+  padding-left: 3.25rem; }
+
+.notification-info {
+  background-color: #3498da;
+  color: #fff; }
+
+.notification-success {
+  background-color: #25a259;
+  color: #fff; }
+
+.notification-warning {
+  background-color: #f39c11;
+  color: #fff; }
+
+.notification-error {
+  background-color: #e74c3b;
+  color: #fff; }
+
+.notification-info::before {
   font-family: Icons; }
 
 .notification-success::before {
+  font-family: Icons; }
+
+.notification-warning::before {
+  font-family: Icons; }
+
+.notification-error::before {
   font-family: Icons; }
 
 .pages-list {
@@ -2697,7 +2721,7 @@ ul {
 .i-error-circle::before, .login-modal-error::before, .notification-error::before {
   content: '\f2ca'; }
 
-.i-exclamation-triangle::before, .login-modal-warning::before {
+.i-exclamation-triangle::before, .login-modal-warning::before, .notification-warning::before {
   content: '\f2cb'; }
 
 .i-exclamation::before, .spinner-error::after {
@@ -2766,7 +2790,7 @@ ul {
 .i-images::before {
   content: '\f2e1'; }
 
-.i-info-circle::before {
+.i-info-circle::before, .login-modal-info::before, .notification-info::before {
   content: '\f2e2'; }
 
 .i-info::before, .spinner-info::after {

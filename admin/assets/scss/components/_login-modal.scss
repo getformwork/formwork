@@ -12,9 +12,10 @@
     }
 }
 
-.login-modal-error,
+.login-modal-info,
 .login-modal-success,
-.login-modal-warning {
+.login-modal-warning,
+.login-modal-error {
     position: relative;
     margin: -2rem -2rem 1rem -2rem;
     padding: 1rem 2rem 1rem 3.5rem;
@@ -38,11 +39,11 @@
     }
 }
 
-.login-modal-error {
-    background-color: $color-error;
+.login-modal-info {
+    background-color: $color-accent;
     color: #fff;
     &::before {
-        @include icon(error-circle);
+        @include icon(info-circle);
     }
 }
 
@@ -59,5 +60,13 @@
     color: #fff;
     &::before {
         @include icon(exclamation-triangle);
+    }
+}
+
+.login-modal-error {
+    background-color: $color-error;
+    color: #fff;
+    &::before {
+        @include icon(error-circle);
     }
 }
