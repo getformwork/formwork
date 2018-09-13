@@ -50,7 +50,7 @@
     background-color: $color-success-dark;
     color: #fff;
     &::before {
-        @include icon(check);
+        @include icon(check-circle);
     }
 }
 
@@ -58,6 +58,6 @@
     background-color: $color-warning;
     color: #fff;
     &::before {
-        @include icon(warning);
+        @include icon(exclamation-triangle);
     }
 }

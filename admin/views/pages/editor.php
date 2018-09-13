@@ -16,10 +16,10 @@
                         <button class="toolbar-button" tabindex="-1" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>" type="button"><span class="i-list-ul"></span></button>
                         <button class="toolbar-button" tabindex="-1" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>" type="button"><span class="i-list-ol"></span></button>
                         <span class="spacer"></span>
-                        <button class="toolbar-button" tabindex="-1" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>" type="button"><span class="i-quote-left"></span></button>
+                        <button class="toolbar-button" tabindex="-1" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>" type="button"><span class="i-quote"></span></button>
                         <button class="toolbar-button" tabindex="-1" data-command="link" title="<?= $this->label('pages.editor.link') ?>" type="button"><span class="i-link"></span></button>
                         <button class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>" type="button"><span class="i-image"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>" type="button"><span class="i-read-more-alt"></span></button>
+                        <button class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>" type="button"><span class="i-read-more"></span></button>
                     </div>
                     <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">

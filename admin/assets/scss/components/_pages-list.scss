@@ -21,11 +21,11 @@
 }
 
 .toggle-collapsed::before {
-    @include icon('chevron-down');
+    @include icon(chevron-down);
 }
 
 .toggle-expanded::before {
-    @include icon('chevron-up');
+    @include icon(chevron-up);
 }
 
 .pages-item {

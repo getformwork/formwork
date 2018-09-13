@@ -55,5 +55,5 @@
 }
 
 .notification-success::before {
-    @include icon(check);
+    @include icon(check-circle);
 }
