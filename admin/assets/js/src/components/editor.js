@@ -98,7 +98,11 @@ Formwork.Editor = function(id) {
 
     function retainCursorPosition() {
         var data = [location.pathname, textarea.scrollTop, textarea.selectionEnd].join('#');
-        window.sessionStorage.setItem('formworkEditorCursorPosition', data);
+        if ($(textarea).is(':focus')) {
+            window.sessionStorage.setItem('formworkEditorCursorPosition', data);
+        } else {
+            window.sessionStorage.removeItem('formworkEditorCursorPosition');
+        }
     }
 
     function restoreCursorPosition() {
