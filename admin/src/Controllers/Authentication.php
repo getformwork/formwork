@@ -48,6 +48,12 @@ class Authentication extends AbstractController
                     Session::set('FORMWORK_USERNAME', $this->username);
                     $time = $this->log('access')->set($this->username);
                     $this->registry('lastAccess')->set($this->username, $time);
+
+                    if (!is_null($destination = Session::get('FORMWORK_REDIRECT_TO'))) {
+                        Session::remove('FORMWORK_REDIRECT_TO');
+                        $this->redirect($destination, 302, true);
+                    }
+                    
                     $this->redirectToPanel(302, true);
                 } else {
                     $this->error();
