@@ -97,6 +97,7 @@ class Admin
         }
 
         if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
+            Session::set('FORMWORK_REDIRECT_TO', HTTPRequest::uri());
             $this->redirect('/login/', 302, true);
         }
 
