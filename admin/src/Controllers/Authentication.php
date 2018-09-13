@@ -53,7 +53,7 @@ class Authentication extends AbstractController
                         Session::remove('FORMWORK_REDIRECT_TO');
                         $this->redirect($destination, 302, true);
                     }
-                    
+
                     $this->redirectToPanel(302, true);
                 } else {
                     $this->error();
@@ -71,7 +71,7 @@ class Authentication extends AbstractController
         if (Formwork::instance()->option('admin.logout_redirect') === 'home') {
             $this->redirectToSite(302, true);
         } else {
-            $this->notify($this->label('login.logged-out'), 'success');
+            $this->notify($this->label('login.logged-out'), 'info');
             $this->redirectToPanel(302, true);
         }
     }
