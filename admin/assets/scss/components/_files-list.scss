@@ -15,15 +15,15 @@
     @include icon(file);
 }
 
-.file-type-image::before {
+.files-item .file-type-image::before {
     @include icon(file-image);
 }
 
-.file-type-document::before {
+.files-item .file-type-document::before {
     @include icon(file-text);
 }
 
-.file-type-audio::before {
+.files-item .file-type-audio::before {
     @include icon(file-audio);
 }
 

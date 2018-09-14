@@ -1298,13 +1298,13 @@ a.button {
   font-size: 1rem;
   font-family: Icons; }
 
-.file-type-image::before {
+.files-item .file-type-image::before {
   font-family: Icons; }
 
-.file-type-document::before {
+.files-item .file-type-document::before {
   font-family: Icons; }
 
-.file-type-audio::before {
+.files-item .file-type-audio::before {
   font-family: Icons; }
 
 .file-type-video::before {
@@ -2742,19 +2742,19 @@ ul {
 .i-file-archive::before {
   content: '\f2d1'; }
 
-.i-file-audio::before, .file-type-audio::before {
+.i-file-audio::before, .files-item .file-type-audio::before {
   content: '\f2d2'; }
 
 .i-file-code::before {
   content: '\f2d3'; }
 
-.i-file-image::before, .file-type-image::before {
+.i-file-image::before, .files-item .file-type-image::before {
   content: '\f2d4'; }
 
 .i-file-pdf::before {
   content: '\f2d5'; }
 
-.i-file-text::before, .file-type-document::before {
+.i-file-text::before, .files-item .file-type-document::before {
   content: '\f2d6'; }
 
 .i-file-video::before, .file-type-video::before {
