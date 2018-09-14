@@ -50,7 +50,7 @@ class Updater
     public function defaults()
     {
         return array(
-            'time' => 3600,
+            'time' => 900,
             'force' => false,
             'registryFile' => LOGS_PATH . 'updates.json',
             'tempFile' => ROOT_PATH . '.formwork-update.zip',
