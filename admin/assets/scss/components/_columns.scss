@@ -5,7 +5,6 @@
     margin: 0 auto;
     padding-right: $columns-gutter / 2;
     padding-left: $columns-gutter / 2;
-
     @include clearfix;
 }
 
@@ -21,7 +20,6 @@
 .row {
     margin-right: -($columns-gutter / 2);
     margin-left: -($columns-gutter / 2);
-
     @include clearfix;
 }
 

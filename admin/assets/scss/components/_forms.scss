@@ -12,11 +12,9 @@ textarea {
     font-size: $input-font-size;
     font-family: $base-font-family;
     line-height: $input-line-height;
-
     @include appearance-none;
     &:focus {
         outline: none;
-
         @extend .focused;
     }
 }
@@ -98,7 +96,6 @@ label {
     display: inline-block;
     margin-bottom: $label-margin-bottom;
     font-size: $label-font-size;
-
     @include user-select-none;
 }
 

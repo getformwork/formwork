@@ -3,7 +3,6 @@
     margin-bottom: 1rem;
     padding: 0;
     list-style-type: none;
-
     @include user-select-none;
 }
 
@@ -11,7 +10,6 @@
     margin-right: 0.5rem;
     color: #444;
     font-size: 1rem;
-
     @include icon(file);
 }
 
@@ -55,7 +53,6 @@
 .file-name {
     width: 60%;
     font-size: 0.9375rem;
-
     @include ellipsis;
 }
 

@@ -25,7 +25,6 @@
         display: block;
         color: #fff;
         text-decoration: underline;
-
         @include ellipsis;
     }
     &::before {
