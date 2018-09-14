@@ -3,7 +3,6 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Core\Formwork;
@@ -36,51 +35,24 @@ class Pages extends AbstractController
 
     public function index()
     {
-        $list = $this->view(
-            'pages.list',
-            array(
-                'pages' => $this->site->pages(),
-                'subpages' => true,
-                'class' => 'pages-list-top',
-                'parent' => '.',
-                'sortable' => 'true'
-            ),
-            false
-        );
+        $this->modal('newPage', array(
+            'templates' => $this->site->templates(),
+            'pages' => $this->site->descendants()->sort('path')
+        ));
 
-        $content = $this->view(
-            'pages.index',
-            array(
-                'pagesList' => $list,
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
-
-        $modals[] = $this->view(
-            'modals.newPage',
-            array(
-                'templates' => $this->site->templates(),
-                'pages' => $this->site->descendants()->sort('path'),
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
-
-        $modals[] = $this->view(
-            'modals.deletePage',
-            array(
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
+        $this->modal('deletePage');
 
         $this->view('admin', array(
             'title' => $this->label('pages.pages'),
-            'location' => 'pages',
-            'content' => $content,
-            'modals' => implode($modals),
-            'csrfToken' => CSRFToken::get()
+            'content' => $this->view('pages.index', array(
+                'pagesList' => $this->view('pages.list', array(
+                    'pages' => $this->site->pages(),
+                    'subpages' => true,
+                    'class' => 'pages-list-top',
+                    'parent' => '.',
+                    'sortable' => 'true'
+                ), false)
+            ), false)
         ));
     }
 
@@ -168,54 +140,24 @@ class Pages extends AbstractController
                 break;
         }
 
-        $modals[] = $this->view(
-            'modals.images',
-            array(
-                'csrfToken' => CSRFToken::get(),
-                'page' => $this->page
-            ),
-            false
-        );
+        $this->modal('changes');
 
-        $modals[] = $this->view(
-            'modals.deletePage',
-            array(
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
+        $this->modal('images', array(
+            'page' => $this->page
+        ));
 
-        $modals[] = $this->view(
-            'modals.deleteFile',
-            array(
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
+        $this->modal('deletePage');
 
-        $modals[] = $this->view(
-            'modals.changes',
-            array(),
-            false
-        );
+        $this->modal('deleteFile');
 
-        $adminData = array(
+        $this->view('admin', array(
             'title' => $this->label('pages.edit-page', $this->page->title()),
-            'location' => 'pages',
-            'content' => $this->view(
-                'pages.editor',
-                array(
-                    'csrfToken' => CSRFToken::get(),
-                    'page' => $this->page,
-                    'templates' => $this->site->templates(),
-                    'parents' => $this->site->descendants()->sort('path')
-                ),
-                false
-            ),
-            'modals' => implode($modals)
-        );
-
-        $this->view('admin', $adminData);
+            'content' => $this->view('pages.editor', array(
+                'page' => $this->page,
+                'templates' => $this->site->templates(),
+                'parents' => $this->site->descendants()->sort('path')
+            ), false)
+        ));
     }
 
     public function reorder()
