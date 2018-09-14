@@ -211,9 +211,9 @@ class Updater
         foreach ($installedFiles as $path) {
             $list[] = $path;
             if (FileSystem::exists($path) && FileSystem::isDirectory($path)) {
-                foreach (FileSystem::scan($path) as $item) {
+                foreach (FileSystem::scan($path, true) as $item) {
                     $item = FileSystem::normalize($path) . $item;
-                    if (FileSystem::isDirectory($item) && !empty(FileSystem::scan($item))) {
+                    if (FileSystem::isDirectory($item) && !empty(FileSystem::scan($item, true))) {
                         continue;
                     }
                     $list[] = $item;
