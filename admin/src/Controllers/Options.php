@@ -3,7 +3,6 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
@@ -33,25 +32,16 @@ class Options extends AbstractController
 
         $fields->validate(new DataGetter(Formwork::instance()->options()));
 
-        $modals = $this->view(
-            'modals.changes',
-            array(),
-            false
-        );
+        $this->modal('changes');
 
         $this->view('admin', array(
             'title' => $this->label('options.options'),
-            'location' => 'options',
-            'modals' => $modals,
-            'content' => $this->view(
-                'options.system',
-                array(
-                    'tabs' => $this->view('options.tabs', array('tab' => 'system'), false),
-                    'fields' => $this->fields($fields, false),
-                    'csrfToken' => CSRFToken::get()
-                ),
-                false
-            )
+            'content' => $this->view('options.system', array(
+                'tabs' => $this->view('options.tabs', array(
+                    'tab' => 'system'
+                ), false),
+                'fields' => $this->fields($fields, false)
+            ), false)
         ));
     }
 
@@ -75,25 +65,16 @@ class Options extends AbstractController
 
         $fields->validate(new DataGetter(Formwork::instance()->site()->data()));
 
-        $modals = $this->view(
-            'modals.changes',
-            array(),
-            false
-        );
+        $this->modal('changes');
 
         $this->view('admin', array(
             'title' => $this->label('options.options'),
-            'location' => 'options',
-            'modals' => $modals,
-            'content' => $this->view(
-                'options.site',
-                array(
-                    'tabs' => $this->view('options.tabs', array('tab' => 'site'), false),
-                    'fields' => $this->fields($fields, false),
-                    'csrfToken' => CSRFToken::get()
-                ),
-                false
-            )
+            'content' => $this->view('options.site', array(
+                'tabs' => $this->view('options.tabs', array(
+                    'tab' => 'site'
+                ), false),
+                'fields' => $this->fields($fields, false)
+            ), false)
         ));
     }
 
@@ -101,15 +82,11 @@ class Options extends AbstractController
     {
         $this->view('admin', array(
             'title' => $this->label('options.updates'),
-            'location' => 'options',
-            'content' => $this->view(
-                'options.updates',
-                array(
-                    'tabs' => $this->view('options.tabs', array('tab' => 'updates'), false)
-                ),
-                false
-            ),
-            'csrfToken' => CSRFToken::get()
+            'content' => $this->view('options.updates', array(
+                'tabs' => $this->view('options.tabs', array(
+                    'tab' => 'updates'
+                ), false)
+            ), false)
         ));
     }
 
@@ -178,15 +155,12 @@ class Options extends AbstractController
 
         $this->view('admin', array(
             'title' => $this->label('options.options'),
-            'location' => 'options',
-            'content' => $this->view(
-                'options.info',
-                array(
-                    'tabs' => $this->view('options.tabs', array('tab' => 'info'), false),
-                    'info' => $data
-                ),
-                false
-            ),
+            'content' => $this->view('options.info', array(
+                'tabs' => $this->view('options.tabs', array(
+                    'tab' => 'info'
+                ), false),
+                'info' => $data
+            ), false)
         ));
     }
 

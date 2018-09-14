@@ -6,18 +6,22 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
+use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Uri;
 use InvalidArgumentException;
 
 abstract class AbstractController
 {
     use AdminTrait;
 
+    protected $location;
+
+    protected $modals = array();
+
     public function __construct()
     {
-        $this->uri = Uri::path();
+        $this->location = strtolower(substr(strrchr(static::class, '\\'), 1));
     }
 
     protected function formwork()
@@ -45,6 +49,15 @@ abstract class AbstractController
         return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE);
     }
 
+    protected function defaults()
+    {
+        return array(
+            'location' => $this->location,
+            'csrfToken' => CSRFToken::get(),
+            'modals' => implode($this->modals)
+        );
+    }
+
     protected function field($field, $render = true)
     {
         if (!($field instanceof Field)) {
@@ -66,11 +79,16 @@ abstract class AbstractController
         }
     }
 
+    protected function modal($modal, $data = array(), $render = false)
+    {
+        $this->modals[] = $this->view('modals.' . $modal, $data, $render);
+    }
+
     protected function view($view, $data = array(), $render = true)
     {
         $file = ADMIN_PATH . 'views' . DS . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
-        $output = $this->renderToString($file, $data);
+        $output = $this->renderToString($file, array_merge($this->defaults(), $data));
         if ($render) {
             echo $output;
         } else {

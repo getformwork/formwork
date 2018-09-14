@@ -19,8 +19,7 @@ class Register extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 $this->view('register.register', array(
-                    'title' => $this->label('register.register'),
-                    'csrfToken' => CSRFToken::get()
+                    'title' => $this->label('register.register')
                 ));
                 break;
 

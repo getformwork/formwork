@@ -25,8 +25,7 @@ class Authentication extends AbstractController
                     CSRFToken::generate();
                 }
                 $this->view('authentication.login', array(
-                    'title' => $this->label('login.login'),
-                    'csrfToken' => CSRFToken::get()
+                    'title' => $this->label('login.login')
                 ));
                 break;
 
@@ -79,6 +78,8 @@ class Authentication extends AbstractController
     protected function error()
     {
         $this->notify($this->label('login.attempt.failed'), 'error');
-        $this->view('authentication.login', array('error' => true, 'csrfToken' => CSRFToken::get()));
+        $this->view('authentication.login', array(
+            'error' => true
+        ));
     }
 }

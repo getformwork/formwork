@@ -3,7 +3,6 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\User;
@@ -18,31 +17,15 @@ class Users extends AbstractController
 {
     public function index()
     {
-        $content = $this->view(
-            'users.index',
-            array(
-                'users' => Admin::instance()->users()
-            ),
-            false
-        );
+        $this->modal('newUser');
 
-        $modals[] = $this->view(
-            'modals.newUser',
-            array('csrfToken' => CSRFToken::get()),
-            false
-        );
-
-        $modals[] = $this->view(
-            'modals.deleteUser',
-            array('csrfToken' => CSRFToken::get()),
-            false
-        );
+        $this->modal('deleteUser');
 
         $this->view('admin', array(
             'title' => $this->label('users.users'),
-            'location' => 'users',
-            'content' => $content,
-            'modals' => implode($modals)
+            'content' => $this->view('users.index', array(
+                'users' => Admin::instance()->users()
+            ), false)
         ));
     }
 
@@ -154,26 +137,13 @@ class Users extends AbstractController
             $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
         }
 
-        $content = $this->view(
-            'users.profile',
-            array(
-                'user' => $user,
-                'csrfToken' => CSRFToken::get()
-            ),
-            false
-        );
-
-        $modals = $this->view(
-            'modals.changes',
-            array(),
-            false
-        );
+        $this->modal('changes');
 
         $this->view('admin', array(
             'title' => $this->label('users.user-profile', $user->username()),
-            'location' => 'users',
-            'content' => $content,
-            'modals' => $modals
+            'content' => $this->view('users.profile', array(
+                'user' => $user
+            ), false)
         ));
     }
 
