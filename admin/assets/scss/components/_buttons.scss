@@ -17,7 +17,6 @@ button,
     line-height: $button-line-height;
     cursor: default;
     transition: border-color 150ms, background-color 150ms, color 150ms;
-
     @include user-select-none;
     &:hover {
         border-color: $color-gray-light;

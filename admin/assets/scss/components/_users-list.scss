@@ -1,6 +1,5 @@
 .users-list {
     border-top: 1px solid #e4e4e4;
-
     @include user-select-none;
 }
 
@@ -12,7 +11,6 @@
 .users-item-cell {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
-
     @include ellipsis;
 }
 
@@ -24,7 +22,6 @@
 .user-status-label::before {
     display: inline-block;
     margin-right: 0.25rem;
-
     @include icon(circle);
 }
 

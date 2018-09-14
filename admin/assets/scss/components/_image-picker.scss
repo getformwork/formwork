@@ -32,7 +32,6 @@
     content: attr(data-text);
     text-align: center;
     font-size: 0.75rem;
-
     @include ellipsis;
 }
 

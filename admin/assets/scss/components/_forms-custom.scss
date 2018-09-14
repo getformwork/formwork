@@ -70,7 +70,6 @@
     border-radius: 3px;
     font-size: 0.875rem;
     line-height: 1.5;
-
     @include user-select-none;
 }
 
@@ -106,7 +105,6 @@
     background-color: $color-gray-xlight;
     font-size: 0.875rem;
     cursor: default;
-
     @include user-select-none;
 }
 
@@ -258,6 +256,5 @@ input[type=range]::-ms-thumb {
     padding: 0 0.5rem;
     vertical-align: 0.1875rem;
     font-size: 0.875rem;
-
     @include user-select-none;
 }

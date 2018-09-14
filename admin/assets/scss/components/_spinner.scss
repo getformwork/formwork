@@ -30,7 +30,6 @@
     background-color: #fff;
     color: #3498da;
     animation: none;
-
     @include icon(info);
 }
 
@@ -39,7 +38,6 @@
     background-color: #fff;
     color: #2ecc70;
     animation: none;
-
     @include icon(check);
 }
 
@@ -48,6 +46,5 @@
     background-color: #fff;
     color: #e74c3b;
     animation: none;
-
     @include icon(exclamation);
 }
