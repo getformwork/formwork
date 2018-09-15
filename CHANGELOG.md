@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.2](https://github.com/giuscris/formwork/releases/tag/0.7.2) (2018-09-15)
+
+**Enhancements**
+
+ * Change Updater check frequency from 1 hour to 15 minutes
+
+**Bug fixes**
+
+ * Fix `Session::start()` not applying session options in PHP < 7.0
+ * Fix Options > Updates parse error triggered in PHP < 7.0
+ * Fix incorrect icons in Pages Editor files list
+
 ## [0.7.1](https://github.com/giuscris/formwork/releases/tag/0.7.1) (2018-09-13)
 
 **Enhancements**
