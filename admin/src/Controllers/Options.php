@@ -85,7 +85,8 @@ class Options extends AbstractController
             'content' => $this->view('options.updates', array(
                 'tabs' => $this->view('options.tabs', array(
                     'tab' => 'updates'
-                ), false)
+                ), false),
+                'currentVersion' => Formwork::VERSION
             ), false)
         ));
     }
