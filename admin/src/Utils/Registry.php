@@ -30,9 +30,8 @@ class Registry
         }
     }
 
-    public function set()
+    public function set($key, $value)
     {
-        list($key, $value) = func_get_args();
         $this->storage[$key] = $value;
     }
 
