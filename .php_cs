@@ -12,6 +12,7 @@ return Config::create()
         '@PSR2' => true,
         'binary_operator_spaces' => array('default' => 'single_space', 'operators' => array('=>' => null)),
         'cast_spaces' => array('space' => 'single'),
+        'class_attributes_separation' => true,
         'concat_space' => array('spacing' => 'one'),
         'escape_implicit_backslashes' => true,
         'include' => true,
