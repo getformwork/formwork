@@ -7,6 +7,7 @@ use Formwork\Utils\Header;
 class JSONResponse
 {
     protected $status;
+
     protected $data;
 
     public function __construct($data, $status = 200)

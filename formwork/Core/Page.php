@@ -13,8 +13,11 @@ use RuntimeException;
 class Page extends AbstractPage
 {
     const NUM_REGEX = '/^(\d+)-/';
+
     const PAGE_STATUS_PUBLISHED = 'published';
+
     const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
+
     const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
     protected static $contentParser;
