@@ -17,7 +17,7 @@
     </div>
     <div class="row current-version" style="display: none;">
         <div class="col-m-1-1">
-            <div class="h5"><strong class="current-version-name">Formwork <?= $this->formwork()::VERSION ?></strong> <?= $this->label('updates.latest-version-available') ?></div>
+            <div class="h5"><strong class="current-version-name">Formwork <?= $currentVersion ?></strong> <?= $this->label('updates.latest-version-available') ?></div>
         </div>
     </div>
 </div>
