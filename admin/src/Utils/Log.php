@@ -12,11 +12,10 @@ class Log extends Registry
         $this->limit = $limit;
     }
 
-    public function set()
+    public function log($message)
     {
-        list($value) = func_get_args();
         $timestamp = (string) microtime(true);
-        parent::set($timestamp, $value);
+        $this->set($timestamp, $message);
         return $timestamp;
     }
 

@@ -47,7 +47,7 @@ class Register extends AbstractController
                 FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
 
                 Session::set('FORMWORK_USERNAME', $this->data->get('username'));
-                $time = $this->log('access')->set($this->data->get('username'));
+                $time = $this->log('access')->log($this->data->get('username'));
                 $this->registry('lastAccess')->set($this->data->get('username'), $time);
 
                 $this->redirectToPanel(302, true);
