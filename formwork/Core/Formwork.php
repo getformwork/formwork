@@ -2,7 +2,7 @@
 
 namespace Formwork\Core;
 
-use Formwork\Cache\Cache;
+use Formwork\Cache\SiteCache;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
@@ -54,8 +54,8 @@ class Formwork
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
 
         if ($this->option('cache.enabled')) {
-            $this->cache = new Cache();
-            $this->cacheKey = sha1(trim(HTTPRequest::uri(), '/'));
+            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
+            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
         }
     }
 
