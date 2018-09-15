@@ -15,6 +15,11 @@ class Session
             'use_strict_mode' => true
         );
         if (session_status() === PHP_SESSION_NONE) {
+            if (PHP_MAJOR_VERSION < 7) {
+                foreach ($options as $key => $value) {
+                    ini_set('session.' . $key, $value);
+                }
+            }
             session_start($options);
         }
     }
