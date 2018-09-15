@@ -11,10 +11,13 @@ use Formwork\Utils\FileSystem;
 class Statistics
 {
     const DATE_FORMAT = 'Ymd';
+
     const CHART_LIMIT = 7;
 
     const VISITS_FILENAME = 'visits.json';
+
     const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
+
     const VISITORS_FILENAME = 'visitors.json';
 
     protected $bots = array(
