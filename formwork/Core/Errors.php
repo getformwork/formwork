@@ -16,7 +16,7 @@ class Errors
 
     public static function displayErrorPage($status = 500)
     {
-        ob_end_clean();
+        @ob_end_clean();
         Header::status($status);
         $message = Header::$statuses[$status];
         require FORMWORK_PATH . 'error.php';
@@ -31,6 +31,9 @@ class Errors
 
     public static function errorHandler($severity, $message, $file, $line)
     {
+        if (!(error_reporting() & $severity)) {
+            return false;
+        }
         throw new ErrorException($message, 0, $severity, $file, $line);
     }
 }
