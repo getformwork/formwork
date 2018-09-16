@@ -20,7 +20,7 @@ class HTTPRequest
 
     public static function uri()
     {
-        $uri = $_SERVER['REQUEST_URI'];
+        $uri = urldecode($_SERVER['REQUEST_URI']);
         $root = static::root();
         if (strpos($uri, $root) === 0) {
             return '/' . ltrim(substr($uri, strlen($root)), '/');
