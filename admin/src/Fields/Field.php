@@ -1,7 +1,6 @@
 <?php
 namespace Formwork\Admin\Fields;
 
-use Formwork\Admin\Admin;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataSetter;
 use LogicException;
@@ -10,12 +9,9 @@ class Field extends DataSetter
 {
     protected $name;
 
-    protected $language;
-
     public function __construct($name, $data = array(), Fields $parent = null)
     {
         $this->name = $name;
-        $this->language = Admin::instance()->language();
         parent::__construct($data);
         if ($this->has('import')) {
             $this->importData();
@@ -23,26 +19,7 @@ class Field extends DataSetter
         if ($this->has('fields')) {
             $this->data['fields'] = new Fields($this->data['fields']);
         }
-    }
-
-    public function get($key, $default = null)
-    {
-        $value = parent::get($key, $default);
-        if ($this->translatable($key) && is_array($value)) {
-            if (isset($value[$this->language])) {
-                return $value[$this->language];
-            }
-        }
-        return $value;
-    }
-
-    public function translatable($key)
-    {
-        $translate = parent::get('translate', true);
-        if (is_array($translate)) {
-            return in_array($key, $translate);
-        }
-        return $translate;
+        Translator::translate($this);
     }
 
     public function isEmpty()

@@ -1,8 +1,6 @@
 section1:
     type: header
-    label:
-        en: Date and Time
-        it: Data e ora
+    label: '{{options.system.date-and-time}}'
 
 rows1:
     type: rows
@@ -13,9 +11,7 @@ rows1:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Date Format
-                        it: Formato data
+                    label: '{{options.system.date-and-time.date-format}}'
                 column2:
                     type: column
                     width: 2-3
@@ -30,9 +26,7 @@ rows1:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Hour Format
-                        it: Formato ora
+                    label: '{{options.system.date-and-time.hour-format}}'
                 column2:
                     type: column
                     width: 2-3
@@ -47,9 +41,7 @@ rows1:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Timezone
-                        it: Fuso orario
+                    label: '{{options.system.date-and-time.timezone}}'
                 column2:
                     type: column
                     width: 2-3
@@ -64,9 +56,7 @@ rows1:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: First Weekday
-                        it: Primo giorno della settimana
+                    label: '{{options.system.date-and-time.first-weekday}}'
                 column2:
                     type: column
                     width: 2-3
@@ -74,18 +64,11 @@ rows1:
                         date.week_starts:
                             type: select
                             options:
-                                en:
-                                    0: Sunday
-                                    1: Monday
-                                it:
-                                    0: Domenica
-                                    1: Lunedì
-
+                                0: '{{options.system.date-and-time.first-weekday.sunday}}'
+                                1: '{{options.system.date-and-time.first-weekday.monday}}'
 section2:
     type: header
-    label:
-        en: Files
-        it: File
+    label: '{{options.system.files}}'
 
 rows2:
     type: rows
@@ -96,9 +79,7 @@ rows2:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Allowed Extensions
-                        it: Estensioni consentite
+                    label: '{{options.system.files.allowed-extensions}}'
                 column2:
                     type: column
                     width: 2-3
@@ -110,9 +91,7 @@ rows2:
 
 section3:
     type: header
-    label:
-        en: Cache
-        it: Cache
+    label: '{{options.system.cache}}'
 
 rows3:
     type: rows
@@ -123,9 +102,7 @@ rows3:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Cache
-                        it: Cache
+                    label: '{{options.system.cache}}'
                 column2:
                     type: column
                     width: 2-3
@@ -133,21 +110,15 @@ rows3:
                         cache.enabled:
                             type: togglegroup
                             options:
-                                en:
-                                    1: Enabled
-                                    0: Disabled
-                                it:
-                                    1: Abilitata
-                                    0: Disabilitata
+                                1: '{{options.system.cache.enabled}}'
+                                0: '{{options.system.cache.disabled}}'
         row2:
             type: row
             fields:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Cache Time (sec)
-                        it: Tempo cache (sec)
+                    label: '{{options.system.cache.time}}'
                 column2:
                     type: column
                     width: 2-3
@@ -161,9 +132,7 @@ rows3:
 
 section4:
     type: header
-    label:
-        en: Admin Panel
-        it: Pannello di amministrazione
+    label: '{{options.system.admin-panel}}'
 
 rows4:
     type: rows
@@ -174,9 +143,7 @@ rows4:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Language
-                        it: Lingua
+                    label: '{{options.system.admin-panel.language}}'
                 column2:
                     type: column
                     width: 2-3
@@ -192,9 +159,7 @@ rows4:
                 column1:
                     type: column
                     width: 1-3
-                    label:
-                        en: Logout Redirects to
-                        it: Reindirizza dopo la disconnessione
+                    label: '{{options.system.admin-panel.logout-redirects-to}}'
                 column2:
                     type: column
                     width: 2-3
@@ -202,9 +167,5 @@ rows4:
                         admin.logout_redirect:
                             type: togglegroup
                             options:
-                                en:
-                                    login: Login
-                                    home: Home Page
-                                it:
-                                    login: Accedi
-                                    home: Pagina iniziale
+                                login: '{{options.system.admin-panel.logout-redirects-to.login}}'
+                                home: '{{options.system.admin-panel.logout-redirects-to.home}}'
