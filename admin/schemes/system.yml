@@ -185,7 +185,7 @@ rows4:
                             type: select
                             translate: false
                             import:
-                                options:  'Formwork\Admin\Admin::languages'
+                                options: 'Formwork\Admin\Admin::languages'
         row2:
             type: row
             fields:
