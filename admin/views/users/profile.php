@@ -61,7 +61,7 @@
                                 <div><?= $this->label('user.avatar') ?></div>
                             </div>
                             <div class="col-m-2-3">
-                                <input class="file-input" id="file-uploader" type="file" name="uploaded-file" accept="<?= implode(', ', $this->formwork()->option('files.allowed_extensions')) ?>">
+                                <input class="file-input" id="file-uploader" type="file" name="uploaded-file" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
                                 <label for="file-uploader" class="file-input-label">
                                     <span><?= $this->label('pages.files.upload-label') ?></span>
                                 </label>

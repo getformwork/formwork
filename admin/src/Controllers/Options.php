@@ -97,9 +97,9 @@ class Options extends AbstractController
 
         $data = @array(
             'PHP' => array(
-                'Version' => phpversion(),
+                'Version' => PHP_VERSION,
                 'Operating System' => php_uname(),
-                'Server API' => php_sapi_name(),
+                'Server API' => PHP_SAPI,
                 'Loaded php.ini' => php_ini_loaded_file(),
                 'Loaded Extensions' => implode(', ', get_loaded_extensions()),
                 'Stream Wrappers' => implode(', ', stream_get_wrappers()),

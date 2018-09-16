@@ -92,7 +92,7 @@
 ?>
                 </ul>
                 <form action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/upload/') ?>" method="post" enctype="multipart/form-data">
-                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->formwork()->option('files.allowed_extensions')) ?>">
+                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
                     <label for="file-uploader" class="file-input-label">
                         <span><?= $this->label('pages.files.upload-label') ?></span>
                     </label>
@@ -106,8 +106,8 @@
 $('.date-input').datePicker({
     dayLabels: <?= json_encode($this->label('date.weekdays.short')) ?>,
     monthLabels: <?= json_encode($this->label('date.months.long')) ?>,
-    weekStarts: <?= json_encode($this->formwork()->option('date.week_starts')) ?>,
+    weekStarts: <?= json_encode($this->option('date.week_starts')) ?>,
     todayLabel: <?= json_encode($this->label('date.today')) ?>,
-    format: <?= json_encode(strtr($this->formwork()->option('date.format'), array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss'))) ?>
+    format: <?= json_encode(strtr($this->option('date.format'), array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss'))) ?>
 });
 </script>
