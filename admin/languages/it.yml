@@ -40,7 +40,30 @@ modal.images.title: Seleziona immagine
 options.info: Informazioni
 options.options: Impostazioni
 options.site: Sito
+options.site.info: Informazioni
+options.site.info.author: Autore
+options.site.info.description: Descrizione
+options.site.info.language: Lingua
+options.site.info.title: Titolo
 options.system: Sistema
+options.system.admin-panel: Pannello di amministrazione
+options.system.admin-panel.language: Lingua
+options.system.admin-panel.logout-redirects-to: Reindirizza dopo la disconnessione
+options.system.admin-panel.logout-redirects-to.home: Pagina iniziale
+options.system.admin-panel.logout-redirects-to.login: Accedi
+options.system.cache: Cache
+options.system.cache.disabled: Disabilitata
+options.system.cache.enabled: Abilitata
+options.system.cache.time: Tempo cache (sec)
+options.system.date-and-time: Data e ora
+options.system.date-and-time.date-format: Formato data
+options.system.date-and-time.first-weekday: Primo giorno della settimana
+options.system.date-and-time.first-weekday.monday: Lunedì
+options.system.date-and-time.first-weekday.sunday: Domenica
+options.system.date-and-time.hour-format: Formato ora
+options.system.date-and-time.timezone: Fuso orario
+options.system.files: File
+options.system.files.allowed-extensions: Estensioni consentite
 options.updated: Opzioni aggiornate
 options.updates: Aggiornamenti
 pages.attributes: Attributi

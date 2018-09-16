@@ -40,7 +40,30 @@ modal.images.title: Select an Image
 options.info: Info
 options.options: Options
 options.site: Site
+options.site.info: Info
+options.site.info.author: Author
+options.site.info.description: Description
+options.site.info.language: Language
+options.site.info.title: Title
 options.system: System
+options.system.admin-panel: Admin Panel
+options.system.admin-panel.language: Language
+options.system.admin-panel.logout-redirects-to: Logout Redirects to
+options.system.admin-panel.logout-redirects-to.home: Home
+options.system.admin-panel.logout-redirects-to.login: Login
+options.system.cache: Cache
+options.system.cache.disabled: Disabled
+options.system.cache.enabled: Enabled
+options.system.cache.time: Cache Time (sec)
+options.system.date-and-time: Date and Time
+options.system.date-and-time.date-format: Date Format
+options.system.date-and-time.first-weekday: First Weekday
+options.system.date-and-time.first-weekday.monday: Monday
+options.system.date-and-time.first-weekday.sunday: Sunday
+options.system.date-and-time.hour-format: Hour Format
+options.system.date-and-time.timezone: Timezone
+options.system.files: Files
+options.system.files.allowed-extensions: Allowed Extensions
 options.updated: Options updated
 options.updates: Updates
 pages.attributes: Attributes
