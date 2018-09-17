@@ -84,39 +84,9 @@ class Header
         header($fieldName . ': ' . trim($fieldValue));
     }
 
-    public static function responseHeaders()
-    {
-        $headers = array();
-        foreach (headers_list() as $header) {
-            list($key, $value) = explode(':', $header, 2);
-            $headers[$key] = trim($value);
-        }
-        return $headers;
-    }
-
     public static function contentType($mimeType)
     {
         static::send('Content-Type', $mimeType);
-    }
-
-    public static function file($file, $download = false)
-    {
-        FileSystem::assert($file);
-        $mimeType = FileSystem::mimeType($file);
-        static::contentType($mimeType);
-        if ($download) {
-            static::send('Content-Disposition', 'attachment; filename="' . FileSystem::basename($file) . '"');
-        }
-        while (ob_get_level()) {
-            ob_end_clean(); // Clean output buffer to prevent displayed file alteration
-        }
-        readfile($file);
-        exit;
-    }
-
-    public static function download($file)
-    {
-        static::file($file, true);
     }
 
     public static function notFound()

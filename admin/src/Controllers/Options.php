@@ -7,8 +7,8 @@ use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\HTTPResponse;
 
 class Options extends AbstractController
 {
@@ -106,7 +106,7 @@ class Options extends AbstractController
                 'Zend Engine Version' => zend_version()
             ),
             'HTTP Request Headers' => HTTPRequest::headers(),
-            'HTTP Response Headers' => Header::responseHeaders(),
+            'HTTP Response Headers' => HTTPResponse::headers(),
             'Server' => array(
                 'IP Address' => $_SERVER['SERVER_ADDR'],
                 'Port' => $_SERVER['SERVER_PORT'],
