@@ -3,6 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Utils\Header;
+use Formwork\Utils\HTTPResponse;
 
 class Errors extends AbstractController
 {
@@ -24,6 +25,7 @@ class Errors extends AbstractController
 
     protected function displayError($status, $name, $action)
     {
+        HTTPResponse::cleanOutputBuffers();
         Header::status($status);
         $this->view('errors.error', array(
             'title' => $this->label('errors.error.' . $name . '.status'),

@@ -55,7 +55,6 @@ class Admin
         Language::load($this->language(), YAML::parseFile($languageFile));
 
         set_exception_handler(function ($exception) {
-            @ob_end_clean();
             $this->errors->internalServerError();
             throw $exception;
         });
