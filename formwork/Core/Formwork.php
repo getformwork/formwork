@@ -9,6 +9,7 @@ use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Uri;
 use LogicException;
 
@@ -141,7 +142,7 @@ class Formwork
                 $upperLevel = FileSystem::dirname($path);
                 if ($parent = $this->site->findPage($upperLevel)) {
                     if ($file = $parent->file($filename)) {
-                        return Header::file($file);
+                        return HTTPResponse::file($file);
                     }
                 }
             }
