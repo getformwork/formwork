@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\Header;
+use Formwork\Utils\HTTPResponse;
 use ErrorException;
 
 class Errors
@@ -16,7 +17,7 @@ class Errors
 
     public static function displayErrorPage($status = 500)
     {
-        @ob_end_clean();
+        HTTPResponse::cleanOutputBuffers();
         Header::status($status);
         $message = Header::$statuses[$status];
         require FORMWORK_PATH . 'error.php';
