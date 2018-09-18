@@ -4,6 +4,7 @@
 
 php_error.log
 
+/backup
 /cache
 /logs
 
