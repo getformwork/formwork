@@ -1,0 +1,44 @@
+<?php
+
+namespace Formwork\Admin\Controllers;
+
+use Formwork\Admin\Backupper;
+use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Core\Formwork;
+use Formwork\Router\RouteParams;
+use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPResponse;
+use RuntimeException;
+
+class Backup extends AbstractController
+{
+    public function make()
+    {
+        $backupper = new Backupper();
+        try {
+            $file = $backupper->backup();
+            $filename = FileSystem::basename($file);
+            JSONResponse::success($this->label('backup.ready'), 200, array(
+                'filename' => $filename,
+                'uri' => $this->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
+            ))->send();
+        } catch (RuntimeException $e) {
+            JSONResponse::error($this->label('backup.error.cannot-make'), 500)->send();
+        }
+    }
+
+    public function download(RouteParams $params)
+    {
+        $file = Formwork::instance()->option('backup.path') . base64_decode($params->get('backup'));
+        try {
+            if (FileSystem::exists($file) && FileSystem::isFile($file)) {
+                HTTPResponse::download($file);
+            } else {
+                throw new RuntimeException($this->label('backup.error.cannot-download.invalid-filename'));
+            }
+        } catch (RuntimeException $e) {
+            $this->notify($this->label('backup.error.cannot-download', $e->getMessage()), 'error');
+            $this->redirectToReferer(302, true, '/dashboard/');
+        }
+    }
+}

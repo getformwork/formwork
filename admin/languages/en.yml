@@ -1,6 +1,11 @@
 admin.manage: Manage
 admin.panel: Administration Panel
 admin.view-site: View Site
+backup.backup: Backup
+backup.error.cannot-download: Cannot download backup. %s
+backup.error.cannot-download.invalid-filename: Invalid backup file.
+backup.error.cannot-make: Cannot make backup. %s
+backup.ready: Backup ready. Starting download...
 cache.clear: Clear Cache
 cache.cleared: Cache cleared
 dashboard.dashboard: Dashboard
