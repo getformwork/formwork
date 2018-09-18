@@ -19,7 +19,7 @@ Formwork.Form = function(form) {
             var link = this;
             event.preventDefault();
             Formwork.Modals.show('changesModal', null, function($modal) {
-                $modal.find('.button-continue').click(function() {
+                $modal.find('[data-command=continue]').click(function() {
                     $window.off('beforeunload');
                     window.location.href = $(this).data('href');
                 }).attr('data-href', link.href);

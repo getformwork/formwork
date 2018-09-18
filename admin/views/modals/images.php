@@ -5,7 +5,7 @@
             <i class="image-picker-empty-state-icon i-images"></i>
             <h4 class="h5"><?= $this->label('modal.images.no-images') ?></h4>
             <p><?= $this->label('modal.images.no-images.upload') ?></p>
-            <button type="button" class="image-picker-upload" data-upload-target="file-uploader"><?= $this->label('modal.action.upload-file') ?></button>
+            <button type="button" data-command="upload" data-upload-target="file-uploader"><?= $this->label('modal.action.upload-file') ?></button>
         </div>
         <select class="image-picker">
 <?php
