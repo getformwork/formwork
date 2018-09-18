@@ -81,7 +81,7 @@ Formwork.Chart = function(element, data) {
 
 Formwork.Dashboard = {
     init: function() {
-        $('#clear-cache').click(function() {
+        $('[data-command=clear-cache]').click(function() {
             new Formwork.Request({
                 method: 'POST',
                 url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
@@ -267,7 +267,7 @@ Formwork.Form = function(form) {
             var link = this;
             event.preventDefault();
             Formwork.Modals.show('changesModal', null, function($modal) {
-                $modal.find('.button-continue').click(function() {
+                $modal.find('[data-command=continue]').click(function() {
                     $window.off('beforeunload');
                     window.location.href = $(this).data('href');
                 }).attr('data-href', link.href);
@@ -390,7 +390,7 @@ Formwork.Forms = {
             $this.parent().siblings('.image-input').val($this.data('value'));
         });
 
-        $('.image-picker-upload').click(function() {
+        $('[data-command=upload]').click(function() {
             var $target = $('#' + $(this).data('upload-target'));
             $target.click();
         });
@@ -556,13 +556,13 @@ Formwork.Pages = {
             event.stopPropagation();
         });
 
-        $('#expand-all-pages').click(function() {
+        $('[data-command=expand-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').show();
             $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
-        $('#collapse-all-pages').click(function() {
+        $('[data-command=collapse-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').hide();
             $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
@@ -872,7 +872,7 @@ Formwork.Updates = {
                 });
             }, 1000);
 
-            $('#updater-component .install-button').click(function() {
+            $('[data-command=install-updates]').click(function() {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
                 $('.update-status').text($('.update-status').data('installing-text'));

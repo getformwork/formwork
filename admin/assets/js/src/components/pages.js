@@ -11,13 +11,13 @@ Formwork.Pages = {
             event.stopPropagation();
         });
 
-        $('#expand-all-pages').click(function() {
+        $('[data-command=expand-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').show();
             $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
-        $('#collapse-all-pages').click(function() {
+        $('[data-command=collapse-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').hide();
             $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');

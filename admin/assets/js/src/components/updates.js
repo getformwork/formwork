@@ -22,7 +22,7 @@ Formwork.Updates = {
                 });
             }, 1000);
 
-            $('#updater-component .install-button').click(function() {
+            $('[data-command=install-updates]').click(function() {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
                 $('.update-status').text($('.update-status').data('installing-text'));
