@@ -5,8 +5,9 @@ Formwork.Forms = {
         });
 
         $('input[data-enable]').change(function() {
-            var checked = $(this).is(':checked');
-            $.each($(this).data('enable').split(','), function(index, value) {
+            var $this = $(this);
+            var checked = $this.is(':checked');
+            $.each($this.data('enable').split(','), function(index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });

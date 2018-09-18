@@ -295,8 +295,9 @@ Formwork.Forms = {
         });
 
         $('input[data-enable]').change(function() {
-            var checked = $(this).is(':checked');
-            $.each($(this).data('enable').split(','), function(index, value) {
+            var $this = $(this);
+            var checked = $this.is(':checked');
+            $.each($this.data('enable').split(','), function(index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });
@@ -419,13 +420,14 @@ Formwork.Modals = {
         });
 
         $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($(this).data('dismiss'));
+            var $this = $(this);
+            if ($this.is('[data-validate]')) {
+                var valid = Formwork.Modals.validate($this.data('dismiss'));
                 if (!valid) {
                     return;
                 }
             }
-            Formwork.Modals.hide($(this).data('dismiss'));
+            Formwork.Modals.hide($this.data('dismiss'));
         });
 
         $('.modal').click(function(event) {
@@ -477,9 +479,9 @@ Formwork.Modals = {
         var valid = false;
         var $modal = $('#' + id);
         $modal.find('[required]').each(function() {
-            if ($(this).val() === '') {
-                $(this).addClass('animated shake');
-                $(this).focus();
+            var $this = $(this);
+            if ($this.val() === '') {
+                $this.addClass('animated shake').focus();
                 $modal.find('.modal-error').show();
                 valid = false;
                 return false;
@@ -545,8 +547,9 @@ Formwork.Pages = {
     init: function() {
         $('.page-children-toggle').click(function(event) {
             event.stopPropagation();
-            $(this).closest('li').children('.pages-list').toggle();
-            $(this).toggleClass('toggle-expanded toggle-collapsed');
+            var $this = $(this);
+            $this.closest('li').children('.pages-list').toggle();
+            $this.toggleClass('toggle-expanded toggle-collapsed');
         });
 
         $('.page-details a').click(function(event) {
@@ -576,7 +579,8 @@ Formwork.Pages = {
             var value = $(this).val();
             if (value.length === 0) {
                 $('.pages-children').each(function() {
-                    $(this).toggle($(this).data('visible'));
+                    var $this = $(this);
+                    $this.toggle($this.data('visible'));
                 });
                 $('.page-details').css('padding-left', '');
                 $('.pages-item, .page-children-toggle').show();
@@ -587,8 +591,9 @@ Formwork.Pages = {
                 $('.page-children-toggle').hide();
                 $('.page-details').css('padding-left', '0');
                 $('.page-title a').each(function() {
-                    var $pagesItem = $(this).closest('.pages-item');
-                    var matched = !!$(this).text().match(regexp);
+                    var $this = $(this);
+                    var $pagesItem = $this.closest('.pages-item');
+                    var matched = !!$this.text().match(regexp);
                     if (matched) {
                         matches++;
                     }
@@ -609,7 +614,8 @@ Formwork.Pages = {
         });
 
         $('#page-slug', '#newPageModal').keyup(function() {
-            $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+            var $this = $(this);
+            $this.val($this.val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
         }).blur(function() {
             if ($(this).val() === '') {
                 $('#page-title', '#newPageModal').trigger('keyup');
@@ -626,8 +632,9 @@ Formwork.Pages = {
                     .data('previous-value', $pageTemplate.val())
                     .val(allowedTemplates[0])
                     .find('option').each(function () {
-                        if (allowedTemplates.indexOf($(this).val()) == -1) {
-                            $(this).attr('disabled', true);
+                        var $this = $(this);
+                        if (allowedTemplates.indexOf($this.val()) == -1) {
+                            $this.attr('disabled', true);
                         }
                     });
             } else if ($pageTemplate.find('option[disabled]').length) {
@@ -1096,8 +1103,8 @@ Formwork.Utils = {
                 $this.val(helpers.formatDateTime(value));
             }
             $this.change(function() {
-                if ($(this).val() === '') {
-                    $(this).data('date', '');
+                if ($this.val() === '') {
+                    $this.data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
                 }
@@ -1343,8 +1350,9 @@ Formwork.Utils = {
         }
 
         this.each(function() {
-            var $target = $(this).find('.tag-hidden-input');
-            var $input = $(this).find('.tag-inner-input');
+            var $this = $(this);
+            var $target = $this.find('.tag-hidden-input');
+            var $input = $this.find('.tag-inner-input');
             var tags = [];
             if ($target.val()) {
                 tags = $target.val().split(', ');
@@ -1354,14 +1362,14 @@ Formwork.Utils = {
                     _createTag($input, value);
                 });
             }
-            $(this).data('tags', tags);
-            $(this).on('mousedown', '.tag-remove', false);
-            $(this).on('click', '.tag-remove', function() {
-                var $tag = $(this).parent();
-                removeTag($input, $tag.text());
-                $tag.remove();
-                return false;
-            });
+            $this.data('tags', tags)
+                .on('mousedown', '.tag-remove', false)
+                .on('click', '.tag-remove', function() {
+                    var $tag = $(this).parent();
+                    removeTag($input, $tag.text());
+                    $tag.remove();
+                    return false;
+                });
         });
 
         this.mousedown(function() {
@@ -1372,12 +1380,13 @@ Formwork.Utils = {
         this.find('.tag-inner-input').focus(function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
-            var value = $(this).val().trim();
+            var $this = $(this);
+            var value = $this.val().trim();
             if (value !== '') {
-                addTag($(this), value);
-                $(this).prop('size', 1);
+                addTag($this, value);
+                $this.prop('size', 1);
             }
-            $(this).parent().removeClass('focused');
+            $this.parent().removeClass('focused');
         }).keydown(function(event) {
             var options = { addKeyCodes: [32] };
             var $this = $(this);

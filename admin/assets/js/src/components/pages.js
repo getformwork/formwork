@@ -2,8 +2,9 @@ Formwork.Pages = {
     init: function() {
         $('.page-children-toggle').click(function(event) {
             event.stopPropagation();
-            $(this).closest('li').children('.pages-list').toggle();
-            $(this).toggleClass('toggle-expanded toggle-collapsed');
+            var $this = $(this);
+            $this.closest('li').children('.pages-list').toggle();
+            $this.toggleClass('toggle-expanded toggle-collapsed');
         });
 
         $('.page-details a').click(function(event) {
@@ -33,7 +34,8 @@ Formwork.Pages = {
             var value = $(this).val();
             if (value.length === 0) {
                 $('.pages-children').each(function() {
-                    $(this).toggle($(this).data('visible'));
+                    var $this = $(this);
+                    $this.toggle($this.data('visible'));
                 });
                 $('.page-details').css('padding-left', '');
                 $('.pages-item, .page-children-toggle').show();
@@ -44,8 +46,9 @@ Formwork.Pages = {
                 $('.page-children-toggle').hide();
                 $('.page-details').css('padding-left', '0');
                 $('.page-title a').each(function() {
-                    var $pagesItem = $(this).closest('.pages-item');
-                    var matched = !!$(this).text().match(regexp);
+                    var $this = $(this);
+                    var $pagesItem = $this.closest('.pages-item');
+                    var matched = !!$this.text().match(regexp);
                     if (matched) {
                         matches++;
                     }
@@ -66,7 +69,8 @@ Formwork.Pages = {
         });
 
         $('#page-slug', '#newPageModal').keyup(function() {
-            $(this).val($(this).val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
+            var $this = $(this);
+            $this.val($this.val().replace(' ', '-').replace(/[^A-Za-z0-9\-]/g, ''));
         }).blur(function() {
             if ($(this).val() === '') {
                 $('#page-title', '#newPageModal').trigger('keyup');
@@ -83,8 +87,9 @@ Formwork.Pages = {
                     .data('previous-value', $pageTemplate.val())
                     .val(allowedTemplates[0])
                     .find('option').each(function () {
-                        if (allowedTemplates.indexOf($(this).val()) == -1) {
-                            $(this).attr('disabled', true);
+                        var $this = $(this);
+                        if (allowedTemplates.indexOf($this.val()) == -1) {
+                            $this.attr('disabled', true);
                         }
                     });
             } else if ($pageTemplate.find('option[disabled]').length) {
