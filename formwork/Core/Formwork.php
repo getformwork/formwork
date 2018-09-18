@@ -86,6 +86,7 @@ class Formwork
             'cache.enabled'            => false,
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
+            'backup.path'              => ROOT_PATH . 'backup' . DS,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
             'admin.logout_redirect'    => 'login'
