@@ -30,8 +30,9 @@
         }
 
         this.each(function() {
-            var $target = $(this).find('.tag-hidden-input');
-            var $input = $(this).find('.tag-inner-input');
+            var $this = $(this);
+            var $target = $this.find('.tag-hidden-input');
+            var $input = $this.find('.tag-inner-input');
             var tags = [];
             if ($target.val()) {
                 tags = $target.val().split(', ');
@@ -41,14 +42,14 @@
                     _createTag($input, value);
                 });
             }
-            $(this).data('tags', tags);
-            $(this).on('mousedown', '.tag-remove', false);
-            $(this).on('click', '.tag-remove', function() {
-                var $tag = $(this).parent();
-                removeTag($input, $tag.text());
-                $tag.remove();
-                return false;
-            });
+            $this.data('tags', tags)
+                .on('mousedown', '.tag-remove', false)
+                .on('click', '.tag-remove', function() {
+                    var $tag = $(this).parent();
+                    removeTag($input, $tag.text());
+                    $tag.remove();
+                    return false;
+                });
         });
 
         this.mousedown(function() {
@@ -59,12 +60,13 @@
         this.find('.tag-inner-input').focus(function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
-            var value = $(this).val().trim();
+            var $this = $(this);
+            var value = $this.val().trim();
             if (value !== '') {
-                addTag($(this), value);
-                $(this).prop('size', 1);
+                addTag($this, value);
+                $this.prop('size', 1);
             }
-            $(this).parent().removeClass('focused');
+            $this.parent().removeClass('focused');
         }).keydown(function(event) {
             var options = { addKeyCodes: [32] };
             var $this = $(this);

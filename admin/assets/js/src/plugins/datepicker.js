@@ -120,8 +120,8 @@
                 $this.val(helpers.formatDateTime(value));
             }
             $this.change(function() {
-                if ($(this).val() === '') {
-                    $(this).data('date', '');
+                if ($this.val() === '') {
+                    $this.data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
                 }
