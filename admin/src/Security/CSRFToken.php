@@ -2,8 +2,8 @@
 
 namespace Formwork\Admin\Security;
 
-use Formwork\Utils\HTTPRequest;
 use Formwork\Admin\Utils\Session;
+use Formwork\Utils\HTTPRequest;
 use RuntimeException;
 
 class CSRFToken

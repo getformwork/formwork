@@ -5,8 +5,8 @@ namespace Formwork\Admin;
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Registry;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPRequest;
 
 class Statistics
 {
