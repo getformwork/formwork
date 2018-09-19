@@ -84,8 +84,8 @@ trait AdminTrait
         return Notification::exists() ? Notification::get() : null;
     }
 
-    protected function label($key)
+    protected function label(...$arguments)
     {
-        return call_user_func_array(array(Language::class, 'get'), func_get_args());
+        return Language::get(...$arguments);
     }
 }
