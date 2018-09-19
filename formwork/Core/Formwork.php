@@ -90,7 +90,8 @@ class Formwork
             'images.png_compression'   => 6,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
-            'admin.logout_redirect'    => 'login'
+            'admin.logout_redirect'    => 'login',
+            'admin.avatar_size'        => 512
         );
     }
 
