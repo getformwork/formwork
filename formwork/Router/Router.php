@@ -47,23 +47,23 @@ class Router
         return false;
     }
 
-    public function add()
+    public function add(...$arguments)
     {
         $type = 'HTTP';
         $method = 'GET';
         $callback = null;
-        switch (func_num_args()) {
+        switch (count($arguments)) {
             case 1:
-                $route = func_get_args()[0];
+                list($route) = $arguments;
                 break;
             case 2:
-                list($route, $callback) = func_get_args();
+                list($route, $callback) = $arguments;
                 break;
             case 3:
-                list($method, $route, $callback) = func_get_args();
+                list($method, $route, $callback) = $arguments;
                 break;
             case 4:
-                list($type, $method, $route, $callback) = func_get_args();
+                list($type, $method, $route, $callback) = $arguments;
                 break;
             default:
                 throw new BadMethodCallException('Invalid arguments for ' . __METHOD__);

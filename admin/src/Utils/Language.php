@@ -103,14 +103,13 @@ class Language
         return static::$language;
     }
 
-    public static function get($key)
+    public static function get($key, ...$arguments)
     {
         if (!isset(static::$data[$key])) {
             throw new LogicException('Invalid string');
         }
-        if (func_num_args() > 1) {
-            $args = array_slice(func_get_args(), 1);
-            return vsprintf(static::$data[$key], $args);
+        if (!empty($arguments)) {
+            return sprintf(static::$data[$key], ...$arguments);
         }
         return static::$data[$key];
     }
