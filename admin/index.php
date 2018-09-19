@@ -1,7 +1,7 @@
 <?php
 
-use Formwork\Core\Formwork;
 use Formwork\Admin\Admin;
+use Formwork\Core\Formwork;
 
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', dirname(__DIR__) . DS);
