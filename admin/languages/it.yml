@@ -64,6 +64,9 @@ options.system.date-and-time.hour-format: Formato ora
 options.system.date-and-time.timezone: Fuso orario
 options.system.files: File
 options.system.files.allowed-extensions: Estensioni consentite
+options.system.images: Immagini
+options.system.images.jpeg-quality: Qualità JPEG
+options.system.images.png-compression-level: Livello di compressione PNG
 options.updated: Opzioni aggiornate
 options.updates: Aggiornamenti
 pages.attributes: Attributi
