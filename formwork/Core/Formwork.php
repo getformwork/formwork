@@ -86,6 +86,8 @@ class Formwork
             'cache.enabled'            => false,
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
+            'images.jpeg_quality'      => 85,
+            'images.png_compression'   => 6,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
             'admin.logout_redirect'    => 'login'
