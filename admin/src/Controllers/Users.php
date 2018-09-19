@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
-use Formwork\Admin\User;
+use Formwork\Admin\Users\User;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
