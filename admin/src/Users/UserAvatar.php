@@ -1,7 +1,8 @@
 <?php
 
-namespace Formwork\Admin;
+namespace Formwork\Admin\Users;
 
+use Formwork\Admin\Admin;
 use Formwork\Files\File;
 use Formwork\Utils\FileSystem;
 

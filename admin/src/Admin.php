@@ -3,6 +3,7 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Users\Users;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Session;
