@@ -23,7 +23,7 @@ class Backup extends AbstractController
                 'uri' => $this->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
             ))->send();
         } catch (RuntimeException $e) {
-            JSONResponse::error($this->label('backup.error.cannot-make'), 500)->send();
+            JSONResponse::error($this->label('backup.error.cannot-make', $e->getMessage()), 500)->send();
         }
     }
 

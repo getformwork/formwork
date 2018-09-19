@@ -2,8 +2,10 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Admin\Utils\ZipErrors;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 use ZipArchive;
 
 class Backupper
@@ -54,7 +56,7 @@ class Backupper
 
         $zip = new ZipArchive();
 
-        if ($zip->open($destination, ZipArchive::CREATE)) {
+        if (($status = $zip->open($destination, ZipArchive::CREATE)) === true) {
             foreach ($files as $file) {
                 $zip->addFile($file, substr($file, strlen($source)));
             }
@@ -63,6 +65,10 @@ class Backupper
 
         if ($previousMaxExecutionTime !== false) {
             ini_set('max_execution_time', $previousMaxExecutionTime);
+        }
+
+        if (is_int($status) && $status !== ZipArchive::ER_OK) {
+            throw new RuntimeException(ZipErrors::getMessage($status));
         }
 
         return $destination;
