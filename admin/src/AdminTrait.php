@@ -2,11 +2,9 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
-use Formwork\Core\Formwork;
 use Formwork\Core\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
@@ -74,11 +72,6 @@ trait AdminTrait
         Notification::send($text, $type);
     }
 
-    public function language()
-    {
-        return Formwork::instance()->option('admin.lang');
-    }
-
     protected function notification()
     {
         return Notification::exists() ? Notification::get() : null;
@@ -86,6 +79,6 @@ trait AdminTrait
 
     protected function label(...$arguments)
     {
-        return Language::get(...$arguments);
+        return Admin::instance()->language()->get(...$arguments);
     }
 }

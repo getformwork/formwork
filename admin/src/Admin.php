@@ -5,11 +5,8 @@ namespace Formwork\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\Users;
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Admin\Utils\Language;
-use Formwork\Admin\Utils\LanguageCodes;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
-use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
@@ -24,13 +21,13 @@ class Admin
 
     public static $instance;
 
-    protected static $languages;
+    protected $errors;
 
     protected $router;
 
     protected $users;
 
-    protected $errors;
+    protected $language;
 
     public function __construct()
     {
@@ -48,13 +45,7 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
-        $this->loadLanguages();
-        $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
-
-        if (!FileSystem::isReadable($languageFile)) {
-            throw new RuntimeException('Cannot load Admin language file');
-        }
-        Language::load($this->language(), YAML::parseFile($languageFile));
+        $this->language = Language::load(Formwork::instance()->option('admin.lang'));
 
         set_exception_handler(function ($exception) {
             $this->errors->internalServerError();
@@ -68,11 +59,6 @@ class Admin
             return static::$instance;
         }
         return static::$instance = new static();
-    }
-
-    public static function languages()
-    {
-        return static::$languages;
     }
 
     public function isLoggedIn()
@@ -276,14 +262,6 @@ class Admin
             '/users/{user}/profile/',
             array(new Controllers\Users(), 'profile')
         );
-    }
-
-    protected function loadLanguages()
-    {
-        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $code = FileSystem::name($file);
-            static::$languages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
-        }
     }
 
     public function __call($name, $arguments)

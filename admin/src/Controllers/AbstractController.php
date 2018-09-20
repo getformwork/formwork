@@ -6,6 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
+use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
@@ -34,9 +35,14 @@ abstract class AbstractController
         return Formwork::instance()->option($option);
     }
 
+    protected function language()
+    {
+        return Admin::instance()->language()->code();
+    }
+
     protected function languages()
     {
-        return Admin::languages();
+        return Language::availableLanguages();
     }
 
     protected function user()
