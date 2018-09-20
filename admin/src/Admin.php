@@ -6,6 +6,7 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\Users;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Language;
+use Formwork\Admin\Utils\LanguageCodes;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
 use Formwork\Parsers\YAML;
@@ -281,7 +282,7 @@ class Admin
     {
         foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
             $code = FileSystem::name($file);
-            static::$languages[$code] = Language::codeToNativeName($code) . ' (' . $code . ')';
+            static::$languages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
         }
     }
 
