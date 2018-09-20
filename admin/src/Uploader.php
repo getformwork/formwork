@@ -73,19 +73,19 @@ class Uploader
         switch ($code) {
             case 1: //UPLOAD_ERR_INI_SIZE
             case 2: //UPLOAD_ERR_FORM_SIZE
-                return Admin::instance()->language()->get('uploader.error.size');
+                return Admin::instance()->label('uploader.error.size');
             case 3: //UPLOAD_ERR_PARTIAL
-                return Admin::instance()->language()->get('uploader.error.partial');
+                return Admin::instance()->label('uploader.error.partial');
             case 4: //UPLOAD_ERR_NO_FILE
-                return Admin::instance()->language()->get('uploader.error.no-file');
+                return Admin::instance()->label('uploader.error.no-file');
             case 6: //UPLOAD_ERR_NO_TMP_DIR
-                return Admin::instance()->language()->get('uploader.error.no-temp');
+                return Admin::instance()->label('uploader.error.no-temp');
             case 7: //UPLOAD_ERR_CANT_WRITE
-                return Admin::instance()->language()->get('uploader.error.cannot-write');
+                return Admin::instance()->label('uploader.error.cannot-write');
             case 8: //UPLOAD_ERR_EXTENSION
-                return Admin::instance()->language()->get('uploader.error.php-extension');
+                return Admin::instance()->label('uploader.error.php-extension');
             default:
-                return Admin::instance()->language()->get('uploader.error.unknown');
+                return Admin::instance()->label('uploader.error.unknown');
         }
     }
 
@@ -94,13 +94,13 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new RuntimeException(Admin::instance()->language()->get('uploader.error.mime-type'));
+            throw new RuntimeException(Admin::instance()->label('uploader.error.mime-type'));
         }
 
         $destination = FileSystem::normalize($destination);
 
         if (FileSystem::basename($filename)[0] === '.') {
-            throw new RuntimeException(Admin::instance()->language()->get('uploader.error.hidden-files'));
+            throw new RuntimeException(Admin::instance()->label('uploader.error.hidden-files'));
         }
 
         $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
@@ -114,7 +114,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new RuntimeException(Admin::instance()->language()->get('uploader.error.file-name'));
+            throw new RuntimeException(Admin::instance()->label('uploader.error.file-name'));
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {

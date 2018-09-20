@@ -100,8 +100,8 @@ class Statistics
 
         $label = function ($day) {
             $time = strtotime($day);
-            $month = Admin::instance()->language()->get('date.months.short')[date('n', $time) - 1];
-            $weekday = Admin::instance()->language()->get('date.weekdays.short')[date('N', $time) % 7];
+            $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
+            $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
             $day = date('j', $time);
             return strtr("D\nj M", array('D' => $weekday, 'M' => $month, 'j' => $day));
         };
