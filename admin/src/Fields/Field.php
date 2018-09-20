@@ -1,7 +1,6 @@
 <?php
 namespace Formwork\Admin\Fields;
 
-use Formwork\Core\Formwork;
 use Formwork\Data\DataSetter;
 use LogicException;
 

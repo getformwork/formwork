@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Fields;
 
-use Formwork\Core\Formwork;
 use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
 
