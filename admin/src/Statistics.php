@@ -3,7 +3,6 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
-use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -101,8 +100,8 @@ class Statistics
 
         $label = function ($day) {
             $time = strtotime($day);
-            $month = Language::get('date.months.short')[date('n', $time) - 1];
-            $weekday = Language::get('date.weekdays.short')[date('N', $time) % 7];
+            $month = Admin::instance()->language()->get('date.months.short')[date('n', $time) - 1];
+            $weekday = Admin::instance()->language()->get('date.weekdays.short')[date('N', $time) % 7];
             $day = date('j', $time);
             return strtr("D\nj M", array('D' => $weekday, 'M' => $month, 'j' => $day));
         };

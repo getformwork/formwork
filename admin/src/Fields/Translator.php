@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Fields;
 
-use Formwork\Admin\Utils\Language;
+use Formwork\Admin\Admin;
 
 class Translator
 {
@@ -12,7 +12,7 @@ class Translator
 
     public static function translate(Field $field)
     {
-        $language = Language::language();
+        $language = Admin::instance()->language()->code();
         foreach ($field->toArray() as $key => $value) {
             if (static::isTranslatable($key, $field)) {
                 if (is_array($value)) {
@@ -45,7 +45,7 @@ class Translator
             return array_map(array(static::class, 'interpolate'), $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
-            return Language::get($matches[1]);
+            return Admin::instance()->language()->get($matches[1]);
         }
         return $value;
     }
