@@ -45,7 +45,7 @@ class Translator
             return array_map(array(static::class, 'interpolate'), $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
-            return Admin::instance()->language()->get($matches[1]);
+            return Admin::instance()->label($matches[1]);
         }
         return $value;
     }
