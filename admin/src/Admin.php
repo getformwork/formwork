@@ -269,6 +269,9 @@ class Admin
         if (property_exists($this, $name)) {
             return $this->$name;
         }
+        if (method_exists(AdminTrait::class, $name)) {
+            return $this->$name(...$arguments);
+        }
         throw new LogicException('Invalid method');
     }
 }

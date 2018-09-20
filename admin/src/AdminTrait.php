@@ -13,37 +13,37 @@ use Formwork\Utils\Uri;
 
 trait AdminTrait
 {
-    public function uri($subpath)
+    protected function uri($subpath)
     {
         return HTTPRequest::root() . ltrim($subpath, '/');
     }
 
-    public function siteUri()
+    protected function siteUri()
     {
         return rtrim(FileSystem::dirname(HTTPRequest::root()), '/') . '/';
     }
 
-    public function pageUri($page)
+    protected function pageUri($page)
     {
         return $this->siteUri() . ltrim($page->slug(), '/');
     }
 
-    public function redirect($uri, $code = 302, $exit = false)
+    protected function redirect($uri, $code = 302, $exit = false)
     {
         Header::redirect($this->uri($uri), $code, $exit);
     }
 
-    public function redirectToSite($code = 302, $exit = false)
+    protected function redirectToSite($code = 302, $exit = false)
     {
         Header::redirect($this->siteUri(), $code, $exit);
     }
 
-    public function redirectToPanel($code = 302, $exit = false)
+    protected function redirectToPanel($code = 302, $exit = false)
     {
         $this->redirect('/', $code, $exit);
     }
 
-    public function redirectToReferer($code = 302, $exit = false, $default = '/')
+    protected function redirectToReferer($code = 302, $exit = false, $default = '/')
     {
         if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() !== Uri::current()) {
             Header::redirect(HTTPRequest::referer(), $code, $exit);
@@ -52,22 +52,22 @@ trait AdminTrait
         }
     }
 
-    public function scheme($template)
+    protected function scheme($template)
     {
         return new Scheme($template);
     }
 
-    public function registry($name)
+    protected function registry($name)
     {
         return new Registry(LOGS_PATH . $name . '.json');
     }
 
-    public function log($name)
+    protected function log($name)
     {
         return new Log(LOGS_PATH . $name . '.json');
     }
 
-    public function notify($text, $type)
+    protected function notify($text, $type)
     {
         Notification::send($text, $type);
     }
