@@ -76,12 +76,12 @@ class Header
         }
     }
 
-    public static function send($fieldName, $fieldValue)
+    public static function send($fieldName, $fieldValue, $replace = true)
     {
         if (headers_sent()) {
             throw new RuntimeException('HTTP headers already sent');
         }
-        header($fieldName . ': ' . trim($fieldValue));
+        header($fieldName . ': ' . trim($fieldValue), $replace);
     }
 
     public static function contentType($mimeType)
