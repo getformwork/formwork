@@ -1,6 +1,6 @@
 Formwork.Dashboard = {
     init: function() {
-        $('#clear-cache').click(function() {
+        $('[data-command=clear-cache]').click(function() {
             new Formwork.Request({
                 method: 'POST',
                 url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),

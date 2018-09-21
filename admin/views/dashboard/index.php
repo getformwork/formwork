@@ -7,7 +7,7 @@
             <div class="component">
                 <h3 class="caption"><?= $this->label('dashboard.quick-actions') ?></h3>
                 <button data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
-                <button id="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>
+                <button data-command="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>
                 <a class="button" href="<?= $this->uri('/options/updates/'); ?>"><i class="i-sync"></i> <?= $this->label('updates.check') ?></a>
             </div>
         </div>
