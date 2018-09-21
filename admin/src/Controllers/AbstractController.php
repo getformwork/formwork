@@ -109,9 +109,4 @@ abstract class AbstractController
         include $file;
         return ob_get_clean();
     }
-
-    private function render($file, $data)
-    {
-        echo $this->renderToString($file, $data);
-    }
 }
