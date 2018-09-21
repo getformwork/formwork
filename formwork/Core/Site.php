@@ -80,7 +80,7 @@ class Site extends AbstractPage
         }
         $resource = Formwork::instance()->resource();
         if ($resource instanceof Page) {
-            return $resource;
+            return $this->currentPage = $resource;
         }
         return null;
     }

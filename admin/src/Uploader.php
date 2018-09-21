@@ -71,18 +71,18 @@ class Uploader
     public function errorMessage($code)
     {
         switch ($code) {
-            case 1: //UPLOAD_ERR_INI_SIZE
-            case 2: //UPLOAD_ERR_FORM_SIZE
+            case 1: // UPLOAD_ERR_INI_SIZE
+            case 2: // UPLOAD_ERR_FORM_SIZE
                 return Admin::instance()->label('uploader.error.size');
-            case 3: //UPLOAD_ERR_PARTIAL
+            case 3: // UPLOAD_ERR_PARTIAL
                 return Admin::instance()->label('uploader.error.partial');
-            case 4: //UPLOAD_ERR_NO_FILE
+            case 4: // UPLOAD_ERR_NO_FILE
                 return Admin::instance()->label('uploader.error.no-file');
-            case 6: //UPLOAD_ERR_NO_TMP_DIR
+            case 6: // UPLOAD_ERR_NO_TMP_DIR
                 return Admin::instance()->label('uploader.error.no-temp');
-            case 7: //UPLOAD_ERR_CANT_WRITE
+            case 7: // UPLOAD_ERR_CANT_WRITE
                 return Admin::instance()->label('uploader.error.cannot-write');
-            case 8: //UPLOAD_ERR_EXTENSION
+            case 8: // UPLOAD_ERR_EXTENSION
                 return Admin::instance()->label('uploader.error.php-extension');
             default:
                 return Admin::instance()->label('uploader.error.unknown');
