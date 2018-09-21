@@ -12,7 +12,7 @@
             <div class="h5"><strong class="new-version-name">Formwork x.x.x</strong> <?= $this->label('updates.available-for-install') ?></div>
             <div><?= $this->label('updates.install-prompt') ?></div>
             <div class="separator"></div>
-            <button class="install-button"><?= $this->label('updates.install') ?></button>
+            <button data-command="install-updates"><?= $this->label('updates.install') ?></button>
         </div>
     </div>
     <div class="row current-version" style="display: none;">

@@ -12,13 +12,14 @@ Formwork.Modals = {
         });
 
         $('.modal [data-dismiss]').click(function() {
-            if ($(this).is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($(this).data('dismiss'));
+            var $this = $(this);
+            if ($this.is('[data-validate]')) {
+                var valid = Formwork.Modals.validate($this.data('dismiss'));
                 if (!valid) {
                     return;
                 }
             }
-            Formwork.Modals.hide($(this).data('dismiss'));
+            Formwork.Modals.hide($this.data('dismiss'));
         });
 
         $('.modal').click(function(event) {
@@ -70,9 +71,9 @@ Formwork.Modals = {
         var valid = false;
         var $modal = $('#' + id);
         $modal.find('[required]').each(function() {
-            if ($(this).val() === '') {
-                $(this).addClass('animated shake');
-                $(this).focus();
+            var $this = $(this);
+            if ($this.val() === '') {
+                $this.addClass('animated shake').focus();
                 $modal.find('.modal-error').show();
                 valid = false;
                 return false;

@@ -5,8 +5,9 @@ Formwork.Forms = {
         });
 
         $('input[data-enable]').change(function() {
-            var checked = $(this).is(':checked');
-            $.each($(this).data('enable').split(','), function(index, value) {
+            var $this = $(this);
+            var checked = $this.is(':checked');
+            $.each($this.data('enable').split(','), function(index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });
@@ -99,7 +100,7 @@ Formwork.Forms = {
             $this.parent().siblings('.image-input').val($this.data('value'));
         });
 
-        $('.image-picker-upload').click(function() {
+        $('[data-command=upload]').click(function() {
             var $target = $('#' + $(this).data('upload-target'));
             $target.click();
         });
