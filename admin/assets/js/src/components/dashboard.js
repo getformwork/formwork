@@ -19,13 +19,13 @@ Formwork.Dashboard = {
                 data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function(response) {
                 Formwork.Notification(response.message, response.status, 5000);
-                if (response.status === 'success') {
-                    var csrfToken = $('meta[name=csrf-token]').attr('content');
-                    setTimeout(function() {
+                setTimeout(function() {
+                    if (response.status === 'success') {
+                        var csrfToken = $('meta[name=csrf-token]').attr('content');
                         Formwork.Utils.download(response.data.uri, csrfToken);
-                        $button.removeAttr('disabled');
-                    }, 1000);
-                }
+                    }
+                    $button.removeAttr('disabled');
+                }, 1000);
             });
         });
     }
