@@ -300,6 +300,20 @@ class FileSystem
         return $items;
     }
 
+    public static function scanRecursive($path, $all = false)
+    {
+        $list = array();
+        $path = static::normalize($path);
+        foreach (FileSystem::scan($path, $all) as $item) {
+            if (FileSystem::isDirectory($path . $item)) {
+                $list = array_merge($list, static::scanRecursive($path . $item, $all));
+            } else {
+                $list[] = $path . $item;
+            }
+        }
+        return $list;
+    }
+
     public static function listFiles($path = null, $all = false)
     {
         $path = static::normalize($path);
