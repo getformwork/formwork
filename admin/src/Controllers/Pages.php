@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
+use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
@@ -208,18 +209,18 @@ class Pages extends AbstractController
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {
-                throw new RuntimeException($this->label('pages.page.not-found'));
+                throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
             if (!$page->isDeletable()) {
-                throw new RuntimeException($this->label('pages.page.cannot-delete.not-deletable'));
+                throw new LocalizedException('Page ' . $page . ' is not deletable', 'pages.page.cannot-delete.not-deletable');
             }
 
             FileSystem::delete($page->path(), true);
 
             $this->notify($this->label('pages.page.deleted'), 'success');
             $this->redirect('/pages/');
-        } catch (RuntimeException $e) {
-            $this->notify($this->label('pages.page.cannot-delete', $e->getMessage()), 'error');
+        } catch (LocalizedException $e) {
+            $this->notify($this->label('pages.page.cannot-delete', $e->getLocalizedMessage()), 'error');
             $this->redirectToReferer(302, true, '/pages/');
         }
     }
@@ -230,7 +231,7 @@ class Pages extends AbstractController
             try {
                 $page = $this->site->findPage($params->get('page'));
                 if (!$page) {
-                    throw new RuntimeException($this->label('pages.page.not-found'));
+                    throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
                 }
 
                 $uploader = new Uploader($page->path());
@@ -238,8 +239,8 @@ class Pages extends AbstractController
 
                 $this->notify($this->label('uploader.uploaded'), 'success');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
-            } catch (RuntimeException $e) {
-                $this->notify($this->label('uploader.error', $e->getMessage()), 'error');
+            } catch (LocalizedException $e) {
+                $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
@@ -250,18 +251,18 @@ class Pages extends AbstractController
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {
-                throw new RuntimeException($this->label('pages.page.not-found'));
+                throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
             if (!$page->files()->has($params->get('filename'))) {
-                throw new RuntimeException($this->label('pages.page.cannot-delete-file.file-not-found'));
+                throw new LocalizedException('File not found', 'pages.page.cannot-delete-file.file-not-found');
             }
 
             FileSystem::delete($page->path() . $params->get('filename'));
 
             $this->notify($this->label('pages.page.file-deleted'), 'success');
             $this->redirect('/pages/' . $params->get('page') . '/edit/');
-        } catch (RuntimeException $e) {
-            $this->notify($this->label('pages.page.cannot-delete-file', $e->getMessage()), 'error');
+        } catch (LocalizedException $e) {
+            $this->notify($this->label('pages.page.cannot-delete-file', $e->getLocalizedMessage()), 'error');
             $this->redirect('/pages/');
         }
     }
