@@ -153,6 +153,19 @@ class Admin
             array(new Controllers\Authentication(), 'logout')
         );
 
+        // Backup
+        $this->router->add(
+            'XHR',
+            'POST',
+            '/backup/make/',
+            array(new Controllers\Backup(), 'make')
+        );
+        $this->router->add(
+            'POST',
+            '/backup/download/{backup}/',
+            array(new Controllers\Backup(), 'download')
+        );
+
         // Cache
         $this->router->add(
             'XHR',
