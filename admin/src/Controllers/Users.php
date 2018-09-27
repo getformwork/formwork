@@ -121,7 +121,7 @@ class Users extends AbstractController
                     array('allowedMimeTypes' => array('image/gif', 'image/jpeg', 'image/png'))
                 );
                 try {
-                    if ($uploader->upload(str_shuffle(uniqid()))) {
+                    if ($uploader->upload(FileSystem::randomName())) {
                         $avatarSize = Formwork::instance()->option('admin.avatar_size');
                         $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
                         $image->square($avatarSize)->save();
