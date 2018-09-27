@@ -14,7 +14,7 @@ dashboard.online-users: Utenti collegati
 dashboard.quick-actions: Azioni rapide
 dashboard.statistics: Statistiche
 dashboard.welcome: Benvenuto/a
-date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio' ,'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
+date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
 date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 date.today: Oggi
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
