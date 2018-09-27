@@ -100,7 +100,7 @@ class Page extends AbstractPage
         return Uri::make(array('host' => Uri::host()), $this->uri());
     }
 
-    public function current()
+    public function isCurrent()
     {
         return Formwork::instance()->site()->currentPage() === $this;
     }

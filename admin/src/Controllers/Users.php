@@ -3,10 +3,11 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
+use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Image;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
-use Formwork\Admin\User;
+use Formwork\Admin\Users\User;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
@@ -71,18 +72,18 @@ class Users extends AbstractController
         try {
             $user = Admin::instance()->users()->get($params->get('user'));
             if (!$user) {
-                throw new RuntimeException($this->label('users.user.not-found'));
+                throw new LocalizedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
             }
             if ($user->logged()) {
-                throw new RuntimeException($this->label('users.user.cannot-delete.logged'));
+                throw new LocalizedException('Cannot delete currently logged user', 'users.user.cannot-delete.logged');
             }
             $this->deleteAvatar($user);
             FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
             $this->registry('lastAccess')->remove($params->get('user'));
             $this->notify($this->label('users.user.deleted'), 'success');
             $this->redirect('/users/', 302, true);
-        } catch (RuntimeException $e) {
-            $this->notify($e->getMessage(), 'error');
+        } catch (LocalizedException $e) {
+            $this->notify($e->getLocalizedMessage(), 'error');
             $this->redirect('/users/', 302, true);
         }
     }

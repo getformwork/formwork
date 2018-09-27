@@ -2,8 +2,8 @@
 
 namespace Formwork\Core;
 
-use Formwork\Utils\Uri;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Uri;
 
 class Pagination
 {

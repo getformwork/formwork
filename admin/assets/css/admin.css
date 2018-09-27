@@ -1840,7 +1840,9 @@ label {
   width: 25%; }
 
 .info-data-value {
-  width: 75%; }
+  width: 75%;
+  font-size: 0.875rem;
+  font-family: "Roboto Mono", Menlo, Courier, monospace; }
 
 .modal-backdrop {
   position: fixed;

@@ -300,6 +300,20 @@ class FileSystem
         return $items;
     }
 
+    public static function scanRecursive($path, $all = false)
+    {
+        $list = array();
+        $path = static::normalize($path);
+        foreach (FileSystem::scan($path, $all) as $item) {
+            if (FileSystem::isDirectory($path . $item)) {
+                $list = array_merge($list, static::scanRecursive($path . $item, $all));
+            } else {
+                $list[] = $path . $item;
+            }
+        }
+        return $list;
+    }
+
     public static function listFiles($path = null, $all = false)
     {
         $path = static::normalize($path);
@@ -316,27 +330,27 @@ class FileSystem
         });
     }
 
-    public static function glob($pattern)
+    public static function glob($pattern, ...$arguments)
     {
-        if (func_num_args() === 1) {
-            return glob($pattern);
+        if (empty($arguments)) {
+            return @glob($pattern);
         }
-        if (func_num_args() >= 2) {
-            if (is_int(func_get_args()[1])) {
-                $flags = func_get_args()[1];
-                return @glob($pattern, $flags);
-            }
-            $context = static::normalize(func_get_args()[1]);
 
-            if (static::isDirectory($context)) {
-                if (func_num_args() === 2) {
-                    return @glob($context . $pattern);
-                }
-                $flags = func_get_args()[2];
-                return @glob($context . $pattern, $flags);
-            }
-            throw new RuntimeException('Invalid glob context');
+        if (is_int($flags = $arguments[0])) {
+            return @glob($pattern, $flags);
         }
+
+        if (static::isDirectory($base = static::normalize($arguments[0]))) {
+            if (!isset($arguments[1])) {
+                $glob = @glob($base . $pattern);
+            } else {
+                $flags = $arguments[1];
+                $glob = @glob($base . $pattern, $flags);
+            }
+            return is_array($glob) ? array_map(array(static::class, 'basename'), $glob) : $glob;
+        }
+
+        throw new RuntimeException(__METHOD__ . ' base path not found: ' . $base);
     }
 
     public static function touch($path)

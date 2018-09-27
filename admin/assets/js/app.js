@@ -90,6 +90,25 @@ Formwork.Dashboard = {
                 Formwork.Notification(response.message, response.status, 5000);
             });
         });
+
+        $('[data-command=make-backup]').click(function() {
+            var $button = $(this);
+            $button.attr('disabled', true);
+            new Formwork.Request({
+                method: 'POST',
+                url: Formwork.Utils.uriPrependBase('/admin/backup/make/', location.pathname),
+                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
+            }, function(response) {
+                Formwork.Notification(response.message, response.status, 5000);
+                setTimeout(function() {
+                    if (response.status === 'success') {
+                        var csrfToken = $('meta[name=csrf-token]').attr('content');
+                        Formwork.Utils.download(response.data.uri, csrfToken);
+                    }
+                    $button.removeAttr('disabled');
+                }, 1000);
+            });
+        });
     }
 };
 
@@ -926,6 +945,12 @@ Formwork.Utils = {
         }
 
         return wrapper;
+    },
+
+    download: function(uri, csrfToken) {
+        var $form = $('<form>').attr({action: uri, method: 'post'});
+        $form.append($("<input>").attr({type: 'hidden', name: 'csrf-token', value: csrfToken}));
+        $form.appendTo('body').submit().remove();
     },
 
     escapeRegExp: function(string) {

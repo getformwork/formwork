@@ -4,12 +4,8 @@ namespace Formwork\Admin\Utils;
 
 use LogicException;
 
-class Language
+class LanguageCodes
 {
-    protected static $language = 'en';
-
-    protected static $data;
-
     protected static $codes = array(
         'af' => array('name' => 'Afrikaans', 'native' => 'Afrikaans', 'continents' => array('AF')),
         'am' => array('name' => 'Amharic', 'native' => 'አማርኛ', 'continents' => array('AF')),
@@ -91,29 +87,6 @@ class Language
         'zh' => array('name' => 'Chinese', 'native' => '中文', 'continents' => array('AS')),
         'zu' => array('name' => 'Zulu', 'native' => 'isiZulu', 'continents' => array('AF')),
     );
-
-    public static function load($language, $data)
-    {
-        static::$language = $language;
-        static::$data = $data;
-    }
-
-    public static function language()
-    {
-        return static::$language;
-    }
-
-    public static function get($key)
-    {
-        if (!isset(static::$data[$key])) {
-            throw new LogicException('Invalid string');
-        }
-        if (func_num_args() > 1) {
-            $args = array_slice(func_get_args(), 1);
-            return vsprintf(static::$data[$key], $args);
-        }
-        return static::$data[$key];
-    }
 
     public static function names($continent = null)
     {

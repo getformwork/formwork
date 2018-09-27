@@ -3,10 +3,10 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
-use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Registry;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Visitor;
 
 class Statistics
 {
@@ -19,24 +19,6 @@ class Statistics
     const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
 
     const VISITORS_FILENAME = 'visitors.json';
-
-    protected $bots = array(
-        'bot', 'crawl', 'search', 'sp[iy]der', 'check', 'findlinks', 'url',
-        'yahoo', 'feed', 'archive', 'heritrix', 'perl', 'links?\s?check',
-        'fetch', 'search[-\s]?engine', 'monitor', 'curl', 'seer', 'thumb',
-        'web[-\s]?search', 'whatsapp', 'scan', 'validator', 'analyz(a|er)',
-        '(http_|media|w)get', 'reader', 'python', 'auto', 'reaper', 'loader',
-        '(apis|appengine|mediapartners)-google', 'download(s|er)',
-        'link\ check', 'images', '(apache-http|go-http-|http_)client', 'finder',
-        'program', 'collect', 'spy', 'site[-\s]?(check|scan)', 'bingpreview',
-        'parse', 'ips-agent', 'verif(y|ier)', 'detector', 'harvest',
-        '(ok|pcore-)http', 'webinator', 'extract', 'aggregator', 'sniff',
-        'index\ ', 'tracker', 'library', 'capture', 'utility', 'scrape',
-        'locat(e|or)', 'gather', 'java\/', 'getter',
-        'html2', 'worth', 'archiving', 'leech', 'hound', 'retrieve', 'sweep',
-        'rating', 'google\ web\ preview', 'somewhere', 'php\/\d', 'control',
-        'fantom', 'http\.rb', 'jorgee', 'linkman', 'wget', 'gopher'
-    );
 
     protected $visitsRegistry;
 
@@ -59,7 +41,7 @@ class Statistics
 
     public function trackVisit()
     {
-        if ($this->isBot()) {
+        if (Visitor::isBot()) {
             return;
         }
 
@@ -101,8 +83,8 @@ class Statistics
 
         $label = function ($day) {
             $time = strtotime($day);
-            $month = Language::get('date.months.short')[date('n', $time) - 1];
-            $weekday = Language::get('date.weekdays.short')[date('N', $time) % 7];
+            $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
+            $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
             $day = date('j', $time);
             return strtr("D\nj M", array('D' => $weekday, 'M' => $month, 'j' => $day));
         };
@@ -124,11 +106,5 @@ class Statistics
                 array_values($interpolate($uniqueVisits))
             )
         );
-    }
-
-    protected function isBot()
-    {
-        $regex = '/' . implode('|', $this->bots) . '/i';
-        return (bool) preg_match($regex, HTTPRequest::userAgent());
     }
 }

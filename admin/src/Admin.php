@@ -3,15 +3,14 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Users\Users;
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Admin\Utils\Language;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
-use Formwork\Parsers\YAML;
-use Formwork\Router\Router;
 use Formwork\Router\RouteParams;
-use Formwork\Utils\HTTPRequest;
+use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use LogicException;
 use RuntimeException;
@@ -22,13 +21,13 @@ class Admin
 
     public static $instance;
 
-    protected static $languages;
+    protected $errors;
 
     protected $router;
 
     protected $users;
 
-    protected $errors;
+    protected $language;
 
     public function __construct()
     {
@@ -46,13 +45,7 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
-        $this->loadLanguages();
-        $languageFile = LANGUAGES_PATH . $this->language() . '.yml';
-
-        if (!FileSystem::isReadable($languageFile)) {
-            throw new RuntimeException('Cannot load Admin language file');
-        }
-        Language::load($this->language(), YAML::parseFile($languageFile));
+        $this->language = Language::load(Formwork::instance()->option('admin.lang'));
 
         set_exception_handler(function ($exception) {
             $this->errors->internalServerError();
@@ -66,11 +59,6 @@ class Admin
             return static::$instance;
         }
         return static::$instance = new static();
-    }
-
-    public static function languages()
-    {
-        return static::$languages;
     }
 
     public function isLoggedIn()
@@ -163,6 +151,19 @@ class Admin
         $this->router->add(
             '/logout/',
             array(new Controllers\Authentication(), 'logout')
+        );
+
+        // Backup
+        $this->router->add(
+            'XHR',
+            'POST',
+            '/backup/make/',
+            array(new Controllers\Backup(), 'make')
+        );
+        $this->router->add(
+            'POST',
+            '/backup/download/{backup}/',
+            array(new Controllers\Backup(), 'download')
         );
 
         // Cache
@@ -276,18 +277,13 @@ class Admin
         );
     }
 
-    protected function loadLanguages()
-    {
-        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $code = FileSystem::name($file);
-            static::$languages[$code] = Language::codeToNativeName($code) . ' (' . $code . ')';
-        }
-    }
-
     public function __call($name, $arguments)
     {
         if (property_exists($this, $name)) {
             return $this->$name;
+        }
+        if (method_exists(AdminTrait::class, $name)) {
+            return $this->$name(...$arguments);
         }
         throw new LogicException('Invalid method');
     }

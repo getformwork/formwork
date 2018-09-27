@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\Language;
+use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -16,6 +16,26 @@ class Uploader
     protected $options;
 
     protected $uploadedFiles;
+
+    protected static $errorMessages = array(
+        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+        UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+        UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
+        UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
+    );
+
+    protected static $errorLanguageStrings = array(
+        UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
+        UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
+        UPLOAD_ERR_PARTIAL    => 'uploader.error.partial',
+        UPLOAD_ERR_NO_FILE    => 'uploader.error.no-file',
+        UPLOAD_ERR_NO_TMP_DIR => 'uploader.error.no-temp',
+        UPLOAD_ERR_CANT_WRITE => 'uploader.error.cannot-write',
+        UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
+    );
 
     public function __construct($destination, $options = array())
     {
@@ -49,7 +69,7 @@ class Uploader
                 }
                 $this->move($file['tmp_name'], $this->destination, $name);
             } else {
-                throw new RuntimeException($this->errorMessage($file['error']));
+                throw new LocalizedException(static::$errorMessages[$file['error']], static::$errorLanguageStrings[$file['error']]);
             }
         }
 
@@ -69,39 +89,18 @@ class Uploader
         return $this->uploadedFiles;
     }
 
-    public function errorMessage($code)
-    {
-        switch ($code) {
-            case 1: //UPLOAD_ERR_INI_SIZE
-            case 2: //UPLOAD_ERR_FORM_SIZE
-                return Language::get('uploader.error.size');
-            case 3: //UPLOAD_ERR_PARTIAL
-                return Language::get('uploader.error.partial');
-            case 4: //UPLOAD_ERR_NO_FILE
-                return Language::get('uploader.error.no-file');
-            case 6: //UPLOAD_ERR_NO_TMP_DIR
-                return Language::get('uploader.error.no-temp');
-            case 7: //UPLOAD_ERR_CANT_WRITE
-                return Language::get('uploader.error.cannot-write');
-            case 8: //UPLOAD_ERR_EXTENSION
-                return Language::get('uploader.error.php-extension');
-            default:
-                return Language::get('uploader.error.unknown');
-        }
-    }
-
     private function move($source, $destination, $filename)
     {
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new RuntimeException(Language::get('uploader.error.mime-type'));
+            throw new LocalizedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
         }
 
         $destination = FileSystem::normalize($destination);
 
         if (FileSystem::basename($filename)[0] === '.') {
-            throw new RuntimeException(Language::get('uploader.error.hidden-files'));
+            throw new LocalizedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
 
         $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
@@ -115,7 +114,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new RuntimeException(Language::get('uploader.error.file-name'));
+            throw new RuntimeException('Invalid file name: ' . $filename, 'uploader.error.file-name');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {

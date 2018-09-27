@@ -1,8 +1,7 @@
 <?php
 
-namespace Formwork\Admin;
+namespace Formwork\Admin\Users;
 
-use Formwork\Core\Formwork;
 use Formwork\Data\Collection;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;

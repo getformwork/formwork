@@ -20,7 +20,7 @@ rows1:
                             type: select
                             translate: false
                             import:
-                                options: 'Formwork\Admin\Utils\Language::names'
+                                options: 'Formwork\Admin\Utils\LanguageCodes::names'
 
         row2:
             type: row
