@@ -104,6 +104,10 @@ class Users extends AbstractController
             unset($postData['csrf-token']);
 
             if (!empty($postData['password'])) {
+                if (!$user->isLogged()) {
+                    $this->notify($this->label('users.user.cannot-change-password'), 'error');
+                    $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+                }
                 $postData['hash'] = Password::hash($postData['password']);
                 unset($postData['password']);
             }
