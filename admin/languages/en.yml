@@ -188,6 +188,7 @@ users.new-user.username-suggestion: between 3-20 letters, digits and dashes
 users.options: Options
 users.user-profile: '%s User Profile'
 users.user: User
+users.user.cannot-change-password: Cannot change the password of another user. The action is not allowed.
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
 users.user.cannot-create.var-missing: Cannot create user, missing %s variable
 users.user.cannot-delete.logged: Cannot delete user, the user is logged
