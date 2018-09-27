@@ -2,10 +2,10 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Utils\ZipErrors;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use RuntimeException;
 use ZipArchive;
 
 class Backupper
@@ -68,7 +68,7 @@ class Backupper
         }
 
         if (is_int($status) && $status !== ZipArchive::ER_OK) {
-            throw new RuntimeException(ZipErrors::getMessage($status));
+            throw new LocalizedException(ZipErrors::$errorMessages[$status], ZipErrors::$errorLanguageStrings[$status]);
         }
 
         return $destination;
