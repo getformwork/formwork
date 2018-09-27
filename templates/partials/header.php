@@ -16,7 +16,7 @@
 <?php
                     foreach ($site->children()->filter('visible') as $page):
 ?>
-                    <a class="menu-item<?php if ($page->current()): ?> active<?php endif; ?>" href="<?= $page->uri() ?>"><?= $page->get('menu', $page->title()) ?></a>
+                    <a class="menu-item<?php if ($page->isCurrent()): ?> active<?php endif; ?>" href="<?= $page->uri() ?>"><?= $page->get('menu', $page->title()) ?></a>
 <?php
                     endforeach;
 ?>

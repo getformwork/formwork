@@ -1,6 +1,11 @@
 admin.manage: Gestione
 admin.panel: Pannello di Amministrazione
 admin.view-site: Visualizza sito
+backup.backup: Esegui backup
+backup.error.cannot-download: Impossibile scaricare il backup. %s.
+backup.error.cannot-download.invalid-filename: File di backup non valido.
+backup.error.cannot-make: Impossibile eseguire il backup. %s.
+backup.ready: Backup pronto. Inizio a scaricare...
 cache.clear: Svuota cache
 cache.cleared: Cache svuotata
 dashboard.dashboard: Riepilogo
@@ -192,3 +197,12 @@ users.user.deleted: Utente eliminato
 users.user.edited: Dati utente aggiornati
 users.user.not-found: Utente non trovato
 users.users: Utenti
+zip.error.already-exists: L’archivio esiste già
+zip.error.cannot-open: Impossibile aprire l’archivio
+zip.error.cannot-read: Impossibile leggere l’archivio
+zip.error.inconsistent-archive: Archivio non valido
+zip.error.invalid-argument: Argomento non valido
+zip.error.memory-failure: Errore di memoria
+zip.error.not-found: Archivio non trovato
+zip.error.not-zip-archive: Non è un archivio ZIP
+zip.error.unspecified: Errore non specificato

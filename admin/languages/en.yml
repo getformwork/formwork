@@ -1,6 +1,11 @@
 admin.manage: Manage
 admin.panel: Administration Panel
 admin.view-site: View Site
+backup.backup: Backup
+backup.error.cannot-download: Cannot download backup. %s.
+backup.error.cannot-download.invalid-filename: Invalid backup file
+backup.error.cannot-make: Cannot make backup. %s.
+backup.ready: Backup ready. Starting download...
 cache.clear: Clear Cache
 cache.cleared: Cache cleared
 dashboard.dashboard: Dashboard
@@ -191,3 +196,12 @@ users.user.deleted: User deleted
 users.user.edited: User data updated
 users.user.not-found: User not found
 users.users: Users
+zip.error.already-exists: The archive already exists
+zip.error.cannot-open: Cannot open the archive
+zip.error.cannot-read: Cannot read the archive
+zip.error.inconsistent-archive: Inconsistent archive
+zip.error.invalid-argument: Invalid argument
+zip.error.memory-failure: Memory failure
+zip.error.not-found: Archive not found
+zip.error.not-zip-archive: Not a ZIP archive
+zip.error.unspecified: Unspecified error

@@ -27,6 +27,12 @@ Formwork.Utils = {
         return wrapper;
     },
 
+    download: function(uri, csrfToken) {
+        var $form = $('<form>').attr({action: uri, method: 'post'});
+        $form.append($("<input>").attr({type: 'hidden', name: 'csrf-token', value: csrfToken}));
+        $form.appendTo('body').submit().remove();
+    },
+
     escapeRegExp: function(string) {
         return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },

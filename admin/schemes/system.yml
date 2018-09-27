@@ -152,7 +152,7 @@ rows4:
                             type: select
                             translate: false
                             import:
-                                options: 'Formwork\Admin\Admin::languages'
+                                options: 'Formwork\Admin\Language::availableLanguages'
         row2:
             type: row
             fields:

@@ -3,24 +3,23 @@
 namespace Formwork\Admin\Utils;
 
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Cookie;
 
 class Session
 {
     public static function start()
     {
-        $options = array(
-            'name' => 'formwork_session',
-            'cookie_path' => HTTPRequest::root(),
-            'cookie_httponly' => true,
-            'use_strict_mode' => true
-        );
         if (session_status() === PHP_SESSION_NONE) {
-            if (PHP_MAJOR_VERSION < 7) {
-                foreach ($options as $key => $value) {
-                    ini_set('session.' . $key, $value);
-                }
-            }
-            session_start($options);
+            ini_set('session.use_strict_mode', true);
+            $options = array(
+                'path' => HTTPRequest::root(),
+                'secure' => HTTPRequest::isHTTPS(),
+                'httponly' => true,
+                'samesite' => 'strict'
+            );
+            session_name('formwork_session');
+            session_start();
+            Cookie::send(session_name(), session_id(), $options, true);
         }
     }
 

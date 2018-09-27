@@ -143,7 +143,7 @@ class HTTPRequest
         if (!is_array($_FILES)) {
             return static::$files;
         }
-        foreach ($_FILES as $field => $data) {
+        foreach ($_FILES as $data) {
             if (!is_array($data)) {
                 return static::$files;
             }
