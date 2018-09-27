@@ -45,13 +45,15 @@ class Language
 
     public static function load($languageCode)
     {
-        foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
-            $code = FileSystem::name($file);
-            static::$availableLanguages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
+        if (empty(static::$availableLanguages)) {
+            foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
+                $code = FileSystem::name($file);
+                static::$availableLanguages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
+            }
         }
         $languageFile = LANGUAGES_PATH . $languageCode . '.yml';
-        if (!FileSystem::isReadable($languageFile)) {
-            throw new RuntimeException('Cannot load Admin language file');
+        if (!(FileSystem::exists($languageFile) && FileSystem::isReadable($languageFile))) {
+            throw new RuntimeException('Cannot load Admin language file ' . $languageFile);
         }
         $languageStrings = YAML::parseFile($languageFile);
         return new static($languageCode, $languageStrings);
