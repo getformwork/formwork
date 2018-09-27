@@ -14,7 +14,6 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use RuntimeException;
 
 class Users extends AbstractController
 {
@@ -130,8 +129,8 @@ class Users extends AbstractController
                         $data['avatar'] = $uploader->uploadedFiles()[0];
                         $this->notify($this->label('user.avatar.uploaded'), 'success');
                     }
-                } catch (RuntimeException $e) {
-                    $this->notify($this->label('uploader.error', $e->getMessage()), 'error');
+                } catch (LocalizedException $e) {
+                    $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
                     $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
                 }
             }
