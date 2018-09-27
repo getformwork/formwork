@@ -169,3 +169,42 @@ rows4:
                             options:
                                 login: '{{options.system.admin-panel.logout-redirects-to.login}}'
                                 home: '{{options.system.admin-panel.logout-redirects-to.home}}'
+
+section5:
+    type: header
+    label: '{{options.system.images}}'
+
+rows5:
+    type: rows
+    fields:
+        row1:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.images.jpeg-quality}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        images.jpeg_quality:
+                            type: range
+                            min: 0
+                            max: 100
+                            step: 5
+        row2:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.images.png-compression-level}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        images.png_compression:
+                            type: range
+                            min: 0
+                            max: 9

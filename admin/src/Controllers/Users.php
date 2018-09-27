@@ -4,9 +4,11 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Image;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
+use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
@@ -114,12 +116,16 @@ class Users extends AbstractController
             }
 
             if (HTTPRequest::hasFiles()) {
+                $avatarsPath = ADMIN_PATH . 'avatars' . DS;
                 $uploader = new Uploader(
-                    ADMIN_PATH . 'avatars' . DS,
+                    $avatarsPath,
                     array('allowedMimeTypes' => array('image/gif', 'image/jpeg', 'image/png'))
                 );
                 try {
                     if ($uploader->upload(str_shuffle(uniqid()))) {
+                        $avatarSize = Formwork::instance()->option('admin.avatar_size');
+                        $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
+                        $image->square($avatarSize)->save();
                         $this->deleteAvatar($user);
                         $data['avatar'] = $uploader->uploadedFiles()[0];
                         $this->notify($this->label('user.avatar.uploaded'), 'success');
