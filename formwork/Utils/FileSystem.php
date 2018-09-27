@@ -384,8 +384,13 @@ class FileSystem
         return $value;
     }
 
+    public static function randomName()
+    {
+        return str_shuffle(dechex(mt_rand(0x100, 0xfff)) . uniqid());
+    }
+
     public static function temporaryName($prefix = '')
     {
-        return $prefix . uniqid();
+        return $prefix . static::randomName();
     }
 }
