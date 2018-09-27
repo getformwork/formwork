@@ -86,10 +86,13 @@ class Formwork
             'cache.enabled'            => false,
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
+            'images.jpeg_quality'      => 85,
+            'images.png_compression'   => 6,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
-            'admin.logout_redirect'    => 'login'
+            'admin.logout_redirect'    => 'login',
+            'admin.avatar_size'        => 512
         );
     }
 
