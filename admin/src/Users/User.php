@@ -27,7 +27,7 @@ class User extends DataGetter
     public function __construct($data)
     {
         $this->data = $data;
-        foreach (array('username', 'fullname', 'hash', 'email', 'avatar', 'language') as $key) {
+        foreach (array('username', 'fullname', 'hash', 'email', 'language', 'avatar') as $key) {
             $this->$key = $data[$key];
         }
         $this->avatar = new UserAvatar($this->avatar);
@@ -38,7 +38,7 @@ class User extends DataGetter
         return Password::verify($password, $this->hash);
     }
 
-    public function logged()
+    public function isLogged()
     {
         return Session::get('FORMWORK_USERNAME') === $this->username;
     }

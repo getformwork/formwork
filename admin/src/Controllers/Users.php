@@ -54,8 +54,8 @@ class Users extends AbstractController
             'fullname' => $this->data->get('fullname'),
             'hash'     => Password::hash($this->data->get('password')),
             'email'    => $this->data->get('email'),
-            'avatar'   => null,
-            'language' => $this->data->get('language')
+            'language' => $this->data->get('language'),
+            'avatar'   => null
         );
 
         $fileContent = YAML::encode($userdata);
@@ -73,7 +73,7 @@ class Users extends AbstractController
             if (!$user) {
                 throw new LocalizedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
             }
-            if ($user->logged()) {
+            if ($user->isLogged()) {
                 throw new LocalizedException('Cannot delete currently logged user', 'users.user.cannot-delete.logged');
             }
             $this->deleteAvatar($user);

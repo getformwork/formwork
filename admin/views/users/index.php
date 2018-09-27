@@ -15,7 +15,7 @@
                     <div class="users-item-cell user-last-access" data-overflow-tooltip="true"><?= is_null($user->lastAccess()) ? '&infin;' : date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $user->lastAccess()) ?></div>
                     <div class="users-item-cell user-actions">
 <?php
-                    if (!$user->logged()):
+                    if (!$user->isLogged()):
 ?>
                         <button class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>"><i class="i-trash"></i></button>
 <?php
