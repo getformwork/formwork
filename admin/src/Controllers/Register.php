@@ -38,8 +38,8 @@ class Register extends AbstractController
                     'fullname' => $this->data->get('fullname'),
                     'hash'     => Password::hash($this->data->get('password')),
                     'email'    => $this->data->get('email'),
-                    'avatar'   => null,
-                    'language' => $this->data->get('language')
+                    'language' => $this->data->get('language'),
+                    'avatar'   => null
                 );
 
                 $fileContent = YAML::encode($userdata);

@@ -37,7 +37,7 @@
                                 <div><?= $this->label('user.password') ?></div>
                             </div>
                             <div class="col-m-2-3">
-                                <input type="password" value="" name="password"<?= !$user->logged() ? ' disabled' : '' ?> autocomplete="new-password">
+                                <input type="password" value="" name="password"<?= !$user->isLogged() ? ' disabled' : '' ?> autocomplete="new-password">
                             </div>
                         </div>
                         <div class="row">
