@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.8.0](https://github.com/giuscris/formwork/releases/tag/0.8.0) (2018-10-06)
+
+**Enhancements**
+
+ * **Add backup feature to export site to a .zip archive**
+ * **Add image processing feature, by now used to resize avatars to square**
+ * **Improve session cookie security and consistency across supported PHP versions**
+ * Use monospace font for values in Options > Info
+ * Allow language strings in schemes
+
+**Bug fixes**
+
+ * Fix redirect loop on Formwork Admin registration
+ * Fix an issue which made possible changing another user's password
+ * Fix error handler ignoring `@` operator and `error_reporting` directive
+ * Fix unrecognized percent-encoded URIs
+
 ## [0.7.2](https://github.com/giuscris/formwork/releases/tag/0.7.2) (2018-09-15)
 
 **Enhancements**
