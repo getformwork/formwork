@@ -17,11 +17,11 @@ class Updater
     protected $registry;
 
     protected $registryDefaults = array(
-        'last-check' => null,
+        'last-check'  => null,
         'last-update' => null,
-        'etag' => null,
-        'release' => null,
-        'up-to-date' => false
+        'etag'        => null,
+        'release'     => null,
+        'up-to-date'  => false
     );
 
     protected $context;
@@ -50,12 +50,12 @@ class Updater
     public function defaults()
     {
         return array(
-            'time' => 900,
-            'force' => false,
-            'registryFile' => LOGS_PATH . 'updates.json',
-            'tempFile' => ROOT_PATH . '.formwork-update.zip',
+            'time'                => 900,
+            'force'               => false,
+            'registryFile'        => LOGS_PATH . 'updates.json',
+            'tempFile'            => ROOT_PATH . '.formwork-update.zip',
             'cleanupAfterInstall' => false,
-            'ignore' => array(
+            'ignore'              => array(
                 'admin/accounts/*',
                 'admin/avatars/*',
                 'admin/logs/*',

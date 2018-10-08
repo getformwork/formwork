@@ -12,8 +12,8 @@ class Session
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_strict_mode', true);
             $options = array(
-                'path' => HTTPRequest::root(),
-                'secure' => HTTPRequest::isHTTPS(),
+                'path'     => HTTPRequest::root(),
+                'secure'   => HTTPRequest::isHTTPS(),
                 'httponly' => true,
                 'samesite' => 'strict'
             );

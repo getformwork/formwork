@@ -19,11 +19,11 @@ class Cookie
     protected static function defaults()
     {
         return array(
-            'expires' => 0,
-            'max-age' => 0,
-            'domain' => null,
-            'path' => null,
-            'secure' => false,
+            'expires'  => 0,
+            'max-age'  => 0,
+            'domain'   => null,
+            'path'     => null,
+            'secure'   => false,
             'httponly' => false,
             'samesite' => false
         );

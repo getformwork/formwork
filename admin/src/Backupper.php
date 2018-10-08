@@ -23,9 +23,9 @@ class Backupper
     {
         return array(
             'maxExecutionTime' => 180,
-            'name' => 'formwork-backup',
-            'path' => Formwork::instance()->option('backup.path'),
-            'ignore' => array(
+            'name'             => 'formwork-backup',
+            'path'             => Formwork::instance()->option('backup.path'),
+            'ignore'           => array(
                 '.git/*',
                 '*.DS_Store',
                 '*.gitignore',
