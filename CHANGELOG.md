@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.1](https://github.com/giuscris/formwork/releases/tag/0.8.1) (2018-10-08)
+
+**Enhancements**
+
+ * Improve exception messages
+ * Remove unneeded loader.php
+
+**Bug fixes**
+
+ * **Fix wrong platform requirements in composer.json**
+
 ## [0.8.0](https://github.com/giuscris/formwork/releases/tag/0.8.0) (2018-10-06)
 
 **Enhancements**
