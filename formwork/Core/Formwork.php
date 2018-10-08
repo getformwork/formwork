@@ -160,6 +160,6 @@ class Formwork
         if (property_exists($this, $name)) {
             return $this->$name;
         }
-        throw new LogicException('Invalid method');
+        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }

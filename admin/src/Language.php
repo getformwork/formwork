@@ -35,7 +35,7 @@ class Language
     public function get($key, ...$arguments)
     {
         if (!isset($this->strings[$key])) {
-            throw new LogicException('Invalid string');
+            throw new LogicException('Invalid language string "' . $key . '"');
         }
         if (!empty($arguments)) {
             return sprintf($this->strings[$key], ...$arguments);

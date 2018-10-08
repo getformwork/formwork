@@ -113,7 +113,7 @@ class Updater
         FileSystem::download($this->release['archive'], $this->options['tempFile'], true, $this->context);
 
         if (!FileSystem::exists($this->options['tempFile'])) {
-            throw new RuntimeException('Cannot update');
+            throw new RuntimeException('Cannot update Formwork, archive not downloaded');
         }
 
         $zip = new ZipArchive();
@@ -175,7 +175,7 @@ class Updater
         $data = json_decode(FileSystem::fetch($uri, $this->context), true);
 
         if (!$data) {
-            throw new RuntimeException('Cannot fetch release data');
+            throw new RuntimeException('Cannot fetch latest Formwork release data');
         }
 
         $this->release = array(

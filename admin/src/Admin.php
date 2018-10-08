@@ -285,6 +285,6 @@ class Admin
         if (method_exists(AdminTrait::class, $name)) {
             return $this->$name(...$arguments);
         }
-        throw new LogicException('Invalid method');
+        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }

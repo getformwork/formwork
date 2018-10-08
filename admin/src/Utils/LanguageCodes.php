@@ -103,7 +103,7 @@ class LanguageCodes
     public static function codeToName($code)
     {
         if (!isset(static::$codes[$code])) {
-            throw new LogicException('Invalid language code');
+            throw new LogicException('Invalid language code "' . $code . '"');
         }
         return static::$codes[$code]['name'];
     }
@@ -111,7 +111,7 @@ class LanguageCodes
     public static function codeToNativeName($code)
     {
         if (!isset(static::$codes[$code])) {
-            throw new LogicException('Invalid language code');
+            throw new LogicException('Invalid language code "' . $code . '"');
         }
         return static::$codes[$code]['native'];
     }

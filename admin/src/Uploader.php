@@ -114,7 +114,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new RuntimeException('Invalid file name: ' . $filename, 'uploader.error.file-name');
+            throw new RuntimeException('Invalid file name ' . $filename, 'uploader.error.file-name');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {
