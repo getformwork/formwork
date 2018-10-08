@@ -1,7 +1,7 @@
 # Formwork
 Formwork is a file-based Content Management System (CMS) to make and manage simple sites.
 
-Latest version: [**0.8.0**](https://github.com/giuscris/formwork/releases/tag/0.8.0)
+Latest version: [**0.8.1**](https://github.com/giuscris/formwork/releases/tag/0.8.1)
 
 ## Features
  * ⚡️ Lightweight Core (~300 kB dependencies included)
