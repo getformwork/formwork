@@ -81,13 +81,13 @@ class Router
             return;
         }
         if (!in_array($type, $this->types)) {
-            throw new LogicException('Invalid request type');
+            throw new LogicException('Invalid request type "' . $type . '"');
         }
         if (!in_array($method, $this->methods)) {
-            throw new LogicException('Invalid HTTP method');
+            throw new LogicException('Invalid HTTP method "' . $method . '"');
         }
         if (!is_null($callback) && !is_callable($callback)) {
-            throw new LogicException('Invalid callback');
+            throw new LogicException('Invalid callback ' . implode('::', (array) $callback));
         }
         if (is_array($route)) {
             foreach ($route as $r) {

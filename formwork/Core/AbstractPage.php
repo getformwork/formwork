@@ -150,6 +150,6 @@ abstract class AbstractPage
         if ($this->has($name)) {
             return $this->get($name);
         }
-        throw new LogicException('Invalid method');
+        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }

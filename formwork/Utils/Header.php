@@ -63,7 +63,7 @@ class Header
     public static function status($code, $send = true, $exit = false)
     {
         if (!isset(static::$statuses[$code])) {
-            throw new LogicException('Unknown HTTP status code');
+            throw new LogicException('Unknown HTTP status code ' . $code);
         }
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . static::$statuses[$code];
@@ -79,7 +79,7 @@ class Header
     public static function send($fieldName, $fieldValue, $replace = true)
     {
         if (headers_sent()) {
-            throw new RuntimeException('HTTP headers already sent');
+            throw new RuntimeException('Cannot send ' . $fieldName . ' header, HTTP headers already sent');
         }
         header($fieldName . ': ' . trim($fieldValue), $replace);
     }

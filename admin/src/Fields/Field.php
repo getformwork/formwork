@@ -59,7 +59,7 @@ class Field extends DataSetter
             }
             $callback = explode('::', $value, 2);
             if (!is_callable($callback)) {
-                throw new LogicException('Invalid import callback');
+                throw new LogicException('Invalid import callback "' . $value . '"');
             }
             $this->data[$key] = $callback();
         }
