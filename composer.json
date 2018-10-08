@@ -16,8 +16,9 @@
         }
     },
     "require": {
-        "php": ">=5.5.4",
+        "php": ">=5.6.0",
         "ext-zip": "*",
+        "ext-gd": "*",
         "mustangostang/spyc": "0.6.2",
         "erusev/parsedown": "^1.6.3",
         "erusev/parsedown-extra": "^0.7.1"
