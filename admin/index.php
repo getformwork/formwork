@@ -14,7 +14,7 @@ define('LANGUAGES_PATH', ADMIN_PATH . 'languages' . DS);
 define('LOGS_PATH', ADMIN_PATH . 'logs' . DS);
 define('VIEWS_PATH', ADMIN_PATH . 'views' . DS);
 
-require FORMWORK_PATH . 'loader.php';
+require ROOT_PATH . 'vendor' . DS . 'autoload.php';
 
 $formwork = new Formwork();
 
