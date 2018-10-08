@@ -194,11 +194,11 @@ class Page extends AbstractPage
     public function toArray()
     {
         return array(
-            'title' => $this->title(),
-            'uri' => $this->uri(),
+            'title'    => $this->title(),
+            'uri'      => $this->uri(),
             'template' => $this->template()->name(),
-            'num' => $this->num(),
-            'data' => $this->data()
+            'num'      => $this->num(),
+            'data'     => $this->data()
         );
     }
 

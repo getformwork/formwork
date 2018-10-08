@@ -20,7 +20,7 @@ class Validator
                 continue;
             }
             $method = 'validate' . ucfirst(strtolower($field->type()));
-            if (method_exists(__CLASS__, $method)) {
+            if (method_exists(static::class, $method)) {
                 $value = static::$method($data->get($field->name()), $field);
             } else {
                 $value = $data->get($field->name(), $field->get('default'));
