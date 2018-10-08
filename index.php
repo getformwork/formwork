@@ -9,7 +9,7 @@ define('FORMWORK_PATH', ROOT_PATH . 'formwork' . DS);
 define('CONFIG_PATH', ROOT_PATH . 'config' . DS);
 define('LOGS_PATH', ROOT_PATH . 'admin' . DS . 'logs' . DS);
 
-require FORMWORK_PATH . 'loader.php';
+require ROOT_PATH . 'vendor' . DS . 'autoload.php';
 
 $formwork = new Formwork();
 $formwork->run();
