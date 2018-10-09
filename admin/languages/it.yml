@@ -20,6 +20,9 @@ date.today: Oggi
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 errors.action.report-to-github: Segnala un problema su GitHub
 errors.action.return-to-dashboard: Torna al Riepilogo
+errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
+errors.error.forbidden.heading: Oops, permessi mancanti!
+errors.error.forbidden.status: Accesso negato
 errors.error.internal-server-error.description: Formwork Admin ha riscontrato un errore nell’elaborare la richiesta. Controlla la configurazione di Formwork o il registro degli errori.
 errors.error.internal-server-error.heading: Oops, qualcosa è andato storto!
 errors.error.internal-server-error.status: Errore interno del server
