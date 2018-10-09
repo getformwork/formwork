@@ -98,51 +98,11 @@ class Users extends AbstractController
         }
 
         if (HTTPRequest::method() === 'POST') {
-            $data = $user->toArray();
-
-            $postData = HTTPRequest::postData();
-
-            unset($postData['csrf-token']);
-
-            if (!empty($postData['password'])) {
-                if (!$this->user()->canChangePasswordOf($user)) {
-                    $this->notify($this->label('users.user.cannot-change-password'), 'error');
-                    $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
-                }
-                $postData['hash'] = Password::hash($postData['password']);
-                unset($postData['password']);
+            if (!$this->user()->canChangeOptionsOf($user)) {
+                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
             }
 
-            foreach ($postData as $key => $value) {
-                if (!empty($value)) {
-                    $data[$key] = $value;
-                }
-            }
-
-            if (HTTPRequest::hasFiles()) {
-                $avatarsPath = ADMIN_PATH . 'avatars' . DS;
-                $uploader = new Uploader(
-                    $avatarsPath,
-                    array('allowedMimeTypes' => array('image/gif', 'image/jpeg', 'image/png'))
-                );
-                try {
-                    if ($uploader->upload(FileSystem::randomName())) {
-                        $avatarSize = Formwork::instance()->option('admin.avatar_size');
-                        $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
-                        $image->square($avatarSize)->save();
-                        $this->deleteAvatar($user);
-                        $data['avatar'] = $uploader->uploadedFiles()[0];
-                        $this->notify($this->label('user.avatar.uploaded'), 'success');
-                    }
-                } catch (LocalizedException $e) {
-                    $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
-                    $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
-                }
-            }
-
-            $fileContent = YAML::encode($data);
-
-            FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', $fileContent);
+            $this->updateUser($user);
 
             $this->notify($this->label('users.user.edited'), 'success');
             $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
@@ -156,6 +116,69 @@ class Users extends AbstractController
                 'user' => $user
             ), false)
         ));
+    }
+
+    protected function updateUser(User $user)
+    {
+        $data = $user->toArray();
+
+        $postData = HTTPRequest::postData();
+
+        unset($postData['csrf-token']);
+
+        if (!empty($postData['password'])) {
+            if (!$this->user()->canChangePasswordOf($user)) {
+                $this->notify($this->label('users.user.cannot-change-password'), 'error');
+                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+            }
+            $postData['hash'] = Password::hash($postData['password']);
+            unset($postData['password']);
+        }
+
+        if (!empty($postData['role']) && $postData['role'] !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
+            $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
+            $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+        }
+
+        foreach ($postData as $key => $value) {
+            if (!empty($value)) {
+                $data[$key] = $value;
+            }
+        }
+
+        if (HTTPRequest::hasFiles()) {
+            $data['avatar'] = $this->uploadAvatar($user);
+        }
+
+        $fileContent = YAML::encode($data);
+
+        FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', $fileContent);
+    }
+
+    protected function uploadAvatar(User $user)
+    {
+        $avatarsPath = ADMIN_PATH . 'avatars' . DS;
+
+        $uploader = new Uploader(
+            $avatarsPath,
+            array(
+                'allowedMimeTypes' => array('image/gif', 'image/jpeg', 'image/png')
+            )
+        );
+
+        try {
+            if ($uploader->upload(FileSystem::randomName())) {
+                $avatarSize = Formwork::instance()->option('admin.avatar_size');
+                $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
+                $image->square($avatarSize)->save();
+                $this->deleteAvatar($user);
+                $this->notify($this->label('user.avatar.uploaded'), 'success');
+                return $uploader->uploadedFiles()[0];
+            }
+        } catch (LocalizedException $e) {
+            $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
+            $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+        }
     }
 
     protected function deleteAvatar(User $user)
