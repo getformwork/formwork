@@ -20,6 +20,9 @@ date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 errors.action.report-to-github: Report an issue to GitHub
 errors.action.return-to-dashboard: Return to Dashboard
+errors.error.forbidden.description: You don’t have permission to access this page.
+errors.error.forbidden.heading: Oops, permission required!
+errors.error.forbidden.status: Forbidden
 errors.error.internal-server-error.description: Formwork Admin encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
 errors.error.internal-server-error.heading: Oops, something went wrong!
 errors.error.internal-server-error.status: Internal Server Error
