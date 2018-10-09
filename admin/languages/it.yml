@@ -198,6 +198,7 @@ users.user.cannot-change-role: Impossible cambare il ruolo di %s. L’azione non
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
 users.user.cannot-create.var-missing: Impossibile creare l’utente, manca la variabile %s
 users.user.cannot-delete: Impossibile eliminare l’utente. Devi essere un amministratore e l’utente non deve essere connesso.
+users.user.cannot-edit: Impossibile modificare l’utente %s. L’azione non è consentita.
 users.user.created: Utente creato
 users.user.deleted: Utente eliminato
 users.user.edited: Dati utente aggiornati

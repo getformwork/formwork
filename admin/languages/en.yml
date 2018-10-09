@@ -197,6 +197,7 @@ users.user.cannot-change-role: Cannot change the role of %s. The action is not a
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
 users.user.cannot-create.var-missing: Cannot create user, missing %s variable
 users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
+users.user.cannot-edit: Cannot edit user %s. The action is not allowed.
 users.user.created: User created
 users.user.deleted: User deleted
 users.user.edited: User data updated
