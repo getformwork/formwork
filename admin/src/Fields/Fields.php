@@ -26,6 +26,22 @@ class Fields extends Collection
         }
     }
 
+    public function find($field)
+    {
+        foreach ($this->items as $name => $data) {
+            if ($name === $field) {
+                return $this->items[$name];
+            }
+            if ($data->has('fields')) {
+                $found = $data->get('fields')->find($field);
+                if (!is_null($found)) {
+                    return $found;
+                }
+            }
+        }
+        return null;
+    }
+
     public function toArray($flatten = false)
     {
         if (!$flatten) {
