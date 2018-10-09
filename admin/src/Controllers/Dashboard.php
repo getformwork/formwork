@@ -10,6 +10,8 @@ class Dashboard extends AbstractController
 {
     public function index()
     {
+        $this->ensurePermission('dashboard');
+
         $site = Formwork::instance()->site();
 
         $statistics = new Statistics();

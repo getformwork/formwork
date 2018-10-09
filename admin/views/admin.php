@@ -45,18 +45,39 @@
         <div class="sidebar-wrapper">
             <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
             <ul class="sidebar-navigation">
+<?php
+                if ($this->user()->permissions()->has('dashboard')):
+?>
                 <li class="<?= ($location === 'dashboard') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/dashboard/') ?>"><?= $this->label('dashboard.dashboard') ?></a>
                 </li>
+<?php
+                endif;
+
+                if ($this->user()->permissions()->has('pages')):
+?>
                 <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/pages/') ?>"><?= $this->label('pages.pages') ?></a>
                 </li>
+<?php
+                endif;
+
+                if ($this->user()->permissions()->has('options')):
+?>
                 <li class="<?= ($location === 'options') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/options/') ?>"><?= $this->label('options.options') ?></a>
                 </li>
+<?php
+                endif;
+
+                if ($this->user()->permissions()->has('users')):
+?>
                 <li class="<?= ($location === 'users') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/users/') ?>"><?= $this->label('users.users') ?></a>
                 </li>
+<?php
+                endif;
+?>
                 <li>
                     <a href="<?= $this->uri('/logout/') ?>"><?= $this->label('login.logout') ?></a>
                 </li>

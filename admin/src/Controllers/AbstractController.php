@@ -64,6 +64,15 @@ abstract class AbstractController
         );
     }
 
+    protected function ensurePermission($permission)
+    {
+        if (!$this->user()->permissions()->has($permission)) {
+            $errors = new Errors();
+            $errors->forbidden();
+            exit;
+        }
+    }
+
     protected function field($field, $render = true)
     {
         if (!($field instanceof Field)) {
