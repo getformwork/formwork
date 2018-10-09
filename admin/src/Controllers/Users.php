@@ -55,7 +55,8 @@ class Users extends AbstractController
             'hash'     => Password::hash($this->data->get('password')),
             'email'    => $this->data->get('email'),
             'language' => $this->data->get('language'),
-            'avatar'   => null
+            'avatar'   => null,
+            'role'     => 'user'
         );
 
         $fileContent = YAML::encode($userdata);
@@ -73,8 +74,8 @@ class Users extends AbstractController
             if (!$user) {
                 throw new LocalizedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
             }
-            if ($user->isLogged()) {
-                throw new LocalizedException('Cannot delete currently logged user', 'users.user.cannot-delete.logged');
+            if (!$this->user()->canDeleteUser($user)) {
+                throw new LocalizedException('Cannot delete user, you must be an administrator and the user must not be logged in', 'users.user.cannot-delete');
             }
             $this->deleteAvatar($user);
             FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
@@ -104,7 +105,7 @@ class Users extends AbstractController
             unset($postData['csrf-token']);
 
             if (!empty($postData['password'])) {
-                if (!$user->isLogged()) {
+                if (!$this->user()->canChangePasswordOf($user)) {
                     $this->notify($this->label('users.user.cannot-change-password'), 'error');
                     $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
                 }
