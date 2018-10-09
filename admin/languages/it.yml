@@ -183,6 +183,7 @@ user.fullname: Nome completo
 user.language: Lingua
 user.last-access: Ultimo accesso
 user.password: Password
+user.role: Ruolo
 user.username: Nome utente
 users.delete-user: Elimina utente
 users.delete-user.prompt: Si è sicuri di eliminare l’utente? Questa azione non può essere annullata.
