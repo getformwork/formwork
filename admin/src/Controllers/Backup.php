@@ -15,6 +15,8 @@ class Backup extends AbstractController
 {
     public function make()
     {
+        $this->ensurePermission('backup.make');
+
         $backupper = new Backupper();
         try {
             $file = $backupper->backup();
@@ -30,6 +32,8 @@ class Backup extends AbstractController
 
     public function download(RouteParams $params)
     {
+        $this->ensurePermission('backup.download');
+
         $file = Formwork::instance()->option('backup.path') . base64_decode($params->get('backup'));
         try {
             if (FileSystem::exists($file) && FileSystem::isFile($file)) {

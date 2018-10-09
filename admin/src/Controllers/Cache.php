@@ -10,6 +10,7 @@ class Cache extends AbstractController
 {
     public function clear()
     {
+        $this->ensurePermission('cache.clear');
         $path = Formwork::instance()->option('cache.path');
         if (FileSystem::exists($path)) {
             FileSystem::delete($path, true);

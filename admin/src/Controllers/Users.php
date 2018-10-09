@@ -19,6 +19,8 @@ class Users extends AbstractController
 {
     public function index()
     {
+        $this->ensurePermission('users.index');
+
         $this->modal('newUser');
 
         $this->modal('deleteUser');
@@ -33,6 +35,8 @@ class Users extends AbstractController
 
     public function create()
     {
+        $this->ensurePermission('users.create');
+
         $this->data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
@@ -69,6 +73,8 @@ class Users extends AbstractController
 
     public function delete(RouteParams $params)
     {
+        $this->ensurePermission('users.delete');
+
         try {
             $user = Admin::instance()->users()->get($params->get('user'));
             if (!$user) {
