@@ -24,6 +24,8 @@ class User extends DataGetter
 
     protected $role;
 
+    protected $permissions;
+
     protected $lastAccess;
 
     public function __construct($data)
@@ -33,6 +35,7 @@ class User extends DataGetter
             $this->$key = $data[$key];
         }
         $this->role = isset($data['role']) ? $data['role'] : 'user';
+        $this->permissions = new Permissions($this->role);
         $this->avatar = new UserAvatar($this->avatar);
     }
 
