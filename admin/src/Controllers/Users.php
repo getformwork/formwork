@@ -112,13 +112,12 @@ class Users extends AbstractController
         }
 
         if (HTTPRequest::method() === 'POST') {
-            if (!$this->user()->canChangeOptionsOf($user)) {
-                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+            if ($this->user()->canChangeOptionsOf($user)) {
+                $this->updateUser($user);
+                $this->notify($this->label('users.user.edited'), 'success');
+            } else {
+                $this->notify($this->label('users.user.cannot-edit', $user->username()), 'error');
             }
-
-            $this->updateUser($user);
-
-            $this->notify($this->label('users.user.edited'), 'success');
             $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
         }
 
