@@ -4,6 +4,7 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Image;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
@@ -96,7 +97,14 @@ class Users extends AbstractController
 
     public function profile(RouteParams $params)
     {
+        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'user.yml'));
+
         $user = Admin::instance()->users()->get($params->get('user'));
+
+        $fields->validate($user);
+
+        $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
+        $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
 
         if (is_null($user)) {
             $this->notify($this->label('users.user.not-found'), 'error');
@@ -116,10 +124,13 @@ class Users extends AbstractController
 
         $this->modal('changes');
 
+        $this->modal('deleteUser');
+
         $this->view('admin', array(
             'title' => $this->label('users.user-profile', $user->username()),
             'content' => $this->view('users.profile', array(
-                'user' => $user
+                'user' => $user,
+                'fields' => $this->fields($fields, false)
             ), false)
         ));
     }
