@@ -24,32 +24,30 @@ class Register extends AbstractController
                 break;
 
             case 'POST':
-                $this->data = new DataGetter(HTTPRequest::postData());
+                $data = new DataGetter(HTTPRequest::postData());
 
                 foreach (array('username', 'fullname', 'password', 'email') as $var) {
-                    if (!$this->data->has($var)) {
+                    if (!$data->has($var)) {
                         $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
                         $this->redirectToPanel(302, true);
                     }
                 }
 
-                $userdata = array(
-                    'username' => $this->data->get('username'),
-                    'fullname' => $this->data->get('fullname'),
-                    'hash'     => Password::hash($this->data->get('password')),
-                    'email'    => $this->data->get('email'),
-                    'language' => $this->data->get('language'),
+                $userData = array(
+                    'username' => $data->get('username'),
+                    'fullname' => $data->get('fullname'),
+                    'hash'     => Password::hash($data->get('password')),
+                    'email'    => $data->get('email'),
+                    'language' => $data->get('language'),
                     'avatar'   => null,
                     'role'     => 'admin'
                 );
 
-                $fileContent = YAML::encode($userdata);
+                FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
-                FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
-
-                Session::set('FORMWORK_USERNAME', $this->data->get('username'));
-                $time = $this->log('access')->log($this->data->get('username'));
-                $this->registry('lastAccess')->set($this->data->get('username'), $time);
+                Session::set('FORMWORK_USERNAME', $data->get('username'));
+                $time = $this->log('access')->log($data->get('username'));
+                $this->registry('lastAccess')->set($data->get('username'), $time);
 
                 $this->redirectToPanel(302, true);
                 break;
