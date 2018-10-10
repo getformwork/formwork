@@ -59,36 +59,36 @@ class Pages extends AbstractController
 
     public function create()
     {
-        $this->data = new DataGetter(HTTPRequest::postData());
+        $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
         foreach (array('title', 'slug', 'template', 'parent') as $var) {
-            if (!$this->data->has($var)) {
+            if (!$data->has($var)) {
                 $this->notify($this->label('pages.page.cannot-create.var-missing', $var), 'error');
                 $this->redirect('/pages/', 302, true);
             }
         }
 
         // Ensure there isn't a page with the same uri
-        if ($this->site->findPage($this->data->get('slug'))) {
+        if ($this->site->findPage($data->get('slug'))) {
             $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
             $this->redirect('/pages/', 302, true);
         }
 
-        $parent = $this->resolveParent($this->data->get('parent'));
+        $parent = $this->resolveParent($data->get('parent'));
 
         if (is_null($parent)) {
             $this->notify($this->label('pages.page.cannot-create.invalid-parent'), 'error');
             $this->redirect('/pages/', 302, true);
         }
 
-        $scheme = $this->scheme($this->data->get('template'));
+        $scheme = $this->scheme($data->get('template'));
 
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $this->data->get('slug') . DS;
+        $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
 
         // Let's create the page
         try {
-            $newPage = $this->createPage($path, $this->data->get('template'), $this->data->get('title'));
+            $newPage = $this->createPage($path, $data->get('template'), $data->get('title'));
             $this->notify($this->label('pages.page.created'), 'success');
             $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/', 302, true);
         } catch (RuntimeException $e) {
@@ -113,30 +113,30 @@ class Pages extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 // Load data from the page itself
-                $this->data = new DataGetter($this->page->data());
+                $data = new DataGetter($this->page->data());
 
                 // Validate fields against data
-                $this->fields->validate($this->data);
+                $this->fields->validate($data);
 
                 break;
 
             case 'POST':
                 // Load data from POST variables
-                $this->data = new DataGetter(HTTPRequest::postData());
+                $data = new DataGetter(HTTPRequest::postData());
 
                 // Validate fields against data
-                $this->fields->validate($this->data);
+                $this->fields->validate($data);
 
                 // Ensure no required data is missing
                 foreach (array('title', 'content') as $var) {
-                    if (!$this->data->has($var)) {
+                    if (!$data->has($var)) {
                         $this->notify($this->label('pages.page.cannot-edit.var-missing', $var), 'error');
                         $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
                     }
                 }
 
                 // Update the page
-                $this->page = $this->updatePage($this->page, $this->data);
+                $this->page = $this->updatePage($this->page, $data);
 
                 break;
         }
@@ -163,27 +163,27 @@ class Pages extends AbstractController
 
     public function reorder()
     {
-        $this->data = new DataGetter(HTTPRequest::postData());
+        $data = new DataGetter(HTTPRequest::postData());
 
         foreach (array('parent', 'from', 'to') as $var) {
-            if (!$this->data->has($var)) {
+            if (!$data->has($var)) {
                 JSONResponse::error($this->label('pages.page.cannot-move'))->send();
             }
         }
 
-        if (!is_numeric($this->data->get('from')) || !is_numeric($this->data->get('to'))) {
+        if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
             JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
-        $parent = $this->resolveParent($this->data->get('parent'));
+        $parent = $this->resolveParent($data->get('parent'));
         if (is_null($parent) || !$parent->hasChildren()) {
             JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
         $pages = $parent->children()->toArray();
 
-        $from = max(0, $this->data->get('from'));
-        $to = max(0, $this->data->get('to'));
+        $from = max(0, $data->get('from'));
+        $to = max(0, $data->get('to'));
         if ($to === $from) {
             return;
         }
