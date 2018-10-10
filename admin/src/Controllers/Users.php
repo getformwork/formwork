@@ -33,34 +33,32 @@ class Users extends AbstractController
 
     public function create()
     {
-        $this->data = new DataGetter(HTTPRequest::postData());
+        $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
         foreach (array('username', 'fullname', 'password', 'email', 'language') as $var) {
-            if (!$this->data->has($var)) {
+            if (!$data->has($var)) {
                 $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
                 $this->redirect('/users/', 302, true);
             }
         }
 
         // Ensure there isn't a user with the same username
-        if (Admin::instance()->users()->has($this->data->get('username'))) {
+        if (Admin::instance()->users()->has($data->get('username'))) {
             $this->notify($this->label('users.user.cannot-create.already-exists'), 'error');
             $this->redirect('/users/', 302, true);
         }
 
-        $userdata = array(
-            'username' => $this->data->get('username'),
-            'fullname' => $this->data->get('fullname'),
-            'hash'     => Password::hash($this->data->get('password')),
-            'email'    => $this->data->get('email'),
-            'language' => $this->data->get('language'),
+        $userData = array(
+            'username' => $data->get('username'),
+            'fullname' => $data->get('fullname'),
+            'hash'     => Password::hash($data->get('password')),
+            'email'    => $data->get('email'),
+            'language' => $data->get('language'),
             'avatar'   => null
         );
 
-        $fileContent = YAML::encode($userdata);
-
-        FileSystem::write(ACCOUNTS_PATH . $this->data->get('username') . '.yml', $fileContent);
+        FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
         $this->notify($this->label('users.user.created'), 'success');
         $this->redirect('/users/', 302, true);
@@ -138,10 +136,8 @@ class Users extends AbstractController
                     $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
                 }
             }
-
-            $fileContent = YAML::encode($data);
-
-            FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', $fileContent);
+            
+            FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', YAML::encode($data));
 
             $this->notify($this->label('users.user.edited'), 'success');
             $this->redirect('/users/' . $user->username() . '/profile/', 302, true);

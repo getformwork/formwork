@@ -194,8 +194,7 @@ class Options extends AbstractController
 
         // Update config file if options differ
         if ($options !== $old) {
-            $fileContent = YAML::encode($options);
-            FileSystem::write(CONFIG_PATH . $type . '.yml', $fileContent);
+            FileSystem::write(CONFIG_PATH . $type . '.yml', YAML::encode($options));
             return true;
         }
 
