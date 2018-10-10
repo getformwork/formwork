@@ -11,6 +11,7 @@ use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
+use Formwork\Data\DataSetter;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
@@ -134,39 +135,35 @@ class Users extends AbstractController
 
     protected function updateUser(User $user)
     {
-        $data = $user->toArray();
+        $data = new DataSetter(HTTPRequest::postData());
 
-        $postData = HTTPRequest::postData();
+        $data->set('csrf-token', null);
 
-        unset($postData['csrf-token']);
-
-        if (!empty($postData['password'])) {
+        if (!empty($data->get('password'))) {
             if (!$this->user()->canChangePasswordOf($user)) {
                 $this->notify($this->label('users.user.cannot-change-password'), 'error');
                 $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
             }
-            $postData['hash'] = Password::hash($postData['password']);
-            unset($postData['password']);
+            $data->set('hash', Password::hash($data->get('password')));
+            $data->set('password', null);
         }
 
-        if (!empty($postData['role']) && $postData['role'] !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
-            $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
-            $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
-        }
-
-        foreach ($postData as $key => $value) {
-            if (!empty($value)) {
-                $data[$key] = $value;
+        if ($data->get('role', $user->role()) !== $user->role()) {
+            if (!$this->user()->canChangeRoleOf($user)) {
+                $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
+                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
             }
         }
 
         if (HTTPRequest::hasFiles()) {
             if (!is_null($avatar = $this->uploadAvatar($user))) {
-                $data['avatar'] = $avatar;
+                $data->set('avatar', $avatar);
             }
         }
 
-        FileSystem::write(ACCOUNTS_PATH . $data['username'] . '.yml', YAML::encode($data));
+        $userData = array_merge($user->toArray(), array_filter($data->toArray()));
+
+        FileSystem::write(ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
     }
 
     protected function uploadAvatar(User $user)
