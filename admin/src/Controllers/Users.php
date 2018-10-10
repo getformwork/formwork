@@ -163,7 +163,9 @@ class Users extends AbstractController
         }
 
         if (HTTPRequest::hasFiles()) {
-            $data['avatar'] = $this->uploadAvatar($user);
+            if (!is_null($avatar = $this->uploadAvatar($user))) {
+                $data['avatar'] = $avatar;
+            }
         }
 
         $fileContent = YAML::encode($data);
