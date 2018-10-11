@@ -6,7 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Files\File;
 use Formwork\Utils\FileSystem;
 
-class UserAvatar extends File
+class Avatar extends File
 {
     protected $uri;
 
