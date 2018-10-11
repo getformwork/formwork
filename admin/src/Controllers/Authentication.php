@@ -79,6 +79,8 @@ class Authentication extends AbstractController
     {
         $this->notify($this->label('login.attempt.failed'), 'error');
         $this->view('authentication.login', array(
+            'title' => $this->label('login.login'),
+            'username' => $this->username,
             'error' => true
         ));
     }

@@ -16,9 +16,9 @@
                 <div class="caption"><?= $this->label('login.login') ?></div>
                 <form action="<?= $this->uri('/login/') ?>" method="post">
                     <label for="username"><?= $this->label('login.username') ?>:</label>
-                    <input id="username" type="text" required name="username" <?php if (isset($error)): ?>value="<?= $_POST['username'] ?>"<?php else: ?>autofocus<?php endif; ?> maxlength="20">
+                    <input id="username" type="text" required name="username" <?php if (!empty($username)): ?>value="<?= $username ?>"<?php else: ?>autofocus<?php endif; ?> maxlength="20">
                     <label for="password"><?= $this->label('login.password') ?>:</label>
-                    <input <?php if (isset($error)): ?>class="animated shake" autofocus <?php endif; ?>id="password" type="password" required name="password">
+                    <input <?php if (!empty($error)): ?>class="animated shake" autofocus <?php endif; ?>id="password" type="password" required name="password">
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <div class="separator"></div>
                     <button type="submit"><?= $this->label('login.login') ?></button>
