@@ -100,15 +100,15 @@ class Users extends AbstractController
 
         $user = Admin::instance()->users()->get($params->get('user'));
 
-        $fields->validate($user);
-
-        $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
-        $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
-
         if (is_null($user)) {
             $this->notify($this->label('users.user.not-found'), 'error');
             $this->redirect('/users/', 302, true);
         }
+
+        $fields->validate($user);
+
+        $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
+        $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
 
         if (HTTPRequest::method() === 'POST') {
             if ($this->user()->canChangeOptionsOf($user)) {
