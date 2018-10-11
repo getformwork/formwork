@@ -36,7 +36,7 @@ class User extends DataGetter
         }
         $this->role = isset($data['role']) ? $data['role'] : 'user';
         $this->permissions = new Permissions($this->role);
-        $this->avatar = new UserAvatar($this->avatar);
+        $this->avatar = new Avatar($this->avatar);
     }
 
     public function authenticate($password)
