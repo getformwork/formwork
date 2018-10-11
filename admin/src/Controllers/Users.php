@@ -75,22 +75,29 @@ class Users extends AbstractController
     {
         $this->ensurePermission('users.delete');
 
+        $user = Admin::instance()->users()->get($params->get('user'));
+
         try {
-            $user = Admin::instance()->users()->get($params->get('user'));
             if (!$user) {
                 throw new LocalizedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
             }
             if (!$this->user()->canDeleteUser($user)) {
-                throw new LocalizedException('Cannot delete user, you must be an administrator and the user must not be logged in', 'users.user.cannot-delete');
+                throw new LocalizedException(
+                    'Cannot delete user ' . $user->username() . ', you must be an administrator and the user must not be logged in',
+                    'users.user.cannot-delete'
+                );
             }
+            FileSystem::delete(ACCOUNTS_PATH . $user->username() . '.yml');
             $this->deleteAvatar($user);
-            FileSystem::delete(ACCOUNTS_PATH . $params->get('user') . '.yml');
-            $this->registry('lastAccess')->remove($params->get('user'));
+
+            // Remove user last access from registry
+            $this->registry('lastAccess')->remove($user->username());
+
             $this->notify($this->label('users.user.deleted'), 'success');
             $this->redirect('/users/', 302, true);
         } catch (LocalizedException $e) {
             $this->notify($e->getLocalizedMessage(), 'error');
-            $this->redirect('/users/', 302, true);
+            $this->redirectToReferer(302, true, '/users/');
         }
     }
 
@@ -107,10 +114,12 @@ class Users extends AbstractController
 
         $fields->validate($user);
 
+        // Disable password and/or role fields if they cannot be changed
         $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
         $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
 
         if (HTTPRequest::method() === 'POST') {
+            // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
                 $this->updateUser($user);
                 $this->notify($this->label('users.user.edited'), 'success');
@@ -137,30 +146,39 @@ class Users extends AbstractController
     {
         $data = new DataSetter(HTTPRequest::postData());
 
+        // Remove CSRF token from $data
         $data->set('csrf-token', null);
 
         if (!empty($data->get('password'))) {
+            // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
                 $this->notify($this->label('users.user.cannot-change-password'), 'error');
                 $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
             }
+
+            // Hash the new password
             $data->set('hash', Password::hash($data->get('password')));
+
+            // Remove password from $data
             $data->set('password', null);
         }
 
         if ($data->get('role', $user->role()) !== $user->role()) {
+            // Ensure that user role can be changed
             if (!$this->user()->canChangeRoleOf($user)) {
                 $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
                 $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
             }
         }
 
+        // Handle incoming files
         if (HTTPRequest::hasFiles()) {
             if (!is_null($avatar = $this->uploadAvatar($user))) {
                 $data->set('avatar', $avatar);
             }
         }
 
+        // Filter empty elements from $data and merge them with $user ones
         $userData = array_merge($user->toArray(), array_filter($data->toArray()));
 
         FileSystem::write(ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
@@ -178,17 +196,24 @@ class Users extends AbstractController
         );
 
         try {
-            if ($uploader->upload(FileSystem::randomName())) {
-                $avatarSize = Formwork::instance()->option('admin.avatar_size');
-                $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
-                $image->square($avatarSize)->save();
-                $this->deleteAvatar($user);
-                $this->notify($this->label('user.avatar.uploaded'), 'success');
-                return $uploader->uploadedFiles()[0];
-            }
+            $hasUploaded = $uploader->upload(FileSystem::randomName());
         } catch (LocalizedException $e) {
             $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
             $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+        }
+
+        if ($hasUploaded) {
+            $avatarSize = Formwork::instance()->option('admin.avatar_size');
+
+            // Square off uploaded avatar
+            $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
+            $image->square($avatarSize)->save();
+
+            // Delete old avatar
+            $this->deleteAvatar($user);
+
+            $this->notify($this->label('user.avatar.uploaded'), 'success');
+            return $uploader->uploadedFiles()[0];
         }
     }
 
