@@ -1,0 +1,15 @@
+admin:
+    title: Administrator
+    permissions:
+        dashboard: true
+        cache: true
+        backup: true
+        pages: true
+        options: true
+        users: true
+
+user:
+    title: User
+    permissions:
+        dashboard: true
+        pages: true

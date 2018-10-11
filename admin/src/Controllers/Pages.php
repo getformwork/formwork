@@ -36,6 +36,8 @@ class Pages extends AbstractController
 
     public function index()
     {
+        $this->ensurePermission('pages.index');
+
         $this->modal('newPage', array(
             'templates' => $this->site->templates(),
             'pages' => $this->site->descendants()->sort('path')
@@ -59,6 +61,8 @@ class Pages extends AbstractController
 
     public function create()
     {
+        $this->ensurePermission('pages.create');
+
         $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
@@ -99,6 +103,8 @@ class Pages extends AbstractController
 
     public function edit(RouteParams $params)
     {
+        $this->ensurePermission('pages.edit');
+
         $this->page = $this->site->findPage($params->get('page'));
 
         // Ensure the page exists
@@ -163,6 +169,8 @@ class Pages extends AbstractController
 
     public function reorder()
     {
+        $this->ensurePermission('pages.reorder');
+
         $data = new DataGetter(HTTPRequest::postData());
 
         foreach (array('parent', 'from', 'to') as $var) {
@@ -206,6 +214,8 @@ class Pages extends AbstractController
 
     public function delete(RouteParams $params)
     {
+        $this->ensurePermission('pages.delete');
+
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {
@@ -227,6 +237,8 @@ class Pages extends AbstractController
 
     public function uploadFile(RouteParams $params)
     {
+        $this->ensurePermission('pages.upload_file');
+
         if (HTTPRequest::hasFiles()) {
             try {
                 $page = $this->site->findPage($params->get('page'));
@@ -248,6 +260,8 @@ class Pages extends AbstractController
 
     public function deleteFile(RouteParams $params)
     {
+        $this->ensurePermission('pages.delete_file');
+
         try {
             $page = $this->site->findPage($params->get('page'));
             if (!$page) {

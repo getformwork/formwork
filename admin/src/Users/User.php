@@ -22,6 +22,10 @@ class User extends DataGetter
 
     protected $avatar;
 
+    protected $role;
+
+    protected $permissions;
+
     protected $lastAccess;
 
     public function __construct($data)
@@ -30,6 +34,8 @@ class User extends DataGetter
         foreach (array('username', 'fullname', 'hash', 'email', 'language', 'avatar') as $key) {
             $this->$key = $data[$key];
         }
+        $this->role = isset($data['role']) ? $data['role'] : 'user';
+        $this->permissions = new Permissions($this->role);
         $this->avatar = new UserAvatar($this->avatar);
     }
 
@@ -41,6 +47,31 @@ class User extends DataGetter
     public function isLogged()
     {
         return Session::get('FORMWORK_USERNAME') === $this->username;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function canDeleteUser(User $user)
+    {
+        return $this->isAdmin() && !$user->isLogged();
+    }
+
+    public function canChangeOptionsOf(User $user)
+    {
+        return $this->isAdmin() || $user->isLogged();
+    }
+
+    public function canChangePasswordOf(User $user)
+    {
+        return $this->isAdmin() || $user->isLogged();
+    }
+
+    public function canChangeRoleOf(User $user)
+    {
+        return $this->isAdmin() && !$user->isLogged();
     }
 
     public function lastAccess()

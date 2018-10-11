@@ -20,6 +20,9 @@ date.today: Today
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 errors.action.report-to-github: Report an issue to GitHub
 errors.action.return-to-dashboard: Return to Dashboard
+errors.error.forbidden.description: You don’t have permission to access this page.
+errors.error.forbidden.heading: Oops, permission required!
+errors.error.forbidden.status: Forbidden
 errors.error.internal-server-error.description: Formwork Admin encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
 errors.error.internal-server-error.heading: Oops, something went wrong!
 errors.error.internal-server-error.status: Internal Server Error
@@ -179,6 +182,7 @@ user.fullname: Full Name
 user.language: Language
 user.last-access: Last access
 user.password: Password
+user.role: Role
 user.username: Username
 users.delete-user: Delete User
 users.delete-user.prompt: Are you sure you want to delete this user? This action can’t be undone.
@@ -189,9 +193,11 @@ users.options: Options
 users.user-profile: '%s User Profile'
 users.user: User
 users.user.cannot-change-password: Cannot change the password of another user. The action is not allowed.
+users.user.cannot-change-role: Cannot change the role of %s. The action is not allowed.
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
 users.user.cannot-create.var-missing: Cannot create user, missing %s variable
-users.user.cannot-delete.logged: Cannot delete user, the user is logged
+users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
+users.user.cannot-edit: Cannot edit user %s. The action is not allowed.
 users.user.created: User created
 users.user.deleted: User deleted
 users.user.edited: User data updated

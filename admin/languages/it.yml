@@ -20,6 +20,9 @@ date.today: Oggi
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 errors.action.report-to-github: Segnala un problema su GitHub
 errors.action.return-to-dashboard: Torna al Riepilogo
+errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
+errors.error.forbidden.heading: Oops, permessi mancanti!
+errors.error.forbidden.status: Accesso negato
 errors.error.internal-server-error.description: Formwork Admin ha riscontrato un errore nell’elaborare la richiesta. Controlla la configurazione di Formwork o il registro degli errori.
 errors.error.internal-server-error.heading: Oops, qualcosa è andato storto!
 errors.error.internal-server-error.status: Errore interno del server
@@ -180,6 +183,7 @@ user.fullname: Nome completo
 user.language: Lingua
 user.last-access: Ultimo accesso
 user.password: Password
+user.role: Ruolo
 user.username: Nome utente
 users.delete-user: Elimina utente
 users.delete-user.prompt: Si è sicuri di eliminare l’utente? Questa azione non può essere annullata.
@@ -190,9 +194,11 @@ users.options: Opzioni
 users.user-profile: Profilo utente %s
 users.user: Utente
 users.user.cannot-change-password: Impossibile cambiare la password di un altro utente. L’azione non è consentita.
+users.user.cannot-change-role: Impossible cambare il ruolo di %s. L’azione non è consentita.
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
 users.user.cannot-create.var-missing: Impossibile creare l’utente, manca la variabile %s
-users.user.cannot-delete.logged: Impossibile eliminare l’utente, l’utente è connesso
+users.user.cannot-delete: Impossibile eliminare l’utente. Devi essere un amministratore e l’utente non deve essere connesso.
+users.user.cannot-edit: Impossibile modificare l’utente %s. L’azione non è consentita.
 users.user.created: Utente creato
 users.user.deleted: Utente eliminato
 users.user.edited: Dati utente aggiornati

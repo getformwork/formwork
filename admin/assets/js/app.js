@@ -743,7 +743,7 @@ Formwork.Request = function(options, callback) {
         request.always(function() {
             var response = request.responseJSON || {};
             var code = response.code || request.status;
-            if (code == 403) {
+            if (code == 400) {
                 location.reload();
             } else {
                 callback(response, request);
