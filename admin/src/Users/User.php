@@ -66,7 +66,7 @@ class User extends DataGetter
 
     public function canChangePasswordOf(User $user)
     {
-        return ($this->isAdmin() && !$user->isAdmin()) || $user->isLogged();
+        return $this->isAdmin() || $user->isLogged();
     }
 
     public function canChangeRoleOf(User $user)
