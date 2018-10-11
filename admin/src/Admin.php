@@ -117,7 +117,7 @@ class Admin
             Session::remove('FORMWORK_USERNAME');
             $this->notify($this->label('login.suspicious-request-detected'), 'warning');
             if (HTTPRequest::isXHR()) {
-                JSONResponse::error('Not authorized!', 403)->send();
+                JSONResponse::error('Bad Request: the CSRF token is not valid', 400)->send();
             }
             $this->redirect('/login/', 302, true);
         }

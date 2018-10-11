@@ -1,0 +1,96 @@
+rows1:
+    type: rows
+    fields:
+        row1:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.fullname}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        fullname:
+                            type: text
+
+        row2:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.email}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        email:
+                            type: email
+
+        row3:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.password}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        password:
+                            type: password
+                            disabled: true
+                            pattern: '^.{8,}$'
+
+        row4:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.language}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        language:
+                            type: select
+                            translate: false
+                            import:
+                                options: 'Formwork\Admin\Language::availableLanguages'
+
+        row5:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.role}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        role:
+                            type: select
+                            translate: false
+                            disabled: true
+                            import:
+                                options: 'Formwork\Admin\Users\Users::availableRoles'
+
+        row6:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{user.avatar}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        avatar:
+                            type: file
+                            accept: .jpg, .jpeg, .png, .gif

@@ -12,13 +12,18 @@ use Formwork\Utils\HTTPResponse;
 
 class Options extends AbstractController
 {
+    protected $tabs = array('system', 'site', 'updates', 'info');
+
     public function index()
     {
+        $this->ensurePermission('options.system');
         $this->redirect('/options/system/', 302, true);
     }
 
     public function system()
     {
+        $this->ensurePermission('options.system');
+
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
         if (HTTPRequest::method() === 'POST') {
@@ -38,7 +43,8 @@ class Options extends AbstractController
             'title' => $this->label('options.options'),
             'content' => $this->view('options.system', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tab' => 'system'
+                    'tabs' => $this->tabs,
+                    'current' => 'system'
                 ), false),
                 'fields' => $this->fields($fields, false)
             ), false)
@@ -47,6 +53,8 @@ class Options extends AbstractController
 
     public function site()
     {
+        $this->ensurePermission('options.site');
+
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
         if (HTTPRequest::method() === 'POST') {
@@ -71,7 +79,8 @@ class Options extends AbstractController
             'title' => $this->label('options.options'),
             'content' => $this->view('options.site', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tab' => 'site'
+                    'tabs' => $this->tabs,
+                    'current' => 'site'
                 ), false),
                 'fields' => $this->fields($fields, false)
             ), false)
@@ -80,11 +89,14 @@ class Options extends AbstractController
 
     public function updates()
     {
+        $this->ensurePermission('options.updates');
+
         $this->view('admin', array(
             'title' => $this->label('options.updates'),
             'content' => $this->view('options.updates', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tab' => 'updates'
+                    'tabs' => $this->tabs,
+                    'current' => 'updates'
                 ), false),
                 'currentVersion' => Formwork::VERSION
             ), false)
@@ -93,6 +105,8 @@ class Options extends AbstractController
 
     public function info()
     {
+        $this->ensurePermission('options.info');
+
         $dependencies = $this->getDependencies();
 
         $data = @array(
@@ -157,7 +171,8 @@ class Options extends AbstractController
             'title' => $this->label('options.options'),
             'content' => $this->view('options.info', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tab' => 'info'
+                    'tabs' => $this->tabs,
+                    'current' => 'info'
                 ), false),
                 'info' => $data
             ), false)
