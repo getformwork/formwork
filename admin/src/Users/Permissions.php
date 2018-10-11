@@ -24,6 +24,9 @@ class Permissions
             return (bool) $this->permissions[$permission];
         }
 
+        // If $permission is not found try with the upper level one (super permission),
+        // e.g. try with 'options' if 'options.updates' is not found
+
         $superPermission = strstr($permission, '.', true);
 
         if ($superPermission !== false) {
