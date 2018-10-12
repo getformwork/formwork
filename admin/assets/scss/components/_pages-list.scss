@@ -158,5 +158,6 @@
 }
 
 .dragging [data-sortable=false] .pages-item:hover {
-    background-color: transparent;
+    background-color: lighten($color-error, 37.5%);
+    cursor: no-drop;
 }

@@ -2114,7 +2114,8 @@ label {
   box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.15); }
 
 .dragging [data-sortable=false] .pages-item:hover {
-  background-color: transparent; }
+  background-color: #fce8e5;
+  cursor: no-drop; }
 
 .sidebar {
   position: fixed;
