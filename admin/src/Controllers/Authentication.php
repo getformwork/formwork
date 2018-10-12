@@ -7,6 +7,7 @@ use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
+use Formwork\Data\DataGetter;
 use Formwork\Utils\HTTPRequest;
 
 class Authentication extends AbstractController
@@ -47,15 +48,15 @@ class Authentication extends AbstractController
 
                 $users = Admin::instance()->users();
 
-                $postData = HTTPRequest::postData();
+                $data = new DataGetter(HTTPRequest::postData());
 
-                foreach (array('username', 'password') as $var) {
-                    if (!isset($postData[$var])) {
-                        return $this->error($this->label('login.attempt.failed'));
-                    }
-                    $this->$var = $postData[$var];
+                if (!$data->has(array('username', 'password'))) {
+                    return $this->error();
                 }
 
+                $this->username = $data->get('username');
+                $this->password = $data->get('password');
+            
                 $limiter->registerAttempt();
 
                 if ($users->has($this->username) && $users->get($this->username)->authenticate($this->password)) {
