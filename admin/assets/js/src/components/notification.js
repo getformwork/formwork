@@ -4,8 +4,8 @@ Formwork.Notification = function(text, type, interval) {
     }).text(text);
 
     if ($('.notification').length > 0) {
-        var $last = $('.notification:last');
-        var top = $last.offset().top + $last.outerHeight(true);
+        var $last = $('.notification:not(.fadeout):last');
+        var top = $last.offset().top + $last.outerHeight(true) - $(window).scrollTop();
         $notification.css('top', top);
     }
 
