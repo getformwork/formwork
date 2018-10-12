@@ -42,11 +42,9 @@ class Users extends AbstractController
         $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
-        foreach (array('username', 'fullname', 'password', 'email', 'language') as $var) {
-            if (!$data->has($var)) {
-                $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
-                $this->redirect('/users/', 302, true);
-            }
+        if (!$data->has(array('username', 'fullname', 'password', 'email', 'language'))) {
+            $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
+            $this->redirect('/users/', 302, true);
         }
 
         // Ensure there isn't a user with the same username
