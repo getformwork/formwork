@@ -91,6 +91,8 @@ class Formwork
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
+            'admin.login_attempts'     => 10,
+            'admin.login_reset_time'   => 300,
             'admin.logout_redirect'    => 'login',
             'admin.avatar_size'        => 512
         );

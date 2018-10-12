@@ -3,6 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
+use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
@@ -17,6 +18,18 @@ class Authentication extends AbstractController
 
     public function login()
     {
+        $limiter = new AccessLimiter(
+            $this->registry('accessAttempts'),
+            Formwork::instance()->option('admin.login_attempts'),
+            Formwork::instance()->option('admin.login_reset_time')
+        );
+
+        if ($limiter->hasReachedLimit()) {
+            $minutes = round(Formwork::instance()->option('admin.login_reset_time') / 60);
+            $this->error($this->label('login.attempt.too-many', $minutes));
+            return;
+        }
+
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
@@ -43,11 +56,16 @@ class Authentication extends AbstractController
 
                 $this->username = $data->get('username');
                 $this->password = $data->get('password');
+            
+                $limiter->registerAttempt();
 
                 if ($users->has($this->username) && $users->get($this->username)->authenticate($this->password)) {
                     Session::set('FORMWORK_USERNAME', $this->username);
+
                     $time = $this->log('access')->log($this->username);
                     $this->registry('lastAccess')->set($this->username, $time);
+
+                    $limiter->resetAttempts();
 
                     if (!is_null($destination = Session::get('FORMWORK_REDIRECT_TO'))) {
                         Session::remove('FORMWORK_REDIRECT_TO');
@@ -56,7 +74,10 @@ class Authentication extends AbstractController
 
                     $this->redirectToPanel(302, true);
                 } else {
-                    $this->error();
+                    $this->error($this->label('login.attempt.failed'), array(
+                        'username' => $this->username,
+                        'error' => true
+                    ));
                 }
                 break;
         }
@@ -76,13 +97,10 @@ class Authentication extends AbstractController
         }
     }
 
-    protected function error()
+    protected function error($message, $data = array())
     {
-        $this->notify($this->label('login.attempt.failed'), 'error');
-        $this->view('authentication.login', array(
-            'title' => $this->label('login.login'),
-            'username' => $this->username,
-            'error' => true
-        ));
+        $defaults = array('title' => $this->label('login.login'));
+        $this->notify($message, 'error');
+        $this->view('authentication.login', array_merge($defaults, $data));
     }
 }
