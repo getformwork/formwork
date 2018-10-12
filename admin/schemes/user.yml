@@ -75,7 +75,6 @@ rows1:
                     fields:
                         role:
                             type: select
-                            translate: false
                             disabled: true
                             import:
                                 options: 'Formwork\Admin\Users\Users::availableRoles'

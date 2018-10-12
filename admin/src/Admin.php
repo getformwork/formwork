@@ -45,7 +45,7 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
-        $this->language = Language::load(Formwork::instance()->option('admin.lang'));
+        $this->loadLanguage();
 
         set_exception_handler(function ($exception) {
             $this->errors->internalServerError();
@@ -95,6 +95,15 @@ class Admin
         if (!$this->router->hasDispatched()) {
             $this->errors->notFound();
         }
+    }
+
+    protected function loadLanguage()
+    {
+        $languageCode = Formwork::instance()->option('admin.lang');
+        if ($this->isLoggedIn()) {
+            $languageCode = $this->loggedUser()->get('language', $languageCode);
+        }
+        $this->language = Language::load($languageCode);
     }
 
     protected function validateContentLength()

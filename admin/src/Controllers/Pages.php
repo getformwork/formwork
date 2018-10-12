@@ -66,11 +66,9 @@ class Pages extends AbstractController
         $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
-        foreach (array('title', 'slug', 'template', 'parent') as $var) {
-            if (!$data->has($var)) {
-                $this->notify($this->label('pages.page.cannot-create.var-missing', $var), 'error');
-                $this->redirect('/pages/', 302, true);
-            }
+        if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
+            $this->notify($this->label('pages.page.cannot-create.var-missing', $var), 'error');
+            $this->redirect('/pages/', 302, true);
         }
 
         // Ensure there isn't a page with the same uri
@@ -134,11 +132,9 @@ class Pages extends AbstractController
                 $this->fields->validate($data);
 
                 // Ensure no required data is missing
-                foreach (array('title', 'content') as $var) {
-                    if (!$data->has($var)) {
-                        $this->notify($this->label('pages.page.cannot-edit.var-missing', $var), 'error');
-                        $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
-                    }
+                if (!$data->has(array('title', 'content'))) {
+                    $this->notify($this->label('pages.page.cannot-edit.var-missing', $var), 'error');
+                    $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
                 }
 
                 // Update the page
@@ -173,10 +169,8 @@ class Pages extends AbstractController
 
         $data = new DataGetter(HTTPRequest::postData());
 
-        foreach (array('parent', 'from', 'to') as $var) {
-            if (!$data->has($var)) {
-                JSONResponse::error($this->label('pages.page.cannot-move'))->send();
-            }
+        if (!$data->has(array('parent', 'from', 'to'))) {
+            JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {

@@ -26,11 +26,9 @@ class Register extends AbstractController
             case 'POST':
                 $data = new DataGetter(HTTPRequest::postData());
 
-                foreach (array('username', 'fullname', 'password', 'email') as $var) {
-                    if (!$data->has($var)) {
-                        $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
-                        $this->redirectToPanel(302, true);
-                    }
+                if (!$data->has(array('username', 'fullname', 'password', 'email'))) {
+                    $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
+                    $this->redirectToPanel(302, true);
                 }
 
                 $userData = array(
@@ -39,7 +37,6 @@ class Register extends AbstractController
                     'hash'     => Password::hash($data->get('password')),
                     'email'    => $data->get('email'),
                     'language' => $data->get('language'),
-                    'avatar'   => null,
                     'role'     => 'admin'
                 );
 
