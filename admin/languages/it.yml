@@ -184,6 +184,8 @@ user.language: Lingua
 user.last-access: Ultimo accesso
 user.password: Password
 user.role: Ruolo
+user.role.admin: Amministratore
+user.role.user: Utente
 user.username: Nome utente
 users.delete-user: Elimina utente
 users.delete-user.prompt: Si è sicuri di eliminare l’utente? Questa azione non può essere annullata.
