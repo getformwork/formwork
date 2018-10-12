@@ -9,28 +9,24 @@
 }
 
 .users-item-cell {
-    padding: 0.25rem 0.5rem;
+    padding: 0.125rem 0.25rem;
+    vertical-align: middle;
     font-size: 0.875rem;
     @include ellipsis;
 }
 
-.users-item .user-fullname,
 .user-username {
     font-size: 1rem;
 }
 
-.user-status-label::before {
+.user-username,
+.user-fullname {
     display: inline-block;
-    margin-right: 0.25rem;
-    @include icon(circle);
 }
 
-.user-status-enabled .user-status-label::before {
-    color: $color-success;
-}
-
-.user-status-disabled .user-status-label::before {
-    color: $color-error;
+.user-last-access,
+.user-actions {
+    display: none;
 }
 
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
@@ -40,18 +36,23 @@
         table-layout: fixed;
         line-height: 1.5;
     }
+
     .users-item-cell {
         display: table-cell;
-        vertical-align: middle;
+        padding: 0.25rem 0.5rem;
     }
 
-    .users-item .user-fullname {
-        width: 30%;
+    .user-username {
+        width: 20%;
     }
 
     .user-last-access,
     .user-actions {
         text-align: center;
+    }
+
+    .user-last-access {
+        width: 20%;
     }
 
     .user-actions {
