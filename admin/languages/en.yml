@@ -31,6 +31,7 @@ errors.error.not-found.heading: Oops, page not found!
 errors.error.not-found.status: Not Found
 language.name: English
 login.attempt.failed: Login attempt failed! Try again.
+login.attempt.too-many: Too many login attempts. Please try again in %d minutes.
 login.logged-out: You have been logged out
 login.login: Login
 login.logout: Logout

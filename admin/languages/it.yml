@@ -31,6 +31,7 @@ errors.error.not-found.heading: Oops, pagina non trovata!
 errors.error.not-found.status: Non trovato
 language.name: Italiano
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
+login.attempt.too-many: Sono stati sbagliati troppi tentativi di accesso. Riprova tra %d minuti.
 login.logged-out: Sei stato disconnesso
 login.login: Accedi
 login.logout: Esci
