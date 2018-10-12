@@ -10,19 +10,12 @@ use LogicException;
 
 class User extends DataGetter
 {
-    protected $username;
-
-    protected $fullname;
-
-    protected $hash;
-
-    protected $email;
-
-    protected $language;
+    protected $defaults = array(
+        'avatar' => null,
+        'role' => 'user'
+    );
 
     protected $avatar;
-
-    protected $role;
 
     protected $permissions;
 
@@ -30,28 +23,24 @@ class User extends DataGetter
 
     public function __construct($data)
     {
-        $this->data = $data;
-        foreach (array('username', 'fullname', 'hash', 'email', 'language', 'avatar') as $key) {
-            $this->$key = $data[$key];
-        }
-        $this->role = isset($data['role']) ? $data['role'] : 'user';
-        $this->permissions = new Permissions($this->role);
-        $this->avatar = new Avatar($this->avatar);
+        $this->data = array_merge($this->defaults, $data);
+        $this->avatar = new Avatar($this->data['avatar']);
+        $this->permissions = new Permissions($this->data['role']);
     }
 
     public function authenticate($password)
     {
-        return Password::verify($password, $this->hash);
+        return Password::verify($password, $this->data['hash']);
     }
 
     public function isLogged()
     {
-        return Session::get('FORMWORK_USERNAME') === $this->username;
+        return Session::get('FORMWORK_USERNAME') === $this->data['username'];
     }
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->data['role'] === 'admin';
     }
 
     public function canDeleteUser(User $user)
@@ -79,15 +68,17 @@ class User extends DataGetter
         if (!is_null($this->lastAccess)) {
             return $this->lastAccess;
         }
-        $lastAccess = Admin::instance()->registry('lastAccess')->get($this->username);
-        $this->lastAccess = $lastAccess;
-        return $this->lastAccess;
+        $lastAccess = Admin::instance()->registry('lastAccess')->get($this->data['username']);
+        return $this->lastAccess = $lastAccess;
     }
 
     public function __call($name, $arguments)
     {
         if (property_exists($this, $name)) {
             return $this->$name;
+        }
+        if ($this->has($name)) {
+            return $this->get($name);
         }
         throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }

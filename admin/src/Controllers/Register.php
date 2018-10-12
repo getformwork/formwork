@@ -37,7 +37,6 @@ class Register extends AbstractController
                     'hash'     => Password::hash($data->get('password')),
                     'email'    => $data->get('email'),
                     'language' => $data->get('language'),
-                    'avatar'   => null,
                     'role'     => 'admin'
                 );
 

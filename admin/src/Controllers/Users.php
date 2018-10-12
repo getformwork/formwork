@@ -58,9 +58,7 @@ class Users extends AbstractController
             'fullname' => $data->get('fullname'),
             'hash'     => Password::hash($data->get('password')),
             'email'    => $data->get('email'),
-            'language' => $data->get('language'),
-            'avatar'   => null,
-            'role'     => 'user'
+            'language' => $data->get('language')
         );
 
         FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
