@@ -26,9 +26,9 @@ class Errors extends AbstractController
     public function forbidden()
     {
         $this->displayError(403, 'forbidden', array(
-                'href' => $this->uri('/dashboard/'),
-                'label' => $this->label('errors.action.return-to-dashboard')
-            ));
+            'href' => $this->uri('/dashboard/'),
+            'label' => $this->label('errors.action.return-to-dashboard')
+        ));
     }
 
     protected function displayError($status, $name, $action)
