@@ -5,7 +5,6 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Backupper;
 use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Core\Formwork;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPResponse;
@@ -16,7 +15,6 @@ class Backup extends AbstractController
     public function make()
     {
         $this->ensurePermission('backup.make');
-
         $backupper = new Backupper();
         try {
             $file = $backupper->backup();
@@ -33,8 +31,7 @@ class Backup extends AbstractController
     public function download(RouteParams $params)
     {
         $this->ensurePermission('backup.download');
-
-        $file = Formwork::instance()->option('backup.path') . base64_decode($params->get('backup'));
+        $file = $this->option('backup.path') . base64_decode($params->get('backup'));
         try {
             if (FileSystem::exists($file) && FileSystem::isFile($file)) {
                 HTTPResponse::download($file);

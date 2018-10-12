@@ -158,7 +158,17 @@ class Pages extends AbstractController
             'content' => $this->view('pages.editor', array(
                 'page' => $this->page,
                 'templates' => $this->site->templates(),
-                'parents' => $this->site->descendants()->sort('path')
+                'parents' => $this->site->descendants()->sort('path'),
+                'datePickerOptions' => array(
+                    'dayLabels' => $this->label('date.weekdays.short'),
+                    'monthLabels' => $this->label('date.months.long'),
+                    'weekStarts' => $this->option('date.week_starts'),
+                    'todayLabel' => $this->label('date.today'),
+                    'format' => strtr(
+                        $this->option('date.format'),
+                        array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a')
+                    )
+                )
             ), false)
         ));
     }
@@ -278,7 +288,7 @@ class Pages extends AbstractController
     protected function createPage($path, $template, $title)
     {
         FileSystem::createDirectory($path, true);
-        $filename = $template . Formwork::instance()->option('content.extension');
+        $filename = $template . $this->option('content.extension');
         FileSystem::createFile($path . $filename);
         $frontmatter = array(
             'title' => $title
@@ -325,7 +335,7 @@ class Pages extends AbstractController
             $fileContent .= '---' . PHP_EOL;
             $fileContent .= $data->get('content');
             FileSystem::write($page->path() . $page->filename(), $fileContent);
-            FileSystem::touch(Formwork::instance()->option('content.path'));
+            FileSystem::touch($this->option('content.path'));
 
             // Update page with the new data
             $page->reload();
@@ -396,7 +406,7 @@ class Pages extends AbstractController
 
     protected function changePageTemplate(Page $page, $template)
     {
-        $destination = $page->path() . $template . Formwork::instance()->option('content.extension');
+        $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
     }
 

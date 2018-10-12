@@ -9,7 +9,6 @@ use Formwork\Admin\Image;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
-use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Data\DataSetter;
 use Formwork\Parsers\YAML;
@@ -199,7 +198,7 @@ class Users extends AbstractController
         }
 
         if ($hasUploaded) {
-            $avatarSize = Formwork::instance()->option('admin.avatar_size');
+            $avatarSize = $this->option('admin.avatar_size');
 
             // Square off uploaded avatar
             $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
