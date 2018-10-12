@@ -197,7 +197,7 @@ class Pages extends AbstractController
         $from = max(0, $data->get('from'));
         $to = max(0, $data->get('to'));
         if ($to === $from) {
-            return;
+            exit;
         }
 
         array_splice($pages, $to, 0, array_splice($pages, $from, 1));

@@ -80,7 +80,7 @@ class Admin
         }
 
         if ($this->users->isEmpty()) {
-            return $this->registerAdmin();
+            $this->registerAdmin();
         }
 
         if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
@@ -139,6 +139,7 @@ class Admin
         }
         $controller = new Controllers\Register();
         $controller->register();
+        exit;
     }
 
     protected function loadRoutes()

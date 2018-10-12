@@ -22,7 +22,6 @@ class Authentication extends AbstractController
         if ($limiter->hasReachedLimit()) {
             $minutes = round($this->option('admin.login_reset_time') / 60);
             $this->error($this->label('login.attempt.too-many', $minutes));
-            return;
         }
 
         switch (HTTPRequest::method()) {
@@ -47,7 +46,7 @@ class Authentication extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 if (!$data->has(array('username', 'password'))) {
-                    return $this->error();
+                    $this->error();
                 }
 
                 $limiter->registerAttempt();
@@ -98,5 +97,6 @@ class Authentication extends AbstractController
         $defaults = array('title' => $this->label('login.login'));
         $this->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
+        exit;
     }
 }
