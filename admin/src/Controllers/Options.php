@@ -64,7 +64,7 @@ class Options extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch(Formwork::instance()->option('content.path'));
+                FileSystem::touch($this->option('content.path'));
             }
 
             $this->notify($this->label('options.updated'), 'success');

@@ -21,6 +21,7 @@ class Register extends AbstractController
                 $this->view('register.register', array(
                     'title' => $this->label('register.register')
                 ));
+
                 break;
 
             case 'POST':
@@ -47,6 +48,7 @@ class Register extends AbstractController
                 $this->registry('lastAccess')->set($data->get('username'), $time);
 
                 $this->redirectToPanel(302, true);
+
                 break;
         }
     }

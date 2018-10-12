@@ -103,11 +103,5 @@
     </div>
 </div>
 <script>
-$('.date-input').datePicker({
-    dayLabels: <?= json_encode($this->label('date.weekdays.short')) ?>,
-    monthLabels: <?= json_encode($this->label('date.months.long')) ?>,
-    weekStarts: <?= json_encode($this->option('date.week_starts')) ?>,
-    todayLabel: <?= json_encode($this->label('date.today')) ?>,
-    format: <?= json_encode(strtr($this->option('date.format'), array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss'))) ?>
-});
+$('.date-input').datePicker(<?= json_encode($datePickerOptions) ?>);
 </script>
