@@ -43,5 +43,6 @@ class Errors extends AbstractController
             'description' => $this->label('errors.error.' . $name . '.description'),
             'action' => $action
         ));
+        exit;
     }
 }

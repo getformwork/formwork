@@ -102,7 +102,7 @@ class Formwork
     {
         if ($this->option('cache.enabled') && $data = $this->cache->fetch($this->cacheKey)) {
             echo $data;
-            return;
+            exit;
         }
 
         $this->router->add(array(
