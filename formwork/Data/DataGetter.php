@@ -18,6 +18,14 @@ class DataGetter
 
     public function has($key)
     {
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (!$this->has($k)) {
+                    return false;
+                }
+            }
+            return true;
+        }
         return array_key_exists($key, $this->data);
     }
 
