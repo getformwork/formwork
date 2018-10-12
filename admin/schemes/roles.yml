@@ -1,5 +1,5 @@
 admin:
-    title: Administrator
+    title: '{{user.role.admin}}'
     permissions:
         dashboard: true
         cache: true
@@ -9,7 +9,7 @@ admin:
         users: true
 
 user:
-    title: User
+    title: '{{user.role.user}}'
     permissions:
         dashboard: true
         pages: true

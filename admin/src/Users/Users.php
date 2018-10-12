@@ -37,7 +37,7 @@ class Users extends Collection
     {
         $roles = array();
         foreach (static::$roles as $role => $data) {
-            $roles[$role] = $data['title'] . ' (' . $role . ')';
+            $roles[$role] = $data['title'];
         }
         return $roles;
     }
