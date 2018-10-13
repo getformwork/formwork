@@ -38,6 +38,7 @@
 .files-item-cell {
     overflow: hidden;
     white-space: nowrap;
+    font-size: 0.875rem;
 }
 
 .files-item {
@@ -51,15 +52,17 @@
 }
 
 .file-name {
-    width: 60%;
     font-size: 0.9375rem;
     @include ellipsis;
 }
 
+.file-size {
+    color: $color-gray-xdark;
+}
+
 .file-actions {
-    width: 40%;
+    width: 20%;
     text-align: right;
-    font-size: 0.875rem;
 }
 
 .file-actions button,

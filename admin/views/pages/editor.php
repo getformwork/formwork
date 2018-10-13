@@ -72,7 +72,7 @@
 ?>
                     <li>
                         <div class="files-item">
-                            <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>"><?= $file->name() ?></div>
+                            <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                             <div class="files-item-cell file-actions">
                                 <a class="button button-link" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>"><i class="i-eye"></i></a>
                                 <button class="button-link" type="button" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">

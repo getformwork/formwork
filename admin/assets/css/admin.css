@@ -1317,7 +1317,8 @@ a.button {
 
 .files-item-cell {
   overflow: hidden;
-  white-space: nowrap; }
+  white-space: nowrap;
+  font-size: 0.875rem; }
 
 .files-item {
   display: table;
@@ -1328,16 +1329,17 @@ a.button {
   display: table-row; }
 
 .file-name {
-  width: 60%;
   font-size: 0.9375rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
 
+.file-size {
+  color: #7e7e7e; }
+
 .file-actions {
-  width: 40%;
-  text-align: right;
-  font-size: 0.875rem; }
+  width: 20%;
+  text-align: right; }
 
 .file-actions button,
 .file-actions .button {
