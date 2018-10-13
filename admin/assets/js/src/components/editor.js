@@ -48,7 +48,16 @@ Formwork.Editor = function(id) {
     });
 
     $('[data-command=image]', $toolbar).click(function() {
-        insertAtCursor(prependSequence() + '![](', ')');
+        Formwork.Modals.show('imagesModal', null, function($modal) {
+            $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
+            $('.image-picker-confirm', $modal).data('target', function(filename) {
+                if (filename !== undefined) {
+                    insertAtCursor(prependSequence() + '![', '](' + filename + ')');
+                } else {
+                    insertAtCursor(prependSequence() + '![](', ')');
+                }
+            });
+        });
     });
 
     $('[data-command=summary]', $toolbar).click(function() {

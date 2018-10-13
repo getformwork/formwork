@@ -162,7 +162,16 @@ Formwork.Editor = function(id) {
     });
 
     $('[data-command=image]', $toolbar).click(function() {
-        insertAtCursor(prependSequence() + '![](', ')');
+        Formwork.Modals.show('imagesModal', null, function($modal) {
+            $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
+            $('.image-picker-confirm', $modal).data('target', function(filename) {
+                if (filename !== undefined) {
+                    insertAtCursor(prependSequence() + '![', '](' + filename + ')');
+                } else {
+                    insertAtCursor(prependSequence() + '![](', ')');
+                }
+            });
+        });
     });
 
     $('[data-command=summary]', $toolbar).click(function() {
@@ -363,14 +372,11 @@ Formwork.Forms = {
             var $this = $(this);
             var value = $this.val();
             Formwork.Modals.show('imagesModal', null, function($modal) {
-                $modal.find('.image-picker-confirm').data('target', $this);
-                $modal.find('.image-picker-thumbnail').each(function() {
-                    var $thumbnail = $(this);
-                    if ($thumbnail.data('text') == value) {
-                        $thumbnail.addClass('selected');
-                        return false;
-                    }
-                });
+                $('.image-picker-confirm', $modal).data('target', $this);
+                $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
+                if (value) {
+                    $('.image-picker-thumbnail[data-filename="' + value + '"]', $modal).addClass('selected');
+                }
             });
         });
 
@@ -382,8 +388,8 @@ Formwork.Forms = {
                 for (var i = 0; i < options.length; i++) {
                     $('<div>', {
                         class: 'image-picker-thumbnail',
-                        'data-value': options[i].value,
-                        'data-text': options[i].text
+                        'data-uri': options[i].value,
+                        'data-filename': options[i].text
                     }).css({
                         'background-image': 'url(' + options[i].value + ')'
                     }).appendTo(container);
@@ -396,14 +402,20 @@ Formwork.Forms = {
 
         $('.image-picker-confirm').click(function() {
             var $this = $(this);
-            $this.data('target').val($this.parent().find('.image-picker-thumbnail.selected').data('text'));
+            var target = $this.data('target');
+            var filename = $('.image-picker-thumbnail.selected', $this.parent()).data('filename');
+            if (typeof target === 'function') {
+                target(filename);
+            } else {
+                $this.data('target').val(filename);
+            }
         });
 
         $('.image-picker-thumbnail').click(function() {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
-            $this.parent().siblings('.image-input').val($this.data('value'));
+            $this.parent().siblings('.image-input').val($this.data('uri'));
         });
 
         $('.image-picker-thumbnail').dblclick(function() {
