@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.9.0](https://github.com/giuscris/formwork/releases/tag/0.9.0) (2018-10-13)
+
+**Enhancements**
+
+ * **Add user roles and permissions** ([#9](https://github.com/giuscris/formwork/pull/9))
+ * **Limit access after a certain amount of failed login attempts** ([#10](https://github.com/giuscris/formwork/pull/10))
+ * Use HTTP status 400 instead of 403 when CSRF token is not valid
+ * Show a `no-drop` cursor and light red background when page reordering is not possible
+ * Improve users list appearance especially for small screen sizes
+ * Slightly reduce sidebar width to have more room for content
+ * Improve pages list columns sizing
+ * Use user language when provided instead of `admin.lang` option
+ * Display file size next to uploaded file names
+
+**Bug fixes**
+
+ * **Fix notification spacing issues when page is scrolled**
+ * Fix missing error notification when editing users is forbidden
+ * Check uploaded avatar existence before user update
+ * Fix language strings
+ * Fix wrong exception type in `Uploader` class
+
 ## [0.8.1](https://github.com/giuscris/formwork/releases/tag/0.8.1) (2018-10-08)
 
 **Enhancements**
