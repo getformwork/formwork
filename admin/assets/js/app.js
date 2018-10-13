@@ -292,7 +292,7 @@ Formwork.Form = function(form) {
             var link = this;
             event.preventDefault();
             Formwork.Modals.show('changesModal', null, function($modal) {
-                $modal.find('[data-command=continue]').click(function() {
+                $('[data-command=continue]', $modal).click(function() {
                     $window.off('beforeunload');
                     window.location.href = $(this).data('href');
                 }).attr('data-href', link.href);
@@ -301,7 +301,7 @@ Formwork.Form = function(form) {
     });
 
     function hasChanged() {
-        var $fileInputs = $form.find(':file');
+        var $fileInputs = $(':file', $form);
         if ($fileInputs.length > 0) {
             for (var i = 0; i < $fileInputs.length; i++) {
                 if ($fileInputs[i].files.length > 0) {
@@ -481,9 +481,9 @@ Formwork.Modals = {
         var $modal = $('#' + id);
         $modal.addClass('show');
         if (action !== null) {
-            $modal.find('form').attr('action', action);
+            $('form', $modal).attr('action', action);
         }
-        $modal.find('[autofocus]').first().focus(); // Firefox bug
+        $('[autofocus]', $modal).first().focus(); // Firefox bug
         if (typeof callback === 'function') {
             callback($modal);
         }
@@ -511,11 +511,11 @@ Formwork.Modals = {
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);
-        $modal.find('[required]').each(function() {
+        $('[required]', $modal).each(function() {
             var $this = $(this);
             if ($this.val() === '') {
                 $this.addClass('animated shake').focus();
-                $modal.find('.modal-error').show();
+                $('.modal-error', $modal).show();
                 valid = false;
                 return false;
             }
@@ -592,13 +592,13 @@ Formwork.Pages = {
         $('[data-command=expand-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').show();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+            $('.page-children-toggle', '.pages-list').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
         $('[data-command=collapse-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').hide();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+            $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
         });
 
         $('.page-search').focus(function() {
@@ -636,7 +636,7 @@ Formwork.Pages = {
         }, 100));
 
         $('.page-details').click(function() {
-            var $toggle = $(this).find('.page-children-toggle').first();
+            var $toggle = $('.page-children-toggle', this).first();
             if ($toggle.length) {
                 $toggle.click();
             }
@@ -656,7 +656,7 @@ Formwork.Pages = {
         });
 
         $('#page-parent', '#newPageModal').change(function() {
-            var $option = $(this).find('option:selected');
+            var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
             var allowedTemplates = $option.data('allowed-templates');
             if (allowedTemplates) {
@@ -670,7 +670,7 @@ Formwork.Pages = {
                             $this.attr('disabled', true);
                         }
                     });
-            } else if ($pageTemplate.find('option[disabled]').length) {
+            } else if ($('option[disabled]', $pageTemplate).length) {
                 $pageTemplate
                     .val($pageTemplate.data('previous-value'))
                     .removeData('previous-value')
@@ -1362,7 +1362,7 @@ Formwork.Utils = {
 
         function _update($input) {
             var $parent = $input.parent();
-            $parent.find('.tag-hidden-input').val($parent.data('tags').join(', '));
+            $('.tag-hidden-input', $parent).val($parent.data('tags').join(', '));
         }
 
         function _createTag($input, value) {
@@ -1390,8 +1390,8 @@ Formwork.Utils = {
 
         this.each(function() {
             var $this = $(this);
-            var $target = $this.find('.tag-hidden-input');
-            var $input = $this.find('.tag-inner-input');
+            var $target = $('.tag-hidden-input', $this);
+            var $input = $('.tag-inner-input', $this);
             var tags = [];
             if ($target.val()) {
                 tags = $target.val().split(', ');
@@ -1412,11 +1412,11 @@ Formwork.Utils = {
         });
 
         this.mousedown(function() {
-          $(this).find('.tag-inner-input').focus();
+          $('.tag-inner-input', this).focus();
           return false;
         });
 
-        this.find('.tag-inner-input').focus(function() {
+        $('.tag-inner-input', this).focus(function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
             var $this = $(this);

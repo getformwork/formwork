@@ -3,7 +3,7 @@
 
         function _update($input) {
             var $parent = $input.parent();
-            $parent.find('.tag-hidden-input').val($parent.data('tags').join(', '));
+            $('.tag-hidden-input', $parent).val($parent.data('tags').join(', '));
         }
 
         function _createTag($input, value) {
@@ -31,8 +31,8 @@
 
         this.each(function() {
             var $this = $(this);
-            var $target = $this.find('.tag-hidden-input');
-            var $input = $this.find('.tag-inner-input');
+            var $target = $('.tag-hidden-input', $this);
+            var $input = $('.tag-inner-input', $this);
             var tags = [];
             if ($target.val()) {
                 tags = $target.val().split(', ');
@@ -53,11 +53,11 @@
         });
 
         this.mousedown(function() {
-          $(this).find('.tag-inner-input').focus();
+          $('.tag-inner-input', this).focus();
           return false;
         });
 
-        this.find('.tag-inner-input').focus(function() {
+        $('.tag-inner-input', this).focus(function() {
             $(this).parent().addClass('focused');
         }).blur(function() {
             var $this = $(this);

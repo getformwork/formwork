@@ -14,13 +14,13 @@ Formwork.Pages = {
         $('[data-command=expand-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').show();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-collapsed').addClass('toggle-expanded');
+            $('.page-children-toggle', '.pages-list').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
         $('[data-command=collapse-all-pages]').click(function() {
             $(this).blur();
             $('.pages-children').hide();
-            $('.pages-list').find('.page-children-toggle').removeClass('toggle-expanded').addClass('toggle-collapsed');
+            $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
         });
 
         $('.page-search').focus(function() {
@@ -58,7 +58,7 @@ Formwork.Pages = {
         }, 100));
 
         $('.page-details').click(function() {
-            var $toggle = $(this).find('.page-children-toggle').first();
+            var $toggle = $('.page-children-toggle', this).first();
             if ($toggle.length) {
                 $toggle.click();
             }
@@ -78,7 +78,7 @@ Formwork.Pages = {
         });
 
         $('#page-parent', '#newPageModal').change(function() {
-            var $option = $(this).find('option:selected');
+            var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
             var allowedTemplates = $option.data('allowed-templates');
             if (allowedTemplates) {
@@ -92,7 +92,7 @@ Formwork.Pages = {
                             $this.attr('disabled', true);
                         }
                     });
-            } else if ($pageTemplate.find('option[disabled]').length) {
+            } else if ($('option[disabled]', $pageTemplate).length) {
                 $pageTemplate
                     .val($pageTemplate.data('previous-value'))
                     .removeData('previous-value')

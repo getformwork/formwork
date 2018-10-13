@@ -40,9 +40,9 @@ Formwork.Modals = {
         var $modal = $('#' + id);
         $modal.addClass('show');
         if (action !== null) {
-            $modal.find('form').attr('action', action);
+            $('form', $modal).attr('action', action);
         }
-        $modal.find('[autofocus]').first().focus(); // Firefox bug
+        $('[autofocus]', $modal).first().focus(); // Firefox bug
         if (typeof callback === 'function') {
             callback($modal);
         }
@@ -70,11 +70,11 @@ Formwork.Modals = {
     validate: function(id) {
         var valid = false;
         var $modal = $('#' + id);
-        $modal.find('[required]').each(function() {
+        $('[required]', $modal).each(function() {
             var $this = $(this);
             if ($this.val() === '') {
                 $this.addClass('animated shake').focus();
-                $modal.find('.modal-error').show();
+                $('.modal-error', $modal).show();
                 valid = false;
                 return false;
             }

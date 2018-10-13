@@ -19,7 +19,7 @@ Formwork.Form = function(form) {
             var link = this;
             event.preventDefault();
             Formwork.Modals.show('changesModal', null, function($modal) {
-                $modal.find('[data-command=continue]').click(function() {
+                $('[data-command=continue]', $modal).click(function() {
                     $window.off('beforeunload');
                     window.location.href = $(this).data('href');
                 }).attr('data-href', link.href);
@@ -28,7 +28,7 @@ Formwork.Form = function(form) {
     });
 
     function hasChanged() {
-        var $fileInputs = $form.find(':file');
+        var $fileInputs = $(':file', $form);
         if ($fileInputs.length > 0) {
             for (var i = 0; i < $fileInputs.length; i++) {
                 if ($fileInputs[i].files.length > 0) {
