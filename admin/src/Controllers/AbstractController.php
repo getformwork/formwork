@@ -10,7 +10,6 @@ use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use InvalidArgumentException;
 
 abstract class AbstractController
 {
@@ -25,9 +24,9 @@ abstract class AbstractController
         $this->location = strtolower(substr(strrchr(static::class, '\\'), 1));
     }
 
-    protected function formwork()
+    protected function site()
     {
-        return Formwork::instance();
+        return Formwork::instance()->site();
     }
 
     protected function option($option)
@@ -73,11 +72,8 @@ abstract class AbstractController
         }
     }
 
-    protected function field($field, $render = true)
+    protected function field(Field $field, $render = true)
     {
-        if (!($field instanceof Field)) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Field::class);
-        }
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
     }
 
@@ -94,9 +90,9 @@ abstract class AbstractController
         }
     }
 
-    protected function modal($modal, $data = array(), $render = false)
+    protected function modal($modal, $data = array())
     {
-        $this->modals[] = $this->view('modals.' . $modal, $data, $render);
+        $this->modals[] = $this->view('modals.' . $modal, $data, false);
     }
 
     protected function view($view, $data = array(), $render = true)

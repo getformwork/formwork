@@ -2,9 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;
-use Formwork\Core\Formwork;
 
 class Dashboard extends AbstractController
 {
@@ -12,13 +10,11 @@ class Dashboard extends AbstractController
     {
         $this->ensurePermission('dashboard');
 
-        $site = Formwork::instance()->site();
-
         $statistics = new Statistics();
 
         $this->modal('newPage', array(
-            'templates' => $site->templates(),
-            'pages' => $site->descendants()->sort('path')
+            'templates' => $this->site()->templates(),
+            'pages' => $this->site()->descendants()->sort('path')
         ));
 
         $this->modal('deletePage');
@@ -26,9 +22,8 @@ class Dashboard extends AbstractController
         $this->view('admin', array(
             'title' => $this->label('dashboard.dashboard'),
             'content' => $this->view('dashboard.index', array(
-                'user' => Admin::instance()->loggedUser(),
                 'lastModifiedPages' => $this->view('pages.list', array(
-                    'pages' => $site->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
+                    'pages' => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
                     'subpages' => false,
                     'class' => 'pages-list-top',
                     'parent' => null,

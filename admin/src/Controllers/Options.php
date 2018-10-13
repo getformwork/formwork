@@ -59,7 +59,7 @@ class Options extends AbstractController
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postDataFromRaw());
-            $options = Formwork::instance()->site()->data();
+            $options = $this->site()->data();
             $differ = $this->updateOptions('site', $fields->validate($data), $options, array());
 
             // Touch content folder to invalidate cache
@@ -71,7 +71,7 @@ class Options extends AbstractController
             $this->redirect('/options/site/', 302, true);
         }
 
-        $fields->validate(new DataGetter(Formwork::instance()->site()->data()));
+        $fields->validate(new DataGetter($this->site()->data()));
 
         $this->modal('changes');
 
@@ -136,10 +136,10 @@ class Options extends AbstractController
             ),
             'Session' => array(
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Strict Mode' => ini_get('session.use_strict_mode')
+                'Session Strict Mode' => ini_get('session.use_strict_mode') ? 'true' : 'false'
             ),
             'Uploads' => array(
-                'File Uploads' => ini_get('file_uploads'),
+                'File Uploads' => ini_get('file_uploads') ? 'true' : 'false',
                 'POST Max Size' => ini_get('post_max_size'),
                 'Maximum File Size' => ini_get('upload_max_filesize'),
                 'Maximum File Uploads' => ini_get('max_file_uploads')
@@ -151,13 +151,17 @@ class Options extends AbstractController
                 'Default MIME-Type' => ini_get('default_mimetype'),
                 'Default Charset' => ini_get('default_charset')
             ),
+            'System' => array(
+                'Directory Separator' => DS,
+                'EOL Symbol' => addcslashes(PHP_EOL, "\r\n")
+            ),
             'Formwork' => array(
                 'Formwork Version' => Formwork::VERSION,
-                'Directory Separator' => DS,
-                'EOL Symbol' => addcslashes(PHP_EOL, "\r\n"),
                 'Root Path' => ROOT_PATH,
                 'Formwork Path' => FORMWORK_PATH,
-                'Config Path' => CONFIG_PATH,
+                'Config Path' => CONFIG_PATH
+            ),
+            'Dependencies' => array(
                 'Parsedown Version' => $dependencies['erusev/parsedown']['version'],
                 'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
                 'Spyc Version' => $dependencies['mustangostang/spyc']['version']
