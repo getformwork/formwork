@@ -41,10 +41,12 @@ class Authentication extends AbstractController
                 break;
 
             case 'POST':
+                // Delay request processing for 0.5-1s
                 usleep(rand(500, 1000) * 1e3);
 
                 $data = new DataGetter(HTTPRequest::postData());
 
+                // Ensure no required data is missing
                 if (!$data->has(array('username', 'password'))) {
                     $this->error();
                 }
@@ -53,6 +55,7 @@ class Authentication extends AbstractController
 
                 $user = Admin::instance()->users()->get($data->get('username'));
 
+                // Authenticate user
                 if (!is_null($user) && $user->authenticate($data->get('password'))) {
                     Session::set('FORMWORK_USERNAME', $data->get('username'));
 
