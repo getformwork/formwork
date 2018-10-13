@@ -202,12 +202,12 @@ class Admin
         $this->router->add(
             array('GET', 'POST'),
             '/options/system/',
-            array(new Controllers\Options(), 'system')
+            array(new Controllers\Options(), 'systemOptions')
         );
         $this->router->add(
             array('GET', 'POST'),
             '/options/site/',
-            array(new Controllers\Options(), 'site')
+            array(new Controllers\Options(), 'siteOptions')
         );
         $this->router->add(
             '/options/updates/',

@@ -20,7 +20,7 @@ class Options extends AbstractController
         $this->redirect('/options/system/', 302, true);
     }
 
-    public function system()
+    public function systemOptions()
     {
         $this->ensurePermission('options.system');
 
@@ -51,7 +51,7 @@ class Options extends AbstractController
         ));
     }
 
-    public function site()
+    public function siteOptions()
     {
         $this->ensurePermission('options.site');
 
