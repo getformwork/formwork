@@ -46,7 +46,7 @@ abstract class AbstractController
 
     protected function user()
     {
-        return Admin::instance()->loggedUser();
+        return Admin::instance()->user();
     }
 
     protected function escape($string)

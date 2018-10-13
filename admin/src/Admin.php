@@ -21,13 +21,13 @@ class Admin
 
     public static $instance;
 
-    protected $errors;
-
     protected $router;
 
     protected $users;
 
     protected $language;
+
+    protected $errors;
 
     public function __construct()
     {
@@ -36,8 +36,6 @@ class Admin
         }
         static::$instance = $this;
 
-        $this->errors = new Controllers\Errors();
-
         if (!Formwork::instance()->option('admin.enabled')) {
             $this->redirectToSite(302, true);
         }
@@ -45,12 +43,8 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
-        $this->loadLanguage();
-
-        set_exception_handler(function ($exception) {
-            $this->errors->internalServerError();
-            throw $exception;
-        });
+        $this->loadLanguages();
+        $this->loadErrorHandler();
     }
 
     public static function instance()
@@ -63,10 +57,11 @@ class Admin
 
     public function isLoggedIn()
     {
-        return !is_null($user = Session::get('FORMWORK_USERNAME')) && $this->users->has($user);
+        $username = Session::get('FORMWORK_USERNAME');
+        return !empty($username) && $this->users->has($username);
     }
 
-    public function loggedUser()
+    public function user()
     {
         $username = Session::get('FORMWORK_USERNAME');
         return $this->users->get($username);
@@ -97,13 +92,22 @@ class Admin
         }
     }
 
-    protected function loadLanguage()
+    protected function loadLanguages()
     {
         $languageCode = Formwork::instance()->option('admin.lang');
         if ($this->isLoggedIn()) {
-            $languageCode = $this->loggedUser()->get('language', $languageCode);
+            $languageCode = $this->user()->get('language', $languageCode);
         }
         $this->language = Language::load($languageCode);
+    }
+
+    protected function loadErrorHandler()
+    {
+        $this->errors = new Controllers\Errors();
+        set_exception_handler(function ($exception) {
+            $this->errors->internalServerError();
+            throw $exception;
+        });
     }
 
     protected function validateContentLength()
