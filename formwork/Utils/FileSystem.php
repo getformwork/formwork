@@ -314,7 +314,7 @@ class FileSystem
         return $list;
     }
 
-    public static function listFiles($path = null, $all = false)
+    public static function listFiles($path, $all = false)
     {
         $path = static::normalize($path);
         return array_filter(static::scan($path, $all), function ($item) use ($path) {
@@ -322,7 +322,7 @@ class FileSystem
         });
     }
 
-    public static function listDirectories($path = null, $all = false)
+    public static function listDirectories($path, $all = false)
     {
         $path = static::normalize($path);
         return array_filter(static::scan($path, $all), function ($item) use ($path) {
