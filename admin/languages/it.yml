@@ -95,7 +95,7 @@ pages.editor.italic: Corsivo
 pages.editor.link: Collegamento
 pages.editor.numbered-list: Elenco numerato
 pages.editor.quote: Citazione
-pages.editor.summary: Summary
+pages.editor.summary: Sommario
 pages.files: File
 pages.files.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
 pages.new-page: Nuova pagina
@@ -112,13 +112,13 @@ pages.page.cannot-change-num: Impossibile cambiare il numero della pagina
 pages.page.cannot-create: Impossibile creare la pagina
 pages.page.cannot-create.already-exists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
 pages.page.cannot-create.invalid-parent: Impossibile creare la pagina, la pagina superiore specificata non è valida
-pages.page.cannot-create.var-missing: Impossibile creare la pagina, manca la variabile %s
+pages.page.cannot-create.var-missing: Impossibile creare la pagina, manca una variabile
 pages.page.cannot-delete-file: Impossibile eliminare il file. %s.
 pages.page.cannot-delete-file.file-not-found: File non trovato
 pages.page.cannot-delete: Impossibile eliminare la pagina. %s.
 pages.page.cannot-delete.not-deletable: La pagina non è eliminabile
 pages.page.cannot-edit.page-missing: Impossibile modificare la pagina, pagina non trovata
-pages.page.cannot-edit.var-missing: Impossibile modificare la pagina, manca la variabile %s
+pages.page.cannot-edit.var-missing: Impossibile modificare la pagina, manca una variabile
 pages.page.cannot-move: Impossibile spostare la pagina
 pages.page.created: Pagina creata!
 pages.page.deleted: Pagina eliminata
@@ -199,7 +199,7 @@ users.user: Utente
 users.user.cannot-change-password: Impossibile cambiare la password di un altro utente. L’azione non è consentita.
 users.user.cannot-change-role: Impossible cambare il ruolo di %s. L’azione non è consentita.
 users.user.cannot-create.already-exists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
-users.user.cannot-create.var-missing: Impossibile creare l’utente, manca la variabile %s
+users.user.cannot-create.var-missing: Impossibile creare l’utente, manca una variabile
 users.user.cannot-delete: Impossibile eliminare l’utente. Devi essere un amministratore e l’utente non deve essere connesso.
 users.user.cannot-edit: Impossibile modificare l’utente %s. L’azione non è consentita.
 users.user.created: Utente creato
