@@ -31,19 +31,13 @@
             <div class="col-l-1-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.options') ?></h3>
-<?php
-                    foreach ($this->fields as $field):
-?>
-                    <?= $this->field($field->name()) ?>
-<?php
-                    endforeach;
-?>
+                    <?= $fields ?>
                 </div>
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.attributes') ?></h3>
                     <label for="page-parent"><?= $this->label('pages.parent') ?>:</label>
                     <select id="page-parent" name="parent">
-                        <option value="." <?php if ($page->parent() === $this->site): ?> selected<?php endif; ?>><?= $this->label('pages.new-page.site') ?> (/)</option>
+                        <option value="." <?php if ($page->parent() === $this->site()): ?> selected<?php endif; ?>><?= $this->label('pages.new-page.site') ?> (/)</option>
 <?php
                         foreach ($parents as $parent):
                             $scheme = $this->scheme($parent->template()->name());

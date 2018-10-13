@@ -6,7 +6,6 @@ use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
@@ -22,25 +21,13 @@ class Pages extends AbstractController
 {
     const DATE_NUM_FORMAT = 'Ymd';
 
-    protected $site;
-
-    protected $page;
-
-    protected $fields;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->site = Formwork::instance()->site();
-    }
-
     public function index()
     {
         $this->ensurePermission('pages.index');
 
         $this->modal('newPage', array(
-            'templates' => $this->site->templates(),
-            'pages' => $this->site->descendants()->sort('path')
+            'templates' => $this->site()->templates(),
+            'pages' => $this->site()->descendants()->sort('path')
         ));
 
         $this->modal('deletePage');
@@ -49,7 +36,7 @@ class Pages extends AbstractController
             'title' => $this->label('pages.pages'),
             'content' => $this->view('pages.index', array(
                 'pagesList' => $this->view('pages.list', array(
-                    'pages' => $this->site->pages(),
+                    'pages' => $this->site()->pages(),
                     'subpages' => true,
                     'class' => 'pages-list-top',
                     'parent' => '.',
@@ -72,7 +59,7 @@ class Pages extends AbstractController
         }
 
         // Ensure there isn't a page with the same uri
-        if ($this->site->findPage($data->get('slug'))) {
+        if ($this->site()->findPage($data->get('slug'))) {
             $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
             $this->redirect('/pages/', 302, true);
         }
@@ -103,24 +90,24 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.edit');
 
-        $this->page = $this->site->findPage($params->get('page'));
+        $page = $this->site()->findPage($params->get('page'));
 
         // Ensure the page exists
-        if (!$this->page) {
+        if (!$page) {
             $this->notify($this->label('pages.page.cannot-edit.page-missing'), 'error');
             $this->redirect('/pages/', 302, true);
         }
 
         // Load page fields
-        $this->fields = new Fields($this->page->template()->scheme()->get('fields'));
+        $fields = new Fields($page->template()->scheme()->get('fields'));
 
         switch (HTTPRequest::method()) {
             case 'GET':
                 // Load data from the page itself
-                $data = new DataGetter($this->page->data());
+                $data = new DataGetter($page->data());
 
                 // Validate fields against data
-                $this->fields->validate($data);
+                $fields->validate($data);
 
                 break;
 
@@ -129,7 +116,7 @@ class Pages extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 // Validate fields against data
-                $this->fields->validate($data);
+                $fields->validate($data);
 
                 // Ensure no required data is missing
                 if (!$data->has(array('title', 'content'))) {
@@ -138,7 +125,7 @@ class Pages extends AbstractController
                 }
 
                 // Update the page
-                $this->page = $this->updatePage($this->page, $data);
+                $page = $this->updatePage($page, $data, $fields);
 
                 break;
         }
@@ -146,7 +133,7 @@ class Pages extends AbstractController
         $this->modal('changes');
 
         $this->modal('images', array(
-            'page' => $this->page
+            'page' => $page
         ));
 
         $this->modal('deletePage');
@@ -154,11 +141,12 @@ class Pages extends AbstractController
         $this->modal('deleteFile');
 
         $this->view('admin', array(
-            'title' => $this->label('pages.edit-page', $this->page->title()),
+            'title' => $this->label('pages.edit-page', $page->title()),
             'content' => $this->view('pages.editor', array(
-                'page' => $this->page,
-                'templates' => $this->site->templates(),
-                'parents' => $this->site->descendants()->sort('path'),
+                'page' => $page,
+                'fields' => $this->fields($fields, false),
+                'templates' => $this->site()->templates(),
+                'parents' => $this->site()->descendants()->sort('path'),
                 'datePickerOptions' => array(
                     'dayLabels' => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
@@ -221,7 +209,7 @@ class Pages extends AbstractController
         $this->ensurePermission('pages.delete');
 
         try {
-            $page = $this->site->findPage($params->get('page'));
+            $page = $this->site()->findPage($params->get('page'));
             if (!$page) {
                 throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
@@ -245,7 +233,7 @@ class Pages extends AbstractController
 
         if (HTTPRequest::hasFiles()) {
             try {
-                $page = $this->site->findPage($params->get('page'));
+                $page = $this->site()->findPage($params->get('page'));
                 if (!$page) {
                     throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
                 }
@@ -267,7 +255,7 @@ class Pages extends AbstractController
         $this->ensurePermission('pages.delete_file');
 
         try {
-            $page = $this->site->findPage($params->get('page'));
+            $page = $this->site()->findPage($params->get('page'));
             if (!$page) {
                 throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
@@ -300,7 +288,7 @@ class Pages extends AbstractController
         return new Page($path);
     }
 
-    protected function updatePage(Page $page, DataGetter $data)
+    protected function updatePage(Page $page, DataGetter $data, Fields $fields)
     {
         // Load current page frontmatter
         $frontmatter = $page->frontmatter();
@@ -311,7 +299,7 @@ class Pages extends AbstractController
         }
 
         // Handle data from fields
-        foreach ($this->fields as $field) {
+        foreach ($fields as $field) {
             $empty = is_null($field->value()) || $field->value() === '';
             $default = isset($page->defaults()[$field->name()]) && $field->value() === $page->defaults()[$field->name()];
 
@@ -410,17 +398,11 @@ class Pages extends AbstractController
         FileSystem::move($page->path() . $page->filename(), $destination);
     }
 
-    protected function field($fieldName, $render = true)
-    {
-        $field = $this->fields->get($fieldName);
-        return parent::field($field, $render);
-    }
-
     protected function resolveParent($parent)
     {
         if ($parent === '.') {
-            return $this->site;
+            return $this->site();
         }
-        return $this->site->findPage($parent);
+        return $this->site()->findPage($parent);
     }
 }
