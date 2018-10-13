@@ -112,13 +112,13 @@ pages.page.cannot-change-num: Cannot change page number
 pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
 pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
-pages.page.cannot-create.var-missing: Cannot create page, missing %s variable
+pages.page.cannot-create.var-missing: Cannot create page, missing a variable
 pages.page.cannot-delete-file: Cannot delete file. %s.
 pages.page.cannot-delete-file.file-not-found: File not found
 pages.page.cannot-delete: Cannot delete page. %s.
 pages.page.cannot-delete.not-deletable: The page is not deletable
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
-pages.page.cannot-edit.var-missing: Cannot edit page, missing variable %s
+pages.page.cannot-edit.var-missing: Cannot edit page, missing a variable
 pages.page.cannot-move: Cannot move page
 pages.page.created: Page created!
 pages.page.deleted: Page deleted
@@ -198,7 +198,7 @@ users.user: User
 users.user.cannot-change-password: Cannot change the password of another user. The action is not allowed.
 users.user.cannot-change-role: Cannot change the role of %s. The action is not allowed.
 users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
-users.user.cannot-create.var-missing: Cannot create user, missing %s variable
+users.user.cannot-create.var-missing: Cannot create user, missing a variable
 users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
 users.user.cannot-edit: Cannot edit user %s. The action is not allowed.
 users.user.created: User created
