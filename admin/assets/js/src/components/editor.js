@@ -12,26 +12,20 @@ Formwork.Editor = function(id) {
     });
 
     $('[data-command=ul]', $toolbar).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(prevChar === undefined ? '- ' : prepend + '- ', '');
+        insertAtCursor(prependSequence() + '- ', '');
     });
 
     $('[data-command=ol]', $toolbar).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
         } else {
-            insertAtCursor(prevChar === undefined ? '1. ' : prepend + '1. ', '');
+            insertAtCursor(prependSequence() + '1. ', '');
         }
     });
 
     $('[data-command=quote]', $toolbar).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = prevChar === '\n' ? '\n' : '\n\n';
-        insertAtCursor(prevChar === undefined ? '> ' : prepend + '> ', '');
+        insertAtCursor(prependSequence() + '> ', '');
     });
 
     $('[data-command=link]', $toolbar).click(function() {
@@ -54,20 +48,12 @@ Formwork.Editor = function(id) {
     });
 
     $('[data-command=image]', $toolbar).click(function() {
-        var prevChar = prevCursorChar();
-        var prepend = '\n\n';
-        if (prevChar === '\n') {
-            prepend = '\n';
-        } else if (prevChar === undefined) {
-            prepend = '';
-        }
-        insertAtCursor(prepend + '![](', ')');
+        insertAtCursor(prependSequence() + '![](', ')');
     });
 
     $('[data-command=summary]', $toolbar).click(function() {
-        var prevChar = prevCursorChar();
         if (!hasSummarySequence()) {
-            console.log(prevChar);
+            var prevChar = prevCursorChar();
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
             insertAtCursor(prepend + '\n===\n\n', '');
             $(this).attr('disabled', true);
@@ -136,6 +122,17 @@ Formwork.Editor = function(id) {
     function prevCursorChar() {
         var startPos = textarea.selectionStart;
         return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
+    }
+
+    function prependSequence() {
+        switch (prevCursorChar()) {
+            case undefined:
+                return '';
+            case '\n':
+                return '\n';
+            default:
+                return '\n\n';
+        }
     }
 
     function insertAtCursor(leftValue, rightValue) {
