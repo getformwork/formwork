@@ -42,7 +42,7 @@ class Users extends AbstractController
 
         // Ensure no required data is missing
         if (!$data->has(array('username', 'fullname', 'password', 'email', 'language'))) {
-            $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
+            $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
             $this->redirect('/users/', 302, true);
         }
 

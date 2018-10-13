@@ -54,7 +54,7 @@ class Pages extends AbstractController
 
         // Ensure no required data is missing
         if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
-            $this->notify($this->label('pages.page.cannot-create.var-missing', $var), 'error');
+            $this->notify($this->label('pages.page.cannot-create.var-missing'), 'error');
             $this->redirect('/pages/', 302, true);
         }
 
@@ -120,7 +120,7 @@ class Pages extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->has(array('title', 'content'))) {
-                    $this->notify($this->label('pages.page.cannot-edit.var-missing', $var), 'error');
+                    $this->notify($this->label('pages.page.cannot-edit.var-missing'), 'error');
                     $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
                 }
 
