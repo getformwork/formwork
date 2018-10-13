@@ -28,7 +28,7 @@ class Register extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 if (!$data->has(array('username', 'fullname', 'password', 'email'))) {
-                    $this->notify($this->label('users.user.cannot-create.var-missing', $var), 'error');
+                    $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
                     $this->redirectToPanel(302, true);
                 }
 
