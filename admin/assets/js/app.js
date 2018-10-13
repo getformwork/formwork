@@ -406,6 +406,11 @@ Formwork.Forms = {
             $this.parent().siblings('.image-input').val($this.data('value'));
         });
 
+        $('.image-picker-thumbnail').dblclick(function() {
+            $(this).click();
+            $('.image-picker-confirm').click();
+        });
+
         $('[data-command=upload]').click(function() {
             var $target = $('#' + $(this).data('upload-target'));
             $target.click();
