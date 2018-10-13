@@ -18,6 +18,8 @@ class File
 
     protected $type;
 
+    protected $size;
+
     public function __construct($path)
     {
         $this->path = $path;
@@ -25,6 +27,7 @@ class File
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
         $this->type = $this->type();
+        $this->size = FileSystem::size($path);
     }
 
     public function type()
