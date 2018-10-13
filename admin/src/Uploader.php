@@ -7,7 +7,6 @@ use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\MimeType;
-use RuntimeException;
 
 class Uploader
 {
@@ -114,7 +113,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new RuntimeException('Invalid file name ' . $filename, 'uploader.error.file-name');
+            throw new LocalizedException('Invalid file name ' . $filename, 'uploader.error.file-name');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {
