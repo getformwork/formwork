@@ -43,6 +43,6 @@ class Errors extends AbstractController
             'description' => $this->label('errors.error.' . $name . '.description'),
             'action' => $action
         ));
-        exit;
+        // Don't exit, otherwise the error will not be logged
     }
 }

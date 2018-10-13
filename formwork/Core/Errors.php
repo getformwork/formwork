@@ -21,7 +21,7 @@ class Errors
         Header::status($status);
         $message = Header::$statuses[$status];
         require FORMWORK_PATH . 'error.php';
-        exit;
+        // Don't exit, otherwise the error will not be logged
     }
 
     public static function exceptionHandler($exception)
