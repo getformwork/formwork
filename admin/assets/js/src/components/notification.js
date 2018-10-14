@@ -1,7 +1,5 @@
-Formwork.Notification = function(text, type, interval) {
-    var $notification = $('<div>', {
-        class: 'notification'
-    }).text(text);
+Formwork.Notification = function (text, type, interval) {
+    var $notification = $('<div>', {class: 'notification'}).text(text);
 
     if ($('.notification').length > 0) {
         var $last = $('.notification:not(.fadeout):last');
@@ -19,11 +17,11 @@ Formwork.Notification = function(text, type, interval) {
 
     $notification.click(remove);
 
-    $notification.mouseenter(function() {
+    $notification.mouseenter(function () {
         clearTimeout(timer);
     });
 
-    $notification.mouseleave(function() {
+    $notification.mouseleave(function () {
         timer = setTimeout(remove, 1000);
     });
 
@@ -31,7 +29,7 @@ Formwork.Notification = function(text, type, interval) {
         var found = false;
         var offset = $notification.outerHeight(true);
 
-        $('.notification').each(function() {
+        $('.notification').each(function () {
             var $this = $(this);
             if ($this.is($notification)) {
                 found = true;
@@ -41,7 +39,7 @@ Formwork.Notification = function(text, type, interval) {
             }
         });
 
-        setTimeout(function() {
+        setTimeout(function () {
             $notification.remove();
         }, 400);
 

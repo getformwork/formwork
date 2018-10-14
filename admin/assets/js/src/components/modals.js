@@ -1,6 +1,6 @@
 Formwork.Modals = {
-    init: function() {
-        $('[data-modal]').click(function() {
+    init: function () {
+        $('[data-modal]').click(function () {
             var $this = $(this);
             var modal = $this.attr('data-modal');
             var action = $this.attr('data-modal-action');
@@ -11,7 +11,7 @@ Formwork.Modals = {
             }
         });
 
-        $('.modal [data-dismiss]').click(function() {
+        $('.modal [data-dismiss]').click(function () {
             var $this = $(this);
             if ($this.is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
@@ -22,15 +22,15 @@ Formwork.Modals = {
             Formwork.Modals.hide($this.attr('data-dismiss'));
         });
 
-        $('.modal').click(function(event) {
+        $('.modal').click(function (event) {
             if (event.target === this) {
                 Formwork.Modals.hide();
             }
         });
 
-        $(document).keyup(function(event) {
+        $(document).keyup(function (event) {
             // ESC key
-            if (event.which == 27) {
+            if (event.which === 27) {
                 Formwork.Modals.hide();
             }
         });
@@ -49,28 +49,26 @@ Formwork.Modals = {
         this.createBackdrop();
     },
 
-    hide: function(id) {
+    hide: function (id) {
         var $modal = id === undefined ? $('.modal') : $('#' + id);
         $modal.removeClass('show');
         this.removeBackdrop();
     },
 
-    createBackdrop: function() {
+    createBackdrop: function () {
         if (!$('.modal-backdrop').length) {
-            $('<div>', {
-                class: 'modal-backdrop'
-            }).appendTo('body');
+            $('<div>', {class: 'modal-backdrop'}).appendTo('body');
         }
     },
 
-    removeBackdrop: function() {
+    removeBackdrop: function () {
         $('.modal-backdrop').remove();
     },
 
-    validate: function(id) {
+    validate: function (id) {
         var valid = false;
         var $modal = $('#' + id);
-        $('[required]', $modal).each(function() {
+        $('[required]', $modal).each(function () {
             var $this = $(this);
             if ($this.val() === '') {
                 $this.addClass('animated shake').focus();
