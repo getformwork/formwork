@@ -7,13 +7,13 @@ Formwork.Forms = {
         $('input[data-enable]').change(function() {
             var $this = $(this);
             var checked = $this.is(':checked');
-            $.each($this.data('enable').split(','), function(index, value) {
+            $.each($this.attr('data-enable').split(','), function(index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });
 
         $('.input-reset').click(function() {
-            var $target = $('#' + $(this).data('reset'));
+            var $target = $('#' + $(this).attr('data-reset'));
             $target.val('');
             $target.change();
         });
@@ -88,7 +88,7 @@ Formwork.Forms = {
         $('.image-picker-confirm').click(function() {
             var $this = $(this);
             var target = $this.data('target');
-            var filename = $('.image-picker-thumbnail.selected', $this.parent()).data('filename');
+            var filename = $('.image-picker-thumbnail.selected', $this.parent()).attr('data-filename');
             if (typeof target === 'function') {
                 target(filename);
             } else {
@@ -100,7 +100,7 @@ Formwork.Forms = {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
-            $this.parent().siblings('.image-input').val($this.data('uri'));
+            $this.parent().siblings('.image-input').val($this.attr('data-uri'));
         });
 
         $('.image-picker-thumbnail').dblclick(function() {
@@ -109,7 +109,7 @@ Formwork.Forms = {
         });
 
         $('[data-command=upload]').click(function() {
-            var $target = $('#' + $(this).data('upload-target'));
+            var $target = $('#' + $(this).attr('data-upload-target'));
             $target.click();
         });
 

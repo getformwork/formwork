@@ -13,12 +13,14 @@ var Formwork = {
         });
 
         $('[data-chart-data]').each(function() {
-            new Formwork.Chart(this, $(this).data('chart-data'));
+            // Use $.data() instead of $.attr() to parse JSON string
+            var data = $(this).data('chart-data');
+            new Formwork.Chart(this, data);
         });
 
         $('meta[name=notification]').each(function() {
             var $this = $(this);
-            new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
+            new Formwork.Notification($this.attr('content'), $this.attr('data-type'), $this.attr('data-interval'));
             $this.remove();
         });
 

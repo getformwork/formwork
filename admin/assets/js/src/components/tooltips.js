@@ -8,7 +8,7 @@ Formwork.Tooltips = {
 
         $('[data-tooltip]').mouseover(function() {
             var $this = $(this);
-            var tooltip = new Formwork.Tooltip($this.data('tooltip'), {
+            var tooltip = new Formwork.Tooltip($this.attr('data-tooltip'), {
                 referenceElement: $this,
                 position: 'bottom',
                 offset: {x: 0, y: 4}

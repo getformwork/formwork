@@ -13,12 +13,14 @@ var Formwork = {
         });
 
         $('[data-chart-data]').each(function() {
-            new Formwork.Chart(this, $(this).data('chart-data'));
+            // Use $.data() instead of $.attr() to parse JSON string
+            var data = $(this).data('chart-data');
+            new Formwork.Chart(this, data);
         });
 
         $('meta[name=notification]').each(function() {
             var $this = $(this);
-            new Formwork.Notification($this.attr('content'), $this.data('type'), $this.data('interval'));
+            new Formwork.Notification($this.attr('content'), $this.attr('data-type'), $this.attr('data-interval'));
             $this.remove();
         });
 
@@ -275,7 +277,7 @@ Formwork.Form = function(form) {
     var $window = $(window);
     var $form = $(form);
 
-    $form.data('original-data', $form.serialize());
+    $form.data('originalData', $form.serialize());
 
     $window.on('beforeunload', function() {
         if (hasChanged()) {
@@ -294,7 +296,7 @@ Formwork.Form = function(form) {
             Formwork.Modals.show('changesModal', null, function($modal) {
                 $('[data-command=continue]', $modal).click(function() {
                     $window.off('beforeunload');
-                    window.location.href = $(this).data('href');
+                    window.location.href = $(this).attr('data-href');
                 }).attr('data-href', link.href);
             });
         }
@@ -309,7 +311,7 @@ Formwork.Form = function(form) {
                 }
             }
         }
-        return $form.serialize() != $form.data('original-data');
+        return $form.serialize() != $form.data('originalData');
     }
 };
 
@@ -322,13 +324,13 @@ Formwork.Forms = {
         $('input[data-enable]').change(function() {
             var $this = $(this);
             var checked = $this.is(':checked');
-            $.each($this.data('enable').split(','), function(index, value) {
+            $.each($this.attr('data-enable').split(','), function(index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });
 
         $('.input-reset').click(function() {
-            var $target = $('#' + $(this).data('reset'));
+            var $target = $('#' + $(this).attr('data-reset'));
             $target.val('');
             $target.change();
         });
@@ -403,7 +405,7 @@ Formwork.Forms = {
         $('.image-picker-confirm').click(function() {
             var $this = $(this);
             var target = $this.data('target');
-            var filename = $('.image-picker-thumbnail.selected', $this.parent()).data('filename');
+            var filename = $('.image-picker-thumbnail.selected', $this.parent()).attr('data-filename');
             if (typeof target === 'function') {
                 target(filename);
             } else {
@@ -415,7 +417,7 @@ Formwork.Forms = {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
-            $this.parent().siblings('.image-input').val($this.data('uri'));
+            $this.parent().siblings('.image-input').val($this.attr('data-uri'));
         });
 
         $('.image-picker-thumbnail').dblclick(function() {
@@ -424,7 +426,7 @@ Formwork.Forms = {
         });
 
         $('[data-command=upload]').click(function() {
-            var $target = $('#' + $(this).data('upload-target'));
+            var $target = $('#' + $(this).attr('data-upload-target'));
             $target.click();
         });
 
@@ -443,8 +445,8 @@ Formwork.Modals = {
     init: function() {
         $('[data-modal]').click(function() {
             var $this = $(this);
-            var modal = $this.data('modal');
-            var action = $this.data('modal-action');
+            var modal = $this.attr('data-modal');
+            var action = $this.attr('data-modal-action');
             if (action) {
                 Formwork.Modals.show(modal, action);
             } else {
@@ -455,12 +457,12 @@ Formwork.Modals = {
         $('.modal [data-dismiss]').click(function() {
             var $this = $(this);
             if ($this.is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($this.data('dismiss'));
+                var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
                 if (!valid) {
                     return;
                 }
             }
-            Formwork.Modals.hide($this.data('dismiss'));
+            Formwork.Modals.hide($this.attr('data-dismiss'));
         });
 
         $('.modal').click(function(event) {
@@ -658,11 +660,11 @@ Formwork.Pages = {
         $('#page-parent', '#newPageModal').change(function() {
             var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
-            var allowedTemplates = $option.data('allowed-templates');
+            var allowedTemplates = $option.attr('data-allowed-templates');
             if (allowedTemplates) {
                 allowedTemplates = allowedTemplates.split(', ');
                 $pageTemplate
-                    .data('previous-value', $pageTemplate.val())
+                    .data('previousValue', $pageTemplate.val())
                     .val(allowedTemplates[0])
                     .find('option').each(function () {
                         var $this = $(this);
@@ -672,8 +674,8 @@ Formwork.Pages = {
                     });
             } else if ($('option[disabled]', $pageTemplate).length) {
                 $pageTemplate
-                    .val($pageTemplate.data('previous-value'))
-                    .removeData('previous-value')
+                    .val($pageTemplate.data('previousValue'))
+                    .removeData('previousValue')
                     .find('option').removeAttr('disabled');
             }
         });
@@ -681,7 +683,7 @@ Formwork.Pages = {
         $('.pages-list').each(function() {
             var $this = $(this);
 
-            if ($this.data('sortable-children') === false) {
+            if ($this.attr('data-sortable-children') === 'false') {
                 return;
             }
 
@@ -695,7 +697,7 @@ Formwork.Pages = {
                     .addClass('toggle-collapsed').css('opacity', '0.5');
                 },
                 onMove: function(event) {
-                    if ($(event.related).data('sortable') === false) {
+                    if ($(event.related).attr('data-sortable') === 'false') {
                         return false;
                     }
                     $('.pages-children', event.related).hide();
@@ -712,7 +714,7 @@ Formwork.Pages = {
 
                     var data = {
                         'csrf-token': $('meta[name=csrf-token]').attr('content'),
-                        parent: $(this.el).data('parent'),
+                        parent: $(this.el).attr('data-parent'),
                         from: event.oldIndex,
                         to: event.newIndex
                     };
@@ -859,7 +861,7 @@ Formwork.Tooltips = {
 
         $('[data-tooltip]').mouseover(function() {
             var $this = $(this);
-            var tooltip = new Formwork.Tooltip($this.data('tooltip'), {
+            var tooltip = new Formwork.Tooltip($this.attr('data-tooltip'), {
                 referenceElement: $this,
                 position: 'bottom',
                 offset: {x: 0, y: 4}
@@ -908,7 +910,7 @@ Formwork.Updates = {
             $('[data-command=install-updates]').click(function() {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
-                $('.update-status').text($('.update-status').data('installing-text'));
+                $('.update-status').text($('.update-status').attr('data-installing-text'));
                 var data = {
                     'csrf-token': $('meta[name=csrf-token]').attr('content')
                 };
