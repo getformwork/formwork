@@ -1,4 +1,4 @@
-Formwork.Chart = function(element, data) {
+Formwork.Chart = function (element, data) {
     var options = {
         showArea: true,
         fullWidth: true,
@@ -9,22 +9,29 @@ Formwork.Chart = function(element, data) {
         low: 0,
         axisX: {
             showGrid: false,
-            labelOffset: {x: 0, y: 10}
+            labelOffset: {
+                x: 0, y: 10
+            }
         },
         axisY: {
             onlyInteger: true,
             offset: 15,
-            labelOffset: {x: 0, y: 5}
+            labelOffset: {
+                x: 0, y: 5
+            }
         }
     };
 
+    /* global Chartist:false */
     var chart = new Chartist.Line(element, data, options);
 
-    var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+    var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
 
-    $(chart.container).on('mouseover', '.ct-point', function() {
+    $(chart.container).on('mouseover', '.ct-point', function () {
         var $this = $(this);
-        var tooltipOffset = {x: 0, y: -8};
+        var tooltipOffset = {
+            x: 0, y: -8
+        };
 
         if (isFirefox) {
             var strokeWidth = parseFloat($this.css('stroke-width'));
@@ -32,7 +39,9 @@ Formwork.Chart = function(element, data) {
             tooltipOffset.y += strokeWidth / 2;
         }
 
-        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {referenceElement: $this, offset: tooltipOffset});
+        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {
+            referenceElement: $this, offset: tooltipOffset
+        });
         tooltip.show();
     });
 };

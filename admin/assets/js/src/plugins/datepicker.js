@@ -1,5 +1,5 @@
-(function($) {
-    $.fn.datePicker = function(options) {
+(function ($) {
+    $.fn.datePicker = function (options) {
         var $input;
         var $calendar;
 
@@ -9,56 +9,60 @@
             year: today.getFullYear(),
             month: today.getMonth(),
             day: today.getDate(),
-            setDate: function(date) {
+            setDate: function (date) {
                 this.year = date.getFullYear();
                 this.month = date.getMonth();
                 this.day = date.getDate();
             },
-            lastDay: function() {
+            lastDay: function () {
                 this.day = helpers.daysInMonth(this.month, this.year);
             },
-            prevYear: function() {
+            prevYear: function () {
                 this.year--;
             },
-            nextYear: function() {
+            nextYear: function () {
                 this.year++;
             },
-            prevMonth: function() {
+            prevMonth: function () {
                 this.month = helpers.mod(this.month - 1, 12);
-                if (this.month == 11) this.prevYear();
+                if (this.month === 11) {
+                    this.prevYear();
+                }
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.lastDay();
                 }
             },
-            nextMonth: function() {
+            nextMonth: function () {
                 this.month = helpers.mod(this.month + 1, 12);
-                if (this.month === 0) this.nextYear();
+                if (this.month === 0) {
+                    this.nextYear();
+                }
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.lastDay();
                 }
             },
-            prevWeek: function() {
+            prevWeek: function () {
                 this.day -= 7;
                 if (this.day < 1) {
                     this.prevMonth();
                     this.day += helpers.daysInMonth(this.month, this.year);
                 }
             },
-            nextWeek: function() {
+            nextWeek: function () {
                 this.day += 7;
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.day -= helpers.daysInMonth(this.month, this.year);
                     this.nextMonth();
                 }
             },
-            prevDay: function() {
+            prevDay: function () {
                 this.day--;
                 if (this.day < 1) {
                     this.prevMonth();
                     this.lastDay();
                 }
             },
-            nextDay: function() {
+            nextDay: function () {
                 this.day++;
                 if (this.day > helpers.daysInMonth(this.month, this.year)) {
                     this.nextMonth();
@@ -69,22 +73,22 @@
 
         var helpers = {
             _daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-            mod: function(n, m) {
+            mod: function (n, m) {
                 return ((n % m) + m) % m;
             },
-            pad: function(num) {
-                return num.toString().length == 1 ? '0' + num : num;
+            pad: function (num) {
+                return num.toString().length === 1 ? '0' + num : num;
             },
-            isValidDate: function(date) {
+            isValidDate: function (date) {
                 return date && !isNaN(Date.parse(date));
             },
-            isLeapYear: function(year) {
+            isLeapYear: function (year) {
                 return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
             },
-            daysInMonth: function(month, year) {
-                return month == 1 && this.isLeapYear(year) ? 29 : this._daysInMonth[month];
+            daysInMonth: function (month, year) {
+                return month === 1 && this.isLeapYear(year) ? 29 : this._daysInMonth[month];
             },
-            formatDateTime: function(date) {
+            formatDateTime: function (date) {
                 var format = options.format;
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
@@ -97,19 +101,19 @@
                     hours = helpers.mod(hours, 12) > 0 ? helpers.mod(hours, 12) : 12;
                 }
                 return format.replace('YYYY', year)
-                             .replace('YY', year.toString().substr(-2))
-                             .replace('MM', helpers.pad(month))
-                             .replace('DD', helpers.pad(day))
-                             .replace('hh', helpers.pad(hours))
-                             .replace('mm', helpers.pad(minutes))
-                             .replace('ss', helpers.pad(seconds))
-                             .replace('a', am ? 'AM' : 'PM');
+                    .replace('YY', year.toString().substr(-2))
+                    .replace('MM', helpers.pad(month))
+                    .replace('DD', helpers.pad(day))
+                    .replace('hh', helpers.pad(hours))
+                    .replace('mm', helpers.pad(minutes))
+                    .replace('ss', helpers.pad(seconds))
+                    .replace('a', am ? 'AM' : 'PM');
             }
         };
 
         options = $.extend({}, $.fn.datePicker.defaults, options);
 
-        this.each(function() {
+        this.each(function () {
             var $this = $(this);
             var value = $this.val();
             $this.prop('readonly', true);
@@ -119,66 +123,66 @@
                 $this.data('date', value);
                 $this.val(helpers.formatDateTime(value));
             }
-            $this.change(function() {
+            $this.change(function () {
                 if ($this.val() === '') {
                     $this.data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
                 }
             });
-            $this.keydown(function(event) {
+            $this.keydown(function (event) {
                 var date = $(this).data('date');
                 calendar.setDate(helpers.isValidDate(date) ? date : new Date());
                 switch (event.which) {
-                    case 13:
-                        $('.calendar-day.selected').click();
-                        $calendar.hide();
-                        return false;
-                    case 8:
-                        $this.val('');
-                        $input.blur();
-                        $calendar.hide();
-                        return false;
-                    case 27:
-                        $input.blur();
-                        $calendar.hide();
-                        return false;
-                    case 37:
-                        if (event.ctrlKey || event.metaKey) {
-                            if (event.shiftKey) {
-                                calendar.prevYear();
-                            } else {
-                                calendar.prevMonth();
-                            }
+                case 13:
+                    $('.calendar-day.selected').click();
+                    $calendar.hide();
+                    return false;
+                case 8:
+                    $this.val('');
+                    $input.blur();
+                    $calendar.hide();
+                    return false;
+                case 27:
+                    $input.blur();
+                    $calendar.hide();
+                    return false;
+                case 37:
+                    if (event.ctrlKey || event.metaKey) {
+                        if (event.shiftKey) {
+                            calendar.prevYear();
                         } else {
-                            calendar.prevDay();
+                            calendar.prevMonth();
                         }
-                        break;
-                    case 38:
-                        calendar.prevWeek();
-                        break;
-                    case 39:
-                        if (event.ctrlKey || event.metaKey) {
-                            if (event.shiftKey) {
-                                calendar.nextYear();
-                            } else {
-                                calendar.nextMonth();
-                            }
+                    } else {
+                        calendar.prevDay();
+                    }
+                    break;
+                case 38:
+                    calendar.prevWeek();
+                    break;
+                case 39:
+                    if (event.ctrlKey || event.metaKey) {
+                        if (event.shiftKey) {
+                            calendar.nextYear();
                         } else {
-                            calendar.nextDay();
+                            calendar.nextMonth();
                         }
-                        break;
-                    case 40:
-                        calendar.nextWeek();
-                        break;
-                    case 48:
-                        if (event.ctrlKey || event.metaKey) {
-                            var today = new Date();
-                            calendar.setDate(today);
-                        }
-                        break;
-                    default:
-                        return true;
+                    } else {
+                        calendar.nextDay();
+                    }
+                    break;
+                case 40:
+                    calendar.nextWeek();
+                    break;
+                case 48:
+                    if (event.ctrlKey || event.metaKey) {
+                        var today = new Date();
+                        calendar.setDate(today);
+                    }
+                    break;
+                default:
+                    return true;
                 }
                 updateInput();
                 return false;
@@ -187,24 +191,24 @@
 
         $calendar = $('<div class="calendar"><div class="calendar-buttons"><button class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.todayLabel + '</button><button class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
 
-        $('.currentMonth').click(function() {
+        $('.currentMonth').click(function () {
             var today = new Date();
             calendar.setDate(today);
             updateInput();
             $input.blur();
         });
 
-        $('.prevMonth').longclick(function() {
+        $('.prevMonth').longclick(function () {
             calendar.prevMonth();
             generateTable(calendar.year, calendar.month);
         }, 750, 500);
 
-        $('.nextMonth').longclick(function() {
+        $('.nextMonth').longclick(function () {
             calendar.nextMonth();
             generateTable(calendar.year, calendar.month);
         }, 750, 500);
 
-        $('.prevMonth, .currentMonth, .nextMonth').mousedown(function() {
+        $('.prevMonth, .currentMonth, .nextMonth').mousedown(function () {
             return false;
         });
 
@@ -217,7 +221,7 @@
 
         $calendar.on('mousedown', '.calendar-day', false);
 
-        $calendar.on('click', '.calendar-day', function() {
+        $calendar.on('click', '.calendar-day', function () {
             var date = new Date(calendar.year, calendar.month, parseInt($(this).text()));
             $input.data('date', date);
             $input.val(helpers.formatDateTime(date));
@@ -232,7 +236,7 @@
             var start = helpers.mod(firstDay - options.weekStarts, 7);
             var html = '<table class="calendar-table">';
             html += '<tr><th class="calendar-header" colspan="7">';
-            html +=  monthName + '&nbsp;' + year;
+            html += monthName + '&nbsp;' + year;
             html += '</th></tr>';
             html += '<tr>';
             for(var i = 0; i < 7; i++ ){
@@ -244,20 +248,18 @@
             for (i = 0; i < 6; i++) {
                 for (var j = 0; j < 7; j++) {
                     if (num <= monthLength && (i > 0 || j >= start)) {
-                        if (num == day) {
+                        if (num === day) {
                             html += '<td class="calendar-day selected">';
                         } else {
                             html += '<td class="calendar-day">';
                         }
                         html += num++;
+                    } else if (num === 1) {
+                        html += '<td class="calendar-prev-month-day">';
+                        html += helpers.daysInMonth(helpers.mod(month - 1, 12), year) - start + j + 1;
                     } else {
-                        if (num == 1) {
-                            html += '<td class="calendar-prev-month-day">';
-                            html += helpers.daysInMonth(helpers.mod(month - 1, 12), year) - start + j + 1;
-                        } else {
-                            html += '<td class="calendar-next-month-day">';
-                            html += num++ - monthLength;
-                        }
+                        html += '<td class="calendar-next-month-day">';
+                        html += num++ - monthLength;
                     }
                     html += '</td>';
                 }
@@ -267,11 +269,11 @@
             $('.calendar-table').replaceWith(html);
         }
 
-        $('.date-input').blur(function() {
+        $('.date-input').blur(function () {
             $calendar.hide();
         });
 
-        $('.date-input').focus(function() {
+        $('.date-input').focus(function () {
             $input = $(this);
             var date = helpers.isValidDate($input.data('date')) ? new Date($input.data('date')) : new Date();
             calendar.setDate(date);
@@ -280,7 +282,7 @@
             setPosition();
         });
 
-        $(window).on('touchstart', function() {
+        $(window).on('touchstart', function () {
             var $eventTarget = $(event.target);
             if (!$eventTarget.is('.date-input') && !$eventTarget.parents('.calendar, .date-input').length) {
                 $input.blur();
@@ -290,7 +292,9 @@
         $(window).on('resize', Formwork.Utils.throttle(setPosition, 100));
 
         function setPosition() {
-            if (!$input || !$calendar.is(':visible')) return;
+            if (!$input || !$calendar.is(':visible')) {
+                return;
+            }
             $calendar.css({
                 top: $input.offset().top + $input.outerHeight(),
                 left: $input.offset().left

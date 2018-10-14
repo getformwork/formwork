@@ -1,21 +1,21 @@
-Formwork.Editor = function(id) {
+Formwork.Editor = function (id) {
     var textarea = $('#' + id)[0];
     var $toolbar = '.editor-toolbar[data-for=' + id + ']';
     restoreCursorPosition();
 
-    $('[data-command=bold]', $toolbar).click(function() {
+    $('[data-command=bold]', $toolbar).click(function () {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', $toolbar).click(function() {
+    $('[data-command=italic]', $toolbar).click(function () {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', $toolbar).click(function() {
+    $('[data-command=ul]', $toolbar).click(function () {
         insertAtCursor(prependSequence() + '- ', '');
     });
 
-    $('[data-command=ol]', $toolbar).click(function() {
+    $('[data-command=ol]', $toolbar).click(function () {
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
@@ -24,11 +24,11 @@ Formwork.Editor = function(id) {
         }
     });
 
-    $('[data-command=quote]', $toolbar).click(function() {
+    $('[data-command=quote]', $toolbar).click(function () {
         insertAtCursor(prependSequence() + '> ', '');
     });
 
-    $('[data-command=link]', $toolbar).click(function() {
+    $('[data-command=link]', $toolbar).click(function () {
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -47,10 +47,10 @@ Formwork.Editor = function(id) {
         }
     });
 
-    $('[data-command=image]', $toolbar).click(function() {
-        Formwork.Modals.show('imagesModal', null, function($modal) {
+    $('[data-command=image]', $toolbar).click(function () {
+        Formwork.Modals.show('imagesModal', null, function ($modal) {
             $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
-            $('.image-picker-confirm', $modal).data('target', function(filename) {
+            $('.image-picker-confirm', $modal).data('target', function (filename) {
                 if (filename !== undefined) {
                     insertAtCursor(prependSequence() + '![', '](' + filename + ')');
                 } else {
@@ -60,7 +60,7 @@ Formwork.Editor = function(id) {
         });
     });
 
-    $('[data-command=summary]', $toolbar).click(function() {
+    $('[data-command=summary]', $toolbar).click(function () {
         if (!hasSummarySequence()) {
             var prevChar = prevCursorChar();
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
@@ -72,18 +72,18 @@ Formwork.Editor = function(id) {
     $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
     disableSummaryCommand();
 
-    $(document).keydown(function(event) {
+    $(document).keydown(function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
-                case 66: // ctrl/cmd + B
-                    $('[data-command=bold]', $toolbar).click();
-                    return false;
-                case 73: // ctrl/cmd + I
-                    $('[data-command=italic]', $toolbar).click();
-                    return false;
-                case 89: //ctrl/cmd + Y
-                case 90: // ctrl/cmd + Z
-                    return false;
+            case 66: // ctrl/cmd + B
+                $('[data-command=bold]', $toolbar).click();
+                return false;
+            case 73: // ctrl/cmd + I
+                $('[data-command=italic]', $toolbar).click();
+                return false;
+            case 89: // ctrl/cmd + Y
+            case 90: // ctrl/cmd + Z
+                return false;
             }
         }
     });
@@ -122,7 +122,7 @@ Formwork.Editor = function(id) {
 
     function lastLine(text) {
         var index = text.lastIndexOf('\n');
-        if (index == -1) {
+        if (index === -1) {
             return text;
         }
         return text.substring(index + 1);
@@ -135,12 +135,12 @@ Formwork.Editor = function(id) {
 
     function prependSequence() {
         switch (prevCursorChar()) {
-            case undefined:
-                return '';
-            case '\n':
-                return '\n';
-            default:
-                return '\n\n';
+        case undefined:
+            return '';
+        case '\n':
+            return '\n';
+        default:
+            return '\n\n';
         }
     }
 

@@ -1,29 +1,29 @@
 Formwork.Forms = {
-    init: function() {
-        $('[data-form]').each(function() {
+    init: function () {
+        $('[data-form]').each(function () {
             new Formwork.Form($(this));
         });
 
-        $('input[data-enable]').change(function() {
+        $('input[data-enable]').change(function () {
             var $this = $(this);
             var checked = $this.is(':checked');
-            $.each($this.attr('data-enable').split(','), function(index, value) {
+            $.each($this.attr('data-enable').split(','), function (index, value) {
                 $('input[name="' + value + '"]').attr('disabled', !checked);
             });
         });
 
-        $('.input-reset').click(function() {
+        $('.input-reset').click(function () {
             var $target = $('#' + $(this).attr('data-reset'));
             $target.val('');
             $target.change();
         });
 
-        $('input:file').each(function() {
+        $('input:file').each(function () {
             var $this = $(this);
             var $span = $('label[for="' + $this.attr('id') + '"] span');
             var labelHTML = $span.html();
             $this.data('originalLabel', labelHTML);
-        }).on('change input', function() {
+        }).on('change input', function () {
             var $this = $(this);
             var $span = $('label[for="' + $this.attr('id') + '"] span');
             var files = $this.prop('files');
@@ -34,29 +34,29 @@ Formwork.Forms = {
             }
         });
 
-        $('input:file[data-auto-upload]').change(function() {
+        $('input:file[data-auto-upload]').change(function () {
             $(this).closest('form').submit();
         });
 
-        $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function(event) {
+        $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
             event.preventDefault();
-        }).on('drop', function(event) {
+        }).on('drop', function (event) {
             var $target = $('#' + $(this).attr('for'));
             $target.prop('files', event.originalEvent.dataTransfer.files);
             // Firefox won't trigger a change event, so we explicitly do that
             $target.change();
-        }).on('dragover dragenter', function() {
+        }).on('dragover dragenter', function () {
             $(this).addClass('drag');
-        }).on('dragleave drop', function() {
+        }).on('dragleave drop', function () {
             $(this).removeClass('drag');
         });
 
         $('.tag-input').tagInput();
 
-        $('.image-input').click(function() {
+        $('.image-input').click(function () {
             var $this = $(this);
             var value = $this.val();
-            Formwork.Modals.show('imagesModal', null, function($modal) {
+            Formwork.Modals.show('imagesModal', null, function ($modal) {
                 $('.image-picker-confirm', $modal).data('target', $this);
                 $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
                 if (value) {
@@ -65,7 +65,7 @@ Formwork.Forms = {
             });
         });
 
-        $('.image-picker').each(function() {
+        $('.image-picker').each(function () {
             var $this = $(this);
             var options = $this.children('option');
             if (options.length > 0) {
@@ -75,9 +75,7 @@ Formwork.Forms = {
                         class: 'image-picker-thumbnail',
                         'data-uri': options[i].value,
                         'data-filename': options[i].text
-                    }).css({
-                        'background-image': 'url(' + options[i].value + ')'
-                    }).appendTo(container);
+                    }).css({'background-image': 'url(' + options[i].value + ')'}).appendTo(container);
                 }
                 $this.before(container);
                 $('.image-picker-empty-state').hide();
@@ -85,7 +83,7 @@ Formwork.Forms = {
             $this.hide();
         });
 
-        $('.image-picker-confirm').click(function() {
+        $('.image-picker-confirm').click(function () {
             var $this = $(this);
             var target = $this.data('target');
             var filename = $('.image-picker-thumbnail.selected', $this.parent()).attr('data-filename');
@@ -96,28 +94,28 @@ Formwork.Forms = {
             }
         });
 
-        $('.image-picker-thumbnail').click(function() {
+        $('.image-picker-thumbnail').click(function () {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
             $this.parent().siblings('.image-input').val($this.attr('data-uri'));
         });
 
-        $('.image-picker-thumbnail').dblclick(function() {
+        $('.image-picker-thumbnail').dblclick(function () {
             $(this).click();
             $('.image-picker-confirm').click();
         });
 
-        $('[data-command=upload]').click(function() {
+        $('[data-command=upload]').click(function () {
             var $target = $('#' + $(this).attr('data-upload-target'));
             $target.click();
         });
 
-        $('.editor-textarea').each(function() {
+        $('.editor-textarea').each(function () {
             new Formwork.Editor($(this).attr('id'));
         });
 
-        $('input[type=range]').on('change input', function() {
+        $('input[type=range]').on('change input', function () {
             var $this = $(this);
             $this.next('.range-input-value').text($this.val());
         });
