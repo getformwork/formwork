@@ -25,7 +25,7 @@ Formwork.Updates = {
             $('[data-command=install-updates]').click(function() {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
-                $('.update-status').text($('.update-status').data('installing-text'));
+                $('.update-status').text($('.update-status').attr('data-installing-text'));
                 var data = {
                     'csrf-token': $('meta[name=csrf-token]').attr('content')
                 };

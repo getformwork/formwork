@@ -2,8 +2,8 @@ Formwork.Modals = {
     init: function() {
         $('[data-modal]').click(function() {
             var $this = $(this);
-            var modal = $this.data('modal');
-            var action = $this.data('modal-action');
+            var modal = $this.attr('data-modal');
+            var action = $this.attr('data-modal-action');
             if (action) {
                 Formwork.Modals.show(modal, action);
             } else {
@@ -14,12 +14,12 @@ Formwork.Modals = {
         $('.modal [data-dismiss]').click(function() {
             var $this = $(this);
             if ($this.is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($this.data('dismiss'));
+                var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
                 if (!valid) {
                     return;
                 }
             }
-            Formwork.Modals.hide($this.data('dismiss'));
+            Formwork.Modals.hide($this.attr('data-dismiss'));
         });
 
         $('.modal').click(function(event) {

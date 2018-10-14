@@ -2,7 +2,7 @@ Formwork.Form = function(form) {
     var $window = $(window);
     var $form = $(form);
 
-    $form.data('original-data', $form.serialize());
+    $form.data('originalData', $form.serialize());
 
     $window.on('beforeunload', function() {
         if (hasChanged()) {
@@ -21,7 +21,7 @@ Formwork.Form = function(form) {
             Formwork.Modals.show('changesModal', null, function($modal) {
                 $('[data-command=continue]', $modal).click(function() {
                     $window.off('beforeunload');
-                    window.location.href = $(this).data('href');
+                    window.location.href = $(this).attr('data-href');
                 }).attr('data-href', link.href);
             });
         }
@@ -36,6 +36,6 @@ Formwork.Form = function(form) {
                 }
             }
         }
-        return $form.serialize() != $form.data('original-data');
+        return $form.serialize() != $form.data('originalData');
     }
 };

@@ -80,11 +80,11 @@ Formwork.Pages = {
         $('#page-parent', '#newPageModal').change(function() {
             var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
-            var allowedTemplates = $option.data('allowed-templates');
+            var allowedTemplates = $option.attr('data-allowed-templates');
             if (allowedTemplates) {
                 allowedTemplates = allowedTemplates.split(', ');
                 $pageTemplate
-                    .data('previous-value', $pageTemplate.val())
+                    .data('previousValue', $pageTemplate.val())
                     .val(allowedTemplates[0])
                     .find('option').each(function () {
                         var $this = $(this);
@@ -94,8 +94,8 @@ Formwork.Pages = {
                     });
             } else if ($('option[disabled]', $pageTemplate).length) {
                 $pageTemplate
-                    .val($pageTemplate.data('previous-value'))
-                    .removeData('previous-value')
+                    .val($pageTemplate.data('previousValue'))
+                    .removeData('previousValue')
                     .find('option').removeAttr('disabled');
             }
         });
@@ -103,7 +103,7 @@ Formwork.Pages = {
         $('.pages-list').each(function() {
             var $this = $(this);
 
-            if ($this.data('sortable-children') === false) {
+            if ($this.attr('data-sortable-children') === 'false') {
                 return;
             }
 
@@ -117,7 +117,7 @@ Formwork.Pages = {
                     .addClass('toggle-collapsed').css('opacity', '0.5');
                 },
                 onMove: function(event) {
-                    if ($(event.related).data('sortable') === false) {
+                    if ($(event.related).attr('data-sortable') === 'false') {
                         return false;
                     }
                     $('.pages-children', event.related).hide();
@@ -134,7 +134,7 @@ Formwork.Pages = {
 
                     var data = {
                         'csrf-token': $('meta[name=csrf-token]').attr('content'),
-                        parent: $(this.el).data('parent'),
+                        parent: $(this.el).attr('data-parent'),
                         from: event.oldIndex,
                         to: event.newIndex
                     };
