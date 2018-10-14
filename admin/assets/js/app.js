@@ -1166,20 +1166,20 @@ Formwork.Utils = {
                 var date = $(this).data('date');
                 calendar.setDate(helpers.isValidDate(date) ? date : new Date());
                 switch (event.which) {
-                case 13:
+                case 13: // enter
                     $('.calendar-day.selected').click();
                     $calendar.hide();
                     return false;
-                case 8:
+                case 8: // backspace
                     $this.val('');
                     $input.blur();
                     $calendar.hide();
                     return false;
-                case 27:
+                case 27: // escape
                     $input.blur();
                     $calendar.hide();
                     return false;
-                case 37:
+                case 37: // left arrow
                     if (event.ctrlKey || event.metaKey) {
                         if (event.shiftKey) {
                             calendar.prevYear();
@@ -1190,10 +1190,10 @@ Formwork.Utils = {
                         calendar.prevDay();
                     }
                     break;
-                case 38:
+                case 38: // up arrow
                     calendar.prevWeek();
                     break;
-                case 39:
+                case 39: // right arrow
                     if (event.ctrlKey || event.metaKey) {
                         if (event.shiftKey) {
                             calendar.nextYear();
@@ -1204,10 +1204,10 @@ Formwork.Utils = {
                         calendar.nextDay();
                     }
                     break;
-                case 40:
+                case 40: // down arrow
                     calendar.nextWeek();
                     break;
-                case 48:
+                case 48: // 0
                     if (event.ctrlKey || event.metaKey) {
                         var today = new Date();
                         calendar.setDate(today);
@@ -1446,7 +1446,7 @@ Formwork.Utils = {
             var value = $this.val().trim();
 
             switch (event.which) {
-            case 8:
+            case 8: // backspace
                 if (value === '') {
                     removeTag($this, $this.prev().text());
                     $this.prev().remove();
@@ -1455,8 +1455,8 @@ Formwork.Utils = {
                 }
                 $this.prop('size', Math.max($this.val().length, 1));
                 return true;
-            case 13:
-            case 188:
+            case 13: // enter
+            case 188: // comma
                 if (value !== '') {
                     addTag($this, value);
                 }

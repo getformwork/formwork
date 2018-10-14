@@ -73,7 +73,7 @@
             var value = $this.val().trim();
 
             switch (event.which) {
-            case 8:
+            case 8: // backspace
                 if (value === '') {
                     removeTag($this, $this.prev().text());
                     $this.prev().remove();
@@ -82,8 +82,8 @@
                 }
                 $this.prop('size', Math.max($this.val().length, 1));
                 return true;
-            case 13:
-            case 188:
+            case 13: // enter
+            case 188: // comma
                 if (value !== '') {
                     addTag($this, value);
                 }
