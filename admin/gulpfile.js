@@ -1,11 +1,12 @@
-var gulp   = require('gulp');
+/* eslint-env node */
+var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var sass   = require('gulp-sass');
+var sass = require('gulp-sass');
 var cssmin = require('gulp-cssmin');
 var uglify = require('gulp-uglify');
 
-gulp.task('css', function() {
+gulp.task('css', function () {
     return gulp.src('./assets/scss/admin.scss')
         .pipe(sass())
         .pipe(gulp.dest('./assets/css'))
@@ -14,7 +15,7 @@ gulp.task('css', function() {
         .pipe(gulp.dest('./assets/css'));
 });
 
-gulp.task('js-app', function() {
+gulp.task('js-app', function () {
     return gulp.src('./assets/js/src/**/*.js')
         .pipe(concat('app.js'))
         .pipe(gulp.dest('./assets/js'))
@@ -23,7 +24,7 @@ gulp.task('js-app', function() {
         .pipe(gulp.dest('./assets/js'));
 });
 
-gulp.task('js-vendor', function() {
+gulp.task('js-vendor', function () {
     return gulp.src('./assets/js/vendor/*.min.js')
         .pipe(concat('vendor.min.js'))
         .pipe(gulp.dest('./assets/js'));
