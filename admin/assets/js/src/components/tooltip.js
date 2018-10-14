@@ -17,6 +17,11 @@ Formwork.Tooltip = function (text, options) {
 
     $referenceElement.on('mouseout', _remove);
 
+    // Remove tooltip when clicking on buttons
+    if ($referenceElement.is('button, .button')) {
+        $referenceElement.on('click', _remove);
+    }
+
     function _tooltipPosition($tooltip) {
         var offset = $referenceElement.offset();
 
