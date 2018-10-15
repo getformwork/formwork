@@ -28,27 +28,27 @@ trait AdminTrait
         return $this->siteUri() . ltrim($page->slug(), '/');
     }
 
-    protected function redirect($uri, $code = 302, $exit = false)
+    protected function redirect($uri, $code = 302)
     {
-        Header::redirect($this->uri($uri), $code, $exit);
+        Header::redirect($this->uri($uri), $code);
     }
 
-    protected function redirectToSite($code = 302, $exit = false)
+    protected function redirectToSite($code = 302)
     {
-        Header::redirect($this->siteUri(), $code, $exit);
+        Header::redirect($this->siteUri(), $code);
     }
 
-    protected function redirectToPanel($code = 302, $exit = false)
+    protected function redirectToPanel($code = 302)
     {
-        $this->redirect('/', $code, $exit);
+        $this->redirect('/', $code);
     }
 
-    protected function redirectToReferer($code = 302, $exit = false, $default = '/')
+    protected function redirectToReferer($code = 302, $default = '/')
     {
         if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() !== Uri::current()) {
-            Header::redirect(HTTPRequest::referer(), $code, $exit);
+            Header::redirect(HTTPRequest::referer(), $code);
         } else {
-            Header::redirect($this->uri($default), $code, $exit);
+            Header::redirect($this->uri($default), $code);
         }
     }
 

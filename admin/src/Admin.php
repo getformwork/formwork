@@ -37,7 +37,7 @@ class Admin
         static::$instance = $this;
 
         if (!Formwork::instance()->option('admin.enabled')) {
-            $this->redirectToSite(302, true);
+            $this->redirectToSite();
         }
 
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
@@ -80,7 +80,7 @@ class Admin
 
         if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
             Session::set('FORMWORK_REDIRECT_TO', HTTPRequest::uri());
-            $this->redirect('/login/', 302, true);
+            $this->redirect('/login/');
         }
 
         $this->loadRoutes();
@@ -116,7 +116,7 @@ class Admin
             $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
             if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
                 $this->notify($this->label('request.error.post-max-size'), 'error');
-                $this->redirectToReferer(302, true);
+                $this->redirectToReferer();
             }
         }
     }
@@ -132,14 +132,14 @@ class Admin
             if (HTTPRequest::isXHR()) {
                 JSONResponse::error('Bad Request: the CSRF token is not valid', 400)->send();
             }
-            $this->redirect('/login/', 302, true);
+            $this->redirect('/login/');
         }
     }
 
     protected function registerAdmin()
     {
         if ($this->router->request() !== '/') {
-            $this->redirectToPanel(302, true);
+            $this->redirectToPanel();
         }
         $controller = new Controllers\Register();
         $controller->register();
@@ -152,7 +152,7 @@ class Admin
         $this->router->add(
             '/',
             function (RouteParams $params) {
-                $this->redirect('/dashboard/', 302, true);
+                $this->redirect('/dashboard/');
             }
         );
 

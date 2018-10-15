@@ -40,7 +40,7 @@ class Backup extends AbstractController
             }
         } catch (LocalizedException $e) {
             $this->notify($this->label('backup.error.cannot-download', $e->getLocalizedMessage()), 'error');
-            $this->redirectToReferer(302, true, '/dashboard/');
+            $this->redirectToReferer(302, '/dashboard/');
         }
     }
 }

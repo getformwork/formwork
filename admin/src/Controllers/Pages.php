@@ -55,20 +55,20 @@ class Pages extends AbstractController
         // Ensure no required data is missing
         if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
             $this->notify($this->label('pages.page.cannot-create.var-missing'), 'error');
-            $this->redirect('/pages/', 302, true);
+            $this->redirect('/pages/');
         }
 
         // Ensure there isn't a page with the same uri
         if ($this->site()->findPage($data->get('slug'))) {
             $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
-            $this->redirect('/pages/', 302, true);
+            $this->redirect('/pages/');
         }
 
         $parent = $this->resolveParent($data->get('parent'));
 
         if (is_null($parent)) {
             $this->notify($this->label('pages.page.cannot-create.invalid-parent'), 'error');
-            $this->redirect('/pages/', 302, true);
+            $this->redirect('/pages/');
         }
 
         $scheme = $this->scheme($data->get('template'));
@@ -79,10 +79,10 @@ class Pages extends AbstractController
         try {
             $newPage = $this->createPage($path, $data->get('template'), $data->get('title'));
             $this->notify($this->label('pages.page.created'), 'success');
-            $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/', 302, true);
+            $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/');
         } catch (RuntimeException $e) {
             $this->notify($this->label('pages.page.cannot-create'), 'error');
-            $this->redirect('/pages/', 302, true);
+            $this->redirect('/pages/');
         }
     }
 
@@ -95,7 +95,7 @@ class Pages extends AbstractController
         // Ensure the page exists
         if (!$page) {
             $this->notify($this->label('pages.page.cannot-edit.page-missing'), 'error');
-            $this->redirect('/pages/', 302, true);
+            $this->redirect('/pages/');
         }
 
         // Load page fields
@@ -121,7 +121,7 @@ class Pages extends AbstractController
                 // Ensure no required data is missing
                 if (!$data->has(array('title', 'content'))) {
                     $this->notify($this->label('pages.page.cannot-edit.var-missing'), 'error');
-                    $this->redirect('/pages/' . $params->get('page') . '/edit/', 302, true);
+                    $this->redirect('/pages/' . $params->get('page') . '/edit/');
                 }
 
                 // Update the page
@@ -223,7 +223,7 @@ class Pages extends AbstractController
             $this->redirect('/pages/');
         } catch (LocalizedException $e) {
             $this->notify($this->label('pages.page.cannot-delete', $e->getLocalizedMessage()), 'error');
-            $this->redirectToReferer(302, true, '/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
     }
 
@@ -336,7 +336,7 @@ class Pages extends AbstractController
                         $this->changePageId($page, $newId);
                     } catch (RuntimeException $e) {
                         $this->notify($this->label('pages.page.cannot-change-num'), 'error');
-                        $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/', 302, true);
+                        $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
                     }
                 }
             }
@@ -346,12 +346,12 @@ class Pages extends AbstractController
 
         if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
             $page = $this->changePageParent($page, $newParent);
-            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/', 302, true);
+            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
         }
 
         if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
             $this->changePageTemplate($page, $newTemplate);
-            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/', 302, true);
+            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
         }
 
         return $page;
