@@ -43,13 +43,13 @@ class Users extends AbstractController
         // Ensure no required data is missing
         if (!$data->has(array('username', 'fullname', 'password', 'email', 'language'))) {
             $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
-            $this->redirect('/users/', 302, true);
+            $this->redirect('/users/');
         }
 
         // Ensure there isn't a user with the same username
         if (Admin::instance()->users()->has($data->get('username'))) {
             $this->notify($this->label('users.user.cannot-create.already-exists'), 'error');
-            $this->redirect('/users/', 302, true);
+            $this->redirect('/users/');
         }
 
         $userData = array(
@@ -63,7 +63,7 @@ class Users extends AbstractController
         FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
         $this->notify($this->label('users.user.created'), 'success');
-        $this->redirect('/users/', 302, true);
+        $this->redirect('/users/');
     }
 
     public function delete(RouteParams $params)
@@ -89,10 +89,10 @@ class Users extends AbstractController
             $this->registry('lastAccess')->remove($user->username());
 
             $this->notify($this->label('users.user.deleted'), 'success');
-            $this->redirect('/users/', 302, true);
+            $this->redirect('/users/');
         } catch (LocalizedException $e) {
             $this->notify($e->getLocalizedMessage(), 'error');
-            $this->redirectToReferer(302, true, '/users/');
+            $this->redirectToReferer(302, '/users/');
         }
     }
 
@@ -104,7 +104,7 @@ class Users extends AbstractController
 
         if (is_null($user)) {
             $this->notify($this->label('users.user.not-found'), 'error');
-            $this->redirect('/users/', 302, true);
+            $this->redirect('/users/');
         }
 
         $fields->validate($user);
@@ -121,7 +121,7 @@ class Users extends AbstractController
             } else {
                 $this->notify($this->label('users.user.cannot-edit', $user->username()), 'error');
             }
-            $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+            $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
         $this->modal('changes');
@@ -148,7 +148,7 @@ class Users extends AbstractController
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
                 $this->notify($this->label('users.user.cannot-change-password'), 'error');
-                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+                $this->redirect('/users/' . $user->username() . '/profile/');
             }
 
             // Hash the new password
@@ -162,7 +162,7 @@ class Users extends AbstractController
             // Ensure that user role can be changed
             if (!$this->user()->canChangeRoleOf($user)) {
                 $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
-                $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+                $this->redirect('/users/' . $user->username() . '/profile/');
             }
         }
 
@@ -194,7 +194,7 @@ class Users extends AbstractController
             $hasUploaded = $uploader->upload(FileSystem::randomName());
         } catch (LocalizedException $e) {
             $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
-            $this->redirect('/users/' . $user->username() . '/profile/', 302, true);
+            $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
         if ($hasUploaded) {

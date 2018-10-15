@@ -29,7 +29,7 @@ class Register extends AbstractController
 
                 if (!$data->has(array('username', 'fullname', 'password', 'email'))) {
                     $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
-                    $this->redirectToPanel(302, true);
+                    $this->redirectToPanel();
                 }
 
                 $userData = array(
@@ -46,7 +46,7 @@ class Register extends AbstractController
                 $time = $this->log('access')->log($data->get('username'));
                 $this->registry('lastAccess')->set($data->get('username'), $time);
 
-                $this->redirectToPanel(302, true);
+                $this->redirectToPanel();
 
                 break;
         }

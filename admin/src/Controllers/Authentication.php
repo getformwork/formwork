@@ -27,7 +27,7 @@ class Authentication extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
-                    $this->redirectToPanel(302, true);
+                    $this->redirectToPanel();
                 }
 
                 if (is_null(CSRFToken::get())) {
@@ -66,10 +66,10 @@ class Authentication extends AbstractController
 
                     if (!is_null($destination = Session::get('FORMWORK_REDIRECT_TO'))) {
                         Session::remove('FORMWORK_REDIRECT_TO');
-                        $this->redirect($destination, 302, true);
+                        $this->redirect($destination);
                     }
 
-                    $this->redirectToPanel(302, true);
+                    $this->redirectToPanel();
                 }
 
                 $this->error($this->label('login.attempt.failed'), array(
@@ -88,10 +88,10 @@ class Authentication extends AbstractController
         Session::destroy();
 
         if ($this->option('admin.logout_redirect') === 'home') {
-            $this->redirectToSite(302, true);
+            $this->redirectToSite();
         } else {
             $this->notify($this->label('login.logged-out'), 'info');
-            $this->redirectToPanel(302, true);
+            $this->redirectToPanel();
         }
     }
 

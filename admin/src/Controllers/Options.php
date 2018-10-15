@@ -17,7 +17,7 @@ class Options extends AbstractController
     public function index()
     {
         $this->ensurePermission('options.system');
-        $this->redirect('/options/system/', 302, true);
+        $this->redirect('/options/system/');
     }
 
     public function systemOptions()
@@ -32,7 +32,7 @@ class Options extends AbstractController
             $defaults = Formwork::instance()->defaults();
             $differ = $this->updateOptions('system', $fields->validate($data), $options, $defaults);
             $this->notify($this->label('options.updated'), 'success');
-            $this->redirect('/options/system/', 302, true);
+            $this->redirect('/options/system/');
         }
 
         $fields->validate(new DataGetter(Formwork::instance()->options()));
@@ -68,7 +68,7 @@ class Options extends AbstractController
             }
 
             $this->notify($this->label('options.updated'), 'success');
-            $this->redirect('/options/site/', 302, true);
+            $this->redirect('/options/site/');
         }
 
         $fields->validate(new DataGetter($this->site()->data()));

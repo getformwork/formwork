@@ -94,12 +94,10 @@ class Header
         static::status(404);
     }
 
-    public static function redirect($uri, $code = 302, $exit = false)
+    public static function redirect($uri, $code = 302)
     {
         static::status($code);
         static::send('Location', $uri);
-        if ($exit) {
-            exit;
-        }
+        exit;
     }
 }

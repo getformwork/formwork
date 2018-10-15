@@ -138,7 +138,7 @@ class Formwork
 
             if ($page = $this->site->findPage($path)) {
                 if ($params->get('paginationPage') == 1) {
-                    Header::redirect($page->uri(), 301, true);
+                    Header::redirect($page->uri(), 301);
                 }
                 if ($page->routable() && $page->published()) {
                     return $page;
