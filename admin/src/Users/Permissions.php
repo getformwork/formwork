@@ -10,6 +10,7 @@ class Permissions
         'backup'    => false,
         'pages'     => false,
         'options'   => false,
+        'updates'   => false,
         'users'     => false
     );
 

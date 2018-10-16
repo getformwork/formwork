@@ -10,6 +10,7 @@ class Updates extends AbstractController
 {
     public function check()
     {
+        $this->ensurePermission('updates.check');
         $updater = new Updater();
         $upToDate = $updater->checkUpdates();
         if ($upToDate) {
@@ -26,6 +27,7 @@ class Updates extends AbstractController
 
     public function update()
     {
+        $this->ensurePermission('updates.update');
         $updater = new Updater(array('force' => true));
         try {
             $updater->update();
