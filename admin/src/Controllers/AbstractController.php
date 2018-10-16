@@ -101,7 +101,7 @@ abstract class AbstractController
 
     protected function view($view, $data = array(), $render = true)
     {
-        $file = ADMIN_PATH . 'views' . DS . str_replace('.', DS, $view) . '.php';
+        $file = VIEWS_PATH . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
         $output = $this->renderToString($file, array_merge($this->defaults(), $data));
         if ($render) {
