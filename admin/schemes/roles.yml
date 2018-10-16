@@ -6,6 +6,7 @@ admin:
         backup: true
         pages: true
         options: true
+        updates: true
         users: true
 
 user:
