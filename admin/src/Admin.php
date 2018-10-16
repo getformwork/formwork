@@ -160,11 +160,11 @@ class Admin
         $this->router->add(
             array('GET', 'POST'),
             '/login/',
-            array(new Controllers\Authentication(), 'login')
+            Controllers\Authentication::class . '@login'
         );
         $this->router->add(
             '/logout/',
-            array(new Controllers\Authentication(), 'logout')
+            Controllers\Authentication::class . '@logout'
         );
 
         // Backup
@@ -172,12 +172,12 @@ class Admin
             'XHR',
             'POST',
             '/backup/make/',
-            array(new Controllers\Backup(), 'make')
+            Controllers\Backup::class . '@make'
         );
         $this->router->add(
             'POST',
             '/backup/download/{backup}/',
-            array(new Controllers\Backup(), 'download')
+            Controllers\Backup::class . '@download'
         );
 
         // Cache
@@ -185,74 +185,74 @@ class Admin
             'XHR',
             'POST',
             '/cache/clear/',
-            array(new Controllers\Cache(), 'clear')
+            Controllers\Cache::class . '@clear'
         );
 
         // Dashboard
         $this->router->add(
             '/dashboard/',
-            array(new Controllers\Dashboard(), 'index')
+            Controllers\Dashboard::class . '@index'
         );
 
         // Options
         $this->router->add(
             '/options/',
-            array(new Controllers\Options(), 'index')
+            Controllers\Options::class . '@index'
         );
         $this->router->add(
             array('GET', 'POST'),
             '/options/system/',
-            array(new Controllers\Options(), 'systemOptions')
+            Controllers\Options::class . '@systemOptions'
         );
         $this->router->add(
             array('GET', 'POST'),
             '/options/site/',
-            array(new Controllers\Options(), 'siteOptions')
+            Controllers\Options::class . '@siteOptions'
         );
         $this->router->add(
             '/options/updates/',
-            array(new Controllers\Options(), 'updates')
+            Controllers\Options::class . '@updates'
         );
         $this->router->add(
             '/options/info/',
-            array(new Controllers\Options(), 'info')
+            Controllers\Options::class . '@info'
         );
 
         // Pages
         $this->router->add(
             '/pages/',
-            array(new Controllers\Pages(), 'index')
+            Controllers\Pages::class . '@index'
         );
         $this->router->add(
             'POST',
             '/pages/new/',
-            array(new Controllers\Pages(), 'create')
+            Controllers\Pages::class . '@create'
         );
         $this->router->add(
             array('GET', 'POST'),
             '/pages/{page}/edit/',
-            array(new Controllers\Pages(), 'edit')
+            Controllers\Pages::class . '@edit'
         );
         $this->router->add(
             'XHR',
             'POST',
             '/pages/reorder/',
-            array(new Controllers\Pages(), 'reorder')
+            Controllers\Pages::class . '@reorder'
         );
         $this->router->add(
             'POST',
             '/pages/{page}/file/upload/',
-            array(new Controllers\Pages(), 'uploadFile')
+            Controllers\Pages::class . '@uploadFile'
         );
         $this->router->add(
             'POST',
             '/pages/{page}/file/{filename}/delete/',
-            array(new Controllers\Pages(), 'deleteFile')
+            Controllers\Pages::class . '@deleteFile'
         );
         $this->router->add(
             'POST',
             '/pages/{page}/delete/',
-            array(new Controllers\Pages(), 'delete')
+            Controllers\Pages::class . '@delete'
         );
 
         // Updates
@@ -260,34 +260,34 @@ class Admin
             'XHR',
             'POST',
             '/updates/check/',
-            array(new Controllers\Updates(), 'check')
+            Controllers\Updates::class . '@check'
         );
         $this->router->add(
             'XHR',
             'POST',
             '/updates/update/',
-            array(new Controllers\Updates(), 'update')
+            Controllers\Updates::class . '@update'
         );
 
         // Users
         $this->router->add(
             '/users/',
-            array(new Controllers\Users(), 'index')
+            Controllers\Users::class . '@index'
         );
         $this->router->add(
             'POST',
             '/users/new/',
-            array(new Controllers\Users(), 'create')
+            Controllers\Users::class . '@create'
         );
         $this->router->add(
             'POST',
             '/users/{user}/delete/',
-            array(new Controllers\Users(), 'delete')
+            Controllers\Users::class . '@delete'
         );
         $this->router->add(
             array('GET', 'POST'),
             '/users/{user}/profile/',
-            array(new Controllers\Users(), 'profile')
+            Controllers\Users::class . '@profile'
         );
     }
 
