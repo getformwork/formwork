@@ -58,8 +58,7 @@ abstract class AbstractController
     {
         return array(
             'location' => $this->location,
-            'csrfToken' => CSRFToken::get(),
-            'modals' => implode($this->modals)
+            'csrfToken' => CSRFToken::get()
         );
     }
 
@@ -93,6 +92,11 @@ abstract class AbstractController
     protected function modal($modal, $data = array())
     {
         $this->modals[] = $this->view('modals.' . $modal, $data, false);
+    }
+
+    protected function modals()
+    {
+        return implode($this->modals);
     }
 
     protected function view($view, $data = array(), $render = true)

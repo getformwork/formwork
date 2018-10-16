@@ -87,6 +87,6 @@
     <main class="main">
         <?= $content ?>
     </main>
-    <?= isset($modals) ? $modals : '' ?>
+    <?= $this->modals() ?>
 </body>
 </html>
