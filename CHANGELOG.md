@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.9.1](https://github.com/giuscris/formwork/releases/tag/0.9.1) (2018-10-16)
+
+**Enhancements**
+
+ * **Use image picker when inserting an image from editor toolbar**
+ * Confirm image picker selection on double click on thumbnail
+ * Add late callback instantiation in `Router` with `Class@method` syntax
+ * Update Admin routes with new `Class@method` syntax to save memory
+ * Avoid passing modals each time a view is rendered
+
+**Bug fixes**
+
+ * Fix persistent tooltip when a button is disabled after click
+ * Fix missing `updates.*` permissions
+
 ## [0.9.0](https://github.com/giuscris/formwork/releases/tag/0.9.0) (2018-10-13)
 
 **Enhancements**
