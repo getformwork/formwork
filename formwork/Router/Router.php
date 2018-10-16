@@ -86,9 +86,6 @@ class Router
         if (!in_array($method, $this->methods)) {
             throw new LogicException('Invalid HTTP method "' . $method . '"');
         }
-        if (!is_null($callback) && !is_callable($callback)) {
-            throw new LogicException('Invalid callback ' . implode('::', (array) $callback));
-        }
         if (is_array($route)) {
             foreach ($route as $r) {
                 $this->add($type, $method, $r, $callback);
@@ -108,6 +105,14 @@ class Router
         foreach ($this->routes as $route) {
             if (HTTPRequest::type() === $route['type'] && HTTPRequest::method() === $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
+                // Parse Class@method callback syntax
+                if (is_string($route['callback']) && strpos($route['callback'], '@') !== false) {
+                    list($class, $method) = explode('@', $route['callback']);
+                    $route['callback'] = array(new $class(), $method);
+                }
+                if (!is_callable($route['callback'])) {
+                    throw new LogicException('Invalid callback for ' . $route['route'] . ' route');
+                }
                 return $route['callback']($this->params);
             }
         }
