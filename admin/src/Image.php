@@ -272,7 +272,7 @@ class Image
     public function brightness($amount)
     {
         if ($amount < -255 || $amount > 255) {
-            throw new UexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
+            throw new UnexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
         }
         imagefilter($this->image, IMG_FILTER_BRIGHTNESS, $amount);
         return $this;
@@ -281,7 +281,7 @@ class Image
     public function contrast($amount)
     {
         if ($amount < -100 || $amount > 100) {
-            throw new UexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
+            throw new UnexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
         }
         // For GD -100 = max contrast, 100 = min contrast; we change $amount sign for a more predictable behavior
         imagefilter($this->image, IMG_FILTER_CONTRAST, -$amount);
@@ -291,16 +291,16 @@ class Image
     public function colorize($red, $green, $blue, $alpha = 0)
     {
         if ($red < 0 || $red > 255) {
-            throw new UexpectedValueException('$red value must be in range 0-255, ' . $red . ' given');
+            throw new UnexpectedValueException('$red value must be in range 0-255, ' . $red . ' given');
         }
         if ($green < 0 || $green > 255) {
-            throw new UexpectedValueException('$green value must be in range 0-255, ' . $green . ' given');
+            throw new UnexpectedValueException('$green value must be in range 0-255, ' . $green . ' given');
         }
         if ($blue < 0 || $blue > 255) {
-            throw new UexpectedValueException('$blue value must be in range 0-255, ' . $blue . ' given');
+            throw new UnexpectedValueException('$blue value must be in range 0-255, ' . $blue . ' given');
         }
         if ($alpha < 0 || $alpha > 127) {
-            throw new UexpectedValueException('$alpha value must be in range 0-127, ' . $alpha . ' given');
+            throw new UnexpectedValueException('$alpha value must be in range 0-127, ' . $alpha . ' given');
         }
         imagefilter($this->image, IMG_FILTER_COLORIZE, $red, $green, $blue, $alpha);
         return $this;
@@ -326,7 +326,7 @@ class Image
     public function blur($amount)
     {
         if ($amount < 0 || $amount > 100) {
-            throw new UexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
+            throw new UnexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
         }
         for ($i = 0; $i < $amount; $i++) {
             imagefilter($this->image, IMG_FILTER_GAUSSIAN_BLUR);
