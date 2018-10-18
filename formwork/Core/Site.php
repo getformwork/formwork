@@ -30,13 +30,6 @@ class Site extends AbstractPage
     protected $templates;
 
     /**
-     * Templates path
-     *
-     * @var string
-     */
-    protected $templatesPath;
-
-    /**
      * Create a new Site instance
      *
      * @param array $data
@@ -44,7 +37,6 @@ class Site extends AbstractPage
     public function __construct($data)
     {
         $this->path = Formwork::instance()->option('content.path');
-        $this->templatesPath = Formwork::instance()->option('templates.path');
         $this->uri = HTTPRequest::root();
         $this->data = array_merge($this->defaults(), $data);
         $this->loadTemplates();
@@ -82,7 +74,7 @@ class Site extends AbstractPage
      */
     public function hasTemplate($template)
     {
-        return in_array($template, $this->templates());
+        return in_array($template, $this->templates(), true);
     }
 
     /**
@@ -222,17 +214,17 @@ class Site extends AbstractPage
     /**
      * Find page from slug
      *
-     * @param string $page
+     * @param string $slug
      *
      * @return Page|null
      */
-    public function findPage($page)
+    public function findPage($slug)
     {
-        if ($page === '/') {
+        if ($slug === '/') {
             return $this->indexPage();
         }
 
-        $components = explode('/', trim($page, '/'));
+        $components = explode('/', trim($slug, '/'));
         $path = $this->path;
 
         foreach ($components as $component) {
@@ -264,8 +256,9 @@ class Site extends AbstractPage
      */
     protected function loadTemplates()
     {
-        foreach (FileSystem::scan($this->templatesPath) as $item) {
-            $path = $this->templatesPath . $item;
+        $templatesPath = Formwork::instance()->option('templates.path');
+        foreach (FileSystem::scan($templatesPath) as $item) {
+            $path = $templatesPath . $item;
             if (FileSystem::isFile($path)) {
                 $templates[FileSystem::name($item)] = $path;
             }

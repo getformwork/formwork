@@ -24,7 +24,7 @@ class Validator
             if ($field->has('fields')) {
                 $field->get('fields')->validate($data);
             }
-            if (in_array($field->type(), static::$ignore)) {
+            if (in_array($field->type(), static::$ignore, true)) {
                 continue;
             }
             $method = 'validate' . ucfirst(strtolower($field->type()));

@@ -130,7 +130,7 @@ class Uploader
         if (is_null($this->options['allowedMimeTypes'])) {
             return true;
         }
-        return in_array($mimeType, (array) $this->options['allowedMimeTypes']);
+        return in_array($mimeType, (array) $this->options['allowedMimeTypes'], true);
     }
 
     /**

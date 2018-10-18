@@ -196,12 +196,12 @@ class Page extends AbstractPage
     /**
      * Get page num
      *
-     * @return string|null
+     * @return int|null
      */
     public function num()
     {
         preg_match(self::NUM_REGEX, $this->id, $matches);
-        return isset($matches[1]) ? $matches[1] : null;
+        return isset($matches[1]) ? (int) $matches[1] : null;
     }
 
     /**
@@ -324,11 +324,11 @@ class Page extends AbstractPage
      *
      * @param string $file Name of the file
      *
-     * @return bool|string File path or false if file is not found
+     * @return string|null File path or null if file is not found
      */
     public function file($file)
     {
-        return $this->files()->has($file) ? substr($this->relativePath() . $file, 1) : false;
+        return $this->files()->has($file) ? substr($this->relativePath() . $file, 1) : null;
     }
 
     /**
@@ -394,7 +394,7 @@ class Page extends AbstractPage
             if (is_null($this->filename) && Formwork::instance()->site()->hasTemplate($name)) {
                 $this->filename = $file;
                 $this->template = new Template($name);
-            } elseif (in_array($extension, Formwork::instance()->option('files.allowed_extensions'))) {
+            } elseif (in_array($extension, Formwork::instance()->option('files.allowed_extensions'), true)) {
                 $files[] = $file;
             }
         }

@@ -459,11 +459,14 @@ class Pages extends AbstractController
      * Change page template
      *
      * @param string $template
+     *
+     * @return Page
      */
     protected function changePageTemplate(Page $page, $template)
     {
         $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
+        return new Page($destination);
     }
 
     /**

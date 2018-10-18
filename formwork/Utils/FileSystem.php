@@ -193,7 +193,7 @@ class FileSystem
      * @param string $file
      * @param bool   $unit Whether to return size with unit of measurement or not
      *
-     * @return string
+     * @return int|string
      */
     public static function size($file, $unit = true)
     {
@@ -279,27 +279,27 @@ class FileSystem
     /**
      * Return whether a path corresponds to a file
      *
-     * @param string $file
+     * @param string $path
      *
      * @return bool
      */
-    public static function isFile($file)
+    public static function isFile($path)
     {
-        static::assert($file);
-        return @is_file($file);
+        static::assert($path);
+        return @is_file($path);
     }
 
     /**
      * Return whether a path corresponds to a directory
      *
-     * @param string $directory
+     * @param string $path
      *
      * @return bool
      */
-    public static function isDirectory($directory)
+    public static function isDirectory($path)
     {
-        static::assert($directory);
-        return @is_dir($directory);
+        static::assert($path);
+        return @is_dir($path);
     }
 
     /**

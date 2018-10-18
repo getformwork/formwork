@@ -224,7 +224,7 @@ class Options extends AbstractController
 
         // Update options with new values
         foreach ($fields as $field) {
-            if (in_array($field->type(), $ignore)) {
+            if (in_array($field->type(), $ignore, true)) {
                 continue;
             }
             if ($field->get('required') && $field->isEmpty()) {

@@ -56,7 +56,7 @@ class Template
      */
     public function __construct($template)
     {
-        $this->path = Formwork::instance()->site()->templatesPath();
+        $this->path = Formwork::instance()->option('templates.path');
         $this->extension = Formwork::instance()->option('templates.extension');
         $this->name = $template;
         $this->vars = $this->defaults();

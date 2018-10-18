@@ -15,7 +15,7 @@ class Scheme extends DataGetter
      */
     public function __construct($template)
     {
-        $path = Formwork::instance()->site()->templatesPath() . 'schemes' . DS;
+        $path = Formwork::instance()->option('templates.path') . 'schemes' . DS;
         $filename = $path . $template . '.yml';
 
         FileSystem::assert($filename);
@@ -37,7 +37,7 @@ class Scheme extends DataGetter
     }
 
     /**
-     * Get whether scheme is default
+     * Return whether scheme is default
      *
      * @return bool
      */

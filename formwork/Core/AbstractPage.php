@@ -238,13 +238,16 @@ abstract class AbstractPage
      */
     public function get($key, $default = null)
     {
-        if (isset($this->$key)) {
+        if (property_exists($this, $key)) {
             return $this->$key;
+        }
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
         }
         if (method_exists($this, $key)) {
             return $this->$key();
         }
-        return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+        return $default;
     }
 
     /**
@@ -256,7 +259,7 @@ abstract class AbstractPage
      */
     public function has($key)
     {
-        return isset($this->$key) || array_key_exists($key, $this->data);
+        return property_exists($this, $key) || array_key_exists($key, $this->data);
     }
 
     /**
@@ -271,9 +274,6 @@ abstract class AbstractPage
 
     public function __call($name, $arguments)
     {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
         if ($this->has($name)) {
             return $this->get($name);
         }
