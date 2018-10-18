@@ -23,7 +23,7 @@ class User extends DataGetter
 
     public function __construct($data)
     {
-        $this->data = array_merge($this->defaults, $data);
+        parent::__construct(array_merge($this->defaults, $data));
         $this->avatar = new Avatar($this->data['avatar']);
         $this->permissions = new Permissions($this->data['role']);
     }

@@ -8,7 +8,7 @@ class Field extends DataSetter
 {
     protected $name;
 
-    public function __construct($name, $data = array(), Fields $parent = null)
+    public function __construct($name, $data = array())
     {
         $this->name = $name;
         parent::__construct($data);
