@@ -32,6 +32,12 @@ class Page extends AbstractPage
 
     protected $files = array();
 
+    protected $rawContent;
+
+    protected $summary;
+
+    protected $content;
+
     protected $siblings;
 
     public function __construct($path)
@@ -232,8 +238,7 @@ class Page extends AbstractPage
         }
         list($match, $frontmatter, $summary, $body) = $matches;
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
-        $this->frontmatter = YAML::parse($frontmatter);
-        $this->data = array_merge($this->defaults(), $this->frontmatter);
+        $this->data = array_merge($this->defaults(), YAML::parse($frontmatter));
         if (!empty($summary)) {
             $this->summary = $this->contentParser()->text($summary);
         }
