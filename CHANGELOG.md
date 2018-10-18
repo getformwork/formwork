@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2](https://github.com/giuscris/formwork/releases/tag/0.9.2) (2018-10-18)
+
+**Enhancements**
+
+ * **Add PHPDoc**
+ * Cleanup code
+
+**Bug fixes**
+
+ * Fix typos in `Image` class
+ * Fix Authentication controller
+ * Add missing properties to `Page` class
+ * Remove duplicate keys in `MimeType` class
+
 ## [0.9.1](https://github.com/giuscris/formwork/releases/tag/0.9.1) (2018-10-16)
 
 **Enhancements**
