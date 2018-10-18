@@ -25,6 +25,7 @@ return Config::create()
         'no_leading_import_slash' => true,
         'no_null_property_initialization' => true,
         'no_superfluous_elseif' => true,
+        'no_superfluous_phpdoc_tags' => true,
         'no_trailing_comma_in_list_call' => true,
         'no_trailing_comma_in_singleline_array' => true,
         'no_trailing_whitespace_in_comment' => true,
@@ -33,6 +34,18 @@ return Config::create()
         'no_unused_imports' => true,
         'no_useless_else' => true,
         'ordered_class_elements' => array('use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
+        'phpdoc_align' => true,
+        'phpdoc_annotation_without_dot' => true,
+        'phpdoc_indent' => true,
+        'phpdoc_no_empty_return' => true,
+        'phpdoc_no_useless_inheritdoc' => true,
+        'phpdoc_order' => true,
+        'phpdoc_return_self_reference' => true,
+        'phpdoc_scalar' => true,
+        'phpdoc_separation' => true,
+        'phpdoc_trim' => true,
+        'phpdoc_types_order' => array('null_adjustment' => 'always_last'),
+        'phpdoc_var_without_name' => true,
         'single_quote' => true
     ))
     ->setFinder($finder);
