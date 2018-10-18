@@ -14,7 +14,7 @@ class Scheme extends DataGetter
         $filename = $path . $template . '.yml';
 
         FileSystem::assert($filename);
-        $this->data = YAML::parseFile($filename);
+        parent::__construct(YAML::parseFile($filename));
 
         if (!$this->has('title')) {
             $this->data['title'] = $template;
