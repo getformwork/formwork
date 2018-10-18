@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.3](https://github.com/giuscris/formwork/releases/tag/0.9.3) (2018-10-18)
+
+**Bug fixes**
+
+ * Fix missing `Page::$frontmatter` that prevented page updating from Admin panel
+
 ## [0.9.2](https://github.com/giuscris/formwork/releases/tag/0.9.2) (2018-10-18)
 
 **Enhancements**
