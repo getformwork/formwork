@@ -83,6 +83,13 @@ class Page extends AbstractPage
     protected $files = array();
 
     /**
+     * Page frontmatter
+     *
+     * @var array
+     */
+    protected $frontmatter;
+
+    /**
      * Page unprocessed content
      *
      * @var string
@@ -422,8 +429,9 @@ class Page extends AbstractPage
             throw new RuntimeException('Invalid page format');
         }
         list($match, $frontmatter, $summary, $body) = $matches;
+        $this->frontmatter = YAML::parse($frontmatter);
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
-        $this->data = array_merge($this->defaults(), YAML::parse($frontmatter));
+        $this->data = array_merge($this->defaults(), $this->frontmatter);
         if (!empty($summary)) {
             $this->summary = $this->contentParser()->text($summary);
         }
