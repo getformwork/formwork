@@ -10,22 +10,65 @@ use Formwork\Utils\Visitor;
 
 class Statistics
 {
+    /**
+     * Date format
+     *
+     * @var string
+     */
     const DATE_FORMAT = 'Ymd';
 
+    /**
+     * Number of days displayed in the statistics chart
+     *
+     * @var int
+     */
     const CHART_LIMIT = 7;
 
+    /**
+     * Visits registry filename
+     *
+     * @var string
+     */
     const VISITS_FILENAME = 'visits.json';
 
+    /**
+     * Unique visits registry filename
+     *
+     * @var string
+     */
     const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
 
+    /**
+     * Visitors registry filename
+     *
+     * @var string
+     */
     const VISITORS_FILENAME = 'visitors.json';
 
+    /**
+     * Visits registry
+     *
+     * @var Registry
+     */
     protected $visitsRegistry;
 
+    /**
+     * Unique visits registry
+     *
+     * @var Registry
+     */
     protected $uniqueVisitsRegistry;
 
+    /**
+     * Visitors registry
+     *
+     * @var Registry
+     */
     protected $visitorsRegistry;
 
+    /**
+     * Create a new Statistics instance
+     */
     public function __construct()
     {
         $base = LOGS_PATH . 'statistics' . DS;
@@ -39,6 +82,9 @@ class Statistics
         $this->visitorsRegistry = new Registry($base . self::VISITORS_FILENAME);
     }
 
+    /**
+     * Track a visit
+     */
     public function trackVisit()
     {
         if (Visitor::isBot()) {
@@ -62,6 +108,11 @@ class Statistics
         $this->visitorsRegistry->save();
     }
 
+    /**
+     * Return chart data
+     *
+     * @return array
+     */
     public function getChartData()
     {
         $visits = $this->visitsRegistry->toArray();

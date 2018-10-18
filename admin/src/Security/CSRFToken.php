@@ -8,8 +8,16 @@ use RuntimeException;
 
 class CSRFToken
 {
+    /**
+     * Current CSRF token
+     */
     protected static $token;
 
+    /**
+     * Generate a new CSRF token
+     *
+     * @return string
+     */
     public static function generate()
     {
         static::$token = function_exists('random_bytes') ? bin2hex(random_bytes(20)) : sha1(microtime());
@@ -17,11 +25,23 @@ class CSRFToken
         return static::$token;
     }
 
+    /**
+     * Get current CSRF token
+     *
+     * @return string
+     */
     public static function get()
     {
         return Session::has('CSRF_TOKEN') ? Session::get('CSRF_TOKEN') : null;
     }
 
+    /**
+     * Check if given CSRF token is valid
+     *
+     * @param string $token
+     *
+     * @return bool
+     */
     public static function validate($token = null)
     {
         if (is_null($token)) {
@@ -37,6 +57,9 @@ class CSRFToken
         return $valid;
     }
 
+    /**
+     * Remove CSRF token from session data
+     */
     public static function destroy()
     {
         Session::remove('CSRF_TOKEN');

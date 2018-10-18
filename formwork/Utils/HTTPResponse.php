@@ -4,8 +4,18 @@ namespace Formwork\Utils;
 
 class HTTPResponse
 {
+    /**
+     * Array containing HTTP response headers
+     *
+     * @var array
+     */
     protected static $headers = array();
 
+    /**
+     * Return an array containing response headers
+     *
+     * @return array
+     */
     public static function headers()
     {
         if (!empty(static::$headers)) {
@@ -18,6 +28,12 @@ class HTTPResponse
         return static::$headers;
     }
 
+    /**
+     * Put file data into response content
+     *
+     * @param string $file
+     * @param bool   $download Whether to download file or not
+     */
     public static function file($file, $download = false)
     {
         FileSystem::assert($file);
@@ -31,11 +47,21 @@ class HTTPResponse
         exit;
     }
 
+    /**
+     * Put file data into response content and tell the browser to download
+     *
+     * @param string $file
+     *
+     * @see HTTPResponse::file()
+     */
     public static function download($file)
     {
         static::file($file, true);
     }
 
+    /**
+     * Clean all output buffers which were not sent
+     */
     public static function cleanOutputBuffers()
     {
         while (ob_get_level()) {

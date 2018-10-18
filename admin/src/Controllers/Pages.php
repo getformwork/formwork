@@ -19,8 +19,16 @@ use RuntimeException;
 
 class Pages extends AbstractController
 {
+    /**
+     * Page prefix date format
+     *
+     * @var string
+     */
     const DATE_NUM_FORMAT = 'Ymd';
 
+    /**
+     * Pages@index action
+     */
     public function index()
     {
         $this->ensurePermission('pages.index');
@@ -46,6 +54,9 @@ class Pages extends AbstractController
         ));
     }
 
+    /**
+     * Pages@create action
+     */
     public function create()
     {
         $this->ensurePermission('pages.create');
@@ -86,6 +97,9 @@ class Pages extends AbstractController
         }
     }
 
+    /**
+     * Pages@edit action
+     */
     public function edit(RouteParams $params)
     {
         $this->ensurePermission('pages.edit');
@@ -161,6 +175,9 @@ class Pages extends AbstractController
         ));
     }
 
+    /**
+     * Pages@reorder action
+     */
     public function reorder()
     {
         $this->ensurePermission('pages.reorder');
@@ -204,6 +221,9 @@ class Pages extends AbstractController
         JSONResponse::success($this->label('pages.page.moved'))->send();
     }
 
+    /**
+     * Pages@delete action
+     */
     public function delete(RouteParams $params)
     {
         $this->ensurePermission('pages.delete');
@@ -227,6 +247,9 @@ class Pages extends AbstractController
         }
     }
 
+    /**
+     * Pages@uploadFile action
+     */
     public function uploadFile(RouteParams $params)
     {
         $this->ensurePermission('pages.upload_file');
@@ -250,6 +273,9 @@ class Pages extends AbstractController
         }
     }
 
+    /**
+     * Pages@deleteFile action
+     */
     public function deleteFile(RouteParams $params)
     {
         $this->ensurePermission('pages.delete_file');
@@ -273,6 +299,15 @@ class Pages extends AbstractController
         }
     }
 
+    /**
+     * Create a new page
+     *
+     * @param string $path
+     * @param string $template
+     * @param string $title
+     *
+     * @return Page
+     */
     protected function createPage($path, $template, $title)
     {
         FileSystem::createDirectory($path, true);
@@ -288,6 +323,12 @@ class Pages extends AbstractController
         return new Page($path);
     }
 
+    /**
+     * Update a page
+     *
+     *
+     * @return Page
+     */
     protected function updatePage(Page $page, DataGetter $data, Fields $fields)
     {
         // Load current page frontmatter
@@ -357,6 +398,14 @@ class Pages extends AbstractController
         return $page;
     }
 
+    /**
+     * Make a page num according to 'date' or default mode
+     *
+     * @param Parent|Site $parent
+     * @param string      $mode   'date' for pages with a publish date
+     *
+     * @return string
+     */
     protected function makePageNum($parent, $mode)
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
@@ -377,6 +426,13 @@ class Pages extends AbstractController
         return $num;
     }
 
+    /**
+     * Change the id of a page
+     *
+     * @param string $id
+     *
+     * @return Page
+     */
     protected function changePageId(Page $page, $id)
     {
         $directory = FileSystem::dirname($page->path());
@@ -385,6 +441,13 @@ class Pages extends AbstractController
         return new Page($destination);
     }
 
+    /**
+     * Change the parent of a page
+     *
+     * @param Page|Site $parent
+     *
+     * @return Page
+     */
     protected function changePageParent(Page $page, $parent)
     {
         $destination = $parent->path() . FileSystem::basename($page->path()) . DS;
@@ -392,12 +455,24 @@ class Pages extends AbstractController
         return new Page($destination);
     }
 
+    /**
+     * Change page template
+     *
+     * @param string $template
+     */
     protected function changePageTemplate(Page $page, $template)
     {
         $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
     }
 
+    /**
+     * Resolve parent page helper
+     *
+     * @param string $parent Page URI or '.' for site
+     *
+     * @return Page|Site
+     */
     protected function resolveParent($parent)
     {
         if ($parent === '.') {

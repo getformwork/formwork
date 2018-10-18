@@ -3,6 +3,7 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Users\User;
 use Formwork\Admin\Users\Users;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Admin\Utils\Session;
@@ -19,16 +20,44 @@ class Admin
 {
     use AdminTrait;
 
+    /**
+     * Admin instance
+     *
+     * @var Admin
+     */
     public static $instance;
 
+    /**
+     * Router instance
+     *
+     * @var Router
+     */
     protected $router;
 
+    /**
+     * All the registered users
+     *
+     * @var Users
+     */
     protected $users;
 
+    /**
+     * Current panel language
+     *
+     * @var Language
+     */
     protected $language;
 
+    /**
+     * Errors controller
+     *
+     * @var Controllers\Errors
+     */
     protected $errors;
 
+    /**
+     * Create a new Admin instance
+     */
     public function __construct()
     {
         if (!is_null(static::$instance)) {
@@ -47,6 +76,11 @@ class Admin
         $this->loadErrorHandler();
     }
 
+    /**
+     * Return self instance
+     *
+     * @return self
+     */
     public static function instance()
     {
         if (!is_null(static::$instance)) {
@@ -55,18 +89,31 @@ class Admin
         return static::$instance = new static();
     }
 
+    /**
+     * Return whether some user is logged in
+     *
+     * @return bool
+     */
     public function isLoggedIn()
     {
         $username = Session::get('FORMWORK_USERNAME');
         return !empty($username) && $this->users->has($username);
     }
 
+    /**
+     * Return currently logged in user
+     *
+     * @return User
+     */
     public function user()
     {
         $username = Session::get('FORMWORK_USERNAME');
         return $this->users->get($username);
     }
 
+    /**
+     * Run the administration panel
+     */
     public function run()
     {
         if (HTTPRequest::method() === 'POST') {
@@ -92,6 +139,9 @@ class Admin
         }
     }
 
+    /**
+     * Load proper panel language
+     */
     protected function loadLanguages()
     {
         $languageCode = Formwork::instance()->option('admin.lang');
@@ -101,6 +151,9 @@ class Admin
         $this->language = Language::load($languageCode);
     }
 
+    /**
+     * Load the panel-styled error handler
+     */
     protected function loadErrorHandler()
     {
         $this->errors = new Controllers\Errors();
@@ -110,6 +163,10 @@ class Admin
         });
     }
 
+    /**
+     * Validate HTTP request Content-Length according to post_max_size directive
+     * and notify if not valid
+     */
     protected function validateContentLength()
     {
         if (!is_null(HTTPRequest::contentLength())) {
@@ -121,6 +178,9 @@ class Admin
         }
     }
 
+    /**
+     * Validate CSRF token and redirect to login view if not valid
+     */
     protected function validateCSRFToken()
     {
         try {
@@ -136,6 +196,9 @@ class Admin
         }
     }
 
+    /**
+     * Register administration panel if no user exists
+     */
     protected function registerAdmin()
     {
         if ($this->router->request() !== '/') {
@@ -146,6 +209,9 @@ class Admin
         exit;
     }
 
+    /**
+     * Load administration panel routes
+     */
     protected function loadRoutes()
     {
         // Default route

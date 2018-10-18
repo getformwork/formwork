@@ -10,12 +10,32 @@ use Formwork\Utils\MimeType;
 
 class Uploader
 {
+    /**
+     * Destination of uploaded file
+     *
+     * @var string
+     */
     protected $destination;
 
+    /**
+     * Uploader options
+     *
+     * @var string
+     */
     protected $options;
 
+    /**
+     * Array containing uploaded files
+     *
+     * @var array
+     */
     protected $uploadedFiles;
 
+    /**
+     * Human-readable Uploader error messages
+     *
+     * @var array
+     */
     protected static $errorMessages = array(
         UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
@@ -26,6 +46,11 @@ class Uploader
         UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
     );
 
+    /**
+     * Uploader errors language strings
+     *
+     * @var array
+     */
     protected static $errorLanguageStrings = array(
         UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
         UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
@@ -36,12 +61,23 @@ class Uploader
         UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
     );
 
+    /**
+     * Create a new Uploader instance
+     *
+     * @param string $destination
+     * @param array  $options
+     */
     public function __construct($destination, $options = array())
     {
         $this->destination = FileSystem::normalize($destination);
         $this->options = array_merge($this->defaults(), $options);
     }
 
+    /**
+     * Return Uploader default options
+     *
+     * @return array
+     */
     public function defaults()
     {
         $mimeTypes = array_map(
@@ -54,6 +90,13 @@ class Uploader
         );
     }
 
+    /**
+     * Upload one or more files
+     *
+     * @param string|null $name
+     *
+     * @return bool Whether files were uploaded or not
+     */
     public function upload($name = null)
     {
         if (!HTTPRequest::hasFiles()) {
@@ -75,6 +118,13 @@ class Uploader
         return true;
     }
 
+    /**
+     * Return if a MIME type is allowed by Formwork
+     *
+     * @param string $mimeType
+     *
+     * @return bool
+     */
     public function isAllowedMimeType($mimeType)
     {
         if (is_null($this->options['allowedMimeTypes'])) {
@@ -83,11 +133,25 @@ class Uploader
         return in_array($mimeType, (array) $this->options['allowedMimeTypes']);
     }
 
+    /**
+     * Return uploaded files
+     *
+     * @return array
+     */
     public function uploadedFiles()
     {
         return $this->uploadedFiles;
     }
 
+    /**
+     * Move uploaded file to a destination
+     *
+     * @param string $source
+     * @param string $destination
+     * @param string $filename
+     *
+     * @return bool Whether file was successfully moved or not
+     */
     private function move($source, $destination, $filename)
     {
         $mimeType = FileSystem::mimeType($source);

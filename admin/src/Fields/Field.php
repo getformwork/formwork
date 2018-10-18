@@ -6,8 +6,19 @@ use LogicException;
 
 class Field extends DataSetter
 {
+    /**
+     * Field name
+     *
+     * @var string
+     */
     protected $name;
 
+    /**
+     * Create a new Field instance
+     *
+     * @param string $name
+     * @param array  $data
+     */
     public function __construct($name, $data = array())
     {
         $this->name = $name;
@@ -21,36 +32,67 @@ class Field extends DataSetter
         Translator::translate($this);
     }
 
+    /**
+     * Return whether field is empty
+     *
+     * @return bool
+     */
     public function isEmpty()
     {
         return empty($this->value());
     }
 
+    /**
+     * Get field name
+     *
+     * @return string
+     */
     public function name()
     {
         return $this->name;
     }
 
+    /**
+     * Get field type
+     *
+     * @return string
+     */
     public function type()
     {
         return $this->get('type');
     }
 
+    /**
+     * Get field label
+     *
+     * @return string
+     */
     public function label()
     {
         return $this->get('label', $this->name());
     }
 
+    /**
+     * Get field placeholder label
+     *
+     * @return string
+     */
     public function placeholder()
     {
         return $this->get('placeholder');
     }
 
+    /**
+     * Get field value
+     */
     public function value()
     {
         return $this->get('value', $this->get('default'));
     }
 
+    /**
+     * Import data helper
+     */
     protected function importData()
     {
         foreach ((array) $this->data['import'] as $key => $value) {
@@ -65,6 +107,11 @@ class Field extends DataSetter
         }
     }
 
+    /**
+     * __debugInfo() magic method
+     *
+     * @return array
+     */
     public function __debugInfo()
     {
         $return['name'] = $this->name;

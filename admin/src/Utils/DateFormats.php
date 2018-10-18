@@ -4,6 +4,11 @@ namespace Formwork\Admin\Utils;
 
 class DateFormats
 {
+    /**
+     * Return common date formats
+     *
+     * @return array
+     */
     public static function date()
     {
         foreach (array('d/m/Y', 'm/d/Y', 'Y-m-d', 'd-m-Y') as $format) {
@@ -12,6 +17,11 @@ class DateFormats
         return $formats;
     }
 
+    /**
+     * Return common hour formats
+     *
+     * @return array
+     */
     public static function hour()
     {
         foreach (array('H:i', 'h:i A') as $format) {
@@ -20,6 +30,11 @@ class DateFormats
         return $formats;
     }
 
+    /**
+     * Return timezone identifiers
+     *
+     * @return array
+     */
     public static function timezones()
     {
         foreach (timezone_identifiers_list() as $tz) {

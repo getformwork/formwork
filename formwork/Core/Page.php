@@ -12,34 +12,109 @@ use RuntimeException;
 
 class Page extends AbstractPage
 {
+    /**
+     * Page num regex
+     *
+     * @var string
+     */
     const NUM_REGEX = '/^(\d+)-/';
 
+    /**
+     * Page 'published' status
+     *
+     * @var string
+     */
     const PAGE_STATUS_PUBLISHED = 'published';
 
+    /**
+     * Page 'not published' status
+     *
+     * @var string
+     */
     const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
+    /**
+     * Page 'not routable' status
+     *
+     * @var string
+     */
     const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
+    /**
+     * Page content parser instance
+     *
+     * @var Parsedown
+     */
     protected static $contentParser;
 
+    /**
+     * Page slug
+     *
+     * @var string
+     */
     protected $slug;
 
+    /**
+     * Page id
+     *
+     * @var string
+     */
     protected $id;
 
+    /**
+     * Page filename
+     *
+     * @var string
+     */
     protected $filename;
 
+    /**
+     * Page template
+     *
+     * @var Template
+     */
     protected $template;
 
+    /**
+     * Page files
+     *
+     * @var Files
+     */
     protected $files = array();
 
+    /**
+     * Page unprocessed content
+     *
+     * @var string
+     */
     protected $rawContent;
 
+    /**
+     * Page summary
+     *
+     * @var string
+     */
     protected $summary;
 
+    /**
+     * Page content
+     *
+     * @var string
+     */
     protected $content;
 
+    /**
+     * PageCollection containing page siblings
+     *
+     * @var PageCollection
+     */
     protected $siblings;
 
+    /**
+     * Create a new Page instance
+     *
+     * @param string $path
+     */
     public function __construct($path)
     {
         if (is_null(static::$contentParser)) {
@@ -57,6 +132,11 @@ class Page extends AbstractPage
         }
     }
 
+    /**
+     * Return page default data
+     *
+     * @return array
+     */
     public function defaults()
     {
         return array(
@@ -68,6 +148,11 @@ class Page extends AbstractPage
         );
     }
 
+    /**
+     * Reload page
+     *
+     * @return $this
+     */
     public function reload()
     {
         $vars = array('uri', 'parents', 'children', 'descendants', 'siblings');
@@ -77,11 +162,19 @@ class Page extends AbstractPage
         $this->__construct($this->path);
     }
 
+    /**
+     * Return whether page is empty
+     *
+     * @return bool
+     */
     public function isEmpty()
     {
         return is_null($this->filename);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function lastModifiedTime()
     {
         $pathLastModifiedTime = parent::lastModifiedTime();
@@ -89,28 +182,51 @@ class Page extends AbstractPage
         return $fileLastModifiedTime > $pathLastModifiedTime ? $fileLastModifiedTime : $pathLastModifiedTime;
     }
 
+    /**
+     * Get page relative path
+     *
+     * @return string
+     */
     public function relativePath()
     {
         $parentPath = FileSystem::dirname(Formwork::instance()->option('content.path'));
         return $parentPath === '.' ? DS . $this->path : substr($this->path, strlen($parentPath));
     }
 
+    /**
+     * Get page num
+     *
+     * @return string|null
+     */
     public function num()
     {
         preg_match(self::NUM_REGEX, $this->id, $matches);
         return isset($matches[1]) ? $matches[1] : null;
     }
 
+    /**
+     * Get page absolute URI
+     *
+     * @return string
+     */
     public function absoluteUri()
     {
         return Uri::make(array('host' => Uri::host()), $this->uri());
     }
 
+    /**
+     * Return whether this is the currently active page
+     *
+     * @return bool
+     */
     public function isCurrent()
     {
         return Formwork::instance()->site()->currentPage() === $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function date($format = null)
     {
         if (is_null($format)) {
@@ -122,6 +238,11 @@ class Page extends AbstractPage
         return parent::date($format);
     }
 
+    /**
+     * Get page status
+     *
+     * @return string
+     */
     public function status()
     {
         if ($this->published()) {
@@ -136,6 +257,11 @@ class Page extends AbstractPage
         return $status;
     }
 
+    /**
+     * Return a PageCollection containing page siblings
+     *
+     * @return PageCollection
+     */
     public function siblings()
     {
         if (!is_null($this->siblings)) {
@@ -148,26 +274,43 @@ class Page extends AbstractPage
         return $this->siblings;
     }
 
+    /**
+     * Return whether page has siblings
+     *
+     * @return bool
+     */
     public function hasSiblings()
     {
         return !$this->siblings()->isEmpty();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function isSite()
     {
         return false;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function isIndexPage()
     {
         return trim($this->slug(), '/') === Formwork::instance()->option('pages.index');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function isErrorPage()
     {
         return trim($this->slug(), '/') === Formwork::instance()->option('pages.error');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function isDeletable()
     {
         if ($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage()) {
@@ -176,27 +319,58 @@ class Page extends AbstractPage
         return true;
     }
 
+    /**
+     * Return a file path relative to the page
+     *
+     * @param string $file Name of the file
+     *
+     * @return bool|string File path or false if file is not found
+     */
     public function file($file)
     {
         return $this->files()->has($file) ? substr($this->relativePath() . $file, 1) : false;
     }
 
+    /**
+     * Return a Files collection containing only images
+     *
+     * @return Files
+     */
     public function images()
     {
         return $this->files()->filterByType('image');
     }
 
+    /**
+     * Render page to string
+     *
+     * @param array $vars Variables to pass to the page
+     *
+     * @return string
+     */
     public function renderToString($vars = array())
     {
         return $this->template()->renderPage($this, $vars, true);
     }
 
+    /**
+     * Render page and return rendered content
+     *
+     * @param array $vars Variables to pass to the page
+     *
+     * @return string
+     */
     public function render($vars = array())
     {
         echo $renderedPage = $this->renderToString($vars);
         return $renderedPage;
     }
 
+    /**
+     * Return an array containing page data
+     *
+     * @return array
+     */
     public function toArray()
     {
         return array(
@@ -208,6 +382,9 @@ class Page extends AbstractPage
         );
     }
 
+    /**
+     * Load files related to page
+     */
     protected function loadFiles()
     {
         $files = array();
@@ -224,12 +401,20 @@ class Page extends AbstractPage
         $this->files = new Files($files, $this->path);
     }
 
+    /**
+     * Initialize content parser
+     *
+     * @return Parsedown
+     */
     protected function contentParser()
     {
         static::$contentParser->setPage($this);
         return static::$contentParser;
     }
 
+    /**
+     * Parse page content
+     */
     protected function parse()
     {
         $contents = FileSystem::read($this->path . $this->filename);
@@ -245,6 +430,9 @@ class Page extends AbstractPage
         $this->content = $this->contentParser()->text($body);
     }
 
+    /**
+     * Process page data
+     */
     protected function processData()
     {
         $this->data['visible'] = !is_null($this->num());

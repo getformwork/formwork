@@ -18,6 +18,9 @@ use Formwork\Utils\HTTPRequest;
 
 class Users extends AbstractController
 {
+    /**
+     * Users@index action
+     */
     public function index()
     {
         $this->ensurePermission('users.index');
@@ -34,6 +37,9 @@ class Users extends AbstractController
         ));
     }
 
+    /**
+     * Users@create action
+     */
     public function create()
     {
         $this->ensurePermission('users.create');
@@ -66,6 +72,9 @@ class Users extends AbstractController
         $this->redirect('/users/');
     }
 
+    /**
+     * Users@delete action
+     */
     public function delete(RouteParams $params)
     {
         $this->ensurePermission('users.delete');
@@ -96,6 +105,9 @@ class Users extends AbstractController
         }
     }
 
+    /**
+     * Users@profile action
+     */
     public function profile(RouteParams $params)
     {
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'user.yml'));
@@ -137,6 +149,9 @@ class Users extends AbstractController
         ));
     }
 
+    /**
+     * Update user data from POST request
+     */
     protected function updateUser(User $user)
     {
         $data = new DataSetter(HTTPRequest::postData());
@@ -179,6 +194,9 @@ class Users extends AbstractController
         FileSystem::write(ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
     }
 
+    /**
+     * Upload a new avatar for a user
+     */
     protected function uploadAvatar(User $user)
     {
         $avatarsPath = ADMIN_PATH . 'avatars' . DS;
@@ -212,6 +230,9 @@ class Users extends AbstractController
         }
     }
 
+    /**
+     * Delete the avatar of a given user
+     */
     protected function deleteAvatar(User $user)
     {
         $avatar = $user->avatar()->path();

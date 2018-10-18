@@ -6,6 +6,11 @@ use ZipArchive;
 
 class ZipErrors
 {
+    /**
+     * Human-readable ZipArchive error messages
+     *
+     * @var array
+     */
     public static $errorMessages = array(
         ZipArchive::ER_MULTIDISK   => 'Multi-disk zip archives not supported',
         ZipArchive::ER_RENAME      => 'Renaming temporary file failed',
@@ -32,6 +37,11 @@ class ZipErrors
         ZipArchive::ER_DELETED     => 'Entry has been deleted'
     );
 
+    /**
+     * ZipArchive errors language strings
+     *
+     * @var array
+     */
     public static $errorLanguageStrings = array(
         ZipArchive::ER_MULTIDISK   => 'zip.error.unspecified',
         ZipArchive::ER_RENAME      => 'zip.error.unspecified',

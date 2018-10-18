@@ -7,6 +7,13 @@ use RuntimeException;
 
 class Header
 {
+    /**
+     * Associative array containing HTTP response status codes
+     *
+     * @see https://tools.ietf.org/html/rfc7231#section-6
+     *
+     * @var array
+     */
     public static $statuses = array(
         // Informational
         '100' => 'Continue',
@@ -60,6 +67,15 @@ class Header
         '505' => 'HTTP Version Not Supported'
     );
 
+    /**
+     * Send an HTTP response status code
+     *
+     * @param int|string $code
+     * @param bool       $send Whether to send status code or return
+     * @param bool       $exit Whether to exit from the script after sending the status code
+     *
+     * @return bool|null
+     */
     public static function status($code, $send = true, $exit = false)
     {
         if (!isset(static::$statuses[$code])) {
@@ -76,6 +92,13 @@ class Header
         }
     }
 
+    /**
+     * Send an HTTP response header
+     *
+     * @param string $fieldName
+     * @param string $fieldValue
+     * @param bool   $replace    Whether to replace headers with the same name
+     */
     public static function send($fieldName, $fieldValue, $replace = true)
     {
         if (headers_sent()) {
@@ -84,16 +107,30 @@ class Header
         header($fieldName . ': ' . trim($fieldValue), $replace);
     }
 
+    /**
+     * Set Content-Type header
+     *
+     * @param string $mimeType
+     */
     public static function contentType($mimeType)
     {
         static::send('Content-Type', $mimeType);
     }
 
+    /**
+     * Send HTTP 404 Not Found status
+     */
     public static function notFound()
     {
         static::status(404);
     }
 
+    /**
+     * Redirect to a given URI and exit from the script
+     *
+     * @param string $uri
+     * @param int    $code Redirect HTTP response status code
+     */
     public static function redirect($uri, $code = 302)
     {
         static::status($code);

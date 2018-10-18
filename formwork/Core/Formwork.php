@@ -15,22 +15,65 @@ use LogicException;
 
 class Formwork
 {
+    /**
+     * Current Formwork version
+     *
+     * @var string
+     */
     const VERSION = '0.9.1';
 
+    /**
+     * Formwork instance
+     *
+     * @var Formwork
+     */
     protected static $instance;
 
+    /**
+     * Array containing options
+     *
+     * @var array
+     */
     protected $options = array();
 
+    /**
+     * Site instance
+     *
+     * @var Site
+     */
     protected $site;
 
+    /**
+     * Router instance
+     *
+     * @var Router
+     */
     protected $router;
 
+    /**
+     * Cache instance
+     *
+     * @var SiteCache
+     */
     protected $cache;
 
+    /**
+     * Current page cache key
+     *
+     * @var string
+     */
     protected $cacheKey;
 
+    /**
+     * Current resource
+     *
+     * @var mixed
+     */
     protected $resource;
 
+    /**
+     * Create a new Formwork instance
+     */
     public function __construct()
     {
         if (!is_null(static::$instance)) {
@@ -60,6 +103,11 @@ class Formwork
         }
     }
 
+    /**
+     * Return self instance
+     *
+     * @return self
+     */
     public static function instance()
     {
         if (!is_null(static::$instance)) {
@@ -68,6 +116,11 @@ class Formwork
         return static::$instance = new static();
     }
 
+    /**
+     * Return default options
+     *
+     * @return array
+     */
     public function defaults()
     {
         return array(
@@ -98,6 +151,9 @@ class Formwork
         );
     }
 
+    /**
+     * Run Formwork
+     */
     public function run()
     {
         if ($this->option('cache.enabled') && $data = $this->cache->fetch($this->cacheKey)) {
@@ -122,11 +178,21 @@ class Formwork
         }
     }
 
+    /**
+     * Get an option value
+     *
+     * @param string $option
+     */
     public function option($option)
     {
         return array_key_exists($option, $this->options) ? $this->options[$option] : null;
     }
 
+    /**
+     * Get default route
+     *
+     * @return callable
+     */
     private function defaultRoute()
     {
         return function (RouteParams $params) {

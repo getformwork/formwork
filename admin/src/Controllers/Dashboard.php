@@ -6,6 +6,9 @@ use Formwork\Admin\Statistics;
 
 class Dashboard extends AbstractController
 {
+    /**
+     * Dashboard@index action
+     */
     public function index()
     {
         $this->ensurePermission('dashboard');

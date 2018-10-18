@@ -10,15 +10,35 @@ use ZipArchive;
 
 class Backupper
 {
+    /**
+     * Date format used in backup archive name
+     *
+     * @var string
+     */
     const DATE_FORMAT = 'YmdHis';
 
+    /**
+     * Backupper options
+     *
+     * @var array
+     */
     protected $options;
 
+    /**
+     * Return a new Backupper instance
+     *
+     * @param array $options
+     */
     public function __construct($options = array())
     {
         $this->options = array_merge($this->defaults(), $options);
     }
 
+    /**
+     * Return an array with default option values
+     *
+     * @return array
+     */
     public function defaults()
     {
         return array(
@@ -36,6 +56,11 @@ class Backupper
         );
     }
 
+    /**
+     * Make a backup of all site files
+     *
+     * @return string Backup archive file path
+     */
     public function backup()
     {
         $previousMaxExecutionTime = ini_set('max_execution_time', $this->options['maxExecutionTime']);
@@ -74,6 +99,13 @@ class Backupper
         return $destination;
     }
 
+    /**
+     * Return whether a file is copiable in the backup archive
+     *
+     * @param string $file
+     *
+     * @return bool
+     */
     protected function isCopiable($file)
     {
         foreach ($this->options['ignore'] as $pattern) {

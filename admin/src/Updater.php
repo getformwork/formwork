@@ -10,12 +10,32 @@ use ZipArchive;
 
 class Updater
 {
+    /**
+     * GitHub repository from which updates are retrieved
+     *
+     * @var string
+     */
     const REPOSITORY = 'giuscris/formwork';
 
+    /**
+     * Updater options
+     *
+     * @var array
+     */
     protected $options;
 
+    /**
+     * Updates registry
+     *
+     * @var Registry
+     */
     protected $registry;
 
+    /**
+     * Updates registry default data
+     *
+     * @var array
+     */
     protected $registryDefaults = array(
         'last-check'  => null,
         'last-update' => null,
@@ -24,14 +44,39 @@ class Updater
         'up-to-date'  => false
     );
 
+    /**
+     * Stream context to make HTTP(S) requests
+     *
+     * @var resource
+     */
     protected $context;
 
+    /**
+     * Array containing release information
+     *
+     * @var array|null
+     */
     protected $release;
 
+    /**
+     * Headers to send in HTTP(S) requests
+     *
+     * @var array
+     */
     protected $headers;
 
+    /**
+     * Whether Formwork is up-to-date
+     *
+     * @var bool
+     */
     protected $upToDate;
 
+    /**
+     * Create a new Updater instance
+     *
+     * @param array $options
+     */
     public function __construct($options = array())
     {
         $this->options = array_merge($this->defaults(), $options);
@@ -47,6 +92,11 @@ class Updater
         ));
     }
 
+    /**
+     * Return updater default options
+     *
+     * @return array
+     */
     public function defaults()
     {
         return array(
@@ -67,6 +117,11 @@ class Updater
         );
     }
 
+    /**
+     * Check for updates
+     *
+     * @return bool Whether updates are found or not
+     */
     public function checkUpdates()
     {
         if (time() - $this->registry->get('last-check') < $this->options['time']) {
@@ -100,6 +155,11 @@ class Updater
         return false;
     }
 
+    /**
+     * Update Formwork
+     *
+     * @return bool|null Whether Formwork was updated or not
+     */
     public function update()
     {
         $this->checkUpdates();
@@ -160,11 +220,21 @@ class Updater
         return true;
     }
 
+    /**
+     * Get latest release data
+     *
+     * @return array
+     */
     public function latestRelease()
     {
         return $this->registry->get('release');
     }
 
+    /**
+     * Load latest release data
+     *
+     * @return array
+     */
     protected function loadRelease()
     {
         if (!is_null($this->release)) {
@@ -186,6 +256,11 @@ class Updater
         );
     }
 
+    /**
+     * Get release archive headers
+     *
+     * @return array
+     */
     protected function getHeaders()
     {
         if (!is_null($this->headers)) {
@@ -195,6 +270,13 @@ class Updater
         return $this->headers;
     }
 
+    /**
+     * Return whether a file is copiable or not
+     *
+     * @param string $file
+     *
+     * @return bool
+     */
     protected function isCopiable($file)
     {
         foreach ($this->options['ignore'] as $pattern) {
@@ -205,6 +287,13 @@ class Updater
         return true;
     }
 
+    /**
+     * Return deletable files based on installed ones
+     *
+     * @param array $installedFiles
+     *
+     * @return array
+     */
     protected function findDeletableFiles($installedFiles)
     {
         $list = array();
@@ -223,6 +312,9 @@ class Updater
         return array_diff($list, $installedFiles);
     }
 
+    /**
+     * Initialize registry data
+     */
     protected function initializeRegistry()
     {
         foreach ($this->registryDefaults as $key => $value) {

@@ -11,6 +11,9 @@ use Formwork\Utils\HTTPRequest;
 
 class Authentication extends AbstractController
 {
+    /**
+     * Authentication@login action
+     */
     public function login()
     {
         $limiter = new AccessLimiter(
@@ -81,6 +84,9 @@ class Authentication extends AbstractController
         }
     }
 
+    /**
+     * Authentication@logout action
+     */
     public function logout()
     {
         CSRFToken::destroy();
@@ -95,6 +101,12 @@ class Authentication extends AbstractController
         }
     }
 
+    /**
+     * Display login view with an error notification and exit from the script
+     *
+     * @param string $message Error message
+     * @param array  $data    Data to pass to the view
+     */
     protected function error($message, $data = array())
     {
         $defaults = array('title' => $this->label('login.login'));

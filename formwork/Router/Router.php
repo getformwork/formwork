@@ -9,30 +9,77 @@ use LogicException;
 
 class Router
 {
+    /**
+     * Valid router request types
+     *
+     * @var array
+     */
     protected $types = array('HTTP', 'XHR');
 
+    /**
+     * Valid router request methods
+     *
+     * @var array
+     */
     protected $methods = array('GET', 'POST', 'PUT', 'PATCH', 'DELETE');
 
+    /**
+     * Array containing route regex shortcuts
+     *
+     * @var array
+     */
     protected $shortcuts = array(
         'num' => '[0-9]+',
         'aln' => '[A-Za-z0-9-]+',
         'all' => '.+'
     );
 
+    /**
+     * Array containing loaded routes
+     *
+     * @var array
+     */
     protected $routes;
 
+    /**
+     * The request to match routes against
+     *
+     * @var string
+     */
     protected $request;
 
+    /**
+     * Route params
+     *
+     * @var RouteParams
+     */
     protected $params;
 
+    /**
+     * Whether router has dispatched
+     *
+     * @var bool
+     */
     protected $dispatched = false;
 
+    /**
+     * Create a new Router instance
+     *
+     * @param string $request
+     */
     public function __construct($request)
     {
         $this->request = Uri::normalize($request);
         $this->params = new RouteParams(array());
     }
 
+    /**
+     * Match route against request
+     *
+     * @param array $route
+     *
+     * @return bool
+     */
     public function match($route)
     {
         $compiledRoute = $this->compileRoute($route);
@@ -47,6 +94,11 @@ class Router
         return false;
     }
 
+    /**
+     * Add a route
+     *
+     * @param mixed ...$arguments
+     */
     public function add(...$arguments)
     {
         $type = 'HTTP';
@@ -100,6 +152,9 @@ class Router
         );
     }
 
+    /**
+     * Dispatch matching route
+     */
     public function dispatch()
     {
         foreach ($this->routes as $route) {
@@ -118,21 +173,43 @@ class Router
         }
     }
 
+    /**
+     * Return whether router has dispatched
+     *
+     * @return bool
+     */
     public function hasDispatched()
     {
         return $this->dispatched;
     }
 
+    /**
+     * Get route params
+     *
+     * @return RouteParams
+     */
     public function params()
     {
         return $this->params;
     }
 
+    /**
+     * Get the request handled by the router
+     *
+     * @return string
+     */
     public function request()
     {
         return $this->request;
     }
 
+    /**
+     * Compile a route to a valid regex and params list
+     *
+     * @param string $route
+     *
+     * @return array
+     */
     protected function compileRoute($route)
     {
         preg_match_all('/{([A-Za-z0-9_]+)(?::([^{]+))?}/', $route, $matches);

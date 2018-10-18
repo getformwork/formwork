@@ -4,6 +4,11 @@ namespace Formwork\Admin\Users;
 
 class Permissions
 {
+    /**
+     * The permission values
+     *
+     * @var array
+     */
     protected $permissions = array(
         'dashboard' => false,
         'cache'     => false,
@@ -14,11 +19,23 @@ class Permissions
         'users'     => false
     );
 
+    /**
+     * Create a new Permissions instance
+     *
+     * @param string $name Name of the role
+     */
     public function __construct($name)
     {
         $this->permissions = array_merge($this->permissions, (array) Users::getRolePermissions($name));
     }
 
+    /**
+     * Return whether a permission is granted
+     *
+     * @param string $permission
+     *
+     * @return bool
+     */
     public function has($permission)
     {
         if (array_key_exists($permission, $this->permissions)) {

@@ -10,17 +10,42 @@ use LogicException;
 
 class User extends DataGetter
 {
+    /**
+     * Default data of the user
+     *
+     * @var array
+     */
     protected $defaults = array(
         'avatar' => null,
         'role' => 'user'
     );
 
+    /**
+     * User avatar
+     *
+     * @var Avatar
+     */
     protected $avatar;
 
+    /**
+     * User permissions
+     *
+     * @var Permissions
+     */
     protected $permissions;
 
+    /**
+     * User last access time
+     *
+     * @var int
+     */
     protected $lastAccess;
 
+    /**
+     * Create a new User instance
+     *
+     * @param array $data
+     */
     public function __construct($data)
     {
         parent::__construct(array_merge($this->defaults, $data));
@@ -28,41 +53,87 @@ class User extends DataGetter
         $this->permissions = new Permissions($this->data['role']);
     }
 
+    /**
+     * Return whether a given password authenticates the user
+     *
+     * @param string $password
+     *
+     * @return bool
+     */
     public function authenticate($password)
     {
         return Password::verify($password, $this->data['hash']);
     }
 
+    /**
+     * Return whether the user is logged or not
+     *
+     * @return bool
+     */
     public function isLogged()
     {
         return Session::get('FORMWORK_USERNAME') === $this->data['username'];
     }
 
+    /**
+     * Return whether the user has 'admin' role
+     *
+     * @return bool
+     */
     public function isAdmin()
     {
         return $this->data['role'] === 'admin';
     }
 
+    /**
+     * Return whether the user can delete a given user
+     *
+     *
+     * @return bool
+     */
     public function canDeleteUser(User $user)
     {
         return $this->isAdmin() && !$user->isLogged();
     }
 
+    /**
+     * Return whether the user can change options of a given user
+     *
+     *
+     * @return bool
+     */
     public function canChangeOptionsOf(User $user)
     {
         return $this->isAdmin() || $user->isLogged();
     }
 
+    /**
+     * Return whether the user can change the password of a given user
+     *
+     *
+     * @return bool
+     */
     public function canChangePasswordOf(User $user)
     {
         return $this->isAdmin() || $user->isLogged();
     }
 
+    /**
+     * Return whether the user can change the role of a given user
+     *
+     *
+     * @return bool
+     */
     public function canChangeRoleOf(User $user)
     {
         return $this->isAdmin() && !$user->isLogged();
     }
 
+    /**
+     * Get the user last access time
+     *
+     * @return int
+     */
     public function lastAccess()
     {
         if (!is_null($this->lastAccess)) {
@@ -72,6 +143,9 @@ class User extends DataGetter
         return $this->lastAccess = $lastAccess;
     }
 
+    /**
+     * __call() magic method
+     */
     public function __call($name, $arguments)
     {
         if (property_exists($this, $name)) {
