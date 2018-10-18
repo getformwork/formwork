@@ -48,7 +48,7 @@ class Authentication extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->has(array('username', 'password'))) {
-                    $this->error();
+                    $this->error($this->label('login.attempt.failed'));
                 }
 
                 $limiter->registerAttempt();
