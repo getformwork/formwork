@@ -30,7 +30,6 @@ class MimeType
         'zip'      => 'application/zip',
         'mid'      => 'audio/midi',
         'm4a'      => 'audio/mp4',
-        'm4a'      => 'audio/mp4a-latm',
         'mp3'      => 'audio/mpeg',
         'aif'      => 'audio/x-aiff',
         'm3u'      => 'audio/x-mpegurl',
@@ -64,7 +63,6 @@ class MimeType
         'mpg'      => 'video/mpeg',
         'mov'      => 'video/quicktime',
         'flv'      => 'video/x-flv',
-        'm4v'      => 'video/x-m4v',
         'asf'      => 'video/x-ms-asf',
         'wmv'      => 'video/x-ms-wmv',
         'avi'      => 'video/x-msvideo'
