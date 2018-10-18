@@ -12,6 +12,9 @@ use Formwork\Utils\HTTPRequest;
 
 class Register extends AbstractController
 {
+    /**
+     * Register@register action
+     */
     public function register()
     {
         CSRFToken::generate();

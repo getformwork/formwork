@@ -9,13 +9,24 @@ use ParsedownExtra;
 
 class ParsedownExtension extends ParsedownExtra
 {
+    /**
+     * Page that will be parsed
+     *
+     * @var Page
+     */
     protected $page;
 
+    /**
+     * Set the page that will be parsed
+     */
     public function setPage(Page $page)
     {
         $this->page = $page;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function inlineLink($excerpt)
     {
         $link = parent::inlineLink($excerpt);

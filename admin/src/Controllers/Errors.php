@@ -7,6 +7,9 @@ use Formwork\Utils\HTTPResponse;
 
 class Errors extends AbstractController
 {
+    /**
+     * Errors@notFound action
+     */
     public function notFound()
     {
         $this->displayError(404, 'not-found', array(
@@ -15,6 +18,9 @@ class Errors extends AbstractController
         ));
     }
 
+    /**
+     * Errors@internalServerError action
+     */
     public function internalServerError()
     {
         $this->displayError(500, 'internal-server-error', array(
@@ -23,6 +29,9 @@ class Errors extends AbstractController
         ));
     }
 
+    /**
+     * Errors@forbidden action
+     */
     public function forbidden()
     {
         $this->displayError(403, 'forbidden', array(
@@ -31,6 +40,13 @@ class Errors extends AbstractController
         ));
     }
 
+    /**
+     * Display error view with error description
+     *
+     * @param int|string $status HTTP error status
+     * @param string     $name   Error name
+     * @param array      $action Action link data
+     */
     protected function displayError($status, $name, $action)
     {
         HTTPResponse::cleanOutputBuffers();

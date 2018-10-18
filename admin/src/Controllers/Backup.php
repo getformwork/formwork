@@ -12,6 +12,9 @@ use RuntimeException;
 
 class Backup extends AbstractController
 {
+    /**
+     * Backup@make action
+     */
     public function make()
     {
         $this->ensurePermission('backup.make');
@@ -28,6 +31,9 @@ class Backup extends AbstractController
         }
     }
 
+    /**
+     * Backup@download action
+     */
     public function download(RouteParams $params)
     {
         $this->ensurePermission('backup.download');

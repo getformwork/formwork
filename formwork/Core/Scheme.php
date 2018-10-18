@@ -8,6 +8,11 @@ use Formwork\Utils\FileSystem;
 
 class Scheme extends DataGetter
 {
+    /**
+     * Create a new Scheme instance
+     *
+     * @param string $template
+     */
     public function __construct($template)
     {
         $path = Formwork::instance()->site()->templatesPath() . 'schemes' . DS;
@@ -21,11 +26,21 @@ class Scheme extends DataGetter
         }
     }
 
+    /**
+     * Get scheme title
+     *
+     * @return string
+     */
     public function title()
     {
         return $this->get('title');
     }
 
+    /**
+     * Get whether scheme is default
+     *
+     * @return bool
+     */
     public function isDefault()
     {
         return $this->get('default', false);

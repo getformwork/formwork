@@ -8,18 +8,54 @@ use Formwork\Utils\Uri;
 
 class AccessLimiter
 {
+    /**
+     * Registry which contains access attempts
+     *
+     * @var Registry
+     */
     protected $registry;
 
+    /**
+     * Limit of valid attempts
+     *
+     * @var int
+     */
     protected $limit;
 
+    /**
+     * Seconds after which registry is reset
+     *
+     * @var int
+     */
     protected $resetTime;
 
+    /**
+     * Hash which identifies the visitor which make attempts
+     *
+     * @var string
+     */
     protected $attemptHash;
 
+    /**
+     * The number of access attempts
+     *
+     * @var int
+     */
     protected $attempts;
 
+    /**
+     * Time of last valid attempt
+     *
+     * @var int
+     */
     protected $lastAttemptTime;
 
+    /**
+     * Create a new AccessLimiter instance
+     *
+     * @param int $limit
+     * @param int $resetTime
+     */
     public function __construct(Registry $registry, $limit, $resetTime)
     {
         $this->registry = $registry;
@@ -33,6 +69,11 @@ class AccessLimiter
         $this->lastAttemptTime = $registry->get($this->attemptHash)[1];
     }
 
+    /**
+     * Return whether attempts limit is reached
+     *
+     * @return bool
+     */
     public function hasReachedLimit()
     {
         if (time() - $this->lastAttemptTime > $this->resetTime) {
@@ -41,11 +82,19 @@ class AccessLimiter
         return $this->attempts > $this->limit;
     }
 
+    /**
+     * Register an access attempt
+     *
+     * @return
+     */
     public function registerAttempt()
     {
         $this->registry->set($this->attemptHash, array(++$this->attempts, time()));
     }
 
+    /**
+     * Reset attempts registry
+     */
     public function resetAttempts()
     {
         $this->attempts = 0;

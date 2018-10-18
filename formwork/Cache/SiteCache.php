@@ -7,6 +7,9 @@ use Formwork\Utils\FileSystem;
 
 class SiteCache extends FilesCache
 {
+    /**
+     * @inheritdoc
+     */
     public function isValid($key)
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));

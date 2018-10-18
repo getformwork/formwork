@@ -6,10 +6,26 @@ use Formwork\Utils\FileSystem;
 
 class FilesCache extends AbstractCache
 {
+    /**
+     * Cache path
+     *
+     * @var string
+     */
     protected $path;
 
+    /**
+     * Cached data time-to-live
+     *
+     * @var int
+     */
     protected $time;
 
+    /**
+     * Create a new FilesCache instance
+     *
+     * @param string $path
+     * @param int    $time
+     */
     public function __construct($path, $time)
     {
         $this->path = $path;
@@ -19,6 +35,9 @@ class FilesCache extends AbstractCache
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function fetch($key)
     {
         if ($this->has($key) && $this->isValid($key)) {
@@ -28,6 +47,9 @@ class FilesCache extends AbstractCache
         return null;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save($key, $value)
     {
         $data = serialize($value);
@@ -41,16 +63,33 @@ class FilesCache extends AbstractCache
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         return FileSystem::exists($this->getFile($key));
     }
 
+    /**
+     * Return the file that corresponds to the given key
+     *
+     * @param string $key
+     *
+     * @return string
+     */
     protected function getFile($key)
     {
         return $this->path . sha1($key);
     }
 
+    /**
+     * Return whether a cached resource has not expired
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
     protected function isValid($key)
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));

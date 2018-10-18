@@ -7,13 +7,28 @@ use Formwork\Utils\FileSystem;
 
 class PageCollection extends Collection
 {
+    /**
+     * Pagination related to the collection
+     *
+     * @var Pagination
+     */
     protected $pagination;
 
+    /**
+     * Return the Pagination object related to the collection
+     *
+     * @return Pagination
+     */
     public function pagination()
     {
         return $this->pagination;
     }
 
+    /**
+     * Reverse the order of collection items
+     *
+     * @return self
+     */
     public function reverse()
     {
         $pageCollection = clone $this;
@@ -21,6 +36,15 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Extract a slice from the collection containing a given number of items
+     * and starting from a given offset
+     *
+     * @param int $offset
+     * @param int $length
+     *
+     * @return self
+     */
     public function slice($offset, $length = null)
     {
         $pageCollection = clone $this;
@@ -28,6 +52,11 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Remove a given element from the collection
+     *
+     * @return self
+     */
     public function remove(Page $element)
     {
         $pageCollection = clone $this;
@@ -39,6 +68,13 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Paginate the collection
+     *
+     * @param int $length Number of items in the pagination
+     *
+     * @return $this
+     */
     public function paginate($length)
     {
         $pagination = new Pagination($this->count(), $length);
@@ -47,6 +83,15 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Filter collection items
+     *
+     * @param string   $property Property to find in filtered items
+     * @param bool     $value    Value to check in filtered items (default: true)
+     * @param callable $process  Callable to process items before filtering
+     *
+     * @return self
+     */
     public function filter($property, $value = true, $process = null)
     {
         $pageCollection = clone $this;
@@ -72,6 +117,14 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Sort collection items
+     *
+     * @param string     $property
+     * @param int|string $direction Sorting direction (e.g. SORT_ASC, 'asc', -1, SORT_DESC, 'desc')
+     *
+     * @return self
+     */
     public function sort($property = 'id', $direction = SORT_ASC)
     {
         $pageCollection = clone $this;
@@ -93,6 +146,14 @@ class PageCollection extends Collection
         return $pageCollection;
     }
 
+    /**
+     * Search pages in the collection
+     *
+     * @param string $query Query to search for
+     * @param int    $min   Minimum query length (default: 4)
+     *
+     * @return self
+     */
     public function search($query, $min = 4)
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
@@ -138,6 +199,14 @@ class PageCollection extends Collection
         return $pageCollection->filter('score')->sort('score', SORT_DESC);
     }
 
+    /**
+     * Create a collection getting pages from a given path
+     *
+     * @param string $path
+     * @param bool   $recursive Whether to recursively search for pages
+     *
+     * @return self
+     */
     public static function fromPath($path, $recursive = false)
     {
         $path = FileSystem::normalize($path);

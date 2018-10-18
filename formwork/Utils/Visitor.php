@@ -4,6 +4,11 @@ namespace Formwork\Utils;
 
 class Visitor
 {
+    /**
+     * Array containing regex tokens that identify bots
+     *
+     * @var array
+     */
     protected static $bots = array(
         'bot', 'crawl', 'search', 'sp[iy]der', 'check', 'findlinks', 'url',
         'yahoo', 'feed', 'archive', 'heritrix', 'perl', 'links?\s?check',
@@ -22,8 +27,18 @@ class Visitor
         'fantom', 'http\.rb', 'jorgee', 'linkman', 'wget', 'gopher'
     );
 
+    /**
+     * Compiled bots regex
+     *
+     * @var string
+     */
     protected static $regex;
 
+    /**
+     * Return whether current visitor is a bot
+     *
+     * @return bool
+     */
     public static function isBot()
     {
         if (is_null(static::$regex)) {
@@ -32,6 +47,11 @@ class Visitor
         return (bool) preg_match(static::$regex, HTTPRequest::userAgent());
     }
 
+    /**
+     * Return whether current user agent is a browser
+     *
+     * @return bool
+     */
     public static function isBrowser()
     {
         return !static::isBot();

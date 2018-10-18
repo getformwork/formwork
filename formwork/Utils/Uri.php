@@ -4,10 +4,25 @@ namespace Formwork\Utils;
 
 class Uri
 {
+    /**
+     * Current URI
+     *
+     * @var string
+     */
     public static $current = null;
 
+    /**
+     * Default ports which will not be present in generated URI
+     *
+     * @var array
+     */
     public static $defaultPorts = array(80, 443);
 
+    /**
+     * Get current URI
+     *
+     * @return string
+     */
     public static function current()
     {
         if (is_null(static::$current)) {
@@ -16,6 +31,13 @@ class Uri
         return static::$current;
     }
 
+    /**
+     * Get the scheme of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function scheme($uri = null)
     {
         if (is_null($uri)) {
@@ -24,6 +46,13 @@ class Uri
         return parse_url($uri, PHP_URL_SCHEME);
     }
 
+    /**
+     * Get the host of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function host($uri = null)
     {
         if (is_null($uri)) {
@@ -32,6 +61,13 @@ class Uri
         return parse_url($uri, PHP_URL_HOST);
     }
 
+    /**
+     * Get the port of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function port($uri = null)
     {
         if (is_null($uri)) {
@@ -41,6 +77,13 @@ class Uri
         return is_null($port) ? 80 : $port;
     }
 
+    /**
+     * Return whether current or a given port is default
+     *
+     * @param int|string $port
+     *
+     * @return bool
+     */
     public static function defaultPort($port = '')
     {
         if (empty($port)) {
@@ -49,6 +92,13 @@ class Uri
         return in_array($port, static::$defaultPorts);
     }
 
+    /**
+     * Get the path of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function path($uri = null)
     {
         if (is_null($uri)) {
@@ -57,11 +107,25 @@ class Uri
         return parse_url($uri, PHP_URL_PATH);
     }
 
+    /**
+     * Get the relative path of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function relativePath($uri = null)
     {
         return static::path($uri);
     }
 
+    /**
+     * Get the absolute path of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function absolutePath($uri = null)
     {
         if (is_null($uri)) {
@@ -70,6 +134,13 @@ class Uri
         return static::base($uri) . static::path($uri);
     }
 
+    /**
+     * Get the query of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function query($uri = null)
     {
         if (is_null($uri)) {
@@ -78,6 +149,13 @@ class Uri
         return parse_url($uri, PHP_URL_QUERY);
     }
 
+    /**
+     * Get the fragment of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function fragment($uri = null)
     {
         if (is_null($uri)) {
@@ -86,6 +164,13 @@ class Uri
         return parse_url($uri, PHP_URL_FRAGMENT);
     }
 
+    /**
+     * Get the base URI (scheme://host:port) of current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function base($uri = null)
     {
         $uriPort = static::port($uri);
@@ -93,6 +178,13 @@ class Uri
         return static::scheme($uri) . '://' . static::host($uri) . $port;
     }
 
+    /**
+     * Convert the query of current or a given URI to array
+     *
+     * @param string|null $uri
+     *
+     * @return array
+     */
     public static function queryToArray($uri = null)
     {
         if (is_null($uri)) {
@@ -102,6 +194,14 @@ class Uri
         return $array;
     }
 
+    /**
+     * Parse current or a given URI and get an associative array
+     * containing its scheme, host, port, path, query and fragment
+     *
+     * @param string|null $uri
+     *
+     * @return array
+     */
     public static function parse($uri = null)
     {
         if (is_null($uri)) {
@@ -117,6 +217,17 @@ class Uri
         );
     }
 
+    /**
+     * Make a URI based on the current or a given one using an array with parts
+     *
+     * @see Uri::parse()
+     *
+     * @param array       $parts
+     * @param string|null $uri
+     * @param bool        $forcePort
+     *
+     * @return string
+     */
     public static function make($parts, $uri = null, $forcePort = false)
     {
         $defaults = static::parse($uri);
@@ -144,6 +255,13 @@ class Uri
         return $result;
     }
 
+    /**
+     * Normalize URI fixing required parts and leaving only one trailing slash
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
     public static function normalize($uri)
     {
         if (substr($uri, 0, 7) === 'http://' || substr($uri, 0, 8) === 'https://') {
@@ -153,6 +271,13 @@ class Uri
         return $normalized[0] === '/' ? $normalized : '/' . $normalized;
     }
 
+    /**
+     * Remove query from current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function removeQuery($uri = null)
     {
         if (is_null($uri)) {
@@ -161,6 +286,13 @@ class Uri
         return static::make(array('query' => ''), $uri);
     }
 
+    /**
+     * Remove fragment from current or a given URI
+     *
+     * @param string|null $uri
+     *
+     * @return string
+     */
     public static function removeFragment($uri = null)
     {
         if (is_null($uri)) {
@@ -169,6 +301,14 @@ class Uri
         return static::make(array('fragment' => ''), $uri);
     }
 
+    /**
+     * Resolve a relative URI against current or a given base URI
+     *
+     * @param string      $uri
+     * @param string|null $base
+     *
+     * @return string
+     */
     public static function resolveRelativeUri($uri, $base = null)
     {
         if (is_null($base)) {

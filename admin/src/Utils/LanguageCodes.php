@@ -6,6 +6,11 @@ use LogicException;
 
 class LanguageCodes
 {
+    /**
+     * All available language codes
+     *
+     * @var array
+     */
     protected static $codes = array(
         'af' => array('name' => 'Afrikaans', 'native' => 'Afrikaans', 'continents' => array('AF')),
         'am' => array('name' => 'Amharic', 'native' => 'አማርኛ', 'continents' => array('AF')),
@@ -88,6 +93,15 @@ class LanguageCodes
         'zu' => array('name' => 'Zulu', 'native' => 'isiZulu', 'continents' => array('AF')),
     );
 
+    /**
+     * Return language native names optionally filtered by continent
+     * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
+     * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
+     *
+     * @param string|null $continent
+     *
+     * @return array
+     */
     public static function names($continent = null)
     {
         $result = array();
@@ -100,6 +114,13 @@ class LanguageCodes
         return $result;
     }
 
+    /**
+     * Return language name from language code (e.g. 'it')
+     *
+     * @param string $code
+     *
+     * @return string
+     */
     public static function codeToName($code)
     {
         if (!isset(static::$codes[$code])) {
@@ -108,6 +129,13 @@ class LanguageCodes
         return static::$codes[$code]['name'];
     }
 
+    /**
+     * Return language native name from language code (e.g. 'it')
+     *
+     * @param string $code
+     *
+     * @return string
+     */
     public static function codeToNativeName($code)
     {
         if (!isset(static::$codes[$code])) {

@@ -7,6 +7,9 @@ use Formwork\Utils\FileSystem;
 
 class Cache extends AbstractController
 {
+    /**
+     * Cache@clear action
+     */
     public function clear()
     {
         $this->ensurePermission('cache.clear');

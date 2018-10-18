@@ -8,6 +8,9 @@ use RuntimeException;
 
 class Updates extends AbstractController
 {
+    /**
+     * Updates@check action
+     */
     public function check()
     {
         $this->ensurePermission('updates.check');
@@ -25,6 +28,9 @@ class Updates extends AbstractController
         }
     }
 
+    /**
+     * Updates@update action
+     */
     public function update()
     {
         $this->ensurePermission('updates.update');

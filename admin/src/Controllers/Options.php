@@ -12,14 +12,25 @@ use Formwork\Utils\HTTPResponse;
 
 class Options extends AbstractController
 {
+    /**
+     * All options tabs
+     *
+     * @var array
+     */
     protected $tabs = array('system', 'site', 'updates', 'info');
 
+    /**
+     * Options@index action
+     */
     public function index()
     {
         $this->ensurePermission('options.system');
         $this->redirect('/options/system/');
     }
 
+    /**
+     * Options@systemOptions action
+     */
     public function systemOptions()
     {
         $this->ensurePermission('options.system');
@@ -51,6 +62,9 @@ class Options extends AbstractController
         ));
     }
 
+    /**
+     * Options@siteOptions action
+     */
     public function siteOptions()
     {
         $this->ensurePermission('options.site');
@@ -87,6 +101,9 @@ class Options extends AbstractController
         ));
     }
 
+    /**
+     * Options@updates action
+     */
     public function updates()
     {
         $this->ensurePermission('options.updates');
@@ -103,6 +120,9 @@ class Options extends AbstractController
         ));
     }
 
+    /**
+     * Options@info action
+     */
     public function info()
     {
         $this->ensurePermission('options.info');
@@ -183,6 +203,15 @@ class Options extends AbstractController
         ));
     }
 
+    /**
+     * Update options of a given type with given data
+     *
+     * @param string $type     Options type ('system' or 'site')
+     * @param array  $options  Current options
+     * @param array  $defaults Default values
+     *
+     * @return bool Whether new values were applied or not
+     */
     protected function updateOptions($type, Fields $fields, $options, $defaults)
     {
         // Fields to ignore
@@ -221,6 +250,11 @@ class Options extends AbstractController
         return false;
     }
 
+    /**
+     * Load dependencies data from composer.lock
+     *
+     * @return array
+     */
     protected function getDependencies()
     {
         $dependencies = array();

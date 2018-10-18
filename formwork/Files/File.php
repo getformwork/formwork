@@ -8,18 +8,53 @@ use LogicException;
 
 class File
 {
+    /**
+     * File path
+     *
+     * @var string
+     */
     protected $path;
 
+    /**
+     * File name
+     *
+     * @var string
+     */
     protected $name;
 
+    /**
+     * File extension
+     *
+     * @var string
+     */
     protected $extension;
 
+    /**
+     * File MIME type
+     *
+     * @var string
+     */
     protected $mimeType;
 
+    /**
+     * File type (image, text, audio, video or document)
+     *
+     * @var string
+     */
     protected $type;
 
+    /**
+     * File size in a human-readable format
+     *
+     * @var string
+     */
     protected $size;
 
+    /**
+     * Create a new File instance
+     *
+     * @param string $path
+     */
     public function __construct($path)
     {
         $this->path = $path;
@@ -30,6 +65,11 @@ class File
         $this->size = FileSystem::size($path);
     }
 
+    /**
+     * Get file type
+     *
+     * @return string
+     */
     public function type()
     {
         if (!is_null($this->type)) {

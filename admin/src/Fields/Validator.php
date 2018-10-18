@@ -8,8 +8,16 @@ use DateTime;
 
 class Validator
 {
+    /**
+     * Fields not to validate
+     *
+     * @var array
+     */
     protected static $ignore = array('column', 'header', 'row', 'rows');
 
+    /**
+     * Validate all Fields against given data
+     */
     public static function validate(Fields $fields, DataGetter $data)
     {
         foreach ($fields as $field) {
@@ -29,11 +37,23 @@ class Validator
         }
     }
 
+    /**
+     * Validate checkbox field
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
     public static function validateCheckbox($value)
     {
         return !empty($value);
     }
 
+    /**
+     * Validate togglegroup field
+     *
+     * @param string $value
+     */
     public static function validateTogglegroup($value)
     {
         if ($value === '0' || $value === 'false' || $value === '') {
@@ -45,6 +65,13 @@ class Validator
         return static::parse($value);
     }
 
+    /**
+     * Validate date field
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     public static function validateDate($value)
     {
         if (!empty($value)) {
@@ -57,6 +84,13 @@ class Validator
         return $value;
     }
 
+    /**
+     * Validate number field
+     *
+     * @param string $value
+     *
+     * @return float|int
+     */
     public static function validateNumber($value, &$field)
     {
         $number = static::parse($value);
@@ -71,16 +105,35 @@ class Validator
         return $number;
     }
 
+    /**
+     * Validate range field
+     *
+     * @param string $value
+     *
+     * @return float|int
+     */
     public static function validateRange($value, &$field)
     {
         return static::validateNumber($value, $field);
     }
 
+    /**
+     * Validate select field
+     *
+     * @param string $value
+     */
     public static function validateSelect($value)
     {
         return static::parse($value);
     }
 
+    /**
+     * Validate tags field
+     *
+     * @param array|string $value
+     *
+     * @return array
+     */
     public static function validateTags($value, &$field)
     {
         $tags = is_array($value) ? $value : explode(', ', $value);
@@ -93,6 +146,11 @@ class Validator
         return $tags;
     }
 
+    /**
+     * Cast a value to its correct type
+     *
+     * @param string $value
+     */
     private static function parse($value)
     {
         if (is_numeric($value)) {
@@ -106,6 +164,14 @@ class Validator
         return $value;
     }
 
+    /**
+     * Return whether a values matches to a regex
+     *
+     * @param string $value
+     * @param string $regex
+     *
+     * @return bool
+     */
     private static function regex($value, $regex)
     {
         return (bool) @preg_match('/' . $regex . '/', $value);

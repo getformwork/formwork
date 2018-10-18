@@ -8,52 +8,104 @@ use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Users\User;
 use Formwork\Core\Formwork;
+use Formwork\Core\Site;
 use Formwork\Utils\FileSystem;
 
 abstract class AbstractController
 {
     use AdminTrait;
 
+    /**
+     * Current panel location
+     *
+     * @var string
+     */
     protected $location;
 
+    /**
+     * All loaded modals
+     *
+     * @var array
+     */
     protected $modals = array();
 
+    /**
+     * Create a new Controller instance
+     */
     public function __construct()
     {
         $this->location = strtolower(substr(strrchr(static::class, '\\'), 1));
     }
 
+    /**
+     * Return site instance
+     *
+     * @return Site
+     */
     protected function site()
     {
         return Formwork::instance()->site();
     }
 
+    /**
+     * Get a system option
+     *
+     * @param string $option
+     */
     protected function option($option)
     {
         return Formwork::instance()->option($option);
     }
 
+    /**
+     * Get current language code
+     *
+     * @return string
+     */
     protected function language()
     {
         return Admin::instance()->language()->code();
     }
 
+    /**
+     * Get all available languages
+     *
+     * @return array
+     */
     protected function languages()
     {
         return Language::availableLanguages();
     }
 
+    /**
+     * Get logged user
+     *
+     * @return User
+     */
     protected function user()
     {
         return Admin::instance()->user();
     }
 
+    /**
+     * Escape HTML in a string
+     *
+     * @param string $string
+     *
+     * @return string
+     */
     protected function escape($string)
     {
         return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE);
     }
 
+    /**
+     * Return default data passed to views
+     *
+     * @return array
+     */
     protected function defaults()
     {
         return array(
@@ -62,6 +114,13 @@ abstract class AbstractController
         );
     }
 
+    /**
+     * Ensure current user has a permission
+     *
+     * @param string $permission
+     *
+     * @return bool
+     */
     protected function ensurePermission($permission)
     {
         if (!$this->user()->permissions()->has($permission)) {
@@ -71,11 +130,25 @@ abstract class AbstractController
         }
     }
 
+    /**
+     * Render a field
+     *
+     * @param bool $render Whether to render or return the field
+     *
+     * @return string|void
+     */
     protected function field(Field $field, $render = true)
     {
         return $this->view('fields.' . $field->type(), array('field' => $field), $render);
     }
 
+    /**
+     * Render multiple fields
+     *
+     * @param bool $render Whether to render or return the fields
+     *
+     * @return string|void
+     */
     protected function fields(Fields $fields, $render = true)
     {
         $output = '';
@@ -89,16 +162,36 @@ abstract class AbstractController
         }
     }
 
+    /**
+     * Load a modal to be rendered later
+     *
+     * @param string $modal Name of the modal
+     * @param array  $data  Data to pass to the modal
+     */
     protected function modal($modal, $data = array())
     {
         $this->modals[] = $this->view('modals.' . $modal, $data, false);
     }
 
+    /**
+     * Get all rendered modals
+     *
+     * @return string
+     */
     protected function modals()
     {
         return implode($this->modals);
     }
 
+    /**
+     * Render a view
+     *
+     * @param string $view   Name of the view
+     * @param array  $data   Data to pass to the view
+     * @param bool   $render Whether to render or return the view
+     *
+     * @return string|void
+     */
     protected function view($view, $data = array(), $render = true)
     {
         $file = VIEWS_PATH . str_replace('.', DS, $view) . '.php';
@@ -111,6 +204,14 @@ abstract class AbstractController
         }
     }
 
+    /**
+     * Render a script
+     *
+     * @param string $file Path to the script
+     * @param array  $data Data to pass to the view
+     *
+     * @return string
+     */
     private function renderToString($file, $data)
     {
         ob_start();

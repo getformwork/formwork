@@ -6,10 +6,23 @@ use Formwork\Admin\Admin;
 
 class Translator
 {
+    /**
+     * Language string interpolation regex
+     *
+     * @var string
+     */
     const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
 
+    /**
+     * Fields not to translate
+     *
+     * @var array
+     */
     protected static $ignore = array('name', 'type', 'import', 'fields');
 
+    /**
+     * Translate a field
+     */
     public static function translate(Field $field)
     {
         $language = Admin::instance()->language()->code();
@@ -27,6 +40,13 @@ class Translator
         }
     }
 
+    /**
+     * Return whether a field key is translatable
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
     protected static function isTranslatable($key, Field $field)
     {
         if (in_array($key, static::$ignore)) {
@@ -39,6 +59,13 @@ class Translator
         return $translate;
     }
 
+    /**
+     * Interpolate a string
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     protected static function interpolate($value)
     {
         if (is_array($value)) {

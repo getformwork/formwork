@@ -7,6 +7,11 @@ use Formwork\Data\DataGetter;
 
 class Fields extends Collection
 {
+    /**
+     * Create a new Fields instance
+     *
+     * @param array $fields Array of Field objects
+     */
     public function __construct($fields)
     {
         foreach ($fields as $name => $data) {
@@ -14,11 +19,25 @@ class Fields extends Collection
         }
     }
 
+    /**
+     * Return whether a field is in the collection
+     *
+     * @param string $field Field name
+     *
+     * @return bool
+     */
     public function has($field)
     {
         return isset($this->items[$field]);
     }
 
+    /**
+     * Get a field by name
+     *
+     * @param string $field Field name
+     *
+     * @return Field
+     */
     public function get($field)
     {
         if ($this->has($field)) {
@@ -26,6 +45,13 @@ class Fields extends Collection
         }
     }
 
+    /**
+     * Recursively find a field by name
+     *
+     * @param string $field Field name
+     *
+     * @return Field|null
+     */
     public function find($field)
     {
         foreach ($this->items as $name => $data) {
@@ -42,6 +68,13 @@ class Fields extends Collection
         return null;
     }
 
+    /**
+     * Convert fields to array
+     *
+     * @param bool $flatten Whether to recursively convert Fields instances
+     *
+     * @return array
+     */
     public function toArray($flatten = false)
     {
         if (!$flatten) {
@@ -58,6 +91,12 @@ class Fields extends Collection
         return $result;
     }
 
+    /**
+     * Validate fields against data
+     *
+     *
+     * @return $this
+     */
     public function validate(DataGetter $data)
     {
         Validator::validate($this, $data);

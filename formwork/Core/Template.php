@@ -7,18 +7,53 @@ use RuntimeException;
 
 class Template
 {
+    /**
+     * Template file path
+     *
+     * @var string
+     */
     protected $path;
 
+    /**
+     * Template file extension
+     *
+     * @var string
+     */
     protected $extension;
 
+    /**
+     * Template name
+     *
+     * @var string
+     */
     protected $name;
 
+    /**
+     * Template variables
+     *
+     * @var array
+     */
     protected $vars;
 
+    /**
+     * Template scheme
+     *
+     * @var Scheme
+     */
     protected $scheme;
 
+    /**
+     * Whether template is being rendered
+     *
+     * @var bool
+     */
     protected static $rendering = false;
 
+    /**
+     * Create a new Template instance
+     *
+     * @param string $template
+     */
     public function __construct($template)
     {
         $this->path = Formwork::instance()->site()->templatesPath();
@@ -27,11 +62,21 @@ class Template
         $this->vars = $this->defaults();
     }
 
+    /**
+     * Get template name
+     *
+     * @return string
+     */
     public function name()
     {
         return $this->name;
     }
 
+    /**
+     * Get template Scheme
+     *
+     * @return Scheme
+     */
     public function scheme()
     {
         if (!is_null($this->scheme)) {
@@ -40,6 +85,14 @@ class Template
         return $this->scheme = new Scheme($this->name);
     }
 
+    /**
+     * Render a Page
+     *
+     * @param array $vars   Variable to pass to the template
+     * @param bool  $return Whether to return rendered content
+     *
+     * @return string
+     */
     public function renderPage(Page $page, $vars, $return = false)
     {
         if (static::$rendering) {
@@ -57,6 +110,11 @@ class Template
         return $this->render($return);
     }
 
+    /**
+     * Return an array containing the default data
+     *
+     * @return array
+     */
     protected function defaults()
     {
         return array(
@@ -65,6 +123,11 @@ class Template
         );
     }
 
+    /**
+     * Load template controller if exists and return its path
+     *
+     * @return string|null
+     */
     protected function controller()
     {
         if (static::$rendering) {
@@ -77,12 +140,25 @@ class Template
         return null;
     }
 
+    /**
+     * Insert a partial template
+     *
+     * @param string $filename
+     * @param array  $vars
+     */
     protected function insert($filename, $vars = array())
     {
         extract(array_merge($this->vars, $vars));
         include $this->path . str_replace('_', 'partials' . DS, $filename) . $this->extension;
     }
 
+    /**
+     * Render template
+     *
+     * @param bool $return Whether to return rendered content or not
+     *
+     * @return string|null
+     */
     protected function render($return = false)
     {
         if (static::$rendering) {

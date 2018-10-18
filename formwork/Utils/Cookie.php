@@ -6,6 +6,14 @@ use LogicException;
 
 class Cookie
 {
+    /**
+     * Send a cookie
+     *
+     * @param string $name
+     * @param string $value
+     * @param array  $options
+     * @param bool   $replace Whether to replace existing Set-Cookie header
+     */
     public static function send($name, $value, $options = array(), $replace = false)
     {
         $options = array_merge(static::defaults(), (array) $options);
@@ -16,6 +24,11 @@ class Cookie
         Header::send('Set-Cookie', static::makeHeader($data), $replace);
     }
 
+    /**
+     * Return an array containing the default cookie directives
+     *
+     * @return array
+     */
     protected static function defaults()
     {
         return array(
@@ -29,6 +42,13 @@ class Cookie
         );
     }
 
+    /**
+     * Parse cookie options
+     *
+     * @param array $options
+     *
+     * @return array
+     */
     protected static function parseOptions($options)
     {
         $data = array();
@@ -56,6 +76,13 @@ class Cookie
         return $data;
     }
 
+    /**
+     * Make Set-Cookie header string
+     *
+     * @param array $data
+     *
+     * @return string
+     */
     protected static function makeHeader($data)
     {
         $parts = array();

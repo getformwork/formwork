@@ -8,8 +8,20 @@ use Spyc;
 
 class YAML
 {
+    /**
+     * Whether to use PHP yaml extension to emit, parse, both or none of the operations
+     *
+     * @var string
+     */
     public static $PHPYAMLmode;
 
+    /**
+     * Parse a YAML string
+     *
+     * @param string $input
+     *
+     * @return array
+     */
     public static function parse($input)
     {
         if (function_exists('yaml_parse') && static::PHPYAMLmode('parse')) {
@@ -21,11 +33,25 @@ class YAML
         return Spyc::YAMLLoadString($input);
     }
 
+    /**
+     * Parse a YAML file
+     *
+     * @param string $file
+     *
+     * @return array
+     */
     public static function parseFile($file)
     {
         return static::parse(FileSystem::read($file));
     }
 
+    /**
+     * Encode data to YAML format
+     *
+     * @param array $data
+     *
+     * @return string
+     */
     public static function encode($data)
     {
         if (function_exists('yaml_emit') && static::PHPYAMLmode('emit')) {
@@ -37,6 +63,11 @@ class YAML
         return Spyc::YAMLDump($data, false, 0, true);
     }
 
+    /**
+     * Check if PHPHYAMLmode option matches a pattern
+     *
+     * @param string $pattern
+     */
     protected static function PHPYAMLmode($pattern)
     {
         if (is_null(static::$PHPYAMLmode)) {

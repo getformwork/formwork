@@ -4,6 +4,13 @@ namespace Formwork\Utils;
 
 class MimeType
 {
+    /**
+     * Associative array containing common MIME types
+     *
+     * @see https://www.iana.org/assignments/media-types/media-types.xhtml
+     *
+     * @var array
+     */
     protected static $data = array(
         'js'       => 'application/javascript',
         'doc'      => 'application/msword',
@@ -68,12 +75,26 @@ class MimeType
         'avi'      => 'video/x-msvideo'
     );
 
+    /**
+     * Get MIME types from file extension
+     *
+     * @param string $extension
+     *
+     * @return array|string
+     */
     public static function fromExtension($extension)
     {
         $extension = ltrim($extension, '.');
         return isset(static::$data[$extension]) ? static::$data[$extension] : null;
     }
 
+    /**
+     * Get extension from MIME type
+     *
+     * @param string $mimeType
+     *
+     * @return string
+     */
     public static function toExtension($mimeType)
     {
         $results = array();
