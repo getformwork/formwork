@@ -87,7 +87,7 @@ class File
         if (strpos($this->mimeType, 'video') === 0) {
             return 'video';
         }
-        if (in_array($this->extension, array('pdf', 'doc', 'docx', 'odt'))) {
+        if (in_array($this->extension, array('pdf', 'doc', 'docx', 'odt'), true)) {
             return 'document';
         }
         return null;

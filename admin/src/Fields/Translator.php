@@ -49,12 +49,12 @@ class Translator
      */
     protected static function isTranslatable($key, Field $field)
     {
-        if (in_array($key, static::$ignore)) {
+        if (in_array($key, static::$ignore, true)) {
             return false;
         }
         $translate = $field->get('translate', true);
         if (is_array($translate)) {
-            return in_array($key, $translate);
+            return in_array($key, $translate, true);
         }
         return $translate;
     }

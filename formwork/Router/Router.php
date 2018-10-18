@@ -132,10 +132,10 @@ class Router
             }
             return;
         }
-        if (!in_array($type, $this->types)) {
+        if (!in_array($type, $this->types, true)) {
             throw new LogicException('Invalid request type "' . $type . '"');
         }
-        if (!in_array($method, $this->methods)) {
+        if (!in_array($method, $this->methods, true)) {
             throw new LogicException('Invalid HTTP method "' . $method . '"');
         }
         if (is_array($route)) {

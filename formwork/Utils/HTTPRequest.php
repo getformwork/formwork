@@ -91,11 +91,11 @@ class HTTPRequest
     /**
      * Return request content length in bytes
      *
-     * @return [type]
+     * @return int|null
      */
     public static function contentLength()
     {
-        return isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : null;
+        return isset($_SERVER['CONTENT_LENGTH']) ? (int) $_SERVER['CONTENT_LENGTH'] : null;
     }
 
     /**

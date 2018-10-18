@@ -17,13 +17,13 @@ trait AdminTrait
     /**
      * Return a URI relative to the request root
      *
-     * @param string $subpath
+     * @param string $path
      *
      * @return string
      */
-    protected function uri($subpath)
+    protected function uri($path)
     {
-        return HTTPRequest::root() . ltrim($subpath, '/');
+        return HTTPRequest::root() . ltrim($path, '/');
     }
 
     /**

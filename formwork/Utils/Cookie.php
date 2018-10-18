@@ -17,7 +17,7 @@ class Cookie
     public static function send($name, $value, $options = array(), $replace = false)
     {
         $options = array_merge(static::defaults(), (array) $options);
-        if (in_array(strtolower($name), array_keys($options))) {
+        if (in_array(strtolower($name), array_keys($options), true)) {
             throw new LogicException('Invalid cookie name "' . $name . '"');
         }
         $data = array($name => rawurlencode($value)) + static::parseOptions($options);
