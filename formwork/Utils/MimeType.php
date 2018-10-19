@@ -97,12 +97,7 @@ class MimeType
      */
     public static function toExtension($mimeType)
     {
-        $results = array();
-        foreach (static::$data as $ext => $mime) {
-            if ($mime === $mimeType) {
-                $results[] = $ext;
-            }
-        }
-        return count($results) < 2 ? array_shift($results) : $results;
+        $results = array_keys(static::$data, $mimeType, true);
+        return count($results) > 1 ? $results : array_shift($results);
     }
 }
