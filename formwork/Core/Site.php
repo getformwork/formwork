@@ -257,11 +257,9 @@ class Site extends AbstractPage
     protected function loadTemplates()
     {
         $templatesPath = Formwork::instance()->option('templates.path');
-        foreach (FileSystem::scan($templatesPath) as $item) {
-            $path = $templatesPath . $item;
-            if (FileSystem::isFile($path)) {
-                $templates[FileSystem::name($item)] = $path;
-            }
+        $templates = array();
+        foreach (FileSystem::listFiles($templatesPath) as $file) {
+            $templates[FileSystem::name($file)] = $templatesPath . $file;
         }
         $this->templates = $templates;
     }
