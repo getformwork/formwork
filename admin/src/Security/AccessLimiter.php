@@ -84,8 +84,6 @@ class AccessLimiter
 
     /**
      * Register an access attempt
-     *
-     * @return
      */
     public function registerAttempt()
     {

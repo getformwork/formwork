@@ -89,11 +89,11 @@ class MimeType
     }
 
     /**
-     * Get extension from MIME type
+     * Get extension or array of extensions (if multiple) from a MIME type
      *
      * @param string $mimeType
      *
-     * @return string
+     * @return array|string
      */
     public static function toExtension($mimeType)
     {

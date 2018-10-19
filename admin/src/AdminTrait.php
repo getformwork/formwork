@@ -143,7 +143,7 @@ trait AdminTrait
     /**
      * Get notification from session data
      *
-     * @return array
+     * @return array|null
      */
     protected function notification()
     {
@@ -153,7 +153,7 @@ trait AdminTrait
     /**
      * Get a label from language string
      *
-     * @param string ...$arguments
+     * @param float|int|string ...$arguments
      *
      * @return string
      */

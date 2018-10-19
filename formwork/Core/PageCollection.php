@@ -73,7 +73,7 @@ class PageCollection extends Collection
      *
      * @param int $length Number of items in the pagination
      *
-     * @return $this
+     * @return self
      */
     public function paginate($length)
     {

@@ -154,7 +154,7 @@ class Site extends AbstractPage
     /**
      * Get site index page
      *
-     * @return Page
+     * @return Page|null
      */
     public function indexPage()
     {
