@@ -74,27 +74,6 @@ class Router
     }
 
     /**
-     * Match route against request
-     *
-     * @param string $route
-     *
-     * @return bool
-     */
-    public function match($route)
-    {
-        $compiledRoute = $this->compileRoute($route);
-        if ($compiledRoute !== false && preg_match($compiledRoute['regex'], $this->request, $matches)) {
-            // Remove entire matches from $matches array
-            array_shift($matches);
-            // Build an associative array using params as keys and matches as values
-            $params = array_combine($compiledRoute['params'], $matches);
-            $this->params = new RouteParams($params);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Add a route
      *
      * @param mixed ...$arguments
@@ -201,6 +180,27 @@ class Router
     public function request()
     {
         return $this->request;
+    }
+
+    /**
+     * Match route against request
+     *
+     * @param string $route
+     *
+     * @return bool
+     */
+    protected function match($route)
+    {
+        $compiledRoute = $this->compileRoute($route);
+        if ($compiledRoute !== false && preg_match($compiledRoute['regex'], $this->request, $matches)) {
+            // Remove entire matches from $matches array
+            array_shift($matches);
+            // Build an associative array using params as keys and matches as values
+            $params = array_combine($compiledRoute['params'], $matches);
+            $this->params = new RouteParams($params);
+            return true;
+        }
+        return false;
     }
 
     /**
