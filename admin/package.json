@@ -4,9 +4,9 @@
     "gulp-concat": "^2.6.1",
     "gulp-cssmin": "^0.2.0",
     "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.1",
+    "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.1",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.9.4",
     "uglify-js": "^3.4.9"
   },
   "devDependencies": {},
