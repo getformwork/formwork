@@ -461,9 +461,9 @@ class Page extends AbstractPage
             $this->data['sortable'] = false;
         }
 
-        // Prepends the page uri if image uri doesn't start with '/', which means it isn't relative to the root
-        if ($this->has('image') && $this->image()[0] !== '/') {
-            $this->data['image'] = $this->uri($this->image());
+        // Resolve image URI
+        if ($this->has('image')) {
+            $this->data['image'] = Uri::resolveRelativeUri($this->data['image'], $this->uri());
         }
     }
 
