@@ -301,7 +301,7 @@ class HTTPRequest
         }
         foreach ($_SERVER as $key => $value) {
             if (strpos($key, 'HTTP_') === 0) {
-                $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $key = str_replace('_', '-', ucwords(strtolower(substr($key, 5)), '_'));
                 static::$headers[$key] = $value;
             }
         }
