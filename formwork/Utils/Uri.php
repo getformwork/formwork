@@ -84,7 +84,7 @@ class Uri
      *
      * @return bool
      */
-    public static function defaultPort($port = '')
+    public static function isDefaultPort($port = '')
     {
         if (empty($port)) {
             $port = static::port();
@@ -174,7 +174,7 @@ class Uri
     public static function base($uri = null)
     {
         $uriPort = static::port($uri);
-        $port = empty($uriPort) || static::defaultPort($uriPort) ? '' : ':' . $uriPort;
+        $port = empty($uriPort) || static::isDefaultPort($uriPort) ? '' : ':' . $uriPort;
         return static::scheme($uri) . '://' . static::host($uri) . $port;
     }
 
@@ -232,7 +232,7 @@ class Uri
     {
         $defaults = static::parse($uri);
         $parts = array_merge($defaults, $parts);
-        if (!$forcePort && static::defaultPort($parts['port'])) {
+        if (!$forcePort && static::isDefaultPort($parts['port'])) {
             $parts['port'] = '';
         }
         $result = empty($parts['scheme']) ? 'http' : $parts['scheme'];
