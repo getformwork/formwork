@@ -139,7 +139,7 @@ class Validator
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {
             $pattern = $field->get('pattern');
-            $tags = array_filter($tags, function ($item) use ($pattern) {
+            $tags = array_filter($tags, static function ($item) use ($pattern) {
                 return static::regex($item, $pattern);
             });
         }

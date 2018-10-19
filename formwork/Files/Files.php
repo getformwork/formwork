@@ -59,7 +59,7 @@ class Files extends Collection
     public function filterByType($type)
     {
         $files = clone $this;
-        $files->items = array_filter($files->items, function ($item) use ($type) {
+        $files->items = array_filter($files->items, static function ($item) use ($type) {
             return $item->type() === $type;
         });
         return $files;

@@ -132,7 +132,7 @@ class Statistics
         $visits = array_slice($visits, -$limit, null, true);
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
-        $label = function ($day) {
+        $label = static function ($day) {
             $time = strtotime($day);
             $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
             $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
@@ -142,7 +142,7 @@ class Statistics
 
         $labels = array_map($label, $days);
 
-        $interpolate = function ($data) use ($days) {
+        $interpolate = static function ($data) use ($days) {
             $output = array();
             foreach ($days as $day) {
                 $output[$day] = isset($data[$day]) ? $data[$day] : 0;
