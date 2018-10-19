@@ -66,7 +66,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return int
      */
     public static function port($uri = null)
     {
@@ -74,22 +74,22 @@ class Uri
             return $_SERVER['SERVER_PORT'];
         }
         $port = parse_url($uri, PHP_URL_PORT);
-        return is_null($port) ? 80 : $port;
+        return is_null($port) ? 80 : (int) $port;
     }
 
     /**
      * Return whether current or a given port is default
      *
-     * @param int|string $port
+     * @param int|string|null $port
      *
      * @return bool
      */
-    public static function isDefaultPort($port = '')
+    public static function isDefaultPort($port = null)
     {
-        if (empty($port)) {
+        if (is_null($port)) {
             $port = static::port();
         }
-        return in_array($port, static::$defaultPorts);
+        return in_array((int) $port, static::$defaultPorts, true);
     }
 
     /**
