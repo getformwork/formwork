@@ -80,7 +80,7 @@ class Page extends AbstractPage
      *
      * @var Files
      */
-    protected $files = array();
+    protected $files;
 
     /**
      * Page frontmatter

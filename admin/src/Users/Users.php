@@ -80,6 +80,6 @@ class Users extends Collection
      */
     public static function getRolePermissions($role)
     {
-        return static::$roles[$role]['permissions'];
+        return (array) static::$roles[$role]['permissions'];
     }
 }

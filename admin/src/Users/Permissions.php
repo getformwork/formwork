@@ -26,7 +26,7 @@ class Permissions
      */
     public function __construct($name)
     {
-        $this->permissions = array_merge($this->permissions, (array) Users::getRolePermissions($name));
+        $this->permissions = array_merge($this->permissions, Users::getRolePermissions($name));
     }
 
     /**

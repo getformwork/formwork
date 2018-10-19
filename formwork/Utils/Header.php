@@ -74,7 +74,7 @@ class Header
      * @param bool       $send Whether to send status code or return
      * @param bool       $exit Whether to exit from the script after sending the status code
      *
-     * @return bool|null
+     * @return string|null
      */
     public static function status($code, $send = true, $exit = false)
     {

@@ -165,7 +165,7 @@ class Updater
         $this->checkUpdates();
 
         if (!$this->options['force'] && $this->registry->get('up-to-date')) {
-            return;
+            return null;
         }
 
         $this->loadRelease();
@@ -179,6 +179,7 @@ class Updater
         $zip = new ZipArchive();
         $zip->open($this->options['tempFile']);
         $baseFolder = $zip->getNameIndex(0);
+        $installedFiles = array();
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
             $source = substr($zip->getNameIndex($i), strlen($baseFolder));
@@ -232,8 +233,6 @@ class Updater
 
     /**
      * Load latest release data
-     *
-     * @return array
      */
     protected function loadRelease()
     {
