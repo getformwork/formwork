@@ -13,7 +13,7 @@ AddDefaultCharset UTF-8
     RewriteRule ^(LICENSE|composer\.lock|\.gitignore|\.php_cs|nginx.conf)/?$ index.php [L]
 
     RewriteRule ^admin/(accounts|languages|logs|schemes|src|views)/.* admin/index.php [L]
-    RewriteRule ^admin/gulpfile\.js/?$ admin/index.php [L]
+    RewriteRule ^admin/(\.eslintrc|gulpfile\.js)/?$ admin/index.php [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^admin/.* admin/index.php [L]
