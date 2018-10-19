@@ -595,7 +595,7 @@ class FileSystem
     public static function listFiles($path, $all = false)
     {
         $path = static::normalize($path);
-        return array_filter(static::scan($path, $all), function ($item) use ($path) {
+        return array_filter(static::scan($path, $all), static function ($item) use ($path) {
             return static::isFile($path . $item);
         });
     }
@@ -611,7 +611,7 @@ class FileSystem
     public static function listDirectories($path, $all = false)
     {
         $path = static::normalize($path);
-        return array_filter(static::scan($path, $all), function ($item) use ($path) {
+        return array_filter(static::scan($path, $all), static function ($item) use ($path) {
             return static::isDirectory($path . $item);
         });
     }
