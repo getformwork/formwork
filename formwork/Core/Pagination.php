@@ -155,7 +155,7 @@ class Pagination
     /**
      * Get previous pagination page number
      *
-     * @return int
+     * @return bool|int
      */
     public function previousPage()
     {
@@ -166,7 +166,7 @@ class Pagination
     /**
      * Get next pagination page number
      *
-     * @return int
+     * @return bool|int
      */
     public function nextPage()
     {

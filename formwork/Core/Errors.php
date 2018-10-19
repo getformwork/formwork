@@ -50,7 +50,7 @@ class Errors
      * @param int    $severity
      * @param string $message
      * @param string $file
-     * @param string $line
+     * @param int    $line
      *
      * @return bool|ErrorException
      */

@@ -576,8 +576,6 @@ class Image
      *
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
-     *
-     * @return
      */
     public function save($filename = null, $destroy = true)
     {

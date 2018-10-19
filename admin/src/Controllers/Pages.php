@@ -401,8 +401,8 @@ class Pages extends AbstractController
     /**
      * Make a page num according to 'date' or default mode
      *
-     * @param Parent|Site $parent
-     * @param string      $mode   'date' for pages with a publish date
+     * @param Page|Site $parent
+     * @param string    $mode   'date' for pages with a publish date
      *
      * @return string
      */

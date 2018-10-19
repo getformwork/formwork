@@ -64,7 +64,7 @@ class Translator
      *
      * @param string $value
      *
-     * @return string
+     * @return array|string
      */
     protected static function interpolate($value)
     {

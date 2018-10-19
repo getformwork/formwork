@@ -20,7 +20,7 @@ class Uploader
     /**
      * Uploader options
      *
-     * @var string
+     * @var array
      */
     protected $options;
 

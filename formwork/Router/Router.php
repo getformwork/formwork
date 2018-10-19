@@ -76,7 +76,7 @@ class Router
     /**
      * Match route against request
      *
-     * @param array $route
+     * @param string $route
      *
      * @return bool
      */

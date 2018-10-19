@@ -28,7 +28,7 @@ class Log extends Registry
      *
      * @param string $message
      *
-     * @return float Logging timestamp
+     * @return string Logging timestamp
      */
     public function log($message)
     {

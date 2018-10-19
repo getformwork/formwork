@@ -77,7 +77,7 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return string
+     * @return array|string
      */
     public static function mimeType($file)
     {
@@ -129,7 +129,7 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return string
+     * @return int
      */
     public static function accessTime($file)
     {
@@ -142,7 +142,7 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return string
+     * @return int
      */
     public static function creationTime($file)
     {
@@ -155,7 +155,7 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return string
+     * @return int
      */
     public static function lastModifiedTime($file)
     {

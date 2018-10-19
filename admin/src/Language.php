@@ -66,8 +66,8 @@ class Language
     /**
      * Return a formatted language label
      *
-     * @param string $key
-     * @param string ...$arguments
+     * @param string           $key
+     * @param float|int|string ...$arguments
      *
      * @return string
      */
