@@ -327,7 +327,7 @@ class Uri
         if ($uri[0] !== '/') {
             $path = explode('/', trim(static::path($base), '/'));
         }
-        if (count($path) > 0 && $base[strlen($base) - 1] !== '/') {
+        if (substr($base, -1) !== '/') {
             array_pop($path);
         }
         foreach (explode('/', static::path($uri)) as $segment) {
@@ -335,13 +335,11 @@ class Uri
                 continue;
             }
             if ($segment === '..') {
-                if (count($segment) > 0) {
-                    array_pop($path);
-                }
+                array_pop($path);
             } else {
-                array_push($path, $segment);
+                $path[] = $segment;
             }
         }
-        return Uri::make(array('path' => implode('/', $path)), $base);
+        return static::make(array('path' => implode('/', $path)), $base);
     }
 }
