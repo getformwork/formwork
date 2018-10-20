@@ -44,7 +44,7 @@ class Collection implements Iterator
     /**
      * Return the key of the current element
      *
-     * @return int|string
+     * @return int|string|null
      */
     public function key()
     {

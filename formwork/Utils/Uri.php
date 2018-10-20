@@ -36,7 +36,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function scheme($uri = null)
     {
@@ -51,7 +51,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function host($uri = null)
     {
@@ -97,7 +97,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function path($uri = null)
     {
@@ -112,7 +112,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function relativePath($uri = null)
     {
@@ -139,7 +139,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function query($uri = null)
     {
@@ -154,7 +154,7 @@ class Uri
      *
      * @param string|null $uri
      *
-     * @return string
+     * @return string|null
      */
     public static function fragment($uri = null)
     {

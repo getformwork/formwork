@@ -80,7 +80,7 @@ class MimeType
      *
      * @param string $extension
      *
-     * @return array|string
+     * @return array|null
      */
     public static function fromExtension($extension)
     {

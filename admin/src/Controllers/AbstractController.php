@@ -118,8 +118,6 @@ abstract class AbstractController
      * Ensure current user has a permission
      *
      * @param string $permission
-     *
-     * @return bool
      */
     protected function ensurePermission($permission)
     {
