@@ -37,7 +37,7 @@ class User extends DataGetter
     /**
      * User last access time
      *
-     * @var int
+     * @var string
      */
     protected $lastAccess;
 
@@ -132,7 +132,7 @@ class User extends DataGetter
     /**
      * Get the user last access time
      *
-     * @return int
+     * @return string
      */
     public function lastAccess()
     {

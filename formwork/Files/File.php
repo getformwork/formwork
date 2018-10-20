@@ -68,7 +68,7 @@ class File
     /**
      * Get file type
      *
-     * @return string
+     * @return string|null
      */
     public function type()
     {

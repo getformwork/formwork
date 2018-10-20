@@ -474,7 +474,7 @@ class Pages extends AbstractController
      *
      * @param string $parent Page URI or '.' for site
      *
-     * @return Page|Site
+     * @return Page|Site|null
      */
     protected function resolveParent($parent)
     {
