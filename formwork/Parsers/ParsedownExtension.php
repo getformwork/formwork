@@ -34,9 +34,12 @@ class ParsedownExtension extends ParsedownExtra
             return;
         }
         $href = &$link['element']['attributes']['href'];
-        if (empty(Uri::host($href)) && $href[0] !== '#') {
-            $relativeUri = Uri::resolveRelativeUri($href, $this->page->slug());
-            $href = Formwork::instance()->site()->uri($relativeUri);
+        // Process only if scheme is either null, 'http' or 'https'
+        if (in_array(Uri::scheme($href), array(null, 'http', 'https'), true)) {
+            if (empty(Uri::host($href)) && $href[0] !== '#') {
+                $relativeUri = Uri::resolveRelativeUri($href, $this->page->slug());
+                $href = Formwork::instance()->site()->uri($relativeUri);
+            }
         }
         return $link;
     }
