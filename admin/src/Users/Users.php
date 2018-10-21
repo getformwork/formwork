@@ -13,7 +13,7 @@ class Users extends Collection
      *
      * @var array
      */
-    protected static $roles;
+    protected static $roles = array();
 
     /**
      * Return whether a user is in the collection

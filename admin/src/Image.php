@@ -51,7 +51,7 @@ class Image
      *
      * @var array
      */
-    protected $info;
+    protected $info = array();
 
     /**
      * Image width

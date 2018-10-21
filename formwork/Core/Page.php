@@ -87,7 +87,7 @@ class Page extends AbstractPage
      *
      * @var array
      */
-    protected $frontmatter;
+    protected $frontmatter = array();
 
     /**
      * Page unprocessed content

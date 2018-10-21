@@ -22,14 +22,14 @@ class Uploader
      *
      * @var array
      */
-    protected $options;
+    protected $options = array();
 
     /**
      * Array containing uploaded files
      *
      * @var array
      */
-    protected $uploadedFiles;
+    protected $uploadedFiles = array();
 
     /**
      * Human-readable Uploader error messages

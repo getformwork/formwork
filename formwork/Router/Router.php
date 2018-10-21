@@ -39,7 +39,7 @@ class Router
      *
      * @var array
      */
-    protected $routes;
+    protected $routes = array();
 
     /**
      * The request to match routes against
