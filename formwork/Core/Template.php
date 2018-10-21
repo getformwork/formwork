@@ -33,7 +33,7 @@ class Template
      *
      * @var array
      */
-    protected $vars;
+    protected $vars = array();
 
     /**
      * Template scheme

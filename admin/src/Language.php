@@ -15,7 +15,7 @@ class Language
      *
      * @var array
      */
-    protected static $availableLanguages;
+    protected static $availableLanguages = array();
 
     /**
      * Language code
@@ -29,7 +29,7 @@ class Language
      *
      * @var array
      */
-    protected $strings;
+    protected $strings = array();
 
     /**
      * Create a new Language istance

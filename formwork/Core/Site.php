@@ -13,7 +13,7 @@ class Site extends AbstractPage
      *
      * @var array
      */
-    public static $storage;
+    public static $storage = array();
 
     /**
      * Current page
@@ -27,7 +27,7 @@ class Site extends AbstractPage
      *
      * @var array
      */
-    protected $templates;
+    protected $templates = array();
 
     /**
      * Create a new Site instance

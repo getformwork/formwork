@@ -18,7 +18,7 @@ class JSONResponse
      *
      * @var array
      */
-    protected $data;
+    protected $data = array();
 
     /**
      * Create a new JSONResponse instance

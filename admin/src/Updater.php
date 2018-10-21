@@ -22,7 +22,7 @@ class Updater
      *
      * @var array
      */
-    protected $options;
+    protected $options = array();
 
     /**
      * Updates registry
