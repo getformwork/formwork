@@ -62,7 +62,7 @@ class Site extends AbstractPage
      */
     public function templates()
     {
-        return array_keys($this->templates);
+        return array_map('strval', array_keys($this->templates));
     }
 
     /**
@@ -74,7 +74,7 @@ class Site extends AbstractPage
      */
     public function hasTemplate($template)
     {
-        return in_array($template, $this->templates(), true);
+        return array_key_exists($template, $this->templates);
     }
 
     /**
