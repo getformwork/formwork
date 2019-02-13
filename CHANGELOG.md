@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.4](https://github.com/giuscris/formwork/releases/tag/0.9.4) (2019-02-13)
+
+**Bug fixes**
+
+ * Fix Parsedown extension link processing (closes [#11](https://github.com/giuscris/formwork/issues/11))
+ * Fix numeric template names not being accepted
+ * Fix `Set-Cookie` header being sent when resuming session
+
 ## [0.9.3](https://github.com/giuscris/formwork/releases/tag/0.9.3) (2018-10-18)
 
 **Bug fixes**
