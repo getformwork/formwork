@@ -7,6 +7,20 @@ use LogicException;
 class Cookie
 {
     /**
+     * 'Strict' value for SameSite directive
+     *
+     * @var string
+     */
+    const SAMESITE_STRICT = 'Strict';
+
+    /**
+     * 'Lax' value for SameSite directive
+     *
+     * @var string
+     */
+    const SAMESITE_LAX = 'Lax';
+
+    /**
      * Send a cookie
      *
      * @param string $name
@@ -71,7 +85,10 @@ class Cookie
             $data[] = 'HttpOnly';
         }
         if (!empty($options['samesite'])) {
-            $data['SameSite'] = ucfirst(strtolower($options['samesite']));
+            if (!in_array($options['samesite'], array(self::SAMESITE_STRICT, self::SAMESITE_LAX), true)) {
+                throw new LogicException('Invalid value for cookie SameSite directive');
+            }
+            $data['SameSite'] = $options['samesite'];
         }
         return $data;
     }
