@@ -129,12 +129,12 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return int
+     * @return int|null
      */
     public static function accessTime($file)
     {
         static::assert($file);
-        return @fileatime($file);
+        return @fileatime($file) ?: null;
     }
 
     /**
@@ -142,12 +142,12 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return int
+     * @return int|null
      */
     public static function creationTime($file)
     {
         static::assert($file);
-        return @filectime($file);
+        return @filectime($file) ?: null;
     }
 
     /**
@@ -155,12 +155,12 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return int
+     * @return int|null
      */
     public static function lastModifiedTime($file)
     {
         static::assert($file);
-        return @filemtime($file);
+        return @filemtime($file) ?: null;
     }
 
     /**
@@ -193,13 +193,15 @@ class FileSystem
      * @param string $file
      * @param bool   $unit Whether to return size with unit of measurement or not
      *
-     * @return int|string
+     * @return int|string|null
      */
     public static function size($file, $unit = true)
     {
         static::assert($file);
-        $bytes = @filesize($file);
-        return $unit ? static::bytesToSize($bytes) : $bytes;
+        if (($bytes = @filesize($file)) !== false) {
+            return $unit ? static::bytesToSize($bytes) : $bytes;
+        }
+        return null;
     }
 
     /**
@@ -208,7 +210,7 @@ class FileSystem
      * @param string $path
      * @param bool   $unit Whether to return size with unit of measurement or not
      *
-     * @return string
+     * @return int|string|null
      */
     public static function directorySize($path, $unit = true)
     {
@@ -217,7 +219,7 @@ class FileSystem
         $bytes = 0;
         foreach (static::scan($path, true) as $item) {
             if (static::isFile($path . $item)) {
-                $bytes += static::size($path . $item, false);
+                $bytes += (int) static::size($path . $item, false);
             } else {
                 $bytes += static::directorySize($path . $item, false);
             }
@@ -622,16 +624,16 @@ class FileSystem
      * @param string $pattern
      * @param mixed  ...$arguments
      *
-     * @return array
+     * @return array|null
      */
     public static function glob($pattern, ...$arguments)
     {
         if (empty($arguments)) {
-            return @glob($pattern);
+            return @glob($pattern) ?: null;
         }
 
         if (is_int($flags = $arguments[0])) {
-            return @glob($pattern, $flags);
+            return @glob($pattern, $flags) ?: null;
         }
 
         if (static::isDirectory($base = static::normalize($arguments[0]))) {
@@ -641,7 +643,7 @@ class FileSystem
                 $flags = $arguments[1];
                 $glob = @glob($base . $pattern, $flags);
             }
-            return is_array($glob) ? array_map(array(static::class, 'basename'), $glob) : $glob;
+            return is_array($glob) ? array_map(array(static::class, 'basename'), $glob) : null;
         }
 
         throw new RuntimeException(__METHOD__ . ' base path not found: ' . $base);
