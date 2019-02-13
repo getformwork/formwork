@@ -22,7 +22,14 @@ class Session
             );
             session_name('formwork_session');
             session_start();
-            Cookie::send(session_name(), session_id(), $options, true);
+            if (!isset($_COOKIE[session_name()])) {
+                // Send session cookie if not already sent
+                Cookie::send(session_name(), session_id(), $options, true);
+            } elseif ($_COOKIE[session_name()] !== session_id()) {
+                // Remove cookie if session id is not valid
+                unset($_COOKIE[session_name()]);
+                Cookie::send(session_name(), '', $options + array('expires' => time() - 3600), true);
+            }
         }
     }
 
