@@ -18,7 +18,7 @@ class Session
                 'path'     => HTTPRequest::root(),
                 'secure'   => HTTPRequest::isHTTPS(),
                 'httponly' => true,
-                'samesite' => 'strict'
+                'samesite' => Cookie::SAMESITE_STRICT
             );
             session_name('formwork_session');
             session_start();
