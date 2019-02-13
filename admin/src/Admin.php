@@ -90,7 +90,7 @@ class Admin
     }
 
     /**
-     * Return whether some user is logged in
+     * Return whether a user is logged in
      *
      * @return bool
      */

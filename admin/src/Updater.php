@@ -61,7 +61,7 @@ class Updater
     /**
      * Headers to send in HTTP(S) requests
      *
-     * @var array
+     * @var array|null
      */
     protected $headers;
 
