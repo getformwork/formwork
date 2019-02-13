@@ -77,7 +77,7 @@ class FileSystem
      *
      * @param string $file
      *
-     * @return array|string
+     * @return string|null
      */
     public static function mimeType($file)
     {
