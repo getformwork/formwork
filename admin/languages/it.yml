@@ -56,7 +56,7 @@ options.site.info.language: Lingua
 options.site.info.title: Titolo
 options.system: Sistema
 options.system.admin-panel: Pannello di amministrazione
-options.system.admin-panel.language: Lingua
+options.system.admin-panel.default-language: Lingua predefinita
 options.system.admin-panel.logout-redirects-to: Reindirizza dopo la disconnessione
 options.system.admin-panel.logout-redirects-to.home: Pagina iniziale
 options.system.admin-panel.logout-redirects-to.login: Accedi
