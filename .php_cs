@@ -43,6 +43,7 @@ return Config::create()
         'phpdoc_return_self_reference' => true,
         'phpdoc_scalar' => true,
         'phpdoc_separation' => true,
+        'phpdoc_trim_consecutive_blank_line_separation' => true,
         'phpdoc_trim' => true,
         'phpdoc_types_order' => array('null_adjustment' => 'always_last'),
         'phpdoc_var_without_name' => true,
