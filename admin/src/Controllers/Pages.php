@@ -326,7 +326,6 @@ class Pages extends AbstractController
     /**
      * Update a page
      *
-     *
      * @return Page
      */
     protected function updatePage(Page $page, DataGetter $data, Fields $fields)
