@@ -94,7 +94,6 @@ class Fields extends Collection
     /**
      * Validate fields against data
      *
-     *
      * @return $this
      */
     public function validate(DataGetter $data)

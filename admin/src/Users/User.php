@@ -88,7 +88,6 @@ class User extends DataGetter
     /**
      * Return whether the user can delete a given user
      *
-     *
      * @return bool
      */
     public function canDeleteUser(User $user)
@@ -98,7 +97,6 @@ class User extends DataGetter
 
     /**
      * Return whether the user can change options of a given user
-     *
      *
      * @return bool
      */
@@ -110,7 +108,6 @@ class User extends DataGetter
     /**
      * Return whether the user can change the password of a given user
      *
-     *
      * @return bool
      */
     public function canChangePasswordOf(User $user)
@@ -120,7 +117,6 @@ class User extends DataGetter
 
     /**
      * Return whether the user can change the role of a given user
-     *
      *
      * @return bool
      */

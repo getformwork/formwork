@@ -39,7 +39,6 @@ trait AdminTrait
     /**
      * Return the URI of a page
      *
-     *
      * @return string
      */
     protected function pageUri(Page $page)
