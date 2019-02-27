@@ -317,9 +317,6 @@ button, .button {
   button:focus, .button:focus {
     box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3); }
 
-body {
-  -webkit-font-smoothing: antialiased; }
-
 img {
   max-width: 100%; }
 
