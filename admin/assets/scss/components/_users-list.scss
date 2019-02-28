@@ -3,19 +3,24 @@
     @include user-select-none;
 }
 
+.users-list-headers {
+    display: none;
+}
+
 .users-item {
     padding: 0.5rem 0;
     border-bottom: 1px solid #e4e4e4;
 }
 
-.users-item-cell {
+.users-item-cell,
+.users-headers-cell {
     padding: 0.125rem 0.25rem;
     vertical-align: middle;
     font-size: 0.875rem;
     @include ellipsis;
 }
 
-.user-username {
+.users-item .user-username {
     font-size: 1rem;
 }
 
@@ -37,7 +42,16 @@
         line-height: 1.5;
     }
 
-    .users-item-cell {
+    .users-list-headers {
+        display: table;
+        padding: 0.25rem 0;
+        width: 100%;
+        table-layout: fixed;
+        font-weight: 600;
+    }
+
+    .users-item-cell,
+    .users-headers-cell {
         display: table-cell;
         padding: 0.25rem 0.5rem;
     }

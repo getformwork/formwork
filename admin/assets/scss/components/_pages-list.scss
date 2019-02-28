@@ -9,6 +9,12 @@
     display: none;
 }
 
+.pages-list-headers {
+    display: none;
+    padding: 0.25rem 0;
+    font-weight: 600;
+}
+
 .page-children-toggle {
     display: block;
     float: left;
@@ -40,12 +46,14 @@
     background-color: $color-gray-xxlight;
 }
 
-.pages-item-cell {
+.pages-item-cell,
+.pages-headers-cell {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
 
-.pages-item-cell div {
+.pages-item-cell div,
+.pages-headers-cell {
     @include ellipsis;
 }
 
@@ -88,7 +96,8 @@
 }
 
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
-    .pages-item {
+    .pages-item,
+    .pages-list-headers {
         display: table;
         width: 100%;
         table-layout: fixed;
@@ -99,7 +108,8 @@
         display: table-row;
     }
 
-    .pages-item-cell {
+    .pages-item-cell,
+    .pages-headers-cell {
         display: table-cell;
         vertical-align: middle;
     }

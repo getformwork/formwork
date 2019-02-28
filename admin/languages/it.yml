@@ -110,6 +110,7 @@ pages.new-page.uri: URI pagina
 pages.not-published: Non pubblicata
 pages.not-routable: Non raggiungibile
 pages.options: Opzioni
+pages.page.actions: Azioni
 pages.page.cannot-change-num: Impossibile cambiare il numero della pagina
 pages.page.cannot-create: Impossibile creare la pagina
 pages.page.cannot-create.already-exists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
@@ -126,8 +127,11 @@ pages.page.created: Pagina creata!
 pages.page.deleted: Pagina eliminata
 pages.page.edited: Pagina modificata!
 pages.page.file-deleted: File eliminato
+pages.page.last-modified: Ultime modifiche
 pages.page.moved: Pagina spostata!
 pages.page.not-found: Pagina non trovata
+pages.page.status: Stato
+pages.page.title: Titolo
 pages.pages: Pagine
 pages.pages.collapse-all: Riduci tutte
 pages.pages.expand-all: Espandi tutte
@@ -179,6 +183,7 @@ uploader.error.php-extension: Il caricamento è stato interrotto da un’estensi
 uploader.error.size: Il file caricato supera la dimensione massima consentita
 uploader.error.unknown: Errore di caricamento sconosciuto
 uploader.uploaded: File caricato
+user.actions: Azioni
 user.avatar: Immagine
 user.avatar.uploaded: Immagine caricata
 user.email: E-mail

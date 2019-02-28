@@ -2019,6 +2019,11 @@ label {
 .pages-list .pages-list {
   display: none; }
 
+.pages-list-headers {
+  display: none;
+  padding: 0.25rem 0;
+  font-weight: 600; }
+
 .page-children-toggle {
   display: block;
   float: left;
@@ -2044,11 +2049,13 @@ label {
 .pages-item:hover {
   background-color: #f8f8f8; }
 
-.pages-item-cell {
+.pages-item-cell,
+.pages-headers-cell {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem; }
 
-.pages-item-cell div {
+.pages-item-cell div,
+.pages-headers-cell {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
@@ -2084,14 +2091,16 @@ label {
   display: none; }
 
 @media (min-width: 568px) {
-  .pages-item {
+  .pages-item,
+  .pages-list-headers {
     display: table;
     width: 100%;
     table-layout: fixed;
     line-height: 1.5; }
   .pages-item-row {
     display: table-row; }
-  .pages-item-cell {
+  .pages-item-cell,
+  .pages-headers-cell {
     display: table-cell;
     vertical-align: middle; }
   .page-details {
@@ -2448,11 +2457,15 @@ ul {
   -ms-user-select: none;
   user-select: none; }
 
+.users-list-headers {
+  display: none; }
+
 .users-item {
   padding: 0.5rem 0;
   border-bottom: 1px solid #e4e4e4; }
 
-.users-item-cell {
+.users-item-cell,
+.users-headers-cell {
   padding: 0.125rem 0.25rem;
   vertical-align: middle;
   font-size: 0.875rem;
@@ -2460,7 +2473,7 @@ ul {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-.user-username {
+.users-item .user-username {
   font-size: 1rem; }
 
 .user-username,
@@ -2477,7 +2490,14 @@ ul {
     width: 100%;
     table-layout: fixed;
     line-height: 1.5; }
-  .users-item-cell {
+  .users-list-headers {
+    display: table;
+    padding: 0.25rem 0;
+    width: 100%;
+    table-layout: fixed;
+    font-weight: 600; }
+  .users-item-cell,
+  .users-headers-cell {
     display: table-cell;
     padding: 0.25rem 0.5rem; }
   .user-username {
