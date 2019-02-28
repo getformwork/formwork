@@ -48,7 +48,8 @@ class Pages extends AbstractController
                     'subpages' => true,
                     'class' => 'pages-list-top',
                     'parent' => '.',
-                    'sortable' => 'true'
+                    'sortable' => 'true',
+                    'headers' => true
                 ), false)
             ), false)
         ));

@@ -1,3 +1,15 @@
+<?php
+        if ($headers):
+?>
+            <div class="pages-list-headers">
+                <div class="pages-headers-cell page-details"><?= $this->label('pages.page.title') ?></div>
+                <div class="pages-headers-cell page-date"><?= $this->label('pages.page.last-modified') ?></div>
+                <div class="pages-headers-cell page-status"><?= $this->label('pages.page.status') ?></div>
+                <div class="pages-headers-cell page-actions"><?= $this->label('pages.page.actions') ?></div>
+            </div>
+<?php
+        endif;
+?>
             <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $sortable ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
@@ -43,7 +55,8 @@
                             'subpages' => true,
                             'class' => 'pages-children',
                             'parent' => $sortableChildren ? $page->slug() : null,
-                            'sortable' => $sortableChildren ? 'true' : 'false'
+                            'sortable' => $sortableChildren ? 'true' : 'false',
+                            'headers' => false
                         ));
 
                     endif;

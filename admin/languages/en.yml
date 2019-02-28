@@ -110,6 +110,7 @@ pages.new-page.uri: Page URI
 pages.not-published: Not published
 pages.not-routable: Non routable
 pages.options: Options
+pages.page.actions: Actions
 pages.page.cannot-change-num: Cannot change page number
 pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
@@ -126,8 +127,11 @@ pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
 pages.page.file-deleted: File deleted
+pages.page.last-modified: Last Modified
 pages.page.moved: Page moved!
 pages.page.not-found: Page not found
+pages.page.status: Status
+pages.page.title: Title
 pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
@@ -178,6 +182,7 @@ uploader.error.php-extension: File upload stopped by extension
 uploader.error.size: The uploaded file exceeds the maximum file size
 uploader.error.unknown: Unknown upload error
 uploader.uploaded: File uploaded
+user.actions: Actions
 user.avatar: Avatar
 user.avatar.uploaded: Avatar uploaded
 user.email: Email
