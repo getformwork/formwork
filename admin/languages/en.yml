@@ -13,6 +13,8 @@ dashboard.last-modified-pages: Last Edited Pages
 dashboard.online-users: Online users
 dashboard.quick-actions: Quick Actions
 dashboard.statistics: Statistics
+dashboard.statistics.unique-visitors: Unique Visitors
+dashboard.statistics.visits: Visits
 dashboard.welcome: Welcome
 date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

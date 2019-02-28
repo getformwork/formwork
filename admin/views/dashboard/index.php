@@ -30,7 +30,15 @@
         </div>
         <div class="col-m-7-12">
             <div class="component">
-                <h3 class="caption"><?= $this->label('dashboard.statistics') ?></h3>
+                <div class="row">
+                    <div class="col-xs-1-2"><h3 class="caption"><?= $this->label('dashboard.statistics') ?></h3></div>
+                    <div class="col-xs-1-2">
+                        <div class="ct-legend ct-legend-right">
+                            <span class="ct-legend-label ct-series-a"><?= $this->label('dashboard.statistics.visits') ?></span>
+                            <span class="ct-legend-label ct-series-b"><?= $this->label('dashboard.statistics.unique-visitors') ?></span>
+                        </div>
+                    </div>
+                </div>
                 <div class="ct-chart" data-chart-data="<?= $this->escape(json_encode($statistics)); ?>"></div>
             </div>
         </div>
