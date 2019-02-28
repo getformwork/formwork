@@ -54,3 +54,30 @@
     text-align: center;
     transform: translateX(-50%);
 }
+
+.ct-legend {
+    font-size: 0.875rem;
+}
+
+.ct-legend-right {
+    text-align: right;
+}
+
+.ct-legend-label {
+    white-space: nowrap;
+}
+
+.ct-legend-label::before {
+    display: inline-block;
+    margin: 0 0.375rem;
+    font-size: 0.75rem;
+    @include icon(circle);
+}
+
+.ct-legend-label.ct-series-a::before {
+    color: $color-accent;
+}
+
+.ct-legend-label.ct-series-b::before {
+    color: $color-warning;
+}

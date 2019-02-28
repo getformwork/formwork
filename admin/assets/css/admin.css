@@ -831,6 +831,27 @@ a.button {
   text-align: center;
   transform: translateX(-50%); }
 
+.ct-legend {
+  font-size: 0.875rem; }
+
+.ct-legend-right {
+  text-align: right; }
+
+.ct-legend-label {
+  white-space: nowrap; }
+
+.ct-legend-label::before {
+  display: inline-block;
+  margin: 0 0.375rem;
+  font-size: 0.75rem;
+  font-family: Icons; }
+
+.ct-legend-label.ct-series-a::before {
+  color: #3498da; }
+
+.ct-legend-label.ct-series-b::before {
+  color: #f39c11; }
+
 .container,
 .container-full,
 .container-no-margin {
@@ -2689,7 +2710,7 @@ ul {
 .i-circle-open::before {
   content: '\f2b7'; }
 
-.i-circle::before, .page-status-label::before {
+.i-circle::before, .ct-legend-label::before, .page-status-label::before {
   content: '\f2b8'; }
 
 .i-clipboard::before {
