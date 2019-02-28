@@ -538,21 +538,17 @@ template {
 @keyframes fadeInRight {
   from {
     opacity: 0;
-    -webkit-transform: translate3d(150%, 0, 0);
     transform: translate3d(150%, 0, 0); }
   to {
     opacity: 1;
-    -webkit-transform: none;
     transform: none; } }
 
 @keyframes fadeOutRight {
   from {
     opacity: 1;
-    -webkit-transform: none;
     transform: none; }
   to {
     opacity: 0;
-    -webkit-transform: translate3d(150%, 0, 0);
     transform: translate3d(150%, 0, 0); } }
 
 @keyframes spin {
