@@ -169,6 +169,21 @@ rows4:
                             options:
                                 login: '{{options.system.admin-panel.logout-redirects-to.login}}'
                                 home: '{{options.system.admin-panel.logout-redirects-to.home}}'
+        row3:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.admin-panel.session-timeout}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        admin.session_timeout:
+                            type: number
+                            min: 0
+                            required: true
 
 section5:
     type: header

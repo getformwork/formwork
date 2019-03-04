@@ -62,6 +62,7 @@ options.system.admin-panel.default-language: Lingua predefinita
 options.system.admin-panel.logout-redirects-to: Reindirizza dopo la disconnessione
 options.system.admin-panel.logout-redirects-to.home: Pagina iniziale
 options.system.admin-panel.logout-redirects-to.login: Accedi
+options.system.admin-panel.session-timeout: Durata sessione (min)
 options.system.cache: Cache
 options.system.cache.disabled: Disabilitata
 options.system.cache.enabled: Abilitata

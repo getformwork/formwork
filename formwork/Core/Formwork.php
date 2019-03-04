@@ -147,6 +147,7 @@ class Formwork
             'admin.login_attempts'     => 10,
             'admin.login_reset_time'   => 300,
             'admin.logout_redirect'    => 'login',
+            'admin.session_timeout'    => 20,
             'admin.avatar_size'        => 512
         );
     }
