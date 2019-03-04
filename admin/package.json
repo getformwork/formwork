@@ -5,7 +5,7 @@
     "gulp-cssmin": "^0.2.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.1",
+    "gulp-uglify": "^3.0.2",
     "node-sass": "^4.11.0",
     "uglify-js": "^3.4.9"
   },
