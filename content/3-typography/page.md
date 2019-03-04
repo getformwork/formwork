@@ -10,7 +10,7 @@ This is a **paragraph**:
 
 ## This is a `h2` heading
 This is a **quote**: 
-> Seeing comes before words. The child looks and recognizes before it can speak. But there is also another sense in which seeing comes before words.
+> Seeing comes before words. The child looks and recognizes before it can speak. But there is also another sense in which seeing comes before words. It is seeing which establishes our place in the surrounding world; we explain that world with words, but words can never undo the fact that we are surrounded by it. The relation between we see and what we know is never settled.
 > <div class="blockquote-source">John Berger, <cite>Ways of Seeing</cite></div>
 
 ### This is a `h3` heading

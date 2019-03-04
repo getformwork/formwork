@@ -3,10 +3,10 @@ title: Home
 ---
 # Formwork is Installed!
 If you can see this page your Formwork installation is working.
-Now you can add some content and customize the website as you want.
+Now you can add some content and customize the website as you want. There are two ways to do that: using the **Administration Panel** or **manually**.
 
 ### Discover the Administration Panel
-The [Administration Panel](/admin) makes easy editing pages, changing options and creating users. At the first access you’ll be requested to register a new user.
+The [Administration Panel](/admin) makes easy editing pages, changing options and creating users. You can always access it by visiting the [`/admin/`](/admin) page right at the site root. At the first access you’ll be requested to register a new user.
 
 ![](/assets/images/admin.png)
 
