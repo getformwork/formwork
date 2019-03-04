@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.5](https://github.com/giuscris/formwork/releases/tag/0.9.5) (2019-03-04)
+
+**Enhancements**
+
+ * **Add Session timeout**
+ * **Enforce CSRF token regeneration when login page is reloaded**
+ * **Add legend to Dashboard chart**
+ * Add headers to pages list and users list
+
+**Bug fixes**
+
+ * Fix fields with numeric `0` value considered empty
+ * Fix filename labels in image picker
+
 ## [0.9.4](https://github.com/giuscris/formwork/releases/tag/0.9.4) (2019-02-13)
 
 **Bug fixes**
