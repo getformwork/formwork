@@ -33,9 +33,8 @@ class Authentication extends AbstractController
                     $this->redirectToPanel();
                 }
 
-                if (is_null(CSRFToken::get())) {
-                    CSRFToken::generate();
-                }
+                // Always generate a new CSRF token
+                CSRFToken::generate();
 
                 $this->view('authentication.login', array(
                     'title' => $this->label('login.login')
@@ -102,16 +101,18 @@ class Authentication extends AbstractController
     }
 
     /**
-     * Display login view with an error notification and exit from the script
+     * Display login view with an error notification
      *
      * @param string $message Error message
      * @param array  $data    Data to pass to the view
      */
     protected function error($message, $data = array())
     {
+        // Ensure CSRF token is re-generated
+        CSRFToken::generate();
+
         $defaults = array('title' => $this->label('login.login'));
         $this->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
-        exit;
     }
 }
