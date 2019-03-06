@@ -1,15 +1,15 @@
 .editor-toolbar {
-    padding: 0 0.25rem;
+    padding: $editor-toolbar-padding-v $editor-toolbar-padding-h;
     border: 1px solid $color-gray;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
     background-color: $color-gray-xxlight;
     font-size: 0;
 }
 
 .editor-toolbar .toolbar-button {
     margin-bottom: 0;
-    padding: 0.625rem;
+    padding: $editor-toolbar-button-padding;
     border: 0;
     border-radius: 0;
     background-color: $color-gray-xxlight;
@@ -22,11 +22,11 @@
 }
 
 .editor-textarea {
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    min-height: 16 * 0.875rem * 1.5 + 0.75rem * 2;
-    max-height: 20 * 0.875rem * 1.5 + 0.75rem * 2;
-    font-size: 0.875rem;
+    margin-bottom: $editor-textarea-margin-bottom;
+    padding: $editor-textarea-padding-v $editor-textarea-padding-h;
+    min-height: 16 * $font-size-s * $base-line-height + $editor-textarea-padding-v * 2;
+    max-height: 20 * $font-size-s * $base-line-height + $editor-textarea-padding-v * 2;
+    font-size: $font-size-s;
     font-family: $mono-font-family;
 }
 
@@ -40,8 +40,8 @@
 }
 
 .page-info {
-    margin-bottom: 0.75rem;
-    padding: 0 0.25rem;
+    margin-bottom: $page-info-margin-bottom;
+    padding: $page-info-padding-v $page-info-padding-h;
 }
 
 .page-info > div {

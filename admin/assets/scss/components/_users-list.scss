@@ -1,5 +1,5 @@
 .users-list {
-    border-top: 1px solid #e4e4e4;
+    border-top: 1px solid $color-gray-light;
     @include user-select-none;
 }
 
@@ -8,20 +8,20 @@
 }
 
 .users-item {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #e4e4e4;
+    padding: $users-item-padding-v $users-item-padding-h;
+    border-bottom: 1px solid $color-gray-light;
 }
 
 .users-item-cell,
 .users-headers-cell {
-    padding: 0.125rem 0.25rem;
+    padding: $users-item-cell-padding-v-s $users-item-cell-padding-h-s;
     vertical-align: middle;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
     @include ellipsis;
 }
 
 .users-item .user-username {
-    font-size: 1rem;
+    font-size: $font-size-m;
 }
 
 .user-username,
@@ -44,7 +44,7 @@
 
     .users-list-headers {
         display: table;
-        padding: 0.25rem 0;
+        padding: $users-list-headers-padding-v $users-list-headers-padding-h;
         width: 100%;
         table-layout: fixed;
         font-weight: 600;
@@ -53,7 +53,7 @@
     .users-item-cell,
     .users-headers-cell {
         display: table-cell;
-        padding: 0.25rem 0.5rem;
+        padding: $users-item-cell-padding-v-l $users-item-cell-padding-h-l;
     }
 
     .user-username {

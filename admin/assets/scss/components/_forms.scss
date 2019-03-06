@@ -2,8 +2,9 @@ input,
 select,
 textarea {
     display: inline-block;
-    margin-top: 0;
-    margin-bottom: $button-margin-bottom;
+    overflow: visible;
+    margin: 0;
+    margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h;
     width: 100%;
     border: $input-border-width solid $color-gray;
@@ -22,6 +23,7 @@ textarea {
 input[type=checkbox],
 input[type=radio] {
     margin-bottom: 0;
+    padding: 0;
     width: auto;
     height: inherit;
     vertical-align: text-top;
@@ -36,14 +38,24 @@ input[type=file] {
     border-radius: 0;
 }
 
+::-webkit-file-upload-button {
+    font: inherit;
+    -webkit-appearance: button;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    height: auto;
+}
+
 input[disabled],
 select[disabled] {
     background-color: $color-gray-xxlight;
-    color: #444;
+    color: $color-gray-xxdark;
 }
 
 select {
-    padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+    padding: $select-padding-h $select-padding-left $select-padding-h $select-padding-right;
     background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
     background-color: #fff;
     background-size: 8px 6px;
@@ -87,8 +99,9 @@ textarea {
 }
 
 textarea {
-    min-height: 2 * $input-line-height * $input-font-size + $input-padding-v * 2;
-    max-height: 12 * $input-line-height * $input-font-size + $input-padding-v * 2;
+    overflow: auto;
+    min-height: 2 * $input-font-size * $input-line-height + $input-padding-v * 2;
+    max-height: 12 * $input-font-size * $input-line-height + $input-padding-v * 2;
     resize: vertical;
 }
 
@@ -120,33 +133,33 @@ label {
 }
 
 .input-wrap input {
-    padding-right: 1.5rem;
+    padding-right: $input-wrap-padding-right;
 }
 
 .input-reset {
     position: absolute;
-    top: 0.25rem;
-    top: calc(0.25rem + 1px);
-    right: 0.25rem;
-    color: #444;
-    font-size: 0.875rem;
+    top: $input-padding-v;
+    top: calc(#{$input-padding-v} + #{$input-border-width});
+    right: $input-padding-h / 2;
+    color: $color-gray-xxdark;
+    font-size: $font-size-s;
     line-height: 1.5;
 }
 
 .label-suggestion {
     color: $color-gray-dark;
-    font-size: 0.75rem;
+    font-size: $font-size-xs;
     line-height: 1;
 }
 
 .label-required::after {
     display: inline-block;
-    margin-left: 0.125rem;
+    margin-left: $label-required-margin-left;
     color: $color-error;
     content: '*';
 }
 
 .options-form .checkbox-label {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    margin-bottom: $input-margin-bottom;
+    font-size: $font-size-m;
 }

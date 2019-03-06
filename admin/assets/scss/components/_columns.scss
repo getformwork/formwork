@@ -23,7 +23,7 @@
     @include clearfix;
 }
 
-@media (max-width: 768px) {
+@media (max-width: map-get($responsive-breakpoints, 's')) {
     .container-no-margin .row {
         margin: 0;
     }

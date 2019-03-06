@@ -4,16 +4,16 @@
     right: 0;
     left: 0;
     z-index: 6;
-    padding: 1rem;
-    padding-left: 4rem;
-    background-color: #f0f0f0;
-    box-shadow: rgba(240, 240, 240, 0.25) 1px 1px 9px 3px;
-    color: #444;
+    padding: $title-bar-padding;
+    padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
+    background-color: $color-gray-xlight;
+    box-shadow: $component-box-shadow;
+    color: $color-gray-xxdark;
     @include user-select-none;
     @include ellipsis;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
-        left: 14rem;
-        padding-left: 1.5rem;
+        left: $sidebar-width;
+        padding-left: $title-bar-padding-left;
     }
 }
 
@@ -23,7 +23,7 @@
 
 .view-site {
     float: right;
-    color: #444;
+    color: $color-gray-xxdark;
     &:hover {
         color: $color-accent;
     }

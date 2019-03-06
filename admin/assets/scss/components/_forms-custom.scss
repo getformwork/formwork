@@ -5,16 +5,16 @@
 
 .custom-checkbox + .custom-checkbox-text::before {
     position: relative;
-    top: 0.125rem;
+    top: $custom-checkbox-top;
     display: inline-block;
     box-sizing: border-box;
-    margin-right: 0.5rem;
-    width: 1rem;
-    height: 1rem;
-    border: 1px solid $color-gray;
-    border-radius: 3px;
+    margin-right: $custom-checkbox-margin-right;
+    width: $custom-checkbox-width;
+    height: $custom-checkbox-height;
+    border: $custom-checkbox-border-width solid $color-gray;
+    border-radius: $border-radius;
     content: ' ';
-    transition: border-color 150ms, background-color 150ms;
+    transition: border-color $transition-time-s, background-color $transition-time-s;
 }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
@@ -34,11 +34,11 @@
 
 .custom-checkbox:checked + .custom-checkbox-text::after {
     position: absolute;
-    top: 0.125rem;
+    top: $custom-checkbox-top;
     left: 0;
     display: block;
-    width: 1rem;
-    height: 1rem;
+    width: $custom-checkbox-width;
+    height: $custom-checkbox-height;
     background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 11 11\'%3E%3Cpath fill=\'%23fff\' d=\'M4.727 7.036L8.263 3.5l.707.707L4.727 8.45 2 5.722l.707-.707z\'/%3E%3C/svg%3E');
     content: ' ';
 }
@@ -54,7 +54,7 @@
 }
 
 .image-input {
-    padding-right: 1.875rem;
+    padding-right: $image-input-padding-right;
     background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 576 512\'><path fill=\'%23444\' d=\'M480 416v16a48 48 0 0 1-48 48H48a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48a48 48 0 0 1 48 48v256a48 48 0 0 1-48 48H144a48 48 0 0 1-48-48V80a48 48 0 0 1 48-48h384zM264 144a40 40 0 1 1-80 0 40 40 0 0 1 80 0zm-72 96l39.52-39.52a12 12 0 0 1 16.97 0L288 240l103.52-103.52a12 12 0 0 1 16.97 0L480 208v80H192v-48z\'/></svg>') no-repeat right 0.5rem center;
     background-size: 1rem 1rem;
 }
@@ -63,12 +63,12 @@
     display: block;
     box-sizing: border-box;
     margin-top: 0;
-    margin-bottom: 0.5rem;
-    padding: 0.25rem 0.25rem;
+    margin-bottom: $input-margin-bottom;
+    padding: $input-padding-v $input-padding-h / 2;
     padding-bottom: 0;
     border: 1px solid $color-gray;
-    border-radius: 3px;
-    font-size: 0.875rem;
+    border-radius: $border-radius;
+    font-size: $input-font-size;
     line-height: 1.5;
     @include user-select-none;
 }
@@ -76,15 +76,15 @@
 .tag-inner-input {
     display: inline-block;
     box-sizing: border-box;
-    margin-bottom: 0.25rem;
-    padding: 0 0.25rem;
+    margin-bottom: $input-padding-v;
+    padding: 0 $input-padding-h / 2;
     max-width: 100%;
     width: auto;
     outline: none;
     border: 0;
     border-radius: 0;
     vertical-align: baseline;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
     font-family: inherit;
     line-height: inherit;
     &:focus {
@@ -99,11 +99,11 @@
 .tag-input .tag {
     display: inline-block;
     box-sizing: border-box;
-    margin-bottom: 0.25rem;
-    padding: 0 0.375rem;
-    border-radius: 3px;
+    margin-bottom: $input-padding-v;
+    padding: $tag-input-tag-padding-v $tag-input-tag-padding-h;
+    border-radius: $border-radius;
     background-color: $color-gray-xlight;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
     cursor: default;
     @include user-select-none;
 }
@@ -119,11 +119,11 @@
 
 .tag-remove {
     display: inline-block;
-    margin-left: 0.25rem;
-    padding: 0 0.125rem;
-    color: #444;
+    margin-left: $tag-remove-margin-left;
+    padding: $tag-remove-padding-v $tag-remove-padding-h;
+    color: $color-gray-xxdark;
     font-style: normal;
-    transition: color 150ms;
+    transition: color $transition-time-s;
 }
 
 .tag-remove:hover {
@@ -141,16 +141,16 @@
 }
 
 .title-input {
-    font-size: 1.125rem;
+    font-size: $font-size-l;
 }
 
 .toggle-group {
     display: inline-block;
     margin: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: $input-margin-bottom;
     padding: 0;
     border: 1px solid $color-gray;
-    border-radius: 3px;
+    border-radius: $border-radius;
     font-size: 0;
 }
 
@@ -164,10 +164,10 @@
 
 .toggle-group input[type=radio] + span {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
+    padding: $toggle-group-inner-padding-v $toggle-group-inner-padding-h;
+    font-size: $font-size-s;
     line-height: 1.5;
-    transition: background-color 150ms, color 150ms;
+    transition: background-color $transition-time-s, color $transition-time-s;
 }
 
 .toggle-group input[type=radio]:hover + span {
@@ -181,7 +181,7 @@
 
 .toggle-group[disabled] input[type=radio] + span {
     background-color: transparent;
-    color: #444;
+    color: $color-gray-xxdark;
 }
 
 .toggle-group[disabled] input[type=radio]:checked + span {
@@ -189,10 +189,9 @@
 }
 
 input[type=range] {
-    padding: 0.875rem 0;
-    width: 15rem;
+    padding: $range-input-padding-v $range-input-padding-h;
+    width: $range-input-width;
     border: 0;
-
     -webkit-appearance: none;
 }
 
@@ -203,22 +202,21 @@ input[type=range]:focus {
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    height: 0.25rem;
+    height: $range-input-track-height;
     border: 0;
-    border-radius: 0.125rem;
-    background-color: #e4e4e4;
+    border-radius: $range-input-track-height / 2;
+    background-color: $color-gray-light;
     cursor: default;
 }
 
 input[type=range]::-webkit-slider-thumb {
     margin-top: -0.375rem;
-    width: 1rem;
-    height: 1rem;
+    width: $range-input-thumb-width;
+    height: $range-input-thumb-height;
     border: 0;
-    border-radius: 50%;
+    border-radius: $range-input-thumb-border-radius;
     background-color: $color-accent;
-    transition: background-color 150ms;
-
+    transition: background-color $transition-time-s;
     -webkit-appearance: none;
 }
 
@@ -228,24 +226,24 @@ input[type=range]:hover::-webkit-slider-thumb {
 
 input[type=range]::-moz-range-track {
     width: 100%;
-    height: 0.25rem;
+    height: $range-input-track-height;
     border: 0;
-    border-radius: 0.125rem;
-    background-color: #e4e4e4;
+    border-radius: $range-input-track-height / 2;
+    background-color: $color-gray-light;
 }
 
 input[type=range]::-moz-range-thumb {
-    width: 1rem;
-    height: 1rem;
+    width: $range-input-thumb-width;
+    height: $range-input-thumb-height;
     border: 0;
-    border-radius: 50%;
+    border-radius: $range-input-thumb-border-radius;
     background-color: $color-accent;
     cursor: default;
 }
 
 input[type=range]::-ms-track {
     width: 100%;
-    height: 0.25rem;
+    height: $range-input-track-height;
     border-color: transparent;
     background-color: transparent;
     color: transparent;
@@ -255,17 +253,17 @@ input[type=range]::-ms-track {
 input[type=range]::-ms-fill-lower,
 input[type=range]::-ms-fill-upper {
     border: 0;
-    border-radius: 0.125rem;
-    background: #e4e4e4;
+    border-radius: $range-input-track-height / 2;
+    background: $color-gray-light;
     box-shadow: none;
 }
 
 input[type=range]::-ms-thumb {
     margin-top: 0;
-    width: 1rem;
-    height: 1rem;
+    width: $range-input-thumb-width;
+    height: $range-input-thumb-height;
     border: 0;
-    border-radius: 50%;
+    border-radius: $range-input-thumb-border-radius;
     background-color: $color-accent;
     cursor: default;
 }
@@ -287,8 +285,8 @@ input[type=range][disabled]::-ms-thumb {
 }
 
 .range-input-value {
-    padding: 0 0.5rem;
+    padding: $range-input-value-padding-v $range-input-value-padding-h;
     vertical-align: 0.1875rem;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
     @include user-select-none;
 }

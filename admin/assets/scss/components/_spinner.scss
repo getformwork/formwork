@@ -1,49 +1,49 @@
 .spinner {
     display: inline-block;
-    margin-right: 0.5rem;
+    margin-right: $spinner-margin-right;
 }
 
 .spinner::after {
     display: inline-block;
-    width: 0.8rem;
-    height: 0.8rem;
-    border-width: 0.2rem;
+    width: $spinner-width;
+    height: $spinner-height;
+    border-width: $spinner-border-width;
     border-style: solid;
-    border-color: #3498da;
+    border-color: $color-accent;
     border-bottom-color: transparent;
     border-left-color: transparent;
-    border-radius: 50%;
+    border-radius: $border-radius-round;
     color: transparent;
     content: '\00a0';
     vertical-align: text-top;
     text-align: center;
-    font-size: 0.625rem;
-    line-height: 1.3;
-    transition: border 0.5s;
+    font-size: $spinner-font-size;
+    line-height: $spinner-line-height;
+    transition: border $spinner-border-transition-duration;
     transition-timing-function: ease-out;
-    animation: 0.75s spin infinite linear;
+    animation: $spinner-animation-duration spin infinite linear;
 }
 
 .spinner-info::after {
-    border-color: #3498da;
+    border-color: $color-accent;
     background-color: #fff;
-    color: #3498da;
+    color: $color-accent;
     animation: none;
     @include icon(info);
 }
 
 .spinner-success::after {
-    border-color: #2ecc70;
+    border-color: $color-success;
     background-color: #fff;
-    color: #2ecc70;
+    color: $color-success;
     animation: none;
     @include icon(check);
 }
 
 .spinner-error::after {
-    border-color: #e74c3b;
+    border-color: $color-error;
     background-color: #fff;
-    color: #e74c3b;
+    color: $color-error;
     animation: none;
     @include icon(exclamation);
 }

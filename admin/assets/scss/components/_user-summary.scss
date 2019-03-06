@@ -6,19 +6,19 @@
 
 .user-summary-avatar {
     display: table-cell;
-    padding: 0.5rem;
+    padding: $user-summary-cell-padding;
     width: 20%;
     vertical-align: middle;
     text-align: center;
 }
 
 .user-summary-avatar img {
-    width: 150px;
-    border-radius: 50%;
+    width: $user-summary-avatar-width;
+    border-radius: $user-summary-border-radius;
 }
 
 .user-summary-data {
     display: table-cell;
-    padding: 0.5rem;
+    padding: $user-summary-cell-padding;
     vertical-align: middle;
 }

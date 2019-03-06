@@ -1,12 +1,13 @@
 html {
     font-size: $base-font-size;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
     box-sizing: border-box;
     margin: 0;
     background-color: $color-gray-xxlight;
-    font-size: 1rem;
+    font-size: $font-size-m;
     font-family: $base-font-family;
     line-height: $base-line-height;
 }
@@ -14,15 +15,19 @@ body {
 * {
     box-sizing: inherit;
     line-height: inherit;
+    -webkit-tap-highlight-color: rgba(#000, 0);
+}
 
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+main {
+    display: block;
 }
 
 a {
     outline: none;
+    background-color: transparent;
     color: $color-accent;
     text-decoration: none;
-    transition: color 150ms;
+    transition: color $transition-time-s;
     &:hover {
         color: $color-accent-xdark;
     }
@@ -33,65 +38,55 @@ a {
 
 img {
     max-width: 100%;
+    border-style: none;
+}
+
+[hidden] {
+    display: none;
 }
 
 .focused {
-    box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3);
+    box-shadow: $focus-box-shadow;
 }
-
-/*.header {
-    margin-bottom: 2rem;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    background-color: $color-accent;
-    color: #fff;
-}
-
-.footer {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    background-color: $color-gray-xlight;
-}*/
 
 .component {
     overflow: auto;
-    margin-bottom: 1rem;
-    padding: 1.5rem;
-    border-radius: 3px;
+    margin-bottom: $component-margin-bottom;
+    padding: $component-padding;
+    border-radius: $border-radius;
     background-color: #fff;
-    box-shadow: rgba(240, 240, 240, 0.25) 1px 1px 9px 3px;
+    box-shadow: $component-box-shadow;
 }
 
 .caption {
-    margin-bottom: 1rem;
+    margin-bottom: $caption-margin-bottom;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: $caption-letter-spacing;
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: $caption-font-size;
 }
 
 .separator {
-    height: 0.5rem;
+    height: $separator-height;
     &-l {
-        height: 1rem;
+        height: $separator-height-l;
     }
 }
 
 .section-header {
-    margin-bottom: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    margin-bottom: $section-header-margin-bottom;
+    padding: $section-header-padding-v $section-header-padding-h;
     border-bottom: 1px solid $color-gray-light;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: $font-size-m;
 }
 
 .main {
-    margin-top: 4.5rem;
+    margin-top: $main-margin-top;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
-        margin: 1.875rem;
-        margin-top: 4.5rem;
-        margin-left: 15.875rem;
+        margin: $main-margin;
+        margin-top: $main-margin-top;
+        margin-left: $main-margin-left;
     }
 }
 

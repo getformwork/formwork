@@ -2,12 +2,12 @@
     position: absolute;
     z-index: 20;
     display: none;
-    padding: 0.25rem;
-    min-width: 2rem;
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0.73);
+    padding: $tooltip-padding;
+    min-width: $tooltip-min-width;
+    border-radius: $border-radius;
+    background-color: $tooltip-background-color;
     color: #fff;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: $font-size-xs;
     pointer-events: none;
 }

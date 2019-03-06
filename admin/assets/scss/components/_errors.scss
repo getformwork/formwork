@@ -1,7 +1,7 @@
 .error-container {
-    margin: 4rem auto;
-    padding: 1rem;
-    max-width: 32rem;
+    margin: $error-container-margin-v $error-container-margin-h;
+    padding: $error-container-padding;
+    max-width: $error-container-max-width;
     text-align: center;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .error-container a.action {
-    font-size: 1.125rem;
+    font-size: $font-size-l;
 }
 
 .error-container .logo {
