@@ -154,6 +154,15 @@
     background-size: 0.875rem 0.875rem;
 }
 
+.page-info {
+    margin-bottom: $page-info-margin-bottom;
+    padding: $page-info-padding-v $page-info-padding-h;
+}
+
+.page-info > div {
+    @include ellipsis;
+}
+
 .sortable-chosen,
 .sortable-ghost {
     background-color: #fff;
