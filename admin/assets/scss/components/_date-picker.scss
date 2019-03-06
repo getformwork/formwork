@@ -8,34 +8,34 @@
     z-index: 4;
     display: block;
     display: none;
-    margin: 3px 1rem 1rem;
-    padding: 0.5rem;
-    width: 18rem;
+    margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
+    padding: $calendar-padding;
+    width: $calendar-width;
     border: 1px solid $color-gray;
-    border-radius: 3px;
+    border-radius: $border-radius;
     background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
+    box-shadow: $calendar-box-shadow;
     color: #000;
 }
 
 .calendar-header {
-    margin-bottom: 0.5rem;
+    margin-bottom: $calendar-padding;
 }
 
 .calendar-buttons {
-    margin: 0 -0.5rem;
+    margin: 0 (-$calendar-padding);
     font-size: 0;
 }
 
 .calendar-buttons button {
     margin: 0;
-    padding: 0 0.5rem;
+    padding: $calendar-button-padding-v $calendar-button-padding-h;
     width: 33.3%;
     outline: none;
     border: 0;
     background-color: transparent;
     color: #000;
-    font-size: 14px;
+    font-size: $font-size-s;
     cursor: pointer;
 }
 
@@ -54,18 +54,17 @@
 .calendar-table td {
     width: 14%;
     text-align: center;
-    line-height: 23px;
     cursor: default;
     @include user-select-none;
 }
 
 .calendar-header-day {
-    font-size: 14px;
+    font-size: $font-size-s;
 }
 
 .calendar-day {
-    border-radius: 3px;
-    transition: background-color 150ms, color 150ms;
+    border-radius: $border-radius;
+    transition: background-color $transition-time-s, color $transition-time-s;
 }
 
 .calendar-day.selected {
@@ -84,7 +83,7 @@
 }
 
 .calendar-separator {
-    margin: 0.5rem -0.5rem;
+    margin: $calendar-padding (-$calendar-padding);
     height: 0;
     border-top: 1px solid $color-gray;
 }

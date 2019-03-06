@@ -1,15 +1,15 @@
 .files-list {
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: $files-list-margin-bottom;
     padding: 0;
     list-style-type: none;
     @include user-select-none;
 }
 
 .file-name::before {
-    margin-right: 0.5rem;
-    color: #444;
-    font-size: 1rem;
+    margin-right: $file-name-icon-margin-right;
+    color: $color-gray-xxdark;
+    font-size: $font-size-m;
     @include icon(file);
 }
 
@@ -31,14 +31,14 @@
 
 .files-item-cell {
     display: table-cell;
-    padding: 0.25rem;
+    padding: $files-item-cell-padding;
     vertical-align: middle;
 }
 
 .files-item-cell {
     overflow: hidden;
     white-space: nowrap;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
 }
 
 .files-item {
@@ -52,7 +52,7 @@
 }
 
 .file-name {
-    font-size: 0.9375rem;
+    font-size: $file-name-font-size;
     @include ellipsis;
 }
 

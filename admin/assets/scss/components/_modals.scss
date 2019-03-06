@@ -5,7 +5,7 @@
     bottom: 0;
     left: 0;
     z-index: 15;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: $backdrop-background-color;
 }
 
 .modal {
@@ -27,31 +27,31 @@
 }
 
 .modal-content {
-    margin: 3rem auto;
-    padding: 2rem;
-    max-width: 26rem;
-    border-radius: 3px;
+    margin: $modal-margin-v $modal-margin-h;
+    padding: $modal-padding;
+    max-width: $modal-width-s;
+    border-radius: $border-radius;
     background-color: #fff;
-    @media (max-width: 26rem) {
-        margin: 3rem 0.5rem;
+    @media (min-width: $modal-width-s) {
+        margin: $modal-margin-v auto;
     }
 }
 
 .modal-size-large {
-    max-width: 40rem;
-    width: 40rem;
-    @media (max-width: 40rem) {
-        margin: 3rem 0.5rem;
+    max-width: $modal-width-l;
+    width: $modal-width-l;
+    @media (max-width: $modal-width-l) {
+        margin: $modal-margin-v $modal-margin-h;
     }
 }
 
 .modal-error {
-    margin: -2rem -2rem 1rem -2rem;
-    padding: 1rem;
+    margin: $modal-error-margin $modal-error-margin $modal-error-margin-bottom $modal-error-margin;
+    padding: $modal-error-padding;
     background-color: $color-error;
     color: #fff;
 }
 
 .modal-text {
-    margin-bottom: 2.5rem;
+    margin-bottom: $modal-text-margin-bottom;
 }

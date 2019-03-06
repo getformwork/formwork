@@ -1,193 +1,3 @@
-/* normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
-html {
-  line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%; }
-
-body {
-  margin: 0; }
-
-article,
-aside,
-footer,
-header,
-nav,
-section {
-  display: block; }
-
-h1 {
-  margin: 0.67em 0;
-  font-size: 2em; }
-
-figcaption,
-figure,
-main {
-  display: block; }
-
-figure {
-  margin: 1em 40px; }
-
-hr {
-  overflow: visible;
-  box-sizing: content-box;
-  height: 0; }
-
-pre {
-  font-size: 1em;
-  font-family: monospace, monospace; }
-
-a {
-  background-color: transparent;
-  -webkit-text-decoration-skip: objects; }
-
-abbr[title] {
-  border-bottom: none;
-  text-decoration: underline;
-  text-decoration: underline dotted; }
-
-b,
-strong {
-  font-weight: inherit; }
-
-b,
-strong {
-  font-weight: bolder; }
-
-code,
-kbd,
-samp {
-  font-size: 1em;
-  font-family: monospace, monospace; }
-
-dfn {
-  font-style: italic; }
-
-mark {
-  background-color: #ff0;
-  color: #000; }
-
-small {
-  font-size: 80%; }
-
-sub,
-sup {
-  position: relative;
-  vertical-align: baseline;
-  font-size: 75%;
-  line-height: 0; }
-
-sub {
-  bottom: -0.25em; }
-
-sup {
-  top: -0.5em; }
-
-audio,
-video {
-  display: inline-block; }
-
-audio:not([controls]) {
-  display: none;
-  height: 0; }
-
-img {
-  border-style: none; }
-
-svg:not(:root) {
-  overflow: hidden; }
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  margin: 0;
-  font-size: 100%;
-  font-family: sans-serif;
-  line-height: 1.15; }
-
-button,
-input {
-  overflow: visible; }
-
-button,
-select {
-  text-transform: none; }
-
-button,
-html [type='button'],
-[type='reset'],
-[type='submit'] {
-  -webkit-appearance: button; }
-
-button::-moz-focus-inner,
-[type='button']::-moz-focus-inner,
-[type='reset']::-moz-focus-inner,
-[type='submit']::-moz-focus-inner {
-  padding: 0;
-  border-style: none; }
-
-button:-moz-focusring,
-[type='button']:-moz-focusring,
-[type='reset']:-moz-focusring,
-[type='submit']:-moz-focusring {
-  outline: 1px dotted ButtonText; }
-
-fieldset {
-  padding: 0.35em 0.75em 0.625em; }
-
-legend {
-  display: table;
-  box-sizing: border-box;
-  padding: 0;
-  max-width: 100%;
-  color: inherit;
-  white-space: normal; }
-
-progress {
-  display: inline-block;
-  vertical-align: baseline; }
-
-textarea {
-  overflow: auto; }
-
-[type='checkbox'],
-[type='radio'] {
-  box-sizing: border-box;
-  padding: 0; }
-
-[type='number']::-webkit-inner-spin-button,
-[type='number']::-webkit-outer-spin-button {
-  height: auto; }
-
-[type='search'] {
-  outline-offset: -2px;
-  -webkit-appearance: textfield; }
-
-[type='search']::-webkit-search-cancel-button,
-[type='search']::-webkit-search-decoration {
-  -webkit-appearance: none; }
-
-::-webkit-file-upload-button {
-  font: inherit;
-  -webkit-appearance: button; }
-
-details,
-menu {
-  display: block; }
-
-summary {
-  display: list-item; }
-
-canvas {
-  display: inline-block; }
-
-template {
-  display: none; }
-
-[hidden] {
-  display: none; }
-
 .ct-label {
   color: rgba(0, 0, 0, 0.4);
   font-size: 0.75rem;
@@ -558,7 +368,8 @@ template {
     transform: rotate(360deg); } }
 
 html {
-  font-size: 16px; }
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%; }
 
 body {
   box-sizing: border-box;
@@ -573,8 +384,12 @@ body {
   line-height: inherit;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 
+main {
+  display: block; }
+
 a {
   outline: none;
+  background-color: transparent;
   color: #3498da;
   text-decoration: none;
   transition: color 150ms; }
@@ -584,28 +399,18 @@ a {
     cursor: default; }
 
 img {
-  max-width: 100%; }
+  max-width: 100%;
+  border-style: none; }
+
+[hidden] {
+  display: none; }
 
 .focused, button:focus,
 .button:focus, input:focus,
 select:focus,
 textarea:focus {
-  box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3); }
+  box-shadow: 0 0 0 2px rgba(40, 154, 230, 0.3); }
 
-/*.header {
-    margin-bottom: 2rem;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    background-color: $color-accent;
-    color: #fff;
-}
-
-.footer {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    background-color: $color-gray-xlight;
-}*/
 .component {
   overflow: auto;
   margin-bottom: 1rem;
@@ -685,6 +490,8 @@ textarea:focus {
 button,
 .button {
   display: inline-block;
+  overflow: visible;
+  margin: 0;
   margin-right: 0.25rem;
   margin-bottom: 0.5rem;
   padding: 0.375rem 0.5rem;
@@ -717,8 +524,15 @@ button,
   .button.disabled:hover {
     border-color: #f8f8f8;
     background-color: #f8f8f8;
-    color: #c4c4c4;
+    color: #cacaca;
     pointer-events: none; }
+
+button {
+  -webkit-appearance: button; }
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: none; }
 
 a.button {
   text-align: center; }
@@ -1151,7 +965,7 @@ a.button {
   border: 0;
   background-color: transparent;
   color: #000;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer; }
 
 .calendar button:hover {
@@ -1166,7 +980,6 @@ a.button {
 .calendar-table td {
   width: 14%;
   text-align: center;
-  line-height: 23px;
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -1174,7 +987,7 @@ a.button {
   user-select: none; }
 
 .calendar-header-day {
-  font-size: 14px; }
+  font-size: 0.875rem; }
 
 .calendar-day {
   border-radius: 3px;
@@ -1624,7 +1437,8 @@ input,
 select,
 textarea {
   display: inline-block;
-  margin-top: 0;
+  overflow: visible;
+  margin: 0;
   margin-bottom: 0.5rem;
   padding: 0.25rem 0.5rem;
   width: 100%;
@@ -1644,6 +1458,7 @@ textarea {
 input[type=checkbox],
 input[type=radio] {
   margin-bottom: 0;
+  padding: 0;
   width: auto;
   height: inherit;
   vertical-align: text-top; }
@@ -1655,6 +1470,14 @@ input[type=file] {
   padding: 0;
   border: none;
   border-radius: 0; }
+
+::-webkit-file-upload-button {
+  font: inherit;
+  -webkit-appearance: button; }
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  height: auto; }
 
 input[disabled],
 select[disabled] {
@@ -1702,6 +1525,7 @@ textarea {
   height: 5.75rem; }
 
 textarea {
+  overflow: auto;
   min-height: 3.125rem;
   max-height: 16.25rem;
   resize: vertical; }
@@ -1795,7 +1619,7 @@ label {
 
 .image-picker-thumbnail.selected {
   border-color: #3498da;
-  box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3); }
+  box-shadow: 0 0 0 2px rgba(40, 154, 230, 0.3); }
 
 .image-picker-empty-state {
   margin: 3rem auto 4rem;
@@ -1916,14 +1740,14 @@ label {
   display: flex; }
 
 .modal-content {
-  margin: 3rem auto;
+  margin: 3rem 0.5rem;
   padding: 2rem;
   max-width: 26rem;
   border-radius: 3px;
   background-color: #fff; }
-  @media (max-width: 26rem) {
+  @media (min-width: 26rem) {
     .modal-content {
-      margin: 3rem 0.5rem; } }
+      margin: 3rem auto; } }
 
 .modal-size-large {
   max-width: 40rem;
@@ -2205,7 +2029,8 @@ label {
 
 .sidebar-navigation > li {
   position: relative;
-  margin: 0.5rem 0;
+  margin: 0;
+  margin-bottom: 0.5rem;
   padding: 0.25rem 0;
   padding-left: 1rem; }
 
@@ -2274,9 +2099,9 @@ label {
   text-align: center;
   font-size: 0.625rem;
   line-height: 1.3;
-  transition: border 0.5s;
+  transition: border 500ms;
   transition-timing-function: ease-out;
-  animation: 0.75s spin infinite linear; }
+  animation: 750ms spin infinite linear; }
 
 .spinner-info::after {
   border-color: #3498da;
@@ -2369,53 +2194,35 @@ label {
   font-size: 0.75rem;
   pointer-events: none; }
 
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3,
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   margin-top: 0;
   margin-bottom: 0.5rem;
-  line-height: 1.2; }
+  line-height: 1.2;
+  font-weight: 600; }
 
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3 {
+h1, .h1, h2, .h2, h3, .h3 {
   letter-spacing: -0.027rem; }
 
-h1,
-.h1 {
+h1, .h1 {
   font-size: 2.369rem; }
 
-h2,
-.h2 {
+h2, .h2 {
   font-size: 2.104rem; }
 
-h3,
-.h3 {
+h3, .h3 {
   font-size: 1.777rem; }
 
-h4,
-.h4 {
+h4, .h4 {
   font-size: 1.579rem; }
 
-h5,
-.h5 {
+h5, .h5 {
   font-size: 1.184rem; }
 
-h6,
-.h6 {
+h6, .h6 {
   font-size: 1rem; }
+
+strong {
+  font-weight: 600; }
 
 p {
   margin-top: 0;

@@ -1,27 +1,29 @@
 button,
 .button {
     display: inline-block;
-    margin-right: $button-margin-right;
+    overflow: visible;
+    margin: 0;
+    margin-right: $button-margin-h;
     margin-bottom: $button-margin-bottom;
     padding: $button-padding-v $button-padding-h;
-    min-width: 2rem;
+    min-width: $button-min-width;
     outline: none;
     border: $button-border-width solid $color-gray-xlight;
     border-radius: $button-border-radius;
     background-color: $color-gray-xlight;
-    color: #444;
+    color: $color-gray-xxdark;
     vertical-align: middle;
     white-space: nowrap;
     font-size: $button-font-size;
     font-family: $base-font-family;
     line-height: $button-line-height;
     cursor: default;
-    transition: border-color 150ms, background-color 150ms, color 150ms;
+    transition: border-color $transition-time-s, background-color $transition-time-s, color $transition-time-s;
     @include user-select-none;
     &:hover {
         border-color: $color-gray-light;
         background-color: $color-gray-light;
-        color: #444;
+        color: $color-gray-xxdark;
     }
     &:focus {
         @extend .focused;
@@ -32,9 +34,18 @@ button,
     &.disabled:hover {
         border-color: $color-gray-xxlight;
         background-color: $color-gray-xxlight;
-        color: lighten(#444, 50%);
+        color: $color-gray;
         pointer-events: none;
     }
+}
+
+button {
+    -webkit-appearance: button;
+}
+
+button::-moz-focus-inner {
+    padding: 0;
+    border: none;
 }
 
 a.button {
@@ -93,7 +104,7 @@ a.button {
     border: 0;
     border-radius: 0;
     background-color: transparent;
-    font-size: 1rem;
+    font-size: $font-size-m;
     cursor: pointer;
     &:hover,
     &:focus {
@@ -117,5 +128,5 @@ a.button {
 .button-right {
     float: right;
     margin-right: 0;
-    margin-left: 0.25rem;
+    margin-left: $button-margin-h;
 }

@@ -1,13 +1,13 @@
 .tabs {
     overflow-x: auto;
-    margin-bottom: 1rem;
+    margin-bottom: $tabs-margin-bottom;
     border-bottom: 1px solid $color-gray-light;
     white-space: nowrap;
 }
 
 .tabs-tab {
     display: inline-block;
-    padding: 0.5rem 1.25rem;
+    padding: $tabs-tab-padding-v $tabs-tab-padding-h;
     color: #000;
     cursor: pointer;
 }
@@ -17,10 +17,10 @@
 }
 
 .tabs-tab.active {
-    border-bottom: 3px solid $color-accent;
+    border-bottom: $tabs-tab-notch-width solid $color-accent;
     font-weight: 600;
 }
 
 .caption + .tabs {
-    margin-top: -0.5rem;
+    margin-top: -$tabs-tab-padding-v;
 }

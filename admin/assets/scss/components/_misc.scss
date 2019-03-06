@@ -1,12 +1,12 @@
 .info-data {
-    margin-bottom: 1rem;
+    margin-bottom: $info-data-margin-bottom;
     width: 100%;
     table-layout: fixed;
 }
 
 .info-data td {
     overflow: hidden;
-    padding: 0.5rem;
+    padding: $info-data-inner-padding;
     vertical-align: top;
 }
 
@@ -17,6 +17,6 @@
 .info-data-value {
     width: 75%;
     word-break: break-word;
-    font-size: 0.875rem;
+    font-size: $font-size-s;
     font-family: $mono-font-family;
 }

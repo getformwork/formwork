@@ -1,28 +1,28 @@
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: $notification-top;
+    right: $notification-right;
     z-index: 11;
     overflow: hidden;
-    margin-bottom: 0.5rem;
-    padding: 1.5rem 2.5rem;
-    width: 350px;
-    border-radius: 3px;
+    margin-bottom: $notification-margin-bottom;
+    padding: $notification-padding-v $notification-padding-h;
+    width: $notification-width;
+    border-radius: $border-radius;
     background-color: $color-gray-xlight;
-    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0;
+    box-shadow: $notification-box-shadow;
     text-overflow: ellipsis;
     cursor: default;
-    transition: top 300ms ease-in, opacity 150ms;
-    animation: fadeInRight 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: top $transition-time-m ease-in, opacity $transition-time-s;
+    animation: fadeInRight $notification-animation-duration $notification-animation-easing;
 }
 
 .notification:hover {
-    opacity: 0.95;
+    opacity: $notification-hover-opacity;
 }
 
 .notification.fadeout {
     opacity: 0;
-    animation: fadeOutRight 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: fadeOutRight $notification-animation-duration $notification-animation-easing;
 }
 
 .notification::before {
@@ -30,7 +30,7 @@
     top: 50%;
     left: 1rem;
     display: block;
-    font-size: 1.25rem;
+    font-size: $font-size-xl;
     transform: translate(0, -50%);
 }
 
@@ -38,7 +38,7 @@
 .notification-success,
 .notification-warning,
 .notification-error {
-    padding-left: 3.25rem;
+    padding-left: $notification-padding-h + $notification-icon-width;
 }
 
 .notification-info {
