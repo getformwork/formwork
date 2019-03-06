@@ -38,12 +38,3 @@
 .editor-textarea:focus {
     box-shadow: none;
 }
-
-.page-info {
-    margin-bottom: $page-info-margin-bottom;
-    padding: $page-info-padding-v $page-info-padding-h;
-}
-
-.page-info > div {
-    @include ellipsis;
-}
