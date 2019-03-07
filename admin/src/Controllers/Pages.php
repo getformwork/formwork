@@ -48,7 +48,7 @@ class Pages extends AbstractController
                     'subpages' => true,
                     'class' => 'pages-list-top',
                     'parent' => '.',
-                    'sortable' => true,
+                    'sortable' => $this->user()->permissions()->has('pages.reorder'),
                     'headers' => true
                 ), false)
             ), false)

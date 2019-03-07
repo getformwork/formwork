@@ -24,7 +24,13 @@
                     <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
+<?php
+                if ($this->user()->permissions()->has('pages.delete')):
+?>
                     <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+<?php
+                endif;
+?>
                     <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
             </div>
@@ -63,6 +69,9 @@
                 </div>
             </div>
         </form>
+<?php
+        if ($this->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
+?>
         <div class="col-l-3-4">
             <div class="component">
                 <h3 class="caption"><?= $this->label('pages.files') ?></h3>
@@ -75,9 +84,15 @@
                             <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                             <div class="files-item-cell file-actions">
                                 <a class="button button-link" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>"><i class="i-eye"></i></a>
+<?php
+                    if ($this->user()->permissions()->has('pages.delete_files')):
+?>
                                 <button class="button-link" type="button" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
                                     <i class="i-trash"></i>
                                 </button>
+<?php
+                    endif;
+?>
                             </div>
                         </div>
                     </li>
@@ -85,6 +100,9 @@
                 endforeach;
 ?>
                 </ul>
+<?php
+                if ($this->user()->permissions()->has('pages.upload_files')):
+?>
                 <form action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/upload/') ?>" method="post" enctype="multipart/form-data">
                     <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
                     <label for="file-uploader" class="file-input-label">
@@ -92,8 +110,14 @@
                     </label>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                 </form>
+<?php
+                endif;
+?>
             </div>
         </div>
+<?php
+        endif;
+?>
     </div>
 </div>
 <script>
