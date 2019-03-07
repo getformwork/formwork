@@ -10,7 +10,7 @@
 <?php
         endif;
 ?>
-            <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $sortable ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
+            <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $sortable ? 'true' : 'false' ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
                 $routable = $page->published() && $page->routable();
@@ -55,7 +55,7 @@
                             'subpages' => true,
                             'class' => 'pages-children',
                             'parent' => $sortableChildren ? $page->slug() : null,
-                            'sortable' => $sortableChildren ? 'true' : 'false',
+                            'sortable' => $sortableChildren,
                             'headers' => false
                         ));
 

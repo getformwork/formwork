@@ -30,7 +30,7 @@ class Dashboard extends AbstractController
                     'subpages' => false,
                     'class' => 'pages-list-top',
                     'parent' => null,
-                    'sortable' => 'false',
+                    'sortable' => false,
                     'headers' => true
                     ), false),
                 'statistics' => $statistics->getChartData()
