@@ -253,7 +253,7 @@ class Pages extends AbstractController
      */
     public function uploadFile(RouteParams $params)
     {
-        $this->ensurePermission('pages.upload_file');
+        $this->ensurePermission('pages.upload_files');
 
         if (HTTPRequest::hasFiles()) {
             try {
@@ -279,7 +279,7 @@ class Pages extends AbstractController
      */
     public function deleteFile(RouteParams $params)
     {
-        $this->ensurePermission('pages.delete_file');
+        $this->ensurePermission('pages.delete_files');
 
         try {
             $page = $this->site()->findPage($params->get('page'));
