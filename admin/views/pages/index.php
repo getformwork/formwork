@@ -1,6 +1,12 @@
 <div class="component">
     <h3 class="caption"><?= $this->label('pages.pages') ?></h3>
+<?php
+    if ($this->user()->permissions()->has('pages.create')):
+?>
     <button data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
+<?php
+    endif;
+?>
     <button data-command="expand-all-pages"><i class="i-chevron-down"></i> <?= $this->label('pages.pages.expand-all') ?></button>
     <button data-command="collapse-all-pages"><i class="i-chevron-up"></i> <?= $this->label('pages.pages.collapse-all') ?></button>
     <div class="separator"></div>

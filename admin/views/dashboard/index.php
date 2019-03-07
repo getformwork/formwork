@@ -6,8 +6,13 @@
             </div>
             <div class="component">
                 <h3 class="caption"><?= $this->label('dashboard.quick-actions') ?></h3>
+<?php
+                if ($this->user()->permissions()->has('pages.create')):
+?>
                 <button data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
 <?php
+                endif;
+
                 if ($this->user()->permissions()->has('cache.clear')):
 ?>
                 <button data-command="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>

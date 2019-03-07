@@ -41,7 +41,13 @@
                         </div>
                         <div class="pages-item-cell page-actions">
                             <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>"<?php if ($page->published() && $page->routable()): ?> href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
+<?php
+                        if ($this->user()->permissions()->has('pages.delete')):
+?>
                             <button class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+<?php
+                        endif;
+?>
                         </div>
                     </div>
 <?php
@@ -55,7 +61,7 @@
                             'subpages' => true,
                             'class' => 'pages-children',
                             'parent' => $sortableChildren ? $page->slug() : null,
-                            'sortable' => $sortableChildren,
+                            'sortable' => $sortable && $sortableChildren,
                             'headers' => false
                         ));
 
