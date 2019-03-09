@@ -44,6 +44,7 @@ rows1:
                             type: password
                             disabled: true
                             pattern: '^.{8,}$'
+                            autocomplete: new-password
 
         row4:
             type: row
