@@ -371,7 +371,7 @@ class Pages extends AbstractController
 
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
-                if ($page->num() !== $page->date(self::DATE_NUM_FORMAT)) {
+                if ($page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
                     $newId = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
                     try {
                         $page = $this->changePageId($page, $newId);
