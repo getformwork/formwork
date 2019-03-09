@@ -3,6 +3,7 @@
     margin-bottom: $tabs-margin-bottom;
     border-bottom: 1px solid $color-gray-light;
     white-space: nowrap;
+    @include user-select-none;
 }
 
 .tabs-tab {

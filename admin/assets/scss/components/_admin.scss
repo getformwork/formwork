@@ -82,6 +82,7 @@
     font-weight: 600;
     font-size: $logo-font-size;
     line-height: $logo-line-height;
+    @include user-select-none;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
         text-align: left;
     }
@@ -163,4 +164,47 @@
 .admin-user-username {
     color: $color-gray-dark;
     font-size: $font-size-s;
+}
+
+.main {
+    margin-top: $main-margin-top;
+    @media (min-width: map-get($responsive-breakpoints, 's')) {
+        margin: $main-margin;
+        margin-top: $main-margin-top;
+        margin-left: $main-margin-left;
+    }
+}
+
+.component {
+    overflow: auto;
+    margin-bottom: $component-margin-bottom;
+    padding: $component-padding;
+    border-radius: $border-radius;
+    background-color: #fff;
+    box-shadow: $component-box-shadow;
+}
+
+.caption {
+    margin-bottom: $caption-margin-bottom;
+    text-transform: uppercase;
+    letter-spacing: $caption-letter-spacing;
+    font-weight: 600;
+    font-size: $caption-font-size;
+    @include user-select-none;
+}
+
+.separator {
+    height: $separator-height;
+    &-l {
+        height: $separator-height-l;
+    }
+}
+
+.section-header {
+    margin-bottom: $section-header-margin-bottom;
+    padding: $section-header-padding-v $section-header-padding-h;
+    border-bottom: 1px solid $color-gray-light;
+    font-weight: 600;
+    font-size: $font-size-m;
+    @include user-select-none;
 }
