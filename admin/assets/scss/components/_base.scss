@@ -49,54 +49,6 @@ img {
     box-shadow: $focus-box-shadow;
 }
 
-.component {
-    overflow: auto;
-    margin-bottom: $component-margin-bottom;
-    padding: $component-padding;
-    border-radius: $border-radius;
-    background-color: #fff;
-    box-shadow: $component-box-shadow;
-}
-
-.caption {
-    margin-bottom: $caption-margin-bottom;
-    text-transform: uppercase;
-    letter-spacing: $caption-letter-spacing;
-    font-weight: 600;
-    font-size: $caption-font-size;
-}
-
-.separator {
-    height: $separator-height;
-    &-l {
-        height: $separator-height-l;
-    }
-}
-
-.section-header {
-    margin-bottom: $section-header-margin-bottom;
-    padding: $section-header-padding-v $section-header-padding-h;
-    border-bottom: 1px solid $color-gray-light;
-    font-weight: 600;
-    font-size: $font-size-m;
-}
-
-.main {
-    margin-top: $main-margin-top;
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
-        margin: $main-margin;
-        margin-top: $main-margin-top;
-        margin-left: $main-margin-left;
-    }
-}
-
-.logo,
-.caption,
-.tabs,
-.section-header {
-    @include user-select-none;
-}
-
 @each $breakpoint-name in map-keys($responsive-breakpoints) {
     @media (min-width: map-get($responsive-breakpoints, $breakpoint-name)) {
         .hide-from-#{$breakpoint-name} {
