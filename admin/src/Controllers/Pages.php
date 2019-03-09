@@ -374,7 +374,7 @@ class Pages extends AbstractController
                 if ($page->num() !== $page->date(self::DATE_NUM_FORMAT)) {
                     $newId = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
                     try {
-                        $this->changePageId($page, $newId);
+                        $page = $this->changePageId($page, $newId);
                     } catch (RuntimeException $e) {
                         $this->notify($this->label('pages.page.cannot-change-num'), 'error');
                         $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
