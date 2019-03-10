@@ -1753,13 +1753,6 @@ input[type=range][disabled]::-ms-thumb {
   30%, 70% {
     transform: translate3d(10px, 0, 0); } }
 
-.shake {
-  animation-name: shake; }
-
-.animated {
-  animation-duration: 500ms;
-  animation-fill-mode: both; }
-
 @keyframes fadeInRight {
   from {
     opacity: 0;
@@ -1847,6 +1840,10 @@ input[type=range][disabled]::-ms-thumb {
   color: #fff; }
   .login-modal-error::before {
     font-family: Icons; }
+
+.login-input-error {
+  animation: shake 500ms;
+  animation-fill-mode: both; }
 
 .title-bar {
   position: fixed;
