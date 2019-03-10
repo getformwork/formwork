@@ -12,15 +12,6 @@
     }
 }
 
-.shake {
-    animation-name: shake;
-}
-
-.animated {
-    animation-duration: 500ms;
-    animation-fill-mode: both;
-}
-
 @keyframes fadeInRight {
     from {
         opacity: 0;

@@ -69,3 +69,8 @@
         @include icon(error-circle);
     }
 }
+
+.login-input-error {
+    animation: shake $login-input-error-animation-duration;
+    animation-fill-mode: both;
+}
