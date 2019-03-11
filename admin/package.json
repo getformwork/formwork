@@ -1,5 +1,6 @@
 {
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-cssmin": "^0.2.0",
@@ -9,6 +10,5 @@
     "node-sass": "^4.11.0",
     "uglify-js": "^3.4.9"
   },
-  "devDependencies": {},
   "license": "MIT"
 }
