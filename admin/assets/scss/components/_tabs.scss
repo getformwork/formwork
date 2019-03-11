@@ -11,10 +11,9 @@
     padding: $tabs-tab-padding-v $tabs-tab-padding-h;
     color: #000;
     cursor: pointer;
-}
-
-.tabs-tab:hover {
-    color: #000;
+    &:hover {
+        color: #000;
+    }
 }
 
 .tabs-tab.active {

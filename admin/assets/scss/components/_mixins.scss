@@ -11,14 +11,14 @@
 
 @mixin user-select-none {
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 @mixin appearance-none {
     -webkit-appearance: none;
-       -moz-appearance: none;
+    -moz-appearance: none;
 }
 
 @mixin ellipsis {
@@ -28,24 +28,25 @@
 }
 
 @mixin icon($name) {
-    font-family: Icons;
+    font-family: Icons, sans-serif;
     @extend .i-#{$name}::before;
 }
 
 @mixin make-columns-globals($columns-count, $breakpoints) {
-    $selectors: "";
+    $selectors: '';
+
     @each $breakpoint-name in map-keys($breakpoints) {
         @for $i from 1 through $columns-count {
-            @if $selectors != "" {
-                $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
+            @if $selectors != '' {
+                $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
                 $gcd: gcd($i, $columns-count);
                 @if $gcd > 1 {
                     $f: $i / $gcd;
                     $g: $columns-count / $gcd;
-                    $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}";
+                    $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
                 }
             } @else {
-                $selectors: ".col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
+                $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
             }
         }
     }
@@ -55,21 +56,22 @@
 }
 
 @mixin make-breakpoint-columns($columns-count, $breakpoint-name) {
-    $all-selectors: "";
+    $all-selectors: '';
+
     @for $i from 1 through $columns-count {
-        $selectors: ".col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
+        $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
         $gcd: gcd($i, $columns-count);
         @if $gcd > 1 {
             $f: $i / $gcd;
             $g: $columns-count / $gcd;
-            $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}";
+            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
         }
-        @if $all-selectors != "" {
-            $all-selectors: "#{$all-selectors}, #{$selectors}";
+        @if $all-selectors != '' {
+            $all-selectors: '#{$all-selectors}, #{$selectors}';
         } @else {
-            $all-selectors: "#{$selectors}";
+            $all-selectors: '#{$selectors}';
         }
-        #{$selectors}{
+        #{$selectors} {
             width: percentage($i / $columns-count);
         }
     }
@@ -80,14 +82,14 @@
 
 @mixin make-breakpoint-columns-offsets($columns-count, $breakpoint-name) {
     @for $i from 1 to $columns-count {
-        $selectors: ".col-#{$breakpoint-name}-o-#{$i}-#{$columns-count}";
+        $selectors: '.col-#{$breakpoint-name}-o-#{$i}-#{$columns-count}';
         $gcd: gcd($i, $columns-count);
         @if $gcd > 1 {
             $f: $i / $gcd;
             $g: $columns-count / $gcd;
-            $selectors: "#{$selectors}, .col-#{$breakpoint-name}-o-#{$f}-#{$g}";
+            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-o-#{$f}-#{$g}';
         }
-        #{$selectors}{
+        #{$selectors} {
             margin-left: percentage($i / $columns-count);
         }
     }

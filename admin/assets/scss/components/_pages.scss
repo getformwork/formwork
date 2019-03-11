@@ -36,14 +36,13 @@
 .pages-item {
     padding: $pages-item-padding-v $pages-item-padding-h;
     border-bottom: 1px solid $color-gray-light;
+    &:hover {
+        background-color: $color-gray-xxlight;
+    }
 }
 
 .pages-list-top {
     border-top: 1px solid $color-gray-light;
-}
-
-.pages-item:hover {
-    background-color: $color-gray-xxlight;
 }
 
 .pages-item-cell,
@@ -95,13 +94,16 @@
     display: none;
 }
 
+.page-actions {
+    font-size: $font-size-m;
+}
+
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
     .pages-item,
     .pages-list-headers {
         display: table;
         width: 100%;
         table-layout: fixed;
-        line-height: 1.5;
     }
 
     .pages-item-row {
@@ -140,11 +142,6 @@
 
 .pages-level-5 .page-details {
     padding-left: $pages-level-5-padding-left;
-}
-
-.page-actions button,
-.page-actions .button {
-    margin: 0;
 }
 
 .page-search {

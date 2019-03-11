@@ -41,6 +41,14 @@ img {
     border-style: none;
 }
 
+button {
+    -webkit-appearance: button;
+    &::-moz-focus-inner {
+        padding: 0;
+        border: none;
+    }
+}
+
 [hidden] {
     display: none;
 }

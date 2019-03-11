@@ -2,7 +2,6 @@ input,
 select,
 textarea {
     display: inline-block;
-    overflow: visible;
     margin: 0;
     margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h;
@@ -17,6 +16,17 @@ textarea {
     &:focus {
         outline: none;
         @extend .focused;
+    }
+    &:invalid {
+        box-shadow: none;
+    }
+    &[disabled] {
+        background-color: $color-gray-xlight;
+        color: $color-gray-xdark;
+    }
+    &[readonly] {
+        // Safari Mobile bug
+        @include user-select-none;
     }
 }
 
@@ -38,7 +48,7 @@ input[type=file] {
     border-radius: 0;
 }
 
-::-webkit-file-upload-button {
+input[type=file]::-webkit-file-upload-button {
     font: inherit;
     -webkit-appearance: button;
 }
@@ -48,68 +58,19 @@ input[type='number']::-webkit-outer-spin-button {
     height: auto;
 }
 
-input[disabled],
-select[disabled] {
-    background-color: $color-gray-xxlight;
-    color: $color-gray-xxdark;
-}
-
 select {
     padding: $select-padding-h $select-padding-left $select-padding-h $select-padding-right;
     background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
     background-color: #fff;
     background-size: 8px 6px;
-    line-height: 1.5;
-}
-
-label {
-    @include appearance-none;
-}
-
-[readonly] {
-    /* Safari Mobile bug */
-    @include user-select-none;
-}
-
-:invalid {
-    box-shadow: none;
-}
-
-:-moz-submit-invalid {
-    box-shadow: none;
-}
-
-:-moz-ui-invalid {
-    box-shadow: none;
-}
-
-:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 #000;
-}
-
-input,
-textarea {
-    @include appearance-none;
-}
-
-select[multiple],
-textarea {
-    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
 }
 
 textarea {
     overflow: auto;
     min-height: 2 * $input-font-size * $input-line-height + $input-padding-v * 2;
     max-height: 12 * $input-font-size * $input-line-height + $input-padding-v * 2;
+    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
     resize: vertical;
-}
-
-label {
-    display: inline-block;
-    margin-bottom: $label-margin-bottom;
-    font-size: $label-font-size;
-    @include user-select-none;
 }
 
 .input-accent {
@@ -138,12 +99,19 @@ label {
 
 .input-reset {
     position: absolute;
-    top: $input-padding-v;
     top: calc(#{$input-padding-v} + #{$input-border-width});
     right: $input-padding-h / 2;
     color: $color-gray-xxdark;
     font-size: $font-size-s;
-    line-height: 1.5;
+    line-height: $input-line-height;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: $label-margin-bottom;
+    font-size: $label-font-size;
+    @include user-select-none;
+    @include appearance-none;
 }
 
 .label-suggestion {
@@ -157,9 +125,4 @@ label {
     margin-left: $label-required-margin-left;
     color: $color-error;
     content: '*';
-}
-
-.options-form .checkbox-label {
-    margin-bottom: $input-margin-bottom;
-    font-size: $font-size-m;
 }

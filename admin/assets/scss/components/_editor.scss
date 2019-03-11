@@ -7,18 +7,18 @@
     font-size: 0;
 }
 
-.editor-toolbar .toolbar-button {
+.toolbar-button {
     margin-bottom: 0;
     padding: $editor-toolbar-button-padding;
     border: 0;
     border-radius: 0;
     background-color: $color-gray-xxlight;
-}
-
-.editor-toolbar + .editor-textarea {
-    border-top-width: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    &:hover {
+        background-color: $color-gray-xlight;
+    }
+    &:focus {
+        box-shadow: none;
+    }
 }
 
 .editor-textarea {
@@ -28,13 +28,13 @@
     max-height: 20 * $font-size-s * $base-line-height + $editor-textarea-padding-v * 2;
     font-size: $font-size-s;
     font-family: $mono-font-family;
+    &:focus {
+        box-shadow: none;
+    }
 }
 
-.toolbar-button:hover {
-    background-color: $color-gray-xlight;
-}
-
-.toolbar-button:focus,
-.editor-textarea:focus {
-    box-shadow: none;
+.editor-toolbar + .editor-textarea {
+    border-top-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
