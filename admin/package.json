@@ -8,6 +8,9 @@
     "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.2",
     "node-sass": "^4.11.0",
+    "stylelint": "^9.10.1",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-order": "^2.1.0",
     "uglify-js": "^3.4.9"
   },
   "license": "MIT"
