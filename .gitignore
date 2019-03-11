@@ -1,5 +1,4 @@
 .DS_Store
-.csscomb.json
 .php_cs.cache
 
 php_error.log
