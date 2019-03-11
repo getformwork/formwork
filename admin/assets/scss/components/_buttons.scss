@@ -29,9 +29,7 @@ button,
         @extend .focused;
     }
     &[disabled],
-    &[disabled]:hover,
-    &.disabled,
-    &.disabled:hover {
+    &[disabled]:hover {
         border-color: $color-gray-xxlight;
         background-color: $color-gray-xxlight;
         color: $color-gray;
@@ -39,17 +37,14 @@ button,
     }
 }
 
-button {
-    -webkit-appearance: button;
-}
-
-button::-moz-focus-inner {
-    padding: 0;
-    border: none;
-}
-
 a.button {
     text-align: center;
+}
+
+.button-right {
+    float: right;
+    margin-right: 0;
+    margin-left: $button-margin-h;
 }
 
 .button-accent {
@@ -101,32 +96,21 @@ a.button {
 }
 
 .button-link {
+    margin: 0;
     border: 0;
-    border-radius: 0;
     background-color: transparent;
-    font-size: $font-size-m;
+    font-size: inherit;
     cursor: pointer;
-    &:hover,
-    &:focus {
-        background-color: transparent;
-    }
     &:hover {
+        background-color: transparent;
         color: $color-accent;
     }
     &:focus {
         box-shadow: none;
     }
     &[disabled],
-    &[disabled]:hover,
-    &.disabled,
-    &.disabled:hover {
+    &[disabled]:hover {
         background-color: transparent;
         cursor: default;
     }
-}
-
-.button-right {
-    float: right;
-    margin-right: 0;
-    margin-left: $button-margin-h;
 }

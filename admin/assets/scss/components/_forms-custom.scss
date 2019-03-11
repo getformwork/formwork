@@ -18,7 +18,7 @@
 }
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
-.custom-checkbox:disabled + .custom-checkbox-text::before {
+.custom-checkbox[disabled] + .custom-checkbox-text::before {
     background-color: $color-gray-xxlight;
 }
 
@@ -43,14 +43,14 @@
     content: ' ';
 }
 
-.custom-checkbox:checked:disabled + .custom-checkbox-text::before {
+.custom-checkbox:checked[disabled] + .custom-checkbox-text::before {
     border-color: $color-gray;
     background-color: $color-gray;
 }
 
 .checkbox-label {
     position: relative;
-    line-height: 1.5;
+    line-height: $input-line-height;
 }
 
 .image-input {
@@ -69,7 +69,7 @@
     border: 1px solid $color-gray;
     border-radius: $border-radius;
     font-size: $input-font-size;
-    line-height: 1.5;
+    line-height: $input-line-height;
     @include user-select-none;
 }
 
@@ -124,10 +124,9 @@
     color: $color-gray-xxdark;
     font-style: normal;
     transition: color $transition-time-s;
-}
-
-.tag-remove:hover {
-    color: $color-accent;
+    &:hover {
+        color: $color-accent;
+    }
 }
 
 .tag-remove::after {
@@ -166,7 +165,6 @@
     display: inline-block;
     padding: $toggle-group-inner-padding-v $toggle-group-inner-padding-h;
     font-size: $font-size-s;
-    line-height: 1.5;
     transition: background-color $transition-time-s, color $transition-time-s;
 }
 
@@ -193,95 +191,75 @@ input[type=range] {
     width: $range-input-width;
     border: 0;
     -webkit-appearance: none;
-}
-
-input[type=range]:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: $range-input-track-height;
-    border: 0;
-    border-radius: $range-input-track-height / 2;
-    background-color: $color-gray-light;
-    cursor: default;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    margin-top: -0.375rem;
-    width: $range-input-thumb-width;
-    height: $range-input-thumb-height;
-    border: 0;
-    border-radius: $range-input-thumb-border-radius;
-    background-color: $color-accent;
-    transition: background-color $transition-time-s;
-    -webkit-appearance: none;
-}
-
-input[type=range]:hover::-webkit-slider-thumb {
-    background-color: $color-accent-dark;
-}
-
-input[type=range]::-moz-range-track {
-    width: 100%;
-    height: $range-input-track-height;
-    border: 0;
-    border-radius: $range-input-track-height / 2;
-    background-color: $color-gray-light;
-}
-
-input[type=range]::-moz-range-thumb {
-    width: $range-input-thumb-width;
-    height: $range-input-thumb-height;
-    border: 0;
-    border-radius: $range-input-thumb-border-radius;
-    background-color: $color-accent;
-    cursor: default;
-}
-
-input[type=range]::-ms-track {
-    width: 100%;
-    height: $range-input-track-height;
-    border-color: transparent;
-    background-color: transparent;
-    color: transparent;
-    cursor: default;
-}
-
-input[type=range]::-ms-fill-lower,
-input[type=range]::-ms-fill-upper {
-    border: 0;
-    border-radius: $range-input-track-height / 2;
-    background: $color-gray-light;
-    box-shadow: none;
-}
-
-input[type=range]::-ms-thumb {
-    margin-top: 0;
-    width: $range-input-thumb-width;
-    height: $range-input-thumb-height;
-    border: 0;
-    border-radius: $range-input-thumb-border-radius;
-    background-color: $color-accent;
-    cursor: default;
-}
-
-input[type=range][disabled] {
-    background-color: transparent;
-}
-
-input[type=range][disabled]::-webkit-slider-thumb {
-    background-color: $color-gray-dark;
-}
-
-input[type=range][disabled]::-moz-range-thumb {
-    background-color: $color-gray-dark;
-}
-
-input[type=range][disabled]::-ms-thumb {
-    background-color: $color-gray-dark;
+    &::-webkit-slider-runnable-track {
+        width: 100%;
+        height: $range-input-track-height;
+        border: 0;
+        border-radius: $range-input-track-height / 2;
+        background-color: $color-gray-light;
+        cursor: default;
+    }
+    &::-webkit-slider-thumb {
+        margin-top: -($range-input-thumb-height - $range-input-track-height) / 2;
+        width: $range-input-thumb-width;
+        height: $range-input-thumb-height;
+        border: 0;
+        border-radius: $range-input-thumb-border-radius;
+        background-color: $color-accent;
+        transition: background-color $transition-time-s;
+        -webkit-appearance: none;
+    }
+    &::-moz-range-track {
+        width: 100%;
+        height: $range-input-track-height;
+        border: 0;
+        border-radius: $range-input-track-height / 2;
+        background-color: $color-gray-light;
+    }
+    &::-moz-range-thumb {
+        width: $range-input-thumb-width;
+        height: $range-input-thumb-height;
+        border: 0;
+        border-radius: $range-input-thumb-border-radius;
+        background-color: $color-accent;
+        cursor: default;
+    }
+    &::-ms-track {
+        width: 100%;
+        height: $range-input-track-height;
+        border-color: transparent;
+        background-color: transparent;
+        color: transparent;
+        cursor: default;
+    }
+    &::-ms-fill-lower, &::-ms-fill-upper {
+        border: 0;
+        border-radius: $range-input-track-height / 2;
+        background: $color-gray-light;
+        box-shadow: none;
+    }
+    &::-ms-thumb {
+        margin-top: 0;
+        width: $range-input-thumb-width;
+        height: $range-input-thumb-height;
+        border: 0;
+        border-radius: $range-input-thumb-border-radius;
+        background-color: $color-accent;
+        cursor: default;
+    }
+    &:hover::-webkit-slider-thumb {
+        background-color: $color-accent-dark;
+    }
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    &[disabled] {
+        background-color: transparent;
+        &::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb {
+            background-color: $color-gray-dark;
+        }
+    }
 }
 
 .range-input-value {
@@ -289,4 +267,29 @@ input[type=range][disabled]::-ms-thumb {
     vertical-align: 0.1875rem;
     font-size: $font-size-s;
     @include user-select-none;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    clear: both;
+    margin-bottom: $file-input-label-margin-bottom;
+    padding: $file-input-label-padding;
+    background-color: $color-gray-xxlight;
+}
+
+.file-input-label span {
+    display: block;
+    padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
+    border: $file-input-label-inner-border-width dashed $color-gray;
+    color: $color-gray-xxdark;
+    text-align: center;
+    transition: background-color $transition-time-m;
+}
+
+.file-input-label.drag span {
+    background-color: #fff;
 }

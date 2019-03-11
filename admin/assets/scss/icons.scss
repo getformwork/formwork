@@ -1,28 +1,25 @@
 @font-face {
-    font-family: 'Icons';
-    src: url('../icons/icons.eot');
-    src: url('../icons/icons.eot#iefix') format('embedded-opentype'),
-         url('../icons/icons.woff2') format('woff2'),
-         url('../icons/icons.woff') format('woff'),
-         url('../icons/icons.ttf') format('truetype'),
-         url('../icons/icons.svg#icons') format('svg');
     font-weight: normal;
     font-style: normal;
+    font-family: 'Icons';
+    src: url('../icons/icons.eot');
+    src: url('../icons/icons.eot#iefix') format('embedded-opentype'), url('../icons/icons.woff2') format('woff2'), url('../icons/icons.woff') format('woff'), url('../icons/icons.ttf') format('truetype'), url('../icons/icons.svg#icons') format('svg');
 }
 
 [class^='i-']::before,
 [class*=' i-']::before {
-      display: inline-block;
-      width: 1.25em;
-      text-decoration: inherit;
-      text-transform: none;
-      font-weight: normal;
-      font-style: normal;
-      font-variant: normal;
-      font-family: 'Icons';
-      line-height: 1em;
+    display: inline-block;
+    width: 1.25em;
+    text-decoration: inherit;
+    text-transform: none;
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-family: Icons, sans-serif;
+    line-height: 1em;
 }
 
+// stylelint-disable rule-empty-line-before
 .i-align-center::before { content: '\f29a'; }
 .i-align-left::before { content: '\f29b'; }
 .i-align-justify::before { content: '\f29c'; }

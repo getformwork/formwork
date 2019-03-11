@@ -35,6 +35,9 @@
 .users-item {
     padding: $users-item-padding-v $users-item-padding-h;
     border-bottom: 1px solid $color-gray-light;
+    &:hover {
+        background-color: $color-gray-xxlight;
+    }
 }
 
 .users-item-cell,
@@ -45,13 +48,13 @@
     @include ellipsis;
 }
 
-.users-item .user-username {
-    font-size: $font-size-m;
-}
-
 .user-username,
 .user-fullname {
     display: inline-block;
+}
+
+.users-item .user-username {
+    font-size: $font-size-m;
 }
 
 .user-last-access,
@@ -59,12 +62,15 @@
     display: none;
 }
 
+.user-actions {
+    font-size: $font-size-m;
+}
+
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
     .users-item {
         display: table;
         width: 100%;
         table-layout: fixed;
-        line-height: 1.5;
     }
 
     .users-list-headers {
@@ -97,13 +103,4 @@
     .user-actions {
         width: 10%;
     }
-}
-
-.users-item:hover {
-    background-color: $color-gray-xxlight;
-}
-
-.user-actions button,
-.user-actions .button {
-    margin: 0;
 }

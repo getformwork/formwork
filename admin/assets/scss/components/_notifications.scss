@@ -14,10 +14,9 @@
     cursor: default;
     transition: top $transition-time-m ease-in, opacity $transition-time-s;
     animation: fadeInRight $notification-animation-duration $notification-animation-easing;
-}
-
-.notification:hover {
-    opacity: $notification-hover-opacity;
+    &:hover {
+        opacity: $notification-hover-opacity;
+    }
 }
 
 .notification.fadeout {

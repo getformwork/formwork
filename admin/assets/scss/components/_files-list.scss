@@ -6,41 +6,6 @@
     @include user-select-none;
 }
 
-.file-name::before {
-    margin-right: $file-name-icon-margin-right;
-    color: $color-gray-xxdark;
-    font-size: $font-size-m;
-    @include icon(file);
-}
-
-.files-item .file-type-image::before {
-    @include icon(file-image);
-}
-
-.files-item .file-type-document::before {
-    @include icon(file-text);
-}
-
-.files-item .file-type-audio::before {
-    @include icon(file-audio);
-}
-
-.file-type-video::before {
-    @include icon(file-video);
-}
-
-.files-item-cell {
-    display: table-cell;
-    padding: $files-item-cell-padding;
-    vertical-align: middle;
-}
-
-.files-item-cell {
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: $font-size-s;
-}
-
 .files-item {
     display: table;
     width: 100%;
@@ -51,9 +16,41 @@
     display: table-row;
 }
 
+.files-item-cell {
+    display: table-cell;
+    overflow: hidden;
+    padding: $files-item-cell-padding;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: $font-size-s;
+}
+
 .file-name {
     font-size: $file-name-font-size;
     @include ellipsis;
+}
+
+.file-name::before {
+    margin-right: $file-name-icon-margin-right;
+    color: $color-gray-xxdark;
+    font-size: $font-size-m;
+    @include icon(file);
+}
+
+.file-name.file-type-image::before {
+    @include icon(file-image);
+}
+
+.file-name.file-type-document::before {
+    @include icon(file-text);
+}
+
+.file-name.file-type-audio::before {
+    @include icon(file-audio);
+}
+
+.file-name.file-type-video::before {
+    @include icon(file-video);
 }
 
 .file-size {
@@ -63,9 +60,5 @@
 .file-actions {
     width: 20%;
     text-align: right;
-}
-
-.file-actions button,
-.file-actions .button {
-    margin: 0;
+    font-size: $font-size-m;
 }

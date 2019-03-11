@@ -6,7 +6,6 @@
     position: absolute;
     top: 100%;
     z-index: 4;
-    display: block;
     display: none;
     margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
     padding: $calendar-padding;
@@ -37,14 +36,12 @@
     color: #000;
     font-size: $font-size-s;
     cursor: pointer;
-}
-
-.calendar button:hover {
-    color: $color-accent;
-}
-
-.calendar button:focus {
-    box-shadow: none;
+    &:hover {
+        color: $color-accent;
+    }
+    &:focus {
+        box-shadow: none;
+    }
 }
 
 .calendar-table {
@@ -65,15 +62,14 @@
 .calendar-day {
     border-radius: $border-radius;
     transition: background-color $transition-time-s, color $transition-time-s;
+    &:hover {
+        background-color: $color-accent-dark;
+        color: #fff;
+    }
 }
 
 .calendar-day.selected {
     background-color: $color-accent;
-    color: #fff;
-}
-
-.calendar-day:hover {
-    background-color: $color-accent-dark;
     color: #fff;
 }
 

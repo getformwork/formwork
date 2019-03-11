@@ -156,6 +156,13 @@ $range-input-thumb-border-radius: $border-radius-round;
 $range-input-value-padding-v: 0;
 $range-input-value-padding-h: 0.5rem;
 
+$file-input-label-margin-bottom: 1rem;
+$file-input-label-padding: 0.5rem;
+
+$file-input-label-inner-padding-v: 1.5rem;
+$file-input-label-inner-padding-h: 1rem;
+$file-input-label-inner-border-width: 2px;
+
 // ===
 // Editor
 // ===
@@ -206,17 +213,6 @@ $image-picker-empty-state-margin-top: 3rem;
 $image-picker-empty-state-margin-bottom: 4rem;
 $image-picker-empty-state-margin-h: auto;
 $image-picker-empty-state-icon-font-size: 2rem;
-
-// ===
-// File input
-// ===
-
-$file-input-label-margin-bottom: 1rem;
-$file-input-label-padding: 0.5rem;
-
-$file-input-label-inner-padding-v: 1.5rem;
-$file-input-label-inner-padding-h: 1rem;
-$file-input-label-inner-border-width: 2px;
 
 // ===
 // Files list
@@ -270,7 +266,7 @@ $notification-box-shadow: rgba(#000, 0.15) 1px 1px 9px 0;
 $notification-hover-opacity: 0.95;
 $notification-icon-width: 0.75rem;
 $notification-animation-duration: 300ms;
-$notification-animation-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
+$notification-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
 // ===
 // Tooltip
