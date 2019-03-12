@@ -383,15 +383,14 @@ class Pages extends AbstractController
             }
         }
 
+        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
+            $page = $this->changePageTemplate($page, $newTemplate);
+        }
+
         $this->notify($this->label('pages.page.edited'), 'success');
 
         if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
             $page = $this->changePageParent($page, $newParent);
-            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
-        }
-
-        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
-            $this->changePageTemplate($page, $newTemplate);
             $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
         }
 
@@ -466,7 +465,8 @@ class Pages extends AbstractController
     {
         $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
-        return new Page($destination);
+        $page->reload();
+        return $page;
     }
 
     /**
