@@ -162,7 +162,7 @@ class Page extends AbstractPage
      */
     public function reload()
     {
-        $vars = array('uri', 'parents', 'children', 'descendants', 'siblings');
+        $vars = array('uri', 'filename', 'template', 'parents', 'children', 'descendants', 'siblings');
         foreach ($vars as $var) {
             $this->$var = null;
         }
