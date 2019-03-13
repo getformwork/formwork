@@ -197,13 +197,13 @@ class Formwork
     private function defaultRoute()
     {
         return function (RouteParams $params) {
-            $path = $params->get('page', $this->option('pages.index'));
+            $route = $params->get('page', $this->option('pages.index'));
 
-            if ($this->site->has('aliases') && $alias = $this->site->alias($path)) {
-                $path = trim($alias, '/');
+            if ($this->site->has('aliases') && $alias = $this->site->alias($route)) {
+                $route = trim($alias, '/');
             }
 
-            if ($page = $this->site->findPage($path)) {
+            if ($page = $this->site->findPage($route)) {
                 if ($params->get('paginationPage') == 1) {
                     Header::redirect($page->uri(), 301);
                 }
@@ -211,8 +211,8 @@ class Formwork
                     return $page;
                 }
             } else {
-                $filename = FileSystem::basename($path);
-                $upperLevel = FileSystem::dirname($path);
+                $filename = FileSystem::basename($route);
+                $upperLevel = FileSystem::dirname($route);
                 if ($parent = $this->site->findPage($upperLevel)) {
                     if ($file = $parent->file($filename)) {
                         return HTTPResponse::file($file);

@@ -17,13 +17,13 @@ trait AdminTrait
     /**
      * Return a URI relative to the request root
      *
-     * @param string $path
+     * @param string $route
      *
      * @return string
      */
-    protected function uri($path)
+    protected function uri($route)
     {
-        return HTTPRequest::root() . ltrim($path, '/');
+        return HTTPRequest::root() . ltrim($route, '/');
     }
 
     /**
@@ -47,14 +47,14 @@ trait AdminTrait
     }
 
     /**
-     * Redirect to a generic URI
+     * Redirect to a given route
      *
-     * @param string $uri
-     * @param int    $code HTTP redirect status code
+     * @param string $route
+     * @param int    $code  HTTP redirect status code
      */
-    protected function redirect($uri, $code = 302)
+    protected function redirect($route, $code = 302)
     {
-        Header::redirect($this->uri($uri), $code);
+        Header::redirect($this->uri($route), $code);
     }
 
     /**
@@ -81,7 +81,7 @@ trait AdminTrait
      * Redirect to the referer page
      *
      * @param int    $code    HTTP redirect status code
-     * @param string $default Default URI if HTTP referer is not available
+     * @param string $default Default route if HTTP referer is not available
      */
     protected function redirectToReferer($code = 302, $default = '/')
     {

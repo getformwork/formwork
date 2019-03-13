@@ -119,18 +119,18 @@ class Site extends AbstractPage
     }
 
     /**
-     * Return alias of a given URI
+     * Return alias of a given route
      *
-     * @param string $uri
+     * @param string $route
      *
      * @return string|null
      */
-    public function alias($uri)
+    public function alias($route)
     {
         if ($this->has('aliases')) {
-            $uri = trim($uri, '/');
-            if (isset($this->data['aliases'][$uri])) {
-                return $this->data['aliases'][$uri];
+            $route = trim($route, '/');
+            if (isset($this->data['aliases'][$route])) {
+                return $this->data['aliases'][$route];
             }
         }
     }
@@ -213,19 +213,19 @@ class Site extends AbstractPage
     }
 
     /**
-     * Find page from slug
+     * Find page from route
      *
-     * @param string $slug
+     * @param string $route
      *
      * @return Page|null
      */
-    public function findPage($slug)
+    public function findPage($route)
     {
-        if ($slug === '/') {
+        if ($route === '/') {
             return $this->indexPage();
         }
 
-        $components = explode('/', trim($slug, '/'));
+        $components = explode('/', trim($route, '/'));
         $path = $this->path;
 
         foreach ($components as $component) {

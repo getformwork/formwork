@@ -59,16 +59,16 @@ abstract class AbstractPage
     /**
      * Return a URI relative to page
      *
-     * @param string $path
+     * @param string $route
      *
      * @return string
      */
-    public function uri($path = null)
+    public function uri($route = null)
     {
-        if (is_null($path)) {
+        if (is_null($route)) {
             return $this->uri;
         }
-        return $this->uri . ltrim($path, '/');
+        return $this->uri . ltrim($route, '/');
     }
 
     /**
