@@ -13,6 +13,7 @@
     display: none;
     padding: $pages-list-headers-padding-v $pages-list-headers-padding-h;
     font-weight: 600;
+    @include user-select-none;
 }
 
 .page-children-toggle {
