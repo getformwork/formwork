@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.6](https://github.com/giuscris/formwork/releases/tag/0.9.6) (2019-03-13)
+
+**Enhancements**
+
+ * Hide unavailable page actions based on user permissions
+ * Refactor and cleanup styles
+
+**Bug fixes**
+
+ * **Fix error when page id is changed**
+ * **Fix error when page template is changed**
+ * **Fix error when `published` attribute is changed in blog pages**
+ * Fix visits not being logged if cache is enabled (closes [#12](https://github.com/giuscris/formwork/issues/12))
+
 ## [0.9.5](https://github.com/giuscris/formwork/releases/tag/0.9.5) (2019-03-04)
 
 **Enhancements**
