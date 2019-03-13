@@ -15,7 +15,7 @@
                     $scheme = $this->scheme($page->template()->name());
                     if (!$scheme->get('pages', true)) continue;
 ?>
-                <option value="<?= $page->slug() ?>"<?php if ($scheme->has('pages')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('pages'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
+                <option value="<?= $page->route() ?>"<?php if ($scheme->has('pages')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('pages'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
 <?php
                 endforeach;
 ?>

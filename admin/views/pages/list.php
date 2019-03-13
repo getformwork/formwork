@@ -27,10 +27,10 @@
 <?php
                     endif;
 ?>
-                                <a href="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
+                                <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
                             </div>
                             <div class="page-uri">
-                                <a<?php if ($routable): ?> href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->slug() ?></a>
+                                <a<?php if ($routable): ?> href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->route() ?></a>
                             </div>
                         </div>
                         <div class="pages-item-cell page-date">
@@ -44,7 +44,7 @@
 <?php
                         if ($this->user()->permissions()->has('pages.delete')):
 ?>
-                            <button class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                            <button class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                         endif;
 ?>
@@ -60,7 +60,7 @@
                             'pages' =>  $reverseChildren ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
                             'class' => 'pages-children',
-                            'parent' => $sortableChildren ? $page->slug() : null,
+                            'parent' => $sortableChildren ? $page->route() : null,
                             'sortable' => $sortable && $sortableChildren,
                             'headers' => false
                         ));

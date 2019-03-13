@@ -48,11 +48,11 @@ class Page extends AbstractPage
     protected static $contentParser;
 
     /**
-     * Page slug
+     * Page route
      *
      * @var string
      */
-    protected $slug;
+    protected $route;
 
     /**
      * Page id
@@ -129,8 +129,8 @@ class Page extends AbstractPage
         }
         $this->path = FileSystem::normalize($path);
         $relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
-        $this->slug = Uri::normalize(preg_replace('~/(\d+-)~', '/', $relativePath));
-        $this->uri = HTTPRequest::root() . ltrim($this->slug, '/');
+        $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $relativePath));
+        $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
         $this->id = FileSystem::basename($this->path);
         $this->loadFiles();
         if (!$this->isEmpty()) {
@@ -304,7 +304,7 @@ class Page extends AbstractPage
      */
     public function isIndexPage()
     {
-        return trim($this->slug(), '/') === Formwork::instance()->option('pages.index');
+        return trim($this->route(), '/') === Formwork::instance()->option('pages.index');
     }
 
     /**
@@ -312,7 +312,7 @@ class Page extends AbstractPage
      */
     public function isErrorPage()
     {
-        return trim($this->slug(), '/') === Formwork::instance()->option('pages.error');
+        return trim($this->route(), '/') === Formwork::instance()->option('pages.error');
     }
 
     /**

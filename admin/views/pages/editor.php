@@ -1,13 +1,13 @@
 <div class="container-no-margin">
     <div class="row">
-        <form action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/edit/') ?>" method="post" data-form="page-editor-form">
+        <form action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" method="post" data-form="page-editor-form">
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
                     <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
                     <div class="page-info">
                         <div class="page-uri">
-                            <a <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->slug() ?></a>
+                            <a <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->route() ?></a>
                         </div>
                     </div>
                     <div class="editor-toolbar" data-for="content">
@@ -27,7 +27,7 @@
 <?php
                 if ($this->user()->permissions()->has('pages.delete')):
 ?>
-                    <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                    <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                 endif;
 ?>
@@ -50,7 +50,7 @@
                             if (!$scheme->get('pages', true)) continue;
                             if ($parent === $page) continue;
 ?>
-                        <option value="<?= $parent->slug() ?>"<?php if ($page->parent() === $parent): ?> selected<?php endif; ?>><?= str_repeat('— ', $parent->level() - 1) . $parent->title() ?></option>
+                        <option value="<?= $parent->route() ?>"<?php if ($page->parent() === $parent): ?> selected<?php endif; ?>><?= str_repeat('— ', $parent->level() - 1) . $parent->title() ?></option>
 <?php
                         endforeach;
 ?>
@@ -87,7 +87,7 @@
 <?php
                     if ($this->user()->permissions()->has('pages.delete_files')):
 ?>
-                                <button class="button-link" type="button" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
+                                <button class="button-link" type="button" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
                                     <i class="i-trash"></i>
                                 </button>
 <?php
@@ -103,7 +103,7 @@
 <?php
                 if ($this->user()->permissions()->has('pages.upload_files')):
 ?>
-                <form action="<?= $this->uri('/pages/' . trim($page->slug(), '/') . '/file/upload/') ?>" method="post" enctype="multipart/form-data">
+                <form action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/upload/') ?>" method="post" enctype="multipart/form-data">
                     <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
                     <label for="file-uploader" class="file-input-label">
                         <span><?= $this->label('pages.files.upload-label') ?></span>

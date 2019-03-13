@@ -96,7 +96,7 @@ class Pages extends AbstractController
         }
 
         $this->notify($this->label('pages.page.created'), 'success');
-        $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/');
+        $this->redirect('/pages/' . trim($newPage->route(), '/') . '/edit/');
     }
 
     /**
@@ -378,7 +378,7 @@ class Pages extends AbstractController
                         $page = $this->changePageId($page, $newId);
                     } catch (RuntimeException $e) {
                         $this->notify($this->label('pages.page.cannot-change-num'), 'error');
-                        $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
+                        $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
                     }
                 }
             }
@@ -392,7 +392,7 @@ class Pages extends AbstractController
 
         if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
             $page = $this->changePageParent($page, $newParent);
-            $this->redirect('/pages/' . trim($page->slug(), '/') . '/edit/');
+            $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
         }
 
         return $page;

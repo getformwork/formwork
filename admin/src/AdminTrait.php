@@ -43,7 +43,7 @@ trait AdminTrait
      */
     protected function pageUri(Page $page)
     {
-        return $this->siteUri() . ltrim($page->slug(), '/');
+        return $this->siteUri() . ltrim($page->route(), '/');
     }
 
     /**
