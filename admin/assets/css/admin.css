@@ -2061,7 +2061,7 @@ input[type=range] {
 .page-actions {
   display: none; }
 
-.page-actions {
+.page-actions .button-link {
   font-size: 1rem; }
 
 @media (min-width: 568px) {
@@ -2202,7 +2202,7 @@ input[type=range] {
 .user-actions {
   display: none; }
 
-.user-actions {
+.user-actions .button-link {
   font-size: 1rem; }
 
 @media (min-width: 568px) {
