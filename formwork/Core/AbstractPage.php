@@ -15,6 +15,13 @@ abstract class AbstractPage
     protected $path;
 
     /**
+     * Page route
+     *
+     * @var string
+     */
+    protected $route;
+
+    /**
      * Page URI
      *
      * @var string

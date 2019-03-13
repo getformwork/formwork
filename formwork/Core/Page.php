@@ -48,13 +48,6 @@ class Page extends AbstractPage
     protected static $contentParser;
 
     /**
-     * Page route
-     *
-     * @var string
-     */
-    protected $route;
-
-    /**
      * Page id
      *
      * @var string
