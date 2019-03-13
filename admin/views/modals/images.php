@@ -22,7 +22,7 @@
         endforeach;
 ?>
         </select>
-        <button type="button" data-dismiss="imagesModal"><?= $this->label('modal.action.cancel') ?></button>
+        <button data-dismiss="imagesModal"><?= $this->label('modal.action.cancel') ?></button>
         <button class="button-accent button-right image-picker-confirm" data-dismiss="imagesModal"><?= $this->label('modal.action.continue') ?></button>
-</div>
+    </div>
 </div>
