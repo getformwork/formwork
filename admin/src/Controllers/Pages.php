@@ -90,12 +90,13 @@ class Pages extends AbstractController
         // Let's create the page
         try {
             $newPage = $this->createPage($path, $data->get('template'), $data->get('title'));
-            $this->notify($this->label('pages.page.created'), 'success');
-            $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/');
         } catch (RuntimeException $e) {
             $this->notify($this->label('pages.page.cannot-create'), 'error');
             $this->redirect('/pages/');
         }
+
+        $this->notify($this->label('pages.page.created'), 'success');
+        $this->redirect('/pages/' . trim($newPage->slug(), '/') . '/edit/');
     }
 
     /**
@@ -229,23 +230,23 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.delete');
 
+        $page = $this->site()->findPage($params->get('page'));
+
         try {
-            $page = $this->site()->findPage($params->get('page'));
             if (!$page) {
                 throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
             if (!$page->isDeletable()) {
                 throw new LocalizedException('Page ' . $page . ' is not deletable', 'pages.page.cannot-delete.not-deletable');
             }
-
             FileSystem::delete($page->path(), true);
-
-            $this->notify($this->label('pages.page.deleted'), 'success');
-            $this->redirect('/pages/');
         } catch (LocalizedException $e) {
             $this->notify($this->label('pages.page.cannot-delete', $e->getLocalizedMessage()), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
+
+        $this->notify($this->label('pages.page.deleted'), 'success');
+        $this->redirect('/pages/');
     }
 
     /**
@@ -255,23 +256,23 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.upload_files');
 
+        $page = $this->site()->findPage($params->get('page'));
+
         if (HTTPRequest::hasFiles()) {
             try {
-                $page = $this->site()->findPage($params->get('page'));
                 if (!$page) {
                     throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
                 }
-
                 $uploader = new Uploader($page->path());
                 $uploader->upload();
-
-                $this->notify($this->label('uploader.uploaded'), 'success');
-                $this->redirect('/pages/' . $params->get('page') . '/edit/');
             } catch (LocalizedException $e) {
                 $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
+
+        $this->notify($this->label('uploader.uploaded'), 'success');
+        $this->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
@@ -281,23 +282,23 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.delete_files');
 
+        $page = $this->site()->findPage($params->get('page'));
+
         try {
-            $page = $this->site()->findPage($params->get('page'));
             if (!$page) {
                 throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
             }
             if (!$page->files()->has($params->get('filename'))) {
                 throw new LocalizedException('File not found', 'pages.page.cannot-delete-file.file-not-found');
             }
-
             FileSystem::delete($page->path() . $params->get('filename'));
-
-            $this->notify($this->label('pages.page.file-deleted'), 'success');
-            $this->redirect('/pages/' . $params->get('page') . '/edit/');
         } catch (LocalizedException $e) {
             $this->notify($this->label('pages.page.cannot-delete-file', $e->getLocalizedMessage()), 'error');
             $this->redirect('/pages/');
         }
+
+        $this->notify($this->label('pages.page.file-deleted'), 'success');
+        $this->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**

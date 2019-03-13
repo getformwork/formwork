@@ -37,13 +37,13 @@ class Updates extends AbstractController
         $updater = new Updater(array('force' => true));
         try {
             $updater->update();
-            JSONResponse::success($this->label('updates.installed'), 200, array(
-                'status' => $this->label('updates.status.up-to-date')
-            ))->send();
         } catch (RuntimeException $e) {
             JSONResponse::error($this->label('updates.status.cannot-install'), 500, array(
                 'status' => $this->label('updates.status.cannot-install')
             ))->send();
         }
+        JSONResponse::success($this->label('updates.installed'), 200, array(
+            'status' => $this->label('updates.status.up-to-date')
+        ))->send();
     }
 }

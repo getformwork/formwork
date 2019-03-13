@@ -93,16 +93,16 @@ class Users extends AbstractController
             }
             FileSystem::delete(ACCOUNTS_PATH . $user->username() . '.yml');
             $this->deleteAvatar($user);
-
-            // Remove user last access from registry
-            $this->registry('lastAccess')->remove($user->username());
-
-            $this->notify($this->label('users.user.deleted'), 'success');
-            $this->redirect('/users/');
         } catch (LocalizedException $e) {
             $this->notify($e->getLocalizedMessage(), 'error');
             $this->redirectToReferer(302, '/users/');
         }
+
+        // Remove user last access from registry
+        $this->registry('lastAccess')->remove($user->username());
+
+        $this->notify($this->label('users.user.deleted'), 'success');
+        $this->redirect('/users/');
     }
 
     /**
