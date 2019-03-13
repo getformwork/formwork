@@ -59,6 +59,7 @@
 
 .ct-legend {
     font-size: $font-size-s;
+    @include user-select-none;
 }
 
 .ct-legend-right {

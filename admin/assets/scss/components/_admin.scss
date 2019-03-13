@@ -44,6 +44,7 @@
     background: $sidebar-background-gradient;
     background-color: $sidebar-background-gradient-color-0;
     box-shadow: $sidebar-box-shadow;
+    @include user-select-none;
 }
 
 .sidebar.show {
@@ -82,7 +83,6 @@
     font-weight: 600;
     font-size: $logo-font-size;
     line-height: $logo-line-height;
-    @include user-select-none;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
         text-align: left;
     }

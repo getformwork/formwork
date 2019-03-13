@@ -30,6 +30,7 @@
 
 .users-list-headers {
     display: none;
+    @include user-select-none;
 }
 
 .users-item {
