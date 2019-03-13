@@ -37,6 +37,7 @@ class Site extends AbstractPage
     public function __construct($data)
     {
         $this->path = Formwork::instance()->option('content.path');
+        $this->route = '/';
         $this->uri = HTTPRequest::root();
         $this->data = array_merge($this->defaults(), $data);
         $this->loadTemplates();
