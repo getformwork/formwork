@@ -121,8 +121,8 @@ class Page extends AbstractPage
             static::$contentParser = new Parsedown();
         }
         $this->path = FileSystem::normalize($path);
-        $relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
-        $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $relativePath));
+        $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
+        $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $this->relativePath));
         $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
         $this->id = FileSystem::basename($this->path);
         $this->loadFiles();
@@ -180,17 +180,6 @@ class Page extends AbstractPage
         $pathLastModifiedTime = parent::lastModifiedTime();
         $fileLastModifiedTime = FileSystem::lastModifiedTime($this->path . $this->filename);
         return $fileLastModifiedTime > $pathLastModifiedTime ? $fileLastModifiedTime : $pathLastModifiedTime;
-    }
-
-    /**
-     * Get page relative path
-     *
-     * @return string
-     */
-    public function relativePath()
-    {
-        $parentPath = FileSystem::dirname(Formwork::instance()->option('content.path'));
-        return $parentPath === '.' ? DS . $this->path : substr($this->path, strlen($parentPath));
     }
 
     /**
@@ -320,7 +309,7 @@ class Page extends AbstractPage
     }
 
     /**
-     * Return a file path relative to the page
+     * Return a file path relative to Formwork root
      *
      * @param string $file Name of the file
      *
@@ -328,7 +317,7 @@ class Page extends AbstractPage
      */
     public function file($file)
     {
-        return $this->files()->has($file) ? substr($this->relativePath() . $file, 1) : null;
+        return $this->files()->has($file) ? substr($this->path() . $file, strlen(ROOT_PATH)) : null;
     }
 
     /**
