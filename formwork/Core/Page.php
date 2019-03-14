@@ -55,6 +55,13 @@ class Page extends AbstractPage
     protected $id;
 
     /**
+     * Page slug
+     *
+     * @var string
+     */
+    protected $slug;
+
+    /**
      * Page filename
      *
      * @var string
@@ -125,6 +132,7 @@ class Page extends AbstractPage
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $this->relativePath));
         $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
         $this->id = FileSystem::basename($this->path);
+        $this->slug = FileSystem::basename($this->route);
         $this->loadFiles();
         if (!$this->isEmpty()) {
             $this->parse();
