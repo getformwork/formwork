@@ -70,16 +70,18 @@ class Pages extends AbstractController
             $this->redirect('/pages/');
         }
 
-        // Ensure there isn't a page with the same uri
-        if ($this->site()->findPage($data->get('slug'))) {
-            $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
-            $this->redirect('/pages/');
-        }
-
         $parent = $this->resolveParent($data->get('parent'));
 
         if (is_null($parent)) {
             $this->notify($this->label('pages.page.cannot-create.invalid-parent'), 'error');
+            $this->redirect('/pages/');
+        }
+
+        $route = $parent->route() . $data->get('slug') . '/';
+
+        // Ensure there isn't a page with the same route
+        if ($this->site()->findPage($route)) {
+            $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
             $this->redirect('/pages/');
         }
 
