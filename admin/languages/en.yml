@@ -104,10 +104,10 @@ pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
 pages.new-page.site: Site
+pages.new-page.slug-suggestion: letters, numbers and dashes only
+pages.new-page.slug: Page Slug
 pages.new-page.template: Template
 pages.new-page.title: Title
-pages.new-page.uri-suggestion: letters, numbers and dashes only
-pages.new-page.uri: Page URI
 pages.not-published: Not published
 pages.not-routable: Non routable
 pages.options: Options

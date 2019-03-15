@@ -4,8 +4,8 @@
         <form action="<?= $this->uri('/pages/new/') ?>" method="post">
             <label class="label-required" for="page-title"><?= $this->label('pages.new-page.title') ?>:</label>
             <input id="page-title" type="text" required name="title" autofocus>
-            <label class="label-required" for="page-slug"><?= $this->label('pages.new-page.uri') ?>:</label>
-            <span class="label-suggestion">(<?= $this->label('pages.new-page.uri-suggestion') ?>)</span>
+            <label class="label-required" for="page-slug"><?= $this->label('pages.new-page.slug') ?>:</label>
+            <span class="label-suggestion">(<?= $this->label('pages.new-page.slug-suggestion') ?>)</span>
             <input id="page-slug" type="text" required name="slug">
             <label class="label-required" for="page-parent"><?= $this->label('pages.new-page.parent') ?>:</label>
             <select id="page-parent" name="parent">
