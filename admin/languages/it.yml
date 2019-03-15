@@ -176,7 +176,6 @@ updates.status.installing: Installo aggiornamento...
 updates.status.up-to-date: Aggiornato!
 updates.updates: Aggiornamenti
 uploader.erorr.cannot-write: Impossibile salvare il file sul disco
-uploader.error: 'Impossibile caricare il file. %s.'
 uploader.error: Impossibile caricare il file. %s.
 uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.file-name: Nome del file non valido
