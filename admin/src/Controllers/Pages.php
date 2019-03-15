@@ -131,7 +131,7 @@ class Pages extends AbstractController
 
         // Ensure the page exists
         if (!$page) {
-            $this->notify($this->label('pages.page.cannot-edit.page-missing'), 'error');
+            $this->notify($this->label('pages.page.cannot-edit.page-not-found'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
@@ -259,7 +259,7 @@ class Pages extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if (!$page) {
-            $this->notify($this->label('pages.page.cannot-delete.page-missing'), 'error');
+            $this->notify($this->label('pages.page.cannot-delete.page-not-found'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
@@ -284,7 +284,7 @@ class Pages extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if (!$page) {
-            $this->notify($this->label('pages.page.cannot-upload-file.page-missing'), 'error');
+            $this->notify($this->label('pages.page.cannot-upload-file.page-not-found'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
@@ -312,7 +312,7 @@ class Pages extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if (!$page) {
-            $this->notify($this->label('pages.page.cannot-delete-file.page-missing'), 'error');
+            $this->notify($this->label('pages.page.cannot-delete-file.page-not-found'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
