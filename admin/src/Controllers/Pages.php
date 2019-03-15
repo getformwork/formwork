@@ -74,20 +74,20 @@ class Pages extends AbstractController
         // Ensure no required data is missing
         if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
             $this->notify($this->label('pages.page.cannot-create.var-missing'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         $parent = $this->resolveParent($data->get('parent'));
 
         if (is_null($parent)) {
             $this->notify($this->label('pages.page.cannot-create.invalid-parent'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         // Validate page slug
         if (!$this->validateSlug($data->get('slug'))) {
             $this->notify($this->label('pages.page.cannot-create.invalid-slug'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         $route = $parent->route() . $data->get('slug') . '/';
@@ -95,13 +95,13 @@ class Pages extends AbstractController
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route)) {
             $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         // Validate page template
         if (!$this->site()->hasTemplate($data->get('template'))) {
             $this->notify($this->label('pages.page.cannot-create.invalid-template'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         $scheme = $this->scheme($data->get('template'));
@@ -113,7 +113,7 @@ class Pages extends AbstractController
             $newPage = $this->createPage($path, $data->get('template'), $data->get('title'));
         } catch (RuntimeException $e) {
             $this->notify($this->label('pages.page.cannot-create'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         $this->notify($this->label('pages.page.created'), 'success');
@@ -132,7 +132,7 @@ class Pages extends AbstractController
         // Ensure the page exists
         if (!$page) {
             $this->notify($this->label('pages.page.cannot-edit.page-missing'), 'error');
-            $this->redirect('/pages/');
+            $this->redirectToReferer(302, '/pages/');
         }
 
         // Load page fields
@@ -271,7 +271,7 @@ class Pages extends AbstractController
         FileSystem::delete($page->path(), true);
 
         $this->notify($this->label('pages.page.deleted'), 'success');
-        $this->redirect('/pages/');
+        $this->redirectToReferer(302, '/pages/');
     }
 
     /**
