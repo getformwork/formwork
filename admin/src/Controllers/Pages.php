@@ -145,6 +145,11 @@ class Pages extends AbstractController
                 // Update the page
                 $page = $this->updatePage($page, $data, $fields);
 
+                // Redirect if page route has changed
+                if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
+                    $this->redirect('/pages/' . $route . '/edit/');
+                }
+
                 break;
         }
 
@@ -390,12 +395,11 @@ class Pages extends AbstractController
             $page = $this->changePageTemplate($page, $newTemplate);
         }
 
-        $this->notify($this->label('pages.page.edited'), 'success');
-
         if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
             $page = $this->changePageParent($page, $newParent);
-            $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
         }
+
+        $this->notify($this->label('pages.page.edited'), 'success');
 
         return $page;
     }
