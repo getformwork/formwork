@@ -211,8 +211,8 @@ class Formwork
                     return $page;
                 }
             } else {
-                $filename = FileSystem::basename($route);
-                $upperLevel = FileSystem::dirname($route);
+                $filename = basename($route);
+                $upperLevel = dirname($route);
                 if ($parent = $this->site->findPage($upperLevel)) {
                     if ($file = $parent->file($filename)) {
                         return HTTPResponse::file($file);

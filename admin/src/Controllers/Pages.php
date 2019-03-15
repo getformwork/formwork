@@ -470,7 +470,7 @@ class Pages extends AbstractController
      */
     protected function changePageId(Page $page, $id)
     {
-        $directory = FileSystem::dirname($page->path());
+        $directory = dirname($page->path());
         $destination = $directory . DS . $id . DS;
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
@@ -485,7 +485,7 @@ class Pages extends AbstractController
      */
     protected function changePageParent(Page $page, $parent)
     {
-        $destination = $parent->path() . FileSystem::basename($page->path()) . DS;
+        $destination = $parent->path() . basename($page->path()) . DS;
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }

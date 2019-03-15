@@ -131,8 +131,8 @@ class Page extends AbstractPage
         $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $this->relativePath));
         $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
-        $this->id = FileSystem::basename($this->path);
-        $this->slug = FileSystem::basename($this->route);
+        $this->id = basename($this->path);
+        $this->slug = basename($this->route);
         $this->loadFiles();
         if (!$this->isEmpty()) {
             $this->parse();
@@ -264,7 +264,7 @@ class Page extends AbstractPage
         if (!is_null($this->siblings)) {
             return $this->siblings;
         }
-        $parentPath = FileSystem::dirname($this->path) . DS;
+        $parentPath = dirname($this->path) . DS;
         $pageCollection = PageCollection::fromPath($parentPath);
         $pageCollection = $pageCollection->remove($this);
         $this->siblings = $pageCollection;

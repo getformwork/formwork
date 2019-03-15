@@ -40,7 +40,7 @@ class HTTPResponse
         $mimeType = FileSystem::mimeType($file);
         Header::contentType($mimeType);
         if ($download) {
-            Header::send('Content-Disposition', 'attachment; filename="' . FileSystem::basename($file) . '"');
+            Header::send('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
         }
         static::cleanOutputBuffers(); // Clean output buffers to prevent displayed file alteration
         readfile($file);

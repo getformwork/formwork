@@ -21,31 +21,6 @@ class FileSystem
     protected static $units = array('B', 'KB', 'MB', 'GB', 'TB');
 
     /**
-     * Get the parent directory given a path
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    public static function dirname($path)
-    {
-        return dirname($path);
-    }
-
-    /**
-     * Get trailing name component of path
-     *
-     * @param string $path
-     * @param string $extension
-     *
-     * @return string
-     */
-    public static function basename($path, $extension = null)
-    {
-        return basename($path, $extension);
-    }
-
-    /**
      * Get file name without extension given a file
      *
      * @param string $file
@@ -54,7 +29,7 @@ class FileSystem
      */
     public static function name($file)
     {
-        $basename = static::basename($file);
+        $basename = basename($file);
         $pos = strrpos($basename, '.');
         return $pos !== false ? substr($basename, 0, $pos) : $basename;
     }
@@ -68,7 +43,7 @@ class FileSystem
      */
     public static function extension($file)
     {
-        $extension = substr(static::basename($file), strlen(static::name($file)) + 1);
+        $extension = substr(basename($file), strlen(static::name($file)) + 1);
         return $extension !== false ? $extension : '';
     }
 
@@ -249,7 +224,7 @@ class FileSystem
      */
     public static function isVisible($path)
     {
-        return static::basename($path)[0] !== '.';
+        return basename($path)[0] !== '.';
     }
 
     /**
@@ -428,7 +403,7 @@ class FileSystem
      */
     public static function swap($path1, $path2)
     {
-        $temp = static::dirname($path1) . DS . static::temporaryName('temp.');
+        $temp = dirname($path1) . DS . static::temporaryName('temp.');
         static::move($path1, $temp);
         static::move($path2, $path1);
         static::move($temp, $path2);

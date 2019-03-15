@@ -184,7 +184,7 @@ class Updater
         for ($i = 1; $i < $zip->numFiles; $i++) {
             $source = substr($zip->getNameIndex($i), strlen($baseFolder));
             $destination = ROOT_PATH . $source;
-            $destinationDirectory = FileSystem::dirname($destination);
+            $destinationDirectory = dirname($destination);
 
             if ($this->isCopiable($source)) {
                 if (!FileSystem::exists($destinationDirectory)) {

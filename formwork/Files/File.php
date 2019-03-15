@@ -58,7 +58,7 @@ class File
     public function __construct($path)
     {
         $this->path = $path;
-        $this->name = FileSystem::basename($path);
+        $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
         $this->type = $this->type();

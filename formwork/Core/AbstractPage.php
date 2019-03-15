@@ -110,7 +110,7 @@ abstract class AbstractPage
      */
     public function parent()
     {
-        $parentPath = FileSystem::dirname($this->path) . DS;
+        $parentPath = dirname($this->path) . DS;
         if (FileSystem::isDirectory($parentPath) && $parentPath !== Formwork::instance()->option('content.path')) {
             if (isset(Site::$storage[$parentPath])) {
                 return Site::$storage[$parentPath];

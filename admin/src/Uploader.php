@@ -162,7 +162,7 @@ class Uploader
 
         $destination = FileSystem::normalize($destination);
 
-        if (FileSystem::basename($filename)[0] === '.') {
+        if (basename($filename)[0] === '.') {
             throw new LocalizedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
 

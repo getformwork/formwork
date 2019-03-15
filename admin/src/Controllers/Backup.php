@@ -24,7 +24,7 @@ class Backup extends AbstractController
         } catch (LocalizedException $e) {
             JSONResponse::error($this->label('backup.error.cannot-make', $e->getLocalizedMessage()), 500)->send();
         }
-        $filename = FileSystem::basename($file);
+        $filename = basename($file);
         JSONResponse::success($this->label('backup.ready'), 200, array(
             'filename' => $filename,
             'uri' => $this->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
