@@ -258,18 +258,17 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        try {
-            if (!$page) {
-                throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
-            }
-            if (!$page->isDeletable()) {
-                throw new LocalizedException('Page ' . $page . ' is not deletable', 'pages.page.cannot-delete.not-deletable');
-            }
-            FileSystem::delete($page->path(), true);
-        } catch (LocalizedException $e) {
-            $this->notify($this->label('pages.page.cannot-delete', $e->getLocalizedMessage()), 'error');
+        if (!$page) {
+            $this->notify($this->label('pages.page.cannot-delete.page-missing'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
+
+        if (!$page->isDeletable()) {
+            $this->notify($this->label('pages.page.cannot-delete.not-deletable'), 'error');
+            $this->redirectToReferer(302, '/pages/');
+        }
+
+        FileSystem::delete($page->path(), true);
 
         $this->notify($this->label('pages.page.deleted'), 'success');
         $this->redirect('/pages/');
@@ -284,11 +283,13 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
+        if (!$page) {
+            $this->notify($this->label('pages.page.cannot-upload-file.page-missing'), 'error');
+            $this->redirectToReferer(302, '/pages/');
+        }
+
         if (HTTPRequest::hasFiles()) {
             try {
-                if (!$page) {
-                    throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
-                }
                 $uploader = new Uploader($page->path());
                 $uploader->upload();
             } catch (LocalizedException $e) {
@@ -310,18 +311,17 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        try {
-            if (!$page) {
-                throw new LocalizedException('Page ' . $params->get('page') . ' not found', 'pages.page.not-found');
-            }
-            if (!$page->files()->has($params->get('filename'))) {
-                throw new LocalizedException('File not found', 'pages.page.cannot-delete-file.file-not-found');
-            }
-            FileSystem::delete($page->path() . $params->get('filename'));
-        } catch (LocalizedException $e) {
-            $this->notify($this->label('pages.page.cannot-delete-file', $e->getLocalizedMessage()), 'error');
-            $this->redirect('/pages/');
+        if (!$page) {
+            $this->notify($this->label('pages.page.cannot-delete-file.page-missing'), 'error');
+            $this->redirectToReferer(302, '/pages/');
         }
+
+        if (!$page->files()->has($params->get('filename'))) {
+            $this->notify($this->label('pages.page.cannot-delete-file.file-not-found'), 'error');
+            $this->redirect('/pages/' . $params->get('page') . '/edit/');
+        }
+
+        FileSystem::delete($page->path() . $params->get('filename'));
 
         $this->notify($this->label('pages.page.file-deleted'), 'success');
         $this->redirect('/pages/' . $params->get('page') . '/edit/');

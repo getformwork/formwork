@@ -119,15 +119,16 @@ pages.page.cannot-create.invalid-parent: Impossibile creare la pagina, la pagina
 pages.page.cannot-create.invalid-slug: Impossibile creare la pagina, l'indirizzo deve contenere solo lettere e numeri separati da trattini
 pages.page.cannot-create.invalid-template: Impossibile creare la pagina, il template specificato non è valido
 pages.page.cannot-create.var-missing: Impossibile creare la pagina, manca una variabile
-pages.page.cannot-delete-file: Impossibile eliminare il file. %s.
-pages.page.cannot-delete-file.file-not-found: File non trovato
-pages.page.cannot-delete: Impossibile eliminare la pagina. %s.
-pages.page.cannot-delete.not-deletable: La pagina non è eliminabile
+pages.page.cannot-delete-file.file-not-found: Impossibile eliminare il file, file non trovato
+pages.page.cannot-delete-file.page-missing: Impossibile eliminare il file, pagina non trovata
+pages.page.cannot-delete.not-deletable: Impossibile eliminare la pagina, la pagina non è eliminabile
+pages.page.cannot-delete.page-missing: Impossibile eliminare la pagina, pagina non trovata
 pages.page.cannot-edit.invalid-parent: Impossibile modificare la pagina, pagina superiore non valida
 pages.page.cannot-edit.invalid-template: Impossibile modificare la pagina, template non valido
 pages.page.cannot-edit.page-missing: Impossibile modificare la pagina, pagina non trovata
 pages.page.cannot-edit.var-missing: Impossibile modificare la pagina, manca una variabile
 pages.page.cannot-move: Impossibile spostare la pagina
+pages.page.cannot-upload-file.page-missing: Impossibile caricare il file, pagina non trovata
 pages.page.created: Pagina creata!
 pages.page.deleted: Pagina eliminata
 pages.page.edited: Pagina modificata!

@@ -119,15 +119,16 @@ pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
 pages.page.cannot-create.invalid-slug: Cannot create page, page slug must contain only letters and numbers separated by dashes
 pages.page.cannot-create.invalid-template: Cannot create page, invalid template
 pages.page.cannot-create.var-missing: Cannot create page, missing a variable
-pages.page.cannot-delete-file: Cannot delete file. %s.
-pages.page.cannot-delete-file.file-not-found: File not found
-pages.page.cannot-delete: Cannot delete page. %s.
-pages.page.cannot-delete.not-deletable: The page is not deletable
+pages.page.cannot-delete-file.file-not-found: Cannot delete file, file not found
+pages.page.cannot-delete-file.page-missing: Cannot delete file, file not found
+pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
+pages.page.cannot-delete.page-missing: Cannot delete page, page not found
 pages.page.cannot-edit.invalid-parent: Cannot edit page, invalid parent page
 pages.page.cannot-edit.invalid-template: Cannot edit page, invalid template
 pages.page.cannot-edit.page-missing: Cannot edit page, page not found
 pages.page.cannot-edit.var-missing: Cannot edit page, missing a variable
 pages.page.cannot-move: Cannot move page
+pages.page.cannot-upload-file.page-missing: Cannot upload file, page not found
 pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
