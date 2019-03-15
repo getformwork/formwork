@@ -20,6 +20,13 @@ use RuntimeException;
 class Pages extends AbstractController
 {
     /**
+     * Valid page slug regex
+     *
+     * @var string
+     */
+    const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
+
+    /**
      * Page prefix date format
      *
      * @var string
@@ -77,11 +84,23 @@ class Pages extends AbstractController
             $this->redirect('/pages/');
         }
 
+        // Validate page slug
+        if (!$this->validateSlug($data->get('slug'))) {
+            $this->notify($this->label('pages.page.cannot-create.invalid-slug'), 'error');
+            $this->redirect('/pages/');
+        }
+
         $route = $parent->route() . $data->get('slug') . '/';
 
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route)) {
             $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
+            $this->redirect('/pages/');
+        }
+
+        // Validate page template
+        if (!$this->site()->hasTemplate($data->get('template'))) {
+            $this->notify($this->label('pages.page.cannot-create.invalid-template'), 'error');
             $this->redirect('/pages/');
         }
 
@@ -391,12 +410,22 @@ class Pages extends AbstractController
             }
         }
 
-        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
-            $page = $this->changePageTemplate($page, $newTemplate);
+        // Check if parent page has to change
+        if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
+            if (is_null($newParent)) {
+                $this->notify($this->label('pages.page.cannot-edit.invalid-parent'), 'error');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+            }
+            $page = $this->changePageParent($page, $newParent);
         }
 
-        if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
-            $page = $this->changePageParent($page, $newParent);
+        // Check if page template has to change
+        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
+            if (!$this->site()->hasTemplate($newTemplate)) {
+                $this->notify($this->label('pages.page.cannot-edit.invalid-template'), 'error');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+            }
+            $page = $this->changePageTemplate($page, $newTemplate);
         }
 
         $this->notify($this->label('pages.page.edited'), 'success');
@@ -489,5 +518,17 @@ class Pages extends AbstractController
             return $this->site();
         }
         return $this->site()->findPage($parent);
+    }
+
+    /**
+     * Validate page slug helper
+     *
+     * @param string $slug
+     *
+     * @return bool
+     */
+    protected function validateSlug($slug)
+    {
+        return (bool) preg_match(self::SLUG_REGEX, $slug);
     }
 }
