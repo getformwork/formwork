@@ -29,8 +29,8 @@
 ?>
                                 <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
                             </div>
-                            <div class="page-uri">
-                                <a<?php if ($routable): ?> href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->route() ?></a>
+                            <div class="page-route">
+                                <span><?= $page->route() ?></span>
                             </div>
                         </div>
                         <div class="pages-item-cell page-date">

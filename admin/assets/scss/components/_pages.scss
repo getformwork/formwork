@@ -61,12 +61,11 @@
     font-size: $font-size-m;
 }
 
-.page-uri {
+.page-route {
     font-size: $font-size-s;
 }
 
-.page-uri a,
-.page-uri a:hover {
+.page-route span {
     color: $color-gray-dark;
 }
 

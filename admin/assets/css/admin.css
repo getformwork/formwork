@@ -2042,11 +2042,10 @@ input[type=range] {
 .page-title {
   font-size: 1rem; }
 
-.page-uri {
+.page-route {
   font-size: 0.875rem; }
 
-.page-uri a,
-.page-uri a:hover {
+.page-route span {
   color: #979797; }
 
 .page-status-label::before {

@@ -6,8 +6,8 @@
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
                     <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
                     <div class="page-info">
-                        <div class="page-uri">
-                            <a <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank"><?= $page->route() ?></a>
+                        <div class="page-route">
+                            <span><?= $page->route() ?></span>
                         </div>
                     </div>
                     <div class="editor-toolbar" data-for="content">
