@@ -226,7 +226,13 @@ class Pages extends AbstractController
         FileSystem::delete($page->path(), true);
 
         $this->notify($this->label('pages.page.deleted'), 'success');
-        $this->redirectToReferer(302, '/pages/');
+
+        // Don't redirect to referer if it's to Pages@edit
+        if (Uri::normalize(HTTPRequest::referer()) !== Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/')))) {
+            $this->redirectToReferer(302, '/pages/');
+        } else {
+            $this->redirect('/pages/');
+        }
     }
 
     /**
