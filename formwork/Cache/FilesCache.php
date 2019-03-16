@@ -40,9 +40,12 @@ class FilesCache extends AbstractCache
      */
     public function fetch($key)
     {
-        if ($this->has($key) && $this->isValid($key)) {
-            $data = FileSystem::read($this->getFile($key));
-            return unserialize($data);
+        if ($this->has($key)) {
+            if ($this->isValid($key)) {
+                $data = FileSystem::read($this->getFile($key));
+                return unserialize($data);
+            }
+            FileSystem::delete($this->getFile($key));
         }
         return null;
     }
