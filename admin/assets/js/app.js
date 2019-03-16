@@ -206,6 +206,9 @@ Formwork.Editor = function (id) {
             case 73: // ctrl/cmd + I
                 $('[data-command=italic]', $toolbar).click();
                 return false;
+            case 75: // ctrl/cmd + K
+                $('[data-command=link]', $toolbar).click();
+                return false;
             case 89: // ctrl/cmd + Y
             case 90: // ctrl/cmd + Z
                 return false;
