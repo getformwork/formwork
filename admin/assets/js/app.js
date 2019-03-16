@@ -488,6 +488,9 @@ Formwork.Modals = {
 
     show: function (id, action, callback) {
         var $modal = $('#' + id);
+        if (!$modal.length) {
+            return;
+        }
         $modal.addClass('show');
         if (action !== null) {
             $('form', $modal).attr('action', action);
@@ -496,6 +499,7 @@ Formwork.Modals = {
         if (typeof callback === 'function') {
             callback($modal);
         }
+        $('.tooltip').remove();
         this.createBackdrop();
     },
 
