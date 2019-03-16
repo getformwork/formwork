@@ -75,7 +75,7 @@ Formwork.Modals = {
         $('[required]', $modal).each(function () {
             var $this = $(this);
             if ($this.val() === '') {
-                $this.addClass('animated shake').focus();
+                $this.addClass('input-invalid').focus();
                 $('.modal-error', $modal).show();
                 valid = false;
                 return false;

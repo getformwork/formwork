@@ -14,15 +14,17 @@ Formwork.Form = function (form) {
         $window.off('beforeunload');
     });
 
+    $('[data-command=continue]', '#changesModal').click(function () {
+        $window.off('beforeunload');
+        window.location.href = $(this).attr('data-href');
+    });
+
     $('a[href]:not([href^="#"]):not([target="_blank"])').click(function (event) {
         if (hasChanged()) {
             var link = this;
             event.preventDefault();
             Formwork.Modals.show('changesModal', null, function ($modal) {
-                $('[data-command=continue]', $modal).click(function () {
-                    $window.off('beforeunload');
-                    window.location.href = $(this).attr('data-href');
-                }).attr('data-href', link.href);
+                $('[data-command=continue]', $modal).attr('data-href', link.href);
             });
         }
     });
