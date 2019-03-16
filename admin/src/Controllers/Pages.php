@@ -71,52 +71,15 @@ class Pages extends AbstractController
 
         $data = new DataGetter(HTTPRequest::postData());
 
-        // Ensure no required data is missing
-        if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
-            $this->notify($this->label('pages.page.cannot-create.var-missing'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
-
-        $parent = $this->resolveParent($data->get('parent'));
-
-        if (is_null($parent)) {
-            $this->notify($this->label('pages.page.cannot-create.invalid-parent'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
-
-        // Validate page slug
-        if (!$this->validateSlug($data->get('slug'))) {
-            $this->notify($this->label('pages.page.cannot-create.invalid-slug'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
-
-        $route = $parent->route() . $data->get('slug') . '/';
-
-        // Ensure there isn't a page with the same route
-        if ($this->site()->findPage($route)) {
-            $this->notify($this->label('pages.page.cannot-create.already-exists'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
-
-        // Validate page template
-        if (!$this->site()->hasTemplate($data->get('template'))) {
-            $this->notify($this->label('pages.page.cannot-create.invalid-template'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
-
-        $scheme = $this->scheme($data->get('template'));
-
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
-
         // Let's create the page
         try {
-            $newPage = $this->createPage($path, $data->get('template'), $data->get('title'));
-        } catch (RuntimeException $e) {
-            $this->notify($this->label('pages.page.cannot-create'), 'error');
+            $newPage = $this->createPage($data);
+            $this->notify($this->label('pages.page.created'), 'success');
+        } catch (LocalizedException $e) {
+            $this->notify($e->getLocalizedMessage(), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
-        $this->notify($this->label('pages.page.created'), 'success');
         $this->redirect('/pages/' . trim($newPage->route(), '/') . '/edit/');
     }
 
@@ -129,11 +92,7 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        // Ensure the page exists
-        if (!$page) {
-            $this->notify($this->label('pages.page.cannot-edit.page-not-found'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
+        $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
 
         // Load page fields
         $fields = new Fields($page->template()->scheme()->get('fields'));
@@ -155,14 +114,13 @@ class Pages extends AbstractController
                 // Validate fields against data
                 $fields->validate($data);
 
-                // Ensure no required data is missing
-                if (!$data->has(array('title', 'content'))) {
-                    $this->notify($this->label('pages.page.cannot-edit.var-missing'), 'error');
-                    $this->redirect('/pages/' . $params->get('page') . '/edit/');
-                }
-
                 // Update the page
-                $page = $this->updatePage($page, $data, $fields);
+                try {
+                    $page = $this->updatePage($page, $data, $fields);
+                    $this->notify($this->label('pages.page.edited'), 'success');
+                } catch (LocalizedException $e) {
+                    $this->notify($e->getLocalizedMessage(), 'error');
+                }
 
                 // Redirect if page route has changed
                 if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
@@ -258,10 +216,7 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        if (!$page) {
-            $this->notify($this->label('pages.page.cannot-delete.page-not-found'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
+        $this->ensurePageExists($page, 'pages.page.cannot-delete.page-not-found');
 
         if (!$page->isDeletable()) {
             $this->notify($this->label('pages.page.cannot-delete.not-deletable'), 'error');
@@ -283,10 +238,7 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        if (!$page) {
-            $this->notify($this->label('pages.page.cannot-upload-file.page-not-found'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
+        $this->ensurePageExists($page, 'pages.page.cannot-upload-file.page-not-found');
 
         if (HTTPRequest::hasFiles()) {
             try {
@@ -311,10 +263,7 @@ class Pages extends AbstractController
 
         $page = $this->site()->findPage($params->get('page'));
 
-        if (!$page) {
-            $this->notify($this->label('pages.page.cannot-delete-file.page-not-found'), 'error');
-            $this->redirectToReferer(302, '/pages/');
-        }
+        $this->ensurePageExists($page, 'pages.page.cannot-delete-file.page-not-found');
 
         if (!$page->files()->has($params->get('filename'))) {
             $this->notify($this->label('pages.page.cannot-delete-file.file-not-found'), 'error');
@@ -330,24 +279,58 @@ class Pages extends AbstractController
     /**
      * Create a new page
      *
-     * @param string $path
-     * @param string $template
-     * @param string $title
-     *
      * @return Page
      */
-    protected function createPage($path, $template, $title)
+    protected function createPage(DataGetter $data)
     {
+        // Ensure no required data is missing
+        if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
+            throw new LocalizedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
+        }
+
+        $parent = $this->resolveParent($data->get('parent'));
+
+        if (is_null($parent)) {
+            throw new LocalizedException('Parent page not found', 'pages.page.cannot-create.invalid-parent');
+        }
+
+        // Validate page slug
+        if (!$this->validateSlug($data->get('slug'))) {
+            throw new LocalizedException('Invalid page slug', 'pages.page.cannot-create.invalid-slug');
+        }
+
+        $route = $parent->route() . $data->get('slug') . '/';
+
+        // Ensure there isn't a page with the same route
+        if ($this->site()->findPage($route)) {
+            throw new LocalizedException('A page with the same route already exists', 'pages.page.cannot-create.already-exists');
+        }
+
+        // Validate page template
+        if (!$this->site()->hasTemplate($data->get('template'))) {
+            throw new LocalizedException('Invalid page template', 'pages.page.cannot-create.invalid-template');
+        }
+
+        $scheme = $this->scheme($data->get('template'));
+
+        $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
+
         FileSystem::createDirectory($path, true);
-        $filename = $template . $this->option('content.extension');
+
+        $filename = $data->get('template') . $this->option('content.extension');
+
         FileSystem::createFile($path . $filename);
+
         $frontmatter = array(
-            'title' => $title
+            'title' => $data->get('title')
         );
+
         $fileContent = '---' . PHP_EOL;
         $fileContent .= YAML::encode($frontmatter);
         $fileContent .= '---' . PHP_EOL;
+
         FileSystem::write($path . $filename, $fileContent);
+
         return new Page($path);
     }
 
@@ -358,6 +341,11 @@ class Pages extends AbstractController
      */
     protected function updatePage(Page $page, DataGetter $data, Fields $fields)
     {
+        // Ensure no required data is missing
+        if (!$data->has(array('title', 'content'))) {
+            throw new LocalizedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
+        }
+
         // Load current page frontmatter
         $frontmatter = $page->frontmatter();
 
@@ -390,6 +378,7 @@ class Pages extends AbstractController
             $fileContent .= YAML::encode($frontmatter);
             $fileContent .= '---' . PHP_EOL;
             $fileContent .= $data->get('content');
+
             FileSystem::write($page->path() . $page->filename(), $fileContent);
             FileSystem::touch($this->option('content.path'));
 
@@ -403,8 +392,7 @@ class Pages extends AbstractController
                     try {
                         $page = $this->changePageId($page, $newId);
                     } catch (RuntimeException $e) {
-                        $this->notify($this->label('pages.page.cannot-change-num'), 'error');
-                        $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                        throw new LocalizedException('Cannot change page num', 'pages.page.cannot-change-num');
                     }
                 }
             }
@@ -413,8 +401,7 @@ class Pages extends AbstractController
         // Check if parent page has to change
         if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
             if (is_null($newParent)) {
-                $this->notify($this->label('pages.page.cannot-edit.invalid-parent'), 'error');
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                throw new LocalizedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
             }
             $page = $this->changePageParent($page, $newParent);
         }
@@ -422,15 +409,26 @@ class Pages extends AbstractController
         // Check if page template has to change
         if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
             if (!$this->site()->hasTemplate($newTemplate)) {
-                $this->notify($this->label('pages.page.cannot-edit.invalid-template'), 'error');
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                throw new LocalizedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
             }
             $page = $this->changePageTemplate($page, $newTemplate);
         }
 
-        $this->notify($this->label('pages.page.edited'), 'success');
-
         return $page;
+    }
+
+    /**
+     * Ensure a page exists
+     *
+     * @param Page|null $page
+     * @param string    $errorLanguageString
+     */
+    protected function ensurePageExists($page, $errorLanguageString)
+    {
+        if (is_null($page)) {
+            $this->notify($this->label($errorLanguageString), 'error');
+            $this->redirectToReferer(302, '/pages/');
+        }
     }
 
     /**
