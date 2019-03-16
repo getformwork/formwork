@@ -5,9 +5,10 @@
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
                     <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
+                    <input type="hidden" id="slug" name="slug" value="<?= $page->slug() ?>">
                     <div class="page-info">
                         <div class="page-route">
-                            <span><?= $page->route() ?></span>
+                            <span<?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?> class="page-slug-change" data-command="change-slug" title="<?= $this->label('pages.change-slug') ?>"<?php endif; ?>><?= $page->route() ?></span>
                         </div>
                     </div>
                     <div class="editor-toolbar" data-for="content">

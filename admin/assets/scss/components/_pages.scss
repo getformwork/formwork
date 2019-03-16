@@ -160,6 +160,22 @@
     @include ellipsis;
 }
 
+.page-slug-change {
+    cursor: pointer;
+    &::after {
+        display: inline-block;
+        margin-left: $page-slug-change-icon-margin-left;
+        color: $color-gray-xxdark;
+        content: ' ';
+        opacity: 0;
+        transition: opacity $transition-time-s;
+        @include icon(pencil);
+    }
+    &:hover::after {
+        opacity: 1;
+    }
+}
+
 .sortable-chosen,
 .sortable-ghost {
     background-color: #fff;

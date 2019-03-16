@@ -132,6 +132,8 @@ class Pages extends AbstractController
 
         $this->modal('changes');
 
+        $this->modal('slug');
+
         $this->modal('images', array(
             'page' => $page
         ));
@@ -418,6 +420,21 @@ class Pages extends AbstractController
                 throw new LocalizedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
             }
             $page = $this->changePageTemplate($page, $template);
+        }
+
+        // Check if page slug has to change
+        if ($page->slug() !== ($slug = $data->get('slug'))) {
+            if (!$this->validateSlug($slug)) {
+                throw new LocalizedException('Invalid page slug', 'pages.page.cannot-edit.invalid-slug');
+            }
+            // Don't change index and error pages slug
+            if ($page->isIndexPage() || $page->isErrorPage()) {
+                throw new LocalizedException('Cannot change slug of index or error pages', 'pages.page.cannot-edit.index-or-error-page-slug');
+            }
+            if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
+                throw new LocalizedException('A page with the same route already exists', 'pages.page.cannot-edit.already-exists');
+            }
+            $page = $this->changePageId($page, ltrim($page->num() . '-', '-') . $slug);
         }
 
         return $page;

@@ -2118,6 +2118,19 @@ input[type=range] {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
+.page-slug-change {
+  cursor: pointer; }
+  .page-slug-change::after {
+    display: inline-block;
+    margin-left: 0.25rem;
+    color: #444;
+    content: ' ';
+    opacity: 0;
+    transition: opacity 150ms;
+    font-family: Icons, sans-serif; }
+  .page-slug-change:hover::after {
+    opacity: 1; }
+
 .sortable-chosen,
 .sortable-ghost {
   background-color: #fff; }
@@ -2662,7 +2675,7 @@ input[type=range] {
 .i-paste::before {
   content: '\f2f0'; }
 
-.i-pencil::before {
+.i-pencil::before, .page-slug-change::after {
   content: '\f2f1'; }
 
 .i-plus-circle::before {

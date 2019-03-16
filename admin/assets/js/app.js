@@ -651,9 +651,9 @@ Formwork.Pages = {
             $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
         });
 
-        $('#page-slug', '#newPageModal').keyup(function () {
+        $('#page-slug', '#newPageModal, #slugModal').keyup(function () {
             var $this = $(this);
-            $this.val($this.val().replace(' ', '-').replace(/[^A-Za-z0-9-]/g, ''));
+            $this.val($this.val().toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, ''));
         }).blur(function () {
             if ($(this).val() === '') {
                 $('#page-title', '#newPageModal').trigger('keyup');
@@ -681,6 +681,34 @@ Formwork.Pages = {
                     .removeData('previousValue')
                     .find('option').removeAttr('disabled');
             }
+        });
+
+        $('[data-command=change-slug]').click(function () {
+            Formwork.Modals.show('slugModal', null, function ($modal) {
+                var slug = $('#slug').val();
+                $('#page-slug', $modal).val(slug).attr('placeholder', slug).focus();
+            });
+        });
+
+        $('#page-slug', '#slugModal').keydown(function (event) {
+            if (event.which === 13) {
+                $('[data-command=continue]', '#slugModal').click();
+            }
+        });
+
+        $('[data-command=generate-slug]', '#slugModal').click(function () {
+            var slug = Formwork.Utils.slug($('#title').val());
+            $('#page-slug', '#slugModal').val(slug).focus();
+        });
+
+        $('[data-command=continue]', '#slugModal').click(function () {
+            var slug = $('#page-slug').val().replace(/^-+|-+$/, '');
+            if (slug.length > 0) {
+                var route = $('.page-route span').text();
+                $('#page-slug, #slug').val(slug);
+                $('.page-route span').text(route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/'));
+            }
+            Formwork.Modals.hide('slugModal');
         });
 
         $('.pages-list').each(function () {

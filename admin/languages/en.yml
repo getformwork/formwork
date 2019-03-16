@@ -82,6 +82,8 @@ options.system.images.png-compression-level: PNG Compression Level
 options.updated: Options updated
 options.updates: Updates
 pages.attributes: Attributes
+pages.change-slug: Edit Slug
+pages.change-slug.generate: Generate From Title
 pages.changes.continue: Continue without Saving
 pages.changes.detected: Changes Detected
 pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
@@ -123,7 +125,10 @@ pages.page.cannot-delete-file.file-not-found: Cannot delete file, file not found
 pages.page.cannot-delete-file.page-not-found: Cannot delete file, file not found
 pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
 pages.page.cannot-delete.page-not-found: Cannot delete page, page not found
+pages.page.cannot-edit.already-exists: Cannot edit page, a page with the same uri already exists
+pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
 pages.page.cannot-edit.invalid-parent: Cannot edit page, invalid parent page
+pages.page.cannot-edit.invalid-slug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
 pages.page.cannot-edit.invalid-template: Cannot edit page, invalid template
 pages.page.cannot-edit.page-not-found: Cannot edit page, page not found
 pages.page.cannot-edit.var-missing: Cannot edit page, missing a variable
