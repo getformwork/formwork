@@ -73,14 +73,14 @@ class Pages extends AbstractController
 
         // Let's create the page
         try {
-            $newPage = $this->createPage($data);
+            $page = $this->createPage($data);
             $this->notify($this->label('pages.page.created'), 'success');
         } catch (LocalizedException $e) {
             $this->notify($e->getLocalizedMessage(), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
-        $this->redirect('/pages/' . trim($newPage->route(), '/') . '/edit/');
+        $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
     }
 
     /**
@@ -394,9 +394,9 @@ class Pages extends AbstractController
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
                 if ($page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
-                    $newId = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
+                    $id = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
                     try {
-                        $page = $this->changePageId($page, $newId);
+                        $page = $this->changePageId($page, $id);
                     } catch (RuntimeException $e) {
                         throw new LocalizedException('Cannot change page num', 'pages.page.cannot-change-num');
                     }
@@ -405,19 +405,19 @@ class Pages extends AbstractController
         }
 
         // Check if parent page has to change
-        if ($page->parent() !== ($newParent = $this->resolveParent($data->get('parent')))) {
-            if (is_null($newParent)) {
+        if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
+            if (is_null($parent)) {
                 throw new LocalizedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
             }
-            $page = $this->changePageParent($page, $newParent);
+            $page = $this->changePageParent($page, $parent);
         }
 
         // Check if page template has to change
-        if ($page->template()->name() !== ($newTemplate = $data->get('template'))) {
-            if (!$this->site()->hasTemplate($newTemplate)) {
+        if ($page->template()->name() !== ($template = $data->get('template'))) {
+            if (!$this->site()->hasTemplate($template)) {
                 throw new LocalizedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
             }
-            $page = $this->changePageTemplate($page, $newTemplate);
+            $page = $this->changePageTemplate($page, $template);
         }
 
         return $page;
