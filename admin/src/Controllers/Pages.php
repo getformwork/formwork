@@ -489,6 +489,9 @@ class Pages extends AbstractController
      */
     protected function changePageParent(Page $page, $parent)
     {
+        if (!($parent instanceof Page || $parent instanceof Site)) {
+            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
+        }
         $destination = $parent->path() . basename($page->path()) . DS;
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
