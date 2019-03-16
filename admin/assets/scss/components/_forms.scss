@@ -89,6 +89,11 @@ textarea {
     border-color: $color-error;
 }
 
+.input-invalid {
+    animation: shake $input-invalid-animation-duration;
+    animation-fill-mode: both;
+}
+
 .input-wrap {
     position: relative;
 }

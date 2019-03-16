@@ -111,6 +111,8 @@ $input-line-height: $base-line-height;
 $input-border-width: 1px;
 $input-border-radius: $border-radius;
 
+$input-invalid-animation-duration: 500ms;
+
 $input-wrap-padding-right: 1.5rem;
 
 $label-margin-bottom: 0.25rem;
@@ -303,8 +305,6 @@ $login-modal-notification-margin-bottom: 1rem;
 $login-modal-notification-padding-v: 1rem;
 $login-modal-notification-padding-left: 3.5rem;
 $login-modal-notification-padding-right: 2rem;
-
-$login-input-error-animation-duration: 500ms;
 
 // ===
 // Admin

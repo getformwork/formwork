@@ -573,6 +573,10 @@ textarea {
 .input-error {
   border-color: #e74c3b; }
 
+.input-invalid {
+  animation: shake 500ms;
+  animation-fill-mode: both; }
+
 .input-wrap {
   position: relative; }
 
@@ -1784,10 +1788,6 @@ input[type=range] {
   color: #fff; }
   .login-modal-error::before {
     font-family: Icons, sans-serif; }
-
-.login-input-error {
-  animation: shake 500ms;
-  animation-fill-mode: both; }
 
 .title-bar {
   position: fixed;
