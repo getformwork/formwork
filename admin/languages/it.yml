@@ -63,6 +63,8 @@ options.system.admin-panel.logout-redirects-to: Reindirizza dopo la disconnessio
 options.system.admin-panel.logout-redirects-to.home: Pagina iniziale
 options.system.admin-panel.logout-redirects-to.login: Accedi
 options.system.admin-panel.session-timeout: Durata sessione (min)
+options.system.backup: Backup
+options.system.backup.backup-files-to-keep: Backup da tenere sul server
 options.system.cache: Cache
 options.system.cache.disabled: Disabilitata
 options.system.cache.enabled: Abilitata

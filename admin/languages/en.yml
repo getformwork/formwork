@@ -63,6 +63,8 @@ options.system.admin-panel.logout-redirects-to: Logout Redirects to
 options.system.admin-panel.logout-redirects-to.home: Home
 options.system.admin-panel.logout-redirects-to.login: Login
 options.system.admin-panel.session-timeout: Session Timeout (min)
+options.system.backup: Backup
+options.system.backup.backup-files-to-keep: Backups to keep on the server
 options.system.cache: Cache
 options.system.cache.disabled: Disabled
 options.system.cache.enabled: Enabled

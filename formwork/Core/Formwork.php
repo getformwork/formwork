@@ -142,6 +142,7 @@ class Formwork
             'images.jpeg_quality'      => 85,
             'images.png_compression'   => 6,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
+            'backup.max_files'         => 10,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
             'admin.login_attempts'     => 10,

@@ -45,6 +45,7 @@ class Backupper
             'maxExecutionTime' => 180,
             'name'             => 'formwork-backup',
             'path'             => Formwork::instance()->option('backup.path'),
+            'maxFiles'         => Formwork::instance()->option('backup.max_files'),
             'ignore'           => array(
                 '.git/*',
                 '*.DS_Store',
@@ -88,6 +89,8 @@ class Backupper
             $zip->close();
         }
 
+        $this->deleteOldBackups();
+
         if ($previousMaxExecutionTime !== false) {
             ini_set('max_execution_time', $previousMaxExecutionTime);
         }
@@ -114,5 +117,28 @@ class Backupper
             }
         }
         return true;
+    }
+
+    /**
+     * Delete old backups
+     */
+    protected function deleteOldBackups()
+    {
+        $backups = array();
+
+        foreach (FileSystem::listFiles($this->options['path']) as $file) {
+            $date = FileSystem::lastModifiedTime($this->options['path'] . $file);
+            $backups[$date] = $this->options['path'] . $file;
+        }
+
+        ksort($backups);
+
+        $deletableBackups = count($backups) - $this->options['maxFiles'];
+
+        if ($deletableBackups > 0) {
+            foreach (array_slice($backups, 0, $deletableBackups) as $backup) {
+                FileSystem::delete($backup);
+            }
+        }
     }
 }
