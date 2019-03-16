@@ -109,6 +109,19 @@ class HTTPRequest
     }
 
     /**
+     * Check if the request referer has the same origin
+     *
+     * @param string $path Optional URI path
+     *
+     * @return bool
+     */
+    public static function validateReferer($path = null)
+    {
+        $base = Uri::normalize(Uri::base() . '/' . ltrim($path, '/'));
+        return substr(static::referer(), 0, strlen($base)) === $base;
+    }
+
+    /**
      * Get request origin
      *
      * @return string|null

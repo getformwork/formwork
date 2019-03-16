@@ -84,7 +84,7 @@ trait AdminTrait
      */
     protected function redirectToReferer($code = 302, $default = '/')
     {
-        if (!is_null(HTTPRequest::referer()) && HTTPRequest::referer() !== Uri::current()) {
+        if (HTTPRequest::validateReferer($this->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
             Header::redirect(HTTPRequest::referer(), $code);
         } else {
             Header::redirect($this->uri($default), $code);
