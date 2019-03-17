@@ -42,7 +42,7 @@ login.suspicious-request-detected: Une demande suspecte a été détectée et po
 login.username: Nom d’utilisateur
 modal.action.cancel: Annuler
 modal.action.continue: Continuer
-modal.action.delete: Effacer
+modal.action.delete: Supprimer
 modal.action.save: Enregistrer
 modal.action.upload-file: Téléverser un fichier
 modal.images.no-images: Il n’y a pas d’images ici
@@ -84,7 +84,7 @@ options.system.images.png-compression-level: Niveau de compression PNG
 options.updated: Options mises à jour
 options.updates: Mises à jour
 pages.attributes: Attributs
-pages.change-slug: Modifier l’identifiant de la page ou de l’article
+pages.change-slug: Modifier l’identifiant de l’URL
 pages.change-slug.generate: Générer à partir du titre
 pages.changes.continue: Continuer sans sauvegarder
 pages.changes.detected: Changements détectés
