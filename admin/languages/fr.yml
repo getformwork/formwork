@@ -1,0 +1,237 @@
+admin.manage: Gérer
+admin.panel: Panneau d’administration
+admin.view-site: Voir le site
+backup.backup: Sauvegarde
+backup.error.cannot-download: Impossible de télécharger la sauvegarde. %s.
+backup.error.cannot-download.invalid-filename: Fichier de sauvegarde invalide
+backup.error.cannot-make: Impossible de faire une sauvegarde. %s.
+backup.ready: Sauvegarde prête. Démarrage du téléchargement...
+cache.clear: Vider le cache
+cache.cleared: Cache effacé
+dashboard.dashboard: Tableau de bord
+dashboard.last-modified-pages: Dernières pages éditées
+dashboard.online-users: Utilisateurs en ligne
+dashboard.quick-actions: Actions rapides
+dashboard.statistics: Statistiques
+dashboard.statistics.unique-visitors: Visiteurs uniques
+dashboard.statistics.visits: Visites
+dashboard.welcome: Bienvenue
+date.months.long: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+date.months.short: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc']
+date.today: Aujourd’hui
+date.weekdays.short: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+errors.action.report-to-github: Signaler le problème sur GitHub
+errors.action.return-to-dashboard: Retour au tableau de bord
+errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
+errors.error.forbidden.heading: Oups, permission requise!
+errors.error.forbidden.status: Interdit
+errors.error.internal-server-error.description: Une erreur s’est produite lors du traitement de votre demande. Veuillez vérifier la configuration du CMS ou le journal du serveur pour rechercher des erreurs.
+errors.error.internal-server-error.heading: Oups, quelque chose s’est mal passé!
+errors.error.internal-server-error.status: Erreur Interne du Serveur
+errors.error.not-found.description: La page n’existe pas ou la demande n’est pas valide.
+errors.error.not-found.heading: Oups, page non trouvée!
+errors.error.not-found.status: Pas trouvé
+language.name: Français
+login.attempt.failed: La tentative de connexion a échoué! Réessayer.
+login.attempt.too-many: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
+login.logged-out: Vous avez été déconnecté
+login.login: S’identifier
+login.logout: Déconnexion
+login.password: Mot de passe
+login.suspicious-request-detected: Une demande suspecte a été détectée et pour des raisons de sécurité, vous avez été déconnecté. Veuillez vous reconnecter.
+login.username: Nom d’utilisateur
+modal.action.cancel: Annuler
+modal.action.continue: Continuer
+modal.action.delete: Effacer
+modal.action.save: Sauvegarder
+modal.action.upload-file: Téléverser un fichier
+modal.images.no-images: Il n’y a pas d’images ici
+modal.images.no-images.upload: Veuillez téléverser des images
+modal.images.title: Sélectionnez une image
+options.info: Information
+options.options: Options
+options.site: Site
+options.site.info: Info
+options.site.info.author: Auteur
+options.site.info.description: Description
+options.site.info.language: Langue
+options.site.info.title: Titre
+options.system: Système
+options.system.admin-panel: Panneau d’administration
+options.system.admin-panel.default-language: Langue par défaut
+options.system.admin-panel.logout-redirects-to: Après déconnexion, redirirection vers
+options.system.admin-panel.logout-redirects-to.home: Page d’accueil
+options.system.admin-panel.logout-redirects-to.login: Page d’identification
+options.system.admin-panel.session-timeout: Expiration de la session (min)
+options.system.backup: Sauvegarde
+options.system.backup.backup-files-to-keep: Sauvegardes à conserver sur le serveur
+options.system.cache: Cache
+options.system.cache.disabled: Désactivé
+options.system.cache.enabled: Activé
+options.system.cache.time: Temps de mise cache (sec)
+options.system.date-and-time: Date et heure
+options.system.date-and-time.date-format: Format de la date
+options.system.date-and-time.first-weekday: Premier jour de la semaine
+options.system.date-and-time.first-weekday.monday: Lundi
+options.system.date-and-time.first-weekday.sunday: Dimanche
+options.system.date-and-time.hour-format: Format de l’heure
+options.system.date-and-time.timezone: Fuseau horaire
+options.system.files: Fichers
+options.system.files.allowed-extensions: Extensions autorisées
+options.system.images: Images
+options.system.images.jpeg-quality: Qualité JPEG
+options.system.images.png-compression-level: Niveau de compression PNG
+options.updated: Options mises à jour
+options.updates: Mises à jour
+pages.attributes: Attributs
+pages.change-slug: Edit Slug
+pages.change-slug.generate: Generate From Title
+pages.changes.continue: Continuer sans sauvegarder
+pages.changes.detected: Changements détectés
+pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
+pages.content: Contenu
+pages.delete-file: Supprimer le fichier
+pages.delete-file.prompt: Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
+pages.delete-page: Delete Page
+pages.delete-page.prompt: Êtes-vous sûr de vouloir supprimer cette page ? Cette action est irréversible.
+pages.edit-page: Modifier la page %s
+pages.editor.bold: Gras
+pages.editor.bullet-list: Liste à puce
+pages.editor.image: Image
+pages.editor.italic: Italique
+pages.editor.link: Lien
+pages.editor.numbered-list: Liste ordonnée
+pages.editor.quote: Citer
+pages.editor.summary: Résumé
+pages.files: Fichiers
+pages.files.upload-label: <strong>Cliquez ici</strong> pour choisir un fichier à téléverser ou <strong>glissez-le</strong> dans la zone
+pages.new-page: Nouvelle page
+pages.new-page.parent: Page parent
+pages.new-page.site: Site
+pages.new-page.slug-suggestion: lettres, chiffres et tirets seulement
+pages.new-page.slug: URL de la page
+pages.new-page.template: Modèle (Template)
+pages.new-page.title: Titre
+pages.not-published: Non publié
+pages.not-routable: Non accessible
+pages.options: Options
+pages.page.actions: Actions
+pages.page.cannot-change-num: Impossible de changer le numéro de page
+pages.page.cannot-create: Impossible de créer une page
+pages.page.cannot-create.already-exists: Impossible de créer une page, une page avec le même uri existe déjà
+pages.page.cannot-create.invalid-parent: Impossible de créer une page, page parent non valide
+pages.page.cannot-create.invalid-slug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
+pages.page.cannot-create.invalid-template: Impossible de créer une page, modèle non valide
+pages.page.cannot-create.var-missing: Impossible de créer une page, il manque une variable
+pages.page.cannot-delete-file.file-not-found: Impossible de supprimer le fichier, fichier introuvable
+pages.page.cannot-delete-file.page-not-found: Impossible de supprimer le fichier, page non trouvée
+pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page ne peut être supprimée
+pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
+pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
+pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
+pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parent non valide
+pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
+pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
+pages.page.cannot-edit.page-not-found: Impossible de modifier la page, page non trouvée
+pages.page.cannot-edit.var-missing: Impossible de modifier la page, il manque une variable
+pages.page.cannot-move: Impossible de déplacer la page
+pages.page.cannot-upload-file.page-not-found: Impossible de téléverser le fichier, page introuvable
+pages.page.created: Page créée !
+pages.page.deleted: Page supprimée
+pages.page.edited: Page éditée
+pages.page.file-deleted: Fichier supprimé
+pages.page.last-modified: Dernière modification
+pages.page.moved: Page déplacée !
+pages.page.not-found: Page non trouvée
+pages.page.status: Statut
+pages.page.title: Titre
+pages.pages: Pages
+pages.pages.collapse-all: Tout réduire
+pages.pages.expand-all: Tout développer
+pages.pages.search: Rechercher dans les Pages ...
+pages.parent: Page parent
+pages.preview-file: Aperçu
+pages.preview: Aperçu
+pages.publish: Publier
+pages.save: Enregistrer
+pages.status.not-published: Non publié
+pages.status.not-routable: Non accessible
+pages.status.published: Publié
+pages.template: Modèle
+password-reset.confirm-new-password: Confirmer le nouveau mot de passe
+password-reset.email-sent: Un e-mail a été envoyé à %s avec les instructions pour réinitialiser votre mot de passe.
+password-reset.email: Adresse de courriel
+password-reset.invalid-link: Le lien de réinitialisation du mot de passe est expiré ou non valide. Veuillez réessayer.
+password-reset.new-password: Nouveau mot de passe
+password-reset.password-changed: Le mot de passe a été changé. Veuillez vous connecter avec vos nouveaux identifiants.
+password-reset.password-reset: Réinitialiser le mot de passe
+password-reset.passwords-not-matching: Le nouveau mot de passe et le mot de passe de confirmation ne correspondent pas. Veuillez réessayer.
+password-reset.reset: Réinitialiser
+register.create-user: Le compte admin est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
+register.register: Enregistrer un nouvel utilisateur
+request.error.post-max-size: La demande HTTP POST dépasse la taille maximale autorisée
+updates.available-for-install: est disponible pour l’installation
+updates.check: Vérifier les mises à jour
+updates.install-prompt: Voulez-vous installer la mise à jour ?
+updates.install: Installer
+updates.installed: Mise à jour installée !
+updates.latest-version-available: est la dernière version disponible
+updates.status.cannot-install: Impossible d’installer la mise à jour
+updates.status.checking: Vérification des mises à jour ...
+updates.status.found: Mises à jour trouvées
+updates.status.installing: Installation de mises à jour...
+updates.status.up-to-date: À jour !
+updates.updates: Mises à jour
+uploader.erorr.cannot-write: Échec de l’écriture du fichier sur le disque
+uploader.error: Impossible de télécharger le fichier. %s.
+uploader.error.cannot-write: Échec de l’écriture du fichier sur le disque
+uploader.error.file-name: Nom de fichier non valide
+uploader.error.hidden-files: Impossible de téléverser des fichiers cachés commençant par un point
+uploader.error.mime-type: Type de fichier non autorisé
+uploader.error.no-file: Aucun fichier n’a été téléchargé
+uploader.error.no-temp: Absence du dossier temporaire
+uploader.error.partial: Le fichier envoyé n’a été que partiellement téléversé
+uploader.error.php-extension: Téléversement du fichier arrêté par extension
+uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
+uploader.error.unknown: Erreur de téléchargement inconnue
+uploader.uploaded: Fichier envoyé !
+user.actions: Actions
+user.avatar: Photo de profil
+user.avatar.uploaded: Photo de profil téléversée avec succès.
+user.email: Email
+user.fullname: Nom complet
+user.language: Langue
+user.last-access: Dernier accès
+user.password: Mot de passe
+user.role: Rôle
+user.role.admin: Administrateur
+user.role.user: Utilisateur
+user.username: Nom d’utilisateur
+users.delete-user: Supprimer l’utilisateur
+users.delete-user.prompt: Êtes-vous sûr de vouloir supprimer cet utilisateur? Cette action est irréversible.
+users.new-user: Nouvel utilisateur
+users.new-user.password-suggestion: au moins 8 caractères
+users.new-user.username-suggestion: entre 3-20 lettres, chiffres et tirets
+users.options: Options
+users.user-profile: '%s Profil utilisateur'
+users.user: Utilisateur
+users.user.cannot-change-password: Impossible de changer le mot de passe d’un autre utilisateur. L’action n’est pas autorisée.
+users.user.cannot-change-role: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
+users.user.cannot-create.already-exists: Impossible de créer l’utilisateur, un utilisateur portant le même nom existe déjà
+users.user.cannot-create.var-missing: Impossible de créer l’utilisateur, il manque une variable
+users.user.cannot-delete: Impossible de supprimer l’utilisateur. Vous devez être un administrateur et l’utilisateur ne doit pas être connecté.
+users.user.cannot-edit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.
+users.user.created: Compte utilisateur créé
+users.user.deleted: Utilisateur supprimé
+users.user.edited: Données utilisateur mises à jour
+users.user.not-found: Utilisateur non trouvé
+users.users: Utilisateurs
+zip.error.already-exists: L’archive existe déjà
+zip.error.cannot-open: Impossible d’ouvrir l’archive
+zip.error.cannot-read: Impossible de lire l’archive
+zip.error.inconsistent-archive: Archive incohérente
+zip.error.invalid-argument: Argument invalide
+zip.error.memory-failure: Défaillance de la mémoire
+zip.error.not-found: Archive non trouvée
+zip.error.not-zip-archive: Pas une archive ZIP
+zip.error.unspecified: Erreur non spécifiée
