@@ -7,43 +7,52 @@ fields:
         default: null
         label:
             en: Image
+            fr: Image
             it: Immagine
         placeholder:
             en: No Image
+            fr: Aucune image
             it: Nessuna immagine
     published:
         type: checkbox
         default: true
         label:
             en: Published
+            fr: Publié
             it: Pubblicato
     publish-date:
         type: date
         default: null
         label:
             en: Publish Date
+            fr: Date de publication
             it: Data di pubblicazione
         placeholder:
             en: No Date
+            fr: Aucune date
             it: Nessuna data
     unpublish-date:
         type: date
         default: null
         label:
             en: Unpublish Date
+            fr: Date de péremption
             it: Data di rimozione
         placeholder:
             en: No Date
+            fr: Aucune date
             it: Nessuna data
     routable:
         type: checkbox
         default: true
         label:
             en: Routable
+            fr: Accessible
             it: Raggiungibile
     cacheable:
         type: checkbox
         default: true
         label:
             en: Cacheable
+            fr: Activer le cache
             it: Abilita cache
