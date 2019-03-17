@@ -59,6 +59,11 @@
     background-size: 1rem 1rem;
 }
 
+.input-wrap .image-input {
+    padding-right: $image-input-padding-right + $input-wrap-padding-right;
+    background-position: right ($input-wrap-padding-right + 0.25rem) center;
+}
+
 .tag-input {
     display: block;
     box-sizing: border-box;
