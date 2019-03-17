@@ -7,7 +7,7 @@ fields:
         default: null
         label:
             en: Image
-            fr: Image
+            fr: Image d’accroche
             it: Immagine
         placeholder:
             en: No Image

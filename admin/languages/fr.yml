@@ -42,8 +42,8 @@ login.suspicious-request-detected: Une demande suspecte a été détectée et po
 login.username: Nom d’utilisateur
 modal.action.cancel: Annuler
 modal.action.continue: Continuer
-modal.action.delete: Effacer
-modal.action.save: Sauvegarder
+modal.action.delete: Supprimer
+modal.action.save: Enregistrer
 modal.action.upload-file: Téléverser un fichier
 modal.images.no-images: Il n’y a pas d’images ici
 modal.images.no-images.upload: Veuillez téléverser des images
@@ -84,15 +84,15 @@ options.system.images.png-compression-level: Niveau de compression PNG
 options.updated: Options mises à jour
 options.updates: Mises à jour
 pages.attributes: Attributs
-pages.change-slug: Edit Slug
-pages.change-slug.generate: Generate From Title
+pages.change-slug: Modifier l’identifiant de l’URL
+pages.change-slug.generate: Générer à partir du titre
 pages.changes.continue: Continuer sans sauvegarder
 pages.changes.detected: Changements détectés
 pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
 pages.content: Contenu
 pages.delete-file: Supprimer le fichier
 pages.delete-file.prompt: Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
-pages.delete-page: Delete Page
+pages.delete-page: Supprimer la page
 pages.delete-page.prompt: Êtes-vous sûr de vouloir supprimer cette page ? Cette action est irréversible.
 pages.edit-page: Modifier la page %s
 pages.editor.bold: Gras
@@ -128,7 +128,7 @@ pages.page.cannot-delete-file.page-not-found: Impossible de supprimer le fichier
 pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page ne peut être supprimée
 pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
 pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
-pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
+pages.page.cannot-edit.index-or-error-page-slug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
 pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parent non valide
 pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
 pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
@@ -213,7 +213,7 @@ users.new-user: Nouvel utilisateur
 users.new-user.password-suggestion: au moins 8 caractères
 users.new-user.username-suggestion: entre 3-20 lettres, chiffres et tirets
 users.options: Options
-users.user-profile: '%s Profil utilisateur'
+users.user-profile: 'Profil utilisateur de %s'
 users.user: Utilisateur
 users.user.cannot-change-password: Impossible de changer le mot de passe d’un autre utilisateur. L’action n’est pas autorisée.
 users.user.cannot-change-role: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
