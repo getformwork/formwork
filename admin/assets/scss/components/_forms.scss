@@ -109,6 +109,10 @@ textarea {
     color: $color-gray-xxdark;
     font-size: $font-size-s;
     line-height: $input-line-height;
+    transition: color $transition-time-s;
+    &:hover {
+        color: $color-accent;
+    }
 }
 
 label {

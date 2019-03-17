@@ -589,7 +589,10 @@ textarea {
   right: 0.25rem;
   color: #444;
   font-size: 0.875rem;
-  line-height: 1.5; }
+  line-height: 1.5;
+  transition: color 150ms; }
+  .input-reset:hover {
+    color: #3498da; }
 
 label {
   display: inline-block;
