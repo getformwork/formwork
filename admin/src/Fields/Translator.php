@@ -21,6 +21,13 @@ class Translator
     protected static $ignore = array('name', 'type', 'import', 'fields');
 
     /**
+     * Keys of which array value has to be ignored
+     *
+     * @var array
+     */
+    protected static $ignoreArrayKeys = array('value', 'options');
+
+    /**
      * Translate a field
      */
     public static function translate(Field $field)
@@ -31,6 +38,8 @@ class Translator
                 if (is_array($value)) {
                     if (isset($value[$language])) {
                         $value = $value[$language];
+                    } elseif (!in_array($key, static::$ignoreArrayKeys, true)) {
+                        $value = array_shift($value);
                     }
                 } elseif (!is_string($value)) {
                     continue;
