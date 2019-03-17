@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.10.0](https://github.com/giuscris/formwork/releases/tag/0.10.0) (2019-03-17)
+
+**Enhancements**
+
+ * **Add modal to Pages editor to change page slugs**
+ * **Keep only a maximum number of backup files**
+ * **Validate referer before redirecting**
+ * **Delete invalid cached resources when fetching with** `FilesCache::fetch()`
+ * Validate page slug, parent page and template in Pages controller
+ * Redirect to referer in Pages controller when possible
+ * Add keyboard shortcut for link command (<kbd>CTRL/Cmd + K</kbd>)
+
+**Bug fixes**
+
+ * **Fix error in Register controller which prevented language setting**
+ * **Fix translated fields not switching to fallback language** (closes [#14](https://github.com/giuscris/formwork/issues/14))
+ * Fix `Pages@create` not correctly checking if page already exists
+ * Fix redirect in `Pages@delete`
+
 ## [0.9.6](https://github.com/giuscris/formwork/releases/tag/0.9.6) (2019-03-13)
 
 **Enhancements**
@@ -163,7 +182,7 @@
  * Add `admin.logout_redirect` option to decide where to redirect after logout (Login or Site Home Page)
  * Display loaded php.ini filename in Options > Info tab
  * Add `range` field type
- * Add keyboard shortcut (`CTRL/Cmd + S`) to all views with Save command
+ * Add keyboard shortcut (<kbd>CTRL/Cmd + S</kbd>) to all views with Save command
  * Add nginx.conf file with NGINX rewrite rules
 
 **Bug fixes**
