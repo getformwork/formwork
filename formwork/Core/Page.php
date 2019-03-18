@@ -325,7 +325,7 @@ class Page extends AbstractPage
      */
     public function file($file)
     {
-        return $this->files()->has($file) ? substr($this->path() . $file, strlen(ROOT_PATH)) : null;
+        return $this->files()->has($file) ? substr($this->files()->get($file)->path(), strlen(ROOT_PATH)) : null;
     }
 
     /**
