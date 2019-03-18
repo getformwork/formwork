@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.1](https://github.com/giuscris/formwork/releases/tag/0.10.1) (2019-03-18)
+
+**Enhancements**
+
+ * **Add French language strings**, thanks to @MiFrance
+ * Add input reset button to `image` field
+ * Move strings from template schemes to language files (closes [#15](https://github.com/giuscris/formwork/issues/15))
+
+**Bug fixes**
+
+ * Fix cover image issues (closes [#21](https://github.com/giuscris/formwork/issues/21), closes [#18](https://github.com/giuscris/formwork/issues/18) again)
+ * Fix `cover-image` and `post` templates (closes [#18](https://github.com/giuscris/formwork/issues/18))
+
 ## [0.10.0](https://github.com/giuscris/formwork/releases/tag/0.10.0) (2019-03-17)
 
 **Enhancements**
@@ -10,7 +23,7 @@
  * **Delete invalid cached resources when fetching with** `FilesCache::fetch()`
  * Validate page slug, parent page and template in Pages controller
  * Redirect to referer in Pages controller when possible
- * Add keyboard shortcut for link command (<kbd>CTRL/Cmd + K</kbd>)
+ * Add keyboard shortcut for link command <kbd>CTRL/Cmd + K</kbd>
 
 **Bug fixes**
 
@@ -182,7 +195,7 @@
  * Add `admin.logout_redirect` option to decide where to redirect after logout (Login or Site Home Page)
  * Display loaded php.ini filename in Options > Info tab
  * Add `range` field type
- * Add keyboard shortcut (<kbd>CTRL/Cmd + S</kbd>) to all views with Save command
+ * Add keyboard shortcut <kbd>CTRL/Cmd + S</kbd> to all views with Save command
  * Add nginx.conf file with NGINX rewrite rules
 
 **Bug fixes**
