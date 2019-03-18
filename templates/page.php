@@ -1,8 +1,7 @@
-<?= $this->insert('_header') ?>
+<?= $this->layout('site') ?>
 <?= $this->insert('_cover-image') ?>
     <main>
         <div class="container">
             <?= $page->get('summary') . $page->content() ?>
         </div>
     </main>
-<?= $this->insert('_footer') ?>

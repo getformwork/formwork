@@ -1,4 +1,4 @@
-<?= $this->insert('_header') ?>
+<?= $this->layout('site') ?>
 <?= $this->insert('_cover-image') ?>
 <?php
     if ($page->content()):
@@ -36,4 +36,3 @@
 <?= $this->insert('_pagination') ?>
                 </div>
             </main>
-<?= $this->insert('_footer') ?>
