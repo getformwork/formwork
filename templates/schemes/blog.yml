@@ -13,50 +13,26 @@ fields:
             15: 15
             20: 20
         default: 5
-        label:
-            en: Posts per page
-            fr: Articles par page
-            it: Post per pagina
+        label: '{{pages.page.posts-per-page}}'
     published:
         type: checkbox
         default: true
-        label:
-            en: Published
-            fr: Publié
-            it: Pubblicato
+        label: '{{pages.status.published}}'
     publish-date:
         type: date
         default: null
-        label:
-            en: Publish Date
-            fr: Date de publication
-            it: Data di pubblicazione
-        placeholder:
-            en: No Date
-            fr: Aucune date
-            it: Nessuna data
+        label: '{{pages.page.publish-date}}'
+        placeholder: '{{pages.page.no-date}}'
     unpublish-date:
         type: date
         default: null
-        label:
-            en: Unpublish Date
-            fr: Date de péremption
-            it: Data di rimozione
-        placeholder:
-            en: No Date
-            fr: Aucune date
-            it: Nessuna data
+        label: '{{pages.page.unpublish-date}}'
+        placeholder: '{{pages.page.no-date}}'
     routable:
         type: checkbox
         default: true
-        label:
-            en: Routable
-            fr: Accessible
-            it: Raggiungibile
+        label: '{{pages.status.routable}}'
     cacheable:
         type: checkbox
         default: true
-        label:
-            en: Cacheable
-            fr: Activer le cache
-            it: Cache
+        label: '{{pages.page.cacheable}}'

@@ -116,6 +116,7 @@ pages.not-published: Not published
 pages.not-routable: Non routable
 pages.options: Options
 pages.page.actions: Actions
+pages.page.cacheable: Cacheable
 pages.page.cannot-change-num: Cannot change page number
 pages.page.cannot-create: Cannot create page
 pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
@@ -140,11 +141,17 @@ pages.page.created: Page created!
 pages.page.deleted: Page deleted
 pages.page.edited: Page edited
 pages.page.file-deleted: File deleted
+pages.page.image: Image
 pages.page.last-modified: Last Modified
 pages.page.moved: Page moved!
+pages.page.no-date: No Date
+pages.page.no-image: No Image
 pages.page.not-found: Page not found
+pages.page.posts-per-page: Posts per page
+pages.page.publish-date: Publish Date
 pages.page.status: Status
 pages.page.title: Title
+pages.page.unpublish-date: Unpublish Date
 pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
@@ -157,6 +164,7 @@ pages.save: Save
 pages.status.not-published: Not Published
 pages.status.not-routable: Not Routable
 pages.status.published: Published
+pages.status.routable: Routable
 pages.template: Template
 password-reset.confirm-new-password: Confirm New Password
 password-reset.email-sent: An email has been sent to %s with instructions to reset your password.

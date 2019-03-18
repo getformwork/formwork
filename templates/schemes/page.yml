@@ -4,43 +4,22 @@ fields:
     published:
         type: checkbox
         default: true
-        label:
-            en: Published
-            fr: Publiée
-            it: Pubblicato
+        label: '{{pages.status.published}}'
     publish-date:
         type: date
         default: null
-        label:
-            en: Publish Date
-            fr: Date de publication
-            it: Data di pubblicazione
-        placeholder:
-            en: No Date
-            fr: Aucune date
-            it: Nessuna data
+        label: '{{pages.page.publish-date}}'
+        placeholder: '{{pages.page.no-date}}'
     unpublish-date:
         type: date
         default: null
-        label:
-            en: Unpublish Date
-            fr: Date de péremption
-            it: Data di rimozione
-        placeholder:
-            en: No Date
-            fr: Aucune date
-            it: Nessuna data
+        label: '{{pages.page.unpublish-date}}'
+        placeholder: '{{pages.page.no-date}}'
     routable:
         type: checkbox
         default: true
-        label:
-            en: Routable
-            fr: Accessible
-            it: Raggiungibile
+        label: '{{pages.status.routable}}'
     cacheable:
         type: checkbox
         default: true
-        label:
-            en: Cacheable
-            fr: Activer le cache
-            it: Abilita cache
+        label: '{{pages.page.cacheable}}'

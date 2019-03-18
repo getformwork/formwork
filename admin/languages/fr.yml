@@ -116,6 +116,7 @@ pages.not-published: Non publié
 pages.not-routable: Non accessible
 pages.options: Options
 pages.page.actions: Actions
+pages.page.cacheable: Activer le cache
 pages.page.cannot-change-num: Impossible de changer le numéro de page
 pages.page.cannot-create: Impossible de créer une page
 pages.page.cannot-create.already-exists: Impossible de créer une page, une page avec le même uri existe déjà
@@ -140,11 +141,17 @@ pages.page.created: Page créée !
 pages.page.deleted: Page supprimée
 pages.page.edited: Page éditée
 pages.page.file-deleted: Fichier supprimé
+pages.page.image: Image d’accroche
 pages.page.last-modified: Dernière modification
 pages.page.moved: Page déplacée !
+pages.page.no-date: Aucune date
+pages.page.no-image: Aucune image
 pages.page.not-found: Page non trouvée
+pages.page.posts-per-page: Articles par page
+pages.page.publish-date: Date de publication
 pages.page.status: Statut
 pages.page.title: Titre
+pages.page.unpublish-date: Date de péremption
 pages.pages: Pages
 pages.pages.collapse-all: Tout réduire
 pages.pages.expand-all: Tout développer
@@ -157,6 +164,7 @@ pages.save: Enregistrer
 pages.status.not-published: Non publié
 pages.status.not-routable: Non accessible
 pages.status.published: Publié
+pages.status.routable: Accessible
 pages.template: Modèle
 password-reset.confirm-new-password: Confirmer le nouveau mot de passe
 password-reset.email-sent: Un e-mail a été envoyé à %s avec les instructions pour réinitialiser votre mot de passe.
