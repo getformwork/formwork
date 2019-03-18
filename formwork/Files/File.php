@@ -4,6 +4,7 @@ namespace Formwork\Files;
 
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
+use Formwork\Utils\Uri;
 use LogicException;
 
 class File
@@ -28,6 +29,13 @@ class File
      * @var string
      */
     protected $extension;
+
+    /**
+     * File uri
+     *
+     * @var string
+     */
+    protected $uri;
 
     /**
      * File MIME type
@@ -63,6 +71,19 @@ class File
         $this->mimeType = FileSystem::mimeType($path);
         $this->type = $this->type();
         $this->size = FileSystem::size($path);
+    }
+
+    /**
+     * Get file uri
+     *
+     * @return string|null
+     */
+    public function uri()
+    {
+        if (!is_null($this->uri)) {
+            return $this->uri;
+        }
+        return $this->uri = Uri::resolveRelativeUri($this->name, Uri::relativePath());
     }
 
     /**
