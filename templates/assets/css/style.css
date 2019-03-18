@@ -479,23 +479,11 @@ p {
 }
 
 .cover-image {
-    display: table;
     margin-bottom: 2rem;
-    min-height: 60vh;
+    padding-bottom: 30%;
     width: 100%;
     background-position: center center;
     background-size: cover;
-}
-
-.cover-header {
-    display: table-cell;
-    color: #fff;
-    vertical-align: middle;
-    text-align: center;
-}
-
-.cover-header h1 {
-    font-size: 4.209rem;
 }
 
 .article-title a {
