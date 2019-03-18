@@ -141,15 +141,26 @@ class Template
     }
 
     /**
-     * Insert a partial template
+     * Insert a template
      *
-     * @param string $filename
+     * @param string $name
      * @param array  $vars
      */
-    protected function insert($filename, $vars = array())
+    protected function insert($name, $vars = array())
     {
+        if ($name[0] === '_') {
+            $name = 'partials' . DS . substr($name, 1);
+        }
+
+        $filename = $this->path . $name . $this->extension;
+
+        if (!FileSystem::exists($filename)) {
+            throw new RuntimeException('Template ' . $name . ' not found');
+        }
+
         extract(array_merge($this->vars, $vars));
-        include $this->path . str_replace('_', 'partials' . DS, $filename) . $this->extension;
+
+        include $filename;
     }
 
     /**
