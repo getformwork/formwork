@@ -214,6 +214,9 @@ class Formwork
             } else {
                 $filename = basename($route);
                 $upperLevel = dirname($route);
+                if ($upperLevel === '.') {
+                    $upperLevel = $this->option('pages.index');
+                }
                 if ($parent = $this->site->findPage($upperLevel)) {
                     if ($file = $parent->file($filename)) {
                         return HTTPResponse::file($file);
