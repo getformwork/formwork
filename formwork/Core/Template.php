@@ -43,6 +43,13 @@ class Template
     protected $scheme;
 
     /**
+     * Template layout name
+     *
+     * @var string
+     */
+    protected $layout;
+
+    /**
      * Whether template is being rendered
      *
      * @var bool
@@ -141,6 +148,19 @@ class Template
     }
 
     /**
+     * Set template layout
+     *
+     * @param string $name
+     */
+    protected function layout($name)
+    {
+        if (!is_null($this->layout)) {
+            throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
+        }
+        $this->layout = $name;
+    }
+
+    /**
      * Insert a template
      *
      * @param string $name
@@ -179,7 +199,18 @@ class Template
         ob_start();
 
         static::$rendering = true;
+
         $this->insert($this->name);
+
+        if (!is_null($this->layout)) {
+            $layout = new Template('layouts' . DS . $this->layout);
+            $layout->vars = array_merge($layout->vars, array('content' => ob_get_clean()));
+
+            static::$rendering = false;
+
+            $layout->render();
+        }
+
         static::$rendering = false;
 
         if ($return) {
