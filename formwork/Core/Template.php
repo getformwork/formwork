@@ -204,7 +204,7 @@ class Template
 
         if (!is_null($this->layout)) {
             $layout = new Template('layouts' . DS . $this->layout);
-            $layout->vars = array_merge($layout->vars, array('content' => ob_get_clean()));
+            $layout->vars = array_merge($this->vars, array('content' => ob_get_clean()));
 
             static::$rendering = false;
 
