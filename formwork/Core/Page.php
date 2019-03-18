@@ -452,11 +452,6 @@ class Page extends AbstractPage
         if (is_null($this->num()) || $this->template()->scheme()->get('num') === 'date') {
             $this->data['sortable'] = false;
         }
-
-        // Resolve image URI
-        if ($this->has('image')) {
-            $this->data['image'] = Uri::resolveRelativeUri($this->data['image'], $this->uri());
-        }
     }
 
     public function __toString()
