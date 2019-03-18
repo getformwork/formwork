@@ -40,6 +40,20 @@ class Files extends Collection
     }
 
     /**
+     * Get a file from the collection
+     *
+     * @param string $file
+     *
+     * @return File|null
+     */
+    public function get($file)
+    {
+        if ($this->has($file)) {
+            return $this->items[$file];
+        }
+    }
+
+    /**
      * Get files path
      *
      * @return string
