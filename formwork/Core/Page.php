@@ -111,6 +111,34 @@ class Page extends AbstractPage
     protected $content;
 
     /**
+     * Whether page is published
+     *
+     * @var bool
+     */
+    protected $published;
+
+    /**
+     * Whether page is routable
+     *
+     * @var bool
+     */
+    protected $routable;
+
+    /**
+     * Whether page is visible
+     *
+     * @var bool
+     */
+    protected $visible;
+
+    /**
+     * Whether page is sortable
+     *
+     * @var bool
+     */
+    protected $sortable;
+
+    /**
      * PageCollection containing page siblings
      *
      * @var PageCollection
@@ -435,22 +463,29 @@ class Page extends AbstractPage
      */
     protected function processData()
     {
-        $this->data['visible'] = !is_null($this->num());
+        $this->published = $this->data['published'];
 
-        if ($this->published() && $this->has('publish-date')) {
-            $this->data['published'] = (strtotime($this->get('publish-date')) < time());
-        }
-        if ($this->published() && $this->has('unpublish-date')) {
-            $this->data['published'] = (strtotime($this->get('unpublish-date')) > time());
+        if ($this->has('publish-date')) {
+            $this->published = strtotime($this->get('publish-date')) < time();
         }
 
-        // If the page isn't published, it won't also be visible
-        if (!$this->published()) {
-            $this->data['visible'] = false;
+        if ($this->has('unpublish-date')) {
+            $this->published = strtotime($this->get('unpublish-date')) > time();
         }
+
+        $this->routable = $this->data['routable'];
+
+        $this->visible = !is_null($this->num());
+
+        // If the page isn't published or routable, it won't also be visible
+        if (!$this->published || !$this->routable) {
+            $this->visible = false;
+        }
+
+        $this->sortable = $this->data['sortable'];
 
         if (is_null($this->num()) || $this->template()->scheme()->get('num') === 'date') {
-            $this->data['sortable'] = false;
+            $this->sortable = false;
         }
     }
 
