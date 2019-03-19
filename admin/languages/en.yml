@@ -152,6 +152,7 @@ pages.page.publish-date: Publish Date
 pages.page.status: Status
 pages.page.title: Title
 pages.page.unpublish-date: Unpublish Date
+pages.page.visible: Visible in the menu
 pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All

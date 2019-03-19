@@ -178,6 +178,7 @@ class Page extends AbstractPage
         return array(
             'published'  => true,
             'routable'   => true,
+            'visible'    => !is_null($this->num()),
             'searchable' => true,
             'cacheable'  => true,
             'sortable'   => true
@@ -475,7 +476,7 @@ class Page extends AbstractPage
 
         $this->routable = $this->data['routable'];
 
-        $this->visible = !is_null($this->num());
+        $this->visible = $this->data['visible'];
 
         // If the page isn't published or routable, it won't also be visible
         if (!$this->published || !$this->routable) {

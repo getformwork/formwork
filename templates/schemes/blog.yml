@@ -32,6 +32,10 @@ fields:
         type: checkbox
         default: true
         label: '{{pages.status.routable}}'
+    visible:
+        type: checkbox
+        default: true
+        label: '{{pages.page.visible}}'
     cacheable:
         type: checkbox
         default: true
