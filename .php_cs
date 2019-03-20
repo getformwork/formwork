@@ -10,7 +10,7 @@ return Config::create()
     ->setRules(array(
         '@PSR1' => true,
         '@PSR2' => true,
-        'binary_operator_spaces' => array('default' => 'single_space', 'operators' => array('=>' => null)),
+        'binary_operator_spaces' => array('default' => 'single_space', 'operators' => array('=>' => 'align')),
         'cast_spaces' => array('space' => 'single'),
         'class_attributes_separation' => true,
         'concat_space' => array('spacing' => 'one'),
