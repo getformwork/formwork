@@ -23,7 +23,7 @@ class Updates extends AbstractController
         } else {
             JSONResponse::success($this->label('updates.status.found'), 200, array(
                 'uptodate' => false,
-                'release' => $updater->latestRelease()
+                'release'  => $updater->latestRelease()
             ))->send();
         }
     }

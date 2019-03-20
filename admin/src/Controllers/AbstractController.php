@@ -109,7 +109,7 @@ abstract class AbstractController
     protected function defaults()
     {
         return array(
-            'location' => $this->location,
+            'location'  => $this->location,
             'csrfToken' => CSRFToken::get()
         );
     }

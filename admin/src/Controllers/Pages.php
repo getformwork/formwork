@@ -42,21 +42,21 @@ class Pages extends AbstractController
 
         $this->modal('newPage', array(
             'templates' => $this->site()->templates(),
-            'pages' => $this->site()->descendants()->sort('path')
+            'pages'     => $this->site()->descendants()->sort('path')
         ));
 
         $this->modal('deletePage');
 
         $this->view('admin', array(
-            'title' => $this->label('pages.pages'),
+            'title'   => $this->label('pages.pages'),
             'content' => $this->view('pages.index', array(
                 'pagesList' => $this->view('pages.list', array(
-                    'pages' => $this->site()->pages(),
+                    'pages'    => $this->site()->pages(),
                     'subpages' => true,
-                    'class' => 'pages-list-top',
-                    'parent' => '.',
+                    'class'    => 'pages-list-top',
+                    'parent'   => '.',
                     'sortable' => $this->user()->permissions()->has('pages.reorder'),
-                    'headers' => true
+                    'headers'  => true
                 ), false)
             ), false)
         ));
@@ -143,18 +143,18 @@ class Pages extends AbstractController
         $this->modal('deleteFile');
 
         $this->view('admin', array(
-            'title' => $this->label('pages.edit-page', $page->title()),
+            'title'   => $this->label('pages.edit-page', $page->title()),
             'content' => $this->view('pages.editor', array(
-                'page' => $page,
-                'fields' => $this->fields($fields, false),
-                'templates' => $this->site()->templates(),
-                'parents' => $this->site()->descendants()->sort('path'),
+                'page'              => $page,
+                'fields'            => $this->fields($fields, false),
+                'templates'         => $this->site()->templates(),
+                'parents'           => $this->site()->descendants()->sort('path'),
                 'datePickerOptions' => array(
-                    'dayLabels' => $this->label('date.weekdays.short'),
+                    'dayLabels'   => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
-                    'weekStarts' => $this->option('date.week_starts'),
-                    'todayLabel' => $this->label('date.today'),
-                    'format' => strtr(
+                    'weekStarts'  => $this->option('date.week_starts'),
+                    'todayLabel'  => $this->label('date.today'),
+                    'format'      => strtr(
                         $this->option('date.format'),
                         array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a')
                     )

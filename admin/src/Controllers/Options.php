@@ -51,10 +51,10 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('admin', array(
-            'title' => $this->label('options.options'),
+            'title'   => $this->label('options.options'),
             'content' => $this->view('options.system', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tabs' => $this->tabs,
+                    'tabs'    => $this->tabs,
                     'current' => 'system'
                 ), false),
                 'fields' => $this->fields($fields, false)
@@ -90,10 +90,10 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('admin', array(
-            'title' => $this->label('options.options'),
+            'title'   => $this->label('options.options'),
             'content' => $this->view('options.site', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tabs' => $this->tabs,
+                    'tabs'    => $this->tabs,
                     'current' => 'site'
                 ), false),
                 'fields' => $this->fields($fields, false)
@@ -109,10 +109,10 @@ class Options extends AbstractController
         $this->ensurePermission('options.updates');
 
         $this->view('admin', array(
-            'title' => $this->label('options.updates'),
+            'title'   => $this->label('options.updates'),
             'content' => $this->view('options.updates', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tabs' => $this->tabs,
+                    'tabs'    => $this->tabs,
                     'current' => 'updates'
                 ), false),
                 'currentVersion' => Formwork::VERSION
@@ -131,60 +131,60 @@ class Options extends AbstractController
 
         $data = @array(
             'PHP' => array(
-                'Version' => PHP_VERSION,
-                'Operating System' => php_uname(),
-                'Server API' => PHP_SAPI,
-                'Loaded php.ini' => php_ini_loaded_file(),
-                'Loaded Extensions' => implode(', ', get_loaded_extensions()),
-                'Stream Wrappers' => implode(', ', stream_get_wrappers()),
+                'Version'             => PHP_VERSION,
+                'Operating System'    => php_uname(),
+                'Server API'          => PHP_SAPI,
+                'Loaded php.ini'      => php_ini_loaded_file(),
+                'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
+                'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
             ),
-            'HTTP Request Headers' => HTTPRequest::headers(),
+            'HTTP Request Headers'  => HTTPRequest::headers(),
             'HTTP Response Headers' => HTTPResponse::headers(),
-            'Server' => array(
-                'IP Address' => $_SERVER['SERVER_ADDR'],
-                'Port' => $_SERVER['SERVER_PORT'],
-                'Name' => $_SERVER['SERVER_NAME'],
-                'Software' => $_SERVER['SERVER_SOFTWARE'],
-                'Protocol' => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS' => HTTPRequest::isHTTPS() ? 'on' : 'off',
+            'Server'                => array(
+                'IP Address'   => $_SERVER['SERVER_ADDR'],
+                'Port'         => $_SERVER['SERVER_PORT'],
+                'Name'         => $_SERVER['SERVER_NAME'],
+                'Software'     => $_SERVER['SERVER_SOFTWARE'],
+                'Protocol'     => $_SERVER['SERVER_PROTOCOL'],
+                'HTTPS'        => HTTPRequest::isHTTPS() ? 'on' : 'off',
                 'Request Time' => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
             ),
             'Client' => array(
                 'IP Address' => HTTPRequest::ip(),
-                'Port' => $_SERVER['REMOTE_PORT']
+                'Port'       => $_SERVER['REMOTE_PORT']
             ),
             'Session' => array(
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Strict Mode' => ini_get('session.use_strict_mode') ? 'true' : 'false'
+                'Session Strict Mode'     => ini_get('session.use_strict_mode') ? 'true' : 'false'
             ),
             'Uploads' => array(
-                'File Uploads' => ini_get('file_uploads') ? 'true' : 'false',
-                'POST Max Size' => ini_get('post_max_size'),
-                'Maximum File Size' => ini_get('upload_max_filesize'),
+                'File Uploads'         => ini_get('file_uploads') ? 'true' : 'false',
+                'POST Max Size'        => ini_get('post_max_size'),
+                'Maximum File Size'    => ini_get('upload_max_filesize'),
                 'Maximum File Uploads' => ini_get('max_file_uploads')
             ),
             'Script' => array(
                 'Max Execution Time' => ini_get('max_execution_time'),
-                'Max Input Time' => ini_get('max_input_time'),
-                'Memory Limit' => ini_get('memory_limit'),
-                'Default MIME-Type' => ini_get('default_mimetype'),
-                'Default Charset' => ini_get('default_charset')
+                'Max Input Time'     => ini_get('max_input_time'),
+                'Memory Limit'       => ini_get('memory_limit'),
+                'Default MIME-Type'  => ini_get('default_mimetype'),
+                'Default Charset'    => ini_get('default_charset')
             ),
             'System' => array(
                 'Directory Separator' => DS,
-                'EOL Symbol' => addcslashes(PHP_EOL, "\r\n")
+                'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n")
             ),
             'Formwork' => array(
                 'Formwork Version' => Formwork::VERSION,
-                'Root Path' => ROOT_PATH,
-                'Formwork Path' => FORMWORK_PATH,
-                'Config Path' => CONFIG_PATH
+                'Root Path'        => ROOT_PATH,
+                'Formwork Path'    => FORMWORK_PATH,
+                'Config Path'      => CONFIG_PATH
             ),
             'Dependencies' => array(
-                'Parsedown Version' => $dependencies['erusev/parsedown']['version'],
+                'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
                 'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
-                'Spyc Version' => $dependencies['mustangostang/spyc']['version']
+                'Spyc Version'            => $dependencies['mustangostang/spyc']['version']
             )
         );
 
@@ -192,10 +192,10 @@ class Options extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         $this->view('admin', array(
-            'title' => $this->label('options.options'),
+            'title'   => $this->label('options.options'),
             'content' => $this->view('options.info', array(
                 'tabs' => $this->view('options.tabs', array(
-                    'tabs' => $this->tabs,
+                    'tabs'    => $this->tabs,
                     'current' => 'info'
                 ), false),
                 'info' => $data

@@ -248,9 +248,9 @@ class Updater
         }
 
         $this->release = array(
-            'name' => $data['name'],
-            'tag'  => $data['tag_name'],
-            'date' => strtotime($data['published_at']),
+            'name'    => $data['name'],
+            'tag'     => $data['tag_name'],
+            'date'    => strtotime($data['published_at']),
             'archive' => $data['zipball_url']
         );
     }

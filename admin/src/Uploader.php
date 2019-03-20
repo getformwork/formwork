@@ -86,7 +86,7 @@ class Uploader
         );
         return array(
             'allowedMimeTypes' => $mimeTypes,
-            'overwrite' => false,
+            'overwrite'        => false,
         );
     }
 

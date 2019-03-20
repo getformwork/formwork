@@ -76,7 +76,7 @@ class Authentication extends AbstractController
 
                 $this->error($this->label('login.attempt.failed'), array(
                     'username' => $data->get('username'),
-                    'error' => true
+                    'error'    => true
                 ));
 
                 break;

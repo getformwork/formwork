@@ -200,10 +200,10 @@ class Pagination
     public function __debugInfo()
     {
         return array(
-            'count' => $this->count,
-            'length' => $this->length,
-            'pages' => $this->pages,
-            'currentPage' => $this->currentPage,
+            'count'        => $this->count,
+            'length'       => $this->length,
+            'pages'        => $this->pages,
+            'currentPage'  => $this->currentPage,
             'previousPage' => $this->previousPageUri()
         );
     }
