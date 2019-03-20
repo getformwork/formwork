@@ -1,4 +1,10 @@
 # Formwork
+
+![GitHub Release Date](https://img.shields.io/github/release-date/giuscris/formwork.svg)
+![GitHub All Releases](https://img.shields.io/github/downloads/giuscris/formwork/total.svg)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/giuscris/formwork.svg)
+![PHP from Packagist](https://img.shields.io/packagist/php-v/giuscris/formwork.svg)
+
 Formwork is a flat file-based Content Management System (CMS) to make and manage simple sites.
 
 Latest version: [**0.10.1**](https://github.com/giuscris/formwork/releases/tag/0.10.1) | [**Changelog**](CHANGELOG.md)
