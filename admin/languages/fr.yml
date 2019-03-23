@@ -5,7 +5,7 @@ backup.backup: Sauvegarde
 backup.error.cannot-download: Impossible de télécharger la sauvegarde. %s.
 backup.error.cannot-download.invalid-filename: Fichier de sauvegarde invalide
 backup.error.cannot-make: Impossible de faire une sauvegarde. %s.
-backup.ready: Sauvegarde prête. Démarrage du téléchargement...
+backup.ready: Sauvegarde prête. Démarrage du téléchargement…
 cache.clear: Vider le cache
 cache.cleared: Cache effacé
 dashboard.dashboard: Tableau de bord
@@ -44,12 +44,12 @@ modal.action.cancel: Annuler
 modal.action.continue: Continuer
 modal.action.delete: Supprimer
 modal.action.save: Enregistrer
-modal.action.upload-file: Téléverser un fichier
-modal.images.no-images: Il n’y a pas d’images ici
-modal.images.no-images.upload: Veuillez téléverser des images
-modal.images.title: Sélectionnez une image
+modal.action.upload-file: Parcourir…
+modal.images.no-images: Aucun fichier média n’a été trouvé.
+modal.images.no-images.upload: Sélectionnez vos fichiers à téléverser.
+modal.images.title: Bibliothèque de médias
 options.info: Information
-options.options: Options
+options.options: Paramètres
 options.site: Site
 options.site.info: Info
 options.site.info.author: Auteur
@@ -59,7 +59,7 @@ options.site.info.title: Titre
 options.system: Système
 options.system.admin-panel: Panneau d’administration
 options.system.admin-panel.default-language: Langue par défaut
-options.system.admin-panel.logout-redirects-to: Après déconnexion, redirirection vers
+options.system.admin-panel.logout-redirects-to: Après déconnexion, redirection vers
 options.system.admin-panel.logout-redirects-to.home: Page d’accueil
 options.system.admin-panel.logout-redirects-to.login: Page d’identification
 options.system.admin-panel.session-timeout: Expiration de la session (min)
@@ -70,13 +70,13 @@ options.system.cache.disabled: Désactivé
 options.system.cache.enabled: Activé
 options.system.cache.time: Temps de mise cache (sec)
 options.system.date-and-time: Date et heure
-options.system.date-and-time.date-format: Format de la date
-options.system.date-and-time.first-weekday: Premier jour de la semaine
+options.system.date-and-time.date-format: Format de date
+options.system.date-and-time.first-weekday: La semaine débute le
 options.system.date-and-time.first-weekday.monday: Lundi
 options.system.date-and-time.first-weekday.sunday: Dimanche
-options.system.date-and-time.hour-format: Format de l’heure
+options.system.date-and-time.hour-format: Format d’heure
 options.system.date-and-time.timezone: Fuseau horaire
-options.system.files: Fichers
+options.system.files: Fichiers
 options.system.files.allowed-extensions: Extensions autorisées
 options.system.images: Images
 options.system.images.jpeg-quality: Qualité JPEG
@@ -84,8 +84,8 @@ options.system.images.png-compression-level: Niveau de compression PNG
 options.updated: Options mises à jour
 options.updates: Mises à jour
 pages.attributes: Attributs
-pages.change-slug: Modifier l’identifiant de l’URL
-pages.change-slug.generate: Générer à partir du titre
+pages.change-slug: Modifier le permalien
+pages.change-slug.generate: Générer automatiquement à partir du titre
 pages.changes.continue: Continuer sans sauvegarder
 pages.changes.detected: Changements détectés
 pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
@@ -104,23 +104,23 @@ pages.editor.numbered-list: Liste ordonnée
 pages.editor.quote: Citer
 pages.editor.summary: Résumé
 pages.files: Fichiers
-pages.files.upload-label: <strong>Cliquez ici</strong> pour choisir un fichier à téléverser ou <strong>glissez-le</strong> dans la zone
+pages.files.upload-label: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
 pages.new-page: Nouvelle page
-pages.new-page.parent: Page parent
+pages.new-page.parent: Parent
 pages.new-page.site: Site
 pages.new-page.slug-suggestion: lettres, chiffres et tirets seulement
-pages.new-page.slug: URL de la page
+pages.new-page.slug: Permalien
 pages.new-page.template: Modèle (Template)
 pages.new-page.title: Titre
-pages.not-published: Non publié
-pages.not-routable: Non accessible
+pages.not-published: Brouillon
+pages.not-routable: Inaccessible
 pages.options: Options
 pages.page.actions: Actions
 pages.page.cacheable: Activer le cache
 pages.page.cannot-change-num: Impossible de changer le numéro de page
 pages.page.cannot-create: Impossible de créer une page
 pages.page.cannot-create.already-exists: Impossible de créer une page, une page avec le même uri existe déjà
-pages.page.cannot-create.invalid-parent: Impossible de créer une page, page parent non valide
+pages.page.cannot-create.invalid-parent: Impossible de créer une page, page parente non valide
 pages.page.cannot-create.invalid-slug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
 pages.page.cannot-create.invalid-template: Impossible de créer une page, modèle non valide
 pages.page.cannot-create.var-missing: Impossible de créer une page, il manque une variable
@@ -130,7 +130,7 @@ pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page
 pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
 pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
 pages.page.cannot-edit.index-or-error-page-slug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
-pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parent non valide
+pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parente non valide
 pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
 pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
 pages.page.cannot-edit.page-not-found: Impossible de modifier la page, page non trouvée
@@ -156,20 +156,20 @@ pages.page.visible: Visible dans le menu
 pages.pages: Pages
 pages.pages.collapse-all: Tout réduire
 pages.pages.expand-all: Tout développer
-pages.pages.search: Rechercher dans les Pages ...
-pages.parent: Page parent
+pages.pages.search: Rechercher dans les Pages…
+pages.parent: Parent
 pages.preview-file: Aperçu
 pages.preview: Aperçu
 pages.publish: Publier
 pages.save: Enregistrer
-pages.status.not-published: Non publié
-pages.status.not-routable: Non accessible
+pages.status.not-published: Brouillon
+pages.status.not-routable: Inaccessible
 pages.status.published: Publié
 pages.status.routable: Accessible
 pages.template: Modèle
 password-reset.confirm-new-password: Confirmer le nouveau mot de passe
 password-reset.email-sent: Un e-mail a été envoyé à %s avec les instructions pour réinitialiser votre mot de passe.
-password-reset.email: Adresse de courriel
+password-reset.email: Adresse de messagerie
 password-reset.invalid-link: Le lien de réinitialisation du mot de passe est expiré ou non valide. Veuillez réessayer.
 password-reset.new-password: Nouveau mot de passe
 password-reset.password-changed: Le mot de passe a été changé. Veuillez vous connecter avec vos nouveaux identifiants.
@@ -186,9 +186,9 @@ updates.install: Installer
 updates.installed: Mise à jour installée !
 updates.latest-version-available: est la dernière version disponible
 updates.status.cannot-install: Impossible d’installer la mise à jour
-updates.status.checking: Vérification des mises à jour ...
+updates.status.checking: Vérification des mises à jour…
 updates.status.found: Mises à jour trouvées
-updates.status.installing: Installation de mises à jour...
+updates.status.installing: Installation de mises à jour…
 updates.status.up-to-date: À jour !
 updates.updates: Mises à jour
 uploader.erorr.cannot-write: Échec de l’écriture du fichier sur le disque
@@ -207,14 +207,14 @@ uploader.uploaded: Fichier envoyé !
 user.actions: Actions
 user.avatar: Photo de profil
 user.avatar.uploaded: Photo de profil téléversée avec succès.
-user.email: Email
+user.email: Adresse de messagerie
 user.fullname: Nom complet
 user.language: Langue
 user.last-access: Dernier accès
 user.password: Mot de passe
 user.role: Rôle
 user.role.admin: Administrateur
-user.role.user: Utilisateur
+user.role.user: Éditeur
 user.username: Nom d’utilisateur
 users.delete-user: Supprimer l’utilisateur
 users.delete-user.prompt: Êtes-vous sûr de vouloir supprimer cet utilisateur? Cette action est irréversible.
@@ -232,7 +232,7 @@ users.user.cannot-delete: Impossible de supprimer l’utilisateur. Vous devez ê
 users.user.cannot-edit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.
 users.user.created: Compte utilisateur créé
 users.user.deleted: Utilisateur supprimé
-users.user.edited: Données utilisateur mises à jour
+users.user.edited: Profil utilisateur mises à jour
 users.user.not-found: Utilisateur non trouvé
 users.users: Utilisateurs
 zip.error.already-exists: L’archive existe déjà
@@ -242,5 +242,5 @@ zip.error.inconsistent-archive: Archive incohérente
 zip.error.invalid-argument: Argument invalide
 zip.error.memory-failure: Défaillance de la mémoire
 zip.error.not-found: Archive non trouvée
-zip.error.not-zip-archive: Pas une archive ZIP
+zip.error.not-zip-archive: N’est pas une archive ZIP
 zip.error.unspecified: Erreur non spécifiée
