@@ -174,6 +174,7 @@ class Site extends AbstractPage
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
         if ($render) {
+            $this->currentPage = $errorPage;
             Header::status(404);
             $errorPage->render();
             exit;
