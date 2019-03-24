@@ -50,6 +50,13 @@ class Template
     protected $layout;
 
     /**
+     * Template layout content
+     *
+     * @var string
+     */
+    protected $layoutContent;
+
+    /**
      * Whether template is being rendered
      *
      * @var bool
@@ -161,6 +168,19 @@ class Template
     }
 
     /**
+     * Get layout contents
+     *
+     * @return string|null
+     */
+    protected function content()
+    {
+        if (is_null($this->layoutContent)) {
+            throw new RuntimeException(__METHOD__ . ' is allowed only in template layouts');
+        }
+        return $this->layoutContent;
+    }
+
+    /**
      * Insert a template
      *
      * @param string $name
@@ -204,7 +224,9 @@ class Template
 
         if (!is_null($this->layout)) {
             $layout = new Template('layouts' . DS . $this->layout);
-            $layout->vars = array_merge($this->vars, array('content' => ob_get_contents()));
+            $layout->vars = $this->vars;
+
+            $layout->layoutContent = ob_get_contents();
             ob_clean(); // Clean but don't end output buffer
 
             static::$rendering = false;
