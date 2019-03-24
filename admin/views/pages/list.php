@@ -57,12 +57,12 @@
                         $sortableChildren = $page->get('sortable-children', $scheme->get('sortable-children', true));
 
                         $this->view('pages.list', array(
-                            'pages' =>  $reverseChildren ? $page->children()->reverse() : $page->children(),
+                            'pages'    => $reverseChildren ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
-                            'class' => 'pages-children',
-                            'parent' => $sortableChildren ? $page->route() : null,
+                            'class'    => 'pages-children',
+                            'parent'   => $sortableChildren ? $page->route() : null,
                             'sortable' => $sortable && $sortableChildren,
-                            'headers' => false
+                            'headers'  => false
                         ));
 
                     endif;
