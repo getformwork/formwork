@@ -456,7 +456,7 @@ class Page extends AbstractPage
         if (!empty($summary)) {
             $this->summary = $this->contentParser()->text($summary);
         }
-        $this->content = $this->contentParser()->text($body);
+        $this->content = $this->summary . $this->contentParser()->text($body);
     }
 
     /**
