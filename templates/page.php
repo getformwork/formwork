@@ -1,7 +1,8 @@
 <?= $this->layout('site') ?>
-<?= $this->insert('_cover-image') ?>
-    <main>
-        <div class="container">
+<main>
+    <div class="container">
+        <article>
             <?= $page->content() ?>
-        </div>
-    </main>
+        </article>
+    </div>
+</main>

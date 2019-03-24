@@ -18,7 +18,6 @@ body {
 
 * {
     box-sizing: inherit;
-    line-height: inherit;
 }
 
 a {
@@ -35,24 +34,20 @@ img {
     max-width: 100%;
 }
 
+main {
+    padding: 2rem 0;
+}
+
+footer {
+    padding: 2rem 0;
+}
+
+article {
+    margin-bottom: 2rem;
+}
+
 hr {
     border: 1px solid #e4e4e4;
-}
-
-.header {
-    margin-bottom: 2rem;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    background-color: #3498da;
-    color: #fff;
-    text-align: center;
-}
-
-.footer {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    background-color: #f0f0f0;
 }
 
 .disabled,
@@ -110,51 +105,34 @@ hr {
     }
 }
 
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3,
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     font-weight: 600;
     line-height: 1.2;
 }
 
-h1,
-.h1 {
+h1, .h1 {
     font-size: 2.369rem;
 }
 
-h2,
-.h2 {
+h2, .h2 {
     font-size: 2.104rem;
 }
 
-h3,
-.h3 {
+h3, .h3 {
     font-size: 1.777rem;
 }
 
-h4,
-.h4 {
+h4, .h4 {
     font-size: 1.579rem;
 }
 
-h5,
-.h5 {
+h5, .h5 {
     font-size: 1.184rem;
 }
 
-h6,
-.h6 {
+h6, .h6 {
     font-size: 1rem;
 }
 
@@ -275,21 +253,16 @@ tr {
     padding-left: 15px;
 }
 
-.container,
-.container-full {
-    *zoom: 1;
-}
-
-.container:before,
-.container:after,
-.container-full:before,
-.container-full:after {
+.container::before,
+.container::after,
+.container-full::before,
+.container-full::after {
     display: table;
     content: ' ';
 }
 
-.container:after,
-.container-full:after {
+.container::after,
+.container-full::after {
     clear: both;
 }
 
@@ -315,9 +288,6 @@ tr {
 .menu-header,
 .menu-item {
     padding: 0.75rem 1rem;
-
-    -webkit-user-select: none;
-            user-select: none;
 }
 
 .menu-header {
@@ -445,9 +415,6 @@ button,
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.15;
     cursor: default;
-
-    -webkit-user-select: none;
-            user-select: none;
 }
 
 button:hover,
@@ -462,22 +429,6 @@ button:focus,
     box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.3);
 }
 
-img {
-    max-width: 100%;
-}
-
-main {
-    margin: 2rem 0;
-}
-
-article {
-    margin-bottom: 2rem;
-}
-
-p {
-    line-height: 1.618;
-}
-
 .cover-image {
     margin-bottom: 2rem;
     padding-bottom: 30%;
@@ -490,15 +441,11 @@ p {
     color: inherit;
 }
 
-footer {
-    margin-top: 1rem;
-    padding: 2rem 0;
-}
-
 .pagination {
     overflow: auto;
-    margin: 0.5rem auto;
-    max-width: 38rem;
+    margin: auto;
+    margin-bottom: 1rem;
+    max-width: 20rem;
 }
 
 .pagination-previous {
