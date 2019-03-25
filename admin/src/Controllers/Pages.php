@@ -364,7 +364,7 @@ class Pages extends AbstractController
 
         // Handle data from fields
         foreach ($fields as $field) {
-            $empty = is_null($field->value()) || $field->value() === '';
+            $empty = is_null($field->value()) || $field->value() === '' || $field->value() === array();
             $default = isset($page->defaults()[$field->name()]) && $field->value() === $page->defaults()[$field->name()];
 
             // Remove empty and default values
