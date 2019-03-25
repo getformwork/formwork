@@ -11,6 +11,7 @@
     <?php foreach ($posts as $post): ?>
         <article>
             <h1 class="article-title"><a href="<?= $post->uri() ?>"><?= $post->title() ?></a></h1>
+            <?= $this->insert('_tags', array('post' => $post, 'blog' => $page)) ?>
             <?php if ($post->summary()): ?>
                 <?= $post->summary() ?>
             <?php else: ?>

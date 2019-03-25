@@ -165,6 +165,8 @@ class Formwork
         $this->router->add(array(
             '/',
             '/page/{paginationPage:num}/',
+            '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
+            '/{page}/tag/{tagName:aln}/',
             '/{page}/page/{paginationPage:num}/',
             '/{page}/'
         ), $this->defaultRoute());

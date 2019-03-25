@@ -7,6 +7,9 @@ fields:
         default: null
         label: '{{pages.page.image}}'
         placeholder: '{{pages.page.no-image}}'
+    tags:
+        type: tags
+        label: '{{pages.page.tags}}'
     published:
         type: checkbox
         default: true
@@ -25,10 +28,6 @@ fields:
         type: checkbox
         default: true
         label: '{{pages.status.routable}}'
-    visible:
-        type: checkbox
-        default: true
-        label: '{{pages.page.visible}}'
     cacheable:
         type: checkbox
         default: true
