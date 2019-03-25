@@ -143,7 +143,7 @@ class Validator
                 return static::regex($item, $pattern);
             });
         }
-        return $tags;
+        return array_filter($tags);
     }
 
     /**
