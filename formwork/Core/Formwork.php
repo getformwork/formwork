@@ -7,7 +7,6 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Uri;
@@ -205,9 +204,6 @@ class Formwork
             }
 
             if ($page = $this->site->findPage($route)) {
-                if ($params->get('paginationPage') == 1) {
-                    Header::redirect($page->uri(), 301);
-                }
                 if ($page->routable() && $page->published()) {
                     return $page;
                 }
