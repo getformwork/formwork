@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.10.2](https://github.com/giuscris/formwork/releases/tag/0.10.2) (2019-03-26)
+
+**Enhancements**
+
+ * **Add tags to blog posts** (closes [#27](https://github.com/giuscris/formwork/issues/27))
+ * **Add templates inheritance with** `Template::layout()`
+ * **Update default templates with new layout feature**
+ * Improve `Template::insert()` providing filename checks
+ * Make index page files available at `/` route
+ * Add `visible` checkbox field to template schemes
+ * Use `Page::content()` to get also the summary
+ * Update base URI logic in `Pagination` class
+ * Better French translation, thanks to @MiFrance
+ * Allow `tagName` and `paginationPage` route params only for listing pages
+ * Remove unused language strings
+
+**Bug fixes**
+
+ * Fix `Page::processData()` directly overwriting data
+ * Fix `Site::errorPage()` not setting `Site::currentPage()` when rendering
+ * Fix empty array not considered as such in Pages controller
+ * Fix `Validator::validateTags()` not filtering empty tags
+ * Fix New User modal auto-completing username and password
+
 ## [0.10.1](https://github.com/giuscris/formwork/releases/tag/0.10.1) (2019-03-18)
 
 **Enhancements**
