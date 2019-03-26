@@ -206,6 +206,11 @@ class Formwork
             }
 
             if ($page = $this->site->findPage($route)) {
+                if ($params->has('tagName') || $params->has('paginationPage')) {
+                    if ($page->template()->scheme()->get('type') !== 'listing') {
+                        return $this->site->errorPage(true);
+                    }
+                }
                 if ($page->routable() && $page->published()) {
                     return $page;
                 }
