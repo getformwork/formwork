@@ -10,7 +10,6 @@ cache.clear: Vider le cache
 cache.cleared: Cache effacé
 dashboard.dashboard: Tableau de bord
 dashboard.last-modified-pages: Dernières pages éditées
-dashboard.online-users: Utilisateurs en ligne
 dashboard.quick-actions: Actions rapides
 dashboard.statistics: Statistiques
 dashboard.statistics.unique-visitors: Visiteurs uniques
@@ -31,7 +30,6 @@ errors.error.internal-server-error.status: Erreur Interne du Serveur
 errors.error.not-found.description: La page n’existe pas ou la demande n’est pas valide.
 errors.error.not-found.heading: Oups, page non trouvée!
 errors.error.not-found.status: Pas trouvé
-language.name: Français
 login.attempt.failed: La tentative de connexion a échoué! Réessayer.
 login.attempt.too-many: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
 login.logged-out: Vous avez été déconnecté
@@ -112,8 +110,6 @@ pages.new-page.slug-suggestion: lettres, chiffres et tirets seulement
 pages.new-page.slug: Permalien
 pages.new-page.template: Modèle (Template)
 pages.new-page.title: Titre
-pages.not-published: Brouillon
-pages.not-routable: Inaccessible
 pages.options: Options
 pages.page.actions: Actions
 pages.page.cacheable: Activer le cache
@@ -161,22 +157,12 @@ pages.pages.search: Rechercher dans les Pages…
 pages.parent: Parent
 pages.preview-file: Aperçu
 pages.preview: Aperçu
-pages.publish: Publier
 pages.save: Enregistrer
 pages.status.not-published: Brouillon
 pages.status.not-routable: Inaccessible
 pages.status.published: Publié
 pages.status.routable: Accessible
 pages.template: Modèle
-password-reset.confirm-new-password: Confirmer le nouveau mot de passe
-password-reset.email-sent: Un e-mail a été envoyé à %s avec les instructions pour réinitialiser votre mot de passe.
-password-reset.email: Adresse de messagerie
-password-reset.invalid-link: Le lien de réinitialisation du mot de passe est expiré ou non valide. Veuillez réessayer.
-password-reset.new-password: Nouveau mot de passe
-password-reset.password-changed: Le mot de passe a été changé. Veuillez vous connecter avec vos nouveaux identifiants.
-password-reset.password-reset: Réinitialiser le mot de passe
-password-reset.passwords-not-matching: Le nouveau mot de passe et le mot de passe de confirmation ne correspondent pas. Veuillez réessayer.
-password-reset.reset: Réinitialiser
 register.create-user: Le compte admin est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
 register.register: Enregistrer un nouvel utilisateur
 request.error.post-max-size: La demande HTTP POST dépasse la taille maximale autorisée
@@ -191,8 +177,6 @@ updates.status.checking: Vérification des mises à jour…
 updates.status.found: Mises à jour trouvées
 updates.status.installing: Installation de mises à jour…
 updates.status.up-to-date: À jour !
-updates.updates: Mises à jour
-uploader.erorr.cannot-write: Échec de l’écriture du fichier sur le disque
 uploader.error: Impossible de télécharger le fichier. %s.
 uploader.error.cannot-write: Échec de l’écriture du fichier sur le disque
 uploader.error.file-name: Nom de fichier non valide
@@ -203,7 +187,6 @@ uploader.error.no-temp: Absence du dossier temporaire
 uploader.error.partial: Le fichier envoyé n’a été que partiellement téléversé
 uploader.error.php-extension: Téléversement du fichier arrêté par extension
 uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
-uploader.error.unknown: Erreur de téléchargement inconnue
 uploader.uploaded: Fichier envoyé !
 user.actions: Actions
 user.avatar: Photo de profil
