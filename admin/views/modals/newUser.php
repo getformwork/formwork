@@ -9,7 +9,7 @@
             <input id="username" type="text" required name="username" pattern="^[a-zA-Z0-9_-]{3,20}$" title="<?= ucfirst($this->label('users.new-user.username-suggestion')) ?>" maxlength="20" autocomplete="false">
             <label class="label-required" for="password"><?= $this->label('user.password') ?>:</label>
             <span class="label-suggestion">(<?= $this->label('users.new-user.password-suggestion') ?>)</span>
-            <input id="password" type="password" required name="password" pattern="^.{8,}$" title="<?= ucfirst($this->label('users.new-user.password-suggestion')) ?>" autocomplete="false">
+            <input id="password" type="password" required name="password" pattern="^.{8,}$" title="<?= ucfirst($this->label('users.new-user.password-suggestion')) ?>" autocomplete="new-password">
             <label class="label-required" for="email"><?= $this->label('user.email') ?>:</label>
             <input id="email" type="email" required name="email">
             <label class="label-required" for="language"><?= $this->label('user.language') ?>:</label>
