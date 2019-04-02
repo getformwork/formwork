@@ -20,7 +20,7 @@ abstract class AbstractPage
      * @var string
      */
     protected $relativePath;
-    
+
     /**
      * Page route
      *

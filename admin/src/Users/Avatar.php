@@ -9,13 +9,6 @@ use Formwork\Utils\FileSystem;
 class Avatar extends File
 {
     /**
-     * The URI of the avatar
-     *
-     * @var string
-     */
-    protected $uri;
-
-    /**
      * Create a new Avatar instance
      *
      * @param string $filename
