@@ -467,11 +467,11 @@ class Page extends AbstractPage
         $this->published = $this->data['published'];
 
         if ($this->has('publish-date')) {
-            $this->published = strtotime($this->get('publish-date')) < time();
+            $this->published = $this->published && strtotime($this->get('publish-date')) < time();
         }
 
         if ($this->has('unpublish-date')) {
-            $this->published = strtotime($this->get('unpublish-date')) > time();
+            $this->published = $this->published && strtotime($this->get('unpublish-date')) > time();
         }
 
         $this->routable = $this->data['routable'];
