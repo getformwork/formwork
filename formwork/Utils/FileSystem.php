@@ -56,7 +56,15 @@ class FileSystem
      */
     public static function mimeType($file)
     {
-        $mimeType = @mime_content_type($file);
+        $mimeType = null;
+
+        if (extension_loaded('fileinfo')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file);
+            finfo_close($finfo);
+        } elseif (function_exists('mime_content_type')) {
+            $mimeType = @mime_content_type($file);
+        }
 
         // Fix wrong type for image/svg+xml
         if ($mimeType === 'text/html') {
