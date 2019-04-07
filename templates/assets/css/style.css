@@ -441,6 +441,10 @@ button:focus,
     color: inherit;
 }
 
+.read-more {
+    font-size: 0.875rem;
+}
+
 .pagination {
     overflow: auto;
     margin: auto;

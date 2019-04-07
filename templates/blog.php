@@ -14,6 +14,7 @@
             <?= $this->insert('_tags', array('post' => $post, 'blog' => $page)) ?>
             <?php if ($post->summary()): ?>
                 <?= $post->summary() ?>
+                <a class="read-more" href="<?= $post->uri() ?>" rel="bookmark">Read more &rarr;</a>
             <?php else: ?>
                 <?= $post->content() ?>
             <?php endif; ?>
