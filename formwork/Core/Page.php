@@ -157,7 +157,7 @@ class Page extends AbstractPage
         }
         $this->path = FileSystem::normalize($path);
         $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
-        $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', $this->relativePath));
+        $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
         $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
