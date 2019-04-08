@@ -21,6 +21,6 @@
         "ext-gd": "*",
         "erusev/parsedown": "~1.7.3",
         "erusev/parsedown-extra": "~0.7.1",
-        "symfony/yaml": "^4.2"
+        "symfony/yaml": "^3.4"
     }
 }
