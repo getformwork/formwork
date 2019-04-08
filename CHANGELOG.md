@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.4](https://github.com/giuscris/formwork/releases/tag/0.10.4) (2019-04-08)
+
+**Bug fixes**
+
+ * Fix Symfony Yaml version to ensure PHP 5.6.0 compatibility
+
 ## [0.10.3](https://github.com/giuscris/formwork/releases/tag/0.10.3) (2019-04-08)
 
 **Enhancements**
