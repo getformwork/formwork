@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.3](https://github.com/giuscris/formwork/releases/tag/0.10.3) (2019-04-08)
+
+**Enhancements**
+
+ * Use fileinfo to get MIME types if the extension is available
+ * Add `rel` attribute to pagination links
+ * Add Read more link to blog template
+ * Use Symfony Yaml instead of Spyc
+
+**Bug fixes**
+
+ * Fix unpublished pages status being overridden by publish dates
+ * Fix broken page routes on Windows systems
+
 ## [0.10.2](https://github.com/giuscris/formwork/releases/tag/0.10.2) (2019-03-26)
 
 **Enhancements**
