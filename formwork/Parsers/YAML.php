@@ -4,7 +4,7 @@ namespace Formwork\Parsers;
 
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
-use Spyc;
+use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
 class YAML
 {
@@ -30,7 +30,7 @@ class YAML
             }
             return (array) yaml_parse($input);
         }
-        return Spyc::YAMLLoadString($input);
+        return (array) SymfonyYaml::parse($input);
     }
 
     /**
@@ -54,13 +54,14 @@ class YAML
      */
     public static function encode($data)
     {
-        if (function_exists('yaml_emit') && static::PHPYAMLmode('emit')) {
-            if (empty($data)) {
-                return '';
-            }
-            return preg_replace('/^---[\n ]|\n\.{3}$/', '', yaml_emit((array) $data));
+        $data = (array) $data;
+        if (empty($data)) {
+            return '';
         }
-        return Spyc::YAMLDump($data, false, 0, true);
+        if (function_exists('yaml_emit') && static::PHPYAMLmode('emit')) {
+            return preg_replace('/^---[\n ]|\n\.{3}$/', '', yaml_emit($data));
+        }
+        return SymfonyYaml::dump($data);
     }
 
     /**

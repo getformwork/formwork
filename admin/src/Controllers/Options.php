@@ -184,7 +184,7 @@ class Options extends AbstractController
             'Dependencies' => array(
                 'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
                 'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
-                'Spyc Version'            => $dependencies['mustangostang/spyc']['version']
+                'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version']
             )
         );
 
