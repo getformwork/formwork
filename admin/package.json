@@ -1,4 +1,15 @@
 {
+  "name": "formwork-admin",
+  "description": "Formwork CMS Administration Panel",
+  "author": "Giuseppe Criscione",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giuscris/formwork.git"
+  },
+  "bugs": {
+    "url": "https://github.com/giuscris/formwork/issues"
+  },
   "dependencies": {},
   "devDependencies": {
     "gulp": "^4.0.0",
@@ -12,6 +23,5 @@
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^2.1.0",
     "uglify-js": "^3.5.3"
-  },
-  "license": "MIT"
+  }
 }
