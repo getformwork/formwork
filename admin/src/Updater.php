@@ -265,7 +265,17 @@ class Updater
         if (!is_null($this->headers)) {
             return $this->headers;
         }
-        $this->headers = get_headers($this->release['archive'], 1, $this->context);
+
+        if (PHP_VERSION_ID < 70100) {
+            // Workaround for PHP < 7.1.0 which doesn't support get_headers() with $context parameter
+            $previousDefaultContext = stream_context_get_default();
+            stream_context_set_default(stream_context_get_options($this->context));
+            $this->headers = get_headers($this->release['archive'], 1);
+            stream_context_set_default(stream_context_get_options($previousDefaultContext));
+        } else {
+            $this->headers = get_headers($this->release['archive'], 1, $this->context);
+        }
+
         return $this->headers;
     }
 
