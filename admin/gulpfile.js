@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
-var cssmin = require('gulp-cssmin');
+var cleanCSS = require('gulp-clean-css');
 var uglify = require('gulp-uglify');
 
 gulp.task('css', function () {
@@ -11,7 +11,7 @@ gulp.task('css', function () {
         .pipe(sass())
         .pipe(gulp.dest('./assets/css'))
         .pipe(rename('admin.min.css'))
-        .pipe(cssmin())
+        .pipe(cleanCSS())
         .pipe(gulp.dest('./assets/css'));
 });
 
