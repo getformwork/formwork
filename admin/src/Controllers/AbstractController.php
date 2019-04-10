@@ -9,6 +9,7 @@ use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
+use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
 use Formwork\Utils\FileSystem;
@@ -24,6 +25,13 @@ abstract class AbstractController
      * @var string
      */
     protected $location;
+
+    /**
+     * Assets instance
+     *
+     * @var Assets
+     */
+    protected $assets;
 
     /**
      * All loaded modals
@@ -88,6 +96,22 @@ abstract class AbstractController
     protected function user()
     {
         return Admin::instance()->user();
+    }
+
+    /**
+     * Get Assets instance
+     *
+     * @return Assets
+     */
+    protected function assets()
+    {
+        if (!is_null($this->assets)) {
+            return $this->assets;
+        }
+        return $this->assets = new Assets(
+            ADMIN_PATH . 'assets' . DS,
+            $this->uri('/assets/')
+        );
     }
 
     /**

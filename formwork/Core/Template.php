@@ -43,6 +43,13 @@ class Template
     protected $scheme;
 
     /**
+     * Template assets instance
+     *
+     * @var Assets
+     */
+    protected $assets;
+
+    /**
      * Template layout name
      *
      * @var string
@@ -152,6 +159,22 @@ class Template
             return $controllerFile;
         }
         return null;
+    }
+
+    /**
+     * Get Assets instance
+     *
+     * @return Assets
+     */
+    protected function assets()
+    {
+        if (!is_null($this->assets)) {
+            return $this->assets;
+        }
+        return $this->assets = new Assets(
+            $this->path . 'assets' . DS,
+            Formwork::instance()->site()->uri('/templates/assets/')
+        );
     }
 
     /**
