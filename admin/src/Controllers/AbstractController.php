@@ -12,6 +12,7 @@ use Formwork\Admin\Users\User;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 
 abstract class AbstractController
 {
@@ -90,15 +91,11 @@ abstract class AbstractController
     }
 
     /**
-     * Escape HTML in a string
-     *
-     * @param string $string
-     *
-     * @return string
+     * @see Formwork\Utils\Str::escape()
      */
     protected function escape($string)
     {
-        return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE);
+        return Str::escape($string);
     }
 
     /**

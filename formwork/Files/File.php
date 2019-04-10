@@ -4,6 +4,7 @@ namespace Formwork\Files;
 
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use LogicException;
 
@@ -96,16 +97,16 @@ class File
         if (!is_null($this->type)) {
             return $this->type;
         }
-        if (strpos($this->mimeType, 'image') === 0) {
+        if (Str::startsWith($this->mimeType, 'image')) {
             return 'image';
         }
-        if (strpos($this->mimeType, 'text') === 0) {
+        if (Str::startsWith($this->mimeType, 'text')) {
             return 'text';
         }
-        if (strpos($this->mimeType, 'audio') === 0) {
+        if (Str::startsWith($this->mimeType, 'audio')) {
             return 'audio';
         }
-        if (strpos($this->mimeType, 'video') === 0) {
+        if (Str::startsWith($this->mimeType, 'video')) {
             return 'video';
         }
         if (in_array($this->extension, array('pdf', 'doc', 'docx', 'odt'), true)) {

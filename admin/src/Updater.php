@@ -5,6 +5,7 @@ namespace Formwork\Admin;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 use RuntimeException;
 use ZipArchive;
 
@@ -190,7 +191,7 @@ class Updater
                 if (!FileSystem::exists($destinationDirectory)) {
                     FileSystem::createDirectory($destinationDirectory);
                 }
-                if (substr($destination, -1) !== DS) {
+                if (!Str::endsWith($destination, DS)) {
                     FileSystem::write($destination, $zip->getFromIndex($i));
                 }
                 $installedFiles[] = $destination;

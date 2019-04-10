@@ -264,7 +264,7 @@ class Uri
      */
     public static function normalize($uri)
     {
-        if (substr($uri, 0, 7) === 'http://' || substr($uri, 0, 8) === 'https://') {
+        if (Str::startsWith($uri, 'http://') || Str::startsWith($uri, 'https://')) {
             return static::make(array(), $uri);
         }
         $normalized = rtrim($uri, '/') . '/';
@@ -327,7 +327,7 @@ class Uri
         if ($uri[0] !== '/') {
             $path = explode('/', trim(static::path($base), '/'));
         }
-        if (substr($base, -1) !== '/') {
+        if (!Str::endsWith($base, '/')) {
             array_pop($path);
         }
         foreach (explode('/', static::path($uri)) as $segment) {

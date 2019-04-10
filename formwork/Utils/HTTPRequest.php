@@ -47,7 +47,7 @@ class HTTPRequest
     {
         $uri = urldecode($_SERVER['REQUEST_URI']);
         $root = static::root();
-        if (strpos($uri, $root) === 0) {
+        if (Str::startsWith($uri, $root)) {
             return '/' . ltrim(substr($uri, strlen($root)), '/');
         }
         return $uri;
@@ -118,7 +118,7 @@ class HTTPRequest
     public static function validateReferer($path = null)
     {
         $base = Uri::normalize(Uri::base() . '/' . ltrim($path, '/'));
-        return substr(static::referer(), 0, strlen($base)) === $base;
+        return Str::startsWith(static::referer(), $base);
     }
 
     /**
@@ -313,7 +313,7 @@ class HTTPRequest
             return static::$headers;
         }
         foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
+            if (Str::startsWith($key, 'HTTP_')) {
                 $key = str_replace('_', '-', ucwords(strtolower(substr($key, 5)), '_'));
                 static::$headers[$key] = $value;
             }
