@@ -68,7 +68,7 @@ class Template
      *
      * @var bool
      */
-    protected static $rendering = false;
+    protected $rendering = false;
 
     /**
      * Create a new Template instance
@@ -116,7 +116,7 @@ class Template
      */
     public function renderPage(Page $page, $vars, $return = false)
     {
-        if (static::$rendering) {
+        if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
 
@@ -151,7 +151,7 @@ class Template
      */
     protected function controller()
     {
-        if (static::$rendering) {
+        if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
         $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
@@ -235,13 +235,13 @@ class Template
      */
     protected function render($return = false)
     {
-        if (static::$rendering) {
+        if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
 
         ob_start();
 
-        static::$rendering = true;
+        $this->rendering = true;
 
         $this->insert($this->name);
 
@@ -252,12 +252,10 @@ class Template
             $layout->layoutContent = ob_get_contents();
             ob_clean(); // Clean but don't end output buffer
 
-            static::$rendering = false;
-
             $layout->render();
         }
 
-        static::$rendering = false;
+        $this->rendering = false;
 
         if ($return) {
             return ob_get_clean();
