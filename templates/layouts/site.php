@@ -4,8 +4,8 @@
     <title><?php if (isset($page)): ?><?= $page->title() ?> | <?php endif; ?><?= $site->title() ?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="<?= $site->uri('/templates/assets/css/style.min.css') ?>">
-    <script src="<?= $site->uri('/templates/assets/js/script.min.js') ?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?= $this->assets()->uri('css/style.min.css') ?>">
+    <script src="<?= $this->assets()->uri('js/script.min.js') ?>"></script>
 </head>
 <body>
 <?= $this->insert('_menu') ?>
