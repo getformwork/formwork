@@ -107,20 +107,18 @@ class Template
     }
 
     /**
-     * Render a Page
+     * Render template
      *
-     * @param array $vars   Variable to pass to the template
-     * @param bool  $return Whether to return rendered content
+     * @param bool $return Whether to return rendered content or not
      *
-     * @return string
+     * @return string|null
      */
-    public function renderPage(Page $page, $vars, $return = false)
+    public function render($vars = array(), $return = false)
     {
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
 
-        $this->vars['page'] = $page;
         $this->vars = array_merge($this->vars, $vars);
 
         if (!is_null($this->controller())) {
@@ -128,7 +126,29 @@ class Template
             $this->vars = array_merge($this->vars, (array) include($this->controller()));
         }
 
-        return $this->render($return);
+        ob_start();
+
+        $this->rendering = true;
+
+        $this->insert($this->name);
+
+        if (!is_null($this->layout)) {
+            $layout = new Template('layouts' . DS . $this->layout);
+            $layout->vars = $this->vars;
+
+            $layout->layoutContent = ob_get_contents();
+            ob_clean(); // Clean but don't end output buffer
+
+            $layout->render();
+        }
+
+        $this->rendering = false;
+
+        if ($return) {
+            return ob_get_clean();
+        }
+
+        ob_end_flush();
     }
 
     /**
@@ -224,44 +244,6 @@ class Template
         extract(array_merge($this->vars, $vars));
 
         include $filename;
-    }
-
-    /**
-     * Render template
-     *
-     * @param bool $return Whether to return rendered content or not
-     *
-     * @return string|null
-     */
-    protected function render($return = false)
-    {
-        if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
-        }
-
-        ob_start();
-
-        $this->rendering = true;
-
-        $this->insert($this->name);
-
-        if (!is_null($this->layout)) {
-            $layout = new Template('layouts' . DS . $this->layout);
-            $layout->vars = $this->vars;
-
-            $layout->layoutContent = ob_get_contents();
-            ob_clean(); // Clean but don't end output buffer
-
-            $layout->render();
-        }
-
-        $this->rendering = false;
-
-        if ($return) {
-            return ob_get_clean();
-        }
-
-        ob_end_flush();
     }
 
     public function __toString()
