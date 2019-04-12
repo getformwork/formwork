@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.5](https://github.com/giuscris/formwork/releases/tag/0.10.5) (2019-04-12)
+
+**Enhancements**
+ * **Add** `Assets` **class**
+ * **Use** `Template::assets()` **in site layout**
+ * Add `Str` class
+ * Use new methods from `Str` class where possible
+ * Use `assets()` method in Admin views
+ * Make `Template::$rendering` non static
+
+**Bug fixes**
+ * **Fix** `Updater::getHeaders()` **not working on PHP < 7.1.0**
+ * **Fix unquoted dates converted to timestamp**
+
 ## [0.10.4](https://github.com/giuscris/formwork/releases/tag/0.10.4) (2019-04-08)
 
 **Bug fixes**
