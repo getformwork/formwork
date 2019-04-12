@@ -21,7 +21,7 @@
     "node-sass": "^4.11.0",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0",
-    "stylelint-order": "^2.1.0",
-    "uglify-js": "^3.5.3"
+    "stylelint-order": "^2.2.1",
+    "uglify-js": "^3.5.4"
   }
 }
