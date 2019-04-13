@@ -11,11 +11,25 @@ use RuntimeException;
 class Language
 {
     /**
+     * Fallback language code
+     *
+     * @var string
+     */
+    const FALLBACK_LANGUAGE_CODE = 'en';
+
+    /**
      * Array containing languages available in administration panel
      *
      * @var array
      */
     protected static $availableLanguages = array();
+
+    /**
+     * Fallback language instance
+     *
+     * @var Language
+     */
+    protected static $fallbackLanguage;
 
     /**
      * Language code
@@ -86,6 +100,9 @@ class Language
     public function get($key, ...$arguments)
     {
         if (!$this->has($key)) {
+            if ($this->code !== self::FALLBACK_LANGUAGE_CODE) {
+                return $this->fallbackLanguage()->get($key, ...$arguments);
+            }
             throw new LogicException('Invalid language string "' . $key . '"');
         }
         if (!empty($arguments)) {
@@ -115,5 +132,18 @@ class Language
         }
         $languageStrings = YAML::parseFile($languageFile);
         return new static($languageCode, $languageStrings);
+    }
+
+    /**
+     * Return fallback language instance
+     *
+     * @return Language
+     */
+    protected function fallbackLanguage()
+    {
+        if (!is_null(static::$fallbackLanguage)) {
+            return static::$fallbackLanguage;
+        }
+        return static::$fallbackLanguage = static::load(self::FALLBACK_LANGUAGE_CODE);
     }
 }
