@@ -64,6 +64,18 @@ class Language
     }
 
     /**
+     * Return whether a language string is set
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function has($key)
+    {
+        return isset($this->strings[$key]);
+    }
+
+    /**
      * Return a formatted language label
      *
      * @param string           $key
@@ -73,7 +85,7 @@ class Language
      */
     public function get($key, ...$arguments)
     {
-        if (!isset($this->strings[$key])) {
+        if (!$this->has($key)) {
             throw new LogicException('Invalid language string "' . $key . '"');
         }
         if (!empty($arguments)) {
