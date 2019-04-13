@@ -176,12 +176,12 @@
 }
 
 .component {
-    overflow: auto;
     margin-bottom: $component-margin-bottom;
     padding: $component-padding;
     border-radius: $border-radius;
     background-color: #fff;
     box-shadow: $component-box-shadow;
+    @include clearfix;
 }
 
 .caption {
