@@ -112,10 +112,7 @@ abstract class AbstractPage
     {
         $parentPath = dirname($this->path) . DS;
         if (FileSystem::isDirectory($parentPath) && $parentPath !== Formwork::instance()->option('content.path')) {
-            if (isset(Site::$storage[$parentPath])) {
-                return Site::$storage[$parentPath];
-            }
-            return Site::$storage[$parentPath] = new Page($parentPath);
+            return Formwork::instance()->site()->retrievePage($parentPath);
         }
         // If no parent was found returns the site as first level pages' parent
         return Formwork::instance()->site();

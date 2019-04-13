@@ -216,12 +216,7 @@ class PageCollection extends Collection
             $pagePath = $path . $dir . DS;
 
             if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
-                if (isset(Site::$storage[$pagePath])) {
-                    $page = Site::$storage[$pagePath];
-                } else {
-                    $page = new Page($pagePath);
-                    Site::$storage[$pagePath] = $page;
-                }
+                $page = Formwork::instance()->site()->retrievePage($pagePath);
 
                 if (!$page->isEmpty()) {
                     $pages[] = $page;

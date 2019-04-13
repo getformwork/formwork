@@ -13,7 +13,7 @@ class Site extends AbstractPage
      *
      * @var array
      */
-    public static $storage = array();
+    protected $storage = array();
 
     /**
      * Current page
@@ -244,14 +244,24 @@ class Site extends AbstractPage
             }
         }
 
-        if (isset(static::$storage[$path])) {
-            $page = static::$storage[$path];
-        } else {
-            $page = new Page($path);
-            static::$storage[$path] = $page;
-        }
+        $page = $this->retrievePage($path);
 
         return !$page->isEmpty() ? $page : null;
+    }
+
+    /**
+     * Retrieve page from the storage creating a new one if not existing
+     *
+     * @param string $path
+     *
+     * @return Page
+     */
+    public function retrievePage($path)
+    {
+        if (isset($this->storage[$path])) {
+            return $this->storage[$path];
+        }
+        return $this->storage[$path] = new Page($path);
     }
 
     /**
