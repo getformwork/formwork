@@ -6,7 +6,6 @@ use Formwork\Files\Files;
 use Formwork\Parsers\ParsedownExtension as Parsedown;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use RuntimeException;
 
@@ -60,6 +59,20 @@ class Page extends AbstractPage
      * @var string
      */
     protected $slug;
+
+    /**
+     * Page language
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
+     * Available page languages
+     *
+     * @var array
+     */
+    protected $availableLanguages = array();
 
     /**
      * Page filename
@@ -148,9 +161,10 @@ class Page extends AbstractPage
     /**
      * Create a new Page instance
      *
-     * @param string $path
+     * @param string      $path
+     * @param string|null $language
      */
-    public function __construct($path)
+    public function __construct($path, $language = null)
     {
         if (is_null(static::$contentParser)) {
             static::$contentParser = new Parsedown();
@@ -158,9 +172,9 @@ class Page extends AbstractPage
         $this->path = FileSystem::normalize($path);
         $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
-        $this->uri = HTTPRequest::root() . ltrim($this->route, '/');
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
+        $this->language = $language ?: Formwork::instance()->language();
         $this->loadFiles();
         if (!$this->isEmpty()) {
             $this->parse();
@@ -192,7 +206,7 @@ class Page extends AbstractPage
      */
     public function reload()
     {
-        $vars = array('uri', 'filename', 'template', 'parents', 'children', 'descendants', 'siblings');
+        $vars = array('filename', 'template', 'parents', 'children', 'descendants', 'siblings');
         foreach ($vars as $var) {
             $this->$var = null;
         }
@@ -415,17 +429,44 @@ class Page extends AbstractPage
      */
     protected function loadFiles()
     {
+        $contentFiles = array();
         $files = array();
+
         foreach (FileSystem::listFiles($this->path) as $file) {
             $name = FileSystem::name($file);
             $extension = '.' . FileSystem::extension($file);
-            if (is_null($this->filename) && Formwork::instance()->site()->hasTemplate($name)) {
-                $this->filename = $file;
-                $this->template = new Template($name);
+            if ($extension === Formwork::instance()->option('content.extension')) {
+                $language = null;
+                if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
+                    // Parse double extension
+                    list($match, $name, $language) = $matches;
+                }
+                if (Formwork::instance()->site()->hasTemplate($name)) {
+                    $contentFiles[$language] = array(
+                        'filename' => $file,
+                        'template' => $name
+                    );
+                    if (!is_null($language) && !in_array($language, $this->availableLanguages)) {
+                        $this->availableLanguages[] = $language;
+                    }
+                }
             } elseif (in_array($extension, Formwork::instance()->option('files.allowed_extensions'), true)) {
                 $files[] = $file;
             }
         }
+
+        // Get correct content file based on requested language
+        ksort($contentFiles);
+        $key = isset($contentFiles[$this->language]) ? $this->language : array_keys($contentFiles)[0];
+
+        // Set actual language
+        if ($this->language !== $key) {
+            $this->language = $key ?: null;
+        }
+
+        $this->filename = $contentFiles[$key]['filename'];
+        $this->template = new Template($contentFiles[$key]['template']);
+
         $this->files = new Files($files, $this->path);
     }
 

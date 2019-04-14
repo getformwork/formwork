@@ -2,7 +2,9 @@
 
 namespace Formwork\Files;
 
+use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -71,20 +73,8 @@ class File
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
         $this->type = $this->type();
+        $this->uri = Uri::resolveRelativeUri($this->name, HTTPRequest::root() . ltrim(Formwork::instance()->request(), '/'));
         $this->size = FileSystem::size($path);
-    }
-
-    /**
-     * Get file uri
-     *
-     * @return string|null
-     */
-    public function uri()
-    {
-        if (!is_null($this->uri)) {
-            return $this->uri;
-        }
-        return $this->uri = Uri::resolveRelativeUri($this->name, Uri::relativePath());
     }
 
     /**
