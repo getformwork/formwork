@@ -190,7 +190,7 @@ kbd,
 pre {
     border-radius: 3px;
     background-color: #f0f0f0;
-    font-family: Menlo, Courier, monospace;
+    font-family: Menlo, Consolas, Courier, monospace;
 }
 
 code,
