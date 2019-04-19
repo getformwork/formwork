@@ -9,19 +9,19 @@
 <?php
                 if ($this->user()->permissions()->has('pages.create')):
 ?>
-                <button data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
+                <button type="button" data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
 <?php
                 endif;
 
                 if ($this->user()->permissions()->has('cache.clear')):
 ?>
-                <button data-command="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>
+                <button type="button" data-command="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>
 <?php
                 endif;
 
                 if ($this->user()->permissions()->has('backup')):
 ?>
-                <button data-command="make-backup"><i class="i-history"></i> <?= $this->label('backup.backup') ?></button>
+                <button type="button" data-command="make-backup"><i class="i-history"></i> <?= $this->label('backup.backup') ?></button>
 <?php
                 endif;
 

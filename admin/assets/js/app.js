@@ -1263,7 +1263,7 @@ Formwork.Utils = {
             });
         });
 
-        $calendar = $('<div class="calendar"><div class="calendar-buttons"><button class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.todayLabel + '</button><button class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
+        $calendar = $('<div class="calendar"><div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button type="button" class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
 
         $('.currentMonth').click(function () {
             var today = new Date();

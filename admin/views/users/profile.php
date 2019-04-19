@@ -20,8 +20,8 @@
             <form method="post" enctype="multipart/form-data" data-form="user-profile-form">
                 <?= $fields ?>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
-                <button class="button-link button-right" type="button" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>" <?php if (!$this->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
+                <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
+                <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>" <?php if (!$this->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
             </form>
         </div>
 <?php

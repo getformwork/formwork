@@ -5,6 +5,6 @@
         <?= $fields ?>
         <div class="separator-l"></div>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-        <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
+        <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
     </form>
 </div>
