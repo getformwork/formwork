@@ -62,10 +62,11 @@ abstract class AbstractController
      * Get a system option
      *
      * @param string $option
+     * @param string $default
      */
-    protected function option($option)
+    protected function option($option, $default = null)
     {
-        return Formwork::instance()->option($option);
+        return Formwork::instance()->option($option, $default);
     }
 
     /**
