@@ -152,6 +152,7 @@ class Formwork
             'date.hour_format'         => 'h:i A',
             'date.timezone'            => 'UTC',
             'date.week_starts'         => 0,
+            'languages'                => array(),
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
             'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
@@ -222,7 +223,7 @@ class Formwork
      */
     protected function loadLanguages()
     {
-        if (!empty($languages = (array) $this->option('languages'))) {
+        if (!empty($languages = $this->option('languages'))) {
             $this->defaultLanguage = $this->option('languages.default', $languages[0]);
             if (preg_match('~^/(' . implode('|', $languages) . ')/~i', $this->request, $matches)) {
                 list($match, $language) = $matches;
