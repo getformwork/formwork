@@ -39,7 +39,7 @@
                     </select>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <div class="separator"></div>
-                    <button class="button-accent" type="submit"><?= $this->label('modal.action.continue') ?></button>
+                    <button type="submit" class="button-accent"><?= $this->label('modal.action.continue') ?></button>
                 </form>
             </div>
         </div>

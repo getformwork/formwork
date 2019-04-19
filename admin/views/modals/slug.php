@@ -5,8 +5,8 @@
         <span class="label-suggestion">(<?= $this->label('pages.new-page.slug-suggestion') ?>)</span>
         <input id="page-slug" type="text" name="slug" autofocus>
         <div class="separator"></div>
-        <button data-dismiss="slugModal"><?= $this->label('modal.action.cancel') ?></button>
-        <button class="button-accent button-right" data-command="continue"><?= $this->label('modal.action.continue') ?></button>
-        <button class="button-link button-right" data-command="generate-slug" title="<?= $this->label('pages.change-slug.generate') ?>"><i class="i-bolt"></i></button>
+        <button type="button" data-dismiss="slugModal"><?= $this->label('modal.action.cancel') ?></button>
+        <button type="button" class="button-accent button-right" data-command="continue"><?= $this->label('modal.action.continue') ?></button>
+        <button type="button" class="button-link button-right" data-command="generate-slug" title="<?= $this->label('pages.change-slug.generate') ?>"><i class="i-bolt"></i></button>
     </div>
 </div>

@@ -34,7 +34,7 @@
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             <div class="separator"></div>
             <button type="button" data-dismiss="newPageModal"><?= $this->label('modal.action.cancel') ?></button>
-            <button class="button-accent button-right"><i class="i-check"></i> <?= $this->label('modal.action.continue') ?></button>
+            <button type="submit" class="button-accent button-right"><i class="i-check"></i> <?= $this->label('modal.action.continue') ?></button>
         </form>
     </div>
 </div>

@@ -2,6 +2,7 @@ var Formwork = {
     init: function () {
         Formwork.Modals.init();
         Formwork.Forms.init();
+        Formwork.Dropdowns.init();
         Formwork.Tooltips.init();
 
         Formwork.Dashboard.init();

@@ -2,6 +2,7 @@ var Formwork = {
     init: function () {
         Formwork.Modals.init();
         Formwork.Forms.init();
+        Formwork.Dropdowns.init();
         Formwork.Tooltips.init();
 
         Formwork.Dashboard.init();
@@ -120,6 +121,25 @@ Formwork.Dashboard = {
                 }, 1000);
             });
         });
+    }
+};
+
+Formwork.Dropdowns = {
+    init: function () {
+        if ($('.dropdown').length > 0) {
+            $(document).click(function (event) {
+                var $button = $(event.target).closest('.dropdown-button');
+                if ($button.length > 0) {
+                    var $dropdown = $('#' + $button.attr('data-dropdown'), '.dropdown');
+                    var isVisible = $dropdown.is(':visible');
+                    event.preventDefault();
+                }
+                $('.dropdown-menu').hide();
+                if ($dropdown !== undefined && !isVisible) {
+                    $dropdown.show();
+                }
+            });
+        }
     }
 };
 
@@ -1263,7 +1283,7 @@ Formwork.Utils = {
             });
         });
 
-        $calendar = $('<div class="calendar"><div class="calendar-buttons"><button class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.todayLabel + '</button><button class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
+        $calendar = $('<div class="calendar"><div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button type="button" class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
 
         $('.currentMonth').click(function () {
             var today = new Date();

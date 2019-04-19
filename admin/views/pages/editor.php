@@ -12,23 +12,23 @@
                         </div>
                     </div>
                     <div class="editor-toolbar" data-for="content">
-                        <button class="toolbar-button" tabindex="-1" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>" type="button"><span class="i-bold"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>" type="button"><span class="i-italic"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>" type="button"><span class="i-list-ul"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>" type="button"><span class="i-list-ol"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>"><span class="i-italic"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>"><span class="i-list-ul"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>"><span class="i-list-ol"></span></button>
                         <span class="spacer"></span>
-                        <button class="toolbar-button" tabindex="-1" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>" type="button"><span class="i-quote"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="link" title="<?= $this->label('pages.editor.link') ?>" type="button"><span class="i-link"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>" type="button"><span class="i-image"></span></button>
-                        <button class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>" type="button"><span class="i-read-more"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>"><span class="i-quote"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
                     </div>
                     <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                    <button class="button-accent button-right" type="submit" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
+                    <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
 <?php
                 if ($this->user()->permissions()->has('pages.delete')):
 ?>
-                    <button class="button-link button-right" tabindex="-1" type="button" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                    <button type="button" class="button-link button-right" tabindex="-1" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                 endif;
 ?>
@@ -88,7 +88,7 @@
 <?php
                     if ($this->user()->permissions()->has('pages.delete_files')):
 ?>
-                                <button class="button-link" type="button" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
+                                <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
                                     <i class="i-trash"></i>
                                 </button>
 <?php
