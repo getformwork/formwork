@@ -161,10 +161,9 @@ class Page extends AbstractPage
     /**
      * Create a new Page instance
      *
-     * @param string      $path
-     * @param string|null $language
+     * @param string $path
      */
-    public function __construct($path, $language = null)
+    public function __construct($path)
     {
         if (is_null(static::$contentParser)) {
             static::$contentParser = new Parsedown();
@@ -174,7 +173,6 @@ class Page extends AbstractPage
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
-        $this->language = $language ?: Formwork::instance()->language();
         $this->loadFiles();
         if (!$this->isEmpty()) {
             $this->parse();
@@ -360,6 +358,32 @@ class Page extends AbstractPage
     }
 
     /**
+     * Return whether page has a language
+     *
+     * @param string $language
+     *
+     * @return bool
+     */
+    public function hasLanguage($language)
+    {
+        return in_array($language, $this->availableLanguages, true);
+    }
+
+    /**
+     * Set page language
+     *
+     * @param string $language
+     */
+    public function setLanguage($language)
+    {
+        if (!$this->hasLanguage($language)) {
+            throw new RuntimeException('Invalid page language "' . $language . '"');
+        }
+        $this->language = $language;
+        $this->__construct($this->path);
+    }
+
+    /**
      * Return a file path relative to Formwork root
      *
      * @param string $file Name of the file
@@ -457,12 +481,11 @@ class Page extends AbstractPage
 
         // Get correct content file based on requested language
         ksort($contentFiles);
-        $key = isset($contentFiles[$this->language]) ? $this->language : array_keys($contentFiles)[0];
+        $requestedLanguage = $this->language ?: Formwork::instance()->language();
+        $key = isset($contentFiles[$requestedLanguage]) ? $requestedLanguage : array_keys($contentFiles)[0];
 
         // Set actual language
-        if ($this->language !== $key) {
-            $this->language = $key ?: null;
-        }
+        $this->language = $key ?: null;
 
         $this->filename = $contentFiles[$key]['filename'];
         $this->template = new Template($contentFiles[$key]['template']);
