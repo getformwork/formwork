@@ -49,6 +49,8 @@ $columns-gutter: 30px;
 $transition-time-s: 150ms;
 $transition-time-m: 300ms;
 
+$caret-width: 0.25rem;
+
 // ===
 // Typography
 // ===
@@ -164,6 +166,28 @@ $file-input-label-padding: 0.5rem;
 $file-input-label-inner-padding-v: 1.5rem;
 $file-input-label-inner-padding-h: 1rem;
 $file-input-label-inner-border-width: 2px;
+
+// ===
+// Dropdowns
+// ===
+
+$dropdown-margin-bottom: $button-margin-bottom;
+
+$dropdown-menu-margin-top: 3px;
+$dropdown-menu-padding-v: 0.25rem;
+$dropdown-menu-padding-h: 0;
+$dropdown-menu-min-width: 8rem;
+$dropdown-menu-border-width: 1px;
+$dropdown-menu-border-radius: 3px;
+$dropdown-menu-box-shadow: rgba(#000, 0.15) 1px 1px 9px 0;
+
+$dropdown-item-padding-v: 0.25rem;
+$dropdown-item-padding-h: 1rem;
+$dropdown-item-font-size: $button-font-size;
+
+$dropdown-separator-margin-v: 0.25rem;
+$dropdown-separator-margin-h: 0;
+$dropdown-separator-border-width: $dropdown-menu-border-width;
 
 // ===
 // Editor

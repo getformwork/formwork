@@ -879,6 +879,54 @@ input[type=range] {
 .file-input-label.drag span {
   background-color: #fff; }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem; }
+
+.dropdown-button {
+  margin-bottom: 0; }
+  .dropdown-button::after {
+    display: inline-block;
+    margin-left: 0.25rem;
+    height: 0;
+    border-top: 0.25rem solid;
+    border-right: 0.25rem solid transparent;
+    border-left: 0.25rem solid transparent;
+    content: ' ';
+    vertical-align: 0.125rem; }
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 4;
+  display: none;
+  float: left;
+  margin-top: 3px;
+  padding: 0.25rem 0;
+  min-width: 8rem;
+  border: 1px solid #cacaca;
+  border-radius: 3px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0; }
+
+.dropdown-item {
+  display: block;
+  padding: 0.25rem 1rem;
+  width: 100%;
+  color: #444;
+  white-space: nowrap;
+  font-size: 0.875rem; }
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #444; }
+
+.dropdown-separator {
+  margin: 0.25rem 0;
+  height: 0;
+  border-top: 1px solid #cacaca; }
+
 .editor-toolbar {
   padding: 0 0.25rem;
   border: 1px solid #cacaca;
