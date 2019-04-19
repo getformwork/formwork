@@ -60,8 +60,8 @@ abstract class AbstractPage
     /**
      * Return a URI relative to page
      *
-     * @param string $path
-     * @param bool   $includeLanguage
+     * @param string      $path
+     * @param bool|string $includeLanguage
      *
      * @return string
      */
@@ -69,7 +69,7 @@ abstract class AbstractPage
     {
         $base = HTTPRequest::root();
         if ($includeLanguage) {
-            $language = Formwork::instance()->language();
+            $language = is_string($includeLanguage) ? $includeLanguage : Formwork::instance()->language();
             if (!is_null($language) && Formwork::instance()->defaultLanguage() !== $language) {
                 $base .= $language . '/';
             }
