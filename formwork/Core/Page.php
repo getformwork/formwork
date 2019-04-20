@@ -6,6 +6,7 @@ use Formwork\Files\Files;
 use Formwork\Parsers\ParsedownExtension as Parsedown;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use RuntimeException;
@@ -382,12 +383,16 @@ class Page extends AbstractPage
     /**
      * Render page and return rendered content
      *
-     * @param array $vars Variables to pass to the page
+     * @param array $vars        Variables to pass to the page
+     * @param bool  $sendHeaders Whether to send headers before rendering
      *
      * @return string
      */
-    public function render($vars = array())
+    public function render($vars = array(), $sendHeaders = true)
     {
+        if ($sendHeaders) {
+            $this->sendHeaders();
+        }
         echo $renderedPage = $this->renderToString($vars);
         return $renderedPage;
     }
@@ -487,6 +492,21 @@ class Page extends AbstractPage
 
         if (is_null($this->num()) || $this->template()->scheme()->get('num') === 'date') {
             $this->sortable = false;
+        }
+
+        // Set default 404 Not Found status to error page
+        if ($this->isErrorPage() && !$this->has('response-status')) {
+            $this->set('response-status', 404);
+        }
+    }
+
+    /**
+     * Send page headers
+     */
+    protected function sendHeaders()
+    {
+        if ($this->has('response-status')) {
+            Header::status($this->get('response-status'));
         }
     }
 
