@@ -172,7 +172,7 @@ class Formwork
 
         $data = $this->site->currentPage()->render();
 
-        if ($this->option('cache.enabled') && $resource->get('cacheable')) {
+        if ($this->option('cache.enabled') && $this->site->currentPage()->cacheable()) {
             $this->cache->save($this->cacheKey, $data);
         }
     }
