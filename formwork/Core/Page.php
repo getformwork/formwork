@@ -377,7 +377,7 @@ class Page extends AbstractPage
      */
     public function renderToString($vars = array())
     {
-        return $this->template()->render(array_merge($vars, array('page' => $this)), true);
+        return $this->template()->render($vars, true);
     }
 
     /**
@@ -426,7 +426,7 @@ class Page extends AbstractPage
             $extension = '.' . FileSystem::extension($file);
             if (is_null($this->filename) && Formwork::instance()->site()->hasTemplate($name)) {
                 $this->filename = $file;
-                $this->template = new Template($name);
+                $this->template = new Template($name, $this);
             } elseif (in_array($extension, Formwork::instance()->option('files.allowed_extensions'), true)) {
                 $files[] = $file;
             }

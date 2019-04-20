@@ -29,6 +29,13 @@ class Template
     protected $name;
 
     /**
+     * Page passed to the template
+     *
+     * @var Page
+     */
+    protected $page;
+
+    /**
      * Template variables
      *
      * @var array
@@ -75,12 +82,14 @@ class Template
      *
      * @param string $template
      */
-    public function __construct($template)
+    public function __construct($template, Page $page)
     {
         $this->path = Formwork::instance()->option('templates.path');
         $this->extension = Formwork::instance()->option('templates.extension');
         $this->name = $template;
+        $this->page = $page;
         $this->vars = $this->defaults();
+        $this->loadController();
     }
 
     /**
@@ -121,11 +130,6 @@ class Template
 
         $this->vars = array_merge($this->vars, $vars);
 
-        if (!is_null($this->controller())) {
-            extract($this->vars);
-            $this->vars = array_merge($this->vars, (array) include($this->controller()));
-        }
-
         ob_start();
 
         $this->rendering = true;
@@ -133,7 +137,7 @@ class Template
         $this->insert($this->name);
 
         if (!is_null($this->layout)) {
-            $layout = new Template('layouts' . DS . $this->layout);
+            $layout = new Template('layouts' . DS . $this->layout, $this->page);
             $layout->vars = $this->vars;
 
             $layout->layoutContent = ob_get_contents();
@@ -160,25 +164,28 @@ class Template
     {
         return array(
             'params' => Formwork::instance()->router()->params(),
-            'site'   => Formwork::instance()->site()
+            'site'   => Formwork::instance()->site(),
+            'page'   => $this->page
         );
     }
 
     /**
-     * Load template controller if exists and return its path
+     * Load template controller if exists
      *
      * @return string|null
      */
-    protected function controller()
+    protected function loadController()
     {
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+
         $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
+
         if (FileSystem::exists($controllerFile)) {
-            return $controllerFile;
+            extract($this->vars);
+            $this->vars = array_merge($this->vars, (array) include $controllerFile);
         }
-        return null;
     }
 
     /**
