@@ -64,13 +64,6 @@ class Formwork
     protected $cacheKey;
 
     /**
-     * Current resource
-     *
-     * @var mixed
-     */
-    protected $resource;
-
-    /**
      * Create a new Formwork instance
      */
     public function __construct()
@@ -171,13 +164,16 @@ class Formwork
             '/{page}/'
         ), $this->defaultRoute());
 
-        $this->resource = $this->router->dispatch();
+        $resource = $this->router->dispatch();
 
-        if ($this->resource instanceof Page) {
-            $data = $this->resource->render();
-            if ($this->option('cache.enabled') && $this->resource->get('cacheable')) {
-                $this->cache->save($this->cacheKey, $data);
-            }
+        if (is_null($this->site->currentPage())) {
+            $this->site->setCurrentPage($resource);
+        }
+
+        $data = $this->site->currentPage()->render();
+
+        if ($this->option('cache.enabled') && $resource->get('cacheable')) {
+            $this->cache->save($this->cacheKey, $data);
         }
     }
 
@@ -209,7 +205,7 @@ class Formwork
             if ($page = $this->site->findPage($route)) {
                 if ($params->has('tagName') || $params->has('paginationPage')) {
                     if ($page->template()->scheme()->get('type') !== 'listing') {
-                        return $this->site->errorPage(true);
+                        return $this->site->errorPage();
                     }
                 }
                 if ($page->routable() && $page->published()) {
@@ -228,7 +224,7 @@ class Formwork
                 }
             }
 
-            return $this->site->errorPage(true);
+            return $this->site->errorPage();
         };
     }
 

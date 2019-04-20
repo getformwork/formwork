@@ -136,20 +136,25 @@ class Site extends AbstractPage
     }
 
     /**
-     * Get site current page
+     * Set and return site current page
      *
-     * @return Page|null
+     * @return Page
      */
-    public function currentPage()
+    public function setCurrentPage(Page $page)
     {
-        if (!empty($this->currentPage)) {
-            return $this->currentPage;
-        }
-        $resource = Formwork::instance()->resource();
-        if ($resource instanceof Page) {
-            return $this->currentPage = $resource;
-        }
-        return null;
+        return $this->currentPage = $page;
+    }
+
+    /**
+     * Navigate to and return a page from its route, setting then the current page
+     *
+     * @param string $route
+     *
+     * @return Page
+     */
+    public function navigate($route)
+    {
+        return $this->currentPage = $this->findPage($route);
     }
 
     /**
@@ -165,17 +170,15 @@ class Site extends AbstractPage
     /**
      * Return or render site error page
      *
-     * @param bool $render Whether to render error page or not
+     * @param bool $navigate Whether to navigate to the error page or not
      *
      * @return Page|null
      */
-    public function errorPage($render = false)
+    public function errorPage($navigate = false)
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
-        if ($render) {
+        if ($navigate) {
             $this->currentPage = $errorPage;
-            $errorPage->render();
-            exit;
         }
         return $errorPage;
     }
