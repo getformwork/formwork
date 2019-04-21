@@ -28,6 +28,13 @@
                     endif;
 ?>
                                 <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
+<?php
+                                foreach ($page->availableLanguages() as $code):
+?>
+                                <span class="page-language"><?= $code ?></span>
+<?php
+                                endforeach;
+?>
                             </div>
                             <div class="page-route">
                                 <span><?= $page->route() ?></span>

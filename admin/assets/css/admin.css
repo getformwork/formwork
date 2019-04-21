@@ -2101,11 +2101,19 @@ input[type=range] {
 .page-title {
   font-size: 1rem; }
 
-.page-route {
+.page-language {
+  display: inline-block;
+  padding: 0 0.25rem;
+  min-width: 1.125rem;
+  border-radius: 3px;
+  background-color: #e9f4fb;
+  color: #3498da;
+  text-align: center;
   font-size: 0.875rem; }
 
-.page-route span {
-  color: #979797; }
+.page-route {
+  color: #979797;
+  font-size: 0.875rem; }
 
 .page-status-label::before {
   display: inline-block;
