@@ -105,6 +105,9 @@ pages.editor.quote: Quote
 pages.editor.summary: Summary
 pages.files: Files
 pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
+pages.languages: Languages
+pages.languages.add-language: Add %s
+pages.languages.edit-language: Edit %s
 pages.new-page: New Page
 pages.new-page.parent: Parent Page
 pages.new-page.site: Site
@@ -128,6 +131,7 @@ pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not dele
 pages.page.cannot-delete.page-not-found: Cannot delete page, page not found
 pages.page.cannot-edit.already-exists: Cannot edit page, a page with the same uri already exists
 pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
+pages.page.cannot-edit.invalid-language: 'Cannot edit page, invalid language: %s'
 pages.page.cannot-edit.invalid-parent: Cannot edit page, invalid parent page
 pages.page.cannot-edit.invalid-slug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
 pages.page.cannot-edit.invalid-template: Cannot edit page, invalid template

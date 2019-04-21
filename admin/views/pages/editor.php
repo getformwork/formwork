@@ -1,11 +1,18 @@
 <div class="container-no-margin">
     <div class="row">
-        <form action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" method="post" data-form="page-editor-form">
+        <form method="post" data-form="page-editor-form">
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
                     <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
                     <input type="hidden" id="slug" name="slug" value="<?= $page->slug() ?>">
+<?php
+                    if ($currentLanguage):
+?>
+                    <input type="hidden" id="language" name="language" value="<?= $currentLanguage ?>">
+<?php
+                    endif;
+?>
                     <div class="page-info">
                         <div class="page-route">
                             <span<?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?> class="page-slug-change" data-command="change-slug" title="<?= $this->label('pages.change-slug') ?>"<?php endif; ?>><?= $page->route() ?></span>
@@ -26,13 +33,32 @@
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
 <?php
+                    if ($availableLanguages):
+?>
+                    <div class="dropdown button-right">
+                        <button type="button" class="dropdown-button button-accent" tabindex="-1" data-dropdown="languages-dropdown"><i class="i-language"></i> <?= $this->label('pages.languages') ?></button>
+                        <div class="dropdown-menu" id="languages-dropdown">
+<?php
+                        foreach ($availableLanguages as $languageCode => $languageLabel):
+?>
+                            <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $languageCode . '/') ?>" class="dropdown-item"><?= $page->hasLanguage($languageCode) ? $this->label('pages.languages.edit-language', $languageLabel) : $this->label('pages.languages.add-language', $languageLabel); ?></a>
+<?php
+                        endforeach;
+?>
+
+                        </div>
+                    </div>
+<?php
+                    endif;
+?>
+<?php
                 if ($this->user()->permissions()->has('pages.delete')):
 ?>
                     <button type="button" class="button-link button-right" tabindex="-1" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                 endif;
 ?>
-                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
+                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
             </div>
             <div class="col-l-1-4">

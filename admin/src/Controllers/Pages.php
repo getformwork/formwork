@@ -6,6 +6,8 @@ use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Admin\Utils\LanguageCodes;
+use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
@@ -94,6 +96,26 @@ class Pages extends AbstractController
 
         $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
 
+        if ($params->has('language')) {
+            if (empty($this->option('languages'))) {
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+            }
+
+            $language = $params->get('language');
+
+            if (!in_array($language, $this->option('languages'), true)) {
+                $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . Formwork::instance()->defaultLanguage() . '/');
+            }
+
+            if ($page->hasLanguage($language)) {
+                $page->setLanguage($language);
+            }
+        } elseif (!is_null($page->language())) {
+            // Redirect to proper language
+            $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+        }
+
         // Load page fields
         $fields = new Fields($page->template()->scheme()->get('fields'));
 
@@ -145,11 +167,13 @@ class Pages extends AbstractController
         $this->view('admin', array(
             'title'   => $this->label('pages.edit-page', $page->title()),
             'content' => $this->view('pages.editor', array(
-                'page'              => $page,
-                'fields'            => $this->fields($fields, false),
-                'templates'         => $this->site()->templates(),
-                'parents'           => $this->site()->descendants()->sort('path'),
-                'datePickerOptions' => array(
+                'page'               => $page,
+                'fields'             => $this->fields($fields, false),
+                'templates'          => $this->site()->templates(),
+                'parents'            => $this->site()->descendants()->sort('path'),
+                'currentLanguage'    => $params->get('language', $page->language()),
+                'availableLanguages' => $this->availableSiteLanguages(),
+                'datePickerOptions'  => array(
                     'dayLabels'   => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
                     'weekStarts'  => $this->option('date.week_starts'),
@@ -379,15 +403,21 @@ class Pages extends AbstractController
 
         $content = str_replace("\r\n", "\n", $data->get('content'));
 
-        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent();
+        $language = $data->get('language');
+
+        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
 
         if ($differ) {
+            $filename = $data->get('template');
+            $filename .= empty($language) ? '' : '.' . $language;
+            $filename .= $this->option('content.extension');
+
             $fileContent = '---' . PHP_EOL;
             $fileContent .= YAML::encode($frontmatter);
             $fileContent .= '---' . PHP_EOL;
             $fileContent .= $data->get('content');
 
-            FileSystem::write($page->path() . $page->filename(), $fileContent);
+            FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->option('content.path'));
 
             // Update page with the new data
@@ -554,5 +584,19 @@ class Pages extends AbstractController
     protected function validateSlug($slug)
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
+    }
+
+    /**
+     * Return an array containing the available site languages as keys with proper labels as values
+     *
+     * @return array
+     */
+    protected function availableSiteLanguages()
+    {
+        $languages = array();
+        foreach ($this->option('languages') as $code) {
+            $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
+        }
+        return $languages;
     }
 }
