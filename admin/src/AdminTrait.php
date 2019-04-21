@@ -38,11 +38,20 @@ trait AdminTrait
     /**
      * Return the URI of a page
      *
+     * @param bool|string $includeLanguage
+     *
      * @return string
      */
-    protected function pageUri(Page $page)
+    protected function pageUri(Page $page, $includeLanguage = true)
     {
-        return $this->siteUri() . ltrim($page->route(), '/');
+        $base = $this->siteUri();
+        if ($includeLanguage) {
+            $language = is_string($includeLanguage) ? $includeLanguage : $page->language();
+            if (!is_null($language)) {
+                $base .= $language . '/';
+            }
+        }
+        return $base . ltrim($page->route(), '/');
     }
 
     /**
