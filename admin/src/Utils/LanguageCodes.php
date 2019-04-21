@@ -94,6 +94,18 @@ class LanguageCodes
     );
 
     /**
+     * Return whether a language code is available
+     *
+     * @param string $code
+     *
+     * @return bool
+     */
+    public static function hasCode($code)
+    {
+        return isset(static::$codes[$code]);
+    }
+
+    /**
      * Return language native names optionally filtered by continent
      * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
      * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
@@ -123,7 +135,7 @@ class LanguageCodes
      */
     public static function codeToName($code)
     {
-        if (!isset(static::$codes[$code])) {
+        if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
         }
         return static::$codes[$code]['name'];
@@ -138,7 +150,7 @@ class LanguageCodes
      */
     public static function codeToNativeName($code)
     {
-        if (!isset(static::$codes[$code])) {
+        if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
         }
         return static::$codes[$code]['native'];
