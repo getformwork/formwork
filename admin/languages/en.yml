@@ -79,6 +79,8 @@ options.system.files.allowed-extensions: Allowed Extensions
 options.system.images: Images
 options.system.images.jpeg-quality: JPEG Quality
 options.system.images.png-compression-level: PNG Compression Level
+options.system.languages: Languages
+options.system.languages.available-languages: Available Languages
 options.updated: Options updated
 options.updates: Updates
 pages.attributes: Attributes
