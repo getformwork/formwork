@@ -63,10 +63,10 @@
 
 .page-language {
     display: inline-block;
-    padding: 0 0.25rem;
-    min-width: 1.125rem;
-    border-radius: 3px;
-    background-color: #e9f4fb;
+    padding: $page-language-padding-v $page-language-padding-h;
+    min-width: $page-language-min-width;
+    border-radius: $border-radius;
+    background-color: $color-accent-background;
     color: $color-accent;
     text-align: center;
     font-size: $font-size-s;
