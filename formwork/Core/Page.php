@@ -7,7 +7,6 @@ use Formwork\Parsers\ParsedownExtension as Parsedown;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use RuntimeException;
 
@@ -476,7 +475,7 @@ class Page extends AbstractPage
                         'filename' => $file,
                         'template' => $name
                     );
-                    if (!is_null($language) && !in_array($language, $this->availableLanguages)) {
+                    if (!is_null($language) && !in_array($language, $this->availableLanguages, true)) {
                         $this->availableLanguages[] = $language;
                     }
                 }
