@@ -405,6 +405,11 @@ class Pages extends AbstractController
 
         $language = $data->get('language');
 
+        // Validate language
+        if (!empty($language) && !in_array($language, $this->option('languages'), true)) {
+            throw new LocalizedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
+        }
+
         $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
 
         if ($differ) {
