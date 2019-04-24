@@ -43,10 +43,6 @@ a.button {
     text-align: center;
 }
 
-.button.disabled {
-    @extend button[disabled];
-}
-
 .button-right {
     float: right;
     margin-right: 0;

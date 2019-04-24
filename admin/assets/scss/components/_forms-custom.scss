@@ -57,6 +57,7 @@
     padding-right: $image-input-padding-right;
     background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 576 512\'><path fill=\'%23444\' d=\'M480 416v16a48 48 0 0 1-48 48H48a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48a48 48 0 0 1 48 48v256a48 48 0 0 1-48 48H144a48 48 0 0 1-48-48V80a48 48 0 0 1 48-48h384zM264 144a40 40 0 1 1-80 0 40 40 0 0 1 80 0zm-72 96l39.52-39.52a12 12 0 0 1 16.97 0L288 240l103.52-103.52a12 12 0 0 1 16.97 0L480 208v80H192v-48z\'/></svg>') no-repeat right 0.5rem center;
     background-size: 1rem 1rem;
+    cursor: default;
 }
 
 .input-wrap .image-input {
@@ -139,13 +140,33 @@
     font-weight: 600;
 }
 
-.date-input,
-.image-input {
-    cursor: default;
-}
-
 .title-input {
     font-size: $font-size-l;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    clear: both;
+    margin-bottom: $file-input-label-margin-bottom;
+    padding: $file-input-label-padding;
+    background-color: $color-gray-xxlight;
+}
+
+.file-input-label span {
+    display: block;
+    padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
+    border: $file-input-label-inner-border-width dashed $color-gray;
+    color: $color-gray-xxdark;
+    text-align: center;
+    transition: background-color $transition-time-m;
+}
+
+.file-input-label.drag span {
+    background-color: #fff;
 }
 
 .toggle-group {
@@ -252,12 +273,12 @@ input[type=range] {
         background-color: $color-accent;
         cursor: default;
     }
-    &:hover::-webkit-slider-thumb {
-        background-color: $color-accent-dark;
-    }
     &:focus {
         outline: none;
         box-shadow: none;
+    }
+    &:hover::-webkit-slider-thumb {
+        background-color: $color-accent-dark;
     }
     &[disabled] {
         background-color: transparent;
@@ -272,29 +293,4 @@ input[type=range] {
     vertical-align: 0.1875rem;
     font-size: $font-size-s;
     @include user-select-none;
-}
-
-.file-input {
-    display: none;
-}
-
-.file-input-label {
-    display: block;
-    clear: both;
-    margin-bottom: $file-input-label-margin-bottom;
-    padding: $file-input-label-padding;
-    background-color: $color-gray-xxlight;
-}
-
-.file-input-label span {
-    display: block;
-    padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
-    border: $file-input-label-inner-border-width dashed $color-gray;
-    color: $color-gray-xxdark;
-    text-align: center;
-    transition: background-color $transition-time-m;
-}
-
-.file-input-label.drag span {
-    background-color: #fff;
 }
