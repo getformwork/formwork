@@ -40,7 +40,7 @@
         "media-feature-parentheses-space-inside": "never",
         "media-feature-colon-space-before": "never",
         "media-feature-colon-space-after": "always",
-        "no-descending-specificity": null,
+        "no-descending-specificity": true,
         "no-duplicate-selectors": true,
         "number-leading-zero": "always",
         "order/properties-order": [
@@ -247,6 +247,9 @@
             "user-select",
         ],
         "rule-empty-line-before": ["always", {
+            "except": [
+                "after-single-line-comment"
+            ],
             "ignore": [
                 "inside-block"
             ]
