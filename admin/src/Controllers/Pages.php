@@ -15,6 +15,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -254,7 +255,7 @@ class Pages extends AbstractController
         $this->notify($this->label('pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
-        if (Uri::normalize(HTTPRequest::referer()) !== Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/')))) {
+        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/'))))) {
             $this->redirectToReferer(302, '/pages/');
         } else {
             $this->redirect('/pages/');
