@@ -349,7 +349,11 @@ class Pages extends AbstractController
 
         FileSystem::createDirectory($path, true);
 
-        $filename = $data->get('template') . $this->option('content.extension');
+        $language = Formwork::instance()->defaultLanguage();
+
+        $filename = $data->get('template');
+        $filename .= empty($language) ? '' : '.' . $language;
+        $filename .= $this->option('content.extension');
 
         FileSystem::createFile($path . $filename);
 
