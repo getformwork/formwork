@@ -484,16 +484,18 @@ class Page extends AbstractPage
             }
         }
 
-        // Get correct content file based on requested language
-        ksort($contentFiles);
-        $requestedLanguage = $this->language ?: Formwork::instance()->language();
-        $key = isset($contentFiles[$requestedLanguage]) ? $requestedLanguage : array_keys($contentFiles)[0];
+        if (!empty($contentFiles)) {
+            // Get correct content file based on requested language
+            ksort($contentFiles);
+            $requestedLanguage = $this->language ?: Formwork::instance()->language();
+            $key = isset($contentFiles[$requestedLanguage]) ? $requestedLanguage : array_keys($contentFiles)[0];
 
-        // Set actual language
-        $this->language = $key ?: null;
+            // Set actual language
+            $this->language = $key ?: null;
 
-        $this->filename = $contentFiles[$key]['filename'];
-        $this->template = new Template($contentFiles[$key]['template'], $this);
+            $this->filename = $contentFiles[$key]['filename'];
+            $this->template = new Template($contentFiles[$key]['template'], $this);
+        }
 
         $this->files = new Files($files, $this->path);
     }
