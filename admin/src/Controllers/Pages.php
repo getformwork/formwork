@@ -245,12 +245,26 @@ class Pages extends AbstractController
 
         $this->ensurePageExists($page, 'pages.page.cannot-delete.page-not-found');
 
+        if ($params->has('language')) {
+            if ($page->hasLanguage($language = $params->get('language'))) {
+                $page->setLanguage($language);
+            } else {
+                $this->notify($this->label('pages.page.cannot-delete.invalid-language', $language), 'error');
+                $this->redirectToReferer(302, '/pages/');
+            }
+        }
+
         if (!$page->isDeletable()) {
             $this->notify($this->label('pages.page.cannot-delete.not-deletable'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
-        FileSystem::delete($page->path(), true);
+        // Delete just the content file only if there are more than one language
+        if ($params->has('language') && count($page->availableLanguages()) > 1) {
+            FileSystem::delete($page->path() . $page->filename());
+        } else {
+            FileSystem::delete($page->path(), true);
+        }
 
         $this->notify($this->label('pages.page.deleted'), 'success');
 

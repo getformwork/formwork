@@ -127,6 +127,7 @@ pages.page.cannot-create.invalid-template: Cannot create page, invalid template
 pages.page.cannot-create.var-missing: Cannot create page, missing a variable
 pages.page.cannot-delete-file.file-not-found: Cannot delete file, file not found
 pages.page.cannot-delete-file.page-not-found: Cannot delete file, file not found
+pages.page.cannot-delete.invalid-language: 'Cannot delete page, invalid language: %s'
 pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
 pages.page.cannot-delete.page-not-found: Cannot delete page, page not found
 pages.page.cannot-edit.already-exists: Cannot edit page, a page with the same uri already exists

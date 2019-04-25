@@ -127,6 +127,7 @@ pages.page.cannot-create.invalid-template: Impossibile creare la pagina, il temp
 pages.page.cannot-create.var-missing: Impossibile creare la pagina, manca una variabile
 pages.page.cannot-delete-file.file-not-found: Impossibile eliminare il file, file non trovato
 pages.page.cannot-delete-file.page-not-found: Impossibile eliminare il file, pagina non trovata
+pages.page.cannot-delete.invalid-language: Impossibile eliminare la pagina, lingua %s non valida
 pages.page.cannot-delete.not-deletable: Impossibile eliminare la pagina, la pagina non è eliminabile
 pages.page.cannot-delete.page-not-found: Impossibile eliminare la pagina, pagina non trovata
 pages.page.cannot-edit.already-exists: Impossibile modificare la pagina, una pagina con lo stesso indirizzo esiste già

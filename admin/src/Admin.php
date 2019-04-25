@@ -320,7 +320,10 @@ class Admin
         );
         $this->router->add(
             'POST',
-            '/pages/{page}/delete/',
+            array(
+                '/pages/{page}/delete/',
+                '/pages/{page}/delete/language/{language}/',
+            ),
             Controllers\Pages::class . '@delete'
         );
 
