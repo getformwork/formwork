@@ -134,8 +134,7 @@ abstract class AbstractPage
             $parentPages[] = $parent;
             $page = $parent;
         }
-        $this->parents = new PageCollection(array_reverse($parentPages));
-        return $this->parents;
+        return $this->parents = new PageCollection(array_reverse($parentPages));
     }
 
     /**
@@ -158,9 +157,7 @@ abstract class AbstractPage
         if (!is_null($this->children)) {
             return $this->children;
         }
-        $pageCollection = PageCollection::fromPath($this->path);
-        $this->children = $pageCollection;
-        return $this->children;
+        return $this->children = PageCollection::fromPath($this->path);
     }
 
     /**
@@ -183,9 +180,7 @@ abstract class AbstractPage
         if (!is_null($this->descendants)) {
             return $this->descendants;
         }
-        $pageCollection = PageCollection::fromPath($this->path, true);
-        $this->descendants = $pageCollection;
-        return $this->descendants;
+        return $this->descendants = PageCollection::fromPath($this->path, true);
     }
 
     /**
