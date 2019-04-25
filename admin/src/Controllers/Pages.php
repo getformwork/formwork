@@ -433,6 +433,11 @@ class Pages extends AbstractController
             // Update page with the new data
             $page->reload();
 
+            // Set correct page language if it has changed
+            if ($language !== $page->language()) {
+                $page->setLanguage($language);
+            }
+
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
                 if ($page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
