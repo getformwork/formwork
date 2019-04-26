@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPRequest;
 use LogicException;
 
 abstract class AbstractPage
@@ -27,13 +28,6 @@ abstract class AbstractPage
      * @var string
      */
     protected $route;
-
-    /**
-     * Page URI
-     *
-     * @var string
-     */
-    protected $uri;
 
     /**
      * Page data
@@ -66,16 +60,21 @@ abstract class AbstractPage
     /**
      * Return a URI relative to page
      *
-     * @param string $route
+     * @param string      $path
+     * @param bool|string $includeLanguage
      *
      * @return string
      */
-    public function uri($route = null)
+    public function uri($path = '', $includeLanguage = true)
     {
-        if (is_null($route)) {
-            return $this->uri;
+        $base = HTTPRequest::root();
+        if ($includeLanguage) {
+            $language = is_string($includeLanguage) ? $includeLanguage : Formwork::instance()->language();
+            if (!is_null($language) && Formwork::instance()->defaultLanguage() !== $language) {
+                $base .= $language . '/';
+            }
         }
-        return $this->uri . ltrim($route, '/');
+        return $base . ltrim($this->route, '/') . ltrim($path, '/');
     }
 
     /**

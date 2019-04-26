@@ -3,7 +3,6 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 
 class Site extends AbstractPage
 {
@@ -38,7 +37,6 @@ class Site extends AbstractPage
         $this->path = Formwork::instance()->option('content.path');
         $this->relativePath = DS;
         $this->route = '/';
-        $this->uri = HTTPRequest::root();
         $this->data = array_merge($this->defaults(), $data);
         $this->loadTemplates();
     }

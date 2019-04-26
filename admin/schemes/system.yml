@@ -66,11 +66,34 @@ rows1:
                             options:
                                 0: '{{options.system.date-and-time.first-weekday.sunday}}'
                                 1: '{{options.system.date-and-time.first-weekday.monday}}'
+
 section2:
+    type: header
+    label: '{{options.system.languages}}'
+
+rows2:
+    type: rows
+    fields:
+        row1:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.languages.available-languages}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        languages:
+                            type: tags
+                            pattern: '^[a-z]{2,3}$'
+
+section3:
     type: header
     label: '{{options.system.files}}'
 
-rows2:
+rows3:
     type: rows
     fields:
         row1:
@@ -89,11 +112,11 @@ rows2:
                             pattern: '^\.[a-zA-Z0-9]+$'
                             required: true
 
-section3:
+section4:
     type: header
     label: '{{options.system.cache}}'
 
-rows3:
+rows4:
     type: rows
     fields:
         row1:
@@ -130,11 +153,11 @@ rows3:
                             step: 86400
                             required: true
 
-section4:
+section5:
     type: header
     label: '{{options.system.admin-panel}}'
 
-rows4:
+rows5:
     type: rows
     fields:
         row1:
@@ -185,11 +208,11 @@ rows4:
                             min: 0
                             required: true
 
-section5:
+section6:
     type: header
     label: '{{options.system.images}}'
 
-rows5:
+rows6:
     type: rows
     fields:
         row1:
@@ -224,11 +247,11 @@ rows5:
                             min: 0
                             max: 9
 
-section6:
+section7:
     type: header
     label: '{{options.system.backup}}'
 
-rows6:
+rows7:
     type: rows
     fields:
         row1:

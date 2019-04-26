@@ -61,12 +61,27 @@
     font-size: $font-size-m;
 }
 
-.page-route {
+.page-language {
+    display: inline-block;
+    padding: $page-language-padding-v $page-language-padding-h;
+    min-width: $page-language-min-width;
+    border-radius: $border-radius;
+    background-color: $color-accent-background;
+    color: $color-accent;
+    text-align: center;
+    font-weight: 600;
     font-size: $font-size-s;
+    line-height: 1;
 }
 
-.page-route span {
+button .page-language,
+.button .page-language {
+    font-size: $font-size-xs;
+}
+
+.page-route {
     color: $color-gray-dark;
+    font-size: $font-size-s;
 }
 
 .page-status-label::before {

@@ -6,6 +6,8 @@ use Formwork\Admin\Exceptions\LocalizedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Admin\Utils\LanguageCodes;
+use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
@@ -13,6 +15,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -94,6 +97,26 @@ class Pages extends AbstractController
 
         $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
 
+        if ($params->has('language')) {
+            if (empty($this->option('languages'))) {
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+            }
+
+            $language = $params->get('language');
+
+            if (!in_array($language, $this->option('languages'), true)) {
+                $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . Formwork::instance()->defaultLanguage() . '/');
+            }
+
+            if ($page->hasLanguage($language)) {
+                $page->setLanguage($language);
+            }
+        } elseif (!is_null($page->language())) {
+            // Redirect to proper language
+            $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+        }
+
         // Load page fields
         $fields = new Fields($page->template()->scheme()->get('fields'));
 
@@ -145,11 +168,13 @@ class Pages extends AbstractController
         $this->view('admin', array(
             'title'   => $this->label('pages.edit-page', $page->title()),
             'content' => $this->view('pages.editor', array(
-                'page'              => $page,
-                'fields'            => $this->fields($fields, false),
-                'templates'         => $this->site()->templates(),
-                'parents'           => $this->site()->descendants()->sort('path'),
-                'datePickerOptions' => array(
+                'page'               => $page,
+                'fields'             => $this->fields($fields, false),
+                'templates'          => $this->site()->templates(),
+                'parents'            => $this->site()->descendants()->sort('path'),
+                'currentLanguage'    => $params->get('language', $page->language()),
+                'availableLanguages' => $this->availableSiteLanguages(),
+                'datePickerOptions'  => array(
                     'dayLabels'   => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
                     'weekStarts'  => $this->option('date.week_starts'),
@@ -220,17 +245,31 @@ class Pages extends AbstractController
 
         $this->ensurePageExists($page, 'pages.page.cannot-delete.page-not-found');
 
+        if ($params->has('language')) {
+            if ($page->hasLanguage($language = $params->get('language'))) {
+                $page->setLanguage($language);
+            } else {
+                $this->notify($this->label('pages.page.cannot-delete.invalid-language', $language), 'error');
+                $this->redirectToReferer(302, '/pages/');
+            }
+        }
+
         if (!$page->isDeletable()) {
             $this->notify($this->label('pages.page.cannot-delete.not-deletable'), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
-        FileSystem::delete($page->path(), true);
+        // Delete just the content file only if there are more than one language
+        if ($params->has('language') && count($page->availableLanguages()) > 1) {
+            FileSystem::delete($page->path() . $page->filename());
+        } else {
+            FileSystem::delete($page->path(), true);
+        }
 
         $this->notify($this->label('pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
-        if (Uri::normalize(HTTPRequest::referer()) !== Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/')))) {
+        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/'))))) {
             $this->redirectToReferer(302, '/pages/');
         } else {
             $this->redirect('/pages/');
@@ -325,7 +364,11 @@ class Pages extends AbstractController
 
         FileSystem::createDirectory($path, true);
 
-        $filename = $data->get('template') . $this->option('content.extension');
+        $language = Formwork::instance()->defaultLanguage();
+
+        $filename = $data->get('template');
+        $filename .= empty($language) ? '' : '.' . $language;
+        $filename .= $this->option('content.extension');
 
         FileSystem::createFile($path . $filename);
 
@@ -379,19 +422,35 @@ class Pages extends AbstractController
 
         $content = str_replace("\r\n", "\n", $data->get('content'));
 
-        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent();
+        $language = $data->get('language');
+
+        // Validate language
+        if (!empty($language) && !in_array($language, $this->option('languages'), true)) {
+            throw new LocalizedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
+        }
+
+        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
 
         if ($differ) {
+            $filename = $data->get('template');
+            $filename .= empty($language) ? '' : '.' . $language;
+            $filename .= $this->option('content.extension');
+
             $fileContent = '---' . PHP_EOL;
             $fileContent .= YAML::encode($frontmatter);
             $fileContent .= '---' . PHP_EOL;
             $fileContent .= $data->get('content');
 
-            FileSystem::write($page->path() . $page->filename(), $fileContent);
+            FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->option('content.path'));
 
             // Update page with the new data
             $page->reload();
+
+            // Set correct page language if it has changed
+            if ($language !== $page->language()) {
+                $page->setLanguage($language);
+            }
 
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
@@ -554,5 +613,19 @@ class Pages extends AbstractController
     protected function validateSlug($slug)
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
+    }
+
+    /**
+     * Return an array containing the available site languages as keys with proper labels as values
+     *
+     * @return array
+     */
+    protected function availableSiteLanguages()
+    {
+        $languages = array();
+        foreach ($this->option('languages') as $code) {
+            $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
+        }
+        return $languages;
     }
 }

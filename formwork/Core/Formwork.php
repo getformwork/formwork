@@ -36,6 +36,27 @@ class Formwork
     protected $options = array();
 
     /**
+     * Current request URI
+     *
+     * @var string
+     */
+    protected $request;
+
+    /**
+     * Default language code
+     *
+     * @var string
+     */
+    protected $defaultLanguage;
+
+    /**
+     * Current language code
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
      * Site instance
      *
      * @var Site
@@ -84,10 +105,14 @@ class Formwork
 
         date_default_timezone_set($this->option('date.timezone'));
 
+        $this->request = Uri::removeQuery(HTTPRequest::uri());
+
+        $this->loadLanguages();
+
+        $this->router = new Router($this->request);
+
         $siteConfig = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($siteConfig);
-
-        $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
 
         if ($this->option('cache.enabled')) {
             $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
@@ -120,6 +145,7 @@ class Formwork
             'date.hour_format'         => 'h:i A',
             'date.timezone'            => 'UTC',
             'date.week_starts'         => 0,
+            'languages'                => array(),
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
             'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
@@ -192,6 +218,23 @@ class Formwork
     public function option($option, $default = null)
     {
         return array_key_exists($option, $this->options) ? $this->options[$option] : $default;
+    }
+
+    /**
+     * Load language from request
+     */
+    protected function loadLanguages()
+    {
+        if (!empty($languages = $this->option('languages'))) {
+            $this->defaultLanguage = $this->option('languages.default', $languages[0]);
+            if (preg_match('~^/(' . implode('|', $languages) . ')/~i', $this->request, $matches)) {
+                list($match, $language) = $matches;
+                $this->language = $language;
+                $this->request = '/' . substr($this->request, strlen($match));
+            } else {
+                $this->language = $this->defaultLanguage;
+            }
+        }
     }
 
     /**

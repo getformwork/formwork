@@ -296,7 +296,10 @@ class Admin
         );
         $this->router->add(
             array('GET', 'POST'),
-            '/pages/{page}/edit/',
+            array(
+                '/pages/{page}/edit/',
+                '/pages/{page}/edit/language/{language}/'
+            ),
             Controllers\Pages::class . '@edit'
         );
         $this->router->add(
@@ -317,7 +320,10 @@ class Admin
         );
         $this->router->add(
             'POST',
-            '/pages/{page}/delete/',
+            array(
+                '/pages/{page}/delete/',
+                '/pages/{page}/delete/language/{language}/',
+            ),
             Controllers\Pages::class . '@delete'
         );
 
