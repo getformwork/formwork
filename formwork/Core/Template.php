@@ -89,7 +89,6 @@ class Template
         $this->name = $template;
         $this->page = $page;
         $this->vars = $this->defaults();
-        $this->loadController();
     }
 
     /**
@@ -156,25 +155,9 @@ class Template
     }
 
     /**
-     * Return an array containing the default data
-     *
-     * @return array
-     */
-    protected function defaults()
-    {
-        return array(
-            'params' => Formwork::instance()->router()->params(),
-            'site'   => Formwork::instance()->site(),
-            'page'   => $this->page
-        );
-    }
-
-    /**
      * Load template controller if exists
-     *
-     * @return string|null
      */
-    protected function loadController()
+    public function loadController()
     {
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
@@ -186,6 +169,20 @@ class Template
             extract($this->vars);
             $this->vars = array_merge($this->vars, (array) include $controllerFile);
         }
+    }
+
+    /**
+     * Return an array containing the default data
+     *
+     * @return array
+     */
+    protected function defaults()
+    {
+        return array(
+            'params' => Formwork::instance()->router()->params(),
+            'site'   => Formwork::instance()->site(),
+            'page'   => $this->page
+        );
     }
 
     /**

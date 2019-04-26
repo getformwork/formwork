@@ -197,6 +197,8 @@ class Formwork
 
         $resource = $this->router->dispatch();
 
+        $resource->template()->loadController();
+
         if (is_null($this->site->currentPage())) {
             $this->site->setCurrentPage($resource);
         }
