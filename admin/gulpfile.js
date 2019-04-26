@@ -25,7 +25,10 @@ gulp.task('js-app', function () {
 });
 
 gulp.task('js-vendor', function () {
-    return gulp.src('./assets/js/vendor/*.min.js')
+    return gulp.src([
+        './node_modules/chartist/dist/chartist.min.js',
+        './node_modules/sortablejs/Sortable.min.js'
+    ])
         .pipe(concat('vendor.min.js'))
         .pipe(gulp.dest('./assets/js'));
 });

@@ -10,7 +10,10 @@
   "bugs": {
     "url": "https://github.com/giuscris/formwork/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chartist": "^0.11.0",
+    "sortablejs": "^1.7.0"
+  },
   "devDependencies": {
     "gulp": "^4.0.1",
     "gulp-clean-css": "^4.0.0",
