@@ -15,13 +15,13 @@ Formwork.Notification = function (text, type, interval) {
 
     var timer = setTimeout(remove, interval);
 
-    $notification.click(remove);
+    $notification.on('click', remove);
 
-    $notification.mouseenter(function () {
+    $notification.on('mouseenter', function () {
         clearTimeout(timer);
     });
 
-    $notification.mouseleave(function () {
+    $notification.on('mouseleave', function () {
         timer = setTimeout(remove, 1000);
     });
 

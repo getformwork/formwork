@@ -4,8 +4,8 @@
         function clear() {
             clearTimeout(timer);
         }
-        $(window).mouseup(clear);
-        $(this).mousedown(function (event) {
+        $(window).on('mouseup', clear);
+        $(this).on('mousedown', function (event) {
             if (event.which !== 1) {
                 clear();
             } else {
@@ -14,6 +14,6 @@
                     timer = window.setInterval(callback, interval ? interval : 250);
                 }, timeout ? timeout : 500);
             }
-        }).mouseout(clear);
+        }).on('mouseout', clear);
     };
 }(jQuery));

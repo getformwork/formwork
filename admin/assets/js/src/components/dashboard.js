@@ -1,6 +1,6 @@
 Formwork.Dashboard = {
     init: function () {
-        $('[data-command=clear-cache]').click(function () {
+        $('[data-command=clear-cache]').on('click', function () {
             new Formwork.Request({
                 method: 'POST',
                 url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
@@ -10,7 +10,7 @@ Formwork.Dashboard = {
             });
         });
 
-        $('[data-command=make-backup]').click(function () {
+        $('[data-command=make-backup]').on('click', function () {
             var $button = $(this);
             $button.attr('disabled', true);
             new Formwork.Request({

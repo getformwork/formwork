@@ -1,36 +1,36 @@
 Formwork.Pages = {
     init: function () {
-        $('.page-children-toggle').click(function (event) {
+        $('.page-children-toggle').on('click', function (event) {
             event.stopPropagation();
             var $this = $(this);
             $this.closest('li').children('.pages-list').toggle();
             $this.toggleClass('toggle-expanded toggle-collapsed');
         });
 
-        $('.page-details a').click(function (event) {
+        $('.page-details a').on('click', function (event) {
             event.stopPropagation();
         });
 
-        $('[data-command=expand-all-pages]').click(function () {
-            $(this).blur();
+        $('[data-command=expand-all-pages]').on('click', function () {
+            $(this).trigger('blur');
             $('.pages-children').show();
             $('.page-children-toggle', '.pages-list').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
-        $('[data-command=collapse-all-pages]').click(function () {
-            $(this).blur();
+        $('[data-command=collapse-all-pages]').on('click', function () {
+            $(this).trigger('blur');
             $('.pages-children').hide();
             $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
         });
 
-        $('.page-search').focus(function () {
+        $('.page-search').on('focus', function () {
             $('.pages-children').each(function () {
                 var $this = $(this);
                 $this.data('visible', $this.is(':visible'));
             });
         });
 
-        $('.page-search').keyup(Formwork.Utils.debounce(function () {
+        $('.page-search').on('keyup', Formwork.Utils.debounce(function () {
             var value = $(this).val();
             if (value.length === 0) {
                 $('.pages-children').each(function () {
@@ -53,27 +53,27 @@ Formwork.Pages = {
             }
         }, 100));
 
-        $('.page-details').click(function () {
+        $('.page-details').on('click', function () {
             var $toggle = $('.page-children-toggle', this).first();
             if ($toggle.length) {
-                $toggle.click();
+                $toggle.trigger('click');
             }
         });
 
-        $('#page-title', '#newPageModal').keyup(function () {
+        $('#page-title', '#newPageModal').on('keyup', function () {
             $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
         });
 
-        $('#page-slug', '#newPageModal, #slugModal').keyup(function () {
+        $('#page-slug', '#newPageModal, #slugModal').on('keyup', function () {
             var $this = $(this);
             $this.val($this.val().toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, ''));
-        }).blur(function () {
+        }).on('blur', function () {
             if ($(this).val() === '') {
                 $('#page-title', '#newPageModal').trigger('keyup');
             }
         });
 
-        $('#page-parent', '#newPageModal').change(function () {
+        $('#page-parent', '#newPageModal').on('change', function () {
             var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
             var allowedTemplates = $option.attr('data-allowed-templates');
@@ -96,25 +96,25 @@ Formwork.Pages = {
             }
         });
 
-        $('[data-command=change-slug]').click(function () {
+        $('[data-command=change-slug]').on('click', function () {
             Formwork.Modals.show('slugModal', null, function ($modal) {
                 var slug = $('#slug').val();
-                $('#page-slug', $modal).val(slug).attr('placeholder', slug).focus();
+                $('#page-slug', $modal).val(slug).attr('placeholder', slug).trigger('focus');
             });
         });
 
-        $('#page-slug', '#slugModal').keydown(function (event) {
+        $('#page-slug', '#slugModal').on('keydown', function (event) {
             if (event.which === 13) {
-                $('[data-command=continue]', '#slugModal').click();
+                $('[data-command=continue]', '#slugModal').trigger('click');
             }
         });
 
-        $('[data-command=generate-slug]', '#slugModal').click(function () {
+        $('[data-command=generate-slug]', '#slugModal').on('click', function () {
             var slug = Formwork.Utils.slug($('#title').val());
-            $('#page-slug', '#slugModal').val(slug).focus();
+            $('#page-slug', '#slugModal').val(slug).trigger('focus');
         });
 
-        $('[data-command=continue]', '#slugModal').click(function () {
+        $('[data-command=continue]', '#slugModal').on('click', function () {
             var slug = $('#page-slug').val().replace(/^-+|-+$/, '');
             if (slug.length > 0) {
                 var route = $('.page-route span').text();
@@ -185,11 +185,11 @@ Formwork.Pages = {
             $this.data('originalOrder', sortable.toArray());
         });
 
-        $(document).keydown(function (event) {
+        $(document).on('keydown', function (event) {
             if (event.ctrlKey || event.metaKey) {
                 // ctrl/cmd + F
                 if (event.which === 70 && $('.page-search:not(:focus)').length) {
-                    $('.page-search').focus();
+                    $('.page-search').trigger('focus');
                     return false;
                 }
             }

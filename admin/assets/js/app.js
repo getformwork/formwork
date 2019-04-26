@@ -9,7 +9,7 @@ var Formwork = {
         Formwork.Pages.init();
         Formwork.Updates.init();
 
-        $('.toggle-navigation').click(function () {
+        $('.toggle-navigation').on('click', function () {
             $('.sidebar').toggleClass('show');
         });
 
@@ -26,10 +26,10 @@ var Formwork = {
         });
 
         if ($('[data-command=save]').length > 0) {
-            $(document).keydown(function () {
+            $(document).on('keydown', function () {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {
                     if (event.which === 83) { // ctrl/cmd + S
-                        $('[data-command=save]').click();
+                        $('[data-command=save]').trigger('click');
                         return false;
                     }
                 }
@@ -93,7 +93,7 @@ Formwork.Chart = function (element, data) {
 
 Formwork.Dashboard = {
     init: function () {
-        $('[data-command=clear-cache]').click(function () {
+        $('[data-command=clear-cache]').on('click', function () {
             new Formwork.Request({
                 method: 'POST',
                 url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
@@ -103,7 +103,7 @@ Formwork.Dashboard = {
             });
         });
 
-        $('[data-command=make-backup]').click(function () {
+        $('[data-command=make-backup]').on('click', function () {
             var $button = $(this);
             $button.attr('disabled', true);
             new Formwork.Request({
@@ -127,7 +127,7 @@ Formwork.Dashboard = {
 Formwork.Dropdowns = {
     init: function () {
         if ($('.dropdown').length > 0) {
-            $(document).click(function (event) {
+            $(document).on('click', function (event) {
                 var $button = $(event.target).closest('.dropdown-button');
                 if ($button.length > 0) {
                     var $dropdown = $('#' + $button.attr('data-dropdown'), '.dropdown');
@@ -148,19 +148,19 @@ Formwork.Editor = function (id) {
     var $toolbar = '.editor-toolbar[data-for=' + id + ']';
     restoreCursorPosition();
 
-    $('[data-command=bold]', $toolbar).click(function () {
+    $('[data-command=bold]', $toolbar).on('click', function () {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', $toolbar).click(function () {
+    $('[data-command=italic]', $toolbar).on('click', function () {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', $toolbar).click(function () {
+    $('[data-command=ul]', $toolbar).on('click', function () {
         insertAtCursor(prependSequence() + '- ', '');
     });
 
-    $('[data-command=ol]', $toolbar).click(function () {
+    $('[data-command=ol]', $toolbar).on('click', function () {
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
@@ -169,11 +169,11 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $('[data-command=quote]', $toolbar).click(function () {
+    $('[data-command=quote]', $toolbar).on('click', function () {
         insertAtCursor(prependSequence() + '> ', '');
     });
 
-    $('[data-command=link]', $toolbar).click(function () {
+    $('[data-command=link]', $toolbar).on('click', function () {
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -181,18 +181,18 @@ Formwork.Editor = function (id) {
         var right = textarea.value.substring(endPos, textarea.value.length);
         if (/^(https?:\/\/|mailto:)/i.test(selection)) {
             textarea.value = left + '[](' + selection + ')' + right;
-            textarea.focus();
+            textarea.trigger('focus');
             textarea.setSelectionRange(startPos + 1, startPos + 1);
         } else if (selection !== '') {
             textarea.value = left + '[' + selection + '](http://)' + right;
-            textarea.focus();
+            textarea.trigger('focus');
             textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
         } else {
             insertAtCursor('[', '](http://)');
         }
     });
 
-    $('[data-command=image]', $toolbar).click(function () {
+    $('[data-command=image]', $toolbar).on('click', function () {
         Formwork.Modals.show('imagesModal', null, function ($modal) {
             $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
             $('.image-picker-confirm', $modal).data('target', function (filename) {
@@ -205,7 +205,7 @@ Formwork.Editor = function (id) {
         });
     });
 
-    $('[data-command=summary]', $toolbar).click(function () {
+    $('[data-command=summary]', $toolbar).on('click', function () {
         if (!hasSummarySequence()) {
             var prevChar = prevCursorChar();
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
@@ -214,20 +214,20 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    $(textarea).on('keyup', Formwork.Utils.debounce(disableSummaryCommand, 1000));
     disableSummaryCommand();
 
-    $(document).keydown(function (event) {
+    $(document).on('keydown', function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
             case 66: // ctrl/cmd + B
-                $('[data-command=bold]', $toolbar).click();
+                $('[data-command=bold]', $toolbar).trigger('click');
                 return false;
             case 73: // ctrl/cmd + I
-                $('[data-command=italic]', $toolbar).click();
+                $('[data-command=italic]', $toolbar).trigger('click');
                 return false;
             case 75: // ctrl/cmd + K
-                $('[data-command=link]', $toolbar).click();
+                $('[data-command=link]', $toolbar).trigger('click');
                 return false;
             case 89: // ctrl/cmd + Y
             case 90: // ctrl/cmd + Z
@@ -255,7 +255,7 @@ Formwork.Editor = function (id) {
             if (data[0] === location.pathname) {
                 textarea.scrollTop = data[1];
                 textarea.setSelectionRange(data[2], data[2]);
-                $(textarea).focus();
+                $(textarea).trigger('focus');
             }
         }
     }
@@ -301,7 +301,7 @@ Formwork.Editor = function (id) {
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
         textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
         textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(textarea).blur().focus();
+        $(textarea).trigger('blur').trigger('focus');
     }
 };
 
@@ -317,16 +317,16 @@ Formwork.Form = function (form) {
         }
     });
 
-    $form.submit(function () {
+    $form.on('submit', function () {
         $window.off('beforeunload');
     });
 
-    $('[data-command=continue]', '#changesModal').click(function () {
+    $('[data-command=continue]', '#changesModal').on('click', function () {
         $window.off('beforeunload');
         window.location.href = $(this).attr('data-href');
     });
 
-    $('a[href]:not([href^="#"]):not([target="_blank"])').click(function (event) {
+    $('a[href]:not([href^="#"]):not([target="_blank"])').on('click', function (event) {
         if (hasChanged()) {
             var link = this;
             event.preventDefault();
@@ -355,7 +355,7 @@ Formwork.Forms = {
             new Formwork.Form($(this));
         });
 
-        $('input[data-enable]').change(function () {
+        $('input[data-enable]').on('change', function () {
             var $this = $(this);
             var checked = $this.is(':checked');
             $.each($this.attr('data-enable').split(','), function (index, value) {
@@ -363,10 +363,10 @@ Formwork.Forms = {
             });
         });
 
-        $('.input-reset').click(function () {
+        $('.input-reset').on('click', function () {
             var $target = $('#' + $(this).attr('data-reset'));
             $target.val('');
-            $target.change();
+            $target.trigger('change');
         });
 
         $('input:file').each(function () {
@@ -385,8 +385,8 @@ Formwork.Forms = {
             }
         });
 
-        $('input:file[data-auto-upload]').change(function () {
-            $(this).closest('form').submit();
+        $('input:file[data-auto-upload]').on('change', function () {
+            $(this).closest('form').trigger('submit');
         });
 
         $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
@@ -395,7 +395,7 @@ Formwork.Forms = {
             var $target = $('#' + $(this).attr('for'));
             $target.prop('files', event.originalEvent.dataTransfer.files);
             // Firefox won't trigger a change event, so we explicitly do that
-            $target.change();
+            $target.trigger('change');
         }).on('dragover dragenter', function () {
             $(this).addClass('drag');
         }).on('dragleave drop', function () {
@@ -404,7 +404,7 @@ Formwork.Forms = {
 
         $('.tag-input').tagInput();
 
-        $('.image-input').click(function () {
+        $('.image-input').on('click', function () {
             var $this = $(this);
             var value = $this.val();
             Formwork.Modals.show('imagesModal', null, function ($modal) {
@@ -434,7 +434,7 @@ Formwork.Forms = {
             $this.hide();
         });
 
-        $('.image-picker-confirm').click(function () {
+        $('.image-picker-confirm').on('click', function () {
             var $this = $(this);
             var target = $this.data('target');
             var filename = $('.image-picker-thumbnail.selected', $this.parent()).attr('data-filename');
@@ -445,21 +445,21 @@ Formwork.Forms = {
             }
         });
 
-        $('.image-picker-thumbnail').click(function () {
+        $('.image-picker-thumbnail').on('click', function () {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
             $this.parent().siblings('.image-input').val($this.attr('data-uri'));
         });
 
-        $('.image-picker-thumbnail').dblclick(function () {
-            $(this).click();
-            $('.image-picker-confirm').click();
+        $('.image-picker-thumbnail').on('dblclick', function () {
+            $(this).trigger('click');
+            $('.image-picker-confirm').trigger('click');
         });
 
-        $('[data-command=upload]').click(function () {
+        $('[data-command=upload]').on('click', function () {
             var $target = $('#' + $(this).attr('data-upload-target'));
-            $target.click();
+            $target.trigger('click');
         });
 
         $('.editor-textarea').each(function () {
@@ -475,7 +475,7 @@ Formwork.Forms = {
 
 Formwork.Modals = {
     init: function () {
-        $('[data-modal]').click(function () {
+        $('[data-modal]').on('click', function () {
             var $this = $(this);
             var modal = $this.attr('data-modal');
             var action = $this.attr('data-modal-action');
@@ -486,7 +486,7 @@ Formwork.Modals = {
             }
         });
 
-        $('.modal [data-dismiss]').click(function () {
+        $('.modal [data-dismiss]').on('click', function () {
             var $this = $(this);
             if ($this.is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
@@ -497,13 +497,13 @@ Formwork.Modals = {
             Formwork.Modals.hide($this.attr('data-dismiss'));
         });
 
-        $('.modal').click(function (event) {
+        $('.modal').on('click', function (event) {
             if (event.target === this) {
                 Formwork.Modals.hide();
             }
         });
 
-        $(document).keyup(function (event) {
+        $(document).on('keyup', function (event) {
             // ESC key
             if (event.which === 27) {
                 Formwork.Modals.hide();
@@ -520,7 +520,7 @@ Formwork.Modals = {
         if (action !== null) {
             $('form', $modal).attr('action', action);
         }
-        $('[autofocus]', $modal).first().focus(); // Firefox bug
+        $('[autofocus]', $modal).first().trigger('focus'); // Firefox bug
         if (typeof callback === 'function') {
             callback($modal);
         }
@@ -550,7 +550,7 @@ Formwork.Modals = {
         $('[required]', $modal).each(function () {
             var $this = $(this);
             if ($this.val() === '') {
-                $this.addClass('input-invalid').focus();
+                $this.addClass('input-invalid').trigger('focus');
                 $('.modal-error', $modal).show();
                 valid = false;
                 return false;
@@ -578,13 +578,13 @@ Formwork.Notification = function (text, type, interval) {
 
     var timer = setTimeout(remove, interval);
 
-    $notification.click(remove);
+    $notification.on('click', remove);
 
-    $notification.mouseenter(function () {
+    $notification.on('mouseenter', function () {
         clearTimeout(timer);
     });
 
-    $notification.mouseleave(function () {
+    $notification.on('mouseleave', function () {
         timer = setTimeout(remove, 1000);
     });
 
@@ -612,37 +612,37 @@ Formwork.Notification = function (text, type, interval) {
 
 Formwork.Pages = {
     init: function () {
-        $('.page-children-toggle').click(function (event) {
+        $('.page-children-toggle').on('click', function (event) {
             event.stopPropagation();
             var $this = $(this);
             $this.closest('li').children('.pages-list').toggle();
             $this.toggleClass('toggle-expanded toggle-collapsed');
         });
 
-        $('.page-details a').click(function (event) {
+        $('.page-details a').on('click', function (event) {
             event.stopPropagation();
         });
 
-        $('[data-command=expand-all-pages]').click(function () {
-            $(this).blur();
+        $('[data-command=expand-all-pages]').on('click', function () {
+            $(this).trigger('blur');
             $('.pages-children').show();
             $('.page-children-toggle', '.pages-list').removeClass('toggle-collapsed').addClass('toggle-expanded');
         });
 
-        $('[data-command=collapse-all-pages]').click(function () {
-            $(this).blur();
+        $('[data-command=collapse-all-pages]').on('click', function () {
+            $(this).trigger('blur');
             $('.pages-children').hide();
             $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
         });
 
-        $('.page-search').focus(function () {
+        $('.page-search').on('focus', function () {
             $('.pages-children').each(function () {
                 var $this = $(this);
                 $this.data('visible', $this.is(':visible'));
             });
         });
 
-        $('.page-search').keyup(Formwork.Utils.debounce(function () {
+        $('.page-search').on('keyup', Formwork.Utils.debounce(function () {
             var value = $(this).val();
             if (value.length === 0) {
                 $('.pages-children').each(function () {
@@ -665,27 +665,27 @@ Formwork.Pages = {
             }
         }, 100));
 
-        $('.page-details').click(function () {
+        $('.page-details').on('click', function () {
             var $toggle = $('.page-children-toggle', this).first();
             if ($toggle.length) {
-                $toggle.click();
+                $toggle.trigger('click');
             }
         });
 
-        $('#page-title', '#newPageModal').keyup(function () {
+        $('#page-title', '#newPageModal').on('keyup', function () {
             $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
         });
 
-        $('#page-slug', '#newPageModal, #slugModal').keyup(function () {
+        $('#page-slug', '#newPageModal, #slugModal').on('keyup', function () {
             var $this = $(this);
             $this.val($this.val().toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, ''));
-        }).blur(function () {
+        }).on('blur', function () {
             if ($(this).val() === '') {
                 $('#page-title', '#newPageModal').trigger('keyup');
             }
         });
 
-        $('#page-parent', '#newPageModal').change(function () {
+        $('#page-parent', '#newPageModal').on('change', function () {
             var $option = $('option:selected', this);
             var $pageTemplate = $('#page-template', '#newPageModal');
             var allowedTemplates = $option.attr('data-allowed-templates');
@@ -708,25 +708,25 @@ Formwork.Pages = {
             }
         });
 
-        $('[data-command=change-slug]').click(function () {
+        $('[data-command=change-slug]').on('click', function () {
             Formwork.Modals.show('slugModal', null, function ($modal) {
                 var slug = $('#slug').val();
-                $('#page-slug', $modal).val(slug).attr('placeholder', slug).focus();
+                $('#page-slug', $modal).val(slug).attr('placeholder', slug).trigger('focus');
             });
         });
 
-        $('#page-slug', '#slugModal').keydown(function (event) {
+        $('#page-slug', '#slugModal').on('keydown', function (event) {
             if (event.which === 13) {
-                $('[data-command=continue]', '#slugModal').click();
+                $('[data-command=continue]', '#slugModal').trigger('click');
             }
         });
 
-        $('[data-command=generate-slug]', '#slugModal').click(function () {
+        $('[data-command=generate-slug]', '#slugModal').on('click', function () {
             var slug = Formwork.Utils.slug($('#title').val());
-            $('#page-slug', '#slugModal').val(slug).focus();
+            $('#page-slug', '#slugModal').val(slug).trigger('focus');
         });
 
-        $('[data-command=continue]', '#slugModal').click(function () {
+        $('[data-command=continue]', '#slugModal').on('click', function () {
             var slug = $('#page-slug').val().replace(/^-+|-+$/, '');
             if (slug.length > 0) {
                 var route = $('.page-route span').text();
@@ -797,11 +797,11 @@ Formwork.Pages = {
             $this.data('originalOrder', sortable.toArray());
         });
 
-        $(document).keydown(function (event) {
+        $(document).on('keydown', function (event) {
             if (event.ctrlKey || event.metaKey) {
                 // ctrl/cmd + F
                 if (event.which === 70 && $('.page-search:not(:focus)').length) {
-                    $('.page-search').focus();
+                    $('.page-search').trigger('focus');
                     return false;
                 }
             }
@@ -923,7 +923,7 @@ Formwork.Tooltips = {
                 .removeAttr('title');
         });
 
-        $('[data-tooltip]').mouseover(function () {
+        $('[data-tooltip]').on('mouseover', function () {
             var $this = $(this);
             var tooltip = new Formwork.Tooltip($this.attr('data-tooltip'), {
                 referenceElement: $this,
@@ -935,7 +935,7 @@ Formwork.Tooltips = {
             tooltip.show();
         });
 
-        $('[data-overflow-tooltip="true"]').mouseover(function () {
+        $('[data-overflow-tooltip="true"]').on('mouseover', function () {
             var $this = $(this);
             if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
                 var tooltip = new Formwork.Tooltip($this.text().trim(), {
@@ -973,7 +973,7 @@ Formwork.Updates = {
                 });
             }, 1000);
 
-            $('[data-command=install-updates]').click(function () {
+            $('[data-command=install-updates]').on('click', function () {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
                 $('.update-status').text($('.update-status').attr('data-installing-text'));
@@ -1034,7 +1034,7 @@ Formwork.Utils = {
         $form.append($('<input>').attr({
             type: 'hidden', name: 'csrf-token', value: csrfToken
         }));
-        $form.appendTo('body').submit().remove();
+        $form.appendTo('body').trigger('submit').remove();
     },
 
     escapeRegExp: function (string) {
@@ -1217,28 +1217,28 @@ Formwork.Utils = {
                 $this.data('date', value);
                 $this.val(helpers.formatDateTime(value));
             }
-            $this.change(function () {
+            $this.on('change', function () {
                 if ($this.val() === '') {
                     $this.data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
                 }
             });
-            $this.keydown(function (event) {
+            $this.on('keydown', function (event) {
                 var date = $(this).data('date');
                 calendar.setDate(helpers.isValidDate(date) ? date : new Date());
                 switch (event.which) {
                 case 13: // enter
-                    $('.calendar-day.selected').click();
+                    $('.calendar-day.selected').trigger('click');
                     $calendar.hide();
                     return false;
                 case 8: // backspace
                     $this.val('');
-                    $input.blur();
+                    $input.trigger('blur');
                     $calendar.hide();
                     return false;
                 case 27: // escape
-                    $input.blur();
+                    $input.trigger('blur');
                     $calendar.hide();
                     return false;
                 case 37: // left arrow
@@ -1285,11 +1285,11 @@ Formwork.Utils = {
 
         $calendar = $('<div class="calendar"><div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button type="button" class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
 
-        $('.currentMonth').click(function () {
+        $('.currentMonth').on('click', function () {
             var today = new Date();
             calendar.setDate(today);
             updateInput();
-            $input.blur();
+            $input.trigger('blur');
         });
 
         $('.prevMonth').longclick(function () {
@@ -1302,7 +1302,7 @@ Formwork.Utils = {
             generateTable(calendar.year, calendar.month);
         }, 750, 500);
 
-        $('.prevMonth, .currentMonth, .nextMonth').mousedown(function () {
+        $('.prevMonth, .currentMonth, .nextMonth').on('mousedown', function () {
             return false;
         });
 
@@ -1319,7 +1319,7 @@ Formwork.Utils = {
             var date = new Date(calendar.year, calendar.month, parseInt($(this).text()));
             $input.data('date', date);
             $input.val(helpers.formatDateTime(date));
-            $input.blur();
+            $input.trigger('blur');
         });
 
         function generateTable(year, month, day) {
@@ -1363,11 +1363,11 @@ Formwork.Utils = {
             $('.calendar-table').replaceWith(html);
         }
 
-        $('.date-input').blur(function () {
+        $('.date-input').on('blur', function () {
             $calendar.hide();
         });
 
-        $('.date-input').focus(function () {
+        $('.date-input').on('focus', function () {
             $input = $(this);
             var date = helpers.isValidDate($input.data('date')) ? new Date($input.data('date')) : new Date();
             calendar.setDate(date);
@@ -1379,7 +1379,7 @@ Formwork.Utils = {
         $(window).on('touchstart', function () {
             var $eventTarget = $(event.target);
             if (!$eventTarget.is('.date-input') && !$eventTarget.parents('.calendar, .date-input').length) {
-                $input.blur();
+                $input.trigger('blur');
             }
         });
 
@@ -1419,8 +1419,8 @@ Formwork.Utils = {
         function clear() {
             clearTimeout(timer);
         }
-        $(window).mouseup(clear);
-        $(this).mousedown(function (event) {
+        $(window).on('mouseup', clear);
+        $(this).on('mousedown', function (event) {
             if (event.which !== 1) {
                 clear();
             } else {
@@ -1429,7 +1429,7 @@ Formwork.Utils = {
                     timer = window.setInterval(callback, interval ? interval : 250);
                 }, timeout ? timeout : 500);
             }
-        }).mouseout(clear);
+        }).on('mouseout', clear);
     };
 }(jQuery));
 
@@ -1487,14 +1487,14 @@ Formwork.Utils = {
                 });
         });
 
-        this.mousedown(function () {
-            $('.tag-inner-input', this).focus();
+        this.on('mousedown', function () {
+            $('.tag-inner-input', this).trigger('focus');
             return false;
         });
 
-        $('.tag-inner-input', this).focus(function () {
+        $('.tag-inner-input', this).on('focus', function () {
             $(this).parent().addClass('focused');
-        }).blur(function () {
+        }).on('blur', function () {
             var $this = $(this);
             var value = $this.val().trim();
             if (value !== '') {
@@ -1502,7 +1502,7 @@ Formwork.Utils = {
                 $this.prop('size', 1);
             }
             $this.parent().removeClass('focused');
-        }).keydown(function (event) {
+        }).on('keydown', function (event) {
             var options = {addKeyCodes: [32]};
             var $this = $(this);
             var value = $this.val().trim();

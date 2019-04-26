@@ -10,16 +10,16 @@ Formwork.Form = function (form) {
         }
     });
 
-    $form.submit(function () {
+    $form.on('submit', function () {
         $window.off('beforeunload');
     });
 
-    $('[data-command=continue]', '#changesModal').click(function () {
+    $('[data-command=continue]', '#changesModal').on('click', function () {
         $window.off('beforeunload');
         window.location.href = $(this).attr('data-href');
     });
 
-    $('a[href]:not([href^="#"]):not([target="_blank"])').click(function (event) {
+    $('a[href]:not([href^="#"]):not([target="_blank"])').on('click', function (event) {
         if (hasChanged()) {
             var link = this;
             event.preventDefault();

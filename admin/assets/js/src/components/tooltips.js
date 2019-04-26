@@ -6,7 +6,7 @@ Formwork.Tooltips = {
                 .removeAttr('title');
         });
 
-        $('[data-tooltip]').mouseover(function () {
+        $('[data-tooltip]').on('mouseover', function () {
             var $this = $(this);
             var tooltip = new Formwork.Tooltip($this.attr('data-tooltip'), {
                 referenceElement: $this,
@@ -18,7 +18,7 @@ Formwork.Tooltips = {
             tooltip.show();
         });
 
-        $('[data-overflow-tooltip="true"]').mouseover(function () {
+        $('[data-overflow-tooltip="true"]').on('mouseover', function () {
             var $this = $(this);
             if ($this.prop('offsetWidth') < $this.prop('scrollWidth')) {
                 var tooltip = new Formwork.Tooltip($this.text().trim(), {

@@ -20,7 +20,7 @@ Formwork.Updates = {
                 });
             }, 1000);
 
-            $('[data-command=install-updates]').click(function () {
+            $('[data-command=install-updates]').on('click', function () {
                 $('.new-version').hide();
                 $('.spinner').removeClass('spinner-info');
                 $('.update-status').text($('.update-status').attr('data-installing-text'));

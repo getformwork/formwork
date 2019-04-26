@@ -34,7 +34,7 @@ Formwork.Utils = {
         $form.append($('<input>').attr({
             type: 'hidden', name: 'csrf-token', value: csrfToken
         }));
-        $form.appendTo('body').submit().remove();
+        $form.appendTo('body').trigger('submit').remove();
     },
 
     escapeRegExp: function (string) {

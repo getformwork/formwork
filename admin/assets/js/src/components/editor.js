@@ -3,19 +3,19 @@ Formwork.Editor = function (id) {
     var $toolbar = '.editor-toolbar[data-for=' + id + ']';
     restoreCursorPosition();
 
-    $('[data-command=bold]', $toolbar).click(function () {
+    $('[data-command=bold]', $toolbar).on('click', function () {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', $toolbar).click(function () {
+    $('[data-command=italic]', $toolbar).on('click', function () {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', $toolbar).click(function () {
+    $('[data-command=ul]', $toolbar).on('click', function () {
         insertAtCursor(prependSequence() + '- ', '');
     });
 
-    $('[data-command=ol]', $toolbar).click(function () {
+    $('[data-command=ol]', $toolbar).on('click', function () {
         var num = /^\d+\./.exec(lastLine(textarea.value));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
@@ -24,11 +24,11 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $('[data-command=quote]', $toolbar).click(function () {
+    $('[data-command=quote]', $toolbar).on('click', function () {
         insertAtCursor(prependSequence() + '> ', '');
     });
 
-    $('[data-command=link]', $toolbar).click(function () {
+    $('[data-command=link]', $toolbar).on('click', function () {
         var startPos = textarea.selectionStart;
         var endPos = textarea.selectionEnd;
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
@@ -36,18 +36,18 @@ Formwork.Editor = function (id) {
         var right = textarea.value.substring(endPos, textarea.value.length);
         if (/^(https?:\/\/|mailto:)/i.test(selection)) {
             textarea.value = left + '[](' + selection + ')' + right;
-            textarea.focus();
+            textarea.trigger('focus');
             textarea.setSelectionRange(startPos + 1, startPos + 1);
         } else if (selection !== '') {
             textarea.value = left + '[' + selection + '](http://)' + right;
-            textarea.focus();
+            textarea.trigger('focus');
             textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
         } else {
             insertAtCursor('[', '](http://)');
         }
     });
 
-    $('[data-command=image]', $toolbar).click(function () {
+    $('[data-command=image]', $toolbar).on('click', function () {
         Formwork.Modals.show('imagesModal', null, function ($modal) {
             $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
             $('.image-picker-confirm', $modal).data('target', function (filename) {
@@ -60,7 +60,7 @@ Formwork.Editor = function (id) {
         });
     });
 
-    $('[data-command=summary]', $toolbar).click(function () {
+    $('[data-command=summary]', $toolbar).on('click', function () {
         if (!hasSummarySequence()) {
             var prevChar = prevCursorChar();
             var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
@@ -69,20 +69,20 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $(textarea).keyup(Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    $(textarea).on('keyup', Formwork.Utils.debounce(disableSummaryCommand, 1000));
     disableSummaryCommand();
 
-    $(document).keydown(function (event) {
+    $(document).on('keydown', function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
             case 66: // ctrl/cmd + B
-                $('[data-command=bold]', $toolbar).click();
+                $('[data-command=bold]', $toolbar).trigger('click');
                 return false;
             case 73: // ctrl/cmd + I
-                $('[data-command=italic]', $toolbar).click();
+                $('[data-command=italic]', $toolbar).trigger('click');
                 return false;
             case 75: // ctrl/cmd + K
-                $('[data-command=link]', $toolbar).click();
+                $('[data-command=link]', $toolbar).trigger('click');
                 return false;
             case 89: // ctrl/cmd + Y
             case 90: // ctrl/cmd + Z
@@ -110,7 +110,7 @@ Formwork.Editor = function (id) {
             if (data[0] === location.pathname) {
                 textarea.scrollTop = data[1];
                 textarea.setSelectionRange(data[2], data[2]);
-                $(textarea).focus();
+                $(textarea).trigger('focus');
             }
         }
     }
@@ -156,6 +156,6 @@ Formwork.Editor = function (id) {
         var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
         textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
         textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(textarea).blur().focus();
+        $(textarea).trigger('blur').trigger('focus');
     }
 };

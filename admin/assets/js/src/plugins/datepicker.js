@@ -123,28 +123,28 @@
                 $this.data('date', value);
                 $this.val(helpers.formatDateTime(value));
             }
-            $this.change(function () {
+            $this.on('change', function () {
                 if ($this.val() === '') {
                     $this.data('date', '');
                 } else {
                     $this.val(helpers.formatDateTime($this.data('date')));
                 }
             });
-            $this.keydown(function (event) {
+            $this.on('keydown', function (event) {
                 var date = $(this).data('date');
                 calendar.setDate(helpers.isValidDate(date) ? date : new Date());
                 switch (event.which) {
                 case 13: // enter
-                    $('.calendar-day.selected').click();
+                    $('.calendar-day.selected').trigger('click');
                     $calendar.hide();
                     return false;
                 case 8: // backspace
                     $this.val('');
-                    $input.blur();
+                    $input.trigger('blur');
                     $calendar.hide();
                     return false;
                 case 27: // escape
-                    $input.blur();
+                    $input.trigger('blur');
                     $calendar.hide();
                     return false;
                 case 37: // left arrow
@@ -191,11 +191,11 @@
 
         $calendar = $('<div class="calendar"><div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button type="button" class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>').appendTo('body');
 
-        $('.currentMonth').click(function () {
+        $('.currentMonth').on('click', function () {
             var today = new Date();
             calendar.setDate(today);
             updateInput();
-            $input.blur();
+            $input.trigger('blur');
         });
 
         $('.prevMonth').longclick(function () {
@@ -208,7 +208,7 @@
             generateTable(calendar.year, calendar.month);
         }, 750, 500);
 
-        $('.prevMonth, .currentMonth, .nextMonth').mousedown(function () {
+        $('.prevMonth, .currentMonth, .nextMonth').on('mousedown', function () {
             return false;
         });
 
@@ -225,7 +225,7 @@
             var date = new Date(calendar.year, calendar.month, parseInt($(this).text()));
             $input.data('date', date);
             $input.val(helpers.formatDateTime(date));
-            $input.blur();
+            $input.trigger('blur');
         });
 
         function generateTable(year, month, day) {
@@ -269,11 +269,11 @@
             $('.calendar-table').replaceWith(html);
         }
 
-        $('.date-input').blur(function () {
+        $('.date-input').on('blur', function () {
             $calendar.hide();
         });
 
-        $('.date-input').focus(function () {
+        $('.date-input').on('focus', function () {
             $input = $(this);
             var date = helpers.isValidDate($input.data('date')) ? new Date($input.data('date')) : new Date();
             calendar.setDate(date);
@@ -285,7 +285,7 @@
         $(window).on('touchstart', function () {
             var $eventTarget = $(event.target);
             if (!$eventTarget.is('.date-input') && !$eventTarget.parents('.calendar, .date-input').length) {
-                $input.blur();
+                $input.trigger('blur');
             }
         });
 

@@ -9,7 +9,7 @@ var Formwork = {
         Formwork.Pages.init();
         Formwork.Updates.init();
 
-        $('.toggle-navigation').click(function () {
+        $('.toggle-navigation').on('click', function () {
             $('.sidebar').toggleClass('show');
         });
 
@@ -26,10 +26,10 @@ var Formwork = {
         });
 
         if ($('[data-command=save]').length > 0) {
-            $(document).keydown(function () {
+            $(document).on('keydown', function () {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {
                     if (event.which === 83) { // ctrl/cmd + S
-                        $('[data-command=save]').click();
+                        $('[data-command=save]').trigger('click');
                         return false;
                     }
                 }

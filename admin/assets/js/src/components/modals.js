@@ -1,6 +1,6 @@
 Formwork.Modals = {
     init: function () {
-        $('[data-modal]').click(function () {
+        $('[data-modal]').on('click', function () {
             var $this = $(this);
             var modal = $this.attr('data-modal');
             var action = $this.attr('data-modal-action');
@@ -11,7 +11,7 @@ Formwork.Modals = {
             }
         });
 
-        $('.modal [data-dismiss]').click(function () {
+        $('.modal [data-dismiss]').on('click', function () {
             var $this = $(this);
             if ($this.is('[data-validate]')) {
                 var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
@@ -22,13 +22,13 @@ Formwork.Modals = {
             Formwork.Modals.hide($this.attr('data-dismiss'));
         });
 
-        $('.modal').click(function (event) {
+        $('.modal').on('click', function (event) {
             if (event.target === this) {
                 Formwork.Modals.hide();
             }
         });
 
-        $(document).keyup(function (event) {
+        $(document).on('keyup', function (event) {
             // ESC key
             if (event.which === 27) {
                 Formwork.Modals.hide();
@@ -45,7 +45,7 @@ Formwork.Modals = {
         if (action !== null) {
             $('form', $modal).attr('action', action);
         }
-        $('[autofocus]', $modal).first().focus(); // Firefox bug
+        $('[autofocus]', $modal).first().trigger('focus'); // Firefox bug
         if (typeof callback === 'function') {
             callback($modal);
         }
@@ -75,7 +75,7 @@ Formwork.Modals = {
         $('[required]', $modal).each(function () {
             var $this = $(this);
             if ($this.val() === '') {
-                $this.addClass('input-invalid').focus();
+                $this.addClass('input-invalid').trigger('focus');
                 $('.modal-error', $modal).show();
                 valid = false;
                 return false;

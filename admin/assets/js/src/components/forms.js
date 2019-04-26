@@ -4,7 +4,7 @@ Formwork.Forms = {
             new Formwork.Form($(this));
         });
 
-        $('input[data-enable]').change(function () {
+        $('input[data-enable]').on('change', function () {
             var $this = $(this);
             var checked = $this.is(':checked');
             $.each($this.attr('data-enable').split(','), function (index, value) {
@@ -12,10 +12,10 @@ Formwork.Forms = {
             });
         });
 
-        $('.input-reset').click(function () {
+        $('.input-reset').on('click', function () {
             var $target = $('#' + $(this).attr('data-reset'));
             $target.val('');
-            $target.change();
+            $target.trigger('change');
         });
 
         $('input:file').each(function () {
@@ -34,8 +34,8 @@ Formwork.Forms = {
             }
         });
 
-        $('input:file[data-auto-upload]').change(function () {
-            $(this).closest('form').submit();
+        $('input:file[data-auto-upload]').on('change', function () {
+            $(this).closest('form').trigger('submit');
         });
 
         $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
@@ -44,7 +44,7 @@ Formwork.Forms = {
             var $target = $('#' + $(this).attr('for'));
             $target.prop('files', event.originalEvent.dataTransfer.files);
             // Firefox won't trigger a change event, so we explicitly do that
-            $target.change();
+            $target.trigger('change');
         }).on('dragover dragenter', function () {
             $(this).addClass('drag');
         }).on('dragleave drop', function () {
@@ -53,7 +53,7 @@ Formwork.Forms = {
 
         $('.tag-input').tagInput();
 
-        $('.image-input').click(function () {
+        $('.image-input').on('click', function () {
             var $this = $(this);
             var value = $this.val();
             Formwork.Modals.show('imagesModal', null, function ($modal) {
@@ -83,7 +83,7 @@ Formwork.Forms = {
             $this.hide();
         });
 
-        $('.image-picker-confirm').click(function () {
+        $('.image-picker-confirm').on('click', function () {
             var $this = $(this);
             var target = $this.data('target');
             var filename = $('.image-picker-thumbnail.selected', $this.parent()).attr('data-filename');
@@ -94,21 +94,21 @@ Formwork.Forms = {
             }
         });
 
-        $('.image-picker-thumbnail').click(function () {
+        $('.image-picker-thumbnail').on('click', function () {
             var $this = $(this);
             $this.siblings().removeClass('selected');
             $this.addClass('selected');
             $this.parent().siblings('.image-input').val($this.attr('data-uri'));
         });
 
-        $('.image-picker-thumbnail').dblclick(function () {
-            $(this).click();
-            $('.image-picker-confirm').click();
+        $('.image-picker-thumbnail').on('dblclick', function () {
+            $(this).trigger('click');
+            $('.image-picker-confirm').trigger('click');
         });
 
-        $('[data-command=upload]').click(function () {
+        $('[data-command=upload]').on('click', function () {
             var $target = $('#' + $(this).attr('data-upload-target'));
-            $target.click();
+            $target.trigger('click');
         });
 
         $('.editor-textarea').each(function () {

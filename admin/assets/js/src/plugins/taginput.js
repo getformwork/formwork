@@ -52,14 +52,14 @@
                 });
         });
 
-        this.mousedown(function () {
-            $('.tag-inner-input', this).focus();
+        this.on('mousedown', function () {
+            $('.tag-inner-input', this).trigger('focus');
             return false;
         });
 
-        $('.tag-inner-input', this).focus(function () {
+        $('.tag-inner-input', this).on('focus', function () {
             $(this).parent().addClass('focused');
-        }).blur(function () {
+        }).on('blur', function () {
             var $this = $(this);
             var value = $this.val().trim();
             if (value !== '') {
@@ -67,7 +67,7 @@
                 $this.prop('size', 1);
             }
             $this.parent().removeClass('focused');
-        }).keydown(function (event) {
+        }).on('keydown', function (event) {
             var options = {addKeyCodes: [32]};
             var $this = $(this);
             var value = $this.val().trim();
