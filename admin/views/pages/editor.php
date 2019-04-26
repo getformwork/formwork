@@ -36,7 +36,7 @@
                     if ($availableLanguages):
 ?>
                     <div class="dropdown button-right">
-                        <button type="button" class="dropdown-button button-accent" tabindex="-1" data-dropdown="languages-dropdown"><i class="i-language"></i> <?= $this->label('pages.languages') ?></button>
+                        <button type="button" class="dropdown-button button-accent" tabindex="-1" data-dropdown="languages-dropdown"><i class="i-language"></i> <?= $this->label('pages.languages') ?><?php if ($currentLanguage): ?> <span class="page-language"><?= $currentLanguage ?></span><?php endif; ?></button>
                         <div class="dropdown-menu" id="languages-dropdown">
 <?php
                         foreach ($availableLanguages as $languageCode => $languageLabel):

@@ -2113,6 +2113,10 @@ input[type=range] {
   font-size: 0.875rem;
   line-height: 1; }
 
+button .page-language,
+.button .page-language {
+  font-size: 0.75rem; }
+
 .page-route {
   color: #979797;
   font-size: 0.875rem; }

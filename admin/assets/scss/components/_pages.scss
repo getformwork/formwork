@@ -74,6 +74,11 @@
     line-height: 1;
 }
 
+button .page-language,
+.button .page-language {
+    font-size: $font-size-xs;
+}
+
 .page-route {
     color: $color-gray-dark;
     font-size: $font-size-s;
