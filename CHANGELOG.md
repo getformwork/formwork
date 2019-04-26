@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.11.0](https://github.com/giuscris/formwork/releases/tag/0.11.0) (2019-04-26)
+
+**Enhancements**
+ * **Add multiple languages support** ([#31](https://github.com/giuscris/formwork/pull/31))
+ * **Add the possibility to create and edit pages in different languages**
+ * **Create default language version with** `Pages@create`
+ * **Add the possibility to delete only a given language version of a page**
+ * **Accept string language code in** `AbstractPage::uri()`
+ * Use fallback language when a label is not available in current language
+ * Move page retrieval from storage to `Site::retrievePage()`
+ * Add `$default` parameter to `Formwork::option()`
+ * Update default templates monospace font stack
+ * Add `type` attribute to all buttons
+ * Add `$default` parameter to `AbstractController::option()`
+ * Add dropdowns component
+ * Add the possibility to set HTTP response status in pages frontmatter
+ * Move to `Site` the selection of current page
+ * Pass page to `Template` constructor and load controller in advance
+ * Add `LanguageCodes::hasCode()`
+ * Add `Output` class
+ * Cache and fetch output by using an `Output` object
+ * Remove deprecated jQuery event shorthands
+ * Remove deprecated jQuery positional selectors
+ * Make vendor.min.js from node modules
+
+**Bug fixes**
+ * Fix `.component` inner spacing
+ * Fix horizontal scrollbar in `<pre>` blocks in default templates
+
 ## [0.10.5](https://github.com/giuscris/formwork/releases/tag/0.10.5) (2019-04-12)
 
 **Enhancements**
