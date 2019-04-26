@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.11.1](https://github.com/giuscris/formwork/releases/tag/0.11.1) (2019-04-26)
+
+**Bug fixes**
+ * Fix potential memory leak on controller load in `Template` constructor
+
 ## [0.11.0](https://github.com/giuscris/formwork/releases/tag/0.11.0) (2019-04-26)
 
 **Enhancements**
