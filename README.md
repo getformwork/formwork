@@ -11,17 +11,17 @@ Formwork is a flat file-based Content Management System (CMS) to make and manage
 Latest version: [**0.11.1**](https://github.com/giuscris/formwork/releases/latest) | [**Changelog**](CHANGELOG.md)
 
 ## Features
- * ⚡️ Lightweight
- * 🗄 No database required!
- * 📦 Easy to [install](#installing)
- * ✨ Out-of-the-box Administration Panel
+- ⚡️ Lightweight
+- 🗄 No database required!
+- 📦 Easy to [install](#installing)
+- ✨ Out-of-the-box Administration Panel
 
 ![](assets/images/formwork.png)
 
 ## Requirements
- * PHP 5.6.0 or higher
- * PHP `zip` extension
- * PHP `gd` extension
+- PHP 5.6.0 or higher
+- PHP `zip` extension
+- PHP `gd` extension
 
 ## Installing
 
