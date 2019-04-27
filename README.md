@@ -4,6 +4,7 @@
 [![GitHub All Releases](https://img.shields.io/github/downloads/giuscris/formwork/total.svg)](https://github.com/giuscris/formwork/releases)
 [![Packagist](https://img.shields.io/packagist/dt/giuscris/formwork.svg?color=%23f28d1a&label=Packagist%20downloads)](https://packagist.org/packages/giuscris/formwork)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/giuscris/formwork.svg)]()
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c39728de81141ca9258acf46af50d51)](https://www.codacy.com/app/giuscris/formwork)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/giuscris/formwork.svg)](#requirements)
 
 Formwork is a flat file-based Content Management System (CMS) to make and manage simple sites.
