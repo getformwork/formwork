@@ -546,8 +546,8 @@ class Page extends AbstractPage
 
         $this->visible = $this->data['visible'];
 
-        // If the page isn't published or routable, it won't also be visible
-        if (!$this->published || !$this->routable) {
+        // If the page isn't published, it won't also be visible
+        if (!$this->published) {
             $this->visible = false;
         }
 
