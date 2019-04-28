@@ -250,7 +250,7 @@ class Page extends AbstractPage
      */
     public function absoluteUri()
     {
-        return Uri::make(array('host' => Uri::host()), $this->uri());
+        return Uri::resolveRelativeUri($this->uri());
     }
 
     /**
