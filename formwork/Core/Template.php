@@ -57,18 +57,11 @@ class Template
     protected $assets;
 
     /**
-     * Template layout name
+     * Template layout
      *
-     * @var string
+     * @var Layout
      */
     protected $layout;
-
-    /**
-     * Template layout content
-     *
-     * @var string
-     */
-    protected $layoutContent;
 
     /**
      * Whether template is being rendered
@@ -136,13 +129,12 @@ class Template
         $this->insert($this->name);
 
         if (!is_null($this->layout)) {
-            $layout = new Template('layouts' . DS . $this->layout, $this->page);
-            $layout->vars = $this->vars;
+            $this->layout->vars = $this->vars;
 
-            $layout->layoutContent = ob_get_contents();
+            $this->layout->content = ob_get_contents();
             ob_clean(); // Clean but don't end output buffer
 
-            $layout->render();
+            $this->layout->render();
         }
 
         $this->rendering = false;
@@ -211,20 +203,7 @@ class Template
         if (!is_null($this->layout)) {
             throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
         }
-        $this->layout = $name;
-    }
-
-    /**
-     * Get layout contents
-     *
-     * @return string|null
-     */
-    protected function content()
-    {
-        if (is_null($this->layoutContent)) {
-            throw new RuntimeException(__METHOD__ . ' is allowed only in template layouts');
-        }
-        return $this->layoutContent;
+        $this->layout = new Layout($name, $this->page);
     }
 
     /**
