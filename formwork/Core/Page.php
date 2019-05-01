@@ -244,16 +244,6 @@ class Page extends AbstractPage
     }
 
     /**
-     * Get page absolute URI
-     *
-     * @return string
-     */
-    public function absoluteUri()
-    {
-        return Uri::resolveRelativeUri($this->uri());
-    }
-
-    /**
      * Return whether this is the currently active page
      *
      * @return bool

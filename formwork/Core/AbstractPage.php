@@ -4,6 +4,7 @@ namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Uri;
 use LogicException;
 
 abstract class AbstractPage
@@ -75,6 +76,16 @@ abstract class AbstractPage
             }
         }
         return $base . ltrim($this->route, '/') . ltrim($path, '/');
+    }
+
+    /**
+     * Get page absolute URI
+     *
+     * @return string
+     */
+    public function absoluteUri()
+    {
+        return Uri::resolveRelativeUri($this->uri());
     }
 
     /**
