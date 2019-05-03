@@ -1,7 +1,9 @@
 {
     "extends": "stylelint-config-standard",
     "ignoreFiles": [
-        "./assets/css/*.css"
+        "./assets/css/*.css",
+        "./assets/scss/*.scss",
+        "./assets/scss/vendor/*.scss"
     ],
     "plugins": [
         "stylelint-order"
