@@ -122,6 +122,15 @@ class Template
 
         $this->vars = array_merge($this->vars, $vars);
 
+        $isCurrentPage = $this->page->isCurrent();
+
+        $this->loadController();
+
+        // Render correct page if the controller has changed the current one
+        if ($isCurrentPage && !$this->page->isCurrent()) {
+            return Formwork::instance()->site()->currentPage()->template()->render($vars, $return);
+        }
+
         ob_start();
 
         $this->rendering = true;
@@ -147,23 +156,6 @@ class Template
     }
 
     /**
-     * Load template controller if exists
-     */
-    public function loadController()
-    {
-        if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
-        }
-
-        $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
-
-        if (FileSystem::exists($controllerFile)) {
-            extract($this->vars);
-            $this->vars = array_merge($this->vars, (array) include $controllerFile);
-        }
-    }
-
-    /**
      * Return an array containing the default data
      *
      * @return array
@@ -175,6 +167,23 @@ class Template
             'site'   => Formwork::instance()->site(),
             'page'   => $this->page
         );
+    }
+
+    /**
+     * Load template controller if exists
+     */
+    protected function loadController()
+    {
+        if ($this->rendering) {
+            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
+        }
+
+        $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
+
+        if (FileSystem::exists($controllerFile)) {
+            extract($this->vars);
+            $this->vars = array_merge($this->vars, (array) include $controllerFile);
+        }
     }
 
     /**
