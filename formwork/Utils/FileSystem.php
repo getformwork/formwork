@@ -43,8 +43,7 @@ class FileSystem
      */
     public static function extension($file)
     {
-        $extension = substr(basename($file), strlen(static::name($file)) + 1);
-        return $extension !== false ? $extension : '';
+        return substr(basename($file), strlen(static::name($file)) + 1);
     }
 
     /**
