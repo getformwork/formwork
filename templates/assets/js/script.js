@@ -8,7 +8,7 @@ window.addEventListener('load', function() {
             var element = document.getElementById(id);
             helpers.toggleElement(element, 250);
             element.classList.toggle('menu-expanded');
-            if (this.getAttribute('aria-expanded') != 'true') {
+            if (this.getAttribute('aria-expanded') !== 'true') {
                 this.setAttribute('aria-expanded', 'true');
             } else {
                 this.setAttribute('aria-expanded', 'false');
@@ -37,7 +37,7 @@ var helpers = {
      * Toggles an element animating its height
      */
     toggleElement: function (element, duration) {
-        var direction = element.clientHeight == 0 ? 1 : -1;
+        var direction = element.clientHeight === 0 ? 1 : -1;
         var measuredHeight = helpers.measureElementHeight(element);
         var steps = Math.floor(duration / 10);
         var delta = measuredHeight / steps * direction;
