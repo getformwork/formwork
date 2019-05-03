@@ -38,6 +38,13 @@ abstract class AbstractPage
     protected $data = array();
 
     /**
+     * Page metadata
+     *
+     * @var Metadata
+     */
+    protected $metadata;
+
+    /**
      * PageCollection containing page parents
      *
      * @var PageCollection
@@ -245,6 +252,13 @@ abstract class AbstractPage
      * @return bool
      */
     abstract public function isDeletable();
+
+    /**
+     * Return page metadata
+     *
+     * @var Metadata
+     */
+    abstract public function metadata();
 
     /**
      * Get page data by key

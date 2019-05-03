@@ -194,7 +194,8 @@ class Page extends AbstractPage
             'visible'    => !is_null($this->num()),
             'searchable' => true,
             'cacheable'  => true,
-            'sortable'   => true
+            'sortable'   => true,
+            'metadata'   => array()
         );
     }
 
@@ -343,6 +344,19 @@ class Page extends AbstractPage
             return false;
         }
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function metadata()
+    {
+        if (!is_null($this->metadata)) {
+            return $this->metadata;
+        }
+        $metadata = clone Formwork::instance()->site()->metadata();
+        $metadata->setMultiple($this->data['metadata']);
+        return $this->metadata = $metadata;
     }
 
     /**
