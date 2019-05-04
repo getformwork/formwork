@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.11.2](https://github.com/giuscris/formwork/releases/tag/0.11.2) (2019-05-04)
+
+**Enhancements**
+
+- Revert visibility for non-routable pages from [94fd949](https://github.com/giuscris/formwork/commit/94fd949)
+- Extract `Layout` class from `Template`
+- Move `Page::absoluteUri()` to `AbstractPage::absoluteUri()`
+- Load templates on each template rendering, not only for the current page
+
+**Bug fixes**
+
+- Fix `Page::absoluteUri()` always returning http scheme
+- Fix `menu` partial template overwriting `$page` variable
+
 ## [0.11.1](https://github.com/giuscris/formwork/releases/tag/0.11.1) (2019-04-26)
 
 **Bug fixes**
