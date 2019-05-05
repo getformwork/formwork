@@ -6,6 +6,7 @@ use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Utils\FileSystem;
+use LogicException;
 use RuntimeException;
 
 class Template
@@ -239,6 +240,15 @@ class Template
         extract(array_merge($this->vars, $vars));
 
         include $filename;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (TemplateHelpers::has($name)) {
+            $helper = TemplateHelpers::get($name);
+            return $helper(...$arguments);
+        }
+        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 
     public function __toString()
