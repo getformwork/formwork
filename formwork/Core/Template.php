@@ -212,7 +212,7 @@ class Template
         if (!is_null($this->layout)) {
             throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
         }
-        $this->layout = new Layout($name, $this->page);
+        $this->layout = new Layout($name, $this->page, $this);
     }
 
     /**

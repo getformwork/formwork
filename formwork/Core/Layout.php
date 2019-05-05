@@ -5,6 +5,13 @@ namespace Formwork\Core;
 class Layout extends Template
 {
     /**
+     * Template reference
+     *
+     * @var Template
+     */
+    protected $template;
+
+    /**
      * Layout content
      *
      * @var string
@@ -16,9 +23,18 @@ class Layout extends Template
      *
      * @param string $layout
      */
-    public function __construct($layout, Page $page)
+    public function __construct($layout, Page $page, Template $template)
     {
         parent::__construct('layouts' . DS . $layout, $page);
+        $this->template = $template;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scheme()
+    {
+        return $this->template->scheme();
     }
 
     /**
