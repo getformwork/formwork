@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 class Site extends AbstractPage
 {
@@ -74,6 +75,21 @@ class Site extends AbstractPage
     public function hasTemplate($template)
     {
         return array_key_exists($template, $this->templates);
+    }
+
+    /**
+     * Return template filename
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function template($name)
+    {
+        if (!$this->hasTemplate($name)) {
+            throw new RuntimeException('Invalid template ' . $name);
+        }
+        return $this->templates[$name];
     }
 
     /**
