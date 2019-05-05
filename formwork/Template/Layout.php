@@ -36,6 +36,14 @@ class Layout extends Template
     /**
      * @inheritdoc
      */
+    public function path()
+    {
+        return $this->template->path();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function scheme()
     {
         return $this->template->scheme();

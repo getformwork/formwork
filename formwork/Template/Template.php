@@ -82,11 +82,23 @@ class Template
      */
     public function __construct($template, Page $page)
     {
-        $this->path = Formwork::instance()->option('templates.path');
         $this->extension = Formwork::instance()->option('templates.extension');
         $this->name = $template;
         $this->page = $page;
         $this->vars = $this->defaults();
+    }
+
+    /**
+     * Get template path
+     *
+     * @return string
+     */
+    public function path()
+    {
+        if (!is_null($this->path)) {
+            return $this->path;
+        }
+        return $this->path = dirname(Formwork::instance()->site()->template($this->name)) . DS;
     }
 
     /**
@@ -184,7 +196,7 @@ class Template
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
 
-        $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
+        $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
             extract($this->vars);
@@ -203,7 +215,7 @@ class Template
             return $this->assets;
         }
         return $this->assets = new Assets(
-            $this->path . 'assets' . DS,
+            $this->path() . 'assets' . DS,
             Formwork::instance()->site()->uri('/templates/assets/', false)
         );
     }
@@ -233,7 +245,7 @@ class Template
             $name = 'partials' . DS . substr($name, 1);
         }
 
-        $filename = $this->path . $name . $this->extension;
+        $filename = $this->path() . $name . $this->extension;
 
         if (!FileSystem::exists($filename)) {
             throw new RuntimeException('Template ' . $name . ' not found');
