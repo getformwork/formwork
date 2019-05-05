@@ -1,6 +1,8 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork\Template;
+
+use Formwork\Core\Page;
 
 class Layout extends Template
 {

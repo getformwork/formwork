@@ -6,7 +6,7 @@ use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Page;
-use Formwork\Core\Scheme;
+use Formwork\Template\Scheme;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;

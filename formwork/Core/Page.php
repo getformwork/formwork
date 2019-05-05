@@ -5,6 +5,7 @@ namespace Formwork\Core;
 use Formwork\Files\Files;
 use Formwork\Parsers\ParsedownExtension as Parsedown;
 use Formwork\Parsers\YAML;
+use Formwork\Template\Template;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\Uri;

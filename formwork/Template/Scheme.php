@@ -1,7 +1,8 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork\Template;
 
+use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;

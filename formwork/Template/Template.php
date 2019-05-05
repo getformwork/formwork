@@ -1,7 +1,10 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork\Template;
 
+use Formwork\Core\Assets;
+use Formwork\Core\Formwork;
+use Formwork\Core\Page;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
