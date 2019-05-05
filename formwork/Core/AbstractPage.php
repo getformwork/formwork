@@ -282,6 +282,7 @@ abstract class AbstractPage
      * Set page data
      *
      * @param string $key
+     * @param mixed  $value
      */
     public function set($key, $value)
     {

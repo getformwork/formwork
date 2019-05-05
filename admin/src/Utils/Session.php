@@ -42,6 +42,7 @@ class Session
      * Set a session key to value
      *
      * @param string $key
+     * @param mixed  $value
      */
     public static function set($key, $value)
     {

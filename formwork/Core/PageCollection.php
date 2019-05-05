@@ -55,6 +55,8 @@ class PageCollection extends Collection
     /**
      * Remove a given element from the collection
      *
+     * @param Page $element
+     *
      * @return self
      */
     public function remove(Page $element)

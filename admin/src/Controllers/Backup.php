@@ -33,6 +33,8 @@ class Backup extends AbstractController
 
     /**
      * Backup@download action
+     *
+     * @param RouteParams $params
      */
     public function download(RouteParams $params)
     {

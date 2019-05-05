@@ -136,6 +136,8 @@ class Site extends AbstractPage
     /**
      * Set and return site current page
      *
+     * @param Page $page
+     *
      * @return Page
      */
     public function setCurrentPage(Page $page)

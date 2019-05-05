@@ -117,6 +117,8 @@ abstract class AbstractController
 
     /**
      * @see Formwork\Utils\Str::escape()
+     *
+     * @param string $string
      */
     protected function escape($string)
     {
@@ -153,7 +155,8 @@ abstract class AbstractController
     /**
      * Render a field
      *
-     * @param bool $render Whether to render or return the field
+     * @param Field $field
+     * @param bool  $render Whether to render or return the field
      *
      * @return string|void
      */
@@ -165,7 +168,8 @@ abstract class AbstractController
     /**
      * Render multiple fields
      *
-     * @param bool $render Whether to render or return the fields
+     * @param Fields $fields
+     * @param bool   $render Whether to render or return the fields
      *
      * @return string|void
      */

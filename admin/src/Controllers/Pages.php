@@ -88,6 +88,8 @@ class Pages extends AbstractController
 
     /**
      * Pages@edit action
+     *
+     * @param RouteParams $params
      */
     public function edit(RouteParams $params)
     {
@@ -236,6 +238,8 @@ class Pages extends AbstractController
 
     /**
      * Pages@delete action
+     *
+     * @param RouteParams $params
      */
     public function delete(RouteParams $params)
     {
@@ -278,6 +282,8 @@ class Pages extends AbstractController
 
     /**
      * Pages@uploadFile action
+     *
+     * @param RouteParams $params
      */
     public function uploadFile(RouteParams $params)
     {
@@ -303,6 +309,8 @@ class Pages extends AbstractController
 
     /**
      * Pages@deleteFile action
+     *
+     * @param RouteParams $params
      */
     public function deleteFile(RouteParams $params)
     {
@@ -325,6 +333,8 @@ class Pages extends AbstractController
 
     /**
      * Create a new page
+     *
+     * @param DataGetter $data
      *
      * @return Page
      */
@@ -387,6 +397,10 @@ class Pages extends AbstractController
 
     /**
      * Update a page
+     *
+     * @param Page       $page
+     * @param DataGetter $data
+     * @param Fields     $fields
      *
      * @return Page
      */
@@ -544,6 +558,7 @@ class Pages extends AbstractController
     /**
      * Change the id of a page
      *
+     * @param Page   $page
      * @param string $id
      *
      * @return Page
@@ -559,6 +574,7 @@ class Pages extends AbstractController
     /**
      * Change the parent of a page
      *
+     * @param Page $page
      * @param Page $parent
      *
      * @return Page
@@ -573,6 +589,7 @@ class Pages extends AbstractController
     /**
      * Change page template
      *
+     * @param Page   $page
      * @param string $template
      *
      * @return Page

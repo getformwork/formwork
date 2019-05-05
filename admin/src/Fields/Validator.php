@@ -17,6 +17,9 @@ class Validator
 
     /**
      * Validate all Fields against given data
+     *
+     * @param Fields     $fields
+     * @param DataGetter $data
      */
     public static function validate(Fields $fields, DataGetter $data)
     {
@@ -88,10 +91,11 @@ class Validator
      * Validate number field
      *
      * @param string $value
+     * @param Field  $field
      *
      * @return float|int
      */
-    public static function validateNumber($value, &$field)
+    public static function validateNumber($value, Field &$field)
     {
         $number = static::parse($value);
         if (!is_null($value)) {
@@ -109,10 +113,11 @@ class Validator
      * Validate range field
      *
      * @param string $value
+     * @param Field  $field
      *
      * @return float|int
      */
-    public static function validateRange($value, &$field)
+    public static function validateRange($value, Field &$field)
     {
         return static::validateNumber($value, $field);
     }
@@ -131,10 +136,11 @@ class Validator
      * Validate tags field
      *
      * @param array|string $value
+     * @param Field        $field
      *
      * @return array
      */
-    public static function validateTags($value, &$field)
+    public static function validateTags($value, Field &$field)
     {
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {

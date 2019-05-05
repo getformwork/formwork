@@ -18,6 +18,7 @@ class Files extends Collection
      * Create a new instance of Files
      *
      * @param array $files
+     * @param mixed $path
      */
     public function __construct($files = array(), $path)
     {

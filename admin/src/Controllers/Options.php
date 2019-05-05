@@ -207,6 +207,7 @@ class Options extends AbstractController
      * Update options of a given type with given data
      *
      * @param string $type     Options type ('system' or 'site')
+     * @param Fields $fields
      * @param array  $options  Current options
      * @param array  $defaults Default values
      *

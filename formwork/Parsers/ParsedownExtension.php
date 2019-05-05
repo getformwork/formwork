@@ -18,6 +18,8 @@ class ParsedownExtension extends ParsedownExtra
 
     /**
      * Set the page that will be parsed
+     *
+     * @param Page $page
      */
     public function setPage(Page $page)
     {

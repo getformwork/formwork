@@ -29,6 +29,8 @@ class Translator
 
     /**
      * Translate a field
+     *
+     * @param Field $field
      */
     public static function translate(Field $field)
     {
@@ -53,6 +55,7 @@ class Translator
      * Return whether a field key is translatable
      *
      * @param string $key
+     * @param Field  $field
      *
      * @return bool
      */

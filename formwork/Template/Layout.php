@@ -23,7 +23,9 @@ class Layout extends Template
     /**
      * Create a new Layout instance
      *
-     * @param string $layout
+     * @param string   $layout
+     * @param Page     $page
+     * @param Template $template
      */
     public function __construct($layout, Page $page, Template $template)
     {

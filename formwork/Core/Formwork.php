@@ -212,8 +212,8 @@ class Formwork
     /**
      * Get an option value
      *
-     * @param string $option
-     * @param mixed  $default Default value if option is not set
+     * @param string     $option
+     * @param mixed|null $default Default value if option is not set
      */
     public function option($option, $default = null)
     {

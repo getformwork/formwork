@@ -38,6 +38,7 @@ trait AdminTrait
     /**
      * Return the URI of a page
      *
+     * @param Page        $page
      * @param bool|string $includeLanguage
      *
      * @return string

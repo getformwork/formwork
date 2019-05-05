@@ -61,6 +61,7 @@ class Registry
      * Add a key to the registry
      *
      * @param string $key
+     * @param mixed  $value
      */
     public function set($key, $value)
     {

@@ -24,7 +24,8 @@ class DataGetter
     /**
      * Get data by key returning a default value if key is not present
      *
-     * @param string $key
+     * @param string     $key
+     * @param mixed|null $default
      */
     public function get($key, $default = null)
     {

@@ -91,7 +91,8 @@ class FileSystem
     /**
      * Assert a file exists or not
      *
-     * @param bool $value Whether to assert if file exists or not
+     * @param string $path
+     * @param bool   $value Whether to assert if file exists or not
      *
      * @return bool
      */
@@ -148,7 +149,8 @@ class FileSystem
     /**
      * Return whether a directory has been modified since a given time
      *
-     * @param int $time
+     * @param string $directory
+     * @param int    $time
      *
      * @return bool
      */

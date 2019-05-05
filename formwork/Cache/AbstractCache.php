@@ -15,6 +15,7 @@ abstract class AbstractCache
      * Save data to cache
      *
      * @param string $key
+     * @param mixed  $value
      */
     abstract public function save($key, $value);
 

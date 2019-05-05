@@ -78,6 +78,7 @@ class Template
      * Create a new Template instance
      *
      * @param string $template
+     * @param Page   $page
      */
     public function __construct($template, Page $page)
     {
@@ -114,7 +115,8 @@ class Template
     /**
      * Render template
      *
-     * @param bool $return Whether to return rendered content or not
+     * @param bool  $return Whether to return rendered content or not
+     * @param mixed $vars
      *
      * @return string|null
      */
