@@ -196,6 +196,7 @@ class Page extends AbstractPage
             'searchable' => true,
             'cacheable'  => true,
             'sortable'   => true,
+            'headers'    => array(),
             'metadata'   => array()
         );
     }
@@ -575,6 +576,11 @@ class Page extends AbstractPage
     {
         if ($this->has('response-status')) {
             Header::status($this->get('response-status'));
+        }
+        if (!empty($this->headers())) {
+            foreach ($this->headers() as $name => $value) {
+                Header::send($name, $value);
+            }
         }
     }
 
