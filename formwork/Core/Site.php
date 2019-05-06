@@ -2,6 +2,7 @@
 
 namespace Formwork\Core;
 
+use Formwork\Metadata\Metadata;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -50,8 +51,9 @@ class Site extends AbstractPage
     public function defaults()
     {
         return array(
-            'lang'  => 'en',
-            'title' => 'Formwork'
+            'lang'     => 'en',
+            'title'    => 'Formwork',
+            'metadata' => array()
         );
     }
 
@@ -229,6 +231,23 @@ class Site extends AbstractPage
     public function isDeletable()
     {
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function metadata()
+    {
+        if (!is_null($this->metadata)) {
+            return $this->metadata;
+        }
+        $defaults = array(
+            'charset'     => Formwork::instance()->option('charset'),
+            'author'      => $this->get('author'),
+            'description' => $this->get('description'),
+            'generator'   => Formwork::instance()->option('metadata.set_generator') ? 'Formwork' : null
+        );
+        return $this->metadata = new Metadata(array_filter(array_merge($defaults, $this->data['metadata'])));
     }
 
     /**

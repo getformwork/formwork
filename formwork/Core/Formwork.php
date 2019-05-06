@@ -141,6 +141,7 @@ class Formwork
     public function defaults()
     {
         return array(
+            'charset'                  => 'utf-8',
             'date.format'              => 'm/d/Y',
             'date.hour_format'         => 'h:i A',
             'date.timezone'            => 'UTC',
@@ -161,6 +162,7 @@ class Formwork
             'images.png_compression'   => 6,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,
+            'metadata.set_generator'   => true,
             'admin.enabled'            => true,
             'admin.lang'               => 'en',
             'admin.login_attempts'     => 10,
