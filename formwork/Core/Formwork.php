@@ -203,10 +203,12 @@ class Formwork
             $this->site->setCurrentPage($resource);
         }
 
-        $content = $this->site->currentPage()->render();
+        $page = $this->site->currentPage();
 
-        if ($this->option('cache.enabled') && $this->site->currentPage()->cacheable()) {
-            $output = new Output($content, $this->site->currentPage()->get('response-status'));
+        $content = $page->render();
+
+        if ($this->option('cache.enabled') && $page->cacheable()) {
+            $output = new Output($content, $page->get('response-status'));
             $this->cache->save($this->cacheKey, $output);
         }
     }
