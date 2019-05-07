@@ -2,6 +2,8 @@
 
 namespace Formwork\Data;
 
+use Formwork\Utils\Arr;
+
 class DataGetter
 {
     /**
@@ -29,7 +31,7 @@ class DataGetter
      */
     public function get($key, $default = null)
     {
-        return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+        return Arr::get($this->data, $key, $default);
     }
 
     /**
@@ -49,7 +51,7 @@ class DataGetter
             }
             return true;
         }
-        return array_key_exists($key, $this->data);
+        return Arr::has($this->data, $key);
     }
 
     /**

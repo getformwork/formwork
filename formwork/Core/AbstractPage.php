@@ -2,6 +2,7 @@
 
 namespace Formwork\Core;
 
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
@@ -271,8 +272,8 @@ abstract class AbstractPage
         if (property_exists($this, $key)) {
             return $this->$key;
         }
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
+        if (Arr::has($this->data, $key)) {
+            return Arr::get($this->data, $key, $default);
         }
         if (method_exists($this, $key)) {
             return $this->$key();
@@ -289,7 +290,7 @@ abstract class AbstractPage
      */
     public function has($key)
     {
-        return property_exists($this, $key) || array_key_exists($key, $this->data);
+        return property_exists($this, $key) || Arr::has($this->data, $key);
     }
 
     /**
