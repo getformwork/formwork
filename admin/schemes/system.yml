@@ -87,6 +87,7 @@ rows2:
                     fields:
                         languages:
                             type: tags
+                            placeholder: '{{options.system.languages.available-languages.no-languages}}'
                             pattern: '^[a-z]{2,3}$'
 
 section3:

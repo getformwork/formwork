@@ -81,6 +81,7 @@ options.system.images.jpeg-quality: JPEG Quality
 options.system.images.png-compression-level: PNG Compression Level
 options.system.languages: Languages
 options.system.languages.available-languages: Available Languages
+options.system.languages.available-languages.no-languages: No Languages
 options.updated: Options updated
 options.updates: Updates
 pages.attributes: Attributes
@@ -204,6 +205,7 @@ user.fullname: Full Name
 user.language: Language
 user.last-access: Last access
 user.password: Password
+user.password.type-new-password: Type a new password to change...
 user.role: Role
 user.role.admin: Administrator
 user.role.user: User

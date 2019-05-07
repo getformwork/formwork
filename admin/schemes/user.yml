@@ -42,6 +42,7 @@ rows1:
                     fields:
                         password:
                             type: password
+                            placeholder: '{{user.password.type-new-password}}'
                             disabled: true
                             pattern: '^.{8,}$'
                             autocomplete: new-password
