@@ -10,6 +10,7 @@ fields:
     tags:
         type: tags
         label: '{{pages.page.tags}}'
+        placeholder: '{{pages.page.no-tags}}'
     published:
         type: checkbox
         default: true
