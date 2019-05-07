@@ -53,6 +53,21 @@ class Field extends DataSetter
     }
 
     /**
+     * Return field name with correct syntax to be used in forms
+     *
+     * @return string
+     */
+    public function formName()
+    {
+        $segments = explode('.', $this->name);
+        $formName = array_shift($segments);
+        foreach ($segments as $segment) {
+            $formName .= '[' . $segment . ']';
+        }
+        return $formName;
+    }
+
+    /**
      * Get field type
      *
      * @return string
