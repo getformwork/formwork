@@ -38,7 +38,7 @@ class Options extends AbstractController
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
 
         if (HTTPRequest::method() === 'POST') {
-            $data = new DataGetter(HTTPRequest::postDataFromRaw());
+            $data = new DataGetter(HTTPRequest::postData());
             $options = Formwork::instance()->options();
             $defaults = Formwork::instance()->defaults();
             $differ = $this->updateOptions('system', $fields->validate($data), $options, $defaults);
@@ -72,7 +72,7 @@ class Options extends AbstractController
         $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
 
         if (HTTPRequest::method() === 'POST') {
-            $data = new DataGetter(HTTPRequest::postDataFromRaw());
+            $data = new DataGetter(HTTPRequest::postData());
             $options = $this->site()->data();
             $differ = $this->updateOptions('site', $fields->validate($data), $options, array());
 
