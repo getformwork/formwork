@@ -2,11 +2,11 @@
 
 namespace Formwork\Admin\Users;
 
-use Formwork\Data\Collection;
+use Formwork\Data\AssociativeCollection;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 
-class Users extends Collection
+class Users extends AssociativeCollection
 {
     /**
      * All available roles
@@ -14,32 +14,6 @@ class Users extends Collection
      * @var array
      */
     protected static $roles = array();
-
-    /**
-     * Return whether a user is in the collection
-     *
-     * @param string $user
-     *
-     * @return bool
-     */
-    public function has($user)
-    {
-        return isset($this->items[$user]);
-    }
-
-    /**
-     * Get a user by name
-     *
-     * @param string $user
-     *
-     * @return User
-     */
-    public function get($user)
-    {
-        if ($this->has($user)) {
-            return $this->items[$user];
-        }
-    }
 
     /**
      * Load all users and roles

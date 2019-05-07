@@ -2,10 +2,10 @@
 
 namespace Formwork\Admin\Fields;
 
-use Formwork\Data\Collection;
+use Formwork\Data\AssociativeCollection;
 use Formwork\Data\DataGetter;
 
-class Fields extends Collection
+class Fields extends AssociativeCollection
 {
     /**
      * Create a new Fields instance
@@ -16,32 +16,6 @@ class Fields extends Collection
     {
         foreach ($fields as $name => $data) {
             $this->items[$name] = new Field($name, $data);
-        }
-    }
-
-    /**
-     * Return whether a field is in the collection
-     *
-     * @param string $field Field name
-     *
-     * @return bool
-     */
-    public function has($field)
-    {
-        return isset($this->items[$field]);
-    }
-
-    /**
-     * Get a field by name
-     *
-     * @param string $field Field name
-     *
-     * @return Field
-     */
-    public function get($field)
-    {
-        if ($this->has($field)) {
-            return $this->items[$field];
         }
     }
 

@@ -2,10 +2,10 @@
 
 namespace Formwork\Files;
 
-use Formwork\Data\Collection;
+use Formwork\Data\AssociativeCollection;
 use Formwork\Utils\FileSystem;
 
-class Files extends Collection
+class Files extends AssociativeCollection
 {
     /**
      * Root path of the file collection
@@ -25,32 +25,6 @@ class Files extends Collection
         $this->path = FileSystem::normalize($path);
         foreach ($files as $file) {
             $this->items[$file] = new File($this->path . $file);
-        }
-    }
-
-    /**
-     * Return whether a file is present in the collection
-     *
-     * @param string $file
-     *
-     * @return bool
-     */
-    public function has($file)
-    {
-        return isset($this->items[$file]);
-    }
-
-    /**
-     * Get a file from the collection
-     *
-     * @param string $file
-     *
-     * @return File|null
-     */
-    public function get($file)
-    {
-        if ($this->has($file)) {
-            return $this->items[$file];
         }
     }
 

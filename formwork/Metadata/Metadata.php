@@ -2,9 +2,9 @@
 
 namespace Formwork\Metadata;
 
-use Formwork\Data\Collection;
+use Formwork\Data\AssociativeCollection;
 
-class Metadata extends Collection
+class Metadata extends AssociativeCollection
 {
     /**
      * Create a new Metadata instance
@@ -12,32 +12,6 @@ class Metadata extends Collection
     public function __construct($items)
     {
         $this->setMultiple($items);
-    }
-
-    /**
-     * Return whether a metadatum in the collection
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
-    {
-        return isset($this->items[$name]);
-    }
-
-    /**
-     * Return a metadatum by name
-     *
-     * @param string $name
-     *
-     * @return Metadatum
-     */
-    public function get($name)
-    {
-        if ($this->has($name)) {
-            return $this->items[$name];
-        }
     }
 
     /**
