@@ -228,21 +228,6 @@ class HTTPRequest
     }
 
     /**
-     * Parse POST data from raw
-     *
-     * @return array
-     */
-    public static function postDataFromRaw()
-    {
-        $data = array();
-        foreach (explode('&', static::rawData()) as $pair) {
-            list($key, $value) = explode('=', $pair);
-            $data[urldecode($key)] = urldecode($value);
-        }
-        return $data;
-    }
-
-    /**
      * Return whether request has files
      *
      * @return bool
