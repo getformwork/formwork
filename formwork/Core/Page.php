@@ -564,8 +564,8 @@ class Page extends AbstractPage
         }
 
         // Set default 404 Not Found status to error page
-        if ($this->isErrorPage() && !$this->has('response-status')) {
-            $this->set('response-status', 404);
+        if ($this->isErrorPage() && !$this->has('response_status')) {
+            $this->set('response_status', 404);
         }
     }
 
@@ -574,8 +574,8 @@ class Page extends AbstractPage
      */
     protected function sendHeaders()
     {
-        if ($this->has('response-status')) {
-            Header::status($this->get('response-status'));
+        if ($this->has('response_status')) {
+            Header::status($this->get('response_status'));
         }
         if (!empty($this->headers())) {
             foreach ($this->headers() as $name => $value) {

@@ -208,7 +208,7 @@ class Formwork
         $content = $page->render();
 
         if ($this->option('cache.enabled') && $page->cacheable()) {
-            $output = new Output($content, $page->get('response-status'), $page->headers());
+            $output = new Output($content, $page->get('response_status'), $page->headers());
             $this->cache->save($this->cacheKey, $output);
         }
     }
