@@ -19,7 +19,7 @@ class Field extends DataSetter
      * @param string $name
      * @param array  $data
      */
-    public function __construct($name, $data = array())
+    public function __construct($name, array $data = array())
     {
         $this->name = $name;
         parent::__construct($data);

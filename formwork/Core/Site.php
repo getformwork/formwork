@@ -34,7 +34,7 @@ class Site extends AbstractPage
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->path = Formwork::instance()->option('content.path');
         $this->relativePath = DS;

@@ -18,7 +18,7 @@ class Collection implements Iterator
      *
      * @param array $items
      */
-    public function __construct($items)
+    public function __construct(array $items)
     {
         if (is_array($items)) {
             $this->items = $items;

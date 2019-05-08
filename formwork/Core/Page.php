@@ -416,7 +416,7 @@ class Page extends AbstractPage
      *
      * @return string
      */
-    public function renderToString($vars = array())
+    public function renderToString(array $vars = array())
     {
         return $this->template()->render($vars, true);
     }
@@ -429,7 +429,7 @@ class Page extends AbstractPage
      *
      * @return string
      */
-    public function render($vars = array(), $sendHeaders = true)
+    public function render(array $vars = array(), $sendHeaders = true)
     {
         if ($sendHeaders) {
             $this->sendHeaders();

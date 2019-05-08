@@ -8,8 +8,10 @@ class Metadata extends AssociativeCollection
 {
     /**
      * Create a new Metadata instance
+     *
+     * @param array $items
      */
-    public function __construct($items)
+    public function __construct(array $items)
     {
         $this->setMultiple($items);
     }
@@ -30,7 +32,7 @@ class Metadata extends AssociativeCollection
      *
      * @param array $items
      */
-    public function setMultiple($items)
+    public function setMultiple(array $items)
     {
         foreach ($items as $name => $content) {
             $this->set($name, $content);

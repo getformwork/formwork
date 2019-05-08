@@ -52,7 +52,7 @@ class YAML
      *
      * @return string
      */
-    public static function encode($data)
+    public static function encode(array $data)
     {
         $data = (array) $data;
         if (empty($data)) {

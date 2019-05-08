@@ -239,7 +239,7 @@ class Template
      * @param string $name
      * @param array  $vars
      */
-    protected function insert($name, $vars = array())
+    protected function insert($name, array $vars = array())
     {
         if ($name[0] === '_') {
             $name = 'partials' . DS . substr($name, 1);

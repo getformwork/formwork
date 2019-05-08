@@ -26,7 +26,7 @@ class JSONResponse
      * @param array      $data
      * @param int|string $status
      */
-    public function __construct($data, $status = 200)
+    public function __construct(array $data, $status = 200)
     {
         $this->status = $status;
         $this->data = $data;
@@ -54,7 +54,7 @@ class JSONResponse
      *
      * @return self
      */
-    public static function success($message, $status = 200, $data = array())
+    public static function success($message, $status = 200, array $data = array())
     {
         return new static(array(
             'status'  => 'success',
@@ -73,7 +73,7 @@ class JSONResponse
      *
      * @return self
      */
-    public static function error($message, $status = 400, $data = array())
+    public static function error($message, $status = 400, array $data = array())
     {
         return new static(array(
             'status'  => 'error',

@@ -47,7 +47,7 @@ class Errors extends AbstractController
      * @param string     $name   Error name
      * @param array      $action Action link data
      */
-    protected function displayError($status, $name, $action)
+    protected function displayError($status, $name, array $action)
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);

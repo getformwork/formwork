@@ -14,7 +14,7 @@ class Arr
      *
      * @return mixed|null
      */
-    public static function get($array, $key, $default = null)
+    public static function get(array $array, $key, $default = null)
     {
         if (array_key_exists($key, $array)) {
             return $array[$key];
@@ -37,7 +37,7 @@ class Arr
      *
      * @return bool
      */
-    public static function has($array, $key)
+    public static function has(array $array, $key)
     {
         if (array_key_exists($key, $array)) {
             return true;

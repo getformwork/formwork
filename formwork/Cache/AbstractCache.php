@@ -42,7 +42,7 @@ abstract class AbstractCache
      *
      * @return array
      */
-    public function fetchMultiple($keys)
+    public function fetchMultiple(array $keys)
     {
         $result = array();
         foreach ($keys as $key) {
@@ -56,7 +56,7 @@ abstract class AbstractCache
      *
      * @param array $keysAndValues
      */
-    public function saveMultiple($keysAndValues)
+    public function saveMultiple(array $keysAndValues)
     {
         foreach ($keysAndValues as $key => $value) {
             $this->save($key, $value);
@@ -68,7 +68,7 @@ abstract class AbstractCache
      *
      * @param array $keys
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple(array $keys)
     {
         foreach ($keys as $key) {
             $this->delete($key);
@@ -82,7 +82,7 @@ abstract class AbstractCache
      *
      * @return bool
      */
-    public function hasMultiple($keys)
+    public function hasMultiple(array $keys)
     {
         foreach ($keys as $key) {
             if (!$this->has($key)) {

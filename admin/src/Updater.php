@@ -78,7 +78,7 @@ class Updater
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         $this->options = array_merge($this->defaults(), $options);
 
@@ -304,7 +304,7 @@ class Updater
      *
      * @return array
      */
-    protected function findDeletableFiles($installedFiles)
+    protected function findDeletableFiles(array $installedFiles)
     {
         $list = array();
         foreach ($installedFiles as $path) {

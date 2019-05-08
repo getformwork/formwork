@@ -20,7 +20,7 @@ class Files extends AssociativeCollection
      * @param array $files
      * @param mixed $path
      */
-    public function __construct($files = array(), $path)
+    public function __construct(array $files = array(), $path)
     {
         $this->path = FileSystem::normalize($path);
         foreach ($files as $file) {

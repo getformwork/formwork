@@ -12,7 +12,7 @@ class Fields extends AssociativeCollection
      *
      * @param array $fields Array of Field objects
      */
-    public function __construct($fields)
+    public function __construct(array $fields)
     {
         foreach ($fields as $name => $data) {
             $this->items[$name] = new Field($name, $data);

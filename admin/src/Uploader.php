@@ -67,7 +67,7 @@ class Uploader
      * @param string $destination
      * @param array  $options
      */
-    public function __construct($destination, $options = array())
+    public function __construct($destination, array $options = array())
     {
         $this->destination = FileSystem::normalize($destination);
         $this->options = array_merge($this->defaults(), $options);

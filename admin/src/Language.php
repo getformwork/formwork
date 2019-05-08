@@ -51,7 +51,7 @@ class Language
      * @param string $code
      * @param array  $strings
      */
-    public function __construct($code, $strings)
+    public function __construct($code, array $strings)
     {
         $this->code = $code;
         $this->strings = $strings;

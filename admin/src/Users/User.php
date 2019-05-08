@@ -46,7 +46,7 @@ class User extends DataGetter
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         parent::__construct(array_merge($this->defaults, $data));
         $this->avatar = new Avatar($this->data['avatar']);

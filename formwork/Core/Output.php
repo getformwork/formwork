@@ -34,7 +34,7 @@ class Output
      * @param int|null $status
      * @param array    $headers
      */
-    public function __construct($content, $status, $headers = array())
+    public function __construct($content, $status, array $headers = array())
     {
         $this->content = $content;
         $this->status = $status;

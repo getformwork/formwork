@@ -192,7 +192,7 @@ abstract class AbstractController
      * @param string $modal Name of the modal
      * @param array  $data  Data to pass to the modal
      */
-    protected function modal($modal, $data = array())
+    protected function modal($modal, array $data = array())
     {
         $this->modals[] = $this->view('modals.' . $modal, $data, false);
     }
@@ -216,7 +216,7 @@ abstract class AbstractController
      *
      * @return string|void
      */
-    protected function view($view, $data = array(), $render = true)
+    protected function view($view, array $data = array(), $render = true)
     {
         $file = VIEWS_PATH . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
@@ -236,7 +236,7 @@ abstract class AbstractController
      *
      * @return string
      */
-    private function renderToString($file, $data)
+    private function renderToString($file, array $data)
     {
         ob_start();
         extract($data);

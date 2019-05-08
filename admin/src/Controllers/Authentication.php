@@ -106,7 +106,7 @@ class Authentication extends AbstractController
      * @param string $message Error message
      * @param array  $data    Data to pass to the view
      */
-    protected function error($message, $data = array())
+    protected function error($message, array $data = array())
     {
         // Ensure CSRF token is re-generated
         CSRFToken::generate();

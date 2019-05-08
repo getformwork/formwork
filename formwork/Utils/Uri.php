@@ -228,7 +228,7 @@ class Uri
      *
      * @return string
      */
-    public static function make($parts, $uri = null, $forcePort = false)
+    public static function make(array $parts, $uri = null, $forcePort = false)
     {
         $defaults = static::parse($uri);
         $parts = array_merge($defaults, $parts);
