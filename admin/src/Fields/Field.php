@@ -39,7 +39,7 @@ class Field extends DataSetter
      */
     public function isEmpty()
     {
-        return empty($this->value()) && !is_numeric($this->value());
+        return is_null($this->value()) || $this->value() === '' || $this->value() === array();
     }
 
     /**
