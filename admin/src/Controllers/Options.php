@@ -74,7 +74,8 @@ class Options extends AbstractController
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
             $options = $this->site()->data();
-            $differ = $this->updateOptions('site', $fields->validate($data), $options, array());
+            $defaults = Formwork::instance()->site()->defaults();
+            $differ = $this->updateOptions('site', $fields->validate($data), $options, $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
