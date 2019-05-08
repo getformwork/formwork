@@ -30,6 +30,8 @@ errors.error.internal-server-error.status: Internal Server Error
 errors.error.not-found.description: The page does not exist or the request is not valid.
 errors.error.not-found.heading: Oops, page not found!
 errors.error.not-found.status: Not Found
+fields.array.add: Add
+fields.array.remove: Remove
 login.attempt.failed: Login attempt failed! Try again.
 login.attempt.too-many: Too many login attempts. Please try again in %d minutes.
 login.logged-out: You have been logged out

@@ -3,6 +3,7 @@
 namespace Formwork\Admin\Fields;
 
 use Formwork\Core\Formwork;
+use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
 use DateTime;
 
@@ -150,6 +151,34 @@ class Validator
             });
         }
         return array_values(array_filter($tags));
+    }
+
+    /**
+     * Validate array field
+     *
+     * @param array|string $value
+     * @param Field        $field
+     *
+     * @return array
+     */
+    public static function validateArray($value, Field &$field)
+    {
+        $array = array();
+        if (is_array($value)) {
+            $array = $value;
+        } elseif ($value instanceof Collection || $value instanceof DataGetter) {
+            $array = $value->toArray();
+        }
+        if ($field->get('associative')) {
+            foreach ($array as $key => $value) {
+                if (is_int($key)) {
+                    unset($array[$key]);
+                }
+            }
+        } else {
+            $array = array_filter($array);
+        }
+        return $array;
     }
 
     /**

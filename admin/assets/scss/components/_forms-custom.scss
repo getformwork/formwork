@@ -294,3 +294,68 @@ input[type=range] {
     font-size: $font-size-s;
     @include user-select-none;
 }
+
+.array-input {
+    margin-bottom: $array-input-margin-bottom;
+    @include user-select-none;
+}
+
+.array-input-row {
+    margin: 0 (-$array-input-row-padding-h);
+    padding: $array-input-row-padding-v $array-input-row-padding-h;
+    white-space: nowrap;
+}
+
+.array-input-key,
+.array-input-value,
+.array-input-handle {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.array-input-key {
+    margin-right: $array-input-key-margin-right;
+    width: $array-input-key-width;
+}
+
+.array-input-value {
+    margin-right: $array-input-value-margin-right;
+    width: $array-input-value-width-xs;
+    @media (min-width: map-get($responsive-breakpoints, 'xs')) {
+        width: $array-input-value-width-s;
+    }
+}
+
+.array-input-associative .array-input-value {
+    margin-right: $array-input-value-margin-right;
+    width: $array-input-associative-value-width-xs;
+    @media (min-width: map-get($responsive-breakpoints, 'xs')) {
+        width: $array-input-associative-value-width-s;
+    }
+}
+
+.array-input-handle {
+    margin-right: $array-input-handle-margin-right;
+    width: $array-input-handle-width;
+}
+
+.array-input-handle::before {
+    color: $color-gray-dark;
+    font-size: $font-size-xs;
+    cursor: grab;
+    @include icon(bars);
+}
+
+.array-input-add,
+.array-input-remove {
+    padding: 0;
+    min-width: 0;
+}
+
+.array-input-add::before {
+    @include icon(plus-circle);
+}
+
+.array-input-remove::before {
+    @include icon(times-circle);
+}

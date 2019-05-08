@@ -119,5 +119,40 @@ Formwork.Forms = {
             var $this = $(this);
             $this.next('.range-input-value').text($this.val());
         });
+
+        $('.array-input').each(function () {
+            $('.array-input-add', this).on('click', function () {
+                var $row = $(this).closest('.array-input-row');
+                var $clone = $row.clone(true);
+                $clone.find('.array-input-key, .array-input-value').val('');
+                $row.after($clone);
+            });
+
+            $('.array-input-remove', this).on('click', function () {
+                var $row = $(this).closest('.array-input-row');
+                if ($row.siblings('.array-input-row').length > 0) {
+                    $row.remove();
+                } else {
+                    $row.find('.array-input-key, .array-input-value').val('');
+                    $(this).siblings('.array-input-key').trigger('keyup');
+                }
+            });
+
+            if ($(this).hasClass('array-input-associative')) {
+                var inputName = $(this).attr('data-name');
+                $('.array-input-key', this).on('keyup', function () {
+                    $(this).siblings('.array-input-value').attr('name', inputName + '[' + $(this).val() + ']');
+                });
+                $('.array-input-value', this).on('keyup', function () {
+                    $(this).attr('name', inputName + '[' + $(this).siblings('.array-input-key').val() + ']');
+                });
+            }
+
+            /* global Sortable:false */
+            Sortable.create(this, {
+                handle: '.array-input-handle',
+                forceFallback: true
+            });
+        });
     }
 };
