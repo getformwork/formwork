@@ -53,6 +53,7 @@ class Site extends AbstractPage
         return array(
             'lang'     => 'en',
             'title'    => 'Formwork',
+            'aliases'  => array(),
             'metadata' => array()
         );
     }

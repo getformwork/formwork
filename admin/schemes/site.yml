@@ -64,3 +64,43 @@ rows1:
                     fields:
                         description:
                             type: textarea
+
+section2:
+    type: header
+    label: '{{options.site.advanced}}'
+
+rows2:
+    type: rows
+    fields:
+        row1:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.site.advanced.metadata}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        metadata:
+                            type: array
+                            associative: true
+                            placeholder_key: '{{options.site.advanced.metadata.name}}'
+                            placeholder_value: '{{options.site.advanced.metadata.content}}'
+        row2:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.site.advanced.aliases}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        aliases:
+                            type: array
+                            associative: true
+                            placeholder_key: '{{options.site.advanced.aliases.alias}}'
+                            placeholder_value: '{{options.site.advanced.aliases.route}}'

@@ -51,6 +51,13 @@ modal.images.title: Seleziona immagine
 options.info: Informazioni
 options.options: Impostazioni
 options.site: Sito
+options.site.advanced: Impostazioni avanzate
+options.site.advanced.aliases: Alias
+options.site.advanced.aliases.alias: Alias
+options.site.advanced.aliases.route: Indirizzo
+options.site.advanced.metadata: Metadati HTML
+options.site.advanced.metadata.content: Contenuto
+options.site.advanced.metadata.name: Nome
 options.site.info: Informazioni
 options.site.info.author: Autore
 options.site.info.description: Descrizione
