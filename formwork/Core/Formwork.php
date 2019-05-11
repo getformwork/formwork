@@ -7,6 +7,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Uri;
@@ -256,6 +257,13 @@ class Formwork
             }
 
             if ($page = $this->site->findPage($route)) {
+                if ($page->has('canonical')) {
+                    $canonical = trim($page->canonical(), '/');
+                    if ($params->get('page', '') !== $canonical) {
+                        $route = empty($canonical) ? '' : $this->router->rewrite(array('page' => $canonical));
+                        Header::redirect($this->site->uri($route), 301);
+                    }
+                }
                 if ($params->has('tagName') || $params->has('paginationPage')) {
                     if ($page->template()->scheme()->get('type') !== 'listing') {
                         return $this->site->errorPage();
