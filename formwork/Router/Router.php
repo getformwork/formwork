@@ -49,6 +49,13 @@ class Router
     protected $request;
 
     /**
+     * Currently matched route
+     *
+     * @var string
+     */
+    protected $route;
+
+    /**
      * Route params
      *
      * @var RouteParams
@@ -197,6 +204,7 @@ class Router
             array_shift($matches);
             // Build an associative array using params as keys and matches as values
             $params = array_combine($compiledRoute['params'], $matches);
+            $this->route = $route;
             $this->params = new RouteParams($params);
             return true;
         }
