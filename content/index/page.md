@@ -1,5 +1,6 @@
 ---
 title: Home
+canonical: /
 ---
 # Formwork is Installed!
 If you can see this page your Formwork installation is working.
