@@ -191,6 +191,18 @@ class Router
     }
 
     /**
+     * Rewrite current route
+     *
+     * @param array $params
+     *
+     * @return string
+     */
+    public function rewrite(array $params)
+    {
+        return $this->rewriteRoute($this->route, array_merge($this->params->toArray(), $params));
+    }
+
+    /**
      * Match route against request
      *
      * @param string $route
