@@ -6,6 +6,7 @@ use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use BadMethodCallException;
 use LogicException;
+use RuntimeException;
 
 class Router
 {
@@ -238,7 +239,28 @@ class Router
         $regex = '~^' . trim($regex, '^$') . '$~';
         return array(
             'regex'  => $regex,
+            'tokens' => $tokens,
             'params' => $params
         );
+    }
+
+    /**
+     * Rewrite a route given new params
+     *
+     * @param string $route
+     * @param array  $params
+     *
+     * @return string
+     */
+    protected function rewriteRoute($route, array $params)
+    {
+        $compiledRoute = $this->compileRoute($route);
+        foreach ($compiledRoute['params'] as $i => $param) {
+            $route = str_replace($compiledRoute['tokens'][$i], $params[$param], $route);
+        }
+        if (!preg_match($compiledRoute['regex'], $route)) {
+            throw new RuntimeException('Cannot rewrite route, one or more params do not match with their regex');
+        }
+        return $route;
     }
 }
