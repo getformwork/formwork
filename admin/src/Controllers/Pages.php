@@ -100,13 +100,13 @@ class Pages extends AbstractController
         $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
 
         if ($params->has('language')) {
-            if (empty($this->option('languages'))) {
+            if (empty($this->option('languages.available'))) {
                 $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
             }
 
             $language = $params->get('language');
 
-            if (!in_array($language, $this->option('languages'), true)) {
+            if (!in_array($language, $this->option('languages.available'), true)) {
                 $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
                 $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . Formwork::instance()->defaultLanguage() . '/');
             }
@@ -439,7 +439,7 @@ class Pages extends AbstractController
         $language = $data->get('language');
 
         // Validate language
-        if (!empty($language) && !in_array($language, $this->option('languages'), true)) {
+        if (!empty($language) && !in_array($language, $this->option('languages.available'), true)) {
             throw new LocalizedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
         }
 
@@ -637,7 +637,7 @@ class Pages extends AbstractController
     protected function availableSiteLanguages()
     {
         $languages = array();
-        foreach ($this->option('languages') as $code) {
+        foreach ($this->option('languages.available') as $code) {
             $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
         }
         return $languages;

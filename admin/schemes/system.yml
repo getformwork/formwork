@@ -85,7 +85,7 @@ rows2:
                     type: column
                     width: 2-3
                     fields:
-                        languages:
+                        languages.available:
                             type: tags
                             placeholder: '{{options.system.languages.available-languages.no-languages}}'
                             pattern: '^[a-z]{2,3}$'
