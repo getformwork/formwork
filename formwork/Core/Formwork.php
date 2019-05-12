@@ -200,17 +200,19 @@ class Formwork
 
         $resource = $this->router->dispatch();
 
-        if (is_null($this->site->currentPage())) {
-            $this->site->setCurrentPage($resource);
-        }
+        if ($resource instanceof Page) {
+            if (is_null($this->site->currentPage())) {
+                $this->site->setCurrentPage($resource);
+            }
 
-        $page = $this->site->currentPage();
+            $page = $this->site->currentPage();
 
-        $content = $page->render();
+            $content = $page->render();
 
-        if ($this->option('cache.enabled') && $page->cacheable()) {
-            $output = new Output($content, $page->get('response_status'), $page->headers());
-            $this->cache->save($this->cacheKey, $output);
+            if ($this->option('cache.enabled') && $page->cacheable()) {
+                $output = new Output($content, $page->get('response_status'), $page->headers());
+                $this->cache->save($this->cacheKey, $output);
+            }
         }
     }
 
