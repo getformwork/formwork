@@ -1,10 +1,10 @@
 # Changelog
 
-## [0.11.2](https://github.com/giuscris/formwork/releases/tag/0.11.2) (2019-05-04)
+## [0.11.2](https://github.com/getformwork/formwork/releases/tag/0.11.2) (2019-05-04)
 
 **Enhancements**
 
-- Revert visibility for non-routable pages from [94fd949](https://github.com/giuscris/formwork/commit/94fd949)
+- Revert visibility for non-routable pages from [94fd949](https://github.com/getformwork/formwork/commit/94fd949)
 - Extract `Layout` class from `Template`
 - Move `Page::absoluteUri()` to `AbstractPage::absoluteUri()`
 - Load templates on each template rendering, not only for the current page
@@ -14,17 +14,17 @@
 - Fix `Page::absoluteUri()` always returning http scheme
 - Fix `menu` partial template overwriting `$page` variable
 
-## [0.11.1](https://github.com/giuscris/formwork/releases/tag/0.11.1) (2019-04-26)
+## [0.11.1](https://github.com/getformwork/formwork/releases/tag/0.11.1) (2019-04-26)
 
 **Bug fixes**
 
 - Fix potential memory leak on controller load in `Template` constructor
 
-## [0.11.0](https://github.com/giuscris/formwork/releases/tag/0.11.0) (2019-04-26)
+## [0.11.0](https://github.com/getformwork/formwork/releases/tag/0.11.0) (2019-04-26)
 
 **Enhancements**
 
-- **Add multiple languages support** ([#31](https://github.com/giuscris/formwork/pull/31))
+- **Add multiple languages support** ([#31](https://github.com/getformwork/formwork/pull/31))
 - **Add the possibility to create and edit pages in different languages**
 - **Create default language version with** `Pages@create`
 - **Add the possibility to delete only a given language version of a page**
@@ -51,7 +51,7 @@
 - Fix `.component` inner spacing
 - Fix horizontal scrollbar in `<pre>` blocks in default templates
 
-## [0.10.5](https://github.com/giuscris/formwork/releases/tag/0.10.5) (2019-04-12)
+## [0.10.5](https://github.com/getformwork/formwork/releases/tag/0.10.5) (2019-04-12)
 
 **Enhancements**
 
@@ -67,13 +67,13 @@
 - **Fix** `Updater::getHeaders()` **not working on PHP < 7.1.0**
 - **Fix unquoted dates converted to timestamp**
 
-## [0.10.4](https://github.com/giuscris/formwork/releases/tag/0.10.4) (2019-04-08)
+## [0.10.4](https://github.com/getformwork/formwork/releases/tag/0.10.4) (2019-04-08)
 
 **Bug fixes**
 
 - Fix Symfony Yaml version to ensure PHP 5.6.0 compatibility
 
-## [0.10.3](https://github.com/giuscris/formwork/releases/tag/0.10.3) (2019-04-08)
+## [0.10.3](https://github.com/getformwork/formwork/releases/tag/0.10.3) (2019-04-08)
 
 **Enhancements**
 
@@ -87,11 +87,11 @@
 - Fix unpublished pages status being overridden by publish dates
 - Fix broken page routes on Windows systems
 
-## [0.10.2](https://github.com/giuscris/formwork/releases/tag/0.10.2) (2019-03-26)
+## [0.10.2](https://github.com/getformwork/formwork/releases/tag/0.10.2) (2019-03-26)
 
 **Enhancements**
 
-- **Add tags to blog posts** (closes [#27](https://github.com/giuscris/formwork/issues/27))
+- **Add tags to blog posts** (closes [#27](https://github.com/getformwork/formwork/issues/27))
 - **Add templates inheritance with** `Template::layout()`
 - **Update default templates with new layout feature**
 - Improve `Template::insert()` providing filename checks
@@ -111,20 +111,20 @@
 - Fix `Validator::validateTags()` not filtering empty tags
 - Fix New User modal auto-completing username and password
 
-## [0.10.1](https://github.com/giuscris/formwork/releases/tag/0.10.1) (2019-03-18)
+## [0.10.1](https://github.com/getformwork/formwork/releases/tag/0.10.1) (2019-03-18)
 
 **Enhancements**
 
 - **Add French language strings**, thanks to @MiFrance
 - Add input reset button to `image` field
-- Move strings from template schemes to language files (closes [#15](https://github.com/giuscris/formwork/issues/15))
+- Move strings from template schemes to language files (closes [#15](https://github.com/getformwork/formwork/issues/15))
 
 **Bug fixes**
 
-- Fix cover image issues (closes [#21](https://github.com/giuscris/formwork/issues/21), closes [#18](https://github.com/giuscris/formwork/issues/18) again)
-- Fix `cover-image` and `post` templates (closes [#18](https://github.com/giuscris/formwork/issues/18))
+- Fix cover image issues (closes [#21](https://github.com/getformwork/formwork/issues/21), closes [#18](https://github.com/getformwork/formwork/issues/18) again)
+- Fix `cover-image` and `post` templates (closes [#18](https://github.com/getformwork/formwork/issues/18))
 
-## [0.10.0](https://github.com/giuscris/formwork/releases/tag/0.10.0) (2019-03-17)
+## [0.10.0](https://github.com/getformwork/formwork/releases/tag/0.10.0) (2019-03-17)
 
 **Enhancements**
 
@@ -139,11 +139,11 @@
 **Bug fixes**
 
 - **Fix error in Register controller which prevented language setting**
-- **Fix translated fields not switching to fallback language** (closes [#14](https://github.com/giuscris/formwork/issues/14))
+- **Fix translated fields not switching to fallback language** (closes [#14](https://github.com/getformwork/formwork/issues/14))
 - Fix `Pages@create` not correctly checking if page already exists
 - Fix redirect in `Pages@delete`
 
-## [0.9.6](https://github.com/giuscris/formwork/releases/tag/0.9.6) (2019-03-13)
+## [0.9.6](https://github.com/getformwork/formwork/releases/tag/0.9.6) (2019-03-13)
 
 **Enhancements**
 
@@ -155,9 +155,9 @@
 - **Fix error when page id is changed**
 - **Fix error when page template is changed**
 - **Fix error when `published` attribute is changed in blog pages**
-- Fix visits not being logged if cache is enabled (closes [#12](https://github.com/giuscris/formwork/issues/12))
+- Fix visits not being logged if cache is enabled (closes [#12](https://github.com/getformwork/formwork/issues/12))
 
-## [0.9.5](https://github.com/giuscris/formwork/releases/tag/0.9.5) (2019-03-04)
+## [0.9.5](https://github.com/getformwork/formwork/releases/tag/0.9.5) (2019-03-04)
 
 **Enhancements**
 
@@ -171,21 +171,21 @@
 - Fix fields with numeric `0` value considered empty
 - Fix filename labels in image picker
 
-## [0.9.4](https://github.com/giuscris/formwork/releases/tag/0.9.4) (2019-02-13)
+## [0.9.4](https://github.com/getformwork/formwork/releases/tag/0.9.4) (2019-02-13)
 
 **Bug fixes**
 
-- Fix Parsedown extension link processing (closes [#11](https://github.com/giuscris/formwork/issues/11))
+- Fix Parsedown extension link processing (closes [#11](https://github.com/getformwork/formwork/issues/11))
 - Fix numeric template names not being accepted
 - Fix `Set-Cookie` header being sent when resuming session
 
-## [0.9.3](https://github.com/giuscris/formwork/releases/tag/0.9.3) (2018-10-18)
+## [0.9.3](https://github.com/getformwork/formwork/releases/tag/0.9.3) (2018-10-18)
 
 **Bug fixes**
 
 - Fix missing `Page::$frontmatter` that prevented page updating from Admin panel
 
-## [0.9.2](https://github.com/giuscris/formwork/releases/tag/0.9.2) (2018-10-18)
+## [0.9.2](https://github.com/getformwork/formwork/releases/tag/0.9.2) (2018-10-18)
 
 **Enhancements**
 
@@ -199,7 +199,7 @@
 - Add missing properties to `Page` class
 - Remove duplicate keys in `MimeType` class
 
-## [0.9.1](https://github.com/giuscris/formwork/releases/tag/0.9.1) (2018-10-16)
+## [0.9.1](https://github.com/getformwork/formwork/releases/tag/0.9.1) (2018-10-16)
 
 **Enhancements**
 
@@ -214,12 +214,12 @@
 - Fix persistent tooltip when a button is disabled after click
 - Fix missing `updates.*` permissions
 
-## [0.9.0](https://github.com/giuscris/formwork/releases/tag/0.9.0) (2018-10-13)
+## [0.9.0](https://github.com/getformwork/formwork/releases/tag/0.9.0) (2018-10-13)
 
 **Enhancements**
 
-- **Add user roles and permissions** ([#9](https://github.com/giuscris/formwork/pull/9))
-- **Limit access after a certain amount of failed login attempts** ([#10](https://github.com/giuscris/formwork/pull/10))
+- **Add user roles and permissions** ([#9](https://github.com/getformwork/formwork/pull/9))
+- **Limit access after a certain amount of failed login attempts** ([#10](https://github.com/getformwork/formwork/pull/10))
 - Use HTTP status 400 instead of 403 when CSRF token is not valid
 - Show a `no-drop` cursor and light red background when page reordering is not possible
 - Improve users list appearance especially for small screen sizes
@@ -236,7 +236,7 @@
 - Fix language strings
 - Fix wrong exception type in `Uploader` class
 
-## [0.8.1](https://github.com/giuscris/formwork/releases/tag/0.8.1) (2018-10-08)
+## [0.8.1](https://github.com/getformwork/formwork/releases/tag/0.8.1) (2018-10-08)
 
 **Enhancements**
 
@@ -247,7 +247,7 @@
 
 - **Fix wrong platform requirements in composer.json**
 
-## [0.8.0](https://github.com/giuscris/formwork/releases/tag/0.8.0) (2018-10-06)
+## [0.8.0](https://github.com/getformwork/formwork/releases/tag/0.8.0) (2018-10-06)
 
 **Enhancements**
 
@@ -264,7 +264,7 @@
 - Fix error handler ignoring `@` operator and `error_reporting` directive
 - Fix unrecognized percent-encoded URIs
 
-## [0.7.2](https://github.com/giuscris/formwork/releases/tag/0.7.2) (2018-09-15)
+## [0.7.2](https://github.com/getformwork/formwork/releases/tag/0.7.2) (2018-09-15)
 
 **Enhancements**
 
@@ -276,7 +276,7 @@
 - Fix Options > Updates parse error triggered in PHP < 7.0
 - Fix incorrect icons in Pages Editor files list
 
-## [0.7.1](https://github.com/giuscris/formwork/releases/tag/0.7.1) (2018-09-13)
+## [0.7.1](https://github.com/getformwork/formwork/releases/tag/0.7.1) (2018-09-13)
 
 **Enhancements**
 
@@ -290,12 +290,12 @@
 
 - Fix Page Editor textarea always being focused after saving/reloading
 
-## [0.7.0](https://github.com/giuscris/formwork/releases/tag/0.7.0) (2018-09-12)
+## [0.7.0](https://github.com/getformwork/formwork/releases/tag/0.7.0) (2018-09-12)
 
 **Enhancements**
 
-- **Add Updater feature to automatically download new releases from GitHub repository** ([#4](https://github.com/giuscris/formwork/pull/4))
-- **Add Attributes component to Pages Editor to change Page Template or Page Parent** ([#6](https://github.com/giuscris/formwork/pull/6))
+- **Add Updater feature to automatically download new releases from GitHub repository** ([#4](https://github.com/getformwork/formwork/pull/4))
+- **Add Attributes component to Pages Editor to change Page Template or Page Parent** ([#6](https://github.com/getformwork/formwork/pull/6))
 - **Add error and exception handlers displaying a Formwork-styled error page**
 - Add Typography page to show template styles
 - Improve default template menus
@@ -316,7 +316,7 @@
 - Fix long notification text overflow
 - Fix vertical scrollbar always visible in IE/Edge
 
-## [0.6.12](https://github.com/giuscris/formwork/releases/tag/0.6.12) (2018-08-27)
+## [0.6.12](https://github.com/getformwork/formwork/releases/tag/0.6.12) (2018-08-27)
 
 **Enhancements**
 
@@ -328,11 +328,11 @@
 
 - Fix method names which broke PHP ^5.5.0 compatibility
 
-## [0.6.11](https://github.com/giuscris/formwork/releases/tag/0.6.11) (2018-07-24)
+## [0.6.11](https://github.com/getformwork/formwork/releases/tag/0.6.11) (2018-07-24)
 
 **Enhancements**
 
-- Make notifications disappear by clicking on them (closes [#3](https://github.com/giuscris/formwork/issues/3))
+- Make notifications disappear by clicking on them (closes [#3](https://github.com/getformwork/formwork/issues/3))
 - Add Delete Page button to Pages editor
 - Add Pages editor keyboard shortcuts for bold, italic and save commands
 - Add Preview button to Pages editor
@@ -341,7 +341,7 @@
 
 - Fix unintended non-static methods which triggered a PHP warning
 
-## [0.6.10](https://github.com/giuscris/formwork/releases/tag/0.6.10) (2018-07-18)
+## [0.6.10](https://github.com/getformwork/formwork/releases/tag/0.6.10) (2018-07-18)
 
 **Enhancements**
 
@@ -357,6 +357,6 @@
 - Fix first level page creation when parent is an instance of `Site` class
 - Fix options defaults not available before `system.yml` loading
 
-## [0.6.9](https://github.com/giuscris/formwork/releases/tag/0.6.9) (2018-07-10)
+## [0.6.9](https://github.com/getformwork/formwork/releases/tag/0.6.9) (2018-07-10)
 
 - Initial release

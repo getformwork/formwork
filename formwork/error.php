@@ -70,7 +70,7 @@
         </h1>
         <h2>Oops, something went wrong!</h2>
         <p>Formwork encountered an error while serving your request. Please check Formwork configuration or the server log for errors.</p>
-        <p><a href="https://github.com/giuscris/formwork/issues" target="_blank">Report an issue to GitHub</a></p>
+        <p><a href="https://github.com/getformwork/formwork/issues" target="_blank">Report an issue to GitHub</a></p>
     </div>
 </body>
 </html>

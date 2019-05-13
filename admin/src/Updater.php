@@ -16,7 +16,7 @@ class Updater
      *
      * @var string
      */
-    const REPOSITORY = 'giuscris/formwork';
+    const REPOSITORY = 'getformwork/formwork';
 
     /**
      * Updater options

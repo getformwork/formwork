@@ -24,7 +24,7 @@ class Errors extends AbstractController
     public function internalServerError()
     {
         $this->displayError(500, 'internal-server-error', array(
-            'href'  => 'https://github.com/giuscris/formwork/issues',
+            'href'  => 'https://github.com/getformwork/formwork/issues',
             'label' => $this->label('errors.action.report-to-github')
         ));
     }

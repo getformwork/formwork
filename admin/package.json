@@ -5,10 +5,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/giuscris/formwork.git"
+    "url": "git+https://github.com/getformwork/formwork.git"
   },
   "bugs": {
-    "url": "https://github.com/giuscris/formwork/issues"
+    "url": "https://github.com/getformwork/formwork/issues"
   },
   "dependencies": {
     "chartist": "^0.11.0",

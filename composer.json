@@ -1,8 +1,8 @@
 {
-    "name": "giuscris/formwork",
+    "name": "getformwork/formwork",
     "description": "A file-based Content Management System (CMS) to make and manage simple sites",
     "type": "project",
-    "homepage": "https://github.com/giuscris/formwork",
+    "homepage": "https://github.com/getformwork/formwork",
     "license": "MIT",
     "authors": [
         {
