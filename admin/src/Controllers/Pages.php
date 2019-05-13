@@ -419,13 +419,15 @@ class Pages extends AbstractController
             $frontmatter['title'] = $data->get('title');
         }
 
+        // Get page defaults
+        $defaults = $page->defaults();
+
         // Handle data from fields
         foreach ($fields as $field) {
-            $empty = is_null($field->value()) || $field->value() === '' || $field->value() === array();
-            $default = isset($page->defaults()[$field->name()]) && $field->value() === $page->defaults()[$field->name()];
+            $default = array_key_exists($field->name(), $defaults) && $field->value() === $defaults[$field->name()];
 
             // Remove empty and default values
-            if ($empty || $default) {
+            if ($field->isEmpty() || $default) {
                 unset($frontmatter[$field->name()]);
                 continue;
             }

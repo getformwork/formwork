@@ -122,11 +122,6 @@ class Field extends DataSetter
         }
     }
 
-    /**
-     * __debugInfo() magic method
-     *
-     * @return array
-     */
     public function __debugInfo()
     {
         $return['name'] = $this->name;

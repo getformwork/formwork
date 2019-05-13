@@ -3,7 +3,6 @@
 namespace Formwork\Core;
 
 use Formwork\Utils\Header;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 
 class Pagination
@@ -57,7 +56,7 @@ class Pagination
         $this->length = $length;
         $this->pages = $count > 0 ? (int) ceil($count / $length) : 1;
 
-        $this->baseUri = Uri::normalize(HTTPRequest::root() . ltrim(preg_replace('~/page/[0-9]+/?$~', '', $router->request()), '/'));
+        $this->baseUri = Formwork::instance()->site()->uri(preg_replace('~/page/[0-9]+/?$~', '', $router->request()));
 
         $this->currentPage = (int) $router->params()->get('paginationPage', 1);
 

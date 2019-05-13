@@ -59,6 +59,9 @@ class FilesCache extends AbstractCache
         FileSystem::write($this->getFile($key), $data);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function delete($key)
     {
         if ($this->has($key)) {
