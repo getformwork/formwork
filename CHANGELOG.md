@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.12.0](https://github.com/getformwork/formwork/releases/tag/0.12.0) (2019-05-13)
+
+**Enhancements**
+
+- **Add metadata support**
+- **Add support for helpers to** `Template`
+- **Add the possibility to set HTTP headers in pages frontmatter**
+- **Add the possibility to set a canonical route for pages**
+- **Add the possibility to redirect to browser preferred language**
+- **Add Metadata and Aliases fields to site options**
+- Add `Metadatum` class
+- Add `Metadata` class
+- Move template-related classes to `Formwork\Template` namespace
+- Add `TemplateHelpers` class
+- Add `Site::template()`
+- Use `Template::path()` to get path from `Site::template()`
+- Add `Arr` class
+- Support dot notation in data getters and pages
+- Extract `AssociativeCollection` class
+- Add `Field::formName()`
+- Use `Field::formName()` in field views
+- Avoid using raw POST data from HTTP requests
+- Remove `HTTPRequest::postDataFromRaw()`
+- Add placeholder support for text-based fields
+- Add placeholder support for `tags` field
+- Use underscores in frontmatter keys for consistency
+- Use site defaults when updating options
+- Add `array` field type
+- Add `robots` meta tag to Admin views
+- Add `Router::rewriteRoute()`
+- Add `Router::rewrite()` to rewrite current route with new params
+- Add canonical route to index page
+- Rename `languages` option to `languages.available`
+- Add `HTTPNegotiation` class
+
+**Bug fixes**
+
+- Fix `Layout::scheme()` throwing a `RuntimeException`
+- Fix `Validator::validateTags()` not resetting keys after filtering
+- Fix `Field::isEmpty()` evaluating fields with `false` value empty
+- Revert instance check on `$resource` in `Formwork::run()` from [7c63eba](https://github.com/getformwork/formwork/commit/7c63eba)
+
 ## [0.11.2](https://github.com/getformwork/formwork/releases/tag/0.11.2) (2019-05-04)
 
 **Enhancements**
