@@ -91,6 +91,9 @@ options.system.images.png-compression-level: PNG Compression Level
 options.system.languages: Languages
 options.system.languages.available-languages: Available Languages
 options.system.languages.available-languages.no-languages: No Languages
+options.system.languages.preferred-language: Use Browser Prefered Language
+options.system.languages.preferred-language.disabled: Disabled
+options.system.languages.preferred-language.enabled: Enabled
 options.updated: Options updated
 options.updates: Updates
 pages.attributes: Attributes

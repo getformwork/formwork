@@ -8,6 +8,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
+use Formwork\Utils\HTTPNegotiation;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Uri;
@@ -49,6 +50,13 @@ class Formwork
      * @var string
      */
     protected $defaultLanguage;
+
+    /**
+     * Preferred language code
+     *
+     * @var string
+     */
+    protected $preferredLanguage;
 
     /**
      * Current language code
@@ -148,6 +156,7 @@ class Formwork
             'date.timezone'            => 'UTC',
             'date.week_starts'         => 0,
             'languages.available'      => array(),
+            'languages.http_preferred' => false,
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
             'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
@@ -234,12 +243,30 @@ class Formwork
     {
         if (!empty($languages = $this->option('languages.available'))) {
             $this->defaultLanguage = $this->option('languages.default', $languages[0]);
+
             if (preg_match('~^/(' . implode('|', $languages) . ')/~i', $this->request, $matches)) {
                 list($match, $language) = $matches;
                 $this->language = $language;
                 $this->request = '/' . substr($this->request, strlen($match));
             } else {
                 $this->language = $this->defaultLanguage;
+            }
+
+            if ($this->option('languages.http_preferred')) {
+                $preferredLanguages = array_keys(HTTPNegotiation::language());
+                foreach ($preferredLanguages as $code) {
+                    if (in_array($code, $languages, true)) {
+                        // Check if language is already set from request URI
+                        if (isset($language)) {
+                            $this->preferredLanguage = $code;
+                            break;
+                        }
+                        if (!defined('ADMIN_PATH')) {
+                            // Don't redirect if we are in Admin
+                            Header::redirect(HTTPRequest::root() . $code . $this->request);
+                        }
+                    }
+                }
             }
         }
     }
