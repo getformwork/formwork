@@ -12,6 +12,7 @@ use Formwork\Admin\Users\User;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
+use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
@@ -220,27 +221,12 @@ abstract class AbstractController
     {
         $file = VIEWS_PATH . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
-        $output = $this->renderToString($file, array_merge($this->defaults(), $data));
-        if ($render) {
-            echo $output;
-        } else {
-            return $output;
-        }
-    }
-
-    /**
-     * Render a script
-     *
-     * @param string $file Path to the script
-     * @param array  $data Data to pass to the view
-     *
-     * @return string
-     */
-    private function renderToString($file, array $data)
-    {
         ob_start();
-        extract($data);
-        include $file;
-        return ob_get_clean();
+        Renderer::load($file, array_merge($this->defaults(), $data), $this, static::class);
+        if ($render) {
+            ob_end_flush();
+        } else {
+            return ob_get_clean();
+        }
     }
 }
