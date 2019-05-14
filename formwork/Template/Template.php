@@ -161,6 +161,10 @@ class Template
      */
     public function insert($name, array $vars = array())
     {
+        if (!$this->rendering) {
+            throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+        }
+
         if ($name[0] === '_') {
             $name = 'partials' . DS . substr($name, 1);
         }
@@ -171,9 +175,7 @@ class Template
             throw new RuntimeException('Template ' . $name . ' not found');
         }
 
-        extract(array_merge($this->vars, $vars));
-
-        include $filename;
+        Renderer::load($filename, array_merge($this->vars, $vars), $this);
     }
 
     /**
@@ -244,15 +246,11 @@ class Template
      */
     protected function loadController()
     {
-        if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
-        }
-
         $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
             extract($this->vars);
-            $this->vars = array_merge($this->vars, (array) include $controllerFile);
+            $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
         }
     }
 
