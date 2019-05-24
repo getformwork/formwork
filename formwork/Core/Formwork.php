@@ -45,25 +45,11 @@ class Formwork
     protected $request;
 
     /**
-     * Default language code
+     * Array containing loaded languages
      *
-     * @var string
+     * @var array
      */
-    protected $defaultLanguage;
-
-    /**
-     * Preferred language code
-     *
-     * @var string
-     */
-    protected $preferredLanguage;
-
-    /**
-     * Current language code
-     *
-     * @var string
-     */
-    protected $language;
+    protected $languages = array();
 
     /**
      * Site instance
@@ -238,30 +224,34 @@ class Formwork
      */
     protected function loadLanguages()
     {
-        if (!empty($languages = $this->option('languages.available'))) {
-            $this->defaultLanguage = $this->option('languages.default', $languages[0]);
+        $this->languages['available'] = $this->option('languages.available');
 
-            if (preg_match('~^/(' . implode('|', $languages) . ')/~i', $this->request, $matches)) {
-                list($match, $language) = $matches;
-                $this->language = $language;
-                $this->request = '/' . substr($this->request, strlen($match));
-            } else {
-                $this->language = $this->defaultLanguage;
-            }
+        if (empty($this->languages['available'])) {
+            return;
+        }
 
-            if ($this->option('languages.http_preferred')) {
-                $preferredLanguages = array_keys(HTTPNegotiation::language());
-                foreach ($preferredLanguages as $code) {
-                    if (in_array($code, $languages, true)) {
-                        // Check if language is already set from request URI
-                        if (isset($language)) {
-                            $this->preferredLanguage = $code;
-                            break;
-                        }
-                        if (!defined('ADMIN_PATH')) {
-                            // Don't redirect if we are in Admin
-                            Header::redirect(HTTPRequest::root() . $code . $this->request);
-                        }
+        $this->languages['current'] = $this->languages['default'] = $this->option(
+            'languages.default',
+            $this->languages['available'][0]
+        );
+
+        if (preg_match('~^/(' . implode('|', $this->languages['available']) . ')/~i', $this->request, $matches)) {
+            list($match, $language) = $matches;
+            $this->languages['current'] = $language;
+            $this->request = '/' . substr($this->request, strlen($match));
+        }
+
+        if ($this->option('languages.http_preferred')) {
+            foreach (HTTPNegotiation::language() as $code => $value) {
+                if (in_array($code, $this->languages['available'], true)) {
+                    // Check if language is already set from request URI
+                    if (isset($language)) {
+                        $this->languages['preferred'] = $code;
+                        break;
+                    }
+                    if (!defined('ADMIN_PATH')) {
+                        // Don't redirect if we are in Admin
+                        Header::redirect(HTTPRequest::root() . $code . $this->request);
                     }
                 }
             }
@@ -276,6 +266,7 @@ class Formwork
         FileSystem::assert(CONFIG_PATH . 'site.yml');
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($config);
+        $this->site->set('languages', $this->languages);
     }
 
     /**

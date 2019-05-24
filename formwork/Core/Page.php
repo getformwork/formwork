@@ -490,7 +490,7 @@ class Page extends AbstractPage
         if (!empty($contentFiles)) {
             // Get correct content file based on requested language
             ksort($contentFiles);
-            $requestedLanguage = $this->language ?: Formwork::instance()->language();
+            $requestedLanguage = $this->language ?: Formwork::instance()->site()->get('languages.current');
             $key = isset($contentFiles[$requestedLanguage]) ? $requestedLanguage : array_keys($contentFiles)[0];
 
             // Set actual language
