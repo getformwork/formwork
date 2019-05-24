@@ -4,6 +4,6 @@
 <?php elseif ($meta->isHTTPEquiv()): ?>
     <meta http-equiv="<?= $meta->name() ?>" content="<?= $meta->content() ?>">
 <?php else: ?>
-    <meta <?= $meta->namespace() === 'og' ? 'property' : 'name' ?>="<?= $meta->name() ?>" content="<?= $meta->content() ?>">
+    <meta <?= $meta->prefix() === 'og' ? 'property' : 'name' ?>="<?= $meta->name() ?>" content="<?= $meta->content() ?>">
 <?php endif; ?>
 <?php endforeach; ?>

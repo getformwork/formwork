@@ -21,11 +21,11 @@ class Metadatum
     protected $content;
 
     /**
-     * Metadatum namespace
+     * Metadatum prefix
      *
      * @var string
      */
-    protected $namespace;
+    protected $prefix;
 
     /**
      * Create a new Metadatum instance
@@ -38,8 +38,8 @@ class Metadatum
         $this->name = strtolower($name);
         $this->content = $content;
 
-        if ($namespace = strstr($name, ':', true)) {
-            $this->namespace = $namespace;
+        if ($prefix = strstr($name, ':', true)) {
+            $this->prefix = $prefix;
         }
     }
 
@@ -64,13 +64,13 @@ class Metadatum
     }
 
     /**
-     * Return whether the metadatum has a namespace (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
+     * Return whether the metadatum has a prefix (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
      *
      * @return bool
      */
-    public function hasNamespace()
+    public function hasPrefix()
     {
-        return !is_null($this->namespace);
+        return !is_null($this->prefix);
     }
 
     public function __call($name, $arguments)
