@@ -44,6 +44,16 @@ class Metadatum
     }
 
     /**
+     * Return metadatum name
+     *
+     * @return string
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
      * Return whether the metadatum is a charset declaration
      *
      * @return bool
@@ -64,6 +74,26 @@ class Metadatum
     }
 
     /**
+     * Return metadatum content
+     *
+     * @return string
+     */
+    public function content()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Return metadatum prefix
+     *
+     * @return string
+     */
+    public function prefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
      * Return whether the metadatum has a prefix (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
      *
      * @return bool
@@ -71,13 +101,5 @@ class Metadatum
     public function hasPrefix()
     {
         return !is_null($this->prefix);
-    }
-
-    public function __call($name, $arguments)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }
