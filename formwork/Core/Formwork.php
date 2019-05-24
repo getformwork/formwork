@@ -105,28 +105,14 @@ class Formwork
 
         Errors::setHandlers();
 
-        FileSystem::assert(CONFIG_PATH . 'system.yml');
-        FileSystem::assert(CONFIG_PATH . 'site.yml');
-
-        $this->options = $this->defaults();
-        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->options, $config);
-
-        date_default_timezone_set($this->option('date.timezone'));
-
         $this->request = Uri::removeQuery(HTTPRequest::uri());
 
+        $this->loadOptions();
         $this->loadLanguages();
+        $this->loadSite();
+        $this->loadCache();
 
         $this->router = new Router($this->request);
-
-        $siteConfig = YAML::parseFile(CONFIG_PATH . 'site.yml');
-        $this->site = new Site($siteConfig);
-
-        if ($this->option('cache.enabled')) {
-            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
-            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
-        }
     }
 
     /**
@@ -237,6 +223,17 @@ class Formwork
     }
 
     /**
+     * Load options
+     */
+    protected function loadOptions()
+    {
+        FileSystem::assert(CONFIG_PATH . 'system.yml');
+        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
+        $this->options = array_merge($this->defaults(), $config);
+        date_default_timezone_set($this->option('date.timezone'));
+    }
+
+    /**
      * Load language from request
      */
     protected function loadLanguages()
@@ -268,6 +265,27 @@ class Formwork
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Load site
+     */
+    protected function loadSite()
+    {
+        FileSystem::assert(CONFIG_PATH . 'site.yml');
+        $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
+        $this->site = new Site($config);
+    }
+
+    /**
+     * Load cache
+     */
+    protected function loadCache()
+    {
+        if ($this->option('cache.enabled')) {
+            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
+            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
         }
     }
 
