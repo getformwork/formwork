@@ -54,7 +54,7 @@ class Layout extends Template
      *
      * @return string|null
      */
-    protected function content()
+    public function content()
     {
         return $this->content;
     }
