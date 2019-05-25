@@ -4,7 +4,7 @@ namespace Formwork\Metadata;
 
 class Metadatum
 {
-    const HTTP_EQUIV_NAMES = array('content-type', 'default-style', 'refresh');
+    protected const HTTP_EQUIV_NAMES = array('content-type', 'default-style', 'refresh');
 
     /**
      * Metadatum name

@@ -18,28 +18,28 @@ class Page extends AbstractPage
      *
      * @var string
      */
-    const NUM_REGEX = '/^(\d+)-/';
+    public const NUM_REGEX = '/^(\d+)-/';
 
     /**
      * Page 'published' status
      *
      * @var string
      */
-    const PAGE_STATUS_PUBLISHED = 'published';
+    public const PAGE_STATUS_PUBLISHED = 'published';
 
     /**
      * Page 'not published' status
      *
      * @var string
      */
-    const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
+    public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
     /**
      * Page 'not routable' status
      *
      * @var string
      */
-    const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
+    public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
     /**
      * Page content parser instance

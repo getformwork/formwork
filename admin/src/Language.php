@@ -15,7 +15,7 @@ class Language
      *
      * @var string
      */
-    const FALLBACK_LANGUAGE_CODE = 'en';
+    protected const FALLBACK_LANGUAGE_CODE = 'en';
 
     /**
      * Array containing languages available in administration panel

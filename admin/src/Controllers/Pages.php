@@ -27,14 +27,14 @@ class Pages extends AbstractController
      *
      * @var string
      */
-    const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
+    protected const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
 
     /**
      * Page prefix date format
      *
      * @var string
      */
-    const DATE_NUM_FORMAT = 'Ymd';
+    protected const DATE_NUM_FORMAT = 'Ymd';
 
     /**
      * Pages@index action

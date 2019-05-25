@@ -11,7 +11,7 @@ class Translator
      *
      * @var string
      */
-    const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
+    protected const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
 
     /**
      * Fields not to translate

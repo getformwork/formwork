@@ -15,7 +15,7 @@ class Backupper
      *
      * @var string
      */
-    const DATE_FORMAT = 'YmdHis';
+    protected const DATE_FORMAT = 'YmdHis';
 
     /**
      * Backupper options

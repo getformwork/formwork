@@ -16,7 +16,7 @@ class Updater
      *
      * @var string
      */
-    const REPOSITORY = 'getformwork/formwork';
+    protected const REPOSITORY = 'getformwork/formwork';
 
     /**
      * Updater options

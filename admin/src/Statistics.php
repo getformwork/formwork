@@ -15,35 +15,35 @@ class Statistics
      *
      * @var string
      */
-    const DATE_FORMAT = 'Ymd';
+    protected const DATE_FORMAT = 'Ymd';
 
     /**
      * Number of days displayed in the statistics chart
      *
      * @var int
      */
-    const CHART_LIMIT = 7;
+    protected const CHART_LIMIT = 7;
 
     /**
      * Visits registry filename
      *
      * @var string
      */
-    const VISITS_FILENAME = 'visits.json';
+    protected const VISITS_FILENAME = 'visits.json';
 
     /**
      * Unique visits registry filename
      *
      * @var string
      */
-    const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
+    protected const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
 
     /**
      * Visitors registry filename
      *
      * @var string
      */
-    const VISITORS_FILENAME = 'visitors.json';
+    protected const VISITORS_FILENAME = 'visitors.json';
 
     /**
      * Visits registry

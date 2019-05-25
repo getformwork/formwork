@@ -11,14 +11,14 @@ class IPAnonymizer
      *
      * @var string
      */
-    const IPV4_MASK = '255.255.255.0';
+    protected const IPV4_MASK = '255.255.255.0';
 
     /**
      * IPv6 addresses mask
      *
      * @var string
      */
-    const IPV6_MASK = 'ffff:ffff:ffff:ffff::';
+    protected const IPV6_MASK = 'ffff:ffff:ffff:ffff::';
 
     /**
      * Anonymize an IP address
