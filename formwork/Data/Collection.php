@@ -66,7 +66,7 @@ class Collection implements Iterator
      */
     public function valid()
     {
-        return $this->current() !== false;
+        return !is_null($this->key());
     }
 
     /**

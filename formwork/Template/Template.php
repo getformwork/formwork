@@ -249,7 +249,6 @@ class Template
         $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
-            extract($this->vars);
             $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
         }
     }

@@ -225,7 +225,7 @@ class PageCollection extends Collection
                 }
 
                 if ($recursive) {
-                    $pages = array_merge($pages, self::fromPath($pagePath, true)->toArray());
+                    $pages = array_merge($pages, static::fromPath($pagePath, true)->toArray());
                 }
             }
         }

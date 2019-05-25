@@ -238,7 +238,7 @@ class HTTPRequest
             return false;
         }
         foreach (static::files() as $file) {
-            if ($file['error'] === 4) {
+            if ($file['error'] === UPLOAD_ERR_NO_FILE) {
                 return false;
             }
         }
