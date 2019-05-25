@@ -257,6 +257,10 @@ class Template
     public function __call($name, $arguments)
     {
         if (TemplateHelpers::has($name)) {
+            if (!$this->rendering) {
+                throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+            }
+
             $helper = TemplateHelpers::get($name);
             return $helper(...$arguments);
         }
