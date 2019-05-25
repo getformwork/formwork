@@ -115,6 +115,46 @@ class Formwork
     }
 
     /**
+     * Get system options
+     *
+     * @return array
+     */
+    public function options()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Get current request
+     *
+     * @return string
+     */
+    public function request()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Return site instance
+     *
+     * @return Site
+     */
+    public function site()
+    {
+        return $this->site;
+    }
+
+    /**
+     * Return router instance
+     *
+     * @return Router
+     */
+    public function router()
+    {
+        return $this->router;
+    }
+
+    /**
      * Return default options
      *
      * @return array
@@ -325,13 +365,5 @@ class Formwork
 
             return $this->site->errorPage();
         };
-    }
-
-    public function __call($name, $arguments)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }
