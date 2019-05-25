@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title><?= isset($message) ? $message : 'Internal Server Error' ?> | Formwork</title>
+    <title><?= $message ?? 'Internal Server Error' ?> | Formwork</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -65,8 +65,8 @@
 <body>
     <div class="container">
         <h1>
-            <span class="error-code"><?= isset($status) ? $status : 500 ?></span>
-            <span class="error-status"><?= isset($message) ? $message : 'Internal Server Error'  ?></span>
+            <span class="error-code"><?= $status ?? 500 ?></span>
+            <span class="error-status"><?= $message ?? 'Internal Server Error'  ?></span>
         </h1>
         <h2>Oops, something went wrong!</h2>
         <p>Formwork encountered an error while serving your request. Please check Formwork configuration or the server log for errors.</p>

@@ -81,7 +81,7 @@ class Header
         if (!isset(static::$statuses[$code])) {
             throw new LogicException('Unknown HTTP status code ' . $code);
         }
-        $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
+        $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . static::$statuses[$code];
         if (!$send) {
             return $status;

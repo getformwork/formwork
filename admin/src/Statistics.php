@@ -145,7 +145,7 @@ class Statistics
         $interpolate = static function ($data) use ($days) {
             $output = array();
             foreach ($days as $day) {
-                $output[$day] = isset($data[$day]) ? $data[$day] : 0;
+                $output[$day] = $data[$day] ?? 0;
             }
             return $output;
         };

@@ -85,7 +85,7 @@ class MimeType
     public static function fromExtension($extension)
     {
         $extension = ltrim($extension, '.');
-        return isset(static::$data[$extension]) ? static::$data[$extension] : null;
+        return static::$data[$extension] ?? null;
     }
 
     /**
