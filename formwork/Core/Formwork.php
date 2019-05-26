@@ -3,12 +3,12 @@
 namespace Formwork\Core;
 
 use Formwork\Cache\SiteCache;
+use Formwork\Languages\Languages;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
-use Formwork\Utils\HTTPNegotiation;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Uri;
@@ -45,11 +45,11 @@ class Formwork
     protected $request;
 
     /**
-     * Array containing loaded languages
+     * Languages instance
      *
-     * @var array
+     * @var Languages
      */
-    protected $languages = array();
+    protected $languages;
 
     /**
      * Site instance
@@ -264,36 +264,14 @@ class Formwork
      */
     protected function loadLanguages()
     {
-        $this->languages['available'] = $this->option('languages.available');
+        $this->languages = Languages::fromRequest($this->request);
 
-        if (empty($this->languages['available'])) {
-            return;
-        }
-
-        $this->languages['current'] = $this->languages['default'] = $this->option(
-            'languages.default',
-            $this->languages['available'][0]
-        );
-
-        if (preg_match('~^/(' . implode('|', $this->languages['available']) . ')/~i', $this->request, $matches)) {
-            list($match, $language) = $matches;
-            $this->languages['current'] = $language;
-            $this->request = '/' . substr($this->request, strlen($match));
-        }
-
-        if ($this->option('languages.http_preferred')) {
-            foreach (HTTPNegotiation::language() as $code => $value) {
-                if (in_array($code, $this->languages['available'], true)) {
-                    // Check if language is already set from request URI
-                    if (isset($language)) {
-                        $this->languages['preferred'] = $code;
-                        break;
-                    }
-                    if (!defined('ADMIN_PATH')) {
-                        // Don't redirect if we are in Admin
-                        Header::redirect(HTTPRequest::root() . $code . $this->request);
-                    }
-                }
+        if (!is_null($this->languages->requested())) {
+            $this->request = '/' . substr($this->request, strlen('/' . $this->languages->current() . '/'));
+        } elseif (!is_null($this->languages->preferred())) {
+            // Don't redirect if we are in Admin
+            if (!defined('ADMIN_PATH')) {
+                Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }
     }

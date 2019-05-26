@@ -78,10 +78,10 @@ abstract class AbstractPage
     {
         $base = HTTPRequest::root();
         if ($includeLanguage) {
-            $language = is_string($includeLanguage) ? $includeLanguage : Formwork::instance()->site()->get('languages.current');
+            $language = is_string($includeLanguage) ? $includeLanguage : Formwork::instance()->site()->languages()->current();
 
-            $default = Formwork::instance()->site()->get('languages.default');
-            $preferred = Formwork::instance()->site()->get('languages.preferred');
+            $default = Formwork::instance()->site()->languages()->default();
+            $preferred = Formwork::instance()->site()->languages()->preferred();
 
             if ((!is_null($language) && $language !== $default) || (!is_null($preferred) && $preferred !== $default)) {
                 $base .= $language . '/';

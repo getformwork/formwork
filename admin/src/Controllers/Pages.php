@@ -108,7 +108,7 @@ class Pages extends AbstractController
 
             if (!in_array($language, $this->option('languages.available'), true)) {
                 $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->get('languages.default') . '/');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
             if ($page->hasLanguage($language)) {
@@ -374,7 +374,7 @@ class Pages extends AbstractController
 
         FileSystem::createDirectory($path, true);
 
-        $language = $this->site()->get('languages.default');
+        $language = $this->site()->languages()->default();
 
         $filename = $data->get('template');
         $filename .= empty($language) ? '' : '.' . $language;
