@@ -42,11 +42,11 @@ class Admin
     protected $users;
 
     /**
-     * Current panel language
+     * Translation instance
      *
-     * @var Language
+     * @var Translation
      */
-    protected $language;
+    protected $translation;
 
     /**
      * Errors controller
@@ -72,7 +72,7 @@ class Admin
         $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
         $this->users = Users::load();
 
-        $this->loadLanguages();
+        $this->loadTranslations();
         $this->loadErrorHandler();
     }
 
@@ -140,15 +140,15 @@ class Admin
     }
 
     /**
-     * Load proper panel language
+     * Load proper panel translation
      */
-    protected function loadLanguages()
+    protected function loadTranslations()
     {
         $languageCode = Formwork::instance()->option('admin.lang');
         if ($this->isLoggedIn()) {
             $languageCode = $this->user()->get('language', $languageCode);
         }
-        $this->language = Language::load($languageCode);
+        $this->translation = Translation::load($languageCode);
     }
 
     /**

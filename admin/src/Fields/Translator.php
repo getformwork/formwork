@@ -34,7 +34,7 @@ class Translator
      */
     public static function translate(Field $field)
     {
-        $language = Admin::instance()->language()->code();
+        $language = Admin::instance()->translation()->code();
         foreach ($field->toArray() as $key => $value) {
             if (static::isTranslatable($key, $field)) {
                 if (is_array($value)) {

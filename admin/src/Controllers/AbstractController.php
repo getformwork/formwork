@@ -6,8 +6,8 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Translation;
 use Formwork\Admin\Users\User;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
@@ -77,7 +77,7 @@ abstract class AbstractController
      */
     protected function language()
     {
-        return Admin::instance()->language()->code();
+        return Admin::instance()->translation()->code();
     }
 
     /**
@@ -87,7 +87,7 @@ abstract class AbstractController
      */
     protected function languages()
     {
-        return Language::availableLanguages();
+        return Translation::availableLanguages();
     }
 
     /**
