@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -111,7 +111,7 @@ class Uploader
                 }
                 $this->move($file['tmp_name'], $this->destination, $name);
             } else {
-                throw new LocalizedException(static::$errorMessages[$file['error']], static::$errorLanguageStrings[$file['error']]);
+                throw new TranslatedException(static::$errorMessages[$file['error']], static::$errorLanguageStrings[$file['error']]);
             }
         }
 
@@ -157,13 +157,13 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new LocalizedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
+            throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
         }
 
         $destination = FileSystem::normalize($destination);
 
         if (basename($filename)[0] === '.') {
-            throw new LocalizedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
+            throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
 
         $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
@@ -177,7 +177,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new LocalizedException('Invalid file name ' . $filename, 'uploader.error.file-name');
+            throw new TranslatedException('Invalid file name ' . $filename, 'uploader.error.file-name');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {

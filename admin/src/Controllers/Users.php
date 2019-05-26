@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Image;
 use Formwork\Admin\Security\Password;
@@ -85,18 +85,18 @@ class Users extends AbstractController
 
         try {
             if (!$user) {
-                throw new LocalizedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
+                throw new TranslatedException('User ' . $params->get('user') . ' not found', 'users.user.not-found');
             }
             if (!$this->user()->canDeleteUser($user)) {
-                throw new LocalizedException(
+                throw new TranslatedException(
                     'Cannot delete user ' . $user->username() . ', you must be an administrator and the user must not be logged in',
                     'users.user.cannot-delete'
                 );
             }
             FileSystem::delete(ACCOUNTS_PATH . $user->username() . '.yml');
             $this->deleteAvatar($user);
-        } catch (LocalizedException $e) {
-            $this->notify($e->getLocalizedMessage(), 'error');
+        } catch (TranslatedException $e) {
+            $this->notify($e->getTranslatedMessage(), 'error');
             $this->redirectToReferer(302, '/users/');
         }
 
@@ -218,8 +218,8 @@ class Users extends AbstractController
 
         try {
             $hasUploaded = $uploader->upload(FileSystem::randomName());
-        } catch (LocalizedException $e) {
-            $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
+        } catch (TranslatedException $e) {
+            $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
             $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
