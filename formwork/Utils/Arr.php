@@ -50,4 +50,23 @@ class Arr
         }
         return true;
     }
+
+    /**
+     * Recursively append elements from the second array that are missing in the first
+     *
+     * @param array $array1
+     * @param array $array2
+     *
+     * @return array
+     */
+    public static function appendMissing(array $array1, array $array2)
+    {
+        foreach ($array1 as $key => $value) {
+            if (is_array($value) && array_key_exists($key, $array2) && is_array($array2[$key])) {
+                $array1[$key] = static::appendMissing($array1[$key], $array2[$key]);
+            }
+        }
+        $array1 += $array2;
+        return $array1;
+    }
 }
