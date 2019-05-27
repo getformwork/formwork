@@ -56,4 +56,14 @@ class Visitor
     {
         return !static::isBot();
     }
+
+    /**
+     * Detect whether current visitor prefers not to be tracked
+     *
+     * @return bool
+     */
+    public static function isTrackable()
+    {
+        return !HTTPRequest::hasHeader('Dnt') || HTTPRequest::headers()['Dnt'] !== '1';
+    }
 }
