@@ -1,4 +1,5 @@
 title: Blog Post
+extend: page
 pages: false
 num: date
 fields:
@@ -11,25 +12,3 @@ fields:
         type: tags
         label: '{{pages.page.tags}}'
         placeholder: '{{pages.page.no-tags}}'
-    published:
-        type: checkbox
-        default: true
-        label: '{{pages.status.published}}'
-    publish-date:
-        type: date
-        default: null
-        label: '{{pages.page.publish-date}}'
-        placeholder: '{{pages.page.no-date}}'
-    unpublish-date:
-        type: date
-        default: null
-        label: '{{pages.page.unpublish-date}}'
-        placeholder: '{{pages.page.no-date}}'
-    routable:
-        type: checkbox
-        default: true
-        label: '{{pages.status.routable}}'
-    cacheable:
-        type: checkbox
-        default: true
-        label: '{{pages.page.cacheable}}'
