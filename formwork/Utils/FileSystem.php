@@ -403,23 +403,6 @@ class FileSystem
     }
 
     /**
-     * Swap two files
-     *
-     * @param string $path1
-     * @param string $path2
-     *
-     * @return bool
-     */
-    public static function swap($path1, $path2)
-    {
-        $temp = dirname($path1) . DS . static::temporaryName('temp.');
-        static::move($path1, $temp);
-        static::move($path2, $path1);
-        static::move($temp, $path2);
-        return true;
-    }
-
-    /**
      * Read the content of a file
      *
      * @param string $file
