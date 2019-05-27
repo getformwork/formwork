@@ -87,7 +87,7 @@ class Statistics
      */
     public function trackVisit()
     {
-        if (Visitor::isBot()) {
+        if (Visitor::isBot() || !Visitor::isTrackable()) {
             return;
         }
 
