@@ -456,18 +456,23 @@ class FileSystem
     }
 
     /**
-     * Write content to file
+     * Write content to file atomically
      *
      * @param string $file
      * @param string $content
-     * @param bool   $append  Whether to append or replace content
      *
      * @return bool
      */
-    public static function write($file, $content, $append = false)
+    public static function write($file, $content)
     {
-        $flag = $append ? FILE_APPEND : null;
-        return file_put_contents($file, $content, $flag) !== false;
+        $temp = static::temporaryName($file . '.');
+        if (file_put_contents($temp, $content, LOCK_EX) === false) {
+            throw new RuntimeException('Cannot write ' . $file);
+        }
+        if (static::exists($file)) {
+            @chmod($temp, @fileperms($file));
+        }
+        return static::move($temp, $file, true);
     }
 
     /**
