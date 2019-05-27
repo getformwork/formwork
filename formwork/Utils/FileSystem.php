@@ -591,37 +591,6 @@ class FileSystem
     }
 
     /**
-     * Find files or directories matching a glob pattern
-     *
-     * @param string $pattern
-     * @param mixed  ...$arguments
-     *
-     * @return array|null
-     */
-    public static function glob($pattern, ...$arguments)
-    {
-        if (empty($arguments)) {
-            return @glob($pattern) ?: null;
-        }
-
-        if (is_int($flags = $arguments[0])) {
-            return @glob($pattern, $flags) ?: null;
-        }
-
-        if (static::isDirectory($base = static::normalize($arguments[0]))) {
-            if (!isset($arguments[1])) {
-                $glob = @glob($base . $pattern);
-            } else {
-                $flags = $arguments[1];
-                $glob = @glob($base . $pattern, $flags);
-            }
-            return is_array($glob) ? array_map(array(static::class, 'basename'), $glob) : null;
-        }
-
-        throw new RuntimeException(__METHOD__ . ' base path not found: ' . $base);
-    }
-
-    /**
      * Touch a file or directory
      *
      * @param string $path
