@@ -25,6 +25,7 @@ class Authentication extends AbstractController
         if ($limiter->hasReachedLimit()) {
             $minutes = round($this->option('admin.login_reset_time') / 60);
             $this->error($this->label('login.attempt.too-many', $minutes));
+            return;
         }
 
         switch (HTTPRequest::method()) {
