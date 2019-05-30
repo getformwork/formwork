@@ -5,26 +5,35 @@ namespace Formwork\Utils;
 class Visitor
 {
     /**
-     * Array containing regex tokens that identify bots
+     * Array containing regex tokens that identify bots based on monperrus/crawler-user-agents list
+     *
+     * @see https://raw.githubusercontent.com/monperrus/crawler-user-agents/master/crawler-user-agents.json
      *
      * @var array
      */
     protected static $bots = array(
-        'bot', 'crawl', 'search', 'sp[iy]der', 'check', 'findlinks', 'url',
-        'yahoo', 'feed', 'archive', 'heritrix', 'perl', 'links?\s?check',
-        'fetch', 'search[-\s]?engine', 'monitor', 'curl', 'seer', 'thumb',
-        'web[-\s]?search', 'whatsapp', 'scan', 'validator', 'analyz(a|er)',
-        '(http_|media|w)get', 'reader', 'python', 'auto', 'reaper', 'loader',
-        '(apis|appengine|mediapartners)-google', 'download(s|er)',
-        'link\ check', 'images', '(apache-http|go-http-|http_)client', 'finder',
-        'program', 'collect', 'spy', 'site[-\s]?(check|scan)', 'bingpreview',
-        'parse', 'ips-agent', 'verif(y|ier)', 'detector', 'harvest',
-        '(ok|pcore-)http', 'webinator', 'extract', 'aggregator', 'sniff',
-        'index\ ', 'tracker', 'library', 'capture', 'utility', 'scrape',
-        'locat(e|or)', 'gather', 'java\/', 'getter',
-        'html2', 'worth', 'archiving', 'leech', 'hound', 'retrieve', 'sweep',
-        'rating', 'google\ web\ preview', 'somewhere', 'php\/\d', 'control',
-        'fantom', 'http\.rb', 'jorgee', 'linkman', 'wget', 'gopher'
+        '(apache-http|btweb|go-http-|http_)client', '(apis|appengine|mediapartners)-google',
+        '(analyz|fetch|find|gath|gett|load|read|reap|se|sp[iy]d|track|transcod)er',
+        '(bing|skypeuri)preview', '(http_|media|w)get', '(ips-|netcraftsurvey)agent',
+        '(mega)?index(er| )?', '(ok|pcore-)http', '(aggregat|detect|extract|validat)or',
+        '^ning\/', 'ahc\/', 'amazon cloudfront', 'analyze', 'anyevent', 'appinsights',
+        'archiv(er?|ing)', 'axios', 'biglotron', 'binlar', 'blackboard', 'bot', 'brandverity',
+        'bubing', 'capture', 'check', 'chrome-lighthouse', 'cloudflare-alwaysonline', 'coccoc',
+        'collect', 'control', 'crawl', 'curl', 'dareboost', 'dataprovider', 'daum',
+        'deusu', 'digg deeper', 'disqus', 'download(s|er)', 'drupact', 'embedly', 'extract',
+        'facebookexternalhit', 'fantom', 'feed', 'fetch', 'findlinks', 'flipboardproxy', 'genieo',
+        'gigablast', 'google( favicon| web preview|-physicalweb|-structured-data-testing-tool|-xrawler)',
+        'grouphigh', 'harvest', 'hatena', 'heritrix', 'hound', 'html2', 'http(\.rb|unit|urlconnection)',
+        'httrack', 'ichiro', 'images', 'iskanie', 'java\/', 'jetty', 'jorgee', 'leech', 'library',
+        'link(dex|man)', 'lipperhey', 'locat(e|or)', 'ltx71', 'meltwaternews', 'metauri', 'miniflux',
+        'monitor', 'moreover', 'muckrack', 'newspaper', 'nmap scripting engine', 'nuzzel', 'omgili',
+        'outbrain', 'page2rss', 'panscient', 'parse', 'perl', 'php\/\d', 'postrank', 'pr-cy\.ru',
+        'program', 'proximic', 'python', 'qwant', 'rating', 'retrieve', 'rivva', 'scan', 'scoutjet',
+        'scrap(e|y)', 'search', 'sentry', 'site[-\s]?(auditor|check|explorer|improve\.com|scan)',
+        'snacktory', 'sniff', 'spy', 'summify', 'sweep', 'sysomos', 'teoma', 'thinklab', 'thumb',
+        'traackr', 'twingly', 'twurly', 'um-ln', 'upflow', 'utility', 'verif(y|ier)', 'vkshare',
+        'w3c(-mobileok|_unicorn)', 'web(datastats|inator)', 'web[-\s]?search', 'whatsapp', 'worth',
+        'xenu link sleuth', 'yahoo', 'zabbix', 'zgrab'
     );
 
     /**
