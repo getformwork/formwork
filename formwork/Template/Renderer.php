@@ -7,13 +7,6 @@ use Closure;
 class Renderer
 {
     /**
-     * Renderer instance
-     *
-     * @var Renderer
-     */
-    protected static $instance;
-
-    /**
      * Load a script passing variables and binding to given instance and context
      *
      * @param string      $filename
@@ -25,10 +18,7 @@ class Renderer
      */
     public static function load($filename, array $vars, $instance, $context = null)
     {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-        $closure = static::$instance->getClosure($instance, $context);
+        $closure = static::getClosure($instance, $context);
         return $closure($filename, $vars);
     }
 
@@ -40,7 +30,7 @@ class Renderer
      *
      * @return Closure
      */
-    protected function getClosure($instance, $context = null)
+    protected static function getClosure($instance, $context = null)
     {
         return Closure::bind(function ($_filename, array $_vars) {
             extract($_vars);
