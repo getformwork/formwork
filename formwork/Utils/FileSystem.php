@@ -622,7 +622,7 @@ class FileSystem
     /**
      * Convert shorthand bytes notation to an integer
      *
-     * @see http://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+     * @see https://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
      *
      * @param string $shorthand
      *
