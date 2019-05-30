@@ -2,9 +2,10 @@
 
 namespace Formwork\Data;
 
+use Countable;
 use Iterator;
 
-class Collection implements Iterator
+class Collection implements Countable, Iterator
 {
     /**
      * Array containing collection items
