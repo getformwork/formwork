@@ -92,18 +92,22 @@ class Collection implements Countable, Iterator
 
     /**
      * Return first collection item
+     *
+     * @return mixed|null
      */
     public function first()
     {
-        return $this->items[0];
+        return $this->items[0] ?? null;
     }
 
     /**
      * Return last collection item
+     *
+     * @return mixed|null
      */
     public function last()
     {
-        return $this->items[$this->count() - 1];
+        return $this->items[$this->count() - 1] ?? null;
     }
 
     /**
