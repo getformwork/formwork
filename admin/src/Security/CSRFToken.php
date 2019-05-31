@@ -20,7 +20,7 @@ class CSRFToken
      */
     public static function generate()
     {
-        static::$token = bin2hex(random_bytes(20));
+        static::$token = base64_encode(random_bytes(36));
         Session::set('CSRF_TOKEN', static::$token);
         return static::$token;
     }
