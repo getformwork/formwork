@@ -500,7 +500,7 @@ class Page extends AbstractPage
             $this->template = new Template($contentFiles[$key]['template'], $this);
         }
 
-        $this->files = new Files($files, $this->path);
+        $this->files = Files::fromPath($this->path, $files);
     }
 
     /**
