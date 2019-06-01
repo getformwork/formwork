@@ -65,6 +65,11 @@ class FileSystem
             $mimeType = @mime_content_type($file);
         }
 
+        // Fix type for SVG images without XML declaration
+        if ($mimeType === 'image/svg') {
+            $mimeType = MimeType::fromExtension('svg');
+        }
+
         // Fix wrong type for image/svg+xml
         if ($mimeType === 'text/html') {
             $node = @simplexml_load_file($file);
