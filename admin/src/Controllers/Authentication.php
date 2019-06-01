@@ -62,6 +62,9 @@ class Authentication extends AbstractController
                 if (!is_null($user) && $user->authenticate($data->get('password'))) {
                     Session::set('FORMWORK_USERNAME', $data->get('username'));
 
+                    // Regenerate CSRF token
+                    CSRFToken::generate();
+
                     $time = $this->log('access')->log($data->get('username'));
                     $this->registry('lastAccess')->set($data->get('username'), $time);
 
