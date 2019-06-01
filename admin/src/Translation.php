@@ -123,19 +123,19 @@ class Translation
     public static function load($languageCode)
     {
         if (empty(static::$availableLanguages)) {
-            foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
+            foreach (FileSystem::listFiles(TRANSLATIONS_PATH) as $file) {
                 $code = FileSystem::name($file);
                 static::$availableLanguages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
             }
         }
 
-        $languageFile = LANGUAGES_PATH . $languageCode . '.yml';
+        $translationFile = TRANSLATIONS_PATH . $languageCode . '.yml';
 
-        if (!(FileSystem::exists($languageFile) && FileSystem::isReadable($languageFile))) {
-            throw new RuntimeException('Cannot load Admin language file ' . $languageFile);
+        if (!(FileSystem::exists($translationFile) && FileSystem::isReadable($translationFile))) {
+            throw new RuntimeException('Cannot load Admin language file ' . $translationFile);
         }
 
-        $languageStrings = YAML::parseFile($languageFile);
+        $languageStrings = YAML::parseFile($translationFile);
 
         return new static($languageCode, $languageStrings);
     }
