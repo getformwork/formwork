@@ -63,7 +63,7 @@ class PageCollection extends Collection
     {
         $pageCollection = clone $this;
         foreach ($pageCollection->items as $key => $item) {
-            if ($item->id() === $element->id()) {
+            if ($item->path() === $element->path()) {
                 unset($pageCollection->items[$key]);
             }
         }
