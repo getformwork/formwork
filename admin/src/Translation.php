@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\LanguageCodes;
+use Formwork\Languages\LanguageCodes;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use LogicException;
