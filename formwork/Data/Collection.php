@@ -19,11 +19,9 @@ class Collection implements Countable, Iterator
      *
      * @param array $items
      */
-    public function __construct(array $items)
+    public function __construct(array $items = array())
     {
-        if (is_array($items)) {
-            $this->items = $items;
-        }
+        $this->items = $items;
     }
 
     /**
