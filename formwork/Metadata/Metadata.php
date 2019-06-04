@@ -13,6 +13,7 @@ class Metadata extends AssociativeCollection
      */
     public function __construct(array $items)
     {
+        parent::__construct();
         $this->setMultiple($items);
     }
 
