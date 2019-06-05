@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/getformwork/formwork/releases/tag/0.12.1) (2019-06-05)
+
+**Bug fixes**
+
+- Fix Composer lock file
+- Fix npm vulnerabilities
+
 ## [0.12.0](https://github.com/getformwork/formwork/releases/tag/0.12.0) (2019-05-13)
 
 **Enhancements**
