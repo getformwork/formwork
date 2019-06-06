@@ -26,15 +26,111 @@
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
     min-height: 16 * $font-size-s * $base-line-height + $editor-textarea-padding-v * 2;
     max-height: 20 * $font-size-s * $base-line-height + $editor-textarea-padding-v * 2;
-    font-size: $font-size-s;
-    font-family: $mono-font-family;
+    border: $input-border-width solid $color-gray;
+    border-radius: $input-border-radius;
+    font-size: $font-size-m;
+    font-family: $base-font-family;
     &:focus {
         box-shadow: none;
     }
 }
 
-.editor-toolbar + .editor-textarea {
+.CodeMirror {
+    margin-bottom: $editor-textarea-margin-bottom;
+    height: 14 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    border: $input-border-width solid $color-gray;
+    border-radius: $input-border-radius;
+    font-size: $font-size-m;
+    font-family: $base-font-family;
+}
+
+.CodeMirror-lines {
+    padding: $editor-textarea-padding-v 0;
+}
+
+.CodeMirror pre {
+    padding: 0 $editor-textarea-padding-h;
+}
+
+.editor-toolbar + .editor-textarea,
+.editor-textarea + .CodeMirror {
     border-top-width: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.CodeMirror-selected {
+    background: $color-gray-xlight;
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+    background: $color-accent-background;
+}
+
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+    background: $color-accent-background;
+}
+
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+    background: $color-accent-background;
+}
+
+.cm-s-formwork .cm-header-1 {
+    font-size: 1.75rem;
+}
+
+.cm-s-formwork .cm-header-2 {
+    font-size: 1.5rem;
+}
+
+.cm-s-formwork .cm-header-3 {
+    font-size: 1.25rem;
+}
+
+.cm-s-formwork .cm-comment {
+    font-size: 0.875rem;
+    font-family: $mono-font-family;
+}
+
+.cm-s-formwork .cm-comment.cm-header-1 {
+    font-size: 1.75rem * 0.875;
+}
+
+.cm-s-formwork .cm-comment.cm-header-2 {
+    font-size: 1.5rem * 0.875;
+}
+
+.cm-s-formwork .cm-comment.cm-header-3 {
+    font-size: 1.25rem * 0.875;
+}
+
+.cm-s-formwork .cm-quote {
+    color: $color-gray-xdark;
+}
+
+.cm-s-formwork .cm-link {
+    color: $color-accent;
+    text-decoration: underline;
+}
+
+.cm-s-formwork .cm-url,
+.cm-s-formwork .cm-image-marker {
+    color: $color-accent-xdark;
+}
+
+.cm-s-formwork .cm-tag {
+    color: #22863a;
+}
+
+.cm-s-formwork .cm-attribute {
+    color: #6f42c1;
+}
+
+.cm-s-formwork .cm-m-xml {
+    font-size: 0.875rem;
+    font-family: $mono-font-family;
 }
