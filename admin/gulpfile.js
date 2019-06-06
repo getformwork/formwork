@@ -27,6 +27,10 @@ gulp.task('js-app', function () {
 gulp.task('js-vendor', function () {
     return gulp.src([
         './node_modules/chartist/dist/chartist.min.js',
+        './node_modules/codemirror-minified/lib/codemirror.js',
+        './node_modules/codemirror-minified/addon/edit/continuelist.js',
+        './node_modules/codemirror-minified/mode/markdown/markdown.js',
+        './node_modules/codemirror-minified/mode/xml/xml.js',
         './node_modules/sortablejs/Sortable.min.js'
     ])
         .pipe(concat('vendor.min.js'))
