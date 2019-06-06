@@ -34,6 +34,7 @@ gulp.task('js-vendor', function () {
         './node_modules/sortablejs/Sortable.min.js'
     ])
         .pipe(concat('vendor.min.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('./assets/js'));
 });
 
