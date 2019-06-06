@@ -289,7 +289,7 @@ Formwork.Editor = function (id) {
         }
         var selection = dropSelection === true ? '' : editor.getSelection();
         var cursor = editor.getCursor();
-        var lineBreaks = leftValue.split('\n').length;
+        var lineBreaks = leftValue.split('\n').length - 1;
         editor.replaceSelection(leftValue + selection + rightValue);
         editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
         editor.focus();
