@@ -71,11 +71,23 @@ Formwork.Editor = function (id) {
         }
     });
 
+    $('[data-command=undo]', $toolbar).on('click', function () {
+        editor.undo();
+        editor.focus();
+    });
+
+    $('[data-command=redo]', $toolbar).on('click', function () {
+        editor.redo();
+        editor.focus();
+    });
+
     disableSummaryCommand();
 
     editor.on('changes', Formwork.Utils.debounce(function () {
         textarea.value = editor.getValue();
         disableSummaryCommand();
+        $('[data-command=undo]').attr('disabled', editor.historySize().undo < 1);
+        $('[data-command=redo]').attr('disabled', editor.historySize().redo < 1);
     }, 500));
 
     $(document).on('keydown', function (event) {
@@ -89,9 +101,6 @@ Formwork.Editor = function (id) {
                 return false;
             case 75: // ctrl/cmd + K
                 $('[data-command=link]', $toolbar).trigger('click');
-                return false;
-            case 89: // ctrl/cmd + Y
-            case 90: // ctrl/cmd + Z
                 return false;
             }
         }
