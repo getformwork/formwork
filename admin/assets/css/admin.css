@@ -48,6 +48,9 @@ select:focus,
 textarea:focus {
   box-shadow: 0 0 0 2px rgba(40, 154, 230, 0.3); }
 
+::selection {
+  background-color: #ecf4fc; }
+
 @media (min-width: 568px) {
   .hide-from-xs {
     display: none; } }

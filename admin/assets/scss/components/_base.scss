@@ -57,6 +57,10 @@ button {
     box-shadow: $focus-box-shadow;
 }
 
+::selection {
+    background-color: $color-accent-background;
+}
+
 @each $breakpoint-name in map-keys($responsive-breakpoints) {
     @media (min-width: map-get($responsive-breakpoints, $breakpoint-name)) {
         .hide-from-#{$breakpoint-name} {
