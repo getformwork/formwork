@@ -1310,7 +1310,7 @@ span.CodeMirror-selectedtext {
 .editor-textarea {
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
-  height: 24rem;
+  min-height: 24rem;
   border: 1px solid #cacaca;
   border-radius: 3px;
   font-size: 1rem;
@@ -1320,7 +1320,7 @@ span.CodeMirror-selectedtext {
 
 .CodeMirror {
   margin-bottom: 1rem;
-  height: 24rem;
+  min-height: 24rem;
   border: 1px solid #cacaca;
   border-radius: 3px;
   font-size: 1rem;

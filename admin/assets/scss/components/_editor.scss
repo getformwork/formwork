@@ -24,7 +24,7 @@
 .editor-textarea {
     margin-bottom: $editor-textarea-margin-bottom;
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
-    height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     border: $input-border-width solid $color-gray;
     border-radius: $input-border-radius;
     font-size: $font-size-m;
@@ -36,7 +36,7 @@
 
 .CodeMirror {
     margin-bottom: $editor-textarea-margin-bottom;
-    height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     border: $input-border-width solid $color-gray;
     border-radius: $input-border-radius;
     font-size: $font-size-m;
