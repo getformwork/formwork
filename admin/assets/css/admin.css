@@ -1340,13 +1340,13 @@ span.CodeMirror-selectedtext {
   background: #f0f0f0; }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background: #e9f4fb; }
+  background: #ecf4fc; }
 
 .CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-  background: #e9f4fb; }
+  background: #ecf4fc; }
 
 .CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
-  background: #e9f4fb; }
+  background: #ecf4fc; }
 
 .cm-s-formwork .cm-header-1 {
   font-size: 1.75rem; }
@@ -2536,7 +2536,7 @@ span.CodeMirror-selectedtext {
   padding: 0.125rem 0.25rem;
   min-width: 1.125rem;
   border-radius: 3px;
-  background-color: #e9f4fb;
+  background-color: #ecf4fc;
   color: #3498da;
   text-align: center;
   font-weight: 600;
