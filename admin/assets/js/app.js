@@ -150,8 +150,8 @@ Formwork.Editor = function (id) {
     var editor = CodeMirror.fromTextArea(textarea, {
         mode: 'markdown',
         theme: 'formwork',
+        indentUnit: 4,
         lineWrapping: true,
-        highlightFormatting: true,
         addModeClass: true,
         extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'}
     });
