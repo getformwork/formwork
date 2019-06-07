@@ -122,14 +122,23 @@
     color: $color-accent-xdark;
 }
 
+.cm-s-formwork .cm-hr {
+    color: $color-gray-xdark;
+}
+
 .cm-s-formwork .cm-tag {
     color: #22863a;
+}
+
+.cm-s-formwork .cm-bracket {
+    color: #000;
 }
 
 .cm-s-formwork .cm-attribute {
     color: #6f42c1;
 }
 
+.cm-s-formwork .cm-bracket,
 .cm-s-formwork .cm-m-xml {
     font-size: 0.875rem;
     font-family: $mono-font-family;
