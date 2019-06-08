@@ -40,4 +40,4 @@ gulp.task('js-vendor', function () {
 
 gulp.task('js', gulp.series('js-app', 'js-vendor'));
 
-gulp.task('default', gulp.series('css', 'js'));
+gulp.task('default', gulp.series('css', 'js-app'));
