@@ -144,9 +144,19 @@ Formwork.Dropdowns = {
 };
 
 Formwork.Editor = function (id) {
-    var textarea = $('#' + id)[0];
+    var textarea = document.getElementById(id);
+
+    /* global CodeMirror:false */
+    var editor = CodeMirror.fromTextArea(textarea, {
+        mode: 'markdown',
+        theme: 'formwork',
+        indentUnit: 4,
+        lineWrapping: true,
+        addModeClass: true,
+        extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'}
+    });
+
     var $toolbar = '.editor-toolbar[data-for=' + id + ']';
-    restoreCursorPosition();
 
     $('[data-command=bold]', $toolbar).on('click', function () {
         insertAtCursor('**');
@@ -161,7 +171,7 @@ Formwork.Editor = function (id) {
     });
 
     $('[data-command=ol]', $toolbar).on('click', function () {
-        var num = /^\d+\./.exec(lastLine(textarea.value));
+        var num = /^\d+\./.exec(lastLine(editor.getValue()));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
         } else {
@@ -174,19 +184,11 @@ Formwork.Editor = function (id) {
     });
 
     $('[data-command=link]', $toolbar).on('click', function () {
-        var startPos = textarea.selectionStart;
-        var endPos = textarea.selectionEnd;
-        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
-        var left = textarea.value.substring(0, startPos);
-        var right = textarea.value.substring(endPos, textarea.value.length);
+        var selection = editor.getSelection();
         if (/^(https?:\/\/|mailto:)/i.test(selection)) {
-            textarea.value = left + '[](' + selection + ')' + right;
-            textarea.trigger('focus');
-            textarea.setSelectionRange(startPos + 1, startPos + 1);
+            insertAtCursor('[', '](' + selection + ')', true);
         } else if (selection !== '') {
-            textarea.value = left + '[' + selection + '](http://)' + right;
-            textarea.trigger('focus');
-            textarea.setSelectionRange(startPos + selection.length + 10, startPos + selection.length + 10);
+            insertAtCursor('[' + selection + '](http://', ')', true);
         } else {
             insertAtCursor('[', '](http://)');
         }
@@ -214,8 +216,24 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $(textarea).on('keyup', Formwork.Utils.debounce(disableSummaryCommand, 1000));
+    $('[data-command=undo]', $toolbar).on('click', function () {
+        editor.undo();
+        editor.focus();
+    });
+
+    $('[data-command=redo]', $toolbar).on('click', function () {
+        editor.redo();
+        editor.focus();
+    });
+
     disableSummaryCommand();
+
+    editor.on('changes', Formwork.Utils.debounce(function () {
+        textarea.value = editor.getValue();
+        disableSummaryCommand();
+        $('[data-command=undo]').attr('disabled', editor.historySize().undo < 1);
+        $('[data-command=redo]').attr('disabled', editor.historySize().redo < 1);
+    }, 500));
 
     $(document).on('keydown', function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
@@ -229,39 +247,12 @@ Formwork.Editor = function (id) {
             case 75: // ctrl/cmd + K
                 $('[data-command=link]', $toolbar).trigger('click');
                 return false;
-            case 89: // ctrl/cmd + Y
-            case 90: // ctrl/cmd + Z
-                return false;
             }
         }
     });
 
-    $(window).on('beforeunload', retainCursorPosition);
-    $(textarea).closest('form').on('submit', retainCursorPosition);
-
-    function retainCursorPosition() {
-        var data = [location.pathname, textarea.scrollTop, textarea.selectionEnd].join('#');
-        if ($(textarea).is(':focus')) {
-            window.sessionStorage.setItem('formworkEditorCursorPosition', data);
-        } else {
-            window.sessionStorage.removeItem('formworkEditorCursorPosition');
-        }
-    }
-
-    function restoreCursorPosition() {
-        var data = window.sessionStorage.getItem('formworkEditorCursorPosition');
-        if (data !== null) {
-            data = data.split('#');
-            if (data[0] === location.pathname) {
-                textarea.scrollTop = data[1];
-                textarea.setSelectionRange(data[2], data[2]);
-                $(textarea).trigger('focus');
-            }
-        }
-    }
-
     function hasSummarySequence() {
-        return /\n+===\n+/.test(textarea.value);
+        return /\n+===\n+/.test(editor.getValue());
     }
 
     function disableSummaryCommand() {
@@ -277,8 +268,8 @@ Formwork.Editor = function (id) {
     }
 
     function prevCursorChar() {
-        var startPos = textarea.selectionStart;
-        return startPos === 0 ? undefined : textarea.value.substring(startPos - 1, startPos);
+        var line = editor.getLine(editor.getCursor().line);
+        return line.length === 0 ? undefined : line.slice(-1);
     }
 
     function prependSequence() {
@@ -292,16 +283,16 @@ Formwork.Editor = function (id) {
         }
     }
 
-    function insertAtCursor(leftValue, rightValue) {
+    function insertAtCursor(leftValue, rightValue, dropSelection) {
         if (rightValue === undefined) {
             rightValue = leftValue;
         }
-        var startPos = textarea.selectionStart;
-        var endPos = textarea.selectionEnd;
-        var selection = startPos === endPos ? '' : textarea.value.substring(startPos, endPos);
-        textarea.value = textarea.value.substring(0, startPos) + leftValue + selection + rightValue + textarea.value.substring(endPos, textarea.value.length);
-        textarea.setSelectionRange(startPos + leftValue.length, startPos + leftValue.length + selection.length);
-        $(textarea).trigger('blur').trigger('focus');
+        var selection = dropSelection === true ? '' : editor.getSelection();
+        var cursor = editor.getCursor();
+        var lineBreaks = leftValue.split('\n').length - 1;
+        editor.replaceSelection(leftValue + selection + rightValue);
+        editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
+        editor.focus();
     }
 };
 

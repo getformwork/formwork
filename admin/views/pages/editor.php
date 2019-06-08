@@ -28,6 +28,9 @@
                         <button type="button" class="toolbar-button" tabindex="-1" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
                         <button type="button" class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
                         <button type="button" class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
+                        <span class="spacer"></span>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="undo" title="<?= $this->label('pages.editor.undo') ?>" disabled><span class="i-undo"></span></button>
+                        <button type="button" class="toolbar-button" tabindex="-1" data-command="redo" title="<?= $this->label('pages.editor.redo') ?>" disabled><span class="i-redo"></span></button>
                     </div>
                     <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">

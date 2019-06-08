@@ -115,7 +115,9 @@ pages.editor.italic: Italic
 pages.editor.link: Link
 pages.editor.numbered-list: Ordered list
 pages.editor.quote: Quote
+pages.editor.redo: Redo
 pages.editor.summary: Summary
+pages.editor.undo: Undo
 pages.files: Files
 pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 pages.languages: Languages
