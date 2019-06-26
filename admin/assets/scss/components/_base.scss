@@ -1,5 +1,5 @@
 html {
-    font-size: $base-font-size;
+    font-size: 100%;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -7,7 +7,6 @@ body {
     box-sizing: border-box;
     margin: 0;
     background-color: $color-gray-xxlight;
-    font-size: $font-size-m;
     font-family: $base-font-family;
     line-height: $base-line-height;
 }
