@@ -4,6 +4,7 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Updater;
 use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Core\Formwork;
 use RuntimeException;
 
 class Updates extends AbstractController
@@ -42,6 +43,7 @@ class Updates extends AbstractController
                 'status' => $this->label('updates.status.cannot-install')
             ))->send();
         }
+        Formwork::instance()->cache()->clear();
         JSONResponse::success($this->label('updates.installed'), 200, array(
             'status' => $this->label('updates.status.up-to-date')
         ))->send();
