@@ -78,7 +78,7 @@ class FileSystem
             }
         }
 
-        return $mimeType ?: MimeType::fromExtension(static::extension($file));
+        return $mimeType ?: MimeType::DEFAULT_MIME_TYPE;
     }
 
     /**

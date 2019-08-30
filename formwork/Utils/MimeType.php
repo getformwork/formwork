@@ -5,6 +5,13 @@ namespace Formwork\Utils;
 class MimeType
 {
     /**
+     * Default MIME type for unknown files
+     *
+     * @var string
+     */
+    public const DEFAULT_MIME_TYPE = 'application/octet-stream';
+
+    /**
      * Associative array containing common MIME types
      *
      * @see https://www.iana.org/assignments/media-types/media-types.xhtml
@@ -80,12 +87,12 @@ class MimeType
      *
      * @param string $extension
      *
-     * @return string|null
+     * @return string
      */
     public static function fromExtension($extension)
     {
         $extension = ltrim($extension, '.');
-        return static::$data[$extension] ?? null;
+        return static::$data[$extension] ?? static::DEFAULT_MIME_TYPE;
     }
 
     /**
