@@ -192,6 +192,8 @@ class Template
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
 
+        $this->layout = null;
+
         $this->vars = array_merge($this->vars, $vars);
 
         $isCurrentPage = $this->page->isCurrent();
