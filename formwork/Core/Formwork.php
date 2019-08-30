@@ -155,6 +155,16 @@ class Formwork
     }
 
     /**
+     * Return cache instance
+     *
+     * @return SiteCache
+     */
+    public function cache()
+    {
+        return $this->cache;
+    }
+
+    /**
      * Return default options
      *
      * @return array
