@@ -210,13 +210,10 @@ class Formwork
      */
     public function run()
     {
-        if ($this->option('cache.enabled') && $output = $this->cache->fetch($this->cacheKey)) {
-            if ($output instanceof Output) {
-                $output->sendHeaders();
-                echo $output->content();
-            } else {
-                echo $output;
-            }
+        if ($this->option('cache.enabled') && $this->cache->has($this->cacheKey)) {
+            $page = $this->cache->fetch($this->cacheKey);
+            $this->site->setCurrentPage($page);
+            $page->render();
             return;
         }
 
@@ -238,11 +235,10 @@ class Formwork
 
             $page = $this->site->currentPage();
 
-            $content = $page->render();
+            $page->render();
 
             if ($this->option('cache.enabled') && $page->cacheable()) {
-                $output = new Output($content, $page->get('response_status'), $page->headers());
-                $this->cache->save($this->cacheKey, $output);
+                $this->cache->save($this->cacheKey, $page);
             }
         }
     }
