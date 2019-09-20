@@ -11,9 +11,9 @@
     "url": "https://github.com/getformwork/formwork/issues"
   },
   "dependencies": {
-    "chartist": "^0.11.3",
-    "codemirror": "^5.48.2",
-    "sortablejs": "^1.9.0"
+    "chartist": "^0.11.4",
+    "codemirror": "^5.49.0",
+    "sortablejs": "^1.10.0"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
@@ -25,7 +25,7 @@
     "node-sass": "^4.12.0",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.3.0",
-    "stylelint-order": "^3.0.1",
+    "stylelint-order": "^3.1.1",
     "uglify-js": "^3.6.0"
   }
 }
