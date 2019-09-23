@@ -190,16 +190,26 @@ class Page extends AbstractPage
      */
     public function defaults()
     {
-        return array(
+        $defaults = array(
             'published'  => true,
             'routable'   => true,
-            'visible'    => !is_null($this->num()),
+            'visible'    => true,
             'searchable' => true,
             'cacheable'  => true,
             'sortable'   => true,
             'headers'    => array(),
             'metadata'   => array()
         );
+
+        // Merge with scheme default field values
+        $defaults = array_merge($defaults, $this->template->scheme()->defaultFieldValues());
+
+        // If the page hasn't a num, by default it won't be visible
+        if (is_null($this->num())) {
+            $defaults['visible'] = false;
+        }
+
+        return $defaults;
     }
 
     /**
