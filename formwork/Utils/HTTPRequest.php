@@ -48,7 +48,7 @@ class HTTPRequest
         $uri = urldecode($_SERVER['REQUEST_URI']);
         $root = static::root();
         if (Str::startsWith($uri, $root)) {
-            return '/' . ltrim(substr($uri, strlen($root)), '/');
+            return '/' . ltrim(Str::removeStart($uri, $root), '/');
         }
         return $uri;
     }

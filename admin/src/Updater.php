@@ -183,7 +183,7 @@ class Updater
         $installedFiles = array();
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
-            $source = substr($zip->getNameIndex($i), strlen($baseFolder));
+            $source = Str::removeStart($zip->getNameIndex($i), $baseFolder);
             $destination = ROOT_PATH . $source;
             $destinationDirectory = dirname($destination);
 

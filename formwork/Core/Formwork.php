@@ -11,6 +11,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use LogicException;
 
@@ -273,7 +274,7 @@ class Formwork
         $this->languages = Languages::fromRequest($this->request);
 
         if (!is_null($this->languages->requested())) {
-            $this->request = '/' . substr($this->request, strlen('/' . $this->languages->current() . '/'));
+            $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
         } elseif (!is_null($this->languages->preferred())) {
             // Don't redirect if we are in Admin
             if (!defined('ADMIN_PATH')) {

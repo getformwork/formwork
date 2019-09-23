@@ -8,6 +8,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
 
@@ -171,7 +172,7 @@ class Page extends AbstractPage
             static::$contentParser = new Parsedown();
         }
         $this->path = FileSystem::normalize($path);
-        $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
+        $this->relativePath = Uri::normalize(Str::removeStart($this->path, Formwork::instance()->option('content.path')));
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
@@ -396,7 +397,7 @@ class Page extends AbstractPage
      */
     public function file($file)
     {
-        return $this->files()->has($file) ? substr($this->files()->get($file)->path(), strlen(ROOT_PATH)) : null;
+        return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
     }
 
     /**
