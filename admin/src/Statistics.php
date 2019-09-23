@@ -4,6 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Registry;
+use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Visitor;
@@ -46,6 +47,13 @@ class Statistics
     protected const VISITORS_FILENAME = 'visitors.json';
 
     /**
+     * Page views registry filename
+     *
+     * @var string
+     */
+    protected const PAGE_VIEWS_FILENAME = 'pageViews.json';
+
+    /**
      * Visits registry
      *
      * @var Registry
@@ -67,6 +75,13 @@ class Statistics
     protected $visitorsRegistry;
 
     /**
+     * Page views registry
+     *
+     * @var Registry
+     */
+    protected $pageViewsRegistry;
+
+    /**
      * Create a new Statistics instance
      */
     public function __construct()
@@ -80,6 +95,7 @@ class Statistics
         $this->visitsRegistry = new Registry($base . self::VISITS_FILENAME);
         $this->uniqueVisitsRegistry = new Registry($base . self::UNIQUE_VISITS_FILENAME);
         $this->visitorsRegistry = new Registry($base . self::VISITORS_FILENAME);
+        $this->pageViewsRegistry = new Registry($base . self::PAGE_VIEWS_FILENAME);
     }
 
     /**
@@ -88,6 +104,12 @@ class Statistics
     public function trackVisit()
     {
         if (Visitor::isBot() || !Visitor::isTrackable()) {
+            return;
+        }
+
+        $page = Formwork::instance()->site()->currentPage();
+
+        if (!is_null($page) && $page->isErrorPage()) {
             return;
         }
 
@@ -106,6 +128,11 @@ class Statistics
 
         $this->visitorsRegistry->set($ip, $date);
         $this->visitorsRegistry->save();
+
+        $uri = HTTPRequest::uri();
+        $pageViews = $this->pageViewsRegistry->has($uri) ? (int) $this->pageViewsRegistry->get($uri) : 0;
+        $this->pageViewsRegistry->set($uri, $pageViews + 1);
+        $this->pageViewsRegistry->save();
     }
 
     /**
