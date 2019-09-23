@@ -29,27 +29,15 @@ This is an **ordered list**:
 3. Nulla nulla lectus, varius id magna non
 
 #### This is a `h4` heading
-This is a **table**:
-
-\# | Novel                  | Year
----|------------------------|------
- 1 | Oliver Twist           | 1837
- 2 | The Old Curiosity Shop | 1840
- 3 | David Copperfield      | 1849
- 4 | A Tale of Two Cities   | 1859
- 5 | Great Expectations     | 1860
-
-##### This is a `h5` heading
 This is a **`<pre>` block**:
 ```
-\# | Novel                  | Year
----|------------------------|------
- 1 | Oliver Twist           | 1837
- 2 | The Old Curiosity Shop | 1840
- 3 | David Copperfield      | 1849
- 4 | A Tale of Two Cities   | 1859
- 5 | Great Expectations     | 1860
+function sayHello() {
+    window.alert('Hello World!');
+}
 ```
+
+##### This is a `h5` heading
+
 ###### This is a `h6` heading
 
 This is an **horizontal rule**:
