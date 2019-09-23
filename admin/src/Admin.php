@@ -69,7 +69,7 @@ class Admin
             $this->redirectToSite();
         }
 
-        $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
+        $this->router = new Router(Uri::removeQuery($this->route()));
         $this->users = Users::load();
 
         $this->loadTranslations();
@@ -125,8 +125,8 @@ class Admin
             $this->registerAdmin();
         }
 
-        if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
-            Session::set('FORMWORK_REDIRECT_TO', HTTPRequest::uri());
+        if (!$this->isLoggedIn() && $this->route() !== '/login/') {
+            Session::set('FORMWORK_REDIRECT_TO', $this->route());
             $this->redirect('/login/');
         }
 

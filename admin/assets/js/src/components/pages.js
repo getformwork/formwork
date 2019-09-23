@@ -166,7 +166,7 @@ Formwork.Pages = {
 
                     new Formwork.Request({
                         method: 'POST',
-                        url: Formwork.Utils.uriPrependBase('/admin/pages/reorder/', location.pathname),
+                        url: Formwork.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {

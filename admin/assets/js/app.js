@@ -1,4 +1,5 @@
 var Formwork = {
+    baseUri: $('meta[name=base-uri]').attr('content'),
     init: function () {
         Formwork.Modals.init();
         Formwork.Forms.init();
@@ -96,7 +97,7 @@ Formwork.Dashboard = {
         $('[data-command=clear-cache]').on('click', function () {
             new Formwork.Request({
                 method: 'POST',
-                url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
+                url: Formwork.baseUri + 'cache/clear/',
                 data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function (response) {
                 Formwork.Notification(response.message, response.status, 5000);
@@ -108,7 +109,7 @@ Formwork.Dashboard = {
             $button.attr('disabled', true);
             new Formwork.Request({
                 method: 'POST',
-                url: Formwork.Utils.uriPrependBase('/admin/backup/make/', location.pathname),
+                url: Formwork.baseUri + 'backup/make/',
                 data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function (response) {
                 Formwork.Notification(response.message, response.status, 5000);
@@ -804,7 +805,7 @@ Formwork.Pages = {
 
                     new Formwork.Request({
                         method: 'POST',
-                        url: Formwork.Utils.uriPrependBase('/admin/pages/reorder/', location.pathname),
+                        url: Formwork.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {
@@ -984,7 +985,7 @@ Formwork.Updates = {
                 var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
                 new Formwork.Request({
                     method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/check/', location.pathname),
+                    url: Formwork.baseUri + 'updates/check/',
                     data: data
                 }, function (response) {
                     $('.update-status').html(response.message);
@@ -1006,7 +1007,7 @@ Formwork.Updates = {
                 var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
                 new Formwork.Request({
                     method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/update/', location.pathname),
+                    url: Formwork.baseUri + 'updates/update/',
                     data: data
                 }, function (response) {
                     $('.update-status').text(response.data.status);

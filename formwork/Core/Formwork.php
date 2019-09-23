@@ -2,6 +2,7 @@
 
 namespace Formwork\Core;
 
+use Formwork\Admin\Admin;
 use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\YAML;
@@ -197,6 +198,7 @@ class Formwork
             'backup.max_files'         => 10,
             'metadata.set_generator'   => true,
             'admin.enabled'            => true,
+            'admin.root'               => 'admin',
             'admin.lang'               => 'en',
             'admin.login_attempts'     => 10,
             'admin.login_reset_time'   => 300,
@@ -217,6 +219,16 @@ class Formwork
             $page->render();
             return;
         }
+
+        $this->router->add(
+            array('HTTP', 'XHR'),
+            array('GET', 'POST'),
+            array(
+                '/' . $this->option('admin.root') . '/',
+                '/' . $this->option('admin.root') . '/{route}/'
+            ),
+            Admin::class . '@run'
+        );
 
         $this->router->add(array(
             '/',
@@ -277,7 +289,7 @@ class Formwork
             $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
         } elseif (!is_null($this->languages->preferred())) {
             // Don't redirect if we are in Admin
-            if (!defined('ADMIN_PATH')) {
+            if (!Str::startsWith($this->request, '/' . $this->option('admin.root'))) {
                 Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }

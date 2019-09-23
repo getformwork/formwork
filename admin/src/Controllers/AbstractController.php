@@ -112,7 +112,7 @@ abstract class AbstractController
         }
         return $this->assets = new Assets(
             ADMIN_PATH . 'assets' . DS,
-            $this->uri('/assets/')
+            $this->realUri('/assets/')
         );
     }
 

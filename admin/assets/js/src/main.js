@@ -1,4 +1,5 @@
 var Formwork = {
+    baseUri: $('meta[name=base-uri]').attr('content'),
     init: function () {
         Formwork.Modals.init();
         Formwork.Forms.init();

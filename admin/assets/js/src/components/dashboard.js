@@ -3,7 +3,7 @@ Formwork.Dashboard = {
         $('[data-command=clear-cache]').on('click', function () {
             new Formwork.Request({
                 method: 'POST',
-                url: Formwork.Utils.uriPrependBase('/admin/cache/clear/', location.pathname),
+                url: Formwork.baseUri + 'cache/clear/',
                 data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function (response) {
                 Formwork.Notification(response.message, response.status, 5000);
@@ -15,7 +15,7 @@ Formwork.Dashboard = {
             $button.attr('disabled', true);
             new Formwork.Request({
                 method: 'POST',
-                url: Formwork.Utils.uriPrependBase('/admin/backup/make/', location.pathname),
+                url: Formwork.baseUri + 'backup/make/',
                 data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
             }, function (response) {
                 Formwork.Notification(response.message, response.status, 5000);

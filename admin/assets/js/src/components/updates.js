@@ -5,7 +5,7 @@ Formwork.Updates = {
                 var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
                 new Formwork.Request({
                     method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/check/', location.pathname),
+                    url: Formwork.baseUri + 'updates/check/',
                     data: data
                 }, function (response) {
                     $('.update-status').html(response.message);
@@ -27,7 +27,7 @@ Formwork.Updates = {
                 var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
                 new Formwork.Request({
                     method: 'POST',
-                    url: Formwork.Utils.uriPrependBase('/admin/updates/update/', location.pathname),
+                    url: Formwork.baseUri + 'updates/update/',
                     data: data
                 }, function (response) {
                     $('.update-status').text(response.data.status);

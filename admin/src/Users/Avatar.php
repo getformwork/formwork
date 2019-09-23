@@ -18,9 +18,9 @@ class Avatar extends File
         $path = ADMIN_PATH . 'avatars/' . $filename;
         if (!empty($filename) && FileSystem::exists($path)) {
             parent::__construct($path);
-            $this->uri = Admin::instance()->uri('/avatars/' . $this->name);
+            $this->uri = Admin::instance()->realUri('/avatars/' . $this->name);
         } else {
-            $this->uri = Admin::instance()->uri('/assets/images/avatar.png');
+            $this->uri = Admin::instance()->realUri('/assets/images/avatar.png');
         }
     }
 }
