@@ -53,4 +53,30 @@ class Str
     {
         return html_entity_decode(strip_tags($string), ENT_QUOTES | ENT_HTML5, 'utf-8');
     }
+
+    /**
+     * Remove $needle from $haystack if it is at the beginning, otherwise return $haystack
+     *
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return string
+     */
+    public static function removeStart($haystack, $needle)
+    {
+        return static::startsWith($haystack, $needle) ? substr($haystack, strlen($needle)) : $haystack;
+    }
+
+    /**
+     * Remove $needle from $haystack if it is at the end, otherwise return $haystack
+     *
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return string
+     */
+    public static function removeEnd($haystack, $needle)
+    {
+        return static::endsWith($haystack, $needle) ? substr($haystack, 0, -strlen($needle)) : $haystack;
+    }
 }
