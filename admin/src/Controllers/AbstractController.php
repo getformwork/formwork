@@ -163,7 +163,9 @@ abstract class AbstractController
      */
     protected function field(Field $field, $render = true)
     {
-        return $this->view('fields.' . $field->type(), array('field' => $field), $render);
+        if ($field->isVisible()) {
+            return $this->view('fields.' . $field->type(), array('field' => $field), $render);
+        }
     }
 
     /**
