@@ -220,15 +220,17 @@ class Formwork
             return;
         }
 
-        $this->router->add(
-            array('HTTP', 'XHR'),
-            array('GET', 'POST'),
-            array(
-                '/' . $this->option('admin.root') . '/',
-                '/' . $this->option('admin.root') . '/{route}/'
-            ),
-            Admin::class . '@run'
-        );
+        if ($this->option('admin.enabled')) {
+            $this->router->add(
+                array('HTTP', 'XHR'),
+                array('GET', 'POST'),
+                array(
+                    '/' . $this->option('admin.root') . '/',
+                    '/' . $this->option('admin.root') . '/{route}/'
+                ),
+                Admin::class . '@run'
+            );
+        }
 
         $this->router->add(array(
             '/',

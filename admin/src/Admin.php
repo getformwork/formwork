@@ -65,10 +65,6 @@ class Admin
         }
         static::$instance = $this;
 
-        if (!Formwork::instance()->option('admin.enabled')) {
-            $this->redirectToSite();
-        }
-
         $this->router = new Router(Uri::removeQuery($this->route()));
         $this->users = Users::load();
 
