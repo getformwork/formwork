@@ -7,7 +7,6 @@ use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;

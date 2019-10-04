@@ -13,7 +13,7 @@ class YAML
      *
      * @var string
      */
-    public static $PHPYAMLmode;
+    protected static $PHPYAMLmode;
 
     /**
      * Parse a YAML string

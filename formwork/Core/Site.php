@@ -271,7 +271,7 @@ class Site extends AbstractPage
             $found = false;
             foreach (FileSystem::listDirectories($path) as $dir) {
                 if (preg_replace(Page::NUM_REGEX, '', $dir) === $component) {
-                    $path = $path . $dir . DS;
+                    $path .= $dir . DS;
                     $found = true;
                     break;
                 }

@@ -5,7 +5,6 @@ namespace Formwork\Files;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 
