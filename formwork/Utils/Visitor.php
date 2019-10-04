@@ -11,7 +11,7 @@ class Visitor
      *
      * @var array
      */
-    protected static $bots = array(
+    protected const BOTS_REGEX_TOKENS = array(
         '(apache-http|btweb|go-http-|http_)client', '(apis|appengine|mediapartners)-google',
         '(analyz|fetch|find|gath|gett|load|read|reap|se|sp[iy]d|track|transcod)er',
         '(bing|skypeuri)preview', '(http_|media|w)get', '(ips-|netcraftsurvey)agent',
@@ -51,7 +51,7 @@ class Visitor
     public static function isBot()
     {
         if (is_null(static::$regex)) {
-            static::$regex = '/' . implode('|', static::$bots) . '/i';
+            static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
         }
         return (bool) preg_match(static::$regex, HTTPRequest::userAgent());
     }

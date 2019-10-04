@@ -14,7 +14,7 @@ class Header
      *
      * @var array
      */
-    public static $statuses = array(
+    protected const HTTP_STATUS = array(
         // Informational
         '100' => 'Continue',
         '101' => 'Switching Protocols',
@@ -78,11 +78,11 @@ class Header
      */
     public static function status($code, $send = true, $exit = false)
     {
-        if (!isset(static::$statuses[$code])) {
+        if (!isset(self::HTTP_STATUS[$code])) {
             throw new LogicException('Unknown HTTP status code ' . $code);
         }
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0';
-        $status = $protocol . ' ' . $code . ' ' . static::$statuses[$code];
+        $status = $protocol . ' ' . $code . ' ' . self::HTTP_STATUS[$code];
         if (!$send) {
             return $status;
         }

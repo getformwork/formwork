@@ -11,14 +11,14 @@ class FileSystem
      *
      * @var array
      */
-    protected static $ignore = array('.', '..');
+    protected const IGNORED_FILES = array('.', '..');
 
     /**
      * Array containing units of measurement for human-readable file sizes
      *
      * @var array
      */
-    protected static $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    protected const FILE_SIZE_UNITS = array('B', 'KB', 'MB', 'GB', 'TB');
 
     /**
      * Get file name without extension given a file
@@ -534,7 +534,7 @@ class FileSystem
         if (!is_array($items)) {
             return array();
         }
-        $items = array_diff($items, static::$ignore);
+        $items = array_diff($items, self::IGNORED_FILES);
         if (!$all) {
             $items = array_filter($items, array(static::class, 'isVisible'));
         }
@@ -620,8 +620,8 @@ class FileSystem
         if ($bytes <= 0) {
             return '0 B';
         }
-        $exp = min(floor(log($bytes, 1024)), count(static::$units) - 1);
-        return round($bytes / pow(1024, $exp), 2) . ' ' . static::$units[$exp];
+        $exp = min(floor(log($bytes, 1024)), count(self::FILE_SIZE_UNITS) - 1);
+        return round($bytes / pow(1024, $exp), 2) . ' ' . self::FILE_SIZE_UNITS[$exp];
     }
 
     /**

@@ -18,7 +18,7 @@ class MimeType
      *
      * @var array
      */
-    protected static $data = array(
+    protected const MIME_TYPES = array(
         'js'       => 'application/javascript',
         'doc'      => 'application/msword',
         'pdf'      => 'application/pdf',
@@ -92,7 +92,7 @@ class MimeType
     public static function fromExtension($extension)
     {
         $extension = ltrim($extension, '.');
-        return static::$data[$extension] ?? static::DEFAULT_MIME_TYPE;
+        return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
     }
 
     /**
@@ -104,7 +104,7 @@ class MimeType
      */
     public static function toExtension($mimeType)
     {
-        $results = array_keys(static::$data, $mimeType, true);
+        $results = array_keys(self::MIME_TYPES, $mimeType, true);
         return count($results) > 1 ? $results : array_shift($results);
     }
 }

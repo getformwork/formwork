@@ -5,18 +5,18 @@ namespace Formwork\Utils;
 class Uri
 {
     /**
-     * Current URI
-     *
-     * @var string
-     */
-    public static $current = null;
-
-    /**
      * Default ports which will not be present in generated URI
      *
      * @var array
      */
-    public static $defaultPorts = array(80, 443);
+    protected const DEFAULT_PORTS = array(80, 443);
+
+    /**
+     * Current URI
+     *
+     * @var string
+     */
+    protected static $current = null;
 
     /**
      * Get current URI
@@ -89,7 +89,7 @@ class Uri
         if (is_null($port)) {
             $port = static::port();
         }
-        return in_array((int) $port, static::$defaultPorts, true);
+        return in_array((int) $port, self::DEFAULT_PORTS, true);
     }
 
     /**

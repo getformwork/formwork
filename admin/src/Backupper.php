@@ -96,7 +96,7 @@ class Backupper
         }
 
         if (is_int($status) && $status !== ZipArchive::ER_OK) {
-            throw new TranslatedException(ZipErrors::$errorMessages[$status], ZipErrors::$errorLanguageStrings[$status]);
+            throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
         }
 
         return $destination;
