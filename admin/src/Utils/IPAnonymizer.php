@@ -49,7 +49,7 @@ class IPAnonymizer
      */
     public static function anonymizeIPv4($ip)
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(static::IPV4_MASK));
+        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV4_MASK));
     }
 
     /**
@@ -61,6 +61,6 @@ class IPAnonymizer
      */
     public static function anonymizeIPv6($ip)
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(static::IPV6_MASK));
+        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV6_MASK));
     }
 }

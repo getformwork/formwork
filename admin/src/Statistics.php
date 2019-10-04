@@ -113,7 +113,7 @@ class Statistics
             return;
         }
 
-        $date = date(static::DATE_FORMAT);
+        $date = date(self::DATE_FORMAT);
         $ip = IPAnonymizer::anonymize(HTTPRequest::ip());
 
         $todayVisits = $this->visitsRegistry->has($date) ? (int) $this->visitsRegistry->get($date) : 0;

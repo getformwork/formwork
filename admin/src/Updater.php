@@ -241,7 +241,7 @@ class Updater
             return;
         }
 
-        $uri = 'https://api.github.com/repos/' . static::REPOSITORY . '/releases/latest';
+        $uri = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
         $data = json_decode(FileSystem::fetch($uri, $this->context), true);
 
         if (!$data) {
