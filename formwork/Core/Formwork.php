@@ -221,15 +221,7 @@ class Formwork
         }
 
         if ($this->option('admin.enabled')) {
-            $this->router->add(
-                array('HTTP', 'XHR'),
-                array('GET', 'POST'),
-                array(
-                    '/' . $this->option('admin.root') . '/',
-                    '/' . $this->option('admin.root') . '/{route}/'
-                ),
-                Admin::class . '@run'
-            );
+            $this->loadAdminRoute();
         }
 
         $this->router->add(array(
@@ -321,6 +313,22 @@ class Formwork
             $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
             $this->cacheKey = Uri::normalize(HTTPRequest::uri());
         }
+    }
+
+    /**
+     * Load admin route
+     */
+    protected function loadAdminRoute()
+    {
+        $this->router->add(
+            array('HTTP', 'XHR'),
+            array('GET', 'POST'),
+            array(
+                '/' . $this->option('admin.root') . '/',
+                '/' . $this->option('admin.root') . '/{route}/'
+            ),
+            Admin::class . '@run'
+        );
     }
 
     /**
