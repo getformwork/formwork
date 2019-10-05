@@ -215,27 +215,27 @@ class Formwork
      */
     public function run()
     {
+        $isCached = false;
+
         if ($this->option('cache.enabled') && $this->cache->has($this->cacheKey)) {
-            $page = $this->cache->fetch($this->cacheKey);
-            $this->site->setCurrentPage($page);
-            $page->render();
-            return;
+            $isCached = true;
+            $resource = $this->cache->fetch($this->cacheKey);
+        } else {
+            if ($this->option('admin.enabled')) {
+                $this->loadAdminRoute();
+            }
+
+            $this->router->add(array(
+                '/',
+                '/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/',
+                '/{page}/page/{paginationPage:num}/',
+                '/{page}/'
+            ), $this->defaultRoute());
+
+            $resource = $this->router->dispatch();
         }
-
-        if ($this->option('admin.enabled')) {
-            $this->loadAdminRoute();
-        }
-
-        $this->router->add(array(
-            '/',
-            '/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/',
-            '/{page}/page/{paginationPage:num}/',
-            '/{page}/'
-        ), $this->defaultRoute());
-
-        $resource = $this->router->dispatch();
 
         if ($resource instanceof Page) {
             if (is_null($this->site->currentPage())) {
@@ -246,8 +246,10 @@ class Formwork
 
             $page->render();
 
-            if ($this->option('cache.enabled') && $page->cacheable()) {
-                $this->cache->save($this->cacheKey, $page);
+            if ($this->option('cache.enabled') && !$isCached) {
+                if ($page->cacheable()) {
+                    $this->cache->save($this->cacheKey, $page);
+                }
             }
         }
 
