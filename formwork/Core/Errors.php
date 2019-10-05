@@ -27,7 +27,7 @@ class Errors
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
-        $message = Header::$statuses[$status];
+        $message = Header::HTTP_STATUS[$status];
         require FORMWORK_PATH . 'error.php';
         // Don't exit, otherwise the error will not be logged
     }
