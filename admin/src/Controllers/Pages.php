@@ -6,6 +6,7 @@ use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Admin\Utils\Session;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
@@ -76,6 +77,7 @@ class Pages extends AbstractController
         // Let's create the page
         try {
             $page = $this->createPage($data);
+            Session::set('FORMWORK_PAGE_TO_PUBLISH', $page->route());
             $this->notify($this->label('pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->notify($e->getTranslatedMessage(), 'error');
@@ -116,6 +118,14 @@ class Pages extends AbstractController
         } elseif (!is_null($page->language())) {
             // Redirect to proper language
             $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+        }
+
+        // Check if page has to be published on next save
+        if (Session::has('FORMWORK_PAGE_TO_PUBLISH')) {
+            if ($page->route() === Session::get('FORMWORK_PAGE_TO_PUBLISH')) {
+                $page->set('published', true);
+            }
+            Session::remove('FORMWORK_PAGE_TO_PUBLISH');
         }
 
         // Load page fields
@@ -382,7 +392,8 @@ class Pages extends AbstractController
         FileSystem::createFile($path . $filename);
 
         $frontmatter = array(
-            'title' => $data->get('title')
+            'title'     => $data->get('title'),
+            'published' => false
         );
 
         $fileContent = '---' . PHP_EOL;
