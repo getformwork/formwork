@@ -14,7 +14,7 @@ class Header
      *
      * @var array
      */
-    protected const HTTP_STATUS = array(
+    public const HTTP_STATUS = array(
         // Informational
         '100' => 'Continue',
         '101' => 'Switching Protocols',
