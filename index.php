@@ -1,7 +1,6 @@
 <?php
 
 use Formwork\Core\Formwork;
-use Formwork\Admin\Statistics;
 
 const DS = DIRECTORY_SEPARATOR;
 const ROOT_PATH = __DIR__ . DS;
@@ -18,8 +17,3 @@ require ROOT_PATH . 'vendor' . DS . 'autoload.php';
 
 $formwork = new Formwork();
 $formwork->run();
-
-if (class_exists('Formwork\Admin\Statistics')) {
-    $statistics = new Statistics();
-    $statistics->trackVisit();
-}

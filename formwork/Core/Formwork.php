@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Admin\Admin;
+use Formwork\Admin\Statistics;
 use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\YAML;
@@ -197,6 +198,7 @@ class Formwork
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,
             'metadata.set_generator'   => true,
+            'statistics.enabled'       => true,
             'admin.enabled'            => true,
             'admin.root'               => 'admin',
             'admin.lang'               => 'en',
@@ -247,6 +249,11 @@ class Formwork
             if ($this->option('cache.enabled') && $page->cacheable()) {
                 $this->cache->save($this->cacheKey, $page);
             }
+        }
+
+        if ($this->option('statistics.enabled')) {
+            $statistics = new Statistics();
+            $statistics->trackVisit();
         }
     }
 
