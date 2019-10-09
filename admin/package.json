@@ -13,7 +13,7 @@
   "dependencies": {
     "chartist": "^0.11.4",
     "codemirror": "^5.49.0",
-    "sortablejs": "^1.10.0"
+    "sortablejs": "^1.10.1"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
@@ -26,6 +26,6 @@
     "stylelint": "^11.0.0",
     "stylelint-config-standard": "^19.0.0",
     "stylelint-order": "^3.1.1",
-    "uglify-js": "^3.6.0"
+    "uglify-js": "^3.6.1"
   }
 }
