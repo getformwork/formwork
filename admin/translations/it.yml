@@ -91,7 +91,7 @@ options.system.images.png-compression-level: Livello di compressione PNG
 options.system.languages: Lingue
 options.system.languages.available-languages: Lingue disponibili
 options.system.languages.available-languages.no-languages: Nessuna lingua
-options.system.languages.preferred-language: Use lingua preferita dal browser
+options.system.languages.preferred-language: Usa lingua preferita dal browser
 options.system.languages.preferred-language.disabled: Disabilitato
 options.system.languages.preferred-language.enabled: Abilitato
 options.updated: Opzioni aggiornate
@@ -115,7 +115,9 @@ pages.editor.italic: Corsivo
 pages.editor.link: Collegamento
 pages.editor.numbered-list: Elenco numerato
 pages.editor.quote: Citazione
+pages.editor.redo: Ripeti
 pages.editor.summary: Sommario
+pages.editor.undo: Annulla
 pages.files: File
 pages.files.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
 pages.languages: Lingue

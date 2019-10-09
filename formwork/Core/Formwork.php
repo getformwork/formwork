@@ -2,15 +2,18 @@
 
 namespace Formwork\Core;
 
+use Formwork\Admin\Admin;
+use Formwork\Admin\Statistics;
 use Formwork\Cache\SiteCache;
+use Formwork\Languages\Languages;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
-use Formwork\Utils\HTTPNegotiation;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use LogicException;
 
@@ -21,7 +24,7 @@ class Formwork
      *
      * @var string
      */
-    const VERSION = '0.12.1';
+    public const VERSION = '1.0.0';
 
     /**
      * Formwork instance
@@ -45,25 +48,11 @@ class Formwork
     protected $request;
 
     /**
-     * Default language code
+     * Languages instance
      *
-     * @var string
+     * @var Languages
      */
-    protected $defaultLanguage;
-
-    /**
-     * Preferred language code
-     *
-     * @var string
-     */
-    protected $preferredLanguage;
-
-    /**
-     * Current language code
-     *
-     * @var string
-     */
-    protected $language;
+    protected $languages;
 
     /**
      * Site instance
@@ -105,28 +94,14 @@ class Formwork
 
         Errors::setHandlers();
 
-        FileSystem::assert(CONFIG_PATH . 'system.yml');
-        FileSystem::assert(CONFIG_PATH . 'site.yml');
-
-        $this->options = $this->defaults();
-        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->options, $config);
-
-        date_default_timezone_set($this->option('date.timezone'));
-
         $this->request = Uri::removeQuery(HTTPRequest::uri());
 
+        $this->loadOptions();
         $this->loadLanguages();
+        $this->loadSite();
+        $this->loadCache();
 
         $this->router = new Router($this->request);
-
-        $siteConfig = YAML::parseFile(CONFIG_PATH . 'site.yml');
-        $this->site = new Site($siteConfig);
-
-        if ($this->option('cache.enabled')) {
-            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
-            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
-        }
     }
 
     /**
@@ -140,6 +115,56 @@ class Formwork
             return static::$instance;
         }
         return static::$instance = new static();
+    }
+
+    /**
+     * Get system options
+     *
+     * @return array
+     */
+    public function options()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Get current request
+     *
+     * @return string
+     */
+    public function request()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Return site instance
+     *
+     * @return Site
+     */
+    public function site()
+    {
+        return $this->site;
+    }
+
+    /**
+     * Return router instance
+     *
+     * @return Router
+     */
+    public function router()
+    {
+        return $this->router;
+    }
+
+    /**
+     * Return cache instance
+     *
+     * @return SiteCache
+     */
+    public function cache()
+    {
+        return $this->cache;
     }
 
     /**
@@ -173,7 +198,9 @@ class Formwork
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,
             'metadata.set_generator'   => true,
+            'statistics.enabled'       => true,
             'admin.enabled'            => true,
+            'admin.root'               => 'admin',
             'admin.lang'               => 'en',
             'admin.login_attempts'     => 10,
             'admin.login_reset_time'   => 300,
@@ -188,26 +215,27 @@ class Formwork
      */
     public function run()
     {
-        if ($this->option('cache.enabled') && $output = $this->cache->fetch($this->cacheKey)) {
-            if ($output instanceof Output) {
-                $output->sendHeaders();
-                echo $output->content();
-            } else {
-                echo $output;
+        $isCached = false;
+
+        if ($this->option('cache.enabled') && $this->cache->has($this->cacheKey)) {
+            $isCached = true;
+            $resource = $this->cache->fetch($this->cacheKey);
+        } else {
+            if ($this->option('admin.enabled')) {
+                $this->loadAdminRoute();
             }
-            return;
+
+            $this->router->add(array(
+                '/',
+                '/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/',
+                '/{page}/page/{paginationPage:num}/',
+                '/{page}/'
+            ), $this->defaultRoute());
+
+            $resource = $this->router->dispatch();
         }
-
-        $this->router->add(array(
-            '/',
-            '/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/',
-            '/{page}/page/{paginationPage:num}/',
-            '/{page}/'
-        ), $this->defaultRoute());
-
-        $resource = $this->router->dispatch();
 
         if ($resource instanceof Page) {
             if (is_null($this->site->currentPage())) {
@@ -216,12 +244,18 @@ class Formwork
 
             $page = $this->site->currentPage();
 
-            $content = $page->render();
+            $page->render();
 
-            if ($this->option('cache.enabled') && $page->cacheable()) {
-                $output = new Output($content, $page->get('response_status'), $page->headers());
-                $this->cache->save($this->cacheKey, $output);
+            if ($this->option('cache.enabled') && !$isCached) {
+                if ($page->cacheable()) {
+                    $this->cache->save($this->cacheKey, $page);
+                }
             }
+        }
+
+        if ($this->option('statistics.enabled')) {
+            $statistics = new Statistics();
+            $statistics->trackVisit();
         }
     }
 
@@ -237,38 +271,73 @@ class Formwork
     }
 
     /**
+     * Load options
+     */
+    protected function loadOptions()
+    {
+        FileSystem::assert(CONFIG_PATH . 'system.yml');
+        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
+        $this->options = array_merge($this->defaults(), $config);
+
+        // Trim slashes from admin.root
+        $this->options['admin.root'] = trim($this->option('admin.root'), '/');
+
+        date_default_timezone_set($this->option('date.timezone'));
+    }
+
+    /**
      * Load language from request
      */
     protected function loadLanguages()
     {
-        if (!empty($languages = $this->option('languages.available'))) {
-            $this->defaultLanguage = $this->option('languages.default', $languages[0]);
+        $this->languages = Languages::fromRequest($this->request);
 
-            if (preg_match('~^/(' . implode('|', $languages) . ')/~i', $this->request, $matches)) {
-                list($match, $language) = $matches;
-                $this->language = $language;
-                $this->request = '/' . substr($this->request, strlen($match));
-            } else {
-                $this->language = $this->defaultLanguage;
-            }
-
-            if ($this->option('languages.http_preferred')) {
-                $preferredLanguages = array_keys(HTTPNegotiation::language());
-                foreach ($preferredLanguages as $code) {
-                    if (in_array($code, $languages, true)) {
-                        // Check if language is already set from request URI
-                        if (isset($language)) {
-                            $this->preferredLanguage = $code;
-                            break;
-                        }
-                        if (!defined('ADMIN_PATH')) {
-                            // Don't redirect if we are in Admin
-                            Header::redirect(HTTPRequest::root() . $code . $this->request);
-                        }
-                    }
-                }
+        if (!is_null($this->languages->requested())) {
+            $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
+        } elseif (!is_null($this->languages->preferred())) {
+            // Don't redirect if we are in Admin
+            if (!Str::startsWith($this->request, '/' . $this->option('admin.root'))) {
+                Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }
+    }
+
+    /**
+     * Load site
+     */
+    protected function loadSite()
+    {
+        FileSystem::assert(CONFIG_PATH . 'site.yml');
+        $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
+        $this->site = new Site($config);
+        $this->site->set('languages', $this->languages);
+    }
+
+    /**
+     * Load cache
+     */
+    protected function loadCache()
+    {
+        if ($this->option('cache.enabled')) {
+            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
+            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
+        }
+    }
+
+    /**
+     * Load admin route
+     */
+    protected function loadAdminRoute()
+    {
+        $this->router->add(
+            array('HTTP', 'XHR'),
+            array('GET', 'POST'),
+            array(
+                '/' . $this->option('admin.root') . '/',
+                '/' . $this->option('admin.root') . '/{route}/'
+            ),
+            Admin::class . '@run'
+        );
     }
 
     /**
@@ -316,13 +385,5 @@ class Formwork
 
             return $this->site->errorPage();
         };
-    }
-
-    public function __call($name, $arguments)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }

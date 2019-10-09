@@ -4,7 +4,7 @@ namespace Formwork\Metadata;
 
 class Metadatum
 {
-    const HTTP_EQUIV_NAMES = array('content-type', 'default-style', 'refresh');
+    protected const HTTP_EQUIV_NAMES = array('content-type', 'default-style', 'refresh');
 
     /**
      * Metadatum name
@@ -21,11 +21,11 @@ class Metadatum
     protected $content;
 
     /**
-     * Metadatum namespace
+     * Metadatum prefix
      *
      * @var string
      */
-    protected $namespace;
+    protected $prefix;
 
     /**
      * Create a new Metadatum instance
@@ -38,9 +38,19 @@ class Metadatum
         $this->name = strtolower($name);
         $this->content = $content;
 
-        if ($namespace = strstr($name, ':', true)) {
-            $this->namespace = $namespace;
+        if ($prefix = strstr($name, ':', true)) {
+            $this->prefix = $prefix;
         }
+    }
+
+    /**
+     * Return metadatum name
+     *
+     * @return string
+     */
+    public function name()
+    {
+        return $this->name;
     }
 
     /**
@@ -64,20 +74,32 @@ class Metadatum
     }
 
     /**
-     * Return whether the metadatum has a namespace (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
+     * Return metadatum content
+     *
+     * @return string
+     */
+    public function content()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Return metadatum prefix
+     *
+     * @return string
+     */
+    public function prefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Return whether the metadatum has a prefix (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
      *
      * @return bool
      */
-    public function hasNamespace()
+    public function hasPrefix()
     {
-        return !is_null($this->namespace);
-    }
-
-    public function __call($name, $arguments)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        return !is_null($this->prefix);
     }
 }

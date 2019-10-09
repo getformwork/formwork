@@ -5,27 +5,18 @@ namespace Formwork\Utils;
 class HTTPResponse
 {
     /**
-     * Array containing HTTP response headers
-     *
-     * @var array
-     */
-    protected static $headers = array();
-
-    /**
      * Return an array containing response headers
      *
      * @return array
      */
     public static function headers()
     {
-        if (!empty(static::$headers)) {
-            return static::$headers;
-        }
+        $headers = array();
         foreach (headers_list() as $header) {
             list($key, $value) = explode(':', $header, 2);
-            static::$headers[$key] = trim($value);
+            $headers[$key] = trim($value);
         }
-        return static::$headers;
+        return $headers;
     }
 
     /**

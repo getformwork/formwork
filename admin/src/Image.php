@@ -16,28 +16,28 @@ class Image
      *
      * @var string
      */
-    const ORIENTATION_LANDSCAPE = 'landscape';
+    public const ORIENTATION_LANDSCAPE = 'landscape';
 
     /**
      * Constant indicating the portrait orientation of an image
      *
      * @var string
      */
-    const ORIENTATION_PORTRAIT = 'portrait';
+    public const ORIENTATION_PORTRAIT = 'portrait';
 
     /**
      * Constant indicating the 'cover' resize to fit mode
      *
      * @var string
      */
-    const RESIZE_FIT_COVER = 'cover';
+    public const RESIZE_FIT_COVER = 'cover';
 
     /**
      * Constant indicating the 'contain' resize to fit mode
      *
      * @var string
      */
-    const RESIZE_FIT_CONTAIN = 'contain';
+    public const RESIZE_FIT_CONTAIN = 'contain';
 
     /**
      * Image filename

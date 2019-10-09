@@ -34,10 +34,6 @@ Formwork.Forms = {
             }
         });
 
-        $('input:file[data-auto-upload]').on('change', function () {
-            $(this).closest('form').trigger('submit');
-        });
-
         $('.file-input-label').on('drag dragstart dragend dragover dragenter dragleave drop', function (event) {
             event.preventDefault();
         }).on('drop', function (event) {

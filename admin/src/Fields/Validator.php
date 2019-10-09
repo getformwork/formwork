@@ -14,7 +14,7 @@ class Validator
      *
      * @var array
      */
-    protected static $ignore = array('column', 'header', 'row', 'rows');
+    protected const IGNORED_FIELDS = array('column', 'header', 'row', 'rows');
 
     /**
      * Validate all Fields against given data
@@ -28,7 +28,7 @@ class Validator
             if ($field->has('fields')) {
                 $field->get('fields')->validate($data);
             }
-            if (in_array($field->type(), static::$ignore, true)) {
+            if (in_array($field->type(), self::IGNORED_FIELDS, true)) {
                 continue;
             }
             $method = 'validate' . ucfirst(strtolower($field->type()));

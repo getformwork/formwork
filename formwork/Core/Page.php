@@ -8,6 +8,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
 
@@ -18,28 +19,28 @@ class Page extends AbstractPage
      *
      * @var string
      */
-    const NUM_REGEX = '/^(\d+)-/';
+    public const NUM_REGEX = '/^(\d+)-/';
 
     /**
      * Page 'published' status
      *
      * @var string
      */
-    const PAGE_STATUS_PUBLISHED = 'published';
+    public const PAGE_STATUS_PUBLISHED = 'published';
 
     /**
      * Page 'not published' status
      *
      * @var string
      */
-    const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
+    public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
     /**
      * Page 'not routable' status
      *
      * @var string
      */
-    const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
+    public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
     /**
      * Page content parser instance
@@ -171,7 +172,7 @@ class Page extends AbstractPage
             static::$contentParser = new Parsedown();
         }
         $this->path = FileSystem::normalize($path);
-        $this->relativePath = substr($this->path, strlen(Formwork::instance()->option('content.path')) - 1);
+        $this->relativePath = Uri::normalize(Str::removeStart($this->path, Formwork::instance()->option('content.path')));
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
@@ -189,16 +190,26 @@ class Page extends AbstractPage
      */
     public function defaults()
     {
-        return array(
+        $defaults = array(
             'published'  => true,
             'routable'   => true,
-            'visible'    => !is_null($this->num()),
+            'visible'    => true,
             'searchable' => true,
             'cacheable'  => true,
             'sortable'   => true,
             'headers'    => array(),
             'metadata'   => array()
         );
+
+        // Merge with scheme default field values
+        $defaults = array_merge($defaults, $this->template->scheme()->defaultFieldValues());
+
+        // If the page hasn't a num, by default it won't be visible
+        if (is_null($this->num())) {
+            $defaults['visible'] = false;
+        }
+
+        return $defaults;
     }
 
     /**
@@ -396,7 +407,7 @@ class Page extends AbstractPage
      */
     public function file($file)
     {
-        return $this->files()->has($file) ? substr($this->files()->get($file)->path(), strlen(ROOT_PATH)) : null;
+        return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
     }
 
     /**
@@ -488,10 +499,10 @@ class Page extends AbstractPage
         }
 
         if (!empty($contentFiles)) {
-            // Get correct content file based on requested language
+            // Get correct content file based on current language
             ksort($contentFiles);
-            $requestedLanguage = $this->language ?: Formwork::instance()->language();
-            $key = isset($contentFiles[$requestedLanguage]) ? $requestedLanguage : array_keys($contentFiles)[0];
+            $currentLanguage = $this->language ?: Formwork::instance()->site()->languages()->current();
+            $key = isset($contentFiles[$currentLanguage]) ? $currentLanguage : array_keys($contentFiles)[0];
 
             // Set actual language
             $this->language = $key ?: null;
@@ -500,7 +511,7 @@ class Page extends AbstractPage
             $this->template = new Template($contentFiles[$key]['template'], $this);
         }
 
-        $this->files = new Files($files, $this->path);
+        $this->files = Files::fromPath($this->path, $files);
     }
 
     /**

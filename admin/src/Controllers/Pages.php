@@ -2,12 +2,12 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Admin\Utils\LanguageCodes;
-use Formwork\Core\Formwork;
+use Formwork\Admin\Utils\Session;
+use Formwork\Languages\LanguageCodes;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
@@ -27,14 +27,14 @@ class Pages extends AbstractController
      *
      * @var string
      */
-    const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
+    protected const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
 
     /**
      * Page prefix date format
      *
      * @var string
      */
-    const DATE_NUM_FORMAT = 'Ymd';
+    protected const DATE_NUM_FORMAT = 'Ymd';
 
     /**
      * Pages@index action
@@ -77,9 +77,10 @@ class Pages extends AbstractController
         // Let's create the page
         try {
             $page = $this->createPage($data);
+            Session::set('FORMWORK_PAGE_TO_PUBLISH', $page->route());
             $this->notify($this->label('pages.page.created'), 'success');
-        } catch (LocalizedException $e) {
-            $this->notify($e->getLocalizedMessage(), 'error');
+        } catch (TranslatedException $e) {
+            $this->notify($e->getTranslatedMessage(), 'error');
             $this->redirectToReferer(302, '/pages/');
         }
 
@@ -108,7 +109,7 @@ class Pages extends AbstractController
 
             if (!in_array($language, $this->option('languages.available'), true)) {
                 $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . Formwork::instance()->defaultLanguage() . '/');
+                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
             if ($page->hasLanguage($language)) {
@@ -117,6 +118,14 @@ class Pages extends AbstractController
         } elseif (!is_null($page->language())) {
             // Redirect to proper language
             $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+        }
+
+        // Check if page has to be published on next save
+        if (Session::has('FORMWORK_PAGE_TO_PUBLISH')) {
+            if ($page->route() === Session::get('FORMWORK_PAGE_TO_PUBLISH')) {
+                $page->set('published', true);
+            }
+            Session::remove('FORMWORK_PAGE_TO_PUBLISH');
         }
 
         // Load page fields
@@ -143,8 +152,18 @@ class Pages extends AbstractController
                 try {
                     $page = $this->updatePage($page, $data, $fields);
                     $this->notify($this->label('pages.page.edited'), 'success');
-                } catch (LocalizedException $e) {
-                    $this->notify($e->getLocalizedMessage(), 'error');
+                } catch (TranslatedException $e) {
+                    $this->notify($e->getTranslatedMessage(), 'error');
+                }
+
+                if (HTTPRequest::hasFiles()) {
+                    try {
+                        $uploader = new Uploader($page->path());
+                        $uploader->upload();
+                        $page->reload();
+                    } catch (TranslatedException $e) {
+                        $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
+                    }
                 }
 
                 // Redirect if page route has changed
@@ -297,8 +316,8 @@ class Pages extends AbstractController
             try {
                 $uploader = new Uploader($page->path());
                 $uploader->upload();
-            } catch (LocalizedException $e) {
-                $this->notify($this->label('uploader.error', $e->getLocalizedMessage()), 'error');
+            } catch (TranslatedException $e) {
+                $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
@@ -342,30 +361,30 @@ class Pages extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
-            throw new LocalizedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
+            throw new TranslatedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
         }
 
         $parent = $this->resolveParent($data->get('parent'));
 
         if (is_null($parent)) {
-            throw new LocalizedException('Parent page not found', 'pages.page.cannot-create.invalid-parent');
+            throw new TranslatedException('Parent page not found', 'pages.page.cannot-create.invalid-parent');
         }
 
         // Validate page slug
         if (!$this->validateSlug($data->get('slug'))) {
-            throw new LocalizedException('Invalid page slug', 'pages.page.cannot-create.invalid-slug');
+            throw new TranslatedException('Invalid page slug', 'pages.page.cannot-create.invalid-slug');
         }
 
         $route = $parent->route() . $data->get('slug') . '/';
 
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route)) {
-            throw new LocalizedException('A page with the same route already exists', 'pages.page.cannot-create.already-exists');
+            throw new TranslatedException('A page with the same route already exists', 'pages.page.cannot-create.already-exists');
         }
 
         // Validate page template
         if (!$this->site()->hasTemplate($data->get('template'))) {
-            throw new LocalizedException('Invalid page template', 'pages.page.cannot-create.invalid-template');
+            throw new TranslatedException('Invalid page template', 'pages.page.cannot-create.invalid-template');
         }
 
         $scheme = $this->scheme($data->get('template'));
@@ -374,7 +393,7 @@ class Pages extends AbstractController
 
         FileSystem::createDirectory($path, true);
 
-        $language = Formwork::instance()->defaultLanguage();
+        $language = $this->site()->languages()->default();
 
         $filename = $data->get('template');
         $filename .= empty($language) ? '' : '.' . $language;
@@ -383,7 +402,8 @@ class Pages extends AbstractController
         FileSystem::createFile($path . $filename);
 
         $frontmatter = array(
-            'title' => $data->get('title')
+            'title'     => $data->get('title'),
+            'published' => false
         );
 
         $fileContent = '---' . PHP_EOL;
@@ -408,7 +428,7 @@ class Pages extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->has(array('title', 'content'))) {
-            throw new LocalizedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
+            throw new TranslatedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
         }
 
         // Load current page frontmatter
@@ -442,7 +462,7 @@ class Pages extends AbstractController
 
         // Validate language
         if (!empty($language) && !in_array($language, $this->option('languages.available'), true)) {
-            throw new LocalizedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
+            throw new TranslatedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
         }
 
         $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
@@ -475,7 +495,7 @@ class Pages extends AbstractController
                     try {
                         $page = $this->changePageId($page, $id);
                     } catch (RuntimeException $e) {
-                        throw new LocalizedException('Cannot change page num', 'pages.page.cannot-change-num');
+                        throw new TranslatedException('Cannot change page num', 'pages.page.cannot-change-num');
                     }
                 }
             }
@@ -484,7 +504,7 @@ class Pages extends AbstractController
         // Check if parent page has to change
         if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
             if (is_null($parent)) {
-                throw new LocalizedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
+                throw new TranslatedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
             }
             $page = $this->changePageParent($page, $parent);
         }
@@ -492,7 +512,7 @@ class Pages extends AbstractController
         // Check if page template has to change
         if ($page->template()->name() !== ($template = $data->get('template'))) {
             if (!$this->site()->hasTemplate($template)) {
-                throw new LocalizedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
+                throw new TranslatedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
             }
             $page = $this->changePageTemplate($page, $template);
         }
@@ -500,14 +520,14 @@ class Pages extends AbstractController
         // Check if page slug has to change
         if ($page->slug() !== ($slug = $data->get('slug'))) {
             if (!$this->validateSlug($slug)) {
-                throw new LocalizedException('Invalid page slug', 'pages.page.cannot-edit.invalid-slug');
+                throw new TranslatedException('Invalid page slug', 'pages.page.cannot-edit.invalid-slug');
             }
             // Don't change index and error pages slug
             if ($page->isIndexPage() || $page->isErrorPage()) {
-                throw new LocalizedException('Cannot change slug of index or error pages', 'pages.page.cannot-edit.index-or-error-page-slug');
+                throw new TranslatedException('Cannot change slug of index or error pages', 'pages.page.cannot-edit.index-or-error-page-slug');
             }
             if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
-                throw new LocalizedException('A page with the same route already exists', 'pages.page.cannot-edit.already-exists');
+                throw new TranslatedException('A page with the same route already exists', 'pages.page.cannot-edit.already-exists');
             }
             $page = $this->changePageId($page, ltrim($page->num() . '-', '-') . $slug);
         }

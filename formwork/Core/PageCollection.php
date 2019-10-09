@@ -63,7 +63,7 @@ class PageCollection extends Collection
     {
         $pageCollection = clone $this;
         foreach ($pageCollection->items as $key => $item) {
-            if ($item->id() === $element->id()) {
+            if ($item->path() === $element->path()) {
                 unset($pageCollection->items[$key]);
             }
         }
@@ -160,7 +160,7 @@ class PageCollection extends Collection
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
-            return new PageCollection(array());
+            return new PageCollection();
         }
 
         $keywords = explode(' ', $query);
@@ -225,7 +225,7 @@ class PageCollection extends Collection
                 }
 
                 if ($recursive) {
-                    $pages = array_merge($pages, self::fromPath($pagePath, true)->toArray());
+                    $pages = array_merge($pages, static::fromPath($pagePath, true)->toArray());
                 }
             }
         }

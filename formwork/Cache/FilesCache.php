@@ -41,10 +41,10 @@ class FilesCache extends AbstractCache
     public function fetch($key)
     {
         if ($this->has($key)) {
-            if ($this->isValid($key)) {
-                $data = FileSystem::read($this->getFile($key));
-                return unserialize($data);
-            }
+            $data = FileSystem::read($this->getFile($key));
+            return unserialize($data);
+        }
+        if (!$this->isValid($key)) {
             FileSystem::delete($this->getFile($key));
         }
         return null;
@@ -72,9 +72,18 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
+    public function clear()
+    {
+        FileSystem::delete($this->path, true);
+        FileSystem::createDirectory($this->path, true);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
-        return FileSystem::exists($this->getFile($key));
+        return FileSystem::exists($this->getFile($key)) && $this->isValid($key);
     }
 
     /**

@@ -5,10 +5,12 @@ namespace Formwork\Admin;
 use Formwork\Admin\Utils\Log;
 use Formwork\Admin\Utils\Notification;
 use Formwork\Admin\Utils\Registry;
+use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Template\Scheme;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 
 trait AdminTrait
@@ -22,7 +24,19 @@ trait AdminTrait
      */
     protected function uri($route)
     {
-        return HTTPRequest::root() . ltrim($route, '/');
+        return $this->panelUri() . ltrim($route, '/');
+    }
+
+    /**
+     * Return a URI relative to the real Admin root
+     *
+     * @param string $route
+     *
+     * @return string
+     */
+    protected function realUri($route)
+    {
+        return HTTPRequest::root() . 'admin/' . ltrim($route, '/');
     }
 
     /**
@@ -32,7 +46,27 @@ trait AdminTrait
      */
     protected function siteUri()
     {
-        return rtrim(dirname(HTTPRequest::root()), '/') . '/';
+        return HTTPRequest::root();
+    }
+
+    /**
+     * Return panel root
+     *
+     * @return string
+     */
+    protected function panelRoot()
+    {
+        return Uri::normalize(Formwork::instance()->option('admin.root'));
+    }
+
+    /**
+     * Get the URI of the panel
+     *
+     * @return string
+     */
+    protected function panelUri()
+    {
+        return HTTPRequest::root() . ltrim($this->panelRoot(), '/');
     }
 
     /**
@@ -53,6 +87,16 @@ trait AdminTrait
             }
         }
         return $base . ltrim($page->route(), '/');
+    }
+
+    /**
+     * Return current route
+     *
+     * @return string
+     */
+    protected function route()
+    {
+        return '/' . Str::removeStart(HTTPRequest::uri(), $this->panelRoot());
     }
 
     /**
@@ -167,6 +211,6 @@ trait AdminTrait
      */
     protected function label(...$arguments)
     {
-        return Admin::instance()->language()->get(...$arguments);
+        return Admin::instance()->translation()->get(...$arguments);
     }
 }

@@ -11,14 +11,14 @@ class Cookie
      *
      * @var string
      */
-    const SAMESITE_STRICT = 'Strict';
+    public const SAMESITE_STRICT = 'Strict';
 
     /**
      * 'Lax' value for SameSite directive
      *
      * @var string
      */
-    const SAMESITE_LAX = 'Lax';
+    public const SAMESITE_LAX = 'Lax';
 
     /**
      * Send a cookie

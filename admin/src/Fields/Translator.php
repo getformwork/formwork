@@ -11,21 +11,21 @@ class Translator
      *
      * @var string
      */
-    const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
+    protected const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
 
     /**
      * Fields not to translate
      *
      * @var array
      */
-    protected static $ignore = array('name', 'type', 'import', 'fields');
+    protected const IGNORED_FIELDS = array('name', 'type', 'import', 'fields');
 
     /**
      * Keys of which array value has to be ignored
      *
      * @var array
      */
-    protected static $ignoreArrayKeys = array('value', 'options');
+    protected const IGNORED_ARRAY_KEYS = array('value', 'options');
 
     /**
      * Translate a field
@@ -34,13 +34,13 @@ class Translator
      */
     public static function translate(Field $field)
     {
-        $language = Admin::instance()->language()->code();
+        $language = Admin::instance()->translation()->code();
         foreach ($field->toArray() as $key => $value) {
             if (static::isTranslatable($key, $field)) {
                 if (is_array($value)) {
                     if (isset($value[$language])) {
                         $value = $value[$language];
-                    } elseif (!in_array($key, static::$ignoreArrayKeys, true)) {
+                    } elseif (!in_array($key, self::IGNORED_ARRAY_KEYS, true)) {
                         $value = array_shift($value);
                     }
                 } elseif (!is_string($value)) {
@@ -61,7 +61,7 @@ class Translator
      */
     protected static function isTranslatable($key, Field $field)
     {
-        if (in_array($key, static::$ignore, true)) {
+        if (in_array($key, self::IGNORED_FIELDS, true)) {
             return false;
         }
         $translate = $field->get('translate', true);

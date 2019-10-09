@@ -16,7 +16,7 @@ class Updater
      *
      * @var string
      */
-    const REPOSITORY = 'getformwork/formwork';
+    protected const REPOSITORY = 'getformwork/formwork';
 
     /**
      * Updater options
@@ -183,7 +183,7 @@ class Updater
         $installedFiles = array();
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
-            $source = substr($zip->getNameIndex($i), strlen($baseFolder));
+            $source = Str::removeStart($zip->getNameIndex($i), $baseFolder);
             $destination = ROOT_PATH . $source;
             $destinationDirectory = dirname($destination);
 
@@ -241,7 +241,7 @@ class Updater
             return;
         }
 
-        $uri = 'https://api.github.com/repos/' . static::REPOSITORY . '/releases/latest';
+        $uri = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
         $data = json_decode(FileSystem::fetch($uri, $this->context), true);
 
         if (!$data) {
@@ -266,18 +266,7 @@ class Updater
         if (!is_null($this->headers)) {
             return $this->headers;
         }
-
-        if (PHP_VERSION_ID < 70100) {
-            // Workaround for PHP < 7.1.0 which doesn't support get_headers() with $context parameter
-            $previousDefaultContext = stream_context_get_default();
-            stream_context_set_default(stream_context_get_options($this->context));
-            $this->headers = get_headers($this->release['archive'], 1);
-            stream_context_set_default(stream_context_get_options($previousDefaultContext));
-        } else {
-            $this->headers = get_headers($this->release['archive'], 1, $this->context);
-        }
-
-        return $this->headers;
+        return $this->headers = get_headers($this->release['archive'], 1, $this->context);
     }
 
     /**

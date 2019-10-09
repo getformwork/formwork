@@ -5,10 +5,8 @@ namespace Formwork\Files;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
-use LogicException;
 
 class File
 {
@@ -78,6 +76,56 @@ class File
     }
 
     /**
+     * Get file path
+     *
+     * @return string
+     */
+    public function path()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Get file name
+     *
+     * @return string
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get file extension
+     *
+     * @return string
+     */
+    public function extension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * Get file URI
+     *
+     * @return string
+     */
+    public function uri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Get file MIME type
+     *
+     * @return string
+     */
+    public function mimeType()
+    {
+        return $this->mimeType;
+    }
+
+    /**
      * Get file type
      *
      * @return string|null
@@ -105,12 +153,14 @@ class File
         return null;
     }
 
-    public function __call($name, $arguments)
+    /**
+     * Get file size
+     *
+     * @return string
+     */
+    public function size()
     {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        return $this->size;
     }
 
     public function __toString()

@@ -62,7 +62,7 @@ rows1:
                             type: select
                             translate: false
                             import:
-                                options: 'Formwork\Admin\Language::availableLanguages'
+                                options: 'Formwork\Admin\Translation::availableLanguages'
 
         row5:
             type: row

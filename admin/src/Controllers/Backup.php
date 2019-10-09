@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Backupper;
-use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
@@ -21,8 +21,8 @@ class Backup extends AbstractController
         $backupper = new Backupper();
         try {
             $file = $backupper->backup();
-        } catch (LocalizedException $e) {
-            JSONResponse::error($this->label('backup.error.cannot-make', $e->getLocalizedMessage()), 500)->send();
+        } catch (TranslatedException $e) {
+            JSONResponse::error($this->label('backup.error.cannot-make', $e->getTranslatedMessage()), 500)->send();
         }
         $filename = basename($file);
         JSONResponse::success($this->label('backup.ready'), 200, array(
@@ -46,8 +46,8 @@ class Backup extends AbstractController
             } else {
                 throw new RuntimeException($this->label('backup.error.cannot-download.invalid-filename'));
             }
-        } catch (LocalizedException $e) {
-            $this->notify($this->label('backup.error.cannot-download', $e->getLocalizedMessage()), 'error');
+        } catch (TranslatedException $e) {
+            $this->notify($this->label('backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
             $this->redirectToReferer(302, '/dashboard/');
         }
     }

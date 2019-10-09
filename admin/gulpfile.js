@@ -26,13 +26,18 @@ gulp.task('js-app', function () {
 
 gulp.task('js-vendor', function () {
     return gulp.src([
-        './node_modules/chartist/dist/chartist.min.js',
-        './node_modules/sortablejs/Sortable.min.js'
+        './node_modules/chartist/dist/chartist.js',
+        './node_modules/codemirror/lib/codemirror.js',
+        './node_modules/codemirror/addon/edit/continuelist.js',
+        './node_modules/codemirror/mode/markdown/markdown.js',
+        './node_modules/codemirror/mode/xml/xml.js',
+        './node_modules/sortablejs/Sortable.js'
     ])
         .pipe(concat('vendor.min.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('./assets/js'));
 });
 
 gulp.task('js', gulp.series('js-app', 'js-vendor'));
 
-gulp.task('default', gulp.series('css', 'js'));
+gulp.task('default', gulp.series('css', 'js-app'));

@@ -5,13 +5,20 @@ namespace Formwork\Utils;
 class MimeType
 {
     /**
+     * Default MIME type for unknown files
+     *
+     * @var string
+     */
+    public const DEFAULT_MIME_TYPE = 'application/octet-stream';
+
+    /**
      * Associative array containing common MIME types
      *
      * @see https://www.iana.org/assignments/media-types/media-types.xhtml
      *
      * @var array
      */
-    protected static $data = array(
+    protected const MIME_TYPES = array(
         'js'       => 'application/javascript',
         'doc'      => 'application/msword',
         'pdf'      => 'application/pdf',
@@ -80,12 +87,12 @@ class MimeType
      *
      * @param string $extension
      *
-     * @return string|null
+     * @return string
      */
     public static function fromExtension($extension)
     {
         $extension = ltrim($extension, '.');
-        return isset(static::$data[$extension]) ? static::$data[$extension] : null;
+        return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
     }
 
     /**
@@ -97,7 +104,7 @@ class MimeType
      */
     public static function toExtension($mimeType)
     {
-        $results = array_keys(static::$data, $mimeType, true);
+        $results = array_keys(self::MIME_TYPES, $mimeType, true);
         return count($results) > 1 ? $results : array_shift($results);
     }
 }

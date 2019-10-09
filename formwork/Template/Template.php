@@ -125,6 +125,60 @@ class Template
     }
 
     /**
+     * Get Assets instance
+     *
+     * @return Assets
+     */
+    public function assets()
+    {
+        if (!is_null($this->assets)) {
+            return $this->assets;
+        }
+        return $this->assets = new Assets(
+            $this->path() . 'assets' . DS,
+            Formwork::instance()->site()->uri('/templates/assets/', false)
+        );
+    }
+
+    /**
+     * Set template layout
+     *
+     * @param string $name
+     */
+    public function layout($name)
+    {
+        if (!is_null($this->layout)) {
+            throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
+        }
+        $this->layout = new Layout($name, $this->page, $this);
+    }
+
+    /**
+     * Insert a template
+     *
+     * @param string $name
+     * @param array  $vars
+     */
+    public function insert($name, array $vars = array())
+    {
+        if (!$this->rendering) {
+            throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+        }
+
+        if ($name[0] === '_') {
+            $name = 'partials' . DS . substr($name, 1);
+        }
+
+        $filename = $this->path() . $name . $this->extension;
+
+        if (!FileSystem::exists($filename)) {
+            throw new RuntimeException('Template ' . $name . ' not found');
+        }
+
+        Renderer::load($filename, array_merge($this->vars, $vars), $this);
+    }
+
+    /**
      * Render template
      *
      * @param bool  $return Whether to return rendered content or not
@@ -137,6 +191,8 @@ class Template
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
         }
+
+        $this->layout = null;
 
         $this->vars = array_merge($this->vars, $vars);
 
@@ -192,73 +248,20 @@ class Template
      */
     protected function loadController()
     {
-        if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
-        }
-
         $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
-            extract($this->vars);
-            $this->vars = array_merge($this->vars, (array) include $controllerFile);
+            $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
         }
-    }
-
-    /**
-     * Get Assets instance
-     *
-     * @return Assets
-     */
-    protected function assets()
-    {
-        if (!is_null($this->assets)) {
-            return $this->assets;
-        }
-        return $this->assets = new Assets(
-            $this->path() . 'assets' . DS,
-            Formwork::instance()->site()->uri('/templates/assets/', false)
-        );
-    }
-
-    /**
-     * Set template layout
-     *
-     * @param string $name
-     */
-    protected function layout($name)
-    {
-        if (!is_null($this->layout)) {
-            throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
-        }
-        $this->layout = new Layout($name, $this->page, $this);
-    }
-
-    /**
-     * Insert a template
-     *
-     * @param string $name
-     * @param array  $vars
-     */
-    protected function insert($name, array $vars = array())
-    {
-        if ($name[0] === '_') {
-            $name = 'partials' . DS . substr($name, 1);
-        }
-
-        $filename = $this->path() . $name . $this->extension;
-
-        if (!FileSystem::exists($filename)) {
-            throw new RuntimeException('Template ' . $name . ' not found');
-        }
-
-        extract(array_merge($this->vars, $vars));
-
-        include $filename;
     }
 
     public function __call($name, $arguments)
     {
         if (TemplateHelpers::has($name)) {
+            if (!$this->rendering) {
+                throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+            }
+
             $helper = TemplateHelpers::get($name);
             return $helper(...$arguments);
         }

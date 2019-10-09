@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Utils\JSONResponse;
-use Formwork\Utils\FileSystem;
+use Formwork\Core\Formwork;
 
 class Cache extends AbstractController
 {
@@ -13,9 +13,8 @@ class Cache extends AbstractController
     public function clear()
     {
         $this->ensurePermission('cache.clear');
-        $path = $this->option('cache.path');
-        if (FileSystem::exists($path)) {
-            FileSystem::delete($path, true);
+        if (!is_null(Formwork::instance()->cache())) {
+            Formwork::instance()->cache()->clear();
         }
         JSONResponse::success($this->label('cache.cleared'))->send();
     }

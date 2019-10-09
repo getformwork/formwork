@@ -2,34 +2,34 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\LanguageCodes;
+use Formwork\Languages\LanguageCodes;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use RuntimeException;
 
-class Language
+class Translation
 {
     /**
      * Fallback language code
      *
      * @var string
      */
-    const FALLBACK_LANGUAGE_CODE = 'en';
+    protected const FALLBACK_LANGUAGE_CODE = 'en';
 
     /**
-     * Array containing languages available in administration panel
+     * Array containing available languages
      *
      * @var array
      */
     protected static $availableLanguages = array();
 
     /**
-     * Fallback language instance
+     * Fallback translation instance
      *
-     * @var Language
+     * @var Translation
      */
-    protected static $fallbackLanguage;
+    protected static $fallbackTranslation;
 
     /**
      * Language code
@@ -46,7 +46,7 @@ class Language
     protected $strings = array();
 
     /**
-     * Create a new Language istance
+     * Create a new Translation istance
      *
      * @param string $code
      * @param array  $strings
@@ -101,13 +101,15 @@ class Language
     {
         if (!$this->has($key)) {
             if ($this->code !== self::FALLBACK_LANGUAGE_CODE) {
-                return $this->fallbackLanguage()->get($key, ...$arguments);
+                return $this->fallbackTranslation()->get($key, ...$arguments);
             }
             throw new LogicException('Invalid language string "' . $key . '"');
         }
+
         if (!empty($arguments)) {
             return sprintf($this->strings[$key], ...$arguments);
         }
+
         return $this->strings[$key];
     }
 
@@ -121,29 +123,33 @@ class Language
     public static function load($languageCode)
     {
         if (empty(static::$availableLanguages)) {
-            foreach (FileSystem::listFiles(LANGUAGES_PATH) as $file) {
+            foreach (FileSystem::listFiles(TRANSLATIONS_PATH) as $file) {
                 $code = FileSystem::name($file);
                 static::$availableLanguages[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
             }
         }
-        $languageFile = LANGUAGES_PATH . $languageCode . '.yml';
-        if (!(FileSystem::exists($languageFile) && FileSystem::isReadable($languageFile))) {
-            throw new RuntimeException('Cannot load Admin language file ' . $languageFile);
+
+        $translationFile = TRANSLATIONS_PATH . $languageCode . '.yml';
+
+        if (!(FileSystem::exists($translationFile) && FileSystem::isReadable($translationFile))) {
+            throw new RuntimeException('Cannot load Admin language file ' . $translationFile);
         }
-        $languageStrings = YAML::parseFile($languageFile);
+
+        $languageStrings = YAML::parseFile($translationFile);
+
         return new static($languageCode, $languageStrings);
     }
 
     /**
-     * Return fallback language instance
+     * Return fallback translation instance
      *
-     * @return Language
+     * @return Translation
      */
-    protected function fallbackLanguage()
+    protected function fallbackTranslation()
     {
-        if (!is_null(static::$fallbackLanguage)) {
-            return static::$fallbackLanguage;
+        if (!is_null(static::$fallbackTranslation)) {
+            return static::$fallbackTranslation;
         }
-        return static::$fallbackLanguage = static::load(self::FALLBACK_LANGUAGE_CODE);
+        return static::$fallbackTranslation = static::load(self::FALLBACK_LANGUAGE_CODE);
     }
 }

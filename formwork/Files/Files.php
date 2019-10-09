@@ -8,37 +8,6 @@ use Formwork\Utils\FileSystem;
 class Files extends AssociativeCollection
 {
     /**
-     * Root path of the file collection
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * Create a new instance of Files
-     *
-     * @param array $files
-     * @param mixed $path
-     */
-    public function __construct(array $files = array(), $path)
-    {
-        $this->path = FileSystem::normalize($path);
-        foreach ($files as $file) {
-            $this->items[$file] = new File($this->path . $file);
-        }
-    }
-
-    /**
-     * Get files path
-     *
-     * @return string
-     */
-    public function path()
-    {
-        return $this->path;
-    }
-
-    /**
      * Filter files by a given type
      *
      * @param string $type
@@ -52,5 +21,28 @@ class Files extends AssociativeCollection
             return $item->type() === $type;
         });
         return $files;
+    }
+
+    /**
+     * Create a collection getting files from a given path
+     *
+     * @param string     $path
+     * @param array|null $filenames Array of file names to include (all files by default)
+     *
+     * @return self
+     */
+    public static function fromPath($path, array $filenames = null)
+    {
+        if (is_null($filenames)) {
+            $filenames = FileSystem::listFiles($path);
+        }
+
+        $files = array();
+
+        foreach ($filenames as $filename) {
+            $files[$filename] = new File($path . $filename);
+        }
+
+        return new static($files);
     }
 }

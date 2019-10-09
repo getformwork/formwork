@@ -4,6 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Registry;
+use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Visitor;
@@ -15,35 +16,42 @@ class Statistics
      *
      * @var string
      */
-    const DATE_FORMAT = 'Ymd';
+    protected const DATE_FORMAT = 'Ymd';
 
     /**
      * Number of days displayed in the statistics chart
      *
      * @var int
      */
-    const CHART_LIMIT = 7;
+    protected const CHART_LIMIT = 7;
 
     /**
      * Visits registry filename
      *
      * @var string
      */
-    const VISITS_FILENAME = 'visits.json';
+    protected const VISITS_FILENAME = 'visits.json';
 
     /**
      * Unique visits registry filename
      *
      * @var string
      */
-    const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
+    protected const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
 
     /**
      * Visitors registry filename
      *
      * @var string
      */
-    const VISITORS_FILENAME = 'visitors.json';
+    protected const VISITORS_FILENAME = 'visitors.json';
+
+    /**
+     * Page views registry filename
+     *
+     * @var string
+     */
+    protected const PAGE_VIEWS_FILENAME = 'pageViews.json';
 
     /**
      * Visits registry
@@ -67,6 +75,13 @@ class Statistics
     protected $visitorsRegistry;
 
     /**
+     * Page views registry
+     *
+     * @var Registry
+     */
+    protected $pageViewsRegistry;
+
+    /**
      * Create a new Statistics instance
      */
     public function __construct()
@@ -80,6 +95,7 @@ class Statistics
         $this->visitsRegistry = new Registry($base . self::VISITS_FILENAME);
         $this->uniqueVisitsRegistry = new Registry($base . self::UNIQUE_VISITS_FILENAME);
         $this->visitorsRegistry = new Registry($base . self::VISITORS_FILENAME);
+        $this->pageViewsRegistry = new Registry($base . self::PAGE_VIEWS_FILENAME);
     }
 
     /**
@@ -87,11 +103,17 @@ class Statistics
      */
     public function trackVisit()
     {
-        if (Visitor::isBot()) {
+        if (Visitor::isBot() || !Visitor::isTrackable()) {
             return;
         }
 
-        $date = date(static::DATE_FORMAT);
+        $page = Formwork::instance()->site()->currentPage();
+
+        if (!is_null($page) && $page->isErrorPage()) {
+            return;
+        }
+
+        $date = date(self::DATE_FORMAT);
         $ip = IPAnonymizer::anonymize(HTTPRequest::ip());
 
         $todayVisits = $this->visitsRegistry->has($date) ? (int) $this->visitsRegistry->get($date) : 0;
@@ -106,6 +128,11 @@ class Statistics
 
         $this->visitorsRegistry->set($ip, $date);
         $this->visitorsRegistry->save();
+
+        $uri = HTTPRequest::uri();
+        $pageViews = $this->pageViewsRegistry->has($uri) ? (int) $this->pageViewsRegistry->get($uri) : 0;
+        $this->pageViewsRegistry->set($uri, $pageViews + 1);
+        $this->pageViewsRegistry->save();
     }
 
     /**
@@ -145,7 +172,7 @@ class Statistics
         $interpolate = static function ($data) use ($days) {
             $output = array();
             foreach ($days as $day) {
-                $output[$day] = isset($data[$day]) ? $data[$day] : 0;
+                $output[$day] = $data[$day] ?? 0;
             }
             return $output;
         };

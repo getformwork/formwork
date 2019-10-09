@@ -11,14 +11,14 @@ class FileSystem
      *
      * @var array
      */
-    protected static $ignore = array('.', '..');
+    protected const IGNORED_FILES = array('.', '..');
 
     /**
      * Array containing units of measurement for human-readable file sizes
      *
      * @var array
      */
-    protected static $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    protected const FILE_SIZE_UNITS = array('B', 'KB', 'MB', 'GB', 'TB');
 
     /**
      * Get file name without extension given a file
@@ -65,6 +65,11 @@ class FileSystem
             $mimeType = @mime_content_type($file);
         }
 
+        // Fix type for SVG images without XML declaration
+        if ($mimeType === 'image/svg') {
+            $mimeType = MimeType::fromExtension('svg');
+        }
+
         // Fix wrong type for image/svg+xml
         if ($mimeType === 'text/html') {
             $node = @simplexml_load_file($file);
@@ -73,7 +78,7 @@ class FileSystem
             }
         }
 
-        return $mimeType ?: MimeType::fromExtension(static::extension($file));
+        return $mimeType ?: MimeType::DEFAULT_MIME_TYPE;
     }
 
     /**
@@ -403,23 +408,6 @@ class FileSystem
     }
 
     /**
-     * Swap two files
-     *
-     * @param string $path1
-     * @param string $path2
-     *
-     * @return bool
-     */
-    public static function swap($path1, $path2)
-    {
-        $temp = dirname($path1) . DS . static::temporaryName('temp.');
-        static::move($path1, $temp);
-        static::move($path2, $path1);
-        static::move($temp, $path2);
-        return true;
-    }
-
-    /**
      * Read the content of a file
      *
      * @param string $file
@@ -456,18 +444,23 @@ class FileSystem
     }
 
     /**
-     * Write content to file
+     * Write content to file atomically
      *
      * @param string $file
      * @param string $content
-     * @param bool   $append  Whether to append or replace content
      *
      * @return bool
      */
-    public static function write($file, $content, $append = false)
+    public static function write($file, $content)
     {
-        $flag = $append ? FILE_APPEND : null;
-        return file_put_contents($file, $content, $flag) !== false;
+        $temp = static::temporaryName($file . '.');
+        if (file_put_contents($temp, $content, LOCK_EX) === false) {
+            throw new RuntimeException('Cannot write ' . $file);
+        }
+        if (static::exists($file)) {
+            @chmod($temp, @fileperms($file));
+        }
+        return static::move($temp, $file, true);
     }
 
     /**
@@ -541,7 +534,7 @@ class FileSystem
         if (!is_array($items)) {
             return array();
         }
-        $items = array_diff($items, static::$ignore);
+        $items = array_diff($items, self::IGNORED_FILES);
         if (!$all) {
             $items = array_filter($items, array(static::class, 'isVisible'));
         }
@@ -603,37 +596,6 @@ class FileSystem
     }
 
     /**
-     * Find files or directories matching a glob pattern
-     *
-     * @param string $pattern
-     * @param mixed  ...$arguments
-     *
-     * @return array|null
-     */
-    public static function glob($pattern, ...$arguments)
-    {
-        if (empty($arguments)) {
-            return @glob($pattern) ?: null;
-        }
-
-        if (is_int($flags = $arguments[0])) {
-            return @glob($pattern, $flags) ?: null;
-        }
-
-        if (static::isDirectory($base = static::normalize($arguments[0]))) {
-            if (!isset($arguments[1])) {
-                $glob = @glob($base . $pattern);
-            } else {
-                $flags = $arguments[1];
-                $glob = @glob($base . $pattern, $flags);
-            }
-            return is_array($glob) ? array_map(array(static::class, 'basename'), $glob) : null;
-        }
-
-        throw new RuntimeException(__METHOD__ . ' base path not found: ' . $base);
-    }
-
-    /**
      * Touch a file or directory
      *
      * @param string $path
@@ -658,14 +620,14 @@ class FileSystem
         if ($bytes <= 0) {
             return '0 B';
         }
-        $exp = min(floor(log($bytes, 1024)), count(static::$units) - 1);
-        return round($bytes / pow(1024, $exp), 2) . ' ' . static::$units[$exp];
+        $exp = min(floor(log($bytes, 1024)), count(self::FILE_SIZE_UNITS) - 1);
+        return round($bytes / pow(1024, $exp), 2) . ' ' . self::FILE_SIZE_UNITS[$exp];
     }
 
     /**
      * Convert shorthand bytes notation to an integer
      *
-     * @see http://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+     * @see https://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
      *
      * @param string $shorthand
      *

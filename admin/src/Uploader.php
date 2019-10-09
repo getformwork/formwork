@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Exceptions\LocalizedException;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -10,6 +10,36 @@ use Formwork\Utils\MimeType;
 
 class Uploader
 {
+    /**
+     * Human-readable Uploader error messages
+     *
+     * @var array
+     */
+    protected const ERROR_MESSAGES = array(
+        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+        UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+        UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
+        UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
+    );
+
+    /**
+     * Uploader errors language strings
+     *
+     * @var array
+     */
+    protected const ERROR_LANGUAGE_STRINGS = array(
+        UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
+        UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
+        UPLOAD_ERR_PARTIAL    => 'uploader.error.partial',
+        UPLOAD_ERR_NO_FILE    => 'uploader.error.no-file',
+        UPLOAD_ERR_NO_TMP_DIR => 'uploader.error.no-temp',
+        UPLOAD_ERR_CANT_WRITE => 'uploader.error.cannot-write',
+        UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
+    );
+
     /**
      * Destination of uploaded file
      *
@@ -30,36 +60,6 @@ class Uploader
      * @var array
      */
     protected $uploadedFiles = array();
-
-    /**
-     * Human-readable Uploader error messages
-     *
-     * @var array
-     */
-    protected static $errorMessages = array(
-        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-        UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-        UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
-        UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
-        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
-        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
-    );
-
-    /**
-     * Uploader errors language strings
-     *
-     * @var array
-     */
-    protected static $errorLanguageStrings = array(
-        UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
-        UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
-        UPLOAD_ERR_PARTIAL    => 'uploader.error.partial',
-        UPLOAD_ERR_NO_FILE    => 'uploader.error.no-file',
-        UPLOAD_ERR_NO_TMP_DIR => 'uploader.error.no-temp',
-        UPLOAD_ERR_CANT_WRITE => 'uploader.error.cannot-write',
-        UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
-    );
 
     /**
      * Create a new Uploader instance
@@ -111,7 +111,7 @@ class Uploader
                 }
                 $this->move($file['tmp_name'], $this->destination, $name);
             } else {
-                throw new LocalizedException(static::$errorMessages[$file['error']], static::$errorLanguageStrings[$file['error']]);
+                throw new TranslatedException(self::ERROR_MESSAGES[$file['error']], self::ERROR_LANGUAGE_STRINGS[$file['error']]);
             }
         }
 
@@ -157,13 +157,13 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new LocalizedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
+            throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
         }
 
         $destination = FileSystem::normalize($destination);
 
         if (basename($filename)[0] === '.') {
-            throw new LocalizedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
+            throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
 
         $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
@@ -177,7 +177,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new LocalizedException('Invalid file name ' . $filename, 'uploader.error.file-name');
+            throw new TranslatedException('Invalid file name ' . $filename, 'uploader.error.file-name');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {

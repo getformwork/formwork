@@ -21,6 +21,13 @@ class Registry
     protected $filename;
 
     /**
+     * Whether the registry is saved
+     *
+     * @var bool
+     */
+    protected $saved = false;
+
+    /**
      * Create a new Registry instance
      *
      * @param string $filename
@@ -30,6 +37,7 @@ class Registry
         $this->filename = $filename;
         if (FileSystem::exists($this->filename)) {
             $this->storage = (array) json_decode(FileSystem::read($filename), true);
+            $this->saved = true;
         }
     }
 
@@ -66,6 +74,7 @@ class Registry
     public function set($key, $value)
     {
         $this->storage[$key] = $value;
+        $this->saved = false;
     }
 
     /**
@@ -77,6 +86,7 @@ class Registry
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);
+            $this->saved = false;
         }
     }
 
@@ -86,6 +96,7 @@ class Registry
     public function save()
     {
         FileSystem::write($this->filename, json_encode($this->storage));
+        $this->saved = true;
     }
 
     /**
@@ -103,6 +114,8 @@ class Registry
      */
     public function __destruct()
     {
-        $this->save();
+        if (!$this->saved) {
+            $this->save();
+        }
     }
 }

@@ -42,11 +42,11 @@ class Admin
     protected $users;
 
     /**
-     * Current panel language
+     * Translation instance
      *
-     * @var Language
+     * @var Translation
      */
-    protected $language;
+    protected $translation;
 
     /**
      * Errors controller
@@ -65,14 +65,10 @@ class Admin
         }
         static::$instance = $this;
 
-        if (!Formwork::instance()->option('admin.enabled')) {
-            $this->redirectToSite();
-        }
-
-        $this->router = new Router(Uri::removeQuery(HTTPRequest::uri()));
+        $this->router = new Router(Uri::removeQuery($this->route()));
         $this->users = Users::load();
 
-        $this->loadLanguages();
+        $this->loadTranslations();
         $this->loadErrorHandler();
     }
 
@@ -125,8 +121,8 @@ class Admin
             $this->registerAdmin();
         }
 
-        if (!$this->isLoggedIn() && HTTPRequest::uri() !== '/login/') {
-            Session::set('FORMWORK_REDIRECT_TO', HTTPRequest::uri());
+        if (!$this->isLoggedIn() && $this->route() !== '/login/') {
+            Session::set('FORMWORK_REDIRECT_TO', $this->route());
             $this->redirect('/login/');
         }
 
@@ -140,15 +136,15 @@ class Admin
     }
 
     /**
-     * Load proper panel language
+     * Load proper panel translation
      */
-    protected function loadLanguages()
+    protected function loadTranslations()
     {
         $languageCode = Formwork::instance()->option('admin.lang');
         if ($this->isLoggedIn()) {
             $languageCode = $this->user()->get('language', $languageCode);
         }
-        $this->language = Language::load($languageCode);
+        $this->translation = Translation::load($languageCode);
     }
 
     /**

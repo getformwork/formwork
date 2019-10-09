@@ -6,12 +6,13 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Fields\Field;
 use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Language;
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Admin\Translation;
 use Formwork\Admin\Users\User;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
+use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
@@ -76,7 +77,7 @@ abstract class AbstractController
      */
     protected function language()
     {
-        return Admin::instance()->language()->code();
+        return Admin::instance()->translation()->code();
     }
 
     /**
@@ -86,7 +87,7 @@ abstract class AbstractController
      */
     protected function languages()
     {
-        return Language::availableLanguages();
+        return Translation::availableLanguages();
     }
 
     /**
@@ -111,7 +112,7 @@ abstract class AbstractController
         }
         return $this->assets = new Assets(
             ADMIN_PATH . 'assets' . DS,
-            $this->uri('/assets/')
+            $this->realUri('/assets/')
         );
     }
 
@@ -162,7 +163,9 @@ abstract class AbstractController
      */
     protected function field(Field $field, $render = true)
     {
-        return $this->view('fields.' . $field->type(), array('field' => $field), $render);
+        if ($field->isVisible()) {
+            return $this->view('fields.' . $field->type(), array('field' => $field), $render);
+        }
     }
 
     /**
@@ -220,27 +223,12 @@ abstract class AbstractController
     {
         $file = VIEWS_PATH . str_replace('.', DS, $view) . '.php';
         FileSystem::assert($file);
-        $output = $this->renderToString($file, array_merge($this->defaults(), $data));
-        if ($render) {
-            echo $output;
-        } else {
-            return $output;
-        }
-    }
-
-    /**
-     * Render a script
-     *
-     * @param string $file Path to the script
-     * @param array  $data Data to pass to the view
-     *
-     * @return string
-     */
-    private function renderToString($file, array $data)
-    {
         ob_start();
-        extract($data);
-        include $file;
-        return ob_get_clean();
+        Renderer::load($file, array_merge($this->defaults(), $data), $this, static::class);
+        if ($render) {
+            ob_end_flush();
+        } else {
+            return ob_get_clean();
+        }
     }
 }

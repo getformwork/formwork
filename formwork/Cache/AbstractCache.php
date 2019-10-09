@@ -27,6 +27,11 @@ abstract class AbstractCache
     abstract public function delete($key);
 
     /**
+     * Clear cache
+     */
+    abstract public function clear();
+
+    /**
      * Return whether a resource is cached
      *
      * @param string $key

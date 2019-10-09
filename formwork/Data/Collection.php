@@ -2,9 +2,10 @@
 
 namespace Formwork\Data;
 
+use Countable;
 use Iterator;
 
-class Collection implements Iterator
+class Collection implements Countable, Iterator
 {
     /**
      * Array containing collection items
@@ -18,11 +19,9 @@ class Collection implements Iterator
      *
      * @param array $items
      */
-    public function __construct(array $items)
+    public function __construct(array $items = array())
     {
-        if (is_array($items)) {
-            $this->items = $items;
-        }
+        $this->items = $items;
     }
 
     /**
@@ -66,7 +65,7 @@ class Collection implements Iterator
      */
     public function valid()
     {
-        return $this->current() !== false;
+        return !is_null($this->key());
     }
 
     /**
@@ -91,18 +90,22 @@ class Collection implements Iterator
 
     /**
      * Return first collection item
+     *
+     * @return mixed|null
      */
     public function first()
     {
-        return $this->items[0];
+        return $this->items[0] ?? null;
     }
 
     /**
      * Return last collection item
+     *
+     * @return mixed|null
      */
     public function last()
     {
-        return $this->items[$this->count() - 1];
+        return $this->items[$this->count() - 1] ?? null;
     }
 
     /**

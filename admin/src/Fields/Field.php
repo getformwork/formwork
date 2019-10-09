@@ -106,6 +106,16 @@ class Field extends DataSetter
     }
 
     /**
+     * Return whether the field is visible
+     *
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->get('visible', true) === true;
+    }
+
+    /**
      * Import data helper
      */
     protected function importData()

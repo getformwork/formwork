@@ -5,20 +5,20 @@ namespace Formwork\Admin\Exceptions;
 use Formwork\Admin\Admin;
 use Exception;
 
-class LocalizedException extends Exception
+class TranslatedException extends Exception
 {
     /**
-     * Language string of the localized message
+     * Language string of the translated message
      *
      * @var string
      */
     protected $languageString;
 
     /**
-     * Create a new LocalizedException instance
+     * Create a new TranslatedException instance
      *
      * @param string    $message        Exception message
-     * @param string    $languageString Language string of the localized message
+     * @param string    $languageString Language string of the translated message
      * @param int       $code           Exception code
      * @param Exception $previous       Previous Exception
      */
@@ -29,7 +29,7 @@ class LocalizedException extends Exception
     }
 
     /**
-     * Get language string of the localized message
+     * Get language string
      *
      * @return string
      */
@@ -43,7 +43,7 @@ class LocalizedException extends Exception
      *
      * @return string
      */
-    public function getLocalizedMessage()
+    public function getTranslatedMessage()
     {
         return Admin::instance()->label($this->languageString);
     }

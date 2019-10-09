@@ -11,14 +11,14 @@ class IPAnonymizer
      *
      * @var string
      */
-    const IPV4_MASK = '255.255.255.0';
+    protected const IPV4_MASK = '255.255.255.0';
 
     /**
      * IPv6 addresses mask
      *
      * @var string
      */
-    const IPV6_MASK = 'ffff:ffff:ffff:ffff::';
+    protected const IPV6_MASK = 'ffff:ffff:ffff:ffff::';
 
     /**
      * Anonymize an IP address
@@ -49,7 +49,7 @@ class IPAnonymizer
      */
     public static function anonymizeIPv4($ip)
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(static::IPV4_MASK));
+        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV4_MASK));
     }
 
     /**
@@ -61,6 +61,6 @@ class IPAnonymizer
      */
     public static function anonymizeIPv6($ip)
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(static::IPV6_MASK));
+        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV6_MASK));
     }
 }
