@@ -1,6 +1,6 @@
 <div class="container-no-margin">
     <div class="row">
-        <form method="post" data-form="page-editor-form">
+        <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
@@ -63,6 +63,50 @@
 ?>
                     <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
+<?php
+            if ($this->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
+?>
+                <div class="component">
+                    <h3 class="caption"><?= $this->label('pages.files') ?></h3>
+                    <ul class="files-list">
+<?php
+                    foreach ($page->files() as $file):
+?>
+                        <li>
+                            <div class="files-item">
+                                <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
+                                <div class="files-item-cell file-actions">
+                                    <a class="button button-link" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>"><i class="i-eye"></i></a>
+<?php
+                        if ($this->user()->permissions()->has('pages.delete_files')):
+?>
+                                    <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
+                                        <i class="i-trash"></i>
+                                    </button>
+<?php
+                        endif;
+?>
+                                </div>
+                            </div>
+                        </li>
+<?php
+                    endforeach;
+?>
+                    </ul>
+<?php
+                    if ($this->user()->permissions()->has('pages.upload_files')):
+?>
+                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
+                    <label for="file-uploader" class="file-input-label">
+                        <span><?= $this->label('pages.files.upload-label') ?></span>
+                    </label>
+<?php
+                    endif;
+?>
+                </div>
+<?php
+            endif;
+?>
             </div>
             <div class="col-l-1-4">
                 <div class="component">
@@ -99,55 +143,6 @@
                 </div>
             </div>
         </form>
-<?php
-        if ($this->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
-?>
-        <div class="col-l-3-4">
-            <div class="component">
-                <h3 class="caption"><?= $this->label('pages.files') ?></h3>
-                <ul class="files-list">
-<?php
-                foreach ($page->files() as $file):
-?>
-                    <li>
-                        <div class="files-item">
-                            <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
-                            <div class="files-item-cell file-actions">
-                                <a class="button button-link" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>"><i class="i-eye"></i></a>
-<?php
-                    if ($this->user()->permissions()->has('pages.delete_files')):
-?>
-                                <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
-                                    <i class="i-trash"></i>
-                                </button>
-<?php
-                    endif;
-?>
-                            </div>
-                        </div>
-                    </li>
-<?php
-                endforeach;
-?>
-                </ul>
-<?php
-                if ($this->user()->permissions()->has('pages.upload_files')):
-?>
-                <form action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/upload/') ?>" method="post" enctype="multipart/form-data">
-                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
-                    <label for="file-uploader" class="file-input-label">
-                        <span><?= $this->label('pages.files.upload-label') ?></span>
-                    </label>
-                    <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                </form>
-<?php
-                endif;
-?>
-            </div>
-        </div>
-<?php
-        endif;
-?>
     </div>
 </div>
 <script>

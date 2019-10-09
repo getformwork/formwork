@@ -156,6 +156,16 @@ class Pages extends AbstractController
                     $this->notify($e->getTranslatedMessage(), 'error');
                 }
 
+                if (HTTPRequest::hasFiles()) {
+                    try {
+                        $uploader = new Uploader($page->path());
+                        $uploader->upload();
+                        $page->reload();
+                    } catch (TranslatedException $e) {
+                        $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
+                    }
+                }
+
                 // Redirect if page route has changed
                 if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
                     $this->redirect('/pages/' . $route . '/edit/');

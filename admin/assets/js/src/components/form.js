@@ -14,6 +14,12 @@ Formwork.Form = function (form) {
         $window.off('beforeunload');
     });
 
+    $('input:file[data-auto-upload]', $form).on('change', function () {
+        if (!hasChanged(false)) {
+            $form.trigger('submit');
+        }
+    });
+
     $('[data-command=continue]', '#changesModal').on('click', function () {
         $window.off('beforeunload');
         window.location.href = $(this).attr('data-href');
@@ -29,9 +35,12 @@ Formwork.Form = function (form) {
         }
     });
 
-    function hasChanged() {
+    function hasChanged(checkFileInputs) {
+        if (typeof checkFileInputs === 'undefined') {
+            checkFileInputs = true;
+        }
         var $fileInputs = $(':file', $form);
-        if ($fileInputs.length > 0) {
+        if (checkFileInputs === true && $fileInputs.length > 0) {
             for (var i = 0; i < $fileInputs.length; i++) {
                 if ($fileInputs[i].files.length > 0) {
                     return true;
