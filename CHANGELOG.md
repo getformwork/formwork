@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.0.0](https://github.com/getformwork/formwork/releases/tag/1.0.0) (2019-10-09)
+
+**Enhancements**
+
+- **Support PHP >= 7.1.3**
+- **Add improved Markdown editor based on CodeMirror**
+- **Add closure-based template Renderer**
+- **Add the possibility to extend schemes**
+- **Avoid saving an empty page when creating a new one**
+- **Avoid tracking users based on their DNT preference**
+- **Improve file uploads**
+- **Add the possibility to redefine admin route**
+- Store loaded languages in `Site` instead of `Formwork`
+- Rename `Metadatum::namespace()` to `Metadatum::prefix()`
+- Rename `LocalizedException` to `TranslatedException`
+- Rename `Language` to `Translation`
+- Make `FileSystem::write()` operate atomically
+- Reduce file writes on disk in `Registry`
+- Update `Visitor::$bots` list
+- Use `https://` in all URI
+- Increase CSRF tokens strength
+- Regenerate CSRF token on authentication
+- Cache `Page` objects directly
+- Reset template layout just before rendering
+- Return default MIME type `application/octet-stream` if unknown
+- Use default field values from template schemes
+- Render fields only if visible
+- Track page views in `Statistics`
+- Add `statistics.enabled` system option
+
+**Bug fixes**
+
+- Fix `HTTPResponse::headers()` mistakenly caching result
+- Fix login modal displayed twice on too many attempts
+- Fix wrong MIME type for SVG images without XML declaration
+- Fix error on clearing cache if not enabled
+- Fix `FilesCache::has()` not checking for validity
+
 ## [0.12.1](https://github.com/getformwork/formwork/releases/tag/0.12.1) (2019-06-05)
 
 **Bug fixes**
