@@ -307,8 +307,7 @@ input[type=range] {
 }
 
 .array-input-key,
-.array-input-value,
-.array-input-handle {
+.array-input-value {
     display: inline-block;
     margin-bottom: 0;
 }
@@ -332,18 +331,6 @@ input[type=range] {
     @media (min-width: map-get($responsive-breakpoints, 'xs')) {
         width: $array-input-associative-value-width-s;
     }
-}
-
-.array-input-handle {
-    margin-right: $array-input-handle-margin-right;
-    width: $array-input-handle-width;
-}
-
-.array-input-handle::before {
-    color: $color-gray-dark;
-    font-size: $font-size-xs;
-    cursor: grab;
-    @include icon(bars);
 }
 
 .array-input-add,

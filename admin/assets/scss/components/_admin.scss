@@ -209,3 +209,16 @@
     font-size: $font-size-m;
     @include user-select-none;
 }
+
+.sort-handle {
+    margin-right: $sort-handle-margin-right;
+    margin-bottom: 0;
+    width: $sort-handle-width;
+}
+
+.sort-handle::before {
+    color: $color-gray-dark;
+    font-size: $font-size-xs;
+    cursor: grab;
+    @include icon(bars);
+}

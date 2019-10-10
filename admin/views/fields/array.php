@@ -2,7 +2,7 @@
 <div id="<?= $field->name() ?>" class="array-input<?php if ($field->get('associative')): ?> array-input-associative<?php endif; ?>" data-name="<?= $field->formName() ?>">
 <?php foreach ($field->value() ?: array('' => '') as $key => $value): ?>
     <div class="array-input-row">
-        <span class="array-input-handle"></span>
+        <span class="sort-handle"></span>
     <?php if ($field->get('associative')): ?>
         <input class="array-input-key" type="text" value="<?= $key ?>" placeholder="<?= $field->get('placeholder_key') ?>">
     <?php endif; ?>

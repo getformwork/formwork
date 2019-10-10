@@ -891,8 +891,7 @@ input[type=range] {
   white-space: nowrap; }
 
 .array-input-key,
-.array-input-value,
-.array-input-handle {
+.array-input-value {
   display: inline-block;
   margin-bottom: 0; }
 
@@ -913,16 +912,6 @@ input[type=range] {
   @media (min-width: 568px) {
     .array-input-associative .array-input-value {
       width: 55%; } }
-
-.array-input-handle {
-  margin-right: 0.25rem;
-  width: 0.75rem; }
-
-.array-input-handle::before {
-  color: #979797;
-  font-size: 0.75rem;
-  cursor: grab;
-  font-family: Icons, sans-serif; }
 
 .array-input-add,
 .array-input-remove {
@@ -2480,6 +2469,17 @@ span.CodeMirror-selectedtext {
   -ms-user-select: none;
   user-select: none; }
 
+.sort-handle {
+  margin-right: 0.25rem;
+  margin-bottom: 0;
+  width: 0.75rem; }
+
+.sort-handle::before {
+  color: #979797;
+  font-size: 0.75rem;
+  cursor: grab;
+  font-family: Icons, sans-serif; }
+
 .pages-list {
   margin: 0;
   padding: 0;
@@ -2955,7 +2955,7 @@ button .page-language,
 .i-at::before {
   content: '\f2a3'; }
 
-.i-bars::before, .array-input-handle::before {
+.i-bars::before, .sort-handle::before {
   content: '\f2a4'; }
 
 .i-bell::before {

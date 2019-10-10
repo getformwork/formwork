@@ -146,7 +146,7 @@ Formwork.Forms = {
 
             /* global Sortable:false */
             Sortable.create(this, {
-                handle: '.array-input-handle',
+                handle: '.sort-handle',
                 forceFallback: true
             });
         });
