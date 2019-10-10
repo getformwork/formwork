@@ -429,6 +429,10 @@ button,
     background-color: #f8f8f8;
     color: #cacaca;
     pointer-events: none; }
+  button.active,
+  .button.active {
+    border-color: #cacaca;
+    background-color: #cacaca; }
 
 a.button {
   text-align: center; }

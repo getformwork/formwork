@@ -37,6 +37,10 @@ button,
         color: $color-gray;
         pointer-events: none;
     }
+    &.active {
+        border-color: $color-gray;
+        background-color: $color-gray;
+    }
 }
 
 a.button {
