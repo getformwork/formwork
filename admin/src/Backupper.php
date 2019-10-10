@@ -6,6 +6,7 @@ use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Utils\ZipErrors;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Uri;
 use ZipArchive;
 
 class Backupper
@@ -43,7 +44,7 @@ class Backupper
     {
         return array(
             'maxExecutionTime' => 180,
-            'name'             => 'formwork-backup',
+            'name'             => str_replace(array(' ', '.'), '-', Uri::host()) . '-formwork-backup',
             'path'             => Formwork::instance()->option('backup.path'),
             'maxFiles'         => Formwork::instance()->option('backup.max_files'),
             'ignore'           => array(
