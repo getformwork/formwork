@@ -2,6 +2,8 @@
 
 namespace Formwork\Admin\Controllers;
 
+use Formwork\Admin\Backupper;
+use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Updater;
 use Formwork\Admin\Utils\JSONResponse;
 use Formwork\Core\Formwork;
@@ -36,6 +38,16 @@ class Updates extends AbstractController
     {
         $this->ensurePermission('updates.update');
         $updater = new Updater(array('force' => true));
+        if ($this->option('updates.backup_before')) {
+            $backupper = new Backupper();
+            try {
+                $backupper->backup();
+            } catch (TranslatedException $e) {
+                JSONResponse::error($this->label('updates.status.cannot-make-backup'), 500, array(
+                    'status' => $this->label('updates.status.cannot-make-backup')
+                ))->send();
+            }
+        }
         try {
             $updater->update();
         } catch (RuntimeException $e) {

@@ -197,6 +197,7 @@ class Formwork
             'images.png_compression'   => 6,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,
+            'updates.backup_before'    => true,
             'metadata.set_generator'   => true,
             'statistics.enabled'       => true,
             'admin.enabled'            => true,

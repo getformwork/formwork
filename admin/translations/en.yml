@@ -197,6 +197,7 @@ updates.install: Install
 updates.installed: Update installed!
 updates.latest-version-available: is the latest version available
 updates.status.cannot-install: Cannot install update
+updates.status.cannot-make-backup: Cannot make backup before updating
 updates.status.checking: Checking for updates...
 updates.status.found: Updates found
 updates.status.installing: Installing updates...
