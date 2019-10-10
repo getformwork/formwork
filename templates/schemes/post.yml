@@ -1,5 +1,6 @@
 title: Blog Post
 extend: page
+default: false
 pages: false
 num: date
 fields:
