@@ -82,10 +82,10 @@ class HTTPRequest
      */
     public static function ip($strict = false)
     {
-        if (!$strict && static::hasHeader('X-Forwarded-For')) {
-            return static::$headers['X-Forwarded-For'];
+        if (!$strict && getenv('HTTP_X_FORWARDED_FOR')) {
+            return getenv('HTTP_X_FORWARDED_FOR');
         }
-        return $_SERVER['REMOTE_ADDR'];
+        return getenv('REMOTE_ADDR');
     }
 
     /**
