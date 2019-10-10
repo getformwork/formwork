@@ -5,6 +5,13 @@ namespace Formwork\Utils;
 class HTTPRequest
 {
     /**
+     * Localhost IP addresses
+     *
+     * @var array
+     */
+    protected const LOCALHOST_IP_ADDRESSES = array('127.0.0.1', '::1');
+
+    /**
      * Array containing HTTP request headers
      *
      * @var array
@@ -175,6 +182,16 @@ class HTTPRequest
     public static function isXHR()
     {
         return static::hasHeader('X-Requested-With') && strtolower(static::$headers['X-Requested-With']) === 'xmlhttprequest';
+    }
+
+    /**
+     * Return whether a request comes from localhost
+     *
+     * @return bool
+     */
+    public static function isLocalhost()
+    {
+        return in_array(static::ip(true), self::LOCALHOST_IP_ADDRESSES, true);
     }
 
     /**
