@@ -176,6 +176,7 @@ pages.page.visible: Visible in the menu
 pages.pages: Pages
 pages.pages.collapse-all: Collapse All
 pages.pages.expand-all: Expand All
+pages.pages.reorder: Reorder
 pages.pages.search: Search Pages...
 pages.parent: Parent Page
 pages.preview-file: Preview

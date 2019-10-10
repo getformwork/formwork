@@ -17,8 +17,7 @@
 }
 
 .page-children-toggle {
-    display: block;
-    float: left;
+    display: inline-block;
     margin-right: $page-children-toggle-margin-right;
     color: $color-gray-xxdark;
     font-weight: 400;
@@ -40,6 +39,10 @@
     &:hover {
         background-color: $color-gray-xxlight;
     }
+}
+
+.pages-item .sort-handle {
+    display: none;
 }
 
 .pages-list-top {

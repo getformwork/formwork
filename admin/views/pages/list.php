@@ -21,6 +21,13 @@
                         <div class="pages-item-cell page-details">
                             <div class="page-title">
 <?php
+                    if ($sortable && $page->sortable()):
+?>
+                            <span class="sort-handle"></span>
+<?php
+                    endif;
+?>
+<?php
                     if ($subpages && $page->hasChildren()):
 ?>
                             <span class="page-children-toggle toggle-collapsed"></span>

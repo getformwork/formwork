@@ -23,6 +23,11 @@ Formwork.Pages = {
             $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
         });
 
+        $('[data-command=reorder-pages]').on('click', function () {
+            $(this).trigger('blur').toggleClass('active');
+            $('.pages-list .sort-handle').toggle();
+        });
+
         $('.page-search').on('focus', function () {
             $('.pages-children').each(function () {
                 var $this = $(this);
@@ -133,6 +138,7 @@ Formwork.Pages = {
 
             /* global Sortable:false */
             var sortable = Sortable.create(this, {
+                handle: '.sort-handle',
                 filter: '[data-sortable=false]',
                 forceFallback: true,
                 onClone: function (event) {

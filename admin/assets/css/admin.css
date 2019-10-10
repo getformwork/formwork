@@ -2506,8 +2506,7 @@ span.CodeMirror-selectedtext {
   user-select: none; }
 
 .page-children-toggle {
-  display: block;
-  float: left;
+  display: inline-block;
   margin-right: 0.25rem;
   color: #444;
   font-weight: 400;
@@ -2525,6 +2524,9 @@ span.CodeMirror-selectedtext {
   border-bottom: 1px solid #e4e4e4; }
   .pages-item:hover {
     background-color: #f8f8f8; }
+
+.pages-item .sort-handle {
+  display: none; }
 
 .pages-list-top {
   border-top: 1px solid #e4e4e4; }
