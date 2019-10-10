@@ -197,6 +197,9 @@ class Admin
      */
     protected function registerAdmin()
     {
+        if (!HTTPRequest::isLocalhost()) {
+            $this->redirectToSite();
+        }
         if ($this->router->request() !== '/') {
             $this->redirectToPanel();
         }
