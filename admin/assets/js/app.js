@@ -779,7 +779,7 @@ Formwork.Pages = {
             var sortable = Sortable.create(this, {
                 filter: '[data-sortable=false]',
                 forceFallback: true,
-                onStart: function (event) {
+                onClone: function (event) {
                     $(event.item).closest('.pages-list').addClass('dragging');
                     $('.pages-children', event.item).hide();
                     $('.page-children-toggle').removeClass('toggle-expanded')
