@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $site->lang() ?>">
+<html lang="<?= $site->languages()->current() ?>">
 <head>
     <title><?= $page->title() ?> | <?= $site->title() ?></title>
     <?= $this->insert('_meta') ?>

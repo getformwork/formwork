@@ -11,23 +11,6 @@ rows1:
                 column1:
                     type: column
                     width: 1-3
-                    label: '{{options.site.info.language}}'
-                column2:
-                    type: column
-                    width: 2-3
-                    fields:
-                        lang:
-                            type: select
-                            translate: false
-                            import:
-                                options: 'Formwork\Languages\LanguageCodes::names'
-
-        row2:
-            type: row
-            fields:
-                column1:
-                    type: column
-                    width: 1-3
                     label: '{{options.site.info.title}}'
                 column2:
                     type: column
@@ -37,7 +20,7 @@ rows1:
                             type: text
                             required: true
 
-        row3:
+        row2:
             type: row
             fields:
                 column1:
@@ -51,7 +34,7 @@ rows1:
                         author:
                             type: text
 
-        row4:
+        row3:
             type: row
             fields:
                 column1:
