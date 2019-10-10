@@ -1,11 +1,13 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg">
-<metadata>Copyright (C) 2018 by original authors @ fontello.com</metadata>
+<metadata>Copyright (C) 2019 by original authors @ fontello.com</metadata>
 <defs>
-<font id="fontello" horiz-adv-x="1000" >
-<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<font id="icons" horiz-adv-x="1000" >
+<font-face font-family="icons" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
 <missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="move" unicode="&#xe870;" d="M688 18l-155-154c-18-19-48-19-66 0l-155 154c-29 30-8 80 33 80h100l0 197h-197v-100c0-41-50-62-80-33l-154 155c-19 18-19 48 0 66l154 155c30 29 80 9 80-33v-100h197v197h-100c-41 0-62 50-33 80l155 154c18 19 48 19 66 0l155-154c29-30 8-80-33-80h-100v-197h197v100c0 41 50 62 80 33l154-155c19-18 19-48 0-66l-154-155c-30-29-80-8-80 33v100h-197v-197h100c42 0 62-50 33-80z" horiz-adv-x="1000" />
+
 <glyph glyph-name="align-center" unicode="&#xf29a;" d="M688 764v-78c0-17-14-31-32-31h-437c-17 0-31 14-31 31v78c0 17 14 31 31 31h437c18 0 32-14 32-31z m-657-359h813c17 0 31 14 31 31v78c0 17-14 31-31 31h-813c-17 0-31-14-31-31v-78c0-17 14-31 31-31z m0-500h813c17 0 31 14 31 31v78c0 17-14 31-31 31h-813c-17 0-31-14-31-31v-78c0-17 14-31 31-31z m625 390h-437c-17 0-31-14-31-31v-78c0-17 14-31 31-31h437c18 0 32 14 32 31v78c0 17-14 31-32 31z" horiz-adv-x="875" />
 
 <glyph glyph-name="align-left" unicode="&#xf29b;" d="M563 764v-78c0-17-14-31-32-31h-500c-17 0-31 14-31 31v78c0 17 14 31 31 31h500c18 0 32-14 32-31z m-563-250v-78c0-17 14-31 31-31h813c17 0 31 14 31 31v78c0 17-14 31-31 31h-813c-17 0-31-14-31-31z m31-609h813c17 0 31 14 31 31v78c0 17-14 31-31 31h-813c-17 0-31-14-31-31v-78c0-17 14-31 31-31z m500 390h-500c-17 0-31-14-31-31v-78c0-17 14-31 31-31h500c18 0 32 14 32 31v78c0 17-14 31-32 31z" horiz-adv-x="875" />

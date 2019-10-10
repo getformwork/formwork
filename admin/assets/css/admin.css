@@ -3264,3 +3264,6 @@ button .page-language,
 
 .i-users::before {
   content: '\f309'; }
+
+.i-move::before {
+  content: '\e870'; }
