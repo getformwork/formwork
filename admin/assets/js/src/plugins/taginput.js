@@ -2,19 +2,33 @@
     $.fn.tagInput = function () {
         this.each(function () {
             var $this = $(this);
-            var $target = $('.tag-hidden-input', $this);
-            var $input = $('.tag-inner-input', $this);
+            var $field = createField();
+            var $target = $('.tag-hidden-input', $field);
+            var $input = $('.tag-inner-input', $field);
             var tags = [];
 
-            function _update() {
-                $target.val($this.data('tags').join(', '));
-                _placeholder();
+            function createField() {
+                var isRequired = $this.is('[required]');
+                var isDisabled = $this.is('[disabled]');
+                var field = $(
+                    '<div class="tag-input"' + (isDisabled ? ' disabled' : '') + '>\n' +
+                        '<input class="tag-inner-input" id="' + $this.attr('id') + '" type="text" size="" placeholder="' + $this.attr('placeholder') + '"' + (isDisabled ? ' disabled' : '') + '>\n' +
+                        '<input class="tag-hidden-input" name="' + $this.attr('name') + '" hidden readonly value="' + $this.attr('value') + '"' + (isRequired ? ' required' : '') + (isDisabled ? ' disabled' : '') + '>\n' +
+                    '</div>'
+                );
+                $this.replaceWith(field);
+                return field;
             }
 
-            function _placeholder() {
+            function updateTags() {
+                $target.val($input.data('tags').join(', '));
+                updatePlaceholder();
+            }
+
+            function updatePlaceholder() {
                 var placeholder = $input.data('placeholder');
                 if (placeholder.length > 0) {
-                    if ($this.data('tags').length === 0) {
+                    if ($input.data('tags').length === 0) {
                         $input.attr('placeholder', placeholder);
                         $input.prop('size', placeholder.length);
                     } else {
@@ -24,26 +38,26 @@
                 }
             }
 
-            function _createTag(value) {
+            function insertTag(value) {
                 $input.before('\n<span class="tag">' + value + '<i class="tag-remove"></i></span>');
             }
 
             function addTag(value) {
-                if ($this.data('tags').indexOf(value) === -1) {
-                    $this.data('tags').push(value);
-                    _createTag(value);
-                    _update();
+                if ($input.data('tags').indexOf(value) === -1) {
+                    $input.data('tags').push(value);
+                    insertTag(value);
+                    updateTags();
                 }
                 $input.val('');
             }
 
             function removeTag(value) {
-                var tags = $input.parent().data('tags');
+                var tags = $input.data('tags');
                 var index = tags.indexOf(value);
                 if (index > -1) {
                     tags.splice(index, 1);
-                    $this.data('tags', tags);
-                    _update();
+                    $input.data('tags', tags);
+                    updateTags();
                 }
             }
 
@@ -52,11 +66,11 @@
                 $.each(tags, function (index, value) {
                     value = value.trim();
                     tags[index] = value;
-                    _createTag(value);
+                    insertTag(value);
                 });
             }
 
-            $this.data('tags', tags)
+            $input.data('tags', tags)
                 .on('mousedown', '.tag-remove', false)
                 .on('click', '.tag-remove', function () {
                     var $tag = $(this).parent();
@@ -67,24 +81,24 @@
 
             if ($input.attr('placeholder') !== undefined) {
                 $input.data('placeholder', $input.attr('placeholder'));
-                _placeholder();
+                updatePlaceholder();
             } else {
                 $input.data('placeholder', '');
             }
 
-            $this.on('mousedown', function () {
+            $field.on('mousedown', function () {
                 $input.trigger('focus');
                 return false;
             });
 
             $input.on('focus', function () {
-                $this.addClass('focused');
+                $field.addClass('focused');
             }).on('blur', function () {
                 var value = $input.val().trim();
                 if (value !== '') {
                     addTag(value);
                 }
-                $this.removeClass('focused');
+                $field.removeClass('focused');
             }).on('keydown', function (event) {
                 var options = {addKeyCodes: [32]};
                 var value = $input.val().trim();

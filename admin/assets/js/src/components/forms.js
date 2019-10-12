@@ -47,7 +47,7 @@ Formwork.Forms = {
             $(this).removeClass('drag');
         });
 
-        $('.tag-input').tagInput();
+        $('input[data-field=tags]').tagInput();
 
         $('.image-input').on('click', function () {
             var $this = $(this);
