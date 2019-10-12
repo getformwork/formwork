@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/getformwork/formwork/releases/tag/1.1.0) (2019-10-12)
+
+**Enhancements**
+
+- **Improve page reordering on desktop and mobile devices**
+- **Make backup before installing updates**
+- Use `getenv()` to get IP address avoiding any `$_SERVER` manipulation
+- Add `HTTPRequest::isLocalhost()`
+- Allow admin registration only on localhost
+- Add reorder button to `pages.list` view
+- Prepend host to backup file names
+- Use current language instead of `lang` in site layout
+- Generate `tags` fields from JavaScript
+
+**Bug fixes**
+
+- Fix template schemes not specifying `default` property
+- Fix children pages list not collapsing on reorder
+
 ## [1.0.0](https://github.com/getformwork/formwork/releases/tag/1.0.0) (2019-10-09)
 
 **Enhancements**
