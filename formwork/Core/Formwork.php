@@ -252,11 +252,11 @@ class Formwork
                     $this->cache->save($this->cacheKey, $page);
                 }
             }
-        }
 
-        if ($this->option('statistics.enabled')) {
-            $statistics = new Statistics();
-            $statistics->trackVisit();
+            if ($this->option('statistics.enabled')) {
+                $statistics = new Statistics();
+                $statistics->trackVisit();
+            }
         }
     }
 
