@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1](https://github.com/getformwork/formwork/releases/tag/1.1.1) (2019-10-12)
+
+**Bug fixes**
+
+- Fix page views being tracked from administration panel
+
 ## [1.1.0](https://github.com/getformwork/formwork/releases/tag/1.1.0) (2019-10-12)
 
 **Enhancements**
