@@ -89,6 +89,9 @@ rows2:
                             type: tags
                             placeholder: '{{options.system.languages.available-languages.no-languages}}'
                             pattern: '^[a-z]{2,3}$'
+                            translate: [placeholder]
+                            import:
+                                options: 'Formwork\Languages\LanguageCodes::names'
         row2:
             type: row
             fields:
