@@ -205,6 +205,8 @@ $dropdown-separator-margin-v: 0.25rem;
 $dropdown-separator-margin-h: 0;
 $dropdown-separator-border-width: $dropdown-menu-border-width;
 
+$dropdown-list-max-height: 6.25 * (2 * $dropdown-item-padding-v * $base-line-height + $dropdown-item-font-size);
+
 // ===
 // Editor
 // ===

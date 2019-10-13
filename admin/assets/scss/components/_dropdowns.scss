@@ -9,7 +9,8 @@
     @include caret;
 }
 
-.dropdown-menu {
+.dropdown-menu,
+.dropdown-list {
     position: absolute;
     top: 100%;
     left: 0;
@@ -25,6 +26,12 @@
     box-shadow: $dropdown-menu-box-shadow;
 }
 
+.dropdown-list {
+    overflow-y: scroll;
+    max-height: $dropdown-list-max-height;
+    width: 100%;
+}
+
 .dropdown-item {
     display: block;
     padding: $dropdown-item-padding-v $dropdown-item-padding-h;
@@ -35,6 +42,10 @@
     &:hover {
         background-color: $color-gray-xlight;
         color: $color-gray-xxdark;
+    }
+    &.selected {
+        background-color: $color-accent;
+        color: #fff;
     }
 }
 

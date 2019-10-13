@@ -680,6 +680,7 @@ label {
   background-position: right 1.75rem center; }
 
 .tag-input {
+  position: relative;
   display: block;
   box-sizing: border-box;
   margin-top: 0;
@@ -945,7 +946,8 @@ input[type=range] {
     content: ' ';
     vertical-align: 0.125rem; }
 
-.dropdown-menu {
+.dropdown-menu,
+.dropdown-list {
   position: absolute;
   top: 100%;
   left: 0;
@@ -960,6 +962,11 @@ input[type=range] {
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 9px 0; }
 
+.dropdown-list {
+  overflow-y: scroll;
+  max-height: 10.15625rem;
+  width: 100%; }
+
 .dropdown-item {
   display: block;
   padding: 0.25rem 1rem;
@@ -970,6 +977,9 @@ input[type=range] {
   .dropdown-item:hover {
     background-color: #f0f0f0;
     color: #444; }
+  .dropdown-item.selected {
+    background-color: #3498da;
+    color: #fff; }
 
 .dropdown-separator {
   margin: 0.25rem 0;
