@@ -5,7 +5,7 @@
             <i class="image-picker-empty-state-icon i-images"></i>
             <h4 class="h5"><?= $this->label('modal.images.no-images') ?></h4>
 <?php
-            if ($this->user()->permissions()->has('pages.upload_files')):
+            if ($admin->user()->permissions()->has('pages.upload_files')):
 ?>
             <p><?= $this->label('modal.images.no-images.upload') ?></p>
             <button type="button" data-command="upload" data-upload-target="file-uploader"><i class="i-cloud-upload"></i> <?= $this->label('modal.action.upload-file') ?></button>

@@ -32,9 +32,9 @@ class Dashboard extends AbstractController
                     'parent'   => null,
                     'sortable' => false,
                     'headers'  => true
-                    ), false),
+                    ), true),
                 'statistics' => $statistics->getChartData()
-            ), false)
+            ), true)
         ));
     }
 }

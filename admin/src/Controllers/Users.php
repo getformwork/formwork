@@ -33,7 +33,7 @@ class Users extends AbstractController
             'title'   => $this->label('users.users'),
             'content' => $this->view('users.index', array(
                 'users' => Admin::instance()->users()
-            ), false)
+            ), true)
         ));
     }
 
@@ -148,8 +148,8 @@ class Users extends AbstractController
             'title'   => $this->label('users.user-profile', $user->username()),
             'content' => $this->view('users.profile', array(
                 'user'   => $user,
-                'fields' => $this->fields($fields, false)
-            ), false)
+                'fields' => $fields->render(true)
+            ), true)
         ));
     }
 

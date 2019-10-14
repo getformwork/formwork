@@ -1,7 +1,7 @@
 <div class="component">
     <h3 class="caption"><?= $this->label('pages.pages') ?></h3>
 <?php
-    if ($this->user()->permissions()->has('pages.create')):
+    if ($admin->user()->permissions()->has('pages.create')):
 ?>
     <button type="button" data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
 <?php

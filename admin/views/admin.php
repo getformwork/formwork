@@ -33,14 +33,14 @@
     </div>
     <div class="sidebar show-from-s">
         <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>">Formwork</a></div>
-        <a href="<?= $this->uri('/users/' . $this->user()->username() . '/profile/') ?>">
+        <a href="<?= $this->uri('/users/' . $admin->user()->username() . '/profile/') ?>">
             <div class="admin-user-card">
                 <div class="admin-user-avatar">
-                    <img src="<?= $this->user()->avatar()->uri() ?>" alt="">
+                    <img src="<?= $admin->user()->avatar()->uri() ?>" alt="">
                 </div>
                 <div class="admin-user-details">
-                    <div class="admin-user-fullname"><?= $this->escape($this->user()->fullname()) ?></div>
-                    <div class="admin-user-username"><?= $this->escape($this->user()->username()) ?></div>
+                    <div class="admin-user-fullname"><?= $this->escape($admin->user()->fullname()) ?></div>
+                    <div class="admin-user-username"><?= $this->escape($admin->user()->username()) ?></div>
                 </div>
             </div>
         </a>
@@ -48,7 +48,7 @@
             <h3 class="caption"><?= $this->label('admin.manage') ?></h3>
             <ul class="sidebar-navigation">
 <?php
-                if ($this->user()->permissions()->has('dashboard')):
+                if ($admin->user()->permissions()->has('dashboard')):
 ?>
                 <li class="<?= ($location === 'dashboard') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/dashboard/') ?>"><?= $this->label('dashboard.dashboard') ?></a>
@@ -56,7 +56,7 @@
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('pages')):
+                if ($admin->user()->permissions()->has('pages')):
 ?>
                 <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/pages/') ?>"><?= $this->label('pages.pages') ?></a>
@@ -64,7 +64,7 @@
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('options')):
+                if ($admin->user()->permissions()->has('options')):
 ?>
                 <li class="<?= ($location === 'options') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/options/') ?>"><?= $this->label('options.options') ?></a>
@@ -72,7 +72,7 @@
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('users')):
+                if ($admin->user()->permissions()->has('users')):
 ?>
                 <li class="<?= ($location === 'users') ? 'active' : '' ?>">
                     <a href="<?= $this->uri('/users/') ?>"><?= $this->label('users.users') ?></a>
@@ -89,6 +89,6 @@
     <main class="main">
         <?= $content ?>
     </main>
-    <?= $this->modals() ?>
+    <?= $modals ?>
 </body>
 </html>

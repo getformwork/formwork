@@ -2,6 +2,6 @@
 <?php if ($field->has('label')): ?>
     <?= $field->label() ?>
 <?php else: ?>
-    <?php $this->fields($field->get('fields')) ?>
+    <?php $field->get('fields')->render() ?>
 <?php endif; ?>
 </div>

@@ -55,7 +55,7 @@
                     endif;
 ?>
 <?php
-                if ($this->user()->permissions()->has('pages.delete')):
+                if ($admin->user()->permissions()->has('pages.delete')):
 ?>
                     <button type="button" class="button-link button-right" tabindex="-1" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
@@ -64,7 +64,7 @@
                     <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
 <?php
-            if ($this->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
+            if ($admin->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
 ?>
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.files') ?></h3>
@@ -78,7 +78,7 @@
                                 <div class="files-item-cell file-actions">
                                     <a class="button button-link" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>"><i class="i-eye"></i></a>
 <?php
-                        if ($this->user()->permissions()->has('pages.delete_files')):
+                        if ($admin->user()->permissions()->has('pages.delete_files')):
 ?>
                                     <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->label('pages.delete-file') ?>">
                                         <i class="i-trash"></i>
@@ -94,9 +94,9 @@
 ?>
                     </ul>
 <?php
-                    if ($this->user()->permissions()->has('pages.upload_files')):
+                    if ($admin->user()->permissions()->has('pages.upload_files')):
 ?>
-                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $this->option('files.allowed_extensions')) ?>">
+                    <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $formwork->option('files.allowed_extensions')) ?>">
                     <label for="file-uploader" class="file-input-label">
                         <span><?= $this->label('pages.files.upload-label') ?></span>
                     </label>
@@ -117,7 +117,7 @@
                     <h3 class="caption"><?= $this->label('pages.attributes') ?></h3>
                     <label for="page-parent"><?= $this->label('pages.parent') ?>:</label>
                     <select id="page-parent" name="parent">
-                        <option value="." <?php if ($page->parent() === $this->site()): ?> selected<?php endif; ?>><?= $this->label('pages.new-page.site') ?> (/)</option>
+                        <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->label('pages.new-page.site') ?> (/)</option>
 <?php
                         foreach ($parents as $parent):
                             $scheme = $this->scheme($parent->template()->name());

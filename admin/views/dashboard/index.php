@@ -7,25 +7,25 @@
             <div class="component">
                 <h3 class="caption"><?= $this->label('dashboard.quick-actions') ?></h3>
 <?php
-                if ($this->user()->permissions()->has('pages.create')):
+                if ($admin->user()->permissions()->has('pages.create')):
 ?>
                 <button type="button" data-modal="newPageModal"><i class="i-plus-circle"></i> <?= $this->label('pages.new-page') ?></button>
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('cache.clear')):
+                if ($admin->user()->permissions()->has('cache.clear')):
 ?>
                 <button type="button" data-command="clear-cache"><i class="i-trash"></i> <?= $this->label('cache.clear') ?></button>
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('backup')):
+                if ($admin->user()->permissions()->has('backup')):
 ?>
                 <button type="button" data-command="make-backup"><i class="i-history"></i> <?= $this->label('backup.backup') ?></button>
 <?php
                 endif;
 
-                if ($this->user()->permissions()->has('options.updates')):
+                if ($admin->user()->permissions()->has('options.updates')):
 ?>
                 <a class="button" href="<?= $this->uri('/options/updates/'); ?>"><i class="i-sync"></i> <?= $this->label('updates.check') ?></a>
 <?php

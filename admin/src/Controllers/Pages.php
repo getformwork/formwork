@@ -60,8 +60,8 @@ class Pages extends AbstractController
                     'parent'   => '.',
                     'sortable' => $this->user()->permissions()->has('pages.reorder'),
                     'headers'  => true
-                ), false)
-            ), false)
+                ), true)
+            ), true)
         ));
     }
 
@@ -190,7 +190,7 @@ class Pages extends AbstractController
             'title'   => $this->label('pages.edit-page', $page->title()),
             'content' => $this->view('pages.editor', array(
                 'page'               => $page,
-                'fields'             => $this->fields($fields, false),
+                'fields'             => $fields->render(true),
                 'templates'          => $this->site()->templates(),
                 'parents'            => $this->site()->descendants()->sort('path'),
                 'currentLanguage'    => $params->get('language', $page->language()),
@@ -205,7 +205,7 @@ class Pages extends AbstractController
                         array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a')
                     )
                 )
-            ), false)
+            ), true)
         ));
     }
 

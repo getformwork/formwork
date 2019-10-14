@@ -8,12 +8,12 @@
                     <h3><?= $this->escape($user->fullname()) ?></h3>
                     <?= $this->escape($user->username()) ?><br>
                     <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
-                    <?= $this->label('user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : date($this->option('date.format') . ' ' . $this->option('date.hour_format'), $user->lastAccess()) ?>
+                    <?= $this->label('user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : date($formwork->option('date.format') . ' ' . $formwork->option('date.hour_format'), $user->lastAccess()) ?>
                 </div>
             </div>
         </div>
 <?php
-        if ($this->user()->canChangeOptionsOf($user)):
+        if ($admin->user()->canChangeOptionsOf($user)):
 ?>
         <div class="component">
             <h3 class="caption"><?= $this->label('users.options') ?></h3>
@@ -21,7 +21,7 @@
                 <?= $fields ?>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                 <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('modal.action.save') ?></button>
-                <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>" <?php if (!$this->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
+                <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
             </form>
         </div>
 <?php

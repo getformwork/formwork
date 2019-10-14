@@ -56,9 +56,9 @@ class Options extends AbstractController
                 'tabs' => $this->view('options.tabs', array(
                     'tabs'    => $this->tabs,
                     'current' => 'system'
-                ), false),
-                'fields' => $this->fields($fields, false)
-            ), false)
+                ), true),
+                'fields' => $fields->render(true)
+            ), true)
         ));
     }
 
@@ -96,9 +96,9 @@ class Options extends AbstractController
                 'tabs' => $this->view('options.tabs', array(
                     'tabs'    => $this->tabs,
                     'current' => 'site'
-                ), false),
-                'fields' => $this->fields($fields, false)
-            ), false)
+                ), true),
+                'fields' => $fields->render(true)
+            ), true)
         ));
     }
 
@@ -115,9 +115,9 @@ class Options extends AbstractController
                 'tabs' => $this->view('options.tabs', array(
                     'tabs'    => $this->tabs,
                     'current' => 'updates'
-                ), false),
+                ), true),
                 'currentVersion' => Formwork::VERSION
-            ), false)
+            ), true)
         ));
     }
 
@@ -198,9 +198,9 @@ class Options extends AbstractController
                 'tabs' => $this->view('options.tabs', array(
                     'tabs'    => $this->tabs,
                     'current' => 'info'
-                ), false),
+                ), true),
                 'info' => $data
-            ), false)
+            ), true)
         ));
     }
 

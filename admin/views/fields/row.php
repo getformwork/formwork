@@ -1,3 +1,3 @@
 <div class="row">
-    <?= $this->fields($field->get('fields')) ?>
+    <?= $field->get('fields')->render() ?>
 </div>
