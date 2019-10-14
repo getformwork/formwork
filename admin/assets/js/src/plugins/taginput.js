@@ -193,8 +193,9 @@
                 });
             }
 
-            $input.data('tags', tags)
-                .on('mousedown', '.tag-remove', false)
+            $input.data('tags', tags);
+
+            $field.on('mousedown', '.tag-remove', false)
                 .on('click', '.tag-remove', function () {
                     var $tag = $(this).parent();
                     removeTag($tag.text());
