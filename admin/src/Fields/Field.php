@@ -1,6 +1,7 @@
 <?php
 namespace Formwork\Admin\Fields;
 
+use Formwork\Admin\View\View;
 use Formwork\Data\DataSetter;
 use LogicException;
 
@@ -113,6 +114,19 @@ class Field extends DataSetter
     public function isVisible()
     {
         return $this->get('visible', true) === true;
+    }
+
+    /**
+     * Render the field
+     *
+     * @param bool $return Whether to return or render the field
+     */
+    public function render($return = false)
+    {
+        if ($this->isVisible()) {
+            $view = new View('fields.' . $this->type(), array('field' => $this));
+            return $view->render($return);
+        }
     }
 
     /**
