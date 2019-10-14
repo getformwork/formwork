@@ -2486,12 +2486,13 @@ span.CodeMirror-selectedtext {
 .sort-handle {
   margin-right: 0.25rem;
   margin-bottom: 0;
-  width: 0.75rem; }
+  width: 0.75rem;
+  cursor: grab; }
 
 .sort-handle::before {
   color: #979797;
   font-size: 0.75rem;
-  cursor: grab;
+  cursor: inherit;
   font-family: Icons, sans-serif; }
 
 .pages-list {

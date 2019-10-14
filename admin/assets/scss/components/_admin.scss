@@ -214,11 +214,12 @@
     margin-right: $sort-handle-margin-right;
     margin-bottom: 0;
     width: $sort-handle-width;
+    cursor: grab;
 }
 
 .sort-handle::before {
     color: $color-gray-dark;
     font-size: $font-size-xs;
-    cursor: grab;
+    cursor: inherit;
     @include icon(bars);
 }
