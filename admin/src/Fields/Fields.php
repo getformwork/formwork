@@ -54,11 +54,10 @@ class Fields extends AssociativeCollection
         foreach ($this->items as $field) {
             $output .= $field->render(true);
         }
-        if (!$return) {
-            echo $output;
-        } else {
+        if ($return) {
             return $output;
         }
+        echo $output;
     }
 
     /**

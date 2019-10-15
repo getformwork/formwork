@@ -22,58 +22,65 @@ class View
     protected $name;
 
     /**
-     * View file
-     *
-     * @var string
-     */
-    protected $file;
-
-    /**
-     * View data
+     * View variables
      *
      * @var array
      */
-    protected $data;
+    protected $vars = array();
 
     /**
-     * Assets instance
+     * View assets instance
      *
      * @var Assets
      */
     protected $assets;
 
-    public function __construct($name, array $data = array())
+    /**
+     * Create a new View instance
+     *
+     * @param string $name
+     * @param array  $vars
+     */
+    public function __construct($name, array $vars = array())
     {
         $this->name = $name;
-        $this->file = VIEWS_PATH . str_replace('.', DS, $name) . '.php';
-        $this->data = array_merge($this->defaults(), $data);
+        $this->vars = array_merge($this->defaults(), $vars);
+    }
+
+    /**
+     * Insert a view
+     *
+     * @param string $name
+     * @param array  $vars
+     */
+    public function insert($name, array $vars = array())
+    {
+        $file = VIEWS_PATH . str_replace('.', DS, $name) . '.php';
+
+        if (!FileSystem::exists($file)) {
+            throw new RuntimeException('View ' . $name . ' not found');
+        }
+
+        Renderer::load($file, array_merge($this->vars, $vars), $this, static::class);
     }
 
     /**
      * Render a view
      *
-     * @param string $view   Name of the view
-     * @param array  $data   Data to pass to the view
-     * @param bool   $return Whether to return
+     * @param bool $return Whether to return or render the view
      *
      * @return string|void
      */
     public function render($return = false)
     {
-        FileSystem::assert($this->file);
         ob_start();
-        Renderer::load($this->file, $this->data, $this, static::class);
-        if (!$return) {
-            ob_end_flush();
-        } else {
+
+        $this->insert($this->name);
+
+        if ($return) {
             return ob_get_clean();
         }
-    }
-
-    public function insert($name, array $data = array(), $return = false)
-    {
-        $view = new static($name, array_merge($this->data, $data));
-        return $view->render($return);
+        ob_end_flush();
     }
 
     /**
@@ -90,16 +97,6 @@ class View
     }
 
     /**
-     * @see Formwork\Utils\Str::escape()
-     *
-     * @param string $string
-     */
-    protected function escape($string)
-    {
-        return Str::escape($string);
-    }
-
-    /**
      * Return an array containing the default data
      *
      * @return array
@@ -111,5 +108,15 @@ class View
             'site'     => Formwork::instance()->site(),
             'admin'    => Admin::instance()
         );
+    }
+
+    /**
+     * @see Formwork\Utils\Str::escape()
+     *
+     * @param string $string
+     */
+    protected function escape($string)
+    {
+        return Str::escape($string);
     }
 }
