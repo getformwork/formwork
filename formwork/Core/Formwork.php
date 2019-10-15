@@ -216,10 +216,9 @@ class Formwork
      */
     public function run()
     {
-        $isCached = false;
+        $isTrackable = false;
 
         if ($this->option('cache.enabled') && $this->cache->has($this->cacheKey)) {
-            $isCached = true;
             $resource = $this->cache->fetch($this->cacheKey);
         } else {
             if ($this->option('admin.enabled')) {
@@ -245,18 +244,31 @@ class Formwork
 
             $page = $this->site->currentPage();
 
-            $page->render();
+            $content = $page->render();
 
-            if ($this->option('cache.enabled') && !$isCached) {
+            if (!$page->isErrorPage()) {
+                $isTrackable = true;
+            }
+
+            if ($this->option('cache.enabled')) {
                 if ($page->cacheable()) {
-                    $this->cache->save($this->cacheKey, $page);
+                    $this->cache->save($this->cacheKey, new Response(
+                        $content,
+                        $page->get('response_status'),
+                        $page->headers()
+                    ));
                 }
             }
+        }
 
-            if ($this->option('statistics.enabled')) {
-                $statistics = new Statistics();
-                $statistics->trackVisit();
-            }
+        if ($resource instanceof Response) {
+            $resource->render();
+            $isTrackable = true;
+        }
+
+        if ($this->option('statistics.enabled') && $isTrackable) {
+            $statistics = new Statistics();
+            $statistics->trackVisit();
         }
     }
 

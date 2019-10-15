@@ -4,7 +4,6 @@ namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Registry;
-use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Visitor;
@@ -104,12 +103,6 @@ class Statistics
     public function trackVisit()
     {
         if (Visitor::isBot() || !Visitor::isTrackable()) {
-            return;
-        }
-
-        $page = Formwork::instance()->site()->currentPage();
-
-        if (!is_null($page) && $page->isErrorPage()) {
             return;
         }
 
