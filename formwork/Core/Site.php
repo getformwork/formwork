@@ -51,7 +51,6 @@ class Site extends AbstractPage
     public function defaults()
     {
         return array(
-            'lang'     => 'en',
             'title'    => 'Formwork',
             'aliases'  => array(),
             'metadata' => array()
@@ -200,6 +199,19 @@ class Site extends AbstractPage
             $this->currentPage = $errorPage;
         }
         return $errorPage;
+    }
+
+    /**
+     * Get site language
+     *
+     * @deprecated
+     *
+     * @return string|null
+     */
+    public function lang()
+    {
+        trigger_error(static::class . '::lang() is deprecated since Formwork 1.2.0, use ' . static::class . '::languages()->default() instead', E_USER_DEPRECATED);
+        return $this->languages()->default() ?? ($this->data['lang'] ?? 'en');
     }
 
     /**
