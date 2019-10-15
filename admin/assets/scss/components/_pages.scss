@@ -194,15 +194,6 @@ button .page-language,
     }
 }
 
-.sortable-chosen,
-.sortable-ghost {
-    background-color: #fff;
-}
-
-.sortable-fallback {
-    box-shadow: $sortable-fallback-box-shadow;
-}
-
 .dragging [data-sortable=false] .pages-item:hover {
     background-color: lighten($color-error, 37.5%);
     cursor: no-drop;

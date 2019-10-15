@@ -2495,6 +2495,17 @@ span.CodeMirror-selectedtext {
   cursor: inherit;
   font-family: Icons, sans-serif; }
 
+.sortable-chosen,
+.sortable-ghost {
+  background-color: #fff;
+  cursor: grabbing; }
+
+.sortable-chosen * {
+  cursor: grabbing; }
+
+.sortable-fallback {
+  box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.15); }
+
 .pages-list {
   margin: 0;
   padding: 0;
@@ -2658,13 +2669,6 @@ button .page-language,
     font-family: Icons, sans-serif; }
   .page-slug-change:hover::after {
     opacity: 1; }
-
-.sortable-chosen,
-.sortable-ghost {
-  background-color: #fff; }
-
-.sortable-fallback {
-  box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.15); }
 
 .dragging [data-sortable=false] .pages-item:hover {
   background-color: #fce8e5;

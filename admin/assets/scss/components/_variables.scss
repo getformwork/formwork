@@ -410,6 +410,8 @@ $section-header-padding-h: 0.5rem;
 $sort-handle-margin-right: 0.25rem;
 $sort-handle-width: 0.75rem;
 
+$sortable-fallback-box-shadow: 0 0 12px 3px rgba(#000, 0.15);
+
 // ===
 // Pages
 // ===
@@ -438,8 +440,6 @@ $pages-level-5-padding-left: 6rem;
 
 $page-search-padding-right: 1.5rem;
 $page-search-width: 28rem;
-
-$sortable-fallback-box-shadow: 0 0 12px 3px rgba(#000, 0.15);
 
 $page-info-margin-bottom: 0.75rem;
 $page-info-padding-v: 0;
