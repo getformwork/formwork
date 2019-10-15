@@ -1,2 +1,2 @@
-<?php if ($field->has('label')): ?><label for="<?= $field->name() ?>"><?= $field->label() ?></label><?php endif; ?>
+<?= $this->insert('fields.label') ?>
 <input type="range" id="<?= $field->name() ?>" name="<?= $field->formName() ?>" min="<?= $field->get('min') ?>" max="<?= $field->get('max') ?>" step="<?= $field->get('step') ?>" value="<?= $field->value() ?>"<?php if ($field->get('required')): ?> required<?php endif; ?><?php if ($field->get('disabled')): ?> disabled<?php endif; ?>><span class="range-input-value"><?= $field->value() ?></span>

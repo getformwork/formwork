@@ -1,4 +1,4 @@
-<?php if ($field->has('label')): ?><label for="<?= $field->name() ?>"><?= $field->label() ?></label><?php endif; ?>
+<?= $this->insert('fields.label') ?>
 <div id="<?= $field->name() ?>" class="array-input<?php if ($field->get('associative')): ?> array-input-associative<?php endif; ?>" data-name="<?= $field->formName() ?>">
 <?php foreach ($field->value() ?: array('' => '') as $key => $value): ?>
     <div class="array-input-row">
