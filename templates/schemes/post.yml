@@ -1,7 +1,7 @@
 title: Blog Post
 extend: page
 default: false
-pages: false
+children: false
 num: date
 fields:
     image:

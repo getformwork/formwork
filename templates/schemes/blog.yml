@@ -2,11 +2,10 @@ title: Blog
 extend: page
 default: false
 type: listing
-pages:
-    - post
-    - blog
-reverse-children: true
-sortable-children: false
+children:
+    templates: [post, blog]
+    reverse: true
+    sortable: true
 fields:
     posts-per-page:
         type: select

@@ -13,9 +13,9 @@
 <?php
                 foreach ($pages as $page):
                     $scheme = $this->scheme($page->template()->name());
-                    if (!$scheme->get('pages', true)) continue;
+                    if (!$scheme->get('children', true)) continue;
 ?>
-                <option value="<?= $page->route() ?>"<?php if ($scheme->has('pages')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('pages'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
+                <option value="<?= $page->route() ?>"<?php if ($scheme->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('children.templates'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
 <?php
                 endforeach;
 ?>
