@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.2.0](https://github.com/getformwork/formwork/releases/tag/1.2.0) (2019-10-16)
+
+**Enhancements**
+
+- **Restore response caching instead of `Page` object to save large amounts of disk space**
+- Add `Response` class
+- Add support for options dropdown list to `tags` field
+- Add options list to `languages.available` field
+- Add `View` class
+- Add `Field::render()`
+- Add `Fields::render()`
+- Refactor admin controllers and views
+- Add `fields.label` view
+- Send `E_USER_DEPRECATED` errors to standard PHP error handler
+
+**Bug fixes**
+
+- Fix template schemes not specifying `default` property
+- Fix children pages list not collapsing on reorder
+
+**Deprecations**
+- Deprecate `Site::lang()`
+- Deprecate `pages`, `reverse-` and `sortable-children` scheme properties
+
 ## [1.1.1](https://github.com/getformwork/formwork/releases/tag/1.1.1) (2019-10-12)
 
 **Bug fixes**
