@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1](https://github.com/getformwork/formwork/releases/tag/1.2.1) (2019-10-22)
+
+**Bug fixes**
+
+- Fix file permissions
+
 ## [1.2.0](https://github.com/getformwork/formwork/releases/tag/1.2.0) (2019-10-16)
 
 **Enhancements**
@@ -21,6 +27,7 @@
 - Fix children pages list not collapsing on reorder
 
 **Deprecations**
+
 - Deprecate `Site::lang()`
 - Deprecate `pages`, `reverse-` and `sortable-children` scheme properties
 
