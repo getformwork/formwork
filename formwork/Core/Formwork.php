@@ -76,13 +76,6 @@ class Formwork
     protected $cache;
 
     /**
-     * Current page cache key
-     *
-     * @var string
-     */
-    protected $cacheKey;
-
-    /**
      * Create a new Formwork instance
      */
     public function __construct()
@@ -100,8 +93,7 @@ class Formwork
         $this->loadLanguages();
         $this->loadSite();
         $this->loadCache();
-
-        $this->router = new Router($this->request);
+        $this->loadRoutes();
     }
 
     /**
@@ -216,26 +208,7 @@ class Formwork
      */
     public function run()
     {
-        $isTrackable = false;
-
-        if ($this->option('cache.enabled') && $this->cache->has($this->cacheKey)) {
-            $resource = $this->cache->fetch($this->cacheKey);
-        } else {
-            if ($this->option('admin.enabled')) {
-                $this->loadAdminRoute();
-            }
-
-            $this->router->add(array(
-                '/',
-                '/page/{paginationPage:num}/',
-                '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
-                '/{page}/tag/{tagName:aln}/',
-                '/{page}/page/{paginationPage:num}/',
-                '/{page}/'
-            ), $this->defaultRoute());
-
-            $resource = $this->router->dispatch();
-        }
+        $resource = $this->router->dispatch();
 
         if ($resource instanceof Page) {
             if (is_null($this->site->currentPage())) {
@@ -244,15 +217,14 @@ class Formwork
 
             $page = $this->site->currentPage();
 
-            $content = $page->render();
+            if ($this->option('cache.enabled') && $this->cache->has($page->route())) {
+                $response = $this->cache->fetch($page->route());
+                $response->render();
+            } else {
+                $content = $page->render();
 
-            if (!$page->isErrorPage()) {
-                $isTrackable = true;
-            }
-
-            if ($this->option('cache.enabled')) {
-                if ($page->cacheable()) {
-                    $this->cache->save($this->cacheKey, new Response(
+                if ($this->option('cache.enabled') && $page->cacheable()) {
+                    $this->cache->save($page->route(), new Response(
                         $content,
                         $page->get('response_status'),
                         $page->headers()
@@ -261,14 +233,11 @@ class Formwork
             }
         }
 
-        if ($resource instanceof Response) {
-            $resource->render();
-            $isTrackable = true;
-        }
-
-        if ($this->option('statistics.enabled') && $isTrackable) {
-            $statistics = new Statistics();
-            $statistics->trackVisit();
+        if ($this->option('statistics.enabled')) {
+            if (isset($page) && !$page->isErrorPage()) {
+                $statistics = new Statistics();
+                $statistics->trackVisit();
+            }
         }
     }
 
@@ -333,8 +302,28 @@ class Formwork
     {
         if ($this->option('cache.enabled')) {
             $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
-            $this->cacheKey = Uri::normalize(HTTPRequest::uri());
         }
+    }
+
+    /**
+     * Load routes
+     */
+    protected function loadRoutes()
+    {
+        $this->router = new Router($this->request);
+
+        if ($this->option('admin.enabled')) {
+            $this->loadAdminRoute();
+        }
+
+        $this->router->add(array(
+            '/',
+            '/page/{paginationPage:num}/',
+            '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
+            '/{page}/tag/{tagName:aln}/',
+            '/{page}/page/{paginationPage:num}/',
+            '/{page}/'
+        ), $this->defaultRoute());
     }
 
     /**
