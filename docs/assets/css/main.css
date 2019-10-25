@@ -1,26 +1,12 @@
 /* header */
 header{}
-header .navbar-brand img{
-    width: 35px;
-}
+header .navbar-brand img{width: 35px;}
 
 /* main */
 main{}
-
-
-
-
-
-
-main .figure-logo img{
-    height: 150px;
-}
-main .f-headline{
-	background: url(https://images.unsplash.com/photo-1514575619841-1a3d949d3277?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300
-) no-repeat;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
+main .figure-logo img{height: 150px;}
+main .f-headline{background: url(../../assets/img/f-headline.png) no-repeat;-webkit-background-clip: text;-webkit-text-fill-color: transparent;}
+main .list-group-item.active{background-color: #17a2b8;border-color: #249caf;}
 
 /* footer */
 footer{}
@@ -31,6 +17,7 @@ footer{}
 .fs-14{font-size:14px;}
 .fs-15{font-size:15px;}
 .fs-16{font-size:16px;}
+.fw-5{font-weight: 500}
 .bg-dark-2{background-color: #000;}
 .ff-poppins{font-family: Poppins;}
 

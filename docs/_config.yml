@@ -1,0 +1,22 @@
+# site
+name:               Formwork
+description:        Formwork is a flat file-based Content Management System (CMS) to make and manage simple sites.
+img:                https://raw.githubusercontent.com/getformwork/formwork/master/assets/images/formwork.png
+type:               WebSite
+version:            1.2.1
+
+# social
+social: 
+  #facebook:         https://www.facebook.com
+  github:           https://github.com
+
+# collections
+collections:
+  docs:
+    permalink: "/docs/:title/"
+    output: true
+
+# plugins
+plugins:
+  - jekyll-redirect-from
+  - jekyll-sitemap
