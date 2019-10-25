@@ -9,7 +9,9 @@
 
         <!-- -->
         <div class="col-12 col-md-9">
-          {{ content }}
+          <article class="markdown">
+            {{ content }}
+          </article>
         </div>
         <div class="col-12 col-md-3">
           <ul class="list-group">
@@ -17,10 +19,10 @@
               <a href="{{ site.url }}{{ site.baseurl }}/docs" class="text-reset">Getting started</a>
             </li>
             <li class="list-group-item {% if page.active == 'configuration' %}active fw-5{% endif %} fs-14">
-              <a href="{{ site.url }}{{ site.baseurl }}/configuration" class="text-reset">Configuration</a>
+              <a href="{{ site.url }}{{ site.baseurl }}/docs/configuration" class="text-reset">Configuration</a>
             </li>
             <li class="list-group-item {% if page.active == 'changelog' %}active fw-5{% endif %} fs-14">
-              <a href="{{ site.url }}{{ site.baseurl }}/changelog" class="text-reset">Changelog</a>
+              <a href="{{ site.url }}{{ site.baseurl }}/docs/changelog" class="text-reset">Changelog</a>
             </li>
           </ul>
         </div>

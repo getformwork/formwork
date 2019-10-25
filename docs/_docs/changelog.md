@@ -1,5 +1,5 @@
 ---
-layout: reference
+layout: docs
 permalink: /docs/changelog
 active: changelog
 ---
