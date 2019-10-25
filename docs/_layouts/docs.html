@@ -5,7 +5,7 @@
   <!-- -->
   <section class="pt-5 my-5">
     <div class="container">
-      <div class="row align-items-center">
+      <div class="row">
 
         <!-- -->
         <div class="col-12 col-md-9">
@@ -13,11 +13,15 @@
         </div>
         <div class="col-12 col-md-3">
           <ul class="list-group">
-            <li class="list-group-item active fw-5 fs-14">Getting started</li>
-            <li class="list-group-item fs-14">Requirements</li>
-            <li class="list-group-item fs-14">Installing</li>
-            <li class="list-group-item fs-14">Changelog</li>
-            <li class="list-group-item fs-14">Configuration</li>
+            <li class="list-group-item {% if page.active == 'docs' %}active fw-5{% endif %} fs-14">
+              <a href="{{ site.url }}{{ site.baseurl }}/docs" class="text-reset">Getting started</a>
+            </li>
+            <li class="list-group-item {% if page.active == 'configuration' %}active fw-5{% endif %} fs-14">
+              <a href="{{ site.url }}{{ site.baseurl }}/configuration" class="text-reset">Configuration</a>
+            </li>
+            <li class="list-group-item {% if page.active == 'changelog' %}active fw-5{% endif %} fs-14">
+              <a href="{{ site.url }}{{ site.baseurl }}/changelog" class="text-reset">Changelog</a>
+            </li>
           </ul>
         </div>
 
