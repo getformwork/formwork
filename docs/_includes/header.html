@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="tr">
+<html>
 <head>
 
   <meta charset="utf-8">
-  <title>test</title>
+  <title>{% if page.title %}{{ page.title }} | {{ site.name }}{% else %}{{ site.name }}{% endif %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="description" content="test">
+  <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
 
   <!--seo -->
   <meta property="og:site_name" content="{{ site.name }}">
