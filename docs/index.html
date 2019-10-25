@@ -15,12 +15,12 @@ active: home
         <div class="col-12 col-md-9">
           <h1 class="h2 font-weight-bold f-headline ff-poppins">{{ site.name }}</h1>
           <p class="fs-15">{{ site.description }}</p>
-          <button type="button" class="btn btn-outline-info mr-1 fs-15">Documentation</button>
-          <button type="button" class="btn btn-dark fs-15">Download</button>
+          <a href="{{ site.url }}{{ site.baseurl }}/docs" class="btn btn-outline-info mr-1 fs-15">Documentation</a>
+          <a href="https://github.com/getformwork/formwork/releases/latest" class="btn btn-dark fs-15">Download</a>
         </div>
         <div class="col-3 d-md-flex justify-content-start d-none">
           <figure class="figure m-0 figure-logo">
-            <img src="{{ site.url }}{{ site.baseurl }}/assets/img/formwork-b.svg" class="figure-img img-fluid rounded">
+            <img src="{{ site.url }}{{ site.baseurl }}/assets/img/formwork-b.svg" class="figure-img img-fluid">
           </figure>
         </div>
 

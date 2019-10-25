@@ -1,3 +1,4 @@
+
 /* header */
 header{}
 header .navbar-brand img{width: 35px;}
@@ -8,64 +9,38 @@ main .figure-logo img{height: 150px;}
 main .f-headline{background: url(../../assets/img/f-headline.png) no-repeat;-webkit-background-clip: text;-webkit-text-fill-color: transparent;}
 main .list-group-item.active{background-color: #17a2b8;border-color: #249caf;}
 
-
-
-
-main .markdown p{
-    font-size: 15px;
-}
-main .markdown h1{
-    font-size: 22px;
-    padding-bottom: .3em;
-    border-bottom: 1px solid #eaecef;
-}
-
-main .markdown h2{
-    font-size: 18px;
-    padding-bottom: .3em;
-    border-bottom: 1px solid #eaecef;
-    margin-bottom: 1rem;
-}
-
-main .markdown h3{
-    font-size: 15px;
-    margin-bottom: 1rem;
-}
-
-main .markdown ol,
-main .markdown ul{
-    padding-left: 2em;
-    font-size: 15px;
-}
-
-main .markdown table{width: 100%;font-size: 15px;margin-bottom: 1rem;border: 1px solid #dee2e6;color: #212529;}
-main .markdown table td,
-main .markdown table th{padding: .60rem;vertical-align: top;border-top: 1px solid #dee2e6;}
-main .markdown table thead th{color: #fff;background-color: #343a40;border-color: #454d55;}
-main .markdown table td,
-main .markdown table th{border: 1px solid #dee2e6;}
-main .markdown table tbody tr:nth-of-type(even){background-color: rgba(0,0,0,.05);}
-
-main .markdown .highlight{width: 100%;overflow-x: auto;vertical-align: middle;border: 1px solid rgba(0,0,0,.125);border-top: 0;margin: 0;padding: 10px 0.5em;}
-main .markdown .highlight pre{border: 0;}
-main .markdown .highlight pre code{
-    font-size: 14px;
-}
-main .markdown .highlighter-rouge{position: relative;margin-bottom: 1rem;}
-
-main .markdown .language-html:before,
-main .markdown .language-sh:before,
-main .markdown .language-js:before,
-main .markdown .language-css:before,
-main .markdown .language-php:before,
-main .markdown .language-shell:before{display: flex;justify-content: center;width: 100%;padding: .4rem;font-size: 13px;color: #24292e;border: 1px solid rgba(0,0,0,.125);background-color: #eff3f6;background-image: linear-gradient(-180deg,#fafbfc,#eff3f6 90%);font-weight: 500;}
-
-main .markdown .language-sh:before{content:"Sh";}
-main .markdown .language-shell:before{content:"Shell";}
-main .markdown .language-html:before{content:"HTML";}
-main .markdown .language-js:before{content:"JS";}
-main .markdown .language-css:before{content:"CSS";}
-main .markdown .language-php:before{content:"PHP";}
+/**/
+article h1{font-size: 22px;padding-bottom: .3em;border-bottom: 1px solid #eaecef;margin-bottom: 1rem;}
+article h2{font-size: 17px;padding-bottom: .3em;border-bottom: 1px solid #eaecef;margin-bottom: 1rem;}
+article h3{font-size: 14px;margin-bottom: 1rem;}
+article ol,
+article ul{padding-left: 2em;font-size: 15px;}
+article ul li{word-break: break-all;}
+article ul li b, 
+article ul li strong{font-weight: 600;}
+article table{width: 100%;font-size: 15px;margin-bottom: 1rem;border: 1px solid #dee2e6;color: #212529;}
+article table td,
+article table th{padding: .60rem;vertical-align: top;border-top: 1px solid #dee2e6;}
+article table thead th{color: #fff;background-color: #343a40;border-color: #454d55;}
+article table td,
+article table th{border: 1px solid #dee2e6;}
+article table tbody tr:nth-of-type(even){background-color: rgba(0,0,0,.05);}
+article .highlight{width: 100%;overflow-x: auto;vertical-align: middle;border: 1px solid rgba(0,0,0,.125);border-top: 0;margin: 0;padding: 10px 0.5em;}
+article .highlight pre{border: 0;}
+article .highlight pre code{font-size: 14px;}
+article .highlighter-rouge{position: relative;margin-bottom: 1rem;}
+article .language-html:before,
+article .language-sh:before,
+article .language-js:before,
+article .language-css:before,
+article .language-php:before,
+article .language-shell:before{display: flex;justify-content: center;width: 100%;padding: .4rem;font-size: 13px;color: #24292e;border: 1px solid rgba(0,0,0,.125);background-color: #eff3f6;background-image: linear-gradient(-180deg,#fafbfc,#eff3f6 90%);font-weight: 500;}
+article .language-sh:before{content:"Sh";}
+article .language-shell:before{content:"Shell";}
+article .language-html:before{content:"HTML";}
+article .language-js:before{content:"JS";}
+article .language-css:before{content:"CSS";}
+article .language-php:before{content:"PHP";}
 
 /* footer */
 footer{}
