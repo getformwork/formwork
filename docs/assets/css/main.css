@@ -8,6 +8,7 @@ main{}
 main .figure-logo img{height: 150px;}
 main .f-headline{background: url(../../assets/img/f-headline.png) no-repeat;-webkit-background-clip: text;-webkit-text-fill-color: transparent;}
 main .list-group-item.active{background-color: #17a2b8;border-color: #249caf;}
+main .card-contributor img{height: 50px;}
 
 /**/
 article h1{font-size: 22px;padding-bottom: .3em;border-bottom: 1px solid #eaecef;margin-bottom: 1rem;}
