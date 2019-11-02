@@ -1,5 +1,6 @@
 # Formwork
 
+[![Discord](https://img.shields.io/discord/637658168754831380?color=%237289da&label=chat&logo=discord&logoColor=%23fff)](https://discord.gg/5Q3BmNY)
 [![GitHub Release Date](https://img.shields.io/github/release-date/getformwork/formwork.svg)](https://github.com/getformwork/formwork/releases/latest)
 [![GitHub All Releases](https://img.shields.io/github/downloads/getformwork/formwork/total.svg)](https://github.com/getformwork/formwork/releases)
 [![Packagist](https://img.shields.io/packagist/dt/getformwork/formwork.svg?color=%23f28d1a&label=Packagist%20downloads)](https://packagist.org/packages/getformwork/formwork)
