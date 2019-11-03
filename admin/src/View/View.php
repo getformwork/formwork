@@ -55,7 +55,7 @@ class View
      */
     public function insert($name, array $vars = array())
     {
-        $file = VIEWS_PATH . str_replace('.', DS, $name) . '.php';
+        $file = Admin::VIEWS_PATH . str_replace('.', DS, $name) . '.php';
 
         if (!FileSystem::exists($file)) {
             throw new RuntimeException('View ' . $name . ' not found');

@@ -21,6 +21,41 @@ class Admin
     use AdminTrait;
 
     /**
+     * Admin accounts path
+     *
+     * @var string
+     */
+    public const ACCOUNTS_PATH = ADMIN_PATH . 'accounts' . DS;
+
+    /**
+     * Admin schemes path
+     *
+     * @var string
+     */
+    public const SCHEMES_PATH = ADMIN_PATH . 'schemes' . DS;
+
+    /**
+     * Admin translations path
+     *
+     * @var string
+     */
+    public const TRANSLATIONS_PATH = ADMIN_PATH . 'translations' . DS;
+
+    /**
+     * Admin logs path
+     *
+     * @var string
+     */
+    public const LOGS_PATH = ADMIN_PATH . 'logs' . DS;
+
+    /**
+     * Admin views path
+     *
+     * @var string
+     */
+    public const VIEWS_PATH = ADMIN_PATH . 'views' . DS;
+
+    /**
      * Admin instance
      *
      * @var Admin

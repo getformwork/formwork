@@ -85,7 +85,7 @@ class Statistics
      */
     public function __construct()
     {
-        $base = LOGS_PATH . 'statistics' . DS;
+        $base = Admin::LOGS_PATH . 'statistics' . DS;
 
         if (!FileSystem::exists($base)) {
             FileSystem::createDirectory($base);

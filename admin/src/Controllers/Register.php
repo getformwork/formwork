@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
+use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Utils\Session;
@@ -44,7 +45,7 @@ class Register extends AbstractController
                     'role'     => 'admin'
                 );
 
-                FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
+                FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
                 Session::set('FORMWORK_USERNAME', $data->get('username'));
                 $time = $this->log('access')->log($data->get('username'));

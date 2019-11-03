@@ -166,7 +166,7 @@ trait AdminTrait
      */
     protected function registry($name)
     {
-        return new Registry(LOGS_PATH . $name . '.json');
+        return new Registry(Admin::LOGS_PATH . $name . '.json');
     }
 
     /**
@@ -178,7 +178,7 @@ trait AdminTrait
      */
     protected function log($name)
     {
-        return new Log(LOGS_PATH . $name . '.json');
+        return new Log(Admin::LOGS_PATH . $name . '.json');
     }
 
     /**

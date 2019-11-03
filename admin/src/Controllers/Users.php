@@ -66,7 +66,7 @@ class Users extends AbstractController
             'language' => $data->get('language')
         );
 
-        FileSystem::write(ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
+        FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
         $this->notify($this->label('users.user.created'), 'success');
         $this->redirect('/users/');
@@ -93,7 +93,7 @@ class Users extends AbstractController
                     'users.user.cannot-delete'
                 );
             }
-            FileSystem::delete(ACCOUNTS_PATH . $user->username() . '.yml');
+            FileSystem::delete(Admin::ACCOUNTS_PATH . $user->username() . '.yml');
             $this->deleteAvatar($user);
         } catch (TranslatedException $e) {
             $this->notify($e->getTranslatedMessage(), 'error');
@@ -114,7 +114,7 @@ class Users extends AbstractController
      */
     public function profile(RouteParams $params)
     {
-        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'user.yml'));
+        $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'user.yml'));
 
         $user = Admin::instance()->users()->get($params->get('user'));
 
@@ -197,7 +197,7 @@ class Users extends AbstractController
         // Filter empty elements from $data and merge them with $user ones
         $userData = array_merge($user->toArray(), array_filter($data->toArray()));
 
-        FileSystem::write(ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
+        FileSystem::write(Admin::ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
     }
 
     /**

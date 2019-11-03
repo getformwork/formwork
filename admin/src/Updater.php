@@ -103,7 +103,7 @@ class Updater
         return array(
             'time'                => 900,
             'force'               => false,
-            'registryFile'        => LOGS_PATH . 'updates.json',
+            'registryFile'        => Admin::LOGS_PATH . 'updates.json',
             'tempFile'            => ROOT_PATH . '.formwork-update.zip',
             'cleanupAfterInstall' => false,
             'ignore'              => array(

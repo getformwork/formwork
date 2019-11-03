@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
+use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
@@ -35,7 +36,7 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'system.yml'));
+        $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'system.yml'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
@@ -69,7 +70,7 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $fields = new Fields(YAML::parseFile(SCHEMES_PATH . 'site.yml'));
+        $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'site.yml'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
