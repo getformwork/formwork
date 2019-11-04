@@ -39,6 +39,34 @@ abstract class AbstractPage
     protected $data = array();
 
     /**
+     * Page uri
+     *
+     * @var string
+     */
+    protected $uri;
+
+    /**
+     * Page absolute uri
+     *
+     * @var string
+     */
+    protected $absoluteUri;
+
+    /**
+     * Page last modified time
+     *
+     * @var int
+     */
+    protected $lastModifiedTime;
+
+    /**
+     * Page modified date
+     *
+     * @var string
+     */
+    protected $date;
+
+    /**
      * Page metadata
      *
      * @var Metadata
@@ -46,11 +74,25 @@ abstract class AbstractPage
     protected $metadata;
 
     /**
+     * Page parent
+     *
+     * @var Page|Site
+     */
+    protected $parent;
+
+    /**
      * PageCollection containing page parents
      *
      * @var PageCollection
      */
     protected $parents;
+
+    /**
+     * Page level
+     *
+     * @var int
+     */
+    protected $level;
 
     /**
      * PageCollection containing page children

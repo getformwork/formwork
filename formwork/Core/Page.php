@@ -127,6 +127,13 @@ class Page extends AbstractPage
     protected $content;
 
     /**
+     * Page status
+     *
+     * @var string
+     */
+    protected $status;
+
+    /**
      * Whether page is published
      *
      * @var bool
