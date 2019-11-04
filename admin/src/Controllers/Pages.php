@@ -475,7 +475,7 @@ class Pages extends AbstractController
             $fileContent = '---' . PHP_EOL;
             $fileContent .= YAML::encode($frontmatter);
             $fileContent .= '---' . PHP_EOL;
-            $fileContent .= $data->get('content');
+            $fileContent .= $content;
 
             FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->option('content.path'));
