@@ -1,5 +1,5 @@
 ---
-title: Page Not Found
+title: 'Page Not Found'
 routable: false
 ---
 # Error 404
