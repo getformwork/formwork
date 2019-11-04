@@ -139,7 +139,10 @@ abstract class AbstractPage
      */
     public function absoluteUri()
     {
-        return Uri::resolveRelativeUri($this->uri());
+        if (!is_null($this->absoluteUri)) {
+            return $this->absoluteUri;
+        }
+        return $this->absoluteUri = Uri::resolveRelativeUri($this->uri());
     }
 
     /**
@@ -149,7 +152,10 @@ abstract class AbstractPage
      */
     public function lastModifiedTime()
     {
-        return FileSystem::lastModifiedTime($this->path);
+        if (!is_null($this->lastModifiedTime)) {
+            return $this->lastModifiedTime;
+        }
+        return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path);
     }
 
     /**
@@ -174,12 +180,15 @@ abstract class AbstractPage
      */
     public function parent()
     {
+        if (!is_null($this->parent)) {
+            return $this->parent;
+        }
         $parentPath = dirname($this->path) . DS;
         if (FileSystem::isDirectory($parentPath) && $parentPath !== Formwork::instance()->option('content.path')) {
-            return Formwork::instance()->site()->retrievePage($parentPath);
+            return $this->parent = Formwork::instance()->site()->retrievePage($parentPath);
         }
         // If no parent was found returns the site as first level pages' parent
-        return Formwork::instance()->site();
+        return $this->parent = Formwork::instance()->site();
     }
 
     /**
@@ -269,7 +278,10 @@ abstract class AbstractPage
      */
     public function level()
     {
-        return $this->parents()->count();
+        if (!is_null($this->level)) {
+            return $this->level;
+        }
+        return $this->level = $this->parents()->count();
     }
 
     /**
@@ -316,6 +328,10 @@ abstract class AbstractPage
     public function get($key, $default = null)
     {
         if (property_exists($this, $key)) {
+            // Call getter method if exists and property is null
+            if (is_null($this->$key) && method_exists($this, $key)) {
+                return $this->$key();
+            }
             return $this->$key;
         }
         if (Arr::has($this->data, $key)) {

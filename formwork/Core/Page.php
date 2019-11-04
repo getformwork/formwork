@@ -226,7 +226,7 @@ class Page extends AbstractPage
      */
     public function reload()
     {
-        $vars = array('filename', 'template', 'parents', 'children', 'descendants', 'siblings');
+        $vars = array('filename', 'template', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings');
         foreach ($vars as $var) {
             $this->$var = null;
         }
@@ -295,6 +295,9 @@ class Page extends AbstractPage
      */
     public function status()
     {
+        if (!is_null($this->status)) {
+            return $this->status;
+        }
         if ($this->published()) {
             $status = self::PAGE_STATUS_PUBLISHED;
         }
@@ -304,7 +307,7 @@ class Page extends AbstractPage
         if (!$this->published()) {
             $status = self::PAGE_STATUS_NOT_PUBLISHED;
         }
-        return $status;
+        return $this->status = $status;
     }
 
     /**
