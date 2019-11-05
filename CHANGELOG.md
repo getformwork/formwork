@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.3.0](https://github.com/getformwork/formwork/releases/tag/1.3.0) (2019-11-05)
+
+**Enhancements**
+
+- **Add Russian translation**, thanks to @aukc1970
+- **Declare properties for all getter methods in** `AbstractPage` **and** `Page`
+- **Cache getter values in** `AbstractPage` **and** `Page` **when possible**
+- Always load routes
+- Make error page cacheable
+- Add Discord badge to README.md
+- Add CONTRIBUTING.md
+- Move admin panel constants to `Admin` class
+- Fix line endings with `Pages::updatePage()`
+- Add .editorconfig
+- Extract `AbstractParser` class from `YAML`
+- Accept `usePHPYAML` option in `YAML::parse()` and `YAML::encode()`
+- Add Markdown parser
+- Update .htaccess and nginx.conf
+
+**Bug fixes**
+
+- Fix line endings and quotes in content files
+
+**Deprecations**
+
+- Deprecate accessing non-getter methods from `AbstractPage::get()`
+
 ## [1.2.1](https://github.com/getformwork/formwork/releases/tag/1.2.1) (2019-10-22)
 
 **Bug fixes**
