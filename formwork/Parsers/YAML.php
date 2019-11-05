@@ -3,10 +3,9 @@
 namespace Formwork\Parsers;
 
 use Formwork\Core\Formwork;
-use Formwork\Utils\FileSystem;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class YAML
+class YAML extends AbstractParser
 {
     /**
      * Whether to use PHP yaml extension to emit, parse, both or none of the operations
@@ -19,10 +18,11 @@ class YAML
      * Parse a YAML string
      *
      * @param string $input
+     * @param array  $options
      *
      * @return array
      */
-    public static function parse($input)
+    public static function parse($input, array $options = array())
     {
         if (function_exists('yaml_parse') && static::PHPYAMLmode('parse')) {
             if (!preg_match('/^---\n/', $input)) {
@@ -34,25 +34,14 @@ class YAML
     }
 
     /**
-     * Parse a YAML file
-     *
-     * @param string $file
-     *
-     * @return array
-     */
-    public static function parseFile($file)
-    {
-        return static::parse(FileSystem::read($file));
-    }
-
-    /**
      * Encode data to YAML format
      *
      * @param array $data
+     * @param array $options
      *
      * @return string
      */
-    public static function encode(array $data)
+    public static function encode(array $data, array $options = array())
     {
         $data = (array) $data;
         if (empty($data)) {
