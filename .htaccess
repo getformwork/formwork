@@ -10,10 +10,10 @@ AddDefaultCharset UTF-8
     RewriteRule ^(cache|config|formwork|templates|vendor)/.* index.php [L]
 
     RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L]
-    RewriteRule ^(LICENSE|composer\.lock|\.gitignore|\.php_cs|nginx.conf)/?$ index.php [L]
+    RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L]
 
     RewriteRule ^admin/(accounts|languages|logs|schemes|src|views)/.* index.php [L]
-    RewriteRule ^admin/(\.eslintrc|gulpfile\.js)/?$ index.php [L]
+    RewriteRule ^admin/(\.(.*)|gulpfile\.js)/?$ index.php [L]
 
     ## Let all URI be processed by index.php
     RewriteCond %{REQUEST_FILENAME} !-f
