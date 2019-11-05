@@ -338,6 +338,7 @@ abstract class AbstractPage
             return Arr::get($this->data, $key, $default);
         }
         if (method_exists($this, $key)) {
+            trigger_error('Accessing non-getter methods from ' . static::class . '::get() is deprecated since Formwork 1.3.0, use $page->' . $key . '() instead', E_USER_DEPRECATED);
             return $this->$key();
         }
         return $default;
