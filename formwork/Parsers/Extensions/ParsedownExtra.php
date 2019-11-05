@@ -1,29 +1,28 @@
 <?php
 
-namespace Formwork\Parsers;
+namespace Formwork\Parsers\Extensions;
 
 use Formwork\Core\Formwork;
-use Formwork\Core\Page;
 use Formwork\Utils\Uri;
-use ParsedownExtra;
 
-class ParsedownExtension extends ParsedownExtra
+class ParsedownExtra extends \ParsedownExtra
 {
     /**
-     * Page that will be parsed
+     * Base route to resolve links
      *
-     * @var Page
+     * @var string
      */
-    protected $page;
+    protected $baseRoute;
 
     /**
-     * Set the page that will be parsed
+     * @inheritdoc
      *
-     * @param Page $page
+     * @param array $options
      */
-    public function setPage(Page $page)
+    public function text($text, array $options = array())
     {
-        $this->page = $page;
+        $this->baseRoute = $options['baseRoute'] ?? '/';
+        return parent::text($text);
     }
 
     /**
@@ -39,7 +38,7 @@ class ParsedownExtension extends ParsedownExtra
         // Process only if scheme is either null, 'http' or 'https'
         if (in_array(Uri::scheme($href), array(null, 'http', 'https'), true)) {
             if (empty(Uri::host($href)) && $href[0] !== '#') {
-                $relativeUri = Uri::resolveRelativeUri($href, $this->page->route());
+                $relativeUri = Uri::resolveRelativeUri($href, $this->baseRoute);
                 $href = Formwork::instance()->site()->uri($relativeUri, false);
             }
         }

@@ -3,7 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Files\Files;
-use Formwork\Parsers\ParsedownExtension as Parsedown;
+use Formwork\Parsers\Markdown;
 use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
 use Formwork\Utils\FileSystem;
@@ -41,13 +41,6 @@ class Page extends AbstractPage
      * @var string
      */
     public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
-
-    /**
-     * Page content parser instance
-     *
-     * @var Parsedown
-     */
-    protected static $contentParser;
 
     /**
      * Page id
@@ -175,9 +168,6 @@ class Page extends AbstractPage
      */
     public function __construct($path)
     {
-        if (is_null(static::$contentParser)) {
-            static::$contentParser = new Parsedown();
-        }
         $this->path = FileSystem::normalize($path);
         $this->relativePath = Uri::normalize(Str::removeStart($this->path, Formwork::instance()->option('content.path')));
         $this->route = Uri::normalize(preg_replace('~/(\d+-)~', '/', strtr($this->relativePath, DS, '/')));
@@ -525,17 +515,6 @@ class Page extends AbstractPage
     }
 
     /**
-     * Initialize content parser
-     *
-     * @return Parsedown
-     */
-    protected function contentParser()
-    {
-        static::$contentParser->setPage($this);
-        return static::$contentParser;
-    }
-
-    /**
      * Parse page content
      */
     protected function parse()
@@ -549,9 +528,9 @@ class Page extends AbstractPage
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
         $this->data = array_merge($this->defaults(), $this->frontmatter);
         if (!empty($summary)) {
-            $this->summary = $this->contentParser()->text($summary);
+            $this->summary = Markdown::parse($summary, array('baseRoute' => $this->route));
         }
-        $this->content = $this->summary . $this->contentParser()->text($body);
+        $this->content = $this->summary . Markdown::parse($body, array('baseRoute' => $this->route));
     }
 
     /**
