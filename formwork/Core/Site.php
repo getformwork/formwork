@@ -258,9 +258,13 @@ class Site extends AbstractPage
             'charset'     => Formwork::instance()->option('charset'),
             'author'      => $this->get('author'),
             'description' => $this->get('description'),
-            'generator'   => Formwork::instance()->option('metadata.set_generator') ? 'Formwork' : null
+            'generator'   => 'Formwork'
         );
-        return $this->metadata = new Metadata(array_filter(array_merge($defaults, $this->data['metadata'])));
+        $data = array_filter(array_merge($defaults, $this->data['metadata']));
+        if (!Formwork::instance()->option('metadata.set_generator')) {
+            unset($data['generator']);
+        }
+        return $this->metadata = new Metadata($data);
     }
 
     /**
