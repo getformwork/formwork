@@ -102,4 +102,9 @@ class Metadatum
     {
         return !is_null($this->prefix);
     }
+
+    public function __toString()
+    {
+        return $this->content();
+    }
 }
