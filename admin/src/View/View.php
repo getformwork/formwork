@@ -9,6 +9,8 @@ use Formwork\Core\Formwork;
 use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use LogicException;
+use RuntimeException;
 
 class View
 {
@@ -36,6 +38,16 @@ class View
     protected $assets;
 
     /**
+     * Helper functions to be used in views
+     *
+     * @var array
+     */
+    protected static $helpers = array(
+        'escape'     => array(Str::class, 'escape'),
+        'removeHTML' => array(Str::class, 'removeHTML')
+    );
+
+    /**
      * Create a new View instance
      *
      * @param string $name
@@ -61,7 +73,7 @@ class View
             throw new RuntimeException('View ' . $name . ' not found');
         }
 
-        Renderer::load($file, array_merge($this->vars, $vars), $this, static::class);
+        Renderer::load($file, array_merge($this->vars, $vars), $this);
     }
 
     /**
@@ -110,13 +122,14 @@ class View
         );
     }
 
-    /**
-     * @see Formwork\Utils\Str::escape()
-     *
-     * @param string $string
-     */
-    protected function escape($string)
+    public function __call($name, $arguments)
     {
-        return Str::escape($string);
+        if (method_exists(AdminTrait::class, $name)) {
+            return $this->$name(...$arguments);
+        }
+        if (isset(static::$helpers[$name])) {
+            return static::$helpers[$name](...$arguments);
+        }
+        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }
