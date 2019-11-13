@@ -282,6 +282,22 @@ rows6:
                             options:
                                 1: '{{options.system.images.jpeg-save-progressive.enabled}}'
                                 0: '{{options.system.images.jpeg-save-progressive.disabled}}'
+        row4:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.images.process-uploads}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        images.process_uploads:
+                            type: togglegroup
+                            options:
+                                1: '{{options.system.images.process-uploads.enabled}}'
+                                0: '{{options.system.images.process-uploads.disabled}}'
 
 section7:
     type: header

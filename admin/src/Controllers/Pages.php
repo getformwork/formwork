@@ -10,6 +10,7 @@ use Formwork\Admin\Utils\Session;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Data\DataGetter;
+use Formwork\Files\Image;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
@@ -158,9 +159,7 @@ class Pages extends AbstractController
 
                 if (HTTPRequest::hasFiles()) {
                     try {
-                        $uploader = new Uploader($page->path());
-                        $uploader->upload();
-                        $page->reload();
+                        $this->processPageUploads($page);
                     } catch (TranslatedException $e) {
                         $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
                     }
@@ -314,8 +313,7 @@ class Pages extends AbstractController
 
         if (HTTPRequest::hasFiles()) {
             try {
-                $uploader = new Uploader($page->path());
-                $uploader->upload();
+                $this->processPageUploads($page);
             } catch (TranslatedException $e) {
                 $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
                 $this->redirect('/pages/' . $params->get('page') . '/edit/');
@@ -533,6 +531,31 @@ class Pages extends AbstractController
         }
 
         return $page;
+    }
+
+    /**
+     * Process page uploads
+     *
+     * @param Page $page
+     */
+    protected function processPageUploads(Page $page)
+    {
+        $uploader = new Uploader($page->path());
+        $uploader->upload();
+        $page->reload();
+
+        if (!empty($uploader->uploadedFiles())) {
+            foreach ($uploader->uploadedFiles() as $file) {
+                $file = $page->files()->get($file);
+
+                // Process JPEG and PNG images according to system options (e.g. quality)
+                if ($this->option('images.process_uploads') && in_array($file->mimeType(), array('image/jpeg', 'image/png'), true)) {
+                    $image = new Image($file->path());
+                    $image->save();
+                    $page->reload();
+                }
+            }
+        }
     }
 
     /**

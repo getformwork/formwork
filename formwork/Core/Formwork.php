@@ -188,6 +188,7 @@ class Formwork
             'images.jpeg_quality'      => 85,
             'images.jpeg_progressive'  => true,
             'images.png_compression'   => 6,
+            'images.process_uploads'   => true,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,
             'updates.backup_before'    => true,

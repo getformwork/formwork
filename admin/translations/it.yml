@@ -91,6 +91,9 @@ options.system.images.jpeg-save-progressive: Salva le immagini JPEG come progres
 options.system.images.jpeg-save-progressive.disabled: Disabilitato
 options.system.images.jpeg-save-progressive.enabled: Abilitato
 options.system.images.png-compression-level: Livello di compressione PNG
+options.system.images.process-uploads: Elabora (ottimizza) le immagini caricate
+options.system.images.process-uploads.disabled: Disabilitato
+options.system.images.process-uploads.enabled: Abilitato
 options.system.languages: Lingue
 options.system.languages.available-languages: Lingue disponibili
 options.system.languages.available-languages.no-languages: Nessuna lingua
