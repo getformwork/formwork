@@ -186,6 +186,7 @@ class Formwork
             'cache.path'               => ROOT_PATH . 'cache' . DS,
             'cache.time'               => 604800,
             'images.jpeg_quality'      => 85,
+            'images.jpeg_progressive'  => true,
             'images.png_compression'   => 6,
             'backup.path'              => ROOT_PATH . 'backup' . DS,
             'backup.max_files'         => 10,

@@ -266,6 +266,22 @@ rows6:
                             type: range
                             min: 0
                             max: 9
+        row3:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.images.jpeg-save-progressive}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        images.jpeg_progressive:
+                            type: togglegroup
+                            options:
+                                1: '{{options.system.images.jpeg-save-progressive.enabled}}'
+                                0: '{{options.system.images.jpeg-save-progressive.disabled}}'
 
 section7:
     type: header

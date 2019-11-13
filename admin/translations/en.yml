@@ -87,6 +87,9 @@ options.system.files: Files
 options.system.files.allowed-extensions: Allowed Extensions
 options.system.images: Images
 options.system.images.jpeg-quality: JPEG Quality
+options.system.images.jpeg-save-progressive: Save JPEG images as progressive
+options.system.images.jpeg-save-progressive.disabled: Disabled
+options.system.images.jpeg-save-progressive.enabled: Enabled
 options.system.images.png-compression-level: PNG Compression Level
 options.system.languages: Languages
 options.system.languages.available-languages: Available Languages

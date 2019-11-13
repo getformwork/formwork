@@ -89,6 +89,13 @@ class Image extends File
     protected $JPEGQuality = 85;
 
     /**
+     * Whether to save JPEG images as progressive
+     *
+     * @var bool
+     */
+    protected $JPEGSaveProgressive = true;
+
+    /**
      * PNG compression level 0-9
      *
      * @var int
@@ -117,6 +124,8 @@ class Image extends File
         if ($this->JPEGQuality < 0 || $this->JPEGQuality > 100) {
             throw new UnexpectedValueException('JPEG quality must be in the range 0-100, ' . $this->JPEGQuality . ' given');
         }
+
+        $this->JPEGSaveProgressive = Formwork::instance()->option('images.jpeg_progressive');
 
         $this->PNGCompression = Formwork::instance()->option('images.png_compression');
 
@@ -590,6 +599,7 @@ class Image extends File
 
         switch ($mimeType) {
             case 'image/jpeg':
+                imageinterlace($this->image, $this->JPEGSaveProgressive);
                 return imagejpeg($this->image, $filename, $this->JPEGQuality);
             case 'image/png':
                 return imagepng($this->image, $filename, $this->PNGCompression);
