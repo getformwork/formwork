@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Admin;
+namespace Formwork\Files;
 
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
@@ -9,7 +9,7 @@ use BadMethodCallException;
 use RuntimeException;
 use UnexpectedValueException;
 
-class Image
+class Image extends File
 {
     /**
      * Constant indicating the landscape orientation of an image
@@ -102,6 +102,8 @@ class Image
      */
     public function __construct($filename)
     {
+        parent::__construct($filename);
+
         if (!extension_loaded('gd')) {
             throw new RuntimeException('GD extension not loaded');
         }
