@@ -62,22 +62,20 @@ class YAML extends AbstractParser
     {
         if (is_null(static::$PHPYAMLmode)) {
             $option = Formwork::instance()->option('parsers.use_php_yaml');
-            if ($option) {
-                switch (strtolower($option)) {
-                    case 'all':
-                        static::$PHPYAMLmode = 'all';
-                        break;
-                    case 'emit':
-                        static::$PHPYAMLmode = 'emit';
-                        break;
-                    case 'parse':
-                        static::$PHPYAMLmode = 'parse';
-                        break;
-                    case 'none':
-                    default:
-                        static::$PHPYAMLmode = false;
-                        break;
-                }
+            switch (strtolower($option)) {
+                case 'all':
+                    static::$PHPYAMLmode = 'all';
+                    break;
+                case 'emit':
+                    static::$PHPYAMLmode = 'emit';
+                    break;
+                case 'parse':
+                    static::$PHPYAMLmode = 'parse';
+                    break;
+                case 'none':
+                default:
+                    static::$PHPYAMLmode = false;
+                    break;
             }
         }
         return static::$PHPYAMLmode === $pattern || static::$PHPYAMLmode === 'all';
