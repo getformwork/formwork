@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.1](https://github.com/getformwork/formwork/releases/tag/1.3.0) (2019-11-13)
+
+**Enhancements**
+
+- Add `Metadatum::__toString()`
+- Add missing status codes to `Header::HTTP_STATUS`
+
+**Bug fixes**
+
+- Fix `metadata.set_generator` ignored if a custom value is given
+
 ## [1.3.0](https://github.com/getformwork/formwork/releases/tag/1.3.0) (2019-11-05)
 
 **Enhancements**
