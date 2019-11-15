@@ -181,7 +181,7 @@ class Uploader
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {
-            return false;
+            throw new TranslatedException('File ' . $filename . ' already exists', 'uploader.error.already-exists');
         }
 
         if (@move_uploaded_file($source, $destination . $filename)) {

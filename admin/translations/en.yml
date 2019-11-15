@@ -209,6 +209,7 @@ updates.status.found: Updates found
 updates.status.installing: Installing updates...
 updates.status.up-to-date: Up-to-date!
 uploader.error: Cannot upload file. %s.
+uploader.error.already-exists: A file with the same name already exists
 uploader.error.cannot-write: Failed to write file to disk
 uploader.error.file-name: Invalid file name
 uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
