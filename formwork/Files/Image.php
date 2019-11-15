@@ -40,13 +40,6 @@ class Image extends File
     public const RESIZE_FIT_CONTAIN = 'contain';
 
     /**
-     * Image filename
-     *
-     * @var string
-     */
-    protected $filename;
-
-    /**
      * Array containing image information
      *
      * @var array
@@ -103,71 +96,15 @@ class Image extends File
     protected $PNGCompression = 9;
 
     /**
-     * Create a new Image instance
-     *
-     * @param string $filename
-     */
-    public function __construct($filename)
-    {
-        parent::__construct($filename);
-
-        if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension not loaded');
-        }
-
-        if (!FileSystem::isReadable($filename)) {
-            throw new RuntimeException('Image ' . $filename . ' must be readable to be processed');
-        }
-
-        $this->JPEGQuality = Formwork::instance()->option('images.jpeg_quality');
-
-        if ($this->JPEGQuality < 0 || $this->JPEGQuality > 100) {
-            throw new UnexpectedValueException('JPEG quality must be in the range 0-100, ' . $this->JPEGQuality . ' given');
-        }
-
-        $this->JPEGSaveProgressive = Formwork::instance()->option('images.jpeg_progressive');
-
-        $this->PNGCompression = Formwork::instance()->option('images.png_compression');
-
-        if ($this->PNGCompression < 0 || $this->PNGCompression > 9) {
-            throw new UnexpectedValueException('PNG compression level must be in range 0-9, ' . $this->PNGCompression . ' given');
-        }
-
-        $this->filename = $filename;
-        $this->info = getimagesize($filename);
-
-        if (!$this->info) {
-            throw new RuntimeException('Cannot load image ' . $filename);
-        }
-
-        switch ($this->info['mime']) {
-            case 'image/jpeg':
-                $this->image = imagecreatefromjpeg($filename);
-                break;
-            case 'image/png':
-                $this->image = imagecreatefrompng($filename);
-                break;
-            case 'image/gif':
-                $this->image = imagecreatefromgif($filename);
-                imagepalettetotruecolor($this->image);
-                break;
-            default:
-                throw new RuntimeException('Unsupported image MIME type');
-                break;
-        }
-
-        $this->width = imagesx($this->image);
-        $this->height = imagesy($this->image);
-        $this->sourceImage = $this->image;
-    }
-
-    /**
      * Return image width
      *
      * @return int
      */
     public function width()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         return $this->width;
     }
 
@@ -178,6 +115,9 @@ class Image extends File
      */
     public function height()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         return $this->height;
     }
 
@@ -188,6 +128,9 @@ class Image extends File
      */
     public function orientation()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         if ($this->width >= $this->height) {
             return self::ORIENTATION_LANDSCAPE;
         }
@@ -203,6 +146,9 @@ class Image extends File
      */
     public function rotate($angle)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         $backgroundColor = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
         $this->image = imagerotate($this->image, $angle, $backgroundColor);
         return $this;
@@ -215,6 +161,9 @@ class Image extends File
      */
     public function flipHorizontal()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imageflip($this->image, IMG_FLIP_HORIZONTAL);
         return $this;
     }
@@ -226,6 +175,9 @@ class Image extends File
      */
     public function flipVertical()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imageflip($this->image, IMG_FLIP_VERTICAL);
         return $this;
     }
@@ -237,6 +189,9 @@ class Image extends File
      */
     public function flipBoth()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imageflip($this->image, IMG_FLIP_BOTH);
         return $this;
     }
@@ -251,6 +206,10 @@ class Image extends File
      */
     public function resize($destinationWidth, $destinationHeight)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
+
         $sourceWidth = $this->width;
         $sourceHeight = $this->height;
 
@@ -312,6 +271,10 @@ class Image extends File
      */
     public function resizeToFit($destinationWidth, $destinationHeight, $mode = self::RESIZE_FIT_COVER)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
+
         $sourceWidth = $this->width;
         $sourceHeight = $this->height;
 
@@ -390,6 +353,10 @@ class Image extends File
             throw new BadMethodCallException(__METHOD__ . ' must be called with both $width and $height arguments');
         }
 
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
+
         $destinationImage = imagecreatetruecolor($width, $height);
 
         if ($this->info['mime'] === 'image/png' || $this->info['mime'] === 'image/gif') {
@@ -419,6 +386,9 @@ class Image extends File
      */
     public function desaturate()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_GRAYSCALE);
         return $this;
     }
@@ -430,6 +400,9 @@ class Image extends File
      */
     public function invert()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_NEGATE);
         return $this;
     }
@@ -446,6 +419,9 @@ class Image extends File
         if ($amount < -255 || $amount > 255) {
             throw new UnexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
         }
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_BRIGHTNESS, $amount);
         return $this;
     }
@@ -461,6 +437,9 @@ class Image extends File
     {
         if ($amount < -100 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
+        }
+        if (is_null($this->image)) {
+            $this->initialize();
         }
         // For GD -100 = max contrast, 100 = min contrast; we change $amount sign for a more predictable behavior
         imagefilter($this->image, IMG_FILTER_CONTRAST, -$amount);
@@ -491,6 +470,9 @@ class Image extends File
         if ($alpha < 0 || $alpha > 127) {
             throw new UnexpectedValueException('$alpha value must be in range 0-127, ' . $alpha . ' given');
         }
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_COLORIZE, $red, $green, $blue, $alpha);
         return $this;
     }
@@ -512,6 +494,9 @@ class Image extends File
      */
     public function edgedetect()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_EDGEDETECT);
         return $this;
     }
@@ -523,6 +508,9 @@ class Image extends File
      */
     public function emboss()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_EMBOSS);
         return $this;
     }
@@ -539,6 +527,9 @@ class Image extends File
         if ($amount < 0 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
         }
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         for ($i = 0; $i < $amount; $i++) {
             imagefilter($this->image, IMG_FILTER_GAUSSIAN_BLUR);
         }
@@ -552,6 +543,9 @@ class Image extends File
      */
     public function sharpen()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_MEAN_REMOVAL);
         return $this;
     }
@@ -565,6 +559,9 @@ class Image extends File
      */
     public function smoothen($amount)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_SMOOTH, $amount);
         return $this;
     }
@@ -578,6 +575,9 @@ class Image extends File
      */
     public function pixelate($amount)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagefilter($this->image, IMG_FILTER_PIXELATE, $amount);
         return $this;
     }
@@ -590,8 +590,12 @@ class Image extends File
      */
     public function save($filename = null, $destroy = true)
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
+
         if (is_null($filename)) {
-            $filename = $this->filename;
+            $filename = $this->path;
         }
 
         $extension = strtolower(FileSystem::extension($filename));
@@ -620,10 +624,67 @@ class Image extends File
      */
     public function destroy()
     {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
         imagedestroy($this->image);
         if (is_resource($this->sourceImage)) {
             imagedestroy($this->sourceImage);
         }
+    }
+
+    /**
+     * Initialize Image object
+     */
+    protected function initialize()
+    {
+        if (!extension_loaded('gd')) {
+            throw new RuntimeException('GD extension not loaded');
+        }
+
+        if (!FileSystem::isReadable($this->path)) {
+            throw new RuntimeException('Image ' . $this->path . ' must be readable to be processed');
+        }
+
+        $this->JPEGQuality = Formwork::instance()->option('images.jpeg_quality');
+
+        if ($this->JPEGQuality < 0 || $this->JPEGQuality > 100) {
+            throw new UnexpectedValueException('JPEG quality must be in the range 0-100, ' . $this->JPEGQuality . ' given');
+        }
+
+        $this->JPEGSaveProgressive = Formwork::instance()->option('images.jpeg_progressive');
+
+        $this->PNGCompression = Formwork::instance()->option('images.png_compression');
+
+        if ($this->PNGCompression < 0 || $this->PNGCompression > 9) {
+            throw new UnexpectedValueException('PNG compression level must be in range 0-9, ' . $this->PNGCompression . ' given');
+        }
+
+        $this->info = getimagesize($this->path);
+
+        if (!$this->info) {
+            throw new RuntimeException('Cannot load image ' . $this->path);
+        }
+
+        switch ($this->info['mime']) {
+            case 'image/jpeg':
+                $this->image = imagecreatefromjpeg($this->path);
+                break;
+            case 'image/png':
+                $this->image = imagecreatefrompng($this->path);
+                break;
+            case 'image/gif':
+                $this->image = imagecreatefromgif($this->path);
+                imagepalettetotruecolor($this->image);
+                break;
+            default:
+                throw new RuntimeException('Unsupported image MIME type');
+                break;
+        }
+
+        $this->width = imagesx($this->image);
+        $this->height = imagesy($this->image);
+        $this->sourceImage = $this->image;
     }
 
     /**
