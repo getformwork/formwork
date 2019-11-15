@@ -672,10 +672,12 @@ class Image extends File
                 break;
             case 'image/png':
                 $this->image = imagecreatefrompng($this->path);
+                $this->enableTransparency($this->image);
                 break;
             case 'image/gif':
                 $this->image = imagecreatefromgif($this->path);
                 imagepalettetotruecolor($this->image);
+                $this->enableTransparency($this->image);
                 break;
             default:
                 throw new RuntimeException('Unsupported image MIME type');
