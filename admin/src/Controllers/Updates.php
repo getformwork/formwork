@@ -17,7 +17,7 @@ class Updates extends AbstractController
     public function check()
     {
         $this->ensurePermission('updates.check');
-        $updater = new Updater();
+        $updater = new Updater(array('preferDistAssets' => true));
         $upToDate = $updater->checkUpdates();
         if ($upToDate) {
             JSONResponse::success($this->label('updates.status.up-to-date'), 200, array(
@@ -37,7 +37,7 @@ class Updates extends AbstractController
     public function update()
     {
         $this->ensurePermission('updates.update');
-        $updater = new Updater(array('force' => true));
+        $updater = new Updater(array('force' => true, 'preferDistAssets' => true));
         if ($this->option('updates.backup_before')) {
             $backupper = new Backupper();
             try {
