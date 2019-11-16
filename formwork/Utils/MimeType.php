@@ -9,7 +9,7 @@ class MimeType
      *
      * @var string
      */
-    public const DEFAULT_MIME_TYPE = 'application/octet-stream';
+    protected const DEFAULT_MIME_TYPE = 'application/octet-stream';
 
     /**
      * Associative array containing common MIME types
@@ -93,6 +93,41 @@ class MimeType
     {
         $extension = ltrim($extension, '.');
         return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
+    }
+
+    /**
+     * Get MIME type from a file
+     *
+     * @param string $file
+     *
+     * @return string|null
+     */
+    public static function fromFile($file)
+    {
+        $mimeType = null;
+
+        if (extension_loaded('fileinfo')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file);
+            finfo_close($finfo);
+        } elseif (function_exists('mime_content_type')) {
+            $mimeType = @mime_content_type($file);
+        }
+
+        // Fix type for SVG images without XML declaration
+        if ($mimeType === 'image/svg') {
+            $mimeType = static::fromExtension('svg');
+        }
+
+        // Fix wrong type for image/svg+xml
+        if ($mimeType === 'text/html') {
+            $node = @simplexml_load_file($file);
+            if ($node && $node->getName() === 'svg') {
+                $mimeType = static::fromExtension('svg');
+            }
+        }
+
+        return $mimeType ?: self::DEFAULT_MIME_TYPE;
     }
 
     /**

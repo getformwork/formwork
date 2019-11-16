@@ -55,30 +55,7 @@ class FileSystem
      */
     public static function mimeType($file)
     {
-        $mimeType = null;
-
-        if (extension_loaded('fileinfo')) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file);
-            finfo_close($finfo);
-        } elseif (function_exists('mime_content_type')) {
-            $mimeType = @mime_content_type($file);
-        }
-
-        // Fix type for SVG images without XML declaration
-        if ($mimeType === 'image/svg') {
-            $mimeType = MimeType::fromExtension('svg');
-        }
-
-        // Fix wrong type for image/svg+xml
-        if ($mimeType === 'text/html') {
-            $node = @simplexml_load_file($file);
-            if ($node && $node->getName() === 'svg') {
-                $mimeType = MimeType::fromExtension('svg');
-            }
-        }
-
-        return $mimeType ?: MimeType::DEFAULT_MIME_TYPE;
+        return MimeType::fromFile($file);
     }
 
     /**
