@@ -37,7 +37,7 @@ class Updates extends AbstractController
     public function update()
     {
         $this->ensurePermission('updates.update');
-        $updater = new Updater(array('force' => true, 'preferDistAssets' => true));
+        $updater = new Updater(array('force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true));
         if ($this->option('updates.backup_before')) {
             $backupper = new Backupper();
             try {
