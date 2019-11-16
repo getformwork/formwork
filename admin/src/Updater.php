@@ -105,12 +105,15 @@ class Updater
             'force'               => false,
             'registryFile'        => Admin::LOGS_PATH . 'updates.json',
             'tempFile'            => ROOT_PATH . '.formwork-update.zip',
+            'preferDistAssets'    => false,
             'cleanupAfterInstall' => false,
             'ignore'              => array(
                 'admin/accounts/*',
                 'admin/avatars/*',
                 'admin/logs/*',
                 'assets/*',
+                'backup/*',
+                'cache/*',
                 'config/*',
                 'content/*',
                 'templates/*'
@@ -254,6 +257,15 @@ class Updater
             'date'    => strtotime($data['published_at']),
             'archive' => $data['zipball_url']
         );
+
+        if ($this->options['preferDistAssets'] && !empty($data['assets'])) {
+            $assetName = 'formwork-' . $data['tag_name'] . '.zip';
+            $key = array_search($assetName, array_column($data['assets'], 'name'), true);
+
+            if ($key !== false) {
+                $this->release['archive'] = $data['assets'][$key]['browser_download_url'];
+            }
+        }
     }
 
     /**
