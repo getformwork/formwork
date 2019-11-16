@@ -96,7 +96,7 @@ class Validator
      *
      * @return float|int
      */
-    public static function validateNumber($value, Field &$field)
+    public static function validateNumber($value, Field $field)
     {
         $number = static::parse($value);
         if (!is_null($value)) {
@@ -118,7 +118,7 @@ class Validator
      *
      * @return float|int
      */
-    public static function validateRange($value, Field &$field)
+    public static function validateRange($value, Field $field)
     {
         return static::validateNumber($value, $field);
     }
@@ -141,7 +141,7 @@ class Validator
      *
      * @return array
      */
-    public static function validateTags($value, Field &$field)
+    public static function validateTags($value, Field $field)
     {
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {
@@ -161,7 +161,7 @@ class Validator
      *
      * @return array
      */
-    public static function validateArray($value, Field &$field)
+    public static function validateArray($value, Field $field)
     {
         $array = array();
         if (is_array($value)) {

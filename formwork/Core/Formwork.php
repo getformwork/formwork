@@ -381,8 +381,8 @@ class Formwork
                     $upperLevel = $this->option('pages.index');
                 }
                 if ($parent = $this->site->findPage($upperLevel)) {
-                    if ($file = $parent->file($filename)) {
-                        return HTTPResponse::file($file);
+                    if ($parent->files()->has($filename)) {
+                        return HTTPResponse::file($parent->files()->get($filename)->path());
                     }
                 }
             }
