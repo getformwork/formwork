@@ -131,14 +131,16 @@ class Statistics
     /**
      * Return chart data
      *
+     * @param int $limit
+     *
      * @return array
      */
-    public function getChartData()
+    public function getChartData($limit = self::CHART_LIMIT)
     {
         $visits = $this->visitsRegistry->toArray();
         $uniqueVisits = $this->uniqueVisitsRegistry->toArray();
 
-        $limit = min(self::CHART_LIMIT, count($visits), count($uniqueVisits));
+        $limit = min($limit, count($visits), count($uniqueVisits));
 
         $low = time() - ($limit - 1) * 86400;
 
