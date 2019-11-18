@@ -238,9 +238,7 @@ class Page extends AbstractPage
      */
     public function lastModifiedTime()
     {
-        $pathLastModifiedTime = parent::lastModifiedTime();
-        $fileLastModifiedTime = FileSystem::lastModifiedTime($this->path . $this->filename);
-        return $fileLastModifiedTime > $pathLastModifiedTime ? $fileLastModifiedTime : $pathLastModifiedTime;
+        return max(FileSystem::lastModifiedTime($this->path . $this->filename), parent::lastModifiedTime());
     }
 
     /**
