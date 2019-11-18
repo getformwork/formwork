@@ -604,11 +604,14 @@ class Image extends File
         switch ($mimeType) {
             case 'image/jpeg':
                 imageinterlace($this->image, $this->JPEGSaveProgressive);
-                return imagejpeg($this->image, $filename, $this->JPEGQuality);
+                imagejpeg($this->image, $filename, $this->JPEGQuality);
+                break;
             case 'image/png':
-                return imagepng($this->image, $filename, $this->PNGCompression);
+                imagepng($this->image, $filename, $this->PNGCompression);
+                break;
             case 'image/gif':
-                return imagegif($this->image, $filename);
+                imagegif($this->image, $filename);
+                break;
             default:
                 throw new RuntimeException('Unknown image MIME type for .' . $filename . ' extension');
                 break;
