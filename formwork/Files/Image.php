@@ -624,10 +624,9 @@ class Image extends File
      */
     public function destroy()
     {
-        if (is_null($this->image)) {
-            $this->initialize();
+        if (is_resource($this->image)) {
+            imagedestroy($this->image);
         }
-        imagedestroy($this->image);
         if (is_resource($this->sourceImage)) {
             imagedestroy($this->sourceImage);
         }
