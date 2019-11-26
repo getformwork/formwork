@@ -623,6 +623,40 @@ class Image extends File
     }
 
     /**
+     * Save image with current quality/compression only if its size is smaller than the original
+     *
+     * @param string $filename
+     * @param bool   $destroy  Whether to destroy image after saving
+     */
+    public function saveOptimized($filename = null, $destroy = true)
+    {
+        if (is_null($this->image)) {
+            $this->initialize();
+        }
+
+        if (is_null($filename)) {
+            $filename = $this->path;
+        }
+
+        $tempFilename = dirname($filename) . DS . '.tmp-' . basename($filename);
+
+        $this->save($tempFilename, false);
+
+        $tempFilesize = FileSystem::size($tempFilename, false);
+        $sourceFilesize = FileSystem::size($this->path, false);
+
+        if ($tempFilesize < $sourceFilesize) {
+            FileSystem::move($tempFilename, $this->path, true);
+        } else {
+            FileSystem::delete($tempFilename);
+        }
+
+        if ($destroy) {
+            $this->destroy();
+        }
+    }
+
+    /**
      * Delete image resources from memory
      */
     public function destroy()

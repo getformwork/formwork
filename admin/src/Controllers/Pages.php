@@ -551,7 +551,7 @@ class Pages extends AbstractController
                 // Process JPEG and PNG images according to system options (e.g. quality)
                 if ($this->option('images.process_uploads') && in_array($file->mimeType(), array('image/jpeg', 'image/png'), true)) {
                     $image = new Image($file->path());
-                    $image->save();
+                    $image->saveOptimized();
                     $page->reload();
                 }
             }
