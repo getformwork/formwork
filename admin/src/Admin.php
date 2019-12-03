@@ -258,7 +258,7 @@ class Admin
 
         // Authentication
         $this->router->add(
-            array('GET', 'POST'),
+            ['GET', 'POST'],
             '/login/',
             Controllers\Authentication::class . '@login'
         );
@@ -300,12 +300,12 @@ class Admin
             Controllers\Options::class . '@index'
         );
         $this->router->add(
-            array('GET', 'POST'),
+            ['GET', 'POST'],
             '/options/system/',
             Controllers\Options::class . '@systemOptions'
         );
         $this->router->add(
-            array('GET', 'POST'),
+            ['GET', 'POST'],
             '/options/site/',
             Controllers\Options::class . '@siteOptions'
         );
@@ -329,11 +329,11 @@ class Admin
             Controllers\Pages::class . '@create'
         );
         $this->router->add(
-            array('GET', 'POST'),
-            array(
+            ['GET', 'POST'],
+            [
                 '/pages/{page}/edit/',
                 '/pages/{page}/edit/language/{language}/'
-            ),
+            ],
             Controllers\Pages::class . '@edit'
         );
         $this->router->add(
@@ -354,10 +354,10 @@ class Admin
         );
         $this->router->add(
             'POST',
-            array(
+            [
                 '/pages/{page}/delete/',
                 '/pages/{page}/delete/language/{language}/',
-            ),
+            ],
             Controllers\Pages::class . '@delete'
         );
 
@@ -391,7 +391,7 @@ class Admin
             Controllers\Users::class . '@delete'
         );
         $this->router->add(
-            array('GET', 'POST'),
+            ['GET', 'POST'],
             '/users/{user}/profile/',
             Controllers\Users::class . '@profile'
         );

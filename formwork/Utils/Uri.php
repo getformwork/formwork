@@ -9,7 +9,7 @@ class Uri
      *
      * @var array
      */
-    protected const DEFAULT_PORTS = array(80, 443);
+    protected const DEFAULT_PORTS = [80, 443];
 
     /**
      * Current URI
@@ -207,14 +207,14 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return array(
+        return [
             'scheme'   => static::scheme($uri),
             'host'     => static::host($uri),
             'port'     => static::port($uri),
             'path'     => static::path($uri),
             'query'    => static::query($uri),
             'fragment' => static::fragment($uri)
-        );
+        ];
     }
 
     /**
@@ -265,7 +265,7 @@ class Uri
     public static function normalize($uri)
     {
         if (Str::startsWith($uri, 'http://') || Str::startsWith($uri, 'https://')) {
-            return static::make(array(), $uri);
+            return static::make([], $uri);
         }
         $normalized = rtrim($uri, '/') . '/';
         return $normalized[0] === '/' ? $normalized : '/' . $normalized;
@@ -283,7 +283,7 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return static::make(array('query' => ''), $uri);
+        return static::make(['query' => ''], $uri);
     }
 
     /**
@@ -298,7 +298,7 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return static::make(array('fragment' => ''), $uri);
+        return static::make(['fragment' => ''], $uri);
     }
 
     /**
@@ -323,7 +323,7 @@ class Uri
         if (!empty(static::host($uri))) {
             return $uri;
         }
-        $path = array();
+        $path = [];
         if ($uri[0] !== '/') {
             $path = explode('/', trim(static::path($base), '/'));
         }
@@ -340,6 +340,6 @@ class Uri
                 $path[] = $segment;
             }
         }
-        return static::make(array('path' => implode('/', $path)), $base);
+        return static::make(['path' => implode('/', $path)], $base);
     }
 }

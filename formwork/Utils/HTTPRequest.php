@@ -9,21 +9,21 @@ class HTTPRequest
      *
      * @var array
      */
-    protected const LOCALHOST_IP_ADDRESSES = array('127.0.0.1', '::1');
+    protected const LOCALHOST_IP_ADDRESSES = ['127.0.0.1', '::1'];
 
     /**
      * Array containing HTTP request headers
      *
      * @var array
      */
-    protected static $headers = array();
+    protected static $headers = [];
 
     /**
      * Array containing HTTP request files
      *
      * @var array
      */
-    protected static $files = array();
+    protected static $files = [];
 
     /**
      * Get request method

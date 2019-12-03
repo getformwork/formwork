@@ -95,8 +95,8 @@ class Scheme extends DataGetter
      */
     public function defaultFieldValues()
     {
-        $result = array();
-        foreach ($this->get('fields', array()) as $name => $value) {
+        $result = [];
+        foreach ($this->get('fields', []) as $name => $value) {
             if (isset($value['default'])) {
                 $result[$name] = $value['default'];
             }

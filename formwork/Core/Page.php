@@ -68,7 +68,7 @@ class Page extends AbstractPage
      *
      * @var array
      */
-    protected $availableLanguages = array();
+    protected $availableLanguages = [];
 
     /**
      * Page filename
@@ -96,7 +96,7 @@ class Page extends AbstractPage
      *
      * @var array
      */
-    protected $frontmatter = array();
+    protected $frontmatter = [];
 
     /**
      * Page unprocessed content
@@ -187,16 +187,16 @@ class Page extends AbstractPage
      */
     public function defaults()
     {
-        $defaults = array(
+        $defaults = [
             'published'  => true,
             'routable'   => true,
             'visible'    => true,
             'searchable' => true,
             'cacheable'  => true,
             'sortable'   => true,
-            'headers'    => array(),
-            'metadata'   => array()
-        );
+            'headers'    => [],
+            'metadata'   => []
+        ];
 
         // Merge with scheme default field values
         $defaults = array_merge($defaults, $this->template->scheme()->defaultFieldValues());
@@ -216,7 +216,7 @@ class Page extends AbstractPage
      */
     public function reload()
     {
-        $vars = array('filename', 'template', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings');
+        $vars = ['filename', 'template', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings'];
         foreach ($vars as $var) {
             $this->$var = null;
         }
@@ -425,7 +425,7 @@ class Page extends AbstractPage
      *
      * @return string
      */
-    public function renderToString(array $vars = array())
+    public function renderToString(array $vars = [])
     {
         return $this->template()->render($vars, true);
     }
@@ -438,7 +438,7 @@ class Page extends AbstractPage
      *
      * @return string
      */
-    public function render(array $vars = array(), $sendHeaders = true)
+    public function render(array $vars = [], $sendHeaders = true)
     {
         if ($sendHeaders) {
             $this->sendHeaders();
@@ -454,7 +454,7 @@ class Page extends AbstractPage
      */
     public function toArray()
     {
-        return array(
+        return [
             'route'    => $this->route(),
             'uri'      => $this->uri(),
             'id'       => $this->id(),
@@ -462,7 +462,7 @@ class Page extends AbstractPage
             'template' => $this->template()->name(),
             'num'      => $this->num(),
             'data'     => $this->data()
-        );
+        ];
     }
 
     /**
@@ -470,8 +470,8 @@ class Page extends AbstractPage
      */
     protected function loadFiles()
     {
-        $contentFiles = array();
-        $files = array();
+        $contentFiles = [];
+        $files = [];
 
         foreach (FileSystem::listFiles($this->path) as $file) {
             $name = FileSystem::name($file);
@@ -483,10 +483,10 @@ class Page extends AbstractPage
                     list($match, $name, $language) = $matches;
                 }
                 if (Formwork::instance()->site()->hasTemplate($name)) {
-                    $contentFiles[$language] = array(
+                    $contentFiles[$language] = [
                         'filename' => $file,
                         'template' => $name
-                    );
+                    ];
                     if ($language !== null && !in_array($language, $this->availableLanguages, true)) {
                         $this->availableLanguages[] = $language;
                     }
@@ -526,9 +526,9 @@ class Page extends AbstractPage
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
         $this->data = array_merge($this->defaults(), $this->frontmatter);
         if (!empty($summary)) {
-            $this->summary = Markdown::parse($summary, array('baseRoute' => $this->route));
+            $this->summary = Markdown::parse($summary, ['baseRoute' => $this->route]);
         }
-        $this->content = $this->summary . Markdown::parse($body, array('baseRoute' => $this->route));
+        $this->content = $this->summary . Markdown::parse($body, ['baseRoute' => $this->route]);
     }
 
     /**

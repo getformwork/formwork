@@ -14,7 +14,7 @@ class Validator
      *
      * @var array
      */
-    protected const IGNORED_FIELDS = array('column', 'header', 'row', 'rows');
+    protected const IGNORED_FIELDS = ['column', 'header', 'row', 'rows'];
 
     /**
      * Validate all Fields against given data
@@ -163,7 +163,7 @@ class Validator
      */
     public static function validateArray($value, Field $field)
     {
-        $array = array();
+        $array = [];
         if (is_array($value)) {
             $array = $value;
         } elseif ($value instanceof Collection || $value instanceof DataGetter) {

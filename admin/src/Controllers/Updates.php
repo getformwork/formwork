@@ -17,17 +17,17 @@ class Updates extends AbstractController
     public function check()
     {
         $this->ensurePermission('updates.check');
-        $updater = new Updater(array('preferDistAssets' => true));
+        $updater = new Updater(['preferDistAssets' => true]);
         $upToDate = $updater->checkUpdates();
         if ($upToDate) {
-            JSONResponse::success($this->label('updates.status.up-to-date'), 200, array(
+            JSONResponse::success($this->label('updates.status.up-to-date'), 200, [
                 'uptodate' => true
-            ))->send();
+            ])->send();
         } else {
-            JSONResponse::success($this->label('updates.status.found'), 200, array(
+            JSONResponse::success($this->label('updates.status.found'), 200, [
                 'uptodate' => false,
                 'release'  => $updater->latestRelease()
-            ))->send();
+            ])->send();
         }
     }
 
@@ -37,29 +37,29 @@ class Updates extends AbstractController
     public function update()
     {
         $this->ensurePermission('updates.update');
-        $updater = new Updater(array('force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true));
+        $updater = new Updater(['force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true]);
         if ($this->option('updates.backup_before')) {
             $backupper = new Backupper();
             try {
                 $backupper->backup();
             } catch (TranslatedException $e) {
-                JSONResponse::error($this->label('updates.status.cannot-make-backup'), 500, array(
+                JSONResponse::error($this->label('updates.status.cannot-make-backup'), 500, [
                     'status' => $this->label('updates.status.cannot-make-backup')
-                ))->send();
+                ])->send();
             }
         }
         try {
             $updater->update();
         } catch (RuntimeException $e) {
-            JSONResponse::error($this->label('updates.status.cannot-install'), 500, array(
+            JSONResponse::error($this->label('updates.status.cannot-install'), 500, [
                 'status' => $this->label('updates.status.cannot-install')
-            ))->send();
+            ])->send();
         }
         if (Formwork::instance()->cache() !== null) {
             Formwork::instance()->cache()->clear();
         }
-        JSONResponse::success($this->label('updates.installed'), 200, array(
+        JSONResponse::success($this->label('updates.installed'), 200, [
             'status' => $this->label('updates.status.up-to-date')
-        ))->send();
+        ])->send();
     }
 }

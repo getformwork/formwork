@@ -190,7 +190,7 @@ class Pagination
      */
     public function nextPageUri()
     {
-        return Uri::make(array('path' => $this->baseUri . 'page/' . $this->nextPage()));
+        return Uri::make(['path' => $this->baseUri . 'page/' . $this->nextPage()]);
     }
 
     /**
@@ -201,19 +201,19 @@ class Pagination
     public function previousPageUri()
     {
         if ($this->previousPage() === 1) {
-            return Uri::make(array('path' => $this->baseUri));
+            return Uri::make(['path' => $this->baseUri]);
         }
-        return Uri::make(array('path' => $this->baseUri . 'page/' . $this->previousPage()));
+        return Uri::make(['path' => $this->baseUri . 'page/' . $this->previousPage()]);
     }
 
     public function __debugInfo()
     {
-        return array(
+        return [
             'count'        => $this->count,
             'length'       => $this->length,
             'pages'        => $this->pages,
             'currentPage'  => $this->currentPage,
             'previousPage' => $this->previousPageUri()
-        );
+        ];
     }
 }

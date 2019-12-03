@@ -15,10 +15,10 @@ class User extends DataGetter
      *
      * @var array
      */
-    protected $defaults = array(
+    protected $defaults = [
         'avatar' => null,
         'role'   => 'user'
-    );
+    ];
 
     /**
      * User avatar

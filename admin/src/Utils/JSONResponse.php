@@ -18,7 +18,7 @@ class JSONResponse
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Create a new JSONResponse instance
@@ -54,14 +54,14 @@ class JSONResponse
      *
      * @return self
      */
-    public static function success($message, $status = 200, array $data = array())
+    public static function success($message, $status = 200, array $data = [])
     {
-        return new static(array(
+        return new static([
             'status'  => 'success',
             'message' => $message,
             'code'    => $status,
             'data'    => $data
-        ), $status);
+        ], $status);
     }
 
     /**
@@ -73,13 +73,13 @@ class JSONResponse
      *
      * @return self
      */
-    public static function error($message, $status = 400, array $data = array())
+    public static function error($message, $status = 400, array $data = [])
     {
-        return new static(array(
+        return new static([
             'status'  => 'error',
             'message' => $message,
             'code'    => $status,
             'data'    => $data
-        ), $status);
+        ], $status);
     }
 }

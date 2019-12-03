@@ -28,7 +28,7 @@ class View
      *
      * @var array
      */
-    protected $vars = array();
+    protected $vars = [];
 
     /**
      * View assets instance
@@ -42,10 +42,10 @@ class View
      *
      * @var array
      */
-    protected static $helpers = array(
-        'escape'     => array(Str::class, 'escape'),
-        'removeHTML' => array(Str::class, 'removeHTML')
-    );
+    protected static $helpers = [
+        'escape'     => [Str::class, 'escape'],
+        'removeHTML' => [Str::class, 'removeHTML']
+    ];
 
     /**
      * Create a new View instance
@@ -53,7 +53,7 @@ class View
      * @param string $name
      * @param array  $vars
      */
-    public function __construct($name, array $vars = array())
+    public function __construct($name, array $vars = [])
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
@@ -65,7 +65,7 @@ class View
      * @param string $name
      * @param array  $vars
      */
-    public function insert($name, array $vars = array())
+    public function insert($name, array $vars = [])
     {
         $file = Admin::VIEWS_PATH . str_replace('.', DS, $name) . '.php';
 
@@ -115,11 +115,11 @@ class View
      */
     protected function defaults()
     {
-        return array(
+        return [
             'formwork' => Formwork::instance(),
             'site'     => Formwork::instance()->site(),
             'admin'    => Admin::instance()
-        );
+        ];
     }
 
     public function __call($name, $arguments)

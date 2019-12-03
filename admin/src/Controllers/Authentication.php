@@ -37,9 +37,9 @@ class Authentication extends AbstractController
                 // Always generate a new CSRF token
                 CSRFToken::generate();
 
-                $this->view('authentication.login', array(
+                $this->view('authentication.login', [
                     'title' => $this->label('login.login')
-                ));
+                ]);
 
                 break;
 
@@ -50,7 +50,7 @@ class Authentication extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 // Ensure no required data is missing
-                if (!$data->has(array('username', 'password'))) {
+                if (!$data->has(['username', 'password'])) {
                     $this->error($this->label('login.attempt.failed'));
                 }
 
@@ -78,10 +78,10 @@ class Authentication extends AbstractController
                     $this->redirectToPanel();
                 }
 
-                $this->error($this->label('login.attempt.failed'), array(
+                $this->error($this->label('login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true
-                ));
+                ]);
 
                 break;
         }
@@ -110,12 +110,12 @@ class Authentication extends AbstractController
      * @param string $message Error message
      * @param array  $data    Data to pass to the view
      */
-    protected function error($message, array $data = array())
+    protected function error($message, array $data = [])
     {
         // Ensure CSRF token is re-generated
         CSRFToken::generate();
 
-        $defaults = array('title' => $this->label('login.login'));
+        $defaults = ['title' => $this->label('login.login')];
         $this->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
     }

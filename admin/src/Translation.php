@@ -22,7 +22,7 @@ class Translation
      *
      * @var array
      */
-    protected static $availableLanguages = array();
+    protected static $availableLanguages = [];
 
     /**
      * Fallback translation instance
@@ -43,7 +43,7 @@ class Translation
      *
      * @var array
      */
-    protected $strings = array();
+    protected $strings = [];
 
     /**
      * Create a new Translation istance

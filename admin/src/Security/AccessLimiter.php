@@ -89,7 +89,7 @@ class AccessLimiter
      */
     public function registerAttempt()
     {
-        $this->registry->set($this->attemptHash, array(++$this->attempts, time()));
+        $this->registry->set($this->attemptHash, [++$this->attempts, time()]);
     }
 
     /**

@@ -11,7 +11,7 @@ class DataGetter
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Create a new instance

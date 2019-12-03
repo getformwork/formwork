@@ -11,7 +11,7 @@ class HTTPResponse
      */
     public static function headers()
     {
-        $headers = array();
+        $headers = [];
         foreach (headers_list() as $header) {
             list($key, $value) = explode(':', $header, 2);
             $headers[$key] = trim($value);

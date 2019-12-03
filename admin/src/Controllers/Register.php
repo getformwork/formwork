@@ -22,28 +22,28 @@ class Register extends AbstractController
 
         switch (HTTPRequest::method()) {
             case 'GET':
-                $this->view('register.register', array(
+                $this->view('register.register', [
                     'title' => $this->label('register.register')
-                ));
+                ]);
 
                 break;
 
             case 'POST':
                 $data = new DataGetter(HTTPRequest::postData());
 
-                if (!$data->has(array('username', 'fullname', 'password', 'language', 'email'))) {
+                if (!$data->has(['username', 'fullname', 'password', 'language', 'email'])) {
                     $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
                     $this->redirectToPanel();
                 }
 
-                $userData = array(
+                $userData = [
                     'username' => $data->get('username'),
                     'fullname' => $data->get('fullname'),
                     'hash'     => Password::hash($data->get('password')),
                     'email'    => $data->get('email'),
                     'language' => $data->get('language'),
                     'role'     => 'admin'
-                );
+                ];
 
                 FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 

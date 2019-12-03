@@ -172,13 +172,13 @@ class PageCollection extends Collection
         $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';
 
-        $scores = array(
+        $scores = [
             'title'    => 8,
             'summary'  => 4,
             'content'  => 3,
             'author'   => 2,
             'uri'      => 1
-        );
+        ];
 
         $pageCollection = clone $this;
 
@@ -212,7 +212,7 @@ class PageCollection extends Collection
     public static function fromPath($path, $recursive = false)
     {
         $path = FileSystem::normalize($path);
-        $pages = array();
+        $pages = [];
 
         foreach (FileSystem::listDirectories($path) as $dir) {
             $pagePath = $path . $dir . DS;
@@ -236,8 +236,8 @@ class PageCollection extends Collection
 
     public function __debugInfo()
     {
-        return array(
+        return [
             'items' => $this->items
-        );
+        ];
     }
 }

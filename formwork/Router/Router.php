@@ -15,32 +15,32 @@ class Router
      *
      * @var array
      */
-    protected $types = array('HTTP', 'XHR');
+    protected $types = ['HTTP', 'XHR'];
 
     /**
      * Valid router request methods
      *
      * @var array
      */
-    protected $methods = array('GET', 'POST', 'PUT', 'PATCH', 'DELETE');
+    protected $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Array containing route regex shortcuts
      *
      * @var array
      */
-    protected $shortcuts = array(
+    protected $shortcuts = [
         'num' => '[0-9]+',
         'aln' => '[A-Za-z0-9-]+',
         'all' => '.+'
-    );
+    ];
 
     /**
      * Array containing loaded routes
      *
      * @var array
      */
-    protected $routes = array();
+    protected $routes = [];
 
     /**
      * The request to match routes against
@@ -78,7 +78,7 @@ class Router
     public function __construct($request)
     {
         $this->request = Uri::normalize($request);
-        $this->params = new RouteParams(array());
+        $this->params = new RouteParams([]);
     }
 
     /**
@@ -131,12 +131,12 @@ class Router
             }
             return;
         }
-        $this->routes[] = array(
+        $this->routes[] = [
             'type'     => $type,
             'method'   => $method,
             'route'    => $route,
             'callback' => $callback
-        );
+        ];
     }
 
     /**
@@ -150,7 +150,7 @@ class Router
                 // Parse Class@method callback syntax
                 if (is_string($route['callback']) && strpos($route['callback'], '@') !== false) {
                     list($class, $method) = explode('@', $route['callback']);
-                    $route['callback'] = array(new $class(), $method);
+                    $route['callback'] = [new $class(), $method];
                 }
                 if (!is_callable($route['callback'])) {
                     throw new LogicException('Invalid callback for ' . $route['route'] . ' route');
@@ -249,11 +249,11 @@ class Router
         }
         // Wrap the regex in tilde delimiters, so we don't need to escape slashes
         $regex = '~^' . trim($regex, '^$') . '$~';
-        return array(
+        return [
             'regex'  => $regex,
             'tokens' => $tokens,
             'params' => $params
-        );
+        ];
     }
 
     /**

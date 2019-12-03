@@ -38,7 +38,7 @@ class Formwork
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Current request URI
@@ -166,17 +166,17 @@ class Formwork
      */
     public function defaults()
     {
-        return array(
+        return [
             'charset'                  => 'utf-8',
             'date.format'              => 'm/d/Y',
             'date.hour_format'         => 'h:i A',
             'date.timezone'            => 'UTC',
             'date.week_starts'         => 0,
-            'languages.available'      => array(),
+            'languages.available'      => [],
             'languages.http_preferred' => false,
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
-            'files.allowed_extensions' => array('.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'),
+            'files.allowed_extensions' => ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.pdf'],
             'parsers.use_php_yaml'     => 'parse',
             'templates.path'           => ROOT_PATH . 'templates' . DS,
             'templates.extension'      => '.php',
@@ -202,7 +202,7 @@ class Formwork
             'admin.logout_redirect'    => 'login',
             'admin.session_timeout'    => 20,
             'admin.avatar_size'        => 512
-        );
+        ];
     }
 
     /**
@@ -318,14 +318,14 @@ class Formwork
             $this->loadAdminRoute();
         }
 
-        $this->router->add(array(
+        $this->router->add([
             '/',
             '/page/{paginationPage:num}/',
             '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
             '/{page}/tag/{tagName:aln}/',
             '/{page}/page/{paginationPage:num}/',
             '/{page}/'
-        ), $this->defaultRoute());
+        ], $this->defaultRoute());
     }
 
     /**
@@ -334,12 +334,12 @@ class Formwork
     protected function loadAdminRoute()
     {
         $this->router->add(
-            array('HTTP', 'XHR'),
-            array('GET', 'POST'),
-            array(
+            ['HTTP', 'XHR'],
+            ['GET', 'POST'],
+            [
                 '/' . $this->option('admin.root') . '/',
                 '/' . $this->option('admin.root') . '/{route}/'
-            ),
+            ],
             Admin::class . '@run'
         );
     }
@@ -362,7 +362,7 @@ class Formwork
                 if ($page->has('canonical')) {
                     $canonical = trim($page->canonical(), '/');
                     if ($params->get('page', '') !== $canonical) {
-                        $route = empty($canonical) ? '' : $this->router->rewrite(array('page' => $canonical));
+                        $route = empty($canonical) ? '' : $this->router->rewrite(['page' => $canonical]);
                         Header::redirect($this->site->uri($route), 301);
                     }
                 }

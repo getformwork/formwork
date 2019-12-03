@@ -23,7 +23,7 @@ class Updater
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Updates registry
@@ -37,13 +37,13 @@ class Updater
      *
      * @var array
      */
-    protected $registryDefaults = array(
+    protected $registryDefaults = [
         'last-check'  => null,
         'last-update' => null,
         'etag'        => null,
         'release'     => null,
         'up-to-date'  => false
-    );
+    ];
 
     /**
      * Stream context to make HTTP(S) requests
@@ -78,7 +78,7 @@ class Updater
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->defaults(), $options);
 
@@ -88,9 +88,9 @@ class Updater
             $this->initializeRegistry();
         }
 
-        $this->context = stream_context_create(array(
-            'http' => array('user_agent' => 'PHP Formwork-Updater')
-        ));
+        $this->context = stream_context_create([
+            'http' => ['user_agent' => 'PHP Formwork-Updater']
+        ]);
     }
 
     /**
@@ -100,14 +100,14 @@ class Updater
      */
     public function defaults()
     {
-        return array(
+        return [
             'time'                => 900,
             'force'               => false,
             'registryFile'        => Admin::LOGS_PATH . 'updates.json',
             'tempFile'            => ROOT_PATH . '.formwork-update.zip',
             'preferDistAssets'    => false,
             'cleanupAfterInstall' => false,
-            'ignore'              => array(
+            'ignore'              => [
                 'admin/accounts/*',
                 'admin/avatars/*',
                 'admin/logs/*',
@@ -117,8 +117,8 @@ class Updater
                 'config/*',
                 'content/*',
                 'templates/*'
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -183,7 +183,7 @@ class Updater
         $zip = new ZipArchive();
         $zip->open($this->options['tempFile']);
         $baseFolder = $zip->getNameIndex(0);
-        $installedFiles = array();
+        $installedFiles = [];
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
             $source = Str::removeStart($zip->getNameIndex($i), $baseFolder);
@@ -251,12 +251,12 @@ class Updater
             throw new RuntimeException('Cannot fetch latest Formwork release data');
         }
 
-        $this->release = array(
+        $this->release = [
             'name'    => $data['name'],
             'tag'     => $data['tag_name'],
             'date'    => strtotime($data['published_at']),
             'archive' => $data['zipball_url']
-        );
+        ];
 
         if ($this->options['preferDistAssets'] && !empty($data['assets'])) {
             $assetName = 'formwork-' . $data['tag_name'] . '.zip';
@@ -307,7 +307,7 @@ class Updater
      */
     protected function findDeletableFiles(array $installedFiles)
     {
-        $list = array();
+        $list = [];
         foreach ($installedFiles as $path) {
             $list[] = $path;
             if (FileSystem::exists($path) && FileSystem::isDirectory($path)) {

@@ -18,14 +18,14 @@ class Translator
      *
      * @var array
      */
-    protected const IGNORED_FIELDS = array('name', 'type', 'import', 'fields');
+    protected const IGNORED_FIELDS = ['name', 'type', 'import', 'fields'];
 
     /**
      * Keys of which array value has to be ignored
      *
      * @var array
      */
-    protected const IGNORED_ARRAY_KEYS = array('value', 'options');
+    protected const IGNORED_ARRAY_KEYS = ['value', 'options'];
 
     /**
      * Translate a field
@@ -81,7 +81,7 @@ class Translator
     protected static function interpolate($value)
     {
         if (is_array($value)) {
-            return array_map(array(static::class, 'interpolate'), $value);
+            return array_map([static::class, 'interpolate'], $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
             return Admin::instance()->label($matches[1]);

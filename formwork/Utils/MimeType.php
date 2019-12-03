@@ -18,7 +18,7 @@ class MimeType
      *
      * @var array
      */
-    protected const MIME_TYPES = array(
+    protected const MIME_TYPES = [
         'js'       => 'application/javascript',
         'doc'      => 'application/msword',
         'pdf'      => 'application/pdf',
@@ -80,7 +80,7 @@ class MimeType
         'asf'      => 'video/x-ms-asf',
         'wmv'      => 'video/x-ms-wmv',
         'avi'      => 'video/x-msvideo'
-    );
+    ];
 
     /**
      * Get MIME types from file extension

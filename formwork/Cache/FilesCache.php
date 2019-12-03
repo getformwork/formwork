@@ -114,9 +114,9 @@ class FilesCache extends AbstractCache
 
     public function __debugInfo()
     {
-        return array(
+        return [
             'path' => $this->path,
             'time' => $this->time
-        );
+        ];
     }
 }

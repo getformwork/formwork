@@ -36,7 +36,7 @@ abstract class AbstractPage
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Page uri
@@ -201,7 +201,7 @@ abstract class AbstractPage
         if ($this->parents !== null) {
             return $this->parents;
         }
-        $parentPages = array();
+        $parentPages = [];
         $page = $this;
         while (($parent = $page->parent()) !== null) {
             $parentPages[] = $parent;

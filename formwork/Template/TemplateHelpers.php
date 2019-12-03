@@ -13,10 +13,10 @@ class TemplateHelpers
      *
      * @var array
      */
-    protected static $helpers = array(
-        'escape'     => array(Str::class, 'escape'),
-        'removeHTML' => array(Str::class, 'removeHTML')
-    );
+    protected static $helpers = [
+        'escape'     => [Str::class, 'escape'],
+        'removeHTML' => [Str::class, 'removeHTML']
+    ];
 
     /**
      * Return whether a template helper is defined

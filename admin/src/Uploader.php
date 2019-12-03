@@ -15,7 +15,7 @@ class Uploader
      *
      * @var array
      */
-    protected const ERROR_MESSAGES = array(
+    protected const ERROR_MESSAGES = [
         UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
         UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
@@ -23,14 +23,14 @@ class Uploader
         UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
         UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
-    );
+    ];
 
     /**
      * Uploader errors language strings
      *
      * @var array
      */
-    protected const ERROR_LANGUAGE_STRINGS = array(
+    protected const ERROR_LANGUAGE_STRINGS = [
         UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
         UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
         UPLOAD_ERR_PARTIAL    => 'uploader.error.partial',
@@ -38,7 +38,7 @@ class Uploader
         UPLOAD_ERR_NO_TMP_DIR => 'uploader.error.no-temp',
         UPLOAD_ERR_CANT_WRITE => 'uploader.error.cannot-write',
         UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
-    );
+    ];
 
     /**
      * Destination of uploaded file
@@ -52,14 +52,14 @@ class Uploader
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Array containing uploaded files
      *
      * @var array
      */
-    protected $uploadedFiles = array();
+    protected $uploadedFiles = [];
 
     /**
      * Create a new Uploader instance
@@ -67,7 +67,7 @@ class Uploader
      * @param string $destination
      * @param array  $options
      */
-    public function __construct($destination, array $options = array())
+    public function __construct($destination, array $options = [])
     {
         $this->destination = FileSystem::normalize($destination);
         $this->options = array_merge($this->defaults(), $options);
@@ -81,13 +81,13 @@ class Uploader
     public function defaults()
     {
         $mimeTypes = array_map(
-            array(MimeType::class, 'fromExtension'),
+            [MimeType::class, 'fromExtension'],
             Formwork::instance()->option('files.allowed_extensions')
         );
-        return array(
+        return [
             'allowedMimeTypes' => $mimeTypes,
             'overwrite'        => false,
-        );
+        ];
     }
 
     /**
@@ -166,7 +166,7 @@ class Uploader
             throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
 
-        $name = str_replace(array(' ', '.'), '-', FileSystem::name($filename));
+        $name = str_replace([' ', '.'], '-', FileSystem::name($filename));
         $extension = strtolower(FileSystem::extension($filename));
 
         if (empty($extension)) {

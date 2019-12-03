@@ -37,7 +37,7 @@ class Files extends AssociativeCollection
             $filenames = FileSystem::listFiles($path);
         }
 
-        $files = array();
+        $files = [];
 
         foreach ($filenames as $filename) {
             $files[$filename] = new File($path . $filename);

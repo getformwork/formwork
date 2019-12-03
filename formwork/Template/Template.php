@@ -44,7 +44,7 @@ class Template
      *
      * @var array
      */
-    protected $vars = array();
+    protected $vars = [];
 
     /**
      * Template scheme
@@ -159,7 +159,7 @@ class Template
      * @param string $name
      * @param array  $vars
      */
-    public function insert($name, array $vars = array())
+    public function insert($name, array $vars = [])
     {
         if (!$this->rendering) {
             throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
@@ -186,7 +186,7 @@ class Template
      *
      * @return string|null
      */
-    public function render($vars = array(), $return = false)
+    public function render($vars = [], $return = false)
     {
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
@@ -236,11 +236,11 @@ class Template
      */
     protected function defaults()
     {
-        return array(
+        return [
             'params' => Formwork::instance()->router()->params(),
             'site'   => Formwork::instance()->site(),
             'page'   => $this->page
-        );
+        ];
     }
 
     /**

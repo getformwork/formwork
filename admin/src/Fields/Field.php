@@ -20,7 +20,7 @@ class Field extends DataSetter
      * @param string $name
      * @param array  $data
      */
-    public function __construct($name, array $data = array())
+    public function __construct($name, array $data = [])
     {
         $this->name = $name;
         parent::__construct($data);
@@ -40,7 +40,7 @@ class Field extends DataSetter
      */
     public function isEmpty()
     {
-        return $this->value() === null || $this->value() === '' || $this->value() === array();
+        return $this->value() === null || $this->value() === '' || $this->value() === [];
     }
 
     /**
@@ -124,7 +124,7 @@ class Field extends DataSetter
     public function render($return = false)
     {
         if ($this->isVisible()) {
-            $view = new View('fields.' . $this->type(), array('field' => $this));
+            $view = new View('fields.' . $this->type(), ['field' => $this]);
             return $view->render($return);
         }
     }

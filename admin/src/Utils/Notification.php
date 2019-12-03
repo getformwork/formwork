@@ -12,7 +12,7 @@ class Notification
      */
     public static function send($text, $type = '')
     {
-        Session::set('FORMWORK_NOTIFICATION', array('text' => $text, 'type' => $type));
+        Session::set('FORMWORK_NOTIFICATION', ['text' => $text, 'type' => $type]);
     }
 
     /**

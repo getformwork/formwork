@@ -23,14 +23,14 @@ class Backupper
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Return a new Backupper instance
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->defaults(), $options);
     }
@@ -42,20 +42,20 @@ class Backupper
      */
     public function defaults()
     {
-        return array(
+        return [
             'maxExecutionTime' => 180,
-            'name'             => str_replace(array(' ', '.'), '-', Uri::host()) . '-formwork-backup',
+            'name'             => str_replace([' ', '.'], '-', Uri::host()) . '-formwork-backup',
             'path'             => Formwork::instance()->option('backup.path'),
             'maxFiles'         => Formwork::instance()->option('backup.max_files'),
-            'ignore'           => array(
+            'ignore'           => [
                 '.git/*',
                 '*.DS_Store',
                 '*.gitignore',
                 '*.gitkeep',
                 'admin/node_modules/*',
                 'backup/*'
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -125,7 +125,7 @@ class Backupper
      */
     protected function deleteOldBackups()
     {
-        $backups = array();
+        $backups = [];
 
         foreach (FileSystem::listFiles($this->options['path']) as $file) {
             $date = FileSystem::lastModifiedTime($this->options['path'] . $file);

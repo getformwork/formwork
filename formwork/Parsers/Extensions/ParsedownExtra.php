@@ -19,7 +19,7 @@ class ParsedownExtra extends \ParsedownExtra
      *
      * @param array $options
      */
-    public function text($text, array $options = array())
+    public function text($text, array $options = [])
     {
         $this->baseRoute = $options['baseRoute'] ?? '/';
         return parent::text($text);
@@ -36,7 +36,7 @@ class ParsedownExtra extends \ParsedownExtra
         }
         $href = &$link['element']['attributes']['href'];
         // Process only if scheme is either null, 'http' or 'https'
-        if (in_array(Uri::scheme($href), array(null, 'http', 'https'), true)) {
+        if (in_array(Uri::scheme($href), [null, 'http', 'https'], true)) {
             if (empty(Uri::host($href)) && $href[0] !== '#') {
                 $relativeUri = Uri::resolveRelativeUri($href, $this->baseRoute);
                 $href = Formwork::instance()->site()->uri($relativeUri, false);

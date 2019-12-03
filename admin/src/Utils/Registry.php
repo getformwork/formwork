@@ -11,7 +11,7 @@ class Registry
      *
      * @var array
      */
-    protected $storage = array();
+    protected $storage = [];
 
     /**
      * Registry filename

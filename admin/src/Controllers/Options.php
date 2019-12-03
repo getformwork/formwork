@@ -18,7 +18,7 @@ class Options extends AbstractController
      *
      * @var array
      */
-    protected $tabs = array('system', 'site', 'updates', 'info');
+    protected $tabs = ['system', 'site', 'updates', 'info'];
 
     /**
      * Options@index action
@@ -51,16 +51,16 @@ class Options extends AbstractController
 
         $this->modal('changes');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.system', array(
-                'tabs' => $this->view('options.tabs', array(
+            'content' => $this->view('options.system', [
+                'tabs' => $this->view('options.tabs', [
                     'tabs'    => $this->tabs,
                     'current' => 'system'
-                ), true),
+                ], true),
                 'fields' => $fields->render(true)
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -91,16 +91,16 @@ class Options extends AbstractController
 
         $this->modal('changes');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.site', array(
-                'tabs' => $this->view('options.tabs', array(
+            'content' => $this->view('options.site', [
+                'tabs' => $this->view('options.tabs', [
                     'tabs'    => $this->tabs,
                     'current' => 'site'
-                ), true),
+                ], true),
                 'fields' => $fields->render(true)
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -110,16 +110,16 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.updates');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('options.updates'),
-            'content' => $this->view('options.updates', array(
-                'tabs' => $this->view('options.tabs', array(
+            'content' => $this->view('options.updates', [
+                'tabs' => $this->view('options.tabs', [
                     'tabs'    => $this->tabs,
                     'current' => 'updates'
-                ), true),
+                ], true),
                 'currentVersion' => Formwork::VERSION
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -131,8 +131,8 @@ class Options extends AbstractController
 
         $dependencies = $this->getDependencies();
 
-        $data = @array(
-            'PHP' => array(
+        $data = @[
+            'PHP' => [
                 'Version'             => PHP_VERSION,
                 'Operating System'    => php_uname(),
                 'Server API'          => PHP_SAPI,
@@ -140,10 +140,10 @@ class Options extends AbstractController
                 'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
                 'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
-            ),
+            ],
             'HTTP Request Headers'  => HTTPRequest::headers(),
             'HTTP Response Headers' => HTTPResponse::headers(),
-            'Server'                => array(
+            'Server'                => [
                 'IP Address'   => $_SERVER['SERVER_ADDR'],
                 'Port'         => $_SERVER['SERVER_PORT'],
                 'Name'         => $_SERVER['SERVER_NAME'],
@@ -151,58 +151,58 @@ class Options extends AbstractController
                 'Protocol'     => $_SERVER['SERVER_PROTOCOL'],
                 'HTTPS'        => HTTPRequest::isHTTPS() ? 'on' : 'off',
                 'Request Time' => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
-            ),
-            'Client' => array(
+            ],
+            'Client' => [
                 'IP Address' => HTTPRequest::ip(),
                 'Port'       => $_SERVER['REMOTE_PORT']
-            ),
-            'Session' => array(
+            ],
+            'Session' => [
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
                 'Session Strict Mode'     => ini_get('session.use_strict_mode') ? 'true' : 'false'
-            ),
-            'Uploads' => array(
+            ],
+            'Uploads' => [
                 'File Uploads'         => ini_get('file_uploads') ? 'true' : 'false',
                 'POST Max Size'        => ini_get('post_max_size'),
                 'Maximum File Size'    => ini_get('upload_max_filesize'),
                 'Maximum File Uploads' => ini_get('max_file_uploads')
-            ),
-            'Script' => array(
+            ],
+            'Script' => [
                 'Max Execution Time' => ini_get('max_execution_time'),
                 'Max Input Time'     => ini_get('max_input_time'),
                 'Memory Limit'       => ini_get('memory_limit'),
                 'Default MIME-Type'  => ini_get('default_mimetype'),
                 'Default Charset'    => ini_get('default_charset')
-            ),
-            'System' => array(
+            ],
+            'System' => [
                 'Directory Separator' => DS,
                 'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n")
-            ),
-            'Formwork' => array(
+            ],
+            'Formwork' => [
                 'Formwork Version' => Formwork::VERSION,
                 'Root Path'        => ROOT_PATH,
                 'Formwork Path'    => FORMWORK_PATH,
                 'Config Path'      => CONFIG_PATH
-            ),
-            'Dependencies' => array(
+            ],
+            'Dependencies' => [
                 'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
                 'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
                 'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version']
-            )
-        );
+            ]
+        ];
 
         ksort($data['HTTP Request Headers']);
         ksort($data['HTTP Response Headers']);
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.info', array(
-                'tabs' => $this->view('options.tabs', array(
+            'content' => $this->view('options.info', [
+                'tabs' => $this->view('options.tabs', [
                     'tabs'    => $this->tabs,
                     'current' => 'info'
-                ), true),
+                ], true),
                 'info' => $data
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -218,7 +218,7 @@ class Options extends AbstractController
     protected function updateOptions($type, Fields $fields, array $options, array $defaults)
     {
         // Fields to ignore
-        $ignore = array('column', 'header', 'row', 'rows');
+        $ignore = ['column', 'header', 'row', 'rows'];
 
         // Flatten fields
         $fields = $fields->toArray(true);
@@ -260,7 +260,7 @@ class Options extends AbstractController
      */
     protected function getDependencies()
     {
-        $dependencies = array();
+        $dependencies = [];
         if (FileSystem::exists(ROOT_PATH . 'composer.lock')) {
             $composerLock = json_decode(FileSystem::read(ROOT_PATH . 'composer.lock'), true);
             foreach ($composerLock['packages'] as $package) {

@@ -25,10 +25,10 @@ class Backup extends AbstractController
             JSONResponse::error($this->label('backup.error.cannot-make', $e->getTranslatedMessage()), 500)->send();
         }
         $filename = basename($file);
-        JSONResponse::success($this->label('backup.ready'), 200, array(
+        JSONResponse::success($this->label('backup.ready'), 200, [
             'filename' => $filename,
             'uri'      => $this->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
-        ))->send();
+        ])->send();
     }
 
     /**

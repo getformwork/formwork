@@ -144,7 +144,7 @@ class Statistics
 
         $low = time() - ($limit - 1) * 86400;
 
-        $days = array();
+        $days = [];
 
         for ($i = 0; $i < $limit; $i++) {
             $value = date(self::DATE_FORMAT, $low + $i * 86400);
@@ -159,25 +159,25 @@ class Statistics
             $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
             $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
             $day = date('j', $time);
-            return strtr("D\nj M", array('D' => $weekday, 'M' => $month, 'j' => $day));
+            return strtr("D\nj M", ['D' => $weekday, 'M' => $month, 'j' => $day]);
         };
 
         $labels = array_map($label, $days);
 
         $interpolate = static function ($data) use ($days) {
-            $output = array();
+            $output = [];
             foreach ($days as $day) {
                 $output[$day] = $data[$day] ?? 0;
             }
             return $output;
         };
 
-        return array(
+        return [
             'labels' => $labels,
-            'series' => array(
+            'series' => [
                 array_values($interpolate($visits)),
                 array_values($interpolate($uniqueVisits))
-            )
-        );
+            ]
+        ];
     }
 }

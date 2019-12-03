@@ -147,7 +147,7 @@ class File
         if (Str::startsWith($this->mimeType, 'video')) {
             return 'video';
         }
-        if (in_array($this->extension, array('pdf', 'doc', 'docx', 'odt'), true)) {
+        if (in_array($this->extension, ['pdf', 'doc', 'docx', 'odt'], true)) {
             return 'document';
         }
         return null;

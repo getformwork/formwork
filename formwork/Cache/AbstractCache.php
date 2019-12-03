@@ -49,7 +49,7 @@ abstract class AbstractCache
      */
     public function fetchMultiple(array $keys)
     {
-        $result = array();
+        $result = [];
         foreach ($keys as $key) {
             $result[] = $this->fetch($key);
         }

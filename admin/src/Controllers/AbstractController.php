@@ -26,7 +26,7 @@ abstract class AbstractController
      *
      * @var array
      */
-    protected $modals = array();
+    protected $modals = [];
 
     /**
      * Create a new Controller instance
@@ -64,11 +64,11 @@ abstract class AbstractController
      */
     protected function defaults()
     {
-        return array(
+        return [
             'location'  => $this->location,
             'csrfToken' => CSRFToken::get(),
             'modals'    => implode($this->modals)
-        );
+        ];
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class AbstractController
      * @param string $name Name of the modal
      * @param array  $data Data to pass to the modal
      */
-    protected function modal($name, array $data = array())
+    protected function modal($name, array $data = [])
     {
         $this->modals[] = $this->view('modals.' . $name, $data, true);
     }
@@ -115,7 +115,7 @@ abstract class AbstractController
      *
      * @return string|void
      */
-    protected function view($name, array $data = array(), $return = false)
+    protected function view($name, array $data = [], $return = false)
     {
         $view = new View($name, array_merge($this->defaults(), $data));
         return $view->render($return);

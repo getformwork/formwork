@@ -44,26 +44,26 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.index');
 
-        $this->modal('newPage', array(
+        $this->modal('newPage', [
             'templates' => $this->site()->templates(),
             'pages'     => $this->site()->descendants()->sort('path')
-        ));
+        ]);
 
         $this->modal('deletePage');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('pages.pages'),
-            'content' => $this->view('pages.index', array(
-                'pagesList' => $this->view('pages.list', array(
+            'content' => $this->view('pages.index', [
+                'pagesList' => $this->view('pages.list', [
                     'pages'    => $this->site()->pages(),
                     'subpages' => true,
                     'class'    => 'pages-list-top',
                     'parent'   => '.',
                     'sortable' => $this->user()->permissions()->has('pages.reorder'),
                     'headers'  => true
-                ), true)
-            ), true)
-        ));
+                ], true)
+            ], true)
+        ]);
     }
 
     /**
@@ -177,35 +177,35 @@ class Pages extends AbstractController
 
         $this->modal('slug');
 
-        $this->modal('images', array(
+        $this->modal('images', [
             'page' => $page
-        ));
+        ]);
 
         $this->modal('deletePage');
 
         $this->modal('deleteFile');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('pages.edit-page', $page->title()),
-            'content' => $this->view('pages.editor', array(
+            'content' => $this->view('pages.editor', [
                 'page'               => $page,
                 'fields'             => $fields->render(true),
                 'templates'          => $this->site()->templates(),
                 'parents'            => $this->site()->descendants()->sort('path'),
                 'currentLanguage'    => $params->get('language', $page->language()),
                 'availableLanguages' => $this->availableSiteLanguages(),
-                'datePickerOptions'  => array(
+                'datePickerOptions'  => [
                     'dayLabels'   => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
                     'weekStarts'  => $this->option('date.week_starts'),
                     'todayLabel'  => $this->label('date.today'),
                     'format'      => strtr(
                         $this->option('date.format'),
-                        array('Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a')
+                        ['Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a']
                     )
-                )
-            ), true)
-        ));
+                ]
+            ], true)
+        ]);
     }
 
     /**
@@ -217,7 +217,7 @@ class Pages extends AbstractController
 
         $data = new DataGetter(HTTPRequest::postData());
 
-        if (!$data->has(array('parent', 'from', 'to'))) {
+        if (!$data->has(['parent', 'from', 'to'])) {
             JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
@@ -291,7 +291,7 @@ class Pages extends AbstractController
         $this->notify($this->label('pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
-        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(array('path' => $this->uri('/pages/' . $params->get('page') . '/edit/'))))) {
+        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->uri('/pages/' . $params->get('page') . '/edit/')]))) {
             $this->redirectToReferer(302, '/pages/');
         } else {
             $this->redirect('/pages/');
@@ -358,7 +358,7 @@ class Pages extends AbstractController
     protected function createPage(DataGetter $data)
     {
         // Ensure no required data is missing
-        if (!$data->has(array('title', 'slug', 'template', 'parent'))) {
+        if (!$data->has(['title', 'slug', 'template', 'parent'])) {
             throw new TranslatedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
         }
 
@@ -399,10 +399,10 @@ class Pages extends AbstractController
 
         FileSystem::createFile($path . $filename);
 
-        $frontmatter = array(
+        $frontmatter = [
             'title'     => $data->get('title'),
             'published' => false
-        );
+        ];
 
         $fileContent = '---' . PHP_EOL;
         $fileContent .= YAML::encode($frontmatter);
@@ -425,7 +425,7 @@ class Pages extends AbstractController
     protected function updatePage(Page $page, DataGetter $data, Fields $fields)
     {
         // Ensure no required data is missing
-        if (!$data->has(array('title', 'content'))) {
+        if (!$data->has(['title', 'content'])) {
             throw new TranslatedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
         }
 
@@ -549,7 +549,7 @@ class Pages extends AbstractController
                 $file = $page->files()->get($file);
 
                 // Process JPEG and PNG images according to system options (e.g. quality)
-                if ($this->option('images.process_uploads') && in_array($file->mimeType(), array('image/jpeg', 'image/png'), true)) {
+                if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
                     $image = new Image($file->path());
                     $image->saveOptimized();
                     $page->reload();
@@ -681,7 +681,7 @@ class Pages extends AbstractController
      */
     protected function availableSiteLanguages()
     {
-        $languages = array();
+        $languages = [];
         foreach ($this->option('languages.available') as $code) {
             $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
         }

@@ -11,14 +11,14 @@ class FileSystem
      *
      * @var array
      */
-    protected const IGNORED_FILES = array('.', '..');
+    protected const IGNORED_FILES = ['.', '..'];
 
     /**
      * Array containing units of measurement for human-readable file sizes
      *
      * @var array
      */
-    protected const FILE_SIZE_UNITS = array('B', 'KB', 'MB', 'GB', 'TB');
+    protected const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
 
     /**
      * Get file name without extension given a file
@@ -509,11 +509,11 @@ class FileSystem
         }
         $items = @scandir($path);
         if (!is_array($items)) {
-            return array();
+            return [];
         }
         $items = array_diff($items, self::IGNORED_FILES);
         if (!$all) {
-            $items = array_filter($items, array(static::class, 'isVisible'));
+            $items = array_filter($items, [static::class, 'isVisible']);
         }
         return $items;
     }
@@ -528,7 +528,7 @@ class FileSystem
      */
     public static function scanRecursive($path, $all = false)
     {
-        $list = array();
+        $list = [];
         $path = static::normalize($path);
         foreach (FileSystem::scan($path, $all) as $item) {
             if (FileSystem::isDirectory($path . $item)) {

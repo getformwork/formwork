@@ -14,7 +14,7 @@ class Header
      *
      * @var array
      */
-    public const HTTP_STATUS = array(
+    public const HTTP_STATUS = [
         // Informational
         '100' => 'Continue',
         '101' => 'Switching Protocols',
@@ -85,7 +85,7 @@ class Header
         '508' => 'Loop Detected',
         '510' => 'Not Extended',
         '511' => 'Network Authentication Required'
-    );
+    ];
 
     /**
      * Send an HTTP response status code

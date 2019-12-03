@@ -14,8 +14,8 @@ class Errors
     public static function setHandlers()
     {
         ini_set('display_errors', 0);
-        set_exception_handler(array(static::class, 'exceptionHandler'));
-        set_error_handler(array(static::class, 'errorHandler'));
+        set_exception_handler([static::class, 'exceptionHandler']);
+        set_error_handler([static::class, 'errorHandler']);
     }
 
     /**

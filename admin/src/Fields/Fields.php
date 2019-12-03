@@ -72,7 +72,7 @@ class Fields extends AssociativeCollection
         if (!$flatten) {
             return $this->items;
         }
-        $result = array();
+        $result = [];
         foreach ($this->items as $name => $data) {
             if ($data->has('fields')) {
                 $result = array_merge($result, $data->get('fields')->toArray(true));

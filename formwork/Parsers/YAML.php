@@ -22,7 +22,7 @@ class YAML extends AbstractParser
      *
      * @return array
      */
-    public static function parse($input, array $options = array())
+    public static function parse($input, array $options = [])
     {
         if (function_exists('yaml_parse') && $options['usePHPYAML'] ?? static::PHPYAMLmode('parse')) {
             if (!preg_match('/^---\n/', $input)) {
@@ -41,7 +41,7 @@ class YAML extends AbstractParser
      *
      * @return string
      */
-    public static function encode(array $data, array $options = array())
+    public static function encode(array $data, array $options = [])
     {
         $data = (array) $data;
         if (empty($data)) {

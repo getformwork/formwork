@@ -15,26 +15,26 @@ class Dashboard extends AbstractController
 
         $statistics = new Statistics();
 
-        $this->modal('newPage', array(
+        $this->modal('newPage', [
             'templates' => $this->site()->templates(),
             'pages'     => $this->site()->descendants()->sort('path')
-        ));
+        ]);
 
         $this->modal('deletePage');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('dashboard.dashboard'),
-            'content' => $this->view('dashboard.index', array(
-                'lastModifiedPages' => $this->view('pages.list', array(
+            'content' => $this->view('dashboard.index', [
+                'lastModifiedPages' => $this->view('pages.list', [
                     'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
                     'subpages' => false,
                     'class'    => 'pages-list-top',
                     'parent'   => null,
                     'sortable' => false,
                     'headers'  => true
-                    ), true),
+                    ], true),
                 'statistics' => $statistics->getChartData()
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 }

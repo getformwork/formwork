@@ -11,7 +11,7 @@ class ZipErrors
      *
      * @var array
      */
-    public const ERROR_MESSAGES = array(
+    public const ERROR_MESSAGES = [
         ZipArchive::ER_MULTIDISK   => 'Multi-disk zip archives not supported',
         ZipArchive::ER_RENAME      => 'Renaming temporary file failed',
         ZipArchive::ER_CLOSE       => 'Closing zip archive failed',
@@ -35,14 +35,14 @@ class ZipErrors
         ZipArchive::ER_INCONS      => 'Zip archive inconsistent',
         ZipArchive::ER_REMOVE      => 'Cannot remove file',
         ZipArchive::ER_DELETED     => 'Entry has been deleted'
-    );
+    ];
 
     /**
      * ZipArchive errors language strings
      *
      * @var array
      */
-    public const ERROR_LANGUAGE_STRINGS = array(
+    public const ERROR_LANGUAGE_STRINGS = [
         ZipArchive::ER_MULTIDISK   => 'zip.error.unspecified',
         ZipArchive::ER_RENAME      => 'zip.error.unspecified',
         ZipArchive::ER_CLOSE       => 'zip.error.unspecified',
@@ -66,5 +66,5 @@ class ZipErrors
         ZipArchive::ER_INCONS      => 'zip.error.inconsistent-archive',
         ZipArchive::ER_REMOVE      => 'zip.error.unspecified',
         ZipArchive::ER_DELETED     => 'zip.error.unspecified'
-    );
+    ];
 }

@@ -12,14 +12,14 @@ class Collection implements Countable, Iterator
      *
      * @var array
      */
-    protected $items = array();
+    protected $items = [];
 
     /**
      * Create a new Collection instance
      *
      * @param array $items
      */
-    public function __construct(array $items = array())
+    public function __construct(array $items = [])
     {
         $this->items = $items;
     }

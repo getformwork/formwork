@@ -12,7 +12,7 @@ class Languages
      *
      * @var array
      */
-    protected $available = array();
+    protected $available = [];
 
     /**
      * Default language code

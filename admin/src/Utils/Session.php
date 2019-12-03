@@ -15,13 +15,13 @@ class Session
     {
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_strict_mode', true);
-            $options = array(
+            $options = [
                 'expires'  => 0,
                 'path'     => HTTPRequest::root(),
                 'secure'   => HTTPRequest::isHTTPS(),
                 'httponly' => true,
                 'samesite' => Cookie::SAMESITE_STRICT
-            );
+            ];
             if (($timeout = Formwork::instance()->option('admin.session_timeout')) > 0) {
                 $options['expires'] = time() + $timeout * 60;
             }
@@ -33,7 +33,7 @@ class Session
             } elseif ($_COOKIE[session_name()] !== session_id()) {
                 // Remove cookie if session id is not valid
                 unset($_COOKIE[session_name()]);
-                Cookie::send(session_name(), '', array('expires' => time() - 3600) + $options, true);
+                Cookie::send(session_name(), '', ['expires' => time() - 3600] + $options, true);
             }
         }
     }

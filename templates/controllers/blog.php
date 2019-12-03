@@ -12,7 +12,7 @@
         $site->errorPage(true);
     }
 
-    return array(
+    return [
         'posts'      => $posts,
         'pagination' => $posts->pagination()
-    );
+    ];

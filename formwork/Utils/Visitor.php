@@ -11,7 +11,7 @@ class Visitor
      *
      * @var array
      */
-    protected const BOTS_REGEX_TOKENS = array(
+    protected const BOTS_REGEX_TOKENS = [
         '(apache-http|btweb|go-http-|http_)client', '(apis|appengine|mediapartners)-google',
         '(analyz|fetch|find|gath|gett|load|read|reap|se|sp[iy]d|track|transcod)er',
         '(bing|skypeuri)preview', '(http_|media|w)get', '(ips-|netcraftsurvey)agent',
@@ -34,7 +34,7 @@ class Visitor
         'traackr', 'twingly', 'twurly', 'um-ln', 'upflow', 'utility', 'verif(y|ier)', 'vkshare',
         'w3c(-mobileok|_unicorn)', 'web(datastats|inator)', 'web[-\s]?search', 'whatsapp', 'worth',
         'xenu link sleuth', 'yahoo', 'zabbix', 'zgrab'
-    );
+    ];
 
     /**
      * Compiled bots regex

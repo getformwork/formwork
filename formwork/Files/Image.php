@@ -44,7 +44,7 @@ class Image extends File
      *
      * @var array
      */
-    protected $info = array();
+    protected $info = [];
 
     /**
      * Image width

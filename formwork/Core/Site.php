@@ -13,7 +13,7 @@ class Site extends AbstractPage
      *
      * @var array
      */
-    protected $storage = array();
+    protected $storage = [];
 
     /**
      * Current page
@@ -27,7 +27,7 @@ class Site extends AbstractPage
      *
      * @var array
      */
-    protected $templates = array();
+    protected $templates = [];
 
     /**
      * Create a new Site instance
@@ -50,11 +50,11 @@ class Site extends AbstractPage
      */
     public function defaults()
     {
-        return array(
+        return [
             'title'    => 'Formwork',
-            'aliases'  => array(),
-            'metadata' => array()
-        );
+            'aliases'  => [],
+            'metadata' => []
+        ];
     }
 
     /**
@@ -254,12 +254,12 @@ class Site extends AbstractPage
         if ($this->metadata !== null) {
             return $this->metadata;
         }
-        $defaults = array(
+        $defaults = [
             'charset'     => Formwork::instance()->option('charset'),
             'author'      => $this->get('author'),
             'description' => $this->get('description'),
             'generator'   => 'Formwork'
-        );
+        ];
         $data = array_filter(array_merge($defaults, $this->data['metadata']));
         if (!Formwork::instance()->option('metadata.set_generator')) {
             unset($data['generator']);
@@ -323,7 +323,7 @@ class Site extends AbstractPage
     protected function loadTemplates()
     {
         $templatesPath = Formwork::instance()->option('templates.path');
-        $templates = array();
+        $templates = [];
         foreach (FileSystem::listFiles($templatesPath) as $file) {
             $templates[FileSystem::name($file)] = $templatesPath . $file;
         }

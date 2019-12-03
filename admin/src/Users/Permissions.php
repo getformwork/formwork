@@ -9,7 +9,7 @@ class Permissions
      *
      * @var array
      */
-    protected $permissions = array(
+    protected $permissions = [
         'dashboard' => false,
         'cache'     => false,
         'backup'    => false,
@@ -17,7 +17,7 @@ class Permissions
         'options'   => false,
         'updates'   => false,
         'users'     => false
-    );
+    ];
 
     /**
      * Create a new Permissions instance

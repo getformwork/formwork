@@ -29,12 +29,12 @@ class Users extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('users.users'),
-            'content' => $this->view('users.index', array(
+            'content' => $this->view('users.index', [
                 'users' => Admin::instance()->users()
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -47,7 +47,7 @@ class Users extends AbstractController
         $data = new DataGetter(HTTPRequest::postData());
 
         // Ensure no required data is missing
-        if (!$data->has(array('username', 'fullname', 'password', 'email', 'language'))) {
+        if (!$data->has(['username', 'fullname', 'password', 'email', 'language'])) {
             $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
             $this->redirect('/users/');
         }
@@ -58,13 +58,13 @@ class Users extends AbstractController
             $this->redirect('/users/');
         }
 
-        $userData = array(
+        $userData = [
             'username' => $data->get('username'),
             'fullname' => $data->get('fullname'),
             'hash'     => Password::hash($data->get('password')),
             'email'    => $data->get('email'),
             'language' => $data->get('language')
-        );
+        ];
 
         FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
 
@@ -144,13 +144,13 @@ class Users extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('admin', array(
+        $this->view('admin', [
             'title'   => $this->label('users.user-profile', $user->username()),
-            'content' => $this->view('users.profile', array(
+            'content' => $this->view('users.profile', [
                 'user'   => $user,
                 'fields' => $fields->render(true)
-            ), true)
-        ));
+            ], true)
+        ]);
     }
 
     /**
@@ -211,9 +211,9 @@ class Users extends AbstractController
 
         $uploader = new Uploader(
             $avatarsPath,
-            array(
-                'allowedMimeTypes' => array('image/gif', 'image/jpeg', 'image/png')
-            )
+            [
+                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png']
+            ]
         );
 
         try {

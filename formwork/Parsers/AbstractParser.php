@@ -14,7 +14,7 @@ abstract class AbstractParser
      *
      * @return mixed
      */
-    abstract public static function parse($input, array $options = array());
+    abstract public static function parse($input, array $options = []);
 
     /**
      * Parse file contents
@@ -24,7 +24,7 @@ abstract class AbstractParser
      *
      * @return mixed
      */
-    public static function parseFile($file, array $options = array())
+    public static function parseFile($file, array $options = [])
     {
         return static::parse(FileSystem::read($file), $options);
     }

@@ -12,10 +12,10 @@ class Errors extends AbstractController
      */
     public function notFound()
     {
-        $this->displayError(404, 'not-found', array(
+        $this->displayError(404, 'not-found', [
             'href'  => $this->uri('/dashboard/'),
             'label' => $this->label('errors.action.return-to-dashboard')
-        ));
+        ]);
     }
 
     /**
@@ -23,10 +23,10 @@ class Errors extends AbstractController
      */
     public function internalServerError()
     {
-        $this->displayError(500, 'internal-server-error', array(
+        $this->displayError(500, 'internal-server-error', [
             'href'  => 'https://github.com/getformwork/formwork/issues',
             'label' => $this->label('errors.action.report-to-github')
-        ));
+        ]);
     }
 
     /**
@@ -34,10 +34,10 @@ class Errors extends AbstractController
      */
     public function forbidden()
     {
-        $this->displayError(403, 'forbidden', array(
+        $this->displayError(403, 'forbidden', [
             'href'  => $this->uri('/dashboard/'),
             'label' => $this->label('errors.action.return-to-dashboard')
-        ));
+        ]);
     }
 
     /**
@@ -51,14 +51,14 @@ class Errors extends AbstractController
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
-        $this->view('errors.error', array(
+        $this->view('errors.error', [
             'title'       => $this->label('errors.error.' . $name . '.status'),
             'code'        => $status,
             'status'      => $this->label('errors.error.' . $name . '.status'),
             'heading'     => $this->label('errors.error.' . $name . '.heading'),
             'description' => $this->label('errors.error.' . $name . '.description'),
             'action'      => $action
-        ));
+        ]);
         // Don't exit, otherwise the error will not be logged
     }
 }

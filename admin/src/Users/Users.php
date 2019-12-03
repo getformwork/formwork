@@ -14,7 +14,7 @@ class Users extends AssociativeCollection
      *
      * @var array
      */
-    protected static $roles = array();
+    protected static $roles = [];
 
     /**
      * Load all users and roles
@@ -24,7 +24,7 @@ class Users extends AssociativeCollection
     public static function load()
     {
         static::$roles = YAML::parseFile(Admin::SCHEMES_PATH . 'roles.yml');
-        $users = array();
+        $users = [];
         foreach (FileSystem::listFiles(Admin::ACCOUNTS_PATH) as $file) {
             $parsedData = YAML::parseFile(Admin::ACCOUNTS_PATH . $file);
             $users[$parsedData['username']] = new User($parsedData);
@@ -39,7 +39,7 @@ class Users extends AssociativeCollection
      */
     public static function availableRoles()
     {
-        $roles = array();
+        $roles = [];
         foreach (static::$roles as $role => $data) {
             $roles[$role] = $data['title'];
         }
