@@ -7,13 +7,14 @@ $finder = Finder::create()
     ->in(__DIR__);
 
 return Config::create()
-    ->setRules(array(
+    ->setRules([
         '@PSR1' => true,
         '@PSR2' => true,
-        'binary_operator_spaces' => array('default' => 'single_space', 'operators' => array('=>' => 'align')),
-        'cast_spaces' => array('space' => 'single'),
+        'array_syntax' => ['syntax' => 'short'],
+        'binary_operator_spaces' => ['default' => 'single_space', 'operators' => ['=>' => 'align']],
+        'cast_spaces' => ['space' => 'single'],
         'class_attributes_separation' => true,
-        'concat_space' => array('spacing' => 'one'),
+        'concat_space' => ['spacing' => 'one'],
         'escape_implicit_backslashes' => true,
         'include' => true,
         'native_function_casing' => true,
@@ -32,8 +33,8 @@ return Config::create()
         'no_unneeded_curly_braces' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
-        'ordered_class_elements' => array('use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'),
-        'phpdoc_add_missing_param_annotation' => array('only_untyped' => false),
+        'ordered_class_elements' => ['use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'],
+        'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
         'phpdoc_align' => true,
         'phpdoc_annotation_without_dot' => true,
         'phpdoc_indent' => true,
@@ -45,8 +46,8 @@ return Config::create()
         'phpdoc_separation' => true,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
         'phpdoc_trim' => true,
-        'phpdoc_types_order' => array('null_adjustment' => 'always_last'),
+        'phpdoc_types_order' => ['null_adjustment' => 'always_last'],
         'phpdoc_var_without_name' => true,
         'single_quote' => true
-    ))
+    ])
     ->setFinder($finder);
