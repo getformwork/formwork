@@ -50,7 +50,7 @@ class Visitor
      */
     public static function isBot()
     {
-        if (is_null(static::$regex)) {
+        if (static::$regex === null) {
             static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
         }
         return (bool) preg_match(static::$regex, HTTPRequest::userAgent());

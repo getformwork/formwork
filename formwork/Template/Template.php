@@ -95,7 +95,7 @@ class Template
      */
     public function path()
     {
-        if (!is_null($this->path)) {
+        if ($this->path !== null) {
             return $this->path;
         }
         return $this->path = dirname(Formwork::instance()->site()->template($this->name)) . DS;
@@ -118,7 +118,7 @@ class Template
      */
     public function scheme()
     {
-        if (!is_null($this->scheme)) {
+        if ($this->scheme !== null) {
             return $this->scheme;
         }
         return $this->scheme = new Scheme($this->name);
@@ -131,7 +131,7 @@ class Template
      */
     public function assets()
     {
-        if (!is_null($this->assets)) {
+        if ($this->assets !== null) {
             return $this->assets;
         }
         return $this->assets = new Assets(
@@ -147,7 +147,7 @@ class Template
      */
     public function layout($name)
     {
-        if (!is_null($this->layout)) {
+        if ($this->layout !== null) {
             throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
         }
         $this->layout = new Layout($name, $this->page, $this);
@@ -211,7 +211,7 @@ class Template
 
         $this->insert($this->name);
 
-        if (!is_null($this->layout)) {
+        if ($this->layout !== null) {
             $this->layout->vars = $this->vars;
 
             $this->layout->content = ob_get_contents();

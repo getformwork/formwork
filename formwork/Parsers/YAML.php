@@ -60,7 +60,7 @@ class YAML extends AbstractParser
      */
     protected static function PHPYAMLmode($pattern)
     {
-        if (is_null(static::$PHPYAMLmode)) {
+        if (static::$PHPYAMLmode === null) {
             $option = Formwork::instance()->option('parsers.use_php_yaml');
             switch (strtolower($option)) {
                 case 'all':

@@ -99,7 +99,7 @@ class Validator
     public static function validateNumber($value, Field $field)
     {
         $number = static::parse($value);
-        if (!is_null($value)) {
+        if ($value !== null) {
             if ($field->has('min')) {
                 $number = max($number, (int) $field->get('min'));
             }

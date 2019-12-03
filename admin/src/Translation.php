@@ -147,7 +147,7 @@ class Translation
      */
     protected function fallbackTranslation()
     {
-        if (!is_null(static::$fallbackTranslation)) {
+        if (static::$fallbackTranslation !== null) {
             return static::$fallbackTranslation;
         }
         return static::$fallbackTranslation = static::load(self::FALLBACK_LANGUAGE_CODE);

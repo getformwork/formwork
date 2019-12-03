@@ -65,7 +65,7 @@ class Collection implements Countable, Iterator
      */
     public function valid()
     {
-        return !is_null($this->key());
+        return $this->key() !== null;
     }
 
     /**

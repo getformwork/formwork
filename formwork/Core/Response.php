@@ -76,7 +76,7 @@ class Response
      */
     public function sendStatus()
     {
-        if (!is_null($this->status)) {
+        if ($this->status !== null) {
             Header::status($this->status);
         }
     }

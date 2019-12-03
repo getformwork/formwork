@@ -44,7 +44,7 @@ class CSRFToken
      */
     public static function validate($token = null)
     {
-        if (is_null($token)) {
+        if ($token === null) {
             $postData = HTTPRequest::postData();
             $valid = isset($postData['csrf-token']) && $postData['csrf-token'] === static::get();
         } else {

@@ -251,7 +251,7 @@ class Site extends AbstractPage
      */
     public function metadata()
     {
-        if (!is_null($this->metadata)) {
+        if ($this->metadata !== null) {
             return $this->metadata;
         }
         $defaults = array(

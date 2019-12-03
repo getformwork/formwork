@@ -80,7 +80,7 @@ class Formwork
      */
     public function __construct()
     {
-        if (!is_null(static::$instance)) {
+        if (static::$instance !== null) {
             throw new LogicException('Formwork class already instantiated');
         }
         static::$instance = $this;
@@ -103,7 +103,7 @@ class Formwork
      */
     public static function instance()
     {
-        if (!is_null(static::$instance)) {
+        if (static::$instance !== null) {
             return static::$instance;
         }
         return static::$instance = new static();
@@ -213,7 +213,7 @@ class Formwork
         $resource = $this->router->dispatch();
 
         if ($resource instanceof Page) {
-            if (is_null($this->site->currentPage())) {
+            if ($this->site->currentPage() === null) {
                 $this->site->setCurrentPage($resource);
             }
 
@@ -276,9 +276,9 @@ class Formwork
     {
         $this->languages = Languages::fromRequest($this->request);
 
-        if (!is_null($this->languages->requested())) {
+        if ($this->languages->requested() !== null) {
             $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
-        } elseif (!is_null($this->languages->preferred())) {
+        } elseif ($this->languages->preferred() !== null) {
             // Don't redirect if we are in Admin
             if (!Str::startsWith($this->request, '/' . $this->option('admin.root'))) {
                 Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);

@@ -118,7 +118,7 @@ class Users extends AbstractController
 
         $user = Admin::instance()->users()->get($params->get('user'));
 
-        if (is_null($user)) {
+        if ($user === null) {
             $this->notify($this->label('users.user.not-found'), 'error');
             $this->redirect('/users/');
         }
@@ -189,7 +189,7 @@ class Users extends AbstractController
 
         // Handle incoming files
         if (HTTPRequest::hasFiles()) {
-            if (!is_null($avatar = $this->uploadAvatar($user))) {
+            if (($avatar = $this->uploadAvatar($user)) !== null) {
                 $data->set('avatar', $avatar);
             }
         }

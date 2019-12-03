@@ -95,7 +95,7 @@ class Admin
      */
     public function __construct()
     {
-        if (!is_null(static::$instance)) {
+        if (static::$instance !== null) {
             throw new LogicException('Admin class already instantiated');
         }
         static::$instance = $this;
@@ -114,7 +114,7 @@ class Admin
      */
     public static function instance()
     {
-        if (!is_null(static::$instance)) {
+        if (static::$instance !== null) {
             return static::$instance;
         }
         return static::$instance = new static();
@@ -200,7 +200,7 @@ class Admin
      */
     protected function validateContentLength()
     {
-        if (!is_null(HTTPRequest::contentLength())) {
+        if (HTTPRequest::contentLength() !== null) {
             $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
             if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
                 $this->notify($this->label('request.error.post-max-size'), 'error');

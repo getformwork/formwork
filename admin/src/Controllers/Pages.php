@@ -116,7 +116,7 @@ class Pages extends AbstractController
             if ($page->hasLanguage($language)) {
                 $page->setLanguage($language);
             }
-        } elseif (!is_null($page->language())) {
+        } elseif ($page->language() !== null) {
             // Redirect to proper language
             $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
         }
@@ -226,7 +226,7 @@ class Pages extends AbstractController
         }
 
         $parent = $this->resolveParent($data->get('parent'));
-        if (is_null($parent) || !$parent->hasChildren()) {
+        if ($parent === null || !$parent->hasChildren()) {
             JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
@@ -242,7 +242,7 @@ class Pages extends AbstractController
 
         foreach ($pages as $i => $page) {
             $id = $page->id();
-            if (is_null($id)) {
+            if ($id === null) {
                 continue;
             }
             $newId = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $id);
@@ -364,7 +364,7 @@ class Pages extends AbstractController
 
         $parent = $this->resolveParent($data->get('parent'));
 
-        if (is_null($parent)) {
+        if ($parent === null) {
             throw new TranslatedException('Parent page not found', 'pages.page.cannot-create.invalid-parent');
         }
 
@@ -501,7 +501,7 @@ class Pages extends AbstractController
 
         // Check if parent page has to change
         if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
-            if (is_null($parent)) {
+            if ($parent === null) {
                 throw new TranslatedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
             }
             $page = $this->changePageParent($page, $parent);
@@ -566,7 +566,7 @@ class Pages extends AbstractController
      */
     protected function ensurePageExists($page, $errorLanguageString)
     {
-        if (is_null($page)) {
+        if ($page === null) {
             $this->notify($this->label($errorLanguageString), 'error');
             $this->redirectToReferer(302, '/pages/');
         }

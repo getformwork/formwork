@@ -132,7 +132,7 @@ class File
      */
     public function type()
     {
-        if (!is_null($this->type)) {
+        if ($this->type !== null) {
             return $this->type;
         }
         if (Str::startsWith($this->mimeType, 'image')) {

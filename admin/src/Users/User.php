@@ -140,7 +140,7 @@ class User extends DataGetter
      */
     public function lastAccess()
     {
-        if (!is_null($this->lastAccess)) {
+        if ($this->lastAccess !== null) {
             return $this->lastAccess;
         }
         $lastAccess = Admin::instance()->registry('lastAccess')->get($this->data['username']);

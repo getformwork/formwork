@@ -82,7 +82,7 @@ trait AdminTrait
         $base = $this->siteUri();
         if ($includeLanguage) {
             $language = is_string($includeLanguage) ? $includeLanguage : $page->language();
-            if (!is_null($language)) {
+            if ($language !== null) {
                 $base .= $language . '/';
             }
         }

@@ -125,7 +125,7 @@ abstract class AbstractPage
             $default = Formwork::instance()->site()->languages()->default();
             $preferred = Formwork::instance()->site()->languages()->preferred();
 
-            if ((!is_null($language) && $language !== $default) || (!is_null($preferred) && $preferred !== $default)) {
+            if (($language !== null && $language !== $default) || ($preferred !== null && $preferred !== $default)) {
                 $base .= $language . '/';
             }
         }
@@ -139,7 +139,7 @@ abstract class AbstractPage
      */
     public function absoluteUri()
     {
-        if (!is_null($this->absoluteUri)) {
+        if ($this->absoluteUri !== null) {
             return $this->absoluteUri;
         }
         return $this->absoluteUri = Uri::resolveRelativeUri($this->uri());
@@ -152,7 +152,7 @@ abstract class AbstractPage
      */
     public function lastModifiedTime()
     {
-        if (!is_null($this->lastModifiedTime)) {
+        if ($this->lastModifiedTime !== null) {
             return $this->lastModifiedTime;
         }
         return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path);
@@ -167,7 +167,7 @@ abstract class AbstractPage
      */
     public function date($format = null)
     {
-        if (is_null($format)) {
+        if ($format === null) {
             $format = Formwork::instance()->option('date.format');
         }
         return date($format, $this->lastModifiedTime());
@@ -180,7 +180,7 @@ abstract class AbstractPage
      */
     public function parent()
     {
-        if (!is_null($this->parent)) {
+        if ($this->parent !== null) {
             return $this->parent;
         }
         $parentPath = dirname($this->path) . DS;
@@ -198,7 +198,7 @@ abstract class AbstractPage
      */
     public function parents()
     {
-        if (!is_null($this->parents)) {
+        if ($this->parents !== null) {
             return $this->parents;
         }
         $parentPages = array();
@@ -227,7 +227,7 @@ abstract class AbstractPage
      */
     public function children()
     {
-        if (!is_null($this->children)) {
+        if ($this->children !== null) {
             return $this->children;
         }
         return $this->children = PageCollection::fromPath($this->path);
@@ -250,7 +250,7 @@ abstract class AbstractPage
      */
     public function descendants()
     {
-        if (!is_null($this->descendants)) {
+        if ($this->descendants !== null) {
             return $this->descendants;
         }
         return $this->descendants = PageCollection::fromPath($this->path, true);
@@ -278,7 +278,7 @@ abstract class AbstractPage
      */
     public function level()
     {
-        if (!is_null($this->level)) {
+        if ($this->level !== null) {
             return $this->level;
         }
         return $this->level = $this->parents()->count();
@@ -329,7 +329,7 @@ abstract class AbstractPage
     {
         if (property_exists($this, $key)) {
             // Call getter method if exists and property is null
-            if (is_null($this->$key) && method_exists($this, $key)) {
+            if ($this->$key === null && method_exists($this, $key)) {
                 return $this->$key();
             }
             return $this->$key;

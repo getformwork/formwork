@@ -240,7 +240,7 @@ class Updater
      */
     protected function loadRelease()
     {
-        if (!is_null($this->release)) {
+        if ($this->release !== null) {
             return;
         }
 
@@ -275,7 +275,7 @@ class Updater
      */
     protected function getHeaders()
     {
-        if (!is_null($this->headers)) {
+        if ($this->headers !== null) {
             return $this->headers;
         }
         return $this->headers = get_headers($this->release['archive'], 1, $this->context);

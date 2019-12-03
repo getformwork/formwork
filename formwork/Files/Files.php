@@ -33,7 +33,7 @@ class Files extends AssociativeCollection
      */
     public static function fromPath($path, array $filenames = null)
     {
-        if (is_null($filenames)) {
+        if ($filenames === null) {
             $filenames = FileSystem::listFiles($path);
         }
 

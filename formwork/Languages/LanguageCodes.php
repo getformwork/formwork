@@ -118,7 +118,7 @@ class LanguageCodes
     {
         $result = array();
         foreach (static::$codes as $code => $data) {
-            if (!is_null($continent) && count(array_intersect((array) $continent, $data['continents'])) < 1) {
+            if ($continent !== null && count(array_intersect((array) $continent, $data['continents'])) < 1) {
                 continue;
             }
             $result[$code] = $data['native'] . ' (' . $code . ')';

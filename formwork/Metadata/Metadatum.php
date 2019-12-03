@@ -100,7 +100,7 @@ class Metadatum
      */
     public function hasPrefix()
     {
-        return !is_null($this->prefix);
+        return $this->prefix !== null;
     }
 
     public function __toString()

@@ -325,7 +325,7 @@ class FileSystem
         if (!$overwrite) {
             static::assert($destination, false);
         }
-        if (!is_null($context)) {
+        if ($context !== null) {
             $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
             if (!$valid) {
                 throw new RuntimeException('Invalid stream context resource');
@@ -407,7 +407,7 @@ class FileSystem
      */
     public static function fetch($source, $context = null)
     {
-        if (!is_null($context)) {
+        if ($context !== null) {
             $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
             if (!$valid) {
                 throw new RuntimeException('Invalid stream context resource');

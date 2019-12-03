@@ -202,7 +202,7 @@ class Page extends AbstractPage
         $defaults = array_merge($defaults, $this->template->scheme()->defaultFieldValues());
 
         // If the page hasn't a num, by default it won't be visible
-        if (is_null($this->num())) {
+        if ($this->num() === null) {
             $defaults['visible'] = false;
         }
 
@@ -230,7 +230,7 @@ class Page extends AbstractPage
      */
     public function isEmpty()
     {
-        return is_null($this->filename);
+        return $this->filename === null;
     }
 
     /**
@@ -267,7 +267,7 @@ class Page extends AbstractPage
      */
     public function date($format = null)
     {
-        if (is_null($format)) {
+        if ($format === null) {
             $format = Formwork::instance()->option('date.format');
         }
         if ($this->has('publish-date')) {
@@ -283,7 +283,7 @@ class Page extends AbstractPage
      */
     public function status()
     {
-        if (!is_null($this->status)) {
+        if ($this->status !== null) {
             return $this->status;
         }
         if ($this->published()) {
@@ -305,7 +305,7 @@ class Page extends AbstractPage
      */
     public function siblings()
     {
-        if (!is_null($this->siblings)) {
+        if ($this->siblings !== null) {
             return $this->siblings;
         }
         $parentPath = dirname($this->path) . DS;
@@ -362,7 +362,7 @@ class Page extends AbstractPage
      */
     public function metadata()
     {
-        if (!is_null($this->metadata)) {
+        if ($this->metadata !== null) {
             return $this->metadata;
         }
         $metadata = clone Formwork::instance()->site()->metadata();
@@ -487,7 +487,7 @@ class Page extends AbstractPage
                         'filename' => $file,
                         'template' => $name
                     );
-                    if (!is_null($language) && !in_array($language, $this->availableLanguages, true)) {
+                    if ($language !== null && !in_array($language, $this->availableLanguages, true)) {
                         $this->availableLanguages[] = $language;
                     }
                 }
@@ -557,7 +557,7 @@ class Page extends AbstractPage
 
         $this->sortable = $this->data['sortable'];
 
-        if (is_null($this->num()) || $this->template()->scheme()->get('num') === 'date') {
+        if ($this->num() === null || $this->template()->scheme()->get('num') === 'date') {
             $this->sortable = false;
         }
 

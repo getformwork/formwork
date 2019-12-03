@@ -59,7 +59,7 @@ class Authentication extends AbstractController
                 $user = Admin::instance()->users()->get($data->get('username'));
 
                 // Authenticate user
-                if (!is_null($user) && $user->authenticate($data->get('password'))) {
+                if ($user !== null && $user->authenticate($data->get('password'))) {
                     Session::set('FORMWORK_USERNAME', $data->get('username'));
 
                     // Regenerate CSRF token
@@ -70,7 +70,7 @@ class Authentication extends AbstractController
 
                     $limiter->resetAttempts();
 
-                    if (!is_null($destination = Session::get('FORMWORK_REDIRECT_TO'))) {
+                    if (($destination = Session::get('FORMWORK_REDIRECT_TO')) !== null) {
                         Session::remove('FORMWORK_REDIRECT_TO');
                         $this->redirect($destination);
                     }

@@ -102,7 +102,7 @@ class View
      */
     public function assets()
     {
-        if (!is_null($this->assets)) {
+        if ($this->assets !== null) {
             return $this->assets;
         }
         return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, $this->realUri('/assets/'));

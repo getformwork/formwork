@@ -106,7 +106,7 @@ class Uploader
 
         foreach (HTTPRequest::files() as $file) {
             if ($file['error'] === 0) {
-                if (is_null($name) || $count > 1) {
+                if ($name === null || $count > 1) {
                     $name = $file['name'];
                 }
                 $this->move($file['tmp_name'], $this->destination, $name);
@@ -127,7 +127,7 @@ class Uploader
      */
     public function isAllowedMimeType($mimeType)
     {
-        if (is_null($this->options['allowedMimeTypes'])) {
+        if ($this->options['allowedMimeTypes'] === null) {
             return true;
         }
         return in_array($mimeType, (array) $this->options['allowedMimeTypes'], true);

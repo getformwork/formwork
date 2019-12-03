@@ -35,7 +35,7 @@ class Fields extends AssociativeCollection
             }
             if ($data->has('fields')) {
                 $found = $data->get('fields')->find($field);
-                if (!is_null($found)) {
+                if ($found !== null) {
                     return $found;
                 }
             }

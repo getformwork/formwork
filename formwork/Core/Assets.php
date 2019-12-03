@@ -60,7 +60,7 @@ class Assets
     public function uri($path, $includeVersion = false)
     {
         $uri = $this->baseUri . trim($path, '/');
-        if ($includeVersion && !is_null($version = $this->version($path))) {
+        if ($includeVersion && ($version = $this->version($path)) !== null) {
             $uri .= '?v=' . $version;
         }
         return $uri;

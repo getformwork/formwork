@@ -55,7 +55,7 @@ class Updates extends AbstractController
                 'status' => $this->label('updates.status.cannot-install')
             ))->send();
         }
-        if (!is_null(Formwork::instance()->cache())) {
+        if (Formwork::instance()->cache() !== null) {
             Formwork::instance()->cache()->clear();
         }
         JSONResponse::success($this->label('updates.installed'), 200, array(
