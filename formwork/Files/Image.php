@@ -40,6 +40,13 @@ class Image extends File
     public const RESIZE_FIT_CONTAIN = 'contain';
 
     /**
+     * Image formats supporting alpha
+     *
+     * @var array
+     */
+    protected const FORMATS_SUPPORTING_ALPHA = ['image/gif', 'image/png', 'image/webp'];
+
+    /**
      * Array containing image information
      *
      * @var array
@@ -94,6 +101,13 @@ class Image extends File
      * @var int
      */
     protected $PNGCompression = 9;
+
+    /**
+     * WEBP export quality (0-100)
+     *
+     * @var int
+     */
+    protected $WEBPQuality = 85;
 
     /**
      * Return image width
@@ -227,7 +241,7 @@ class Image extends File
 
         $destinationImage = imagecreatetruecolor($destinationWidth, $destinationHeight);
 
-        if ($this->info['mime'] === 'image/png' || $this->info['mime'] === 'image/gif') {
+        if (in_array($this->info['mime'], self::FORMATS_SUPPORTING_ALPHA, true)) {
             $this->enableTransparency($destinationImage);
         }
 
@@ -302,7 +316,7 @@ class Image extends File
 
         $destinationImage = imagecreatetruecolor($destinationWidth, $destinationHeight);
 
-        if ($this->info['mime'] === 'image/png' || $this->info['mime'] === 'image/gif') {
+        if (in_array($this->info['mime'], self::FORMATS_SUPPORTING_ALPHA, true)) {
             $this->enableTransparency($destinationImage);
         }
 
@@ -359,7 +373,7 @@ class Image extends File
 
         $destinationImage = imagecreatetruecolor($width, $height);
 
-        if ($this->info['mime'] === 'image/png' || $this->info['mime'] === 'image/gif') {
+        if (in_array($this->info['mime'], self::FORMATS_SUPPORTING_ALPHA, true)) {
             $this->enableTransparency($destinationImage);
         }
 
@@ -612,6 +626,9 @@ class Image extends File
             case 'image/gif':
                 imagegif($this->image, $filename);
                 break;
+            case 'image/webp':
+                imagewebp($this->image, $filename, $this->WEBPQuality);
+                break;
             default:
                 throw new RuntimeException('Unknown image MIME type for .' . $filename . ' extension');
                 break;
@@ -696,6 +713,12 @@ class Image extends File
             throw new UnexpectedValueException('PNG compression level must be in range 0-9, ' . $this->PNGCompression . ' given');
         }
 
+        $this->WEBPQuality = Formwork::instance()->option('images.webp_quality');
+
+        if ($this->WEBPQuality < 0 || $this->WEBPQuality > 100) {
+            throw new UnexpectedValueException('WebP quality must be in the range 0-100, ' . $this->WEBPQuality . ' given');
+        }
+
         $this->info = getimagesize($this->path);
 
         if (!$this->info) {
@@ -713,6 +736,10 @@ class Image extends File
             case 'image/gif':
                 $this->image = imagecreatefromgif($this->path);
                 imagepalettetotruecolor($this->image);
+                $this->enableTransparency($this->image);
+                break;
+            case 'image/webp':
+                $this->image = imagecreatefromwebp($this->path);
                 $this->enableTransparency($this->image);
                 break;
             default:

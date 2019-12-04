@@ -58,6 +58,7 @@ class MimeType
         'tiff'     => 'image/tiff',
         'tif'      => 'image/tiff',
         'psd'      => 'image/vnd.adobe.photoshop',
+        'webp'     => 'image/webp',
         'ico'      => 'image/x-icon',
         'tga'      => 'image/x-tga',
         'ics'      => 'text/calendar',
