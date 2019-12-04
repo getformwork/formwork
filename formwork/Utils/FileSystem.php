@@ -598,7 +598,7 @@ class FileSystem
             return '0 B';
         }
         $exp = min(floor(log($bytes, 1024)), count(self::FILE_SIZE_UNITS) - 1);
-        return round($bytes / pow(1024, $exp), 2) . ' ' . self::FILE_SIZE_UNITS[$exp];
+        return round($bytes / 1024 ** $exp, 2) . ' ' . self::FILE_SIZE_UNITS[$exp];
     }
 
     /**
