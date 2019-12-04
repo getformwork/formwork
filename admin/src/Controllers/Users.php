@@ -212,7 +212,7 @@ class Users extends AbstractController
         $uploader = new Uploader(
             $avatarsPath,
             [
-                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png']
+                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png', 'image/webp']
             ]
         );
 
