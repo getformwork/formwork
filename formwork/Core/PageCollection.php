@@ -160,7 +160,7 @@ class PageCollection extends Collection
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
-            return new PageCollection();
+            return new static();
         }
 
         $keywords = explode(' ', $query);
