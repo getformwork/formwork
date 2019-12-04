@@ -619,9 +619,9 @@ class FileSystem
         if ($unit === 'K') {
             $value *= 1024;
         } elseif ($unit === 'M') {
-            $value *= 1024 * 1024;
+            $value *= 1024 ** 2;
         } elseif ($unit === 'G') {
-            $value *= 1024 * 1024;
+            $value *= 1024 ** 3;
         }
         return $value;
     }
