@@ -94,6 +94,7 @@ options.system.images.png-compression-level: Livello di compressione PNG
 options.system.images.process-uploads: Elabora (ottimizza) le immagini caricate
 options.system.images.process-uploads.disabled: Disabilitato
 options.system.images.process-uploads.enabled: Abilitato
+options.system.images.webp-quality: Qualità WebP
 options.system.languages: Lingue
 options.system.languages.available-languages: Lingue disponibili
 options.system.languages.available-languages.no-languages: Nessuna lingua
