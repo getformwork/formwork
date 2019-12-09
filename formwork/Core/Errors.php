@@ -5,6 +5,7 @@ namespace Formwork\Core;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
 use ErrorException;
+use Throwable;
 
 class Errors
 {
@@ -35,13 +36,19 @@ class Errors
     /**
      * Display error page on exception
      *
-     * @param ErrorException $exception
+     * @param Throwable $exception
      */
-    public static function exceptionHandler($exception)
+    public static function exceptionHandler(Throwable $exception)
     {
         static::displayErrorPage();
-        // Throws exception again to be logged
-        throw $exception;
+        error_log(sprintf(
+            "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
+            get_class($exception),
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine(),
+            $exception->getTraceAsString()
+        ));
     }
 
     /**
