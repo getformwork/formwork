@@ -402,9 +402,12 @@ class Page extends AbstractPage
      * @param string $file Name of the file
      *
      * @return string|null File path or null if file is not found
+     *
+     * @deprecated
      */
     public function file($file)
     {
+        trigger_error(static::class . '::file() is deprecated since Formwork 1.4.0, access files from ' . static::class . '::files() instead', E_USER_DEPRECATED);
         return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
     }
 
