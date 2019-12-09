@@ -1,6 +1,48 @@
 # Changelog
 
-## [1.3.1](https://github.com/getformwork/formwork/releases/tag/1.3.0) (2019-11-13)
+## [1.4.0](https://github.com/getformwork/formwork/releases/tag/1.4.0) (2019-12-9)
+
+**Enhancements**
+
+- Move `Formwork\Admin\Image` to `Formwork\Files\Image`
+- Add the possibility to save JPEG images as progressive
+- Add the option to process (optimize) uploaded images
+- Add lazy initalization to `Image` class
+- Throw an exception when an uploaded file already exists
+- Add option to prefer dist assets to `Updater` class
+- Prefer dist assets when updating
+- Cleanup files after installing updates
+- Move `FileSystem::mimeType()` logic to `MimeType::fromFile()`
+- Add `$limit` parameter to `Statistics::getChartData()`
+- Simplify `Page::lastModifiedTime()`
+- Add `Image::saveOptimized()`
+- Use `=== null` instead of `is_null()`
+- Use short array syntax
+- Use `**` operator instead of `pow()`
+- Use late static binding in `PageCollection::search()`
+- Add WebP images support
+- Add WebP quality slider to Options > System
+- Allow to upload WebP images as user avatar
+- Avoid re-throwing exception in `Errors::exceptionHandler()`
+- Revert type check in `Pages::changePageParent()` from [4ae2b29](https://github.com/getformwork/formwork/commit/4ae2b29)
+- Minify app.js with uglify-js@3.7
+
+**Bug fixes**
+
+- Fix `Image::destroy()` error if the image is not modified
+- Fix transparency not handled when loading images
+- Fix `Image::destroy()` error if the image was already destroyed
+- Fix `Image::save()` not destroying image after saving
+- Fix array access on null in `AccessLimiter::__construct()`
+- Fix `FileSystem::shorthandToBytes()` treating M and G the same
+- Fix extraneous npm packages
+- Temporarily suppress `ParsedownExtra` PHP 7.4 errors (array access on null)
+
+**Deprecations**
+
+- Deprecate `Page::file()`
+
+## [1.3.1](https://github.com/getformwork/formwork/releases/tag/1.3.1) (2019-11-13)
 
 **Enhancements**
 
