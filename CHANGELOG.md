@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.1](https://github.com/getformwork/formwork/releases/tag/1.4.1) (2019-12-11)
+
+**Enhancements**
+
+- Optimize `YAML::parse()`
+- Load defaults before parsing YAML in `Formwork::loadOptions()`
+
+**Bug fixes**
+
+- Fix errors when using PHP Yaml extension
+
 ## [1.4.0](https://github.com/getformwork/formwork/releases/tag/1.4.0) (2019-12-9)
 
 **Enhancements**
