@@ -261,8 +261,12 @@ class Formwork
     protected function loadOptions()
     {
         FileSystem::assert(CONFIG_PATH . 'system.yml');
+
+        // Load defaults before parsing YAML
+        $this->options = $this->defaults();
+
         $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->defaults(), $config);
+        $this->options = array_merge($this->options, $config);
 
         // Trim slashes from admin.root
         $this->options['admin.root'] = trim($this->option('admin.root'), '/');
