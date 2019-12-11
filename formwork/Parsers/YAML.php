@@ -25,7 +25,7 @@ class YAML extends AbstractParser
     public static function parse($input, array $options = [])
     {
         if (function_exists('yaml_parse') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('parse'))) {
-            if (!preg_match('/^---\n/', $input)) {
+            if (strpos($input, "---\n") !== 0) {
                 $input = "---\n" . $input;
             }
             return (array) yaml_parse($input);
