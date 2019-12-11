@@ -24,7 +24,7 @@ class YAML extends AbstractParser
      */
     public static function parse($input, array $options = [])
     {
-        if (function_exists('yaml_parse') && $options['usePHPYAML'] ?? static::PHPYAMLmode('parse')) {
+        if (function_exists('yaml_parse') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('parse'))) {
             if (!preg_match('/^---\n/', $input)) {
                 $input = "---\n" . $input;
             }
@@ -47,7 +47,7 @@ class YAML extends AbstractParser
         if (empty($data)) {
             return '';
         }
-        if (function_exists('yaml_emit') && $options['usePHPYAML'] ?? static::PHPYAMLmode('emit')) {
+        if (function_exists('yaml_emit') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('emit'))) {
             return preg_replace('/^---[\n ]|\n\.{3}$/', '', yaml_emit($data));
         }
         return SymfonyYaml::dump($data);
