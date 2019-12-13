@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.2](https://github.com/getformwork/formwork/releases/tag/1.4.1) (2019-12-13)
+
+**Bug fixes**
+
+- Fix paginated pages cached incorrectly
+
 ## [1.4.1](https://github.com/getformwork/formwork/releases/tag/1.4.1) (2019-12-11)
 
 **Enhancements**
