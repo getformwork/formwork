@@ -220,14 +220,14 @@ class Formwork
 
             $page = $this->site->currentPage();
 
-            if ($this->option('cache.enabled') && $this->cache->has($page->route())) {
-                $response = $this->cache->fetch($page->route());
+            if ($this->option('cache.enabled') && $this->cache->has($this->request)) {
+                $response = $this->cache->fetch($this->request);
                 $response->render();
             } else {
                 $content = $page->render();
 
                 if ($this->option('cache.enabled') && $page->cacheable()) {
-                    $this->cache->save($page->route(), new Response(
+                    $this->cache->save($this->request, new Response(
                         $content,
                         $page->get('response_status'),
                         $page->headers()
