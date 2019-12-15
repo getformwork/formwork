@@ -27,7 +27,7 @@ class Layout extends Template
      * @param Page     $page
      * @param Template $template
      */
-    public function __construct($layout, Page $page, Template $template)
+    public function __construct(string $layout, Page $page, Template $template)
     {
         parent::__construct('layouts' . DS . $layout, $page);
         $this->template = $template;

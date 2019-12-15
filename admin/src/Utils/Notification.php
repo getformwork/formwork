@@ -10,7 +10,7 @@ class Notification
      * @param string $text
      * @param string $type Notification type ('error', 'info', 'success', 'warning')
      */
-    public static function send($text, $type = '')
+    public static function send(string $text, string $type = '')
     {
         Session::set('FORMWORK_NOTIFICATION', ['text' => $text, 'type' => $type]);
     }
@@ -32,7 +32,7 @@ class Notification
      *
      * @return array
      */
-    public static function get($remove = true)
+    public static function get(bool $remove = true)
     {
         $notification = Session::get('FORMWORK_NOTIFICATION');
         if ($remove) {

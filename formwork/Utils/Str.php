@@ -12,7 +12,7 @@ class Str
      *
      * @return bool
      */
-    public static function startsWith($haystack, $needle)
+    public static function startsWith(string $haystack, string $needle)
     {
         return substr($haystack, 0, strlen($needle)) === $needle;
     }
@@ -25,7 +25,7 @@ class Str
      *
      * @return bool
      */
-    public static function endsWith($haystack, $needle)
+    public static function endsWith(string $haystack, string $needle)
     {
         return substr($haystack, -strlen($needle)) === $needle;
     }
@@ -37,7 +37,7 @@ class Str
      *
      * @return string
      */
-    public static function escape($string)
+    public static function escape(string $string)
     {
         return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE, 'utf-8', false);
     }
@@ -49,7 +49,7 @@ class Str
      *
      * @return string
      */
-    public static function removeHTML($string)
+    public static function removeHTML(string $string)
     {
         return html_entity_decode(strip_tags($string), ENT_QUOTES | ENT_HTML5, 'utf-8');
     }
@@ -62,7 +62,7 @@ class Str
      *
      * @return string
      */
-    public static function removeStart($haystack, $needle)
+    public static function removeStart(string $haystack, string $needle)
     {
         return static::startsWith($haystack, $needle) ? substr($haystack, strlen($needle)) : $haystack;
     }
@@ -75,7 +75,7 @@ class Str
      *
      * @return string
      */
-    public static function removeEnd($haystack, $needle)
+    public static function removeEnd(string $haystack, string $needle)
     {
         return static::endsWith($haystack, $needle) ? substr($haystack, 0, -strlen($needle)) : $haystack;
     }

@@ -33,7 +33,7 @@ class Metadatum
      * @param string $name
      * @param string $content
      */
-    public function __construct($name, $content)
+    public function __construct(string $name, string $content)
     {
         $this->name = strtolower($name);
         $this->content = $content;

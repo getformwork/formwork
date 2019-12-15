@@ -51,7 +51,7 @@ class Translation
      * @param string $code
      * @param array  $strings
      */
-    public function __construct($code, array $strings)
+    public function __construct(string $code, array $strings)
     {
         $this->code = $code;
         $this->strings = $strings;
@@ -84,7 +84,7 @@ class Translation
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key)
     {
         return isset($this->strings[$key]);
     }
@@ -97,7 +97,7 @@ class Translation
      *
      * @return string
      */
-    public function get($key, ...$arguments)
+    public function get(string $key, ...$arguments)
     {
         if (!$this->has($key)) {
             if ($this->code !== self::FALLBACK_LANGUAGE_CODE) {
@@ -120,7 +120,7 @@ class Translation
      *
      * @return self
      */
-    public static function load($languageCode)
+    public static function load(string $languageCode)
     {
         if (empty(static::$availableLanguages)) {
             foreach (FileSystem::listFiles(Admin::TRANSLATIONS_PATH) as $file) {

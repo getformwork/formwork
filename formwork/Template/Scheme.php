@@ -28,7 +28,7 @@ class Scheme extends DataGetter
      *
      * @param string $name
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->path = Formwork::instance()->option('templates.path') . 'schemes' . DS;
         $this->name = $name;

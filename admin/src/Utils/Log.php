@@ -17,7 +17,7 @@ class Log extends Registry
      * @param string $filename
      * @param int    $limit
      */
-    public function __construct($filename, $limit = 128)
+    public function __construct(string $filename, int $limit = 128)
     {
         parent::__construct($filename);
         $this->limit = $limit;
@@ -30,7 +30,7 @@ class Log extends Registry
      *
      * @return string Logging timestamp
      */
-    public function log($message)
+    public function log(string $message)
     {
         $timestamp = (string) microtime(true);
         $this->set($timestamp, $message);

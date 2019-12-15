@@ -44,7 +44,7 @@ class Session
      * @param string $key
      * @param mixed  $value
      */
-    public static function set($key, $value)
+    public static function set(string $key, $value)
     {
         static::start();
         $_SESSION[$key] = $value;
@@ -55,7 +55,7 @@ class Session
      *
      * @param string $key
      */
-    public static function get($key)
+    public static function get(string $key)
     {
         static::start();
         if (static::has($key)) {
@@ -70,7 +70,7 @@ class Session
      *
      * @return bool
      */
-    public static function has($key)
+    public static function has(string $key)
     {
         static::start();
         return isset($_SESSION[$key]);
@@ -81,7 +81,7 @@ class Session
      *
      * @param string $key
      */
-    public static function remove($key)
+    public static function remove(string $key)
     {
         static::start();
         if (static::has($key)) {

@@ -45,7 +45,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public function slice($offset, $length = null)
+    public function slice(int $offset, ?int $length = null)
     {
         $pageCollection = clone $this;
         $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
@@ -77,7 +77,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public function paginate($length)
+    public function paginate(int $length)
     {
         $pagination = new Pagination($this->count(), $length);
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
@@ -94,7 +94,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public function filter($property, $value = true, $process = null)
+    public function filter(string $property, bool $value = true, ?callable $process = null)
     {
         $pageCollection = clone $this;
 
@@ -127,7 +127,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public function sort($property = 'id', $direction = SORT_ASC)
+    public function sort(string $property = 'id', $direction = SORT_ASC)
     {
         $pageCollection = clone $this;
 
@@ -156,7 +156,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public function search($query, $min = 4)
+    public function search(string $query, int $min = 4)
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
@@ -209,7 +209,7 @@ class PageCollection extends Collection
      *
      * @return self
      */
-    public static function fromPath($path, $recursive = false)
+    public static function fromPath(string $path, bool $recursive = false)
     {
         $path = FileSystem::normalize($path);
         $pages = [];

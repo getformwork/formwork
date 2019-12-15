@@ -51,7 +51,7 @@ class HTTPNegotiation
      *
      * @return array
      */
-    public static function parseHeader($header)
+    public static function parseHeader(string $header)
     {
         if (!HTTPRequest::hasHeader($header)) {
             return [];
@@ -68,7 +68,7 @@ class HTTPNegotiation
      *
      * @return array
      */
-    protected static function parseCommaSeparatedList($list)
+    protected static function parseCommaSeparatedList(string $list)
     {
         $result = [];
         $tokens = array_map('trim', explode(',', $list));

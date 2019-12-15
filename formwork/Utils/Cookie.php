@@ -28,7 +28,7 @@ class Cookie
      * @param array  $options
      * @param bool   $replace Whether to replace existing Set-Cookie header
      */
-    public static function send($name, $value, array $options = [], $replace = false)
+    public static function send(string $name, string $value, array $options = [], bool $replace = false)
     {
         $options = array_merge(static::defaults(), (array) $options);
         if (in_array(strtolower($name), array_keys($options), true)) {

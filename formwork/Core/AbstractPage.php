@@ -116,7 +116,7 @@ abstract class AbstractPage
      *
      * @return string
      */
-    public function uri($path = '', $includeLanguage = true)
+    public function uri(string $path = '', $includeLanguage = true)
     {
         $base = HTTPRequest::root();
         if ($includeLanguage) {
@@ -165,7 +165,7 @@ abstract class AbstractPage
      *
      * @return string
      */
-    public function date($format = null)
+    public function date(?string $format = null)
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');
@@ -367,7 +367,7 @@ abstract class AbstractPage
         $this->data[$key] = $value;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if ($this->has($name)) {
             return $this->get($name);

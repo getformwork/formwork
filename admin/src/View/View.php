@@ -53,7 +53,7 @@ class View
      * @param string $name
      * @param array  $vars
      */
-    public function __construct($name, array $vars = [])
+    public function __construct(string $name, array $vars = [])
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
@@ -65,7 +65,7 @@ class View
      * @param string $name
      * @param array  $vars
      */
-    public function insert($name, array $vars = [])
+    public function insert(string $name, array $vars = [])
     {
         $file = Admin::VIEWS_PATH . str_replace('.', DS, $name) . '.php';
 
@@ -83,7 +83,7 @@ class View
      *
      * @return string|void
      */
-    public function render($return = false)
+    public function render(bool $return = false)
     {
         ob_start();
 
@@ -122,7 +122,7 @@ class View
         ];
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if (method_exists(AdminTrait::class, $name)) {
             return $this->$name(...$arguments);

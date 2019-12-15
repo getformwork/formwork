@@ -87,7 +87,7 @@ class HTTPRequest
      *
      * @return string
      */
-    public static function ip($strict = false)
+    public static function ip(bool $strict = false)
     {
         if (!$strict && getenv('HTTP_X_FORWARDED_FOR')) {
             return getenv('HTTP_X_FORWARDED_FOR');
@@ -122,10 +122,10 @@ class HTTPRequest
      *
      * @return bool
      */
-    public static function validateReferer($path = null)
+    public static function validateReferer(?string $path = null)
     {
         $base = Uri::normalize(Uri::base() . '/' . ltrim($path, '/'));
-        return Str::startsWith(static::referer(), $base);
+        return Str::startsWith((string) static::referer(), $base);
     }
 
     /**
@@ -299,7 +299,7 @@ class HTTPRequest
      *
      * @return bool
      */
-    public static function hasHeader($header)
+    public static function hasHeader(string $header)
     {
         return isset(static::headers()[$header]);
     }

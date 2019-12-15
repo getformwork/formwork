@@ -90,7 +90,7 @@ class MimeType
      *
      * @return string
      */
-    public static function fromExtension($extension)
+    public static function fromExtension(string $extension)
     {
         $extension = ltrim($extension, '.');
         return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
@@ -103,7 +103,7 @@ class MimeType
      *
      * @return string|null
      */
-    public static function fromFile($file)
+    public static function fromFile(string $file)
     {
         $mimeType = null;
 
@@ -138,7 +138,7 @@ class MimeType
      *
      * @return array|string
      */
-    public static function toExtension($mimeType)
+    public static function toExtension(string $mimeType)
     {
         $results = array_keys(self::MIME_TYPES, $mimeType, true);
         return count($results) > 1 ? $results : array_shift($results);

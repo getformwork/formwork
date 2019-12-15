@@ -25,7 +25,7 @@ class HTTPResponse
      * @param string $file
      * @param bool   $download Whether to download file or not
      */
-    public static function file($file, $download = false)
+    public static function file(string $file, bool $download = false)
     {
         FileSystem::assert($file);
         $mimeType = FileSystem::mimeType($file);
@@ -45,7 +45,7 @@ class HTTPResponse
      *
      * @see HTTPResponse::file()
      */
-    public static function download($file)
+    public static function download(string $file)
     {
         static::file($file, true);
     }

@@ -23,7 +23,7 @@ class Metadata extends AssociativeCollection
      * @param string $name
      * @param string $content
      */
-    public function set($name, $content)
+    public function set(string $name, string $content)
     {
         $this->items[$name] = new Metadatum($name, $content);
     }

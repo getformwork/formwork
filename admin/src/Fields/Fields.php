@@ -27,7 +27,7 @@ class Fields extends AssociativeCollection
      *
      * @return Field|null
      */
-    public function find($field)
+    public function find(string $field)
     {
         foreach ($this->items as $name => $data) {
             if ($name === $field) {
@@ -48,7 +48,7 @@ class Fields extends AssociativeCollection
      *
      * @param bool $return Whether to return or render the fields
      */
-    public function render($return = false)
+    public function render(bool $return = false)
     {
         $output = '';
         foreach ($this->items as $field) {
@@ -67,7 +67,7 @@ class Fields extends AssociativeCollection
      *
      * @return array
      */
-    public function toArray($flatten = false)
+    public function toArray(bool $flatten = false)
     {
         if (!$flatten) {
             return $this->items;

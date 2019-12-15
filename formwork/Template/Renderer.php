@@ -16,7 +16,7 @@ class Renderer
      *
      * @return mixed
      */
-    public static function load($filename, array $vars, $instance, $context = null)
+    public static function load(string $filename, array $vars, object $instance, ?string $context = null)
     {
         $closure = static::getClosure($instance, $context);
         return $closure($filename, $vars);
@@ -30,7 +30,7 @@ class Renderer
      *
      * @return Closure
      */
-    protected static function getClosure($instance, $context = null)
+    protected static function getClosure(object $instance, ?string $context = null)
     {
         return Closure::bind(function ($_filename, array $_vars) {
             extract($_vars);

@@ -59,7 +59,7 @@ class Translator
      *
      * @return bool
      */
-    protected static function isTranslatable($key, Field $field)
+    protected static function isTranslatable(string $key, Field $field)
     {
         if (in_array($key, self::IGNORED_FIELDS, true)) {
             return false;
@@ -74,7 +74,7 @@ class Translator
     /**
      * Interpolate a string
      *
-     * @param string $value
+     * @param array|string $value
      *
      * @return array|string
      */

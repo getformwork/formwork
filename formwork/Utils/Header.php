@@ -90,13 +90,13 @@ class Header
     /**
      * Send an HTTP response status code
      *
-     * @param int|string $code
-     * @param bool       $send Whether to send status code or return
-     * @param bool       $exit Whether to exit from the script after sending the status code
+     * @param int  $code
+     * @param bool $send Whether to send status code or return
+     * @param bool $exit Whether to exit from the script after sending the status code
      *
      * @return string|null
      */
-    public static function status($code, $send = true, $exit = false)
+    public static function status(int $code, bool $send = true, bool $exit = false)
     {
         if (!isset(self::HTTP_STATUS[$code])) {
             throw new LogicException('Unknown HTTP status code ' . $code);
@@ -119,7 +119,7 @@ class Header
      * @param string $fieldValue
      * @param bool   $replace    Whether to replace headers with the same name
      */
-    public static function send($fieldName, $fieldValue, $replace = true)
+    public static function send(string $fieldName, string $fieldValue, bool $replace = true)
     {
         if (headers_sent()) {
             throw new RuntimeException('Cannot send ' . $fieldName . ' header, HTTP headers already sent');
@@ -132,7 +132,7 @@ class Header
      *
      * @param string $mimeType
      */
-    public static function contentType($mimeType)
+    public static function contentType(string $mimeType)
     {
         static::send('Content-Type', $mimeType);
     }
@@ -151,7 +151,7 @@ class Header
      * @param string $uri
      * @param int    $code Redirect HTTP response status code
      */
-    public static function redirect($uri, $code = 302)
+    public static function redirect(string $uri, int $code = 302)
     {
         static::status($code);
         static::send('Location', $uri);

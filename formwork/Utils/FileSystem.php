@@ -27,7 +27,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function name($file)
+    public static function name(string $file)
     {
         $basename = basename($file);
         $pos = strrpos($basename, '.');
@@ -41,7 +41,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function extension($file)
+    public static function extension(string $file)
     {
         return substr(basename($file), strlen(static::name($file)) + 1);
     }
@@ -53,7 +53,7 @@ class FileSystem
      *
      * @return string|null
      */
-    public static function mimeType($file)
+    public static function mimeType(string $file)
     {
         return MimeType::fromFile($file);
     }
@@ -65,7 +65,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function exists($path)
+    public static function exists(string $path)
     {
         return @file_exists($path);
     }
@@ -78,7 +78,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function assert($path, $value = true)
+    public static function assert(string $path, bool $value = true)
     {
         if ($value === true && !static::exists($path)) {
             throw new RuntimeException('File not found: ' . $path);
@@ -96,7 +96,7 @@ class FileSystem
      *
      * @return int|null
      */
-    public static function accessTime($file)
+    public static function accessTime(string $file)
     {
         static::assert($file);
         return @fileatime($file) ?: null;
@@ -109,7 +109,7 @@ class FileSystem
      *
      * @return int|null
      */
-    public static function creationTime($file)
+    public static function creationTime(string $file)
     {
         static::assert($file);
         return @filectime($file) ?: null;
@@ -122,7 +122,7 @@ class FileSystem
      *
      * @return int|null
      */
-    public static function lastModifiedTime($file)
+    public static function lastModifiedTime(string $file)
     {
         static::assert($file);
         return @filemtime($file) ?: null;
@@ -136,7 +136,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function directoryModifiedSince($directory, $time)
+    public static function directoryModifiedSince(string $directory, int $time)
     {
         if (static::lastModifiedTime($directory) > $time) {
             return true;
@@ -161,7 +161,7 @@ class FileSystem
      *
      * @return int|string|null
      */
-    public static function size($file, $unit = true)
+    public static function size(string $file, bool $unit = true)
     {
         static::assert($file);
         if (($bytes = @filesize($file)) !== false) {
@@ -178,7 +178,7 @@ class FileSystem
      *
      * @return int|string|null
      */
-    public static function directorySize($path, $unit = true)
+    public static function directorySize(string $path, bool $unit = true)
     {
         $path = static::normalize($path);
         static::assert($path);
@@ -200,7 +200,7 @@ class FileSystem
      *
      * @return int
      */
-    public static function mode($file)
+    public static function mode(string $file)
     {
         static::assert($file);
         return @fileperms($file);
@@ -213,7 +213,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function isVisible($path)
+    public static function isVisible(string $path)
     {
         return basename($path)[0] !== '.';
     }
@@ -225,7 +225,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function isReadable($file)
+    public static function isReadable(string $file)
     {
         static::assert($file);
         return @is_readable($file);
@@ -238,7 +238,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function isWritable($file)
+    public static function isWritable(string $file)
     {
         static::assert($file);
         return @is_writable($file);
@@ -251,7 +251,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function isFile($path)
+    public static function isFile(string $path)
     {
         static::assert($path);
         return @is_file($path);
@@ -264,7 +264,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function isDirectory($path)
+    public static function isDirectory(string $path)
     {
         static::assert($path);
         return @is_dir($path);
@@ -278,7 +278,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function delete($path, $recursive = false)
+    public static function delete(string $path, bool $recursive = false)
     {
         static::assert($path);
         if (static::isFile($path)) {
@@ -301,7 +301,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function copy($source, $destination, $overwrite = false)
+    public static function copy(string $source, string $destination, bool $overwrite = false)
     {
         static::assert($source);
         if (!$overwrite) {
@@ -320,7 +320,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function download($source, $destination, $overwrite = false, $context = null)
+    public static function download(string $source, string $destination, bool $overwrite = false, $context = null)
     {
         if (!$overwrite) {
             static::assert($destination, false);
@@ -346,7 +346,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function move($source, $destination, $overwrite = false)
+    public static function move(string $source, string $destination, bool $overwrite = false)
     {
         static::assert($source);
         if (!$overwrite) {
@@ -364,7 +364,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function moveDirectory($source, $destination, $overwrite = false)
+    public static function moveDirectory(string $source, string $destination, bool $overwrite = false)
     {
         $source = static::normalize($source);
         $destination = static::normalize($destination);
@@ -391,7 +391,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function read($file)
+    public static function read(string $file)
     {
         static::assert($file);
         return file_get_contents($file);
@@ -405,7 +405,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function fetch($source, $context = null)
+    public static function fetch(string $source, $context = null)
     {
         if ($context !== null) {
             $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
@@ -428,7 +428,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function write($file, $content)
+    public static function write(string $file, string $content)
     {
         $temp = static::temporaryName($file . '.');
         if (file_put_contents($temp, $content, LOCK_EX) === false) {
@@ -447,7 +447,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function createFile($file)
+    public static function createFile(string $file)
     {
         static::assert($file, false);
         return static::write($file, '');
@@ -461,7 +461,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function createDirectory($directory, $recursive = false)
+    public static function createDirectory(string $directory, bool $recursive = false)
     {
         static::assert($directory, false);
         return @mkdir($directory, 0777, $recursive);
@@ -476,7 +476,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function create($file)
+    public static function create(string $file)
     {
         return static::createFile($file);
     }
@@ -488,7 +488,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function normalize($path)
+    public static function normalize(string $path)
     {
         return rtrim($path, DS) . DS;
     }
@@ -501,7 +501,7 @@ class FileSystem
      *
      * @return array
      */
-    public static function scan($path, $all = false)
+    public static function scan(string $path, bool $all = false)
     {
         static::assert($path);
         if (!static::isDirectory($path)) {
@@ -526,7 +526,7 @@ class FileSystem
      *
      * @return array
      */
-    public static function scanRecursive($path, $all = false)
+    public static function scanRecursive(string $path, bool $all = false)
     {
         $list = [];
         $path = static::normalize($path);
@@ -548,7 +548,7 @@ class FileSystem
      *
      * @return array
      */
-    public static function listFiles($path, $all = false)
+    public static function listFiles(string $path, bool $all = false)
     {
         $path = static::normalize($path);
         return array_filter(static::scan($path, $all), static function ($item) use ($path) {
@@ -564,7 +564,7 @@ class FileSystem
      *
      * @return array
      */
-    public static function listDirectories($path, $all = false)
+    public static function listDirectories(string $path, bool $all = false)
     {
         $path = static::normalize($path);
         return array_filter(static::scan($path, $all), static function ($item) use ($path) {
@@ -579,7 +579,7 @@ class FileSystem
      *
      * @return bool
      */
-    public static function touch($path)
+    public static function touch(string $path)
     {
         static::assert($path, true);
         return @touch($path);
@@ -592,7 +592,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function bytesToSize($bytes)
+    public static function bytesToSize(int $bytes)
     {
         if ($bytes <= 0) {
             return '0 B';
@@ -610,7 +610,7 @@ class FileSystem
      *
      * @return int
      */
-    public static function shorthandToBytes($shorthand)
+    public static function shorthandToBytes(string $shorthand)
     {
         $shorthand = trim($shorthand);
         preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches);
@@ -643,7 +643,7 @@ class FileSystem
      *
      * @return string
      */
-    public static function temporaryName($prefix = '')
+    public static function temporaryName(string $prefix = '')
     {
         return $prefix . static::randomName();
     }

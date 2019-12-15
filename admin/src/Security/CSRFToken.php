@@ -38,11 +38,11 @@ class CSRFToken
     /**
      * Check if given CSRF token is valid
      *
-     * @param string $token
+     * @param string|null $token
      *
      * @return bool
      */
-    public static function validate($token = null)
+    public static function validate(?string $token = null)
     {
         if ($token === null) {
             $postData = HTTPRequest::postData();

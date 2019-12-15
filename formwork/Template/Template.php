@@ -80,7 +80,7 @@ class Template
      * @param string $template
      * @param Page   $page
      */
-    public function __construct($template, Page $page)
+    public function __construct(string $template, Page $page)
     {
         $this->extension = Formwork::instance()->option('templates.extension');
         $this->name = $template;
@@ -145,7 +145,7 @@ class Template
      *
      * @param string $name
      */
-    public function layout($name)
+    public function layout(string $name)
     {
         if ($this->layout !== null) {
             throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
@@ -159,7 +159,7 @@ class Template
      * @param string $name
      * @param array  $vars
      */
-    public function insert($name, array $vars = [])
+    public function insert(string $name, array $vars = [])
     {
         if (!$this->rendering) {
             throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
@@ -182,11 +182,11 @@ class Template
      * Render template
      *
      * @param bool  $return Whether to return rendered content or not
-     * @param mixed $vars
+     * @param array $vars
      *
      * @return string|null
      */
-    public function render($vars = [], $return = false)
+    public function render(array $vars = [], bool $return = false)
     {
         if ($this->rendering) {
             throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
@@ -255,7 +255,7 @@ class Template
         }
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if (TemplateHelpers::has($name)) {
             if (!$this->rendering) {

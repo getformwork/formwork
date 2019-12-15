@@ -20,7 +20,7 @@ class Field extends DataSetter
      * @param string $name
      * @param array  $data
      */
-    public function __construct($name, array $data = [])
+    public function __construct(string $name, array $data = [])
     {
         $this->name = $name;
         parent::__construct($data);
@@ -121,7 +121,7 @@ class Field extends DataSetter
      *
      * @param bool $return Whether to return or render the field
      */
-    public function render($return = false)
+    public function render(bool $return = false)
     {
         if ($this->isVisible()) {
             $view = new View('fields.' . $this->type(), ['field' => $this]);

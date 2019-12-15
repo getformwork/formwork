@@ -24,7 +24,7 @@ class Permissions
      *
      * @param string $name Name of the role
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->permissions = array_merge($this->permissions, Users::getRolePermissions($name));
     }
@@ -36,7 +36,7 @@ class Permissions
      *
      * @return bool
      */
-    public function has($permission)
+    public function has(string $permission)
     {
         if (array_key_exists($permission, $this->permissions)) {
             return (bool) $this->permissions[$permission];

@@ -27,7 +27,7 @@ class IPAnonymizer
      *
      * @return string
      */
-    public static function anonymize($ip)
+    public static function anonymize(string $ip)
     {
         switch (strlen(inet_pton($ip))) {
             case 4:
@@ -47,7 +47,7 @@ class IPAnonymizer
      *
      * @return string
      */
-    public static function anonymizeIPv4($ip)
+    public static function anonymizeIPv4(string $ip)
     {
         return inet_ntop(inet_pton($ip) & inet_pton(self::IPV4_MASK));
     }
@@ -59,7 +59,7 @@ class IPAnonymizer
      *
      * @return string
      */
-    public static function anonymizeIPv6($ip)
+    public static function anonymizeIPv6(string $ip)
     {
         return inet_ntop(inet_pton($ip) & inet_pton(self::IPV6_MASK));
     }

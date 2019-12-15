@@ -75,7 +75,7 @@ class Router
      *
      * @param string $request
      */
-    public function __construct($request)
+    public function __construct(string $request)
     {
         $this->request = Uri::normalize($request);
         $this->params = new RouteParams([]);
@@ -209,7 +209,7 @@ class Router
      *
      * @return bool
      */
-    protected function match($route)
+    protected function match(string $route)
     {
         $compiledRoute = $this->compileRoute($route);
         if ($compiledRoute !== false && preg_match($compiledRoute['regex'], $this->request, $matches)) {
@@ -231,7 +231,7 @@ class Router
      *
      * @return array
      */
-    protected function compileRoute($route)
+    protected function compileRoute(string $route)
     {
         preg_match_all('/{([A-Za-z0-9_]+)(?::([^{]+))?}/', $route, $matches);
         list($tokens, $params, $patterns) = $matches;
@@ -264,7 +264,7 @@ class Router
      *
      * @return string
      */
-    protected function rewriteRoute($route, array $params)
+    protected function rewriteRoute(string $route, array $params)
     {
         $compiledRoute = $this->compileRoute($route);
         foreach ($compiledRoute['params'] as $i => $param) {

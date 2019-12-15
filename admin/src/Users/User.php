@@ -60,7 +60,7 @@ class User extends DataGetter
      *
      * @return bool
      */
-    public function authenticate($password)
+    public function authenticate(string $password)
     {
         return Password::verify($password, $this->data['hash']);
     }
@@ -147,7 +147,7 @@ class User extends DataGetter
         return $this->lastAccess = $lastAccess;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if (property_exists($this, $name)) {
             return $this->$name;

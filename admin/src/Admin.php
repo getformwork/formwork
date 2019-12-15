@@ -397,7 +397,7 @@ class Admin
         );
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if (property_exists($this, $name)) {
             return $this->$name;

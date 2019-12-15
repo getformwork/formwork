@@ -135,7 +135,7 @@ class Statistics
      *
      * @return array
      */
-    public function getChartData($limit = self::CHART_LIMIT)
+    public function getChartData(int $limit = self::CHART_LIMIT)
     {
         $visits = $this->visitsRegistry->toArray();
         $uniqueVisits = $this->uniqueVisitsRegistry->toArray();

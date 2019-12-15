@@ -207,7 +207,7 @@ class Validator
      *
      * @return bool
      */
-    private static function regex($value, $regex)
+    private static function regex($value, string $regex)
     {
         return (bool) @preg_match('/' . $regex . '/', $value);
     }

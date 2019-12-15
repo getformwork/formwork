@@ -564,7 +564,7 @@ class Pages extends AbstractController
      * @param Page|null $page
      * @param string    $errorLanguageString
      */
-    protected function ensurePageExists($page, $errorLanguageString)
+    protected function ensurePageExists(?Page $page, string $errorLanguageString)
     {
         if ($page === null) {
             $this->notify($this->label($errorLanguageString), 'error');
@@ -580,7 +580,7 @@ class Pages extends AbstractController
      *
      * @return string
      */
-    protected function makePageNum($parent, $mode)
+    protected function makePageNum($parent, string $mode)
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
@@ -608,7 +608,7 @@ class Pages extends AbstractController
      *
      * @return Page
      */
-    protected function changePageId(Page $page, $id)
+    protected function changePageId(Page $page, string $id)
     {
         $directory = dirname($page->path());
         $destination = $directory . DS . $id . DS;
@@ -642,7 +642,7 @@ class Pages extends AbstractController
      *
      * @return Page
      */
-    protected function changePageTemplate(Page $page, $template)
+    protected function changePageTemplate(Page $page, string $template)
     {
         $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
@@ -657,7 +657,7 @@ class Pages extends AbstractController
      *
      * @return Page|Site|null
      */
-    protected function resolveParent($parent)
+    protected function resolveParent(string $parent)
     {
         if ($parent === '.') {
             return $this->site();
@@ -672,7 +672,7 @@ class Pages extends AbstractController
      *
      * @return bool
      */
-    protected function validateSlug($slug)
+    protected function validateSlug(string $slug)
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
     }

@@ -34,7 +34,7 @@ class Response
      * @param int|null $status
      * @param array    $headers
      */
-    public function __construct($content, $status = null, array $headers = [])
+    public function __construct(string $content, ?int $status = null, array $headers = [])
     {
         $this->content = $content;
         $this->status = $status;

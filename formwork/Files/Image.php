@@ -158,7 +158,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function rotate($angle)
+    public function rotate(int $angle)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -218,7 +218,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function resize($destinationWidth, $destinationHeight)
+    public function resize(int $destinationWidth, int $destinationHeight)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -265,11 +265,11 @@ class Image extends File
     /**
      * Scale image by a factor
      *
-     * @param int $factor
+     * @param float $factor
      *
      * @return $this
      */
-    public function scale($factor)
+    public function scale(float $factor)
     {
         return $this->resize($factor * $this->width, $factor * $this->height);
     }
@@ -283,7 +283,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function resizeToFit($destinationWidth, $destinationHeight, $mode = self::RESIZE_FIT_COVER)
+    public function resizeToFit(int $destinationWidth, int $destinationHeight, string $mode = self::RESIZE_FIT_COVER)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -346,7 +346,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function square($size, $mode = self::RESIZE_FIT_COVER)
+    public function square(int $size, string $mode = self::RESIZE_FIT_COVER)
     {
         return $this->resizeToFit($size, $size, $mode);
     }
@@ -361,7 +361,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function crop($originX, $originY, $width, $height)
+    public function crop(int $originX, int $originY, int $width, int $height)
     {
         if (!$width || !$height) {
             throw new BadMethodCallException(__METHOD__ . ' must be called with both $width and $height arguments');
@@ -428,7 +428,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function brightness($amount)
+    public function brightness(int $amount)
     {
         if ($amount < -255 || $amount > 255) {
             throw new UnexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
@@ -447,7 +447,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function contrast($amount)
+    public function contrast(int $amount)
     {
         if ($amount < -100 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
@@ -470,7 +470,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function colorize($red, $green, $blue, $alpha = 0)
+    public function colorize(int $red, int $green, int $blue, int $alpha = 0)
     {
         if ($red < 0 || $red > 255) {
             throw new UnexpectedValueException('$red value must be in range 0-255, ' . $red . ' given');
@@ -536,7 +536,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function blur($amount)
+    public function blur(int $amount)
     {
         if ($amount < 0 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
@@ -571,7 +571,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function smoothen($amount)
+    public function smoothen(int $amount)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -587,7 +587,7 @@ class Image extends File
      *
      * @return $this
      */
-    public function pixelate($amount)
+    public function pixelate(int $amount)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -602,7 +602,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function save($filename = null, $destroy = true)
+    public function save(?string $filename = null, bool $destroy = true)
     {
         if ($this->image === null) {
             $this->initialize();
@@ -645,7 +645,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function saveOptimized($filename = null, $destroy = true)
+    public function saveOptimized(?string $filename = null, bool $destroy = true)
     {
         if ($this->image === null) {
             $this->initialize();

@@ -10,7 +10,7 @@ class SiteCache extends FilesCache
     /**
      * @inheritdoc
      */
-    public function isValid($key)
+    public function isValid(string $key)
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
         $expires = $lastModified + $this->time;

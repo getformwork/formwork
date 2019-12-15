@@ -118,7 +118,7 @@ class Languages
      *
      * @return self
      */
-    public static function fromRequest($request)
+    public static function fromRequest(string $request)
     {
         $languages = new static();
 

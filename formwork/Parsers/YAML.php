@@ -22,7 +22,7 @@ class YAML extends AbstractParser
      *
      * @return array
      */
-    public static function parse($input, array $options = [])
+    public static function parse(string $input, array $options = [])
     {
         if (function_exists('yaml_parse') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('parse'))) {
             if (strpos($input, "---\n") !== 0) {
@@ -58,7 +58,7 @@ class YAML extends AbstractParser
      *
      * @param string $pattern
      */
-    protected static function PHPYAMLmode($pattern)
+    protected static function PHPYAMLmode(string $pattern)
     {
         if (static::$PHPYAMLmode === null) {
             $option = Formwork::instance()->option('parsers.use_php_yaml');

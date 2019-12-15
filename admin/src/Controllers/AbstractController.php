@@ -52,7 +52,7 @@ abstract class AbstractController
      * @param string $option
      * @param string $default
      */
-    protected function option($option, $default = null)
+    protected function option(string $option, $default = null)
     {
         return Formwork::instance()->option($option, $default);
     }
@@ -86,7 +86,7 @@ abstract class AbstractController
      *
      * @param string $permission
      */
-    protected function ensurePermission($permission)
+    protected function ensurePermission(string $permission)
     {
         if (!$this->user()->permissions()->has($permission)) {
             $errors = new Errors();
@@ -101,7 +101,7 @@ abstract class AbstractController
      * @param string $name Name of the modal
      * @param array  $data Data to pass to the modal
      */
-    protected function modal($name, array $data = [])
+    protected function modal(string $name, array $data = [])
     {
         $this->modals[] = $this->view('modals.' . $name, $data, true);
     }
@@ -115,7 +115,7 @@ abstract class AbstractController
      *
      * @return string|void
      */
-    protected function view($name, array $data = [], $return = false)
+    protected function view(string $name, array $data = [], bool $return = false)
     {
         $view = new View($name, array_merge($this->defaults(), $data));
         return $view->render($return);

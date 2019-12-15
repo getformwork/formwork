@@ -53,11 +53,11 @@ class AccessLimiter
     /**
      * Create a new AccessLimiter instance
      *
+     * @param Registry $registry
      * @param int      $limit
      * @param int      $resetTime
-     * @param Registry $registry
      */
-    public function __construct(Registry $registry, $limit, $resetTime)
+    public function __construct(Registry $registry, int $limit, int $resetTime)
     {
         $this->registry = $registry;
         $this->limit = $limit;

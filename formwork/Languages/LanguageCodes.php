@@ -100,7 +100,7 @@ class LanguageCodes
      *
      * @return bool
      */
-    public static function hasCode($code)
+    public static function hasCode(string $code)
     {
         return isset(static::$codes[$code]);
     }
@@ -114,7 +114,7 @@ class LanguageCodes
      *
      * @return array
      */
-    public static function names($continent = null)
+    public static function names(?string $continent = null)
     {
         $result = [];
         foreach (static::$codes as $code => $data) {
@@ -133,7 +133,7 @@ class LanguageCodes
      *
      * @return string
      */
-    public static function codeToName($code)
+    public static function codeToName(string $code)
     {
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
@@ -148,7 +148,7 @@ class LanguageCodes
      *
      * @return string
      */
-    public static function codeToNativeName($code)
+    public static function codeToNativeName(string $code)
     {
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');

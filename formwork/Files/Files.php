@@ -14,7 +14,7 @@ class Files extends AssociativeCollection
      *
      * @return self
      */
-    public function filterByType($type)
+    public function filterByType(string $type)
     {
         $files = clone $this;
         $files->items = array_filter($files->items, static function ($item) use ($type) {
@@ -31,7 +31,7 @@ class Files extends AssociativeCollection
      *
      * @return self
      */
-    public static function fromPath($path, array $filenames = null)
+    public static function fromPath(string $path, array $filenames = null)
     {
         if ($filenames === null) {
             $filenames = FileSystem::listFiles($path);

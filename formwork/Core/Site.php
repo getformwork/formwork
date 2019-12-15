@@ -74,7 +74,7 @@ class Site extends AbstractPage
      *
      * @return bool
      */
-    public function hasTemplate($template)
+    public function hasTemplate(string $template)
     {
         return array_key_exists($template, $this->templates);
     }
@@ -86,7 +86,7 @@ class Site extends AbstractPage
      *
      * @return string
      */
-    public function template($name)
+    public function template(string $name)
     {
         if (!$this->hasTemplate($name)) {
             throw new RuntimeException('Invalid template ' . $name);
@@ -101,7 +101,7 @@ class Site extends AbstractPage
      *
      * @return bool
      */
-    public function modifiedSince($time)
+    public function modifiedSince(int $time)
     {
         return FileSystem::directoryModifiedSince($this->path, $time);
     }
@@ -141,7 +141,7 @@ class Site extends AbstractPage
      *
      * @return string|null
      */
-    public function alias($route)
+    public function alias(string $route)
     {
         if ($this->has('aliases')) {
             $route = trim($route, '/');
@@ -170,7 +170,7 @@ class Site extends AbstractPage
      *
      * @return Page
      */
-    public function navigate($route)
+    public function navigate(string $route)
     {
         return $this->currentPage = $this->findPage($route);
     }
@@ -192,7 +192,7 @@ class Site extends AbstractPage
      *
      * @return Page|null
      */
-    public function errorPage($navigate = false)
+    public function errorPage(bool $navigate = false)
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
         if ($navigate) {
@@ -274,7 +274,7 @@ class Site extends AbstractPage
      *
      * @return Page|null
      */
-    public function findPage($route)
+    public function findPage(string $route)
     {
         if ($route === '/') {
             return $this->indexPage();
@@ -309,7 +309,7 @@ class Site extends AbstractPage
      *
      * @return Page
      */
-    public function retrievePage($path)
+    public function retrievePage(string $path)
     {
         if (isset($this->storage[$path])) {
             return $this->storage[$path];

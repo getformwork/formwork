@@ -67,7 +67,7 @@ class Uploader
      * @param string $destination
      * @param array  $options
      */
-    public function __construct($destination, array $options = [])
+    public function __construct(string $destination, array $options = [])
     {
         $this->destination = FileSystem::normalize($destination);
         $this->options = array_merge($this->defaults(), $options);
@@ -97,7 +97,7 @@ class Uploader
      *
      * @return bool Whether files were uploaded or not
      */
-    public function upload($name = null)
+    public function upload(?string $name = null)
     {
         if (!HTTPRequest::hasFiles()) {
             return false;
@@ -125,7 +125,7 @@ class Uploader
      *
      * @return bool
      */
-    public function isAllowedMimeType($mimeType)
+    public function isAllowedMimeType(string $mimeType)
     {
         if ($this->options['allowedMimeTypes'] === null) {
             return true;
@@ -152,7 +152,7 @@ class Uploader
      *
      * @return bool Whether file was successfully moved or not
      */
-    private function move($source, $destination, $filename)
+    private function move(string $source, string $destination, string $filename)
     {
         $mimeType = FileSystem::mimeType($source);
 

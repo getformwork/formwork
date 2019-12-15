@@ -32,7 +32,7 @@ class Registry
      *
      * @param string $filename
      */
-    public function __construct($filename)
+    public function __construct(string $filename)
     {
         $this->filename = $filename;
         if (FileSystem::exists($this->filename)) {
@@ -48,7 +48,7 @@ class Registry
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key)
     {
         return isset($this->storage[$key]);
     }
@@ -58,7 +58,7 @@ class Registry
      *
      * @param string $key
      */
-    public function get($key)
+    public function get(string $key)
     {
         if ($this->has($key)) {
             return $this->storage[$key];
@@ -71,7 +71,7 @@ class Registry
      * @param string $key
      * @param mixed  $value
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         $this->storage[$key] = $value;
         $this->saved = false;
@@ -82,7 +82,7 @@ class Registry
      *
      * @param string $key
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);

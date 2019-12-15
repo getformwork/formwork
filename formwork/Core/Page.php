@@ -166,7 +166,7 @@ class Page extends AbstractPage
      *
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = FileSystem::normalize($path);
         $this->relativePath = Uri::normalize(Str::removeStart($this->path, Formwork::instance()->option('content.path')));
@@ -265,7 +265,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function date($format = null)
+    public function date(?string $format = null)
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');
@@ -377,7 +377,7 @@ class Page extends AbstractPage
      *
      * @return bool
      */
-    public function hasLanguage($language)
+    public function hasLanguage(string $language)
     {
         return in_array($language, $this->availableLanguages, true);
     }
@@ -387,7 +387,7 @@ class Page extends AbstractPage
      *
      * @param string $language
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language)
     {
         if (!$this->hasLanguage($language)) {
             throw new RuntimeException('Invalid page language "' . $language . '"');
@@ -405,7 +405,7 @@ class Page extends AbstractPage
      *
      * @deprecated
      */
-    public function file($file)
+    public function file(string $file)
     {
         trigger_error(static::class . '::file() is deprecated since Formwork 1.4.0, access files from ' . static::class . '::files() instead', E_USER_DEPRECATED);
         return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
@@ -441,7 +441,7 @@ class Page extends AbstractPage
      *
      * @return string
      */
-    public function render(array $vars = [], $sendHeaders = true)
+    public function render(array $vars = [], bool $sendHeaders = true)
     {
         if ($sendHeaders) {
             $this->sendHeaders();
@@ -576,7 +576,7 @@ class Page extends AbstractPage
     protected function sendHeaders()
     {
         if ($this->has('response_status')) {
-            Header::status($this->get('response_status'));
+            Header::status((int) $this->get('response_status'));
         }
         if (!empty($this->headers())) {
             foreach ($this->headers() as $name => $value) {

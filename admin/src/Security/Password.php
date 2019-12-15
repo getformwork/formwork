@@ -11,7 +11,7 @@ class Password
      *
      * @return string
      */
-    public static function hash($password)
+    public static function hash(string $password)
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
@@ -24,7 +24,7 @@ class Password
      *
      * @return bool
      */
-    public static function verify($password, $hash)
+    public static function verify(string $password, string $hash)
     {
         return password_verify($password, $hash);
     }

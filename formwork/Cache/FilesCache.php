@@ -26,7 +26,7 @@ class FilesCache extends AbstractCache
      * @param string $path
      * @param int    $time
      */
-    public function __construct($path, $time)
+    public function __construct(string $path, int $time)
     {
         $this->path = $path;
         $this->time = $time;
@@ -38,7 +38,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function fetch($key)
+    public function fetch(string $key)
     {
         if ($this->has($key)) {
             $data = FileSystem::read($this->getFile($key));
@@ -53,7 +53,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function save($key, $value)
+    public function save(string $key, $value)
     {
         $data = serialize($value);
         FileSystem::write($this->getFile($key), $data);
@@ -62,7 +62,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function delete($key)
+    public function delete(string $key)
     {
         if ($this->has($key)) {
             FileSystem::delete($this->getFile($key));
@@ -81,7 +81,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function has($key)
+    public function has(string $key)
     {
         return FileSystem::exists($this->getFile($key)) && $this->isValid($key);
     }
@@ -93,7 +93,7 @@ class FilesCache extends AbstractCache
      *
      * @return string
      */
-    protected function getFile($key)
+    protected function getFile(string $key)
     {
         return $this->path . sha1($key);
     }
@@ -105,7 +105,7 @@ class FilesCache extends AbstractCache
      *
      * @return bool
      */
-    protected function isValid($key)
+    protected function isValid(string $key)
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
         $expires = $lastModified + $this->time;

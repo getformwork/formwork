@@ -48,7 +48,7 @@ class Pagination
      * @param int $count
      * @param int $length
      */
-    public function __construct($count, $length)
+    public function __construct(int $count, int $length)
     {
         $router = Formwork::instance()->router();
 
@@ -106,7 +106,7 @@ class Pagination
      *
      * @return bool
      */
-    public function hasPage($number)
+    public function hasPage(int $number)
     {
         return (int) $number > 1 && (int) $number <= $this->pages;
     }

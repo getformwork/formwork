@@ -43,11 +43,11 @@ class Errors extends AbstractController
     /**
      * Display error view with error description
      *
-     * @param int|string $status HTTP error status
-     * @param string     $name   Error name
-     * @param array      $action Action link data
+     * @param int    $status HTTP error status
+     * @param string $name   Error name
+     * @param array  $action Action link data
      */
-    protected function displayError($status, $name, array $action)
+    protected function displayError(int $status, string $name, array $action)
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);

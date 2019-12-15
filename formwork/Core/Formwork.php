@@ -250,7 +250,7 @@ class Formwork
      * @param string     $option
      * @param mixed|null $default Default value if option is not set
      */
-    public function option($option, $default = null)
+    public function option(string $option, $default = null)
     {
         return array_key_exists($option, $this->options) ? $this->options[$option] : $default;
     }

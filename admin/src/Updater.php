@@ -288,7 +288,7 @@ class Updater
      *
      * @return bool
      */
-    protected function isCopiable($file)
+    protected function isCopiable(string $file)
     {
         foreach ($this->options['ignore'] as $pattern) {
             if (fnmatch($pattern, $file)) {

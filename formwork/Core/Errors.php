@@ -24,7 +24,7 @@ class Errors
      *
      * @param int $status HTTP status code
      */
-    public static function displayErrorPage($status = 500)
+    public static function displayErrorPage(int $status = 500)
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);

@@ -215,7 +215,7 @@ class Options extends AbstractController
      *
      * @return bool Whether new values were applied or not
      */
-    protected function updateOptions($type, Fields $fields, array $options, array $defaults)
+    protected function updateOptions(string $type, Fields $fields, array $options, array $defaults)
     {
         // Fields to ignore
         $ignore = ['column', 'header', 'row', 'rows'];

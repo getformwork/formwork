@@ -53,7 +53,7 @@ class Users extends AssociativeCollection
      *
      * @return array
      */
-    public static function getRolePermissions($role)
+    public static function getRolePermissions(string $role)
     {
         return (array) static::$roles[$role]['permissions'];
     }

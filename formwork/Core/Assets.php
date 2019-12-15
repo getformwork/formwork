@@ -27,7 +27,7 @@ class Assets
      * @param string $basePath
      * @param string $baseUri
      */
-    public function __construct($basePath, $baseUri)
+    public function __construct(string $basePath, string $baseUri)
     {
         $this->basePath = FileSystem::normalize($basePath);
         $this->baseUri = Uri::normalize($baseUri);
@@ -40,7 +40,7 @@ class Assets
      *
      * @return string|null
      */
-    public function version($path)
+    public function version(string $path)
     {
         $file = $this->basePath . strtr(trim($path, '/'), '/', DS);
         if (FileSystem::exists($file)) {
@@ -57,7 +57,7 @@ class Assets
      *
      * @return string
      */
-    public function uri($path, $includeVersion = false)
+    public function uri(string $path, bool $includeVersion = false)
     {
         $uri = $this->baseUri . trim($path, '/');
         if ($includeVersion && ($version = $this->version($path)) !== null) {

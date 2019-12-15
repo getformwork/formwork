@@ -22,7 +22,7 @@ trait AdminTrait
      *
      * @return string
      */
-    protected function uri($route)
+    protected function uri(string $route)
     {
         return $this->panelUri() . ltrim($route, '/');
     }
@@ -34,7 +34,7 @@ trait AdminTrait
      *
      * @return string
      */
-    protected function realUri($route)
+    protected function realUri(string $route)
     {
         return HTTPRequest::root() . 'admin/' . ltrim($route, '/');
     }
@@ -105,7 +105,7 @@ trait AdminTrait
      * @param string $route
      * @param int    $code  HTTP redirect status code
      */
-    protected function redirect($route, $code = 302)
+    protected function redirect(string $route, int $code = 302)
     {
         Header::redirect($this->uri($route), $code);
     }
@@ -115,7 +115,7 @@ trait AdminTrait
      *
      * @param int $code HTTP redirect status code
      */
-    protected function redirectToSite($code = 302)
+    protected function redirectToSite(int $code = 302)
     {
         Header::redirect($this->siteUri(), $code);
     }
@@ -125,7 +125,7 @@ trait AdminTrait
      *
      * @param int $code HTTP redirect status code
      */
-    protected function redirectToPanel($code = 302)
+    protected function redirectToPanel(int $code = 302)
     {
         $this->redirect('/', $code);
     }
@@ -136,7 +136,7 @@ trait AdminTrait
      * @param int    $code    HTTP redirect status code
      * @param string $default Default route if HTTP referer is not available
      */
-    protected function redirectToReferer($code = 302, $default = '/')
+    protected function redirectToReferer(int $code = 302, string $default = '/')
     {
         if (HTTPRequest::validateReferer($this->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
             Header::redirect(HTTPRequest::referer(), $code);
@@ -152,7 +152,7 @@ trait AdminTrait
      *
      * @return Scheme
      */
-    protected function scheme($template)
+    protected function scheme(string $template)
     {
         return new Scheme($template);
     }
@@ -164,7 +164,7 @@ trait AdminTrait
      *
      * @return Registry
      */
-    protected function registry($name)
+    protected function registry(string $name)
     {
         return new Registry(Admin::LOGS_PATH . $name . '.json');
     }
@@ -176,7 +176,7 @@ trait AdminTrait
      *
      * @return Log
      */
-    protected function log($name)
+    protected function log(string $name)
     {
         return new Log(Admin::LOGS_PATH . $name . '.json');
     }
@@ -187,7 +187,7 @@ trait AdminTrait
      * @param string $text
      * @param string $type Notification type ('error', 'info', 'success', 'warning')
      */
-    protected function notify($text, $type)
+    protected function notify(string $text, string $type)
     {
         Notification::send($text, $type);
     }

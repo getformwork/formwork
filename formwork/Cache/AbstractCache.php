@@ -9,7 +9,7 @@ abstract class AbstractCache
      *
      * @param string $key
      */
-    abstract public function fetch($key);
+    abstract public function fetch(string $key);
 
     /**
      * Save data to cache
@@ -17,14 +17,14 @@ abstract class AbstractCache
      * @param string $key
      * @param mixed  $value
      */
-    abstract public function save($key, $value);
+    abstract public function save(string $key, $value);
 
     /**
      * Delete cached resource
      *
      * @param string $key
      */
-    abstract public function delete($key);
+    abstract public function delete(string $key);
 
     /**
      * Clear cache
@@ -38,7 +38,7 @@ abstract class AbstractCache
      *
      * @return bool
      */
-    abstract public function has($key);
+    abstract public function has(string $key);
 
     /**
      * Fetch multiple data from cache
