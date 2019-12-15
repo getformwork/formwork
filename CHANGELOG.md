@@ -1,6 +1,19 @@
 # Changelog
 
-## [1.4.2](https://github.com/getformwork/formwork/releases/tag/1.4.1) (2019-12-13)
+## [1.4.3](https://github.com/getformwork/formwork/releases/tag/1.4.3) (2019-12-15)
+
+**Enhancements**
+
+- Add type declarations
+- Remove superfluous PHPDoc
+
+**Bug fixes**
+
+- Fix pagination URIs generated sometimes with missing slashes
+
+# Changelog
+
+## [1.4.2](https://github.com/getformwork/formwork/releases/tag/1.4.2) (2019-12-13)
 
 **Bug fixes**
 
