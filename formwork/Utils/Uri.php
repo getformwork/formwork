@@ -34,7 +34,7 @@ class Uri
     /**
      * Get the scheme of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -49,7 +49,7 @@ class Uri
     /**
      * Get the host of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -64,7 +64,7 @@ class Uri
     /**
      * Get the port of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return int
      */
@@ -95,7 +95,7 @@ class Uri
     /**
      * Get the path of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -110,7 +110,7 @@ class Uri
     /**
      * Get the relative path of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -122,7 +122,7 @@ class Uri
     /**
      * Get the absolute path of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string
      */
@@ -137,7 +137,7 @@ class Uri
     /**
      * Get the query of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -152,7 +152,7 @@ class Uri
     /**
      * Get the fragment of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string|null
      */
@@ -167,7 +167,7 @@ class Uri
     /**
      * Get the base URI (scheme://host:port) of current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string
      */
@@ -181,7 +181,7 @@ class Uri
     /**
      * Convert the query of current or a given URI to array
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return array
      */
@@ -198,7 +198,7 @@ class Uri
      * Parse current or a given URI and get an associative array
      * containing its scheme, host, port, path, query and fragment
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return array
      */
@@ -222,13 +222,11 @@ class Uri
      *
      * @see Uri::parse()
      *
-     * @param array       $parts
-     * @param string|null $uri
-     * @param bool        $forcePort
+     * @param ?string $uri
      *
      * @return string
      */
-    public static function make(array $parts, ?string $uri = null, $forcePort = false)
+    public static function make(array $parts, ?string $uri = null, bool $forcePort = false)
     {
         $defaults = static::parse($uri);
         $parts = array_merge($defaults, $parts);
@@ -258,8 +256,6 @@ class Uri
     /**
      * Normalize URI fixing required parts and leaving only one trailing slash
      *
-     * @param string $uri
-     *
      * @return string
      */
     public static function normalize(string $uri)
@@ -274,7 +270,7 @@ class Uri
     /**
      * Remove query from current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string
      */
@@ -289,7 +285,7 @@ class Uri
     /**
      * Remove fragment from current or a given URI
      *
-     * @param string|null $uri
+     * @param ?string $uri
      *
      * @return string
      */
@@ -304,8 +300,7 @@ class Uri
     /**
      * Resolve a relative URI against current or a given base URI
      *
-     * @param string      $uri
-     * @param string|null $base
+     * @param ?string $base
      *
      * @return string
      */

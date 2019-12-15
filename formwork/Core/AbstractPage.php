@@ -111,7 +111,6 @@ abstract class AbstractPage
     /**
      * Return a URI relative to page
      *
-     * @param string      $path
      * @param bool|string $includeLanguage
      *
      * @return string
@@ -360,7 +359,6 @@ abstract class AbstractPage
      * Set page data
      *
      * @param string $key
-     * @param mixed  $value
      */
     public function set($key, $value)
     {

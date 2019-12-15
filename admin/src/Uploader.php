@@ -63,9 +63,6 @@ class Uploader
 
     /**
      * Create a new Uploader instance
-     *
-     * @param string $destination
-     * @param array  $options
      */
     public function __construct(string $destination, array $options = [])
     {
@@ -93,8 +90,6 @@ class Uploader
     /**
      * Upload one or more files
      *
-     * @param string|null $name
-     *
      * @return bool Whether files were uploaded or not
      */
     public function upload(?string $name = null)
@@ -121,8 +116,6 @@ class Uploader
     /**
      * Return if a MIME type is allowed by Formwork
      *
-     * @param string $mimeType
-     *
      * @return bool
      */
     public function isAllowedMimeType(string $mimeType)
@@ -145,10 +138,6 @@ class Uploader
 
     /**
      * Move uploaded file to a destination
-     *
-     * @param string $source
-     * @param string $destination
-     * @param string $filename
      *
      * @return bool Whether file was successfully moved or not
      */

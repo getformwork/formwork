@@ -23,8 +23,6 @@ class FileSystem
     /**
      * Get file name without extension given a file
      *
-     * @param string $file
-     *
      * @return string
      */
     public static function name(string $file)
@@ -37,8 +35,6 @@ class FileSystem
     /**
      * Get extension of a file
      *
-     * @param string $file
-     *
      * @return string
      */
     public static function extension(string $file)
@@ -48,8 +44,6 @@ class FileSystem
 
     /**
      * Get MIME type of a file
-     *
-     * @param string $file
      *
      * @return string|null
      */
@@ -61,8 +55,6 @@ class FileSystem
     /**
      * Return whether a file exists
      *
-     * @param string $path
-     *
      * @return bool
      */
     public static function exists(string $path)
@@ -73,8 +65,7 @@ class FileSystem
     /**
      * Assert a file exists or not
      *
-     * @param string $path
-     * @param bool   $value Whether to assert if file exists or not
+     * @param bool $value Whether to assert if file exists or not
      *
      * @return bool
      */
@@ -92,8 +83,6 @@ class FileSystem
     /**
      * Get access time of a file
      *
-     * @param string $file
-     *
      * @return int|null
      */
     public static function accessTime(string $file)
@@ -104,8 +93,6 @@ class FileSystem
 
     /**
      * Get creation time of a file
-     *
-     * @param string $file
      *
      * @return int|null
      */
@@ -118,8 +105,6 @@ class FileSystem
     /**
      * Get last modified time of a file
      *
-     * @param string $file
-     *
      * @return int|null
      */
     public static function lastModifiedTime(string $file)
@@ -130,9 +115,6 @@ class FileSystem
 
     /**
      * Return whether a directory has been modified since a given time
-     *
-     * @param string $directory
-     * @param int    $time
      *
      * @return bool
      */
@@ -156,8 +138,7 @@ class FileSystem
     /**
      * Get file size
      *
-     * @param string $file
-     * @param bool   $unit Whether to return size with unit of measurement or not
+     * @param bool $unit Whether to return size with unit of measurement or not
      *
      * @return int|string|null
      */
@@ -173,8 +154,7 @@ class FileSystem
     /**
      * Get directory size recursively
      *
-     * @param string $path
-     * @param bool   $unit Whether to return size with unit of measurement or not
+     * @param bool $unit Whether to return size with unit of measurement or not
      *
      * @return int|string|null
      */
@@ -196,8 +176,6 @@ class FileSystem
     /**
      * Get an integer representing permissions of a file
      *
-     * @param string $file
-     *
      * @return int
      */
     public static function mode(string $file)
@@ -209,8 +187,6 @@ class FileSystem
     /**
      * Return whether a file is visible (starts with a dot) or not
      *
-     * @param string $path
-     *
      * @return bool
      */
     public static function isVisible(string $path)
@@ -220,8 +196,6 @@ class FileSystem
 
     /**
      * Return whether a file is readable
-     *
-     * @param string $file
      *
      * @return bool
      */
@@ -234,8 +208,6 @@ class FileSystem
     /**
      * Return whether a file is writable
      *
-     * @param string $file
-     *
      * @return bool
      */
     public static function isWritable(string $file)
@@ -246,8 +218,6 @@ class FileSystem
 
     /**
      * Return whether a path corresponds to a file
-     *
-     * @param string $path
      *
      * @return bool
      */
@@ -260,8 +230,6 @@ class FileSystem
     /**
      * Return whether a path corresponds to a directory
      *
-     * @param string $path
-     *
      * @return bool
      */
     public static function isDirectory(string $path)
@@ -273,8 +241,7 @@ class FileSystem
     /**
      * Delete a file or a directory
      *
-     * @param string $path
-     * @param bool   $recursive Whether to delete files recursively or not
+     * @param bool $recursive Whether to delete files recursively or not
      *
      * @return bool
      */
@@ -295,9 +262,7 @@ class FileSystem
     /**
      * Copy a file to another path
      *
-     * @param string $source
-     * @param string $destination
-     * @param bool   $overwrite   Whether to overwrite destination file or not
+     * @param bool $overwrite Whether to overwrite destination file or not
      *
      * @return bool
      */
@@ -313,10 +278,8 @@ class FileSystem
     /**
      * Download a file to a destination
      *
-     * @param string   $source
-     * @param string   $destination
-     * @param bool     $overwrite   Whether to overwrite destination if already exists
-     * @param resource $context     A stream context resource
+     * @param bool     $overwrite Whether to overwrite destination if already exists
+     * @param resource $context   A stream context resource
      *
      * @return bool
      */
@@ -340,9 +303,7 @@ class FileSystem
     /**
      * Move a file to another path
      *
-     * @param string $source
-     * @param string $destination
-     * @param bool   $overwrite   Whether to overwrite destination file or not
+     * @param bool $overwrite Whether to overwrite destination file or not
      *
      * @return bool
      */
@@ -358,9 +319,7 @@ class FileSystem
     /**
      * Move a directory to another path
      *
-     * @param string $source
-     * @param string $destination
-     * @param bool   $overwrite   Whether to overwrite destination directory or not
+     * @param bool $overwrite Whether to overwrite destination directory or not
      *
      * @return bool
      */
@@ -387,8 +346,6 @@ class FileSystem
     /**
      * Read the content of a file
      *
-     * @param string $file
-     *
      * @return string
      */
     public static function read(string $file)
@@ -400,7 +357,6 @@ class FileSystem
     /**
      * Fetch a remote file
      *
-     * @param string   $source
      * @param resource $context A stream context resource
      *
      * @return string
@@ -423,9 +379,6 @@ class FileSystem
     /**
      * Write content to file atomically
      *
-     * @param string $file
-     * @param string $content
-     *
      * @return bool
      */
     public static function write(string $file, string $content)
@@ -443,8 +396,6 @@ class FileSystem
     /**
      * Create a new file with empty content
      *
-     * @param string $file
-     *
      * @return bool
      */
     public static function createFile(string $file)
@@ -456,8 +407,7 @@ class FileSystem
     /**
      * Create a empty directory
      *
-     * @param string $directory
-     * @param bool   $recursive Whether to create directory recursively
+     * @param bool $recursive Whether to create directory recursively
      *
      * @return bool
      */
@@ -472,8 +422,6 @@ class FileSystem
      *
      * @see FileSystem::createFile()
      *
-     * @param string $file
-     *
      * @return bool
      */
     public static function create(string $file)
@@ -483,8 +431,6 @@ class FileSystem
 
     /**
      * Return a path with a single trailing slash
-     *
-     * @param string $path
      *
      * @return string
      */
@@ -496,8 +442,7 @@ class FileSystem
     /**
      * Scan a path for files and directories
      *
-     * @param string $path
-     * @param bool   $all  Whether to return only visible or all files
+     * @param bool $all Whether to return only visible or all files
      *
      * @return array
      */
@@ -521,8 +466,7 @@ class FileSystem
     /**
      * Recursively scan a path for files and directories
      *
-     * @param string $path
-     * @param bool   $all  Whether to return only visible or all files
+     * @param bool $all Whether to return only visible or all files
      *
      * @return array
      */
@@ -543,8 +487,7 @@ class FileSystem
     /**
      * Scan a path only for files
      *
-     * @param string $path
-     * @param bool   $all  Whether to return only visible or all files
+     * @param bool $all Whether to return only visible or all files
      *
      * @return array
      */
@@ -559,8 +502,7 @@ class FileSystem
     /**
      * Scan a path only for directories
      *
-     * @param string $path
-     * @param bool   $all  Whether to return only visible or all directories
+     * @param bool $all Whether to return only visible or all directories
      *
      * @return array
      */
@@ -575,8 +517,6 @@ class FileSystem
     /**
      * Touch a file or directory
      *
-     * @param string $path
-     *
      * @return bool
      */
     public static function touch(string $path)
@@ -587,8 +527,6 @@ class FileSystem
 
     /**
      * Convert bytes to a human-readable size
-     *
-     * @param int $bytes
      *
      * @return string
      */
@@ -605,8 +543,6 @@ class FileSystem
      * Convert shorthand bytes notation to an integer
      *
      * @see https://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
-     *
-     * @param string $shorthand
      *
      * @return int
      */

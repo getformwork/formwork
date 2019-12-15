@@ -295,8 +295,6 @@ class HTTPRequest
     /**
      * Return whether request as a given header
      *
-     * @param string $header
-     *
      * @return bool
      */
     public static function hasHeader(string $header)

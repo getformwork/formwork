@@ -44,9 +44,6 @@ class Pagination
 
     /**
      * Create a new Pagination instance
-     *
-     * @param int $count
-     * @param int $length
      */
     public function __construct(int $count, int $length)
     {
@@ -101,8 +98,6 @@ class Pagination
 
     /**
      * Return whether a given page number exists
-     *
-     * @param int $number
      *
      * @return bool
      */

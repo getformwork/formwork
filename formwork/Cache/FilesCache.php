@@ -22,9 +22,6 @@ class FilesCache extends AbstractCache
 
     /**
      * Create a new FilesCache instance
-     *
-     * @param string $path
-     * @param int    $time
      */
     public function __construct(string $path, int $time)
     {
@@ -89,8 +86,6 @@ class FilesCache extends AbstractCache
     /**
      * Return the file that corresponds to the given key
      *
-     * @param string $key
-     *
      * @return string
      */
     protected function getFile(string $key)
@@ -100,8 +95,6 @@ class FilesCache extends AbstractCache
 
     /**
      * Return whether a cached resource has not expired
-     *
-     * @param string $key
      *
      * @return bool
      */

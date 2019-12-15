@@ -47,9 +47,6 @@ class Translation
 
     /**
      * Create a new Translation istance
-     *
-     * @param string $code
-     * @param array  $strings
      */
     public function __construct(string $code, array $strings)
     {
@@ -80,8 +77,6 @@ class Translation
     /**
      * Return whether a language string is set
      *
-     * @param string $key
-     *
      * @return bool
      */
     public function has(string $key)
@@ -92,7 +87,6 @@ class Translation
     /**
      * Return a formatted language label
      *
-     * @param string           $key
      * @param float|int|string ...$arguments
      *
      * @return string
@@ -115,8 +109,6 @@ class Translation
 
     /**
      * Load administration panel language
-     *
-     * @param string $languageCode
      *
      * @return self
      */

@@ -8,7 +8,6 @@ class Arr
      * Get data by key returning a default value if key is not present in a given array,
      * using dot notation to traverse if literal key is not found
      *
-     * @param array      $array
      * @param string     $key
      * @param mixed|null $default
      *
@@ -32,7 +31,6 @@ class Arr
      * Return whether a key is present in a given array, using dot notation to traverse
      * if literal key is not found
      *
-     * @param array  $array
      * @param string $key
      *
      * @return bool
@@ -53,9 +51,6 @@ class Arr
 
     /**
      * Recursively append elements from the second array that are missing in the first
-     *
-     * @param array $array1
-     * @param array $array2
      *
      * @return array
      */

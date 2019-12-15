@@ -90,8 +90,6 @@ class Pages extends AbstractController
 
     /**
      * Pages@edit action
-     *
-     * @param RouteParams $params
      */
     public function edit(RouteParams $params)
     {
@@ -256,8 +254,6 @@ class Pages extends AbstractController
 
     /**
      * Pages@delete action
-     *
-     * @param RouteParams $params
      */
     public function delete(RouteParams $params)
     {
@@ -300,8 +296,6 @@ class Pages extends AbstractController
 
     /**
      * Pages@uploadFile action
-     *
-     * @param RouteParams $params
      */
     public function uploadFile(RouteParams $params)
     {
@@ -326,8 +320,6 @@ class Pages extends AbstractController
 
     /**
      * Pages@deleteFile action
-     *
-     * @param RouteParams $params
      */
     public function deleteFile(RouteParams $params)
     {
@@ -350,8 +342,6 @@ class Pages extends AbstractController
 
     /**
      * Create a new page
-     *
-     * @param DataGetter $data
      *
      * @return Page
      */
@@ -415,10 +405,6 @@ class Pages extends AbstractController
 
     /**
      * Update a page
-     *
-     * @param Page       $page
-     * @param DataGetter $data
-     * @param Fields     $fields
      *
      * @return Page
      */
@@ -535,8 +521,6 @@ class Pages extends AbstractController
 
     /**
      * Process page uploads
-     *
-     * @param Page $page
      */
     protected function processPageUploads(Page $page)
     {
@@ -560,9 +544,6 @@ class Pages extends AbstractController
 
     /**
      * Ensure a page exists
-     *
-     * @param Page|null $page
-     * @param string    $errorLanguageString
      */
     protected function ensurePageExists(?Page $page, string $errorLanguageString)
     {
@@ -603,9 +584,6 @@ class Pages extends AbstractController
     /**
      * Change the id of a page
      *
-     * @param Page   $page
-     * @param string $id
-     *
      * @return Page
      */
     protected function changePageId(Page $page, string $id)
@@ -619,7 +597,6 @@ class Pages extends AbstractController
     /**
      * Change the parent of a page
      *
-     * @param Page      $page
      * @param Page|Site $parent
      *
      * @return Page
@@ -636,9 +613,6 @@ class Pages extends AbstractController
 
     /**
      * Change page template
-     *
-     * @param Page   $page
-     * @param string $template
      *
      * @return Page
      */
@@ -667,8 +641,6 @@ class Pages extends AbstractController
 
     /**
      * Validate page slug helper
-     *
-     * @param string $slug
      *
      * @return bool
      */

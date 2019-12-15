@@ -25,8 +25,6 @@ class Scheme extends DataGetter
 
     /**
      * Create a new Scheme instance
-     *
-     * @param string $name
      */
     public function __construct(string $name)
     {

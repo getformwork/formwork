@@ -163,8 +163,6 @@ class Page extends AbstractPage
 
     /**
      * Create a new Page instance
-     *
-     * @param string $path
      */
     public function __construct(string $path)
     {
@@ -373,8 +371,6 @@ class Page extends AbstractPage
     /**
      * Return whether page has a language
      *
-     * @param string $language
-     *
      * @return bool
      */
     public function hasLanguage(string $language)
@@ -384,8 +380,6 @@ class Page extends AbstractPage
 
     /**
      * Set page language
-     *
-     * @param string $language
      */
     public function setLanguage(string $language)
     {

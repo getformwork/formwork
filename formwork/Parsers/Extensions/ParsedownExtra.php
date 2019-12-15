@@ -16,8 +16,6 @@ class ParsedownExtra extends \ParsedownExtra
 
     /**
      * @inheritdoc
-     *
-     * @param array $options
      */
     public function text($text, array $options = [])
     {

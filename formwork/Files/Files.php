@@ -10,8 +10,6 @@ class Files extends AssociativeCollection
     /**
      * Filter files by a given type
      *
-     * @param string $type
-     *
      * @return self
      */
     public function filterByType(string $type)
@@ -26,7 +24,6 @@ class Files extends AssociativeCollection
     /**
      * Create a collection getting files from a given path
      *
-     * @param string     $path
      * @param array|null $filenames Array of file names to include (all files by default)
      *
      * @return self

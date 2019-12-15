@@ -40,7 +40,6 @@ class PageCollection extends Collection
      * Extract a slice from the collection containing a given number of items
      * and starting from a given offset
      *
-     * @param int $offset
      * @param int $length
      *
      * @return self
@@ -54,8 +53,6 @@ class PageCollection extends Collection
 
     /**
      * Remove a given element from the collection
-     *
-     * @param Page $element
      *
      * @return self
      */
@@ -122,7 +119,6 @@ class PageCollection extends Collection
     /**
      * Sort collection items
      *
-     * @param string     $property
      * @param int|string $direction Sorting direction (e.g. SORT_ASC, 'asc', -1, SORT_DESC, 'desc')
      *
      * @return self
@@ -204,8 +200,7 @@ class PageCollection extends Collection
     /**
      * Create a collection getting pages from a given path
      *
-     * @param string $path
-     * @param bool   $recursive Whether to recursively search for pages
+     * @param bool $recursive Whether to recursively search for pages
      *
      * @return self
      */

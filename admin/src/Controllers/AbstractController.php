@@ -48,9 +48,6 @@ abstract class AbstractController
 
     /**
      * Get a system option
-     *
-     * @param string $option
-     * @param string $default
      */
     protected function option(string $option, $default = null)
     {
@@ -83,8 +80,6 @@ abstract class AbstractController
 
     /**
      * Ensure current user has a permission
-     *
-     * @param string $permission
      */
     protected function ensurePermission(string $permission)
     {

@@ -7,9 +7,6 @@ class Str
     /**
      * Return whether $haystack string starts with $needle
      *
-     * @param string $haystack
-     * @param string $needle
-     *
      * @return bool
      */
     public static function startsWith(string $haystack, string $needle)
@@ -19,9 +16,6 @@ class Str
 
     /**
      * Return whether $haystack string ends with $needle
-     *
-     * @param string $haystack
-     * @param string $needle
      *
      * @return bool
      */
@@ -33,8 +27,6 @@ class Str
     /**
      * Escape HTML tags from a given string
      *
-     * @param string $string
-     *
      * @return string
      */
     public static function escape(string $string)
@@ -44,8 +36,6 @@ class Str
 
     /**
      * Remove HTML tags and entities from a given string
-     *
-     * @param string $string
      *
      * @return string
      */
@@ -57,9 +47,6 @@ class Str
     /**
      * Remove $needle from $haystack if it is at the beginning, otherwise return $haystack
      *
-     * @param string $haystack
-     * @param string $needle
-     *
      * @return string
      */
     public static function removeStart(string $haystack, string $needle)
@@ -69,9 +56,6 @@ class Str
 
     /**
      * Remove $needle from $haystack if it is at the end, otherwise return $haystack
-     *
-     * @param string $haystack
-     * @param string $needle
      *
      * @return string
      */

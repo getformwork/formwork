@@ -18,8 +18,6 @@ trait AdminTrait
     /**
      * Return a URI relative to the request root
      *
-     * @param string $route
-     *
      * @return string
      */
     protected function uri(string $route)
@@ -29,8 +27,6 @@ trait AdminTrait
 
     /**
      * Return a URI relative to the real Admin root
-     *
-     * @param string $route
      *
      * @return string
      */
@@ -72,7 +68,6 @@ trait AdminTrait
     /**
      * Return the URI of a page
      *
-     * @param Page        $page
      * @param bool|string $includeLanguage
      *
      * @return string
@@ -102,8 +97,7 @@ trait AdminTrait
     /**
      * Redirect to a given route
      *
-     * @param string $route
-     * @param int    $code  HTTP redirect status code
+     * @param int $code HTTP redirect status code
      */
     protected function redirect(string $route, int $code = 302)
     {
@@ -148,8 +142,6 @@ trait AdminTrait
     /**
      * Get scheme object from template name
      *
-     * @param string $template
-     *
      * @return Scheme
      */
     protected function scheme(string $template)
@@ -159,8 +151,6 @@ trait AdminTrait
 
     /**
      * Get a Registry object by name from logs path
-     *
-     * @param string $name
      *
      * @return Registry
      */
@@ -172,8 +162,6 @@ trait AdminTrait
     /**
      * Get a Log object by name from logs path
      *
-     * @param string $name
-     *
      * @return Log
      */
     protected function log(string $name)
@@ -184,7 +172,6 @@ trait AdminTrait
     /**
      * Send a notification
      *
-     * @param string $text
      * @param string $type Notification type ('error', 'info', 'success', 'warning')
      */
     protected function notify(string $text, string $type)

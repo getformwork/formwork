@@ -86,8 +86,6 @@ class Fields extends AssociativeCollection
     /**
      * Validate fields against data
      *
-     * @param DataGetter $data
-     *
      * @return $this
      */
     public function validate(DataGetter $data)

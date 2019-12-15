@@ -96,8 +96,6 @@ class LanguageCodes
     /**
      * Return whether a language code is available
      *
-     * @param string $code
-     *
      * @return bool
      */
     public static function hasCode(string $code)
@@ -109,8 +107,6 @@ class LanguageCodes
      * Return language native names optionally filtered by continent
      * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
      * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
-     *
-     * @param string|null $continent
      *
      * @return array
      */
@@ -129,8 +125,6 @@ class LanguageCodes
     /**
      * Return language name from language code (e.g. 'it')
      *
-     * @param string $code
-     *
      * @return string
      */
     public static function codeToName(string $code)
@@ -143,8 +137,6 @@ class LanguageCodes
 
     /**
      * Return language native name from language code (e.g. 'it')
-     *
-     * @param string $code
      *
      * @return string
      */

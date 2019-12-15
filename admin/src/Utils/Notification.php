@@ -7,7 +7,6 @@ class Notification
     /**
      * Send a notification
      *
-     * @param string $text
      * @param string $type Notification type ('error', 'info', 'success', 'warning')
      */
     public static function send(string $text, string $type = '')

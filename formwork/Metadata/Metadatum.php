@@ -29,9 +29,6 @@ class Metadatum
 
     /**
      * Create a new Metadatum instance
-     *
-     * @param string $name
-     * @param string $content
      */
     public function __construct(string $name, string $content)
     {

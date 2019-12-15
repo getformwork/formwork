@@ -114,8 +114,6 @@ class Languages
     /**
      * Create a Languages instance from a given request
      *
-     * @param string $request
-     *
      * @return self
      */
     public static function fromRequest(string $request)

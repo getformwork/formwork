@@ -154,8 +154,6 @@ class Image extends File
     /**
      * Rotate image
      *
-     * @param int $angle
-     *
      * @return $this
      */
     public function rotate(int $angle)
@@ -213,9 +211,6 @@ class Image extends File
     /**
      * Resize image without keeping its aspect ratio
      *
-     * @param int $destinationWidth
-     * @param int $destinationHeight
-     *
      * @return $this
      */
     public function resize(int $destinationWidth, int $destinationHeight)
@@ -265,8 +260,6 @@ class Image extends File
     /**
      * Scale image by a factor
      *
-     * @param float $factor
-     *
      * @return $this
      */
     public function scale(float $factor)
@@ -277,9 +270,7 @@ class Image extends File
     /**
      * Resize image keeping its aspect ratio
      *
-     * @param int    $destinationWidth
-     * @param int    $destinationHeight
-     * @param string $mode              self::RESIZE_FIT_COVER (default) or self::RESIZE_FIT_CONTAIN
+     * @param string $mode self::RESIZE_FIT_COVER (default) or self::RESIZE_FIT_CONTAIN
      *
      * @return $this
      */
@@ -341,7 +332,6 @@ class Image extends File
     /**
      * Square image to a given size
      *
-     * @param int    $size
      * @param string $mode self::RESIZE_FIT_COVER (default) or self::RESIZE_FIT_CONTAIN
      *
      * @return $this
@@ -353,11 +343,6 @@ class Image extends File
 
     /**
      * Crop image to given size from origin coordinates
-     *
-     * @param int $originX
-     * @param int $originY
-     * @param int $width
-     * @param int $height
      *
      * @return $this
      */
@@ -567,8 +552,6 @@ class Image extends File
     /**
      * Smoothen image
      *
-     * @param int $amount
-     *
      * @return $this
      */
     public function smoothen(int $amount)
@@ -582,8 +565,6 @@ class Image extends File
 
     /**
      * Pixelate image
-     *
-     * @param int $amount
      *
      * @return $this
      */

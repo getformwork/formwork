@@ -17,9 +17,6 @@ class YAML extends AbstractParser
     /**
      * Parse a YAML string
      *
-     * @param string $input
-     * @param array  $options
-     *
      * @return array
      */
     public static function parse(string $input, array $options = [])
@@ -35,9 +32,6 @@ class YAML extends AbstractParser
 
     /**
      * Encode data to YAML format
-     *
-     * @param array $data
-     * @param array $options
      *
      * @return string
      */
@@ -55,8 +49,6 @@ class YAML extends AbstractParser
 
     /**
      * Check if PHPHYAMLmode option matches a pattern
-     *
-     * @param string $pattern
      */
     protected static function PHPYAMLmode(string $pattern)
     {

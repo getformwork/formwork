@@ -16,9 +16,6 @@ class Field extends DataSetter
 
     /**
      * Create a new Field instance
-     *
-     * @param string $name
-     * @param array  $data
      */
     public function __construct(string $name, array $data = [])
     {

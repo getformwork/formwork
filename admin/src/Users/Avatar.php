@@ -10,8 +10,6 @@ class Avatar extends File
 {
     /**
      * Create a new Avatar instance
-     *
-     * @param string $filename
      */
     public function __construct(string $filename)
     {

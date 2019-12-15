@@ -31,8 +31,6 @@ class Site extends AbstractPage
 
     /**
      * Create a new Site instance
-     *
-     * @param array $data
      */
     public function __construct(array $data)
     {
@@ -70,8 +68,6 @@ class Site extends AbstractPage
     /**
      * Return whether a template exists
      *
-     * @param string $template
-     *
      * @return bool
      */
     public function hasTemplate(string $template)
@@ -81,8 +77,6 @@ class Site extends AbstractPage
 
     /**
      * Return template filename
-     *
-     * @param string $name
      *
      * @return string
      */
@@ -96,8 +90,6 @@ class Site extends AbstractPage
 
     /**
      * Return whether site has been modified since given time
-     *
-     * @param int $time
      *
      * @return bool
      */
@@ -137,8 +129,6 @@ class Site extends AbstractPage
     /**
      * Return alias of a given route
      *
-     * @param string $route
-     *
      * @return string|null
      */
     public function alias(string $route)
@@ -154,8 +144,6 @@ class Site extends AbstractPage
     /**
      * Set and return site current page
      *
-     * @param Page $page
-     *
      * @return Page
      */
     public function setCurrentPage(Page $page)
@@ -165,8 +153,6 @@ class Site extends AbstractPage
 
     /**
      * Navigate to and return a page from its route, setting then the current page
-     *
-     * @param string $route
      *
      * @return Page
      */
@@ -270,8 +256,6 @@ class Site extends AbstractPage
     /**
      * Find page from route
      *
-     * @param string $route
-     *
      * @return Page|null
      */
     public function findPage(string $route)
@@ -304,8 +288,6 @@ class Site extends AbstractPage
 
     /**
      * Retrieve page from the storage creating a new one if not existing
-     *
-     * @param string $path
      *
      * @return Page
      */

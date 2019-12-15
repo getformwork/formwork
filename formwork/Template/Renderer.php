@@ -8,13 +8,6 @@ class Renderer
 {
     /**
      * Load a script passing variables and binding to given instance and context
-     *
-     * @param string      $filename
-     * @param array       $vars
-     * @param object      $instance
-     * @param string|null $context
-     *
-     * @return mixed
      */
     public static function load(string $filename, array $vars, object $instance, ?string $context = null)
     {
@@ -24,9 +17,6 @@ class Renderer
 
     /**
      * Return rendering closure bound to given instance and context
-     *
-     * @param object      $instance
-     * @param string|null $context
      *
      * @return Closure
      */

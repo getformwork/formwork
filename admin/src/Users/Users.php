@@ -49,8 +49,6 @@ class Users extends AssociativeCollection
     /**
      * Get permissions for a given role
      *
-     * @param string $role
-     *
      * @return array
      */
     public static function getRolePermissions(string $role)

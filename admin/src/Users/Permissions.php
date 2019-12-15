@@ -32,8 +32,6 @@ class Permissions
     /**
      * Return whether a permission is granted
      *
-     * @param string $permission
-     *
      * @return bool
      */
     public function has(string $permission)

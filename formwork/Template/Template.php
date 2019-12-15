@@ -76,9 +76,6 @@ class Template
 
     /**
      * Create a new Template instance
-     *
-     * @param string $template
-     * @param Page   $page
      */
     public function __construct(string $template, Page $page)
     {
@@ -142,8 +139,6 @@ class Template
 
     /**
      * Set template layout
-     *
-     * @param string $name
      */
     public function layout(string $name)
     {
@@ -155,9 +150,6 @@ class Template
 
     /**
      * Insert a template
-     *
-     * @param string $name
-     * @param array  $vars
      */
     public function insert(string $name, array $vars = [])
     {
@@ -181,8 +173,7 @@ class Template
     /**
      * Render template
      *
-     * @param bool  $return Whether to return rendered content or not
-     * @param array $vars
+     * @param bool $return Whether to return rendered content or not
      *
      * @return string|null
      */

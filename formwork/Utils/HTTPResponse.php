@@ -22,8 +22,7 @@ class HTTPResponse
     /**
      * Put file data into response content
      *
-     * @param string $file
-     * @param bool   $download Whether to download file or not
+     * @param bool $download Whether to download file or not
      */
     public static function file(string $file, bool $download = false)
     {
@@ -40,8 +39,6 @@ class HTTPResponse
 
     /**
      * Put file data into response content and tell the browser to download
-     *
-     * @param string $file
      *
      * @see HTTPResponse::file()
      */

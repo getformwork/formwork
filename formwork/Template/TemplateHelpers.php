@@ -21,8 +21,6 @@ class TemplateHelpers
     /**
      * Return whether a template helper is defined
      *
-     * @param string $name
-     *
      * @return bool
      */
     public static function has(string $name)
@@ -32,9 +30,6 @@ class TemplateHelpers
 
     /**
      * Add a template helper
-     *
-     * @param string   $name
-     * @param callable $helper
      */
     public static function add(string $name, callable $helper)
     {
@@ -50,8 +45,6 @@ class TemplateHelpers
     /**
      * Get a template helper
      *
-     * @param string $name
-     *
      * @return callable
      */
     public static function get(string $name)
@@ -64,8 +57,6 @@ class TemplateHelpers
 
     /**
      * Remove a template helper
-     *
-     * @param string $name
      */
     public static function remove(string $name)
     {

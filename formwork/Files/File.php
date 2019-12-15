@@ -61,8 +61,6 @@ class File
 
     /**
      * Create a new File instance
-     *
-     * @param string $path
      */
     public function __construct(string $path)
     {

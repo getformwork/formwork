@@ -29,8 +29,6 @@ class Registry
 
     /**
      * Create a new Registry instance
-     *
-     * @param string $filename
      */
     public function __construct(string $filename)
     {
@@ -44,8 +42,6 @@ class Registry
     /**
      * Return whether a key is in the registry
      *
-     * @param string $key
-     *
      * @return bool
      */
     public function has(string $key)
@@ -55,8 +51,6 @@ class Registry
 
     /**
      * Get a key from the registry
-     *
-     * @param string $key
      */
     public function get(string $key)
     {
@@ -67,9 +61,6 @@ class Registry
 
     /**
      * Add a key to the registry
-     *
-     * @param string $key
-     * @param mixed  $value
      */
     public function set(string $key, $value)
     {
@@ -79,8 +70,6 @@ class Registry
 
     /**
      * Remove a key from the registry
-     *
-     * @param string $key
      */
     public function remove(string $key)
     {

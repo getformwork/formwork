@@ -15,8 +15,6 @@ class DataGetter
 
     /**
      * Create a new instance
-     *
-     * @param array $data
      */
     public function __construct(array $data)
     {

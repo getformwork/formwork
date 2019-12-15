@@ -23,8 +23,6 @@ class IPAnonymizer
     /**
      * Anonymize an IP address
      *
-     * @param string $ip
-     *
      * @return string
      */
     public static function anonymize(string $ip)
@@ -43,8 +41,6 @@ class IPAnonymizer
     /**
      * Anonymize an IPv4 address
      *
-     * @param string $ip
-     *
      * @return string
      */
     public static function anonymizeIPv4(string $ip)
@@ -54,8 +50,6 @@ class IPAnonymizer
 
     /**
      * Anonymize an IPv6 address
-     *
-     * @param string $ip
      *
      * @return string
      */

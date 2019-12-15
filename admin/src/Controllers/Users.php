@@ -74,8 +74,6 @@ class Users extends AbstractController
 
     /**
      * Users@delete action
-     *
-     * @param RouteParams $params
      */
     public function delete(RouteParams $params)
     {
@@ -109,8 +107,6 @@ class Users extends AbstractController
 
     /**
      * Users@profile action
-     *
-     * @param RouteParams $params
      */
     public function profile(RouteParams $params)
     {
@@ -155,8 +151,6 @@ class Users extends AbstractController
 
     /**
      * Update user data from POST request
-     *
-     * @param User $user
      */
     protected function updateUser(User $user)
     {
@@ -202,8 +196,6 @@ class Users extends AbstractController
 
     /**
      * Upload a new avatar for a user
-     *
-     * @param User $user
      */
     protected function uploadAvatar(User $user)
     {
@@ -240,8 +232,6 @@ class Users extends AbstractController
 
     /**
      * Delete the avatar of a given user
-     *
-     * @param User $user
      */
     protected function deleteAvatar(User $user)
     {

@@ -40,9 +40,6 @@ class Session
 
     /**
      * Set a session key to value
-     *
-     * @param string $key
-     * @param mixed  $value
      */
     public static function set(string $key, $value)
     {
@@ -52,8 +49,6 @@ class Session
 
     /**
      * Get a session key
-     *
-     * @param string $key
      */
     public static function get(string $key)
     {
@@ -66,8 +61,6 @@ class Session
     /**
      * Return whether a key is in session data
      *
-     * @param string $key
-     *
      * @return bool
      */
     public static function has(string $key)
@@ -78,8 +71,6 @@ class Session
 
     /**
      * Remove session data by key
-     *
-     * @param string $key
      */
     public static function remove(string $key)
     {

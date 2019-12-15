@@ -38,8 +38,6 @@ class CSRFToken
     /**
      * Check if given CSRF token is valid
      *
-     * @param string|null $token
-     *
      * @return bool
      */
     public static function validate(?string $token = null)

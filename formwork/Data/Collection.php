@@ -16,8 +16,6 @@ class Collection implements Countable, Iterator
 
     /**
      * Create a new Collection instance
-     *
-     * @param array $items
      */
     public function __construct(array $items = [])
     {

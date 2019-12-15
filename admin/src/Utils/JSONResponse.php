@@ -22,9 +22,6 @@ class JSONResponse
 
     /**
      * Create a new JSONResponse instance
-     *
-     * @param array $data
-     * @param int   $status
      */
     public function __construct(array $data, int $status = 200)
     {
@@ -48,10 +45,6 @@ class JSONResponse
     /**
      * Shortcut for success response
      *
-     * @param string $message
-     * @param int    $status
-     * @param array  $data
-     *
      * @return self
      */
     public static function success(string $message, int $status = 200, array $data = [])
@@ -66,10 +59,6 @@ class JSONResponse
 
     /**
      * Shortcut for error response
-     *
-     * @param string $message
-     * @param int    $status
-     * @param array  $data
      *
      * @return self
      */

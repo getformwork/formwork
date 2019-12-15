@@ -29,10 +29,6 @@ class Response
 
     /**
      * Create a new Response instance
-     *
-     * @param string   $content
-     * @param int|null $status
-     * @param array    $headers
      */
     public function __construct(string $content, ?int $status = null, array $headers = [])
     {

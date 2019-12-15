@@ -23,9 +23,6 @@ class Assets
 
     /**
      * Create a new Assets instance
-     *
-     * @param string $basePath
-     * @param string $baseUri
      */
     public function __construct(string $basePath, string $baseUri)
     {

@@ -90,7 +90,6 @@ class Header
     /**
      * Send an HTTP response status code
      *
-     * @param int  $code
      * @param bool $send Whether to send status code or return
      * @param bool $exit Whether to exit from the script after sending the status code
      *
@@ -115,9 +114,7 @@ class Header
     /**
      * Send an HTTP response header
      *
-     * @param string $fieldName
-     * @param string $fieldValue
-     * @param bool   $replace    Whether to replace headers with the same name
+     * @param bool $replace Whether to replace headers with the same name
      */
     public static function send(string $fieldName, string $fieldValue, bool $replace = true)
     {
@@ -129,8 +126,6 @@ class Header
 
     /**
      * Set Content-Type header
-     *
-     * @param string $mimeType
      */
     public static function contentType(string $mimeType)
     {
@@ -148,8 +143,7 @@ class Header
     /**
      * Redirect to a given URI and exit from the script
      *
-     * @param string $uri
-     * @param int    $code Redirect HTTP response status code
+     * @param int $code Redirect HTTP response status code
      */
     public static function redirect(string $uri, int $code = 302)
     {

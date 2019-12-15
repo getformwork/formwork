@@ -131,8 +131,6 @@ class Statistics
     /**
      * Return chart data
      *
-     * @param int $limit
-     *
      * @return array
      */
     public function getChartData(int $limit = self::CHART_LIMIT)

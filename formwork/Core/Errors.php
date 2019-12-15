@@ -35,8 +35,6 @@ class Errors
 
     /**
      * Display error page on exception
-     *
-     * @param Throwable $exception
      */
     public static function exceptionHandler(Throwable $exception)
     {

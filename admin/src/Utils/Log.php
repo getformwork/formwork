@@ -13,9 +13,6 @@ class Log extends Registry
 
     /**
      * Create a new Log instance
-     *
-     * @param string $filename
-     * @param int    $limit
      */
     public function __construct(string $filename, int $limit = 128)
     {
@@ -25,8 +22,6 @@ class Log extends Registry
 
     /**
      * Log a message at current time with microseconds
-     *
-     * @param string $message
      *
      * @return string Logging timestamp
      */

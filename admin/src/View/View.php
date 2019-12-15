@@ -49,9 +49,6 @@ class View
 
     /**
      * Create a new View instance
-     *
-     * @param string $name
-     * @param array  $vars
      */
     public function __construct(string $name, array $vars = [])
     {
@@ -61,9 +58,6 @@ class View
 
     /**
      * Insert a view
-     *
-     * @param string $name
-     * @param array  $vars
      */
     public function insert(string $name, array $vars = [])
     {

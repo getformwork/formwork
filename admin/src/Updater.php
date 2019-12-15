@@ -75,8 +75,6 @@ class Updater
 
     /**
      * Create a new Updater instance
-     *
-     * @param array $options
      */
     public function __construct(array $options = [])
     {
@@ -284,8 +282,6 @@ class Updater
     /**
      * Return whether a file is copiable or not
      *
-     * @param string $file
-     *
      * @return bool
      */
     protected function isCopiable(string $file)
@@ -300,8 +296,6 @@ class Updater
 
     /**
      * Return deletable files based on installed ones
-     *
-     * @param array $installedFiles
      *
      * @return array
      */

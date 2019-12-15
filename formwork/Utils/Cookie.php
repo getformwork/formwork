@@ -23,10 +23,7 @@ class Cookie
     /**
      * Send a cookie
      *
-     * @param string $name
-     * @param string $value
-     * @param array  $options
-     * @param bool   $replace Whether to replace existing Set-Cookie header
+     * @param bool $replace Whether to replace existing Set-Cookie header
      */
     public static function send(string $name, string $value, array $options = [], bool $replace = false)
     {
@@ -58,8 +55,6 @@ class Cookie
 
     /**
      * Parse cookie options
-     *
-     * @param array $options
      *
      * @return array
      */
@@ -95,8 +90,6 @@ class Cookie
 
     /**
      * Make Set-Cookie header string
-     *
-     * @param array $data
      *
      * @return string
      */

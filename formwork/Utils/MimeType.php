@@ -86,8 +86,6 @@ class MimeType
     /**
      * Get MIME types from file extension
      *
-     * @param string $extension
-     *
      * @return string
      */
     public static function fromExtension(string $extension)
@@ -98,8 +96,6 @@ class MimeType
 
     /**
      * Get MIME type from a file
-     *
-     * @param string $file
      *
      * @return string|null
      */
@@ -133,8 +129,6 @@ class MimeType
 
     /**
      * Get extension or array of extensions (if multiple) from a MIME type
-     *
-     * @param string $mimeType
      *
      * @return array|string
      */

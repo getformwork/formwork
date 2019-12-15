@@ -27,8 +27,6 @@ class Backupper
 
     /**
      * Return a new Backupper instance
-     *
-     * @param array $options
      */
     public function __construct(array $options = [])
     {
@@ -105,8 +103,6 @@ class Backupper
 
     /**
      * Return whether a file is copiable in the backup archive
-     *
-     * @param string $file
      *
      * @return bool
      */

@@ -8,8 +8,6 @@ class Metadata extends AssociativeCollection
 {
     /**
      * Create a new Metadata instance
-     *
-     * @param array $items
      */
     public function __construct(array $items)
     {
@@ -19,9 +17,6 @@ class Metadata extends AssociativeCollection
 
     /**
      * Set a metadatum
-     *
-     * @param string $name
-     * @param string $content
      */
     public function set(string $name, string $content)
     {
@@ -30,8 +25,6 @@ class Metadata extends AssociativeCollection
 
     /**
      * Set multiple metadata
-     *
-     * @param array $items
      */
     public function setMultiple(array $items)
     {

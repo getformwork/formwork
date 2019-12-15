@@ -43,8 +43,6 @@ class User extends DataGetter
 
     /**
      * Create a new User instance
-     *
-     * @param array $data
      */
     public function __construct(array $data)
     {
@@ -55,8 +53,6 @@ class User extends DataGetter
 
     /**
      * Return whether a given password authenticates the user
-     *
-     * @param string $password
      *
      * @return bool
      */
@@ -88,8 +84,6 @@ class User extends DataGetter
     /**
      * Return whether the user can delete a given user
      *
-     * @param User $user
-     *
      * @return bool
      */
     public function canDeleteUser(User $user)
@@ -99,8 +93,6 @@ class User extends DataGetter
 
     /**
      * Return whether the user can change options of a given user
-     *
-     * @param User $user
      *
      * @return bool
      */
@@ -112,8 +104,6 @@ class User extends DataGetter
     /**
      * Return whether the user can change the password of a given user
      *
-     * @param User $user
-     *
      * @return bool
      */
     public function canChangePasswordOf(User $user)
@@ -123,8 +113,6 @@ class User extends DataGetter
 
     /**
      * Return whether the user can change the role of a given user
-     *
-     * @param User $user
      *
      * @return bool
      */

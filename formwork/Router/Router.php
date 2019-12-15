@@ -72,8 +72,6 @@ class Router
 
     /**
      * Create a new Router instance
-     *
-     * @param string $request
      */
     public function __construct(string $request)
     {
@@ -193,8 +191,6 @@ class Router
     /**
      * Rewrite current route
      *
-     * @param array $params
-     *
      * @return string
      */
     public function rewrite(array $params)
@@ -204,8 +200,6 @@ class Router
 
     /**
      * Match route against request
-     *
-     * @param string $route
      *
      * @return bool
      */
@@ -226,8 +220,6 @@ class Router
 
     /**
      * Compile a route to a valid regex and params list
-     *
-     * @param string $route
      *
      * @return array
      */
@@ -258,9 +250,6 @@ class Router
 
     /**
      * Rewrite a route given new params
-     *
-     * @param string $route
-     * @param array  $params
      *
      * @return string
      */

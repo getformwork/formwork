@@ -18,9 +18,6 @@ class Validator
 
     /**
      * Validate all Fields against given data
-     *
-     * @param Fields     $fields
-     * @param DataGetter $data
      */
     public static function validate(Fields $fields, DataGetter $data)
     {
@@ -44,8 +41,6 @@ class Validator
     /**
      * Validate checkbox field
      *
-     * @param string $value
-     *
      * @return bool
      */
     public static function validateCheckbox($value)
@@ -55,8 +50,6 @@ class Validator
 
     /**
      * Validate togglegroup field
-     *
-     * @param string $value
      */
     public static function validateTogglegroup($value)
     {
@@ -71,8 +64,6 @@ class Validator
 
     /**
      * Validate date field
-     *
-     * @param string $value
      *
      * @return string
      */
@@ -90,9 +81,6 @@ class Validator
 
     /**
      * Validate number field
-     *
-     * @param string $value
-     * @param Field  $field
      *
      * @return float|int
      */
@@ -113,9 +101,7 @@ class Validator
     /**
      * Validate range field
      *
-     * @param string $value
-     * @param Field  $field
-     *
+
      * @return float|int
      */
     public static function validateRange($value, Field $field)
@@ -125,8 +111,6 @@ class Validator
 
     /**
      * Validate select field
-     *
-     * @param string $value
      */
     public static function validateSelect($value)
     {
@@ -136,9 +120,7 @@ class Validator
     /**
      * Validate tags field
      *
-     * @param array|string $value
-     * @param Field        $field
-     *
+
      * @return array
      */
     public static function validateTags($value, Field $field)
@@ -155,9 +137,7 @@ class Validator
 
     /**
      * Validate array field
-     *
-     * @param array|string $value
-     * @param Field        $field
+
      *
      * @return array
      */
@@ -183,8 +163,6 @@ class Validator
 
     /**
      * Cast a value to its correct type
-     *
-     * @param string $value
      */
     private static function parse($value)
     {
@@ -201,9 +179,6 @@ class Validator
 
     /**
      * Return whether a values matches to a regex
-     *
-     * @param string $value
-     * @param string $regex
      *
      * @return bool
      */
