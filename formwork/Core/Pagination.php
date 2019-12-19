@@ -185,7 +185,7 @@ class Pagination
      */
     public function nextPageUri()
     {
-        return Uri::make(['path' => $this->baseUri . 'page/' . $this->nextPage()]);
+        return Uri::make(['host' => '', 'path' => $this->baseUri . 'page/' . $this->nextPage()]);
     }
 
     /**
@@ -196,9 +196,9 @@ class Pagination
     public function previousPageUri()
     {
         if ($this->previousPage() === 1) {
-            return Uri::make(['path' => $this->baseUri]);
+            return Uri::make(['host' => '', 'path' => $this->baseUri]);
         }
-        return Uri::make(['path' => $this->baseUri . 'page/' . $this->previousPage()]);
+        return Uri::make(['host' => '', 'path' => $this->baseUri . 'page/' . $this->previousPage()]);
     }
 
     public function __debugInfo()
