@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.4](https://github.com/getformwork/formwork/releases/tag/1.4.4) (2019-12-21)
+
+**Enhancements**
+
+- Make all pagination URIs relative
+- Update French translation, thanks to @MiFrance
+
+**Bug fixes**
+
+- Fix `Avatar::__construct()` (closes [#47](https://github.com/getformwork/formwork/issues/47))
+
 ## [1.4.3](https://github.com/getformwork/formwork/releases/tag/1.4.3) (2019-12-15)
 
 **Enhancements**
