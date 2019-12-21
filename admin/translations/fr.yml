@@ -30,6 +30,8 @@ errors.error.internal-server-error.status: Erreur Interne du Serveur
 errors.error.not-found.description: La page n’existe pas ou la demande n’est pas valide.
 errors.error.not-found.heading: Oups, page non trouvée!
 errors.error.not-found.status: Pas trouvé
+fields.array.add: Ajouter
+fields.array.remove: Supprimer
 login.attempt.failed: La tentative de connexion a échoué! Réessayer.
 login.attempt.too-many: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
 login.logged-out: Vous avez été déconnecté
@@ -49,6 +51,13 @@ modal.images.title: Bibliothèque de médias
 options.info: Information
 options.options: Paramètres
 options.site: Site
+options.site.advanced: Options avancées
+options.site.advanced.aliases: Alias
+options.site.advanced.aliases.alias: Alias
+options.site.advanced.aliases.route: Route
+options.site.advanced.metadata: Métadonnées HTML
+options.site.advanced.metadata.content: Contenu
+options.site.advanced.metadata.name: Nom
 options.site.info: Info
 options.site.info.author: Auteur
 options.site.info.description: Description
@@ -78,7 +87,20 @@ options.system.files: Fichiers
 options.system.files.allowed-extensions: Extensions autorisées
 options.system.images: Images
 options.system.images.jpeg-quality: Qualité JPEG
+options.system.images.jpeg-save-progressive: Enregistrer les images JPEG en progressif
+options.system.images.jpeg-save-progressive.disabled: Désactivé
+options.system.images.jpeg-save-progressive.enabled: Activé
 options.system.images.png-compression-level: Niveau de compression PNG
+options.system.images.process-uploads: Traitement (optimisé) des images envoyées
+options.system.images.process-uploads.disabled: Désactivé
+options.system.images.process-uploads.enabled: Activé
+options.system.images.webp-quality: Qualité WebP
+options.system.languages: Langues
+options.system.languages.available-languages: Langues disponibles
+options.system.languages.available-languages.no-languages: Aucune langue
+options.system.languages.preferred-language: Utiliser la langue préférée du navigateur
+options.system.languages.preferred-language.disabled: Désactivé
+options.system.languages.preferred-language.enabled: Activé
 options.updated: Options mises à jour
 options.updates: Mises à jour
 pages.attributes: Attributs
@@ -100,9 +122,14 @@ pages.editor.italic: Italique
 pages.editor.link: Lien
 pages.editor.numbered-list: Liste ordonnée
 pages.editor.quote: Citer
+pages.editor.redo: Refaire
 pages.editor.summary: Résumé
+pages.editor.undo: Annuler
 pages.files: Fichiers
 pages.files.upload-label: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
+pages.languages: Langues
+pages.languages.add-language: Ajouter %s
+pages.languages.edit-language: Éditer %s
 pages.new-page: Nouvelle page
 pages.new-page.parent: Parent
 pages.new-page.site: Site
@@ -122,10 +149,12 @@ pages.page.cannot-create.invalid-template: Impossible de créer une page, modèl
 pages.page.cannot-create.var-missing: Impossible de créer une page, il manque une variable
 pages.page.cannot-delete-file.file-not-found: Impossible de supprimer le fichier, fichier introuvable
 pages.page.cannot-delete-file.page-not-found: Impossible de supprimer le fichier, page non trouvée
+pages.page.cannot-delete.invalid-language: 'Impossible de supprimer la page, terme non défini : %s'
 pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page ne peut être supprimée
 pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
 pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
 pages.page.cannot-edit.index-or-error-page-slug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
+pages.page.cannot-edit.invalid-language: 'Impossible de modifier la page, terme non défini : %s'
 pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parente non valide
 pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
 pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
@@ -154,6 +183,7 @@ pages.page.visible: Visible dans le menu
 pages.pages: Pages
 pages.pages.collapse-all: Tout réduire
 pages.pages.expand-all: Tout développer
+pages.pages.reorder: Réorganiser
 pages.pages.search: Rechercher dans les Pages…
 pages.parent: Parent
 pages.preview-file: Aperçu
@@ -174,11 +204,13 @@ updates.install: Installer
 updates.installed: Mise à jour installée !
 updates.latest-version-available: est la dernière version disponible
 updates.status.cannot-install: Impossible d’installer la mise à jour
+updates.status.cannot-make-backup: Impossible de faire une sauvegarde avant la mise à jour
 updates.status.checking: Vérification des mises à jour…
 updates.status.found: Mises à jour trouvées
 updates.status.installing: Installation de mises à jour…
 updates.status.up-to-date: À jour !
 uploader.error: Impossible de télécharger le fichier. %s.
+uploader.error.already-exists: Un fichier du même nom existe déjà
 uploader.error.cannot-write: Échec de l’écriture du fichier sur le disque
 uploader.error.file-name: Nom de fichier non valide
 uploader.error.hidden-files: Impossible de téléverser des fichiers cachés commençant par un point
@@ -197,6 +229,7 @@ user.fullname: Nom complet
 user.language: Langue
 user.last-access: Dernier accès
 user.password: Mot de passe
+user.password.type-new-password: Tapez un nouveau mot de passe pour le modifier...
 user.role: Rôle
 user.role.admin: Administrateur
 user.role.user: Éditeur
