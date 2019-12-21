@@ -11,7 +11,7 @@ class Avatar extends File
     /**
      * Create a new Avatar instance
      */
-    public function __construct(string $filename)
+    public function __construct(?string $filename)
     {
         $path = ADMIN_PATH . 'avatars/' . $filename;
         if (!empty($filename) && FileSystem::exists($path)) {
