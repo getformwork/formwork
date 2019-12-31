@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.5](https://github.com/getformwork/formwork/releases/tag/1.4.5) (2019-12-31)
+
+**Enhancements**
+
+- Revert temporary error suppression in `ParsedownExtra` from [c53fbbd](https://github.com/getformwork/formwork/commit/c53fbbd)
+
 ## [1.4.4](https://github.com/getformwork/formwork/releases/tag/1.4.4) (2019-12-21)
 
 **Enhancements**
