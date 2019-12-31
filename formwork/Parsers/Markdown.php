@@ -13,6 +13,6 @@ class Markdown extends AbstractParser
      */
     public static function parse(string $input, array $options = [])
     {
-        return @ParsedownExtra::instance()->text($input, $options);
+        return ParsedownExtra::instance()->text($input, $options);
     }
 }
