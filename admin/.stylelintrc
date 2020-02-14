@@ -259,6 +259,11 @@
         "selector-combinator-space-after": "always",
         "selector-list-comma-newline-after": "always-multi-line",
         "selector-pseudo-element-colon-notation": "double",
-        "string-quotes": "single"
+        "string-quotes": "single",
+        "value-keyword-case": ["lower", {
+            "ignoreProperties": [
+                "/^\\$/"
+            ]
+        }]
     }
 }
