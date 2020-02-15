@@ -363,6 +363,9 @@ class FileSystem
      */
     public static function fetch(string $source, $context = null)
     {
+        if (filter_var($source, FILTER_VALIDATE_URL) === false) {
+            throw new RuntimeException('Cannot fetch ' . $source . ': invalid URI');
+        }
         if ($context !== null) {
             $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
             if (!$valid) {
