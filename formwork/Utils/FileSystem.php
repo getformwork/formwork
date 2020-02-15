@@ -374,7 +374,12 @@ class FileSystem
         }
         $data = @file_get_contents($source, false, $context);
         if ($data === false) {
-            throw new RuntimeException('Cannot fetch ' . $source);
+            $message = error_get_last()['message'] ?? '';
+            // Stream errors are in the form %s(%s):%s, we only need the trailing part
+            if (preg_match('/^.*\(.*\)(:.*)/', $message, $matches)) {
+                $message = $matches[1];
+            }
+            throw new RuntimeException('Cannot fetch ' . $source . $message);
         }
         return $data;
     }
