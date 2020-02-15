@@ -288,15 +288,8 @@ class FileSystem
         if (!$overwrite) {
             static::assert($destination, false);
         }
-        if ($context !== null) {
-            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
-            if (!$valid) {
-                throw new RuntimeException('Invalid stream context resource');
-            }
-        }
-        if (!@copy($source, $destination, $context)) {
-            throw new RuntimeException('Cannot download ' . $source);
-        }
+        $data = static::fetch($source, $context);
+        static::write($destination, $data);
         return true;
     }
 
