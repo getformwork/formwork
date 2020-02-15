@@ -19,6 +19,13 @@ class Updater
     protected const REPOSITORY = 'getformwork/formwork';
 
     /**
+     * GitHub API latest release URI
+     *
+     * @var string
+     */
+    protected const API_RELEASE_URI = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
+
+    /**
      * Updater options
      *
      * @var array
@@ -242,8 +249,7 @@ class Updater
             return;
         }
 
-        $uri = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
-        $data = json_decode(FileSystem::fetch($uri, $this->context), true);
+        $data = json_decode(FileSystem::fetch(self::API_RELEASE_URI, $this->context), true);
 
         if (!$data) {
             throw new RuntimeException('Cannot fetch latest Formwork release data');
