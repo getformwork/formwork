@@ -203,6 +203,7 @@ updates.install-prompt: Installare l'aggiornamento?
 updates.install: Installa
 updates.installed: Aggiornamento installato!
 updates.latest-version-available: è l'ultima versione disponibile
+updates.status.cannot-check: Impossibile cercare aggiornamenti. Riprova più tardi.
 updates.status.cannot-install: Impossibile installare l'aggiornamento
 updates.status.cannot-make-backup: Impossibile eseguire il backup prima di aggiornare
 updates.status.checking: Cerco aggiornamenti...

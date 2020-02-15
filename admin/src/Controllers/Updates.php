@@ -18,7 +18,13 @@ class Updates extends AbstractController
     {
         $this->ensurePermission('updates.check');
         $updater = new Updater(['preferDistAssets' => true]);
-        $upToDate = $updater->checkUpdates();
+        try {
+            $upToDate = $updater->checkUpdates();
+        } catch (RuntimeException $e) {
+            JSONResponse::error($this->label('updates.status.cannot-check'), 500, [
+                'status' => $this->label('updates.status.cannot-check')
+            ])->send();
+        }
         if ($upToDate) {
             JSONResponse::success($this->label('updates.status.up-to-date'), 200, [
                 'uptodate' => true
