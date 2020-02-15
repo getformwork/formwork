@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.6](https://github.com/getformwork/formwork/releases/tag/1.4.6) (2020-02-15)
+
+**Enhancements**
+
+- Validate URIs in `FileSystem::fetch()`
+- Improve error messages in `FileSystem::fetch()`
+- Simplify `FileSystem::download()`
+- Extract constant `API_RELEASE_URI` in `Updater` class
+- Catch exceptions on checking updates
+- Properly display errors on checking updates
+
 ## [1.4.5](https://github.com/getformwork/formwork/releases/tag/1.4.5) (2019-12-31)
 
 **Enhancements**
