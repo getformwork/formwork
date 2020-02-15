@@ -9,13 +9,17 @@ Formwork.Updates = {
                     data: data
                 }, function (response) {
                     $('.update-status').html(response.message);
-                    if (response.data.uptodate === false) {
-                        $('.spinner').addClass('spinner-info');
-                        $('.new-version-name').text(response.data.release.name);
-                        $('.new-version').show();
+                    if (response.status === 'success') {
+                        if (response.data.uptodate === false) {
+                            $('.spinner').addClass('spinner-info');
+                            $('.new-version-name').text(response.data.release.name);
+                            $('.new-version').show();
+                        } else {
+                            $('.spinner').addClass('spinner-success');
+                            $('.current-version').show();
+                        }
                     } else {
-                        $('.spinner').addClass('spinner-success');
-                        $('.current-version').show();
+                        $('.spinner').addClass('spinner-error');
                     }
                 });
             }, 1000);
