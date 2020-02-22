@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.7](https://github.com/getformwork/formwork/releases/tag/1.4.7) (2020-02-22)
+
+**Bug fixes**
+
+- Fix error in Pages controller which prevented page creation
+
 ## [1.4.6](https://github.com/getformwork/formwork/releases/tag/1.4.6) (2020-02-15)
 
 **Enhancements**
