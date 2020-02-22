@@ -561,7 +561,7 @@ class Pages extends AbstractController
      *
      * @return string
      */
-    protected function makePageNum($parent, string $mode)
+    protected function makePageNum($parent, ?string $mode)
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
