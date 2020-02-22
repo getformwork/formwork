@@ -25,23 +25,23 @@ Formwork.Chart = function (element, data) {
     /* global Chartist:false */
     var chart = new Chartist.Line(element, data, options);
 
-    var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
+    chart.container.addEventListener('mouseover', function (event) {
+        var tooltipOffset, tooltip, strokeWidth;
 
-    $(chart.container).on('mouseover', '.ct-point', function () {
-        var $this = $(this);
-        var tooltipOffset = {
-            x: 0, y: -8
-        };
-
-        if (isFirefox) {
-            var strokeWidth = parseFloat($this.css('stroke-width'));
-            tooltipOffset.x += strokeWidth / 2;
-            tooltipOffset.y += strokeWidth / 2;
+        if (event.target.getAttribute('class') === 'ct-point') {
+            tooltipOffset = {
+                x: 0, y: -8
+            };
+            if (navigator.userAgent.indexOf('Firefox') !== -1) {
+                strokeWidth = parseFloat(getComputedStyle(event.target)['stroke-width']);
+                tooltipOffset.x += strokeWidth / 2;
+                tooltipOffset.y += strokeWidth / 2;
+            }
+            tooltip = new Formwork.Tooltip(event.target.getAttribute('ct:value'), {
+                referenceElement: event.target,
+                offset: tooltipOffset
+            });
+            tooltip.show();
         }
-
-        var tooltip = new Formwork.Tooltip($this.attr('ct:value'), {
-            referenceElement: $this, offset: tooltipOffset
-        });
-        tooltip.show();
     });
 };

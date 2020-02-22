@@ -1,50 +1,79 @@
 Formwork.Updates = {
     init: function () {
-        if ($('#updater-component').length > 0) {
+        var updaterComponent = document.getElementById('updater-component');
+        var updateStatus, spinner,
+            currentVersion, currentVersionName,
+            newVersion, newVersionName;
+
+        if (updaterComponent) {
+            updateStatus = $('.update-status');
+            spinner = $('.spinner');
+            currentVersion = $('.current-version');
+            currentVersionName = $('.current-version-name');
+            newVersion = $('.new-version');
+            newVersionName = $('.new-version-name');
+
             setTimeout(function () {
-                var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
-                new Formwork.Request({
+                var data = {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')};
+
+                Formwork.Request({
                     method: 'POST',
                     url: Formwork.baseUri + 'updates/check/',
                     data: data
                 }, function (response) {
-                    $('.update-status').html(response.message);
+                    updateStatus.innerHTML = response.message;
+
                     if (response.status === 'success') {
                         if (response.data.uptodate === false) {
-                            $('.spinner').addClass('spinner-info');
-                            $('.new-version-name').text(response.data.release.name);
-                            $('.new-version').show();
+                            showNewVersion(response.data.release.name);
                         } else {
-                            $('.spinner').addClass('spinner-success');
-                            $('.current-version').show();
+                            showCurrentVersion();
                         }
                     } else {
-                        $('.spinner').addClass('spinner-error');
+                        spinner.classList.add('spinner-error');
                     }
                 });
             }, 1000);
 
-            $('[data-command=install-updates]').on('click', function () {
-                $('.new-version').hide();
-                $('.spinner').removeClass('spinner-info');
-                $('.update-status').text($('.update-status').attr('data-installing-text'));
-                var data = {'csrf-token': $('meta[name=csrf-token]').attr('content')};
-                new Formwork.Request({
+            $('[data-command=install-updates]').addEventListener('click', function () {
+                newVersion.style.display = 'none';
+                spinner.classList.remove('spinner-info');
+                updateStatus.innerHTML = updateStatus.getAttribute('data-installing-text');
+
+                Formwork.Request({
                     method: 'POST',
                     url: Formwork.baseUri + 'updates/update/',
-                    data: data
+                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
-                    $('.update-status').text(response.data.status);
-                    new Formwork.Notification(response.message, response.status, 5000);
+                    var notification = new Formwork.Notification(response.message, response.status, 5000);
+                    notification.show();
+
+                    updateStatus.innerHTML = response.data.status;
+
                     if (response.status === 'success') {
-                        $('.spinner').addClass('spinner-success');
-                        $('.current-version-name').text($('.new-version-name').text());
-                        $('.current-version').show();
+                        showInstalledVersion();
                     } else {
-                        $('.spinner').addClass('spinner-error');
+                        spinner.classList.add('spinner-error');
                     }
                 });
             });
+        }
+
+        function showNewVersion(name) {
+            spinner.classList.add('spinner-info');
+            newVersionName.innerHTML = name;
+            newVersion.style.display = 'block';
+        }
+
+        function showCurrentVersion() {
+            spinner.classList.add('spinner-success');
+            currentVersion.style.display = 'block';
+        }
+
+        function showInstalledVersion() {
+            spinner.classList.add('spinner-success');
+            currentVersionName.innerHTML = newVersionName.innerHTML;
+            currentVersion.style.display = 'block';
         }
     }
 };

@@ -21,7 +21,6 @@
 ?>
     <link rel="shortcut icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri('css/admin.min.css', true) ?>">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
     <script src="<?= $this->assets()->uri('js/vendor.min.js', true) ?>"></script>
 </head>
