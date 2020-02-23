@@ -286,7 +286,7 @@ Formwork.Pages = {
                 });
                 $$('.page-title a').forEach(function (element) {
                     var pagesItem = element.closest('.pages-item');
-                    var text = element.innerHTML;
+                    var text = element.textContent;
                     var matched = !!text.match(regexp);
                     pagesItem.style.display = matched ? 'block' : 'none';
                 });

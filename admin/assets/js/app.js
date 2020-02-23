@@ -540,7 +540,7 @@ Formwork.DatePicker = function (input, options) {
             });
             element.addEventListener('click', function () {
                 var input = getCurrentInput();
-                var date = new Date(dateKeeper.year, dateKeeper.month, parseInt(this.innerText));
+                var date = new Date(dateKeeper.year, dateKeeper.month, parseInt(this.textContent));
                 input.setAttribute('data-date', date);
                 input.value = dateHelpers.formatDateTime(date);
                 input.blur();
@@ -1488,7 +1488,7 @@ Formwork.Pages = {
                 });
                 $$('.page-title a').forEach(function (element) {
                     var pagesItem = element.closest('.pages-item');
-                    var text = element.innerHTML;
+                    var text = element.textContent;
                     var matched = !!text.match(regexp);
                     pagesItem.style.display = matched ? 'block' : 'none';
                 });
@@ -1848,7 +1848,7 @@ Formwork.TagInput = function (input) {
         var visibleItems = 0;
         dropdown.style.display = 'block';
         $$('.dropdown-item', dropdown).forEach(function (element) {
-            var text = element.innerText;
+            var text = element.textContent;
             var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
             var matched = !!text.match(regexp);
             if (matched && element.style.display !== 'none') {

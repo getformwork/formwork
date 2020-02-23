@@ -308,7 +308,7 @@ Formwork.TagInput = function (input) {
         var visibleItems = 0;
         dropdown.style.display = 'block';
         $$('.dropdown-item', dropdown).forEach(function (element) {
-            var text = element.innerText;
+            var text = element.textContent;
             var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
             var matched = !!text.match(regexp);
             if (matched && element.style.display !== 'none') {

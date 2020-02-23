@@ -311,7 +311,7 @@ Formwork.DatePicker = function (input, options) {
             });
             element.addEventListener('click', function () {
                 var input = getCurrentInput();
-                var date = new Date(dateKeeper.year, dateKeeper.month, parseInt(this.innerText));
+                var date = new Date(dateKeeper.year, dateKeeper.month, parseInt(this.textContent));
                 input.setAttribute('data-date', date);
                 input.value = dateHelpers.formatDateTime(date);
                 input.blur();
