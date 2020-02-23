@@ -28,6 +28,10 @@ Formwork.Forms = {
             });
         });
 
+        $$('.date-input').forEach(function (element) {
+            Formwork.DatePicker(element, Formwork.config.DatePicker);
+        });
+
         $$('.image-input').forEach(function (element) {
             element.addEventListener('click', function () {
                 Formwork.Modals.show('imagesModal', null, function (modal) {
