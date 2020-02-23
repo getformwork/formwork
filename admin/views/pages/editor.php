@@ -145,8 +145,3 @@
         </form>
     </div>
 </div>
-<script>
-$$('.date-input').forEach(function (element) {
-    Formwork.DatePicker(element, <?= json_encode($datePickerOptions) ?>);
-});
-</script>
