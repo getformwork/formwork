@@ -278,7 +278,7 @@ Formwork.Pages = {
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = 'block';
                 });
-                $$('.pages-children-toggle').forEach(function (element) {
+                $$('.page-children-toggle').forEach(function (element) {
                     element.style.display = 'none';
                 });
                 $$('.page-details').forEach(function (element) {
