@@ -369,7 +369,7 @@ Formwork.DatePicker = function (input, options) {
         });
         input.addEventListener('keydown', function (event) {
             var date = this.getAttribute('data-date');
-            dateKeeper.setDate(dateHelpers.isValidDate(date) ? Date(date) : Date());
+            dateKeeper.setDate(dateHelpers.isValidDate(date) ? new Date(date) : new Date());
             switch (event.which) {
             case 13: // enter
                 $('.calendar-day.selected', calendar).click();
@@ -418,7 +418,7 @@ Formwork.DatePicker = function (input, options) {
                 break;
             case 48: // 0
                 if (event.ctrlKey || event.metaKey) {
-                    dateKeeper.setDate(Date());
+                    dateKeeper.setDate(new Date());
                 }
                 updateInput(this);
                 break;
@@ -430,7 +430,7 @@ Formwork.DatePicker = function (input, options) {
         });
 
         input.addEventListener('focus', function () {
-            var date = dateHelpers.isValidDate(this.getAttribute('data-date')) ? Date(this.getAttribute('data-date')) : Date();
+            var date = dateHelpers.isValidDate(this.getAttribute('data-date')) ? new Date(this.getAttribute('data-date')) : new Date();
             dateKeeper.setDate(date);
             generateCalendarTable(dateKeeper.year, dateKeeper.month, dateKeeper.day);
             calendar.style.display = 'block';
