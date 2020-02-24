@@ -14,9 +14,12 @@ Formwork.Tooltip = function (text, options) {
 
     options = Formwork.Utils.extendObject({}, defaults, options);
 
-    // Remove tooltip when clicking on buttons
-    if (referenceElement.tagName.toLowerCase() === 'button' || referenceElement.classList.contains('button')) {
-        referenceElement.addEventListener('click', remove);
+    // IE 10-11 support classList only on HTMLElement
+    if (referenceElement instanceof HTMLElement) {
+        // Remove tooltip when clicking on buttons
+        if (referenceElement.tagName.toLowerCase() === 'button' || referenceElement.classList.contains('button')) {
+            referenceElement.addEventListener('click', remove);
+        }
     }
 
     referenceElement.addEventListener('mouseout', remove);
