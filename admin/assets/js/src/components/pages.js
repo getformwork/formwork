@@ -234,7 +234,7 @@ Formwork.Pages = {
 
                     data = {
                         'csrf-token': $('meta[name=csrf-token]').getAttribute('content'),
-                        parent: this.element.getAttribute('data-parent'),
+                        parent: element.getAttribute('data-parent'),
                         from: event.oldIndex,
                         to: event.newIndex
                     };
