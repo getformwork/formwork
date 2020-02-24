@@ -1142,7 +1142,7 @@ Formwork.Notification = function (text, type, interval, options) {
         notification.style.top = position.top + 'px';
         notification.style.right = position.right + 'px';
 
-        document.body.append(notification);
+        document.body.appendChild(notification);
 
         timer = setTimeout(remove, interval);
 
