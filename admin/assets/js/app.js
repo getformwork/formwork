@@ -1182,7 +1182,7 @@ Formwork.Notification = function (text, type, interval, options) {
         var rect;
         if (lastNotification !== undefined) {
             rect = lastNotification.getBoundingClientRect();
-            top = rect.top + Formwork.Utils.outerHeight(lastNotification) - window.pageYOffset;
+            top = rect.top + Formwork.Utils.outerHeight(lastNotification);
         }
         return {
             top: top,
