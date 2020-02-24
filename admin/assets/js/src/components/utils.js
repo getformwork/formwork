@@ -179,14 +179,14 @@ Formwork.Utils = {
 
     triggerEvent: function (target, type) {
         var event;
-        if ('Event' in window) {
+        try {
             event = new Event(type);
-            target.dispatchEvent(event);
-        } else {
-            event = document.createEvents('HTMLEvents');
-            event.initEvent(type);
-            target.dispatchEvent(event);
+        } catch (error) {
+            // The browser doesn't support Event constructor
+            event = document.createEvent('HTMLEvents');
+            event.initEvent(type, true, true);
         }
+        target.dispatchEvent(event);
     },
 
     longClick: function (element, callback, timeout, interval) {
