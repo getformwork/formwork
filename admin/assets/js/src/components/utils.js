@@ -94,19 +94,6 @@ Formwork.Utils = {
         return wrapper;
     },
 
-    uriPrependBase: function (path, base) {
-        var regexp = /^\/+|\/+$/gm;
-        var i;
-        path = path.replace(regexp, '').split('/');
-        base = base.replace(regexp, '').split('/');
-        for (i = 0; i < base.length; i++) {
-            if (base[i] === path[0] && base[i + 1] !== path[0]) {
-                base = base.slice(0, i);
-            }
-        }
-        return '/' + base.concat(path).join('/') + '/';
-    },
-
     outerWidth: function (element) {
         var width = element.offsetWidth;
         var style = getComputedStyle(element);
