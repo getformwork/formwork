@@ -217,7 +217,7 @@ Formwork.Dashboard = {
                     notification.show();
                     setTimeout(function () {
                         if (response.status === 'success') {
-                            Formwork.Utils.download(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
+                            Formwork.Utils.triggerDownload(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
                         }
                         button.removeAttribute('disabled');
                     }, 1000);
@@ -2169,20 +2169,6 @@ Formwork.Updates = {
 };
 
 Formwork.Utils = {
-    download: function (uri, csrfToken) {
-        var form = document.createElement('form');
-        var input = document.createElement('input');
-        form.action = uri;
-        form.method = 'post';
-        input.type = 'hidden';
-        input.name = 'csrf-token';
-        input.value = csrfToken;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-    },
-
     escapeRegExp: function (string) {
         return string.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     },
@@ -2344,6 +2330,20 @@ Formwork.Utils = {
             event.initEvent(type, true, true);
         }
         target.dispatchEvent(event);
+    },
+
+    triggerDownload: function (uri, csrfToken) {
+        var form = document.createElement('form');
+        var input = document.createElement('input');
+        form.action = uri;
+        form.method = 'post';
+        input.type = 'hidden';
+        input.name = 'csrf-token';
+        input.value = csrfToken;
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
     },
 
     longClick: function (element, callback, timeout, interval) {

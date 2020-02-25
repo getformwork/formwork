@@ -29,7 +29,7 @@ Formwork.Dashboard = {
                     notification.show();
                     setTimeout(function () {
                         if (response.status === 'success') {
-                            Formwork.Utils.download(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
+                            Formwork.Utils.triggerDownload(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
                         }
                         button.removeAttribute('disabled');
                     }, 1000);
