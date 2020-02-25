@@ -107,50 +107,46 @@ Formwork.Utils = {
     },
 
     extendObject: function (target) {
-        var i, source, prop;
+        var i, source, property;
         target = target || {};
         for (i = 1; i < arguments.length; i++) {
             source = arguments[i];
-            for (prop in source) {
-                target[prop] = source[prop];
+            for (property in source) {
+                target[property] = source[property];
             }
         }
         return target;
     },
 
-    serializeObject: function (obj) {
-        var query = '';
-        var key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (query.length > 0) {
-                    query += '&';
-                }
-                query += key + '=' + encodeURIComponent(obj[key]);
+    serializeObject: function (object) {
+        var property;
+        var serialized = [];
+        for (property in object) {
+            if (object.hasOwnProperty(property)) {
+                serialized.push(encodeURIComponent(property) + '=' + encodeURIComponent(object[property]));
             }
         }
-        return query;
+        return serialized.join('&');
     },
 
     serializeForm: function (form) {
         var field, i, j;
-        var s = [];
-        var len = form.elements.length;
-        for (i = 0; i < len; i++) {
+        var serialized = [];
+        for (i = 0; i < form.elements.length; i++) {
             field = form.elements[i];
             if (field.name && !field.disabled && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
                 if (field.type === 'select-multiple') {
                     for (j = form.elements[i].options.length - 1; j >= 0; j--) {
                         if (field.options[j].selected) {
-                            s[s.length] = encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[j].value);
+                            serialized.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[j].value));
                         }
                     }
                 } else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
-                    s[s.length] = encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);
+                    serialized.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value));
                 }
             }
         }
-        return s.join('&');
+        return serialized.join('&');
     },
 
     triggerEvent: function (target, type) {
