@@ -56,7 +56,7 @@ Formwork.Pages = {
             commandReorderPages.addEventListener('click', function () {
                 this.classList.toggle('active');
                 $$('.pages-list .sort-handle').forEach(function (element) {
-                    Formwork.Utils.toggleElement(element);
+                    Formwork.Utils.toggleElement(element, 'inline');
                 });
                 this.blur();
             });

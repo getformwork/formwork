@@ -1266,7 +1266,7 @@ Formwork.Pages = {
             commandReorderPages.addEventListener('click', function () {
                 this.classList.toggle('active');
                 $$('.pages-list .sort-handle').forEach(function (element) {
-                    Formwork.Utils.toggleElement(element);
+                    Formwork.Utils.toggleElement(element, 'inline');
                 });
                 this.blur();
             });
@@ -2264,10 +2264,13 @@ Formwork.Utils = {
         return height;
     },
 
-    toggleElement: function (element) {
-        var visibility = element.style.display || getComputedStyle(element).display;
-        if (visibility === 'none') {
-            element.style.display = element.tagName.toLowerCase() === 'span' ? 'inline' : 'block';
+    toggleElement: function (element, type) {
+        var display = element.style.display || getComputedStyle(element).display;
+        if (typeof type === 'undefined') {
+            type = 'block';
+        }
+        if (display === 'none') {
+            element.style.display = type;
         } else {
             element.style.display = 'none';
         }
