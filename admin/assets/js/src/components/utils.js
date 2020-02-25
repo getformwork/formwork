@@ -1,29 +1,4 @@
 Formwork.Utils = {
-    debounce: function (callback, delay, leading) {
-        var context, args, result;
-        var timer = null;
-
-        function wrapper() {
-            context = this;
-            args = arguments;
-            if (timer) {
-                clearTimeout(timer);
-            }
-            if (leading && !timer) {
-                result = callback.apply(context, args);
-            }
-            timer = setTimeout(function () {
-                if (!leading) {
-                    result = callback.apply(context, args);
-                }
-                timer = null;
-            }, delay);
-            return result;
-        }
-
-        return wrapper;
-    },
-
     download: function (uri, csrfToken) {
         var form = document.createElement('form');
         var input = document.createElement('input');
@@ -58,6 +33,31 @@ Formwork.Utils = {
 
     validateSlug: function (slug) {
         return slug.toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, '');
+    },
+
+    debounce: function (callback, delay, leading) {
+        var context, args, result;
+        var timer = null;
+
+        function wrapper() {
+            context = this;
+            args = arguments;
+            if (timer) {
+                clearTimeout(timer);
+            }
+            if (leading && !timer) {
+                result = callback.apply(context, args);
+            }
+            timer = setTimeout(function () {
+                if (!leading) {
+                    result = callback.apply(context, args);
+                }
+                timer = null;
+            }, delay);
+            return result;
+        }
+
+        return wrapper;
     },
 
     throttle: function (callback, delay) {
