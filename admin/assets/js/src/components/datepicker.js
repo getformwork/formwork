@@ -321,7 +321,8 @@ Formwork.DatePicker = function (input, options) {
 
     function setCalendarPosition() {
         var inputRect, inputTop, inputLeft,
-            calendarRect, calendarTop, calendarLeft, calendarWidth, calendarHeight;
+            calendarRect, calendarTop, calendarLeft, calendarWidth, calendarHeight,
+            windowWidth, windowHeight;
 
         input = getCurrentInput();
 
@@ -341,12 +342,15 @@ Formwork.DatePicker = function (input, options) {
         calendarWidth = Formwork.Utils.outerWidth(calendar);
         calendarHeight = Formwork.Utils.outerHeight(calendar);
 
-        if (calendarLeft + calendarWidth > window.innerWidth) {
-            calendar.style.left = (window.innerWidth - calendarWidth) + 'px';
+        windowWidth = document.documentElement.clientWidth;
+        windowHeight = document.documentElement.clientHeight;
+
+        if (calendarLeft + calendarWidth > windowWidth) {
+            calendar.style.left = (windowWidth - calendarWidth) + 'px';
         }
 
-        if (calendarTop < window.pageYOffset || window.pageYOffset < calendarTop + calendarHeight - window.innerHeight) {
-            window.scrollTo(window.pageXOffset, calendarTop + calendarHeight - window.innerHeight);
+        if (calendarTop < window.pageYOffset || window.pageYOffset < calendarTop + calendarHeight - windowHeight) {
+            window.scrollTo(window.pageXOffset, calendarTop + calendarHeight - windowHeight);
         }
     }
 };
