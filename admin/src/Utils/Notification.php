@@ -2,15 +2,46 @@
 
 namespace Formwork\Admin\Utils;
 
+use InvalidArgumentException;
+
 class Notification
 {
     /**
-     * Send a notification
+     * Info notification type
      *
-     * @param string $type Notification type ('error', 'info', 'success', 'warning')
+     * @var string
      */
-    public static function send(string $text, string $type = '')
+    public const INFO = 'info';
+
+    /**
+     * Success notification type
+     *
+     * @var string
+     */
+    public const SUCCESS = 'success';
+
+    /**
+     * Warning notification type
+     *
+     * @var string
+     */
+    public const WARNING = 'warning';
+
+    /**
+     * Error notification type
+     *
+     * @var string
+     */
+    public const ERROR = 'error';
+
+    /**
+     * Send a notification
+     */
+    public static function send(string $text, string $type = self::INFO)
     {
+        if (!in_array($type, [self::INFO, self::SUCCESS, self::WARNING, self::ERROR], true)) {
+            throw new InvalidArgumentException('Invalid notification type: ' . $type);
+        }
         Session::set('FORMWORK_NOTIFICATION', ['text' => $text, 'type' => $type]);
     }
 

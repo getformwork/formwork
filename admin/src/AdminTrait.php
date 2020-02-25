@@ -171,10 +171,8 @@ trait AdminTrait
 
     /**
      * Send a notification
-     *
-     * @param string $type Notification type ('error', 'info', 'success', 'warning')
      */
-    protected function notify(string $text, string $type)
+    protected function notify(string $text, string $type = Notification::INFO)
     {
         Notification::send($text, $type);
     }
