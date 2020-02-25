@@ -1,7 +1,7 @@
 Formwork.Dashboard = {
     init: function () {
         var clearCacheCommand = $('[data-command=clear-cache]');
-        var makeBackupCommand = $('[data-command-make-backup]');
+        var makeBackupCommand = $('[data-command=make-backup]');
 
         if (clearCacheCommand) {
             clearCacheCommand.addEventListener('click', function () {
@@ -17,7 +17,7 @@ Formwork.Dashboard = {
         }
 
         if (makeBackupCommand) {
-            $(makeBackupCommand).addEventListener('click', function () {
+            makeBackupCommand.addEventListener('click', function () {
                 var button = this;
                 button.setAttribute('disabled', '');
                 Formwork.Request({
