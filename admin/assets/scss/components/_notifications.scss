@@ -1,8 +1,12 @@
-.notification {
+.notification-container {
     position: fixed;
-    top: $notification-top;
-    right: $notification-right;
+    top: $notification-container-top;
+    right: $notification-container-right;
     z-index: 11;
+}
+
+.notification {
+    position: relative;
     overflow: hidden;
     margin-bottom: $notification-margin-bottom;
     padding: $notification-padding-v $notification-padding-h;

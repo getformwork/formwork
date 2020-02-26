@@ -1,11 +1,12 @@
 {
     "env": {
-        "browser": true,
-        "jquery": true
+        "browser": true
     },
     "extends": "eslint:recommended",
     "globals": {
-        "Formwork": false
+        "Formwork": false,
+        "$": false,
+        "$$": false
     },
     "parserOptions": {
         "ecmaVersion": 5
@@ -15,6 +16,7 @@
         "curly": ["error", "all"],
         "eqeqeq": ["error", "always"],
         "indent": ["error", 4],
+        "keyword-spacing": ["error"],
         "linebreak-style": ["error", "unix"],
         "new-parens": ["error"],
         "no-else-return": ["error"],
@@ -26,12 +28,14 @@
         "object-curly-newline": ["error", {"multiline": true, "minProperties": 2}],
         "object-curly-spacing": ["error"],
         "object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
+        "one-var": ["error", {"initialized": "never", "uninitialized": "always"}],
         "operator-assignment": ["error"],
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "space-before-function-paren": ["error", {"anonymous": "always", "named": "never"}],
         "space-infix-ops": ["error"],
         "space-unary-ops": ["error", {"words": true, "nonwords": false}],
-        "spaced-comment": ["error"]
+        "spaced-comment": ["error"],
+        "vars-on-top": ["error"]
     }
 }

@@ -1,161 +1,230 @@
 Formwork.Pages = {
     init: function () {
-        $('.page-children-toggle').on('click', function (event) {
-            event.stopPropagation();
-            var $this = $(this);
-            $this.closest('li').children('.pages-list').toggle();
-            $this.toggleClass('toggle-expanded toggle-collapsed');
+
+        var commandExpandAllPages = $('[data-command=expand-all-pages]');
+        var commandCollapseAllPages = $('[data-command=collapse-all-pages]');
+        var commandReorderPages = $('[data-command=reorder-pages]');
+
+        var searchInput = $('.page-search');
+
+        var newPageModal = document.getElementById('newPageModal');
+        var slugModal = document.getElementById('slugModal');
+
+        $$('.pages-list').forEach(function (element) {
+            if (element.getAttribute('data-sortable-children') === 'true') {
+                initSortable(element);
+            }
         });
 
-        $('.page-details a').on('click', function (event) {
-            event.stopPropagation();
+        $$('.page-details').forEach(function (element) {
+            var toggle = $('.page-children-toggle', element);
+            if (toggle) {
+                element.addEventListener('click', function () {
+                    toggle.click();
+                });
+            }
         });
 
-        $('[data-command=expand-all-pages]').on('click', function () {
-            $(this).trigger('blur');
-            $('.pages-children').show();
-            $('.page-children-toggle', '.pages-list').removeClass('toggle-collapsed').addClass('toggle-expanded');
-        });
-
-        $('[data-command=collapse-all-pages]').on('click', function () {
-            $(this).trigger('blur');
-            $('.pages-children').hide();
-            $('.page-children-toggle', '.pages-list').removeClass('toggle-expanded').addClass('toggle-collapsed');
-        });
-
-        $('[data-command=reorder-pages]').on('click', function () {
-            $(this).trigger('blur').toggleClass('active');
-            $('.pages-list .sort-handle').toggle();
-        });
-
-        $('.page-search').on('focus', function () {
-            $('.pages-children').each(function () {
-                var $this = $(this);
-                $this.data('visible', $this.is(':visible'));
+        $$('.page-details a').forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                event.stopPropagation();
             });
         });
 
-        $('.page-search').on('keyup', Formwork.Utils.debounce(function () {
-            var value = $(this).val();
-            if (value.length === 0) {
-                $('.pages-children').each(function () {
-                    var $this = $(this);
-                    $this.toggle($this.data('visible'));
+        $$('.page-children-toggle').forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                togglePagesList(this);
+                event.stopPropagation();
+            });
+        });
+
+        if (commandExpandAllPages) {
+            commandExpandAllPages.addEventListener('click', function () {
+                expandAllPages();
+                this.blur();
+            });
+        }
+
+        if (commandCollapseAllPages) {
+            commandCollapseAllPages.addEventListener('click', function () {
+                collapseAllPages();
+                this.blur();
+            });
+        }
+
+        if (commandReorderPages) {
+            commandReorderPages.addEventListener('click', function () {
+                this.classList.toggle('active');
+                $$('.pages-list .sort-handle').forEach(function (element) {
+                    Formwork.Utils.toggleElement(element, 'inline');
                 });
-                $('.page-details').css('padding-left', '');
-                $('.pages-item, .page-children-toggle').show();
-            } else {
-                var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
-                $('.pages-children').show();
-                $('.page-children-toggle').hide();
-                $('.page-details').css('padding-left', '0');
-                $('.page-title a').each(function () {
-                    var $this = $(this);
-                    var $pagesItem = $this.closest('.pages-item');
-                    var matched = !!$this.text().match(regexp);
-                    $pagesItem.toggle(matched);
+                this.blur();
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('focus', function () {
+                $$('.pages-children').forEach(function (element) {
+                    element.setAttribute('data-display', getComputedStyle(element).display);
                 });
-            }
-        }, 100));
+            });
 
-        $('.page-details').on('click', function () {
-            var $toggle = $('.page-children-toggle', this).first();
-            if ($toggle.length) {
-                $toggle.trigger('click');
-            }
-        });
+            searchInput.addEventListener('keyup', Formwork.Utils.debounce(handleSearch, 100));
 
-        $('#page-title', '#newPageModal').on('keyup', function () {
-            $('#page-slug', '#newPageModal').val(Formwork.Utils.slug($(this).val()));
-        });
+            document.addEventListener('keydown', function (event) {
+                if (event.ctrlKey || event.metaKey) {
+                    // ctrl/cmd + F
+                    if (event.which === 70 && document.activeElement !== searchInput) {
+                        searchInput.focus();
+                        event.preventDefault();
+                    }
+                }
+            });
+        }
 
-        $('#page-slug', '#newPageModal, #slugModal').on('keyup', function () {
-            var $this = $(this);
-            $this.val($this.val().toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, ''));
-        }).on('blur', function () {
-            if ($(this).val() === '') {
-                $('#page-title', '#newPageModal').trigger('keyup');
-            }
-        });
+        if (newPageModal) {
+            $('#page-title', newPageModal).addEventListener('keyup', function () {
+                $('#page-slug', newPageModal).value = Formwork.Utils.slug(this.value);
+            });
 
-        $('#page-parent', '#newPageModal').on('change', function () {
-            var $option = $('option:selected', this);
-            var $pageTemplate = $('#page-template', '#newPageModal');
-            var allowedTemplates = $option.attr('data-allowed-templates');
-            if (allowedTemplates) {
-                allowedTemplates = allowedTemplates.split(', ');
-                $pageTemplate
-                    .data('previousValue', $pageTemplate.val())
-                    .val(allowedTemplates[0])
-                    .find('option').each(function () {
-                        var $this = $(this);
-                        if (allowedTemplates.indexOf($this.val()) === -1) {
-                            $this.attr('disabled', true);
+            $('#page-slug', newPageModal).addEventListener('keyup', handleSlugChange);
+            $('#page-slug', newPageModal).addEventListener('blur', handleSlugChange);
+
+            $('#page-parent', newPageModal).addEventListener('change', function () {
+                var option = this.options[this.selectedIndex];
+                var pageTemplate = $('#page-template', newPageModal);
+                var allowedTemplates = option.getAttribute('data-allowed-templates');
+                var i = 0;
+
+                if (allowedTemplates !== null) {
+                    allowedTemplates = allowedTemplates.split(', ');
+                    pageTemplate.setAttribute('data-previous-value', pageTemplate.value);
+                    pageTemplate.value = allowedTemplates[0];
+                    for (i = 0; i < pageTemplate.options.length; i++) {
+                        if (allowedTemplates.indexOf(pageTemplate.options[i].value) === -1) {
+                            pageTemplate.options[i].setAttribute('disabled', '');
                         }
-                    });
-            } else if ($('option[disabled]', $pageTemplate).length) {
-                $pageTemplate
-                    .val($pageTemplate.data('previousValue'))
-                    .removeData('previousValue')
-                    .find('option').removeAttr('disabled');
-            }
-        });
-
-        $('[data-command=change-slug]').on('click', function () {
-            Formwork.Modals.show('slugModal', null, function ($modal) {
-                var slug = $('#slug').val();
-                $('#page-slug', $modal).val(slug).attr('placeholder', slug).trigger('focus');
+                    }
+                } else {
+                    pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
+                    pageTemplate.removeAttribute('data-previous-value');
+                    for (i = 0; i < pageTemplate.options.length; i++) {
+                        pageTemplate.options[i].disabled = false;
+                    }
+                }
             });
-        });
+        }
 
-        $('#page-slug', '#slugModal').on('keydown', function (event) {
-            if (event.which === 13) {
-                $('[data-command=continue]', '#slugModal').trigger('click');
-            }
-        });
+        if (slugModal) {
+            $('[data-command=change-slug]').addEventListener('click', function () {
+                Formwork.Modals.show('slugModal', null, function (modal) {
+                    var slug = document.getElementById('slug').value;
+                    var slugInput = $('#page-slug', modal);
+                    slugInput.value = slug;
+                    slugInput.setAttribute('placeholder', slug);
+                    slugInput.focus();
+                });
+            });
 
-        $('[data-command=generate-slug]', '#slugModal').on('click', function () {
-            var slug = Formwork.Utils.slug($('#title').val());
-            $('#page-slug', '#slugModal').val(slug).trigger('focus');
-        });
+            $('#page-slug', slugModal).addEventListener('keydown', function (event) {
+                // enter
+                if (event.which === 13) {
+                    $('[data-command=continue]', slugModal).click();
+                }
+            });
 
-        $('[data-command=continue]', '#slugModal').on('click', function () {
-            var slug = $('#page-slug').val().replace(/^-+|-+$/, '');
-            if (slug.length > 0) {
-                var route = $('.page-route span').text();
-                $('#page-slug, #slug').val(slug);
-                $('.page-route span').text(route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/'));
-            }
-            Formwork.Modals.hide('slugModal');
-        });
+            $('#page-slug', slugModal).addEventListener('keyup', handleSlugChange);
+            $('#page-slug', slugModal).addEventListener('blur', handleSlugChange);
 
-        $('.pages-list').each(function () {
-            var $this = $(this);
+            $('[data-command=generate-slug]', slugModal).addEventListener('click', function () {
+                var slug = Formwork.Utils.slug(document.getElementById('title').value);
+                $('#page-slug', slugModal).value = slug;
+                $('#page-slug', slugModal).focus();
+            });
 
-            if ($this.attr('data-sortable-children') === 'false') {
-                return;
-            }
+            $('[data-command=continue]', slugModal).addEventListener('click', function () {
+                var slug = $('#page-slug', slugModal).value.replace(/^-+|-+$/, '');
+                var route;
+                if (slug.length > 0) {
+                    route = $('.page-route span').innerHTML;
+                    $$('#page-slug, #slug').forEach(function (element) {
+                        element.value = slug;
+                    });
+                    $('#page-slug', slugModal).value = slug;
+                    document.getElementById('slug').value = slug;
+                    $('.page-route span').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/');
+                }
+                Formwork.Modals.hide('slugModal');
+            });
+        }
+
+        function expandAllPages() {
+            $$('.pages-children').forEach(function (element) {
+                element.style.display = 'block';
+            });
+            $$('.pages-list .page-children-toggle').forEach(function (element) {
+                element.classList.remove('toggle-collapsed');
+                element.classList.add('toggle-expanded');
+            });
+        }
+
+        function collapseAllPages() {
+            $$('.pages-children').forEach(function (element) {
+                element.style.display = 'none';
+            });
+            $$('.pages-list .page-children-toggle').forEach(function (element) {
+                element.classList.remove('toggle-expanded');
+                element.classList.add('toggle-collapsed');
+            });
+        }
+
+        function togglePagesList(list) {
+            $$('.pages-list', list.closest('li')).forEach(function (element) {
+                Formwork.Utils.toggleElement(element);
+            });
+            list.classList.toggle('toggle-expanded');
+            list.classList.toggle('toggle-collapsed');
+        }
+
+        function initSortable(element) {
+            var originalOrder = [];
 
             /* global Sortable:false */
-            var sortable = Sortable.create(this, {
+            var sortable = Sortable.create(element, {
                 handle: '.sort-handle',
                 filter: '[data-sortable=false]',
                 forceFallback: true,
+
                 onClone: function (event) {
-                    $(event.item).closest('.pages-list').addClass('dragging');
-                    $('.pages-children', event.item).hide();
-                    $('.page-children-toggle').removeClass('toggle-expanded')
-                        .addClass('toggle-collapsed').css('opacity', '0.5');
+                    event.item.closest('.pages-list').classList.add('dragging');
+
+                    $$('.pages-children', event.item).forEach(function (element) {
+                        element.style.display = 'none';
+                    });
+                    $$('.page-children-toggle').forEach(function (element) {
+                        element.classList.remove('toggle-expanded');
+                        element.classList.add('toggle-collapsed');
+                        element.style.opacity = '0.5';
+                    });
                 },
+
                 onMove: function (event) {
-                    if ($(event.related).attr('data-sortable') === 'false') {
+                    if (event.related.getAttribute('data-sortable') === 'false') {
                         return false;
                     }
-                    $('.pages-children', event.related).hide();
+                    $$('.pages-children', event.related).forEach(function (element) {
+                        element.style.display = 'none';
+                    });
                 },
+
                 onEnd: function (event) {
-                    $(event.item).closest('.pages-list').removeClass('dragging');
-                    $('.page-children-toggle').css('opacity', '');
+                    var data, notification;
+
+                    event.item.closest('.pages-list').classList.remove('dragging');
+
+                    $$('.page-children-toggle').forEach(function (element) {
+                        element.style.opacity = '';
+                    });
 
                     if (event.newIndex === event.oldIndex) {
                         return;
@@ -163,42 +232,69 @@ Formwork.Pages = {
 
                     sortable.option('disabled', true);
 
-                    var data = {
-                        'csrf-token': $('meta[name=csrf-token]').attr('content'),
-                        parent: $(this.el).attr('data-parent'),
+                    data = {
+                        'csrf-token': $('meta[name=csrf-token]').getAttribute('content'),
+                        parent: element.getAttribute('data-parent'),
                         from: event.oldIndex,
                         to: event.newIndex
                     };
 
-                    new Formwork.Request({
+                    Formwork.Request({
                         method: 'POST',
                         url: Formwork.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {
-                            Formwork.Notification(response.message, response.status, 5000);
+                            notification = new Formwork.Notification(response.message, response.status, 5000);
+                            notification.show();
                         }
                         if (!response.status || response.status === 'error') {
-                            sortable.sort($(event.from).data('originalOrder'));
+                            sortable.sort(originalOrder);
                         }
                         sortable.option('disabled', false);
-                        $(event.from).data('originalOrder', sortable.toArray());
+                        originalOrder = sortable.toArray();
                     });
 
                 }
             });
 
-            $this.data('originalOrder', sortable.toArray());
-        });
+            originalOrder = sortable.toArray();
+        }
 
-        $(document).on('keydown', function (event) {
-            if (event.ctrlKey || event.metaKey) {
-                // ctrl/cmd + F
-                if (event.which === 70 && $('.page-search:not(:focus)').length) {
-                    $('.page-search').trigger('focus');
-                    return false;
-                }
+        function handleSearch() {
+            var regexp;
+            if (this.value.length === 0) {
+                $$('.pages-children').forEach(function (element) {
+                    element.style.display = element.getAttribute('data-display');
+                });
+                $$('.page-details').forEach(function (element) {
+                    element.style.paddingLeft = '';
+                });
+                $$('.pages-item, .page-children-toggle').forEach(function (element) {
+                    element.style.display = '';
+                });
+            } else {
+                regexp = new RegExp(Formwork.Utils.escapeRegExp(this.value), 'i');
+                $$('.pages-children').forEach(function (element) {
+                    element.style.display = 'block';
+                });
+                $$('.page-children-toggle').forEach(function (element) {
+                    element.style.display = 'none';
+                });
+                $$('.page-details').forEach(function (element) {
+                    element.style.paddingLeft = '0';
+                });
+                $$('.page-title a').forEach(function (element) {
+                    var pagesItem = element.closest('.pages-item');
+                    var text = element.textContent;
+                    var matched = !!text.match(regexp);
+                    pagesItem.style.display = matched ? 'block' : 'none';
+                });
             }
-        });
+        }
+
+        function handleSlugChange() {
+            this.value = Formwork.Utils.validateSlug(this.value);
+        }
     }
 };

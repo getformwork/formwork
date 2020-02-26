@@ -145,6 +145,3 @@
         </form>
     </div>
 </div>
-<script>
-$('.date-input').datePicker(<?= json_encode($datePickerOptions) ?>);
-</script>

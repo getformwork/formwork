@@ -1,52 +1,56 @@
 Formwork.Form = function (form) {
-    var $window = $(window);
-    var $form = $(form);
+    var originalData = Formwork.Utils.serializeForm(form);
 
-    $form.data('originalData', $form.serialize());
+    form.addEventListener('submit', function () {
+        window.removeEventListener('beforeunload', handleBeforeunload);
+    });
 
-    $window.on('beforeunload', function () {
+    window.addEventListener('beforeunload', handleBeforeunload);
+
+    $$('input[type=file][data-auto-upload]', form).forEach(function (element) {
+        element.addEventListener('change', function () {
+            if (!hasChanged(false)) {
+                form.submit();
+            }
+        });
+    });
+
+    $('#changesModal [data-command=continue]').addEventListener('click', function () {
+        window.removeEventListener('beforeunload', handleBeforeunload);
+        window.location.href = this.getAttribute('data-href');
+    });
+
+    $$('a[href]:not([href^="#"]):not([target="_blank"])').forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            if (hasChanged()) {
+                event.preventDefault();
+                Formwork.Modals.show('changesModal', null, function (modal) {
+                    $('[data-command=continue]', modal).setAttribute('data-href', element.href);
+                });
+            }
+        });
+    });
+
+    function handleBeforeunload(event) {
         if (hasChanged()) {
-            return true;
-        }
-    });
-
-    $form.on('submit', function () {
-        $window.off('beforeunload');
-    });
-
-    $('input:file[data-auto-upload]', $form).on('change', function () {
-        if (!hasChanged(false)) {
-            $form.trigger('submit');
-        }
-    });
-
-    $('[data-command=continue]', '#changesModal').on('click', function () {
-        $window.off('beforeunload');
-        window.location.href = $(this).attr('data-href');
-    });
-
-    $('a[href]:not([href^="#"]):not([target="_blank"])').on('click', function (event) {
-        if (hasChanged()) {
-            var link = this;
             event.preventDefault();
-            Formwork.Modals.show('changesModal', null, function ($modal) {
-                $('[data-command=continue]', $modal).attr('data-href', link.href);
-            });
+            event.returnValue = '';
         }
-    });
+    }
 
     function hasChanged(checkFileInputs) {
+        var fileInputs, i;
+        fileInputs = $$('input[file]', form);
         if (typeof checkFileInputs === 'undefined') {
             checkFileInputs = true;
         }
-        var $fileInputs = $(':file', $form);
-        if (checkFileInputs === true && $fileInputs.length > 0) {
-            for (var i = 0; i < $fileInputs.length; i++) {
-                if ($fileInputs[i].files.length > 0) {
+        if (checkFileInputs === true && fileInputs.length > 0) {
+            for (i = 0; i < fileInputs.length; i++) {
+                if (fileInputs[i].files.length > 0) {
                     return true;
                 }
             }
         }
-        return $form.serialize() !== $form.data('originalData');
+        return Formwork.Utils.serializeForm(form) !== originalData;
     }
 };

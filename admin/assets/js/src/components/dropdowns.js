@@ -1,16 +1,19 @@
 Formwork.Dropdowns = {
     init: function () {
-        if ($('.dropdown').length > 0) {
-            $(document).on('click', function (event) {
-                var $button = $(event.target).closest('.dropdown-button');
-                if ($button.length > 0) {
-                    var $dropdown = $('#' + $button.attr('data-dropdown'), '.dropdown');
-                    var isVisible = $dropdown.is(':visible');
+        if ($('.dropdown')) {
+            document.addEventListener('click', function (event) {
+                var button = event.target.closest('.dropdown-button');
+                var dropdown, isVisible;
+                if (button) {
+                    dropdown = document.getElementById(button.getAttribute('data-dropdown'));
+                    isVisible = getComputedStyle(dropdown).display !== 'none';
                     event.preventDefault();
                 }
-                $('.dropdown-menu').hide();
-                if ($dropdown !== undefined && !isVisible) {
-                    $dropdown.show();
+                $$('.dropdown-menu').forEach(function (element) {
+                    element.style.display = '';
+                });
+                if (dropdown && !isVisible) {
+                    dropdown.style.display = 'block';
                 }
             });
         }

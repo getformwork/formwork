@@ -1,32 +1,40 @@
 Formwork.Dashboard = {
     init: function () {
-        $('[data-command=clear-cache]').on('click', function () {
-            new Formwork.Request({
-                method: 'POST',
-                url: Formwork.baseUri + 'cache/clear/',
-                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
-            }, function (response) {
-                Formwork.Notification(response.message, response.status, 5000);
-            });
-        });
+        var clearCacheCommand = $('[data-command=clear-cache]');
+        var makeBackupCommand = $('[data-command=make-backup]');
 
-        $('[data-command=make-backup]').on('click', function () {
-            var $button = $(this);
-            $button.attr('disabled', true);
-            new Formwork.Request({
-                method: 'POST',
-                url: Formwork.baseUri + 'backup/make/',
-                data: {'csrf-token': $('meta[name=csrf-token]').attr('content')}
-            }, function (response) {
-                Formwork.Notification(response.message, response.status, 5000);
-                setTimeout(function () {
-                    if (response.status === 'success') {
-                        var csrfToken = $('meta[name=csrf-token]').attr('content');
-                        Formwork.Utils.download(response.data.uri, csrfToken);
-                    }
-                    $button.removeAttr('disabled');
-                }, 1000);
+        if (clearCacheCommand) {
+            clearCacheCommand.addEventListener('click', function () {
+                Formwork.Request({
+                    method: 'POST',
+                    url: Formwork.baseUri + 'cache/clear/',
+                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
+                }, function (response) {
+                    var notification = new Formwork.Notification(response.message, response.status, 5000);
+                    notification.show();
+                });
             });
-        });
+        }
+
+        if (makeBackupCommand) {
+            makeBackupCommand.addEventListener('click', function () {
+                var button = this;
+                button.setAttribute('disabled', '');
+                Formwork.Request({
+                    method: 'POST',
+                    url: Formwork.baseUri + 'backup/make/',
+                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
+                }, function (response) {
+                    var notification = new Formwork.Notification(response.message, response.status, 5000);
+                    notification.show();
+                    setTimeout(function () {
+                        if (response.status === 'success') {
+                            Formwork.Utils.triggerDownload(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
+                        }
+                        button.removeAttribute('disabled');
+                    }, 1000);
+                });
+            });
+        }
     }
 };

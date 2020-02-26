@@ -191,17 +191,7 @@ class Pages extends AbstractController
                 'templates'          => $this->site()->templates(),
                 'parents'            => $this->site()->descendants()->sort('path'),
                 'currentLanguage'    => $params->get('language', $page->language()),
-                'availableLanguages' => $this->availableSiteLanguages(),
-                'datePickerOptions'  => [
-                    'dayLabels'   => $this->label('date.weekdays.short'),
-                    'monthLabels' => $this->label('date.months.long'),
-                    'weekStarts'  => $this->option('date.week_starts'),
-                    'todayLabel'  => $this->label('date.today'),
-                    'format'      => strtr(
-                        $this->option('date.format'),
-                        ['Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a']
-                    )
-                ]
+                'availableLanguages' => $this->availableSiteLanguages()
             ], true)
         ]);
     }

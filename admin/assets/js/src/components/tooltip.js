@@ -9,79 +9,79 @@ Formwork.Tooltip = function (text, options) {
         delay: 500
     };
 
-    var $referenceElement = $(options.referenceElement);
-    var $tooltip;
-    var timer;
+    var referenceElement = options.referenceElement;
+    var tooltip, timer;
 
-    options = $.extend({}, defaults, options);
+    options = Formwork.Utils.extendObject({}, defaults, options);
 
-    $referenceElement.on('mouseout', _remove);
-
-    // Remove tooltip when clicking on buttons
-    if ($referenceElement.is('button, .button')) {
-        $referenceElement.on('click', _remove);
+    // IE 10-11 support classList only on HTMLElement
+    if (referenceElement instanceof HTMLElement) {
+        // Remove tooltip when clicking on buttons
+        if (referenceElement.tagName.toLowerCase() === 'button' || referenceElement.classList.contains('button')) {
+            referenceElement.addEventListener('click', remove);
+        }
     }
 
-    function _tooltipPosition($tooltip) {
-        var offset = $referenceElement.offset();
+    referenceElement.addEventListener('mouseout', remove);
 
-        if (offset.top === 0 && offset.left === 0) {
-            var rect = $referenceElement[0].getBoundingClientRect();
-            offset.top = rect.top + window.pageYOffset;
-            offset.left = rect.left + window.pageXOffset;
+    function show() {
+        timer = setTimeout(function () {
+            var position;
+            tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.setAttribute('role', 'tooltip');
+            tooltip.style.display = 'block';
+            tooltip.innerHTML = text;
+
+            options.container.appendChild(tooltip);
+
+            position = getTooltipPosition(tooltip);
+            tooltip.style.top = position.top + 'px';
+            tooltip.style.left = position.left + 'px';
+        }, options.delay);
+    }
+
+    function remove() {
+        clearTimeout(timer);
+        if (tooltip !== undefined && options.container.contains(tooltip)) {
+            options.container.removeChild(tooltip);
         }
+    }
 
-        var top = offset.top;
-        var left = offset.left;
+    function getTooltipPosition(tooltip) {
+        var rect = referenceElement.getBoundingClientRect();
+        var top = rect.top + window.pageYOffset;
+        var left = rect.left + window.pageXOffset;
 
-        var hw = ($referenceElement.outerWidth() - $tooltip.outerWidth()) / 2;
-        var hh = ($referenceElement.outerHeight() - $tooltip.outerHeight()) / 2;
+        var hw = (rect.width - tooltip.offsetWidth) / 2;
+        var hh = (rect.height - tooltip.offsetHeight) / 2;
+
         switch (options.position) {
         case 'top':
             return {
-                top: Math.round(top - $tooltip.outerHeight() + options.offset.y),
+                top: Math.round(top - tooltip.offsetHeight + options.offset.y),
                 left: Math.round(left + hw + options.offset.x)
             };
         case 'right':
             return {
                 top: Math.round(top + hh + options.offset.y),
-                left: Math.round(left + $referenceElement.outerWidth() + options.offset.x)
+                left: Math.round(left + referenceElement.offsetWidth + options.offset.x)
             };
         case 'bottom':
             return {
-                top: Math.round(top + $referenceElement.outerHeight() + options.offset.y),
+                top: Math.round(top + referenceElement.offsetHeight + options.offset.y),
                 left: Math.round(left + hw + options.offset.x)
             };
         case 'left':
             return {
                 top: Math.round(top + hh + options.offset.y),
-                left: Math.round(left - $tooltip.outerWidth() + options.offset.x)
+                left: Math.round(left - tooltip.offsetWidth + options.offset.x)
             };
         }
     }
 
-    function _show() {
-        timer = setTimeout(function () {
-            $tooltip = $('<div class="tooltip" role="tooltip">')
-                .appendTo(options.container);
-
-            $tooltip.text(text)
-                .css(_tooltipPosition($tooltip))
-                .fadeIn(200);
-        }, options.delay);
-    }
-
-    function _remove() {
-        clearTimeout(timer);
-        if ($tooltip !== undefined) {
-            $tooltip.fadeOut(100, function () {
-                $tooltip.remove();
-            });
-        }
-    }
-
     return {
-        show: _show,
-        remove: _remove
+        show: show,
+        remove: remove
     };
 };

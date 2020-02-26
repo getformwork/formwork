@@ -1,34 +1,39 @@
 Formwork.Modals = {
     init: function () {
-        $('[data-modal]').on('click', function () {
-            var $this = $(this);
-            var modal = $this.attr('data-modal');
-            var action = $this.attr('data-modal-action');
-            if (action) {
-                Formwork.Modals.show(modal, action);
-            } else {
-                Formwork.Modals.show(modal);
-            }
-        });
-
-        $('.modal [data-dismiss]').on('click', function () {
-            var $this = $(this);
-            if ($this.is('[data-validate]')) {
-                var valid = Formwork.Modals.validate($this.attr('data-dismiss'));
-                if (!valid) {
-                    return;
+        $$('[data-modal]').forEach(function (element) {
+            element.addEventListener('click', function () {
+                var modal = this.getAttribute('data-modal');
+                var action = this.getAttribute('data-modal-action');
+                if (action) {
+                    Formwork.Modals.show(modal, action);
+                } else {
+                    Formwork.Modals.show(modal);
                 }
-            }
-            Formwork.Modals.hide($this.attr('data-dismiss'));
+            });
         });
 
-        $('.modal').on('click', function (event) {
-            if (event.target === this) {
-                Formwork.Modals.hide();
-            }
+        $$('.modal [data-dismiss]').forEach(function (element) {
+            element.addEventListener('click', function () {
+                var valid;
+                if (this.hasAttribute('data-validate')) {
+                    valid = Formwork.Modals.validate(this.getAttribute('data-dismiss'));
+                    if (!valid) {
+                        return;
+                    }
+                }
+                Formwork.Modals.hide(this.getAttribute('data-dismiss'));
+            });
         });
 
-        $(document).on('keyup', function (event) {
+        $$('.modal').forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                if (event.target === this) {
+                    Formwork.Modals.hide();
+                }
+            });
+        });
+
+        document.addEventListener('keyup', function (event) {
             // ESC key
             if (event.which === 27) {
                 Formwork.Modals.hide();
@@ -37,46 +42,61 @@ Formwork.Modals = {
     },
 
     show: function (id, action, callback) {
-        var $modal = $('#' + id);
-        if (!$modal.length) {
+        var modal = document.getElementById(id);
+        if (!modal) {
             return;
         }
-        $modal.addClass('show');
-        if (action !== null) {
-            $('form', $modal).attr('action', action);
+        modal.classList.add('show');
+        if (action) {
+            $('form', modal).setAttribute('action', action);
         }
-        $('[autofocus]', $modal).first().trigger('focus'); // Firefox bug
+        if ($('[autofocus]', modal)) {
+            Formwork.Utils.triggerEvent($('[autofocus]', modal), 'focus'); // Firefox bug
+        }
         if (typeof callback === 'function') {
-            callback($modal);
+            callback(modal);
         }
-        $('.tooltip').remove();
+        $$('.tooltip').forEach(function (element) {
+            element.parentNode.removeChild(element);
+        });
         this.createBackdrop();
     },
 
     hide: function (id) {
-        var $modal = id === undefined ? $('.modal') : $('#' + id);
-        $modal.removeClass('show');
+        if (typeof id !== 'undefined') {
+            document.getElementById(id).classList.remove('show');
+        } else {
+            $$('.modal').forEach(function (element) {
+                element.classList.remove('show');
+            });
+        }
         this.removeBackdrop();
     },
 
     createBackdrop: function () {
-        if (!$('.modal-backdrop').length) {
-            $('<div>', {class: 'modal-backdrop'}).appendTo('body');
+        var backdrop;
+        if (!$('.modal-backdrop')) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop';
+            document.body.appendChild(backdrop);
         }
     },
 
     removeBackdrop: function () {
-        $('.modal-backdrop').remove();
+        var backdrop = $('.modal-backdrop');
+        if (backdrop) {
+            backdrop.parentNode.removeChild(backdrop);
+        }
     },
 
     validate: function (id) {
         var valid = false;
-        var $modal = $('#' + id);
-        $('[required]', $modal).each(function () {
-            var $this = $(this);
-            if ($this.val() === '') {
-                $this.addClass('input-invalid').trigger('focus');
-                $('.modal-error', $modal).show();
+        var modal = document.getElementById(id);
+        $$('[required]', id).forEach(function (element) {
+            if (element.value === '') {
+                element.classList('input-invalid');
+                Formwork.Utils.triggerEvent(element, 'focus');
+                $('.modal-error', modal).style.display = 'block';
                 valid = false;
                 return false;
             }

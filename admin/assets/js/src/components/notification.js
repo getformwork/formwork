@@ -1,48 +1,64 @@
-Formwork.Notification = function (text, type, interval) {
-    var $notification = $('<div>', {class: 'notification'}).text(text);
+Formwork.Notification = function (text, type, interval, options) {
+    var defaults = {
+        newestOnTop: true,
+        fadeOutDelay: 300,
+        mouseleaveDelay: 1000
+    };
 
-    if ($('.notification').length > 0) {
-        var $last = $('.notification:not(.fadeout)').last();
-        var top = $last.offset().top + $last.outerHeight(true) - $(window).scrollTop();
-        $notification.css('top', top);
-    }
+    var container = $('.notification-container');
 
-    if (type) {
-        $notification.addClass('notification-' + type);
-    }
+    var notification, timer;
 
-    $notification.appendTo('body');
+    options = Formwork.Utils.extendObject({}, defaults, options);
 
-    var timer = setTimeout(remove, interval);
+    function show() {
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
 
-    $notification.on('click', remove);
+        notification = document.createElement('div');
+        notification.className = 'notification notification-' + type;
+        notification.innerHTML = text;
 
-    $notification.on('mouseenter', function () {
-        clearTimeout(timer);
-    });
+        if (options.newestOnTop && container.childNodes.length > 0) {
+            container.insertBefore(notification, container.childNodes[0]);
+        } else {
+            container.appendChild(notification);
+        }
 
-    $notification.on('mouseleave', function () {
-        timer = setTimeout(remove, 1000);
-    });
+        timer = setTimeout(remove, interval);
 
-    function remove() {
-        var found = false;
-        var offset = $notification.outerHeight(true);
+        notification.addEventListener('click', remove);
 
-        $('.notification').each(function () {
-            var $this = $(this);
-            if ($this.is($notification)) {
-                found = true;
-                $this.addClass('fadeout');
-            } else if (found) {
-                $this.css('top', '-=' + offset);
-            }
+        notification.addEventListener('mouseenter', function () {
+            clearTimeout(timer);
         });
 
-        setTimeout(function () {
-            $notification.remove();
-        }, 400);
-
+        notification.addEventListener('mouseleave', function () {
+            timer = setTimeout(remove, options.mouseleaveDelay);
+        });
     }
 
+    function remove() {
+        notification.classList.add('fadeout');
+
+        setTimeout(function () {
+            if (notification.parentNode) {
+                container.removeChild(notification);
+            }
+            if (container.childNodes.length < 1) {
+                if (container.parentNode) {
+                    document.body.removeChild(container);
+                }
+                container = null;
+            }
+        }, options.fadeOutDelay);
+    }
+
+    return {
+        show: show,
+        remove: remove
+    };
 };

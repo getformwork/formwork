@@ -1,6 +1,4 @@
-Formwork.Editor = function (id) {
-    var textarea = document.getElementById(id);
-
+Formwork.Editor = function (textarea) {
     /* global CodeMirror:false */
     var editor = CodeMirror.fromTextArea(textarea, {
         mode: 'markdown',
@@ -11,21 +9,21 @@ Formwork.Editor = function (id) {
         extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'}
     });
 
-    var $toolbar = '.editor-toolbar[data-for=' + id + ']';
+    var toolbar = $('.editor-toolbar[data-for=' + textarea.id + ']');
 
-    $('[data-command=bold]', $toolbar).on('click', function () {
+    $('[data-command=bold]', toolbar).addEventListener('click', function () {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', $toolbar).on('click', function () {
+    $('[data-command=italic]', toolbar).addEventListener('click', function () {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', $toolbar).on('click', function () {
+    $('[data-command=ul]', toolbar).addEventListener('click', function () {
         insertAtCursor(prependSequence() + '- ', '');
     });
 
-    $('[data-command=ol]', $toolbar).on('click', function () {
+    $('[data-command=ol]', toolbar).addEventListener('click', function () {
         var num = /^\d+\./.exec(lastLine(editor.getValue()));
         if (num) {
             insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
@@ -34,11 +32,11 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $('[data-command=quote]', $toolbar).on('click', function () {
+    $('[data-command=quote]', toolbar).addEventListener('click', function () {
         insertAtCursor(prependSequence() + '> ', '');
     });
 
-    $('[data-command=link]', $toolbar).on('click', function () {
+    $('[data-command=link]', toolbar).addEventListener('click', function () {
         var selection = editor.getSelection();
         if (/^(https?:\/\/|mailto:)/i.test(selection)) {
             insertAtCursor('[', '](' + selection + ')', true);
@@ -49,34 +47,41 @@ Formwork.Editor = function (id) {
         }
     });
 
-    $('[data-command=image]', $toolbar).on('click', function () {
-        Formwork.Modals.show('imagesModal', null, function ($modal) {
-            $('.image-picker-thumbnail.selected', $modal).removeClass('selected');
-            $('.image-picker-confirm', $modal).data('target', function (filename) {
+    $('[data-command=image]', toolbar).addEventListener('click', function () {
+        Formwork.Modals.show('imagesModal', null, function (modal) {
+            var selected = $('.image-picker-thumbnail.selected', modal);
+            if (selected) {
+                selected.classList.remove('selected');
+            }
+            function confirmImage() {
+                var filename = $('.image-picker-thumbnail.selected', $('#imagesModal')).getAttribute('data-filename');
                 if (filename !== undefined) {
                     insertAtCursor(prependSequence() + '![', '](' + filename + ')');
                 } else {
                     insertAtCursor(prependSequence() + '![](', ')');
                 }
-            });
+                this.removeEventListener('click', confirmImage);
+            }
+            $('.image-picker-confirm', modal).addEventListener('click', confirmImage);
         });
     });
 
-    $('[data-command=summary]', $toolbar).on('click', function () {
+    $('[data-command=summary]', toolbar).addEventListener('click', function () {
+        var prevChar, prepend;
         if (!hasSummarySequence()) {
-            var prevChar = prevCursorChar();
-            var prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
+            prevChar = prevCursorChar();
+            prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
             insertAtCursor(prepend + '\n===\n\n', '');
-            $(this).attr('disabled', true);
+            this.setAttribute('disabled', '');
         }
     });
 
-    $('[data-command=undo]', $toolbar).on('click', function () {
+    $('[data-command=undo]', toolbar).addEventListener('click', function () {
         editor.undo();
         editor.focus();
     });
 
-    $('[data-command=redo]', $toolbar).on('click', function () {
+    $('[data-command=redo]', toolbar).addEventListener('click', function () {
         editor.redo();
         editor.focus();
     });
@@ -86,22 +91,33 @@ Formwork.Editor = function (id) {
     editor.on('changes', Formwork.Utils.debounce(function () {
         textarea.value = editor.getValue();
         disableSummaryCommand();
-        $('[data-command=undo]').attr('disabled', editor.historySize().undo < 1);
-        $('[data-command=redo]').attr('disabled', editor.historySize().redo < 1);
+        if (editor.historySize().undo < 1) {
+            $('[data-command=undo]').setAttribute('disabled', '');
+        } else {
+            $('[data-command=undo]').removeAttribute('disabled');
+        }
+        if (editor.historySize().redo < 1) {
+            $('[data-command=redo]').setAttribute('disabled', '');
+        } else {
+            $('[data-command=redo]').removeAttribute('disabled');
+        }
     }, 500));
 
-    $(document).on('keydown', function (event) {
+    document.addEventListener('keydown', function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
             case 66: // ctrl/cmd + B
-                $('[data-command=bold]', $toolbar).trigger('click');
-                return false;
+                $('[data-command=bold]', toolbar).click();
+                event.preventDefault();
+                break;
             case 73: // ctrl/cmd + I
-                $('[data-command=italic]', $toolbar).trigger('click');
-                return false;
+                $('[data-command=italic]', toolbar).click();
+                event.preventDefault();
+                break;
             case 75: // ctrl/cmd + K
-                $('[data-command=link]', $toolbar).trigger('click');
-                return false;
+                $('[data-command=link]', toolbar).click();
+                event.preventDefault();
+                break;
             }
         }
     });
@@ -111,7 +127,11 @@ Formwork.Editor = function (id) {
     }
 
     function disableSummaryCommand() {
-        $('[data-command=summary]', $toolbar).attr('disabled', hasSummarySequence());
+        if (hasSummarySequence()) {
+            $('[data-command=summary]', toolbar).setAttribute('disabled', '');
+        } else {
+            $('[data-command=summary]', toolbar).removeAttribute('disabled');
+        }
     }
 
     function lastLine(text) {
@@ -139,12 +159,13 @@ Formwork.Editor = function (id) {
     }
 
     function insertAtCursor(leftValue, rightValue, dropSelection) {
+        var selection, cursor, lineBreaks;
         if (rightValue === undefined) {
             rightValue = leftValue;
         }
-        var selection = dropSelection === true ? '' : editor.getSelection();
-        var cursor = editor.getCursor();
-        var lineBreaks = leftValue.split('\n').length - 1;
+        selection = dropSelection === true ? '' : editor.getSelection();
+        cursor = editor.getCursor();
+        lineBreaks = leftValue.split('\n').length - 1;
         editor.replaceSelection(leftValue + selection + rightValue);
         editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
         editor.focus();
