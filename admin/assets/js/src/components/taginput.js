@@ -229,7 +229,7 @@ Formwork.TagInput = function (input) {
 
     function validateTag(value) {
         if (tags.indexOf(value) === -1) {
-            if (dropdown !== null) {
+            if (dropdown) {
                 return $('[data-value="' + value + '"]', dropdown) !== null;
             }
             return true;
@@ -263,7 +263,7 @@ Formwork.TagInput = function (input) {
             updatePlaceholder();
         }
         innerInput.value = '';
-        if (dropdown !== null) {
+        if (dropdown) {
             updateDropdown();
         }
     }
@@ -274,7 +274,7 @@ Formwork.TagInput = function (input) {
             tags.splice(index, 1);
             updateTags();
         }
-        if (dropdown !== null) {
+        if (dropdown) {
             updateDropdown();
         }
     }
