@@ -1125,28 +1125,33 @@ Formwork.Modals = {
 
 Formwork.Notification = function (text, type, interval, options) {
     var defaults = {
-        top: 20,
-        right: 20,
+        newestOnTop: true,
         fadeOutDelay: 300,
         mouseleaveDelay: 1000
     };
+
+    var container = $('.notification-container');
 
     var notification, timer;
 
     options = Formwork.Utils.extendObject({}, defaults, options);
 
     function show() {
-        var position;
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+
         notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.classList.add('notification-' + type);
+        notification.className = 'notification notification-' + type;
         notification.innerHTML = text;
 
-        position = getNotificationPosition();
-        notification.style.top = position.top + 'px';
-        notification.style.right = position.right + 'px';
-
-        document.body.appendChild(notification);
+        if (options.newestOnTop && container.childNodes.length > 0) {
+            container.insertBefore(notification, container.childNodes[0]);
+        } else {
+            container.appendChild(notification);
+        }
 
         timer = setTimeout(remove, interval);
 
@@ -1162,44 +1167,19 @@ Formwork.Notification = function (text, type, interval, options) {
     }
 
     function remove() {
-        var found = false;
-        var offset = Formwork.Utils.outerHeight(notification);
-        $$('.notification').forEach(function (element) {
-            if (element === notification) {
-                found = true;
-                element.classList.add('fadeout');
-            } else if (found) {
-                element.style.top = (parseInt(element.style.top) - offset) + 'px';
-            }
-        });
+        notification.classList.add('fadeout');
+
         setTimeout(function () {
-            if (notification && notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+            if (notification.parentNode) {
+                container.removeChild(notification);
+            }
+            if (container.childNodes.length < 1) {
+                if (container.parentNode) {
+                    document.body.removeChild(container);
+                }
+                container = null;
             }
         }, options.fadeOutDelay);
-    }
-
-    function getNotificationPosition() {
-        var top = options.top;
-        var right = options.right;
-        var lastNotification = getLastNotification();
-        var rect;
-        if (lastNotification !== undefined) {
-            rect = lastNotification.getBoundingClientRect();
-            top = rect.top + Formwork.Utils.outerHeight(lastNotification);
-        }
-        return {
-            top: top,
-            right: right
-        };
-    }
-
-    function getLastNotification() {
-        var visible;
-        if ($$('.notification').length > 0) {
-            visible = $$('.notification:not(.fadeout)');
-            return visible[visible.length - 1];
-        }
     }
 
     return {

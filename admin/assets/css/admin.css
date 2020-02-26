@@ -1659,11 +1659,14 @@ span.CodeMirror-selectedtext {
 .modal-text {
   margin-bottom: 2.5rem; }
 
-.notification {
+.notification-container {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 11;
+  z-index: 11; }
+
+.notification {
+  position: relative;
   overflow: hidden;
   margin-bottom: 0.5rem;
   padding: 1.5rem 2.5rem;
