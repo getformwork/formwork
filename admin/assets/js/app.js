@@ -1257,6 +1257,7 @@ Formwork.Pages = {
             });
 
             searchInput.addEventListener('keyup', Formwork.Utils.debounce(handleSearch, 100));
+            searchInput.addEventListener('search', handleSearch);
 
             document.addEventListener('keydown', function (event) {
                 if (event.ctrlKey || event.metaKey) {
@@ -1449,19 +1450,23 @@ Formwork.Pages = {
         }
 
         function handleSearch() {
+            var value = this.value;
             var regexp;
-            if (this.value.length === 0) {
+            if (value.length === 0) {
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = element.getAttribute('data-display');
-                });
-                $$('.page-details').forEach(function (element) {
-                    element.style.paddingLeft = '';
                 });
                 $$('.pages-item, .page-children-toggle').forEach(function (element) {
                     element.style.display = '';
                 });
+                $$('.page-details').forEach(function (element) {
+                    element.style.paddingLeft = '';
+                });
+                $$('.page-title a').forEach(function (element) {
+                    element.innerHTML = element.textContent;
+                });
             } else {
-                regexp = new RegExp(Formwork.Utils.escapeRegExp(this.value), 'i');
+                regexp = new RegExp(Formwork.Utils.makeDiacriticsRegExp(Formwork.Utils.escapeRegExp(value)), 'gi');
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = 'block';
                 });
@@ -1474,8 +1479,12 @@ Formwork.Pages = {
                 $$('.page-title a').forEach(function (element) {
                     var pagesItem = element.closest('.pages-item');
                     var text = element.textContent;
-                    var matched = !!text.match(regexp);
-                    pagesItem.style.display = matched ? 'block' : 'none';
+                    if (text.match(regexp) !== null) {
+                        element.innerHTML = text.replace(regexp, '<mark>$&</mark>');
+                        pagesItem.style.display = '';
+                    } else {
+                        pagesItem.style.display = 'none';
+                    }
                 });
             }
         }
@@ -1834,9 +1843,8 @@ Formwork.TagInput = function (input) {
         dropdown.style.display = 'block';
         $$('.dropdown-item', dropdown).forEach(function (element) {
             var text = element.textContent;
-            var regexp = new RegExp(Formwork.Utils.escapeRegExp(value), 'i');
-            var matched = !!text.match(regexp);
-            if (matched && element.style.display !== 'none') {
+            var regexp = new RegExp(Formwork.Utils.makeDiacriticsRegExp(Formwork.Utils.escapeRegExp(value)), 'i');
+            if (text.match(regexp) !== null && element.style.display !== 'none') {
                 element.style.display = 'block';
                 visibleItems++;
             } else {
@@ -2148,6 +2156,43 @@ Formwork.Updates = {
 Formwork.Utils = {
     escapeRegExp: function (string) {
         return string.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+    },
+
+    makeDiacriticsRegExp: function (string) {
+        var char;
+        var diacritics = {
+            'a': '[aáàăâǎåäãȧąāảȁạ]',
+            'b': '[bḃḅ]',
+            'c': '[cćĉčċç]',
+            'd': '[dďḋḑḍ]',
+            'e': '[eéèĕêěëẽėȩęēẻȅẹ]',
+            'g': '[gǵğĝǧġģḡ]',
+            'h': '[hĥȟḧḣḩḥ]',
+            'i': '[iiíìĭîǐïĩįīỉȉịı]',
+            'j': '[jĵǰ]',
+            'k': '[kḱǩķḳ]',
+            'l': '[lĺľļḷ]',
+            'm': '[mḿṁṃ]',
+            'n': '[nńǹňñṅņṇ]',
+            'o': '[oóòŏôǒöőõȯǿǫōỏȍơọ]',
+            'p': '[pṕṗ]',
+            'r': '[rŕřṙŗȑṛ]',
+            's': '[sśŝšṡşṣș]',
+            't': '[tťẗṫţṭț]',
+            'u': '[uúùŭûǔůüűũųūủȕưụ]',
+            'v': '[vṽṿ]',
+            'w': '[wẃẁŵẘẅẇẉ]',
+            'x': '[xẍẋ]',
+            'y': '[yýỳŷẙÿỹẏȳỷỵ]',
+            'z': '[zźẑžżẓ]'
+        };
+        for (char in diacritics) {
+            if (diacritics.hasOwnProperty(char)) {
+                string = string.split(char).join(diacritics[char]);
+                string = string.split(char.toUpperCase()).join(diacritics[char].toUpperCase());
+            }
+        }
+        return string;
     },
 
     slug: function (string) {

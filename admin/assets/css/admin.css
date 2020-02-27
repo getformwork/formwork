@@ -38,6 +38,9 @@ button {
     padding: 0;
     border: none; }
 
+mark {
+  background-color: #ffd700; }
+
 [hidden] {
   display: none; }
 

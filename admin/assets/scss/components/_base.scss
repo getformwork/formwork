@@ -48,6 +48,10 @@ button {
     }
 }
 
+mark {
+    background-color: $mark-background-color;
+}
+
 [hidden] {
     display: none;
 }

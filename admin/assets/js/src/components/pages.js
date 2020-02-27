@@ -70,6 +70,7 @@ Formwork.Pages = {
             });
 
             searchInput.addEventListener('keyup', Formwork.Utils.debounce(handleSearch, 100));
+            searchInput.addEventListener('search', handleSearch);
 
             document.addEventListener('keydown', function (event) {
                 if (event.ctrlKey || event.metaKey) {
@@ -262,19 +263,23 @@ Formwork.Pages = {
         }
 
         function handleSearch() {
+            var value = this.value;
             var regexp;
-            if (this.value.length === 0) {
+            if (value.length === 0) {
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = element.getAttribute('data-display');
-                });
-                $$('.page-details').forEach(function (element) {
-                    element.style.paddingLeft = '';
                 });
                 $$('.pages-item, .page-children-toggle').forEach(function (element) {
                     element.style.display = '';
                 });
+                $$('.page-details').forEach(function (element) {
+                    element.style.paddingLeft = '';
+                });
+                $$('.page-title a').forEach(function (element) {
+                    element.innerHTML = element.textContent;
+                });
             } else {
-                regexp = new RegExp(Formwork.Utils.escapeRegExp(this.value), 'i');
+                regexp = new RegExp(Formwork.Utils.makeDiacriticsRegExp(Formwork.Utils.escapeRegExp(value)), 'gi');
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = 'block';
                 });
@@ -287,8 +292,12 @@ Formwork.Pages = {
                 $$('.page-title a').forEach(function (element) {
                     var pagesItem = element.closest('.pages-item');
                     var text = element.textContent;
-                    var matched = !!text.match(regexp);
-                    pagesItem.style.display = matched ? 'block' : 'none';
+                    if (text.match(regexp) !== null) {
+                        element.innerHTML = text.replace(regexp, '<mark>$&</mark>');
+                        pagesItem.style.display = '';
+                    } else {
+                        pagesItem.style.display = 'none';
+                    }
                 });
             }
         }

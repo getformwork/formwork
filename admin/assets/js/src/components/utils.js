@@ -3,6 +3,43 @@ Formwork.Utils = {
         return string.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     },
 
+    makeDiacriticsRegExp: function (string) {
+        var char;
+        var diacritics = {
+            'a': '[aáàăâǎåäãȧąāảȁạ]',
+            'b': '[bḃḅ]',
+            'c': '[cćĉčċç]',
+            'd': '[dďḋḑḍ]',
+            'e': '[eéèĕêěëẽėȩęēẻȅẹ]',
+            'g': '[gǵğĝǧġģḡ]',
+            'h': '[hĥȟḧḣḩḥ]',
+            'i': '[iiíìĭîǐïĩįīỉȉịı]',
+            'j': '[jĵǰ]',
+            'k': '[kḱǩķḳ]',
+            'l': '[lĺľļḷ]',
+            'm': '[mḿṁṃ]',
+            'n': '[nńǹňñṅņṇ]',
+            'o': '[oóòŏôǒöőõȯǿǫōỏȍơọ]',
+            'p': '[pṕṗ]',
+            'r': '[rŕřṙŗȑṛ]',
+            's': '[sśŝšṡşṣș]',
+            't': '[tťẗṫţṭț]',
+            'u': '[uúùŭûǔůüűũųūủȕưụ]',
+            'v': '[vṽṿ]',
+            'w': '[wẃẁŵẘẅẇẉ]',
+            'x': '[xẍẋ]',
+            'y': '[yýỳŷẙÿỹẏȳỷỵ]',
+            'z': '[zźẑžżẓ]'
+        };
+        for (char in diacritics) {
+            if (diacritics.hasOwnProperty(char)) {
+                string = string.split(char).join(diacritics[char]);
+                string = string.split(char.toUpperCase()).join(diacritics[char].toUpperCase());
+            }
+        }
+        return string;
+    },
+
     slug: function (string) {
         var char;
         var translate = {
