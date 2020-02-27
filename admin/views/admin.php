@@ -31,7 +31,7 @@
         <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
     </div>
     <div class="sidebar show-from-s">
-        <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>">Formwork</a></div>
+        <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.png') ?>" alt=""> Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $admin->user()->username() . '/profile/') ?>">
             <div class="admin-user-card">
                 <div class="admin-user-avatar">

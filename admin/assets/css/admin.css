@@ -2378,6 +2378,11 @@ span.CodeMirror-selectedtext {
     .logo {
       text-align: left; } }
 
+.logo img {
+  margin-right: 0.25rem;
+  height: 1.5rem;
+  vertical-align: -0.25rem; }
+
 .logo a {
   color: #000; }
 

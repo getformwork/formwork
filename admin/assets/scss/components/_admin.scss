@@ -88,6 +88,12 @@
     }
 }
 
+.logo img {
+    margin-right: $logo-image-margin-right;
+    height: $logo-image-height;
+    vertical-align: $logo-image-vertical-align;
+}
+
 .logo a {
     color: #000;
 }
