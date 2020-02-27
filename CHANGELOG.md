@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.5.0](https://github.com/getformwork/formwork/releases/tag/1.5.0) (2020-02-27)
+
+**Enhancements**
+
+- **Rewrite admin panel app without jQuery**
+- **Add diacritic-insensitive page search and highlight results in admin panel**
+- Improve calendar positioning
+- Improve notification positioning
+- Check notification type in `Notification::send()`
+- Add pre-filled data to GitHub issue link on internal server errors
+- Add Formwork logo to sidebar
+
+**Bug fixes**
+
+- Fix error when deleting users without avatar
+
 ## [1.4.7](https://github.com/getformwork/formwork/releases/tag/1.4.7) (2020-02-22)
 
 **Bug fixes**
