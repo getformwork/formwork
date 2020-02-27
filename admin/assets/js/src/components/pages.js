@@ -241,7 +241,7 @@ Formwork.Pages = {
 
                     Formwork.Request({
                         method: 'POST',
-                        url: Formwork.baseUri + 'pages/reorder/',
+                        url: Formwork.config.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {

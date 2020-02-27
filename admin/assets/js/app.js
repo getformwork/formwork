@@ -1,10 +1,7 @@
 var Formwork = {
-    baseUri: '',
     config: {},
 
     init: function () {
-        this.baseUri = $('meta[name=base-uri]').getAttribute('content');
-
         Formwork.Modals.init();
         Formwork.Forms.init();
         Formwork.Dropdowns.init();
@@ -195,7 +192,7 @@ Formwork.Dashboard = {
             clearCacheCommand.addEventListener('click', function () {
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'cache/clear/',
+                    url: Formwork.config.baseUri + 'cache/clear/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
                     var notification = new Formwork.Notification(response.message, response.status, 5000);
@@ -210,7 +207,7 @@ Formwork.Dashboard = {
                 button.setAttribute('disabled', '');
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'backup/make/',
+                    url: Formwork.config.baseUri + 'backup/make/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
                     var notification = new Formwork.Notification(response.message, response.status, 5000);
@@ -1431,7 +1428,7 @@ Formwork.Pages = {
 
                     Formwork.Request({
                         method: 'POST',
-                        url: Formwork.baseUri + 'pages/reorder/',
+                        url: Formwork.config.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {
@@ -2088,7 +2085,7 @@ Formwork.Updates = {
 
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'updates/check/',
+                    url: Formwork.config.baseUri + 'updates/check/',
                     data: data
                 }, function (response) {
                     updateStatus.innerHTML = response.message;
@@ -2112,7 +2109,7 @@ Formwork.Updates = {
 
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'updates/update/',
+                    url: Formwork.config.baseUri + 'updates/update/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
                     var notification = new Formwork.Notification(response.message, response.status, 5000);

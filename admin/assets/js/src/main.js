@@ -1,10 +1,7 @@
 var Formwork = {
-    baseUri: '',
     config: {},
 
     init: function () {
-        this.baseUri = $('meta[name=base-uri]').getAttribute('content');
-
         Formwork.Modals.init();
         Formwork.Forms.init();
         Formwork.Dropdowns.init();

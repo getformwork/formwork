@@ -7,7 +7,7 @@ Formwork.Dashboard = {
             clearCacheCommand.addEventListener('click', function () {
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'cache/clear/',
+                    url: Formwork.config.baseUri + 'cache/clear/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
                     var notification = new Formwork.Notification(response.message, response.status, 5000);
@@ -22,7 +22,7 @@ Formwork.Dashboard = {
                 button.setAttribute('disabled', '');
                 Formwork.Request({
                     method: 'POST',
-                    url: Formwork.baseUri + 'backup/make/',
+                    url: Formwork.config.baseUri + 'backup/make/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
                     var notification = new Formwork.Notification(response.message, response.status, 5000);

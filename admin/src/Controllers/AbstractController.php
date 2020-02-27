@@ -66,6 +66,7 @@ abstract class AbstractController
             'csrfToken' => CSRFToken::get(),
             'modals'    => implode($this->modals),
             'appConfig' => [
+                'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
                     'dayLabels'   => $this->label('date.weekdays.short'),
                     'monthLabels' => $this->label('date.months.long'),
