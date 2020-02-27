@@ -1,24 +1,9 @@
 Formwork.Form = function (form) {
     var originalData = Formwork.Utils.serializeForm(form);
 
-    form.addEventListener('submit', function () {
-        window.removeEventListener('beforeunload', handleBeforeunload);
-    });
-
     window.addEventListener('beforeunload', handleBeforeunload);
 
-    $$('input[type=file][data-auto-upload]', form).forEach(function (element) {
-        element.addEventListener('change', function () {
-            if (!hasChanged(false)) {
-                form.submit();
-            }
-        });
-    });
-
-    $('#changesModal [data-command=continue]').addEventListener('click', function () {
-        window.removeEventListener('beforeunload', handleBeforeunload);
-        window.location.href = this.getAttribute('data-href');
-    });
+    form.addEventListener('submit', removeBeforeUnload);
 
     $$('a[href]:not([href^="#"]):not([target="_blank"])').forEach(function (element) {
         element.addEventListener('click', function (event) {
@@ -31,6 +16,17 @@ Formwork.Form = function (form) {
         });
     });
 
+    $$('input[type=file][data-auto-upload]', form).forEach(function (element) {
+        element.addEventListener('change', function () {
+            if (!hasChanged(false)) {
+                removeBeforeUnload();
+                form.submit();
+            }
+        });
+    });
+
+    registerModalExceptions();
+
     function handleBeforeunload(event) {
         if (hasChanged()) {
             event.preventDefault();
@@ -38,12 +34,37 @@ Formwork.Form = function (form) {
         }
     }
 
+    function removeBeforeUnload() {
+        window.removeEventListener('beforeunload', handleBeforeunload);
+    }
+
+    function registerModalExceptions() {
+        var changesModal = document.getElementById('changesModal');
+        var deletePageModal = document.getElementById('deletePageModal');
+        var deleteUserModal = document.getElementById('deleteUserModal');
+
+        if (changesModal) {
+            $('[data-command=continue]', changesModal).addEventListener('click', function () {
+                removeBeforeUnload();
+                window.location.href = this.getAttribute('data-href');
+            });
+        }
+
+        if (deletePageModal) {
+            $('[data-command=delete]', deletePageModal).addEventListener('click', removeBeforeUnload);
+        }
+
+        if (deleteUserModal) {
+            $('[data-command=delete]', deleteUserModal).addEventListener('click', removeBeforeUnload);
+        }
+    }
+
     function hasChanged(checkFileInputs) {
         var fileInputs, i;
-        fileInputs = $$('input[file]', form);
         if (typeof checkFileInputs === 'undefined') {
             checkFileInputs = true;
         }
+        fileInputs = $$('input[type=file]', form);
         if (checkFileInputs === true && fileInputs.length > 0) {
             for (i = 0; i < fileInputs.length; i++) {
                 if (fileInputs[i].files.length > 0) {
