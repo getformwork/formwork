@@ -5,7 +5,7 @@
             <p class="modal-text"><?= $this->label('pages.delete-page.prompt') ?></p>
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             <button type="button" data-dismiss="deletePageModal"><?= $this->label('modal.action.cancel') ?></button>
-            <button type="submit" class="button-error button-right"><i class="i-trash"></i> <?= $this->label('modal.action.delete') ?></button>
+            <button type="submit" class="button-error button-right" data-command="delete"><i class="i-trash"></i> <?= $this->label('modal.action.delete') ?></button>
         </form>
     </div>
 </div>
