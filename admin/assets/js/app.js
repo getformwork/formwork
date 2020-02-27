@@ -792,10 +792,9 @@ Formwork.FileInput = function (input) {
     label.addEventListener('dragleave', handleDragleave);
 
     label.addEventListener('drop', function (event) {
-        var target = document.getElementById(this.getAttribute('for'));
-        target.files = event.dataTransfer.files;
+        input.files = event.dataTransfer.files;
         // Firefox won't trigger a change event, so we explicitly do that
-        Formwork.Utils.triggerEvent(target, 'change');
+        Formwork.Utils.triggerEvent(input, 'change');
         event.preventDefault();
     });
 
