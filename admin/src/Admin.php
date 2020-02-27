@@ -189,7 +189,7 @@ class Admin
     {
         $this->errors = new Controllers\Errors();
         set_exception_handler(function ($exception) {
-            $this->errors->internalServerError();
+            $this->errors->internalServerError($exception);
             throw $exception;
         });
     }
