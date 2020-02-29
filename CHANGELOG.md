@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.1](https://github.com/getformwork/formwork/releases/tag/1.5.1) (2020-02-29)
+
+**Bug fixes**
+
+- Fix type declarations for PHP < 7.2
+
 ## [1.5.0](https://github.com/getformwork/formwork/releases/tag/1.5.0) (2020-02-27)
 
 **Enhancements**
