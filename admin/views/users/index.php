@@ -2,7 +2,7 @@
             <h3 class="caption"><?= $this->label('users.users') ?></h3>
             <button type="button" data-modal="newUserModal"<?php if (!$admin->user()->permissions()->has('users.create')): ?> disabled<?php endif; ?>><i class="i-plus-circle"></i> <?= $this->label('users.new-user') ?></button>
             <div class="separator"></div>
-            <div class="users-list-headers">
+            <div class="users-list-headers" aria-hidden="true">
                 <div class="users-headers-cell user-username"><?= $this->label('user.username') ?></div>
                 <div class="users-headers-cell user-fullname"><?= $this->label('user.fullname') ?></div>
                 <div class="users-headers-cell user-email"><?= $this->label('user.email') ?></div>

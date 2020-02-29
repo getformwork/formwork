@@ -1,7 +1,7 @@
 <?php
         if ($headers):
 ?>
-            <div class="pages-list-headers">
+            <div class="pages-list-headers" aria-hidden="true">
                 <div class="pages-headers-cell page-details"><?= $this->label('pages.page.title') ?></div>
                 <div class="pages-headers-cell page-date"><?= $this->label('pages.page.last-modified') ?></div>
                 <div class="pages-headers-cell page-status"><?= $this->label('pages.page.status') ?></div>
@@ -43,7 +43,7 @@
                                 endforeach;
 ?>
                             </div>
-                            <div class="page-route">
+                            <div class="page-route" aria-hidden="true">
                                 <span><?= $page->route() ?></span>
                             </div>
                         </div>
