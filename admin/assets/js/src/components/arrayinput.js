@@ -2,17 +2,9 @@ Formwork.ArrayInput = function (input) {
     var isAssociative = input.classList.contains('array-input-associative');
     var inputName = input.getAttribute('data-name');
 
-    $('.array-input-add', input).addEventListener('click', addRow);
-    $('.array-input-remove', input).addEventListener('click', removeRow);
-
-    if (isAssociative) {
-        $('.array-input-key', input).addEventListener('keyup', function () {
-            $('.array-input-value', this.parentNode).setAttribute('name', inputName + '[' + this.value + ']');
-        });
-        $('.array-input-value', input).addEventListener('keyup', function () {
-            this.setAttribute('name', inputName + '[' + $('.array-input-key', this.parentNode).value + ']');
-        });
-    }
+    $$('.array-input-row', input).forEach(function (element) {
+        bindRowEvents(element);
+    });
 
     /* global Sortable:false */
     Sortable.create(input, {
@@ -20,13 +12,10 @@ Formwork.ArrayInput = function (input) {
         forceFallback: true
     });
 
-    function addRow() {
-        var row = this.closest('.array-input-row');
+    function addRow(row) {
         var clone = row.cloneNode(true);
-        $('.array-input-key', clone).value = '';
-        $('.array-input-value', clone).value = '';
-        $('.array-input-add', clone).addEventListener('click', addRow);
-        $('.array-input-remove', clone).addEventListener('click', removeRow);
+        clearRow(clone);
+        bindRowEvents(clone);
         if (row.nextSibling) {
             row.parentNode.insertBefore(clone, row.nextSibling);
         } else {
@@ -34,15 +23,46 @@ Formwork.ArrayInput = function (input) {
         }
     }
 
-    function removeRow() {
-        var row = this.closest('.array-input-row');
-        if ($$('.array-input-row', row.parentNode).length > 0) {
+    function removeRow(row) {
+        if ($$('.array-input-row', row.parentNode).length > 1) {
             row.parentNode.removeChild(row);
         } else {
-            $('.array-input-key', row).value = '';
-            $('.array-input-value', row).value = '';
+            clearRow(row);
+        }
+    }
 
-            Formwork.Utils.triggerEvent($('.array-input-key', row), 'keyup');
+    function clearRow(row) {
+        var inputKey, inputValue;
+        if (isAssociative) {
+            inputKey = $('.array-input-key', row);
+            inputKey.value = '';
+            inputKey.removeAttribute('value');
+        }
+        inputValue = $('.array-input-value', row);
+        inputValue.value = '';
+        inputValue.removeAttribute('value');
+        inputValue.name = inputName + '[]';
+    }
+
+    function updateAssociativeRow(row) {
+        var inputKey = $('.array-input-key', row);
+        var inputValue = $('.array-input-value', row);
+        inputValue.name = inputName + '[' + inputKey.value.trim() + ']';
+    }
+
+    function bindRowEvents(row) {
+        var inputAdd = $('.array-input-add', row);
+        var inputRemove = $('.array-input-remove', row);
+        var inputKey, inputValue;
+
+        inputAdd.addEventListener('click', addRow.bind(inputAdd, row));
+        inputRemove.addEventListener('click', removeRow.bind(inputRemove, row));
+
+        if (isAssociative) {
+            inputKey = $('.array-input-key', row);
+            inputValue = $('.array-input-value', row);
+            inputKey.addEventListener('keyup', updateAssociativeRow.bind(inputKey, row));
+            inputValue.addEventListener('keyup',updateAssociativeRow.bind(inputValue, row));
         }
     }
 };
