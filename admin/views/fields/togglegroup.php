@@ -1,7 +1,16 @@
-<fieldset class="toggle-group"<?php if ($field->get('disabled')): ?> disabled<?php endif; ?>>
+<fieldset <?= $this->attr([
+    'id'       => $field->name(),
+    'class'    => 'toggle-group',
+    'disabled' => $field->get('disabled')
+]) ?>>
 <?php foreach ((array) $field->get('options') as $value => $label): ?>
     <label>
-        <input type="radio" name="<?= $field->formName() ?>" value="<?= $value ?>"<?php if ($value == $field->value()): ?> checked<?php endif; ?>>
+        <input <?= $this->attr([
+            'type'    => 'radio',
+            'name'    => $field->formName(),
+            'value'   => $value,
+            'checked' => $value == $field->value()
+        ]) ?>>
         <span><?= $label ?></span>
     </label>
 <?php endforeach; ?>

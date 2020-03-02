@@ -1,2 +1,12 @@
 <?= $this->insert('fields.label') ?>
-<input id="<?= $field->name() ?>" name="<?= $field->formName() ?>" value="<?= implode(', ', (array) $field->value()) ?>" placeholder="<?= $field->placeholder() ?>"<?php if ($field->get('required')): ?> required<?php endif; ?><?php if ($field->get('disabled')): ?> disabled<?php endif; ?> data-field="tags"<?php if ($field->has('options')): ?> data-options="<?= $this->escape(json_encode((array) $field->get('options'))) ?>"<?php endif; ?>>
+<input <?= $this->attr([
+    'type'         => 'text',
+    'id'           => $field->name(),
+    'name'         => $field->formName(),
+    'value'        => implode(', ', (array) $field->value()),
+    'placeholder'  => $field->placeholder(),
+    'required'     => $field->get('required'),
+    'disabled'     => $field->get('disabled'),
+    'data-field'   => 'tags',
+    'data-options' => $field->has('options') ? $this->escape(json_encode((array) $field->get('options'))) : null
+]) ?>>

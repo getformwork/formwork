@@ -1,2 +1,12 @@
 <?= $this->insert('fields.label') ?>
-<input type="password" id="<?= $field->name() ?>" name="<?= $field->formName() ?>" value="<?= $field->value() ?>" placeholder="<?= $field->placeholder() ?>"<?php if ($field->get('pattern')): ?> pattern="<?= $field->get('pattern') ?>"<?php endif; ?><?php if ($field->get('autocomplete')): ?> autocomplete="<?= $field->get('autocomplete') ?>"<?php endif; ?><?php if ($field->get('required')): ?> required<?php endif; ?><?php if ($field->get('disabled')): ?> disabled<?php endif; ?>>
+<input <?= $this->attr([
+    'type'         => 'password',
+    'id'           => $field->name(),
+    'name'         => $field->formName(),
+    'value'        => $field->value(),
+    'placeholder'  => $field->placeholder(),
+    'pattern'      => $field->get('pattern'),
+    'autocomplete' => $field->get('autocomplete'),
+    'required'     => $field->get('required'),
+    'disabled'     => $field->get('disabled')
+]) ?>>
