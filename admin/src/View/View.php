@@ -8,6 +8,7 @@ use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTML;
 use Formwork\Utils\Str;
 use LogicException;
 use RuntimeException;
@@ -43,6 +44,7 @@ class View
      * @var array
      */
     protected static $helpers = [
+        'attr'       => [HTML::class, 'attributes'],
         'escape'     => [Str::class, 'escape'],
         'removeHTML' => [Str::class, 'removeHTML']
     ];

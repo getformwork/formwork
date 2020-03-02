@@ -2,6 +2,7 @@
 
 namespace Formwork\Template;
 
+use Formwork\Utils\HTML;
 use Formwork\Utils\Str;
 use LogicException;
 use RuntimeException;
@@ -14,6 +15,7 @@ class TemplateHelpers
      * @var array
      */
     protected static $helpers = [
+        'attr'       => [HTML::class, 'attributes'],
         'escape'     => [Str::class, 'escape'],
         'removeHTML' => [Str::class, 'removeHTML']
     ];
