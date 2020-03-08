@@ -1,15 +1,26 @@
-var Formwork = {
+import Chart from './components/chart';
+import Dashboard from './components/dashboard';
+import Dropdowns from './components/dropdowns';
+import Forms from './components/forms';
+import Modals from './components/modals';
+import Notification from './components/notification';
+import Pages from './components/pages';
+import Tooltips from './components/tooltips';
+import Updates from './components/updates';
+
+var Formwork;
+
+export default Formwork = {
     config: {},
-
     init: function () {
-        Formwork.Modals.init();
-        Formwork.Forms.init();
-        Formwork.Dropdowns.init();
-        Formwork.Tooltips.init();
+        Modals.init();
+        Forms.init();
+        Dropdowns.init();
+        Tooltips.init();
 
-        Formwork.Dashboard.init();
-        Formwork.Pages.init();
-        Formwork.Updates.init();
+        Dashboard.init();
+        Pages.init();
+        Updates.init();
 
         $('.toggle-navigation').addEventListener('click', function () {
             $('.sidebar').classList.toggle('show');
@@ -17,11 +28,11 @@ var Formwork = {
 
         $$('[data-chart-data]').forEach(function (element) {
             var data = JSON.parse(element.getAttribute('data-chart-data'));
-            Formwork.Chart(element, data);
+            Chart(element, data);
         });
 
         $$('meta[name=notification]').forEach(function (element) {
-            var notification = new Formwork.Notification(element.getAttribute('content'), element.getAttribute('data-type'), element.getAttribute('data-interval'));
+            var notification = new Notification(element.getAttribute('content'), element.getAttribute('data-type'), element.getAttribute('data-interval'));
             notification.show();
             element.parentNode.removeChild(element);
         });

@@ -1,4 +1,4 @@
-Formwork.Utils = {
+export default {
     escapeRegExp: function (string) {
         return string.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     },

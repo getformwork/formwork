@@ -1,4 +1,6 @@
-Formwork.ArrayInput = function (input) {
+import Sortable from 'sortablejs';
+
+export default function ArrayInput(input) {
     var isAssociative = input.classList.contains('array-input-associative');
     var inputName = input.getAttribute('data-name');
 
@@ -6,7 +8,6 @@ Formwork.ArrayInput = function (input) {
         bindRowEvents(element);
     });
 
-    /* global Sortable:false */
     Sortable.create(input, {
         handle: '.sort-handle',
         forceFallback: true
@@ -65,4 +66,4 @@ Formwork.ArrayInput = function (input) {
             inputValue.addEventListener('keyup',updateAssociativeRow.bind(inputValue, row));
         }
     }
-};
+}

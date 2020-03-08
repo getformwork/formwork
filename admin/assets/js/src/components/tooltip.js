@@ -1,4 +1,6 @@
-Formwork.Tooltip = function (text, options) {
+import Utils from './utils';
+
+export default function Tooltip(text, options) {
     var defaults = {
         container: document.body,
         referenceElement: document.body,
@@ -12,7 +14,7 @@ Formwork.Tooltip = function (text, options) {
     var referenceElement = options.referenceElement;
     var tooltip, timer;
 
-    options = Formwork.Utils.extendObject({}, defaults, options);
+    options = Utils.extendObject({}, defaults, options);
 
     // IE 10-11 support classList only on HTMLElement
     if (referenceElement instanceof HTMLElement) {
@@ -84,4 +86,4 @@ Formwork.Tooltip = function (text, options) {
         show: show,
         remove: remove
     };
-};
+}

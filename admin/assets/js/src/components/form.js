@@ -1,5 +1,8 @@
-Formwork.Form = function (form) {
-    var originalData = Formwork.Utils.serializeForm(form);
+import Modals from './modals';
+import Utils from './utils';
+
+export default function Form(form) {
+    var originalData = Utils.serializeForm(form);
 
     window.addEventListener('beforeunload', handleBeforeunload);
 
@@ -9,7 +12,7 @@ Formwork.Form = function (form) {
         element.addEventListener('click', function (event) {
             if (hasChanged()) {
                 event.preventDefault();
-                Formwork.Modals.show('changesModal', null, function (modal) {
+                Modals.show('changesModal', null, function (modal) {
                     $('[data-command=continue]', modal).setAttribute('data-href', element.href);
                 });
             }
@@ -72,6 +75,6 @@ Formwork.Form = function (form) {
                 }
             }
         }
-        return Formwork.Utils.serializeForm(form) !== originalData;
+        return Utils.serializeForm(form) !== originalData;
     }
-};
+}

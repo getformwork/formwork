@@ -1,5 +1,10 @@
-Formwork.Editor = function (textarea) {
-    /* global CodeMirror:false */
+import CodeMirror from 'codemirror/lib/codemirror.js';
+import Modals from './modals';
+import Utils from './utils';
+
+import 'codemirror/mode/markdown/markdown.js';
+
+export default function Editor(textarea) {
     var editor = CodeMirror.fromTextArea(textarea, {
         mode: 'markdown',
         theme: 'formwork',
@@ -48,7 +53,7 @@ Formwork.Editor = function (textarea) {
     });
 
     $('[data-command=image]', toolbar).addEventListener('click', function () {
-        Formwork.Modals.show('imagesModal', null, function (modal) {
+        Modals.show('imagesModal', null, function (modal) {
             var selected = $('.image-picker-thumbnail.selected', modal);
             if (selected) {
                 selected.classList.remove('selected');
@@ -88,7 +93,7 @@ Formwork.Editor = function (textarea) {
 
     disableSummaryCommand();
 
-    editor.on('changes', Formwork.Utils.debounce(function () {
+    editor.on('changes', Utils.debounce(function () {
         textarea.value = editor.getValue();
         disableSummaryCommand();
         if (editor.historySize().undo < 1) {
@@ -170,4 +175,4 @@ Formwork.Editor = function (textarea) {
         editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
         editor.focus();
     }
-};
+}

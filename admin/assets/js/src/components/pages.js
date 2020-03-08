@@ -1,4 +1,10 @@
-Formwork.Pages = {
+import Modals from './modals';
+import Notification from './notification';
+import Request from './request';
+import Sortable from 'sortablejs';
+import Utils from './utils';
+
+export default {
     init: function () {
 
         var commandExpandAllPages = $('[data-command=expand-all-pages]');
@@ -56,7 +62,7 @@ Formwork.Pages = {
             commandReorderPages.addEventListener('click', function () {
                 this.classList.toggle('active');
                 $$('.pages-list .sort-handle').forEach(function (element) {
-                    Formwork.Utils.toggleElement(element, 'inline');
+                    Utils.toggleElement(element, 'inline');
                 });
                 this.blur();
             });
@@ -69,7 +75,7 @@ Formwork.Pages = {
                 });
             });
 
-            searchInput.addEventListener('keyup', Formwork.Utils.debounce(handleSearch, 100));
+            searchInput.addEventListener('keyup', Utils.debounce(handleSearch, 100));
             searchInput.addEventListener('search', handleSearch);
 
             document.addEventListener('keydown', function (event) {
@@ -85,7 +91,7 @@ Formwork.Pages = {
 
         if (newPageModal) {
             $('#page-title', newPageModal).addEventListener('keyup', function () {
-                $('#page-slug', newPageModal).value = Formwork.Utils.slug(this.value);
+                $('#page-slug', newPageModal).value = Utils.slug(this.value);
             });
 
             $('#page-slug', newPageModal).addEventListener('keyup', handleSlugChange);
@@ -118,7 +124,7 @@ Formwork.Pages = {
 
         if (slugModal) {
             $('[data-command=change-slug]').addEventListener('click', function () {
-                Formwork.Modals.show('slugModal', null, function (modal) {
+                Modals.show('slugModal', null, function (modal) {
                     var slug = document.getElementById('slug').value;
                     var slugInput = $('#page-slug', modal);
                     slugInput.value = slug;
@@ -138,7 +144,7 @@ Formwork.Pages = {
             $('#page-slug', slugModal).addEventListener('blur', handleSlugChange);
 
             $('[data-command=generate-slug]', slugModal).addEventListener('click', function () {
-                var slug = Formwork.Utils.slug(document.getElementById('title').value);
+                var slug = Utils.slug(document.getElementById('title').value);
                 $('#page-slug', slugModal).value = slug;
                 $('#page-slug', slugModal).focus();
             });
@@ -155,7 +161,7 @@ Formwork.Pages = {
                     document.getElementById('slug').value = slug;
                     $('.page-route span').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/');
                 }
-                Formwork.Modals.hide('slugModal');
+                Modals.hide('slugModal');
             });
         }
 
@@ -181,7 +187,7 @@ Formwork.Pages = {
 
         function togglePagesList(list) {
             $$('.pages-list', list.closest('li')).forEach(function (element) {
-                Formwork.Utils.toggleElement(element);
+                Utils.toggleElement(element);
             });
             list.classList.toggle('toggle-expanded');
             list.classList.toggle('toggle-collapsed');
@@ -190,7 +196,6 @@ Formwork.Pages = {
         function initSortable(element) {
             var originalOrder = [];
 
-            /* global Sortable:false */
             var sortable = Sortable.create(element, {
                 handle: '.sort-handle',
                 filter: '[data-sortable=false]',
@@ -240,13 +245,13 @@ Formwork.Pages = {
                         to: event.newIndex
                     };
 
-                    Formwork.Request({
+                    Request({
                         method: 'POST',
                         url: Formwork.config.baseUri + 'pages/reorder/',
                         data: data
                     }, function (response) {
                         if (response.status) {
-                            notification = new Formwork.Notification(response.message, response.status, 5000);
+                            notification = new Notification(response.message, response.status, 5000);
                             notification.show();
                         }
                         if (!response.status || response.status === 'error') {
@@ -279,7 +284,7 @@ Formwork.Pages = {
                     element.innerHTML = element.textContent;
                 });
             } else {
-                regexp = new RegExp(Formwork.Utils.makeDiacriticsRegExp(Formwork.Utils.escapeRegExp(value)), 'gi');
+                regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'gi');
                 $$('.pages-children').forEach(function (element) {
                     element.style.display = 'block';
                 });
@@ -303,7 +308,7 @@ Formwork.Pages = {
         }
 
         function handleSlugChange() {
-            this.value = Formwork.Utils.validateSlug(this.value);
+            this.value = Utils.validateSlug(this.value);
         }
     }
 };

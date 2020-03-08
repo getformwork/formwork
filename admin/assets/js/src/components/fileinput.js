@@ -1,4 +1,6 @@
-Formwork.FileInput = function (input) {
+import Utils from './utils';
+
+export default function FileInput(input) {
     var label = $('label[for="' + input.id + '"]');
 
     input.setAttribute('data-label', $('label[for="' + input.id + '"] span').innerHTML);
@@ -15,7 +17,7 @@ Formwork.FileInput = function (input) {
     label.addEventListener('drop', function (event) {
         input.files = event.dataTransfer.files;
         // Firefox won't trigger a change event, so we explicitly do that
-        Formwork.Utils.triggerEvent(input, 'change');
+        Utils.triggerEvent(input, 'change');
         event.preventDefault();
     });
 
@@ -41,4 +43,4 @@ Formwork.FileInput = function (input) {
         this.classList.remove('drag');
         event.preventDefault();
     }
-};
+}

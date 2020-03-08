@@ -1,13 +1,17 @@
-Formwork.Modals = {
+import Utils from './utils';
+
+var Modals;
+
+export default Modals = {
     init: function () {
         $$('[data-modal]').forEach(function (element) {
             element.addEventListener('click', function () {
                 var modal = this.getAttribute('data-modal');
                 var action = this.getAttribute('data-modal-action');
                 if (action) {
-                    Formwork.Modals.show(modal, action);
+                    Modals.show(modal, action);
                 } else {
-                    Formwork.Modals.show(modal);
+                    Modals.show(modal);
                 }
             });
         });
@@ -16,19 +20,19 @@ Formwork.Modals = {
             element.addEventListener('click', function () {
                 var valid;
                 if (this.hasAttribute('data-validate')) {
-                    valid = Formwork.Modals.validate(this.getAttribute('data-dismiss'));
+                    valid = Modals.validate(this.getAttribute('data-dismiss'));
                     if (!valid) {
                         return;
                     }
                 }
-                Formwork.Modals.hide(this.getAttribute('data-dismiss'));
+                Modals.hide(this.getAttribute('data-dismiss'));
             });
         });
 
         $$('.modal').forEach(function (element) {
             element.addEventListener('click', function (event) {
                 if (event.target === this) {
-                    Formwork.Modals.hide();
+                    Modals.hide();
                 }
             });
         });
@@ -36,7 +40,7 @@ Formwork.Modals = {
         document.addEventListener('keyup', function (event) {
             // ESC key
             if (event.which === 27) {
-                Formwork.Modals.hide();
+                Modals.hide();
             }
         });
     },
@@ -51,7 +55,7 @@ Formwork.Modals = {
             $('form', modal).setAttribute('action', action);
         }
         if ($('[autofocus]', modal)) {
-            Formwork.Utils.triggerEvent($('[autofocus]', modal), 'focus'); // Firefox bug
+            Utils.triggerEvent($('[autofocus]', modal), 'focus'); // Firefox bug
         }
         if (typeof callback === 'function') {
             callback(modal);
@@ -95,7 +99,7 @@ Formwork.Modals = {
         $$('[required]', id).forEach(function (element) {
             if (element.value === '') {
                 element.classList('input-invalid');
-                Formwork.Utils.triggerEvent(element, 'focus');
+                Utils.triggerEvent(element, 'focus');
                 $('.modal-error', modal).style.display = 'block';
                 valid = false;
                 return false;

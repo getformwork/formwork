@@ -1,4 +1,7 @@
-Formwork.Updates = {
+import Notification from './notification';
+import Request from './request';
+
+export default {
     init: function () {
         var updaterComponent = document.getElementById('updater-component');
         var updateStatus, spinner,
@@ -16,7 +19,7 @@ Formwork.Updates = {
             setTimeout(function () {
                 var data = {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')};
 
-                Formwork.Request({
+                Request({
                     method: 'POST',
                     url: Formwork.config.baseUri + 'updates/check/',
                     data: data
@@ -40,12 +43,12 @@ Formwork.Updates = {
                 spinner.classList.remove('spinner-info');
                 updateStatus.innerHTML = updateStatus.getAttribute('data-installing-text');
 
-                Formwork.Request({
+                Request({
                     method: 'POST',
                     url: Formwork.config.baseUri + 'updates/update/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
-                    var notification = new Formwork.Notification(response.message, response.status, 5000);
+                    var notification = new Notification(response.message, response.status, 5000);
                     notification.show();
 
                     updateStatus.innerHTML = response.data.status;

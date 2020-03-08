@@ -1,4 +1,4 @@
-Formwork.Dropdowns = {
+export default {
     init: function () {
         if ($('.dropdown')) {
             document.addEventListener('click', function (event) {
