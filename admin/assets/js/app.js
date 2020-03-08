@@ -1820,6 +1820,7 @@ Formwork.TagInput = function (input) {
         innerInput.parentNode.insertBefore(tag, innerInput);
 
         tagRemove.className = 'tag-remove';
+        tagRemove.setAttribute('role', 'button');
         tagRemove.addEventListener('mousedown', function (event) {
             removeTag(value);
             tag.parentNode.removeChild(tag);
