@@ -56,7 +56,7 @@ class HTML
      *
      * @return string
      */
-    public static function tag(string $name, array $attributes = [], ?string $content = null)
+    public static function tag(string $name, array $attributes = [], ?string ...$content)
     {
         $name = strtolower($name);
         $attributes = static::attributes($attributes);
@@ -65,15 +65,18 @@ class HTML
             $html .= ' ' . $attributes;
         }
         $html .= '>';
-        if ($content !== null) {
+        if (count($content) > 0) {
             if (static::isVoid($name)) {
                 throw new InvalidArgumentException('Cannot set tag content, <' . $name . '> is a void element');
             }
-            $html .= $content . '</' . $name . '>';
+            $html .= implode($content);
+        }
+        if (!static::isVoid($name)) {
+            $html .= '</' . $name . '>';
         }
         return $html;
     }
-
+    
     /**
      * Return whether the given tag is a void element
      *
