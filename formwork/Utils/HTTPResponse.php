@@ -13,7 +13,7 @@ class HTTPResponse
     {
         $headers = [];
         foreach (headers_list() as $header) {
-            list($key, $value) = explode(':', $header, 2);
+            [$key, $value] = explode(':', $header, 2);
             $headers[$key] = trim($value);
         }
         return $headers;

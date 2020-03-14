@@ -63,7 +63,7 @@ class AccessLimiter
         $this->attemptHash = sha1(HTTPRequest::ip() . '@' . Uri::host());
 
         if ($registry->has($this->attemptHash)) {
-            list($this->attempts, $this->lastAttemptTime) = $registry->get($this->attemptHash);
+            [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);
         }
     }
 
