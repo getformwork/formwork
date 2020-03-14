@@ -1,4 +1,7 @@
-Formwork.Chart = function (element, data) {
+import Chartist from 'chartist';
+import Tooltip from './tooltip';
+
+export default function Chart(element, data) {
     var options = {
         showArea: true,
         fullWidth: true,
@@ -22,7 +25,6 @@ Formwork.Chart = function (element, data) {
         }
     };
 
-    /* global Chartist:false */
     var chart = new Chartist.Line(element, data, options);
 
     chart.container.addEventListener('mouseover', function (event) {
@@ -37,11 +39,11 @@ Formwork.Chart = function (element, data) {
                 tooltipOffset.x += strokeWidth / 2;
                 tooltipOffset.y += strokeWidth / 2;
             }
-            tooltip = new Formwork.Tooltip(event.target.getAttribute('ct:value'), {
+            tooltip = new Tooltip(event.target.getAttribute('ct:value'), {
                 referenceElement: event.target,
                 offset: tooltipOffset
             });
             tooltip.show();
         }
     });
-};
+}

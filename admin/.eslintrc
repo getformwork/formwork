@@ -9,7 +9,8 @@
         "$$": false
     },
     "parserOptions": {
-        "ecmaVersion": 5
+        "ecmaVersion": 5,
+        "sourceType": "module"
     },
     "rules": {
         "brace-style": ["error", "1tbs"],

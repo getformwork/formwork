@@ -1,4 +1,6 @@
-Formwork.DatePicker = function (input, options) {
+import Utils from './utils';
+
+export default function DatePicker(input, options) {
     var defaults = {
         dayLabels:  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         monthLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
@@ -10,7 +12,7 @@ Formwork.DatePicker = function (input, options) {
     var today = new Date();
     var dateKeeper, dateHelpers, calendar;
 
-    options = Formwork.Utils.extendObject({}, defaults, options);
+    options = Utils.extendObject({}, defaults, options);
 
     dateKeeper = {
         year: today.getFullYear(),
@@ -239,13 +241,13 @@ Formwork.DatePicker = function (input, options) {
             event.preventDefault();
         });
 
-        Formwork.Utils.longClick($('.prevMonth', calendar), function (event) {
+        Utils.longClick($('.prevMonth', calendar), function (event) {
             dateKeeper.prevMonth();
             generateCalendarTable(dateKeeper.year, dateKeeper.month);
             event.preventDefault();
         }, 750, 500);
 
-        Formwork.Utils.longClick($('.nextMonth', calendar), function (event) {
+        Utils.longClick($('.nextMonth', calendar), function (event) {
             dateKeeper.nextMonth();
             generateCalendarTable(dateKeeper.year, dateKeeper.month);
             event.preventDefault();
@@ -259,7 +261,7 @@ Formwork.DatePicker = function (input, options) {
             }
         });
 
-        window.addEventListener('resize', Formwork.Utils.throttle(setCalendarPosition, 100));
+        window.addEventListener('resize', Utils.throttle(setCalendarPosition, 100));
 
         return calendar;
     }
@@ -339,8 +341,8 @@ Formwork.DatePicker = function (input, options) {
         calendarRect = calendar.getBoundingClientRect();
         calendarTop = calendarRect.top + window.pageYOffset;
         calendarLeft = calendarRect.left + window.pageXOffset;
-        calendarWidth = Formwork.Utils.outerWidth(calendar);
-        calendarHeight = Formwork.Utils.outerHeight(calendar);
+        calendarWidth = Utils.outerWidth(calendar);
+        calendarHeight = Utils.outerHeight(calendar);
 
         windowWidth = document.documentElement.clientWidth;
         windowHeight = document.documentElement.clientHeight;
@@ -353,4 +355,4 @@ Formwork.DatePicker = function (input, options) {
             window.scrollTo(window.pageXOffset, calendarTop + calendarHeight - windowHeight);
         }
     }
-};
+}

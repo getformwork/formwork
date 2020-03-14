@@ -1,4 +1,6 @@
-Formwork.Notification = function (text, type, interval, options) {
+import Utils from './utils';
+
+export default function Notification(text, type, interval, options) {
     var defaults = {
         newestOnTop: true,
         fadeOutDelay: 300,
@@ -9,7 +11,7 @@ Formwork.Notification = function (text, type, interval, options) {
 
     var notification, timer;
 
-    options = Formwork.Utils.extendObject({}, defaults, options);
+    options = Utils.extendObject({}, defaults, options);
 
     function show() {
         if (!container) {
@@ -61,4 +63,4 @@ Formwork.Notification = function (text, type, interval, options) {
         show: show,
         remove: remove
     };
-};
+}
