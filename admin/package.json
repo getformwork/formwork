@@ -10,18 +10,19 @@
   "bugs": {
     "url": "https://github.com/getformwork/formwork/issues"
   },
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "node-sass ./assets/scss/admin.scss > ./assets/css/admin.css && node-sass ./assets/scss/admin.scss --output-style compressed > ./assets/css/admin.min.css",
+    "build:js": "rollup -c && uglifyjs assets/js/app.min.js -c -m -o assets/js/app.min.js --timings",
+    "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
+    "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js"
+  },
   "dependencies": {
     "chartist": "^0.11.4",
     "codemirror": "^5.52.0",
     "sortablejs": "^1.10.2"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.2",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "node-sass": "^4.13.1",
