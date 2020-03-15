@@ -1,5 +1,11 @@
 <?= $this->insert('fields.label') ?>
-<input class="file-input" id="file-uploader" type="file" name="<?= $field->formName() ?>" accept="<?= $field->get('accept') ?>">
-<label for="file-uploader" class="file-input-label">
+<input <?= $this->attr([
+    'type'   => 'file',
+    'class'  => 'file-input',
+    'id'     => $field->name(),
+    'name'   => $field->formName(),
+    'accept' => $field->get('accept'),
+]) ?>>
+<label for="<?= $field->name() ?>" class="file-input-label">
     <span><?= $this->label('pages.files.upload-label') ?></span>
 </label>

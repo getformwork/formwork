@@ -1,2 +1,10 @@
 <?= $this->insert('fields.label') ?>
-<input id="<?= $field->name() ?>" name="<?= $field->formName() ?>" value="<?= $field->value() ?>" placeholder="<?= $field->placeholder() ?>"<?php if ($field->get('required')): ?> required<?php endif; ?><?php if ($field->get('disabled')): ?> disabled<?php endif; ?>>
+<input <?= $this->attr([
+    'type'        => 'text',
+    'id'          => $field->name(),
+    'name'        => $field->formName(),
+    'value'       => $field->value(),
+    'placeholder' => $field->placeholder(),
+    'required'    => $field->get('required'),
+    'disabled'    => $field->get('disabled')
+]) ?>>
