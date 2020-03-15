@@ -1,4 +1,6 @@
-Formwork.Request = function (options, callback) {
+import Utils from './utils';
+
+export default function Request(options, callback) {
 
     var request = new XMLHttpRequest();
 
@@ -7,7 +9,7 @@ Formwork.Request = function (options, callback) {
     request.open(options.method, options.url, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    request.send(Formwork.Utils.serializeObject(options.data));
+    request.send(Utils.serializeObject(options.data));
 
     if (typeof callback === 'function') {
         handler = function () {
@@ -24,4 +26,4 @@ Formwork.Request = function (options, callback) {
     }
 
     return request;
-};
+}

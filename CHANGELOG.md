@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.2](https://github.com/getformwork/formwork/releases/tag/1.5.2) (2020-03-02)
+
+**Bug fixes**
+
+- Fix `Formwork.ArrayInput()` not properly binding and handling events
+
 ## [1.5.1](https://github.com/getformwork/formwork/releases/tag/1.5.1) (2020-02-29)
 
 **Bug fixes**

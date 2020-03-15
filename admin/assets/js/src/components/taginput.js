@@ -1,4 +1,6 @@
-Formwork.TagInput = function (input) {
+import Utils from './utils';
+
+export default function TagInput(input) {
     var options = {addKeyCodes: [32]};
     var tags = [];
     var field, innerInput, hiddenInput, placeholder, dropdown;
@@ -137,7 +139,7 @@ Formwork.TagInput = function (input) {
                 }
             });
 
-            innerInput.addEventListener('keyup', Formwork.Utils.debounce(function (event) {
+            innerInput.addEventListener('keyup', Utils.debounce(function (event) {
                 var value = innerInput.value.trim();
                 switch (event.which) {
                 case 27: // escape
@@ -246,6 +248,7 @@ Formwork.TagInput = function (input) {
         innerInput.parentNode.insertBefore(tag, innerInput);
 
         tagRemove.className = 'tag-remove';
+        tagRemove.setAttribute('role', 'button');
         tagRemove.addEventListener('mousedown', function (event) {
             removeTag(value);
             tag.parentNode.removeChild(tag);
@@ -309,7 +312,7 @@ Formwork.TagInput = function (input) {
         dropdown.style.display = 'block';
         $$('.dropdown-item', dropdown).forEach(function (element) {
             var text = element.textContent;
-            var regexp = new RegExp(Formwork.Utils.makeDiacriticsRegExp(Formwork.Utils.escapeRegExp(value)), 'i');
+            var regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'i');
             if (text.match(regexp) !== null && element.style.display !== 'none') {
                 element.style.display = 'block';
                 visibleItems++;
@@ -411,4 +414,4 @@ Formwork.TagInput = function (input) {
         }
         selectFirstDropdownItem();
     }
-};
+}

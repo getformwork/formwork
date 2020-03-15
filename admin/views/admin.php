@@ -2,7 +2,7 @@
 <html>
 <head>
     <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
 <?php
     if (isset($csrfToken)):
@@ -21,7 +21,6 @@
     <link rel="shortcut icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri('css/admin.min.css', true) ?>">
     <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
-    <script src="<?= $this->assets()->uri('js/vendor.min.js', true) ?>"></script>
     <script>Formwork.config = <?= json_encode($appConfig) ?>;</script>
 </head>
 <body>

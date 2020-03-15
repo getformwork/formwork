@@ -477,7 +477,7 @@ class Page extends AbstractPage
                 $language = null;
                 if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
                     // Parse double extension
-                    list($match, $name, $language) = $matches;
+                    [$match, $name, $language] = $matches;
                 }
                 if (Formwork::instance()->site()->hasTemplate($name)) {
                     $contentFiles[$language] = [
@@ -518,7 +518,7 @@ class Page extends AbstractPage
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
             throw new RuntimeException('Invalid page format');
         }
-        list($match, $frontmatter, $summary, $body) = $matches;
+        [$match, $frontmatter, $summary, $body] = $matches;
         $this->frontmatter = YAML::parse($frontmatter);
         $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
         $this->data = array_merge($this->defaults(), $this->frontmatter);

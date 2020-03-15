@@ -1,4 +1,4 @@
-Formwork.ImagePicker = function (element) {
+export default function ImagePicker(element) {
     var options = $$('option', element);
     var confirmCommand = $('.image-picker-confirm', element.parentNode);
     var uploadCommand = $('[data-command=upload]', element.parentNode);
@@ -53,4 +53,4 @@ Formwork.ImagePicker = function (element) {
         this.click();
         $('.image-picker-confirm').click();
     }
-};
+}

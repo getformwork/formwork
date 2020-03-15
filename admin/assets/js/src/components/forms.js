@@ -1,8 +1,19 @@
-Formwork.Forms = {
+import ArrayInput from './arrayinput';
+import DatePicker from './datepicker';
+import Editor from './editor';
+import FileInput from './fileinput';
+import Form from './form';
+import ImagePicker from './imagepicker';
+import Modals from './modals';
+import RangeInput from './rangeinput';
+import TagInput from './taginput';
+import Utils from './utils';
+
+export default {
     init: function () {
 
         $$('[data-form]').forEach(function (element) {
-            Formwork.Form(element);
+            Form(element);
         });
 
         $$('input[data-enable]').forEach(function (element) {
@@ -24,17 +35,17 @@ Formwork.Forms = {
             element.addEventListener('click', function () {
                 var target = document.getElementById(this.getAttribute('data-reset'));
                 target.value = '';
-                Formwork.Utils.triggerEvent(target, 'change');
+                Utils.triggerEvent(target, 'change');
             });
         });
 
         $$('.date-input').forEach(function (element) {
-            Formwork.DatePicker(element, Formwork.config.DatePicker);
+            DatePicker(element, Formwork.config.DatePicker);
         });
 
         $$('.image-input').forEach(function (element) {
             element.addEventListener('click', function () {
-                Formwork.Modals.show('imagesModal', null, function (modal) {
+                Modals.show('imagesModal', null, function (modal) {
                     var selected = $('.image-picker-thumbnail.selected', modal);
                     if (selected) {
                         selected.classList.remove('selected');
@@ -48,27 +59,27 @@ Formwork.Forms = {
         });
 
         $$('.image-picker').forEach(function (element) {
-            Formwork.ImagePicker(element);
+            ImagePicker(element);
         });
 
         $$('.editor-textarea').forEach(function (element) {
-            Formwork.Editor(element);
+            Editor(element);
         });
 
         $$('input[type=file]').forEach(function (element) {
-            Formwork.FileInput(element);
+            FileInput(element);
         });
 
         $$('input[data-field=tags]').forEach(function (element) {
-            Formwork.TagInput(element);
+            TagInput(element);
         });
 
         $$('input[type=range]').forEach(function (element) {
-            Formwork.RangeInput(element);
+            RangeInput(element);
         });
 
         $$('.array-input').forEach(function (element) {
-            Formwork.ArrayInput(element);
+            ArrayInput(element);
         });
     }
 };

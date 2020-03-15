@@ -91,16 +91,16 @@ class Router
         $callback = null;
         switch (count($arguments)) {
             case 1:
-                list($route) = $arguments;
+                [$route] = $arguments;
                 break;
             case 2:
-                list($route, $callback) = $arguments;
+                [$route, $callback] = $arguments;
                 break;
             case 3:
-                list($method, $route, $callback) = $arguments;
+                [$method, $route, $callback] = $arguments;
                 break;
             case 4:
-                list($type, $method, $route, $callback) = $arguments;
+                [$type, $method, $route, $callback] = $arguments;
                 break;
             default:
                 throw new BadMethodCallException('Invalid arguments for ' . __METHOD__);
@@ -147,7 +147,7 @@ class Router
                 $this->dispatched = true;
                 // Parse Class@method callback syntax
                 if (is_string($route['callback']) && strpos($route['callback'], '@') !== false) {
-                    list($class, $method) = explode('@', $route['callback']);
+                    [$class, $method] = explode('@', $route['callback']);
                     $route['callback'] = [new $class(), $method];
                 }
                 if (!is_callable($route['callback'])) {
@@ -226,7 +226,7 @@ class Router
     protected function compileRoute(string $route)
     {
         preg_match_all('/{([A-Za-z0-9_]+)(?::([^{]+))?}/', $route, $matches);
-        list($tokens, $params, $patterns) = $matches;
+        [$tokens, $params, $patterns] = $matches;
         $regex = $route;
         foreach ($tokens as $i => $token) {
             // Make sure current pattern is not wrapped in a capture group

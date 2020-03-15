@@ -1,4 +1,6 @@
-Formwork.Tooltips = {
+import Tooltip from './tooltip';
+
+export default {
     init: function () {
         $$('[title]').forEach(function (element) {
             element.setAttribute('data-tooltip', element.getAttribute('title'));
@@ -7,7 +9,7 @@ Formwork.Tooltips = {
 
         $$('[data-tooltip]').forEach(function (element) {
             element.addEventListener('mouseover', function () {
-                var tooltip = new Formwork.Tooltip(this.getAttribute('data-tooltip'), {
+                var tooltip = new Tooltip(this.getAttribute('data-tooltip'), {
                     referenceElement: this,
                     position: 'bottom',
                     offset: {
@@ -22,7 +24,7 @@ Formwork.Tooltips = {
             element.addEventListener('mouseover', function () {
                 var tooltip;
                 if (this.offsetWidth < this.scrollWidth) {
-                    tooltip = new Formwork.Tooltip(this.textContent.trim(), {
+                    tooltip = new Tooltip(this.textContent.trim(), {
                         referenceElement: this,
                         position: 'bottom',
                         offset: {
