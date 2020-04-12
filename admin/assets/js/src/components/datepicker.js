@@ -82,8 +82,9 @@ export default function DatePicker(input, options) {
 
     dateHelpers = {
         _daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-        mod: function (n, m) {
-            return ((n % m) + m) % m;
+        mod: function (x, y) {
+            // Return x mod y (always rounded downwards, differs from x % y which is the remainder)
+            return x - y * Math.floor(x / y);
         },
         pad: function (num) {
             return num.toString().length === 1 ? '0' + num : num;
