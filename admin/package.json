@@ -19,18 +19,18 @@
   },
   "dependencies": {
     "chartist": "^0.11.4",
-    "codemirror": "^5.52.2",
+    "codemirror": "^5.53.2",
     "sortablejs": "^1.10.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",
-    "@rollup/plugin-node-resolve": "^7.1.2",
-    "node-sass": "^4.13.1",
-    "onchange": "^6.1.0",
-    "rollup": "^2.6.0",
-    "stylelint": "^13.3.2",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "node-sass": "^4.14.1",
+    "onchange": "^7.0.2",
+    "rollup": "^2.8.2",
+    "stylelint": "^13.3.3",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.0.0",
-    "uglify-js": "^3.8.1"
+    "uglify-js": "^3.9.2"
   }
 }
