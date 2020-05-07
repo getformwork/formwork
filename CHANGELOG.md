@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.0](https://github.com/getformwork/formwork/releases/tag/1.6.0) (2020-05-07)
+
+**Enhancements**
+
+- Add `aria-hidden` attributes
+- Make field views more readable with new `attr` helper
+- Avoid non user-scalable `<meta name="viewport">` values
+- Rewrite panel app as JavaScript modules
+- Remove Gulp and use npm scripts instead
+- Make error handling consistent in `FileSystem` class
+
 ## [1.5.2](https://github.com/getformwork/formwork/releases/tag/1.5.2) (2020-03-02)
 
 **Bug fixes**
