@@ -344,7 +344,7 @@ class FileSystem
     public static function read(string $file)
     {
         static::assert($file);
-        return file_get_contents($file);
+        return @file_get_contents($file);
     }
 
     /**
@@ -385,7 +385,7 @@ class FileSystem
     public static function write(string $file, string $content)
     {
         $temp = static::temporaryName($file . '.');
-        if (file_put_contents($temp, $content, LOCK_EX) === false) {
+        if (@file_put_contents($temp, $content, LOCK_EX) === false) {
             throw new RuntimeException('Cannot write ' . $file);
         }
         if (static::exists($file)) {
