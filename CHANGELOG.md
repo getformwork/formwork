@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.1](https://github.com/getformwork/formwork/releases/tag/1.6.1) (2020-05-27)
+
+**Bug fixes**
+
+- **Fix potential security issues with .htaccess**
+
 ## [1.6.0](https://github.com/getformwork/formwork/releases/tag/1.6.0) (2020-05-07)
 
 **Enhancements**
