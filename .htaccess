@@ -7,13 +7,13 @@ AddDefaultCharset UTF-8
     ## Prevent direct access to Formwork folders
     ## but allow access to template assets
     RewriteRule ^templates/assets/.* - [L]
-    RewriteRule ^(cache|config|formwork|templates|vendor)/.* index.php [L]
+    RewriteRule ^(backup|cache|config|formwork|templates|vendor)/.* index.php [L]
 
     RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L]
 
-    RewriteRule ^admin/(accounts|languages|logs|schemes|src|views)/.* index.php [L]
-    RewriteRule ^admin/(\.(.*)|gulpfile\.js)/?$ index.php [L]
+    RewriteRule ^admin/(accounts|logs|schemes|src|translations|views)/.* index.php [L]
+    RewriteRule ^admin/(\.(.*)|rollup\.config\.js)/?$ index.php [L]
 
     ## Let all URI be processed by index.php
     RewriteCond %{REQUEST_FILENAME} !-f
