@@ -9,10 +9,10 @@
 .tabs-tab {
     display: inline-block;
     padding: $tabs-tab-padding-v $tabs-tab-padding-h;
-    color: #000;
+    color: $color-gray-xxdark;
     cursor: pointer;
     &:hover {
-        color: #000;
+        color: $color-gray-xxdark;
     }
 }
 

@@ -3,7 +3,7 @@
     overflow: hidden;
     height: 300px;
     background: #fff;
-    color: #000;
+    color: $color-gray-xxdark;
     font-family: monospace;
     direction: ltr;
 }
@@ -60,7 +60,7 @@
 }
 
 .CodeMirror-guttermarker {
-    color: #000;
+    color: $color-gray-xxdark;
 }
 
 .CodeMirror-guttermarker-subtle {

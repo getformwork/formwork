@@ -13,13 +13,13 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-gray: #cacaca;
-$color-gray-xxdark: #444;
-$color-gray-xdark: darken($color-gray, 30%);
-$color-gray-dark: darken($color-gray, 20%);
-$color-gray-light: lighten($color-gray, 10%);
-$color-gray-xlight: lighten($color-gray, 15%);
-$color-gray-xxlight: lighten($color-gray, 18%);
+$color-gray-xxdark: lighten(#000, 15%);
+$color-gray-xdark: lighten(#000, 49%);
+$color-gray-dark: lighten(#000, 59%);
+$color-gray: lighten(#000, 79%);
+$color-gray-light: lighten(#000, 89%);
+$color-gray-xlight: lighten(#000, 94%);
+$color-gray-xxlight: lighten(#000, 97%);
 
 $color-accent: #3498da;
 $color-accent-dark: darken($color-accent, 10%);

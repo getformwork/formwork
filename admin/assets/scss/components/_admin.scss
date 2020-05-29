@@ -78,7 +78,7 @@
 
 .logo {
     margin-bottom: $logo-margin-bottom;
-    color: #000;
+    color: $color-gray-xxdark;
     text-align: center;
     font-weight: 600;
     font-size: $logo-font-size;
@@ -95,7 +95,7 @@
 }
 
 .logo a {
-    color: #000;
+    color: $color-gray-xxdark;
 }
 
 .sidebar-navigation {
@@ -117,7 +117,7 @@
 }
 
 .sidebar-navigation > li a {
-    color: #000;
+    color: $color-gray-xxdark;
 }
 
 .sidebar-navigation > li.active {
@@ -164,7 +164,7 @@
 }
 
 .admin-user-fullname {
-    color: #000;
+    color: $color-gray-xxdark;
 }
 
 .admin-user-username {
