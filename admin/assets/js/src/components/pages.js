@@ -129,7 +129,6 @@ export default {
                     var slugInput = $('#page-slug', modal);
                     slugInput.value = slug;
                     slugInput.setAttribute('placeholder', slug);
-                    slugInput.focus();
                 });
             });
 
