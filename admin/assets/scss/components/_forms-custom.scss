@@ -27,6 +27,11 @@
     background-color: $color-accent;
 }
 
+.custom-checkbox:focus + .custom-checkbox-text::before {
+    border-color: $color-accent;
+    @extend .focused;
+}
+
 .custom-checkbox:checked + .custom-checkbox-text:hover::before {
     border-color: $color-accent-dark;
     background-color: $color-accent-dark;
@@ -78,6 +83,10 @@
     font-size: $input-font-size;
     line-height: $input-line-height;
     @include user-select-none;
+}
+
+.tag-input.focused {
+    border-color: $color-accent;
 }
 
 .tag-inner-input {
@@ -174,10 +183,15 @@
     display: inline-block;
     margin: 0;
     margin-bottom: $input-margin-bottom;
-    padding: 0;
     border: 1px solid $color-gray;
     border-radius: $border-radius;
     font-size: 0;
+}
+
+.toggle-group:focus-within {
+    @extend .focused;
+
+    border-color: $color-accent;
 }
 
 .toggle-group label {
@@ -185,12 +199,14 @@
 }
 
 .toggle-group input[type=radio] {
-    display: none;
+    position: absolute;
+    opacity: 0;
 }
 
 .toggle-group input[type=radio] + span {
     display: inline-block;
     padding: $toggle-group-inner-padding-v $toggle-group-inner-padding-h;
+    border-radius: $border-radius - 1px;
     font-size: $font-size-s;
     transition: background-color $transition-time-s, color $transition-time-s;
 }
@@ -204,6 +220,10 @@
     color: #fff;
 }
 
+.toggle-group input[type=radio]:focus + span {
+    background-color: $color-accent-dark;
+}
+
 .toggle-group[disabled] input[type=radio] + span {
     background-color: transparent;
     color: $color-gray-xxdark;
@@ -211,6 +231,10 @@
 
 .toggle-group[disabled] input[type=radio]:checked + span {
     background-color: $color-gray-light;
+}
+
+.toggle-group input[type=radio]:checked:hover + span {
+    background-color: $color-accent-dark;
 }
 
 input[type=range] {
@@ -275,7 +299,6 @@ input[type=range] {
         cursor: default;
     }
     &:focus {
-        outline: none;
         box-shadow: none;
     }
     &:hover::-webkit-slider-thumb {
@@ -286,6 +309,18 @@ input[type=range] {
         &::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb {
             background-color: $color-gray-dark;
         }
+    }
+    &:focus::-webkit-slider-thumb {
+        background-color: $color-accent-dark;
+        box-shadow: $focus-box-shadow;
+    }
+    &:focus::-moz-range-thumb {
+        background-color: $color-accent-dark;
+        box-shadow: $focus-box-shadow;
+    }
+    &:focus::-ms-thumb {
+        background-color: $color-accent-dark;
+        box-shadow: $focus-box-shadow;
     }
 }
 

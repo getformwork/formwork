@@ -61,6 +61,8 @@
 }
 
 .page-title {
+    margin: -$focus-outline-width;
+    padding: $focus-outline-width;
     font-size: $font-size-m;
 }
 

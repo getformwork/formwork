@@ -112,7 +112,8 @@ a.button {
         color: $color-accent;
     }
     &:focus {
-        box-shadow: none;
+        color: $color-accent;
+        @extend .focused;
     }
     &[disabled],
     &[disabled]:hover,

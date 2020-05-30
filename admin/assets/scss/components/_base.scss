@@ -23,7 +23,7 @@ main {
 }
 
 a {
-    outline: none;
+    outline-color: $focus-outline-color;
     background-color: transparent;
     color: $color-accent;
     text-decoration: none;
