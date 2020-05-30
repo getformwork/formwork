@@ -21,10 +21,10 @@ $color-gray-light: lighten(#000, 89%);
 $color-gray-xlight: lighten(#000, 94%);
 $color-gray-xxlight: lighten(#000, 97%);
 
-$color-accent: #3498da;
+$color-accent: #1e88e5;
 $color-accent-dark: darken($color-accent, 10%);
 $color-accent-xdark: darken($color-accent, 20%);
-$color-accent-background: #ecf4fc;
+$color-accent-background: lighten($color-accent, 44%);
 
 $color-success: #2ecc70;
 $color-success-dark: darken($color-success, 10%);

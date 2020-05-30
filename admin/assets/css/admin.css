@@ -21,11 +21,11 @@ main {
 a {
   outline: none;
   background-color: transparent;
-  color: #3498da;
+  color: #1e88e5;
   text-decoration: none;
   transition: color 150ms; }
   a:hover {
-    color: #1a608e; }
+    color: #10538d; }
   a:not([href]) {
     cursor: default; }
 
@@ -49,10 +49,10 @@ mark {
 .button:focus, input:focus,
 select:focus,
 textarea:focus {
-  box-shadow: 0 0 0 2px rgba(40, 154, 230, 0.3); }
+  box-shadow: 0 0 0 2px rgba(17, 137, 242, 0.3); }
 
 ::selection {
-  background-color: #ecf4fc; }
+  background-color: #e7f2fc; }
 
 @media (min-width: 568px) {
   .hide-from-xs {
@@ -447,12 +447,12 @@ a.button {
   margin-left: 0.25rem; }
 
 .button-accent {
-  border: 1px solid #3498da;
-  background-color: #3498da;
+  border: 1px solid #1e88e5;
+  background-color: #1e88e5;
   color: #fff; }
   .button-accent:hover, .button-accent:focus {
-    border-color: #227db9;
-    background-color: #227db9;
+    border-color: #166dba;
+    background-color: #166dba;
     color: #fff; }
 
 .button-success {
@@ -490,7 +490,7 @@ a.button {
   cursor: pointer; }
   .button-link:hover {
     background-color: transparent;
-    color: #3498da; }
+    color: #1e88e5; }
   .button-link:focus {
     box-shadow: none; }
   .button-link[disabled], .button-link[disabled]:hover, .button-link.disabled, .button-link.disabled:hover {
@@ -572,7 +572,7 @@ textarea {
   resize: vertical; }
 
 .input-accent {
-  border-color: #3498da; }
+  border-color: #1e88e5; }
 
 .input-success {
   border-color: #2ecc70; }
@@ -602,7 +602,7 @@ textarea {
   line-height: 1.5;
   transition: color 150ms; }
   .input-reset:hover {
-    color: #3498da; }
+    color: #1e88e5; }
 
 label {
   display: inline-block;
@@ -648,12 +648,12 @@ label {
   background-color: #f7f7f7; }
 
 .custom-checkbox:checked + .custom-checkbox-text::before {
-  border-color: #3498da;
-  background-color: #3498da; }
+  border-color: #1e88e5;
+  background-color: #1e88e5; }
 
 .custom-checkbox:checked + .custom-checkbox-text:hover::before {
-  border-color: #227db9;
-  background-color: #227db9; }
+  border-color: #166dba;
+  background-color: #166dba; }
 
 .custom-checkbox:checked + .custom-checkbox-text::after {
   position: absolute;
@@ -749,7 +749,7 @@ label {
   font-style: normal;
   transition: color 150ms; }
   .tag-remove:hover {
-    color: #3498da; }
+    color: #1e88e5; }
 
 .tag-remove::after {
   content: '\00d7';
@@ -804,7 +804,7 @@ label {
   background-color: #f7f7f7; }
 
 .toggle-group input[type=radio]:checked + span {
-  background-color: #3498da;
+  background-color: #1e88e5;
   color: #fff; }
 
 .toggle-group[disabled] input[type=radio] + span {
@@ -832,7 +832,7 @@ input[type=range] {
     height: 1rem;
     border: 0;
     border-radius: 50%;
-    background-color: #3498da;
+    background-color: #1e88e5;
     transition: background-color 150ms;
     -webkit-appearance: none; }
   input[type=range]::-moz-range-track {
@@ -846,7 +846,7 @@ input[type=range] {
     height: 1rem;
     border: 0;
     border-radius: 50%;
-    background-color: #3498da;
+    background-color: #1e88e5;
     cursor: default; }
   input[type=range]::-ms-track {
     width: 100%;
@@ -866,13 +866,13 @@ input[type=range] {
     height: 1rem;
     border: 0;
     border-radius: 50%;
-    background-color: #3498da;
+    background-color: #1e88e5;
     cursor: default; }
   input[type=range]:focus {
     outline: none;
     box-shadow: none; }
   input[type=range]:hover::-webkit-slider-thumb {
-    background-color: #227db9; }
+    background-color: #166dba; }
   input[type=range][disabled] {
     background-color: transparent; }
     input[type=range][disabled]::-webkit-slider-thumb, input[type=range][disabled]::-moz-range-thumb, input[type=range][disabled]::-ms-thumb {
@@ -982,7 +982,7 @@ input[type=range] {
     background-color: #f0f0f0;
     color: #262626; }
   .dropdown-item.selected {
-    background-color: #3498da;
+    background-color: #1e88e5;
     color: #fff; }
 
 .dropdown-separator {
@@ -1348,13 +1348,13 @@ span.CodeMirror-selectedtext {
   background: #f0f0f0; }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background: #ecf4fc; }
+  background: #e7f2fc; }
 
 .CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-  background: #ecf4fc; }
+  background: #e7f2fc; }
 
 .CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
-  background: #ecf4fc; }
+  background: #e7f2fc; }
 
 .cm-s-formwork .cm-header-1 {
   font-size: 1.75rem; }
@@ -1382,12 +1382,12 @@ span.CodeMirror-selectedtext {
   color: #7d7d7d; }
 
 .cm-s-formwork .cm-link {
-  color: #3498da;
+  color: #1e88e5;
   text-decoration: underline; }
 
 .cm-s-formwork .cm-url,
 .cm-s-formwork .cm-image-marker {
-  color: #1a608e; }
+  color: #10538d; }
 
 .cm-s-formwork .cm-hr {
   color: #7d7d7d; }
@@ -1442,7 +1442,7 @@ span.CodeMirror-selectedtext {
   font-size: 0.875rem;
   cursor: pointer; }
   .calendar-buttons button:hover {
-    color: #3498da; }
+    color: #1e88e5; }
   .calendar-buttons button:focus {
     box-shadow: none; }
 
@@ -1465,11 +1465,11 @@ span.CodeMirror-selectedtext {
   border-radius: 3px;
   transition: background-color 150ms, color 150ms; }
   .calendar-day:hover {
-    background-color: #227db9;
+    background-color: #166dba;
     color: #fff; }
 
 .calendar-day.selected {
-  background-color: #3498da;
+  background-color: #1e88e5;
   color: #fff; }
 
 .calendar-prev-month-day,
@@ -1518,8 +1518,8 @@ span.CodeMirror-selectedtext {
   white-space: nowrap; }
 
 .image-picker-thumbnail.selected {
-  border-color: #3498da;
-  box-shadow: 0 0 0 2px rgba(40, 154, 230, 0.3); }
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 2px rgba(17, 137, 242, 0.3); }
 
 .image-picker-empty-state {
   margin: 3rem auto 4rem;
@@ -1606,7 +1606,7 @@ span.CodeMirror-selectedtext {
     color: #262626; }
 
 .tabs-tab.active {
-  border-bottom: 3px solid #3498da;
+  border-bottom: 3px solid #1e88e5;
   font-weight: 600; }
 
 .caption + .tabs {
@@ -1704,7 +1704,7 @@ span.CodeMirror-selectedtext {
   padding-left: 3.25rem; }
 
 .notification-info {
-  background-color: #3498da;
+  background-color: #1e88e5;
   color: #fff; }
 
 .notification-success {
@@ -1754,7 +1754,7 @@ span.CodeMirror-selectedtext {
   height: 0.8rem;
   border-width: 0.2rem;
   border-style: solid;
-  border-color: #3498da;
+  border-color: #1e88e5;
   border-bottom-color: transparent;
   border-left-color: transparent;
   border-radius: 50%;
@@ -1769,9 +1769,9 @@ span.CodeMirror-selectedtext {
   animation: 750ms spin infinite linear; }
 
 .spinner-info::after {
-  border-color: #3498da;
+  border-color: #1e88e5;
   background-color: #fff;
-  color: #3498da;
+  color: #1e88e5;
   animation: none;
   font-family: Icons, sans-serif; }
 
@@ -2151,10 +2151,10 @@ span.CodeMirror-selectedtext {
 
 .ct-series-a .ct-line,
 .ct-series-a .ct-point {
-  stroke: #3498da; }
+  stroke: #1e88e5; }
 
 .ct-series-a .ct-area {
-  fill: #3498da; }
+  fill: #1e88e5; }
 
 .ct-series-b .ct-line,
 .ct-series-b .ct-point {
@@ -2192,7 +2192,7 @@ span.CodeMirror-selectedtext {
   font-family: Icons, sans-serif; }
 
 .ct-legend-label.ct-series-a::before {
-  color: #3498da; }
+  color: #1e88e5; }
 
 .ct-legend-label.ct-series-b::before {
   color: #f39c11; }
@@ -2270,7 +2270,7 @@ span.CodeMirror-selectedtext {
     transform: translate(0, -50%); }
 
 .login-modal-info {
-  background-color: #3498da;
+  background-color: #1e88e5;
   color: #fff; }
   .login-modal-info::before {
     font-family: Icons, sans-serif; }
@@ -2323,7 +2323,7 @@ span.CodeMirror-selectedtext {
   float: right;
   color: #262626; }
   .view-site:hover {
-    color: #3498da; }
+    color: #1e88e5; }
 
 .view-site i {
   margin-left: 0.5rem; }
@@ -2364,7 +2364,7 @@ span.CodeMirror-selectedtext {
   .toggle-navigation:hover {
     background-color: transparent;
     box-shadow: none;
-    color: #3498da; }
+    color: #1e88e5; }
   .toggle-navigation:focus {
     box-shadow: none; }
 
@@ -2414,7 +2414,7 @@ span.CodeMirror-selectedtext {
   bottom: 0;
   left: 0;
   width: 3px;
-  background-color: #3498da;
+  background-color: #1e88e5;
   content: ' '; }
 
 .admin-user-card {
@@ -2584,8 +2584,8 @@ span.CodeMirror-selectedtext {
   padding: 0.125rem 0.25rem;
   min-width: 1.125rem;
   border-radius: 3px;
-  background-color: #ecf4fc;
-  color: #3498da;
+  background-color: #e7f2fc;
+  color: #1e88e5;
   text-align: center;
   font-weight: 600;
   font-size: 0.875rem;
