@@ -4,7 +4,7 @@
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
-                    <input class="title-input" id="title" type="text" name="title" tabindex="1" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
+                    <input class="title-input" id="title" type="text" name="title" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
                     <input type="hidden" id="slug" name="slug" value="<?= $page->slug() ?>">
 <?php
                     if ($currentLanguage):
@@ -19,27 +19,27 @@
                         </div>
                     </div>
                     <div class="editor-toolbar" data-for="content">
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>"><span class="i-italic"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>"><span class="i-list-ul"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>"><span class="i-list-ol"></span></button>
+                        <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
+                        <button type="button" class="toolbar-button" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>"><span class="i-italic"></span></button>
+                        <button type="button" class="toolbar-button" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>"><span class="i-list-ul"></span></button>
+                        <button type="button" class="toolbar-button" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>"><span class="i-list-ol"></span></button>
                         <span class="spacer"></span>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>"><span class="i-quote"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
+                        <button type="button" class="toolbar-button" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>"><span class="i-quote"></span></button>
+                        <button type="button" class="toolbar-button" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
+                        <button type="button" class="toolbar-button" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
+                        <button type="button" class="toolbar-button" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
                         <span class="spacer"></span>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="undo" title="<?= $this->label('pages.editor.undo') ?>" disabled><span class="i-undo"></span></button>
-                        <button type="button" class="toolbar-button" tabindex="-1" data-command="redo" title="<?= $this->label('pages.editor.redo') ?>" disabled><span class="i-redo"></span></button>
+                        <button type="button" class="toolbar-button" data-command="undo" title="<?= $this->label('pages.editor.undo') ?>" disabled><span class="i-undo"></span></button>
+                        <button type="button" class="toolbar-button" data-command="redo" title="<?= $this->label('pages.editor.redo') ?>" disabled><span class="i-redo"></span></button>
                     </div>
-                    <textarea tabindex="2" class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
+                    <textarea class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-                    <button type="submit" class="button-accent button-right" tabindex="4" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
+                    <button type="submit" class="button-accent button-right" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
 <?php
                     if ($availableLanguages):
 ?>
                     <div class="dropdown button-right">
-                        <button type="button" class="dropdown-button button-accent" tabindex="-1" data-dropdown="languages-dropdown"><i class="i-language"></i> <?= $this->label('pages.languages') ?><?php if ($currentLanguage): ?> <span class="page-language"><?= $currentLanguage ?></span><?php endif; ?></button>
+                        <button type="button" class="dropdown-button button-accent" data-dropdown="languages-dropdown"><i class="i-language"></i> <?= $this->label('pages.languages') ?><?php if ($currentLanguage): ?> <span class="page-language"><?= $currentLanguage ?></span><?php endif; ?></button>
                         <div class="dropdown-menu" id="languages-dropdown">
 <?php
                         foreach ($availableLanguages as $languageCode => $languageLabel):
@@ -57,7 +57,7 @@
 <?php
                 if ($admin->user()->permissions()->has('pages.delete')):
 ?>
-                    <button type="button" class="button-link button-right" tabindex="-1" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->label('pages.delete-page') ?>" aria-label="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                    <button type="button" class="button-link button-right" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->label('pages.delete-page') ?>" aria-label="<?= $this->label('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                 endif;
 ?>
