@@ -18,6 +18,22 @@ export default {
                 });
                 tooltip.show();
             });
+
+            // Immediately show tooltip on focused buttons
+            if (element.tagName.toLowerCase() === 'button' || element.classList.contains('button')) {
+                element.addEventListener('focus', function () {
+                    var tooltip = new Tooltip(this.getAttribute('data-tooltip'), {
+                        referenceElement: this,
+                        position: 'bottom',
+                        offset: {
+                            x: 0, y: 4
+                        },
+                        delay: 0
+                    });
+                    tooltip.show();
+
+                });
+            }
         });
 
         $$('[data-overflow-tooltip="true"]').forEach(function (element) {
