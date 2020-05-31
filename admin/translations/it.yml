@@ -194,6 +194,7 @@ pages.status.not-routable: Non raggiungibile
 pages.status.published: Pubblicato
 pages.status.routable: Raggiungibile
 pages.template: Template
+pages.toggle-children: Mostra/nascondi sottopagine
 register.create-user: Formwork Admin è installato ma non è stato trovato alcun utente. Registrane uno ora.
 register.register: Registra nuovo utente
 request.error.post-max-size: La richiesta HTTP con metodo POST supera la dimensione massima consentita

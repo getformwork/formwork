@@ -194,6 +194,7 @@ pages.status.not-routable: Not Routable
 pages.status.published: Published
 pages.status.routable: Routable
 pages.template: Template
+pages.toggle-children: Toggle Children Pages
 register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
 register.register: Register New User
 request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size

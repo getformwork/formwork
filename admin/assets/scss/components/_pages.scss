@@ -18,11 +18,19 @@
 
 .page-children-toggle {
     display: inline-block;
-    margin-right: $page-children-toggle-margin-right;
+    margin: 0 $page-children-toggle-margin-right $page-children-toggle-margin-bottom 0;
+    padding: 0;
+    min-width: auto;
+    border-color: transparent;
+    background-color: transparent;
     color: $color-gray-xxdark;
     font-weight: 400;
     font-size: $font-size-s;
-    line-height: 1.714;
+    cursor: pointer;
+    &:hover {
+        border-color: transparent;
+        background-color: transparent;
+    }
 }
 
 .toggle-collapsed::before {
@@ -87,6 +95,11 @@ button .page-language,
 .page-route {
     color: $color-gray-dark;
     font-size: $font-size-s;
+}
+
+.page-route-changeable {
+    margin: -$focus-outline-width;
+    padding: $focus-outline-width;
 }
 
 .page-status-label::before {
@@ -181,7 +194,17 @@ button .page-language,
 }
 
 .page-slug-change {
+    margin: 0;
+    padding: 0;
+    border-color: transparent;
+    background-color: transparent;
+    color: $color-gray-dark;
     cursor: pointer;
+    &:hover {
+        border-color: transparent;
+        background-color: transparent;
+        color: $color-gray-dark;
+    }
     &::after {
         display: inline-block;
         margin-left: $page-slug-change-icon-margin-left;
@@ -191,7 +214,7 @@ button .page-language,
         transition: opacity $transition-time-s;
         @include icon(pencil);
     }
-    &:hover::after {
+    &:hover::after, &:focus::after {
         opacity: 1;
     }
 }

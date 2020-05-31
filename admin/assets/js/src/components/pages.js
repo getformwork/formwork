@@ -152,13 +152,13 @@ export default {
                 var slug = $('#page-slug', slugModal).value.replace(/^-+|-+$/, '');
                 var route;
                 if (slug.length > 0) {
-                    route = $('.page-route span').innerHTML;
+                    route = $('.page-slug-change').innerHTML;
                     $$('#page-slug, #slug').forEach(function (element) {
                         element.value = slug;
                     });
                     $('#page-slug', slugModal).value = slug;
                     document.getElementById('slug').value = slug;
-                    $('.page-route span').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/');
+                    $('.page-slug-change').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/');
                 }
                 Modals.hide('slugModal');
             });

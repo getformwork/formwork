@@ -2570,11 +2570,18 @@ span.CodeMirror-selectedtext {
 
 .page-children-toggle {
   display: inline-block;
-  margin-right: 0.25rem;
+  margin: 0 0.25rem 0.125rem 0;
+  padding: 0;
+  min-width: auto;
+  border-color: transparent;
+  background-color: transparent;
   color: #262626;
   font-weight: 400;
   font-size: 0.875rem;
-  line-height: 1.714; }
+  cursor: pointer; }
+  .page-children-toggle:hover {
+    border-color: transparent;
+    background-color: transparent; }
 
 .toggle-collapsed::before {
   font-family: Icons, sans-serif; }
@@ -2629,6 +2636,10 @@ button .page-language,
 .page-route {
   color: #969696;
   font-size: 0.875rem; }
+
+.page-route-changeable {
+  margin: -2px;
+  padding: 2px; }
 
 .page-status-label::before {
   display: inline-block;
@@ -2701,7 +2712,16 @@ button .page-language,
   white-space: nowrap; }
 
 .page-slug-change {
+  margin: 0;
+  padding: 0;
+  border-color: transparent;
+  background-color: transparent;
+  color: #969696;
   cursor: pointer; }
+  .page-slug-change:hover {
+    border-color: transparent;
+    background-color: transparent;
+    color: #969696; }
   .page-slug-change::after {
     display: inline-block;
     margin-left: 0.25rem;
@@ -2710,7 +2730,7 @@ button .page-language,
     opacity: 0;
     transition: opacity 150ms;
     font-family: Icons, sans-serif; }
-  .page-slug-change:hover::after {
+  .page-slug-change:hover::after, .page-slug-change:focus::after {
     opacity: 1; }
 
 .dragging [data-sortable=false] .pages-item:hover {

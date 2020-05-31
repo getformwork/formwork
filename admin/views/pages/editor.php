@@ -14,9 +14,13 @@
                     endif;
 ?>
                     <div class="page-info">
-                        <div class="page-route">
-                            <span<?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?> class="page-slug-change" data-command="change-slug" title="<?= $this->label('pages.change-slug') ?>"<?php endif; ?>><?= $page->route() ?></span>
-                        </div>
+                        <?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?>
+                            <div class="page-route page-route-changeable">
+                                <button type="button" class="page-slug-change" data-command="change-slug" title="<?= $this->label('pages.change-slug') ?>"><?= $page->route() ?></button>
+                            </div>
+                        <?php else: ?>
+                            <div class="page-route"><span><?= $page->route() ?></span></div>
+                        <?php endif; ?>
                     </div>
                     <div class="editor-toolbar" data-for="content">
                         <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
