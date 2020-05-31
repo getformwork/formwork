@@ -22,8 +22,8 @@
             'value'       => $value,
             'placeholder' => $field->get('placeholder_value')
         ]) ?>>
-        <span class="button button-link array-input-remove" role="button" title="<?= $this->label('fields.array.remove') ?>" aria-label="<?= $this->label('fields.array.remove') ?>"></span>
-        <span class="button button-link array-input-add" role="button" title="<?= $this->label('fields.array.add') ?>" aria-label="<?= $this->label('fields.array.add') ?>"></span>
+        <button type="button" class="button-link array-input-remove" title="<?= $this->label('fields.array.remove') ?>" aria-label="<?= $this->label('fields.array.remove') ?>"></button>
+        <button type="button" class="button-link array-input-add" title="<?= $this->label('fields.array.add') ?>" aria-label="<?= $this->label('fields.array.add') ?>"></button>
     </div>
 <?php endforeach; ?>
 </div>
