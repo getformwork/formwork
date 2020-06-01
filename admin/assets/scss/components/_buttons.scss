@@ -20,13 +20,13 @@ button,
     cursor: default;
     transition: border-color $transition-time-s, background-color $transition-time-s, color $transition-time-s;
     @include user-select-none;
-    &:hover {
+    &:hover,
+    &:focus {
         border-color: $color-gray-light;
         background-color: $color-gray-light;
-        color: $color-gray-xxdark;
     }
     &:focus {
-        @include focusring;
+        @include focusring($color-gray-xxdark);
     }
     &[disabled],
     &[disabled]:hover,
@@ -63,6 +63,9 @@ a.button {
         background-color: $color-accent-dark;
         color: #fff;
     }
+    &:focus {
+        @include focusring;
+    }
 }
 
 .button-success {
@@ -74,6 +77,9 @@ a.button {
         border-color: $color-success-dark;
         background-color: $color-success-dark;
         color: #fff;
+    }
+    &:focus {
+        @include focusring($color-success-dark);
     }
 }
 
@@ -87,6 +93,9 @@ a.button {
         background-color: $color-warning-dark;
         color: #fff;
     }
+    &:focus {
+        @include focusring($color-warning-dark);
+    }
 }
 
 .button-error {
@@ -99,6 +108,9 @@ a.button {
         background-color: $color-error-dark;
         color: #fff;
     }
+    &:focus {
+        @include focusring($color-error-dark);
+    }
 }
 
 .button-link {
@@ -107,12 +119,12 @@ a.button {
     background-color: transparent;
     font-size: inherit;
     cursor: pointer;
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: transparent;
         color: $color-accent;
     }
     &:focus {
-        color: $color-accent;
         @include focusring;
     }
     &[disabled],

@@ -27,9 +27,13 @@
     font-weight: 400;
     font-size: $font-size-s;
     cursor: pointer;
-    &:hover {
+    &:hover,
+    &:focus {
         border-color: transparent;
         background-color: transparent;
+    }
+    &:focus {
+        @include focusring;
     }
 }
 

@@ -416,14 +416,14 @@ button,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-  button:hover,
-  .button:hover {
+  button:hover, button:focus,
+  .button:hover,
+  .button:focus {
     border-color: #e3e3e3;
-    background-color: #e3e3e3;
-    color: #262626; }
+    background-color: #e3e3e3; }
   button:focus,
   .button:focus {
-    box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
+    box-shadow: 0 0 0 2px rgba(38, 38, 38, 0.25); }
   button[disabled], button[disabled]:hover, button.disabled, button.disabled:hover,
   .button[disabled],
   .button[disabled]:hover,
@@ -454,6 +454,8 @@ a.button {
     border-color: #166dba;
     background-color: #166dba;
     color: #fff; }
+  .button-accent:focus {
+    box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
 
 .button-success {
   border: 1px solid #2ecc70;
@@ -463,6 +465,8 @@ a.button {
     border-color: #25a259;
     background-color: #25a259;
     color: #fff; }
+  .button-success:focus {
+    box-shadow: 0 0 0 2px rgba(37, 162, 89, 0.25); }
 
 .button-warning {
   border: 1px solid #f39c11;
@@ -472,6 +476,8 @@ a.button {
     border-color: #c77e0a;
     background-color: #c77e0a;
     color: #fff; }
+  .button-warning:focus {
+    box-shadow: 0 0 0 2px rgba(199, 126, 10, 0.25); }
 
 .button-error {
   border: 1px solid #e74c3b;
@@ -481,6 +487,8 @@ a.button {
     border-color: #d52d1a;
     background-color: #d52d1a;
     color: #fff; }
+  .button-error:focus {
+    box-shadow: 0 0 0 2px rgba(213, 45, 26, 0.25); }
 
 .button-link {
   margin: 0;
@@ -488,11 +496,10 @@ a.button {
   background-color: transparent;
   font-size: inherit;
   cursor: pointer; }
-  .button-link:hover {
+  .button-link:hover, .button-link:focus {
     background-color: transparent;
     color: #1e88e5; }
   .button-link:focus {
-    color: #1e88e5;
     box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
   .button-link[disabled], .button-link[disabled]:hover, .button-link.disabled, .button-link.disabled:hover {
     background-color: transparent;
@@ -2580,9 +2587,11 @@ span.CodeMirror-selectedtext {
   font-weight: 400;
   font-size: 0.875rem;
   cursor: pointer; }
-  .page-children-toggle:hover {
+  .page-children-toggle:hover, .page-children-toggle:focus {
     border-color: transparent;
     background-color: transparent; }
+  .page-children-toggle:focus {
+    box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
 
 .toggle-collapsed::before {
   font-family: Icons, sans-serif; }
