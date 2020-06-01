@@ -204,10 +204,14 @@ button .page-language,
     background-color: transparent;
     color: $color-gray-dark;
     cursor: pointer;
-    &:hover {
+    &:hover,
+    &:focus {
         border-color: transparent;
         background-color: transparent;
         color: $color-gray-dark;
+    }
+    &:focus {
+        @include focusring;
     }
     &::after {
         display: inline-block;

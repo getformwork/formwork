@@ -12,12 +12,13 @@
     padding: $editor-toolbar-button-padding;
     border: 0;
     background-color: $color-gray-xxlight;
+    &:hover,
     &:focus {
-        color: $color-accent;
-    }
-    &:hover {
         background-color: transparent;
         color: $color-accent;
+    }
+    &:focus {
+        @include focusring;
     }
 }
 

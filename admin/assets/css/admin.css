@@ -1342,11 +1342,11 @@ span.CodeMirror-selectedtext {
   padding: 0.5rem;
   border: 0;
   background-color: #f7f7f7; }
-  .toolbar-button:focus {
-    color: #1e88e5; }
-  .toolbar-button:hover {
+  .toolbar-button:hover, .toolbar-button:focus {
     background-color: transparent;
     color: #1e88e5; }
+  .toolbar-button:focus {
+    box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
 
 .editor-textarea {
   margin-bottom: 1rem;
@@ -2728,10 +2728,12 @@ button .page-language,
   background-color: transparent;
   color: #969696;
   cursor: pointer; }
-  .page-slug-change:hover {
+  .page-slug-change:hover, .page-slug-change:focus {
     border-color: transparent;
     background-color: transparent;
     color: #969696; }
+  .page-slug-change:focus {
+    box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
   .page-slug-change::after {
     display: inline-block;
     margin-left: 0.25rem;
