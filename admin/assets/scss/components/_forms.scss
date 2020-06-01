@@ -16,7 +16,7 @@ textarea {
     &:focus {
         outline: none;
         border-color: $color-accent;
-        @extend .focused;
+        @include focusring;
     }
     &[disabled] {
         background-color: $color-gray-xlight;

@@ -29,7 +29,7 @@
 
 .custom-checkbox:focus + .custom-checkbox-text::before {
     border-color: $color-accent;
-    @extend .focused;
+    @include focusring;
 }
 
 .custom-checkbox:checked + .custom-checkbox-text:hover::before {
@@ -189,9 +189,8 @@
 }
 
 .toggle-group:focus-within {
-    @extend .focused;
-
     border-color: $color-accent;
+    @include focusring;
 }
 
 .toggle-group label {
@@ -312,15 +311,15 @@ input[type=range] {
     }
     &:focus::-webkit-slider-thumb {
         background-color: $color-accent-dark;
-        box-shadow: $focus-box-shadow;
+        @include focusring;
     }
     &:focus::-moz-range-thumb {
         background-color: $color-accent-dark;
-        box-shadow: $focus-box-shadow;
+        @include focusring;
     }
     &:focus::-ms-thumb {
         background-color: $color-accent-dark;
-        box-shadow: $focus-box-shadow;
+        @include focusring;
     }
 }
 

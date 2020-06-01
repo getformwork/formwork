@@ -44,10 +44,11 @@ $border-radius-round: 50%;
 
 $mark-background-color: #ffd700;
 
-$focus-outline-color: rgba(saturate($color-accent, 10%), 0.5);
-$focus-box-shadow: 0 0 0 2px $focus-outline-color;
+$focusring-width: 2px;
+$focusring-opacity: 0.25;
+$focusring-default-color: saturate($color-accent, 21%);
 
-$focus-outline-width: 2px;
+$link-outline-color: rgba($focusring-default-color, $focusring-opacity);
 
 $columns-count: 12;
 $columns-gutter: 30px;

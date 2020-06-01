@@ -69,8 +69,8 @@
 }
 
 .page-title {
-    margin: -$focus-outline-width;
-    padding: $focus-outline-width;
+    margin: -$focusring-width;
+    padding: $focusring-width;
     font-size: $font-size-m;
 }
 
@@ -98,8 +98,8 @@ button .page-language,
 }
 
 .page-route-changeable {
-    margin: -$focus-outline-width;
-    padding: $focus-outline-width;
+    margin: -$focusring-width;
+    padding: $focusring-width;
 }
 
 .page-status-label::before {

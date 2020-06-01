@@ -53,6 +53,10 @@
     }
 }
 
+@mixin focusring($color: $focusring-default-color) {
+    box-shadow: 0 0 0 $focusring-width rgba($color, $focusring-opacity);
+}
+
 @mixin make-columns-globals($columns-count, $breakpoints) {
     $selectors: '';
 
