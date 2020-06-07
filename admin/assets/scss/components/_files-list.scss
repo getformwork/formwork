@@ -7,25 +7,20 @@
 }
 
 .files-item {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
-
-.files-item-row {
-    display: table-row;
+    display: flex;
+    align-items: center;
 }
 
 .files-item-cell {
-    display: table-cell;
     overflow: hidden;
     padding: $files-item-cell-padding;
-    vertical-align: middle;
     white-space: nowrap;
     font-size: $font-size-s;
 }
 
 .file-name {
+    flex: 0 0 80%;
+    max-width: 80%;
     font-size: $file-name-font-size;
     @include ellipsis;
 }
@@ -58,7 +53,8 @@
 }
 
 .file-actions {
-    width: 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
     text-align: right;
     font-size: $font-size-m;
 }

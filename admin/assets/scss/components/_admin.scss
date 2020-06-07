@@ -136,9 +136,9 @@
 }
 
 .admin-user-card {
-    display: table;
+    display: flex;
+    align-items: center;
     margin-bottom: $admin-user-card-margin-bottom;
-    table-layout: fixed;
     cursor: pointer;
     &:hover img {
         box-shadow: $color-gray-light 0 0 0 0.5rem;
@@ -146,9 +146,7 @@
 }
 
 .admin-user-avatar {
-    display: table-cell;
     width: $admin-user-avatar-width;
-    vertical-align: middle;
 }
 
 // stylelint-disable-next-line no-descending-specificity
@@ -159,9 +157,7 @@
 }
 
 .admin-user-details {
-    display: table-cell;
     padding: $admin-user-details-padding-v $admin-user-details-padding-h;
-    vertical-align: middle;
 }
 
 .admin-user-fullname {
@@ -183,12 +179,12 @@
 }
 
 .component {
+    overflow: auto;
     margin-bottom: $component-margin-bottom;
     padding: $component-padding;
     border-radius: $border-radius;
     background-color: #fff;
     box-shadow: $component-box-shadow;
-    @include clearfix;
 }
 
 .caption {

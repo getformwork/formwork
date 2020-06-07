@@ -1,14 +1,12 @@
 .user-summary {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+    display: flex;
+    align-items: center;
 }
 
 .user-summary-avatar {
-    display: table-cell;
+    flex: 0 0 20%;
     padding: $user-summary-cell-padding;
-    width: 20%;
-    vertical-align: middle;
+    max-width: 20%;
     text-align: center;
 }
 
@@ -18,9 +16,7 @@
 }
 
 .user-summary-data {
-    display: table-cell;
     padding: $user-summary-cell-padding;
-    vertical-align: middle;
 }
 
 .users-list {
@@ -68,28 +64,32 @@
 }
 
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
-    .users-item {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
+    .users-item, .users-list-headers {
+        display: flex;
+        align-items: center;
     }
 
     .users-list-headers {
-        display: table;
         padding: $users-list-headers-padding-v $users-list-headers-padding-h;
-        width: 100%;
-        table-layout: fixed;
         font-weight: 600;
     }
 
     .users-item-cell,
     .users-headers-cell {
-        display: table-cell;
+        display: block;
         padding: $users-item-cell-padding-v-l $users-item-cell-padding-h-l;
     }
 
-    .user-username {
-        width: 20%;
+    .user-username,
+    .user-last-access {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+
+    .user-fullname,
+    .user-email {
+        flex: 0 0 25%;
+        max-width: 25%;
     }
 
     .user-last-access,
@@ -97,11 +97,8 @@
         text-align: center;
     }
 
-    .user-last-access {
-        width: 20%;
-    }
-
     .user-actions {
-        width: 10%;
+        flex: 0 0 10%;
+        max-width: 10%;
     }
 }
