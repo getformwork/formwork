@@ -138,29 +138,25 @@ button .page-language,
 @media (min-width: map-get($responsive-breakpoints, 'xs')) {
     .pages-item,
     .pages-list-headers {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    .pages-item-row {
-        display: table-row;
+        display: flex;
+        align-items: center;
     }
 
     .pages-item-cell,
     .pages-headers-cell {
-        display: table-cell;
-        vertical-align: middle;
+        display: block;
     }
 
     .page-details {
-        width: 50%;
+        flex: 0 0 55%;
+        max-width: 55%;
     }
 
     .page-date,
     .page-status,
     .page-actions {
-        width: 15%;
+        flex: 0 0 15%;
+        max-width: 15%;
         text-align: center;
     }
 }

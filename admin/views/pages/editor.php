@@ -1,6 +1,6 @@
 <div class="container-no-margin">
-    <div class="row">
-        <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
+    <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
+        <div class="row">
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
@@ -146,6 +146,6 @@
                     </select>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>

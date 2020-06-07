@@ -1,14 +1,3 @@
-@mixin clearfix {
-    &::before,
-    &::after {
-        display: table;
-        content: ' ';
-    }
-    &::after {
-        clear: both;
-    }
-}
-
 @mixin user-select-none {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -61,27 +50,34 @@
     $selectors: '';
 
     @each $breakpoint-name in map-keys($breakpoints) {
+        @if $selectors != '' {
+            $selectors: '#{$selectors}, .col-#{$breakpoint-name}';
+        } @else {
+            $selectors: '.col-#{$breakpoint-name}';
+        }
+
         @for $i from 1 through $columns-count {
-            @if $selectors != '' {
-                $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
-                $gcd: gcd($i, $columns-count);
-                @if $gcd > 1 {
-                    $f: $i / $gcd;
-                    $g: $columns-count / $gcd;
-                    $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
-                }
-            } @else {
-                $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
+            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
+            $gcd: gcd($i, $columns-count);
+            @if $gcd > 1 {
+                $f: $i / $gcd;
+                $g: $columns-count / $gcd;
+                $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
             }
         }
     }
     #{$selectors} {
         padding: 0 $columns-gutter / 2;
+        width: 100%;
     }
 }
 
 @mixin make-breakpoint-columns($columns-count, $breakpoint-name) {
-    $all-selectors: '';
+    .col-#{$breakpoint-name} {
+        flex: 1 0 auto;
+        max-width: 100%;
+        width: auto;
+    }
 
     @for $i from 1 through $columns-count {
         $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
@@ -91,31 +87,9 @@
             $g: $columns-count / $gcd;
             $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
         }
-        @if $all-selectors != '' {
-            $all-selectors: '#{$all-selectors}, #{$selectors}';
-        } @else {
-            $all-selectors: '#{$selectors}';
-        }
         #{$selectors} {
-            width: percentage($i / $columns-count);
-        }
-    }
-    #{$all-selectors} {
-        float: left;
-    }
-}
-
-@mixin make-breakpoint-columns-offsets($columns-count, $breakpoint-name) {
-    @for $i from 1 to $columns-count {
-        $selectors: '.col-#{$breakpoint-name}-o-#{$i}-#{$columns-count}';
-        $gcd: gcd($i, $columns-count);
-        @if $gcd > 1 {
-            $f: $i / $gcd;
-            $g: $columns-count / $gcd;
-            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-o-#{$f}-#{$g}';
-        }
-        #{$selectors} {
-            margin-left: percentage($i / $columns-count);
+            flex: 0 0 percentage($i / $columns-count);
+            max-width: percentage($i / $columns-count);
         }
     }
 }
