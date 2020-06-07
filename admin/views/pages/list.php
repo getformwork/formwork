@@ -30,7 +30,7 @@
 <?php
                     if ($subpages && $page->hasChildren()):
 ?>
-                            <span class="page-children-toggle toggle-collapsed"></span>
+                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->label('pages.toggle-children') ?>"></button>
 <?php
                     endif;
 ?>

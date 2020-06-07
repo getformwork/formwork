@@ -44,7 +44,11 @@ $border-radius-round: 50%;
 
 $mark-background-color: #ffd700;
 
-$focus-box-shadow: 0 0 0 2px rgba(saturate($color-accent, 10%), 0.3);
+$focusring-width: 2px;
+$focusring-opacity: 0.25;
+$focusring-default-color: saturate($color-accent, 21%);
+
+$link-outline-color: rgba($focusring-default-color, $focusring-opacity);
 
 $columns-count: 12;
 $columns-gutter: 30px;
@@ -213,9 +217,9 @@ $dropdown-list-max-height: 6.25 * (2 * $dropdown-item-padding-v * $base-line-hei
 // Editor
 // ===
 
-$editor-toolbar-padding-v: 0;
+$editor-toolbar-padding-v: 0.125rem;
 $editor-toolbar-padding-h: 0.25rem;
-$editor-toolbar-button-padding: 0.625rem;
+$editor-toolbar-button-padding: 0.5rem;
 
 $editor-textarea-margin-bottom: 1rem;
 $editor-textarea-padding-v: 0.75rem;
@@ -426,6 +430,7 @@ $pages-list-headers-padding-v: 0.25rem;
 $pages-list-headers-padding-h: 0;
 
 $page-children-toggle-margin-right: 0.25rem;
+$page-children-toggle-margin-bottom: 0.125rem;
 
 $pages-item-padding-v: 0.5rem;
 $pages-item-padding-h: 0;

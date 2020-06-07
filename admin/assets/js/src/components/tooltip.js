@@ -21,6 +21,7 @@ export default function Tooltip(text, options) {
         // Remove tooltip when clicking on buttons
         if (referenceElement.tagName.toLowerCase() === 'button' || referenceElement.classList.contains('button')) {
             referenceElement.addEventListener('click', remove);
+            referenceElement.addEventListener('blur', remove);
         }
     }
 

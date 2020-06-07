@@ -230,5 +230,12 @@ export default {
         });
         element.addEventListener('mouseout', clear);
         window.addEventListener('mouseup', clear);
+    },
+
+    firstFocusableElement: function (parent) {
+        if (typeof parent === 'undefined') {
+            parent = document.body;
+        }
+        return parent.querySelector('button, .button, input:not([type=hidden]), select, textarea') || parent;
     }
 };

@@ -15,10 +15,8 @@ textarea {
     @include appearance-none;
     &:focus {
         outline: none;
-        @extend .focused;
-    }
-    &:invalid {
-        box-shadow: none;
+        border-color: $color-accent;
+        @include focusring;
     }
     &[disabled] {
         background-color: $color-gray-xlight;
@@ -64,6 +62,10 @@ select {
     background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
     background-color: #fff;
     background-size: 8px 6px;
+    &:-moz-focusring {
+        color: transparent;
+        text-shadow: 0 0 0 $color-gray-xxdark;
+    }
 }
 
 // stylelint-disable-next-line no-descending-specificity

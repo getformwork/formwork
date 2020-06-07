@@ -43,6 +43,13 @@ export default Modals = {
                 Modals.hide();
             }
         });
+
+        window.addEventListener('focus', function () {
+            var modal = $('.modal.show');
+            if (modal) {
+                Utils.firstFocusableElement(modal).focus();
+            }
+        });
     },
 
     show: function (id, action, callback) {
@@ -54,8 +61,11 @@ export default Modals = {
         if (action) {
             $('form', modal).setAttribute('action', action);
         }
+        document.activeElement.blur(); // Don't retain focus on any element
         if ($('[autofocus]', modal)) {
-            Utils.triggerEvent($('[autofocus]', modal), 'focus'); // Firefox bug
+            $('[autofocus]', modal).focus(); // Firefox bug
+        } else {
+            Utils.firstFocusableElement(modal).focus();
         }
         if (typeof callback === 'function') {
             callback(modal);
@@ -99,7 +109,7 @@ export default Modals = {
         $$('[required]', id).forEach(function (element) {
             if (element.value === '') {
                 element.classList('input-invalid');
-                Utils.triggerEvent(element, 'focus');
+                element.focus();
                 $('.modal-error', modal).style.display = 'block';
                 valid = false;
                 return false;

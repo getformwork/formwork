@@ -1,6 +1,7 @@
 .tabs {
     overflow-x: auto;
     margin-bottom: $tabs-margin-bottom;
+    padding: $focusring-width $focusring-width 0;
     border-bottom: 1px solid $color-gray-light;
     white-space: nowrap;
     @include user-select-none;

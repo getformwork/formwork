@@ -25,10 +25,6 @@
 </head>
 <body>
     <button type="button" class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
-    <div class="title-bar">
-        <span class="panel-title"><?= $this->label('admin.panel') ?></span>
-        <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
-    </div>
     <div class="sidebar show-from-s">
         <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.png') ?>" alt=""> Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $admin->user()->username() . '/profile/') ?>">
@@ -83,6 +79,10 @@
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="title-bar">
+        <span class="panel-title"><?= $this->label('admin.panel') ?></span>
+        <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
     </div>
     <main class="main">
         <?= $content ?>

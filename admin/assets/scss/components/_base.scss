@@ -23,7 +23,7 @@ main {
 }
 
 a {
-    outline: none;
+    outline-color: $link-outline-color;
     background-color: transparent;
     color: $color-accent;
     text-decoration: none;
@@ -58,7 +58,7 @@ mark {
 }
 
 .focused {
-    box-shadow: $focus-box-shadow;
+    @include focusring;
 }
 
 ::selection {

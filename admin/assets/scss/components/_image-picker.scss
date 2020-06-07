@@ -37,7 +37,7 @@
 
 .image-picker-thumbnail.selected {
     border-color: $color-accent;
-    box-shadow: $focus-box-shadow;
+    @include focusring;
 }
 
 .image-picker-empty-state {
