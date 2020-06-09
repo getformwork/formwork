@@ -1,3 +1,14 @@
+@mixin clearfix {
+    &::before,
+    &::after {
+        display: table;
+        content: '';
+    }
+    &::after {
+        clear: both;
+    }
+}
+
 @mixin user-select-none {
     -webkit-user-select: none;
     -moz-user-select: none;

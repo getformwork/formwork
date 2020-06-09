@@ -2427,12 +2427,16 @@ span.CodeMirror-selectedtext {
       margin-left: 15.875rem; } }
 
 .component {
-  overflow: auto;
   margin-bottom: 1rem;
   padding: 1.5rem;
   border-radius: 3px;
   background-color: #fff;
   box-shadow: rgba(240, 240, 240, 0.25) 1px 1px 9px 3px; }
+  .component::before, .component::after {
+    display: table;
+    content: ''; }
+  .component::after {
+    clear: both; }
 
 .caption {
   margin-bottom: 1rem;
