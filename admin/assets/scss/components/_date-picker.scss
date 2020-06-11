@@ -45,6 +45,10 @@
     }
 }
 
+.calendar-buttons .currentMonth {
+    font-weight: 600;
+}
+
 .calendar-table {
     width: 100%;
 }
@@ -76,7 +80,7 @@
 
 .calendar-prev-month-day,
 .calendar-next-month-day {
-    color: $color-gray-dark;
+    color: $color-gray;
 }
 
 .calendar-separator {

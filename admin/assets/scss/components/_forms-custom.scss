@@ -306,7 +306,7 @@ input[type=range] {
     &[disabled] {
         background-color: transparent;
         &::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb {
-            background-color: $color-gray-dark;
+            background-color: $color-gray-xdark;
         }
     }
     &:focus::-webkit-slider-thumb {

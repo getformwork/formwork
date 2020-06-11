@@ -361,7 +361,8 @@ button,
   .button:hover,
   .button:focus {
     border-color: #e3e3e3;
-    background-color: #e3e3e3; }
+    background-color: #e3e3e3;
+    color: #262626; }
   button:focus,
   .button:focus {
     box-shadow: 0 0 0 2px rgba(38, 38, 38, 0.25); }
@@ -566,7 +567,7 @@ label {
   -moz-appearance: none; }
 
 .label-suggestion {
-  color: #969696;
+  color: #7d7d7d;
   font-size: 0.75rem;
   line-height: 1; }
 
@@ -843,7 +844,7 @@ input[type=range] {
   input[type=range][disabled] {
     background-color: transparent; }
     input[type=range][disabled]::-webkit-slider-thumb, input[type=range][disabled]::-moz-range-thumb, input[type=range][disabled]::-ms-thumb {
-      background-color: #969696; }
+      background-color: #7d7d7d; }
   input[type=range]:focus::-webkit-slider-thumb {
     background-color: #166dba;
     box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
@@ -1422,6 +1423,9 @@ span.CodeMirror-selectedtext {
   .calendar-buttons button:focus {
     box-shadow: none; }
 
+.calendar-buttons .currentMonth {
+  font-weight: 600; }
+
 .calendar-table {
   width: 100%; }
 
@@ -1450,7 +1454,7 @@ span.CodeMirror-selectedtext {
 
 .calendar-prev-month-day,
 .calendar-next-month-day {
-  color: #969696; }
+  color: #c9c9c9; }
 
 .calendar-separator {
   margin: 0.5rem -0.5rem;
@@ -2415,7 +2419,7 @@ span.CodeMirror-selectedtext {
   color: #262626; }
 
 .admin-user-username {
-  color: #969696;
+  color: #7d7d7d;
   font-size: 0.875rem; }
 
 .main {
@@ -2578,7 +2582,7 @@ button .page-language,
   font-size: 0.75rem; }
 
 .page-route {
-  color: #969696;
+  color: #7d7d7d;
   font-size: 0.875rem; }
 
 .page-route-changeable {
@@ -2658,12 +2662,12 @@ button .page-language,
   padding: 0;
   border-color: transparent;
   background-color: transparent;
-  color: #969696;
+  color: #7d7d7d;
   cursor: pointer; }
   .page-slug-change:hover, .page-slug-change:focus {
     border-color: transparent;
     background-color: transparent;
-    color: #969696; }
+    color: #7d7d7d; }
   .page-slug-change:focus {
     box-shadow: 0 0 0 2px rgba(4, 138, 255, 0.25); }
   .page-slug-change::after {

@@ -24,6 +24,7 @@ button,
     &:focus {
         border-color: $color-gray-light;
         background-color: $color-gray-light;
+        color: $color-gray-xxdark;
     }
     &:focus {
         @include focusring($color-gray-xxdark);

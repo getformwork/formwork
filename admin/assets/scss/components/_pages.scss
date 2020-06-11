@@ -97,7 +97,7 @@ button .page-language,
 }
 
 .page-route {
-    color: $color-gray-dark;
+    color: $color-gray-xdark;
     font-size: $font-size-s;
 }
 
@@ -198,13 +198,13 @@ button .page-language,
     padding: 0;
     border-color: transparent;
     background-color: transparent;
-    color: $color-gray-dark;
+    color: $color-gray-xdark;
     cursor: pointer;
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
-        color: $color-gray-dark;
+        color: $color-gray-xdark;
     }
     &:focus {
         @include focusring;
