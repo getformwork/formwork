@@ -47,11 +47,15 @@ export default {
             element.addEventListener('click', function () {
                 Modals.show('imagesModal', null, function (modal) {
                     var selected = $('.image-picker-thumbnail.selected', modal);
+                    var thumbnail;
                     if (selected) {
                         selected.classList.remove('selected');
                     }
-                    if (this.value) {
-                        $('.image-picker-thumbnail[data-filename="' + this.value + '"]', modal).classList.add('selected');
+                    if (element.value) {
+                        thumbnail = $('.image-picker-thumbnail[data-filename="' + element.value + '"]', modal);
+                        if (thumbnail) {
+                            thumbnail.classList.add('selected');
+                        }
                     }
                     $('.image-picker-confirm', modal).setAttribute('data-target', element.id);
                 });
