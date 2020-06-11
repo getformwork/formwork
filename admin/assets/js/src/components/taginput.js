@@ -19,7 +19,6 @@ export default function TagInput(input) {
 
         innerInput = document.createElement('input');
         innerInput.className = 'tag-inner-input';
-        innerInput.id = input.id;
         innerInput.type = 'text';
         innerInput.placeholder = input.placeholder;
 
