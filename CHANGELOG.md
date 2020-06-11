@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.7.0](https://github.com/getformwork/formwork/releases/tag/1.7.0) (2020-06-11)
+
+**Enhancements**
+
+- **Improve focus state on form inputs, buttons and links**
+- Make shades of gray more consistent
+- Improve accent and text color contrast
+- Move `.title-bar` down so that sidebar comes first in tab order
+- Replace floats with flexbox
+
+**Bug fixes**
+
+- Fix grid in page editor form
+- Fix non-unique id in `TagInput`
+- Fix errors occurring with image inputs
+- Fix wrongly detected changes in forms
+
 ## [1.6.1](https://github.com/getformwork/formwork/releases/tag/1.6.1) (2020-05-27)
 
 **Bug fixes**

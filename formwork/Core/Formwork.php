@@ -24,7 +24,7 @@ class Formwork
      *
      * @var string
      */
-    public const VERSION = '1.6.1';
+    public const VERSION = '1.7.0';
 
     /**
      * Formwork instance
