@@ -12,10 +12,6 @@ import Utils from './utils';
 export default {
     init: function () {
 
-        $$('[data-form]').forEach(function (element) {
-            Form(element);
-        });
-
         $$('input[data-enable]').forEach(function (element) {
             element.addEventListener('change', function () {
                 var i, input;
@@ -84,6 +80,11 @@ export default {
 
         $$('.array-input').forEach(function (element) {
             ArrayInput(element);
+        });
+
+        // Load the Form component at the end, after initialization of elements
+        $$('[data-form]').forEach(function (element) {
+            Form(element);
         });
     }
 };
