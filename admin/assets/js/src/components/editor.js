@@ -3,6 +3,7 @@ import Modals from './modals';
 import Utils from './utils';
 
 import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/addon/edit/continuelist.js';
 
 export default function Editor(textarea) {
     var editor = CodeMirror.fromTextArea(textarea, {
