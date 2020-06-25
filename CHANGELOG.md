@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.1](https://github.com/getformwork/formwork/releases/tag/1.7.1) (2020-06-25)
+
+**Enhancements**
+
+- Restore Markdown list continuation
+
+**Bug fixes**
+
+- Fix errors occurring when Change slug command is not available
+
 ## [1.7.0](https://github.com/getformwork/formwork/releases/tag/1.7.0) (2020-06-11)
 
 **Enhancements**
