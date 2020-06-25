@@ -10,6 +10,7 @@ export default {
         var commandExpandAllPages = $('[data-command=expand-all-pages]');
         var commandCollapseAllPages = $('[data-command=collapse-all-pages]');
         var commandReorderPages = $('[data-command=reorder-pages]');
+        var commandChangeSlug = $('[data-command=change-slug]');
 
         var searchInput = $('.page-search');
 
@@ -122,8 +123,8 @@ export default {
             });
         }
 
-        if (slugModal) {
-            $('[data-command=change-slug]').addEventListener('click', function () {
+        if (slugModal && commandChangeSlug) {
+            commandChangeSlug.addEventListener('click', function () {
                 Modals.show('slugModal', null, function (modal) {
                     var slug = document.getElementById('slug').value;
                     var slugInput = $('#page-slug', modal);
