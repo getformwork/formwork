@@ -23,11 +23,11 @@
     "sortablejs": "^1.10.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.0",
-    "@rollup/plugin-node-resolve": "^8.1.0",
+    "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-node-resolve": "^8.4.0",
     "node-sass": "^4.14.1",
     "onchange": "^7.0.2",
-    "rollup": "^2.18.0",
+    "rollup": "^2.22.1",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
