@@ -32,7 +32,7 @@ export default {
             'z': '[zźẑžżẓ]'
         };
         for (char in diacritics) {
-            if (diacritics.hasOwnProperty(char)) {
+            if (Object.prototype.hasOwnProperty.call(diacritics, char)) {
                 string = string.split(char).join(diacritics[char]);
                 string = string.split(char.toUpperCase()).join(diacritics[char].toUpperCase());
             }
@@ -47,7 +47,7 @@ export default {
         };
         string = string.toLowerCase();
         for (char in translate) {
-            if (translate.hasOwnProperty(char)) {
+            if (Object.prototype.hasOwnProperty.call(translate, char)) {
                 string = string.split(char).join(translate[char]);
             }
         }
@@ -159,7 +159,7 @@ export default {
         var property;
         var serialized = [];
         for (property in object) {
-            if (object.hasOwnProperty(property)) {
+            if (Object.prototype.hasOwnProperty.call(object, property)) {
                 serialized.push(encodeURIComponent(property) + '=' + encodeURIComponent(object[property]));
             }
         }
