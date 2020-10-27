@@ -6,6 +6,7 @@ use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Utils\ZipErrors;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use ZipArchive;
 
@@ -74,16 +75,14 @@ class Backupper
 
         $destination = $path . $this->options['name'] . '-' . date(self::DATE_FORMAT) . '.zip';
 
-        $files = FileSystem::scanRecursive($source, true);
-        $files = array_filter($files, function ($item) use ($source) {
-            return $this->isCopiable(substr($item, strlen($source)));
-        });
-
         $zip = new ZipArchive();
 
         if (($status = $zip->open($destination, ZipArchive::CREATE)) === true) {
-            foreach ($files as $file) {
-                $zip->addFile($file, substr($file, strlen($source)));
+            foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
+                $relative = Str::removeStart($file, $source);
+                if ($this->isCopiable($relative)) {
+                    $zip->addFile($file, $relative);
+                }
             }
             $zip->close();
         }
