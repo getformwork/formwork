@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.8.0](https://github.com/getformwork/formwork/releases/tag/1.8.0) (2020-10-27)
+
+**Enhancements**
+
+- Add generator-based `FileSystem::listContents()` and `FileSystem::listRecursive()`
+- Add `FileSystem::isEmptyDirectory()`
+- Avoid using `FileSystem::scan()` and `FileSystem::scanRecursive()`
+- Avoid using `hasOwnProperty()` directly on instances
+
+**Bug fixes**
+
+- Fix wrong `ecmaVersion` in .eslintrc
+
+**Deprecations**
+
+- Deprecate `FileSystem::scan()` and `FileSystem::scanRecursive()`
+
 ## [1.7.1](https://github.com/getformwork/formwork/releases/tag/1.7.1) (2020-06-25)
 
 **Enhancements**
