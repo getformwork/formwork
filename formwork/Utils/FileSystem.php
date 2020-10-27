@@ -545,6 +545,8 @@ class FileSystem
     /**
      * List files and directories contained in a path
      *
+     * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
+     *
      * @return Generator
      */
     public static function listContents(string $path, int $flags = self::LIST_VISIBLE)
@@ -576,7 +578,7 @@ class FileSystem
     /**
      * Recursively list files and directories contained in a path
      *
-     * @param int $flags [description]
+     * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
      *
      * @return Generator
      */
