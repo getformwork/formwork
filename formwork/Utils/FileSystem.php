@@ -494,12 +494,15 @@ class FileSystem
     /**
      * Scan a path for files and directories
      *
+     * @deprecated
+     *
      * @param bool $all Whether to return only visible or all files
      *
      * @return array
      */
     public static function scan(string $path, bool $all = false)
     {
+        trigger_error(static::class . '::scan() is deprecated since Formwork 1.8.0, use ' . static::class . '::listContents() instead', E_USER_DEPRECATED);
         static::assert($path);
         if (!static::isDirectory($path)) {
             throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
@@ -518,12 +521,15 @@ class FileSystem
     /**
      * Recursively scan a path for files and directories
      *
+     * @deprecated
+     *
      * @param bool $all Whether to return only visible or all files
      *
      * @return array
      */
     public static function scanRecursive(string $path, bool $all = false)
     {
+        trigger_error(static::class . '::scanRecursive() is deprecated since Formwork 1.8.0, use ' . static::class . '::listRecursive() instead', E_USER_DEPRECATED);
         $list = [];
         $path = static::normalize($path);
         foreach (FileSystem::scan($path, $all) as $item) {
