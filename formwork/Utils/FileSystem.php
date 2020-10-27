@@ -7,6 +7,41 @@ use RuntimeException;
 class FileSystem
 {
     /**
+     * List only files flag
+     *
+     * @var int
+     */
+    public const LIST_FILES = 1;
+
+    /**
+     * List only directories flag
+     *
+     * @var int
+     */
+    public const LIST_DIRECTORIES = 2;
+
+    /**
+     * List hidden files flag
+     *
+     * @var int
+     */
+    public const LIST_HIDDEN = 4;
+
+    /**
+     * List visible files and directories flag
+     *
+     * @var int
+     */
+    public const LIST_VISIBLE = self::LIST_FILES | self::LIST_DIRECTORIES;
+
+    /**
+     * List visible and hidden files and directories flag
+     *
+     * @var int
+     */
+    public const LIST_ALL = self::LIST_FILES | self::LIST_DIRECTORIES | self::LIST_HIDDEN;
+
+    /**
      * Array containing files to ignore
      *
      * @var array
@@ -123,7 +158,7 @@ class FileSystem
         if (static::lastModifiedTime($directory) > $time) {
             return true;
         }
-        foreach (static::scan($directory) as $item) {
+        foreach (static::listContents($directory) as $item) {
             $path = static::normalize($directory) . $item;
             if (static::lastModifiedTime($path) > $time) {
                 return true;
@@ -163,7 +198,7 @@ class FileSystem
         $path = static::normalize($path);
         static::assert($path);
         $bytes = 0;
-        foreach (static::scan($path, true) as $item) {
+        foreach (static::listContents($path, self::LIST_ALL) as $item) {
             if (static::isFile($path . $item)) {
                 $bytes += (int) static::size($path . $item, false);
             } else {
@@ -252,7 +287,7 @@ class FileSystem
             return @unlink($path);
         }
         if ($recursive) {
-            foreach (static::scan($path, true) as $file) {
+            foreach (static::listContents($path, self::LIST_ALL) as $file) {
                 static::delete($path . DS . $file, true);
             }
         }
@@ -326,7 +361,7 @@ class FileSystem
         if (!static::exists($destination)) {
             static::createDirectory($destination);
         }
-        foreach (static::scan($source, true) as $item) {
+        foreach (static::listContents($source, self::LIST_ALL) as $item) {
             if (static::isFile($source . $item)) {
                 static::move($source . $item, $destination . $item);
             } else {
@@ -486,33 +521,79 @@ class FileSystem
     }
 
     /**
-     * Scan a path only for files
+     * List files and directories contained in a path
      *
-     * @param bool $all Whether to return only visible or all files
-     *
-     * @return array
+     * @return Generator
      */
-    public static function listFiles(string $path, bool $all = false)
+    public static function listContents(string $path, int $flags = self::LIST_VISIBLE)
     {
-        $path = static::normalize($path);
-        return array_filter(static::scan($path, $all), static function ($item) use ($path) {
-            return static::isFile($path . $item);
-        });
+        static::assert($path);
+        $handle = @opendir($path);
+        if ($handle === false) {
+            throw new RuntimeException('Cannot open the directory ' . $path);
+        }
+        while (($item = @readdir($handle)) !== false) {
+            if (in_array($item, self::IGNORED_FILES, true)) {
+                continue;
+            }
+            if (!($flags & self::LIST_HIDDEN) && !static::isVisible($item)) {
+                continue;
+            }
+            $itemPath = static::normalize($path) . $item;
+            if (!($flags & self::LIST_FILES) && static::isFile($itemPath)) {
+                continue;
+            }
+            if (!($flags & self::LIST_DIRECTORIES) && static::isDirectory($itemPath)) {
+                continue;
+            }
+            yield $item;
+        }
+        @closedir($handle);
     }
 
     /**
-     * Scan a path only for directories
+     * Recursively list files and directories contained in a path
+     *
+     * @param int $flags [description]
+     *
+     * @return Generator
+     */
+    public static function listRecursive(string $path, int $flags = self::LIST_VISIBLE)
+    {
+        foreach (static::listContents($path, $flags) as $item) {
+            $itemPath = static::normalize($path) . $item;
+            if (static::isDirectory($itemPath)) {
+                foreach (static::listRecursive($itemPath, $flags) as $item) {
+                    yield $item;
+                }
+            } else {
+                yield $itemPath;
+            }
+        }
+    }
+
+    /**
+     * List files contained in a path
+     *
+     * @param bool $all Whether to return only visible or all files
+     *
+     * @return Generator
+     */
+    public static function listFiles(string $path, bool $all = false)
+    {
+        return static::listContents($path, $all ? self::LIST_FILES | self::LIST_HIDDEN : self::LIST_FILES);
+    }
+
+    /**
+     * List directories contained in a path
      *
      * @param bool $all Whether to return only visible or all directories
      *
-     * @return array
+     * @return Generator
      */
     public static function listDirectories(string $path, bool $all = false)
     {
-        $path = static::normalize($path);
-        return array_filter(static::scan($path, $all), static function ($item) use ($path) {
-            return static::isDirectory($path . $item);
-        });
+        return static::listContents($path, $all ? self::LIST_DIRECTORIES | self::LIST_HIDDEN : self::LIST_DIRECTORIES);
     }
 
     /**
