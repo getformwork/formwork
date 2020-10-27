@@ -15,7 +15,9 @@
     "build:css": "node-sass ./assets/scss/admin.scss > ./assets/css/admin.css && node-sass ./assets/scss/admin.scss --output-style compressed > ./assets/css/admin.min.css",
     "build:js": "rollup -c && uglifyjs assets/js/app.min.js -c -m -o assets/js/app.min.js --timings",
     "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
-    "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js"
+    "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js",
+    "lint:css": "stylelint ./assets/scss/**/*.scss",
+    "lint:js": "eslint ./assets/js/src/**/*.js"
   },
   "dependencies": {
     "chartist": "^0.11.4",
