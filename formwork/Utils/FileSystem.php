@@ -274,6 +274,22 @@ class FileSystem
     }
 
     /**
+     * Return whether a directory is empty
+     *
+     * @return bool
+     */
+    public static function isEmptyDirectory(string $path)
+    {
+        if (!static::isDirectory($path)) {
+            return false;
+        }
+        foreach (static::listContents($path, self::LIST_ALL) as $item) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Delete a file or a directory
      *
      * @param bool $recursive Whether to delete files recursively or not
