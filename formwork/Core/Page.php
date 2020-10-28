@@ -92,6 +92,13 @@ class Page extends AbstractPage
     protected $files;
 
     /**
+     * Unprocessed page frontmatter
+     *
+     * @var string
+     */
+    protected $rawFrontmatter;
+
+    /**
      * Page frontmatter
      *
      * @var array
@@ -99,11 +106,18 @@ class Page extends AbstractPage
     protected $frontmatter = [];
 
     /**
-     * Page unprocessed content
+     * Unprocessed page content
      *
      * @var string
      */
     protected $rawContent;
+
+    /**
+     * Unprocessed page summary
+     *
+     * @var string
+     */
+    protected $rawSummary;
 
     /**
      * Page summary
@@ -113,11 +127,18 @@ class Page extends AbstractPage
     protected $summary;
 
     /**
-     * Page content
+     * Unprocessed page body text
      *
      * @var string
      */
-    protected $content;
+    protected $rawBody;
+
+    /**
+     * Page body text
+     *
+     * @var string
+     */
+    protected $body;
 
     /**
      * Page status
@@ -463,6 +484,55 @@ class Page extends AbstractPage
     }
 
     /**
+     * Return raw content
+     *
+     * @return string
+     */
+    public function rawContent()
+    {
+        if ($this->rawContent !== null) {
+            return $this->rawContent;
+        }
+        return $this->rawContent = str_replace("\r\n", "\n", empty($this->rawSummary) ? $this->rawBody : $this->rawSummary . "\n\n===\n\n" . $this->rawBody);
+    }
+
+    /**
+     * Return summary text
+     *
+     * @return string
+     */
+    public function summary()
+    {
+        if ($this->summary !== null) {
+            return $this->summary;
+        }
+        return $this->summary = Markdown::parse($this->rawSummary, ['baseRoute' => $this->route]);
+    }
+
+    /**
+     * Return body text
+     *
+     * @return string
+     */
+    public function body()
+    {
+        if ($this->body !== null) {
+            return $this->body;
+        }
+        return $this->body = Markdown::parse($this->rawBody, ['baseRoute' => $this->route]);
+    }
+
+    /**
+     * Return page content (summary and body text)
+     *
+     * @return string
+     */
+    public function content()
+    {
+        return $this->summary() . $this->body();
+    }
+
+    /**
      * Load files related to page
      */
     protected function loadFiles()
@@ -518,14 +588,9 @@ class Page extends AbstractPage
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
             throw new RuntimeException('Invalid page format');
         }
-        [$match, $frontmatter, $summary, $body] = $matches;
-        $this->frontmatter = YAML::parse($frontmatter);
-        $this->rawContent = str_replace("\r\n", "\n", empty($summary) ? $body : $summary . "\n\n===\n\n" . $body);
+        [$match, $this->rawFrontmatter, $this->rawSummary, $this->rawBody] = $matches;
+        $this->frontmatter = YAML::parse($this->rawFrontmatter);
         $this->data = array_merge($this->defaults(), $this->frontmatter);
-        if (!empty($summary)) {
-            $this->summary = Markdown::parse($summary, ['baseRoute' => $this->route]);
-        }
-        $this->content = $this->summary . Markdown::parse($body, ['baseRoute' => $this->route]);
     }
 
     /**
