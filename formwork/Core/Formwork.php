@@ -375,6 +375,14 @@ class Formwork
                         return $this->site->errorPage();
                     }
                 }
+                if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
+                    if (($page->published() && !$this->site->modifiedSince((int) strtotime($page->get('publish-date'))))
+                    || (!$page->published() && !$this->site->modifiedSince((int) strtotime($page->get('unpublish-date'))))) {
+                        // Clear cache if the site was not modified since the page has been published or unpublished
+                        $this->cache->clear();
+                        FileSystem::touch($this->option('content.path'));
+                    }
+                }
                 if ($page->routable() && $page->published()) {
                     return $page;
                 }
