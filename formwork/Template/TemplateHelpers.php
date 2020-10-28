@@ -17,7 +17,8 @@ class TemplateHelpers
     protected static $helpers = [
         'attr'       => [HTML::class, 'attributes'],
         'escape'     => [Str::class, 'escape'],
-        'removeHTML' => [Str::class, 'removeHTML']
+        'removeHTML' => [Str::class, 'removeHTML'],
+        'slug'       => [Str::class, 'slug']
     ];
 
     /**
