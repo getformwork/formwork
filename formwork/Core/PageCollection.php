@@ -86,12 +86,12 @@ class PageCollection extends Collection
      * Filter collection items
      *
      * @param string   $property Property to find in filtered items
-     * @param bool     $value    Value to check in filtered items (default: true)
+     * @param          $value    Value to check in filtered items (default: true)
      * @param callable $process  Callable to process items before filtering
      *
      * @return self
      */
-    public function filter(string $property, bool $value = true, ?callable $process = null)
+    public function filter(string $property, $value = true, ?callable $process = null)
     {
         $pageCollection = clone $this;
 
