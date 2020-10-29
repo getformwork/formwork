@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.0](https://github.com/getformwork/formwork/releases/tag/1.9.0) (2020-10-29)
+
+**Enhancements**
+
+- Revert non-cacheable error page from [b8018e9](https://github.com/getformwork/formwork/commit/b8018e9)
+- Defer Markdown processing in pages
+- Clear cache when current page has been published or unpublished
+- Add `Str::slug()`
+- Add `slug` template helper
+- Use `Str::slug()` to support tags with special characters
+
+**Bug fixes**
+
+- Fix `PageCollection::filter()` coercing `$value` parameter to bool
+
 ## [1.8.0](https://github.com/getformwork/formwork/releases/tag/1.8.0) (2020-10-27)
 
 **Enhancements**
