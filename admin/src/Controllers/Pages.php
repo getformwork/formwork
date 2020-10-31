@@ -254,7 +254,8 @@ class Pages extends AbstractController
         $this->ensurePageExists($page, 'pages.page.cannot-delete.page-not-found');
 
         if ($params->has('language')) {
-            if ($page->hasLanguage($language = $params->get('language'))) {
+            $language = $params->get('language');
+            if ($page->hasLanguage($language)) {
                 $page->setLanguage($language);
             } else {
                 $this->notify($this->label('pages.page.cannot-delete.invalid-language', $language), 'error');
