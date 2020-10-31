@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.1](https://github.com/getformwork/formwork/releases/tag/1.9.1) (2020-10-31)
+
+**Enhancements**
+
+- Invalidate cache also when system options are changed
+
+**Bug fixes**
+
+- Fix undefined variable in `Pages::delete()`
+
 ## [1.9.0](https://github.com/getformwork/formwork/releases/tag/1.9.0) (2020-10-29)
 
 **Enhancements**
