@@ -43,6 +43,12 @@ class Options extends AbstractController
             $options = Formwork::instance()->options();
             $defaults = Formwork::instance()->defaults();
             $differ = $this->updateOptions('system', $fields->validate($data), $options, $defaults);
+
+            // Touch content folder to invalidate cache
+            if ($differ) {
+                FileSystem::touch($this->option('content.path'));
+            }
+
             $this->notify($this->label('options.updated'), 'success');
             $this->redirect('/options/system/');
         }
