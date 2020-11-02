@@ -7,10 +7,8 @@ class Arr
     /**
      * Get data by key returning a default value if key is not present in a given array,
      * using dot notation to traverse if literal key is not found
-     *
-     * @param string $key
      */
-    public static function get(array $array, $key, $default = null)
+    public static function get(array $array, string $key, $default = null)
     {
         if (array_key_exists($key, $array)) {
             return $array[$key];
@@ -27,10 +25,8 @@ class Arr
     /**
      * Return whether a key is present in a given array, using dot notation to traverse
      * if literal key is not found
-     *
-     * @param string $key
      */
-    public static function has(array $array, $key): bool
+    public static function has(array $array, string $key): bool
     {
         if (array_key_exists($key, $array)) {
             return true;
