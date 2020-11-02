@@ -33,19 +33,15 @@ class DataGetter
     }
 
     /**
-     * Return whether a key or multiple keys are present
+     * Return whether a key is present
      *
      * @param array|string $key
      */
     public function has($key): bool
     {
         if (is_array($key)) {
-            foreach ($key as $k) {
-                if (!$this->has($k)) {
-                    return false;
-                }
-            }
-            return true;
+            trigger_error('Using ' . static::class . '::has() with an array as $key parameter is deprecated since Formwork 1.10.0, use ' . static::class . '::hasMultiple() instead', E_USER_DEPRECATED);
+            return $this->hasMultiple($key);
         }
         return Arr::has($this->data, $key);
     }
