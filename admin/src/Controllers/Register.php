@@ -31,7 +31,7 @@ class Register extends AbstractController
             case 'POST':
                 $data = new DataGetter(HTTPRequest::postData());
 
-                if (!$data->has(['username', 'fullname', 'password', 'language', 'email'])) {
+                if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
                     $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
                     $this->redirectToPanel();
                 }

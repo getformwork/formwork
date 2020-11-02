@@ -205,7 +205,7 @@ class Pages extends AbstractController
 
         $data = new DataGetter(HTTPRequest::postData());
 
-        if (!$data->has(['parent', 'from', 'to'])) {
+        if (!$data->hasMultiple(['parent', 'from', 'to'])) {
             JSONResponse::error($this->label('pages.page.cannot-move'))->send();
         }
 
@@ -337,7 +337,7 @@ class Pages extends AbstractController
     protected function createPage(DataGetter $data): Page
     {
         // Ensure no required data is missing
-        if (!$data->has(['title', 'slug', 'template', 'parent'])) {
+        if (!$data->hasMultiple(['title', 'slug', 'template', 'parent'])) {
             throw new TranslatedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
         }
 
@@ -398,7 +398,7 @@ class Pages extends AbstractController
     protected function updatePage(Page $page, DataGetter $data, Fields $fields): Page
     {
         // Ensure no required data is missing
-        if (!$data->has(['title', 'content'])) {
+        if (!$data->hasMultiple(['title', 'content'])) {
             throw new TranslatedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
         }
 

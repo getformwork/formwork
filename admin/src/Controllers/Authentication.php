@@ -50,7 +50,7 @@ class Authentication extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 // Ensure no required data is missing
-                if (!$data->has(['username', 'password'])) {
+                if (!$data->hasMultiple(['username', 'password'])) {
                     $this->error($this->label('login.attempt.failed'));
                 }
 
