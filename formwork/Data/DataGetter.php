@@ -51,6 +51,19 @@ class DataGetter
     }
 
     /**
+     * Return whether multiple keys are present
+     */
+    public function hasMultiple(array $key): bool
+    {
+        foreach ($key as $k) {
+            if (!$this->has($k)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Return an array containing data
      */
     public function toArray(): array
