@@ -100,10 +100,8 @@ class Updater
 
     /**
      * Return updater default options
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
             'time'                => 900,
@@ -131,7 +129,7 @@ class Updater
      *
      * @return bool Whether updates are found or not
      */
-    public function checkUpdates()
+    public function checkUpdates(): bool
     {
         if (time() - $this->registry->get('last-check') < $this->options['time']) {
             return $this->registry->get('up-to-date');
@@ -169,7 +167,7 @@ class Updater
      *
      * @return bool|null Whether Formwork was updated or not
      */
-    public function update()
+    public function update(): ?bool
     {
         $this->checkUpdates();
 
@@ -232,10 +230,8 @@ class Updater
 
     /**
      * Get latest release data
-     *
-     * @return array
      */
-    public function latestRelease()
+    public function latestRelease(): array
     {
         return $this->registry->get('release');
     }
@@ -243,7 +239,7 @@ class Updater
     /**
      * Load latest release data
      */
-    protected function loadRelease()
+    protected function loadRelease(): void
     {
         if ($this->release !== null) {
             return;
@@ -274,10 +270,8 @@ class Updater
 
     /**
      * Get release archive headers
-     *
-     * @return array
      */
-    protected function getHeaders()
+    protected function getHeaders(): array
     {
         if ($this->headers !== null) {
             return $this->headers;
@@ -287,10 +281,8 @@ class Updater
 
     /**
      * Return whether a file is copiable or not
-     *
-     * @return bool
      */
-    protected function isCopiable(string $file)
+    protected function isCopiable(string $file): bool
     {
         foreach ($this->options['ignore'] as $pattern) {
             if (fnmatch($pattern, $file)) {
@@ -302,10 +294,8 @@ class Updater
 
     /**
      * Return deletable files based on installed ones
-     *
-     * @return array
      */
-    protected function findDeletableFiles(array $installedFiles)
+    protected function findDeletableFiles(array $installedFiles): array
     {
         $list = [];
         foreach ($installedFiles as $path) {
@@ -326,7 +316,7 @@ class Updater
     /**
      * Initialize registry data
      */
-    protected function initializeRegistry()
+    protected function initializeRegistry(): void
     {
         foreach ($this->registryDefaults as $key => $value) {
             $this->registry->set($key, $value);

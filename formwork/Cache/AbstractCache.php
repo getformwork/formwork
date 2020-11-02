@@ -12,31 +12,27 @@ abstract class AbstractCache
     /**
      * Save data to cache
      */
-    abstract public function save(string $key, $value);
+    abstract public function save(string $key, $value): void;
 
     /**
      * Delete cached resource
      */
-    abstract public function delete(string $key);
+    abstract public function delete(string $key): void;
 
     /**
      * Clear cache
      */
-    abstract public function clear();
+    abstract public function clear(): void;
 
     /**
      * Return whether a resource is cached
-     *
-     * @return bool
      */
-    abstract public function has(string $key);
+    abstract public function has(string $key): bool;
 
     /**
      * Fetch multiple data from cache
-     *
-     * @return array
      */
-    public function fetchMultiple(array $keys)
+    public function fetchMultiple(array $keys): array
     {
         $result = [];
         foreach ($keys as $key) {
@@ -48,7 +44,7 @@ abstract class AbstractCache
     /**
      * Save multiple data to cache
      */
-    public function saveMultiple(array $keysAndValues)
+    public function saveMultiple(array $keysAndValues): void
     {
         foreach ($keysAndValues as $key => $value) {
             $this->save($key, $value);
@@ -58,7 +54,7 @@ abstract class AbstractCache
     /**
      * Delete multiple cached resources
      */
-    public function deleteMultiple(array $keys)
+    public function deleteMultiple(array $keys): void
     {
         foreach ($keys as $key) {
             $this->delete($key);
@@ -67,10 +63,8 @@ abstract class AbstractCache
 
     /**
      * Return whether multiple resources are cached
-     *
-     * @return bool
      */
-    public function hasMultiple(array $keys)
+    public function hasMultiple(array $keys): bool
     {
         foreach ($keys as $key) {
             if (!$this->has($key)) {

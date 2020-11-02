@@ -93,7 +93,7 @@ class Header
      * @param bool $send Whether to send status code or return
      * @param bool $exit Whether to exit from the script after sending the status code
      *
-     * @return string|null
+     * @return string|void
      */
     public static function status(int $code, bool $send = true, bool $exit = false)
     {
@@ -116,7 +116,7 @@ class Header
      *
      * @param bool $replace Whether to replace headers with the same name
      */
-    public static function send(string $fieldName, string $fieldValue, bool $replace = true)
+    public static function send(string $fieldName, string $fieldValue, bool $replace = true): void
     {
         if (headers_sent()) {
             throw new RuntimeException('Cannot send ' . $fieldName . ' header, HTTP headers already sent');
@@ -127,7 +127,7 @@ class Header
     /**
      * Set Content-Type header
      */
-    public static function contentType(string $mimeType)
+    public static function contentType(string $mimeType): void
     {
         static::send('Content-Type', $mimeType);
     }
@@ -135,7 +135,7 @@ class Header
     /**
      * Send HTTP 404 Not Found status
      */
-    public static function notFound()
+    public static function notFound(): void
     {
         static::status(404);
     }
@@ -145,7 +145,7 @@ class Header
      *
      * @param int $code Redirect HTTP response status code
      */
-    public static function redirect(string $uri, int $code = 302)
+    public static function redirect(string $uri, int $code = 302): void
     {
         static::status($code);
         static::send('Location', $uri);

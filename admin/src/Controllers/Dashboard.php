@@ -9,7 +9,7 @@ class Dashboard extends AbstractController
     /**
      * Dashboard@index action
      */
-    public function index()
+    public function index(): void
     {
         $this->ensurePermission('dashboard');
 

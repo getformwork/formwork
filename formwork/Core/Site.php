@@ -43,10 +43,8 @@ class Site extends AbstractPage
 
     /**
      * Return site default data
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
             'title'    => 'Formwork',
@@ -57,30 +55,24 @@ class Site extends AbstractPage
 
     /**
      * Get all available templates
-     *
-     * @return array
      */
-    public function templates()
+    public function templates(): array
     {
         return array_map('strval', array_keys($this->templates));
     }
 
     /**
      * Return whether a template exists
-     *
-     * @return bool
      */
-    public function hasTemplate(string $template)
+    public function hasTemplate(string $template): bool
     {
         return array_key_exists($template, $this->templates);
     }
 
     /**
      * Return template filename
-     *
-     * @return string
      */
-    public function template(string $name)
+    public function template(string $name): string
     {
         if (!$this->hasTemplate($name)) {
             throw new RuntimeException('Invalid template ' . $name);
@@ -90,10 +82,8 @@ class Site extends AbstractPage
 
     /**
      * Return whether site has been modified since given time
-     *
-     * @return bool
      */
-    public function modifiedSince(int $time)
+    public function modifiedSince(int $time): bool
     {
         return FileSystem::directoryModifiedSince($this->path, $time);
     }
@@ -108,20 +98,16 @@ class Site extends AbstractPage
 
     /**
      * Return a PageCollection containing site pages
-     *
-     * @return PageCollection
      */
-    public function pages()
+    public function pages(): PageCollection
     {
         return $this->children();
     }
 
     /**
      * Return whether site has pages
-     *
-     * @return bool
      */
-    public function hasPages()
+    public function hasPages(): bool
     {
         return !$this->children()->isEmpty();
     }
@@ -129,7 +115,7 @@ class Site extends AbstractPage
     /**
      * Return alias of a given route
      *
-     * @return string|null
+     * @return string|void
      */
     public function alias(string $route)
     {
@@ -143,30 +129,24 @@ class Site extends AbstractPage
 
     /**
      * Set and return site current page
-     *
-     * @return Page
      */
-    public function setCurrentPage(Page $page)
+    public function setCurrentPage(Page $page): Page
     {
         return $this->currentPage = $page;
     }
 
     /**
      * Navigate to and return a page from its route, setting then the current page
-     *
-     * @return Page
      */
-    public function navigate(string $route)
+    public function navigate(string $route): Page
     {
         return $this->currentPage = $this->findPage($route);
     }
 
     /**
      * Get site index page
-     *
-     * @return Page|null
      */
-    public function indexPage()
+    public function indexPage(): ?Page
     {
         return $this->findPage(Formwork::instance()->option('pages.index'));
     }
@@ -175,10 +155,8 @@ class Site extends AbstractPage
      * Return or render site error page
      *
      * @param bool $navigate Whether to navigate to the error page or not
-     *
-     * @return Page|null
      */
-    public function errorPage(bool $navigate = false)
+    public function errorPage(bool $navigate = false): ?Page
     {
         $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
         if ($navigate) {
@@ -191,10 +169,8 @@ class Site extends AbstractPage
      * Get site language
      *
      * @deprecated
-     *
-     * @return string|null
      */
-    public function lang()
+    public function lang(): ?string
     {
         trigger_error(static::class . '::lang() is deprecated since Formwork 1.2.0, use ' . static::class . '::languages()->default() instead', E_USER_DEPRECATED);
         return $this->languages()->default() ?? ($this->data['lang'] ?? 'en');
@@ -203,7 +179,7 @@ class Site extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isSite()
+    public function isSite(): bool
     {
         return true;
     }
@@ -211,7 +187,7 @@ class Site extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isIndexPage()
+    public function isIndexPage(): bool
     {
         return false;
     }
@@ -219,7 +195,7 @@ class Site extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isErrorPage()
+    public function isErrorPage(): bool
     {
         return false;
     }
@@ -227,7 +203,7 @@ class Site extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         return false;
     }
@@ -235,7 +211,7 @@ class Site extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function metadata()
+    public function metadata(): Metadata
     {
         if ($this->metadata !== null) {
             return $this->metadata;
@@ -255,10 +231,8 @@ class Site extends AbstractPage
 
     /**
      * Find page from route
-     *
-     * @return Page|null
      */
-    public function findPage(string $route)
+    public function findPage(string $route): ?Page
     {
         if ($route === '/') {
             return $this->indexPage();
@@ -288,10 +262,8 @@ class Site extends AbstractPage
 
     /**
      * Retrieve page from the storage creating a new one if not existing
-     *
-     * @return Page
      */
-    public function retrievePage(string $path)
+    public function retrievePage(string $path): Page
     {
         if (isset($this->storage[$path])) {
             return $this->storage[$path];
@@ -302,7 +274,7 @@ class Site extends AbstractPage
     /**
      * Load all available templates
      */
-    protected function loadTemplates()
+    protected function loadTemplates(): void
     {
         $templatesPath = Formwork::instance()->option('templates.path');
         $templates = [];
@@ -312,7 +284,7 @@ class Site extends AbstractPage
         $this->templates = $templates;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'site';
     }

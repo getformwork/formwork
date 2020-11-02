@@ -10,7 +10,7 @@ class Cache extends AbstractController
     /**
      * Cache@clear action
      */
-    public function clear()
+    public function clear(): void
     {
         $this->ensurePermission('cache.clear');
         if (Formwork::instance()->cache() !== null) {

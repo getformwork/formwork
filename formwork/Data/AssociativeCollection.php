@@ -21,10 +21,8 @@ class AssociativeCollection extends Collection
      * Return whether a key is present
      *
      * @param string $key
-     *
-     * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return Arr::has($this->items, $key);
     }

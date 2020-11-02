@@ -15,7 +15,7 @@ class Backup extends AbstractController
     /**
      * Backup@make action
      */
-    public function make()
+    public function make(): void
     {
         $this->ensurePermission('backup.make');
         $backupper = new Backupper();
@@ -34,7 +34,7 @@ class Backup extends AbstractController
     /**
      * Backup@download action
      */
-    public function download(RouteParams $params)
+    public function download(RouteParams $params): void
     {
         $this->ensurePermission('backup.download');
         $file = $this->option('backup.path') . base64_decode($params->get('backup'));

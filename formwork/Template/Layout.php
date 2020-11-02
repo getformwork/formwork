@@ -32,7 +32,7 @@ class Layout extends Template
     /**
      * @inheritdoc
      */
-    public function path()
+    public function path(): string
     {
         return $this->template->path();
     }
@@ -40,17 +40,15 @@ class Layout extends Template
     /**
      * @inheritdoc
      */
-    public function scheme()
+    public function scheme(): Scheme
     {
         return $this->template->scheme();
     }
 
     /**
      * Get layout contents
-     *
-     * @return string|null
      */
-    public function content()
+    public function content(): ?string
     {
         return $this->content;
     }

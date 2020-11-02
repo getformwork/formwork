@@ -84,7 +84,7 @@ class Router
      *
      * @param mixed ...$arguments
      */
-    public function add(...$arguments)
+    public function add(...$arguments): void
     {
         $type = 'HTTP';
         $method = 'GET';
@@ -160,50 +160,40 @@ class Router
 
     /**
      * Return whether router has dispatched
-     *
-     * @return bool
      */
-    public function hasDispatched()
+    public function hasDispatched(): bool
     {
         return $this->dispatched;
     }
 
     /**
      * Get route params
-     *
-     * @return RouteParams
      */
-    public function params()
+    public function params(): RouteParams
     {
         return $this->params;
     }
 
     /**
      * Get the request handled by the router
-     *
-     * @return string
      */
-    public function request()
+    public function request(): string
     {
         return $this->request;
     }
 
     /**
      * Rewrite current route
-     *
-     * @return string
      */
-    public function rewrite(array $params)
+    public function rewrite(array $params): string
     {
         return $this->rewriteRoute($this->route, array_merge($this->params->toArray(), $params));
     }
 
     /**
      * Match route against request
-     *
-     * @return bool
      */
-    protected function match(string $route)
+    protected function match(string $route): bool
     {
         $compiledRoute = $this->compileRoute($route);
         if ($compiledRoute !== false && preg_match($compiledRoute['regex'], $this->request, $matches)) {
@@ -220,10 +210,8 @@ class Router
 
     /**
      * Compile a route to a valid regex and params list
-     *
-     * @return array
      */
-    protected function compileRoute(string $route)
+    protected function compileRoute(string $route): array
     {
         preg_match_all('/{([A-Za-z0-9_]+)(?::([^{]+))?}/', $route, $matches);
         [$tokens, $params, $patterns] = $matches;
@@ -250,10 +238,8 @@ class Router
 
     /**
      * Rewrite a route given new params
-     *
-     * @return string
      */
-    protected function rewriteRoute(string $route, array $params)
+    protected function rewriteRoute(string $route, array $params): string
     {
         $compiledRoute = $this->compileRoute($route);
         foreach ($compiledRoute['params'] as $i => $param) {

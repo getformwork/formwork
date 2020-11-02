@@ -72,10 +72,8 @@ class Uploader
 
     /**
      * Return Uploader default options
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         $mimeTypes = array_map(
             [MimeType::class, 'fromExtension'],
@@ -92,7 +90,7 @@ class Uploader
      *
      * @return bool Whether files were uploaded or not
      */
-    public function upload(?string $name = null)
+    public function upload(?string $name = null): bool
     {
         if (!HTTPRequest::hasFiles()) {
             return false;
@@ -115,10 +113,8 @@ class Uploader
 
     /**
      * Return if a MIME type is allowed by Formwork
-     *
-     * @return bool
      */
-    public function isAllowedMimeType(string $mimeType)
+    public function isAllowedMimeType(string $mimeType): bool
     {
         if ($this->options['allowedMimeTypes'] === null) {
             return true;
@@ -128,10 +124,8 @@ class Uploader
 
     /**
      * Return uploaded files
-     *
-     * @return array
      */
-    public function uploadedFiles()
+    public function uploadedFiles(): array
     {
         return $this->uploadedFiles;
     }
@@ -141,7 +135,7 @@ class Uploader
      *
      * @return bool Whether file was successfully moved or not
      */
-    private function move(string $source, string $destination, string $filename)
+    private function move(string $source, string $destination, string $filename): bool
     {
         $mimeType = FileSystem::mimeType($source);
 

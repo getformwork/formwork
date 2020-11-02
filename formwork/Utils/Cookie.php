@@ -25,7 +25,7 @@ class Cookie
      *
      * @param bool $replace Whether to replace existing Set-Cookie header
      */
-    public static function send(string $name, string $value, array $options = [], bool $replace = false)
+    public static function send(string $name, string $value, array $options = [], bool $replace = false): void
     {
         $options = array_merge(static::defaults(), (array) $options);
         if (in_array(strtolower($name), array_keys($options), true)) {
@@ -37,10 +37,8 @@ class Cookie
 
     /**
      * Return an array containing the default cookie directives
-     *
-     * @return array
      */
-    protected static function defaults()
+    protected static function defaults(): array
     {
         return [
             'expires'  => 0,
@@ -55,10 +53,8 @@ class Cookie
 
     /**
      * Parse cookie options
-     *
-     * @return array
      */
-    protected static function parseOptions(array $options)
+    protected static function parseOptions(array $options): array
     {
         $data = [];
         if ($options['expires'] > 0) {
@@ -90,10 +86,8 @@ class Cookie
 
     /**
      * Make Set-Cookie header string
-     *
-     * @return string
      */
-    protected static function makeHeader(array $data)
+    protected static function makeHeader(array $data): string
     {
         $parts = [];
         foreach ($data as $key => $value) {

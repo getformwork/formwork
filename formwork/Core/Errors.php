@@ -12,7 +12,7 @@ class Errors
     /**
      * Set error handlers
      */
-    public static function setHandlers()
+    public static function setHandlers(): void
     {
         ini_set('display_errors', 0);
         set_exception_handler([static::class, 'exceptionHandler']);
@@ -24,7 +24,7 @@ class Errors
      *
      * @param int $status HTTP status code
      */
-    public static function displayErrorPage(int $status = 500)
+    public static function displayErrorPage(int $status = 500): void
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
@@ -36,7 +36,7 @@ class Errors
     /**
      * Display error page on exception
      */
-    public static function exceptionHandler(Throwable $exception)
+    public static function exceptionHandler(Throwable $exception): void
     {
         static::displayErrorPage();
         error_log(sprintf(
@@ -56,8 +56,6 @@ class Errors
      * @param string $message
      * @param string $file
      * @param int    $line
-     *
-     * @return bool|ErrorException
      */
     public static function errorHandler($severity, $message, $file, $line)
     {

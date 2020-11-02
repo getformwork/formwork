@@ -100,7 +100,7 @@ class Statistics
     /**
      * Track a visit
      */
-    public function trackVisit()
+    public function trackVisit(): void
     {
         if (Visitor::isBot() || !Visitor::isTrackable()) {
             return;
@@ -130,10 +130,8 @@ class Statistics
 
     /**
      * Return chart data
-     *
-     * @return array
      */
-    public function getChartData(int $limit = self::CHART_LIMIT)
+    public function getChartData(int $limit = self::CHART_LIMIT): array
     {
         $visits = $this->visitsRegistry->toArray();
         $uniqueVisits = $this->uniqueVisitsRegistry->toArray();

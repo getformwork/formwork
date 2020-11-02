@@ -12,7 +12,7 @@ class Errors extends AbstractController
     /**
      * Errors@notFound action
      */
-    public function notFound()
+    public function notFound(): void
     {
         $this->displayError(404, 'not-found', [
             'href'  => $this->uri('/dashboard/'),
@@ -23,7 +23,7 @@ class Errors extends AbstractController
     /**
      * Errors@internalServerError action
      */
-    public function internalServerError(Throwable $exception)
+    public function internalServerError(Throwable $exception): void
     {
         $this->displayError(500, 'internal-server-error', [
             'href'  => $this->makeGitHubIssueUri($exception),
@@ -34,7 +34,7 @@ class Errors extends AbstractController
     /**
      * Errors@forbidden action
      */
-    public function forbidden()
+    public function forbidden(): void
     {
         $this->displayError(403, 'forbidden', [
             'href'  => $this->uri('/dashboard/'),
@@ -49,7 +49,7 @@ class Errors extends AbstractController
      * @param string $name   Error name
      * @param array  $action Action link data
      */
-    protected function displayError(int $status, string $name, array $action)
+    protected function displayError(int $status, string $name, array $action): void
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
@@ -66,10 +66,8 @@ class Errors extends AbstractController
 
     /**
      * Make a URI to a new GitHub issue with pre-filled data from an (uncaught) exception
-     *
-     * @return string
      */
-    protected function makeGitHubIssueUri(Throwable $exception)
+    protected function makeGitHubIssueUri(Throwable $exception): string
     {
         $query = http_build_query([
             'labels' => 'bug',

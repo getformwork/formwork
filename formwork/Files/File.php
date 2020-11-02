@@ -75,60 +75,48 @@ class File
 
     /**
      * Get file path
-     *
-     * @return string
      */
-    public function path()
+    public function path(): string
     {
         return $this->path;
     }
 
     /**
      * Get file name
-     *
-     * @return string
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
     /**
      * Get file extension
-     *
-     * @return string
      */
-    public function extension()
+    public function extension(): string
     {
         return $this->extension;
     }
 
     /**
      * Get file URI
-     *
-     * @return string
      */
-    public function uri()
+    public function uri(): string
     {
         return $this->uri;
     }
 
     /**
      * Get file MIME type
-     *
-     * @return string
      */
-    public function mimeType()
+    public function mimeType(): string
     {
         return $this->mimeType;
     }
 
     /**
      * Get file type
-     *
-     * @return string|null
      */
-    public function type()
+    public function type(): string
     {
         if ($this->type !== null) {
             return $this->type;
@@ -153,15 +141,13 @@ class File
 
     /**
      * Get file size
-     *
-     * @return string
      */
-    public function size()
+    public function size(): string
     {
         return $this->size;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }

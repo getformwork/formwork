@@ -25,7 +25,7 @@ class Collection implements Countable, Iterator
     /**
      * Rewind the iterator to the first element
      */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->items);
     }
@@ -40,8 +40,6 @@ class Collection implements Countable, Iterator
 
     /**
      * Return the key of the current element
-     *
-     * @return int|string|null
      */
     public function key()
     {
@@ -58,30 +56,24 @@ class Collection implements Countable, Iterator
 
     /**
      * Check if current position is valid
-     *
-     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->key() !== null;
     }
 
     /**
      * Return the number of items
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
 
     /**
      * Return an array containing collection items
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->items;
     }
@@ -108,10 +100,8 @@ class Collection implements Countable, Iterator
 
     /**
      * Return whether collection is empty
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->items);
     }

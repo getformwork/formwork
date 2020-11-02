@@ -14,7 +14,7 @@ class Authentication extends AbstractController
     /**
      * Authentication@login action
      */
-    public function login()
+    public function login(): void
     {
         $limiter = new AccessLimiter(
             $this->registry('accessAttempts'),
@@ -90,7 +90,7 @@ class Authentication extends AbstractController
     /**
      * Authentication@logout action
      */
-    public function logout()
+    public function logout(): void
     {
         CSRFToken::destroy();
         Session::remove('FORMWORK_USERNAME');
@@ -110,7 +110,7 @@ class Authentication extends AbstractController
      * @param string $message Error message
      * @param array  $data    Data to pass to the view
      */
-    protected function error(string $message, array $data = [])
+    protected function error(string $message, array $data = []): void
     {
         // Ensure CSRF token is re-generated
         CSRFToken::generate();

@@ -40,7 +40,7 @@ class Pages extends AbstractController
     /**
      * Pages@index action
      */
-    public function index()
+    public function index(): void
     {
         $this->ensurePermission('pages.index');
 
@@ -69,7 +69,7 @@ class Pages extends AbstractController
     /**
      * Pages@create action
      */
-    public function create()
+    public function create(): void
     {
         $this->ensurePermission('pages.create');
 
@@ -91,7 +91,7 @@ class Pages extends AbstractController
     /**
      * Pages@edit action
      */
-    public function edit(RouteParams $params)
+    public function edit(RouteParams $params): void
     {
         $this->ensurePermission('pages.edit');
 
@@ -199,7 +199,7 @@ class Pages extends AbstractController
     /**
      * Pages@reorder action
      */
-    public function reorder()
+    public function reorder(): void
     {
         $this->ensurePermission('pages.reorder');
 
@@ -245,7 +245,7 @@ class Pages extends AbstractController
     /**
      * Pages@delete action
      */
-    public function delete(RouteParams $params)
+    public function delete(RouteParams $params): void
     {
         $this->ensurePermission('pages.delete');
 
@@ -288,7 +288,7 @@ class Pages extends AbstractController
     /**
      * Pages@uploadFile action
      */
-    public function uploadFile(RouteParams $params)
+    public function uploadFile(RouteParams $params): void
     {
         $this->ensurePermission('pages.upload_files');
 
@@ -312,7 +312,7 @@ class Pages extends AbstractController
     /**
      * Pages@deleteFile action
      */
-    public function deleteFile(RouteParams $params)
+    public function deleteFile(RouteParams $params): void
     {
         $this->ensurePermission('pages.delete_files');
 
@@ -333,10 +333,8 @@ class Pages extends AbstractController
 
     /**
      * Create a new page
-     *
-     * @return Page
      */
-    protected function createPage(DataGetter $data)
+    protected function createPage(DataGetter $data): Page
     {
         // Ensure no required data is missing
         if (!$data->has(['title', 'slug', 'template', 'parent'])) {
@@ -396,10 +394,8 @@ class Pages extends AbstractController
 
     /**
      * Update a page
-     *
-     * @return Page
      */
-    protected function updatePage(Page $page, DataGetter $data, Fields $fields)
+    protected function updatePage(Page $page, DataGetter $data, Fields $fields): Page
     {
         // Ensure no required data is missing
         if (!$data->has(['title', 'content'])) {
@@ -513,7 +509,7 @@ class Pages extends AbstractController
     /**
      * Process page uploads
      */
-    protected function processPageUploads(Page $page)
+    protected function processPageUploads(Page $page): void
     {
         $uploader = new Uploader($page->path());
         $uploader->upload();
@@ -536,7 +532,7 @@ class Pages extends AbstractController
     /**
      * Ensure a page exists
      */
-    protected function ensurePageExists(?Page $page, string $errorLanguageString)
+    protected function ensurePageExists(?Page $page, string $errorLanguageString): void
     {
         if ($page === null) {
             $this->notify($this->label($errorLanguageString), 'error');
@@ -549,10 +545,8 @@ class Pages extends AbstractController
      *
      * @param Page|Site $parent
      * @param string    $mode   'date' for pages with a publish date
-     *
-     * @return string
      */
-    protected function makePageNum($parent, ?string $mode)
+    protected function makePageNum($parent, ?string $mode): string
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
@@ -574,10 +568,8 @@ class Pages extends AbstractController
 
     /**
      * Change the id of a page
-     *
-     * @return Page
      */
-    protected function changePageId(Page $page, string $id)
+    protected function changePageId(Page $page, string $id): Page
     {
         $directory = dirname($page->path());
         $destination = $directory . DS . $id . DS;
@@ -589,10 +581,8 @@ class Pages extends AbstractController
      * Change the parent of a page
      *
      * @param Page|Site $parent
-     *
-     * @return Page
      */
-    protected function changePageParent(Page $page, $parent)
+    protected function changePageParent(Page $page, $parent): Page
     {
         if (!($parent instanceof Page || $parent instanceof Site)) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
@@ -604,10 +594,8 @@ class Pages extends AbstractController
 
     /**
      * Change page template
-     *
-     * @return Page
      */
-    protected function changePageTemplate(Page $page, string $template)
+    protected function changePageTemplate(Page $page, string $template): Page
     {
         $destination = $page->path() . $template . $this->option('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
@@ -632,20 +620,16 @@ class Pages extends AbstractController
 
     /**
      * Validate page slug helper
-     *
-     * @return bool
      */
-    protected function validateSlug(string $slug)
+    protected function validateSlug(string $slug): bool
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
     }
 
     /**
      * Return an array containing the available site languages as keys with proper labels as values
-     *
-     * @return array
      */
-    protected function availableSiteLanguages()
+    protected function availableSiteLanguages(): array
     {
         $languages = [];
         foreach ($this->option('languages.available') as $code) {

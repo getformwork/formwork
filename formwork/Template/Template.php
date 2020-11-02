@@ -87,10 +87,8 @@ class Template
 
     /**
      * Get template path
-     *
-     * @return string
      */
-    public function path()
+    public function path(): string
     {
         if ($this->path !== null) {
             return $this->path;
@@ -100,20 +98,16 @@ class Template
 
     /**
      * Get template name
-     *
-     * @return string
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
     /**
      * Get template Scheme
-     *
-     * @return Scheme
      */
-    public function scheme()
+    public function scheme(): Scheme
     {
         if ($this->scheme !== null) {
             return $this->scheme;
@@ -123,10 +117,8 @@ class Template
 
     /**
      * Get Assets instance
-     *
-     * @return Assets
      */
-    public function assets()
+    public function assets(): Assets
     {
         if ($this->assets !== null) {
             return $this->assets;
@@ -140,7 +132,7 @@ class Template
     /**
      * Set template layout
      */
-    public function layout(string $name)
+    public function layout(string $name): void
     {
         if ($this->layout !== null) {
             throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
@@ -151,7 +143,7 @@ class Template
     /**
      * Insert a template
      */
-    public function insert(string $name, array $vars = [])
+    public function insert(string $name, array $vars = []): void
     {
         if (!$this->rendering) {
             throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
@@ -175,7 +167,7 @@ class Template
      *
      * @param bool $return Whether to return rendered content or not
      *
-     * @return string|null
+     * @return string|void
      */
     public function render(array $vars = [], bool $return = false)
     {
@@ -222,10 +214,8 @@ class Template
 
     /**
      * Return an array containing the default data
-     *
-     * @return array
      */
-    protected function defaults()
+    protected function defaults(): array
     {
         return [
             'params' => Formwork::instance()->router()->params(),
@@ -237,7 +227,7 @@ class Template
     /**
      * Load template controller if exists
      */
-    protected function loadController()
+    protected function loadController(): void
     {
         $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
 
@@ -259,7 +249,7 @@ class Template
         throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }

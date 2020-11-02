@@ -6,50 +6,40 @@ class HTTPNegotiation
 {
     /**
      * Return an array containing client preferred MIME types as keys and quality factors as values
-     *
-     * @return array
      */
-    public static function mimeType()
+    public static function mimeType(): array
     {
         return static::parseHeader('Accept');
     }
 
     /**
      * Return an array containing client preferred charsets as keys and quality factors as values
-     *
-     * @return array
      */
-    public static function charset()
+    public static function charset(): array
     {
         return static::parseHeader('Accept-Charset');
     }
 
     /**
      * Return an array containing client preferred encodings as keys and quality factors as values
-     *
-     * @return array
      */
-    public static function encoding()
+    public static function encoding(): array
     {
         return static::parseHeader('Accept-Encoding');
     }
 
     /**
      * Return an array containing client preferred languages as keys and quality factors as values
-     *
-     * @return array
      */
-    public static function language()
+    public static function language(): array
     {
         return static::parseHeader('Accept-Language');
     }
 
     /**
      * Parse a given header returning an associative array with quality factor as values
-     *
-     * @return array
      */
-    public static function parseHeader(string $header)
+    public static function parseHeader(string $header): array
     {
         if (!HTTPRequest::hasHeader($header)) {
             return [];
@@ -61,10 +51,8 @@ class HTTPNegotiation
      * Parse a comma-separated list of values and quality factors returning an associative array
      *
      * @see https://developer.mozilla.org/docs/Glossary/Quality_values
-     *
-     * @return array
      */
-    protected static function parseCommaSeparatedList(string $list)
+    protected static function parseCommaSeparatedList(string $list): array
     {
         $result = [];
         $tokens = array_map('trim', explode(',', $list));

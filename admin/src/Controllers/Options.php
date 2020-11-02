@@ -23,7 +23,7 @@ class Options extends AbstractController
     /**
      * Options@index action
      */
-    public function index()
+    public function index(): void
     {
         $this->ensurePermission('options.system');
         $this->redirect('/options/system/');
@@ -32,7 +32,7 @@ class Options extends AbstractController
     /**
      * Options@systemOptions action
      */
-    public function systemOptions()
+    public function systemOptions(): void
     {
         $this->ensurePermission('options.system');
 
@@ -72,7 +72,7 @@ class Options extends AbstractController
     /**
      * Options@siteOptions action
      */
-    public function siteOptions()
+    public function siteOptions(): void
     {
         $this->ensurePermission('options.site');
 
@@ -112,7 +112,7 @@ class Options extends AbstractController
     /**
      * Options@updates action
      */
-    public function updates()
+    public function updates(): void
     {
         $this->ensurePermission('options.updates');
 
@@ -131,7 +131,7 @@ class Options extends AbstractController
     /**
      * Options@info action
      */
-    public function info()
+    public function info(): void
     {
         $this->ensurePermission('options.info');
 
@@ -221,7 +221,7 @@ class Options extends AbstractController
      *
      * @return bool Whether new values were applied or not
      */
-    protected function updateOptions(string $type, Fields $fields, array $options, array $defaults)
+    protected function updateOptions(string $type, Fields $fields, array $options, array $defaults): bool
     {
         // Fields to ignore
         $ignore = ['column', 'header', 'row', 'rows'];
@@ -261,10 +261,8 @@ class Options extends AbstractController
 
     /**
      * Load dependencies data from composer.lock
-     *
-     * @return array
      */
-    protected function getDependencies()
+    protected function getDependencies(): array
     {
         $dependencies = [];
         if (FileSystem::exists(ROOT_PATH . 'composer.lock')) {

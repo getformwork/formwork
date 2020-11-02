@@ -61,7 +61,7 @@ class View
     /**
      * Insert a view
      */
-    public function insert(string $name, array $vars = [])
+    public function insert(string $name, array $vars = []): void
     {
         $file = Admin::VIEWS_PATH . str_replace('.', DS, $name) . '.php';
 
@@ -93,10 +93,8 @@ class View
 
     /**
      * Get Assets instance
-     *
-     * @return Assets
      */
-    public function assets()
+    public function assets(): Assets
     {
         if ($this->assets !== null) {
             return $this->assets;
@@ -106,10 +104,8 @@ class View
 
     /**
      * Return an array containing the default data
-     *
-     * @return array
      */
-    protected function defaults()
+    protected function defaults(): array
     {
         return [
             'formwork' => Formwork::instance(),

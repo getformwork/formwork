@@ -16,20 +16,16 @@ class PageCollection extends Collection
 
     /**
      * Return the Pagination object related to the collection
-     *
-     * @return Pagination
      */
-    public function pagination()
+    public function pagination(): Pagination
     {
         return $this->pagination;
     }
 
     /**
      * Reverse the order of collection items
-     *
-     * @return self
      */
-    public function reverse()
+    public function reverse(): self
     {
         $pageCollection = clone $this;
         $pageCollection->items = array_reverse($pageCollection->items);
@@ -41,10 +37,8 @@ class PageCollection extends Collection
      * and starting from a given offset
      *
      * @param int $length
-     *
-     * @return self
      */
-    public function slice(int $offset, ?int $length = null)
+    public function slice(int $offset, ?int $length = null): self
     {
         $pageCollection = clone $this;
         $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
@@ -53,10 +47,8 @@ class PageCollection extends Collection
 
     /**
      * Remove a given element from the collection
-     *
-     * @return self
      */
-    public function remove(Page $element)
+    public function remove(Page $element): self
     {
         $pageCollection = clone $this;
         foreach ($pageCollection->items as $key => $item) {
@@ -71,10 +63,8 @@ class PageCollection extends Collection
      * Paginate the collection
      *
      * @param int $length Number of items in the pagination
-     *
-     * @return self
      */
-    public function paginate(int $length)
+    public function paginate(int $length): self
     {
         $pagination = new Pagination($this->count(), $length);
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
@@ -88,10 +78,8 @@ class PageCollection extends Collection
      * @param string   $property Property to find in filtered items
      * @param          $value    Value to check in filtered items (default: true)
      * @param callable $process  Callable to process items before filtering
-     *
-     * @return self
      */
-    public function filter(string $property, $value = true, ?callable $process = null)
+    public function filter(string $property, $value = true, ?callable $process = null): self
     {
         $pageCollection = clone $this;
 
@@ -120,10 +108,8 @@ class PageCollection extends Collection
      * Sort collection items
      *
      * @param int|string $direction Sorting direction (e.g. SORT_ASC, 'asc', -1, SORT_DESC, 'desc')
-     *
-     * @return self
      */
-    public function sort(string $property = 'id', $direction = SORT_ASC)
+    public function sort(string $property = 'id', $direction = SORT_ASC): self
     {
         $pageCollection = clone $this;
 
@@ -149,10 +135,8 @@ class PageCollection extends Collection
      *
      * @param string $query Query to search for
      * @param int    $min   Minimum query length (default: 4)
-     *
-     * @return self
      */
-    public function search(string $query, int $min = 4)
+    public function search(string $query, int $min = 4): self
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
@@ -201,10 +185,8 @@ class PageCollection extends Collection
      * Create a collection getting pages from a given path
      *
      * @param bool $recursive Whether to recursively search for pages
-     *
-     * @return self
      */
-    public static function fromPath(string $path, bool $recursive = false)
+    public static function fromPath(string $path, bool $recursive = false): self
     {
         $path = FileSystem::normalize($path);
         $pages = [];
@@ -229,7 +211,7 @@ class PageCollection extends Collection
         return $pages->sort();
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return [
             'items' => $this->items

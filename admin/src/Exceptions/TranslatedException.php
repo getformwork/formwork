@@ -30,20 +30,16 @@ class TranslatedException extends Exception
 
     /**
      * Get language string
-     *
-     * @return string
      */
-    public function getLanguageString()
+    public function getLanguageString(): string
     {
         return $this->languageString;
     }
 
     /**
      * Get localized message
-     *
-     * @return string
      */
-    public function getTranslatedMessage()
+    public function getTranslatedMessage(): string
     {
         return Admin::instance()->label($this->languageString);
     }

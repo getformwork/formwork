@@ -6,10 +6,8 @@ class HTTPResponse
 {
     /**
      * Return an array containing response headers
-     *
-     * @return array
      */
-    public static function headers()
+    public static function headers(): array
     {
         $headers = [];
         foreach (headers_list() as $header) {
@@ -24,7 +22,7 @@ class HTTPResponse
      *
      * @param bool $download Whether to download file or not
      */
-    public static function file(string $file, bool $download = false)
+    public static function file(string $file, bool $download = false): void
     {
         FileSystem::assert($file);
         $mimeType = FileSystem::mimeType($file);
@@ -42,7 +40,7 @@ class HTTPResponse
      *
      * @see HTTPResponse::file()
      */
-    public static function download(string $file)
+    public static function download(string $file): void
     {
         static::file($file, true);
     }
@@ -50,7 +48,7 @@ class HTTPResponse
     /**
      * Clean all output buffers which were not sent
      */
-    public static function cleanOutputBuffers()
+    public static function cleanOutputBuffers(): void
     {
         while (ob_get_level()) {
             ob_end_clean();

@@ -30,7 +30,7 @@ class Translator
     /**
      * Translate a field
      */
-    public static function translate(Field $field)
+    public static function translate(Field $field): void
     {
         $language = Admin::instance()->translation()->code();
         foreach ($field->toArray() as $key => $value) {
@@ -51,10 +51,8 @@ class Translator
 
     /**
      * Return whether a field key is translatable
-     *
-     * @return bool
      */
-    protected static function isTranslatable(string $key, Field $field)
+    protected static function isTranslatable(string $key, Field $field): bool
     {
         if (in_array($key, self::IGNORED_FIELDS, true)) {
             return false;

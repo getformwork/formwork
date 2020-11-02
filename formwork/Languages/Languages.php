@@ -53,70 +53,56 @@ class Languages
 
     /**
      * Get available languages
-     *
-     * @return array
      */
-    public function available()
+    public function available(): array
     {
         return $this->available;
     }
 
     /**
      * Get default language code
-     *
-     * @return string
      */
-    public function default()
+    public function default(): ?string
     {
         return $this->default;
     }
 
     /**
      * Get current language code
-     *
-     * @return string
      */
-    public function current()
+    public function current(): ?string
     {
         return $this->current;
     }
 
     /**
      * Get requested language code
-     *
-     * @return string
      */
-    public function requested()
+    public function requested(): ?string
     {
         return $this->requested;
     }
 
     /**
      * Get preferred language code
-     *
-     * @return string
      */
-    public function preferred()
+    public function preferred(): ?string
     {
         return $this->preferred;
     }
 
     /**
      * Return whether current language is the default
-     *
-     * @return bool
      */
-    public function isDefault()
+    public function isDefault(): bool
     {
         return $this->current === $this->default;
     }
 
     /**
      * Create a Languages instance from a given request
-     *
-     * @return self
      */
-    public static function fromRequest(string $request)
+    public static function fromRequest(string $request): self
     {
         $languages = new static();
 

@@ -68,30 +68,24 @@ class Scheme extends DataGetter
 
     /**
      * Get scheme title
-     *
-     * @return string
      */
-    public function title()
+    public function title(): string
     {
         return $this->get('title');
     }
 
     /**
      * Return whether scheme is default
-     *
-     * @return bool
      */
-    public function isDefault()
+    public function isDefault(): bool
     {
         return $this->get('default', false);
     }
 
     /**
      * Return default field values
-     *
-     * @return array
      */
-    public function defaultFieldValues()
+    public function defaultFieldValues(): array
     {
         $result = [];
         foreach ($this->get('fields', []) as $name => $value) {

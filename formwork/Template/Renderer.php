@@ -17,10 +17,8 @@ class Renderer
 
     /**
      * Return rendering closure bound to given instance and context
-     *
-     * @return Closure
      */
-    protected static function getClosure($instance, ?string $context = null)
+    protected static function getClosure($instance, ?string $context = null): Closure
     {
         return Closure::bind(function ($_filename, array $_vars) {
             extract($_vars);

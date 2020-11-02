@@ -24,10 +24,8 @@ class Fields extends AssociativeCollection
      * Recursively find a field by name
      *
      * @param string $field Field name
-     *
-     * @return Field|null
      */
-    public function find(string $field)
+    public function find(string $field): ?Field
     {
         foreach ($this->items as $name => $data) {
             if ($name === $field) {
@@ -64,10 +62,8 @@ class Fields extends AssociativeCollection
      * Convert fields to array
      *
      * @param bool $flatten Whether to recursively convert Fields instances
-     *
-     * @return array
      */
-    public function toArray(bool $flatten = false)
+    public function toArray(bool $flatten = false): array
     {
         if (!$flatten) {
             return $this->items;
@@ -85,16 +81,14 @@ class Fields extends AssociativeCollection
 
     /**
      * Validate fields against data
-     *
-     * @return $this
      */
-    public function validate(DataGetter $data)
+    public function validate(DataGetter $data): self
     {
         Validator::validate($this, $data);
         return $this;
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return $this->items;
     }

@@ -41,10 +41,8 @@ class Registry
 
     /**
      * Return whether a key is in the registry
-     *
-     * @return bool
      */
-    public function has(string $key)
+    public function has(string $key): bool
     {
         return isset($this->storage[$key]);
     }
@@ -62,7 +60,7 @@ class Registry
     /**
      * Add a key to the registry
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         $this->storage[$key] = $value;
         $this->saved = false;
@@ -71,7 +69,7 @@ class Registry
     /**
      * Remove a key from the registry
      */
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);
@@ -82,7 +80,7 @@ class Registry
     /**
      * Save the registry to file
      */
-    public function save()
+    public function save(): void
     {
         FileSystem::write($this->filename, json_encode($this->storage));
         $this->saved = true;
@@ -90,10 +88,8 @@ class Registry
 
     /**
      * Convert the registry to array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->storage;
     }

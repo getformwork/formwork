@@ -2,6 +2,7 @@
 
 namespace Formwork\Core;
 
+use Formwork\Metadata\Metadata;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -112,10 +113,8 @@ abstract class AbstractPage
      * Return a URI relative to page
      *
      * @param bool|string $includeLanguage
-     *
-     * @return string
      */
-    public function uri(string $path = '', $includeLanguage = true)
+    public function uri(string $path = '', $includeLanguage = true): string
     {
         $base = HTTPRequest::root();
         if ($includeLanguage) {
@@ -133,10 +132,8 @@ abstract class AbstractPage
 
     /**
      * Get page absolute URI
-     *
-     * @return string
      */
-    public function absoluteUri()
+    public function absoluteUri(): string
     {
         if ($this->absoluteUri !== null) {
             return $this->absoluteUri;
@@ -146,10 +143,8 @@ abstract class AbstractPage
 
     /**
      * Get page last modified time
-     *
-     * @return int
      */
-    public function lastModifiedTime()
+    public function lastModifiedTime(): int
     {
         if ($this->lastModifiedTime !== null) {
             return $this->lastModifiedTime;
@@ -161,10 +156,8 @@ abstract class AbstractPage
      * Return page date optionally in a given format
      *
      * @param string $format
-     *
-     * @return string
      */
-    public function date(?string $format = null)
+    public function date(?string $format = null): string
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');
@@ -175,7 +168,7 @@ abstract class AbstractPage
     /**
      * Get parent page
      *
-     * @return Page|Site
+     * @return Page|Site|null
      */
     public function parent()
     {
@@ -192,10 +185,8 @@ abstract class AbstractPage
 
     /**
      * Return a PageCollection containing page parents
-     *
-     * @return PageCollection
      */
-    public function parents()
+    public function parents(): PageCollection
     {
         if ($this->parents !== null) {
             return $this->parents;
@@ -211,20 +202,16 @@ abstract class AbstractPage
 
     /**
      * Return whether page has parents
-     *
-     * @return bool
      */
-    public function hasParents()
+    public function hasParents(): bool
     {
         return !$this->parents()->isEmpty();
     }
 
     /**
      * Return a PageCollection containing page children
-     *
-     * @return PageCollection
      */
-    public function children()
+    public function children(): PageCollection
     {
         if ($this->children !== null) {
             return $this->children;
@@ -234,20 +221,16 @@ abstract class AbstractPage
 
     /**
      * Return whether page has children
-     *
-     * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return !$this->children()->isEmpty();
     }
 
     /**
      * Return a PageCollection containing page descendants
-     *
-     * @return PageCollection
      */
-    public function descendants()
+    public function descendants(): PageCollection
     {
         if ($this->descendants !== null) {
             return $this->descendants;
@@ -257,10 +240,8 @@ abstract class AbstractPage
 
     /**
      * Return whether page has descendants
-     *
-     * @return bool
      */
-    public function hasDescendants()
+    public function hasDescendants(): bool
     {
         foreach ($this->children() as $child) {
             if ($child->hasChildren()) {
@@ -272,10 +253,8 @@ abstract class AbstractPage
 
     /**
      * Return page level
-     *
-     * @return int
      */
-    public function level()
+    public function level(): int
     {
         if ($this->level !== null) {
             return $this->level;
@@ -285,38 +264,28 @@ abstract class AbstractPage
 
     /**
      * Return whether current page is Site
-     *
-     * @return bool
      */
-    abstract public function isSite();
+    abstract public function isSite(): bool;
 
     /**
      * Return whether current page is index page
-     *
-     * @return bool
      */
-    abstract public function isIndexPage();
+    abstract public function isIndexPage(): bool;
 
     /**
      * Return whether current page is error page
-     *
-     * @return bool
      */
-    abstract public function isErrorPage();
+    abstract public function isErrorPage(): bool;
 
     /**
      * Return whether current page is deletable
-     *
-     * @return bool
      */
-    abstract public function isDeletable();
+    abstract public function isDeletable(): bool;
 
     /**
      * Return page metadata
-     *
-     * @var Metadata
      */
-    abstract public function metadata();
+    abstract public function metadata(): Metadata;
 
     /**
      * Get page data by key
@@ -347,10 +316,8 @@ abstract class AbstractPage
      * Return whether page data has a key
      *
      * @param string $key
-     *
-     * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return property_exists($this, $key) || Arr::has($this->data, $key);
     }
@@ -360,7 +327,7 @@ abstract class AbstractPage
      *
      * @param string $key
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->data[$key] = $value;
     }

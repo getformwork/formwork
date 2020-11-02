@@ -50,7 +50,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function save(string $key, $value)
+    public function save(string $key, $value): void
     {
         $data = serialize($value);
         FileSystem::write($this->getFile($key), $data);
@@ -59,7 +59,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function delete(string $key)
+    public function delete(string $key): void
     {
         if ($this->has($key)) {
             FileSystem::delete($this->getFile($key));
@@ -69,7 +69,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function clear()
+    public function clear(): void
     {
         FileSystem::delete($this->path, true);
         FileSystem::createDirectory($this->path, true);
@@ -78,34 +78,30 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function has(string $key)
+    public function has(string $key): bool
     {
         return FileSystem::exists($this->getFile($key)) && $this->isValid($key);
     }
 
     /**
      * Return the file that corresponds to the given key
-     *
-     * @return string
      */
-    protected function getFile(string $key)
+    protected function getFile(string $key): string
     {
         return $this->path . sha1($key);
     }
 
     /**
      * Return whether a cached resource has not expired
-     *
-     * @return bool
      */
-    protected function isValid(string $key)
+    protected function isValid(string $key): bool
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
         $expires = $lastModified + $this->time;
         return time() < $expires;
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return [
             'path' => $this->path,

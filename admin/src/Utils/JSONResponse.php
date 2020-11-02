@@ -32,7 +32,7 @@ class JSONResponse
     /**
      * Send the JSON response with proper Content-Type
      */
-    public function send()
+    public function send(): string
     {
         Header::contentType('application/json; charset=utf-8');
         if ($this->status != 200) {
@@ -44,10 +44,8 @@ class JSONResponse
 
     /**
      * Shortcut for success response
-     *
-     * @return self
      */
-    public static function success(string $message, int $status = 200, array $data = [])
+    public static function success(string $message, int $status = 200, array $data = []): self
     {
         return new static([
             'status'  => 'success',
@@ -59,10 +57,8 @@ class JSONResponse
 
     /**
      * Shortcut for error response
-     *
-     * @return self
      */
-    public static function error(string $message, int $status = 400, array $data = [])
+    public static function error(string $message, int $status = 400, array $data = []): self
     {
         return new static([
             'status'  => 'error',

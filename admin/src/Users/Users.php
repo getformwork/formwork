@@ -18,10 +18,8 @@ class Users extends AssociativeCollection
 
     /**
      * Load all users and roles
-     *
-     * @return self
      */
-    public static function load()
+    public static function load(): self
     {
         static::$roles = YAML::parseFile(Admin::SCHEMES_PATH . 'roles.yml');
         $users = [];
@@ -34,10 +32,8 @@ class Users extends AssociativeCollection
 
     /**
      * Get all available roles
-     *
-     * @return array
      */
-    public static function availableRoles()
+    public static function availableRoles(): array
     {
         $roles = [];
         foreach (static::$roles as $role => $data) {
@@ -48,10 +44,8 @@ class Users extends AssociativeCollection
 
     /**
      * Get permissions for a given role
-     *
-     * @return array
      */
-    public static function getRolePermissions(string $role)
+    public static function getRolePermissions(string $role): array
     {
         return (array) static::$roles[$role]['permissions'];
     }

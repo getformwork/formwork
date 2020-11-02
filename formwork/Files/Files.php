@@ -9,10 +9,8 @@ class Files extends AssociativeCollection
 {
     /**
      * Filter files by a given type
-     *
-     * @return self
      */
-    public function filterByType(string $type)
+    public function filterByType(string $type): self
     {
         $files = clone $this;
         $files->items = array_filter($files->items, static function ($item) use ($type) {
@@ -25,10 +23,8 @@ class Files extends AssociativeCollection
      * Create a collection getting files from a given path
      *
      * @param array|null $filenames Array of file names to include (all files by default)
-     *
-     * @return self
      */
-    public static function fromPath(string $path, array $filenames = null)
+    public static function fromPath(string $path, array $filenames = null): self
     {
         if ($filenames === null) {
             $filenames = FileSystem::listFiles($path);

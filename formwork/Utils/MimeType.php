@@ -85,10 +85,8 @@ class MimeType
 
     /**
      * Get MIME types from file extension
-     *
-     * @return string
      */
-    public static function fromExtension(string $extension)
+    public static function fromExtension(string $extension): string
     {
         $extension = ltrim($extension, '.');
         return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
@@ -96,10 +94,8 @@ class MimeType
 
     /**
      * Get MIME type from a file
-     *
-     * @return string|null
      */
-    public static function fromFile(string $file)
+    public static function fromFile(string $file): ?string
     {
         $mimeType = null;
 
@@ -129,10 +125,8 @@ class MimeType
 
     /**
      * Get extension or array of extensions (if multiple) from a MIME type
-     *
-     * @return array|string
      */
-    public static function toExtension(string $mimeType)
+    public static function toExtension(string $mimeType): array
     {
         $results = array_keys(self::MIME_TYPES, $mimeType, true);
         return count($results) > 1 ? $results : array_shift($results);

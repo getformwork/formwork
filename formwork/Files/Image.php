@@ -111,10 +111,8 @@ class Image extends File
 
     /**
      * Return image width
-     *
-     * @return int
      */
-    public function width()
+    public function width(): int
     {
         if ($this->image === null) {
             $this->initialize();
@@ -124,10 +122,8 @@ class Image extends File
 
     /**
      * Return image height
-     *
-     * @return int
      */
-    public function height()
+    public function height(): int
     {
         if ($this->image === null) {
             $this->initialize();
@@ -137,10 +133,8 @@ class Image extends File
 
     /**
      * Return image orientation
-     *
-     * @return string
      */
-    public function orientation()
+    public function orientation(): string
     {
         if ($this->image === null) {
             $this->initialize();
@@ -153,10 +147,8 @@ class Image extends File
 
     /**
      * Rotate image
-     *
-     * @return $this
      */
-    public function rotate(int $angle)
+    public function rotate(int $angle): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -168,10 +160,8 @@ class Image extends File
 
     /**
      * Flip image horizontally
-     *
-     * @return $this
      */
-    public function flipHorizontal()
+    public function flipHorizontal(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -182,10 +172,8 @@ class Image extends File
 
     /**
      * Flip image vertically
-     *
-     * @return $this
      */
-    public function flipVertical()
+    public function flipVertical(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -196,10 +184,8 @@ class Image extends File
 
     /**
      * Flip image horizontally and vertically
-     *
-     * @return $this
      */
-    public function flipBoth()
+    public function flipBoth(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -210,10 +196,8 @@ class Image extends File
 
     /**
      * Resize image without keeping its aspect ratio
-     *
-     * @return $this
      */
-    public function resize(int $destinationWidth, int $destinationHeight)
+    public function resize(int $destinationWidth, int $destinationHeight): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -259,10 +243,8 @@ class Image extends File
 
     /**
      * Scale image by a factor
-     *
-     * @return $this
      */
-    public function scale(float $factor)
+    public function scale(float $factor): self
     {
         return $this->resize($factor * $this->width, $factor * $this->height);
     }
@@ -271,10 +253,8 @@ class Image extends File
      * Resize image keeping its aspect ratio
      *
      * @param string $mode self::RESIZE_FIT_COVER (default) or self::RESIZE_FIT_CONTAIN
-     *
-     * @return $this
      */
-    public function resizeToFit(int $destinationWidth, int $destinationHeight, string $mode = self::RESIZE_FIT_COVER)
+    public function resizeToFit(int $destinationWidth, int $destinationHeight, string $mode = self::RESIZE_FIT_COVER): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -333,20 +313,16 @@ class Image extends File
      * Square image to a given size
      *
      * @param string $mode self::RESIZE_FIT_COVER (default) or self::RESIZE_FIT_CONTAIN
-     *
-     * @return $this
      */
-    public function square(int $size, string $mode = self::RESIZE_FIT_COVER)
+    public function square(int $size, string $mode = self::RESIZE_FIT_COVER): self
     {
         return $this->resizeToFit($size, $size, $mode);
     }
 
     /**
      * Crop image to given size from origin coordinates
-     *
-     * @return $this
      */
-    public function crop(int $originX, int $originY, int $width, int $height)
+    public function crop(int $originX, int $originY, int $width, int $height): self
     {
         if (!$width || !$height) {
             throw new BadMethodCallException(__METHOD__ . ' must be called with both $width and $height arguments');
@@ -380,10 +356,8 @@ class Image extends File
 
     /**
      * Desaturate image
-     *
-     * @return $this
      */
-    public function desaturate()
+    public function desaturate(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -394,10 +368,8 @@ class Image extends File
 
     /**
      * Invert image colors
-     *
-     * @return $this
      */
-    public function invert()
+    public function invert(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -410,10 +382,8 @@ class Image extends File
      * Increase or decrease image brightness
      *
      * @param int $amount Amount of brightness from -255 to 255
-     *
-     * @return $this
      */
-    public function brightness(int $amount)
+    public function brightness(int $amount): self
     {
         if ($amount < -255 || $amount > 255) {
             throw new UnexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
@@ -429,10 +399,8 @@ class Image extends File
      * Increase or decrease image contrast
      *
      * @param int $amount Amount of contrast from -100 to 100
-     *
-     * @return $this
      */
-    public function contrast(int $amount)
+    public function contrast(int $amount): self
     {
         if ($amount < -100 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
@@ -452,10 +420,8 @@ class Image extends File
      * @param int $green Green value from 0 to 255
      * @param int $blue  Blue value from 0 to 255
      * @param int $alpha Alpha value from 0 (opaque) to 127 (transparent)
-     *
-     * @return $this
      */
-    public function colorize(int $red, int $green, int $blue, int $alpha = 0)
+    public function colorize(int $red, int $green, int $blue, int $alpha = 0): self
     {
         if ($red < 0 || $red > 255) {
             throw new UnexpectedValueException('$red value must be in range 0-255, ' . $red . ' given');
@@ -478,20 +444,16 @@ class Image extends File
 
     /**
      * Apply sepia effect to image
-     *
-     * @return $this
      */
-    public function sepia()
+    public function sepia(): self
     {
         return $this->desaturate()->colorize(76, 48, 0);
     }
 
     /**
      * Apply edge detect effect to image
-     *
-     * @return $this
      */
-    public function edgedetect()
+    public function edgedetect(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -502,10 +464,8 @@ class Image extends File
 
     /**
      * Apply emboss effect to image
-     *
-     * @return $this
      */
-    public function emboss()
+    public function emboss(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -518,10 +478,8 @@ class Image extends File
      * Blur image
      *
      * @param int $amount Amount of blur from 0 to 100
-     *
-     * @return $this
      */
-    public function blur(int $amount)
+    public function blur(int $amount): self
     {
         if ($amount < 0 || $amount > 100) {
             throw new UnexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
@@ -537,10 +495,8 @@ class Image extends File
 
     /**
      * Sharpen image
-     *
-     * @return $this
      */
-    public function sharpen()
+    public function sharpen(): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -551,10 +507,8 @@ class Image extends File
 
     /**
      * Smoothen image
-     *
-     * @return $this
      */
-    public function smoothen(int $amount)
+    public function smoothen(int $amount): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -565,10 +519,8 @@ class Image extends File
 
     /**
      * Pixelate image
-     *
-     * @return $this
      */
-    public function pixelate(int $amount)
+    public function pixelate(int $amount): self
     {
         if ($this->image === null) {
             $this->initialize();
@@ -583,7 +535,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function save(?string $filename = null, bool $destroy = true)
+    public function save(?string $filename = null, bool $destroy = true): void
     {
         if ($this->image === null) {
             $this->initialize();
@@ -626,7 +578,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function saveOptimized(?string $filename = null, bool $destroy = true)
+    public function saveOptimized(?string $filename = null, bool $destroy = true): void
     {
         if ($this->image === null) {
             $this->initialize();
@@ -657,7 +609,7 @@ class Image extends File
     /**
      * Delete image resources from memory
      */
-    public function destroy()
+    public function destroy(): void
     {
         if (is_resource($this->image)) {
             imagedestroy($this->image);
@@ -670,7 +622,7 @@ class Image extends File
     /**
      * Initialize Image object
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         if (!extension_loaded('gd')) {
             throw new RuntimeException('GD extension not loaded');
@@ -738,7 +690,7 @@ class Image extends File
      *
      * @param resource $image
      */
-    protected function enableTransparency($image)
+    protected function enableTransparency($image): void
     {
         $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
         imagealphablending($image, true);

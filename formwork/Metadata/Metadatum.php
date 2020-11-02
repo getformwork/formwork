@@ -42,65 +42,53 @@ class Metadatum
 
     /**
      * Return metadatum name
-     *
-     * @return string
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
     /**
      * Return whether the metadatum is a charset declaration
-     *
-     * @return bool
      */
-    public function isCharset()
+    public function isCharset(): bool
     {
         return $this->name === 'charset';
     }
 
     /**
      * Return whether the metadatum is an http-equiv directive
-     *
-     * @return bool
      */
-    public function isHTTPEquiv()
+    public function isHTTPEquiv(): bool
     {
         return in_array($this->name, self::HTTP_EQUIV_NAMES, true);
     }
 
     /**
      * Return metadatum content
-     *
-     * @return string
      */
-    public function content()
+    public function content(): string
     {
         return $this->content;
     }
 
     /**
      * Return metadatum prefix
-     *
-     * @return string
      */
-    public function prefix()
+    public function prefix(): ?string
     {
         return $this->prefix;
     }
 
     /**
      * Return whether the metadatum has a prefix (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
-     *
-     * @return bool
      */
-    public function hasPrefix()
+    public function hasPrefix(): bool
     {
         return $this->prefix !== null;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->content();
     }

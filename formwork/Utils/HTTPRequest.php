@@ -27,30 +27,24 @@ class HTTPRequest
 
     /**
      * Get request method
-     *
-     * @return string
      */
-    public static function method()
+    public static function method(): string
     {
         return $_SERVER['REQUEST_METHOD'];
     }
 
     /**
      * Get request type (HTTP or XHR)
-     *
-     * @return string
      */
-    public static function type()
+    public static function type(): string
     {
         return static::isXHR() ? 'XHR' : 'HTTP';
     }
 
     /**
      * Get request URI
-     *
-     * @return string
      */
-    public static function uri()
+    public static function uri(): string
     {
         $uri = urldecode($_SERVER['REQUEST_URI']);
         $root = static::root();
@@ -62,20 +56,16 @@ class HTTPRequest
 
     /**
      * Get request URI root
-     *
-     * @return string
      */
-    public static function root()
+    public static function root(): string
     {
         return '/' . ltrim(preg_replace('~[^/]+$~', '', $_SERVER['SCRIPT_NAME']), '/');
     }
 
     /**
      * Get request protocol
-     *
-     * @return string
      */
-    public static function protocol()
+    public static function protocol(): string
     {
         return $_SERVER['SERVER_PROTOCOL'];
     }
@@ -84,10 +74,8 @@ class HTTPRequest
      * Get visitor IP
      *
      * @param bool $strict Whether to ignore X-Forwarded-For header or not
-     *
-     * @return string
      */
-    public static function ip(bool $strict = false)
+    public static function ip(bool $strict = false): string
     {
         if (!$strict && getenv('HTTP_X_FORWARDED_FOR')) {
             return getenv('HTTP_X_FORWARDED_FOR');
@@ -97,20 +85,16 @@ class HTTPRequest
 
     /**
      * Return request content length in bytes
-     *
-     * @return int|null
      */
-    public static function contentLength()
+    public static function contentLength(): ?int
     {
         return isset($_SERVER['CONTENT_LENGTH']) ? (int) $_SERVER['CONTENT_LENGTH'] : null;
     }
 
     /**
      * Get request referer
-     *
-     * @return string|null
      */
-    public static function referer()
+    public static function referer(): ?string
     {
         return static::hasHeader('Referer') ? static::$headers['Referer'] : null;
     }
@@ -119,10 +103,8 @@ class HTTPRequest
      * Check if the request referer has the same origin
      *
      * @param string $path Optional URI path
-     *
-     * @return bool
      */
-    public static function validateReferer(?string $path = null)
+    public static function validateReferer(?string $path = null): bool
     {
         $base = Uri::normalize(Uri::base() . '/' . ltrim($path, '/'));
         return Str::startsWith((string) static::referer(), $base);
@@ -130,30 +112,24 @@ class HTTPRequest
 
     /**
      * Get request origin
-     *
-     * @return string|null
      */
-    public static function origin()
+    public static function origin(): ?string
     {
         return static::hasHeader('Origin') ? static::$headers['Origin'] : null;
     }
 
     /**
      * Get request user agent
-     *
-     * @return string|null
      */
-    public static function userAgent()
+    public static function userAgent(): ?string
     {
         return static::hasHeader('User-Agent') ? static::$headers['User-Agent'] : null;
     }
 
     /**
      * Get request raw GET or POST data
-     *
-     * @return string|null
      */
-    public static function rawData()
+    public static function rawData(): ?string
     {
         if (static::method() === 'GET') {
             return parse_url(static::uri(), PHP_URL_QUERY);
@@ -163,10 +139,8 @@ class HTTPRequest
 
     /**
      * Return whether request is secure or not
-     *
-     * @return bool
      */
-    public static function isHTTPS()
+    public static function isHTTPS(): bool
     {
         if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
             return true;
@@ -176,80 +150,64 @@ class HTTPRequest
 
     /**
      * Return whether request is a XmlHttpRequest (AJAX)
-     *
-     * @return bool
      */
-    public static function isXHR()
+    public static function isXHR(): bool
     {
         return static::hasHeader('X-Requested-With') && strtolower(static::$headers['X-Requested-With']) === 'xmlhttprequest';
     }
 
     /**
      * Return whether a request comes from localhost
-     *
-     * @return bool
      */
-    public static function isLocalhost()
+    public static function isLocalhost(): bool
     {
         return in_array(static::ip(true), self::LOCALHOST_IP_ADDRESSES, true);
     }
 
     /**
      * Return whether request has GET data
-     *
-     * @return bool
      */
-    public static function hasGetData()
+    public static function hasGetData(): bool
     {
         return !empty($_GET);
     }
 
     /**
      * Return whether request has POST data
-     *
-     * @return bool
      */
-    public static function hasPostData()
+    public static function hasPostData(): bool
     {
         return !empty($_POST);
     }
 
     /**
      * Return whether request has GET or POST data
-     *
-     * @return bool
      */
-    public static function hasData()
+    public static function hasData(): bool
     {
         return static::hasGetData() || static::hasPostData();
     }
 
     /**
      * Return an array containing GET data
-     *
-     * @return array
      */
-    public static function getData()
+    public static function getData(): array
     {
         return $_GET;
     }
 
     /**
      * Return an array containing POST data
-     *
-     * @return array
      */
-    public static function postData()
+    public static function postData(): array
     {
         return $_POST;
     }
 
     /**
      * Return whether request has files
-     *
-     * @return bool
      */
-    public static function hasFiles()
+    public static function hasFiles(): bool
     {
         if (empty($_FILES)) {
             return false;
@@ -264,10 +222,8 @@ class HTTPRequest
 
     /**
      * Return an array containing request incoming files
-     *
-     * @return array
      */
-    public static function files()
+    public static function files(): array
     {
         if (!empty(static::$files)) {
             return static::$files;
@@ -294,20 +250,16 @@ class HTTPRequest
 
     /**
      * Return whether request as a given header
-     *
-     * @return bool
      */
-    public static function hasHeader(string $header)
+    public static function hasHeader(string $header): bool
     {
         return isset(static::headers()[$header]);
     }
 
     /**
      * Return an array containing request headers
-     *
-     * @return array
      */
-    public static function headers()
+    public static function headers(): array
     {
         if (!empty(static::$headers)) {
             return static::$headers;

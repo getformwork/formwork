@@ -21,7 +21,7 @@ class Users extends AbstractController
     /**
      * Users@index action
      */
-    public function index()
+    public function index(): void
     {
         $this->ensurePermission('users.index');
 
@@ -40,7 +40,7 @@ class Users extends AbstractController
     /**
      * Users@create action
      */
-    public function create()
+    public function create(): void
     {
         $this->ensurePermission('users.create');
 
@@ -75,7 +75,7 @@ class Users extends AbstractController
     /**
      * Users@delete action
      */
-    public function delete(RouteParams $params)
+    public function delete(RouteParams $params): void
     {
         $this->ensurePermission('users.delete');
 
@@ -108,7 +108,7 @@ class Users extends AbstractController
     /**
      * Users@profile action
      */
-    public function profile(RouteParams $params)
+    public function profile(RouteParams $params): void
     {
         $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'user.yml'));
 
@@ -152,7 +152,7 @@ class Users extends AbstractController
     /**
      * Update user data from POST request
      */
-    protected function updateUser(User $user)
+    protected function updateUser(User $user): void
     {
         $data = new DataSetter(HTTPRequest::postData());
 
@@ -197,7 +197,7 @@ class Users extends AbstractController
     /**
      * Upload a new avatar for a user
      */
-    protected function uploadAvatar(User $user)
+    protected function uploadAvatar(User $user): ?string
     {
         $avatarsPath = ADMIN_PATH . 'avatars' . DS;
 
@@ -233,7 +233,7 @@ class Users extends AbstractController
     /**
      * Delete the avatar of a given user
      */
-    protected function deleteAvatar(User $user)
+    protected function deleteAvatar(User $user): void
     {
         $avatar = $user->avatar()->path();
         if ($avatar !== null && FileSystem::exists($avatar)) {

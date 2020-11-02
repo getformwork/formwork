@@ -36,10 +36,8 @@ class Backupper
 
     /**
      * Return an array with default option values
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
             'maxExecutionTime' => 180,
@@ -62,7 +60,7 @@ class Backupper
      *
      * @return string Backup archive file path
      */
-    public function backup()
+    public function backup(): string
     {
         $previousMaxExecutionTime = ini_set('max_execution_time', $this->options['maxExecutionTime']);
 
@@ -102,10 +100,8 @@ class Backupper
 
     /**
      * Return whether a file is copiable in the backup archive
-     *
-     * @return bool
      */
-    protected function isCopiable(string $file)
+    protected function isCopiable(string $file): bool
     {
         foreach ($this->options['ignore'] as $pattern) {
             if (fnmatch($pattern, $file)) {
@@ -118,7 +114,7 @@ class Backupper
     /**
      * Delete old backups
      */
-    protected function deleteOldBackups()
+    protected function deleteOldBackups(): void
     {
         $backups = [];
 

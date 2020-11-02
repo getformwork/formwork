@@ -95,10 +95,8 @@ class LanguageCodes
 
     /**
      * Return whether a language code is available
-     *
-     * @return bool
      */
-    public static function hasCode(string $code)
+    public static function hasCode(string $code): bool
     {
         return isset(static::$codes[$code]);
     }
@@ -107,10 +105,8 @@ class LanguageCodes
      * Return language native names optionally filtered by continent
      * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
      * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
-     *
-     * @return array
      */
-    public static function names(?string $continent = null)
+    public static function names(?string $continent = null): array
     {
         $result = [];
         foreach (static::$codes as $code => $data) {
@@ -124,10 +120,8 @@ class LanguageCodes
 
     /**
      * Return language name from language code (e.g. 'it')
-     *
-     * @return string
      */
-    public static function codeToName(string $code)
+    public static function codeToName(string $code): string
     {
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
@@ -137,10 +131,8 @@ class LanguageCodes
 
     /**
      * Return language native name from language code (e.g. 'it')
-     *
-     * @return string
      */
-    public static function codeToNativeName(string $code)
+    public static function codeToNativeName(string $code): string
     {
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');

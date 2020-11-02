@@ -23,10 +23,8 @@ class TemplateHelpers
 
     /**
      * Return whether a template helper is defined
-     *
-     * @return bool
      */
-    public static function has(string $name)
+    public static function has(string $name): bool
     {
         return isset(static::$helpers[$name]);
     }
@@ -34,7 +32,7 @@ class TemplateHelpers
     /**
      * Add a template helper
      */
-    public static function add(string $name, callable $helper)
+    public static function add(string $name, callable $helper): void
     {
         if (static::has($name)) {
             throw new RuntimeException('Template helper ' . $name . ' is already defined');
@@ -47,10 +45,8 @@ class TemplateHelpers
 
     /**
      * Get a template helper
-     *
-     * @return callable
      */
-    public static function get(string $name)
+    public static function get(string $name): callable
     {
         if (!static::has($name)) {
             throw new RuntimeException('Template helper ' . $name . ' is not defined');
@@ -61,7 +57,7 @@ class TemplateHelpers
     /**
      * Remove a template helper
      */
-    public static function remove(string $name)
+    public static function remove(string $name): void
     {
         unset(static::$helpers[$name]);
     }

@@ -32,30 +32,24 @@ class Field extends DataSetter
 
     /**
      * Return whether field is empty
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->value() === null || $this->value() === '' || $this->value() === [];
     }
 
     /**
      * Get field name
-     *
-     * @return string
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
     /**
      * Return field name with correct syntax to be used in forms
-     *
-     * @return string
      */
-    public function formName()
+    public function formName(): string
     {
         $segments = explode('.', $this->name);
         $formName = array_shift($segments);
@@ -67,30 +61,24 @@ class Field extends DataSetter
 
     /**
      * Get field type
-     *
-     * @return string
      */
-    public function type()
+    public function type(): string
     {
         return $this->get('type');
     }
 
     /**
      * Get field label
-     *
-     * @return string
      */
-    public function label()
+    public function label(): string
     {
         return $this->get('label', $this->name());
     }
 
     /**
      * Get field placeholder label
-     *
-     * @return string
      */
-    public function placeholder()
+    public function placeholder(): ?string
     {
         return $this->get('placeholder');
     }
@@ -105,10 +93,8 @@ class Field extends DataSetter
 
     /**
      * Return whether the field is visible
-     *
-     * @return bool
      */
-    public function isVisible()
+    public function isVisible(): bool
     {
         return $this->get('visible', true) === true;
     }
@@ -129,7 +115,7 @@ class Field extends DataSetter
     /**
      * Import data helper
      */
-    protected function importData()
+    protected function importData(): void
     {
         foreach ((array) $this->data['import'] as $key => $value) {
             if ($key === 'import') {
@@ -143,7 +129,7 @@ class Field extends DataSetter
         }
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         $return['name'] = $this->name;
         if ($this->has('type')) {

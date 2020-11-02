@@ -98,10 +98,8 @@ class Formwork
 
     /**
      * Return self instance
-     *
-     * @return self
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (static::$instance !== null) {
             return static::$instance;
@@ -111,60 +109,48 @@ class Formwork
 
     /**
      * Get system options
-     *
-     * @return array
      */
-    public function options()
+    public function options(): array
     {
         return $this->options;
     }
 
     /**
      * Get current request
-     *
-     * @return string
      */
-    public function request()
+    public function request(): string
     {
         return $this->request;
     }
 
     /**
      * Return site instance
-     *
-     * @return Site
      */
-    public function site()
+    public function site(): Site
     {
         return $this->site;
     }
 
     /**
      * Return router instance
-     *
-     * @return Router
      */
-    public function router()
+    public function router(): Router
     {
         return $this->router;
     }
 
     /**
      * Return cache instance
-     *
-     * @return SiteCache
      */
-    public function cache()
+    public function cache(): ?SiteCache
     {
         return $this->cache;
     }
 
     /**
      * Return default options
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
             'charset'                  => 'utf-8',
@@ -209,7 +195,7 @@ class Formwork
     /**
      * Run Formwork
      */
-    public function run()
+    public function run(): void
     {
         $resource = $this->router->dispatch();
 
@@ -257,7 +243,7 @@ class Formwork
     /**
      * Load options
      */
-    protected function loadOptions()
+    protected function loadOptions(): void
     {
         FileSystem::assert(CONFIG_PATH . 'system.yml');
 
@@ -276,7 +262,7 @@ class Formwork
     /**
      * Load language from request
      */
-    protected function loadLanguages()
+    protected function loadLanguages(): void
     {
         $this->languages = Languages::fromRequest($this->request);
 
@@ -293,7 +279,7 @@ class Formwork
     /**
      * Load site
      */
-    protected function loadSite()
+    protected function loadSite(): void
     {
         FileSystem::assert(CONFIG_PATH . 'site.yml');
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
@@ -304,7 +290,7 @@ class Formwork
     /**
      * Load cache
      */
-    protected function loadCache()
+    protected function loadCache(): void
     {
         if ($this->option('cache.enabled')) {
             $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
@@ -314,7 +300,7 @@ class Formwork
     /**
      * Load routes
      */
-    protected function loadRoutes()
+    protected function loadRoutes(): void
     {
         $this->router = new Router($this->request);
 
@@ -335,7 +321,7 @@ class Formwork
     /**
      * Load admin route
      */
-    protected function loadAdminRoute()
+    protected function loadAdminRoute(): void
     {
         $this->router->add(
             ['HTTP', 'XHR'],
@@ -350,10 +336,8 @@ class Formwork
 
     /**
      * Get default route
-     *
-     * @return callable
      */
-    private function defaultRoute()
+    private function defaultRoute(): callable
     {
         return function (RouteParams $params) {
             $route = $params->get('page', $this->option('pages.index'));

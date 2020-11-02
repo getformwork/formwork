@@ -45,10 +45,8 @@ class Visitor
 
     /**
      * Return whether current visitor is a bot
-     *
-     * @return bool
      */
-    public static function isBot()
+    public static function isBot(): bool
     {
         if (static::$regex === null) {
             static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
@@ -58,20 +56,16 @@ class Visitor
 
     /**
      * Return whether current user agent is a browser
-     *
-     * @return bool
      */
-    public static function isBrowser()
+    public static function isBrowser(): bool
     {
         return !static::isBot();
     }
 
     /**
      * Detect whether current visitor prefers not to be tracked
-     *
-     * @return bool
      */
-    public static function isTrackable()
+    public static function isTrackable(): bool
     {
         return !HTTPRequest::hasHeader('Dnt') || HTTPRequest::headers()['Dnt'] !== '1';
     }

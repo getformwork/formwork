@@ -31,10 +31,8 @@ class Permissions
 
     /**
      * Return whether a permission is granted
-     *
-     * @return bool
      */
-    public function has(string $permission)
+    public function has(string $permission): bool
     {
         if (array_key_exists($permission, $this->permissions)) {
             return (bool) $this->permissions[$permission];

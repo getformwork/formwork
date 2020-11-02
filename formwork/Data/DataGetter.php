@@ -36,10 +36,8 @@ class DataGetter
      * Return whether a key or multiple keys are present
      *
      * @param array|string $key
-     *
-     * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         if (is_array($key)) {
             foreach ($key as $k) {
@@ -54,15 +52,13 @@ class DataGetter
 
     /**
      * Return an array containing data
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->data;
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return $this->toArray();
     }

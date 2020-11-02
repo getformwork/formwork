@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Files\Files;
+use Formwork\Metadata\Metadata;
 use Formwork\Parsers\Markdown;
 use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
@@ -201,10 +202,8 @@ class Page extends AbstractPage
 
     /**
      * Return page default data
-     *
-     * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         $defaults = [
             'published'  => true,
@@ -230,10 +229,8 @@ class Page extends AbstractPage
 
     /**
      * Reload page
-     *
-     * @return $this
      */
-    public function reload()
+    public function reload(): void
     {
         $vars = ['filename', 'template', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings'];
         foreach ($vars as $var) {
@@ -244,10 +241,8 @@ class Page extends AbstractPage
 
     /**
      * Return whether page is empty
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->filename === null;
     }
@@ -255,17 +250,15 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function lastModifiedTime()
+    public function lastModifiedTime(): int
     {
         return max(FileSystem::lastModifiedTime($this->path . $this->filename), parent::lastModifiedTime());
     }
 
     /**
      * Get page num
-     *
-     * @return int|null
      */
-    public function num()
+    public function num(): ?int
     {
         preg_match(self::NUM_REGEX, $this->id, $matches);
         return isset($matches[1]) ? (int) $matches[1] : null;
@@ -273,10 +266,8 @@ class Page extends AbstractPage
 
     /**
      * Return whether this is the currently active page
-     *
-     * @return bool
      */
-    public function isCurrent()
+    public function isCurrent(): bool
     {
         return Formwork::instance()->site()->currentPage() === $this;
     }
@@ -284,7 +275,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function date(?string $format = null)
+    public function date(?string $format = null): string
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');
@@ -297,10 +288,8 @@ class Page extends AbstractPage
 
     /**
      * Get page status
-     *
-     * @return string
      */
-    public function status()
+    public function status(): string
     {
         if ($this->status !== null) {
             return $this->status;
@@ -319,10 +308,8 @@ class Page extends AbstractPage
 
     /**
      * Return a PageCollection containing page siblings
-     *
-     * @return PageCollection
      */
-    public function siblings()
+    public function siblings(): PageCollection
     {
         if ($this->siblings !== null) {
             return $this->siblings;
@@ -333,10 +320,8 @@ class Page extends AbstractPage
 
     /**
      * Return whether page has siblings
-     *
-     * @return bool
      */
-    public function hasSiblings()
+    public function hasSiblings(): bool
     {
         return !$this->siblings()->isEmpty();
     }
@@ -344,7 +329,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isSite()
+    public function isSite(): bool
     {
         return false;
     }
@@ -352,7 +337,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isIndexPage()
+    public function isIndexPage(): bool
     {
         return trim($this->route(), '/') === Formwork::instance()->option('pages.index');
     }
@@ -360,7 +345,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isErrorPage()
+    public function isErrorPage(): bool
     {
         return trim($this->route(), '/') === Formwork::instance()->option('pages.error');
     }
@@ -368,7 +353,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         if ($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage()) {
             return false;
@@ -379,7 +364,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function metadata()
+    public function metadata(): Metadata
     {
         if ($this->metadata !== null) {
             return $this->metadata;
@@ -391,10 +376,8 @@ class Page extends AbstractPage
 
     /**
      * Return whether page has a language
-     *
-     * @return bool
      */
-    public function hasLanguage(string $language)
+    public function hasLanguage(string $language): bool
     {
         return in_array($language, $this->availableLanguages, true);
     }
@@ -402,7 +385,7 @@ class Page extends AbstractPage
     /**
      * Set page language
      */
-    public function setLanguage(string $language)
+    public function setLanguage(string $language): void
     {
         if (!$this->hasLanguage($language)) {
             throw new RuntimeException('Invalid page language "' . $language . '"');
@@ -420,7 +403,7 @@ class Page extends AbstractPage
      *
      * @deprecated
      */
-    public function file(string $file)
+    public function file(string $file): ?string
     {
         trigger_error(static::class . '::file() is deprecated since Formwork 1.4.0, access files from ' . static::class . '::files() instead', E_USER_DEPRECATED);
         return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
@@ -428,10 +411,8 @@ class Page extends AbstractPage
 
     /**
      * Return a Files collection containing only images
-     *
-     * @return Files
      */
-    public function images()
+    public function images(): Files
     {
         return $this->files()->filterByType('image');
     }
@@ -440,10 +421,8 @@ class Page extends AbstractPage
      * Render page to string
      *
      * @param array $vars Variables to pass to the page
-     *
-     * @return string
      */
-    public function renderToString(array $vars = [])
+    public function renderToString(array $vars = []): string
     {
         return $this->template()->render($vars, true);
     }
@@ -453,10 +432,8 @@ class Page extends AbstractPage
      *
      * @param array $vars        Variables to pass to the page
      * @param bool  $sendHeaders Whether to send headers before rendering
-     *
-     * @return string
      */
-    public function render(array $vars = [], bool $sendHeaders = true)
+    public function render(array $vars = [], bool $sendHeaders = true): string
     {
         if ($sendHeaders) {
             $this->sendHeaders();
@@ -467,10 +444,8 @@ class Page extends AbstractPage
 
     /**
      * Return an array containing page data
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'route'    => $this->route(),
@@ -485,10 +460,8 @@ class Page extends AbstractPage
 
     /**
      * Return raw content
-     *
-     * @return string
      */
-    public function rawContent()
+    public function rawContent(): string
     {
         if ($this->rawContent !== null) {
             return $this->rawContent;
@@ -498,10 +471,8 @@ class Page extends AbstractPage
 
     /**
      * Return summary text
-     *
-     * @return string
      */
-    public function summary()
+    public function summary(): string
     {
         if ($this->summary !== null) {
             return $this->summary;
@@ -511,10 +482,8 @@ class Page extends AbstractPage
 
     /**
      * Return body text
-     *
-     * @return string
      */
-    public function body()
+    public function body(): string
     {
         if ($this->body !== null) {
             return $this->body;
@@ -524,10 +493,8 @@ class Page extends AbstractPage
 
     /**
      * Return page content (summary and body text)
-     *
-     * @return string
      */
-    public function content()
+    public function content(): string
     {
         return $this->summary() . $this->body();
     }
@@ -535,7 +502,7 @@ class Page extends AbstractPage
     /**
      * Load files related to page
      */
-    protected function loadFiles()
+    protected function loadFiles(): void
     {
         $contentFiles = [];
         $files = [];
@@ -582,7 +549,7 @@ class Page extends AbstractPage
     /**
      * Parse page content
      */
-    protected function parse()
+    protected function parse(): void
     {
         $contents = FileSystem::read($this->path . $this->filename);
         if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(?:(.+?)\s+={3}\s+)?(.*?)\s*$/s', $contents, $matches)) {
@@ -596,7 +563,7 @@ class Page extends AbstractPage
     /**
      * Process page data
      */
-    protected function processData()
+    protected function processData(): void
     {
         $this->published = $this->data['published'];
 
@@ -632,7 +599,7 @@ class Page extends AbstractPage
     /**
      * Send page headers
      */
-    protected function sendHeaders()
+    protected function sendHeaders(): void
     {
         if ($this->has('response_status')) {
             Header::status((int) $this->get('response_status'));
@@ -644,12 +611,12 @@ class Page extends AbstractPage
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->id();
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return $this->toArray();
     }

@@ -16,7 +16,7 @@ class Register extends AbstractController
     /**
      * Register@register action
      */
-    public function register()
+    public function register(): void
     {
         CSRFToken::generate();
 

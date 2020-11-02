@@ -40,10 +40,8 @@ class Validator
 
     /**
      * Validate checkbox field
-     *
-     * @return bool
      */
-    public static function validateCheckbox($value)
+    public static function validateCheckbox($value): bool
     {
         return !empty($value);
     }
@@ -64,10 +62,8 @@ class Validator
 
     /**
      * Validate date field
-     *
-     * @return string
      */
-    public static function validateDate($value)
+    public static function validateDate($value): ?string
     {
         if (!empty($value)) {
             $format = Formwork::instance()->option('date.format');
@@ -119,11 +115,8 @@ class Validator
 
     /**
      * Validate tags field
-     *
-
-     * @return array
      */
-    public static function validateTags($value, Field $field)
+    public static function validateTags($value, Field $field): array
     {
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {
@@ -137,11 +130,8 @@ class Validator
 
     /**
      * Validate array field
-
-     *
-     * @return array
      */
-    public static function validateArray($value, Field $field)
+    public static function validateArray($value, Field $field): array
     {
         $array = [];
         if (is_array($value)) {
@@ -179,10 +169,8 @@ class Validator
 
     /**
      * Return whether a values matches to a regex
-     *
-     * @return bool
      */
-    private static function regex($value, string $regex)
+    private static function regex($value, string $regex): bool
     {
         return (bool) @preg_match('/' . $regex . '/', $value);
     }

@@ -39,30 +39,24 @@ class Response
 
     /**
      * Return Response content
-     *
-     * @return string
      */
-    public function content()
+    public function content(): string
     {
         return $this->content;
     }
 
     /**
      * Return HTTP status
-     *
-     * @return int
      */
-    public function status()
+    public function status(): int
     {
         return $this->status;
     }
 
     /**
      * Return HTTP headers
-     *
-     * @return array
      */
-    public function headers()
+    public function headers(): array
     {
         return $this->headers;
     }
@@ -70,7 +64,7 @@ class Response
     /**
      * Send HTTP status
      */
-    public function sendStatus()
+    public function sendStatus(): void
     {
         if ($this->status !== null) {
             Header::status($this->status);
@@ -80,7 +74,7 @@ class Response
     /**
      * Send HTTP status and headers
      */
-    public function sendHeaders()
+    public function sendHeaders(): void
     {
         $this->sendStatus();
 

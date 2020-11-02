@@ -69,10 +69,8 @@ class AccessLimiter
 
     /**
      * Return whether attempts limit is reached
-     *
-     * @return bool
      */
-    public function hasReachedLimit()
+    public function hasReachedLimit(): bool
     {
         if (time() - $this->lastAttemptTime > $this->resetTime) {
             $this->resetAttempts();
@@ -83,7 +81,7 @@ class AccessLimiter
     /**
      * Register an access attempt
      */
-    public function registerAttempt()
+    public function registerAttempt(): void
     {
         $this->registry->set($this->attemptHash, [++$this->attempts, time()]);
     }
@@ -91,7 +89,7 @@ class AccessLimiter
     /**
      * Reset attempts registry
      */
-    public function resetAttempts()
+    public function resetAttempts(): void
     {
         $this->attempts = 0;
         $this->registry->remove($this->attemptHash);

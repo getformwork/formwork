@@ -25,7 +25,7 @@ class Log extends Registry
      *
      * @return string Logging timestamp
      */
-    public function log(string $message)
+    public function log(string $message): string
     {
         $timestamp = (string) microtime(true);
         $this->set($timestamp, $message);
@@ -35,7 +35,7 @@ class Log extends Registry
     /**
      * @inheritdoc
      */
-    public function save()
+    public function save(): void
     {
         if (count($this->storage) > $this->limit) {
             $this->storage = array_slice($this->storage, -$this->limit, null, true);

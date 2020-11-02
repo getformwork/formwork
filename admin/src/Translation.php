@@ -56,30 +56,24 @@ class Translation
 
     /**
      * Get all available languages
-     *
-     * @return array
      */
-    public static function availableLanguages()
+    public static function availableLanguages(): array
     {
         return static::$availableLanguages;
     }
 
     /**
      * Get language code
-     *
-     * @return string
      */
-    public function code()
+    public function code(): string
     {
         return $this->code;
     }
 
     /**
      * Return whether a language string is set
-     *
-     * @return bool
      */
-    public function has(string $key)
+    public function has(string $key): bool
     {
         return isset($this->strings[$key]);
     }
@@ -88,8 +82,6 @@ class Translation
      * Return a formatted language label
      *
      * @param float|int|string ...$arguments
-     *
-     * @return string
      */
     public function get(string $key, ...$arguments)
     {
@@ -109,10 +101,8 @@ class Translation
 
     /**
      * Load administration panel language
-     *
-     * @return self
      */
-    public static function load(string $languageCode)
+    public static function load(string $languageCode): self
     {
         if (empty(static::$availableLanguages)) {
             foreach (FileSystem::listFiles(Admin::TRANSLATIONS_PATH) as $file) {
@@ -134,10 +124,8 @@ class Translation
 
     /**
      * Return fallback translation instance
-     *
-     * @return Translation
      */
-    protected function fallbackTranslation()
+    protected function fallbackTranslation(): Translation
     {
         if (static::$fallbackTranslation !== null) {
             return static::$fallbackTranslation;

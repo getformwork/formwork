@@ -17,50 +17,40 @@ trait AdminTrait
 {
     /**
      * Return a URI relative to the request root
-     *
-     * @return string
      */
-    protected function uri(string $route)
+    protected function uri(string $route): string
     {
         return $this->panelUri() . ltrim($route, '/');
     }
 
     /**
      * Return a URI relative to the real Admin root
-     *
-     * @return string
      */
-    protected function realUri(string $route)
+    protected function realUri(string $route): string
     {
         return HTTPRequest::root() . 'admin/' . ltrim($route, '/');
     }
 
     /**
      * Get the URI of the site
-     *
-     * @return string
      */
-    protected function siteUri()
+    protected function siteUri(): string
     {
         return HTTPRequest::root();
     }
 
     /**
      * Return panel root
-     *
-     * @return string
      */
-    protected function panelRoot()
+    protected function panelRoot(): string
     {
         return Uri::normalize(Formwork::instance()->option('admin.root'));
     }
 
     /**
      * Get the URI of the panel
-     *
-     * @return string
      */
-    protected function panelUri()
+    protected function panelUri(): string
     {
         return HTTPRequest::root() . ltrim($this->panelRoot(), '/');
     }
@@ -69,10 +59,8 @@ trait AdminTrait
      * Return the URI of a page
      *
      * @param bool|string $includeLanguage
-     *
-     * @return string
      */
-    protected function pageUri(Page $page, $includeLanguage = true)
+    protected function pageUri(Page $page, $includeLanguage = true): string
     {
         $base = $this->siteUri();
         if ($includeLanguage) {
@@ -86,10 +74,8 @@ trait AdminTrait
 
     /**
      * Return current route
-     *
-     * @return string
      */
-    protected function route()
+    protected function route(): string
     {
         return '/' . Str::removeStart(HTTPRequest::uri(), $this->panelRoot());
     }
@@ -99,7 +85,7 @@ trait AdminTrait
      *
      * @param int $code HTTP redirect status code
      */
-    protected function redirect(string $route, int $code = 302)
+    protected function redirect(string $route, int $code = 302): void
     {
         Header::redirect($this->uri($route), $code);
     }
@@ -109,7 +95,7 @@ trait AdminTrait
      *
      * @param int $code HTTP redirect status code
      */
-    protected function redirectToSite(int $code = 302)
+    protected function redirectToSite(int $code = 302): void
     {
         Header::redirect($this->siteUri(), $code);
     }
@@ -119,7 +105,7 @@ trait AdminTrait
      *
      * @param int $code HTTP redirect status code
      */
-    protected function redirectToPanel(int $code = 302)
+    protected function redirectToPanel(int $code = 302): void
     {
         $this->redirect('/', $code);
     }
@@ -130,7 +116,7 @@ trait AdminTrait
      * @param int    $code    HTTP redirect status code
      * @param string $default Default route if HTTP referer is not available
      */
-    protected function redirectToReferer(int $code = 302, string $default = '/')
+    protected function redirectToReferer(int $code = 302, string $default = '/'): void
     {
         if (HTTPRequest::validateReferer($this->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
             Header::redirect(HTTPRequest::referer(), $code);
@@ -141,30 +127,24 @@ trait AdminTrait
 
     /**
      * Get scheme object from template name
-     *
-     * @return Scheme
      */
-    protected function scheme(string $template)
+    protected function scheme(string $template): Scheme
     {
         return new Scheme($template);
     }
 
     /**
      * Get a Registry object by name from logs path
-     *
-     * @return Registry
      */
-    protected function registry(string $name)
+    protected function registry(string $name): Registry
     {
         return new Registry(Admin::LOGS_PATH . $name . '.json');
     }
 
     /**
      * Get a Log object by name from logs path
-     *
-     * @return Log
      */
-    protected function log(string $name)
+    protected function log(string $name): Log
     {
         return new Log(Admin::LOGS_PATH . $name . '.json');
     }
@@ -172,17 +152,15 @@ trait AdminTrait
     /**
      * Send a notification
      */
-    protected function notify(string $text, string $type = Notification::INFO)
+    protected function notify(string $text, string $type = Notification::INFO): void
     {
         Notification::send($text, $type);
     }
 
     /**
      * Get notification from session data
-     *
-     * @return array|null
      */
-    protected function notification()
+    protected function notification(): ?array
     {
         return Notification::exists() ? Notification::get() : null;
     }
@@ -191,8 +169,6 @@ trait AdminTrait
      * Get a label from language string
      *
      * @param float|int|string ...$arguments
-     *
-     * @return string
      */
     protected function label(...$arguments)
     {

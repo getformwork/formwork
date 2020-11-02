@@ -68,90 +68,72 @@ class Pagination
 
     /**
      * Get current page
-     *
-     * @return int
      */
-    public function currentPage()
+    public function currentPage(): int
     {
         return $this->currentPage;
     }
 
     /**
      * Get pagination length
-     *
-     * @return int
      */
-    public function length()
+    public function length(): int
     {
         return $this->length;
     }
 
     /**
      * Get current pagination offset
-     *
-     * @return int
      */
-    public function offset()
+    public function offset(): int
     {
         return ($this->currentPage - 1) * $this->length;
     }
 
     /**
      * Return whether a given page number exists
-     *
-     * @return bool
      */
-    public function hasPage(int $number)
+    public function hasPage(int $number): bool
     {
         return (int) $number > 1 && (int) $number <= $this->pages;
     }
 
     /**
      * Return whether current page is the first
-     *
-     * @return bool
      */
-    public function firstPage()
+    public function firstPage(): bool
     {
         return $this->currentPage === 1;
     }
 
     /**
      * Return whether current page is the last
-     *
-     * @return bool
      */
-    public function lastPage()
+    public function lastPage(): bool
     {
         return $this->currentPage === $this->pages;
     }
 
     /**
      * Return whether pagination has more than one page
-     *
-     * @return bool
      */
-    public function hasPages()
+    public function hasPages(): bool
     {
         return $this->pages > 1;
     }
 
     /**
      * Return whether a previous page exists
-     *
-     * @return bool
      */
-    public function hasPreviousPage()
+    public function hasPreviousPage(): bool
     {
         return !$this->firstPage();
     }
 
     /**
      * Return whether a next page exists
-     *
-     * @return bool
      */
-    public function hasNextPage()
+    public function hasNextPage(): bool
     {
         return !$this->lastPage();
     }
@@ -180,20 +162,16 @@ class Pagination
 
     /**
      * Get the URI of the next pagination page
-     *
-     * @return string
      */
-    public function nextPageUri()
+    public function nextPageUri(): string
     {
         return Uri::make(['host' => '', 'path' => $this->baseUri . 'page/' . $this->nextPage()]);
     }
 
     /**
      * Get the URI of the previous pagination page
-     *
-     * @return string
      */
-    public function previousPageUri()
+    public function previousPageUri(): string
     {
         if ($this->previousPage() === 1) {
             return Uri::make(['host' => '', 'path' => $this->baseUri]);
@@ -201,7 +179,7 @@ class Pagination
         return Uri::make(['host' => '', 'path' => $this->baseUri . 'page/' . $this->previousPage()]);
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return [
             'count'        => $this->count,

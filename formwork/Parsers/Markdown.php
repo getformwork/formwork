@@ -8,10 +8,8 @@ class Markdown extends AbstractParser
 {
     /**
      * Parse a Markdown string
-     *
-     * @return string
      */
-    public static function parse(string $input, array $options = [])
+    public static function parse(string $input, array $options = []): string
     {
         return ParsedownExtra::instance()->text($input, $options);
     }

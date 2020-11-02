@@ -38,10 +38,8 @@ abstract class AbstractController
 
     /**
      * Return site instance
-     *
-     * @return Site
      */
-    protected function site()
+    protected function site(): Site
     {
         return Formwork::instance()->site();
     }
@@ -57,9 +55,8 @@ abstract class AbstractController
     /*
      * Return default data passed to views
      *
-     * @return array
      */
-    protected function defaults()
+    protected function defaults(): array
     {
         return [
             'location'  => $this->location,
@@ -83,10 +80,8 @@ abstract class AbstractController
 
     /**
      * Get logged user
-     *
-     * @return User
      */
-    protected function user()
+    protected function user(): User
     {
         return Admin::instance()->user();
     }
@@ -94,7 +89,7 @@ abstract class AbstractController
     /**
      * Ensure current user has a permission
      */
-    protected function ensurePermission(string $permission)
+    protected function ensurePermission(string $permission): void
     {
         if (!$this->user()->permissions()->has($permission)) {
             $errors = new Errors();
@@ -109,7 +104,7 @@ abstract class AbstractController
      * @param string $name Name of the modal
      * @param array  $data Data to pass to the modal
      */
-    protected function modal(string $name, array $data = [])
+    protected function modal(string $name, array $data = []): void
     {
         $this->modals[] = $this->view('modals.' . $name, $data, true);
     }

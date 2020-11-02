@@ -34,10 +34,8 @@ class Assets
      * Get asset version, if possible, based on its last modified time
      *
      * @param string $path Requested asset path
-     *
-     * @return string|null
      */
-    public function version(string $path)
+    public function version(string $path): ?string
     {
         $file = $this->basePath . strtr(trim($path, '/'), '/', DS);
         if (FileSystem::exists($file)) {
@@ -51,10 +49,8 @@ class Assets
      *
      * @param string $path           Requested asset path
      * @param bool   $includeVersion Whether to include asset version
-     *
-     * @return string
      */
-    public function uri(string $path, bool $includeVersion = false)
+    public function uri(string $path, bool $includeVersion = false): string
     {
         $uri = $this->baseUri . trim($path, '/');
         if ($includeVersion && ($version = $this->version($path)) !== null) {

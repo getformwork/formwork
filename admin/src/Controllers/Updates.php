@@ -14,7 +14,7 @@ class Updates extends AbstractController
     /**
      * Updates@check action
      */
-    public function check()
+    public function check(): void
     {
         $this->ensurePermission('updates.check');
         $updater = new Updater(['preferDistAssets' => true]);
@@ -40,7 +40,7 @@ class Updates extends AbstractController
     /**
      * Updates@update action
      */
-    public function update()
+    public function update(): void
     {
         $this->ensurePermission('updates.update');
         $updater = new Updater(['force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true]);

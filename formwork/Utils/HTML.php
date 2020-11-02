@@ -19,10 +19,8 @@ class HTML
 
     /**
      * Return an attribute ('name="value"') from $name and $value arguments
-     *
-     * @return string
      */
-    public static function attribute(string $name, $value = null)
+    public static function attribute(string $name, $value = null): string
     {
         $name = strtolower($name);
         if ($value === true) {
@@ -39,10 +37,8 @@ class HTML
 
     /**
      * Return an attributes string from an array of name and value pairs
-     *
-     * @return string
      */
-    public static function attributes(array $data)
+    public static function attributes(array $data): string
     {
         $attributes = [];
         foreach ($data as $key => $value) {
@@ -53,10 +49,8 @@ class HTML
 
     /**
      * Return a string containing an HTML tag with specified name, attributes and content
-     *
-     * @return string
      */
-    public static function tag(string $name, array $attributes = [], ?string ...$content)
+    public static function tag(string $name, array $attributes = [], ?string ...$content): string
     {
         $name = strtolower($name);
         $attributes = static::attributes($attributes);
@@ -79,10 +73,8 @@ class HTML
     
     /**
      * Return whether the given tag is a void element
-     *
-     * @return bool
      */
-    public static function isVoid(string $tag)
+    public static function isVoid(string $tag): bool
     {
         return in_array(strtolower($tag), self::VOID_ELEMENTS, true);
     }

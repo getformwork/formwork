@@ -37,7 +37,7 @@ class User extends DataGetter
     /**
      * User last access time
      *
-     * @var string
+     * @var string|null
      */
     protected $lastAccess;
 
@@ -53,80 +53,64 @@ class User extends DataGetter
 
     /**
      * Return whether a given password authenticates the user
-     *
-     * @return bool
      */
-    public function authenticate(string $password)
+    public function authenticate(string $password): bool
     {
         return Password::verify($password, $this->data['hash']);
     }
 
     /**
      * Return whether the user is logged or not
-     *
-     * @return bool
      */
-    public function isLogged()
+    public function isLogged(): bool
     {
         return Session::get('FORMWORK_USERNAME') === $this->data['username'];
     }
 
     /**
      * Return whether the user has 'admin' role
-     *
-     * @return bool
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->data['role'] === 'admin';
     }
 
     /**
      * Return whether the user can delete a given user
-     *
-     * @return bool
      */
-    public function canDeleteUser(User $user)
+    public function canDeleteUser(User $user): bool
     {
         return $this->isAdmin() && !$user->isLogged();
     }
 
     /**
      * Return whether the user can change options of a given user
-     *
-     * @return bool
      */
-    public function canChangeOptionsOf(User $user)
+    public function canChangeOptionsOf(User $user): bool
     {
         return $this->isAdmin() || $user->isLogged();
     }
 
     /**
      * Return whether the user can change the password of a given user
-     *
-     * @return bool
      */
-    public function canChangePasswordOf(User $user)
+    public function canChangePasswordOf(User $user): bool
     {
         return $this->isAdmin() || $user->isLogged();
     }
 
     /**
      * Return whether the user can change the role of a given user
-     *
-     * @return bool
      */
-    public function canChangeRoleOf(User $user)
+    public function canChangeRoleOf(User $user): bool
     {
         return $this->isAdmin() && !$user->isLogged();
     }
 
     /**
      * Get the user last access time
-     *
-     * @return string
      */
-    public function lastAccess()
+    public function lastAccess(): ?string
     {
         if ($this->lastAccess !== null) {
             return $this->lastAccess;

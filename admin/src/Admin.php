@@ -109,10 +109,8 @@ class Admin
 
     /**
      * Return self instance
-     *
-     * @return self
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (static::$instance !== null) {
             return static::$instance;
@@ -122,10 +120,8 @@ class Admin
 
     /**
      * Return whether a user is logged in
-     *
-     * @return bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         $username = Session::get('FORMWORK_USERNAME');
         return !empty($username) && $this->users->has($username);
@@ -133,10 +129,8 @@ class Admin
 
     /**
      * Return currently logged in user
-     *
-     * @return User
      */
-    public function user()
+    public function user(): User
     {
         $username = Session::get('FORMWORK_USERNAME');
         return $this->users->get($username);
@@ -145,7 +139,7 @@ class Admin
     /**
      * Run the administration panel
      */
-    public function run()
+    public function run(): void
     {
         if (HTTPRequest::method() === 'POST') {
             $this->validateContentLength();
@@ -173,7 +167,7 @@ class Admin
     /**
      * Load proper panel translation
      */
-    protected function loadTranslations()
+    protected function loadTranslations(): void
     {
         $languageCode = Formwork::instance()->option('admin.lang');
         if ($this->isLoggedIn()) {
@@ -185,7 +179,7 @@ class Admin
     /**
      * Load the panel-styled error handler
      */
-    protected function loadErrorHandler()
+    protected function loadErrorHandler(): void
     {
         $this->errors = new Controllers\Errors();
         set_exception_handler(function ($exception) {
@@ -198,7 +192,7 @@ class Admin
      * Validate HTTP request Content-Length according to post_max_size directive
      * and notify if not valid
      */
-    protected function validateContentLength()
+    protected function validateContentLength(): void
     {
         if (HTTPRequest::contentLength() !== null) {
             $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
@@ -212,7 +206,7 @@ class Admin
     /**
      * Validate CSRF token and redirect to login view if not valid
      */
-    protected function validateCSRFToken()
+    protected function validateCSRFToken(): void
     {
         try {
             CSRFToken::validate();
@@ -230,7 +224,7 @@ class Admin
     /**
      * Register administration panel if no user exists
      */
-    protected function registerAdmin()
+    protected function registerAdmin(): void
     {
         if (!HTTPRequest::isLocalhost()) {
             $this->redirectToSite();
@@ -246,7 +240,7 @@ class Admin
     /**
      * Load administration panel routes
      */
-    protected function loadRoutes()
+    protected function loadRoutes(): void
     {
         // Default route
         $this->router->add(

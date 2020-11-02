@@ -15,10 +15,8 @@ class CSRFToken
 
     /**
      * Generate a new CSRF token
-     *
-     * @return string
      */
-    public static function generate()
+    public static function generate(): string
     {
         static::$token = base64_encode(random_bytes(36));
         Session::set('CSRF_TOKEN', static::$token);
@@ -27,20 +25,16 @@ class CSRFToken
 
     /**
      * Get current CSRF token
-     *
-     * @return string
      */
-    public static function get()
+    public static function get(): string
     {
         return Session::has('CSRF_TOKEN') ? Session::get('CSRF_TOKEN') : null;
     }
 
     /**
      * Check if given CSRF token is valid
-     *
-     * @return bool
      */
-    public static function validate(?string $token = null)
+    public static function validate(?string $token = null): bool
     {
         if ($token === null) {
             $postData = HTTPRequest::postData();
@@ -58,7 +52,7 @@ class CSRFToken
     /**
      * Remove CSRF token from session data
      */
-    public static function destroy()
+    public static function destroy(): void
     {
         Session::remove('CSRF_TOKEN');
     }

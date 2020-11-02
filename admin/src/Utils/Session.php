@@ -11,7 +11,7 @@ class Session
     /**
      * Start a new session
      */
-    public static function start()
+    public static function start(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_strict_mode', true);
@@ -41,7 +41,7 @@ class Session
     /**
      * Set a session key to value
      */
-    public static function set(string $key, $value)
+    public static function set(string $key, $value): void
     {
         static::start();
         $_SESSION[$key] = $value;
@@ -60,10 +60,8 @@ class Session
 
     /**
      * Return whether a key is in session data
-     *
-     * @return bool
      */
-    public static function has(string $key)
+    public static function has(string $key): bool
     {
         static::start();
         return isset($_SESSION[$key]);
@@ -72,7 +70,7 @@ class Session
     /**
      * Remove session data by key
      */
-    public static function remove(string $key)
+    public static function remove(string $key): void
     {
         static::start();
         if (static::has($key)) {
@@ -83,7 +81,7 @@ class Session
     /**
      * End a session and destroy all data
      */
-    public static function destroy()
+    public static function destroy(): void
     {
         session_destroy();
     }

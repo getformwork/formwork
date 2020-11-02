@@ -6,10 +6,8 @@ class DateFormats
 {
     /**
      * Return common date formats
-     *
-     * @return array
      */
-    public static function date()
+    public static function date(): array
     {
         $formats = [];
         foreach (['d/m/Y', 'm/d/Y', 'Y-m-d', 'd-m-Y'] as $format) {
@@ -20,10 +18,8 @@ class DateFormats
 
     /**
      * Return common hour formats
-     *
-     * @return array
      */
-    public static function hour()
+    public static function hour(): array
     {
         $formats = [];
         foreach (['H:i', 'h:i A'] as $format) {
@@ -34,10 +30,8 @@ class DateFormats
 
     /**
      * Return timezone identifiers
-     *
-     * @return array
      */
-    public static function timezones()
+    public static function timezones(): array
     {
         $timezones = [];
         foreach (timezone_identifiers_list() as $tz) {
