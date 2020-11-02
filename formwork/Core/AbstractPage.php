@@ -295,6 +295,9 @@ abstract class AbstractPage
      */
     public function get($key, $default = null)
     {
+        if (!is_string($key)) {
+            trigger_error('Using ' . static::class . '::get() with a non-string $key parameter is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
+        }
         if (property_exists($this, $key)) {
             // Call getter method if exists and property is null
             if ($this->$key === null && method_exists($this, $key)) {
@@ -319,6 +322,10 @@ abstract class AbstractPage
      */
     public function has($key): bool
     {
+        if (!is_string($key)) {
+            trigger_error('Using ' . static::class . '::has() with a non-string $key parameter is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
+            $key = (string) $key;
+        }
         return property_exists($this, $key) || Arr::has($this->data, $key);
     }
 
@@ -329,6 +336,9 @@ abstract class AbstractPage
      */
     public function set($key, $value): void
     {
+        if (!is_string($key)) {
+            trigger_error('Using ' . static::class . '::set() with a non-string $key parameter is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
+        }
         $this->data[$key] = $value;
     }
 
