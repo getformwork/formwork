@@ -54,6 +54,14 @@ class Str
     }
 
     /**
+     * Wrap a string with another
+     */
+    public static function wrap(string $string, string $wrap): string
+    {
+        return $wrap . $string . $wrap;
+    }
+
+    /**
      * Remove $needle from $haystack if it is at the beginning, otherwise return $haystack
      */
     public static function removeStart(string $haystack, string $needle): string
