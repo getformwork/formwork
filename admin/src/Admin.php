@@ -15,6 +15,7 @@ use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use LogicException;
 use RuntimeException;
+use Throwable;
 
 class Admin
 {
@@ -182,7 +183,7 @@ class Admin
     protected function loadErrorHandler(): void
     {
         $this->errors = new Controllers\Errors();
-        set_exception_handler(function ($exception) {
+        set_exception_handler(function (Throwable $exception): void {
             $this->errors->internalServerError($exception);
             throw $exception;
         });
@@ -245,7 +246,7 @@ class Admin
         // Default route
         $this->router->add(
             '/',
-            function (RouteParams $params) {
+            function (RouteParams $params): void {
                 $this->redirect('/dashboard/');
             }
         );

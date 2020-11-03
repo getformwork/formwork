@@ -83,7 +83,7 @@ class PageCollection extends Collection
     {
         $pageCollection = clone $this;
 
-        $pageCollection->items = array_filter($pageCollection->items, static function ($item) use ($property, $value, $process) {
+        $pageCollection->items = array_filter($pageCollection->items, static function (Page $item) use ($property, $value, $process): bool {
             if ($item->has($property)) {
                 $propertyValue = $item->get($property);
 
@@ -123,7 +123,7 @@ class PageCollection extends Collection
             $direction = 1;
         }
 
-        usort($pageCollection->items, static function ($item1, $item2) use ($property, $direction) {
+        usort($pageCollection->items, static function (Page $item1, Page $item2) use ($property, $direction): int {
             return $direction * strnatcasecmp($item1->get($property), $item2->get($property));
         });
 
@@ -145,7 +145,7 @@ class PageCollection extends Collection
 
         $keywords = explode(' ', $query);
         $keywords = array_diff($keywords, (array) Formwork::instance()->option('search.stopwords'));
-        $keywords = array_filter($keywords, static function ($item) use ($min) {
+        $keywords = array_filter($keywords, static function (string $item) use ($min): bool {
             return strlen($item) > $min;
         });
 

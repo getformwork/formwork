@@ -20,7 +20,7 @@ class Renderer
      */
     protected static function getClosure($instance, string $context = null): Closure
     {
-        return Closure::bind(function ($_filename, array $_vars) {
+        return Closure::bind(function (string $_filename, array $_vars) {
             extract($_vars);
             return include $_filename;
         }, $instance, $context);

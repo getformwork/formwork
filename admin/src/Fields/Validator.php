@@ -19,7 +19,7 @@ class Validator
     /**
      * Validate all Fields against given data
      */
-    public static function validate(Fields $fields, DataGetter $data)
+    public static function validate(Fields $fields, DataGetter $data): void
     {
         foreach ($fields as $field) {
             if ($field->has('fields')) {
@@ -121,7 +121,7 @@ class Validator
         $tags = is_array($value) ? $value : explode(', ', $value);
         if ($field->has('pattern')) {
             $pattern = $field->get('pattern');
-            $tags = array_filter($tags, static function ($item) use ($pattern) {
+            $tags = array_filter($tags, static function ($item) use ($pattern): bool {
                 return static::regex($item, $pattern);
             });
         }

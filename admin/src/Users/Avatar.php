@@ -44,20 +44,16 @@ class Avatar
 
     /**
      * Return avatar URI
-     *
-     * @return string
      */
-    public function uri()
+    public function uri(): string
     {
         return $this->uri;
     }
 
     /**
      * Return avatar path
-     *
-     * @return string|null
      */
-    public function path()
+    public function path(): ?string
     {
         return $this->path;
     }

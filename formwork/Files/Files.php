@@ -13,7 +13,7 @@ class Files extends AssociativeCollection
     public function filterByType(string $type): self
     {
         $files = clone $this;
-        $files->items = array_filter($files->items, static function ($item) use ($type) {
+        $files->items = array_filter($files->items, static function (File $item) use ($type): bool {
             return $item->type() === $type;
         });
         return $files;

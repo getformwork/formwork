@@ -88,7 +88,7 @@ class Response
     /**
      * Send HTTP status, headers and render content
      */
-    public function render()
+    public function render(): void
     {
         $this->sendHeaders();
         echo $this->content;
