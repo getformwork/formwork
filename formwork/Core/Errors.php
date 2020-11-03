@@ -51,13 +51,8 @@ class Errors
 
     /**
      * Handle error throwing an ErrorException
-     *
-     * @param int    $severity
-     * @param string $message
-     * @param string $file
-     * @param int    $line
      */
-    public static function errorHandler($severity, $message, $file, $line)
+    public static function errorHandler(int $severity, string $message, string $file, int $line)
     {
         if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED) {
             return false;

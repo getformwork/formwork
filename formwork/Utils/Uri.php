@@ -31,8 +31,6 @@ class Uri
 
     /**
      * Get the scheme of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function scheme(string $uri = null): ?string
     {
@@ -44,8 +42,6 @@ class Uri
 
     /**
      * Get the host of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function host(string $uri = null): ?string
     {
@@ -57,8 +53,6 @@ class Uri
 
     /**
      * Get the port of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function port(string $uri = null): int
     {
@@ -84,8 +78,6 @@ class Uri
 
     /**
      * Get the path of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function path(string $uri = null): ?string
     {
@@ -97,8 +89,6 @@ class Uri
 
     /**
      * Get the relative path of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function relativePath(string $uri = null): ?string
     {
@@ -107,8 +97,6 @@ class Uri
 
     /**
      * Get the absolute path of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function absolutePath(string $uri = null): string
     {
@@ -120,8 +108,6 @@ class Uri
 
     /**
      * Get the query of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function query(string $uri = null): ?string
     {
@@ -133,8 +119,6 @@ class Uri
 
     /**
      * Get the fragment of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function fragment(string $uri = null): ?string
     {
@@ -146,8 +130,6 @@ class Uri
 
     /**
      * Get the base URI (scheme://host:port) of current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function base(string $uri = null): string
     {
@@ -158,8 +140,6 @@ class Uri
 
     /**
      * Convert the query of current or a given URI to array
-     *
-     * @param ?string $uri
      */
     public static function queryToArray(string $uri = null): array
     {
@@ -173,8 +153,6 @@ class Uri
     /**
      * Parse current or a given URI and get an associative array
      * containing its scheme, host, port, path, query and fragment
-     *
-     * @param ?string $uri
      */
     public static function parse(string $uri = null): array
     {
@@ -195,8 +173,6 @@ class Uri
      * Make a URI based on the current or a given one using an array with parts
      *
      * @see Uri::parse()
-     *
-     * @param ?string $uri
      */
     public static function make(array $parts, string $uri = null, bool $forcePort = false): string
     {
@@ -239,8 +215,6 @@ class Uri
 
     /**
      * Remove query from current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function removeQuery(string $uri = null): string
     {
@@ -252,8 +226,6 @@ class Uri
 
     /**
      * Remove fragment from current or a given URI
-     *
-     * @param ?string $uri
      */
     public static function removeFragment(string $uri = null): string
     {
@@ -265,8 +237,6 @@ class Uri
 
     /**
      * Resolve a relative URI against current or a given base URI
-     *
-     * @param ?string $base
      */
     public static function resolveRelativeUri(string $uri, string $base = null): string
     {
