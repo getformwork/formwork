@@ -34,6 +34,7 @@ return Config::create()
         'no_unneeded_curly_braces' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
+        'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => false],
         'ordered_class_elements' => ['use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'],
         'phpdoc_align' => true,
         'phpdoc_annotation_without_dot' => true,
