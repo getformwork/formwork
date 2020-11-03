@@ -30,7 +30,7 @@ class Response
     /**
      * Create a new Response instance
      */
-    public function __construct(string $content, ?int $status = null, array $headers = [])
+    public function __construct(string $content, int $status = null, array $headers = [])
     {
         $this->content = $content;
         $this->status = $status;

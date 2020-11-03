@@ -34,7 +34,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function scheme(?string $uri = null): ?string
+    public static function scheme(string $uri = null): ?string
     {
         if ($uri === null) {
             return HTTPRequest::isHTTPS() ? 'https' : 'http';
@@ -47,7 +47,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function host(?string $uri = null): ?string
+    public static function host(string $uri = null): ?string
     {
         if ($uri === null) {
             return $_SERVER['SERVER_NAME'];
@@ -60,7 +60,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function port(?string $uri = null): int
+    public static function port(string $uri = null): int
     {
         if ($uri === null) {
             return $_SERVER['SERVER_PORT'];
@@ -87,7 +87,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function path(?string $uri = null): ?string
+    public static function path(string $uri = null): ?string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -100,7 +100,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function relativePath(?string $uri = null): ?string
+    public static function relativePath(string $uri = null): ?string
     {
         return static::path($uri);
     }
@@ -110,7 +110,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function absolutePath(?string $uri = null): string
+    public static function absolutePath(string $uri = null): string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -123,7 +123,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function query(?string $uri = null): ?string
+    public static function query(string $uri = null): ?string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -136,7 +136,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function fragment(?string $uri = null): ?string
+    public static function fragment(string $uri = null): ?string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -149,7 +149,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function base(?string $uri = null): string
+    public static function base(string $uri = null): string
     {
         $uriPort = static::port($uri);
         $port = empty($uriPort) || static::isDefaultPort($uriPort) ? '' : ':' . $uriPort;
@@ -161,7 +161,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function queryToArray(?string $uri = null): array
+    public static function queryToArray(string $uri = null): array
     {
         if ($uri === null) {
             $uri = static::current();
@@ -176,7 +176,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function parse(?string $uri = null): array
+    public static function parse(string $uri = null): array
     {
         if ($uri === null) {
             $uri = static::current();
@@ -198,7 +198,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function make(array $parts, ?string $uri = null, bool $forcePort = false): string
+    public static function make(array $parts, string $uri = null, bool $forcePort = false): string
     {
         $defaults = static::parse($uri);
         $parts = array_merge($defaults, $parts);
@@ -242,7 +242,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function removeQuery(?string $uri = null): string
+    public static function removeQuery(string $uri = null): string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -255,7 +255,7 @@ class Uri
      *
      * @param ?string $uri
      */
-    public static function removeFragment(?string $uri = null): string
+    public static function removeFragment(string $uri = null): string
     {
         if ($uri === null) {
             $uri = static::current();
@@ -268,7 +268,7 @@ class Uri
      *
      * @param ?string $base
      */
-    public static function resolveRelativeUri(string $uri, ?string $base = null): string
+    public static function resolveRelativeUri(string $uri, string $base = null): string
     {
         if ($base === null) {
             $base = static::current();

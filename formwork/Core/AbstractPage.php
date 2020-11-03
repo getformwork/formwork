@@ -157,7 +157,7 @@ abstract class AbstractPage
      *
      * @param string $format
      */
-    public function date(?string $format = null): string
+    public function date(string $format = null): string
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');

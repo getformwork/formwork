@@ -38,7 +38,7 @@ class PageCollection extends Collection
      *
      * @param int $length
      */
-    public function slice(int $offset, ?int $length = null): self
+    public function slice(int $offset, int $length = null): self
     {
         $pageCollection = clone $this;
         $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
@@ -79,7 +79,7 @@ class PageCollection extends Collection
      * @param          $value    Value to check in filtered items (default: true)
      * @param callable $process  Callable to process items before filtering
      */
-    public function filter(string $property, $value = true, ?callable $process = null): self
+    public function filter(string $property, $value = true, callable $process = null): self
     {
         $pageCollection = clone $this;
 

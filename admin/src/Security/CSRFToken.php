@@ -34,7 +34,7 @@ class CSRFToken
     /**
      * Check if given CSRF token is valid
      */
-    public static function validate(?string $token = null): bool
+    public static function validate(string $token = null): bool
     {
         if ($token === null) {
             $postData = HTTPRequest::postData();

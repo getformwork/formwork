@@ -275,7 +275,7 @@ class Page extends AbstractPage
     /**
      * @inheritdoc
      */
-    public function date(?string $format = null): string
+    public function date(string $format = null): string
     {
         if ($format === null) {
             $format = Formwork::instance()->option('date.format');

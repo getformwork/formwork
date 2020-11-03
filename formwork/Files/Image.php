@@ -535,7 +535,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function save(?string $filename = null, bool $destroy = true): void
+    public function save(string $filename = null, bool $destroy = true): void
     {
         if ($this->image === null) {
             $this->initialize();
@@ -578,7 +578,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function saveOptimized(?string $filename = null, bool $destroy = true): void
+    public function saveOptimized(string $filename = null, bool $destroy = true): void
     {
         if ($this->image === null) {
             $this->initialize();

@@ -106,7 +106,7 @@ class LanguageCodes
      * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
      * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
      */
-    public static function names(?string $continent = null): array
+    public static function names(string $continent = null): array
     {
         $result = [];
         foreach (static::$codes as $code => $data) {
