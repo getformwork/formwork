@@ -202,15 +202,14 @@ class Uri
     }
 
     /**
-     * Normalize URI fixing required parts and leaving only one trailing slash
+     * Normalize URI fixing required parts and slashes
      */
     public static function normalize(string $uri): string
     {
         if (Str::startsWith($uri, 'http://') || Str::startsWith($uri, 'https://')) {
             return static::make([], $uri);
         }
-        $normalized = rtrim($uri, '/') . '/';
-        return $normalized[0] === '/' ? $normalized : '/' . $normalized;
+        return preg_replace('~[/]+~', '/', Str::wrap($uri, '/'));
     }
 
     /**
