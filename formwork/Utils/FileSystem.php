@@ -43,6 +43,20 @@ class FileSystem
     public const LIST_ALL = self::LIST_FILES | self::LIST_DIRECTORIES | self::LIST_HIDDEN;
 
     /**
+     * Maximum path length provided by the system
+     *
+     * @var int
+     */
+    public const MAX_PATH_LENGTH = PHP_MAXPATHLEN - 2;
+
+    /**
+     * Maximum directory or filename length
+     *
+     * @var int
+     */
+    public const MAX_NAME_LENGTH = 255;
+
+    /**
      * Array containing files to ignore
      *
      * @var array
