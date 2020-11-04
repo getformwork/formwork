@@ -232,7 +232,7 @@ class Page extends AbstractPage
      */
     public function reload(): void
     {
-        $vars = ['filename', 'template', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings'];
+        $vars = ['filename', 'template', 'rawContent', 'rawSummary', 'summary', 'rawBody', 'body', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings'];
         foreach ($vars as $var) {
             $this->$var = null;
         }
