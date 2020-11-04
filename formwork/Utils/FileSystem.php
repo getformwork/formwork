@@ -430,9 +430,12 @@ class FileSystem
 
     /**
      * Return a path with a single trailing slash
+     *
+     * @deprecated
      */
     public static function normalize(string $path): string
     {
+        trigger_error(static::class . '::normalize($path) is deprecated since Formwork 1.10.0, use ' . static::class . '::normalizePath($path . DS) instead', E_USER_DEPRECATED);
         return static::normalizePath($path . DS);
     }
 
