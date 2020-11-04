@@ -213,6 +213,7 @@ updates.status.installing: Installo aggiornamento...
 updates.status.up-to-date: Aggiornato!
 uploader.error: Impossibile caricare il file. %s.
 uploader.error.already-exists: Un file con lo stesso nome esiste già
+uploader.error.cannot-move-to-destination: Impossibile spostare il file caricato alla destinazione
 uploader.error.cannot-write: Impossibile salvare il file sul disco
 uploader.error.destination-too-long: Il percorso di destinazione è troppo lungo
 uploader.error.file-name: Nome del file non valido

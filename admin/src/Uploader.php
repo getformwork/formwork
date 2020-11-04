@@ -180,6 +180,8 @@ class Uploader
             return true;
         }
 
+        throw new TranslatedException('Cannot move uploaded file to destination', 'uploader.error.cannot-move-to-destination');
+
         return false;
     }
 }
