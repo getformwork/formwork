@@ -214,7 +214,9 @@ updates.status.up-to-date: Aggiornato!
 uploader.error: Impossibile caricare il file. %s.
 uploader.error.already-exists: Un file con lo stesso nome esiste già
 uploader.error.cannot-write: Impossibile salvare il file sul disco
+uploader.error.destination-too-long: Il percorso di destinazione è troppo lungo
 uploader.error.file-name: Nome del file non valido
+uploader.error.file-name-too-long: Il nome del file è troppo lungo
 uploader.error.hidden-files: Impossibile caricare i file che iniziano con '.'
 uploader.error.mime-type: Il tipo di file non è consentito
 uploader.error.no-file: Nessun file caricato

@@ -214,7 +214,9 @@ updates.status.up-to-date: Up-to-date!
 uploader.error: Cannot upload file. %s.
 uploader.error.already-exists: A file with the same name already exists
 uploader.error.cannot-write: Failed to write file to disk
+uploader.error.destination-too-long: Destination path too long
 uploader.error.file-name: Invalid file name
+uploader.error.file-name-too-long: File name too long
 uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
 uploader.error.mime-type: File type not allowed
 uploader.error.no-file: No file was uploaded

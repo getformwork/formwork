@@ -157,10 +157,18 @@ class Uploader
 
         $filename = $name . '.' . $extension;
 
-        $destinationPath = FileSystem::joinPaths($destination, $filename);
+        if (strlen($filename) > FileSystem::MAX_NAME_LENGTH) {
+            throw new TranslatedException('File name too long', 'uploader.error.file-name-too-long');
+        }
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
             throw new TranslatedException('Invalid file name ' . $filename, 'uploader.error.file-name');
+        }
+
+        $destinationPath = FileSystem::joinPaths($destination, $filename);
+
+        if (strlen($destinationPath) > FileSystem::MAX_PATH_LENGTH) {
+            throw new TranslatedException('Destination path too long', 'uploader.error.destination-too-long');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
