@@ -448,6 +448,14 @@ class FileSystem
     }
 
     /**
+     * Join paths and normalize the result
+     */
+    public static function joinPaths(string ...$paths): string
+    {
+        return static::normalizePath(implode(DS, $paths));
+    }
+
+    /**
      * Scan a path for files and directories
      *
      * @deprecated
