@@ -2,10 +2,15 @@ import Utils from './utils';
 
 export default function FileInput(input) {
     var label = $('label[for="' + input.id + '"]');
+    var span = $('span', label);
 
     input.setAttribute('data-label', $('label[for="' + input.id + '"] span').innerHTML);
     input.addEventListener('change', updateLabel);
     input.addEventListener('input', updateLabel);
+
+    input.form.addEventListener('submit', function () {
+        span.innerHTML += ' <span class="spinner"></span>';
+    });
 
     label.addEventListener('drag', preventDefault);
     label.addEventListener('dragstart', preventDefault);
@@ -22,7 +27,6 @@ export default function FileInput(input) {
     });
 
     function updateLabel() {
-        var span = $('label[for="' + this.id + '"] span');
         if (this.files.length > 0) {
             span.innerHTML = this.files[0].name;
         } else {

@@ -726,7 +726,7 @@ label {
   padding: 0.5rem;
   background-color: #f7f7f7; }
 
-.file-input-label span {
+.file-input-label > span {
   display: block;
   padding: 1.5rem 1rem;
   border: 2px dashed #c9c9c9;
@@ -734,7 +734,7 @@ label {
   text-align: center;
   transition: background-color 300ms; }
 
-.file-input-label.drag span {
+.file-input-label.drag > span {
   background-color: #fff; }
 
 .toggle-group {
