@@ -22,8 +22,7 @@ export default function Form(form) {
     $$('input[type=file][data-auto-upload]', form).forEach(function (element) {
         element.addEventListener('change', function () {
             if (!hasChanged(false)) {
-                removeBeforeUnload();
-                form.submit();
+                form.requestSubmit($('[type=submit]', form));
             }
         });
     });
