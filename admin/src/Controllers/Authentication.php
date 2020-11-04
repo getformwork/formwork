@@ -45,7 +45,7 @@ class Authentication extends AbstractController
 
             case 'POST':
                 // Delay request processing for 0.5-1s
-                usleep(rand(500, 1000) * 1e3);
+                usleep(random_int(500, 1000) * 1e3);
 
                 $data = new DataGetter(HTTPRequest::postData());
 
