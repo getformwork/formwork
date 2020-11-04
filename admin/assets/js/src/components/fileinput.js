@@ -4,12 +4,15 @@ export default function FileInput(input) {
     var label = $('label[for="' + input.id + '"]');
     var span = $('span', label);
 
+    var isSubmitted = false;
+
     input.setAttribute('data-label', $('label[for="' + input.id + '"] span').innerHTML);
     input.addEventListener('change', updateLabel);
     input.addEventListener('input', updateLabel);
 
     input.form.addEventListener('submit', function () {
         span.innerHTML += ' <span class="spinner"></span>';
+        isSubmitted = true;
     });
 
     label.addEventListener('drag', preventDefault);
@@ -20,10 +23,19 @@ export default function FileInput(input) {
     label.addEventListener('dragleave', handleDragleave);
 
     label.addEventListener('drop', function (event) {
+        event.preventDefault();
+        if (isSubmitted) {
+            return;
+        }
         input.files = event.dataTransfer.files;
         // Firefox won't trigger a change event, so we explicitly do that
         Utils.triggerEvent(input, 'change');
-        event.preventDefault();
+    });
+
+    label.addEventListener('click', function (event) {
+        if (isSubmitted) {
+            event.preventDefault();
+        }
     });
 
     function updateLabel() {
