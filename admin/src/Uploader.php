@@ -66,7 +66,7 @@ class Uploader
      */
     public function __construct(string $destination, array $options = [])
     {
-        $this->destination = FileSystem::normalize($destination);
+        $this->destination = FileSystem::normalizePath($destination);
         $this->options = array_merge($this->defaults(), $options);
     }
 
@@ -143,8 +143,6 @@ class Uploader
             throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
         }
 
-        $destination = FileSystem::normalize($destination);
-
         if (basename($filename)[0] === '.') {
             throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
         }
@@ -159,15 +157,17 @@ class Uploader
 
         $filename = $name . '.' . $extension;
 
+        $destinationPath = FileSystem::joinPaths($destination, $filename);
+
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
             throw new TranslatedException('Invalid file name ' . $filename, 'uploader.error.file-name');
         }
 
-        if (!$this->options['overwrite'] && FileSystem::exists($destination . $filename)) {
+        if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
             throw new TranslatedException('File ' . $filename . ' already exists', 'uploader.error.already-exists');
         }
 
-        if (@move_uploaded_file($source, $destination . $filename)) {
+        if (@move_uploaded_file($source, $destinationPath)) {
             $this->uploadedFiles[] = $filename;
             return true;
         }

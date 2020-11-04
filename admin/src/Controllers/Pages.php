@@ -572,7 +572,7 @@ class Pages extends AbstractController
     protected function changePageId(Page $page, string $id): Page
     {
         $directory = dirname($page->path());
-        $destination = $directory . DS . $id . DS;
+        $destination = FileSystem::joinPaths($directory, $id, DS);
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }
@@ -587,7 +587,7 @@ class Pages extends AbstractController
         if (!($parent instanceof Page || $parent instanceof Site)) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
-        $destination = $parent->path() . basename($page->path()) . DS;
+        $destination = FileSystem::joinPaths($parent->path(), $page->id(), DS);
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }

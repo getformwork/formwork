@@ -142,7 +142,7 @@ class FileSystem
             return true;
         }
         foreach (static::listContents($directory) as $item) {
-            $path = static::normalize($directory) . $item;
+            $path = static::joinPaths($directory, $item);
             if (static::lastModifiedTime($path) > $time) {
                 return true;
             }
@@ -178,14 +178,14 @@ class FileSystem
      */
     public static function directorySize(string $path, bool $unit = true)
     {
-        $path = static::normalize($path);
         static::assert($path);
         $bytes = 0;
         foreach (static::listContents($path, self::LIST_ALL) as $item) {
-            if (static::isFile($path . $item)) {
-                $bytes += (int) static::size($path . $item, false);
+            $itemPath = static::joinPaths($path, $item);
+            if (static::isFile($itemPath)) {
+                $bytes += (int) static::size($itemPath, false);
             } else {
-                $bytes += static::directorySize($path . $item, false);
+                $bytes += static::directorySize($itemPath, false);
             }
         }
         return $unit ? static::bytesToSize($bytes) : $bytes;
@@ -270,8 +270,8 @@ class FileSystem
             return @unlink($path);
         }
         if ($recursive) {
-            foreach (static::listContents($path, self::LIST_ALL) as $file) {
-                static::delete($path . DS . $file, true);
+            foreach (static::listContents($path, self::LIST_ALL) as $item) {
+                static::delete(static::joinPaths($path, $item), true);
             }
         }
         return @rmdir($path);
@@ -328,8 +328,6 @@ class FileSystem
      */
     public static function moveDirectory(string $source, string $destination, bool $overwrite = false): void
     {
-        $source = static::normalize($source);
-        $destination = static::normalize($destination);
         if (!$overwrite) {
             static::assert($destination, false);
         }
@@ -337,10 +335,12 @@ class FileSystem
             static::createDirectory($destination);
         }
         foreach (static::listContents($source, self::LIST_ALL) as $item) {
-            if (static::isFile($source . $item)) {
-                static::move($source . $item, $destination . $item);
+            $sourceItemPath = static::joinPaths($source, $item);
+            $destinationItemPath = static::joinPaths($destination, $item);
+            if (static::isFile($sourceItemPath)) {
+                static::move($sourceItemPath, $destinationItemPath);
             } else {
-                static::moveDirectory($source . $item, $destination . $item);
+                static::moveDirectory($sourceItemPath, $destinationItemPath);
             }
         }
         static::delete($source, true);
@@ -521,7 +521,7 @@ class FileSystem
             if (!($flags & self::LIST_HIDDEN) && !static::isVisible($item)) {
                 continue;
             }
-            $itemPath = static::normalize($path) . $item;
+            $itemPath = static::joinPaths($path, $item);
             if (!($flags & self::LIST_FILES) && static::isFile($itemPath)) {
                 continue;
             }
@@ -541,7 +541,7 @@ class FileSystem
     public static function listRecursive(string $path, int $flags = self::LIST_VISIBLE): Generator
     {
         foreach (static::listContents($path, $flags) as $item) {
-            $itemPath = static::normalize($path) . $item;
+            $itemPath = static::joinPaths($path, $item);
             if (static::isDirectory($itemPath)) {
                 foreach (static::listRecursive($itemPath, $flags) as $item) {
                     yield $item;

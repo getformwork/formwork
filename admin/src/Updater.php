@@ -302,7 +302,7 @@ class Updater
             $list[] = $path;
             if (FileSystem::exists($path) && FileSystem::isDirectory($path)) {
                 foreach (FileSystem::listContents($path, FileSystem::LIST_ALL) as $item) {
-                    $item = FileSystem::normalize($path) . $item;
+                    $item = FileSystem::joinPaths($path, $item);
                     if (FileSystem::isDirectory($item) && !FileSystem::isEmptyDirectory($item)) {
                         continue;
                     }

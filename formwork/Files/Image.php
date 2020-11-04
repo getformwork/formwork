@@ -588,7 +588,7 @@ class Image extends File
             $filename = $this->path;
         }
 
-        $tempFilename = dirname($filename) . DS . '.tmp-' . basename($filename);
+        $tempFilename = FileSystem::joinPaths(dirname($filename), '.tmp-' . basename($filename));
 
         $this->save($tempFilename, false);
 

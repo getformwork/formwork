@@ -26,7 +26,7 @@ class Assets
      */
     public function __construct(string $basePath, string $baseUri)
     {
-        $this->basePath = FileSystem::normalize($basePath);
+        $this->basePath = FileSystem::normalizePath($basePath);
         $this->baseUri = Uri::normalize($baseUri);
     }
 
@@ -37,7 +37,7 @@ class Assets
      */
     public function version(string $path): ?string
     {
-        $file = $this->basePath . strtr(trim($path, '/'), '/', DS);
+        $file = FileSystem::joinPaths($this->basePath, $path);
         if (FileSystem::exists($file)) {
             return dechex(FileSystem::lastModifiedTime($file));
         }

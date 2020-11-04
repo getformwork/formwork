@@ -188,11 +188,10 @@ class PageCollection extends Collection
      */
     public static function fromPath(string $path, bool $recursive = false): self
     {
-        $path = FileSystem::normalize($path);
         $pages = [];
 
         foreach (FileSystem::listDirectories($path) as $dir) {
-            $pagePath = $path . $dir . DS;
+            $pagePath = FileSystem::joinPaths($path, $dir, DS);
 
             if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
                 $page = Formwork::instance()->site()->retrievePage($pagePath);
