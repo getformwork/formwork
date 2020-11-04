@@ -433,7 +433,15 @@ class FileSystem
      */
     public static function normalize(string $path): string
     {
-        return rtrim($path, DS) . DS;
+        return static::normalizePath($path . DS);
+    }
+
+    /**
+     * Normalize path slashes
+     */
+    public static function normalizePath(string $path): string
+    {
+        return preg_replace('~[/\\\\]+~', DS, $path);
     }
 
     /**
