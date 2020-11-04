@@ -16,8 +16,8 @@
     "build:js": "rollup -c && uglifyjs assets/js/app.min.js -c -m -o assets/js/app.min.js --timings",
     "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
     "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js",
-    "lint:css": "stylelint ./assets/scss/**/*.scss",
-    "lint:js": "eslint ./assets/js/src/**/*.js"
+    "lint:css": "stylelint ./assets/scss/**/*.scss --fix",
+    "lint:js": "eslint ./assets/js/src/** --fix"
   },
   "dependencies": {
     "chartist": "^0.11.4",
