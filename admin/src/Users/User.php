@@ -6,7 +6,6 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Utils\Session;
 use Formwork\Data\DataGetter;
-use LogicException;
 
 class User extends DataGetter
 {
@@ -16,9 +15,56 @@ class User extends DataGetter
      * @var array
      */
     protected $defaults = [
-        'avatar' => null,
-        'role'   => 'user'
+        'username' => null,
+        'fullname' => null,
+        'hash'     => null,
+        'email'    => null,
+        'language' => 'en',
+        'role'     => 'user',
+        'avatar'   => null
     ];
+
+    /**
+     * User username
+     *
+     * @var string
+     */
+    protected $username;
+
+    /**
+     * User full name
+     *
+     * @var string
+     */
+    protected $fullname;
+
+    /**
+     * User password hash
+     *
+     * @var string
+     */
+    protected $hash;
+
+    /**
+     * User email
+     *
+     * @var string
+     */
+    protected $email;
+
+    /**
+     * User language
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
+     * User role
+     *
+     * @var string
+     */
+    protected $role;
 
     /**
      * User avatar
@@ -47,8 +93,71 @@ class User extends DataGetter
     public function __construct(array $data)
     {
         parent::__construct(array_merge($this->defaults, $data));
+        foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
+            $this->$var = $this->data[$var];
+        }
+
         $this->avatar = new Avatar($this->data['avatar']);
-        $this->permissions = new Permissions($this->data['role']);
+        $this->permissions = new Permissions($this->role);
+
+        // Unset hash to avoid exposure with $this->toArray()
+        unset($this->data['hash']);
+    }
+
+    /**
+     * Return the username
+     */
+    public function username(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * Return the full name
+     */
+    public function fullname(): string
+    {
+        return $this->fullname;
+    }
+
+    /**
+     * Return the email
+     */
+    public function email(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Return the language code
+     */
+    public function language(): string
+    {
+        return $this->language;
+    }
+
+    /**
+     * Return the role
+     */
+    public function role(): string
+    {
+        return $this->role;
+    }
+
+    /**
+     * Return user avatar
+     */
+    public function avatar(): Avatar
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * Return user permissions
+     */
+    public function permissions(): Permissions
+    {
+        return $this->permissions;
     }
 
     /**
@@ -56,7 +165,7 @@ class User extends DataGetter
      */
     public function authenticate(string $password): bool
     {
-        return Password::verify($password, $this->data['hash']);
+        return Password::verify($password, $this->hash);
     }
 
     /**
@@ -64,7 +173,7 @@ class User extends DataGetter
      */
     public function isLogged(): bool
     {
-        return Session::get('FORMWORK_USERNAME') === $this->data['username'];
+        return Session::get('FORMWORK_USERNAME') === $this->username;
     }
 
     /**
@@ -72,7 +181,7 @@ class User extends DataGetter
      */
     public function isAdmin(): bool
     {
-        return $this->data['role'] === 'admin';
+        return $this->role === 'admin';
     }
 
     /**
@@ -115,18 +224,7 @@ class User extends DataGetter
         if ($this->lastAccess !== null) {
             return $this->lastAccess;
         }
-        $lastAccess = Admin::instance()->registry('lastAccess')->get($this->data['username']);
+        $lastAccess = Admin::instance()->registry('lastAccess')->get($this->username);
         return $this->lastAccess = $lastAccess;
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        if ($this->has($name)) {
-            return $this->get($name);
-        }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
     }
 }
