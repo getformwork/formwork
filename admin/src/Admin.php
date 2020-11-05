@@ -129,12 +129,28 @@ class Admin
     }
 
     /**
+     * Return all registered users
+     */
+    public function users(): Users
+    {
+        return $this->users;
+    }
+
+    /**
      * Return currently logged in user
      */
     public function user(): User
     {
         $username = Session::get('FORMWORK_USERNAME');
         return $this->users->get($username);
+    }
+
+    /**
+     * Get current translation
+     */
+    public function translation(): Translation
+    {
+        return $this->translation;
     }
 
     /**
@@ -394,9 +410,6 @@ class Admin
 
     public function __call(string $name, array $arguments)
     {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
         if (method_exists(AdminTrait::class, $name)) {
             return $this->$name(...$arguments);
         }
