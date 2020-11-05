@@ -142,7 +142,7 @@ class Formwork
     /**
      * Return cache instance
      */
-    public function cache(): ?SiteCache
+    public function cache(): SiteCache
     {
         return $this->cache;
     }
@@ -292,9 +292,7 @@ class Formwork
      */
     protected function loadCache(): void
     {
-        if ($this->option('cache.enabled')) {
-            $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
-        }
+        $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
     }
 
     /**
