@@ -125,8 +125,10 @@ class MimeType
 
     /**
      * Get extension or array of extensions (if multiple) from a MIME type
+     *
+     * @return array|string
      */
-    public static function toExtension(string $mimeType): array
+    public static function toExtension(string $mimeType)
     {
         $results = array_keys(self::MIME_TYPES, $mimeType, true);
         return count($results) > 1 ? $results : array_shift($results);

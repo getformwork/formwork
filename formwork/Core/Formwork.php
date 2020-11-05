@@ -339,7 +339,7 @@ class Formwork
      */
     private function defaultRoute(): callable
     {
-        return function (RouteParams $params): Page {
+        return function (RouteParams $params) {
             $route = $params->get('page', $this->option('pages.index'));
 
             if ($this->site->has('aliases') && $alias = $this->site->alias($route)) {
