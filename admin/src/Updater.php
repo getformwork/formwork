@@ -62,14 +62,14 @@ class Updater
     /**
      * Array containing release information
      *
-     * @var array|null
+     * @var array
      */
     protected $release;
 
     /**
      * Headers to send in HTTP(S) requests
      *
-     * @var array|null
+     * @var array
      */
     protected $headers;
 

@@ -9,24 +9,19 @@ use RuntimeException;
 class CSRFToken
 {
     /**
-     * Current CSRF token
-     */
-    protected static $token;
-
-    /**
      * Generate a new CSRF token
      */
     public static function generate(): string
     {
-        static::$token = base64_encode(random_bytes(36));
-        Session::set('CSRF_TOKEN', static::$token);
-        return static::$token;
+        $token = base64_encode(random_bytes(36));
+        Session::set('CSRF_TOKEN', $token);
+        return $token;
     }
 
     /**
      * Get current CSRF token
      */
-    public static function get(): string
+    public static function get(): ?string
     {
         return Session::has('CSRF_TOKEN') ? Session::get('CSRF_TOKEN') : null;
     }
