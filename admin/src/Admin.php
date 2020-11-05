@@ -172,7 +172,7 @@ class Admin
     {
         $languageCode = Formwork::instance()->option('admin.lang');
         if ($this->isLoggedIn()) {
-            $languageCode = $this->user()->get('language', $languageCode);
+            $languageCode = $this->user()->language();
         }
         $this->translation = Translation::load($languageCode);
     }
