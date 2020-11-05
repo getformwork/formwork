@@ -435,10 +435,12 @@ class FileSystem
     /**
      * Alias of createFile method
      *
+     * @deprecated
      * @see FileSystem::createFile()
      */
     public static function create(string $file): bool
     {
+        trigger_error(static::class . '::create() is deprecated since Formwork 1.10.0, use ' . static::class . '::createFile() instead', E_USER_DEPRECATED);
         return static::createFile($file);
     }
 
