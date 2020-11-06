@@ -11,7 +11,7 @@ class LanguageCodes
      *
      * @var array
      */
-    protected static $codes = [
+    protected const LANGUAGE_CODES = [
         'af' => ['name' => 'Afrikaans', 'native' => 'Afrikaans', 'continents' => ['AF']],
         'am' => ['name' => 'Amharic', 'native' => 'አማርኛ', 'continents' => ['AF']],
         'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'rtl' => true, 'continents' => ['AF', 'AS']],
@@ -98,7 +98,7 @@ class LanguageCodes
      */
     public static function hasCode(string $code): bool
     {
-        return isset(static::$codes[$code]);
+        return isset(self::LANGUAGE_CODES[$code]);
     }
 
     /**
@@ -109,7 +109,7 @@ class LanguageCodes
     public static function names(string $continent = null): array
     {
         $result = [];
-        foreach (static::$codes as $code => $data) {
+        foreach (self::LANGUAGE_CODES as $code => $data) {
             if ($continent !== null && count(array_intersect((array) $continent, $data['continents'])) < 1) {
                 continue;
             }
@@ -126,7 +126,7 @@ class LanguageCodes
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
         }
-        return static::$codes[$code]['name'];
+        return self::LANGUAGE_CODES[$code]['name'];
     }
 
     /**
@@ -137,6 +137,6 @@ class LanguageCodes
         if (!static::hasCode($code)) {
             throw new LogicException('Invalid language code "' . $code . '"');
         }
-        return static::$codes[$code]['native'];
+        return self::LANGUAGE_CODES[$code]['native'];
     }
 }
