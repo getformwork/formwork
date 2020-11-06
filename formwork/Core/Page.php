@@ -114,6 +114,13 @@ class Page extends AbstractPage
     protected $rawContent;
 
     /**
+     * Page content
+     *
+     * @var string
+     */
+    protected $content;
+
+    /**
      * Unprocessed page summary
      *
      * @var string
