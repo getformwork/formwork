@@ -9,29 +9,24 @@ use Formwork\Languages\Languages;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
+use Formwork\Traits\SingletonTrait;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
-use LogicException;
 
 class Formwork
 {
+    use SingletonTrait;
+
     /**
      * Current Formwork version
      *
      * @var string
      */
     public const VERSION = '1.9.1';
-
-    /**
-     * Formwork instance
-     *
-     * @var Formwork
-     */
-    protected static $instance;
 
     /**
      * Array containing options
@@ -80,10 +75,7 @@ class Formwork
      */
     public function __construct()
     {
-        if (static::$instance !== null) {
-            throw new LogicException('Formwork class already instantiated');
-        }
-        static::$instance = $this;
+        $this->initializeSingleton();
 
         Errors::setHandlers();
 
@@ -94,17 +86,6 @@ class Formwork
         $this->loadSite();
         $this->loadCache();
         $this->loadRoutes();
-    }
-
-    /**
-     * Return self instance
-     */
-    public static function instance(): self
-    {
-        if (static::$instance !== null) {
-            return static::$instance;
-        }
-        return static::$instance = new static();
     }
 
     /**

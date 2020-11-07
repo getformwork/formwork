@@ -10,6 +10,7 @@ use Formwork\Admin\Utils\Session;
 use Formwork\Core\Formwork;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
+use Formwork\Traits\SingletonTrait;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
@@ -20,6 +21,7 @@ use Throwable;
 class Admin
 {
     use AdminTrait;
+    use SingletonTrait;
 
     /**
      * Admin accounts path
@@ -57,13 +59,6 @@ class Admin
     public const VIEWS_PATH = ADMIN_PATH . 'views' . DS;
 
     /**
-     * Admin instance
-     *
-     * @var Admin
-     */
-    public static $instance;
-
-    /**
      * Router instance
      *
      * @var Router
@@ -96,27 +91,13 @@ class Admin
      */
     public function __construct()
     {
-        if (static::$instance !== null) {
-            throw new LogicException('Admin class already instantiated');
-        }
-        static::$instance = $this;
+        $this->initializeSingleton();
 
         $this->router = new Router(Uri::removeQuery($this->route()));
         $this->users = Users::load();
 
         $this->loadTranslations();
         $this->loadErrorHandler();
-    }
-
-    /**
-     * Return self instance
-     */
-    public static function instance(): self
-    {
-        if (static::$instance !== null) {
-            return static::$instance;
-        }
-        return static::$instance = new static();
     }
 
     /**
