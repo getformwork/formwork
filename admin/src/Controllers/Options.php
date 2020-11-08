@@ -4,6 +4,7 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Fields\Fields;
+use Formwork\Admin\Fields\Validator;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
@@ -223,9 +224,6 @@ class Options extends AbstractController
      */
     protected function updateOptions(string $type, Fields $fields, array $options, array $defaults): bool
     {
-        // Fields to ignore
-        $ignore = ['column', 'header', 'row', 'rows'];
-
         // Flatten fields
         $fields = $fields->toArray(true);
 
@@ -233,10 +231,10 @@ class Options extends AbstractController
 
         // Update options with new values
         foreach ($fields as $field) {
-            if (in_array($field->type(), $ignore, true)) {
+            if (in_array($field->type(), Validator::IGNORED_FIELDS, true)) {
                 continue;
             }
-            if ($field->get('required') && $field->isEmpty()) {
+            if ($field->isRequired() && $field->isEmpty()) {
                 continue;
             }
             $options[$field->name()] = $field->value();
