@@ -11,7 +11,9 @@ export default function FileInput(input) {
     input.addEventListener('input', updateLabel);
 
     input.form.addEventListener('submit', function () {
-        span.innerHTML += ' <span class="spinner"></span>';
+        if (input.files.length > 0) {
+            span.innerHTML += ' <span class="spinner"></span>';
+        }
         isSubmitted = true;
     });
 
