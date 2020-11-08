@@ -1,5 +1,66 @@
 # Changelog
 
+## [1.10.0](https://github.com/getformwork/formwork/releases/tag/1.10.0) (2020-11-08)
+
+**Enhancements**
+
+- **Rewrite data fields as properties in `User` class**
+- **Add `ValidationException`**
+- **Rewrite `Validator` class and add several methods to `Field`**
+- **Add missing attributes to fields**
+- Add return types
+- Add `DataGetter::hasMultiple()`
+- Use `DataGetter::hasMultiple()` in admin controllers
+- Enforce string keys in `Arr::get()` and `Arr::has()`
+- Remove incompatible parent from `Avatar` class
+- Remove superfluous PHPDoc
+- Add missing type declarations
+- Add `Str::wrap()`
+- Normalize duplicated slashes with `FileSystem::Uri()`
+- Add `FileSystem::normalizePath()` variant which does not force trailing slashes
+- Add `FileSystem::joinPaths()`
+- Use `FileSystem::normalizePath()` and `FileSystem::joinPaths()` whenpossible
+- Use `form.requestSubmit()` instead of `form.submit()` to properly trigger events
+- Add `HTMLFormElement.requestSubmit()` polyfill
+- Display a spinner when files are being uploaded
+- Prevent click and drop on file inputs when their forms are submitted
+- Remove .eslintignore
+- Update lint scripts in package.json
+- Add `FileSystem::MAX_PATH_LENGTH` and `FileSystem::MAX_NAME_LENGTH`
+- Check filename and path lengths in `Uploader::move()`
+- Throw an exception when an uploaded file cannot be moved
+- Use `random_int()` instead of `rand()` and `mt_rand()`
+- Always load cache
+- Add explicit `Admin::users()` and `Admin::translation()`
+- Add `content` property to `Page` to restore access from `get()`
+- Make `LanguageCodes::$codes` a constant
+- Extract `SingletonTrait` from `Admin` and `Formwork` classes
+- Recognize `Field` instances in `Fields::__construct()` and handle them properly
+- Rename variables for consistency in `Fields::find()` and `Fields::toArray()`
+- Use `Field::isDisabled()` and `Field::isRequired()` in field views
+- Update `Options::updateOptions()`
+- Add `DataSetter::remove()`
+- Update `Users::profile()` and `Users::updateUser()`
+- Update user scheme
+- Avoid adding languages to `data` property of `Site` class
+
+**Bug fixes**
+
+- Fix data access in cover image partial template
+- Fix `Page::reload()` not setting some properties to null
+- Fix return types
+- Fix password hash being always unset in `User::__construct()`
+- Fix `Users` controller triggering deprecation warnings
+- Fix spinner wrongly displayed on submit in empty files input
+
+**Deprecations**
+
+- Deprecate `DataGetter::has()` use with an array as key
+- Deprecate non-string used as key in getters and setters
+- Deprecate `FileSystem::normalize()`
+- Deprecate `User::get()` and `User::has()`
+- Deprecate `FileSystem::create()`
+
 ## [1.9.1](https://github.com/getformwork/formwork/releases/tag/1.9.1) (2020-10-31)
 
 **Enhancements**
