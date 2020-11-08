@@ -119,7 +119,9 @@ class Users extends AbstractController
             $this->redirect('/users/');
         }
 
-        $fields->validate($user);
+        $data = new DataGetter($user->toArray());
+
+        $fields->validate($data);
 
         // Disable password and/or role fields if they cannot be changed
         $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
