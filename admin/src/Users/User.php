@@ -99,9 +99,6 @@ class User extends DataGetter
 
         $this->avatar = new Avatar($this->data['avatar']);
         $this->permissions = new Permissions($this->role);
-
-        // Unset hash to avoid exposure with $this->toArray()
-        unset($this->data['hash']);
     }
 
     /**
@@ -248,5 +245,13 @@ class User extends DataGetter
     {
         trigger_error('Using ' . static::class . '::has() is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
         return parent::has($key);
+    }
+
+    public function __debugInfo(): array
+    {
+        $data = $this->data;
+        // Unset hash to avoid exposure
+        unset($data['hash']);
+        return $data;
     }
 }
