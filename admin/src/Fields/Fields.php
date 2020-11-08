@@ -15,8 +15,15 @@ class Fields extends AssociativeCollection
     public function __construct(array $fields)
     {
         parent::__construct();
-        foreach ($fields as $name => $data) {
-            $this->items[$name] = new Field($name, $data);
+        foreach ($fields as $key => $value) {
+            if ($value instanceof Field) {
+                if (is_int($key)) {
+                    $key = $value->name();
+                }
+                $this->items[$key] = $value;
+            } else {
+                $this->items[$key] = new Field($key, $value);
+            }
         }
     }
 
