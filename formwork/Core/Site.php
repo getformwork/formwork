@@ -2,6 +2,7 @@
 
 namespace Formwork\Core;
 
+use Formwork\Languages\Languages;
 use Formwork\Metadata\Metadata;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
@@ -28,6 +29,13 @@ class Site extends AbstractPage
      * @var array
      */
     protected $templates = [];
+
+    /**
+     * Site languages
+     *
+     * @var Languages
+     */
+    protected $languages;
 
     /**
      * Create a new Site instance
@@ -141,6 +149,14 @@ class Site extends AbstractPage
     public function navigate(string $route): Page
     {
         return $this->currentPage = $this->findPage($route);
+    }
+
+    /**
+     * Set site languages
+     */
+    public function setLanguages(Languages $languages): void
+    {
+        $this->languages = $languages;
     }
 
     /**

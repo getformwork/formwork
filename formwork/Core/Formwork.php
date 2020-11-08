@@ -265,7 +265,7 @@ class Formwork
         FileSystem::assert(CONFIG_PATH . 'site.yml');
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($config);
-        $this->site->set('languages', $this->languages);
+        $this->site->setLanguages($this->languages);
     }
 
     /**
