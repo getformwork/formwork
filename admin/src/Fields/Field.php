@@ -31,14 +31,6 @@ class Field extends DataSetter
     }
 
     /**
-     * Return whether field is empty
-     */
-    public function isEmpty(): bool
-    {
-        return $this->value() === null || $this->value() === '' || $this->value() === [];
-    }
-
-    /**
      * Get field name
      */
     public function name(): string
@@ -88,7 +80,39 @@ class Field extends DataSetter
      */
     public function value()
     {
-        return $this->get('value', $this->get('default'));
+        return $this->get('value', $this->defaultValue());
+    }
+
+    /**
+     * Get field default value
+     */
+    public function defaultValue()
+    {
+        return $this->get('default');
+    }
+
+    /**
+     * Return whether field is empty
+     */
+    public function isEmpty(): bool
+    {
+        return in_array($this->value(), Validator::EMPTY_VALUES, true);
+    }
+
+    /**
+     * Return whether field is required
+     */
+    public function isRequired(): bool
+    {
+        return $this->is('required');
+    }
+
+    /**
+     * Return whether field is disabled
+     */
+    public function isDisabled(): bool
+    {
+        return $this->is('disabled');
     }
 
     /**
@@ -96,7 +120,15 @@ class Field extends DataSetter
      */
     public function isVisible(): bool
     {
-        return $this->get('visible', true) === true;
+        return $this->is('visible', true);
+    }
+
+    /**
+     * Get a value by key and return whether it is equal to boolean `true`
+     */
+    public function is(string $key, bool $default = false): bool
+    {
+        return $this->get($key, $default) === true;
     }
 
     /**
@@ -133,13 +165,13 @@ class Field extends DataSetter
     {
         $return['name'] = $this->name;
         if ($this->has('type')) {
-            $return['type'] = $this->get('type');
+            $return['type'] = $this->type();
         }
         if ($this->has('default')) {
-            $return['default'] = $this->get('default');
+            $return['default'] = $this->defaultValue();
         }
         if ($this->has('value')) {
-            $return['value'] = $this->get('value');
+            $return['value'] = $this->value();
         }
         if ($this->has('fields')) {
             $return['fields'] = $this->get('fields');
