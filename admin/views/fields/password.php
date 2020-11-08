@@ -7,6 +7,6 @@
     'placeholder'  => $field->placeholder(),
     'pattern'      => $field->get('pattern'),
     'autocomplete' => $field->get('autocomplete'),
-    'required'     => $field->get('required'),
-    'disabled'     => $field->get('disabled')
+    'required'     => $field->isRequired(),
+    'disabled'     => $field->isDisabled()
 ]) ?>>

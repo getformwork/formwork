@@ -7,8 +7,8 @@
         'name'        => $field->formName(),
         'value'       => $field->value(),
         'placeholder' => $field->placeholder(),
-        'required'    => $field->get('required'),
-        'disabled'    => $field->get('disabled')
+        'required'    => $field->isRequired(),
+        'disabled'    => $field->isDisabled()
     ]) ?>>
     <span class="input-reset" data-reset="<?= $field->name() ?>"><i class="i-times-circle"></i></span>
 </div>

@@ -7,7 +7,7 @@
     'max'      => $field->get('max'),
     'step'     => $field->get('step'),
     'value'    => $field->value(),
-    'required' => $field->get('required'),
-    'disabled' => $field->get('disabled')
+    'required' => $field->isRequired(),
+    'disabled' => $field->isDisabled()
 ]) ?>>
 <span class="range-input-value"><?= $field->value() ?></span>

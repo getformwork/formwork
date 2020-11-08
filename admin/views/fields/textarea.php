@@ -3,6 +3,6 @@
     'id'          => $field->name(),
     'name'        => $field->formName(),
     'placeholder' => $field->placeholder(),
-    'required'    => $field->get('required'),
-    'disabled'    => $field->get('disabled')
+    'required'    => $field->isRequired(),
+    'disabled'    => $field->isDisabled()
 ]) ?>><?= $field->value() ?></textarea>

@@ -5,8 +5,8 @@
     'name'         => $field->formName(),
     'value'        => implode(', ', (array) $field->value()),
     'placeholder'  => $field->placeholder(),
-    'required'     => $field->get('required'),
-    'disabled'     => $field->get('disabled'),
+    'required'     => $field->isRequired(),
+    'disabled'     => $field->isDisabled(),
     'data-field'   => 'tags',
     'data-options' => $field->has('options') ? $this->escape(json_encode((array) $field->get('options'))) : null
 ]) ?>>

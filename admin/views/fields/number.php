@@ -8,6 +8,6 @@
     'step'        => $field->get('step'),
     'value'       => $field->value(),
     'placeholder' => $field->placeholder(),
-    'required'    => $field->get('required'),
-    'disabled'    => $field->get('disabled')
+    'required'    => $field->isRequired(),
+    'disabled'    => $field->isDisabled()
 ]) ?>>

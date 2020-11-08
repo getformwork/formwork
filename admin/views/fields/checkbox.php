@@ -6,8 +6,8 @@
             'id'       => $field->name(),
             'name'     => $field->formName(),
             'checked'  => $field->value() == true,
-            'required' => $field->get('required'),
-            'disabled' => $field->get('disabled')
+            'required' => $field->isRequired(),
+            'disabled' => $field->isDisabled()
         ]) ?>>
         <span class="custom-checkbox-text"><?= $field->label() ?></span>
     </label>

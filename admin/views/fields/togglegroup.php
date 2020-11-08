@@ -1,7 +1,7 @@
 <fieldset <?= $this->attr([
     'id'       => $field->name(),
     'class'    => 'toggle-group',
-    'disabled' => $field->get('disabled')
+    'disabled' => $field->isDisabled()
 ]) ?>>
 <?php foreach ((array) $field->get('options') as $value => $label): ?>
     <label>
