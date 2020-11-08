@@ -14,6 +14,7 @@ rows1:
                     fields:
                         fullname:
                             type: text
+                            required: true
 
         row2:
             type: row
@@ -28,6 +29,7 @@ rows1:
                     fields:
                         email:
                             type: email
+                            required: true
 
         row3:
             type: row
@@ -60,6 +62,7 @@ rows1:
                     fields:
                         language:
                             type: select
+                            required: true
                             translate: false
                             import:
                                 options: 'Formwork\Admin\Translation::availableLanguages'
