@@ -34,12 +34,12 @@ class Fields extends AssociativeCollection
      */
     public function find(string $field): ?Field
     {
-        foreach ($this->items as $name => $data) {
-            if ($name === $field) {
-                return $this->items[$name];
+        foreach ($this->items as $key => $value) {
+            if ($key === $field) {
+                return $this->items[$key];
             }
-            if ($data->has('fields')) {
-                $found = $data->get('fields')->find($field);
+            if ($value->has('fields')) {
+                $found = $value->get('fields')->find($field);
                 if ($found !== null) {
                     return $found;
                 }
@@ -76,11 +76,11 @@ class Fields extends AssociativeCollection
             return $this->items;
         }
         $result = [];
-        foreach ($this->items as $name => $data) {
-            if ($data->has('fields')) {
-                $result = array_merge($result, $data->get('fields')->toArray(true));
+        foreach ($this->items as $key => $value) {
+            if ($value->has('fields')) {
+                $result = array_merge($result, $value->get('fields')->toArray(true));
             } else {
-                $result[$name] = $data;
+                $result[$key] = $value;
             }
         }
         return $result;
