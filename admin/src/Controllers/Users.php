@@ -119,10 +119,6 @@ class Users extends AbstractController
             $this->redirect('/users/');
         }
 
-        $data = new DataGetter($user->toArray());
-
-        $fields->validate($data);
-
         // Disable password and/or role fields if they cannot be changed
         $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
         $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
@@ -130,13 +126,18 @@ class Users extends AbstractController
         if (HTTPRequest::method() === 'POST') {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $this->updateUser($user);
+                $data = new DataSetter(HTTPRequest::postData());
+                $fields->validate($data);
+                $this->updateUser($user, $data);
                 $this->notify($this->label('users.user.edited'), 'success');
             } else {
                 $this->notify($this->label('users.user.cannot-edit', $user->username()), 'error');
             }
+
             $this->redirect('/users/' . $user->username() . '/profile/');
         }
+
+        $fields->validate(new DataGetter($user->toArray()));
 
         $this->modal('changes');
 
@@ -154,12 +155,10 @@ class Users extends AbstractController
     /**
      * Update user data from POST request
      */
-    protected function updateUser(User $user): void
+    protected function updateUser(User $user, DataSetter $data): void
     {
-        $data = new DataSetter(HTTPRequest::postData());
-
         // Remove CSRF token from $data
-        $data->set('csrf-token', null);
+        $data->remove('csrf-token');
 
         if (!empty($data->get('password'))) {
             // Ensure that password can be changed
@@ -170,10 +169,10 @@ class Users extends AbstractController
 
             // Hash the new password
             $data->set('hash', Password::hash($data->get('password')));
-
-            // Remove password from $data
-            $data->set('password', null);
         }
+
+        // Remove password from $data
+        $data->remove('password');
 
         if ($data->get('role', $user->role()) !== $user->role()) {
             // Ensure that user role can be changed
@@ -191,7 +190,7 @@ class Users extends AbstractController
         }
 
         // Filter empty elements from $data and merge them with $user ones
-        $userData = array_merge($user->toArray(), array_filter($data->toArray()));
+        $userData = array_merge($user->toArray(), $data->toArray());
 
         FileSystem::write(Admin::ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
     }
