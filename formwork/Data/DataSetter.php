@@ -16,4 +16,12 @@ class DataSetter extends DataGetter
         }
         $this->data[$key] = $value;
     }
+
+    /**
+     * Remove a data value by key
+     */
+    public function remove(string $key): void
+    {
+        unset($this->data[$key]);
+    }
 }
