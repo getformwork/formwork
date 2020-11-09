@@ -31,7 +31,7 @@
     padding: $modal-padding;
     max-width: $modal-width-s;
     border-radius: $border-radius;
-    background-color: #fff;
+    background-color: $color-base-900;
     @media (min-width: $modal-width-s) {
         margin: $modal-margin-v auto;
     }
@@ -48,8 +48,8 @@
 .modal-error {
     margin: $modal-error-margin $modal-error-margin $modal-error-margin-bottom $modal-error-margin;
     padding: $modal-error-padding;
-    background-color: $color-error;
-    color: #fff;
+    background-color: $color-error-500;
+    color: $color-base-900;
 }
 
 .modal-text {

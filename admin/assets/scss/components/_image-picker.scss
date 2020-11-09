@@ -13,7 +13,7 @@
     padding: $image-picker-thumbnail-padding;
     width: $image-picker-thumbnail-width;
     height: $image-picker-thumbnail-height;
-    border: 1px solid $color-gray;
+    border: 1px solid $color-base-500;
     background-position: center;
     background-origin: content-box;
     background-size: contain;
@@ -36,7 +36,7 @@
 }
 
 .image-picker-thumbnail.selected {
-    border-color: $color-accent;
+    border-color: $color-accent-500;
     @include focusring;
 }
 
@@ -46,6 +46,6 @@
 }
 
 .image-picker-empty-state-icon {
-    color: $color-gray;
+    color: $color-base-500;
     font-size: $image-picker-empty-state-icon-font-size;
 }

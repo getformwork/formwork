@@ -6,9 +6,9 @@
     z-index: 6;
     padding: $title-bar-padding;
     padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
-    background-color: $color-gray-xlight;
+    background-color: $color-base-700;
     box-shadow: $component-box-shadow;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     @include user-select-none;
     @include ellipsis;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
@@ -23,9 +23,9 @@
 
 .view-site {
     float: right;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     &:hover {
-        color: $color-accent;
+        color: $color-accent-500;
     }
 }
 
@@ -43,7 +43,7 @@
     width: $sidebar-width;
     background: $sidebar-background-gradient;
     background-color: $sidebar-background-gradient-color-0;
-    box-shadow: $sidebar-box-shadow;
+    box-shadow: $component-box-shadow;
     @include user-select-none;
 }
 
@@ -69,7 +69,7 @@
     &:hover {
         background-color: transparent;
         box-shadow: none;
-        color: $color-accent;
+        color: $color-accent-500;
     }
     &:focus {
         box-shadow: none;
@@ -78,7 +78,7 @@
 
 .logo {
     margin-bottom: $logo-margin-bottom;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     text-align: center;
     font-weight: 600;
     font-size: $logo-font-size;
@@ -96,7 +96,7 @@
 
 .logo a {
     padding-top: $focusring-width;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
 }
 
 .sidebar-navigation {
@@ -118,7 +118,7 @@
 }
 
 .sidebar-navigation > li a {
-    color: $color-gray-xxdark;
+    color: $color-base-200;
 }
 
 .sidebar-navigation > li.active {
@@ -131,7 +131,7 @@
     bottom: 0;
     left: 0;
     width: $sidebar-navigation-notch-width;
-    background-color: $color-accent;
+    background-color: $color-accent-500;
     content: ' ';
 }
 
@@ -141,7 +141,7 @@
     margin-bottom: $admin-user-card-margin-bottom;
     cursor: pointer;
     &:hover img {
-        box-shadow: $color-gray-light 0 0 0 0.5rem;
+        box-shadow: 0 0 0 0.5rem $color-base-600;
     }
 }
 
@@ -161,11 +161,11 @@
 }
 
 .admin-user-fullname {
-    color: $color-gray-xxdark;
+    color: $color-base-200;
 }
 
 .admin-user-username {
-    color: $color-gray-xdark;
+    color: $color-base-300;
     font-size: $font-size-s;
 }
 
@@ -182,7 +182,7 @@
     margin-bottom: $component-margin-bottom;
     padding: $component-padding;
     border-radius: $border-radius;
-    background-color: #fff;
+    background-color: $color-base-900;
     box-shadow: $component-box-shadow;
     @include clearfix;
 }
@@ -207,7 +207,7 @@
 .section-header {
     margin-bottom: $section-header-margin-bottom;
     padding: $section-header-padding-v $section-header-padding-h;
-    border-bottom: 1px solid $color-gray-light;
+    border-bottom: 1px solid $color-base-600;
     font-weight: 600;
     font-size: $font-size-m;
     @include user-select-none;
@@ -221,7 +221,7 @@
 }
 
 .sort-handle::before {
-    color: $color-gray-dark;
+    color: $color-base-400;
     font-size: $font-size-xs;
     cursor: inherit;
     @include icon(bars);
@@ -229,7 +229,7 @@
 
 .sortable-chosen,
 .sortable-ghost {
-    background-color: #fff;
+    background-color: $color-base-900;
     cursor: grabbing;
 }
 

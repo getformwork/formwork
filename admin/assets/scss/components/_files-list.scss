@@ -27,7 +27,7 @@
 
 .file-name::before {
     margin-right: $file-name-icon-margin-right;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     font-size: $font-size-m;
     @include icon(file);
 }
@@ -49,7 +49,7 @@
 }
 
 .file-size {
-    color: $color-gray-xdark;
+    color: $color-base-300;
 }
 
 .file-actions {

@@ -13,27 +13,31 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-gray-xxdark: lighten(#000, 15%);
-$color-gray-xdark: lighten(#000, 49%);
-$color-gray-dark: lighten(#000, 59%);
-$color-gray: lighten(#000, 79%);
-$color-gray-light: lighten(#000, 89%);
-$color-gray-xlight: lighten(#000, 94%);
-$color-gray-xxlight: lighten(#000, 97%);
+$color-white: #fff;
+$color-black: #000;
 
-$color-accent: #1e88e5;
-$color-accent-dark: darken($color-accent, 10%);
-$color-accent-xdark: darken($color-accent, 20%);
-$color-accent-background: lighten($color-accent, 44%);
+$color-base-200: lighten(#000, 15%);
+$color-base-300: lighten(#000, 49%);
+$color-base-400: lighten(#000, 59%);
+$color-base-500: lighten(#000, 79%);
+$color-base-600: lighten(#000, 89%);
+$color-base-700: lighten(#000, 94%);
+$color-base-800: lighten(#000, 97%);
+$color-base-900: lighten(#000, 100%);
 
-$color-success: #2ecc70;
-$color-success-dark: darken($color-success, 10%);
+$color-accent-500: #1e88e5;
+$color-accent-400: darken($color-accent-500, 10%);
+$color-accent-300: darken($color-accent-500, 20%);
+$color-accent-background: lighten($color-accent-500, 44%);
 
-$color-warning: #f39c11;
-$color-warning-dark: darken($color-warning, 10%);
+$color-success-500: #2ecc70;
+$color-success-400: darken($color-success-500, 10%);
 
-$color-error: #e74c3b;
-$color-error-dark: darken($color-error, 10%);
+$color-warning-500: #f39c11;
+$color-warning-400: darken($color-warning-500, 10%);
+
+$color-error-500: #e74c3b;
+$color-error-400: darken($color-error-500, 10%);
 
 // ===
 // Common values
@@ -44,9 +48,11 @@ $border-radius-round: 50%;
 
 $mark-background-color: #ffd700;
 
+$selection-background-color: rgba($color-accent-500, 0.25);
+
 $focusring-width: 2px;
 $focusring-opacity: 0.25;
-$focusring-default-color: saturate($color-accent, 21%);
+$focusring-default-color: saturate($color-accent-500, 21%);
 
 $link-outline-color: rgba($focusring-default-color, $focusring-opacity);
 
@@ -57,6 +63,9 @@ $transition-time-s: 150ms;
 $transition-time-m: 300ms;
 
 $caret-width: 0.25rem;
+
+$dropdown-box-shadow: 1px 1px 0.75rem 0 rgba($color-black, 0.25);
+$component-box-shadow: 0 0 0.75rem -0.25rem rgba($color-black, 0.05);
 
 // ===
 // Typography
@@ -201,7 +210,6 @@ $dropdown-menu-padding-h: 0;
 $dropdown-menu-min-width: 8rem;
 $dropdown-menu-border-width: 1px;
 $dropdown-menu-border-radius: 3px;
-$dropdown-menu-box-shadow: rgba(#000, 0.15) 1px 1px 9px 0;
 
 $dropdown-item-padding-v: 0.25rem;
 $dropdown-item-padding-h: 1rem;
@@ -234,7 +242,6 @@ $calendar-margin-top: 3px;
 $calendar-margin-bottom: 1rem;
 $calendar-padding: 0.5rem;
 $calendar-width: 18rem;
-$calendar-box-shadow: rgba(#000, 0.15) 1px 1px 9px 0;
 
 $calendar-button-padding-v: 0;
 $calendar-button-padding-h: 0.5rem;
@@ -257,7 +264,7 @@ $image-picker-thumbnail-caption-bottom: 0.5rem;
 $image-picker-thumbnail-caption-left: 0.75rem;
 $image-picker-thumbnail-caption-padding-v: 0;
 $image-picker-thumbnail-caption-padding-h: 0.375rem;
-$image-picker-thumbnail-caption-background-color: rgba($color-gray-light, 0.9);
+$image-picker-thumbnail-caption-background-color: rgba($color-base-600, 0.9);
 
 $image-picker-empty-state-margin-top: 3rem;
 $image-picker-empty-state-margin-bottom: 4rem;
@@ -288,7 +295,7 @@ $tabs-tab-notch-width: 3px;
 // Modals
 // ===
 
-$backdrop-background-color: rgba(#000, 0.75);
+$backdrop-background-color: rgba($color-black, 0.75);
 
 $modal-margin-v: 3rem;
 $modal-margin-h: 0.5rem;
@@ -312,7 +319,7 @@ $notification-margin-bottom: 0.5rem;
 $notification-padding-v: 1.5rem;
 $notification-padding-h: 2.5rem;
 $notification-width: 350px;
-$notification-box-shadow: rgba(#000, 0.15) 1px 1px 9px 0;
+$notification-box-shadow: $dropdown-box-shadow;
 $notification-hover-opacity: 0.95;
 $notification-icon-width: 0.75rem;
 $notification-animation-duration: 300ms;
@@ -324,7 +331,7 @@ $notification-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
 $tooltip-padding: 0.25rem;
 $tooltip-min-width: 2rem;
-$tooltip-background-color: rgba(#000, 0.73);
+$tooltip-background-color: rgba($color-base-200, 0.8);
 
 // ===
 // Spinner
@@ -365,10 +372,9 @@ $sidebar-width: 14rem;
 
 $sidebar-padding-h: 1rem;
 $sidebar-padding-v: 1.5rem;
-$sidebar-background-gradient-color-0: #fcfcfc;
-$sidebar-background-gradient-color-100: #f9f9f9;
+$sidebar-background-gradient-color-0: $color-base-900;
+$sidebar-background-gradient-color-100: $color-base-800;
 $sidebar-background-gradient: linear-gradient(to bottom, #{$sidebar-background-gradient-color-0} 0%, #{$sidebar-background-gradient-color-100} 100%);
-$sidebar-box-shadow: rgba($color-gray-xlight, 0.25) 1px 0 9px 3px;
 
 $toggle-navigation-top: 0.75rem;
 $toggle-navigation-left: 0.75rem;
@@ -404,7 +410,7 @@ $main-margin-left: $main-margin + $sidebar-width;
 
 $component-margin-bottom: 1rem;
 $component-padding: 1.5rem;
-$component-box-shadow: rgba($color-gray-xlight, 0.25) 1px 1px 9px 3px;
+$component-box-shadow: 0 0 0.75rem -0.25rem rgba($color-black, 0.05);
 
 $caption-margin-bottom: 1rem;
 $caption-letter-spacing: 1px;
@@ -420,7 +426,7 @@ $section-header-padding-h: 0.5rem;
 $sort-handle-margin-right: 0.25rem;
 $sort-handle-width: 0.75rem;
 
-$sortable-fallback-box-shadow: 0 0 12px 3px rgba(#000, 0.15);
+$sortable-fallback-box-shadow: 0 0 0.75rem 0.25rem rgba($color-black, 0.15);
 
 // ===
 // Pages

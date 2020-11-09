@@ -6,8 +6,8 @@ html {
 body {
     box-sizing: border-box;
     margin: 0;
-    background-color: $color-gray-xxlight;
-    color: $color-gray-xxdark;
+    background-color: $color-base-800;
+    color: $color-base-200;
     font-family: $base-font-family;
     line-height: $base-line-height;
 }
@@ -15,7 +15,7 @@ body {
 * {
     box-sizing: inherit;
     line-height: inherit;
-    -webkit-tap-highlight-color: rgba(#000, 0);
+    -webkit-tap-highlight-color: rgba($color-base-200, 0);
 }
 
 main {
@@ -25,11 +25,11 @@ main {
 a {
     outline-color: $link-outline-color;
     background-color: transparent;
-    color: $color-accent;
+    color: $color-accent-500;
     text-decoration: none;
     transition: color $transition-time-s;
     &:hover {
-        color: $color-accent-xdark;
+        color: $color-accent-400;
     }
     &:not([href]) {
         cursor: default;
@@ -62,7 +62,7 @@ mark {
 }
 
 ::selection {
-    background-color: $color-accent-background;
+    background-color: $selection-background-color;
 }
 
 @each $breakpoint-name in map-keys($responsive-breakpoints) {

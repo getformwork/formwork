@@ -1,9 +1,9 @@
 .editor-toolbar {
     padding: $editor-toolbar-padding-v $editor-toolbar-padding-h;
-    border: 1px solid $color-gray;
+    border: 1px solid $color-base-500;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
     font-size: 0;
 }
 
@@ -11,11 +11,11 @@
     margin-bottom: 0;
     padding: $editor-toolbar-button-padding;
     border: 0;
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
     &:hover,
     &:focus {
         background-color: transparent;
-        color: $color-accent;
+        color: $color-accent-500;
     }
     &:focus {
         @include focusring;
@@ -26,7 +26,7 @@
     margin-bottom: $editor-textarea-margin-bottom;
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
-    border: $input-border-width solid $color-gray;
+    border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
     font-size: $font-size-m;
     font-family: $base-font-family;
@@ -38,7 +38,7 @@
 .CodeMirror {
     margin-bottom: $editor-textarea-margin-bottom;
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
-    border: $input-border-width solid $color-gray;
+    border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
     font-size: $font-size-m;
     font-family: $base-font-family;
@@ -60,23 +60,23 @@
 }
 
 .CodeMirror-selected {
-    background: $color-gray-xlight;
+    background: $color-base-700;
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-    background: $color-accent-background;
+    background: $selection-background-color;
 }
 
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-    background: $color-accent-background;
+    background: $selection-background-color;
 }
 
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line > span::-moz-selection,
 .CodeMirror-line > span > span::-moz-selection {
-    background: $color-accent-background;
+    background: $selection-background-color;
 }
 
 .cm-s-formwork .cm-header-1 {
@@ -109,21 +109,21 @@
 }
 
 .cm-s-formwork .cm-quote {
-    color: $color-gray-xdark;
+    color: $color-base-300;
 }
 
 .cm-s-formwork .cm-link {
-    color: $color-accent;
+    color: $color-accent-500;
     text-decoration: underline;
 }
 
 .cm-s-formwork .cm-url,
 .cm-s-formwork .cm-image-marker {
-    color: $color-accent-xdark;
+    color: $color-accent-500;
 }
 
 .cm-s-formwork .cm-hr {
-    color: $color-gray-xdark;
+    color: $color-base-300;
 }
 
 .cm-s-formwork .cm-tag {
@@ -131,7 +131,7 @@
 }
 
 .cm-s-formwork .cm-bracket {
-    color: $color-gray-xxdark;
+    color: $color-base-200;
 }
 
 .cm-s-formwork .cm-attribute {

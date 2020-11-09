@@ -31,20 +31,20 @@
 
 .ct-series-a .ct-line,
 .ct-series-a .ct-point {
-    stroke: $color-accent;
+    stroke: $color-accent-500;
 }
 
 .ct-series-a .ct-area {
-    fill: $color-accent;
+    fill: $color-accent-500;
 }
 
 .ct-series-b .ct-line,
 .ct-series-b .ct-point {
-    stroke: $color-warning;
+    stroke: $color-warning-500;
 }
 
 .ct-series-b .ct-area {
-    fill: $color-warning;
+    fill: $color-warning-500;
 }
 
 .ct-label.ct-horizontal,
@@ -52,7 +52,7 @@
     display: inline-block;
     min-width: 3rem;
     width: auto !important;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     text-align: center;
     transform: translateX(-50%);
 }
@@ -78,9 +78,9 @@
 }
 
 .ct-legend-label.ct-series-a::before {
-    color: $color-accent;
+    color: $color-accent-500;
 }
 
 .ct-legend-label.ct-series-b::before {
-    color: $color-warning;
+    color: $color-warning-500;
 }

@@ -12,7 +12,7 @@
     padding: $notification-padding-v $notification-padding-h;
     width: $notification-width;
     border-radius: $border-radius;
-    background-color: $color-gray-xlight;
+    background-color: $color-base-700;
     box-shadow: $notification-box-shadow;
     text-overflow: ellipsis;
     cursor: default;
@@ -45,23 +45,23 @@
 }
 
 .notification-info {
-    background-color: $color-accent;
-    color: #fff;
+    background-color: $color-accent-500;
+    color: $color-white;
 }
 
 .notification-success {
-    background-color: $color-success-dark;
-    color: #fff;
+    background-color: darken($color-success-500, 10%);
+    color: $color-white;
 }
 
 .notification-warning {
-    background-color: $color-warning;
-    color: #fff;
+    background-color: darken($color-warning-500, 10%);
+    color: $color-white;
 }
 
 .notification-error {
-    background-color: $color-error;
-    color: #fff;
+    background-color: darken($color-error-500, 10%);
+    color: $color-white;
 }
 
 .notification-info::before {

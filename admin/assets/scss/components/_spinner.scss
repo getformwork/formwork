@@ -9,7 +9,7 @@
     height: $spinner-height;
     border-width: $spinner-border-width;
     border-style: solid;
-    border-color: $color-accent;
+    border-color: $color-accent-500;
     border-bottom-color: transparent;
     border-left-color: transparent;
     border-radius: $border-radius-round;
@@ -25,25 +25,22 @@
 }
 
 .spinner-info::after {
-    border-color: $color-accent;
-    background-color: #fff;
-    color: $color-accent;
+    border-color: $color-accent-500;
+    color: $color-accent-500;
     animation: none;
     @include icon(info);
 }
 
 .spinner-success::after {
-    border-color: $color-success;
-    background-color: #fff;
-    color: $color-success;
+    border-color: $color-success-500;
+    color: $color-success-500;
     animation: none;
     @include icon(check);
 }
 
 .spinner-error::after {
-    border-color: $color-error;
-    background-color: #fff;
-    color: $color-error;
+    border-color: $color-error-500;
+    color: $color-error-500;
     animation: none;
     @include icon(exclamation);
 }

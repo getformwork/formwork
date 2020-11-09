@@ -6,8 +6,10 @@ textarea {
     margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h;
     width: 100%;
-    border: $input-border-width solid $color-gray;
+    border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
+    background-color: $color-base-900;
+    color: $color-base-200;
     vertical-align: middle;
     font-size: $input-font-size;
     font-family: $base-font-family;
@@ -15,12 +17,12 @@ textarea {
     @include appearance-none;
     &:focus {
         outline: none;
-        border-color: $color-accent;
+        border-color: $color-accent-500;
         @include focusring;
     }
     &[disabled] {
-        background-color: $color-gray-xlight;
-        color: $color-gray-xdark;
+        background-color: $color-base-700;
+        color: $color-base-300;
     }
     &[readonly] {
         // Safari Mobile bug
@@ -59,12 +61,12 @@ input[type='number']::-webkit-outer-spin-button {
 // stylelint-disable-next-line no-descending-specificity
 select {
     padding: $select-padding-h $select-padding-left $select-padding-h $select-padding-right;
-    background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
-    background-color: #fff;
+    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
+    background-color: $color-base-900;
     background-size: 8px 6px;
     &:-moz-focusring {
         color: transparent;
-        text-shadow: 0 0 0 $color-gray-xxdark;
+        text-shadow: 0 0 0 $color-base-200;
     }
 }
 
@@ -78,19 +80,19 @@ textarea {
 }
 
 .input-accent {
-    border-color: $color-accent;
+    border-color: $color-accent-500;
 }
 
 .input-success {
-    border-color: $color-success;
+    border-color: $color-success-500;
 }
 
 .input-warning {
-    border-color: $color-warning;
+    border-color: $color-warning-500;
 }
 
 .input-error {
-    border-color: $color-error;
+    border-color: $color-error-500;
 }
 
 .input-invalid {
@@ -110,12 +112,12 @@ textarea {
     position: absolute;
     top: calc(#{$input-padding-v} + #{$input-border-width});
     right: $input-padding-h / 2;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     font-size: $font-size-s;
     line-height: $input-line-height;
     transition: color $transition-time-s;
     &:hover {
-        color: $color-accent;
+        color: $color-accent-500;
     }
 }
 
@@ -128,7 +130,7 @@ label {
 }
 
 .label-suggestion {
-    color: $color-gray-xdark;
+    color: $color-base-300;
     font-size: $font-size-xs;
     line-height: 1;
 }
@@ -136,6 +138,6 @@ label {
 .label-required::after {
     display: inline-block;
     margin-left: $label-required-margin-left;
-    color: $color-error;
+    color: $color-error-500;
     content: '*';
 }

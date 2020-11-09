@@ -8,10 +8,10 @@ button,
     padding: $button-padding-v $button-padding-h;
     min-width: $button-min-width;
     outline: none;
-    border: $button-border-width solid $color-gray-xlight;
+    border: $button-border-width solid $color-base-700;
     border-radius: $button-border-radius;
-    background-color: $color-gray-xlight;
-    color: $color-gray-xxdark;
+    background-color: $color-base-700;
+    color: $color-base-200;
     vertical-align: middle;
     white-space: nowrap;
     font-size: $button-font-size;
@@ -22,25 +22,25 @@ button,
     @include user-select-none;
     &:hover,
     &:focus {
-        border-color: $color-gray-light;
-        background-color: $color-gray-light;
-        color: $color-gray-xxdark;
+        border-color: $color-base-600;
+        background-color: $color-base-600;
+        color: $color-base-200;
     }
     &:focus {
-        @include focusring($color-gray-xxdark);
+        @include focusring($color-base-200);
     }
     &[disabled],
     &[disabled]:hover,
     &.disabled,
     &.disabled:hover {
-        border-color: $color-gray-xxlight;
-        background-color: $color-gray-xxlight;
-        color: $color-gray;
+        border-color: $color-base-800;
+        background-color: $color-base-800;
+        color: $color-base-500;
         pointer-events: none;
     }
     &.active {
-        border-color: $color-gray;
-        background-color: $color-gray;
+        border-color: $color-base-500;
+        background-color: $color-base-500;
     }
 }
 
@@ -55,14 +55,14 @@ a.button {
 }
 
 .button-accent {
-    border: 1px solid $color-accent;
-    background-color: $color-accent;
-    color: #fff;
+    border: 1px solid $color-accent-500;
+    background-color: $color-accent-500;
+    color: $color-white;
     &:hover,
     &:focus {
-        border-color: $color-accent-dark;
-        background-color: $color-accent-dark;
-        color: #fff;
+        border-color: $color-accent-400;
+        background-color: $color-accent-400;
+        color: $color-white;
     }
     &:focus {
         @include focusring;
@@ -70,47 +70,47 @@ a.button {
 }
 
 .button-success {
-    border: 1px solid $color-success;
-    background-color: $color-success;
-    color: #fff;
+    border: 1px solid $color-success-500;
+    background-color: $color-success-500;
+    color: $color-white;
     &:hover,
     &:focus {
-        border-color: $color-success-dark;
-        background-color: $color-success-dark;
-        color: #fff;
+        border-color: $color-success-400;
+        background-color: $color-success-400;
+        color: $color-white;
     }
     &:focus {
-        @include focusring($color-success-dark);
+        @include focusring($color-success-400);
     }
 }
 
 .button-warning {
-    border: 1px solid $color-warning;
-    background-color: $color-warning;
-    color: #fff;
+    border: 1px solid $color-warning-500;
+    background-color: $color-warning-500;
+    color: $color-white;
     &:hover,
     &:focus {
-        border-color: $color-warning-dark;
-        background-color: $color-warning-dark;
-        color: #fff;
+        border-color: $color-warning-400;
+        background-color: $color-warning-400;
+        color: $color-white;
     }
     &:focus {
-        @include focusring($color-warning-dark);
+        @include focusring($color-warning-400);
     }
 }
 
 .button-error {
-    border: 1px solid $color-error;
-    background-color: $color-error;
-    color: #fff;
+    border: 1px solid $color-error-500;
+    background-color: $color-error-500;
+    color: $color-white;
     &:hover,
     &:focus {
-        border-color: $color-error-dark;
-        background-color: $color-error-dark;
-        color: #fff;
+        border-color: $color-error-400;
+        background-color: $color-error-400;
+        color: $color-white;
     }
     &:focus {
-        @include focusring($color-error-dark);
+        @include focusring($color-error-400);
     }
 }
 
@@ -123,7 +123,7 @@ a.button {
     &:hover,
     &:focus {
         background-color: transparent;
-        color: $color-accent;
+        color: $color-accent-500;
     }
     &:focus {
         @include focusring;

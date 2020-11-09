@@ -20,7 +20,7 @@
 }
 
 .users-list {
-    border-top: 1px solid $color-gray-light;
+    border-top: 1px solid $color-base-600;
     @include user-select-none;
 }
 
@@ -31,9 +31,9 @@
 
 .users-item {
     padding: $users-item-padding-v $users-item-padding-h;
-    border-bottom: 1px solid $color-gray-light;
+    border-bottom: 1px solid $color-base-600;
     &:hover {
-        background-color: $color-gray-xxlight;
+        background-color: $color-base-800;
     }
 }
 

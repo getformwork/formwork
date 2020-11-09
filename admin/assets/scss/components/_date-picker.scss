@@ -11,11 +11,11 @@
     margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
     padding: $calendar-padding;
     width: $calendar-width;
-    border: 1px solid $color-gray;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
-    background-color: #fff;
-    box-shadow: $calendar-box-shadow;
-    color: $color-gray-xxdark;
+    background-color: $color-base-900;
+    box-shadow: $dropdown-box-shadow;
+    color: $color-base-200;
 }
 
 .calendar-header {
@@ -34,11 +34,11 @@
     outline: none;
     border: 0;
     background-color: transparent;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     font-size: $font-size-s;
     cursor: pointer;
     &:hover {
-        color: $color-accent;
+        color: $color-accent-500;
     }
     &:focus {
         box-shadow: none;
@@ -68,23 +68,23 @@
     border-radius: $border-radius;
     transition: background-color $transition-time-s, color $transition-time-s;
     &:hover {
-        background-color: $color-accent-dark;
-        color: #fff;
+        background-color: $color-accent-400;
+        color: $color-white;
     }
 }
 
 .calendar-day.selected {
-    background-color: $color-accent;
-    color: #fff;
+    background-color: $color-accent-500;
+    color: $color-white;
 }
 
 .calendar-prev-month-day,
 .calendar-next-month-day {
-    color: $color-gray;
+    color: $color-base-500;
 }
 
 .calendar-separator {
     margin: $calendar-padding (-$calendar-padding);
     height: 0;
-    border-top: 1px solid $color-gray;
+    border-top: 1px solid $color-base-500;
 }

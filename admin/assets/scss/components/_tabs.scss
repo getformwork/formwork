@@ -2,7 +2,7 @@
     overflow-x: auto;
     margin-bottom: $tabs-margin-bottom;
     padding: $focusring-width $focusring-width 0;
-    border-bottom: 1px solid $color-gray-light;
+    border-bottom: 1px solid $color-base-600;
     white-space: nowrap;
     @include user-select-none;
 }
@@ -10,15 +10,15 @@
 .tabs-tab {
     display: inline-block;
     padding: $tabs-tab-padding-v $tabs-tab-padding-h;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     cursor: pointer;
     &:hover {
-        color: $color-gray-xxdark;
+        color: $color-base-200;
     }
 }
 
 .tabs-tab.active {
-    border-bottom: $tabs-tab-notch-width solid $color-accent;
+    border-bottom: $tabs-tab-notch-width solid $color-accent-500;
     font-weight: 600;
 }
 

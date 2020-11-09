@@ -11,7 +11,7 @@
     margin-right: $custom-checkbox-margin-right;
     width: $custom-checkbox-width;
     height: $custom-checkbox-height;
-    border: $custom-checkbox-border-width solid $color-gray;
+    border: $custom-checkbox-border-width solid $color-base-500;
     border-radius: $border-radius;
     content: ' ';
     transition: border-color $transition-time-s, background-color $transition-time-s;
@@ -19,22 +19,22 @@
 
 .custom-checkbox + .custom-checkbox-text:hover::before,
 .custom-checkbox[disabled] + .custom-checkbox-text::before {
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
 }
 
 .custom-checkbox:checked + .custom-checkbox-text::before {
-    border-color: $color-accent;
-    background-color: $color-accent;
+    border-color: $color-accent-500;
+    background-color: $color-accent-500;
 }
 
 .custom-checkbox:focus + .custom-checkbox-text::before {
-    border-color: $color-accent;
+    border-color: $color-accent-500;
     @include focusring;
 }
 
 .custom-checkbox:checked + .custom-checkbox-text:hover::before {
-    border-color: $color-accent-dark;
-    background-color: $color-accent-dark;
+    border-color: $color-accent-400;
+    background-color: $color-accent-400;
 }
 
 .custom-checkbox:checked + .custom-checkbox-text::after {
@@ -49,8 +49,8 @@
 }
 
 .custom-checkbox:checked[disabled] + .custom-checkbox-text::before {
-    border-color: $color-gray;
-    background-color: $color-gray;
+    border-color: $color-base-500;
+    background-color: $color-base-500;
 }
 
 .checkbox-label {
@@ -60,7 +60,7 @@
 
 .image-input {
     padding-right: $image-input-padding-right;
-    background: #fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 576 512\'><path fill=\'%23444\' d=\'M480 416v16a48 48 0 0 1-48 48H48a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48a48 48 0 0 1 48 48v256a48 48 0 0 1-48 48H144a48 48 0 0 1-48-48V80a48 48 0 0 1 48-48h384zM264 144a40 40 0 1 1-80 0 40 40 0 0 1 80 0zm-72 96l39.52-39.52a12 12 0 0 1 16.97 0L288 240l103.52-103.52a12 12 0 0 1 16.97 0L480 208v80H192v-48z\'/></svg>') no-repeat right 0.5rem center;
+    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 576 512\'><path fill=\'%23444\' d=\'M480 416v16a48 48 0 0 1-48 48H48a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48a48 48 0 0 1 48 48v256a48 48 0 0 1-48 48H144a48 48 0 0 1-48-48V80a48 48 0 0 1 48-48h384zM264 144a40 40 0 1 1-80 0 40 40 0 0 1 80 0zm-72 96l39.52-39.52a12 12 0 0 1 16.97 0L288 240l103.52-103.52a12 12 0 0 1 16.97 0L480 208v80H192v-48z\'/></svg>') no-repeat right 0.5rem center;
     background-size: 1rem 1rem;
     cursor: default;
 }
@@ -78,7 +78,7 @@
     margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h / 2;
     padding-bottom: 0;
-    border: 1px solid $color-gray;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;
@@ -86,7 +86,7 @@
 }
 
 .tag-input.focused {
-    border-color: $color-accent;
+    border-color: $color-accent-500;
 }
 
 .tag-inner-input {
@@ -118,7 +118,7 @@
     margin-bottom: $input-padding-v;
     padding: $tag-input-tag-padding-v $tag-input-tag-padding-h;
     border-radius: $border-radius;
-    background-color: $color-gray-xlight;
+    background-color: $color-base-700;
     font-size: $font-size-s;
     cursor: default;
     @include user-select-none;
@@ -126,22 +126,22 @@
 
 .tag-input.disabled,
 .tag-input.disabled .tag-inner-input {
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
 }
 
 .tag-input.disabled .tag {
-    background-color: $color-gray-light;
+    background-color: $color-base-600;
 }
 
 .tag-remove {
     display: inline-block;
     margin-left: $tag-remove-margin-left;
     padding: $tag-remove-padding-v $tag-remove-padding-h;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
     font-style: normal;
     transition: color $transition-time-s;
     &:hover {
-        color: $color-accent;
+        color: $color-accent-500;
     }
 }
 
@@ -163,33 +163,33 @@
     clear: both;
     margin-bottom: $file-input-label-margin-bottom;
     padding: $file-input-label-padding;
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
 }
 
 .file-input-label > span {
     display: block;
     padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
-    border: $file-input-label-inner-border-width dashed $color-gray;
-    color: $color-gray-xxdark;
+    border: $file-input-label-inner-border-width dashed $color-base-500;
+    color: $color-base-200;
     text-align: center;
     transition: background-color $transition-time-m;
 }
 
 .file-input-label.drag > span {
-    background-color: #fff;
+    background-color: $color-base-900;
 }
 
 .toggle-group {
     display: inline-block;
     margin: 0;
     margin-bottom: $input-margin-bottom;
-    border: 1px solid $color-gray;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
     font-size: 0;
 }
 
 .toggle-group:focus-within {
-    border-color: $color-accent;
+    border-color: $color-accent-500;
     @include focusring;
 }
 
@@ -211,29 +211,29 @@
 }
 
 .toggle-group input[type=radio]:hover + span {
-    background-color: $color-gray-xxlight;
+    background-color: $color-base-800;
 }
 
 .toggle-group input[type=radio]:checked + span {
-    background-color: $color-accent;
-    color: #fff;
+    background-color: $color-accent-500;
+    color: $color-white;
 }
 
 .toggle-group input[type=radio]:focus + span {
-    background-color: $color-accent-dark;
+    background-color: $color-accent-400;
 }
 
 .toggle-group[disabled] input[type=radio] + span {
     background-color: transparent;
-    color: $color-gray-xxdark;
+    color: $color-base-200;
 }
 
 .toggle-group[disabled] input[type=radio]:checked + span {
-    background-color: $color-gray-light;
+    background-color: $color-base-600;
 }
 
 .toggle-group input[type=radio]:checked:hover + span {
-    background-color: $color-accent-dark;
+    background-color: $color-accent-400;
 }
 
 input[type=range] {
@@ -246,7 +246,7 @@ input[type=range] {
         height: $range-input-track-height;
         border: 0;
         border-radius: $range-input-track-height / 2;
-        background-color: $color-gray-light;
+        background-color: $color-base-600;
         cursor: default;
     }
     &::-webkit-slider-thumb {
@@ -255,7 +255,7 @@ input[type=range] {
         height: $range-input-thumb-height;
         border: 0;
         border-radius: $range-input-thumb-border-radius;
-        background-color: $color-accent;
+        background-color: $color-accent-500;
         transition: background-color $transition-time-s;
         -webkit-appearance: none;
     }
@@ -264,14 +264,14 @@ input[type=range] {
         height: $range-input-track-height;
         border: 0;
         border-radius: $range-input-track-height / 2;
-        background-color: $color-gray-light;
+        background-color: $color-base-600;
     }
     &::-moz-range-thumb {
         width: $range-input-thumb-width;
         height: $range-input-thumb-height;
         border: 0;
         border-radius: $range-input-thumb-border-radius;
-        background-color: $color-accent;
+        background-color: $color-accent-500;
         cursor: default;
     }
     &::-ms-track {
@@ -285,7 +285,7 @@ input[type=range] {
     &::-ms-fill-lower, &::-ms-fill-upper {
         border: 0;
         border-radius: $range-input-track-height / 2;
-        background: $color-gray-light;
+        background: $color-base-600;
         box-shadow: none;
     }
     &::-ms-thumb {
@@ -294,31 +294,31 @@ input[type=range] {
         height: $range-input-thumb-height;
         border: 0;
         border-radius: $range-input-thumb-border-radius;
-        background-color: $color-accent;
+        background-color: $color-accent-500;
         cursor: default;
     }
     &:focus {
         box-shadow: none;
     }
     &:hover::-webkit-slider-thumb {
-        background-color: $color-accent-dark;
+        background-color: $color-accent-400;
     }
     &[disabled] {
         background-color: transparent;
         &::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb {
-            background-color: $color-gray-xdark;
+            background-color: $color-base-300;
         }
     }
     &:focus::-webkit-slider-thumb {
-        background-color: $color-accent-dark;
+        background-color: $color-accent-400;
         @include focusring;
     }
     &:focus::-moz-range-thumb {
-        background-color: $color-accent-dark;
+        background-color: $color-accent-400;
         @include focusring;
     }
     &:focus::-ms-thumb {
-        background-color: $color-accent-dark;
+        background-color: $color-accent-400;
         @include focusring;
     }
 }

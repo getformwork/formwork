@@ -3,7 +3,7 @@
     padding: $login-modal-padding;
     max-width: $login-modal-width;
     border-radius: $border-radius;
-    background-color: #fff;
+    background-color: $color-base-900;
 }
 
 @media (min-width: $login-modal-width) {
@@ -23,7 +23,7 @@
     border-top-right-radius: $border-radius;
     a {
         display: block;
-        color: #fff;
+        color: $color-white;
         text-decoration: underline;
         @include ellipsis;
     }
@@ -39,32 +39,32 @@
 }
 
 .login-modal-info {
-    background-color: $color-accent;
-    color: #fff;
+    background-color: $color-accent-500;
+    color: $color-white;
     &::before {
         @include icon(info-circle);
     }
 }
 
 .login-modal-success {
-    background-color: $color-success-dark;
-    color: #fff;
+    background-color: $color-success-400;
+    color: $color-white;
     &::before {
         @include icon(check-circle);
     }
 }
 
 .login-modal-warning {
-    background-color: $color-warning;
-    color: #fff;
+    background-color: $color-warning-500;
+    color: $color-white;
     &::before {
         @include icon(exclamation-triangle);
     }
 }
 
 .login-modal-error {
-    background-color: $color-error;
-    color: #fff;
+    background-color: $color-error-500;
+    color: $color-white;
     &::before {
         @include icon(error-circle);
     }
