@@ -114,8 +114,10 @@ export default {
                         }
                     }
                 } else {
-                    pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
-                    pageTemplate.removeAttribute('data-previous-value');
+                    if (pageTemplate.hasAttribute('data-previous-value')) {
+                        pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
+                        pageTemplate.removeAttribute('data-previous-value');
+                    }
                     for (i = 0; i < pageTemplate.options.length; i++) {
                         pageTemplate.options[i].disabled = false;
                     }
