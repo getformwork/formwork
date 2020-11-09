@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/getformwork/formwork/releases/tag/1.10.1) (2020-11-09)
+
+**Bug fixes**
+
+- Fix pages list toggle expanding all children lists
+- Fix value disappearing from template select in New Page modal
+
 ## [1.10.0](https://github.com/getformwork/formwork/releases/tag/1.10.0) (2020-11-08)
 
 **Enhancements**
