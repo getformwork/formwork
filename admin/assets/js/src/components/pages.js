@@ -186,8 +186,11 @@ export default {
         }
 
         function togglePagesList(list) {
-            $$('.pages-list', list.closest('li')).forEach(function (element) {
-                Utils.toggleElement(element);
+            var parent = list.closest('li');
+            $$('.pages-list', parent).forEach(function (element) {
+                if (element.parentNode === parent) {
+                    Utils.toggleElement(element);
+                }
             });
             list.classList.toggle('toggle-expanded');
             list.classList.toggle('toggle-collapsed');
