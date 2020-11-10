@@ -37,6 +37,7 @@
 
 .CodeMirror {
     margin-bottom: $editor-textarea-margin-bottom;
+    padding: 0 $editor-textarea-padding-h;
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
@@ -48,8 +49,8 @@
     padding: $editor-textarea-padding-v 0;
 }
 
-.CodeMirror pre {
-    padding: 0 $editor-textarea-padding-h;
+.CodeMirror-lines pre {
+    padding: 0;
 }
 
 .editor-toolbar + .editor-textarea,
