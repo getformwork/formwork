@@ -2347,6 +2347,7 @@ span.CodeMirror-selectedtext {
     box-shadow: none;
     color: #1e88e5; }
   .toggle-navigation:focus {
+    background-color: transparent;
     box-shadow: none; }
 
 .logo {
