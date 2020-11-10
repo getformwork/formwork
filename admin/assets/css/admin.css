@@ -937,7 +937,7 @@ input[type=range] {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 4;
+  z-index: 8;
   display: none;
   float: left;
   margin-top: 3px;
@@ -1396,7 +1396,7 @@ span.CodeMirror-selectedtext {
 .calendar {
   position: absolute;
   top: 100%;
-  z-index: 4;
+  z-index: 8;
   display: none;
   margin: 3px 1rem 1rem;
   padding: 0.5rem;
@@ -1602,7 +1602,7 @@ span.CodeMirror-selectedtext {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 15;
+  z-index: 16;
   background-color: rgba(0, 0, 0, 0.75); }
 
 .modal {
@@ -1651,7 +1651,7 @@ span.CodeMirror-selectedtext {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 11; }
+  z-index: 12; }
 
 .notification {
   position: relative;
@@ -2279,7 +2279,7 @@ span.CodeMirror-selectedtext {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 6;
+  z-index: 8;
   padding: 1rem;
   padding-left: 4rem;
   background-color: #ededed;
@@ -2314,7 +2314,7 @@ span.CodeMirror-selectedtext {
   top: 0;
   bottom: 0;
   left: 0;
-  z-index: 8;
+  z-index: 10;
   padding: 1rem 1.5rem;
   width: 14rem;
   background: linear-gradient(to bottom, #fcfcfc 0%, #f7f7f7 100%);
@@ -2336,7 +2336,7 @@ span.CodeMirror-selectedtext {
   position: fixed;
   top: 0.75rem;
   left: 0.75rem;
-  z-index: 10;
+  z-index: 12;
   margin: 0;
   border: none;
   background-color: transparent;
