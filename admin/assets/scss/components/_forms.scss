@@ -9,7 +9,7 @@ textarea {
     border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
     background-color: $color-base-900;
-    color: $color-base-200;
+    color: $color-base-100;
     vertical-align: middle;
     font-size: $input-font-size;
     font-family: $base-font-family;
@@ -66,7 +66,7 @@ select {
     background-size: 8px 6px;
     &:-moz-focusring {
         color: transparent;
-        text-shadow: 0 0 0 $color-base-200;
+        text-shadow: 0 0 0 $color-base-100;
     }
 }
 
@@ -112,7 +112,7 @@ textarea {
     position: absolute;
     top: calc(#{$input-padding-v} + #{$input-border-width});
     right: $input-padding-h / 2;
-    color: $color-base-200;
+    color: $color-base-100;
     font-size: $font-size-s;
     line-height: $input-line-height;
     transition: color $transition-time-s;

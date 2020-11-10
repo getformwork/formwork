@@ -27,7 +27,7 @@
 
 .file-name::before {
     margin-right: $file-name-icon-margin-right;
-    color: $color-base-200;
+    color: $color-base-100;
     font-size: $font-size-m;
     @include icon(file);
 }

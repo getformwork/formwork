@@ -137,7 +137,7 @@
     display: inline-block;
     margin-left: $tag-remove-margin-left;
     padding: $tag-remove-padding-v $tag-remove-padding-h;
-    color: $color-base-200;
+    color: $color-base-100;
     font-style: normal;
     transition: color $transition-time-s;
     &:hover {
@@ -170,7 +170,7 @@
     display: block;
     padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
     border: $file-input-label-inner-border-width dashed $color-base-500;
-    color: $color-base-200;
+    color: $color-base-100;
     text-align: center;
     transition: background-color $transition-time-m;
 }
@@ -225,7 +225,7 @@
 
 .toggle-group[disabled] input[type=radio] + span {
     background-color: transparent;
-    color: $color-base-200;
+    color: $color-base-100;
 }
 
 .toggle-group[disabled] input[type=radio]:checked + span {

@@ -7,7 +7,7 @@ body {
     box-sizing: border-box;
     margin: 0;
     background-color: $color-base-800;
-    color: $color-base-200;
+    color: $color-base-100;
     font-family: $base-font-family;
     line-height: $base-line-height;
 }
@@ -15,7 +15,7 @@ body {
 * {
     box-sizing: inherit;
     line-height: inherit;
-    -webkit-tap-highlight-color: rgba($color-base-200, 0);
+    -webkit-tap-highlight-color: rgba($color-base-100, 0);
 }
 
 main {

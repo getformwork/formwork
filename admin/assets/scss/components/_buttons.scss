@@ -11,7 +11,7 @@ button,
     border: $button-border-width solid $color-base-700;
     border-radius: $button-border-radius;
     background-color: $color-base-700;
-    color: $color-base-200;
+    color: $color-base-100;
     vertical-align: middle;
     white-space: nowrap;
     font-size: $button-font-size;
@@ -24,10 +24,10 @@ button,
     &:focus {
         border-color: $color-base-600;
         background-color: $color-base-600;
-        color: $color-base-200;
+        color: $color-base-100;
     }
     &:focus {
-        @include focusring($color-base-200);
+        @include focusring($color-base-100);
     }
     &[disabled],
     &[disabled]:hover,

@@ -23,7 +23,7 @@
     min-width: auto;
     border-color: transparent;
     background-color: transparent;
-    color: $color-base-200;
+    color: $color-base-100;
     font-weight: 400;
     font-size: $font-size-s;
     cursor: pointer;
@@ -83,7 +83,7 @@
     padding: $page-language-padding-v $page-language-padding-h;
     min-width: $page-language-min-width;
     border-radius: $border-radius;
-    background-color: $color-accent-background;
+    background-color: $color-accent-900;
     color: $color-accent-500;
     text-align: center;
     font-weight: 600;
@@ -212,7 +212,7 @@ button .page-language,
     &::after {
         display: inline-block;
         margin-left: $page-slug-change-icon-margin-left;
-        color: $color-base-200;
+        color: $color-base-100;
         content: ' ';
         opacity: 0;
         transition: opacity $transition-time-s;

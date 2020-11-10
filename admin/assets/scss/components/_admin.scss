@@ -8,7 +8,7 @@
     padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
     background-color: $color-base-700;
     box-shadow: $component-box-shadow;
-    color: $color-base-200;
+    color: $color-base-100;
     @include user-select-none;
     @include ellipsis;
     @media (min-width: map-get($responsive-breakpoints, 's')) {
@@ -23,7 +23,7 @@
 
 .view-site {
     float: right;
-    color: $color-base-200;
+    color: $color-base-100;
     &:hover {
         color: $color-accent-500;
     }
@@ -78,7 +78,7 @@
 
 .logo {
     margin-bottom: $logo-margin-bottom;
-    color: $color-base-200;
+    color: $color-base-100;
     text-align: center;
     font-weight: 600;
     font-size: $logo-font-size;
@@ -96,7 +96,7 @@
 
 .logo a {
     padding-top: $focusring-width;
-    color: $color-base-200;
+    color: $color-base-100;
 }
 
 .sidebar-navigation {
@@ -118,7 +118,7 @@
 }
 
 .sidebar-navigation > li a {
-    color: $color-base-200;
+    color: $color-base-100;
 }
 
 .sidebar-navigation > li.active {
@@ -161,7 +161,7 @@
 }
 
 .admin-user-fullname {
-    color: $color-base-200;
+    color: $color-base-100;
 }
 
 .admin-user-username {

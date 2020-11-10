@@ -1,0 +1,68 @@
+$color-white: #fff;
+$color-black: #000;
+$color-blue: #1e88e5;
+$color-green: #2ecc70;
+$color-yellow: #ffd700;
+$color-amber: #f39c11;
+$color-red: #e74c3b;
+$color-purple: #6f42c1;
+
+$color-blue-100: shade($color-blue, 80%);
+$color-blue-200: shade($color-blue, 60%);
+$color-blue-300: shade($color-blue, 40%);
+$color-blue-400: shade($color-blue, 20%);
+$color-blue-500: $color-blue;
+$color-blue-600: tint($color-blue, 20%);
+$color-blue-700: tint($color-blue, 40%);
+$color-blue-800: tint($color-blue, 60%);
+$color-blue-900: tint($color-blue, 80%);
+
+$color-green-100: shade($color-green, 80%);
+$color-green-200: shade($color-green, 60%);
+$color-green-300: shade($color-green, 40%);
+$color-green-400: shade($color-green, 20%);
+$color-green-500: $color-green;
+$color-green-600: tint($color-green, 20%);
+$color-green-700: tint($color-green, 40%);
+$color-green-800: tint($color-green, 60%);
+$color-green-900: tint($color-green, 80%);
+
+$color-yellow-100: shade($color-yellow, 80%);
+$color-yellow-200: shade($color-yellow, 60%);
+$color-yellow-300: shade($color-yellow, 40%);
+$color-yellow-400: shade($color-yellow, 20%);
+$color-yellow-500: $color-yellow;
+$color-yellow-600: tint($color-yellow, 20%);
+$color-yellow-700: tint($color-yellow, 40%);
+$color-yellow-800: tint($color-yellow, 60%);
+$color-yellow-900: tint($color-yellow, 80%);
+
+$color-amber-100: shade($color-amber, 80%);
+$color-amber-200: shade($color-amber, 60%);
+$color-amber-300: shade($color-amber, 40%);
+$color-amber-400: shade($color-amber, 20%);
+$color-amber-500: $color-amber;
+$color-amber-600: tint($color-amber, 20%);
+$color-amber-700: tint($color-amber, 40%);
+$color-amber-800: tint($color-amber, 60%);
+$color-amber-900: tint($color-amber, 80%);
+
+$color-red-100: shade($color-red, 80%);
+$color-red-200: shade($color-red, 60%);
+$color-red-300: shade($color-red, 40%);
+$color-red-400: shade($color-red, 20%);
+$color-red-500: $color-red;
+$color-red-600: tint($color-red, 20%);
+$color-red-700: tint($color-red, 40%);
+$color-red-800: tint($color-red, 60%);
+$color-red-900: tint($color-red, 80%);
+
+$color-purple-100: shade($color-purple, 80%);
+$color-purple-200: shade($color-purple, 60%);
+$color-purple-300: shade($color-purple, 40%);
+$color-purple-400: shade($color-purple, 20%);
+$color-purple-500: $color-purple;
+$color-purple-600: tint($color-purple, 20%);
+$color-purple-700: tint($color-purple, 40%);
+$color-purple-800: tint($color-purple, 60%);
+$color-purple-900: tint($color-purple, 80%);

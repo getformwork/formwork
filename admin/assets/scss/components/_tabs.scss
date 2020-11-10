@@ -10,10 +10,10 @@
 .tabs-tab {
     display: inline-block;
     padding: $tabs-tab-padding-v $tabs-tab-padding-h;
-    color: $color-base-200;
+    color: $color-base-100;
     cursor: pointer;
     &:hover {
-        color: $color-base-200;
+        color: $color-base-100;
     }
 }
 

@@ -1,9 +1,8 @@
 .ct-label {
-    color: rgba($color-base-200, 0.4);
+    color: rgba($color-base-100, 0.4);
     font-size: 0.75rem;
     line-height: 1;
-
-    fill: rgba($color-base-200, 0.4);
+    fill: rgba($color-base-100, 0.4);
 }
 
 .ct-chart-line .ct-label,
@@ -162,7 +161,7 @@
 }
 
 .ct-grid {
-    stroke: rgba($color-base-200, 0.2);
+    stroke: rgba($color-base-100, 0.2);
     stroke-dasharray: 2px;
     stroke-width: 1px;
 }

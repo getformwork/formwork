@@ -13,31 +13,55 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-white: #fff;
-$color-black: #000;
+$color-base-100: hsl(0, 0, 15) !default;
+$color-base-200: hsl(0, 0, 32) !default;
+$color-base-300: hsl(0, 0, 49) !default;
+$color-base-400: hsl(0, 0, 59) !default;
+$color-base-500: hsl(0, 0, 79) !default;
+$color-base-600: hsl(0, 0, 89) !default;
+$color-base-700: hsl(0, 0, 93) !default;
+$color-base-800: hsl(0, 0, 97) !default;
+$color-base-900: hsl(0, 0, 99) !default;
 
-$color-base-200: lighten(#000, 15%);
-$color-base-300: lighten(#000, 49%);
-$color-base-400: lighten(#000, 59%);
-$color-base-500: lighten(#000, 79%);
-$color-base-600: lighten(#000, 89%);
-$color-base-700: lighten(#000, 94%);
-$color-base-800: lighten(#000, 97%);
-$color-base-900: lighten(#000, 100%);
+$color-accent-100: $color-blue-100;
+$color-accent-200: $color-blue-200;
+$color-accent-300: $color-blue-300;
+$color-accent-400: $color-blue-400;
+$color-accent-500: $color-blue-500;
+$color-accent-600: $color-blue-600;
+$color-accent-700: $color-blue-700;
+$color-accent-800: $color-blue-800;
+$color-accent-900: $color-blue-900;
 
-$color-accent-500: #1e88e5;
-$color-accent-400: darken($color-accent-500, 10%);
-$color-accent-300: darken($color-accent-500, 20%);
-$color-accent-background: lighten($color-accent-500, 44%);
+$color-success-100: $color-green-100;
+$color-success-200: $color-green-200;
+$color-success-300: $color-green-300;
+$color-success-400: $color-green-400;
+$color-success-500: $color-green-500;
+$color-success-600: $color-green-600;
+$color-success-700: $color-green-700;
+$color-success-800: $color-green-800;
+$color-success-900: $color-green-900;
 
-$color-success-500: #2ecc70;
-$color-success-400: darken($color-success-500, 10%);
+$color-warning-100: $color-amber-100;
+$color-warning-200: $color-amber-200;
+$color-warning-300: $color-amber-300;
+$color-warning-400: $color-amber-400;
+$color-warning-500: $color-amber-500;
+$color-warning-600: $color-amber-600;
+$color-warning-700: $color-amber-700;
+$color-warning-800: $color-amber-800;
+$color-warning-900: $color-amber-900;
 
-$color-warning-500: #f39c11;
-$color-warning-400: darken($color-warning-500, 10%);
-
-$color-error-500: #e74c3b;
-$color-error-400: darken($color-error-500, 10%);
+$color-error-100: $color-red-100;
+$color-error-200: $color-red-200;
+$color-error-300: $color-red-300;
+$color-error-400: $color-red-400;
+$color-error-500: $color-red-500;
+$color-error-600: $color-red-600;
+$color-error-700: $color-red-700;
+$color-error-800: $color-red-800;
+$color-error-900: $color-red-900;
 
 // ===
 // Common values
@@ -46,7 +70,7 @@ $color-error-400: darken($color-error-500, 10%);
 $border-radius: 3px;
 $border-radius-round: 50%;
 
-$mark-background-color: #ffd700;
+$mark-background-color: $color-yellow-500;
 
 $selection-background-color: rgba($color-accent-500, 0.25);
 
@@ -331,7 +355,7 @@ $notification-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
 $tooltip-padding: 0.25rem;
 $tooltip-min-width: 2rem;
-$tooltip-background-color: rgba($color-base-200, 0.8);
+$tooltip-background-color: rgba($color-base-100, 0.8);
 
 // ===
 // Spinner

@@ -36,12 +36,12 @@
     display: block;
     padding: $dropdown-item-padding-v $dropdown-item-padding-h;
     width: 100%;
-    color: $color-base-200;
+    color: $color-base-100;
     white-space: nowrap;
     font-size: $dropdown-item-font-size;
     &:hover {
         background-color: $color-base-700;
-        color: $color-base-200;
+        color: $color-base-100;
     }
     &.selected {
         background-color: $color-accent-500;
