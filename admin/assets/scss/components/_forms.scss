@@ -61,7 +61,7 @@ input[type='number']::-webkit-outer-spin-button {
 // stylelint-disable-next-line no-descending-specificity
 select {
     padding: $select-padding-h $select-padding-left $select-padding-h $select-padding-right;
-    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'%23444\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
+    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 24\'><path fill=\'#{urlencode-color($color-base-300)}\' d=\'M0 0h32L16 24z\'/></svg>') no-repeat right 0.75rem center;
     background-color: $color-base-900;
     background-size: 8px 6px;
     &:-moz-focusring {
