@@ -51,6 +51,9 @@ mark {
 ::selection {
   background-color: rgba(30, 136, 229, 0.25); }
 
+::placeholder {
+  color: #7d7d7d; }
+
 @media (min-width: 568px) {
   .hide-from-xs {
     display: none; } }
