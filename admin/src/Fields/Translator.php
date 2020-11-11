@@ -18,7 +18,7 @@ class Translator
      *
      * @var array
      */
-    protected const IGNORED_FIELDS = ['name', 'type', 'import', 'fields'];
+    protected const IGNORED_PROPERTIES = ['name', 'type', 'import', 'fields'];
 
     /**
      * Keys of which array value has to be ignored
@@ -54,7 +54,7 @@ class Translator
      */
     protected static function isTranslatable(string $key, Field $field): bool
     {
-        if (in_array($key, self::IGNORED_FIELDS, true)) {
+        if (in_array($key, self::IGNORED_PROPERTIES, true)) {
             return false;
         }
         $translate = $field->get('translate', true);
