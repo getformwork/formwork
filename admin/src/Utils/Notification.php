@@ -35,6 +35,13 @@ class Notification
     public const ERROR = 'error';
 
     /**
+     * Session key to store the notification
+     *
+     * @var string
+     */
+    protected const SESSION_KEY = 'FORMWORK_NOTIFICATION';
+
+    /**
      * Send a notification
      */
     public static function send(string $text, string $type = self::INFO): void
@@ -42,7 +49,7 @@ class Notification
         if (!in_array($type, [self::INFO, self::SUCCESS, self::WARNING, self::ERROR], true)) {
             throw new InvalidArgumentException('Invalid notification type: ' . $type);
         }
-        Session::set('FORMWORK_NOTIFICATION', ['text' => $text, 'type' => $type]);
+        Session::set(self::SESSION_KEY, ['text' => $text, 'type' => $type]);
     }
 
     /**
@@ -50,7 +57,7 @@ class Notification
      */
     public static function exists(): bool
     {
-        return Session::has('FORMWORK_NOTIFICATION');
+        return Session::has(self::SESSION_KEY);
     }
 
     /**
@@ -60,7 +67,7 @@ class Notification
      */
     public static function get(bool $remove = true): array
     {
-        $notification = Session::get('FORMWORK_NOTIFICATION');
+        $notification = Session::get(self::SESSION_KEY);
         if ($remove) {
             static::remove();
         }
@@ -72,6 +79,6 @@ class Notification
      */
     public static function remove(): void
     {
-        Session::remove('FORMWORK_NOTIFICATION');
+        Session::remove(self::SESSION_KEY);
     }
 }
