@@ -1,3 +1,5 @@
+@import '../vendor/codemirror';
+
 .editor-toolbar {
     padding: $editor-toolbar-padding-v $editor-toolbar-padding-h;
     border: 1px solid $color-base-500;
@@ -41,6 +43,8 @@
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
+    background: $color-base-900;
+    color: $color-base-100;
     font-size: $font-size-m;
     font-family: $base-font-family;
 }

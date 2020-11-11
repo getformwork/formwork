@@ -5,28 +5,16 @@
     display: block;
     width: 100%;
     @include user-select-none;
+    @extend .ct-major-twelfth;
 }
 
-.ct-chart::before {
-    display: block;
-    float: left;
-    padding-bottom: 33.3333333333%;
-    width: 0;
-    height: 0;
-    content: '';
+.ct-label {
+    color: rgba($color-base-100, 0.4);
+    fill: rgba($color-base-100, 0.4);
 }
 
-.ct-chart::after {
-    display: table;
-    clear: both;
-    content: '';
-}
-
-.ct-chart > svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
+.ct-grid {
+    stroke: rgba($color-base-100, 0.2);
 }
 
 .ct-series-a .ct-line,
