@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.10.2](https://github.com/getformwork/formwork/releases/tag/1.10.2) (2020-11-11)
+
+**Enhancements**
+
+- Extract _functions.scss from admin.scss
+- Add `tint()` and `shade()` to _functions.scss
+- Move base colors logic to _colors.scss and remove more inconsistencies
+- Add `urlencode-color()` to _functions.scss
+- Extract constant `SESSION_NAME` in `Session` class
+- Extract constant `SESSION_KEY` in `Notification` class
+- Extract constants `SESSION_KEY` and `INPUT_NAME` in `CSRFToken` class
+- Rename constant `IGNORED_FIELDS` to `IGNORED_PROPERTIES` in `Translator`
+- Use `Str::wrap()` in `Pages` controller
+
+**Bug fixes**
+
+- **Fix `PageCollection::search()` not ignoring HTML tags**
+- Fix colors and shadows inconsistencies
+- Fix fill color in embedded SVGs
+- Fix non-matching input placeholder color
+- Fix highlighting color of HTML attributes
+- Fix codemirror editor padding
+- Fix z-index conflict with codemirror scrollbar
+- Fix background color when `.toggle-navigation` is focused
+
 ## [1.10.1](https://github.com/getformwork/formwork/releases/tag/1.10.1) (2020-11-09)
 
 **Bug fixes**
