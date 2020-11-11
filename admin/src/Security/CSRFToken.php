@@ -9,12 +9,26 @@ use RuntimeException;
 class CSRFToken
 {
     /**
+     * Session key to store the CSRF token
+     *
+     * @var string
+     */
+    protected const SESSION_KEY = 'CSRF_TOKEN';
+
+    /**
+     * Input name to retrieve the CSRF token
+     *
+     * @var string
+     */
+    protected const INPUT_NAME = 'csrf-token';
+
+    /**
      * Generate a new CSRF token
      */
     public static function generate(): string
     {
         $token = base64_encode(random_bytes(36));
-        Session::set('CSRF_TOKEN', $token);
+        Session::set(self::SESSION_KEY, $token);
         return $token;
     }
 
@@ -23,7 +37,7 @@ class CSRFToken
      */
     public static function get(): ?string
     {
-        return Session::has('CSRF_TOKEN') ? Session::get('CSRF_TOKEN') : null;
+        return Session::has(self::SESSION_KEY) ? Session::get(self::SESSION_KEY) : null;
     }
 
     /**
@@ -33,7 +47,7 @@ class CSRFToken
     {
         if ($token === null) {
             $postData = HTTPRequest::postData();
-            $valid = isset($postData['csrf-token']) && $postData['csrf-token'] === static::get();
+            $valid = isset($postData[self::INPUT_NAME]) && $postData[self::INPUT_NAME] === static::get();
         } else {
             $valid = $token === static::get();
         }
@@ -49,6 +63,6 @@ class CSRFToken
      */
     public static function destroy(): void
     {
-        Session::remove('CSRF_TOKEN');
+        Session::remove(self::SESSION_KEY);
     }
 }
