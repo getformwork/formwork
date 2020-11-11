@@ -383,9 +383,7 @@ class Pages extends AbstractController
             'published' => false
         ];
 
-        $fileContent = '---' . PHP_EOL;
-        $fileContent .= YAML::encode($frontmatter);
-        $fileContent .= '---' . PHP_EOL;
+        $fileContent = Str::wrap(YAML::encode($frontmatter), '---' . PHP_EOL);
 
         FileSystem::write($path . $filename, $fileContent);
 
@@ -443,10 +441,7 @@ class Pages extends AbstractController
             $filename .= empty($language) ? '' : '.' . $language;
             $filename .= $this->option('content.extension');
 
-            $fileContent = '---' . PHP_EOL;
-            $fileContent .= YAML::encode($frontmatter);
-            $fileContent .= '---' . PHP_EOL;
-            $fileContent .= $content;
+            $fileContent = Str::wrap(YAML::encode($frontmatter), '---' . PHP_EOL) . $content;
 
             FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->option('content.path'));
