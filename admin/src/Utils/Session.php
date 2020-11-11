@@ -9,6 +9,13 @@ use Formwork\Utils\Cookie;
 class Session
 {
     /**
+     * Session name
+     *
+     * @var string
+     */
+    protected const SESSION_NAME = 'formwork_session';
+
+    /**
      * Start a new session
      */
     public static function start(): void
@@ -25,15 +32,15 @@ class Session
             if (($timeout = Formwork::instance()->option('admin.session_timeout')) > 0) {
                 $options['expires'] = time() + $timeout * 60;
             }
-            session_name('formwork_session');
+            session_name(self::SESSION_NAME);
             session_start();
-            if (!isset($_COOKIE[session_name()]) || $options['expires'] > 0) {
+            if (!isset($_COOKIE[self::SESSION_NAME]) || $options['expires'] > 0) {
                 // Send session cookie if not already sent or timeout is set
-                Cookie::send(session_name(), session_id(), $options, true);
-            } elseif ($_COOKIE[session_name()] !== session_id()) {
+                Cookie::send(self::SESSION_NAME, session_id(), $options, true);
+            } elseif ($_COOKIE[self::SESSION_NAME] !== session_id()) {
                 // Remove cookie if session id is not valid
-                unset($_COOKIE[session_name()]);
-                Cookie::send(session_name(), '', ['expires' => time() - 3600] + $options, true);
+                unset($_COOKIE[self::SESSION_NAME]);
+                Cookie::send(self::SESSION_NAME, '', ['expires' => time() - 3600] + $options, true);
             }
         }
     }
