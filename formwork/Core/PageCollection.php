@@ -4,6 +4,7 @@ namespace Formwork\Core;
 
 use Formwork\Data\Collection;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 
 class PageCollection extends Collection
 {
@@ -165,7 +166,7 @@ class PageCollection extends Collection
         foreach ($pageCollection->items as $page) {
             $score = 0;
             foreach (array_keys($scores) as $key) {
-                $value = html_entity_decode($page->get($key));
+                $value = Str::removeHTML((string) $page->get($key));
 
                 $queryMatches = preg_match_all($queryRegex, $value);
                 $keywordsMatches = empty($keywords) ? 0 : preg_match_all($keywordsRegex, $value);
