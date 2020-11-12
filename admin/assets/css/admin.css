@@ -1447,8 +1447,16 @@ span.CodeMirror-selectedtext {
   border-top-left-radius: 0;
   border-top-right-radius: 0; }
 
+.CodeMirror-cursor {
+  border-left-color: #262626; }
+
+.CodeMirror-vscrollbar,
+.CodeMirror-hscrollbar,
+.CodeMirror-scrollbar-filler {
+  background-color: inherit; }
+
 .CodeMirror-selected {
-  background: #ededed; }
+  background: transparent; }
 
 .CodeMirror-focused .CodeMirror-selected {
   background: rgba(30, 136, 229, 0.25); }
