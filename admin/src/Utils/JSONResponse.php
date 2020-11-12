@@ -35,7 +35,7 @@ class JSONResponse
     public function send(): string
     {
         Header::contentType('application/json; charset=utf-8');
-        if ($this->status != 200) {
+        if ($this->status !== 200) {
             Header::status($this->status);
         }
         echo json_encode($this->data);
