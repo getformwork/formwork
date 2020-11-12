@@ -15,21 +15,21 @@ class Router
      *
      * @var array
      */
-    protected $types = ['HTTP', 'XHR'];
+    protected const REQUEST_TYPES = ['HTTP', 'XHR'];
 
     /**
      * Valid router request methods
      *
      * @var array
      */
-    protected $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    protected const REQUEST_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Array containing route regex shortcuts
      *
      * @var array
      */
-    protected $shortcuts = [
+    protected const REGEX_SHORTCUTS = [
         'num' => '[0-9]+',
         'aln' => '[A-Za-z0-9-]+',
         'all' => '.+'
@@ -117,10 +117,10 @@ class Router
             }
             return;
         }
-        if (!in_array($type, $this->types, true)) {
+        if (!in_array($type, self::REQUEST_TYPES, true)) {
             throw new LogicException('Invalid request type "' . $type . '"');
         }
-        if (!in_array($method, $this->methods, true)) {
+        if (!in_array($method, self::REQUEST_METHODS, true)) {
             throw new LogicException('Invalid HTTP method "' . $method . '"');
         }
         if (is_array($route)) {
@@ -222,8 +222,8 @@ class Router
             if (empty($pattern)) {
                 $pattern = 'all';
             }
-            if (array_key_exists($pattern, $this->shortcuts)) {
-                $pattern = $this->shortcuts[$pattern];
+            if (array_key_exists($pattern, self::REGEX_SHORTCUTS)) {
+                $pattern = self::REGEX_SHORTCUTS[$pattern];
             }
             $regex = str_replace($token, '(' . $pattern . ')', $regex);
         }
