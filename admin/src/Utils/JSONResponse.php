@@ -9,7 +9,7 @@ class JSONResponse
     /**
      * Response HTTP status code
      *
-     * @var int|string
+     * @var int
      */
     protected $status;
 
@@ -32,7 +32,7 @@ class JSONResponse
     /**
      * Send the JSON response with proper Content-Type
      */
-    public function send(): string
+    public function send(): void
     {
         Header::contentType('application/json; charset=utf-8');
         if ($this->status !== 200) {
