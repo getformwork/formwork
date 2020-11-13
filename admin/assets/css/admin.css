@@ -3166,17 +3166,17 @@ button .page-language,
   align-items: center; }
 
 .user-summary-avatar {
-  flex: 0 0 20%;
-  padding: 0.5rem;
-  max-width: 20%;
+  flex: 0 0 33.33333%;
+  padding: 0.75rem;
+  max-width: 33.33333%;
   text-align: center; }
 
 .user-summary-avatar img {
-  width: 150px;
+  width: 180px;
   border-radius: 50%; }
 
 .user-summary-data {
-  padding: 0.5rem; }
+  padding: 0.75rem; }
 
 .users-list {
   border-top: 1px solid #e3e3e3;
