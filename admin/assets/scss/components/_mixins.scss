@@ -29,7 +29,7 @@
 
 @mixin icon($name) {
     font-family: Icons, sans-serif;
-    @extend .i-#{$name}::before;
+    @extend .i-#{$name};
 }
 
 @mixin caret($direction: bottom) {
