@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.3](https://github.com/getformwork/formwork/releases/tag/1.10.3) (2020-11-14)
+
+**Enhancements**
+
+- Move custom styles to avoid modifying vendor stylesheets
+- Unquote `Header::HTTP_STATUS` keys
+- Rewrite `$methods`, `$types` and `$shortcuts` as constants in `Router`
+- Make styles in `.user-summary` component more consistent
+
+**Bug fixes**
+
+- Fix loose comparison in `JSONResponse::send()`
+- Fix types in `JSONResponse` class
+- Fix CodeMirror cursor, scrollbar and selection colors
+
 ## [1.10.2](https://github.com/getformwork/formwork/releases/tag/1.10.2) (2020-11-11)
 
 **Enhancements**
