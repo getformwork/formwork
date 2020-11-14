@@ -53,4 +53,33 @@ class Arr
         $array1 += $array2;
         return $array1;
     }
+
+    /**
+     * Return a random value from a given array
+     */
+    public static function random(array $array, $default = null)
+    {
+        return count($array) > 0 ? $array[array_rand($array)] : $default;
+    }
+
+    /**
+     * Return a given array with its values shuffled optionally preserving the key/value pairs
+     */
+    public static function shuffle(array $array, bool $preserveKeys = false): array
+    {
+        if (count($array) <= 1) {
+            return $array;
+        }
+        if (!$preserveKeys) {
+            shuffle($array);
+            return $array;
+        }
+        $keys = array_keys($array);
+        shuffle($keys);
+        $result = [];
+        foreach ($keys as $key) {
+            $result[$key] = $array[$key];
+        }
+        return $result;
+    }
 }
