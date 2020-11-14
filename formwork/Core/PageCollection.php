@@ -108,7 +108,7 @@ class PageCollection extends Collection
     /**
      * Sort collection items
      *
-     * @param int|string $direction Sorting direction (e.g. SORT_ASC, 'asc', -1, SORT_DESC, 'desc')
+     * @param int|string $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
      */
     public function sort(string $property = 'id', $direction = SORT_ASC): self
     {
@@ -118,9 +118,17 @@ class PageCollection extends Collection
             return $pageCollection;
         }
 
-        if ($direction === SORT_DESC || strtolower($direction) === 'desc' || $direction === -1) {
+        if (is_string($direction)) {
+            trigger_error('Using ' . static::class . '::sort() with a string as $direction argument is deprecated since Formwork 1.11.0. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending', E_USER_DEPRECATED);
+            $direction = strtolower($direction);
+        }
+
+        if ($direction === SORT_ASC || $direction === 'asc' || $direction === 1) {
+            $direction = 1;
+        } elseif ($direction === SORT_DESC || $direction === 'desc' || $direction === -1) {
             $direction = -1;
         } else {
+            trigger_error('Using ' . static::class . '::sort() with an invalid $direction argument is deprecated Formwork 1.11.0. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending', E_USER_DEPRECATED);
             $direction = 1;
         }
 
