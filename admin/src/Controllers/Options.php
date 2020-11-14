@@ -136,6 +136,8 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.info');
 
+        $opcacheStatus = ini_get('opcache.enable') ? opcache_get_status(false) : [];
+
         $dependencies = $this->getDependencies();
 
         $data = @[
@@ -179,6 +181,17 @@ class Options extends AbstractController
                 'Memory Limit'       => ini_get('memory_limit'),
                 'Default MIME-Type'  => ini_get('default_mimetype'),
                 'Default Charset'    => ini_get('default_charset')
+            ],
+            'OPcache' => [
+                'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
+                'Cached Scripts'            => $opcacheStatus['opcache_statistics']['num_cached_scripts'] ?? 0,
+                'Cache Hits'                => $opcacheStatus['opcache_statistics']['hits'] ?? 0,
+                'Cache Misses'              => $opcacheStatus['opcache_statistics']['misses'] ?? 0,
+                'Used Memory'               => $opcacheStatus['memory_usage']['used_memory'] ?? 0,
+                'Free Memory'               => $opcacheStatus['memory_usage']['free_memory'] ?? 0,
+                'Wasted Memory'             => $opcacheStatus['memory_usage']['wasted_memory'] ?? 0,
+                'Current Wasted Percentage' => $opcacheStatus['memory_usage']['current_wasted_percentage'] ?? 0,
+                'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage')
             ],
             'System' => [
                 'Directory Separator' => DS,
