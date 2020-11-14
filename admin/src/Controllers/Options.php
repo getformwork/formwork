@@ -195,7 +195,8 @@ class Options extends AbstractController
             ],
             'System' => [
                 'Directory Separator' => DS,
-                'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n")
+                'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n"),
+                'Max Path Length'     => FileSystem::MAX_PATH_LENGTH
             ],
             'Formwork' => [
                 'Formwork Version' => Formwork::VERSION,
