@@ -5,7 +5,7 @@ namespace Formwork\Files;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
-use BadMethodCallException;
+use InvalidArgumentException;
 use RuntimeException;
 use UnexpectedValueException;
 
@@ -195,10 +195,15 @@ class Image extends File
     }
 
     /**
-     * Resize image without keeping its aspect ratio
+     * Resize image to a given width and height. If an argument is null its value will be chosen
+     * preserving the aspect ratio
      */
-    public function resize(int $destinationWidth, int $destinationHeight): self
+    public function resize(int $destinationWidth = null, int $destinationHeight = null): self
     {
+        if ($destinationWidth === null && $destinationHeight === null) {
+            throw new InvalidArgumentException(__METHOD__ . ' must be called with at least one of $destinationWidth or $destinationHeight arguments');
+        }
+
         if ($this->image === null) {
             $this->initialize();
         }
@@ -208,13 +213,9 @@ class Image extends File
 
         $sourceRatio = $sourceWidth / $sourceHeight;
 
-        if (!$destinationWidth && !$destinationHeight) {
-            throw new BadMethodCallException(__METHOD__ . ' must be called with at least one of $destinationWidth or $destinationHeight arguments');
-        }
-
-        if (!$destinationWidth) {
+        if ($destinationWidth === null) {
             $destinationWidth = $destinationHeight * $sourceRatio;
-        } elseif (!$destinationHeight) {
+        } elseif ($destinationHeight === null) {
             $destinationHeight = $destinationWidth / $sourceRatio;
         }
 
@@ -262,10 +263,6 @@ class Image extends File
 
         $sourceWidth = $this->width;
         $sourceHeight = $this->height;
-
-        if (!$destinationWidth || !$destinationHeight) {
-            throw new BadMethodCallException(__METHOD__ . ' must be called with both $destinationWidth and $destinationHeight arguments');
-        }
 
         $cropAreaWidth = $sourceWidth;
         $cropAreaHeight = $sourceHeight;
@@ -324,10 +321,6 @@ class Image extends File
      */
     public function crop(int $originX, int $originY, int $width, int $height): self
     {
-        if (!$width || !$height) {
-            throw new BadMethodCallException(__METHOD__ . ' must be called with both $width and $height arguments');
-        }
-
         if ($this->image === null) {
             $this->initialize();
         }
@@ -386,7 +379,7 @@ class Image extends File
     public function brightness(int $amount): self
     {
         if ($amount < -255 || $amount > 255) {
-            throw new UnexpectedValueException('$amount value must be in range -255-+255, ' . $amount . ' given');
+            throw new InvalidArgumentException('$amount value must be in range -255-+255, ' . $amount . ' given');
         }
         if ($this->image === null) {
             $this->initialize();
@@ -403,7 +396,7 @@ class Image extends File
     public function contrast(int $amount): self
     {
         if ($amount < -100 || $amount > 100) {
-            throw new UnexpectedValueException('$amount value must be in range -100-+100, ' . $amount . ' given');
+            throw new InvalidArgumentException('$amount value must be in range -100-+100, ' . $amount . ' given');
         }
         if ($this->image === null) {
             $this->initialize();
@@ -424,16 +417,16 @@ class Image extends File
     public function colorize(int $red, int $green, int $blue, int $alpha = 0): self
     {
         if ($red < 0 || $red > 255) {
-            throw new UnexpectedValueException('$red value must be in range 0-255, ' . $red . ' given');
+            throw new InvalidArgumentException('$red value must be in range 0-255, ' . $red . ' given');
         }
         if ($green < 0 || $green > 255) {
-            throw new UnexpectedValueException('$green value must be in range 0-255, ' . $green . ' given');
+            throw new InvalidArgumentException('$green value must be in range 0-255, ' . $green . ' given');
         }
         if ($blue < 0 || $blue > 255) {
-            throw new UnexpectedValueException('$blue value must be in range 0-255, ' . $blue . ' given');
+            throw new InvalidArgumentException('$blue value must be in range 0-255, ' . $blue . ' given');
         }
         if ($alpha < 0 || $alpha > 127) {
-            throw new UnexpectedValueException('$alpha value must be in range 0-127, ' . $alpha . ' given');
+            throw new InvalidArgumentException('$alpha value must be in range 0-127, ' . $alpha . ' given');
         }
         if ($this->image === null) {
             $this->initialize();
@@ -482,7 +475,7 @@ class Image extends File
     public function blur(int $amount): self
     {
         if ($amount < 0 || $amount > 100) {
-            throw new UnexpectedValueException('$amount value must be in range 0-100, ' . $amount . ' given');
+            throw new InvalidArgumentException('$amount value must be in range 0-100, ' . $amount . ' given');
         }
         if ($this->image === null) {
             $this->initialize();
