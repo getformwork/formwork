@@ -3,6 +3,7 @@
 namespace Formwork\Core;
 
 use Formwork\Data\Collection;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
@@ -136,6 +137,16 @@ class PageCollection extends Collection
             return $direction * strnatcasecmp($item1->get($property), $item2->get($property));
         });
 
+        return $pageCollection;
+    }
+
+    /**
+     * Shuffle collection items
+     */
+    public function shuffle(): self
+    {
+        $pageCollection = clone $this;
+        $pageCollection->items = Arr::shuffle($pageCollection->items);
         return $pageCollection;
     }
 
