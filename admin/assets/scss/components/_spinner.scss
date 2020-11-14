@@ -3,7 +3,7 @@
     margin-right: $spinner-margin-right;
 }
 
-.spinner::after {
+.spinner::before {
     display: inline-block;
     width: $spinner-width;
     height: $spinner-height;
@@ -24,21 +24,21 @@
     animation: $spinner-animation-duration spin infinite linear;
 }
 
-.spinner-info::after {
+.spinner-info::before {
     border-color: $color-accent-500;
     color: $color-accent-500;
     animation: none;
     @include icon(info);
 }
 
-.spinner-success::after {
+.spinner-success::before {
     border-color: $color-success-500;
     color: $color-success-500;
     animation: none;
     @include icon(check);
 }
 
-.spinner-error::after {
+.spinner-error::before {
     border-color: $color-error-500;
     color: $color-error-500;
     animation: none;

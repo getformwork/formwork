@@ -2299,7 +2299,7 @@ span.CodeMirror-selectedtext {
   margin-right: 0.5rem;
 }
 
-.spinner::after {
+.spinner::before {
   display: inline-block;
   width: 0.8rem;
   height: 0.8rem;
@@ -2320,21 +2320,21 @@ span.CodeMirror-selectedtext {
   animation: 750ms spin infinite linear;
 }
 
-.spinner-info::after {
+.spinner-info::before {
   border-color: #1e88e5;
   color: #1e88e5;
   animation: none;
   font-family: Icons, sans-serif;
 }
 
-.spinner-success::after {
+.spinner-success::before {
   border-color: #2ecc70;
   color: #2ecc70;
   animation: none;
   font-family: Icons, sans-serif;
 }
 
-.spinner-error::after {
+.spinner-error::before {
   border-color: #e74c3b;
   color: #e74c3b;
   animation: none;
@@ -4230,7 +4230,7 @@ button .page-language,
   content: "";
 }
 
-.i-check::before {
+.i-check::before, .spinner-success::before {
   content: "";
 }
 
@@ -4334,7 +4334,7 @@ button .page-language,
   content: "";
 }
 
-.i-exclamation::before {
+.i-exclamation::before, .spinner-error::before {
   content: "";
 }
 
@@ -4426,7 +4426,7 @@ button .page-language,
   content: "";
 }
 
-.i-info::before {
+.i-info::before, .spinner-info::before {
   content: "";
 }
 
