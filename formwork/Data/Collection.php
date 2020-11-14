@@ -2,6 +2,7 @@
 
 namespace Formwork\Data;
 
+use Formwork\Utils\Arr;
 use Countable;
 use Iterator;
 
@@ -96,6 +97,14 @@ class Collection implements Countable, Iterator
     public function last()
     {
         return $this->items[$this->count() - 1] ?? null;
+    }
+
+    /**
+     * Return a random item or a given default value if the collection is empty
+     */
+    public function random($default = null)
+    {
+        return Arr::random($this->items, $default);
     }
 
     /**
