@@ -4,8 +4,7 @@ namespace Formwork\Template;
 
 use Formwork\Utils\HTML;
 use Formwork\Utils\Str;
-use LogicException;
-use RuntimeException;
+use InvalidArgumentException;
 
 class TemplateHelpers
 {
@@ -35,10 +34,10 @@ class TemplateHelpers
     public static function add(string $name, callable $helper): void
     {
         if (static::has($name)) {
-            throw new RuntimeException('Template helper ' . $name . ' is already defined');
+            throw new InvalidArgumentException('Template helper ' . $name . ' is already defined');
         }
         if (method_exists(Template::class, $name)) {
-            throw new LogicException('Template helpers must not conflict with ' . Template::class . ' methods. Invalid name ' . $name);
+            throw new InvalidArgumentException('Template helpers must not conflict with ' . Template::class . ' methods. Invalid name ' . $name);
         }
         static::$helpers[$name] = $helper;
     }
@@ -49,7 +48,7 @@ class TemplateHelpers
     public static function get(string $name): callable
     {
         if (!static::has($name)) {
-            throw new RuntimeException('Template helper ' . $name . ' is not defined');
+            throw new InvalidArgumentException('Template helper ' . $name . ' is not defined');
         }
         return static::$helpers[$name];
     }

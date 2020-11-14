@@ -2,7 +2,7 @@
 
 namespace Formwork\Languages;
 
-use LogicException;
+use InvalidArgumentException;
 
 class LanguageCodes
 {
@@ -124,7 +124,7 @@ class LanguageCodes
     public static function codeToName(string $code): string
     {
         if (!static::hasCode($code)) {
-            throw new LogicException('Invalid language code "' . $code . '"');
+            throw new InvalidArgumentException('Invalid language code "' . $code . '"');
         }
         return self::LANGUAGE_CODES[$code]['name'];
     }
@@ -135,7 +135,7 @@ class LanguageCodes
     public static function codeToNativeName(string $code): string
     {
         if (!static::hasCode($code)) {
-            throw new LogicException('Invalid language code "' . $code . '"');
+            throw new InvalidArgumentException('Invalid language code "' . $code . '"');
         }
         return self::LANGUAGE_CODES[$code]['native'];
     }

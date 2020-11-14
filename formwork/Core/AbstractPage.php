@@ -7,7 +7,7 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use LogicException;
+use BadMethodCallException;
 
 abstract class AbstractPage
 {
@@ -347,6 +347,6 @@ abstract class AbstractPage
         if ($this->has($name)) {
             return $this->get($name);
         }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
     }
 }

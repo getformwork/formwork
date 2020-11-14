@@ -5,7 +5,7 @@ namespace Formwork\Admin;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
-use LogicException;
+use InvalidArgumentException;
 use RuntimeException;
 
 class Translation
@@ -89,7 +89,7 @@ class Translation
             if ($this->code !== self::FALLBACK_LANGUAGE_CODE) {
                 return $this->fallbackTranslation()->get($key, ...$arguments);
             }
-            throw new LogicException('Invalid language string "' . $key . '"');
+            throw new InvalidArgumentException('Invalid language string "' . $key . '"');
         }
 
         if (!empty($arguments)) {

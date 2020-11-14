@@ -2,7 +2,7 @@
 
 namespace Formwork\Utils;
 
-use LogicException;
+use InvalidArgumentException;
 use RuntimeException;
 
 class Header
@@ -98,7 +98,7 @@ class Header
     public static function status(int $code, bool $send = true, bool $exit = false)
     {
         if (!isset(self::HTTP_STATUS[$code])) {
-            throw new LogicException('Unknown HTTP status code ' . $code);
+            throw new InvalidArgumentException('Unknown HTTP status code ' . $code);
         }
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . self::HTTP_STATUS[$code];

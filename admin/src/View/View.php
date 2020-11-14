@@ -10,7 +10,7 @@ use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTML;
 use Formwork\Utils\Str;
-use LogicException;
+use BadMethodCallException;
 use RuntimeException;
 
 class View
@@ -122,6 +122,6 @@ class View
         if (isset(static::$helpers[$name])) {
             return static::$helpers[$name](...$arguments);
         }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
     }
 }

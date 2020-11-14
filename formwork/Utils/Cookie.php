@@ -2,7 +2,8 @@
 
 namespace Formwork\Utils;
 
-use LogicException;
+use InvalidArgumentException;
+use UnexpectedValueException;
 
 class Cookie
 {
@@ -29,7 +30,7 @@ class Cookie
     {
         $options = array_merge(static::defaults(), (array) $options);
         if (in_array(strtolower($name), array_keys($options), true)) {
-            throw new LogicException('Invalid cookie name "' . $name . '"');
+            throw new InvalidArgumentException('Invalid cookie name "' . $name . '"');
         }
         $data = [$name => rawurlencode($value)] + static::parseOptions($options);
         Header::send('Set-Cookie', static::makeHeader($data), $replace);
@@ -77,7 +78,7 @@ class Cookie
         }
         if (!empty($options['samesite'])) {
             if (!in_array($options['samesite'], [self::SAMESITE_STRICT, self::SAMESITE_LAX], true)) {
-                throw new LogicException('Invalid value for cookie SameSite directive');
+                throw new UnexpectedValueException('Invalid value for cookie SameSite directive');
             }
             $data['SameSite'] = $options['samesite'];
         }

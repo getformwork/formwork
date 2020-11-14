@@ -14,7 +14,7 @@ use Formwork\Traits\SingletonTrait;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use LogicException;
+use BadMethodCallException;
 use RuntimeException;
 use Throwable;
 
@@ -394,6 +394,6 @@ class Admin
         if (method_exists(AdminTrait::class, $name)) {
             return $this->$name(...$arguments);
         }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
     }
 }

@@ -6,7 +6,7 @@ use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Utils\FileSystem;
-use LogicException;
+use BadMethodCallException;
 use RuntimeException;
 
 class Template
@@ -246,7 +246,7 @@ class Template
             $helper = TemplateHelpers::get($name);
             return $helper(...$arguments);
         }
-        throw new LogicException('Invalid method ' . static::class . '::' . $name);
+        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
     }
 
     public function __toString(): string

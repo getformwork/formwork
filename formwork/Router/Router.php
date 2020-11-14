@@ -4,9 +4,9 @@ namespace Formwork\Router;
 
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use BadMethodCallException;
-use LogicException;
+use InvalidArgumentException;
 use RuntimeException;
+use UnexpectedValueException;
 
 class Router
 {
@@ -103,7 +103,7 @@ class Router
                 [$type, $method, $route, $callback] = $arguments;
                 break;
             default:
-                throw new BadMethodCallException('Invalid arguments for ' . __METHOD__);
+                throw new InvalidArgumentException('Invalid arguments for ' . __METHOD__);
         }
         if (is_array($type)) {
             foreach ($type as $t) {
@@ -118,10 +118,10 @@ class Router
             return;
         }
         if (!in_array($type, self::REQUEST_TYPES, true)) {
-            throw new LogicException('Invalid request type "' . $type . '"');
+            throw new InvalidArgumentException('Invalid request type "' . $type . '"');
         }
         if (!in_array($method, self::REQUEST_METHODS, true)) {
-            throw new LogicException('Invalid HTTP method "' . $method . '"');
+            throw new InvalidArgumentException('Invalid HTTP method "' . $method . '"');
         }
         if (is_array($route)) {
             foreach ($route as $r) {
@@ -151,7 +151,7 @@ class Router
                     $route['callback'] = [new $class(), $method];
                 }
                 if (!is_callable($route['callback'])) {
-                    throw new LogicException('Invalid callback for ' . $route['route'] . ' route');
+                    throw new UnexpectedValueException('Invalid callback for ' . $route['route'] . ' route');
                 }
                 return $route['callback']($this->params);
             }

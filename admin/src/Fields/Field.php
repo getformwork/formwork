@@ -3,7 +3,7 @@ namespace Formwork\Admin\Fields;
 
 use Formwork\Admin\View\View;
 use Formwork\Data\DataSetter;
-use LogicException;
+use UnexpectedValueException;
 
 class Field extends DataSetter
 {
@@ -151,11 +151,11 @@ class Field extends DataSetter
     {
         foreach ((array) $this->data['import'] as $key => $value) {
             if ($key === 'import') {
-                throw new LogicException('Invalid key for import');
+                throw new UnexpectedValueException('Invalid key for import');
             }
             $callback = explode('::', $value, 2);
             if (!is_callable($callback)) {
-                throw new LogicException('Invalid import callback "' . $value . '"');
+                throw new UnexpectedValueException('Invalid import callback "' . $value . '"');
             }
             $this->data[$key] = $callback();
         }
