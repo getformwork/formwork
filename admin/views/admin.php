@@ -18,7 +18,8 @@
 <?php
     endif;
 ?>
-    <link rel="shortcut icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
+    <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri('css/admin.min.css', true) ?>">
     <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
     <script>Formwork.config = <?= json_encode($appConfig) ?>;</script>
@@ -26,7 +27,7 @@
 <body>
     <button type="button" class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
     <div class="sidebar show-from-s">
-        <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.png') ?>" alt=""> Formwork</a></div>
+        <div class="logo"><a href="<?= $this->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a></div>
         <a href="<?= $this->uri('/users/' . $admin->user()->username() . '/profile/') ?>">
             <div class="admin-user-card">
                 <div class="admin-user-avatar">

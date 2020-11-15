@@ -4,7 +4,8 @@
     <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="shortcut icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
+    <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri('css/admin.min.css', true) ?>">
 </head>
 <body>
@@ -15,7 +16,7 @@
                     <span class="error-code"><?= $code ?></span>
                     <span class="error-status"><?= $status ?></span>
                 </h1>
-                <div class="logo" style="background-image: url(<?= $this->assets()->uri('images/icon.png') ?>);"></div>
+                <div class="logo" style="background-image: url(<?= $this->assets()->uri('images/icon.svg') ?>);"></div>
                 <h2><?= $heading ?></h2>
                 <p><?= $description ?></p>
                 <?php if (isset($action)): ?><a class="action" href="<?= $action['href'] ?>"><?= $action['label'] ?></a><?php endif; ?>
