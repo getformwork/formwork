@@ -12,7 +12,7 @@ class Avatar
      *
      * @var string
      */
-    protected const DEFAULT_AVATAR_URI = '/assets/images/avatar.png';
+    protected const DEFAULT_AVATAR_URI = '/assets/images/avatar.svg';
 
     /**
      * Avatar URI
