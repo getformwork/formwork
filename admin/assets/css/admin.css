@@ -1860,7 +1860,7 @@ span.CodeMirror-selectedtext {
 
 .cm-s-formwork .cm-comment {
   font-size: 0.875rem;
-  font-family: "Roboto Mono", Menlo, Courier, monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .cm-s-formwork .cm-comment.cm-header-1 {
@@ -1949,7 +1949,7 @@ span.CodeMirror-selectedtext {
 .cm-s-formwork .cm-bracket,
 .cm-s-formwork .cm-m-xml {
   font-size: 0.875rem;
-  font-family: "Roboto Mono", Menlo, Courier, monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .date-input {
@@ -3912,7 +3912,7 @@ button .page-language,
   width: 75%;
   word-break: break-word;
   font-size: 0.875rem;
-  font-family: "Roboto Mono", Menlo, Courier, monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .user-summary {
