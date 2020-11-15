@@ -54,7 +54,7 @@
 }
 
 .CodeMirror-lines pre {
-    padding: 0;
+    padding: 0 !important;
 }
 
 .editor-toolbar + .editor-textarea,
@@ -94,6 +94,24 @@
     background: $selection-background-color;
 }
 
+.cm-formatting-code-block,
+.cm-formatting-list {
+    display: inline !important;
+}
+
+.cm-formatting,
+.cm-image-alt-text,
+.cm-url {
+    display: none;
+    .CodeMirror-activeline & {
+        display: inline;
+    }
+}
+
+.cm-s-formwork .cm-formatting {
+    color: $color-base-300;
+}
+
 .cm-s-formwork .cm-header-1 {
     font-size: 1.75rem;
 }
@@ -127,14 +145,55 @@
     color: $color-base-300;
 }
 
+.cm-s-formwork .cm-formatting-quote + .cm-quote::before {
+    margin-right: 0.25rem;
+    color: $color-base-300;
+    content: ' ';
+    @include icon('quote');
+}
+
+.cm-s-formwork .CodeMirror-activeline .cm-formatting-quote + .cm-quote::before {
+    display: none;
+}
+
 .cm-s-formwork .cm-link {
     color: $color-accent-500;
     text-decoration: underline;
 }
 
-.cm-s-formwork .cm-url,
+.cm-s-formwork .cm-url.cm-formatting,
+.cm-s-formwork .cm-image-alt-text.cm-formatting,
 .cm-s-formwork .cm-image-marker {
     color: $color-accent-500;
+}
+
+.cm-s-formwork .cm-url,
+.cm-s-formwork .cm-image-alt-text {
+    color: $color-base-300;
+    text-decoration: none;
+}
+
+.cm-s-formwork .cm-image ~ .cm-url:not(.cm-formatting) {
+    display: inline;
+    padding: 0 0.25rem;
+    border-radius: 3px;
+    background-color: $color-base-700;
+    color: $color-base-100;
+    &::before {
+        margin-right: 0.25rem;
+        color: $color-base-300;
+        content: ' ';
+        @include icon('image');
+    }
+}
+
+.cm-s-formwork .CodeMirror-activeline .cm-image ~ .cm-url:not(.cm-formatting) {
+    padding: 0;
+    background-color: transparent;
+    color: $color-base-300;
+    &::before {
+        display: none;
+    }
 }
 
 .cm-s-formwork .cm-hr {

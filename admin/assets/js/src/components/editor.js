@@ -7,15 +7,26 @@ import 'codemirror/addon/edit/continuelist.js';
 
 export default function Editor(textarea) {
     var editor = CodeMirror.fromTextArea(textarea, {
-        mode: 'markdown',
+        mode: {
+            name: 'markdown',
+            highlightFormatting: true
+        },
         theme: 'formwork',
         indentUnit: 4,
         lineWrapping: true,
         addModeClass: true,
-        extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'}
+        extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'},
+        configureMouse: function () {
+            return {
+                extend: false,
+                addNew: false
+            };
+        }
     });
 
     var toolbar = $('.editor-toolbar[data-for=' + textarea.id + ']');
+
+    var activeLines = [];
 
     $('[data-command=bold]', toolbar).addEventListener('click', function () {
         insertAtCursor('**');
@@ -109,6 +120,23 @@ export default function Editor(textarea) {
         }
     }, 500));
 
+    editor.on('beforeSelectionChange', function (editor, selection) {
+        var lines = getLinesFromRange(selection.ranges);
+        editor.operation(function () {
+            if (!Utils.sameArray(lines, activeLines)) {
+                removeActiveLines(editor, activeLines);
+                addActiveLines(editor, lines);
+                activeLines = lines;
+            }
+        });
+        editor.refresh();
+    });
+
+    editor.on('blur', function (editor) {
+        removeActiveLines(editor, activeLines);
+        activeLines = [];
+    });
+
     document.addEventListener('keydown', function (event) {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
@@ -175,5 +203,28 @@ export default function Editor(textarea) {
         editor.replaceSelection(leftValue + selection + rightValue);
         editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
         editor.focus();
+    }
+
+    function getLinesFromRange(ranges) {
+        var i;
+        var lines = [];
+        for (i = 0; i < ranges.length; i++) {
+            lines.push(ranges[i].head.line);
+        }
+        return lines;
+    }
+
+    function removeActiveLines(editor, lines) {
+        var i;
+        for (i = 0; i < lines.length; i++) {
+            editor.removeLineClass(lines[i], 'wrap', 'CodeMirror-activeline');
+        }
+    }
+
+    function addActiveLines(editor, lines) {
+        var i;
+        for (i = 0; i < lines.length; i++) {
+            editor.addLineClass(lines[i], 'wrap', 'CodeMirror-activeline');
+        }
     }
 }

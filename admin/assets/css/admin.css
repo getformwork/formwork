@@ -1786,7 +1786,7 @@ span.CodeMirror-selectedtext {
 }
 
 .CodeMirror-lines pre {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .editor-toolbar + .editor-textarea,
@@ -1826,6 +1826,26 @@ span.CodeMirror-selectedtext {
   background: rgba(30, 136, 229, 0.25);
 }
 
+.cm-formatting-code-block,
+.cm-formatting-list {
+  display: inline !important;
+}
+
+.cm-formatting,
+.cm-image-alt-text,
+.cm-url {
+  display: none;
+}
+.CodeMirror-activeline .cm-formatting,
+.CodeMirror-activeline .cm-image-alt-text,
+.CodeMirror-activeline .cm-url {
+  display: inline;
+}
+
+.cm-s-formwork .cm-formatting {
+  color: #7d7d7d;
+}
+
 .cm-s-formwork .cm-header-1 {
   font-size: 1.75rem;
 }
@@ -1859,14 +1879,55 @@ span.CodeMirror-selectedtext {
   color: #7d7d7d;
 }
 
+.cm-s-formwork .cm-formatting-quote + .cm-quote::before {
+  margin-right: 0.25rem;
+  color: #7d7d7d;
+  content: " ";
+  font-family: Icons, sans-serif;
+}
+
+.cm-s-formwork .CodeMirror-activeline .cm-formatting-quote + .cm-quote::before {
+  display: none;
+}
+
 .cm-s-formwork .cm-link {
   color: #1e88e5;
   text-decoration: underline;
 }
 
-.cm-s-formwork .cm-url,
+.cm-s-formwork .cm-url.cm-formatting,
+.cm-s-formwork .cm-image-alt-text.cm-formatting,
 .cm-s-formwork .cm-image-marker {
   color: #1e88e5;
+}
+
+.cm-s-formwork .cm-url,
+.cm-s-formwork .cm-image-alt-text {
+  color: #7d7d7d;
+  text-decoration: none;
+}
+
+.cm-s-formwork .cm-image ~ .cm-url:not(.cm-formatting) {
+  display: inline;
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  background-color: #ededed;
+  color: #262626;
+}
+.cm-s-formwork .cm-image ~ .cm-url:not(.cm-formatting)::before {
+  margin-right: 0.25rem;
+  color: #7d7d7d;
+  content: " ";
+  font-family: Icons, sans-serif;
+}
+
+.cm-s-formwork .CodeMirror-activeline .cm-image ~ .cm-url:not(.cm-formatting) {
+  padding: 0;
+  background-color: transparent;
+  color: #7d7d7d;
+}
+.cm-s-formwork .CodeMirror-activeline .cm-image ~ .cm-url:not(.cm-formatting)::before {
+  display: none;
 }
 
 .cm-s-formwork .cm-hr {
@@ -4414,7 +4475,7 @@ button .page-language,
   content: "";
 }
 
-.i-image::before {
+.i-image::before, .cm-s-formwork .cm-image ~ .cm-url:not(.cm-formatting)::before {
   content: "";
 }
 
@@ -4494,7 +4555,7 @@ button .page-language,
   content: "";
 }
 
-.i-quote::before {
+.i-quote::before, .cm-s-formwork .cm-formatting-quote + .cm-quote::before {
   content: "";
 }
 
