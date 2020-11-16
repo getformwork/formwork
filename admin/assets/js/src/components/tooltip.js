@@ -8,11 +8,14 @@ export default function Tooltip(text, options) {
         offset: {
             x: 0, y: 0
         },
-        delay: 500
+        delay: 500,
+        timeout: null,
+        removeOnMouseout: true,
+        removeOnClick: false
     };
 
     var referenceElement = options.referenceElement;
-    var tooltip, timer;
+    var tooltip, delayTimer, timeoutTimer;
 
     options = Utils.extendObject({}, defaults, options);
 
@@ -25,10 +28,15 @@ export default function Tooltip(text, options) {
         }
     }
 
-    referenceElement.addEventListener('mouseout', remove);
+    if (options.removeOnMouseout) {
+        referenceElement.addEventListener('mouseout', remove);
+    }
+    if (options.removeOnClick) {
+        referenceElement.addEventListener('click', remove);
+    }
 
     function show() {
-        timer = setTimeout(function () {
+        delayTimer = setTimeout(function () {
             var position;
             tooltip = document.createElement('div');
             tooltip.className = 'tooltip';
@@ -41,11 +49,16 @@ export default function Tooltip(text, options) {
             position = getTooltipPosition(tooltip);
             tooltip.style.top = position.top + 'px';
             tooltip.style.left = position.left + 'px';
+
+            if (options.timeout !== null) {
+                timeoutTimer = setTimeout(remove, options.timeout);
+            }
         }, options.delay);
     }
 
     function remove() {
-        clearTimeout(timer);
+        clearTimeout(delayTimer);
+        clearTimeout(timeoutTimer);
         if (tooltip !== undefined && options.container.contains(tooltip)) {
             options.container.removeChild(tooltip);
         }
@@ -79,6 +92,11 @@ export default function Tooltip(text, options) {
             return {
                 top: Math.round(top + hh + options.offset.y),
                 left: Math.round(left - tooltip.offsetWidth + options.offset.x)
+            };
+        case 'center':
+            return {
+                top: Math.round(top + hh + options.offset.y),
+                left: Math.round(left + hw + options.offset.x)
             };
         }
     }
