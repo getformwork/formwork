@@ -2156,6 +2156,10 @@ span.CodeMirror-selectedtext {
   font-family: Icons, sans-serif;
 }
 
+.file-name.file-type-archive::before {
+  font-family: Icons, sans-serif;
+}
+
 .file-size {
   color: #7d7d7d;
 }
@@ -4312,7 +4316,7 @@ button .page-language,
   content: "";
 }
 
-.i-file-archive::before {
+.i-file-archive::before, .file-name.file-type-archive::before {
   content: "";
 }
 

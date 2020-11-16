@@ -136,6 +136,9 @@ class File
         if (in_array($this->extension, ['pdf', 'doc', 'docx', 'odt'], true)) {
             return 'document';
         }
+        if (in_array($this->extension, ['gz', '7z', 'bz2', 'rar', 'tar', 'zip'], true)) {
+            return 'archive';
+        }
         return null;
     }
 

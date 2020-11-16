@@ -48,6 +48,10 @@
     @include icon(file-video);
 }
 
+.file-name.file-type-archive::before {
+    @include icon(file-archive);
+}
+
 .file-size {
     color: $color-base-300;
 }
