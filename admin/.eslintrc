@@ -16,6 +16,7 @@
         "brace-style": ["error", "1tbs"],
         "curly": ["error", "all"],
         "eqeqeq": ["error", "always"],
+        "guard-for-in": ["error"],
         "indent": ["error", 4],
         "keyword-spacing": ["error"],
         "linebreak-style": ["error", "unix"],
