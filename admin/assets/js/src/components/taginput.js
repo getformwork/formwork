@@ -80,14 +80,16 @@ export default function TagInput(input) {
             dropdown.className = 'dropdown-list';
 
             for (key in list) {
-                item = document.createElement('div');
-                item.className = 'dropdown-item';
-                item.innerHTML = list[key];
-                item.setAttribute('data-value', key);
-                item.addEventListener('click', function () {
-                    addTag(this.getAttribute('data-value'));
-                });
-                dropdown.appendChild(item);
+                if (Object.prototype.hasOwnProperty.call(list, key)) {
+                    item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.innerHTML = list[key];
+                    item.setAttribute('data-value', key);
+                    item.addEventListener('click', function () {
+                        addTag(this.getAttribute('data-value'));
+                    });
+                    dropdown.appendChild(item);
+                }
             }
 
             field.appendChild(dropdown);

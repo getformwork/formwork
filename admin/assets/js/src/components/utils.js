@@ -161,6 +161,7 @@ export default {
         target = target || {};
         for (i = 1; i < arguments.length; i++) {
             source = arguments[i];
+            // eslint-disable-next-line guard-for-in
             for (property in source) {
                 target[property] = source[property];
             }
