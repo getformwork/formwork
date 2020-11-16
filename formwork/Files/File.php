@@ -116,7 +116,7 @@ class File
     /**
      * Get file type
      */
-    public function type(): string
+    public function type(): ?string
     {
         if ($this->type !== null) {
             return $this->type;
