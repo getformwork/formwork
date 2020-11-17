@@ -3878,10 +3878,10 @@ button .page-language,
   display: inline-block;
   margin-left: 0.25rem;
   color: #262626;
-  content: " ";
+  content: "";
+  font-family: Icons, sans-serif;
   opacity: 0;
   transition: opacity 150ms;
-  font-family: Icons, sans-serif;
 }
 .page-slug-change:hover::after, .page-slug-change:focus::after {
   opacity: 1;

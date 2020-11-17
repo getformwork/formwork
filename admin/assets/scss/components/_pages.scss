@@ -213,10 +213,10 @@ button .page-language,
         display: inline-block;
         margin-left: $page-slug-change-icon-margin-left;
         color: $color-base-100;
-        content: ' ';
+        content: '\f2f1';
+        font-family: Icons, sans-serif;
         opacity: 0;
         transition: opacity $transition-time-s;
-        @include icon(pencil);
     }
     &:hover::after, &:focus::after {
         opacity: 1;
