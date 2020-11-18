@@ -65,6 +65,9 @@ options.site.info.language: Language
 options.site.info.title: Title
 options.system: System
 options.system.admin-panel: Admin Panel
+options.system.admin-panel.default-color-scheme: Default Color Scheme
+options.system.admin-panel.default-color-scheme.dark: Dark
+options.system.admin-panel.default-color-scheme.light: Light
 options.system.admin-panel.default-language: Default Language
 options.system.admin-panel.logout-redirects-to: Logout Redirects to
 options.system.admin-panel.logout-redirects-to.home: Home
@@ -229,6 +232,10 @@ uploader.uploaded: File uploaded
 user.actions: Actions
 user.avatar: Avatar
 user.avatar.uploaded: Avatar uploaded
+user.color-scheme: Color Scheme
+user.color-scheme.auto: Auto
+user.color-scheme.dark: Dark
+user.color-scheme.light: Light
 user.email: Email
 user.fullname: Full Name
 user.language: Language
