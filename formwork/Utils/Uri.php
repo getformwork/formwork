@@ -176,28 +176,30 @@ class Uri
      */
     public static function make(array $parts, string $uri = null, bool $forcePort = false): string
     {
-        $defaults = static::parse($uri);
-        $parts = array_merge($defaults, $parts);
-        if (!$forcePort && static::isDefaultPort($parts['port'])) {
-            $parts['port'] = '';
+        $parts = array_merge(static::parse($uri), $parts);
+        $result = '';
+        if (!empty($parts['host'])) {
+            $result = empty($parts['scheme']) ? 'http' : $parts['scheme'];
+            $result .= '://';
+            $result .= strtolower($parts['host']);
+            if (!empty($parts['port']) && ($forcePort || !static::isDefaultPort($parts['port']))) {
+                $result .= ':' . $parts['port'];
+            }
         }
-        $result = empty($parts['scheme']) ? 'http' : $parts['scheme'];
-        $result .= '://';
-        $result .= strtolower($parts['host']);
-        $result .= empty($parts['port']) ? '' : ':' . $parts['port'];
-        // If host is empty we reset $result in order to return a relative url
-        if (empty($parts['host'])) {
-            $result = '';
+        // Normalize path slashes
+        $normalizedPath = '/' . preg_replace('~[/]+~', '/', trim($parts['path'], '/'));
+        // Add trailing slash only if the trailing component is not empty or a filename
+        if ($normalizedPath !== '/' && !Str::contains(basename($normalizedPath), '.')) {
+            $normalizedPath .= '/';
         }
-        $result .= empty($parts['path']) ? '' : '/' . trim($parts['path'], '/');
-        if ($parts['path'] !== '/' && strrpos(basename($parts['path']), '.') === false) {
-            $result .= '/';
-        }
+        $result .= $normalizedPath;
         if (!empty($parts['query'])) {
             $result .= '?';
             $result .= is_array($parts['query']) ? http_build_query($parts['query']) : ltrim($parts['query'], '?');
         }
-        $result .= empty($parts['fragment']) ? '' : '#' . ltrim($parts['fragment'], '#');
+        if (!empty($parts['fragment'])) {
+            $result .= '#' . ltrim($parts['fragment'], '#');
+        }
         return $result;
     }
 
@@ -206,10 +208,8 @@ class Uri
      */
     public static function normalize(string $uri): string
     {
-        if (Str::startsWith($uri, 'http://') || Str::startsWith($uri, 'https://')) {
-            return static::make([], $uri);
-        }
-        return preg_replace('~[/]+~', '/', Str::wrap($uri, '/'));
+        // TODO: we should not force trailing slash, avoid this in 2.0
+        return rtrim(static::make([], $uri), '/') . '/';
     }
 
     /**
