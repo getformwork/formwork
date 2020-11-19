@@ -2,6 +2,8 @@
 
 namespace Formwork\Admin\Users;
 
+use Formwork\Utils\Str;
+
 class Permissions
 {
     /**
@@ -41,7 +43,7 @@ class Permissions
         // If $permission is not found try with the upper level one (super permission),
         // e.g. try with 'options' if 'options.updates' is not found
 
-        $superPermission = strstr($permission, '.', true);
+        $superPermission = Str::before($permission, '.');
 
         if ($superPermission !== false) {
             return $this->has($superPermission);

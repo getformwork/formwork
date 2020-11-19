@@ -9,6 +9,7 @@ use Formwork\Admin\Users\User;
 use Formwork\Admin\View\View;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
+use Formwork\Utils\Str;
 
 abstract class AbstractController
 {
@@ -33,7 +34,7 @@ abstract class AbstractController
      */
     public function __construct()
     {
-        $this->location = strtolower(substr(strrchr(static::class, '\\'), 1));
+        $this->location = strtolower(Str::afterLast(static::class, '\\'));
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Formwork\Router;
 
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -146,7 +147,7 @@ class Router
             if (HTTPRequest::type() === $route['type'] && HTTPRequest::method() === $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
                 // Parse Class@method callback syntax
-                if (is_string($route['callback']) && strpos($route['callback'], '@') !== false) {
+                if (is_string($route['callback']) && Str::contains($route['callback'], '@')) {
                     [$class, $method] = explode('@', $route['callback']);
                     $route['callback'] = [new $class(), $method];
                 }

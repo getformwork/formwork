@@ -2,6 +2,8 @@
 
 namespace Formwork\Metadata;
 
+use Formwork\Utils\Str;
+
 class Metadatum
 {
     protected const HTTP_EQUIV_NAMES = ['content-type', 'default-style', 'refresh'];
@@ -35,7 +37,7 @@ class Metadatum
         $this->name = strtolower($name);
         $this->content = $content;
 
-        if ($prefix = strstr($name, ':', true)) {
+        if ($prefix = Str::before($name, ':')) {
             $this->prefix = $prefix;
         }
     }
