@@ -30,6 +30,62 @@ class Str
     }
 
     /**
+     * Return whether $haystack string contains $needle (the empty string is always contained)
+     */
+    public static function contains(string $haystack, string $needle): bool
+    {
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+
+    /**
+     * Return the portion of $haystack before the first occurrence of $needle
+     */
+    public static function before(string $haystack, string $needle): string
+    {
+        if ($needle === '') {
+            return $haystack;
+        }
+        $position = strpos($haystack, $needle);
+        return $position !== false ? substr($haystack, 0, $position) : $haystack;
+    }
+
+    /**
+     * Return the portion of $haystack before the last occurrence $needle
+     */
+    public static function beforeLast(string $haystack, string $needle): string
+    {
+        if ($needle === '') {
+            return $haystack;
+        }
+        $position = strrpos($haystack, $needle);
+        return $position !== false ? substr($haystack, 0, $position) : $haystack;
+    }
+
+    /**
+     * Return the portion of $haystack after the first occurrence of $needle
+     */
+    public static function after(string $haystack, string $needle): string
+    {
+        if ($needle === '') {
+            return $haystack;
+        }
+        $position = strpos($haystack, $needle);
+        return $position !== false ? substr($haystack, $position + strlen($needle)) : $haystack;
+    }
+
+    /**
+     * Return the portion of $haystack after the last occurrence of $needle
+     */
+    public static function afterLast(string $haystack, string $needle): string
+    {
+        if ($needle === '') {
+            return $haystack;
+        }
+        $position = strrpos($haystack, $needle);
+        return $position !== false ? substr($haystack, $position + strlen($needle)) : $haystack;
+    }
+
+    /**
      * Escape HTML tags from a given string
      */
     public static function escape(string $string): string
