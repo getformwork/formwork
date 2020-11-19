@@ -75,9 +75,7 @@ class FileSystem
      */
     public static function name(string $file): string
     {
-        $basename = basename($file);
-        $pos = strrpos($basename, '.');
-        return $pos !== false ? substr($basename, 0, $pos) : $basename;
+        return pathinfo($file, PATHINFO_FILENAME);
     }
 
     /**
@@ -85,7 +83,7 @@ class FileSystem
      */
     public static function extension(string $file): string
     {
-        return substr(basename($file), strlen(static::name($file)) + 1);
+        return pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**
