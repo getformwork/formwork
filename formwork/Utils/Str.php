@@ -58,7 +58,7 @@ class Str
      */
     public static function wrap(string $string, string $wrap): string
     {
-        return $wrap . $string . $wrap;
+        return (static::startsWith($string, $wrap) ? '' : $wrap) . $string . (static::endsWith($string, $wrap) ? '' : $wrap);
     }
 
     /**
