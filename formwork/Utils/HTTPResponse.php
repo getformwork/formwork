@@ -24,7 +24,7 @@ class HTTPResponse
      */
     public static function file(string $file, bool $download = false): void
     {
-        FileSystem::assert($file);
+        FileSystem::assertExists($file);
         $mimeType = FileSystem::mimeType($file);
         Header::contentType($mimeType);
         if ($download) {

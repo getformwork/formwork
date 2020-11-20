@@ -105,9 +105,21 @@ class FileSystem
     /**
      * Assert a file exists or not
      *
+     * @deprecated Use FileSystem::assertExists() instead
+     */
+    public static function assert(string $path): bool
+    {
+        trigger_error(static::class . '::assert() is deprecated since Formwork 1.11.0, use ' . static::class . '::assertExists() instead', E_USER_DEPRECATED);
+        static::assertExists($path);
+        return true;
+    }
+
+    /**
+     * Assert a file exists or not
+     *
      * @param bool $value Whether to assert if file exists or not
      */
-    public static function assert(string $path, bool $value = true): bool
+    public static function assertExists(string $path, bool $value = true): void
     {
         if ($value === true && !static::exists($path)) {
             throw new RuntimeException('File not found: ' . $path);
@@ -115,7 +127,6 @@ class FileSystem
         if ($value === false && static::exists($path)) {
             throw new RuntimeException('File ' . $path . ' already exists');
         }
-        return true;
     }
 
     /**
@@ -123,7 +134,7 @@ class FileSystem
      */
     public static function accessTime(string $file): ?int
     {
-        static::assert($file);
+        static::assertExists($file);
         return @fileatime($file) ?: null;
     }
 
@@ -132,7 +143,7 @@ class FileSystem
      */
     public static function creationTime(string $file): ?int
     {
-        static::assert($file);
+        static::assertExists($file);
         return @filectime($file) ?: null;
     }
 
@@ -141,7 +152,7 @@ class FileSystem
      */
     public static function lastModifiedTime(string $file): ?int
     {
-        static::assert($file);
+        static::assertExists($file);
         return @filemtime($file) ?: null;
     }
 
@@ -174,7 +185,7 @@ class FileSystem
      */
     public static function size(string $file, bool $unit = true)
     {
-        static::assert($file);
+        static::assertExists($file);
         if (($bytes = @filesize($file)) !== false) {
             return $unit ? static::bytesToSize($bytes) : $bytes;
         }
@@ -190,7 +201,7 @@ class FileSystem
      */
     public static function directorySize(string $path, bool $unit = true)
     {
-        static::assert($path);
+        static::assertExists($path);
         $bytes = 0;
         foreach (static::listContents($path, self::LIST_ALL) as $item) {
             $itemPath = static::joinPaths($path, $item);
@@ -208,7 +219,7 @@ class FileSystem
      */
     public static function mode(string $file): int
     {
-        static::assert($file);
+        static::assertExists($file);
         return @fileperms($file);
     }
 
@@ -225,7 +236,7 @@ class FileSystem
      */
     public static function isReadable(string $file): bool
     {
-        static::assert($file);
+        static::assertExists($file);
         return @is_readable($file);
     }
 
@@ -234,7 +245,7 @@ class FileSystem
      */
     public static function isWritable(string $file): bool
     {
-        static::assert($file);
+        static::assertExists($file);
         return @is_writable($file);
     }
 
@@ -243,7 +254,7 @@ class FileSystem
      */
     public static function isFile(string $path): bool
     {
-        static::assert($path);
+        static::assertExists($path);
         return @is_file($path);
     }
 
@@ -252,7 +263,7 @@ class FileSystem
      */
     public static function isDirectory(string $path): bool
     {
-        static::assert($path);
+        static::assertExists($path);
         return @is_dir($path);
     }
 
@@ -277,7 +288,7 @@ class FileSystem
      */
     public static function delete(string $path, bool $recursive = false): bool
     {
-        static::assert($path);
+        static::assertExists($path);
         if (static::isFile($path)) {
             return @unlink($path);
         }
@@ -296,9 +307,9 @@ class FileSystem
      */
     public static function copy(string $source, string $destination, bool $overwrite = false): bool
     {
-        static::assert($source);
+        static::assertExists($source);
         if (!$overwrite) {
-            static::assert($destination, false);
+            static::assertExists($destination, false);
         }
         return @copy($source, $destination);
     }
@@ -312,7 +323,7 @@ class FileSystem
     public static function download(string $source, string $destination, bool $overwrite = false, $context = null): bool
     {
         if (!$overwrite) {
-            static::assert($destination, false);
+            static::assertExists($destination, false);
         }
         $data = static::fetch($source, $context);
         static::write($destination, $data);
@@ -326,9 +337,9 @@ class FileSystem
      */
     public static function move(string $source, string $destination, bool $overwrite = false): bool
     {
-        static::assert($source);
+        static::assertExists($source);
         if (!$overwrite) {
-            static::assert($destination, false);
+            static::assertExists($destination, false);
         }
         return @rename($source, $destination);
     }
@@ -341,7 +352,7 @@ class FileSystem
     public static function moveDirectory(string $source, string $destination, bool $overwrite = false): void
     {
         if (!$overwrite) {
-            static::assert($destination, false);
+            static::assertExists($destination, false);
         }
         if (!static::exists($destination)) {
             static::createDirectory($destination);
@@ -363,7 +374,7 @@ class FileSystem
      */
     public static function read(string $file): string
     {
-        static::assert($file);
+        static::assertExists($file);
         return @file_get_contents($file);
     }
 
@@ -413,7 +424,7 @@ class FileSystem
      */
     public static function createFile(string $file): bool
     {
-        static::assert($file, false);
+        static::assertExists($file, false);
         return static::write($file, '');
     }
 
@@ -424,7 +435,7 @@ class FileSystem
      */
     public static function createDirectory(string $directory, bool $recursive = false): bool
     {
-        static::assert($directory, false);
+        static::assertExists($directory, false);
         return @mkdir($directory, 0777, $recursive);
     }
 
@@ -477,7 +488,7 @@ class FileSystem
     public static function scan(string $path, bool $all = false): array
     {
         trigger_error(static::class . '::scan() is deprecated since Formwork 1.8.0, use ' . static::class . '::listContents() instead', E_USER_DEPRECATED);
-        static::assert($path);
+        static::assertExists($path);
         if (!static::isDirectory($path)) {
             throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
         }
@@ -521,7 +532,7 @@ class FileSystem
      */
     public static function listContents(string $path, int $flags = self::LIST_VISIBLE): Generator
     {
-        static::assert($path);
+        static::assertExists($path);
         $handle = @opendir($path);
         if ($handle === false) {
             throw new RuntimeException('Cannot open the directory ' . $path);
@@ -589,7 +600,7 @@ class FileSystem
      */
     public static function touch(string $path): bool
     {
-        static::assert($path, true);
+        static::assertExists($path, true);
         return @touch($path);
     }
 

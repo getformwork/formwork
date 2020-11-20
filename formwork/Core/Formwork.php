@@ -226,7 +226,7 @@ class Formwork
      */
     protected function loadOptions(): void
     {
-        FileSystem::assert(CONFIG_PATH . 'system.yml');
+        FileSystem::assertExists(CONFIG_PATH . 'system.yml');
 
         // Load defaults before parsing YAML
         $this->options = $this->defaults();
@@ -262,7 +262,7 @@ class Formwork
      */
     protected function loadSite(): void
     {
-        FileSystem::assert(CONFIG_PATH . 'site.yml');
+        FileSystem::assertExists(CONFIG_PATH . 'site.yml');
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($config);
         $this->site->setLanguages($this->languages);
