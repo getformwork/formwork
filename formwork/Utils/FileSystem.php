@@ -396,6 +396,9 @@ class FileSystem
     public static function write(string $file, string $content): bool
     {
         $temp = static::temporaryName($file . '.');
+        if (static::exists($file) && !static::isWritable($file)) {
+            throw new RuntimeException('Cannot write ' . $file . ': file exists but is not writable');
+        }
         if (@file_put_contents($temp, $content, LOCK_EX) === false) {
             throw new RuntimeException('Cannot write ' . $file . ': ' . static::getLastStreamErrorMessage());
         }
