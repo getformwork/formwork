@@ -300,7 +300,7 @@ class Updater
         $list = [];
         foreach ($installedFiles as $path) {
             $list[] = $path;
-            if (FileSystem::exists($path) && FileSystem::isDirectory($path)) {
+            if (FileSystem::isDirectory($path, false)) {
                 foreach (FileSystem::listContents($path, FileSystem::LIST_ALL) as $item) {
                     $item = FileSystem::joinPaths($path, $item);
                     if (FileSystem::isDirectory($item) && !FileSystem::isEmptyDirectory($item)) {

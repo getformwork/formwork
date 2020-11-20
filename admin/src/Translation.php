@@ -113,7 +113,7 @@ class Translation
 
         $translationFile = Admin::TRANSLATIONS_PATH . $languageCode . '.yml';
 
-        if (!(FileSystem::exists($translationFile) && FileSystem::isReadable($translationFile))) {
+        if (!FileSystem::isReadable($translationFile, false)) {
             throw new RuntimeException('Cannot load Admin language file ' . $translationFile);
         }
 

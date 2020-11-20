@@ -39,7 +39,7 @@ class Backup extends AbstractController
         $this->ensurePermission('backup.download');
         $file = $this->option('backup.path') . base64_decode($params->get('backup'));
         try {
-            if (FileSystem::exists($file) && FileSystem::isFile($file)) {
+            if (FileSystem::isFile($file, false)) {
                 HTTPResponse::download($file);
             } else {
                 throw new RuntimeException($this->label('backup.error.cannot-download.invalid-filename'));
