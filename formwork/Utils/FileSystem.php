@@ -397,7 +397,7 @@ class FileSystem
     {
         $temp = static::temporaryName($file . '.');
         if (@file_put_contents($temp, $content, LOCK_EX) === false) {
-            throw new RuntimeException('Cannot write ' . $file);
+            throw new RuntimeException('Cannot write ' . $file . ': ' . static::getLastStreamErrorMessage());
         }
         if (static::exists($file)) {
             @chmod($temp, @fileperms($file));
