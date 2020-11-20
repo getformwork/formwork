@@ -3,25 +3,33 @@
 namespace Formwork\Parsers;
 
 use Formwork\Core\Formwork;
+use Formwork\Utils\Str;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
 class YAML extends AbstractParser
 {
     /**
-     * Whether to use PHP yaml extension to emit, parse, both or none of the operations
+     * Document start delimiter required by yaml_parse()
      *
      * @var string
      */
-    protected static $PHPYAMLmode;
+    protected const DOCUMENT_START = "---\n";
+
+    /**
+     * Regex matching document delimiters to be removed from yaml_emit() output
+     *
+     * @var string
+     */
+    protected const DOCUMENT_DELIMITERS_REGEX = '/^-{3}[\n ]|\n\.{3}$/';
 
     /**
      * Parse a YAML string
      */
     public static function parse(string $input, array $options = []): array
     {
-        if (function_exists('yaml_parse') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('parse'))) {
-            if (strpos($input, "---\n") !== 0) {
-                $input = "---\n" . $input;
+        if (function_exists('yaml_parse') && ($options['usePHPYAML'] ?? static::usePHPYAMLparse())) {
+            if (!Str::startsWith($input, self::DOCUMENT_START)) {
+                $input = self::DOCUMENT_START . $input;
             }
             return (array) yaml_parse($input);
         }
@@ -33,39 +41,30 @@ class YAML extends AbstractParser
      */
     public static function encode(array $data, array $options = []): string
     {
-        $data = (array) $data;
         if (empty($data)) {
             return '';
         }
-        if (function_exists('yaml_emit') && ($options['usePHPYAML'] ?? static::PHPYAMLmode('emit'))) {
-            return preg_replace('/^---[\n ]|\n\.{3}$/', '', yaml_emit($data));
+        if (function_exists('yaml_emit') && ($options['usePHPYAML'] ?? static::usePHPYAMLemit())) {
+            return preg_replace(self::DOCUMENT_DELIMITERS_REGEX, '', yaml_emit($data));
         }
         return SymfonyYaml::dump($data);
     }
 
     /**
-     * Check if PHPHYAMLmode option matches a pattern
+     * Return whether yaml_parse() can be used
      */
-    protected static function PHPYAMLmode(string $pattern): string
+    protected static function usePHPYAMLparse(): bool
     {
-        if (static::$PHPYAMLmode === null) {
-            $option = Formwork::instance()->option('parsers.use_php_yaml');
-            switch (strtolower($option)) {
-                case 'all':
-                    static::$PHPYAMLmode = 'all';
-                    break;
-                case 'emit':
-                    static::$PHPYAMLmode = 'emit';
-                    break;
-                case 'parse':
-                    static::$PHPYAMLmode = 'parse';
-                    break;
-                case 'none':
-                default:
-                    static::$PHPYAMLmode = false;
-                    break;
-            }
-        }
-        return static::$PHPYAMLmode === $pattern || static::$PHPYAMLmode === 'all';
+        $option = Formwork::instance()->option('parsers.use_php_yaml');
+        return $option === 'parse' || $option === 'all';
+    }
+
+    /**
+     * Return whether yaml_emit() can be used
+     */
+    protected static function usePHPYAMLemit(): bool
+    {
+        $option = Formwork::instance()->option('parsers.use_php_yaml');
+        return $option === 'emit' || $option === 'all';
     }
 }
