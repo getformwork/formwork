@@ -234,45 +234,53 @@ class FileSystem
     /**
      * Return whether a file is readable
      */
-    public static function isReadable(string $file): bool
+    public static function isReadable(string $file, bool $assertExists = true): bool
     {
-        static::assertExists($file);
+        if ($assertExists) {
+            static::assertExists($file);
+        }
         return @is_readable($file);
     }
 
     /**
      * Return whether a file is writable
      */
-    public static function isWritable(string $file): bool
+    public static function isWritable(string $file, bool $assertExists = true): bool
     {
-        static::assertExists($file);
+        if ($assertExists) {
+            static::assertExists($file);
+        }
         return @is_writable($file);
     }
 
     /**
      * Return whether a path corresponds to a file
      */
-    public static function isFile(string $path): bool
+    public static function isFile(string $path, bool $assertExists = true): bool
     {
-        static::assertExists($path);
+        if ($assertExists) {
+            static::assertExists($path);
+        }
         return @is_file($path);
     }
 
     /**
      * Return whether a path corresponds to a directory
      */
-    public static function isDirectory(string $path): bool
+    public static function isDirectory(string $path, bool $assertExists = true): bool
     {
-        static::assertExists($path);
+        if ($assertExists) {
+            static::assertExists($path);
+        }
         return @is_dir($path);
     }
 
     /**
      * Return whether a directory is empty
      */
-    public static function isEmptyDirectory(string $path): bool
+    public static function isEmptyDirectory(string $path, bool $assertExists = true): bool
     {
-        if (!static::isDirectory($path)) {
+        if (!static::isDirectory($path, $assertExists)) {
             return false;
         }
         foreach (static::listContents($path, self::LIST_ALL) as $item) {
