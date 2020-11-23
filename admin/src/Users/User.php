@@ -216,12 +216,12 @@ class User extends DataGetter
     /**
      * Get the user last access time
      */
-    public function lastAccess(): ?string
+    public function lastAccess(): ?int
     {
         if ($this->lastAccess !== null) {
             return $this->lastAccess;
         }
-        $lastAccess = Admin::instance()->registry('lastAccess')->get($this->username);
+        $lastAccess = (int) Admin::instance()->registry('lastAccess')->get($this->username);
         return $this->lastAccess = $lastAccess;
     }
 
