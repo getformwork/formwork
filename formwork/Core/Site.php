@@ -42,7 +42,7 @@ class Site extends AbstractPage
      */
     public function __construct(array $data)
     {
-        $this->path = Formwork::instance()->option('content.path');
+        $this->path = FileSystem::normalizePath(Formwork::instance()->option('content.path'));
         $this->relativePath = DS;
         $this->route = '/';
         $this->data = array_merge($this->defaults(), $data);
