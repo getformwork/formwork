@@ -27,7 +27,7 @@ class Log extends Registry
      */
     public function log(string $message): string
     {
-        $timestamp = (string) microtime(true);
+        $timestamp = sprintf('%F', microtime(true));
         $this->set($timestamp, $message);
         return $timestamp;
     }
