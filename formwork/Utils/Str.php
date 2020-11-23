@@ -18,7 +18,7 @@ class Str
      */
     public static function startsWith(string $haystack, string $needle): bool
     {
-        return substr($haystack, 0, strlen($needle)) === $needle;
+        return $needle === '' || substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
     }
 
     /**
@@ -26,7 +26,7 @@ class Str
      */
     public static function endsWith(string $haystack, string $needle): bool
     {
-        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
+        return $needle === '' || substr_compare($haystack, $needle, -strlen($needle)) === 0;
     }
 
     /**
