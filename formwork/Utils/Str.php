@@ -110,11 +110,27 @@ class Str
     }
 
     /**
+     * Append a suffix to a given string if missing
+     */
+    public static function append(string $string, string $suffix): string
+    {
+        return static::endsWith($string, $suffix) ? $string : $string . $suffix;
+    }
+
+    /**
+     * Prepend a prefix to a given string if missing
+     */
+    public static function prepend(string $string, string $prefix): string
+    {
+        return static::startsWith($string, $prefix) ? $string : $prefix . $string;
+    }
+
+    /**
      * Wrap a string with another
      */
     public static function wrap(string $string, string $wrap): string
     {
-        return (static::startsWith($string, $wrap) ? '' : $wrap) . $string . (static::endsWith($string, $wrap) ? '' : $wrap);
+        return static::append(static::prepend($string, $wrap), $wrap);
     }
 
     /**
