@@ -6,7 +6,7 @@ use Formwork\Core\Formwork;
 use Formwork\Utils\Str;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class YAML extends AbstractParser
+class YAML extends AbstractEncoder
 {
     /**
      * Document start delimiter required by yaml_parse()
