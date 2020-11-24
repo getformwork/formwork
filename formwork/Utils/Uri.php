@@ -2,6 +2,8 @@
 
 namespace Formwork\Utils;
 
+use InvalidArgumentException;
+
 class Uri
 {
     /**
@@ -37,7 +39,7 @@ class Uri
         if ($uri === null) {
             return HTTPRequest::isHTTPS() ? 'https' : 'http';
         }
-        return parse_url($uri, PHP_URL_SCHEME);
+        return static::parseComponent($uri, PHP_URL_SCHEME);
     }
 
     /**
@@ -48,7 +50,7 @@ class Uri
         if ($uri === null) {
             return $_SERVER['SERVER_NAME'];
         }
-        return parse_url($uri, PHP_URL_HOST);
+        return static::parseComponent($uri, PHP_URL_HOST);
     }
 
     /**
@@ -59,7 +61,7 @@ class Uri
         if ($uri === null) {
             return $_SERVER['SERVER_PORT'];
         }
-        $port = parse_url($uri, PHP_URL_PORT);
+        $port = static::parseComponent($uri, PHP_URL_PORT);
         return $port === null ? 80 : (int) $port;
     }
 
@@ -84,7 +86,7 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return parse_url($uri, PHP_URL_PATH);
+        return static::parseComponent($uri, PHP_URL_PATH);
     }
 
     /**
@@ -114,7 +116,7 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return parse_url($uri, PHP_URL_QUERY);
+        return static::parseComponent($uri, PHP_URL_QUERY);
     }
 
     /**
@@ -125,7 +127,7 @@ class Uri
         if ($uri === null) {
             $uri = static::current();
         }
-        return parse_url($uri, PHP_URL_FRAGMENT);
+        return static::parseComponent($uri, PHP_URL_FRAGMENT);
     }
 
     /**
@@ -269,5 +271,17 @@ class Uri
             }
         }
         return static::make(['path' => implode('/', $path)], $base);
+    }
+
+    /**
+     * Parse URI component, throwing an exception when the URI is invalid
+     */
+    protected static function parseComponent(string $uri, int $component)
+    {
+        $result = parse_url($uri, $component);
+        if ($result === false) {
+            throw new InvalidArgumentException('Invalid URI "' . $uri . '"');
+        }
+        return $result;
     }
 }
