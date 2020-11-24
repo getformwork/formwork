@@ -11,7 +11,7 @@ class Uri
      *
      * @var array
      */
-    protected const DEFAULT_PORTS = [80, 443];
+    protected const DEFAULT_PORTS = ['http' => 80, 'https' => 443];
 
     /**
      * Current URI
@@ -56,26 +56,37 @@ class Uri
     /**
      * Get the port of current or a given URI
      */
-    public static function port(string $uri = null): int
+    public static function port(string $uri = null): ?int
     {
         if ($uri === null) {
-            return $_SERVER['SERVER_PORT'];
+            return (int) $_SERVER['SERVER_PORT'];
         }
-        $port = static::parseComponent($uri, PHP_URL_PORT);
-        return $port === null ? 80 : (int) $port;
+        return static::parseComponent($uri, PHP_URL_PORT) ?? static::getDefaultPort(static::scheme($uri));
+    }
+
+    /**
+     * Return the default port of current URI or a given scheme
+     */
+    public static function getDefaultPort(string $scheme = null): ?int
+    {
+        if ($scheme === null) {
+            $scheme = static::scheme();
+        }
+        return self::DEFAULT_PORTS[$scheme] ?? null;
     }
 
     /**
      * Return whether current or a given port is default
-     *
-     * @param int|string|null $port
      */
-    public static function isDefaultPort($port = null): bool
+    public static function isDefaultPort(int $port = null, string $scheme = null): bool
     {
         if ($port === null) {
             $port = static::port();
         }
-        return in_array((int) $port, self::DEFAULT_PORTS, true);
+        if ($scheme === null) {
+            $scheme = static::scheme();
+        }
+        return $port !== null && $scheme !== null && $port === static::getDefaultPort($scheme);
     }
 
     /**
@@ -135,9 +146,8 @@ class Uri
      */
     public static function base(string $uri = null): string
     {
-        $uriPort = static::port($uri);
-        $port = empty($uriPort) || static::isDefaultPort($uriPort) ? '' : ':' . $uriPort;
-        return static::scheme($uri) . '://' . static::host($uri) . $port;
+        $port = static::port($uri);
+        return static::scheme($uri) . '://' . static::host($uri) . (static::isDefaultPort($port, static::scheme($uri)) ? '' : ':' . $port);
     }
 
     /**
@@ -178,14 +188,15 @@ class Uri
      */
     public static function make(array $parts, string $uri = null, bool $forcePort = false): string
     {
+        $givenParts = array_keys($parts);
         $parts = array_merge(static::parse($uri), $parts);
         $result = '';
         if (!empty($parts['host'])) {
-            $result = empty($parts['scheme']) ? 'http' : $parts['scheme'];
-            $result .= '://';
-            $result .= strtolower($parts['host']);
-            if (!empty($parts['port']) && ($forcePort || !static::isDefaultPort($parts['port']))) {
-                $result .= ':' . $parts['port'];
+            $scheme = $parts['scheme'] ?? 'http';
+            $port = $parts['port'] ?? static::getDefaultPort($scheme);
+            $result = $scheme . '://' . strtolower($parts['host']);
+            if ($forcePort || (in_array('port', $givenParts, true) && !static::isDefaultPort($port, $scheme))) {
+                $result .= ':' . $port;
             }
         }
         // Normalize path slashes
