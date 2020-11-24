@@ -8,7 +8,6 @@ use Formwork\Admin\Security\Password;
 use Formwork\Admin\Utils\Session;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 
 class Register extends AbstractController
@@ -45,7 +44,7 @@ class Register extends AbstractController
                     'role'     => 'admin'
                 ];
 
-                FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
+                YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
 
                 Session::set('FORMWORK_USERNAME', $data->get('username'));
                 $time = $this->log('access')->log($data->get('username'));

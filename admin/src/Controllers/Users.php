@@ -66,7 +66,7 @@ class Users extends AbstractController
             'language' => $data->get('language')
         ];
 
-        FileSystem::write(Admin::ACCOUNTS_PATH . $data->get('username') . '.yml', YAML::encode($userData));
+        YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
 
         $this->notify($this->label('users.user.created'), 'success');
         $this->redirect('/users/');
@@ -192,7 +192,7 @@ class Users extends AbstractController
         // Filter empty elements from $data and merge them with $user ones
         $userData = array_merge($user->toArray(), $data->toArray());
 
-        FileSystem::write(Admin::ACCOUNTS_PATH . $user->username() . '.yml', YAML::encode($userData));
+        YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $user->username() . '.yml');
     }
 
     /**
