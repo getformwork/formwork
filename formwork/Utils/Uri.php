@@ -39,7 +39,8 @@ class Uri
         if ($uri === null) {
             return HTTPRequest::isHTTPS() ? 'https' : 'http';
         }
-        return static::parseComponent($uri, PHP_URL_SCHEME);
+        $scheme = static::parseComponent($uri, PHP_URL_SCHEME);
+        return $scheme !== null ? strtolower($scheme) : null;
     }
 
     /**
@@ -48,9 +49,10 @@ class Uri
     public static function host(string $uri = null): ?string
     {
         if ($uri === null) {
-            return $_SERVER['SERVER_NAME'];
+            return strtolower($_SERVER['SERVER_NAME']);
         }
-        return static::parseComponent($uri, PHP_URL_HOST);
+        $host = static::parseComponent($uri, PHP_URL_HOST);
+        return $host !== null ? strtolower($host) : null;
     }
 
     /**
@@ -192,7 +194,7 @@ class Uri
         $parts = array_merge(static::parse($uri), $parts);
         $result = '';
         if (!empty($parts['host'])) {
-            $scheme = $parts['scheme'] ?? 'http';
+            $scheme = strtolower($parts['scheme']) ?? 'http';
             $port = $parts['port'] ?? static::getDefaultPort($scheme);
             $result = $scheme . '://' . strtolower($parts['host']);
             if ($forcePort || (in_array('port', $givenParts, true) && !static::isDefaultPort($port, $scheme))) {
