@@ -209,8 +209,7 @@ class Uri
         }
         $result .= $normalizedPath;
         if (!empty($parts['query'])) {
-            $result .= '?';
-            $result .= is_array($parts['query']) ? http_build_query($parts['query']) : ltrim($parts['query'], '?');
+            $result .= '?' . (is_array($parts['query']) ? http_build_query($parts['query']) : ltrim($parts['query'], '?'));
         }
         if (!empty($parts['fragment'])) {
             $result .= '#' . ltrim($parts['fragment'], '#');
