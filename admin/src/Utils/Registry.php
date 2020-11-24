@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Utils;
 
+use Formwork\Parsers\JSON;
 use Formwork\Utils\FileSystem;
 
 class Registry
@@ -34,7 +35,7 @@ class Registry
     {
         $this->filename = $filename;
         if (FileSystem::exists($this->filename)) {
-            $this->storage = (array) json_decode(FileSystem::read($filename), true);
+            $this->storage = JSON::parseFile($filename);
             $this->saved = true;
         }
     }
@@ -82,7 +83,7 @@ class Registry
      */
     public function save(): void
     {
-        FileSystem::write($this->filename, json_encode($this->storage));
+        JSON::encodeToFile($this->storage, $this->filename);
         $this->saved = true;
     }
 

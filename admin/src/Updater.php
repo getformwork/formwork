@@ -4,6 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Formwork;
+use Formwork\Parsers\JSON;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
@@ -245,7 +246,7 @@ class Updater
             return;
         }
 
-        $data = json_decode(FileSystem::fetch(self::API_RELEASE_URI, $this->context), true);
+        $data = JSON::parse(FileSystem::fetch(self::API_RELEASE_URI, $this->context));
 
         if (!$data) {
             throw new RuntimeException('Cannot fetch latest Formwork release data');

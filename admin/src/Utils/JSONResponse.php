@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin\Utils;
 
+use Formwork\Parsers\JSON;
 use Formwork\Utils\Header;
 
 class JSONResponse
@@ -38,7 +39,7 @@ class JSONResponse
         if ($this->status !== 200) {
             Header::status($this->status);
         }
-        echo json_encode($this->data);
+        echo JSON::encode($this->data);
         exit;
     }
 
