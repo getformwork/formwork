@@ -201,8 +201,9 @@ class Uri
                 $result .= ':' . $port;
             }
         }
-        // Normalize path slashes
-        $normalizedPath = '/' . preg_replace('~[/]+~', '/', trim($parts['path'], '/'));
+        // Normalize path slashes (leading and trailing separators are trimmed before so that the path
+        // is always considered relative and we can then add a trailing slash conditionally)
+        $normalizedPath = '/' . Path::normalize(trim($parts['path'], '/'));
         // Add trailing slash only if the trailing component is not empty or a filename
         if ($normalizedPath !== '/' && !Str::contains(basename($normalizedPath), '.')) {
             $normalizedPath .= '/';
@@ -248,41 +249,20 @@ class Uri
         return static::make(['fragment' => ''], $uri);
     }
 
-    /**
-     * Resolve a relative URI against current or a given base URI
-     */
     public static function resolveRelativeUri(string $uri, string $base = null): string
     {
         if ($base === null) {
             $base = static::current();
         }
-        if (empty($uri)) {
-            return $base;
+        if (Str::startsWith($uri, '#')) {
+            return static::make(['fragment' => $uri], $base);
         }
-        if ($uri[0] === '#') {
-            return $base . $uri;
+        $uriPath = (string) static::path($uri);
+        $basePath = (string) static::path($base);
+        if (!Str::endsWith($basePath, '/')) {
+            $basePath = dirname($basePath);
         }
-        if (!empty(static::host($uri))) {
-            return $uri;
-        }
-        $path = [];
-        if ($uri[0] !== '/') {
-            $path = explode('/', trim(static::path($base), '/'));
-        }
-        if (!Str::endsWith($base, '/')) {
-            array_pop($path);
-        }
-        foreach (explode('/', static::path($uri)) as $segment) {
-            if (empty($segment) || $segment === '.') {
-                continue;
-            }
-            if ($segment === '..') {
-                array_pop($path);
-            } else {
-                $path[] = $segment;
-            }
-        }
-        return static::make(['path' => implode('/', $path)], $base);
+        return static::make(['path' => Path::resolve($uriPath, $basePath)], $base);
     }
 
     /**
