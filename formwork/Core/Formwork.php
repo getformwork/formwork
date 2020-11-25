@@ -316,7 +316,7 @@ class Formwork
     /**
      * Get default route
      */
-    private function defaultRoute(): callable
+    protected function defaultRoute(): callable
     {
         return function (RouteParams $params) {
             $route = $params->get('page', $this->option('pages.index'));

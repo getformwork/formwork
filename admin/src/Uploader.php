@@ -135,7 +135,7 @@ class Uploader
      *
      * @return bool Whether file was successfully moved or not
      */
-    private function move(string $source, string $destination, string $filename): bool
+    protected function move(string $source, string $destination, string $filename): bool
     {
         $mimeType = FileSystem::mimeType($source);
 

@@ -297,7 +297,7 @@ class Validator
     /**
      * Cast a value to its correct type
      */
-    private static function parse($value)
+    protected static function parse($value)
     {
         if (is_numeric($value)) {
             if ($value == (int) $value) {
@@ -314,7 +314,7 @@ class Validator
     /**
      * Return whether a value matches a regex
      */
-    private static function regex($value, string $regex): bool
+    protected static function regex($value, string $regex): bool
     {
         return (bool) @preg_match('/' . $regex . '/', $value);
     }
