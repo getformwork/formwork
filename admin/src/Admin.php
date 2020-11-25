@@ -18,7 +18,7 @@ use BadMethodCallException;
 use RuntimeException;
 use Throwable;
 
-class Admin
+final class Admin
 {
     use AdminTrait;
     use SingletonTrait;

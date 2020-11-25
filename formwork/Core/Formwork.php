@@ -17,7 +17,7 @@ use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 
-class Formwork
+final class Formwork
 {
     use SingletonTrait;
 
