@@ -3,6 +3,7 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\Registry;
+use Formwork\Admin\Utils\SemVer;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -141,7 +142,7 @@ class Updater
 
         $this->registry->set('last-check', time());
 
-        if (version_compare(Formwork::VERSION, $this->release['tag']) >= 0) {
+        if (!$this->isVersionInstallable($this->release['tag'])) {
             $this->registry->set('up-to-date', true);
             $this->registry->save();
             return true;
@@ -277,6 +278,16 @@ class Updater
             return $this->headers;
         }
         return $this->headers = get_headers($this->release['archive'], 1, $this->context);
+    }
+
+    /**
+     * Return whether a version is installable based on the current version of Formwork
+     */
+    protected function isVersionInstallable(string $version): bool
+    {
+        $current = SemVer::fromString(Formwork::VERSION);
+        $new = SemVer::fromString($version);
+        return !$new->isPrerelease() && $current->compareWith($new, '!=') && $current->compareWith($new, '^');
     }
 
     /**
