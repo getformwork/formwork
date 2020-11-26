@@ -203,11 +203,9 @@ final class Formwork
             }
         }
 
-        if ($this->option('statistics.enabled')) {
-            if (isset($page) && !$page->isErrorPage()) {
-                $statistics = new Statistics();
-                $statistics->trackVisit();
-            }
+        if ($this->option('statistics.enabled') && isset($page) && !$page->isErrorPage()) {
+            $statistics = new Statistics();
+            $statistics->trackVisit();
         }
     }
 
@@ -333,10 +331,8 @@ final class Formwork
                         Header::redirect($this->site->uri($route), 301);
                     }
                 }
-                if ($params->has('tagName') || $params->has('paginationPage')) {
-                    if ($page->template()->scheme()->get('type') !== 'listing') {
-                        return $this->site->errorPage();
-                    }
+                if (($params->has('tagName') || $params->has('paginationPage')) && $page->template()->scheme()->get('type') !== 'listing') {
+                    return $this->site->errorPage();
                 }
                 if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
                     if (($page->published() && !$this->site->modifiedSince((int) strtotime($page->get('publish-date'))))
@@ -355,10 +351,8 @@ final class Formwork
                 if ($upperLevel === '.') {
                     $upperLevel = $this->option('pages.index');
                 }
-                if ($parent = $this->site->findPage($upperLevel)) {
-                    if ($parent->files()->has($filename)) {
-                        return HTTPResponse::file($parent->files()->get($filename)->path());
-                    }
+                if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
+                    return HTTPResponse::file($parent->files()->get($filename)->path());
                 }
             }
 

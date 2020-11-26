@@ -174,19 +174,15 @@ class Users extends AbstractController
         // Remove password from $data
         $data->remove('password');
 
-        if ($data->get('role', $user->role()) !== $user->role()) {
-            // Ensure that user role can be changed
-            if (!$this->user()->canChangeRoleOf($user)) {
-                $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
-                $this->redirect('/users/' . $user->username() . '/profile/');
-            }
+        // Ensure that user role can be changed
+        if ($data->get('role', $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
+            $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
+            $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
         // Handle incoming files
-        if (HTTPRequest::hasFiles()) {
-            if (($avatar = $this->uploadAvatar($user)) !== null) {
-                $data->set('avatar', $avatar);
-            }
+        if (HTTPRequest::hasFiles() && ($avatar = $this->uploadAvatar($user)) !== null) {
+            $data->set('avatar', $avatar);
         }
 
         // Filter empty elements from $data and merge them with $user ones
