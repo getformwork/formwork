@@ -78,10 +78,8 @@ class Response
     {
         $this->sendStatus();
 
-        if (!empty($this->headers)) {
-            foreach ($this->headers as $fieldName => $fieldValue) {
-                Header::send($fieldName, $fieldValue);
-            }
+        foreach ($this->headers as $fieldName => $fieldValue) {
+            Header::send($fieldName, $fieldValue);
         }
     }
 

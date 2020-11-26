@@ -608,10 +608,8 @@ class Page extends AbstractPage
         if ($this->has('response_status')) {
             Header::status((int) $this->get('response_status'));
         }
-        if (!empty($this->headers())) {
-            foreach ($this->headers() as $name => $value) {
-                Header::send($name, $value);
-            }
+        foreach ($this->headers() as $name => $value) {
+            Header::send($name, $value);
         }
     }
 

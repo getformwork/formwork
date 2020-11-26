@@ -508,16 +508,14 @@ class Pages extends AbstractController
         $uploader->upload();
         $page->reload();
 
-        if (!empty($uploader->uploadedFiles())) {
-            foreach ($uploader->uploadedFiles() as $file) {
-                $file = $page->files()->get($file);
+        foreach ($uploader->uploadedFiles() as $file) {
+            $file = $page->files()->get($file);
 
-                // Process JPEG and PNG images according to system options (e.g. quality)
-                if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
-                    $image = new Image($file->path());
-                    $image->saveOptimized();
-                    $page->reload();
-                }
+            // Process JPEG and PNG images according to system options (e.g. quality)
+            if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
+                $image = new Image($file->path());
+                $image->saveOptimized();
+                $page->reload();
             }
         }
     }

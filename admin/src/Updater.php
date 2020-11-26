@@ -208,10 +208,8 @@ class Updater
 
         if ($this->options['cleanupAfterInstall']) {
             $deletableFiles = $this->findDeletableFiles($installedFiles);
-            if (!empty($deletableFiles)) {
-                foreach ($deletableFiles as $file) {
-                    FileSystem::delete($file);
-                }
+            foreach ($deletableFiles as $file) {
+                FileSystem::delete($file);
             }
         }
 
