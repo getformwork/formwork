@@ -50,8 +50,7 @@ class Arr
                 $array1[$key] = static::appendMissing($array1[$key], $array2[$key]);
             }
         }
-        $array1 += $array2;
-        return $array1;
+        return $array1 + $array2;
     }
 
     /**
