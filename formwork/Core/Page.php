@@ -362,10 +362,7 @@ class Page extends AbstractPage
      */
     public function isDeletable(): bool
     {
-        if ($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage()) {
-            return false;
-        }
-        return true;
+        return !($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage());
     }
 
     /**
