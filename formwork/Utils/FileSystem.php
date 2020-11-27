@@ -432,8 +432,12 @@ class FileSystem
      */
     public static function createFile(string $file): bool
     {
-        static::assertExists($file, false);
-        return static::write($file, '');
+        // x+ mode checks file existence atomically
+        if (($handle = @fopen($file, 'x+')) !== false) {
+            @fclose($handle);
+            return true;
+        }
+        throw new RuntimeException('Cannot create file ' . $file . ': ' . static::getLastStreamErrorMessage());
     }
 
     /**
