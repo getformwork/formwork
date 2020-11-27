@@ -648,9 +648,9 @@ class FileSystem
     /**
      * Generate a random file name
      */
-    public static function randomName(): string
+    public static function randomName(string $prefix = ''): string
     {
-        return bin2hex(random_bytes(8));
+        return $prefix . bin2hex(random_bytes(8));
     }
 
     /**
