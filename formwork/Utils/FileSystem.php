@@ -414,17 +414,17 @@ class FileSystem
      */
     public static function write(string $file, string $content): bool
     {
-        $temp = static::temporaryName($file . '.');
         if (static::exists($file) && !static::isWritable($file)) {
             throw new RuntimeException('Cannot write ' . $file . ': file exists but is not writable');
         }
-        if (@file_put_contents($temp, $content, LOCK_EX) === false) {
+        $temporaryFile = static::createTemporaryFile(dirname($file));
+        if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
             throw new RuntimeException('Cannot write ' . $file . ': ' . static::getLastStreamErrorMessage());
         }
         if (static::exists($file)) {
-            @chmod($temp, @fileperms($file));
+            @chmod($temporaryFile, @fileperms($file));
         }
-        return static::move($temp, $file, true);
+        return static::move($temporaryFile, $file, true);
     }
 
     /**
