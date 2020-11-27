@@ -441,6 +441,24 @@ class FileSystem
     }
 
     /**
+     * Try to create a temporary file in the specified directory and return its path
+     */
+    public static function createTemporaryFile(string $directory, string $prefix = ''): string
+    {
+        $attempts = 0;
+        while ($attempts++ < 10) {
+            $temporaryFile = static::joinPaths($directory, static::randomName($prefix));
+            try {
+                static::createFile($temporaryFile);
+            } catch (RuntimeException $e) {
+                continue;
+            }
+            return $temporaryFile;
+        }
+        throw new RuntimeException('Cannot create a temporary file');
+    }
+
+    /**
      * Create a empty directory
      *
      * @param bool $recursive Whether to create directory recursively
