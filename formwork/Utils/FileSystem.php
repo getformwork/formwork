@@ -447,8 +447,10 @@ class FileSystem
      */
     public static function createDirectory(string $directory, bool $recursive = false): bool
     {
-        static::assertExists($directory, false);
-        return @mkdir($directory, 0777, $recursive);
+        if (@mkdir($directory, 0777, $recursive)) {
+            return true;
+        }
+        throw new RuntimeException('Cannot create directory ' . $directory);
     }
 
     /**
