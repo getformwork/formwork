@@ -650,7 +650,7 @@ class FileSystem
      */
     public static function randomName(): string
     {
-        return str_shuffle(dechex(random_int(0x100, 0xfff)) . uniqid());
+        return bin2hex(random_bytes(8));
     }
 
     /**
