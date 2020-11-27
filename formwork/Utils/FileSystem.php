@@ -57,6 +57,20 @@ class FileSystem
     public const MAX_NAME_LENGTH = 255;
 
     /**
+     * Default mode for created files
+     *
+     * @var int
+     */
+    protected const DEFAULT_FILE_MODE = 0666;
+
+    /**
+     * Default mode for created directories
+     *
+     * @var int
+     */
+    protected const DEFAULT_DIRECTORY_MODE = 0777;
+
+    /**
      * Array containing files to ignore
      *
      * @var array
@@ -435,6 +449,7 @@ class FileSystem
         // x+ mode checks file existence atomically
         if (($handle = @fopen($file, 'x+')) !== false) {
             @fclose($handle);
+            @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
             return true;
         }
         throw new RuntimeException('Cannot create file ' . $file . ': ' . static::getLastStreamErrorMessage());
@@ -465,7 +480,7 @@ class FileSystem
      */
     public static function createDirectory(string $directory, bool $recursive = false): bool
     {
-        if (@mkdir($directory, 0777, $recursive)) {
+        if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
             return true;
         }
         throw new RuntimeException('Cannot create directory ' . $directory);
