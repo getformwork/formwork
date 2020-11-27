@@ -660,7 +660,8 @@ class FileSystem
      */
     public static function temporaryName(string $prefix = ''): string
     {
-        return $prefix . static::randomName();
+        trigger_error(static::class . '::temporaryName() is deprecated since Formwork 1.11.0, use ' . static::class . '::randomName() instead', E_USER_DEPRECATED);
+        return static::randomName($prefix);
     }
 
     /**
