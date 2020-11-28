@@ -242,7 +242,7 @@ class FileSystem
      */
     public static function isVisible(string $path): bool
     {
-        return basename($path)[0] !== '.';
+        return !Str::startsWith(basename($path), '.');
     }
 
     /**
