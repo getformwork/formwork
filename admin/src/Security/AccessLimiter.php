@@ -60,7 +60,7 @@ class AccessLimiter
         $this->resetTime = $resetTime;
 
         // Hash visitor IP address followed by current host
-        $this->attemptHash = sha1(HTTPRequest::ip() . '@' . Uri::host());
+        $this->attemptHash = hash('sha256', HTTPRequest::ip() . '@' . Uri::host());
 
         if ($registry->has($this->attemptHash)) {
             [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);

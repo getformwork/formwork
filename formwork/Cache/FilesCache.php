@@ -88,7 +88,7 @@ class FilesCache extends AbstractCache
      */
     protected function getFile(string $key): string
     {
-        return $this->path . sha1($key);
+        return $this->path . hash('sha256', $key);
     }
 
     /**
