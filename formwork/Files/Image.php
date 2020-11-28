@@ -75,13 +75,6 @@ class Image extends File
     protected $image;
 
     /**
-     * Unmodified image resource
-     *
-     * @var resource
-     */
-    protected $sourceImage;
-
-    /**
      * JPEG export quality (0-100)
      *
      * @var int
@@ -607,9 +600,6 @@ class Image extends File
         if (is_resource($this->image)) {
             imagedestroy($this->image);
         }
-        if (is_resource($this->sourceImage)) {
-            imagedestroy($this->sourceImage);
-        }
     }
 
     /**
@@ -675,7 +665,6 @@ class Image extends File
 
         $this->width = imagesx($this->image);
         $this->height = imagesy($this->image);
-        $this->sourceImage = $this->image;
     }
 
     /**
