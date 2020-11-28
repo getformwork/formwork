@@ -383,9 +383,9 @@ class FileSystem
             $sourceItemPath = static::joinPaths($source, $item);
             $destinationItemPath = static::joinPaths($destination, $item);
             if (static::isFile($sourceItemPath)) {
-                static::move($sourceItemPath, $destinationItemPath);
+                static::move($sourceItemPath, $destinationItemPath, $overwrite);
             } else {
-                static::moveDirectory($sourceItemPath, $destinationItemPath);
+                static::moveDirectory($sourceItemPath, $destinationItemPath, $overwrite);
             }
         }
         static::delete($source, true);
