@@ -21,8 +21,6 @@
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri($colorScheme === 'dark' ? 'css/admin-dark.min.css' : 'css/admin.min.css', true) ?>">
-    <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
-    <script>Formwork.config = <?= Formwork\Parsers\JSON::encode($appConfig) ?>;</script>
 </head>
 <body>
     <button type="button" class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
@@ -89,5 +87,7 @@
         <?= $content ?>
     </main>
     <?= $modals ?>
+    <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
+    <script>Formwork.config = <?= Formwork\Parsers\JSON::encode($appConfig) ?>;</script>
 </body>
 </html>
