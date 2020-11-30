@@ -23,9 +23,11 @@ export default Formwork = {
         Pages.init();
         Updates.init();
 
-        $('.toggle-navigation').addEventListener('click', function () {
-            $('.sidebar').classList.toggle('show');
-        });
+        if ($('.toggle-navigation')) {
+            $('.toggle-navigation').addEventListener('click', function () {
+                $('.sidebar').classList.toggle('show');
+            });
+        }
 
         $$('[data-chart-data]').forEach(function (element) {
             var data = JSON.parse(element.getAttribute('data-chart-data'));
