@@ -65,6 +65,9 @@ options.site.info.language: Lingua
 options.site.info.title: Titolo
 options.system: Sistema
 options.system.admin-panel: Pannello di amministrazione
+options.system.admin-panel.default-color-scheme: Combinazione di colori predefinita
+options.system.admin-panel.default-color-scheme.dark: Scura
+options.system.admin-panel.default-color-scheme.light: Chiara
 options.system.admin-panel.default-language: Lingua predefinita
 options.system.admin-panel.logout-redirects-to: Reindirizza dopo la disconnessione
 options.system.admin-panel.logout-redirects-to.home: Pagina iniziale
@@ -229,6 +232,10 @@ uploader.uploaded: File caricato
 user.actions: Azioni
 user.avatar: Immagine
 user.avatar.uploaded: Immagine caricata
+user.color-scheme: Combinazione di colori
+user.color-scheme.auto: Automatica
+user.color-scheme.dark: Scura
+user.color-scheme.light: Chiara
 user.email: E-mail
 user.fullname: Nome completo
 user.language: Lingua

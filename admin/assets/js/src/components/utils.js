@@ -251,5 +251,29 @@ export default {
             parent = document.body;
         }
         return parent.querySelector('button, .button, input:not([type=hidden]), select, textarea') || parent;
+    },
+
+    getCookies: function () {
+        var result = [];
+        var cookies = document.cookie.split(';');
+        var nameAndValue, i;
+        for (i = 0; i < cookies.length; i++) {
+            nameAndValue = cookies[i].split('=', 2);
+            if (nameAndValue.length === 2) {
+                result[nameAndValue[0].trim()] = decodeURIComponent(nameAndValue[1].trim());
+            }
+        }
+        return result;
+    },
+
+    setCookie: function (name, value, options) {
+        var cookie = name + '=' + value;
+        var option;
+        for (option in options) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
+                cookie += ';' + option + '=' + options[option];
+            }
+        }
+        document.cookie = cookie;
     }
 };

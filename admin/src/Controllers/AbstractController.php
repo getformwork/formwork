@@ -60,10 +60,11 @@ abstract class AbstractController
     protected function defaults(): array
     {
         return [
-            'location'  => $this->location,
-            'csrfToken' => CSRFToken::get(),
-            'modals'    => implode($this->modals),
-            'appConfig' => [
+            'location'    => $this->location,
+            'csrfToken'   => CSRFToken::get(),
+            'modals'      => implode($this->modals),
+            'colorScheme' => $this->getColorScheme(),
+            'appConfig'   => [
                 'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
                     'dayLabels'   => $this->label('date.weekdays.short'),
@@ -123,5 +124,20 @@ abstract class AbstractController
     {
         $view = new View($name, array_merge($this->defaults(), $data));
         return $view->render($return);
+    }
+
+    /**
+     * Get color scheme
+     */
+    private function getColorScheme(): string
+    {
+        $default = $this->option('admin.color_scheme');
+        if (Admin::instance()->isLoggedIn()) {
+            if ($this->user()->colorScheme() === 'auto') {
+                return $_COOKIE['formwork_preferred_color_scheme'] ?? $default;
+            }
+            return $this->user()->colorScheme();
+        }
+        return $default;
     }
 }

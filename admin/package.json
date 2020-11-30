@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "npm run build:css && npm run build:js",
-    "build:css": "sass ./assets/scss/admin.scss ./assets/css/admin.min.css --style=compressed --no-source-map",
+    "build:css": "sass ./assets/scss/admin.scss:./assets/css/admin.min.css ./assets/scss/admin-dark.scss:./assets/css/admin-dark.min.css --style=compressed --no-source-map",
     "build:js": "rollup -c && uglifyjs assets/js/app.min.js -c -m -o assets/js/app.min.js --timings",
     "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
     "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js",
