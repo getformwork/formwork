@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="ct-chart" data-chart-data="<?= $this->escape(Formwork\Parsers\JSON::encode($statistics)); ?>"></div>
+                <div class="ct-chart" data-chart-data="<?= $this->escape($statistics); ?>"></div>
             </div>
         </div>
     </div>

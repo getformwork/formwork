@@ -88,6 +88,6 @@
     </main>
     <?= $modals ?>
     <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
-    <script>Formwork.config = <?= Formwork\Parsers\JSON::encode($appConfig) ?>;</script>
+    <script>Formwork.config = <?= $appConfig ?>;</script>
 </body>
 </html>

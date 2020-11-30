@@ -3,6 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Statistics;
+use Formwork\Parsers\JSON;
 
 class Dashboard extends AbstractController
 {
@@ -33,7 +34,7 @@ class Dashboard extends AbstractController
                     'sortable' => false,
                     'headers'  => true
                     ], true),
-                'statistics' => $statistics->getChartData()
+                'statistics' => JSON::encode($statistics->getChartData())
             ], true)
         ]);
     }

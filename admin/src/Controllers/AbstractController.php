@@ -9,6 +9,7 @@ use Formwork\Admin\Users\User;
 use Formwork\Admin\View\View;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
+use Formwork\Parsers\JSON;
 use Formwork\Utils\Str;
 
 abstract class AbstractController
@@ -64,7 +65,7 @@ abstract class AbstractController
             'csrfToken'   => CSRFToken::get(),
             'modals'      => implode($this->modals),
             'colorScheme' => $this->getColorScheme(),
-            'appConfig'   => [
+            'appConfig'   => JSON::encode([
                 'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
                     'dayLabels'   => $this->label('date.weekdays.short'),
@@ -76,7 +77,7 @@ abstract class AbstractController
                         ['Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a']
                     )
                 ]
-            ]
+            ])
         ];
     }
 
