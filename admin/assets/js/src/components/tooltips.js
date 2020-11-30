@@ -2,7 +2,7 @@ import Tooltip from './tooltip';
 
 export default {
     init: function () {
-        $$('[title]').forEach(function (element) {
+        $$('[title]', document.body).forEach(function (element) {
             element.setAttribute('data-tooltip', element.getAttribute('title'));
             element.removeAttribute('title');
         });
