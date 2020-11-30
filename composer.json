@@ -20,8 +20,8 @@
         "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-zip": "*",
-        "erusev/parsedown": "~1.7",
-        "erusev/parsedown-extra": "~0.8",
-        "symfony/yaml": "~4.4"
+        "erusev/parsedown": "^1.7",
+        "erusev/parsedown-extra": "^0.8.1",
+        "symfony/yaml": "^5.1"
     }
 }
