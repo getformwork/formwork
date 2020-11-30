@@ -7,6 +7,7 @@ use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Fields\Validator;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
+use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -279,7 +280,7 @@ class Options extends AbstractController
     {
         $dependencies = [];
         if (FileSystem::exists(ROOT_PATH . 'composer.lock')) {
-            $composerLock = json_decode(FileSystem::read(ROOT_PATH . 'composer.lock'), true);
+            $composerLock = JSON::parseFile(ROOT_PATH . 'composer.lock');
             foreach ($composerLock['packages'] as $package) {
                 $dependencies[$package['name']] = $package;
             }

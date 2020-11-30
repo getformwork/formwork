@@ -8,5 +8,5 @@
     'required'     => $field->isRequired(),
     'disabled'     => $field->isDisabled(),
     'data-field'   => 'tags',
-    'data-options' => $field->has('options') ? $this->escape(json_encode((array) $field->get('options'))) : null
+    'data-options' => $field->has('options') ? $this->escape(Formwork\Parsers\JSON::encode((array) $field->get('options'))) : null
 ]) ?>>
