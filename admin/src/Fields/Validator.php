@@ -2,10 +2,11 @@
 
 namespace Formwork\Admin\Fields;
 
-use Formwork\Core\Formwork;
 use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
-use DateTime;
+use Formwork\Utils\Date;
+use Formwork\Utils\Str;
+use InvalidArgumentException;
 
 class Validator
 {
@@ -112,14 +113,11 @@ class Validator
             return null;
         }
 
-        $format = Formwork::instance()->option('date.format');
-        $date = date_create_from_format($format, $value) ?: date_create($value);
-
-        if ($date instanceof DateTime) {
-            return date_format($date, 'Y-m-d');
+        try {
+            return date('Y-m-d', Date::toTimestamp($value, null, true));
+        } catch (InvalidArgumentException $e) {
+            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '":' . Str::after($e->getMessage(), ':'));
         }
-
-        throw new ValidationException('Invalid date format for field "' . $field->name() . '" of type "' . $field->type() . '"');
     }
 
     /**
