@@ -46,6 +46,7 @@ class View
     protected static $helpers = [
         'attr'       => [HTML::class, 'attributes'],
         'escape'     => [Str::class, 'escape'],
+        'escapeAttr' => [Str::class, 'escapeAttr'],
         'removeHTML' => [Str::class, 'removeHTML']
     ];
 
