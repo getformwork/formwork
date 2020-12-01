@@ -86,11 +86,19 @@ class Str
     }
 
     /**
-     * Escape HTML tags from a given string
+     * Escape HTML tags, quotes and ampersands from a given string
      */
     public static function escape(string $string): string
     {
         return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE, 'utf-8', false);
+    }
+
+    /**
+     * Escape quotes and ampersands from a given string (to be used with HTML attributes)
+     */
+    public static function escapeAttr(string $string): string
+    {
+        return str_replace(['&lt;', '&gt;'], ['<', '>'], static::escape($string));
     }
 
     /**
