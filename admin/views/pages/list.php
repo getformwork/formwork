@@ -34,7 +34,7 @@
 <?php
                     endif;
 ?>
-                                <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escape($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
+                                <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
 <?php
                                 foreach ($page->availableLanguages() as $code):
 ?>

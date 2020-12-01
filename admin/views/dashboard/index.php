@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="ct-chart" data-chart-data="<?= $this->escape($statistics); ?>"></div>
+                <div class="ct-chart" data-chart-data="<?= $this->escapeAttr($statistics); ?>"></div>
             </div>
         </div>
     </div>
