@@ -7,6 +7,7 @@ use Formwork\Metadata\Metadata;
 use Formwork\Parsers\Markdown;
 use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\Str;
@@ -288,7 +289,7 @@ class Page extends AbstractPage
             $format = Formwork::instance()->option('date.format');
         }
         if ($this->has('publish-date')) {
-            return date($format, strtotime($this->data['publish-date']));
+            return date($format, Date::toTimestamp($this->data['publish-date']));
         }
         return parent::date($format);
     }
@@ -572,11 +573,11 @@ class Page extends AbstractPage
         $this->published = $this->data['published'];
 
         if ($this->has('publish-date')) {
-            $this->published = $this->published && strtotime($this->get('publish-date')) < time();
+            $this->published = $this->published && Date::toTimestamp($this->get('publish-date')) < time();
         }
 
         if ($this->has('unpublish-date')) {
-            $this->published = $this->published && strtotime($this->get('unpublish-date')) > time();
+            $this->published = $this->published && Date::toTimestamp($this->get('unpublish-date')) > time();
         }
 
         $this->routable = $this->data['routable'];

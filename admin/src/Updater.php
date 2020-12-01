@@ -5,6 +5,7 @@ namespace Formwork\Admin;
 use Formwork\Admin\Utils\Registry;
 use Formwork\Core\Formwork;
 use Formwork\Parsers\JSON;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
@@ -253,7 +254,7 @@ class Updater
         $this->release = [
             'name'    => $data['name'],
             'tag'     => $data['tag_name'],
-            'date'    => strtotime($data['published_at']),
+            'date'    => Date::toTimestamp($data['published_at'], DATE_ISO8601),
             'archive' => $data['zipball_url']
         ];
 
