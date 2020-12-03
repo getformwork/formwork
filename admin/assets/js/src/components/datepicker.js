@@ -2,11 +2,19 @@ import Utils from './utils';
 
 export default function DatePicker(input, options) {
     var defaults = {
-        dayLabels:  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        monthLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
         weekStarts: 0,
-        todayLabel: 'Today',
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        labels: {
+            today: 'Today',
+            weekdays: {
+                long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+            },
+            months: {
+                long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
+                short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            }
+        }
     };
 
     var today = new Date();
@@ -230,7 +238,7 @@ export default function DatePicker(input, options) {
     function generateCalendar() {
         calendar = document.createElement('div');
         calendar.className = 'calendar';
-        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
+        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.labels.today + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
         document.body.appendChild(calendar);
 
         $('.currentMonth', calendar).addEventListener('mousedown', function (event) {
@@ -272,7 +280,7 @@ export default function DatePicker(input, options) {
         var num = 1;
         var firstDay = new Date(year, month, 1).getDay();
         var monthLength = dateHelpers.daysInMonth(month, year);
-        var monthName = options.monthLabels[month];
+        var monthName = options.labels.months.long[month];
         var start = dateHelpers.mod(firstDay - options.weekStarts, 7);
         var html = '';
         html += '<tr><th class="calendar-header" colspan="7">';
@@ -281,7 +289,7 @@ export default function DatePicker(input, options) {
         html += '<tr>';
         for (i = 0; i < 7; i++ ){
             html += '<td class="calendar-header-day">';
-            html += options.dayLabels[dateHelpers.mod(i + options.weekStarts, 7)];
+            html += options.labels.weekdays.short[dateHelpers.mod(i + options.weekStarts, 7)];
             html += '</td>';
         }
         html += '</tr><tr>';
