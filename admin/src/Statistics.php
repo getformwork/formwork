@@ -4,6 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Registry;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Visitor;
@@ -151,7 +152,7 @@ class Statistics
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
         $label = static function (string $day): string {
-            $time = strtotime($day);
+            $time = Date::toTimestamp($day, self::DATE_FORMAT);
             $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
             $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
             $day = date('j', $time);

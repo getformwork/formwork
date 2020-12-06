@@ -10,6 +10,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Traits\SingletonTrait;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
@@ -336,8 +337,8 @@ final class Formwork
                     return $this->site->errorPage();
                 }
                 if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
-                    if (($page->published() && !$this->site->modifiedSince((int) strtotime($page->get('publish-date'))))
-                    || (!$page->published() && !$this->site->modifiedSince((int) strtotime($page->get('unpublish-date'))))) {
+                    if (($page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
+                    || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
                         // Clear cache if the site was not modified since the page has been published or unpublished
                         $this->cache->clear();
                         FileSystem::touch($this->option('content.path'));
