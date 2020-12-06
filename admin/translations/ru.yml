@@ -18,6 +18,7 @@ dashboard.welcome: Добро пожаловать
 date.months.long: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октября', 'Ноябрь', 'Декабрь']
 date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
 date.today: Сегодня
+date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 errors.action.report-to-github: Сообщить о проблеме на GitHub
 errors.action.return-to-dashboard: Вернуться к панели управления
@@ -91,7 +92,7 @@ options.system.images.png-compression-level: PNG Уровень сжатия
 options.system.languages: Языки
 options.system.languages.available-languages: Доступные Языки
 options.system.languages.available-languages.no-languages: Нет Языков
-options.system.languages.preferred-language: Использовать предпочитаемый язык браузера 
+options.system.languages.preferred-language: Использовать предпочитаемый язык браузера
 options.system.languages.preferred-language.disabled: Выключить
 options.system.languages.preferred-language.enabled: Включить
 options.updated: Опции обновляются

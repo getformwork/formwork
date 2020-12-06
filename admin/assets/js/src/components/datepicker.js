@@ -2,11 +2,19 @@ import Utils from './utils';
 
 export default function DatePicker(input, options) {
     var defaults = {
-        dayLabels:  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        monthLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
         weekStarts: 0,
-        todayLabel: 'Today',
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        labels: {
+            today: 'Today',
+            weekdays: {
+                long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+            },
+            months: {
+                long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
+                short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            }
+        }
     };
 
     var today = new Date();
@@ -86,9 +94,6 @@ export default function DatePicker(input, options) {
             // Return x mod y (always rounded downwards, differs from x % y which is the remainder)
             return x - y * Math.floor(x / y);
         },
-        pad: function (num) {
-            return num.toString().length === 1 ? '0' + num : num;
-        },
         isValidDate: function (date) {
             return date && !isNaN(Date.parse(date));
         },
@@ -98,26 +103,115 @@ export default function DatePicker(input, options) {
         daysInMonth: function (month, year) {
             return month === 1 && this.isLeapYear(year) ? 29 : this._daysInMonth[month];
         },
-        formatDateTime: function (date) {
-            var format = options.format;
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
+        weekStart: function (date, firstDay) {
             var day = date.getDate();
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var seconds = date.getSeconds();
-            var am = hours < 12;
-            if (format.indexOf('a') > -1) {
-                hours = dateHelpers.mod(hours, 12) > 0 ? dateHelpers.mod(hours, 12) : 12;
+            if (typeof firstDay === 'undefined') {
+                firstDay = options.weekStarts;
             }
-            return format.replace('YYYY', year)
-                .replace('YY', year.toString().substr(-2))
-                .replace('MM', dateHelpers.pad(month))
-                .replace('DD', dateHelpers.pad(day))
-                .replace('hh', dateHelpers.pad(hours))
-                .replace('mm', dateHelpers.pad(minutes))
-                .replace('ss', dateHelpers.pad(seconds))
-                .replace('a', am ? 'AM' : 'PM');
+            day -= this.mod(date.getDay() - firstDay, 7);
+            return new Date(date.getFullYear(), date.getMonth(), day);
+        },
+        weekNumberingYear: function (date) {
+            var year = date.getFullYear();
+            var thisYearFirstWeekStart = this.weekStart(new Date(year, 0, 4), 1);
+            var nextYearFirstWeekStart = this.weekStart(new Date(year + 1, 0, 4), 1);
+            if (date.getTime() >= nextYearFirstWeekStart.getTime()) {
+                return year + 1;
+            } else if (date.getTime() >= thisYearFirstWeekStart.getTime()) {
+                return year;
+            }
+            return year - 1;
+        },
+        weekOfYear: function (date) {
+            var weekNumberingYear = this.weekNumberingYear(date);
+            var firstWeekStart = this.weekStart(new Date(weekNumberingYear, 0, 4), 1);
+            var weekStart = this.weekStart(date, 1);
+            return Math.round((weekStart.getTime() - firstWeekStart.getTime()) / 604800000) + 1;
+        },
+        formatDateTime: function (date, format) {
+            var regex = /\[([^\]]*)\]|[YR]{4}|uuu|[YR]{2}|[MD]{1,4}|[WHhms]{1,2}|[AaZz]/g;
+
+            if (typeof format === 'undefined') {
+                format = options.format;
+            }
+
+            function pad(num, length) {
+                var result = num.toString();
+                while (result.length < length) {
+                    result = '0' + result;
+                }
+                return result;
+            }
+
+            function splitTimezoneOffset(offset) {
+                // Note that the offset returned by Date.getTimezoneOffset()
+                // is positive if behind UTC and negative if ahead UTC
+                var sign = offset > 0 ? '-' : '+';
+                var hours = Math.floor(Math.abs(offset) / 60);
+                var minutes = Math.abs(offset) % 60;
+                return [sign + pad(hours, 2), pad(minutes, 2)];
+            }
+
+            return format.replace(regex, function (match, $1) {
+                switch (match) {
+                case 'YY':
+                    return date.getFullYear().toString().substr(-2);
+                case 'YYYY':
+                    return date.getFullYear();
+                case 'M':
+                    return date.getMonth() + 1;
+                case 'MM':
+                    return pad(date.getMonth() + 1, 2);
+                case 'MMM':
+                    return options.labels.months.short[date.getMonth()];
+                case 'MMMM':
+                    return options.labels.months.long[date.getMonth()];
+                case 'D':
+                    return date.getDate();
+                case 'DD':
+                    return pad(date.getDate(), 2);
+                case 'DDD':
+                    return options.labels.weekdays.short[dateHelpers.mod(date.getDay() + options.weekStarts, 7)];
+                case 'DDDD':
+                    return options.labels.weekdays.long[dateHelpers.mod(date.getDay() + options.weekStarts, 7)];
+                case 'W':
+                    return dateHelpers.weekOfYear(date);
+                case 'WW':
+                    return pad(dateHelpers.weekOfYear(date), 2);
+                case 'RR':
+                    return dateHelpers.weekNumberingYear(date).toString().substr(-2);
+                case 'RRRR':
+                    return dateHelpers.weekNumberingYear(date);
+                case 'H':
+                    return dateHelpers.mod(date.getHours(), 12) || 12;
+                case 'HH':
+                    return pad(dateHelpers.mod(date.getHours(), 12) || 12, 2);
+                case 'h':
+                    return date.getHours();
+                case 'hh':
+                    return pad(date.getHours(), 2);
+                case 'm':
+                    return date.getMinutes();
+                case 'mm':
+                    return pad(date.getMinutes(), 2);
+                case 's':
+                    return date.getSeconds();
+                case 'ss':
+                    return pad(date.getSeconds(), 2);
+                case 'uuu':
+                    return pad(date.getMilliseconds(), 3);
+                case 'A':
+                    return date.getHours() < 12 ? 'AM' : 'PM';
+                case 'a':
+                    return date.getHours() < 12 ? 'am' : 'pm';
+                case 'Z':
+                    return splitTimezoneOffset(date.getTimezoneOffset()).join(':');
+                case 'z':
+                    return splitTimezoneOffset(date.getTimezoneOffset()).join('');
+                default:
+                    return $1 || match;
+                }
+            });
         }
     };
 
@@ -230,7 +324,7 @@ export default function DatePicker(input, options) {
     function generateCalendar() {
         calendar = document.createElement('div');
         calendar.className = 'calendar';
-        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.todayLabel + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
+        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.labels.today + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
         document.body.appendChild(calendar);
 
         $('.currentMonth', calendar).addEventListener('mousedown', function (event) {
@@ -272,7 +366,7 @@ export default function DatePicker(input, options) {
         var num = 1;
         var firstDay = new Date(year, month, 1).getDay();
         var monthLength = dateHelpers.daysInMonth(month, year);
-        var monthName = options.monthLabels[month];
+        var monthName = options.labels.months.long[month];
         var start = dateHelpers.mod(firstDay - options.weekStarts, 7);
         var html = '';
         html += '<tr><th class="calendar-header" colspan="7">';
@@ -281,7 +375,7 @@ export default function DatePicker(input, options) {
         html += '<tr>';
         for (i = 0; i < 7; i++ ){
             html += '<td class="calendar-header-day">';
-            html += options.dayLabels[dateHelpers.mod(i + options.weekStarts, 7)];
+            html += options.labels.weekdays.short[dateHelpers.mod(i + options.weekStarts, 7)];
             html += '</td>';
         }
         html += '</tr><tr>';
