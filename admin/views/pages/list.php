@@ -14,7 +14,7 @@
 <?php
             foreach ($pages as $page):
                 $routable = $page->published() && $page->routable();
-                $date = date($formwork->option('date.format') . ' ' . $formwork->option('date.hour_format'), $page->lastModifiedTime());
+                $date = $this->datetime($page->lastModifiedTime());
 ?>
                 <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?>" <?php if (!$page->sortable()): ?>data-sortable="false"<?php endif; ?>>
                     <div class="pages-item">

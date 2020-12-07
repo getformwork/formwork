@@ -4,6 +4,7 @@ namespace Formwork\Admin\View;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
+use Formwork\Admin\Utils\DateFormats;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Template\Renderer;
@@ -124,7 +125,19 @@ class View
             'attr'       => [HTML::class, 'attributes'],
             'escape'     => [Str::class, 'escape'],
             'escapeAttr' => [Str::class, 'escapeAttr'],
-            'removeHTML' => [Str::class, 'removeHTML']
+            'removeHTML' => [Str::class, 'removeHTML'],
+            'date'       => static function (int $timestamp): string {
+                return DateFormats::formatTimestamp(
+                    $timestamp,
+                    Formwork::instance()->option('date.format')
+                );
+            },
+            'datetime'   => static function (int $timestamp): string {
+                return DateFormats::formatTimestamp(
+                    $timestamp,
+                    Formwork::instance()->option('date.format') . ' ' . Formwork::instance()->option('date.hour_format')
+                );
+            }
         ];
     }
 

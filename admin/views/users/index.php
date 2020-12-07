@@ -19,7 +19,7 @@
                     </div>
                     <div class="users-item-cell user-fullname"><?= $this->escape($user->fullname()) ?></div>
                     <div class="users-item-cell user-email" data-overflow-tooltip="true"><?= $this->escape($user->email()) ?></div>
-                    <div class="users-item-cell user-last-access" data-overflow-tooltip="true"><?= is_null($user->lastAccess()) ? '&infin;' : date($formwork->option('date.format') . ' ' . $formwork->option('date.hour_format'), $user->lastAccess()) ?></div>
+                    <div class="users-item-cell user-last-access" data-overflow-tooltip="true"><?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?></div>
                     <div class="users-item-cell user-actions">
                         <button type="button" class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->label('users.delete-user') ?>" aria-label="<?= $this->label('users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
                     </div>
