@@ -43,12 +43,7 @@ class View
      *
      * @var array
      */
-    protected static $helpers = [
-        'attr'       => [HTML::class, 'attributes'],
-        'escape'     => [Str::class, 'escape'],
-        'escapeAttr' => [Str::class, 'escapeAttr'],
-        'removeHTML' => [Str::class, 'removeHTML']
-    ];
+    protected static $helpers = [];
 
     /**
      * Create a new View instance
@@ -57,6 +52,11 @@ class View
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
+
+        // Load helpers
+        if (empty(static::$helpers)) {
+            static::$helpers = $this->helpers();
+        }
     }
 
     /**
@@ -112,6 +112,19 @@ class View
             'formwork' => Formwork::instance(),
             'site'     => Formwork::instance()->site(),
             'admin'    => Admin::instance()
+        ];
+    }
+
+    /**
+     * Return an array containing the helper functions
+     */
+    protected function helpers(): array
+    {
+        return [
+            'attr'       => [HTML::class, 'attributes'],
+            'escape'     => [Str::class, 'escape'],
+            'escapeAttr' => [Str::class, 'escapeAttr'],
+            'removeHTML' => [Str::class, 'removeHTML']
         ];
     }
 
