@@ -81,4 +81,12 @@ class Arr
         }
         return $result;
     }
+
+    /**
+     * Return whether the given array is not empty and its keys are not sequential
+     */
+    public static function isAssociative(array $array): bool
+    {
+        return $array !== [] && array_keys($array) !== range(0, count($array) - 1);
+    }
 }
