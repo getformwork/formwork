@@ -91,4 +91,9 @@ class Response
         $this->sendHeaders();
         echo $this->content;
     }
+
+    public static function __set_state(array $properties): self
+    {
+        return new static($properties['content'], $properties['status'], $properties['headers']);
+    }
 }
