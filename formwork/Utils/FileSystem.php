@@ -514,7 +514,7 @@ class FileSystem
      */
     public static function normalizePath(string $path): string
     {
-        return preg_replace('~[/\\\\]+~', DS, $path);
+        return Path::normalize($path, DS);
     }
 
     /**
@@ -522,7 +522,7 @@ class FileSystem
      */
     public static function joinPaths(string ...$paths): string
     {
-        return static::normalizePath(implode(DS, $paths));
+        return Path::join($paths, DS);
     }
 
     /**
