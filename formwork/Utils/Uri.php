@@ -201,9 +201,9 @@ class Uri
                 $result .= ':' . $port;
             }
         }
-        // Normalize path slashes (leading and trailing separators are trimmed before so that the path
+        // Normalize path slashes (leading and trailing separators are trimmed after so that the path
         // is always considered relative and we can then add a trailing slash conditionally)
-        $normalizedPath = '/' . Path::normalize(trim($parts['path'], '/'));
+        $normalizedPath = '/' . trim(Path::normalize($parts['path']), '/');
         // Add trailing slash only if the trailing component is not empty or a filename
         if ($normalizedPath !== '/' && !Str::contains(basename($normalizedPath), '.')) {
             $normalizedPath .= '/';
