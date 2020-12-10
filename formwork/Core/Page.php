@@ -197,7 +197,7 @@ class Page extends AbstractPage
     public function __construct(string $path)
     {
         $this->path = FileSystem::normalizePath($path . DS);
-        $this->relativePath = Str::wrap(Str::removeStart($this->path, Formwork::instance()->site()->path(), DS), DS);
+        $this->relativePath = Str::wrap(Str::removeStart($this->path, Formwork::instance()->site()->path()), DS);
         $this->route = Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
         $this->id = basename($this->path);
         $this->slug = basename($this->route);
