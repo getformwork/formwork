@@ -142,10 +142,7 @@ class HTTPRequest
      */
     public static function isHTTPS(): bool
     {
-        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
-            return true;
-        }
-        return false;
+        return isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' || $_SERVER['SERVER_PORT'] == 443;
     }
 
     /**

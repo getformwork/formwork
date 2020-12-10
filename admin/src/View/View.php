@@ -4,6 +4,7 @@ namespace Formwork\Admin\View;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
+use Formwork\Admin\Utils\DateFormats;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Template\Renderer;
@@ -43,11 +44,7 @@ class View
      *
      * @var array
      */
-    protected static $helpers = [
-        'attr'       => [HTML::class, 'attributes'],
-        'escape'     => [Str::class, 'escape'],
-        'removeHTML' => [Str::class, 'removeHTML']
-    ];
+    protected static $helpers = [];
 
     /**
      * Create a new View instance
@@ -56,6 +53,11 @@ class View
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
+
+        // Load helpers
+        if (empty(static::$helpers)) {
+            static::$helpers = $this->helpers();
+        }
     }
 
     /**
@@ -111,6 +113,31 @@ class View
             'formwork' => Formwork::instance(),
             'site'     => Formwork::instance()->site(),
             'admin'    => Admin::instance()
+        ];
+    }
+
+    /**
+     * Return an array containing the helper functions
+     */
+    protected function helpers(): array
+    {
+        return [
+            'attr'       => [HTML::class, 'attributes'],
+            'escape'     => [Str::class, 'escape'],
+            'escapeAttr' => [Str::class, 'escapeAttr'],
+            'removeHTML' => [Str::class, 'removeHTML'],
+            'date'       => static function (int $timestamp): string {
+                return DateFormats::formatTimestamp(
+                    $timestamp,
+                    Formwork::instance()->option('date.format')
+                );
+            },
+            'datetime'   => static function (int $timestamp): string {
+                return DateFormats::formatTimestamp(
+                    $timestamp,
+                    Formwork::instance()->option('date.format') . ' ' . Formwork::instance()->option('date.hour_format')
+                );
+            }
         ];
     }
 

@@ -10,6 +10,7 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Traits\SingletonTrait;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
@@ -169,7 +170,8 @@ final class Formwork
             'admin.login_reset_time'   => 300,
             'admin.logout_redirect'    => 'login',
             'admin.session_timeout'    => 20,
-            'admin.avatar_size'        => 512
+            'admin.avatar_size'        => 512,
+            'admin.color_scheme'       => 'light'
         ];
     }
 
@@ -203,11 +205,9 @@ final class Formwork
             }
         }
 
-        if ($this->option('statistics.enabled')) {
-            if (isset($page) && !$page->isErrorPage()) {
-                $statistics = new Statistics();
-                $statistics->trackVisit();
-            }
+        if ($this->option('statistics.enabled') && isset($page) && !$page->isErrorPage()) {
+            $statistics = new Statistics();
+            $statistics->trackVisit();
         }
     }
 
@@ -333,14 +333,12 @@ final class Formwork
                         Header::redirect($this->site->uri($route), 301);
                     }
                 }
-                if ($params->has('tagName') || $params->has('paginationPage')) {
-                    if ($page->template()->scheme()->get('type') !== 'listing') {
-                        return $this->site->errorPage();
-                    }
+                if (($params->has('tagName') || $params->has('paginationPage')) && $page->template()->scheme()->get('type') !== 'listing') {
+                    return $this->site->errorPage();
                 }
                 if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
-                    if (($page->published() && !$this->site->modifiedSince((int) strtotime($page->get('publish-date'))))
-                    || (!$page->published() && !$this->site->modifiedSince((int) strtotime($page->get('unpublish-date'))))) {
+                    if (($page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
+                    || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
                         // Clear cache if the site was not modified since the page has been published or unpublished
                         $this->cache->clear();
                         FileSystem::touch($this->option('content.path'));
@@ -355,10 +353,8 @@ final class Formwork
                 if ($upperLevel === '.') {
                     $upperLevel = $this->option('pages.index');
                 }
-                if ($parent = $this->site->findPage($upperLevel)) {
-                    if ($parent->files()->has($filename)) {
-                        return HTTPResponse::file($parent->files()->get($filename)->path());
-                    }
+                if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
+                    return HTTPResponse::file($parent->files()->get($filename)->path());
                 }
             }
 

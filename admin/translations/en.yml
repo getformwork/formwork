@@ -18,6 +18,7 @@ dashboard.welcome: Welcome
 date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 date.today: Today
+date.weekdays.long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 errors.action.report-to-github: Report an issue to GitHub
 errors.action.return-to-dashboard: Return to Dashboard
@@ -65,6 +66,9 @@ options.site.info.language: Language
 options.site.info.title: Title
 options.system: System
 options.system.admin-panel: Admin Panel
+options.system.admin-panel.default-color-scheme: Default Color Scheme
+options.system.admin-panel.default-color-scheme.dark: Dark
+options.system.admin-panel.default-color-scheme.light: Light
 options.system.admin-panel.default-language: Default Language
 options.system.admin-panel.logout-redirects-to: Logout Redirects to
 options.system.admin-panel.logout-redirects-to.home: Home
@@ -229,6 +233,10 @@ uploader.uploaded: File uploaded
 user.actions: Actions
 user.avatar: Avatar
 user.avatar.uploaded: Avatar uploaded
+user.color-scheme: Color Scheme
+user.color-scheme.auto: Auto
+user.color-scheme.dark: Dark
+user.color-scheme.light: Light
 user.email: Email
 user.fullname: Full Name
 user.language: Language

@@ -7,6 +7,7 @@ use Formwork\Metadata\Metadata;
 use Formwork\Parsers\Markdown;
 use Formwork\Parsers\YAML;
 use Formwork\Template\Template;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\Str;
@@ -288,7 +289,7 @@ class Page extends AbstractPage
             $format = Formwork::instance()->option('date.format');
         }
         if ($this->has('publish-date')) {
-            return date($format, strtotime($this->data['publish-date']));
+            return date($format, Date::toTimestamp($this->data['publish-date']));
         }
         return parent::date($format);
     }
@@ -362,10 +363,7 @@ class Page extends AbstractPage
      */
     public function isDeletable(): bool
     {
-        if ($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage()) {
-            return false;
-        }
-        return true;
+        return !($this->hasChildren() || $this->isSite() || $this->isIndexPage() || $this->isErrorPage());
     }
 
     /**
@@ -575,11 +573,11 @@ class Page extends AbstractPage
         $this->published = $this->data['published'];
 
         if ($this->has('publish-date')) {
-            $this->published = $this->published && strtotime($this->get('publish-date')) < time();
+            $this->published = $this->published && Date::toTimestamp($this->get('publish-date')) < time();
         }
 
         if ($this->has('unpublish-date')) {
-            $this->published = $this->published && strtotime($this->get('unpublish-date')) > time();
+            $this->published = $this->published && Date::toTimestamp($this->get('unpublish-date')) > time();
         }
 
         $this->routable = $this->data['routable'];
@@ -611,10 +609,8 @@ class Page extends AbstractPage
         if ($this->has('response_status')) {
             Header::status((int) $this->get('response_status'));
         }
-        if (!empty($this->headers())) {
-            foreach ($this->headers() as $name => $value) {
-                Header::send($name, $value);
-            }
+        foreach ($this->headers() as $name => $value) {
+            Header::send($name, $value);
         }
     }
 

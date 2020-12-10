@@ -3,7 +3,10 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\Registry;
+use Formwork\Admin\Utils\SemVer;
 use Formwork\Core\Formwork;
+use Formwork\Parsers\JSON;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
@@ -141,7 +144,7 @@ class Updater
 
         $this->registry->set('last-check', time());
 
-        if (version_compare(Formwork::VERSION, $this->release['tag']) >= 0) {
+        if (!$this->isVersionInstallable($this->release['tag'])) {
             $this->registry->set('up-to-date', true);
             $this->registry->save();
             return true;
@@ -208,10 +211,8 @@ class Updater
 
         if ($this->options['cleanupAfterInstall']) {
             $deletableFiles = $this->findDeletableFiles($installedFiles);
-            if (!empty($deletableFiles)) {
-                foreach ($deletableFiles as $file) {
-                    FileSystem::delete($file);
-                }
+            foreach ($deletableFiles as $file) {
+                FileSystem::delete($file);
             }
         }
 
@@ -245,7 +246,7 @@ class Updater
             return;
         }
 
-        $data = json_decode(FileSystem::fetch(self::API_RELEASE_URI, $this->context), true);
+        $data = JSON::parse(FileSystem::fetch(self::API_RELEASE_URI, $this->context));
 
         if (!$data) {
             throw new RuntimeException('Cannot fetch latest Formwork release data');
@@ -254,7 +255,7 @@ class Updater
         $this->release = [
             'name'    => $data['name'],
             'tag'     => $data['tag_name'],
-            'date'    => strtotime($data['published_at']),
+            'date'    => Date::toTimestamp($data['published_at'], DATE_ISO8601),
             'archive' => $data['zipball_url']
         ];
 
@@ -277,6 +278,16 @@ class Updater
             return $this->headers;
         }
         return $this->headers = get_headers($this->release['archive'], 1, $this->context);
+    }
+
+    /**
+     * Return whether a version is installable based on the current version of Formwork
+     */
+    protected function isVersionInstallable(string $version): bool
+    {
+        $current = SemVer::fromString(Formwork::VERSION);
+        $new = SemVer::fromString($version);
+        return !$new->isPrerelease() && $current->compareWith($new, '!=') && $current->compareWith($new, '^');
     }
 
     /**

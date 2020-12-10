@@ -57,6 +57,20 @@ class FileSystem
     public const MAX_NAME_LENGTH = 255;
 
     /**
+     * Default mode for created files
+     *
+     * @var int
+     */
+    protected const DEFAULT_FILE_MODE = 0666;
+
+    /**
+     * Default mode for created directories
+     *
+     * @var int
+     */
+    protected const DEFAULT_DIRECTORY_MODE = 0777;
+
+    /**
      * Array containing files to ignore
      *
      * @var array
@@ -228,7 +242,7 @@ class FileSystem
      */
     public static function isVisible(string $path): bool
     {
-        return basename($path)[0] !== '.';
+        return !Str::startsWith(basename($path), '.');
     }
 
     /**
@@ -369,9 +383,9 @@ class FileSystem
             $sourceItemPath = static::joinPaths($source, $item);
             $destinationItemPath = static::joinPaths($destination, $item);
             if (static::isFile($sourceItemPath)) {
-                static::move($sourceItemPath, $destinationItemPath);
+                static::move($sourceItemPath, $destinationItemPath, $overwrite);
             } else {
-                static::moveDirectory($sourceItemPath, $destinationItemPath);
+                static::moveDirectory($sourceItemPath, $destinationItemPath, $overwrite);
             }
         }
         static::delete($source, true);
@@ -414,17 +428,17 @@ class FileSystem
      */
     public static function write(string $file, string $content): bool
     {
-        $temp = static::temporaryName($file . '.');
         if (static::exists($file) && !static::isWritable($file)) {
             throw new RuntimeException('Cannot write ' . $file . ': file exists but is not writable');
         }
-        if (@file_put_contents($temp, $content, LOCK_EX) === false) {
+        $temporaryFile = static::createTemporaryFile(dirname($file));
+        if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
             throw new RuntimeException('Cannot write ' . $file . ': ' . static::getLastStreamErrorMessage());
         }
         if (static::exists($file)) {
-            @chmod($temp, @fileperms($file));
+            @chmod($temporaryFile, @fileperms($file));
         }
-        return static::move($temp, $file, true);
+        return static::move($temporaryFile, $file, true);
     }
 
     /**
@@ -432,8 +446,31 @@ class FileSystem
      */
     public static function createFile(string $file): bool
     {
-        static::assertExists($file, false);
-        return static::write($file, '');
+        // x+ mode checks file existence atomically
+        if (($handle = @fopen($file, 'x+')) !== false) {
+            @fclose($handle);
+            @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
+            return true;
+        }
+        throw new RuntimeException('Cannot create file ' . $file . ': ' . static::getLastStreamErrorMessage());
+    }
+
+    /**
+     * Try to create a temporary file in the specified directory and return its path
+     */
+    public static function createTemporaryFile(string $directory, string $prefix = ''): string
+    {
+        $attempts = 0;
+        while ($attempts++ < 10) {
+            $temporaryFile = static::joinPaths($directory, static::randomName($prefix));
+            try {
+                static::createFile($temporaryFile);
+            } catch (RuntimeException $e) {
+                continue;
+            }
+            return $temporaryFile;
+        }
+        throw new RuntimeException('Cannot create a temporary file');
     }
 
     /**
@@ -443,8 +480,10 @@ class FileSystem
      */
     public static function createDirectory(string $directory, bool $recursive = false): bool
     {
-        static::assertExists($directory, false);
-        return @mkdir($directory, 0777, $recursive);
+        if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
+            return true;
+        }
+        throw new RuntimeException('Cannot create directory ' . $directory);
     }
 
     /**
@@ -648,9 +687,9 @@ class FileSystem
     /**
      * Generate a random file name
      */
-    public static function randomName(): string
+    public static function randomName(string $prefix = ''): string
     {
-        return str_shuffle(dechex(random_int(0x100, 0xfff)) . uniqid());
+        return $prefix . bin2hex(random_bytes(8));
     }
 
     /**
@@ -660,7 +699,8 @@ class FileSystem
      */
     public static function temporaryName(string $prefix = ''): string
     {
-        return $prefix . static::randomName();
+        trigger_error(static::class . '::temporaryName() is deprecated since Formwork 1.11.0, use ' . static::class . '::randomName() instead', E_USER_DEPRECATED);
+        return static::randomName($prefix);
     }
 
     /**

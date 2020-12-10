@@ -50,8 +50,7 @@ class Arr
                 $array1[$key] = static::appendMissing($array1[$key], $array2[$key]);
             }
         }
-        $array1 += $array2;
-        return $array1;
+        return $array1 + $array2;
     }
 
     /**
@@ -81,5 +80,13 @@ class Arr
             $result[$key] = $array[$key];
         }
         return $result;
+    }
+
+    /**
+     * Return whether the given array is not empty and its keys are not sequential
+     */
+    public static function isAssociative(array $array): bool
+    {
+        return $array !== [] && array_keys($array) !== range(0, count($array) - 1);
     }
 }

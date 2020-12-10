@@ -455,14 +455,12 @@ class Pages extends AbstractController
             }
 
             // Check if page number has to change
-            if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date') {
-                if ($page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
-                    $id = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
-                    try {
-                        $page = $this->changePageId($page, $id);
-                    } catch (RuntimeException $e) {
-                        throw new TranslatedException('Cannot change page num', 'pages.page.cannot-change-num');
-                    }
+            if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date' && $page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
+                $id = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
+                try {
+                    $page = $this->changePageId($page, $id);
+                } catch (RuntimeException $e) {
+                    throw new TranslatedException('Cannot change page num', 'pages.page.cannot-change-num');
                 }
             }
         }
@@ -510,16 +508,14 @@ class Pages extends AbstractController
         $uploader->upload();
         $page->reload();
 
-        if (!empty($uploader->uploadedFiles())) {
-            foreach ($uploader->uploadedFiles() as $file) {
-                $file = $page->files()->get($file);
+        foreach ($uploader->uploadedFiles() as $file) {
+            $file = $page->files()->get($file);
 
-                // Process JPEG and PNG images according to system options (e.g. quality)
-                if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
-                    $image = new Image($file->path());
-                    $image->saveOptimized();
-                    $page->reload();
-                }
+            // Process JPEG and PNG images according to system options (e.g. quality)
+            if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
+                $image = new Image($file->path());
+                $image->saveOptimized();
+                $page->reload();
             }
         }
     }
@@ -543,7 +539,7 @@ class Pages extends AbstractController
      */
     protected function makePageNum($parent, ?string $mode): string
     {
-        if (!($parent instanceof Page || $parent instanceof Site)) {
+        if (!$parent instanceof Page && !$parent instanceof Site) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
         switch ($mode) {
@@ -579,7 +575,7 @@ class Pages extends AbstractController
      */
     protected function changePageParent(Page $page, $parent): Page
     {
-        if (!($parent instanceof Page || $parent instanceof Site)) {
+        if (!$parent instanceof Page && !$parent instanceof Site) {
             throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
         $destination = FileSystem::joinPaths($parent->path(), $page->id(), DS);

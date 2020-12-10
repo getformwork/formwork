@@ -8,7 +8,7 @@
                     <h3><?= $this->escape($user->fullname()) ?></h3>
                     <?= $this->escape($user->username()) ?><br>
                     <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
-                    <?= $this->label('user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : date($formwork->option('date.format') . ' ' . $formwork->option('date.hour_format'), $user->lastAccess()) ?>
+                    <?= $this->label('user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?>
                 </div>
             </div>
         </div>

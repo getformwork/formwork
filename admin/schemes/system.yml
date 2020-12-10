@@ -227,6 +227,22 @@ rows5:
                             type: number
                             min: 0
                             required: true
+        row4:
+            type: row
+            fields:
+                column1:
+                    type: column
+                    width: 1-3
+                    label: '{{options.system.admin-panel.default-color-scheme}}'
+                column2:
+                    type: column
+                    width: 2-3
+                    fields:
+                        admin.color_scheme:
+                            type: togglegroup
+                            options:
+                                light: '{{options.system.admin-panel.default-color-scheme.light}}'
+                                dark: '{{options.system.admin-panel.default-color-scheme.dark}}'
 
 section6:
     type: header

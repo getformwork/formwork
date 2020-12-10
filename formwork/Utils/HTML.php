@@ -32,7 +32,7 @@ class HTML
         if (is_array($value)) {
             $value = implode(' ', array_filter($value));
         }
-        return $name . '="' . $value . '"';
+        return $name . '="' . Str::escapeAttr($value) . '"';
     }
 
     /**
@@ -70,7 +70,7 @@ class HTML
         }
         return $html;
     }
-    
+
     /**
      * Return whether the given tag is a void element
      */

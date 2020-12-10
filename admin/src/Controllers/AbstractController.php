@@ -6,9 +6,11 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
+use Formwork\Admin\Utils\DateFormats;
 use Formwork\Admin\View\View;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
+use Formwork\Parsers\JSON;
 use Formwork\Utils\Str;
 
 abstract class AbstractController
@@ -60,22 +62,22 @@ abstract class AbstractController
     protected function defaults(): array
     {
         return [
-            'location'  => $this->location,
-            'csrfToken' => CSRFToken::get(),
-            'modals'    => implode($this->modals),
-            'appConfig' => [
+            'location'    => $this->location,
+            'csrfToken'   => CSRFToken::get(),
+            'modals'      => implode($this->modals),
+            'colorScheme' => $this->getColorScheme(),
+            'appConfig'   => JSON::encode([
                 'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
-                    'dayLabels'   => $this->label('date.weekdays.short'),
-                    'monthLabels' => $this->label('date.months.long'),
-                    'weekStarts'  => $this->option('date.week_starts'),
-                    'todayLabel'  => $this->label('date.today'),
-                    'format'      => strtr(
-                        $this->option('date.format'),
-                        ['Y' => 'YYYY', 'm' => 'MM', 'd' => 'DD', 'H' => 'hh', 'i' => 'mm', 's' => 'ss', 'A' => 'a']
-                    )
+                    'weekStarts' => $this->option('date.week_starts'),
+                    'format'     => DateFormats::formatToPattern(Formwork::instance()->option('date.format')),
+                    'labels'     => [
+                        'today'    => $this->label('date.today'),
+                        'weekdays' => ['long' => $this->label('date.weekdays.long'), 'short' =>  $this->label('date.weekdays.short')],
+                        'months'   => ['long' => $this->label('date.months.long'), 'short' =>  $this->label('date.months.short')]
+                    ]
                 ]
-            ]
+            ])
         ];
     }
 
@@ -123,5 +125,20 @@ abstract class AbstractController
     {
         $view = new View($name, array_merge($this->defaults(), $data));
         return $view->render($return);
+    }
+
+    /**
+     * Get color scheme
+     */
+    private function getColorScheme(): string
+    {
+        $default = $this->option('admin.color_scheme');
+        if (Admin::instance()->isLoggedIn()) {
+            if ($this->user()->colorScheme() === 'auto') {
+                return $_COOKIE['formwork_preferred_color_scheme'] ?? $default;
+            }
+            return $this->user()->colorScheme();
+        }
+        return $default;
     }
 }

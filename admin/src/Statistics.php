@@ -2,8 +2,10 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Admin\Utils\DateFormats;
 use Formwork\Admin\Utils\IPAnonymizer;
 use Formwork\Admin\Utils\Registry;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Visitor;
@@ -150,15 +152,9 @@ class Statistics
         $visits = array_slice($visits, -$limit, null, true);
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
-        $label = static function (string $day): string {
-            $time = strtotime($day);
-            $month = Admin::instance()->label('date.months.short')[date('n', $time) - 1];
-            $weekday = Admin::instance()->label('date.weekdays.short')[date('N', $time) % 7];
-            $day = date('j', $time);
-            return strtr("D\nj M", ['D' => $weekday, 'M' => $month, 'j' => $day]);
-        };
-
-        $labels = array_map($label, $days);
+        $labels = array_map(static function (string $day): string {
+            return DateFormats::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M");
+        }, $days);
 
         $interpolate = static function (array $data) use ($days): array {
             $output = [];

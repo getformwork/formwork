@@ -7,6 +7,7 @@ import Notification from './components/notification';
 import Pages from './components/pages';
 import Tooltips from './components/tooltips';
 import Updates from './components/updates';
+import Utils from './components/utils';
 
 var Formwork;
 
@@ -22,9 +23,11 @@ export default Formwork = {
         Pages.init();
         Updates.init();
 
-        $('.toggle-navigation').addEventListener('click', function () {
-            $('.sidebar').classList.toggle('show');
-        });
+        if ($('.toggle-navigation')) {
+            $('.toggle-navigation').addEventListener('click', function () {
+                $('.sidebar').classList.toggle('show');
+            });
+        }
 
         $$('[data-chart-data]').forEach(function (element) {
             var data = JSON.parse(element.getAttribute('data-chart-data'));
@@ -48,6 +51,29 @@ export default Formwork = {
             });
         }
 
+        window.addEventListener('beforeunload', setPreferredColorScheme);
+        window.addEventListener('pagehide', setPreferredColorScheme);
+
+        function setPreferredColorScheme() {
+            var cookies = Utils.getCookies();
+            var cookieName = 'formwork_preferred_color_scheme';
+            var oldValue = cookieName in cookies ? cookies[cookieName] : null;
+            var value = null;
+
+            if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+                value = 'light';
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                value = 'dark';
+            }
+
+            if (value !== oldValue) {
+                Utils.setCookie(cookieName, value, {
+                    'max-age': 2592000, // 1 month
+                    'path': Formwork.config.baseUri,
+                    'samesite': 'strict'
+                });
+            }
+        }
     },
 
     initGlobals: function (global) {

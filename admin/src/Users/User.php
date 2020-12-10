@@ -15,13 +15,14 @@ class User extends DataGetter
      * @var array
      */
     protected $defaults = [
-        'username' => null,
-        'fullname' => null,
-        'hash'     => null,
-        'email'    => null,
-        'language' => 'en',
-        'role'     => 'user',
-        'avatar'   => null
+        'username'     => null,
+        'fullname'     => null,
+        'hash'         => null,
+        'email'        => null,
+        'language'     => 'en',
+        'role'         => 'user',
+        'avatar'       => null,
+        'color-scheme' => 'auto'
     ];
 
     /**
@@ -223,6 +224,14 @@ class User extends DataGetter
         }
         $lastAccess = (int) Admin::instance()->registry('lastAccess')->get($this->username);
         return $this->lastAccess = $lastAccess;
+    }
+
+    /**
+     * Get the user color scheme preference
+     */
+    public function colorScheme(): string
+    {
+        return $this->data['color-scheme'];
     }
 
     /**

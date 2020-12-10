@@ -4,7 +4,7 @@
             <div class="col-l-3-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->label('pages.content') ?></h3>
-                    <input class="title-input" id="title" type="text" name="title" value="<?= $this->escape($page->title()) ?>" required autocomplete="off">
+                    <input class="title-input" id="title" type="text" name="title" value="<?= $this->escapeAttr($page->title()) ?>" required autocomplete="off">
                     <input type="hidden" id="slug" name="slug" value="<?= $page->slug() ?>">
 <?php
                     if ($currentLanguage):

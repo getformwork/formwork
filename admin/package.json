@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "npm run build:css && npm run build:js",
-    "build:css": "sass ./assets/scss/admin.scss ./assets/css/admin.min.css --style=compressed --no-source-map",
+    "build:css": "sass ./assets/scss/admin.scss:./assets/css/admin.min.css ./assets/scss/admin-dark.scss:./assets/css/admin-dark.min.css --style=compressed --no-source-map",
     "build:js": "rollup -c && uglifyjs assets/js/app.min.js -c -m -o assets/js/app.min.js --timings",
     "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
     "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js",
@@ -21,19 +21,19 @@
   },
   "dependencies": {
     "chartist": "^0.11.4",
-    "codemirror": "^5.58.1",
+    "codemirror": "^5.58.3",
     "sortablejs": "~1.10.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
-    "eslint": "^7.12.1",
+    "eslint": "^7.14.0",
     "onchange": "^7.0.2",
-    "rollup": "^2.31.0",
+    "rollup": "^2.34.0",
     "sass": "^1.29.0",
-    "stylelint": "^13.7.2",
+    "stylelint": "^13.8.0",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
-    "uglify-js": "^3.11.2"
+    "uglify-js": "^3.12.0"
   }
 }

@@ -7,7 +7,7 @@
     <meta name="base-uri" content="<?= $this->panelUri() ?>">
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
-    <link rel="stylesheet" href="<?= $this->assets()->uri('css/admin.min.css', true) ?>">
+    <link rel="stylesheet" href="<?= $this->assets()->uri($colorScheme === 'dark' ? 'css/admin-dark.min.css' : 'css/admin.min.css', true) ?>">
 </head>
 <body>
     <main>
@@ -29,5 +29,7 @@
             </div>
         </div>
     </main>
+    <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>"></script>
+    <script>Formwork.config = <?= $appConfig ?>;</script>
 </body>
 </html>
