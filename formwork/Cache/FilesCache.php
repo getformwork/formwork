@@ -2,6 +2,7 @@
 
 namespace Formwork\Cache;
 
+use Formwork\Parsers\PHP;
 use Formwork\Utils\FileSystem;
 
 class FilesCache extends AbstractCache
@@ -38,8 +39,8 @@ class FilesCache extends AbstractCache
     public function fetch(string $key)
     {
         if ($this->has($key)) {
-            $data = FileSystem::read($this->getFile($key));
-            return unserialize($data);
+            $data = PHP::parseFile($this->getFile($key));
+            return $data['value'];
         }
         if (!$this->isValid($key)) {
             FileSystem::delete($this->getFile($key));
@@ -52,8 +53,7 @@ class FilesCache extends AbstractCache
      */
     public function save(string $key, $value): void
     {
-        $data = serialize($value);
-        FileSystem::write($this->getFile($key), $data);
+        PHP::encodeToFile(['value' => $value], $this->getFile($key));
     }
 
     /**
