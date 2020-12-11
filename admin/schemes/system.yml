@@ -167,10 +167,11 @@ rows4:
                     width: 2-3
                     fields:
                         cache.time:
-                            type: number
-                            min: 0
-                            max: 2592000
-                            step: 86400
+                            type: duration
+                            min: 900
+                            step: 900
+                            display: [weeks, days, hours, minutes]
+                            translate: false
                             required: true
 
 section5:
@@ -224,8 +225,11 @@ rows5:
                     width: 2-3
                     fields:
                         admin.session_timeout:
-                            type: number
+                            type: duration
                             min: 0
+                            display: [hours, minutes]
+                            unit: minutes
+                            translate: false
                             required: true
         row4:
             type: row
