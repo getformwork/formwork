@@ -76,6 +76,17 @@ abstract class AbstractController
                         'weekdays' => ['long' => $this->label('date.weekdays.long'), 'short' =>  $this->label('date.weekdays.short')],
                         'months'   => ['long' => $this->label('date.months.long'), 'short' =>  $this->label('date.months.short')]
                     ]
+                ],
+                'DurationInput' => [
+                    'labels' => [
+                        'years'   => $this->label('date.duration.years'),
+                        'months'  => $this->label('date.duration.months'),
+                        'weeks'   => $this->label('date.duration.weeks'),
+                        'days'    => $this->label('date.duration.days'),
+                        'hours'   => $this->label('date.duration.hours'),
+                        'minutes' => $this->label('date.duration.minutes'),
+                        'seconds' => $this->label('date.duration.seconds')
+                    ]
                 ]
             ])
         ];

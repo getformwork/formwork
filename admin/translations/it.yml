@@ -15,6 +15,13 @@ dashboard.statistics: Statistiche
 dashboard.statistics.unique-visitors: Visitatori unici
 dashboard.statistics.visits: Visite
 dashboard.welcome: Benvenuto/a
+date.duration.days: ['giorno', 'giorni']
+date.duration.hours: ['ora', 'ore']
+date.duration.minutes: ['minuto', 'minuti']
+date.duration.months: ['mese', 'mesi']
+date.duration.seconds: ['secondo', 'secondi']
+date.duration.weeks: ['settimana', 'settimane']
+date.duration.years: ['anno', 'anni']
 date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
 date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 date.today: Oggi
