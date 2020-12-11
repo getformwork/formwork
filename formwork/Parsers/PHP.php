@@ -68,6 +68,10 @@ class PHP extends AbstractEncoder
     {
         switch (($type = gettype($data))) {
             case 'array':
+                if ($data === []) {
+                    return '[]';
+                }
+
                 $parts = [];
 
                 foreach ($data as $key => $value) {
