@@ -224,7 +224,7 @@ class Uri
     public static function normalize(string $uri): string
     {
         // TODO: we should not force trailing slash, avoid this in 2.0
-        return rtrim(static::make([], $uri), '/') . '/';
+        return Str::append(static::make([], $uri), '/');
     }
 
     /**
