@@ -3,7 +3,7 @@ import Utils from './utils';
 export default function DurationInput(input, options) {
     var defaults = {
         unit: 'seconds',
-        display: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'],
+        intervals: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'],
         labels: {
             years: ['year', 'years'],
             months: ['month', 'months'],
@@ -40,7 +40,7 @@ export default function DurationInput(input, options) {
         var t;
         seconds = Utils.toSafeInteger(seconds);
         if (typeof intervalNames === 'undefined') {
-            intervalNames = options.display;
+            intervalNames = options.intervals;
         }
         for (t in TIME_INTERVALS) {
             if (Object.prototype.hasOwnProperty.call(TIME_INTERVALS, t) && intervalNames.indexOf(t) !== -1) {
@@ -120,8 +120,8 @@ export default function DurationInput(input, options) {
         field = document.createElement('div');
         field.className = 'duration-input';
 
-        for (i = 0; i < options.display.length; i++) {
-            name = options.display[i];
+        for (i = 0; i < options.intervals.length; i++) {
+            name = options.intervals[i];
             wrap = document.createElement('span');
             wrap.className = 'duration-' + name;
             innerInput = document.createElement('input');
@@ -205,8 +205,8 @@ export default function DurationInput(input, options) {
         if (input.disabled) {
             hiddenInput.disabled = true;
         }
-        if (input.hasAttribute('data-display')) {
-            options.display = input.getAttribute('data-display').split(', ');
+        if (input.hasAttribute('data-intervals')) {
+            options.intervals = input.getAttribute('data-intervals').split(', ');
         }
         if (input.hasAttribute('data-unit')) {
             options.unit = input.getAttribute('data-unit');

@@ -170,7 +170,7 @@ rows4:
                             type: duration
                             min: 900
                             step: 900
-                            display: [weeks, days, hours, minutes]
+                            intervals: [weeks, days, hours, minutes]
                             translate: false
                             required: true
 
@@ -227,8 +227,8 @@ rows5:
                         admin.session_timeout:
                             type: duration
                             min: 0
-                            display: [hours, minutes]
                             unit: minutes
+                            intervals: [hours, minutes]
                             translate: false
                             required: true
         row4:
