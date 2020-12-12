@@ -38,6 +38,7 @@ export default function DurationInput(input, options) {
     function secondsToIntervals(seconds) {
         var intervals = {};
         var t;
+        seconds = Utils.toSafeInteger(seconds);
         for (t in TIME_INTERVALS) {
             if (Object.prototype.hasOwnProperty.call(TIME_INTERVALS, t) && options.display.indexOf(t) !== -1) {
                 intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
@@ -55,7 +56,7 @@ export default function DurationInput(input, options) {
                 seconds += intervals[i] * TIME_INTERVALS[i];
             }
         }
-        return seconds;
+        return Utils.toSafeInteger(seconds);
     }
 
     function updateHiddenInput() {
@@ -138,8 +139,11 @@ export default function DurationInput(input, options) {
                 updateLabels();
             });
             innerInput.addEventListener('input', function () {
-                updateHiddenInput();
+                while (this.value > Utils.getMaxSafeInteger()) {
+                    this.value = this.value.slice(0, -1);
+                }
                 updateInnerInputsLength();
+                updateHiddenInput();
                 updateLabels();
             });
             innerInput.addEventListener('focus', function () {
