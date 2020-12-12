@@ -64,6 +64,15 @@
     border-top-right-radius: 0;
 }
 
+.editor-wrap {
+    border-radius: $border-radius;
+}
+
+.editor-wrap.focused .editor-toolbar,
+.editor-wrap.focused .CodeMirror {
+    border-color: $color-accent-500;
+}
+
 .CodeMirror-cursor {
     border-left-color: $color-base-100;
 }

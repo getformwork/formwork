@@ -22,21 +22,23 @@
                             <div class="page-route"><span><?= $page->route() ?></span></div>
                         <?php endif; ?>
                     </div>
-                    <div class="editor-toolbar" data-for="content">
-                        <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
-                        <button type="button" class="toolbar-button" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>"><span class="i-italic"></span></button>
-                        <button type="button" class="toolbar-button" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>"><span class="i-list-ul"></span></button>
-                        <button type="button" class="toolbar-button" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>"><span class="i-list-ol"></span></button>
-                        <span class="spacer"></span>
-                        <button type="button" class="toolbar-button" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>"><span class="i-quote"></span></button>
-                        <button type="button" class="toolbar-button" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
-                        <button type="button" class="toolbar-button" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
-                        <button type="button" class="toolbar-button" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
-                        <span class="spacer"></span>
-                        <button type="button" class="toolbar-button" data-command="undo" title="<?= $this->label('pages.editor.undo') ?>" disabled><span class="i-undo"></span></button>
-                        <button type="button" class="toolbar-button" data-command="redo" title="<?= $this->label('pages.editor.redo') ?>" disabled><span class="i-redo"></span></button>
+                    <div class="editor-wrap">
+                        <div class="editor-toolbar" data-for="content">
+                            <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->label('pages.editor.bold') ?>"><span class="i-bold"></span></button>
+                            <button type="button" class="toolbar-button" data-command="italic" title="<?= $this->label('pages.editor.italic') ?>"><span class="i-italic"></span></button>
+                            <button type="button" class="toolbar-button" data-command="ul" title="<?= $this->label('pages.editor.bullet-list') ?>"><span class="i-list-ul"></span></button>
+                            <button type="button" class="toolbar-button" data-command="ol" title="<?= $this->label('pages.editor.numbered-list') ?>"><span class="i-list-ol"></span></button>
+                            <span class="spacer"></span>
+                            <button type="button" class="toolbar-button" data-command="quote" title="<?= $this->label('pages.editor.quote') ?>"><span class="i-quote"></span></button>
+                            <button type="button" class="toolbar-button" data-command="link" title="<?= $this->label('pages.editor.link') ?>"><span class="i-link"></span></button>
+                            <button type="button" class="toolbar-button" data-command="image" title="<?= $this->label('pages.editor.image') ?>"><span class="i-image"></span></button>
+                            <button type="button" class="toolbar-button" data-command="summary" title="<?= $this->label('pages.editor.summary') ?>"><span class="i-read-more"></span></button>
+                            <span class="spacer"></span>
+                            <button type="button" class="toolbar-button" data-command="undo" title="<?= $this->label('pages.editor.undo') ?>" disabled><span class="i-undo"></span></button>
+                            <button type="button" class="toolbar-button" data-command="redo" title="<?= $this->label('pages.editor.redo') ?>" disabled><span class="i-redo"></span></button>
+                        </div>
+                        <textarea class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     </div>
-                    <textarea class="editor-textarea" id="content" name="content" autocomplete="off"><?= $this->escape($page->rawContent()) ?></textarea>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <button type="submit" class="button-accent button-right" data-command="save"><i class="i-check"></i> <?= $this->label('pages.save') ?></button>
 <?php

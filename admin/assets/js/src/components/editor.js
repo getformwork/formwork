@@ -26,6 +26,8 @@ export default function Editor(textarea) {
 
     var toolbar = $('.editor-toolbar[data-for=' + textarea.id + ']');
 
+    var wrap = textarea.parentNode.classList.contains('editor-wrap') ? textarea.parentNode : null;
+
     var activeLines = [];
 
     $('[data-command=bold]', toolbar).addEventListener('click', function () {
@@ -132,7 +134,16 @@ export default function Editor(textarea) {
         editor.refresh();
     });
 
+    editor.on('focus', function () {
+        if (wrap !== null) {
+            wrap.classList.add('focused');
+        }
+    });
+
     editor.on('blur', function (editor) {
+        if (wrap !== null) {
+            wrap.classList.remove('focused');
+        }
         removeActiveLines(editor, activeLines);
         activeLines = [];
     });
