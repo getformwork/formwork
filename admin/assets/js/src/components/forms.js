@@ -1,5 +1,6 @@
 import ArrayInput from './arrayinput';
 import DatePicker from './datepicker';
+import DurationInput from './durationinput';
 import Editor from './editor';
 import FileInput from './fileinput';
 import Form from './form';
@@ -72,6 +73,10 @@ export default {
 
         $$('input[data-field=tags]').forEach(function (element) {
             TagInput(element);
+        });
+
+        $$('input[data-field=duration]').forEach(function (element) {
+            DurationInput(element, Formwork.config.DurationInput);
         });
 
         $$('input[type=range]').forEach(function (element) {

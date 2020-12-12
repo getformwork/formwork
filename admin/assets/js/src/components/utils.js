@@ -275,5 +275,21 @@ export default {
             }
         }
         document.cookie = cookie;
+    },
+
+    getMaxSafeInteger: function () {
+        return Number.MAX_SAFE_INTEGER || 9007199254740991;
+    },
+
+    toSafeInteger: function (value) {
+        var max = this.getMaxSafeInteger();
+        var min = -max;
+        if (value > max) {
+            return max;
+        }
+        if (value < min) {
+            return min;
+        }
+        return parseInt(value, 10) || 0;
     }
 };

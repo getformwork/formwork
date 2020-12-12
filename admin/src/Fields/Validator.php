@@ -293,6 +293,14 @@ class Validator
     }
 
     /**
+     * Validate "duration" fields
+     */
+    public static function validateDuration($value, Field $field)
+    {
+        return static::validateNumber($value, $field);
+    }
+
+    /**
      * Cast a value to its correct type
      */
     protected static function parse($value)

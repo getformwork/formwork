@@ -150,6 +150,55 @@
     font-weight: 600;
 }
 
+.duration-input {
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: $input-margin-bottom;
+    padding: $input-padding-v $input-padding-h / 2;
+    border: 1px solid $color-base-500;
+    border-radius: $border-radius;
+    font-size: $input-font-size;
+    line-height: $input-line-height;
+    @include user-select-none;
+}
+
+.duration-input.focused {
+    border-color: $color-accent-500;
+}
+
+.duration-input > span {
+    text-align: center;
+}
+
+.duration-input input {
+    margin: 0;
+    padding: 0;
+    width: 2rem;
+    border: 0;
+    background-color: $color-base-700;
+    vertical-align: baseline;
+    text-align: center;
+    -moz-appearance: textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+    }
+}
+
+.duration-input input:focus {
+    box-shadow: none;
+}
+
+.duration-input label {
+    margin: 0;
+    padding: 0 0.5rem;
+}
+
+.duration-hidden-input {
+    display: none;
+}
+
 .title-input {
     font-size: $font-size-l;
 }
