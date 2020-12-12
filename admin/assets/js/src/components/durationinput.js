@@ -135,12 +135,6 @@ export default function DurationInput(input, options) {
                 innerInput.disabled = true;
             }
             innerInputs[name] = innerInput;
-            innerInput.addEventListener('change', function () {
-                updateHiddenInput();
-                updateInnerInputs();
-                updateInnerInputsLength();
-                updateLabels();
-            });
             innerInput.addEventListener('input', function () {
                 if (this.value.length > 1) {
                     this.value = this.value.replace(/^0+/, '');
@@ -150,6 +144,12 @@ export default function DurationInput(input, options) {
                 }
                 updateInnerInputsLength();
                 updateHiddenInput();
+                updateLabels();
+            });
+            innerInput.addEventListener('blur', function () {
+                updateHiddenInput();
+                updateInnerInputs();
+                updateInnerInputsLength();
                 updateLabels();
             });
             innerInput.addEventListener('focus', function () {
