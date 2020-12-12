@@ -298,14 +298,9 @@ class Validator
     protected static function parse($value)
     {
         if (is_numeric($value)) {
-            if ($value == (int) $value) {
-                return (int) $value;
-            }
-            if ($value == (float) $value) {
-                return (float) $value;
-            }
+            // This reliably casts numeric values to int or float
+            return $value + 0;
         }
-
         return $value;
     }
 
