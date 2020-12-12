@@ -35,12 +35,15 @@ export default function DurationInput(input, options) {
 
     createField();
 
-    function secondsToIntervals(seconds) {
+    function secondsToIntervals(seconds, intervalNames) {
         var intervals = {};
         var t;
         seconds = Utils.toSafeInteger(seconds);
+        if (typeof intervalNames === 'undefined') {
+            intervalNames = options.display;
+        }
         for (t in TIME_INTERVALS) {
-            if (Object.prototype.hasOwnProperty.call(TIME_INTERVALS, t) && options.display.indexOf(t) !== -1) {
+            if (Object.prototype.hasOwnProperty.call(TIME_INTERVALS, t) && intervalNames.indexOf(t) !== -1) {
                 intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
                 seconds -= intervals[t] * TIME_INTERVALS[t];
             }
