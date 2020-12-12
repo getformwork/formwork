@@ -142,6 +142,9 @@ export default function DurationInput(input, options) {
                 updateLabels();
             });
             innerInput.addEventListener('input', function () {
+                if (this.value.length > 1) {
+                    this.value = this.value.replace(/^0+/, '');
+                }
                 while (this.value > Utils.getMaxSafeInteger()) {
                     this.value = this.value.slice(0, -1);
                 }
