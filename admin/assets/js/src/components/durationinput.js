@@ -136,8 +136,8 @@ export default function DurationInput(input, options) {
             }
             innerInputs[name] = innerInput;
             innerInput.addEventListener('input', function () {
-                if (this.value.length > 1) {
-                    this.value = this.value.replace(/^0+/, '');
+                while (this.value.charAt(0) === '0' && this.value.length > 1 && !this.value.charAt(1).match(/[.,]/)) {
+                    this.value = this.value.slice(1);
                 }
                 while (this.value > Utils.getMaxSafeInteger()) {
                     this.value = this.value.slice(0, -1);
