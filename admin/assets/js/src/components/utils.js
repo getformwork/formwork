@@ -290,6 +290,6 @@ export default {
         if (value < min) {
             return min;
         }
-        return value;
+        return parseInt(value, 10) || 0;
     }
 };
