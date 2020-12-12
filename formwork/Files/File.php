@@ -69,7 +69,7 @@ class File
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
         $this->type = $this->type();
-        $this->uri = Uri::resolveRelativeUri($this->name, HTTPRequest::root() . ltrim(Formwork::instance()->request(), '/'));
+        $this->uri = Uri::resolveRelative($this->name, HTTPRequest::root() . ltrim(Formwork::instance()->request(), '/'));
         $this->size = FileSystem::size($path);
     }
 

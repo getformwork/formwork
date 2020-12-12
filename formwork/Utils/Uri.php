@@ -249,7 +249,10 @@ class Uri
         return static::make(['fragment' => ''], $uri);
     }
 
-    public static function resolveRelativeUri(string $uri, string $base = null): string
+    /**
+     * Resolve a relative URI against current or a given base URI
+     */
+    public static function resolveRelative(string $uri, string $base = null): string
     {
         if ($base === null) {
             $base = static::current();
@@ -263,6 +266,17 @@ class Uri
             $basePath = dirname($basePath);
         }
         return static::make(['path' => Path::resolve($uriPath, $basePath)], $base);
+    }
+
+    /**
+     * Resolve a relative URI against current or a given base URI
+     *
+     * @deprecated
+     */
+    public static function resolveRelativeUri(string $uri, string $base = null): string
+    {
+        trigger_error(static::class . '::resolveRelativeUri() is deprecated since Formwork 1.11.0, use ' . static::class . '::resolveRelative() instead', E_USER_DEPRECATED);
+        return static::resolveRelative($uri, $base);
     }
 
     /**

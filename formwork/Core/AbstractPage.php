@@ -138,7 +138,7 @@ abstract class AbstractPage
         if ($this->absoluteUri !== null) {
             return $this->absoluteUri;
         }
-        return $this->absoluteUri = Uri::resolveRelativeUri($this->uri());
+        return $this->absoluteUri = Uri::resolveRelative($this->uri());
     }
 
     /**
