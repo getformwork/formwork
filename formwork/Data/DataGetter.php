@@ -30,7 +30,7 @@ class DataGetter
     public function get($key, $default = null)
     {
         if (!is_string($key)) {
-            trigger_error('Using ' . static::class . '::get() with a non-string $key parameter is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
+            trigger_error('Using ' . static::class . '::get() with a non-string $key argument is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
             $key = (string) $key;
         }
         return Arr::get($this->data, $key, $default);
@@ -44,11 +44,11 @@ class DataGetter
     public function has($key): bool
     {
         if (is_array($key)) {
-            trigger_error('Using ' . static::class . '::has() with an array as $key parameter is deprecated since Formwork 1.10.0, use ' . static::class . '::hasMultiple() instead', E_USER_DEPRECATED);
+            trigger_error('Using ' . static::class . '::has() with an array as $key argument is deprecated since Formwork 1.10.0, use ' . static::class . '::hasMultiple() instead', E_USER_DEPRECATED);
             return $this->hasMultiple($key);
         }
         if (!is_string($key)) {
-            trigger_error('Using ' . static::class . '::has() with a non-string $key parameter is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
+            trigger_error('Using ' . static::class . '::has() with a non-string $key argument is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
             $key = (string) $key;
         }
         return Arr::has($this->data, $key);
