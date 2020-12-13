@@ -48,8 +48,17 @@ class Page extends AbstractPage
      * Page id
      *
      * @var string
+     *
+     * @deprecated
      */
     protected $id;
+
+    /**
+     * Page name (the name of the containing directory)
+     *
+     * @var string
+     */
+    protected $name;
 
     /**
      * Page slug
@@ -199,7 +208,7 @@ class Page extends AbstractPage
         $this->path = FileSystem::normalizePath($path . DS);
         $this->relativePath = Str::wrap(Str::removeStart($this->path, Formwork::instance()->site()->path()), DS);
         $this->route = Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
-        $this->id = basename($this->path);
+        $this->name = basename($this->relativePath);
         $this->slug = basename($this->route);
         $this->loadFiles();
         if (!$this->isEmpty()) {
@@ -256,6 +265,17 @@ class Page extends AbstractPage
     }
 
     /**
+     * Return page id
+     *
+     * @deprecated Use Page::name() instead
+     */
+    public function id(): string
+    {
+        trigger_error(static::class . '::id() is deprecated since Formwork 1.11.0, use ' . static::class . '::name() instead', E_USER_DEPRECATED);
+        return $this->name();
+    }
+
+    /**
      * @inheritdoc
      */
     public function lastModifiedTime(): int
@@ -268,7 +288,7 @@ class Page extends AbstractPage
      */
     public function num(): ?int
     {
-        preg_match(self::NUM_REGEX, $this->id, $matches);
+        preg_match(self::NUM_REGEX, $this->name, $matches);
         return isset($matches[1]) ? (int) $matches[1] : null;
     }
 
@@ -455,7 +475,7 @@ class Page extends AbstractPage
         return [
             'route'    => $this->route(),
             'uri'      => $this->uri(),
-            'id'       => $this->id(),
+            'name'     => $this->name(),
             'slug'     => $this->slug(),
             'template' => $this->template()->name(),
             'num'      => $this->num(),
@@ -616,7 +636,7 @@ class Page extends AbstractPage
 
     public function __toString(): string
     {
-        return $this->id();
+        return $this->name();
     }
 
     public function __debugInfo(): array

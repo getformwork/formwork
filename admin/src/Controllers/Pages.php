@@ -229,13 +229,13 @@ class Pages extends AbstractController
         array_splice($pages, $to, 0, array_splice($pages, $from, 1));
 
         foreach ($pages as $i => $page) {
-            $id = $page->id();
-            if ($id === null) {
+            $name = $page->name();
+            if ($name === null) {
                 continue;
             }
-            $newId = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $id);
-            if ($newId !== $id) {
-                $this->changePageId($page, $newId);
+            $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name);
+            if ($newName !== $name) {
+                $this->changePageName($page, $newName);
             }
         }
 
@@ -456,9 +456,9 @@ class Pages extends AbstractController
 
             // Check if page number has to change
             if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date' && $page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
-                $id = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->id());
+                $name = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->name());
                 try {
-                    $page = $this->changePageId($page, $id);
+                    $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
                     throw new TranslatedException('Cannot change page num', 'pages.page.cannot-change-num');
                 }
@@ -493,7 +493,7 @@ class Pages extends AbstractController
             if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
                 throw new TranslatedException('A page with the same route already exists', 'pages.page.cannot-edit.already-exists');
             }
-            $page = $this->changePageId($page, ltrim($page->num() . '-', '-') . $slug);
+            $page = $this->changePageName($page, ltrim($page->num() . '-', '-') . $slug);
         }
 
         return $page;
@@ -558,12 +558,12 @@ class Pages extends AbstractController
     }
 
     /**
-     * Change the id of a page
+     * Change the name of a page
      */
-    protected function changePageId(Page $page, string $id): Page
+    protected function changePageName(Page $page, string $name): Page
     {
         $directory = dirname($page->path());
-        $destination = FileSystem::joinPaths($directory, $id, DS);
+        $destination = FileSystem::joinPaths($directory, $name, DS);
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }
@@ -578,7 +578,7 @@ class Pages extends AbstractController
         if (!$parent instanceof Page && !$parent instanceof Site) {
             throw new InvalidArgumentException(__METHOD__ . '() accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
-        $destination = FileSystem::joinPaths($parent->path(), $page->id(), DS);
+        $destination = FileSystem::joinPaths($parent->path(), $page->name(), DS);
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
     }
