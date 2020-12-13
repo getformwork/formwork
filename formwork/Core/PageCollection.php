@@ -10,6 +10,13 @@ use Formwork\Utils\Str;
 class PageCollection extends Collection
 {
     /**
+     * Default property used to sort pages
+     *
+     * @var string
+     */
+    protected const DEFAULT_SORT_PROPERTY = 'relativePath';
+
+    /**
      * Pagination related to the collection
      *
      * @var Pagination
@@ -111,7 +118,7 @@ class PageCollection extends Collection
      *
      * @param int|string $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
      */
-    public function sort(string $property = 'id', $direction = SORT_ASC): self
+    public function sort(string $property = self::DEFAULT_SORT_PROPERTY, $direction = SORT_ASC): self
     {
         $pageCollection = clone $this;
 
