@@ -2,6 +2,8 @@
 
 namespace Formwork\Utils;
 
+use RuntimeException;
+
 class MimeType
 {
     /**
@@ -132,13 +134,13 @@ class MimeType
     {
         $mimeType = null;
 
-        if (extension_loaded('fileinfo')) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file);
-            finfo_close($finfo);
-        } elseif (function_exists('mime_content_type')) {
-            $mimeType = @mime_content_type($file);
+        if (!extension_loaded('fileinfo')) {
+            throw new RuntimeException(__METHOD__ . '() requires the extension "fileinfo" to be enabled');
         }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file);
+        finfo_close($finfo);
 
         // Fix type for SVG images without XML declaration
         if ($mimeType === 'image/svg') {
