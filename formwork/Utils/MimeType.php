@@ -130,7 +130,7 @@ class MimeType
     /**
      * Get MIME type from a file
      */
-    public static function fromFile(string $file): ?string
+    public static function fromFile(string $file): string
     {
         $mimeType = null;
 
