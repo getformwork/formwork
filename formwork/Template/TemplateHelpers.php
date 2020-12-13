@@ -2,8 +2,7 @@
 
 namespace Formwork\Template;
 
-use Formwork\Utils\HTML;
-use Formwork\Utils\Str;
+use Formwork\Parsers\PHP;
 use InvalidArgumentException;
 
 class TemplateHelpers
@@ -13,19 +12,14 @@ class TemplateHelpers
      *
      * @var array
      */
-    protected static $helpers = [
-        'attr'       => [HTML::class, 'attributes'],
-        'escape'     => [Str::class, 'escape'],
-        'escapeAttr' => [Str::class, 'escapeAttr'],
-        'removeHTML' => [Str::class, 'removeHTML'],
-        'slug'       => [Str::class, 'slug']
-    ];
+    protected static $helpers = [];
 
     /**
      * Return whether a template helper is defined
      */
     public static function has(string $name): bool
     {
+        static::initialize();
         return isset(static::$helpers[$name]);
     }
 
@@ -60,5 +54,15 @@ class TemplateHelpers
     public static function remove(string $name): void
     {
         unset(static::$helpers[$name]);
+    }
+
+    /**
+     * Initialize template helpers
+     */
+    protected static function initialize(): void
+    {
+        if (empty(static::$helpers)) {
+            static::$helpers = PHP::parseFile(FORMWORK_PATH . 'helpers.php');
+        }
     }
 }
