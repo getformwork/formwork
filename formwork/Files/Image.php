@@ -608,7 +608,7 @@ class Image extends File
     protected function initialize(): void
     {
         if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension not loaded');
+            throw new RuntimeException('Class ' . static::class . ' requires the extension "gd" to be enabled');
         }
 
         if (!FileSystem::isReadable($this->path)) {
