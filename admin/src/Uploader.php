@@ -151,8 +151,7 @@ class Uploader
         $extension = strtolower(FileSystem::extension($filename));
 
         if (empty($extension)) {
-            $mimeToExt = MimeType::toExtension($mimeType);
-            $extension = is_array($mimeToExt) ? $mimeToExt[0] : $mimeToExt;
+            $extension = MimeType::toExtension($mimeType, false);
         }
 
         $filename = $name . '.' . $extension;
