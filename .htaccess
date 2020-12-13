@@ -9,7 +9,7 @@ AddDefaultCharset UTF-8
     RewriteRule ^templates/assets/.* - [L]
     RewriteRule ^(backup|cache|config|formwork|templates|vendor)/.* index.php [L]
 
-    RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L]
+    RewriteRule ^(.*)\.(md|yml|json|php)/?$ index.php [L]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L]
 
     RewriteRule ^admin/(accounts|logs|schemes|src|translations|views)/.* index.php [L]
