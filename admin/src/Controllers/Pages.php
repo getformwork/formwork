@@ -540,7 +540,7 @@ class Pages extends AbstractController
     protected function makePageNum($parent, ?string $mode): string
     {
         if (!$parent instanceof Page && !$parent instanceof Site) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
+            throw new InvalidArgumentException(__METHOD__ . '() accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
         switch ($mode) {
             case 'date':
@@ -576,7 +576,7 @@ class Pages extends AbstractController
     protected function changePageParent(Page $page, $parent): Page
     {
         if (!$parent instanceof Page && !$parent instanceof Site) {
-            throw new InvalidArgumentException(__METHOD__ . ' accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
+            throw new InvalidArgumentException(__METHOD__ . '() accepts only instances of ' . Page::class . ' or ' . Site::class . ' as $parent argument');
         }
         $destination = FileSystem::joinPaths($parent->path(), $page->id(), DS);
         FileSystem::moveDirectory($page->path(), $destination);

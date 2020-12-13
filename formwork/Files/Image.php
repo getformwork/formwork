@@ -194,7 +194,7 @@ class Image extends File
     public function resize(int $destinationWidth = null, int $destinationHeight = null): self
     {
         if ($destinationWidth === null && $destinationHeight === null) {
-            throw new InvalidArgumentException(__METHOD__ . ' must be called with at least one of $destinationWidth or $destinationHeight arguments');
+            throw new InvalidArgumentException(__METHOD__ . '() must be called with at least one of $destinationWidth or $destinationHeight arguments');
         }
 
         if ($this->image === null) {

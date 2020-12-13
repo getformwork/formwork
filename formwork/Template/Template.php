@@ -146,7 +146,7 @@ class Template
     public function insert(string $name, array $vars = []): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
         }
 
         if ($name[0] === '_') {
@@ -172,7 +172,7 @@ class Template
     public function render(array $vars = [], bool $return = false)
     {
         if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . ' not allowed while rendering');
+            throw new RuntimeException(__METHOD__ . '() not allowed while rendering');
         }
 
         $this->layout = null;
@@ -240,7 +240,7 @@ class Template
     {
         if (TemplateHelpers::has($name)) {
             if (!$this->rendering) {
-                throw new RuntimeException(__METHOD__ . ' is allowed only in rendering context');
+                throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
             }
 
             $helper = TemplateHelpers::get($name);
