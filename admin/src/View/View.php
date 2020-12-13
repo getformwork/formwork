@@ -4,13 +4,11 @@ namespace Formwork\Admin\View;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
-use Formwork\Admin\Utils\DateFormats;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Template\Renderer;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTML;
-use Formwork\Utils\Str;
+use Formwork\Parsers\PHP;
 use BadMethodCallException;
 use RuntimeException;
 
@@ -53,11 +51,7 @@ class View
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
-
-        // Load helpers
-        if (empty(static::$helpers)) {
-            static::$helpers = $this->helpers();
-        }
+        static::initializeHelpers();
     }
 
     /**
@@ -117,28 +111,16 @@ class View
     }
 
     /**
-     * Return an array containing the helper functions
+     * Initialize view helpers
      */
-    protected function helpers(): array
+    protected static function initializeHelpers(): void
     {
-        return [
-            'attr'       => [HTML::class, 'attributes'],
-            'escape'     => [Str::class, 'escape'],
-            'escapeAttr' => [Str::class, 'escapeAttr'],
-            'removeHTML' => [Str::class, 'removeHTML'],
-            'date'       => static function (int $timestamp): string {
-                return DateFormats::formatTimestamp(
-                    $timestamp,
-                    Formwork::instance()->option('date.format')
-                );
-            },
-            'datetime'   => static function (int $timestamp): string {
-                return DateFormats::formatTimestamp(
-                    $timestamp,
-                    Formwork::instance()->option('date.format') . ' ' . Formwork::instance()->option('date.hour_format')
-                );
-            }
-        ];
+        if (empty(static::$helpers)) {
+            static::$helpers = array_merge(
+                PHP::parseFile(FORMWORK_PATH . 'helpers.php'),
+                PHP::parseFile(ADMIN_PATH . 'helpers.php')
+            );
+        }
     }
 
     public function __call(string $name, array $arguments)
