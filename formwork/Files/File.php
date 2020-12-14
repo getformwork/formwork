@@ -60,6 +60,13 @@ class File
     protected $size;
 
     /**
+     * File hash
+     *
+     * @var string
+     */
+    protected $hash;
+
+    /**
      * Create a new File instance
      */
     public function __construct(string $path)
@@ -148,6 +155,17 @@ class File
     public function size(): string
     {
         return $this->size;
+    }
+
+    /**
+     * Get file hash
+     */
+    public function hash(): string
+    {
+        if ($this->hash !== null) {
+            return $this->hash;
+        }
+        return $this->hash = hash_file('sha256', $this->path);
     }
 
     public function __toString(): string
