@@ -67,7 +67,7 @@
 <?php
                 endif;
 ?>
-                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>" aria-label="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
+                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->label('pages.preview') ?>" aria-label="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
 <?php
             if ($admin->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
@@ -82,7 +82,7 @@
                             <div class="files-item">
                                 <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                                 <div class="files-item-cell file-actions">
-                                    <a class="button button-link" role="button" href="<?= $this->pageUri($page) . $file->name() ?>" target="_blank" title="<?= $this->label('pages.preview-file') ?>" aria-label="title="<?= $this->label('pages.preview-file') ?>""><i class="i-eye"></i></a>
+                                    <a class="button button-link" role="button" href="<?= $this->pageUri($page) . $file->name() ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->label('pages.preview-file') ?>" aria-label="title="<?= $this->label('pages.preview-file') ?>""><i class="i-eye"></i></a>
 <?php
                         if ($admin->user()->permissions()->has('pages.delete_files')):
 ?>

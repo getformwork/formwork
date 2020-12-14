@@ -8,7 +8,7 @@ export default function Form(form) {
 
     form.addEventListener('submit', removeBeforeUnload);
 
-    $$('a[href]:not([href^="#"]):not([target="_blank"])').forEach(function (element) {
+    $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach(function (element) {
         element.addEventListener('click', function (event) {
             if (hasChanged()) {
                 event.preventDefault();

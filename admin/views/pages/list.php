@@ -54,7 +54,7 @@
                             <div class="page-status-label" data-overflow-tooltip="true"><?= $this->label('pages.status.' . $page->status()) ?></div>
                         </div>
                         <div class="pages-item-cell page-actions">
-                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="_blank" title="<?= $this->label('pages.preview') ?>" aria-label="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
+                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->label('pages.preview') ?>" aria-label="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
 <?php
                         if ($admin->user()->permissions()->has('pages.delete')):
 ?>

@@ -81,7 +81,7 @@
     </div>
     <div class="title-bar">
         <span class="panel-title"><?= $this->label('admin.panel') ?></span>
-        <a href="<?= $this->siteUri() ?>" class="view-site" target="_blank"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
+        <a href="<?= $this->siteUri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->label('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
     </div>
     <main class="main">
         <?= $content ?>
