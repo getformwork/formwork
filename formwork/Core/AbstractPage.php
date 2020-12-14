@@ -26,6 +26,13 @@ abstract class AbstractPage
     protected $relativePath;
 
     /**
+     * Page unique identifier
+     *
+     * @var string
+     */
+    protected $uid;
+
+    /**
      * Page route
      *
      * @var string
@@ -128,6 +135,17 @@ abstract class AbstractPage
             }
         }
         return $base . ltrim($this->route, '/') . ltrim($path, '/');
+    }
+
+    /**
+     * Get the page unique identifier
+     */
+    public function uid(): string
+    {
+        if ($this->uid !== null) {
+            return $this->uid;
+        }
+        return $this->uid = substr(hash('sha256', $this->relativePath), 0, 32);
     }
 
     /**
