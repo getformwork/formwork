@@ -104,9 +104,12 @@ class Uri
 
     /**
      * Get the relative path of current or a given URI
+     *
+     * @deprecated Use Uri::path() instead
      */
     public static function relativePath(string $uri = null): ?string
     {
+        trigger_error(static::class . '::relativePath() is deprecated since Formwork 1.11.0, use ' . static::class . '::path() instead', E_USER_DEPRECATED);
         return static::path($uri);
     }
 
