@@ -49,7 +49,7 @@ class Page extends AbstractPage
      *
      * @var string
      *
-     * @deprecated
+     * @deprecated Use the name property
      */
     protected $id;
 
@@ -426,7 +426,7 @@ class Page extends AbstractPage
      *
      * @return string|null File path or null if file is not found
      *
-     * @deprecated
+     * @deprecated Access files from Page::files()
      */
     public function file(string $file): ?string
     {

@@ -184,7 +184,7 @@ class Site extends AbstractPage
     /**
      * Get site language
      *
-     * @deprecated
+     * @deprecated Use Site::languages()->default() instead
      */
     public function lang(): ?string
     {

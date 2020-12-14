@@ -237,7 +237,7 @@ class User extends DataGetter
     /**
      * @inheritdoc
      *
-     * @deprecated
+     * @deprecated Access data directly from class methods
      */
     public function get($key, $default = null)
     {

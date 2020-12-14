@@ -271,7 +271,7 @@ class Uri
     /**
      * Resolve a relative URI against current or a given base URI
      *
-     * @deprecated
+     * @deprecated Use Uri::resolveRelativeUri() instead
      */
     public static function resolveRelativeUri(string $uri, string $base = null): string
     {

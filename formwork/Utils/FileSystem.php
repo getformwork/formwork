@@ -489,8 +489,7 @@ class FileSystem
     /**
      * Alias of createFile method
      *
-     * @deprecated
-     * @see FileSystem::createFile()
+     * @deprecated Use FileSystem::createFile() instead
      */
     public static function create(string $file): bool
     {
@@ -501,7 +500,7 @@ class FileSystem
     /**
      * Return a path with a single trailing slash
      *
-     * @deprecated
+     * @deprecated Use FileSystem::normalizePath($path . DS) instead
      */
     public static function normalize(string $path): string
     {
@@ -528,7 +527,7 @@ class FileSystem
     /**
      * Scan a path for files and directories
      *
-     * @deprecated
+     * @deprecated Use generator-based FileSystem::listContents() instead
      *
      * @param bool $all Whether to return only visible or all files
      */
@@ -553,7 +552,7 @@ class FileSystem
     /**
      * Recursively scan a path for files and directories
      *
-     * @deprecated
+     * @deprecated Use generator-based FileSystem::listRecursive() instead
      *
      * @param bool $all Whether to return only visible or all files
      */
