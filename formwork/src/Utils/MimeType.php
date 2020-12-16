@@ -168,18 +168,9 @@ class MimeType
 
     /**
      * Get the extension associated to a MIME type
-     *
-     * @param bool $mixedReturn Whether to return an array of results if multiple associated extensions are found
-     *                          (should be always false, since this possibility is deprecated from Formwork 1.11.0)
-     *
-     * @return array|string
      */
-    public static function toExtension(string $mimeType, bool $mixedReturn = true)
+    public static function toExtension(string $mimeType): ?string
     {
-        if ($mixedReturn) {
-            trigger_error('The possibility to return an array or a string with ' . static::class . '::toExtension() is deprecated since Formwork 1.11.0, use ' . static::class . '::toExtension($mimeType, false) to disable this error and always get the first (preferred) associated extension as string', E_USER_DEPRECATED);
-        }
-        $results = static::getAssociatedExtensions($mimeType);
-        return count($results) > 1 && $mixedReturn ? $results : array_shift($results);
+        return static::getAssociatedExtensions($mimeType)[0] ?? null;
     }
 }

@@ -182,17 +182,6 @@ class Site extends AbstractPage
     }
 
     /**
-     * Get site language
-     *
-     * @deprecated Use Site::languages()->default() instead
-     */
-    public function lang(): ?string
-    {
-        trigger_error(static::class . '::lang() is deprecated since Formwork 1.2.0, use ' . static::class . '::languages()->default() instead', E_USER_DEPRECATED);
-        return $this->languages()->default() ?? ($this->data['lang'] ?? 'en');
-    }
-
-    /**
      * @inheritdoc
      */
     public function isSite(): bool

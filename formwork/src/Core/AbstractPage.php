@@ -307,15 +307,9 @@ abstract class AbstractPage
 
     /**
      * Get page data by key
-     *
-     * @param string $key
-     * @param mixed  $default Default value if key is not set
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
-        if (!is_string($key)) {
-            trigger_error('Using ' . static::class . '::get() with a non-string $key argument is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
-        }
         if (property_exists($this, $key)) {
             // Call getter method if exists and property is null
             if ($this->$key === null && method_exists($this, $key)) {
@@ -326,37 +320,22 @@ abstract class AbstractPage
         if (Arr::has($this->data, $key)) {
             return Arr::get($this->data, $key, $default);
         }
-        if (method_exists($this, $key)) {
-            trigger_error('Accessing non-getter methods from ' . static::class . '::get() is deprecated since Formwork 1.3.0, use $page->' . $key . '() instead', E_USER_DEPRECATED);
-            return $this->$key();
-        }
         return $default;
     }
 
     /**
      * Return whether page data has a key
-     *
-     * @param string $key
      */
-    public function has($key): bool
+    public function has(string $key): bool
     {
-        if (!is_string($key)) {
-            trigger_error('Using ' . static::class . '::has() with a non-string $key argument is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
-            $key = (string) $key;
-        }
         return property_exists($this, $key) || Arr::has($this->data, $key);
     }
 
     /**
      * Set page data
-     *
-     * @param string $key
      */
-    public function set($key, $value): void
+    public function set(string $key, $value): void
     {
-        if (!is_string($key)) {
-            trigger_error('Using ' . static::class . '::set() with a non-string $key argument is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
-        }
         $this->data[$key] = $value;
     }
 

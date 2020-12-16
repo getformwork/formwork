@@ -11,10 +11,8 @@ class Date
 {
     /**
      * Parse a date according to a given format (or the default format if not given) and return the timestamp
-     *
-     * @param $throwOnError Whether to throw an Exception when the method fails or trigger a deprecation error (@internal)
      */
-    public static function toTimestamp(string $date, string $format = null, bool $throwOnError = false): int
+    public static function toTimestamp(string $date, string $format = null): int
     {
         $isFormatGiven = $format !== null;
 
@@ -31,12 +29,7 @@ class Date
             try {
                 $dateTime = new DateTime($date);
             } catch (Exception $e) {
-                $message = 'Invalid date "' . $date . '": ' . static::getLastDateTimeError();
-                // TODO: this will always be the case in 2.0
-                if ($throwOnError) {
-                    throw new InvalidArgumentException($message, $e->getCode(), $e->getPrevious());
-                }
-                trigger_error('Using invalid dates is deprecated since Formwork 1.11.0. ' . $message, E_USER_DEPRECATED);
+                throw new InvalidArgumentException('Invalid date "' . $date . '": ' . static::getLastDateTimeError(), $e->getCode(), $e->getPrevious());
             }
         }
 

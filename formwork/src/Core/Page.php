@@ -265,17 +265,6 @@ class Page extends AbstractPage
     }
 
     /**
-     * Return page id
-     *
-     * @deprecated Use Page::name() instead
-     */
-    public function id(): string
-    {
-        trigger_error(static::class . '::id() is deprecated since Formwork 1.11.0, use ' . static::class . '::name() instead', E_USER_DEPRECATED);
-        return $this->name();
-    }
-
-    /**
      * @inheritdoc
      */
     public function lastModifiedTime(): int
@@ -417,21 +406,6 @@ class Page extends AbstractPage
         }
         $this->language = $language;
         $this->__construct($this->path);
-    }
-
-    /**
-     * Return a file path relative to Formwork root
-     *
-     * @param string $file Name of the file
-     *
-     * @return string|null File path or null if file is not found
-     *
-     * @deprecated Access files from Page::files()
-     */
-    public function file(string $file): ?string
-    {
-        trigger_error(static::class . '::file() is deprecated since Formwork 1.4.0, access files from ' . static::class . '::files() instead', E_USER_DEPRECATED);
-        return $this->files()->has($file) ? Str::removeStart($this->files()->get($file)->path(), ROOT_PATH) : null;
     }
 
     /**

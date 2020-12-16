@@ -234,28 +234,6 @@ class User extends DataGetter
         return $this->data['color-scheme'];
     }
 
-    /**
-     * @inheritdoc
-     *
-     * @deprecated Access data directly from class methods
-     */
-    public function get($key, $default = null)
-    {
-        trigger_error('Using ' . static::class . '::get() is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
-        return parent::get($key, $default);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * @deprecated
-     */
-    public function has($key): bool
-    {
-        trigger_error('Using ' . static::class . '::has() is deprecated since Formwork 1.10.0', E_USER_DEPRECATED);
-        return parent::has($key);
-    }
-
     public function __debugInfo(): array
     {
         $data = $this->data;

@@ -103,17 +103,6 @@ class Uri
     }
 
     /**
-     * Get the relative path of current or a given URI
-     *
-     * @deprecated Use Uri::path() instead
-     */
-    public static function relativePath(string $uri = null): ?string
-    {
-        trigger_error(static::class . '::relativePath() is deprecated since Formwork 1.11.0, use ' . static::class . '::path() instead', E_USER_DEPRECATED);
-        return static::path($uri);
-    }
-
-    /**
      * Get the absolute path of current or a given URI
      */
     public static function absolutePath(string $uri = null): string
@@ -269,17 +258,6 @@ class Uri
             $basePath = dirname($basePath);
         }
         return static::make(['path' => Path::resolve($uriPath, $basePath)], $base);
-    }
-
-    /**
-     * Resolve a relative URI against current or a given base URI
-     *
-     * @deprecated Use Uri::resolveRelative() instead
-     */
-    public static function resolveRelativeUri(string $uri, string $base = null): string
-    {
-        trigger_error(static::class . '::resolveRelativeUri() is deprecated since Formwork 1.11.0, use ' . static::class . '::resolveRelative() instead', E_USER_DEPRECATED);
-        return static::resolveRelative($uri, $base);
     }
 
     /**

@@ -6,6 +6,7 @@ use Formwork\Data\Collection;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use InvalidArgumentException;
 
 class PageCollection extends Collection
 {
@@ -116,9 +117,9 @@ class PageCollection extends Collection
     /**
      * Sort collection items
      *
-     * @param int|string $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
+     * @param int $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
      */
-    public function sort(string $property = self::DEFAULT_SORT_PROPERTY, $direction = SORT_ASC): self
+    public function sort(string $property = self::DEFAULT_SORT_PROPERTY, int $direction = SORT_ASC): self
     {
         $pageCollection = clone $this;
 
@@ -126,18 +127,12 @@ class PageCollection extends Collection
             return $pageCollection;
         }
 
-        if (is_string($direction)) {
-            trigger_error('Using ' . static::class . '::sort() with a string as $direction argument is deprecated since Formwork 1.11.0. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending', E_USER_DEPRECATED);
-            $direction = strtolower($direction);
-        }
-
-        if ($direction === SORT_ASC || $direction === 'asc' || $direction === 1) {
+        if ($direction === SORT_ASC || $direction === 1) {
             $direction = 1;
-        } elseif ($direction === SORT_DESC || $direction === 'desc' || $direction === -1) {
+        } elseif ($direction === SORT_DESC || $direction === -1) {
             $direction = -1;
         } else {
-            trigger_error('Using ' . static::class . '::sort() with an invalid $direction argument is deprecated Formwork 1.11.0. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending', E_USER_DEPRECATED);
-            $direction = 1;
+            throw new InvalidArgumentException('Invalid sorting direction. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending');
         }
 
         usort($pageCollection->items, static function (Page $item1, Page $item2) use ($property, $direction): int {

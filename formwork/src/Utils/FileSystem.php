@@ -119,18 +119,6 @@ class FileSystem
     /**
      * Assert a file exists or not
      *
-     * @deprecated Use FileSystem::assertExists() instead
-     */
-    public static function assert(string $path): bool
-    {
-        trigger_error(static::class . '::assert() is deprecated since Formwork 1.11.0, use ' . static::class . '::assertExists() instead', E_USER_DEPRECATED);
-        static::assertExists($path);
-        return true;
-    }
-
-    /**
-     * Assert a file exists or not
-     *
      * @param bool $value Whether to assert if file exists or not
      */
     public static function assertExists(string $path, bool $value = true): void
@@ -487,28 +475,6 @@ class FileSystem
     }
 
     /**
-     * Alias of createFile method
-     *
-     * @deprecated Use FileSystem::createFile() instead
-     */
-    public static function create(string $file): bool
-    {
-        trigger_error(static::class . '::create() is deprecated since Formwork 1.10.0, use ' . static::class . '::createFile() instead', E_USER_DEPRECATED);
-        return static::createFile($file);
-    }
-
-    /**
-     * Return a path with a single trailing slash
-     *
-     * @deprecated Use FileSystem::normalizePath($path . DS) instead
-     */
-    public static function normalize(string $path): string
-    {
-        trigger_error(static::class . '::normalize($path) is deprecated since Formwork 1.10.0, use ' . static::class . '::normalizePath($path . DS) instead', E_USER_DEPRECATED);
-        return static::normalizePath($path . DS);
-    }
-
-    /**
      * Normalize path slashes
      */
     public static function normalizePath(string $path): string
@@ -522,53 +488,6 @@ class FileSystem
     public static function joinPaths(string ...$paths): string
     {
         return Path::join($paths, DS);
-    }
-
-    /**
-     * Scan a path for files and directories
-     *
-     * @deprecated Use generator-based FileSystem::listContents() instead
-     *
-     * @param bool $all Whether to return only visible or all files
-     */
-    public static function scan(string $path, bool $all = false): array
-    {
-        trigger_error(static::class . '::scan() is deprecated since Formwork 1.8.0, use ' . static::class . '::listContents() instead', E_USER_DEPRECATED);
-        static::assertExists($path);
-        if (!static::isDirectory($path)) {
-            throw new RuntimeException('Unable to list: ' . $path . ', specified path is not a directory');
-        }
-        $items = @scandir($path);
-        if (!is_array($items)) {
-            return [];
-        }
-        $items = array_diff($items, self::IGNORED_FILES);
-        if (!$all) {
-            $items = array_filter($items, [static::class, 'isVisible']);
-        }
-        return $items;
-    }
-
-    /**
-     * Recursively scan a path for files and directories
-     *
-     * @deprecated Use generator-based FileSystem::listRecursive() instead
-     *
-     * @param bool $all Whether to return only visible or all files
-     */
-    public static function scanRecursive(string $path, bool $all = false): array
-    {
-        trigger_error(static::class . '::scanRecursive() is deprecated since Formwork 1.8.0, use ' . static::class . '::listRecursive() instead', E_USER_DEPRECATED);
-        $list = [];
-        $path = static::normalize($path);
-        foreach (FileSystem::scan($path, $all) as $item) {
-            if (FileSystem::isDirectory($path . $item)) {
-                $list = array_merge($list, static::scanRecursive($path . $item, $all));
-            } else {
-                $list[] = $path . $item;
-            }
-        }
-        return $list;
     }
 
     /**
@@ -689,17 +608,6 @@ class FileSystem
     public static function randomName(string $prefix = ''): string
     {
         return $prefix . bin2hex(random_bytes(8));
-    }
-
-    /**
-     * Generate a temporary file name
-     *
-     * @param string $prefix Optional file name prefix
-     */
-    public static function temporaryName(string $prefix = ''): string
-    {
-        trigger_error(static::class . '::temporaryName() is deprecated since Formwork 1.11.0, use ' . static::class . '::randomName() instead', E_USER_DEPRECATED);
-        return static::randomName($prefix);
     }
 
     /**
