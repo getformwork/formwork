@@ -125,7 +125,7 @@ class Template
         }
         return $this->assets = new Assets(
             $this->path() . 'assets' . DS,
-            Formwork::instance()->site()->uri('/templates/assets/', false)
+            Formwork::instance()->site()->uri('/site/templates/assets/', false)
         );
     }
 
