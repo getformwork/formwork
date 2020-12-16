@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Formwork\\": "formwork/",
+            "Formwork\\": "formwork/src/",
             "Formwork\\Admin\\": "admin/src/"
         }
     },
