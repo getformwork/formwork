@@ -19,6 +19,7 @@
         "php": ">=7.3.5",
         "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-mbstring": "*",
         "ext-zip": "*",
         "erusev/parsedown": "^1.7",
         "erusev/parsedown-extra": "^0.8.1",
