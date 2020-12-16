@@ -44,7 +44,7 @@ class Updates extends AbstractController
     {
         $this->ensurePermission('updates.update');
         $updater = new Updater(['force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true]);
-        if ($this->option('updates.backup_before')) {
+        if (Formwork::instance()->config()->get('updates.backup_before')) {
             $backupper = new Backupper();
             try {
                 $backupper->backup();
@@ -61,7 +61,7 @@ class Updates extends AbstractController
                 'status' => $this->label('updates.status.cannot-install')
             ])->send();
         }
-        if (Formwork::instance()->option('cache.enabled')) {
+        if (Formwork::instance()->config()->get('cache.enabled')) {
             Formwork::instance()->cache()->clear();
         }
         JSONResponse::success($this->label('updates.installed'), 200, [

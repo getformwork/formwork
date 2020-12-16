@@ -306,7 +306,7 @@ class Page extends AbstractPage
     public function date(string $format = null): string
     {
         if ($format === null) {
-            $format = Formwork::instance()->option('date.format');
+            $format = Formwork::instance()->config()->get('date.format');
         }
         if ($this->has('publish-date')) {
             return date($format, Date::toTimestamp($this->data['publish-date']));
@@ -367,7 +367,7 @@ class Page extends AbstractPage
      */
     public function isIndexPage(): bool
     {
-        return trim($this->route(), '/') === Formwork::instance()->option('pages.index');
+        return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.index');
     }
 
     /**
@@ -375,7 +375,7 @@ class Page extends AbstractPage
      */
     public function isErrorPage(): bool
     {
-        return trim($this->route(), '/') === Formwork::instance()->option('pages.error');
+        return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.error');
     }
 
     /**
@@ -535,7 +535,7 @@ class Page extends AbstractPage
         foreach (FileSystem::listFiles($this->path) as $file) {
             $name = FileSystem::name($file);
             $extension = '.' . FileSystem::extension($file);
-            if ($extension === Formwork::instance()->option('content.extension')) {
+            if ($extension === Formwork::instance()->config()->get('content.extension')) {
                 $language = null;
                 if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
                     // Parse double extension
@@ -550,7 +550,7 @@ class Page extends AbstractPage
                         $this->availableLanguages[] = $language;
                     }
                 }
-            } elseif (in_array($extension, Formwork::instance()->option('files.allowed_extensions'), true)) {
+            } elseif (in_array($extension, Formwork::instance()->config()->get('files.allowed_extensions'), true)) {
                 $files[] = $file;
             }
         }

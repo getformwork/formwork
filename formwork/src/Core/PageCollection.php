@@ -171,7 +171,7 @@ class PageCollection extends Collection
         }
 
         $keywords = explode(' ', $query);
-        $keywords = array_diff($keywords, (array) Formwork::instance()->option('search.stopwords'));
+        $keywords = array_diff($keywords, (array) Formwork::instance()->config()->get('search.stopwords'));
         $keywords = array_filter($keywords, static function (string $item) use ($min): bool {
             return strlen($item) > $min;
         });

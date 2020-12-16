@@ -28,7 +28,7 @@ class Scheme extends DataGetter
      */
     public function __construct(string $name)
     {
-        $this->path = Formwork::instance()->option('templates.path') . 'schemes' . DS;
+        $this->path = Formwork::instance()->config()->get('templates.path') . 'schemes' . DS;
         $this->name = $name;
 
         parent::__construct(YAML::parseFile($this->path . $this->name . '.yml'));

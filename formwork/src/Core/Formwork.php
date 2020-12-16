@@ -30,11 +30,11 @@ final class Formwork
     public const VERSION = '1.11.0';
 
     /**
-     * Array containing options
+     * Formwork config
      *
-     * @var array
+     * @var Config
      */
-    protected $options = [];
+    protected $config = [];
 
     /**
      * Current request URI
@@ -82,7 +82,7 @@ final class Formwork
 
         $this->request = Uri::removeQuery(HTTPRequest::uri());
 
-        $this->loadOptions();
+        $this->loadConfig();
         $this->loadLanguages();
         $this->loadSite();
         $this->loadCache();
@@ -92,9 +92,9 @@ final class Formwork
     /**
      * Get system options
      */
-    public function options(): array
+    public function config(): Config
     {
-        return $this->options;
+        return $this->config;
     }
 
     /**
@@ -189,13 +189,13 @@ final class Formwork
 
             $page = $this->site->currentPage();
 
-            if ($this->option('cache.enabled') && $this->cache->has($this->request)) {
+            if ($this->config()->get('cache.enabled') && $this->cache->has($this->request)) {
                 $response = $this->cache->fetch($this->request);
                 $response->render();
             } else {
                 $content = $page->render();
 
-                if ($this->option('cache.enabled') && $page->cacheable()) {
+                if ($this->config()->get('cache.enabled') && $page->cacheable()) {
                     $this->cache->save($this->request, new Response(
                         $content,
                         $page->get('response_status'),
@@ -205,39 +205,27 @@ final class Formwork
             }
         }
 
-        if ($this->option('statistics.enabled') && isset($page) && !$page->isErrorPage()) {
+        if ($this->config()->get('statistics.enabled') && isset($page) && !$page->isErrorPage()) {
             $statistics = new Statistics();
             $statistics->trackVisit();
         }
     }
 
     /**
-     * Get an option value
-     *
-     * @param mixed|null $default Default value if option is not set
-     */
-    public function option(string $option, $default = null)
-    {
-        return array_key_exists($option, $this->options) ? $this->options[$option] : $default;
-    }
-
-    /**
      * Load options
      */
-    protected function loadOptions(): void
+    protected function loadConfig(): void
     {
-        FileSystem::assertExists(CONFIG_PATH . 'system.yml');
+        $data = YAML::parseFile(CONFIG_PATH . 'system.yml');
 
-        // Load defaults before parsing YAML
-        $this->options = $this->defaults();
+        if (isset($data['admin.root'])) {
+            // Trim slashes from admin.root
+            $data['admin.root'] = trim($data['admin.root'], '/');
+        }
 
-        $config = YAML::parseFile(CONFIG_PATH . 'system.yml');
-        $this->options = array_merge($this->options, $config);
+        $this->config = new Config($data + $this->defaults());
 
-        // Trim slashes from admin.root
-        $this->options['admin.root'] = trim($this->option('admin.root'), '/');
-
-        date_default_timezone_set($this->option('date.timezone'));
+        date_default_timezone_set($this->config->get('date.timezone'));
     }
 
     /**
@@ -251,7 +239,7 @@ final class Formwork
             $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
         } elseif ($this->languages->preferred() !== null) {
             // Don't redirect if we are in Admin
-            if (!Str::startsWith($this->request, '/' . $this->option('admin.root'))) {
+            if (!Str::startsWith($this->request, '/' . $this->config()->get('admin.root'))) {
                 Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }
@@ -273,7 +261,7 @@ final class Formwork
      */
     protected function loadCache(): void
     {
-        $this->cache = new SiteCache($this->option('cache.path'), $this->option('cache.time'));
+        $this->cache = new SiteCache($this->config()->get('cache.path'), $this->config()->get('cache.time'));
     }
 
     /**
@@ -283,7 +271,7 @@ final class Formwork
     {
         $this->router = new Router($this->request);
 
-        if ($this->option('admin.enabled')) {
+        if ($this->config()->get('admin.enabled')) {
             $this->loadAdminRoute();
         }
 
@@ -306,8 +294,8 @@ final class Formwork
             ['HTTP', 'XHR'],
             ['GET', 'POST'],
             [
-                '/' . $this->option('admin.root') . '/',
-                '/' . $this->option('admin.root') . '/{route}/'
+                '/' . $this->config()->get('admin.root') . '/',
+                '/' . $this->config()->get('admin.root') . '/{route}/'
             ],
             Admin::class . '@run'
         );
@@ -319,7 +307,7 @@ final class Formwork
     protected function defaultRoute(): callable
     {
         return function (RouteParams $params) {
-            $route = $params->get('page', $this->option('pages.index'));
+            $route = $params->get('page', $this->config()->get('pages.index'));
 
             if ($this->site->has('aliases') && $alias = $this->site->alias($route)) {
                 $route = trim($alias, '/');
@@ -336,12 +324,12 @@ final class Formwork
                 if (($params->has('tagName') || $params->has('paginationPage')) && $page->template()->scheme()->get('type') !== 'listing') {
                     return $this->site->errorPage();
                 }
-                if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
+                if ($this->config()->get('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
                     if (($page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
                     || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
                         // Clear cache if the site was not modified since the page has been published or unpublished
                         $this->cache->clear();
-                        FileSystem::touch($this->option('content.path'));
+                        FileSystem::touch($this->config()->get('content.path'));
                     }
                 }
                 if ($page->routable() && $page->published()) {
@@ -351,7 +339,7 @@ final class Formwork
                 $filename = basename($route);
                 $upperLevel = dirname($route);
                 if ($upperLevel === '.') {
-                    $upperLevel = $this->option('pages.index');
+                    $upperLevel = $this->config()->get('pages.index');
                 }
                 if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
                     return HTTPResponse::file($parent->files()->get($filename)->path());

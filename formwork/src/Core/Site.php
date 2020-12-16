@@ -42,7 +42,7 @@ class Site extends AbstractPage
      */
     public function __construct(array $data)
     {
-        $this->path = FileSystem::normalizePath(Formwork::instance()->option('content.path'));
+        $this->path = FileSystem::normalizePath(Formwork::instance()->config()->get('content.path'));
         $this->relativePath = DS;
         $this->route = '/';
         $this->data = array_merge($this->defaults(), $data);
@@ -164,7 +164,7 @@ class Site extends AbstractPage
      */
     public function indexPage(): ?Page
     {
-        return $this->findPage(Formwork::instance()->option('pages.index'));
+        return $this->findPage(Formwork::instance()->config()->get('pages.index'));
     }
 
     /**
@@ -174,7 +174,7 @@ class Site extends AbstractPage
      */
     public function errorPage(bool $navigate = false): ?Page
     {
-        $errorPage = $this->findPage(Formwork::instance()->option('pages.error'));
+        $errorPage = $this->findPage(Formwork::instance()->config()->get('pages.error'));
         if ($navigate) {
             $this->currentPage = $errorPage;
         }
@@ -233,13 +233,13 @@ class Site extends AbstractPage
             return $this->metadata;
         }
         $defaults = [
-            'charset'     => Formwork::instance()->option('charset'),
+            'charset'     => Formwork::instance()->config()->get('charset'),
             'author'      => $this->get('author'),
             'description' => $this->get('description'),
             'generator'   => 'Formwork'
         ];
         $data = array_filter(array_merge($defaults, $this->data['metadata']));
-        if (!Formwork::instance()->option('metadata.set_generator')) {
+        if (!Formwork::instance()->config()->get('metadata.set_generator')) {
             unset($data['generator']);
         }
         return $this->metadata = new Metadata($data);
@@ -292,7 +292,7 @@ class Site extends AbstractPage
      */
     protected function loadTemplates(): void
     {
-        $templatesPath = Formwork::instance()->option('templates.path');
+        $templatesPath = Formwork::instance()->config()->get('templates.path');
         $templates = [];
         foreach (FileSystem::listFiles($templatesPath) as $file) {
             $templates[FileSystem::name($file)] = $templatesPath . $file;

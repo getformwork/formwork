@@ -44,7 +44,7 @@ trait AdminTrait
      */
     protected function panelRoot(): string
     {
-        return Uri::normalize(Formwork::instance()->option('admin.root'));
+        return Uri::normalize(Formwork::instance()->config()->get('admin.root'));
     }
 
     /**

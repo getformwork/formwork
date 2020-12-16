@@ -79,7 +79,7 @@ class Template
      */
     public function __construct(string $template, Page $page)
     {
-        $this->extension = Formwork::instance()->option('templates.extension');
+        $this->extension = Formwork::instance()->config()->get('templates.extension');
         $this->name = $template;
         $this->page = $page;
         $this->vars = $this->defaults();

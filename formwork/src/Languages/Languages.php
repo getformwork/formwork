@@ -47,8 +47,8 @@ class Languages
      */
     public function __construct()
     {
-        $this->available = (array) Formwork::instance()->option('languages.available');
-        $this->current = $this->default = Formwork::instance()->option('languages.default', $this->available[0] ?? null);
+        $this->available = (array) Formwork::instance()->config()->get('languages.available');
+        $this->current = $this->default = Formwork::instance()->config()->get('languages.default', $this->available[0] ?? null);
     }
 
     /**
@@ -110,7 +110,7 @@ class Languages
             $languages->requested = $languages->current = $matches[1];
         }
 
-        if (Formwork::instance()->option('languages.http_preferred')) {
+        if (Formwork::instance()->config()->get('languages.http_preferred')) {
             foreach (array_keys(HTTPNegotiation::language()) as $code) {
                 if (in_array($code, $languages->available, true)) {
                     $languages->preferred = $code;

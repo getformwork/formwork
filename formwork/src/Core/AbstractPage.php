@@ -178,7 +178,7 @@ abstract class AbstractPage
     public function date(string $format = null): string
     {
         if ($format === null) {
-            $format = Formwork::instance()->option('date.format');
+            $format = Formwork::instance()->config()->get('date.format');
         }
         return date($format, $this->lastModifiedTime());
     }
@@ -194,7 +194,7 @@ abstract class AbstractPage
             return $this->parent;
         }
         $parentPath = dirname($this->path) . DS;
-        if (FileSystem::isDirectory($parentPath) && $parentPath !== Formwork::instance()->option('content.path')) {
+        if (FileSystem::isDirectory($parentPath) && $parentPath !== Formwork::instance()->config()->get('content.path')) {
             return $this->parent = Formwork::instance()->site()->retrievePage($parentPath);
         }
         // If no parent was found returns the site as first level pages' parent

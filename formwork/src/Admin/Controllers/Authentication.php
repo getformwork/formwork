@@ -5,6 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
+use Formwork\Core\Formwork;
 use Formwork\Utils\Session;
 use Formwork\Data\DataGetter;
 use Formwork\Utils\HTTPRequest;
@@ -18,12 +19,12 @@ class Authentication extends AbstractController
     {
         $limiter = new AccessLimiter(
             $this->registry('accessAttempts'),
-            $this->option('admin.login_attempts'),
-            $this->option('admin.login_reset_time')
+            Formwork::instance()->config()->get('admin.login_attempts'),
+            Formwork::instance()->config()->get('admin.login_reset_time')
         );
 
         if ($limiter->hasReachedLimit()) {
-            $minutes = round($this->option('admin.login_reset_time') / 60);
+            $minutes = round(Formwork::instance()->config()->get('admin.login_reset_time') / 60);
             $this->error($this->label('login.attempt.too-many', $minutes));
             return;
         }
@@ -96,7 +97,7 @@ class Authentication extends AbstractController
         Session::remove('FORMWORK_USERNAME');
         Session::destroy();
 
-        if ($this->option('admin.logout_redirect') === 'home') {
+        if (Formwork::instance()->config()->get('admin.logout_redirect') === 'home') {
             $this->redirectToSite();
         } else {
             $this->notify($this->label('login.logged-out'), 'info');

@@ -167,7 +167,7 @@ final class Admin
      */
     protected function loadTranslations(): void
     {
-        $languageCode = Formwork::instance()->option('admin.lang');
+        $languageCode = Formwork::instance()->config()->get('admin.lang');
         if ($this->isLoggedIn()) {
             $languageCode = $this->user()->language();
         }

@@ -19,7 +19,7 @@ class Date
         $isFormatGiven = $format !== null;
 
         if (!$isFormatGiven) {
-            $format = Formwork::instance()->option('date.format');
+            $format = Formwork::instance()->config()->get('date.format');
         }
 
         $dateTime = DateTime::createFromFormat($format, $date);

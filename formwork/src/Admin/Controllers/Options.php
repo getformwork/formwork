@@ -42,20 +42,20 @@ class Options extends AbstractController
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
-            $options = Formwork::instance()->options();
+            $options = Formwork::instance()->config();
             $defaults = Formwork::instance()->defaults();
-            $differ = $this->updateOptions('system', $fields->validate($data), $options, $defaults);
+            $differ = $this->updateOptions('system', $fields->validate($data), $options->toArray(), $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch($this->option('content.path'));
+                FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
             $this->notify($this->label('options.updated'), 'success');
             $this->redirect('/options/system/');
         }
 
-        $fields->validate(new DataGetter(Formwork::instance()->options()));
+        $fields->validate(Formwork::instance()->config());
 
         $this->modal('changes');
 
@@ -88,7 +88,7 @@ class Options extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch($this->option('content.path'));
+                FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
             $this->notify($this->label('options.updated'), 'success');

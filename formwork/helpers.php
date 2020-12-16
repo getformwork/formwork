@@ -46,13 +46,13 @@ return [
     },
     'date' => static function (int $timestamp): string {
         return date(
-            \Formwork\Core\Formwork::instance()->option('date.format'),
+            \Formwork\Core\Formwork::instance()->config()->get('date.format'),
             $timestamp
         );
     },
     'datetime' => static function (int $timestamp): string {
         return date(
-            \Formwork\Core\Formwork::instance()->option('date.format') . ' ' . \Formwork\Core\Formwork::instance()->option('date.hour_format'),
+            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format'),
             $timestamp
         );
     }

@@ -13,7 +13,7 @@ class Cache extends AbstractController
     public function clear(): void
     {
         $this->ensurePermission('cache.clear');
-        if (Formwork::instance()->option('cache.enabled')) {
+        if (Formwork::instance()->config()->get('cache.enabled')) {
             Formwork::instance()->cache()->clear();
         }
         JSONResponse::success($this->label('cache.cleared'))->send();

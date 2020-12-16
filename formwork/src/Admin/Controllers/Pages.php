@@ -9,6 +9,7 @@ use Formwork\Utils\JSONResponse;
 use Formwork\Utils\Session;
 use Formwork\Core\Page;
 use Formwork\Core\Site;
+use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Files\Image;
 use Formwork\Languages\LanguageCodes;
@@ -100,13 +101,13 @@ class Pages extends AbstractController
         $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
 
         if ($params->has('language')) {
-            if (empty($this->option('languages.available'))) {
+            if (empty(Formwork::instance()->config()->get('languages.available'))) {
                 $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
             }
 
             $language = $params->get('language');
 
-            if (!in_array($language, $this->option('languages.available'), true)) {
+            if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
                 $this->notify($this->label('pages.page.cannot-edit.invalid-language', $language), 'error');
                 $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
@@ -374,7 +375,7 @@ class Pages extends AbstractController
 
         $filename = $data->get('template');
         $filename .= empty($language) ? '' : '.' . $language;
-        $filename .= $this->option('content.extension');
+        $filename .= Formwork::instance()->config()->get('content.extension');
 
         FileSystem::createFile($path . $filename);
 
@@ -430,7 +431,7 @@ class Pages extends AbstractController
         $language = $data->get('language');
 
         // Validate language
-        if (!empty($language) && !in_array($language, $this->option('languages.available'), true)) {
+        if (!empty($language) && !in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
             throw new TranslatedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
         }
 
@@ -439,12 +440,12 @@ class Pages extends AbstractController
         if ($differ) {
             $filename = $data->get('template');
             $filename .= empty($language) ? '' : '.' . $language;
-            $filename .= $this->option('content.extension');
+            $filename .= Formwork::instance()->config()->get('content.extension');
 
             $fileContent = Str::wrap(YAML::encode($frontmatter), '---' . PHP_EOL) . $content;
 
             FileSystem::write($page->path() . $filename, $fileContent);
-            FileSystem::touch($this->option('content.path'));
+            FileSystem::touch(Formwork::instance()->config()->get('content.path'));
 
             // Update page with the new data
             $page->reload();
@@ -512,7 +513,7 @@ class Pages extends AbstractController
             $file = $page->files()->get($file);
 
             // Process JPEG and PNG images according to system options (e.g. quality)
-            if ($this->option('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
+            if (Formwork::instance()->config()->get('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($file->path());
                 $image->saveOptimized();
                 $page->reload();
@@ -588,7 +589,7 @@ class Pages extends AbstractController
      */
     protected function changePageTemplate(Page $page, string $template): Page
     {
-        $destination = $page->path() . $template . $this->option('content.extension');
+        $destination = $page->path() . $template . Formwork::instance()->config()->get('content.extension');
         FileSystem::move($page->path() . $page->filename(), $destination);
         $page->reload();
         return $page;
@@ -623,7 +624,7 @@ class Pages extends AbstractController
     protected function availableSiteLanguages(): array
     {
         $languages = [];
-        foreach ($this->option('languages.available') as $code) {
+        foreach (Formwork::instance()->config()->get('languages.available') as $code) {
             $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
         }
         return $languages;

@@ -47,14 +47,6 @@ abstract class AbstractController
         return Formwork::instance()->site();
     }
 
-    /**
-     * Get a system option
-     */
-    protected function option(string $option, $default = null)
-    {
-        return Formwork::instance()->option($option, $default);
-    }
-
     /*
      * Return default data passed to views
      *
@@ -69,8 +61,8 @@ abstract class AbstractController
             'appConfig'   => JSON::encode([
                 'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
-                    'weekStarts' => $this->option('date.week_starts'),
-                    'format'     => DateFormats::formatToPattern(Formwork::instance()->option('date.format')),
+                    'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
+                    'format'     => DateFormats::formatToPattern(Formwork::instance()->config()->get('date.format')),
                     'labels'     => [
                         'today'    => $this->label('date.today'),
                         'weekdays' => ['long' => $this->label('date.weekdays.long'), 'short' =>  $this->label('date.weekdays.short')],
@@ -143,7 +135,7 @@ abstract class AbstractController
      */
     private function getColorScheme(): string
     {
-        $default = $this->option('admin.color_scheme');
+        $default = Formwork::instance()->config()->get('admin.color_scheme');
         if (Admin::instance()->isLoggedIn()) {
             if ($this->user()->colorScheme() === 'auto') {
                 return $_COOKIE['formwork_preferred_color_scheme'] ?? $default;

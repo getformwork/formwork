@@ -77,7 +77,7 @@ class Uploader
     {
         $mimeTypes = array_map(
             [MimeType::class, 'fromExtension'],
-            Formwork::instance()->option('files.allowed_extensions')
+            Formwork::instance()->config()->get('files.allowed_extensions')
         );
         return [
             'allowedMimeTypes' => $mimeTypes,
