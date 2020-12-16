@@ -1,5 +1,172 @@
 # Changelog
 
+## [1.11.0](https://github.com/getformwork/formwork/releases/tag/1.11.0) (2020-12-16)
+
+**Enhancements**
+
+- **Support PHP >= 7.3.5**
+- **Display Markdown only on active CodeMirror lines**
+- **Merge pull request #56 from getformwork/feature/dark-color-scheme**
+- **Merge pull request #58 from getformwork/feature/json-parser**
+- **Merge pull request #59 from getformwork/feature/updater-semver-parsing**
+- **Merge pull request #60 from getformwork/feature/path-class**
+- **Merge pull request #61 from getformwork/feature/stricter-date-parsing**
+- **Merge pull request #62 from getformwork/feature/improved-date-formats**
+- **Merge pull request #63 from getformwork/feature/improved-cache-serialization**
+- **Merge pull request #65 from getformwork/feature/duration-input**
+- Move from deprecated node-sass to Dart Sass
+- Replace most of `LogicException` with more appropriate exceptions
+- Add `Arr::random()` and `Arr::shuffle()`
+- Add `Collection::random()`
+- Add `PageCollection::shuffle()`
+- Add OPcache status to Options > Info
+- Ad Max Path Length to Options > Info
+- Add Formwork icon in SVG format
+- Use a default avatar image in SVG format
+- Use system monospace font stack
+- Update fonts
+- Move fonts.scss and icons.scss to components folder
+- Update `MimeType::MIME_TYPES`
+- Recognize archive file type and display appropriate icon
+- Add new options to tooltip component
+- Update .eslintrc
+- Build minified CSS only
+- Add dark color scheme CSS
+- Add color scheme support to panel
+- Add color scheme options to system and user schemes
+- Add support for system preferred color scheme
+- Avoid wrapping strings more than once with `Str::wrap()`
+- Add `Str::contains()`, `Str::before()`, `Str::beforeLast()`, `Str::after()` and `Str::afterLast()`
+- Use new utilities from `Str` class
+- Rewrite `Uri::make()` and `Uri::normalize()` moving slashes normalization in the first method
+- Rewrite `FileSystem::name()` and `FileSystem::extension()` using `pathinfo()`
+- Simplify `YAML` class
+- Extract `FileSystem::getLastStreamErrorMessage()` from `FileSystem::fetch()`
+- Add stream error details to `FileSystem::write()`
+- Rename `FileSystem::assert()` to `FileSystem::assertExists()`
+- Add `$assertExists` argument to `FileSystem::isReadable()`, `FileSystem::isWritable()`, `FileSystem::isFile()`, `FileSystem::isDirectory()` and `FileSystem::isEmptyDirectory()`
+- Use `$assertExists` argument to remove `FileSystem::exists()` checks
+- Use `substr_compare()` to make `Str::startsWith()` and `Str::endsWith()` more efficient
+- Add `Str::append()` and `Str::prepend()`
+- Return `User::lastAccess()` as integer
+- Normalize path in `Site::__construct()`
+- Avoid treating page relative path as URI
+- Remove unneeded slashes normalization since `Uri::normalize()` does that
+- Throw an exception when an URI is invalid
+- Handle default ports scheme-dependently in `Uri` class
+- Handle scheme and host always as lowercase in `Uri` class
+- Avoid concatenating twice in `Uri::make()`
+- Add `AbstractEncoder` class
+- Make `YAML` class extend `AbstractEncoder`
+- Use `YAML::encodeToFile()`
+- Add `JSON` class
+- Replace `json_encode()` and `json_decode()` with methods from `JSON`
+- Make `Formwork` and `Admin` classes final
+- Add `SemVer` class
+- Add supplementary version checks to `Updater::checkUpdates()`
+- Add `Path` class
+- Use methods from `Path` class in `FileSystem` and `Uri`
+- Remove superfluous argument
+- Simplify conditional returns
+- Simplify and combine conditionals when possible
+- Simplify `Arr::appendMissing()`
+- Simplify `Cookie::send()`
+- Remove superfluous checks before foreach
+- Use `random_bytes()` in `FileSystem::randomName()`
+- Add `$prefix` argument to `FileSystem::randomName()`
+- Make `FileSystem::createFile()` check file existence atomically and avoid call to `FileSystem::write()`
+- Make `FileSystem::createDirectory()` error handling similar to `FileSystem::createFile()`
+- Add `FileSystem::createTemporaryFile()`
+- Use `FileSystem::createTemporaryFile()` in `FileSystem::write()`
+- Explicitly handle the mode of created files and directories
+- Add File Creation Mask to Options > Info
+- Use SHA-256 hashes instead of SHA-1
+- Avoid retaining in memory unmodified copies of images
+- Update default avatar
+- Move `<script>` tags before `</body>`
+- Load scripts in `login` and `register` views
+- Move JSON encoding to controllers
+- Add `Date` class
+- Improve validation in `Validator::validateDate()`
+- Replace `strtotime()` with `Date::toTimestamp()`
+- Add `Str::escapeAttr()`
+- Always escape attributes with `HTML::attribute()`
+- Add `escapeAttr` helper
+- Use `escapeAttr` helper in admin views
+- Add missing type declarations
+- Move DatePicker `dayLabels`, `monthLabels` and `todayLabel` to `labels` property
+- Rewrite DatePicker formatting function
+- Add `date.weekdays.long` to translations
+- Add `formatToPattern()`, `patternToFormat()`, `formatDateTime()` and `formatTimestamp()` to `DateFormats` class
+- Update `AbstractController::defaults()`
+- Simplify `Statistics::getChartData()`
+- Move view helpers to `View::helpers()`
+- Add `date()` and `datetime()` helpers to views
+- Add `Arr::isAssociative()`
+- Match backslash in `Page::__construct()`
+- Merge branch 'master' into feature/path-class
+- Remove superfluous argument
+- Add `PHP` parser class
+- Use PHP parser instead of `serialize()` in `FilesCache`
+- Add `Response::__set_state()`
+- Encode empty arrays inline in `PHP::encodeData()`
+- Add duration field
+- Use duration fields in system options
+- Make sure duration input value is always a safe integer
+- Add duration strings to French translation
+- Add `intervalNames` argument to `secondsToInterval()`
+- Rename `display` option to `intervals` in DurationInput
+- Remove leading zeros in DurationInput
+- Use `blur` event intead of `change`
+- Allow leading zeros for decimal numbers in DurationInput
+- Add focus styles to editor
+- Use `Str::append()` in `Uri::normalize()`
+- Rename `Uri::resolveRelativeUri()` to `Uri::resolveRelative()`
+- Throw an exception in `MimeType::fromFile()` when the extension `fileinfo` is not enabled
+- Update exception message in `Image::initialize()`
+- Add parentheses after `__METHOD__` for consistency
+- Export helpers to separate file
+- Export admin view helpers to separate file
+- Prevent direct access to .php files
+- Rename `Page::id()` to `Page::name()`
+- Add `AbstractPage::uid()`
+- Add `File::hash()`
+- Create browsing context for preview links to avoid always opening a new tab
+- Add details to `@deprecated` tags
+- Add `Text` class
+- Add `countWords`, `truncate`, `truncateWords`, `readingTime`, `markdown`, `date` and `datetime` helpers
+
+**Bug fixes**
+
+- Fix spinner component due to Dart Sass breaking changes
+- Fix argument validation in `Image` class
+- Fix return type in `File::type()`
+- Fix for-in loops
+- Fix `.page-slug-change` icon
+- Fix `Str::endsWith()` returning `false` with empty `$needle`
+- Fix `FileSystem::write()` potentially writing files without write permissions
+- Fix timestamp format to avoid locale-dependent issues in `Log::log()`
+- Fix method visibility
+- Fix `FileSystem::isVisible()` failing for empty paths
+- Fix `FileSystem::moveDirectory()` ignoring `$overwrite` argument on recursion
+- Fix js error in pages without sidebar
+- Fix tooltips.js altering title attributes outside document body
+- Fix `SemVer::fromString()` for PHP < 7.4
+- Fix normalization after trimming separators in `Uri::make()`
+- Fix `Validator::parse()` precision issues in casting to numeric types
+- Fix `Utils.toSafeInteger()` not converting to integer values
+- Fix return type
+- Fix terminology of deprecation messages
+- Fix `PageCollection::sort()` using `id` as default property, returning as adjacent pages in completely different places within hierarchy
+- Fix `@deprecated` tag details
+
+**Deprecations**
+
+- Deprecate string and invalid `$direction` argument in `PageCollection::sort()`
+- Deprecate `FileSystem::temporaryName()`
+- Deprecate the possibility to return an array or a string with `MimeType::toExtension()`
+- Deprecate `Uri::relativePath()`
+
 ## [1.10.3](https://github.com/getformwork/formwork/releases/tag/1.10.3) (2020-11-14)
 
 **Enhancements**

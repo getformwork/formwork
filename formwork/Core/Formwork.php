@@ -27,7 +27,7 @@ final class Formwork
      *
      * @var string
      */
-    public const VERSION = '1.10.3';
+    public const VERSION = '1.11.0';
 
     /**
      * Array containing options
