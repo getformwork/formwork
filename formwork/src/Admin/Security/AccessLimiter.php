@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Security;
 
-use Formwork\Admin\Utils\Registry;
+use Formwork\Utils\Registry;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 

@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Security;
 
-use Formwork\Admin\Utils\Session;
+use Formwork\Utils\Session;
 use Formwork\Utils\HTTPRequest;
 use RuntimeException;
 

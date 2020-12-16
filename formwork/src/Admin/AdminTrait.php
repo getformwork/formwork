@@ -2,9 +2,9 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\Log;
-use Formwork\Admin\Utils\Notification;
-use Formwork\Admin\Utils\Registry;
+use Formwork\Utils\Log;
+use Formwork\Utils\Notification;
+use Formwork\Utils\Registry;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Template\Scheme;

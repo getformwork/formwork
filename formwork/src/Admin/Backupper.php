@@ -3,7 +3,7 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Exceptions\TranslatedException;
-use Formwork\Admin\Utils\ZipErrors;
+use Formwork\Utils\ZipErrors;
 use Formwork\Core\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;

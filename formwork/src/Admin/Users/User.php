@@ -4,7 +4,7 @@ namespace Formwork\Admin\Users;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
-use Formwork\Admin\Utils\Session;
+use Formwork\Utils\Session;
 use Formwork\Data\DataGetter;
 
 class User extends DataGetter

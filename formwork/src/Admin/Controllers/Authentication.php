@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
-use Formwork\Admin\Utils\Session;
+use Formwork\Utils\Session;
 use Formwork\Data\DataGetter;
 use Formwork\Utils\HTTPRequest;
 

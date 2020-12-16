@@ -1,9 +1,8 @@
 <?php
 
-namespace Formwork\Admin\Utils;
+namespace Formwork\Utils;
 
 use Formwork\Parsers\JSON;
-use Formwork\Utils\Header;
 
 class JSONResponse
 {

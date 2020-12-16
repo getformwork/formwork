@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Backupper;
 use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Updater;
-use Formwork\Admin\Utils\JSONResponse;
+use Formwork\Utils\JSONResponse;
 use Formwork\Core\Formwork;
 use RuntimeException;
 

@@ -1,10 +1,8 @@
 <?php
 
-namespace Formwork\Admin\Utils;
+namespace Formwork\Utils;
 
 use Formwork\Core\Formwork;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Cookie;
 
 class Session
 {

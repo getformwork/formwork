@@ -2,8 +2,8 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\Registry;
-use Formwork\Admin\Utils\SemVer;
+use Formwork\Utils\Registry;
+use Formwork\Utils\SemVer;
 use Formwork\Core\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Utils\Date;

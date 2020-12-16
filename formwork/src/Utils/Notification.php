@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Admin\Utils;
+namespace Formwork\Utils;
 
 use InvalidArgumentException;
 

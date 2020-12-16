@@ -3,8 +3,8 @@
 namespace Formwork\Admin;
 
 use Formwork\Admin\Utils\DateFormats;
-use Formwork\Admin\Utils\IPAnonymizer;
-use Formwork\Admin\Utils\Registry;
+use Formwork\Utils\IPAnonymizer;
+use Formwork\Utils\Registry;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
