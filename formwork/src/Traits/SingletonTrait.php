@@ -15,6 +15,8 @@ trait SingletonTrait
 
     /**
      * Return self instance
+     *
+     * @return static
      */
     public static function instance(): self
     {
