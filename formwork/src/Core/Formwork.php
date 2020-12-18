@@ -130,6 +130,14 @@ final class Formwork
     }
 
     /**
+     * Return languages instance
+     */
+    public function languages(): Languages
+    {
+        return $this->languages;
+    }
+
+    /**
      * Return default options
      */
     public function defaults(): array
