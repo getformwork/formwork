@@ -31,11 +31,9 @@ class Users extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('admin', [
+        $this->view('users.index', [
             'title'   => $this->label('users.users'),
-            'content' => $this->view('users.index', [
-                'users' => Admin::instance()->users()
-            ], true)
+            'users'   => Admin::instance()->users()
         ]);
     }
 
@@ -148,12 +146,10 @@ class Users extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('admin', [
+        $this->view('users.profile', [
             'title'   => $this->label('users.user-profile', $user->username()),
-            'content' => $this->view('users.profile', [
-                'user'   => $user,
-                'fields' => $fields->render(true)
-            ], true)
+            'user'    => $user,
+            'fields'  => $fields->render(true)
         ]);
     }
 

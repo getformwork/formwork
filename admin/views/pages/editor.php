@@ -1,3 +1,4 @@
+<?php $this->layout('admin') ?>
 <div class="container-no-margin">
     <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
         <div class="row">

@@ -63,15 +63,13 @@ class Options extends AbstractController
 
         $this->modal('changes');
 
-        $this->view('admin', [
+        $this->view('options.system', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.system', [
-                'tabs' => $this->view('options.tabs', [
-                    'tabs'    => $this->tabs,
-                    'current' => 'system'
-                ], true),
-                'fields' => $fields->render(true)
-            ], true)
+            'tabs'    => $this->view('options.tabs', [
+                'tabs'    => $this->tabs,
+                'current' => 'system'
+            ], true),
+            'fields' => $fields->render(true)
         ]);
     }
 
@@ -106,15 +104,13 @@ class Options extends AbstractController
 
         $this->modal('changes');
 
-        $this->view('admin', [
+        $this->view('options.site', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.site', [
-                'tabs' => $this->view('options.tabs', [
-                    'tabs'    => $this->tabs,
-                    'current' => 'site'
-                ], true),
-                'fields' => $fields->render(true)
-            ], true)
+            'tabs'    => $this->view('options.tabs', [
+                'tabs'    => $this->tabs,
+                'current' => 'site'
+            ], true),
+            'fields' => $fields->render(true)
         ]);
     }
 
@@ -125,15 +121,13 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.updates');
 
-        $this->view('admin', [
+        $this->view('options.updates', [
             'title'   => $this->label('options.updates'),
-            'content' => $this->view('options.updates', [
-                'tabs' => $this->view('options.tabs', [
-                    'tabs'    => $this->tabs,
-                    'current' => 'updates'
-                ], true),
-                'currentVersion' => Formwork::VERSION
-            ], true)
+            'tabs'    => $this->view('options.tabs', [
+                'tabs'    => $this->tabs,
+                'current' => 'updates'
+            ], true),
+            'currentVersion' => Formwork::VERSION
         ]);
     }
 
@@ -223,15 +217,13 @@ class Options extends AbstractController
         ksort($data['HTTP Request Headers']);
         ksort($data['HTTP Response Headers']);
 
-        $this->view('admin', [
+        $this->view('options.info', [
             'title'   => $this->label('options.options'),
-            'content' => $this->view('options.info', [
-                'tabs' => $this->view('options.tabs', [
-                    'tabs'    => $this->tabs,
-                    'current' => 'info'
-                ], true),
-                'info' => $data
-            ], true)
+            'tabs'    => $this->view('options.tabs', [
+                'tabs'    => $this->tabs,
+                'current' => 'info'
+            ], true),
+            'info' => $data
         ]);
     }
 

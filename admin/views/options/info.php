@@ -1,3 +1,4 @@
+<?php $this->layout('admin') ?>
 <div class="component">
     <h3 class="caption"><?= $this->label('options.options') ?></h3>
     <?= $tabs ?>

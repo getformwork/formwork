@@ -1,3 +1,4 @@
+<?php $this->layout('admin') ?>
 <div class="container-no-margin">
     <div class="row">
         <div class="col-m-5-12">

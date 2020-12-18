@@ -53,17 +53,15 @@ class Pages extends AbstractController
 
         $this->modal('deletePage');
 
-        $this->view('admin', [
-            'title'   => $this->label('pages.pages'),
-            'content' => $this->view('pages.index', [
-                'pagesList' => $this->view('pages.list', [
-                    'pages'    => $this->site()->pages(),
-                    'subpages' => true,
-                    'class'    => 'pages-list-top',
-                    'parent'   => '.',
-                    'sortable' => $this->user()->permissions()->has('pages.reorder'),
-                    'headers'  => true
-                ], true)
+        $this->view('pages.index', [
+            'title'     => $this->label('pages.pages'),
+            'pagesList' => $this->view('pages.list', [
+                'pages'    => $this->site()->pages(),
+                'subpages' => true,
+                'class'    => 'pages-list-top',
+                'parent'   => '.',
+                'sortable' => $this->user()->permissions()->has('pages.reorder'),
+                'headers'  => true
             ], true)
         ]);
     }
@@ -188,16 +186,14 @@ class Pages extends AbstractController
 
         $this->modal('deleteFile');
 
-        $this->view('admin', [
-            'title'   => $this->label('pages.edit-page', $page->title()),
-            'content' => $this->view('pages.editor', [
-                'page'               => $page,
-                'fields'             => $fields->render(true),
-                'templates'          => $this->site()->templates(),
-                'parents'            => $this->site()->descendants()->sort('path'),
-                'currentLanguage'    => $params->get('language', $page->language()),
-                'availableLanguages' => $this->availableSiteLanguages()
-            ], true)
+        $this->view('pages.editor', [
+            'title'              => $this->label('pages.edit-page', $page->title()),
+            'page'               => $page,
+            'fields'             => $fields->render(true),
+            'templates'          => $this->site()->templates(),
+            'parents'            => $this->site()->descendants()->sort('path'),
+            'currentLanguage'    => $params->get('language', $page->language()),
+            'availableLanguages' => $this->availableSiteLanguages()
         ]);
     }
 

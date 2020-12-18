@@ -1,3 +1,4 @@
+<?php $this->layout('admin') ?>
 <div id="updater-component" class="component">
     <h3 class="caption"><?= $this->label('options.options') ?></h3>
     <?= $tabs ?>

@@ -23,19 +23,17 @@ class Dashboard extends AbstractController
 
         $this->modal('deletePage');
 
-        $this->view('admin', [
-            'title'   => $this->label('dashboard.dashboard'),
-            'content' => $this->view('dashboard.index', [
-                'lastModifiedPages' => $this->view('pages.list', [
-                    'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
-                    'subpages' => false,
-                    'class'    => 'pages-list-top',
-                    'parent'   => null,
-                    'sortable' => false,
-                    'headers'  => true
-                    ], true),
-                'statistics' => JSON::encode($statistics->getChartData())
-            ], true)
+        $this->view('dashboard.index', [
+            'title'             => $this->label('dashboard.dashboard'),
+            'lastModifiedPages' => $this->view('pages.list', [
+                'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
+                'subpages' => false,
+                'class'    => 'pages-list-top',
+                'parent'   => null,
+                'sortable' => false,
+                'headers'  => true
+                ], true),
+            'statistics' => JSON::encode($statistics->getChartData())
         ]);
     }
 }
