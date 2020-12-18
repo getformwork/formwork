@@ -67,7 +67,7 @@ class Date
             }
         }
 
-        return $dateTime instanceof DateTime ? $dateTime->getTimestamp() : strtotime($date);
+        return $dateTime->getTimestamp();
     }
 
     /**
