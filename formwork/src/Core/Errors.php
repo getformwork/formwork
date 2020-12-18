@@ -4,6 +4,7 @@ namespace Formwork\Core;
 
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
+use Formwork\View\View;
 use ErrorException;
 use Throwable;
 
@@ -28,8 +29,8 @@ class Errors
     {
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
-        $message = Header::HTTP_STATUS[$status];
-        require FORMWORK_PATH . 'error.php';
+        $view = new View('error', ['status' => $status, 'message' => Header::HTTP_STATUS[$status]]);
+        $view->render();
         // Don't exit, otherwise the error will not be logged
     }
 
