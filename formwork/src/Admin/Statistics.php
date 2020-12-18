@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Utils\DateFormats;
 use Formwork\Utils\IPAnonymizer;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Date;
@@ -153,7 +152,7 @@ class Statistics
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
         $labels = array_map(static function (string $day): string {
-            return DateFormats::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M");
+            return Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M", Admin::instance()->translation()->code());
         }, $days);
 
         $interpolate = static function (array $data) use ($days): array {

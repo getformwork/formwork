@@ -1,16 +1,18 @@
 <?php
 
 return [
-    'date' => static function (int $timestamp): string {
-        return \Formwork\Admin\Utils\DateFormats::formatTimestamp(
+    'date' => static function (int $timestamp, string $format = null): string {
+        return \Formwork\Utils\Date::formatTimestamp(
             $timestamp,
-            \Formwork\Core\Formwork::instance()->config()->get('date.format')
+            $format ?? \Formwork\Core\Formwork::instance()->config()->get('date.format'),
+            \Formwork\Admin\Admin::instance()->translation()->code()
         );
     },
     'datetime' => static function (int $timestamp): string {
-        return \Formwork\Admin\Utils\DateFormats::formatTimestamp(
+        return \Formwork\Utils\Date::formatTimestamp(
             $timestamp,
-            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format')
+            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format'),
+            \Formwork\Admin\Admin::instance()->translation()->code()
         );
     }
 ];

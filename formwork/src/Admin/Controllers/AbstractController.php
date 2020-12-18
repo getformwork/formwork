@@ -6,11 +6,11 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
-use Formwork\Admin\Utils\DateFormats;
 use Formwork\Admin\View\View;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
 use Formwork\Parsers\JSON;
+use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 
 abstract class AbstractController
@@ -62,7 +62,7 @@ abstract class AbstractController
                 'baseUri'    => $this->panelUri(),
                 'DatePicker' => [
                     'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
-                    'format'     => DateFormats::formatToPattern(Formwork::instance()->config()->get('date.format')),
+                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format')),
                     'labels'     => [
                         'today'    => $this->label('date.today'),
                         'weekdays' => ['long' => $this->label('date.weekdays.long'), 'short' =>  $this->label('date.weekdays.short')],

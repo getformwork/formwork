@@ -44,16 +44,16 @@ return [
             ['baseRoute' => $currentPage ? $currentPage->route() : '/']
         );
     },
-    'date' => static function (int $timestamp): string {
-        return date(
-            \Formwork\Core\Formwork::instance()->config()->get('date.format'),
-            $timestamp
+    'date' => static function (int $timestamp, string $format = null): string {
+        return \Formwork\Utils\Date::formatTimestamp(
+            $timestamp,
+            $format ?? \Formwork\Core\Formwork::instance()->config()->get('date.format')
         );
     },
     'datetime' => static function (int $timestamp): string {
-        return date(
-            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format'),
-            $timestamp
+        return \Formwork\Utils\Date::formatTimestamp(
+            $timestamp,
+            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format')
         );
     }
 ];
