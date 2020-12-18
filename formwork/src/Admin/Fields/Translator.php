@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Fields;
 
-use Formwork\Admin\Admin;
+use Formwork\Core\Formwork;
 
 class Translator
 {
@@ -30,9 +30,11 @@ class Translator
     /**
      * Translate a field
      */
-    public static function translate(Field $field): void
+    public static function translate(Field $field, string $language = null): void
     {
-        $language = Admin::instance()->translation()->code();
+        if ($language === null) {
+            $language = Formwork::instance()->languages()->getTranslation()->code();
+        }
         foreach ($field->toArray() as $key => $value) {
             if (static::isTranslatable($key, $field)) {
                 if (is_array($value)) {
@@ -44,7 +46,7 @@ class Translator
                 } elseif (!is_string($value)) {
                     continue;
                 }
-                $field->set($key, static::interpolate($value));
+                $field->set($key, static::interpolate($value, $language));
             }
         }
     }
@@ -71,13 +73,15 @@ class Translator
      *
      * @return array|string
      */
-    protected static function interpolate($value)
+    protected static function interpolate($value, string $language)
     {
         if (is_array($value)) {
-            return array_map([static::class, 'interpolate'], $value);
+            return array_map(static function ($value) use ($language) {
+                return static::interpolate($value, $language);
+            }, $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
-            return Admin::instance()->label($matches[1]);
+            return Formwork::instance()->translations()->get($language, true)->translate($matches[1]);
         }
         return $value;
     }

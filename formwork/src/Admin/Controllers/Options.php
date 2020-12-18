@@ -39,7 +39,10 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'system.yml'))->get('fields'));
+        $fields = new Fields(
+            (new Scheme(Admin::SCHEMES_PATH . 'system.yml'))->get('fields'),
+            Admin::instance()->translation()->code()
+        );
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
@@ -79,7 +82,10 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'site.yml'))->get('fields'));
+        $fields = new Fields(
+            (new Scheme(Admin::SCHEMES_PATH . 'site.yml'))->get('fields'),
+            Admin::instance()->translation()->code()
+        );
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());

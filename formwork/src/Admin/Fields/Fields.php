@@ -12,7 +12,7 @@ class Fields extends AssociativeCollection
      *
      * @param array $fields Array of Field objects
      */
-    public function __construct(array $fields)
+    public function __construct(array $fields, string $language = null)
     {
         parent::__construct();
         foreach ($fields as $key => $value) {
@@ -22,7 +22,7 @@ class Fields extends AssociativeCollection
                 }
                 $this->items[$key] = $value;
             } else {
-                $this->items[$key] = new Field($key, $value);
+                $this->items[$key] = new Field($key, $value, $language);
             }
         }
     }

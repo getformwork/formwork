@@ -112,7 +112,10 @@ class Users extends AbstractController
      */
     public function profile(RouteParams $params): void
     {
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'user.yml'))->get('fields'));
+        $fields = new Fields(
+            (new Scheme(Admin::SCHEMES_PATH . 'user.yml'))->get('fields'),
+            Admin::instance()->translation()->code()
+        );
 
         $user = Admin::instance()->users()->get($params->get('user'));
 

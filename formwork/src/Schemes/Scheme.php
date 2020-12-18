@@ -60,12 +60,28 @@ class Scheme extends DataGetter
     }
 
     /**
+     * Get scheme fields
+     */
+    public function fields(): array
+    {
+        return $this->get('fields', []);
+    }
+
+    /**
+     * Get scheme data
+     */
+    public function data(): array
+    {
+        return $this->get('data', []);
+    }
+
+    /**
      * Return default field values
      */
     public function defaultFieldValues(): array
     {
         $result = [];
-        foreach ($this->get('fields', []) as $name => $value) {
+        foreach ($this->fields() as $name => $value) {
             if (isset($value['default'])) {
                 $result[$name] = $value['default'];
             }
