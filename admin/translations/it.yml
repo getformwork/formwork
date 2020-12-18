@@ -15,18 +15,6 @@ dashboard.statistics: Statistiche
 dashboard.statistics.unique-visitors: Visitatori unici
 dashboard.statistics.visits: Visite
 dashboard.welcome: Benvenuto/a
-date.duration.days: ['giorno', 'giorni']
-date.duration.hours: ['ora', 'ore']
-date.duration.minutes: ['minuto', 'minuti']
-date.duration.months: ['mese', 'mesi']
-date.duration.seconds: ['secondo', 'secondi']
-date.duration.weeks: ['settimana', 'settimane']
-date.duration.years: ['anno', 'anni']
-date.months.long: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
-date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
-date.today: Oggi
-date.weekdays.long: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
-date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 errors.action.report-to-github: Segnala un problema su GitHub
 errors.action.return-to-dashboard: Torna al Riepilogo
 errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
@@ -273,12 +261,3 @@ users.user.deleted: Utente eliminato
 users.user.edited: Dati utente aggiornati
 users.user.not-found: Utente non trovato
 users.users: Utenti
-zip.error.already-exists: L’archivio esiste già
-zip.error.cannot-open: Impossibile aprire l’archivio
-zip.error.cannot-read: Impossibile leggere l’archivio
-zip.error.inconsistent-archive: Archivio non valido
-zip.error.invalid-argument: Argomento non valido
-zip.error.memory-failure: Errore di memoria
-zip.error.not-found: Archivio non trovato
-zip.error.not-zip-archive: Non è un archivio ZIP
-zip.error.unspecified: Errore non specificato

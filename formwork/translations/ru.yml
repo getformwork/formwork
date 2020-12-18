@@ -1,0 +1,14 @@
+date.months.long: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октября', 'Ноябрь', 'Декабрь']
+date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+date.today: Сегодня
+date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
+date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+zip.error.already-exists: Архив уже существует
+zip.error.cannot-open: Не удается открыть архив
+zip.error.cannot-read: Не удается прочитать архив
+zip.error.inconsistent-archive: Противоречивый архив
+zip.error.invalid-argument: Недопустимый аргумент
+zip.error.memory-failure: Сбой памяти
+zip.error.not-found: Архив не найден
+zip.error.not-zip-archive: Не ZIP архив
+zip.error.unspecified: Неизвестная ошибка

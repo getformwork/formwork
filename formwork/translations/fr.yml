@@ -1,0 +1,21 @@
+date.duration.days: ['jour', 'jours']
+date.duration.hours: ['heure', 'heures']
+date.duration.minutes: ['minute', 'minutes']
+date.duration.months: ['mois', 'mois']
+date.duration.seconds: ['seconde', 'secondes']
+date.duration.weeks: ['semaine', 'semaines']
+date.duration.years: ['an', 'ans']
+date.months.long: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+date.months.short: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc']
+date.today: Aujourd’hui
+date.weekdays.long: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+date.weekdays.short: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+zip.error.already-exists: L’archive existe déjà
+zip.error.cannot-open: Impossible d’ouvrir l’archive
+zip.error.cannot-read: Impossible de lire l’archive
+zip.error.inconsistent-archive: Archive incohérente
+zip.error.invalid-argument: Argument invalide
+zip.error.memory-failure: Défaillance de la mémoire
+zip.error.not-found: Archive non trouvée
+zip.error.not-zip-archive: N’est pas une archive ZIP
+zip.error.unspecified: Erreur non spécifiée
