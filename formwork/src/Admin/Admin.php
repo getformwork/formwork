@@ -15,6 +15,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
 use BadMethodCallException;
+use Formwork\Translations\Translation;
 use RuntimeException;
 use Throwable;
 
@@ -36,13 +37,6 @@ final class Admin
      * @var string
      */
     public const SCHEMES_PATH = ADMIN_PATH . 'schemes' . DS;
-
-    /**
-     * Admin translations path
-     *
-     * @var string
-     */
-    public const TRANSLATIONS_PATH = ADMIN_PATH . 'translations' . DS;
 
     /**
      * Admin logs path
@@ -171,7 +165,9 @@ final class Admin
         if ($this->isLoggedIn()) {
             $languageCode = $this->user()->language();
         }
-        $this->translation = Translation::load($languageCode);
+        $path = Formwork::instance()->config()->get('translations.paths.admin');
+        Formwork::instance()->translations()->loadFromPath($path);
+        $this->translation = Formwork::instance()->translations()->get($languageCode);
     }
 
     /**

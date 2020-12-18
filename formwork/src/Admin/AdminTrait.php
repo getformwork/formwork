@@ -172,6 +172,6 @@ trait AdminTrait
      */
     protected function label(...$arguments)
     {
-        return Admin::instance()->translation()->get(...$arguments);
+        return Admin::instance()->translation()->translate(...$arguments);
     }
 }
