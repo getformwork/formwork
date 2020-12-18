@@ -189,6 +189,8 @@ final class Formwork
             'translations.fallback'        => 'en',
             'translations.paths.admin'     => ADMIN_PATH . 'translations' . DS,
             'translations.paths.system'    => FORMWORK_PATH . 'translations' . DS,
+            'views.paths.admin'            => ADMIN_PATH . 'views' . DS,
+            'views.paths.system'           => FORMWORK_PATH . 'views' . DS,
             'admin.enabled'                => true,
             'admin.root'                   => 'admin',
             'admin.lang'                   => 'en',

@@ -1,7 +1,7 @@
 <?php
 namespace Formwork\Admin\Fields;
 
-use Formwork\Admin\View\View;
+use Formwork\Admin\AdminView;
 use Formwork\Data\DataSetter;
 use UnexpectedValueException;
 
@@ -139,7 +139,7 @@ class Field extends DataSetter
     public function render(bool $return = false)
     {
         if ($this->isVisible()) {
-            $view = new View('fields.' . $this->type(), ['field' => $this]);
+            $view = new AdminView('fields.' . $this->type(), ['field' => $this]);
             return $view->render($return);
         }
     }

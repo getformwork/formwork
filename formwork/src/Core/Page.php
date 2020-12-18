@@ -423,7 +423,7 @@ class Page extends AbstractPage
      */
     public function renderToString(array $vars = []): string
     {
-        return $this->template()->render($vars, true);
+        return $this->template()->render(true);
     }
 
     /**

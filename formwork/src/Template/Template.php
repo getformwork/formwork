@@ -7,31 +7,16 @@ use Formwork\Core\Formwork;
 use Formwork\Core\Page;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
-use BadMethodCallException;
-use RuntimeException;
+use Formwork\Utils\Str;
+use Formwork\View\Renderer;
+use Formwork\View\View;
 
-class Template
+class Template extends View
 {
     /**
-     * Template file path
-     *
-     * @var string
+     * @inheritdoc
      */
-    protected $path;
-
-    /**
-     * Template file extension
-     *
-     * @var string
-     */
-    protected $extension;
-
-    /**
-     * Template name
-     *
-     * @var string
-     */
-    protected $name;
+    protected const TYPE = 'template';
 
     /**
      * Page passed to the template
@@ -39,13 +24,6 @@ class Template
      * @var Page
      */
     protected $page;
-
-    /**
-     * Template variables
-     *
-     * @var array
-     */
-    protected $vars = [];
 
     /**
      * Template scheme
@@ -62,47 +40,20 @@ class Template
     protected $assets;
 
     /**
-     * Template layout
-     *
-     * @var Layout
-     */
-    protected $layout;
-
-    /**
-     * Whether template is being rendered
-     *
-     * @var bool
-     */
-    protected $rendering = false;
-
-    /**
      * Create a new Template instance
      */
-    public function __construct(string $template, Page $page)
+    public function __construct(string $name, Page $page)
     {
-        $this->extension = Formwork::instance()->config()->get('templates.extension');
-        $this->name = $template;
         $this->page = $page;
-        $this->vars = $this->defaults();
+        parent::__construct($name);
     }
 
     /**
-     * Get template path
+     * @inheritdoc
      */
     public function path(): string
     {
-        if ($this->path !== null) {
-            return $this->path;
-        }
-        return $this->path = dirname(Formwork::instance()->site()->template($this->name)) . DS;
-    }
-
-    /**
-     * Get template name
-     */
-    public function name(): string
-    {
-        return $this->name;
+        return Formwork::instance()->config()->get('templates.path');
     }
 
     /**
@@ -131,90 +82,36 @@ class Template
     }
 
     /**
-     * Set template layout
-     */
-    public function layout(string $name): void
-    {
-        if ($this->layout !== null) {
-            throw new RuntimeException('The layout for ' . $this->name . ' template is already set');
-        }
-        $this->layout = new Layout($name, $this->page, $this);
-    }
-
-    /**
      * Insert a template
      */
     public function insert(string $name, array $vars = []): void
     {
-        if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
+        if (Str::startsWith($name, '_')) {
+            $name = 'partials' . DS . Str::removeStart($name, '_');
         }
 
-        if ($name[0] === '_') {
-            $name = 'partials' . DS . substr($name, 1);
-        }
-
-        $filename = $this->path() . $name . $this->extension;
-
-        if (!FileSystem::exists($filename)) {
-            throw new RuntimeException('Template ' . $name . ' not found');
-        }
-
-        Renderer::load($filename, array_merge($this->vars, $vars), $this);
+        parent::insert($name, $vars);
     }
 
     /**
      * Render template
-     *
-     * @param bool $return Whether to return rendered content or not
-     *
-     * @return string|void
      */
-    public function render(array $vars = [], bool $return = false)
+    public function render(bool $return = false)
     {
-        if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() not allowed while rendering');
-        }
-
-        $this->layout = null;
-
-        $this->vars = array_merge($this->vars, $vars);
-
         $isCurrentPage = $this->page->isCurrent();
 
         $this->loadController();
 
         // Render correct page if the controller has changed the current one
         if ($isCurrentPage && !$this->page->isCurrent()) {
-            return Formwork::instance()->site()->currentPage()->template()->render($vars, $return);
+            return Formwork::instance()->site()->currentPage()->template()->render($return);
         }
 
-        ob_start();
-
-        $this->rendering = true;
-
-        $this->insert($this->name);
-
-        if ($this->layout !== null) {
-            $this->layout->vars = $this->vars;
-
-            $this->layout->content = ob_get_contents();
-            ob_clean(); // Clean but don't end output buffer
-
-            $this->layout->render();
-        }
-
-        $this->rendering = false;
-
-        if ($return) {
-            return ob_get_clean();
-        }
-
-        ob_end_flush();
+        return parent::render($return);
     }
 
     /**
-     * Return an array containing the default data
+     * @inheritdoc
      */
     protected function defaults(): array
     {
@@ -223,6 +120,14 @@ class Template
             'site'   => Formwork::instance()->site(),
             'page'   => $this->page
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createLayoutView(string $name): View
+    {
+        return new static('layouts' . DS . $name, $this->page);
     }
 
     /**
@@ -235,19 +140,6 @@ class Template
         if (FileSystem::exists($controllerFile)) {
             $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
         }
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        if (TemplateHelpers::has($name)) {
-            if (!$this->rendering) {
-                throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
-            }
-
-            $helper = TemplateHelpers::get($name);
-            return $helper(...$arguments);
-        }
-        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
     }
 
     public function __toString(): string

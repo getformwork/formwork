@@ -4,9 +4,9 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\AdminTrait;
+use Formwork\Admin\AdminView;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
-use Formwork\Admin\View\View;
 use Formwork\Core\Formwork;
 use Formwork\Core\Site;
 use Formwork\Parsers\JSON;
@@ -126,7 +126,7 @@ abstract class AbstractController
      */
     protected function view(string $name, array $data = [], bool $return = false)
     {
-        $view = new View($name, array_merge($this->defaults(), $data));
+        $view = new AdminView($name, array_merge($this->defaults(), $data));
         return $view->render($return);
     }
 
