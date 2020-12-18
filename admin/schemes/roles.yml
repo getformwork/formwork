@@ -1,16 +1,18 @@
-admin:
-    title: '{{user.role.admin}}'
-    permissions:
-        dashboard: true
-        cache: true
-        backup: true
-        pages: true
-        options: true
-        updates: true
-        users: true
+title: Roles
+data:
+    admin:
+        title: '{{user.role.admin}}'
+        permissions:
+            dashboard: true
+            cache: true
+            backup: true
+            pages: true
+            options: true
+            updates: true
+            users: true
 
-user:
-    title: '{{user.role.user}}'
-    permissions:
-        dashboard: true
-        pages: true
+    user:
+        title: '{{user.role.user}}'
+        permissions:
+            dashboard: true
+            pages: true

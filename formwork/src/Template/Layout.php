@@ -3,6 +3,7 @@
 namespace Formwork\Template;
 
 use Formwork\Core\Page;
+use Formwork\Schemes\Scheme;
 
 class Layout extends Template
 {

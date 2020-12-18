@@ -9,6 +9,7 @@ use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
+use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
@@ -38,7 +39,7 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'system.yml'));
+        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'system.yml'))->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());
@@ -78,7 +79,7 @@ class Options extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $fields = new Fields(YAML::parseFile(Admin::SCHEMES_PATH . 'site.yml'));
+        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'site.yml'))->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = new DataGetter(HTTPRequest::postData());

@@ -5,6 +5,7 @@ namespace Formwork\Template;
 use Formwork\Core\Assets;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
+use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use BadMethodCallException;
 use RuntimeException;
@@ -112,7 +113,7 @@ class Template
         if ($this->scheme !== null) {
             return $this->scheme;
         }
-        return $this->scheme = new Scheme($this->name);
+        return $this->scheme = new Scheme($this->path() . 'schemes' . DS . $this->name . '.yml');
     }
 
     /**

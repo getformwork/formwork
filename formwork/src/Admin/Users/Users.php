@@ -5,6 +5,7 @@ namespace Formwork\Admin\Users;
 use Formwork\Admin\Admin;
 use Formwork\Data\AssociativeCollection;
 use Formwork\Parsers\YAML;
+use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 
 class Users extends AssociativeCollection
@@ -21,7 +22,7 @@ class Users extends AssociativeCollection
      */
     public static function load(): self
     {
-        static::$roles = YAML::parseFile(Admin::SCHEMES_PATH . 'roles.yml');
+        static::$roles = (new Scheme(Admin::SCHEMES_PATH . 'roles.yml'))->get('data');
         $users = [];
         foreach (FileSystem::listFiles(Admin::ACCOUNTS_PATH) as $file) {
             $parsedData = YAML::parseFile(Admin::ACCOUNTS_PATH . $file);

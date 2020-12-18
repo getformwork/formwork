@@ -7,7 +7,7 @@ use Formwork\Utils\Notification;
 use Formwork\Utils\Registry;
 use Formwork\Core\Formwork;
 use Formwork\Core\Page;
-use Formwork\Template\Scheme;
+use Formwork\Schemes\Scheme;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;
@@ -130,7 +130,7 @@ trait AdminTrait
      */
     protected function scheme(string $template): Scheme
     {
-        return new Scheme($template);
+        return new Scheme(Formwork::instance()->config()->get('templates.path') . 'schemes' . DS . $template . '.yml');
     }
 
     /**
