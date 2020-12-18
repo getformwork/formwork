@@ -16,7 +16,7 @@ class Errors extends AbstractController
     {
         $this->displayError(404, 'not-found', [
             'href'  => $this->uri('/dashboard/'),
-            'label' => $this->label('errors.action.return-to-dashboard')
+            'label' => $this->translate('errors.action.return-to-dashboard')
         ]);
     }
 
@@ -27,7 +27,7 @@ class Errors extends AbstractController
     {
         $this->displayError(500, 'internal-server-error', [
             'href'  => $this->makeGitHubIssueUri($exception),
-            'label' => $this->label('errors.action.report-to-github')
+            'label' => $this->translate('errors.action.report-to-github')
         ]);
     }
 
@@ -38,7 +38,7 @@ class Errors extends AbstractController
     {
         $this->displayError(403, 'forbidden', [
             'href'  => $this->uri('/dashboard/'),
-            'label' => $this->label('errors.action.return-to-dashboard')
+            'label' => $this->translate('errors.action.return-to-dashboard')
         ]);
     }
 
@@ -54,11 +54,11 @@ class Errors extends AbstractController
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
         $this->view('errors.error', [
-            'title'       => $this->label('errors.error.' . $name . '.status'),
+            'title'       => $this->translate('errors.error.' . $name . '.status'),
             'code'        => $status,
-            'status'      => $this->label('errors.error.' . $name . '.status'),
-            'heading'     => $this->label('errors.error.' . $name . '.heading'),
-            'description' => $this->label('errors.error.' . $name . '.description'),
+            'status'      => $this->translate('errors.error.' . $name . '.status'),
+            'heading'     => $this->translate('errors.error.' . $name . '.heading'),
+            'description' => $this->translate('errors.error.' . $name . '.description'),
             'action'      => $action
         ]);
         // Don't exit, otherwise the error will not be logged

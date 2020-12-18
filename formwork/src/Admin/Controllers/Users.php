@@ -32,7 +32,7 @@ class Users extends AbstractController
         $this->modal('deleteUser');
 
         $this->view('users.index', [
-            'title'   => $this->label('users.users'),
+            'title'   => $this->translate('users.users'),
             'users'   => Admin::instance()->users()
         ]);
     }
@@ -48,13 +48,13 @@ class Users extends AbstractController
 
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
-            $this->notify($this->label('users.user.cannot-create.var-missing'), 'error');
+            $this->notify($this->translate('users.user.cannot-create.var-missing'), 'error');
             $this->redirect('/users/');
         }
 
         // Ensure there isn't a user with the same username
         if (Admin::instance()->users()->has($data->get('username'))) {
-            $this->notify($this->label('users.user.cannot-create.already-exists'), 'error');
+            $this->notify($this->translate('users.user.cannot-create.already-exists'), 'error');
             $this->redirect('/users/');
         }
 
@@ -68,7 +68,7 @@ class Users extends AbstractController
 
         YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
 
-        $this->notify($this->label('users.user.created'), 'success');
+        $this->notify($this->translate('users.user.created'), 'success');
         $this->redirect('/users/');
     }
 
@@ -101,7 +101,7 @@ class Users extends AbstractController
         // Remove user last access from registry
         $this->registry('lastAccess')->remove($user->username());
 
-        $this->notify($this->label('users.user.deleted'), 'success');
+        $this->notify($this->translate('users.user.deleted'), 'success');
         $this->redirect('/users/');
     }
 
@@ -118,7 +118,7 @@ class Users extends AbstractController
         $user = Admin::instance()->users()->get($params->get('user'));
 
         if ($user === null) {
-            $this->notify($this->label('users.user.not-found'), 'error');
+            $this->notify($this->translate('users.user.not-found'), 'error');
             $this->redirect('/users/');
         }
 
@@ -132,9 +132,9 @@ class Users extends AbstractController
                 $data = new DataSetter(HTTPRequest::postData());
                 $fields->validate($data);
                 $this->updateUser($user, $data);
-                $this->notify($this->label('users.user.edited'), 'success');
+                $this->notify($this->translate('users.user.edited'), 'success');
             } else {
-                $this->notify($this->label('users.user.cannot-edit', $user->username()), 'error');
+                $this->notify($this->translate('users.user.cannot-edit', $user->username()), 'error');
             }
 
             $this->redirect('/users/' . $user->username() . '/profile/');
@@ -147,7 +147,7 @@ class Users extends AbstractController
         $this->modal('deleteUser');
 
         $this->view('users.profile', [
-            'title'   => $this->label('users.user-profile', $user->username()),
+            'title'   => $this->translate('users.user-profile', $user->username()),
             'user'    => $user,
             'fields'  => $fields->render(true)
         ]);
@@ -164,7 +164,7 @@ class Users extends AbstractController
         if (!empty($data->get('password'))) {
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
-                $this->notify($this->label('users.user.cannot-change-password'), 'error');
+                $this->notify($this->translate('users.user.cannot-change-password'), 'error');
                 $this->redirect('/users/' . $user->username() . '/profile/');
             }
 
@@ -177,7 +177,7 @@ class Users extends AbstractController
 
         // Ensure that user role can be changed
         if ($data->get('role', $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
-            $this->notify($this->label('users.user.cannot-change-role', $user->username()), 'error');
+            $this->notify($this->translate('users.user.cannot-change-role', $user->username()), 'error');
             $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
@@ -209,7 +209,7 @@ class Users extends AbstractController
         try {
             $hasUploaded = $uploader->upload(FileSystem::randomName());
         } catch (TranslatedException $e) {
-            $this->notify($this->label('uploader.error', $e->getTranslatedMessage()), 'error');
+            $this->notify($this->translate('uploader.error', $e->getTranslatedMessage()), 'error');
             $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
@@ -223,7 +223,7 @@ class Users extends AbstractController
             // Delete old avatar
             $this->deleteAvatar($user);
 
-            $this->notify($this->label('user.avatar.uploaded'), 'success');
+            $this->notify($this->translate('user.avatar.uploaded'), 'success');
             return $uploader->uploadedFiles()[0];
         }
     }

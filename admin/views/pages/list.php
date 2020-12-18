@@ -2,10 +2,10 @@
         if ($headers):
 ?>
             <div class="pages-list-headers" aria-hidden="true">
-                <div class="pages-headers-cell page-details"><?= $this->label('pages.page.title') ?></div>
-                <div class="pages-headers-cell page-date"><?= $this->label('pages.page.last-modified') ?></div>
-                <div class="pages-headers-cell page-status"><?= $this->label('pages.page.status') ?></div>
-                <div class="pages-headers-cell page-actions"><?= $this->label('pages.page.actions') ?></div>
+                <div class="pages-headers-cell page-details"><?= $this->translate('pages.page.title') ?></div>
+                <div class="pages-headers-cell page-date"><?= $this->translate('pages.page.last-modified') ?></div>
+                <div class="pages-headers-cell page-status"><?= $this->translate('pages.page.status') ?></div>
+                <div class="pages-headers-cell page-actions"><?= $this->translate('pages.page.actions') ?></div>
             </div>
 <?php
         endif;
@@ -30,7 +30,7 @@
 <?php
                     if ($subpages && $page->hasChildren()):
 ?>
-                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->label('pages.toggle-children') ?>"></button>
+                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->translate('pages.toggle-children') ?>"></button>
 <?php
                     endif;
 ?>
@@ -51,14 +51,14 @@
                             <div class="page-date-inner" data-overflow-tooltip="true"><?= $date ?></div>
                         </div>
                         <div class="pages-item-cell page-status page-status-<?= $page->status() ?>">
-                            <div class="page-status-label" data-overflow-tooltip="true"><?= $this->label('pages.status.' . $page->status()) ?></div>
+                            <div class="page-status-label" data-overflow-tooltip="true"><?= $this->translate('pages.status.' . $page->status()) ?></div>
                         </div>
                         <div class="pages-item-cell page-actions">
-                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->label('pages.preview') ?>" aria-label="<?= $this->label('pages.preview') ?>"><i class="i-eye"></i></a>
+                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('pages.preview') ?>" aria-label="<?= $this->translate('pages.preview') ?>"><i class="i-eye"></i></a>
 <?php
                         if ($admin->user()->permissions()->has('pages.delete')):
 ?>
-                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->label('pages.delete-page') ?>" aria-label="<?= $this->label('pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('pages.delete-page') ?>" aria-label="<?= $this->translate('pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                         endif;
 ?>

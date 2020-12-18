@@ -15,21 +15,21 @@
             <?php if ($notification = $this->notification()): ?>
                 <div class="login-modal-<?= $notification['type'] ?>"><?= $notification['text'] ?></div>
             <?php endif; ?>
-                <div class="caption"><?= $this->label('register.register') ?></div>
-                <p><?= $this->label('register.create-user') ?></p>
+                <div class="caption"><?= $this->translate('register.register') ?></div>
+                <p><?= $this->translate('register.create-user') ?></p>
                 <div class="separator"></div>
                 <form action="<?= $this->uri('/') ?>" method="post">
-                    <label class="label-required" for="fullname"><?= $this->label('user.fullname') ?>:</label>
+                    <label class="label-required" for="fullname"><?= $this->translate('user.fullname') ?>:</label>
                     <input id="fullname" type="text" required name="fullname" autofocus>
-                    <label class="label-required" for="username"><?= $this->label('user.username') ?>:</label>
-                    <span class="label-suggestion">(<?= $this->label('users.new-user.username-suggestion') ?>)</span>
-                    <input id="username" type="text" required name="username" pattern="^[a-zA-Z0-9_-]{3,20}$" title="<?= ucfirst($this->label('users.new-user.username-suggestion')) ?>" maxlength="20" autocomplete="false">
-                    <label class="label-required" for="password"><?= $this->label('user.password') ?>:</label>
-                    <span class="label-suggestion">(<?= $this->label('users.new-user.password-suggestion') ?>)</span>
-                    <input id="password" type="password" required name="password" pattern="^.{8,}$" title="<?= ucfirst($this->label('users.new-user.password-suggestion')) ?>" autocomplete="new-password">
-                    <label class="label-required" for="email"><?= $this->label('user.email') ?>:</label>
+                    <label class="label-required" for="username"><?= $this->translate('user.username') ?>:</label>
+                    <span class="label-suggestion">(<?= $this->translate('users.new-user.username-suggestion') ?>)</span>
+                    <input id="username" type="text" required name="username" pattern="^[a-zA-Z0-9_-]{3,20}$" title="<?= ucfirst($this->translate('users.new-user.username-suggestion')) ?>" maxlength="20" autocomplete="false">
+                    <label class="label-required" for="password"><?= $this->translate('user.password') ?>:</label>
+                    <span class="label-suggestion">(<?= $this->translate('users.new-user.password-suggestion') ?>)</span>
+                    <input id="password" type="password" required name="password" pattern="^.{8,}$" title="<?= ucfirst($this->translate('users.new-user.password-suggestion')) ?>" autocomplete="new-password">
+                    <label class="label-required" for="email"><?= $this->translate('user.email') ?>:</label>
                     <input id="email" type="email" required name="email">
-                    <label class="label-required" for="email"><?= $this->label('user.language') ?>:</label>
+                    <label class="label-required" for="email"><?= $this->translate('user.language') ?>:</label>
                     <select id="language" name="language">
 <?php
                     foreach ($admin->translation()->availableLanguages() as $key => $value):
@@ -41,7 +41,7 @@
                     </select>
                     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
                     <div class="separator"></div>
-                    <button type="submit" class="button-accent"><?= $this->label('modal.action.continue') ?></button>
+                    <button type="submit" class="button-accent"><?= $this->translate('modal.action.continue') ?></button>
                 </form>
             </div>
         </div>

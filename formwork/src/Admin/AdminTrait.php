@@ -166,11 +166,9 @@ trait AdminTrait
     }
 
     /**
-     * Get a label from language string
-     *
-     * @param float|int|string ...$arguments
+     * Get a translation
      */
-    protected function label(...$arguments)
+    protected function translate(...$arguments)
     {
         return Admin::instance()->translation()->translate(...$arguments);
     }

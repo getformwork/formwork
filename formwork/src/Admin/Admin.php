@@ -191,7 +191,7 @@ final class Admin
         if (HTTPRequest::contentLength() !== null) {
             $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
             if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                $this->notify($this->label('request.error.post-max-size'), 'error');
+                $this->notify($this->translate('request.error.post-max-size'), 'error');
                 $this->redirectToReferer();
             }
         }
@@ -207,7 +207,7 @@ final class Admin
         } catch (RuntimeException $e) {
             CSRFToken::destroy();
             Session::remove('FORMWORK_USERNAME');
-            $this->notify($this->label('login.suspicious-request-detected'), 'warning');
+            $this->notify($this->translate('login.suspicious-request-detected'), 'warning');
             if (HTTPRequest::isXHR()) {
                 JSONResponse::error('Bad Request: the CSRF token is not valid', 400)->send();
             }

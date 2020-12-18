@@ -64,20 +64,20 @@ abstract class AbstractController
                     'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
                     'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format')),
                     'labels'     => [
-                        'today'    => $this->label('date.today'),
-                        'weekdays' => ['long' => $this->label('date.weekdays.long'), 'short' =>  $this->label('date.weekdays.short')],
-                        'months'   => ['long' => $this->label('date.months.long'), 'short' =>  $this->label('date.months.short')]
+                        'today'    => $this->translate('date.today'),
+                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' =>  $this->translate('date.weekdays.short')],
+                        'months'   => ['long' => $this->translate('date.months.long'), 'short' =>  $this->translate('date.months.short')]
                     ]
                 ],
                 'DurationInput' => [
                     'labels' => [
-                        'years'   => $this->label('date.duration.years'),
-                        'months'  => $this->label('date.duration.months'),
-                        'weeks'   => $this->label('date.duration.weeks'),
-                        'days'    => $this->label('date.duration.days'),
-                        'hours'   => $this->label('date.duration.hours'),
-                        'minutes' => $this->label('date.duration.minutes'),
-                        'seconds' => $this->label('date.duration.seconds')
+                        'years'   => $this->translate('date.duration.years'),
+                        'months'  => $this->translate('date.duration.months'),
+                        'weeks'   => $this->translate('date.duration.weeks'),
+                        'days'    => $this->translate('date.duration.days'),
+                        'hours'   => $this->translate('date.duration.hours'),
+                        'minutes' => $this->translate('date.duration.minutes'),
+                        'seconds' => $this->translate('date.duration.seconds')
                     ]
                 ]
             ])

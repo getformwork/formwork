@@ -25,7 +25,7 @@ class Authentication extends AbstractController
 
         if ($limiter->hasReachedLimit()) {
             $minutes = round(Formwork::instance()->config()->get('admin.login_reset_time') / 60);
-            $this->error($this->label('login.attempt.too-many', $minutes));
+            $this->error($this->translate('login.attempt.too-many', $minutes));
             return;
         }
 
@@ -39,7 +39,7 @@ class Authentication extends AbstractController
                 CSRFToken::generate();
 
                 $this->view('authentication.login', [
-                    'title' => $this->label('login.login')
+                    'title' => $this->translate('login.login')
                 ]);
 
                 break;
@@ -52,7 +52,7 @@ class Authentication extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {
-                    $this->error($this->label('login.attempt.failed'));
+                    $this->error($this->translate('login.attempt.failed'));
                 }
 
                 $limiter->registerAttempt();
@@ -79,7 +79,7 @@ class Authentication extends AbstractController
                     $this->redirectToPanel();
                 }
 
-                $this->error($this->label('login.attempt.failed'), [
+                $this->error($this->translate('login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true
                 ]);
@@ -100,7 +100,7 @@ class Authentication extends AbstractController
         if (Formwork::instance()->config()->get('admin.logout_redirect') === 'home') {
             $this->redirectToSite();
         } else {
-            $this->notify($this->label('login.logged-out'), 'info');
+            $this->notify($this->translate('login.logged-out'), 'info');
             $this->redirectToPanel();
         }
     }
@@ -116,7 +116,7 @@ class Authentication extends AbstractController
         // Ensure CSRF token is re-generated
         CSRFToken::generate();
 
-        $defaults = ['title' => $this->label('login.login')];
+        $defaults = ['title' => $this->translate('login.login')];
         $this->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
     }
