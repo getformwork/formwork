@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
@@ -128,10 +127,7 @@ class Pages extends AbstractController
         }
 
         // Load page fields
-        $fields = new Fields(
-            $page->template()->scheme()->get('fields'),
-            Admin::instance()->translation()->code()
-        );
+        $fields = new Fields($page->template()->scheme()->get('fields'));
 
         switch (HTTPRequest::method()) {
             case 'GET':

@@ -55,5 +55,8 @@ return [
             $timestamp,
             \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format')
         );
+    },
+    'translate' => static function (string $key, ...$arguments) {
+        return \Formwork\Core\Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments);
     }
 ];

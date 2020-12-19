@@ -30,11 +30,9 @@ class Translator
     /**
      * Translate a field
      */
-    public static function translate(Field $field, string $language = null): void
+    public static function translate(Field $field): void
     {
-        if ($language === null) {
-            $language = Formwork::instance()->languages()->getTranslation()->code();
-        }
+        $language = Formwork::instance()->translations()->getCurrent()->code();
         foreach ($field->toArray() as $key => $value) {
             if (static::isTranslatable($key, $field)) {
                 if (is_array($value)) {
@@ -46,7 +44,7 @@ class Translator
                 } elseif (!is_string($value)) {
                     continue;
                 }
-                $field->set($key, static::interpolate($value, $language));
+                $field->set($key, static::interpolate($value));
             }
         }
     }
@@ -73,15 +71,15 @@ class Translator
      *
      * @return array|string
      */
-    protected static function interpolate($value, string $language)
+    protected static function interpolate($value)
     {
         if (is_array($value)) {
-            return array_map(static function ($value) use ($language) {
-                return static::interpolate($value, $language);
+            return array_map(static function ($value) {
+                return static::interpolate($value);
             }, $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
-            return Formwork::instance()->translations()->get($language, true)->translate($matches[1]);
+            return Formwork::instance()->translations()->getCurrent()->translate($matches[1]);
         }
         return $value;
     }

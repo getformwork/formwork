@@ -72,13 +72,6 @@ final class Admin
     protected $users;
 
     /**
-     * Translation instance
-     *
-     * @var Translation
-     */
-    protected $translation;
-
-    /**
      * Errors controller
      *
      * @var Controllers\Errors
@@ -316,7 +309,7 @@ final class Admin
      */
     public function translate(...$arguments)
     {
-        return $this->translation()->translate(...$arguments);
+        return Formwork::instance()->translations()->getCurrent()->translate(...$arguments);
     }
 
     /**
@@ -330,7 +323,7 @@ final class Admin
         }
         $path = Formwork::instance()->config()->get('translations.paths.admin');
         Formwork::instance()->translations()->loadFromPath($path);
-        $this->translation = Formwork::instance()->translations()->get($languageCode);
+        Formwork::instance()->translations()->setCurrent($languageCode);
     }
 
     /**

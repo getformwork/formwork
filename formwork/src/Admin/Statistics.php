@@ -152,7 +152,7 @@ class Statistics
         $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
 
         $labels = array_map(static function (string $day): string {
-            return Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M", Admin::instance()->translation()->code());
+            return Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M");
         }, $days);
 
         $interpolate = static function (array $data) use ($days): array {

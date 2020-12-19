@@ -17,7 +17,7 @@
 <?php
             foreach (\Formwork\Admin\Translation::availableLanguages() as $key => $value):
 ?>
-                <option value="<?= $key ?>"<?php if ($key === $admin->translation()->code()): ?> selected<?php endif; ?>><?= $value ?></option>
+                <option value="<?= $key ?>"<?php if ($key === $admin->user()->language()): ?> selected<?php endif; ?>><?= $value ?></option>
 <?php
             endforeach;
 ?>

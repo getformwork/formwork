@@ -279,6 +279,7 @@ final class Formwork
     protected function loadTranslations(): void
     {
         $this->translations = Translations::fromPath($this->config()->get('translations.paths.system'));
+        $this->translations->setCurrent($this->languages->current() ?? $this->config()->get('translations.fallback'));
     }
 
     /**

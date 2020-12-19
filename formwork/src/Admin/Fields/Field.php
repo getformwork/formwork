@@ -17,7 +17,7 @@ class Field extends DataSetter
     /**
      * Create a new Field instance
      */
-    public function __construct(string $name, array $data = [], string $language = null)
+    public function __construct(string $name, array $data = [])
     {
         $this->name = $name;
         parent::__construct($data);
@@ -25,9 +25,9 @@ class Field extends DataSetter
             $this->importData();
         }
         if ($this->has('fields')) {
-            $this->data['fields'] = new Fields($this->data['fields'], $language);
+            $this->data['fields'] = new Fields($this->data['fields']);
         }
-        Translator::translate($this, $language);
+        Translator::translate($this);
     }
 
     /**

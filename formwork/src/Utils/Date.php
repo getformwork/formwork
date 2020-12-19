@@ -116,7 +116,7 @@ class Date
         }
 
         if ($language === null) {
-            $language = Formwork::instance()->languages()->getTranslation()->code();
+            $language = Formwork::instance()->translations()->getCurrent()->code();
         }
 
         $translation = Formwork::instance()->translations()->get($language);
