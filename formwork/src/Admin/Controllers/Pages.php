@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Uploader;
 use Formwork\Utils\JSONResponse;
@@ -11,6 +10,7 @@ use Formwork\Core\Page;
 use Formwork\Core\Site;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\Image;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Parsers\YAML;

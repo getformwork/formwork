@@ -2,8 +2,8 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Core\Formwork;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\MimeType;

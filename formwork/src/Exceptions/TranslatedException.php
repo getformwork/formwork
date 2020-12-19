@@ -1,8 +1,8 @@
 <?php
 
-namespace Formwork\Admin\Exceptions;
+namespace Formwork\Exceptions;
 
-use Formwork\Admin\Admin;
+use Formwork\Core\Formwork;
 use Exception;
 
 class TranslatedException extends Exception
@@ -41,6 +41,6 @@ class TranslatedException extends Exception
      */
     public function getTranslatedMessage(): string
     {
-        return Admin::instance()->translate($this->languageString);
+        return Formwork::instance()->translations()->getCurrent()->translate($this->languageString);
     }
 }

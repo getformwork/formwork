@@ -2,9 +2,9 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Admin\Exceptions\TranslatedException;
 use Formwork\Utils\ZipErrors;
 use Formwork\Core\Formwork;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
