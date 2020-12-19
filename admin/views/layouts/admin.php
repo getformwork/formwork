@@ -12,7 +12,7 @@
     endif;
 ?>
 <?php
-    if ($notification = $this->notification()):
+    if ($notification = $admin->notification()):
 ?>
     <meta name="notification" content="<?= $notification['text']?>" data-type="<?= $notification['type']?>" data-interval="5000">
 <?php
@@ -26,7 +26,7 @@
     <?php $this->insert('partials.sidebar') ?>
     <div class="title-bar">
         <span class="panel-title"><?= $this->translate('admin.panel') ?></span>
-        <a href="<?= $this->siteUri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
+        <a href="<?= $admin->siteUri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
     </div>
     <main class="main">
         <?= $this->content() ?>

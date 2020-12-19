@@ -20,7 +20,7 @@
         <?= $fields ?>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
         <button type="submit" class="button-accent button-right" data-command="save"><i class="i-check"></i> <?= $this->translate('modal.action.save') ?></button>
-        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $this->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('users.delete-user') ?>" aria-label="<?= $this->translate('users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
+        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $admin->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('users.delete-user') ?>" aria-label="<?= $this->translate('users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
     </form>
 </div>
 <?php endif; ?>

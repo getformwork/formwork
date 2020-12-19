@@ -2,7 +2,7 @@
 <div class="caption"><?= $this->translate('register.register') ?></div>
 <p><?= $this->translate('register.create-user') ?></p>
 <div class="separator"></div>
-<form action="<?= $this->uri('/') ?>" method="post">
+<form action="<?= $admin->uri('/') ?>" method="post">
     <label class="label-required" for="fullname"><?= $this->translate('user.fullname') ?>:</label>
     <input id="fullname" type="text" required name="fullname" autofocus>
     <label class="label-required" for="username"><?= $this->translate('user.username') ?>:</label>

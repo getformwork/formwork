@@ -14,5 +14,8 @@ return [
             \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format'),
             \Formwork\Admin\Admin::instance()->translation()->code()
         );
+    },
+    'translate' => static function (string $key, ...$arguments) {
+        return \Formwork\Admin\Admin::instance()->translation()->translate($key, ...$arguments);
     }
 ];

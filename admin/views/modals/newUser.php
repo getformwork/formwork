@@ -1,7 +1,7 @@
 <div id="newUserModal" class="modal">
     <div class="modal-content">
         <h3 class="caption"><?= $this->translate('users.new-user') ?></h3>
-        <form action="<?= $this->uri('/users/new/') ?>" method="post">
+        <form action="<?= $admin->uri('/users/new/') ?>" method="post">
             <label class="label-required" for="fullname"><?= $this->translate('user.fullname') ?>:</label>
             <input id="fullname" type="text" required name="fullname" autofocus>
             <label class="label-required" for="username"><?= $this->translate('user.username') ?>:</label>

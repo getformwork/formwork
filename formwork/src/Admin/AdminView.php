@@ -15,6 +15,11 @@ class AdminView extends View
     protected const TYPE = 'admin view';
 
     /**
+     * @inheritdoc
+     */
+    protected static $helpers = [];
+
+    /**
      * View assets instance
      *
      * @var Assets
@@ -58,13 +63,5 @@ class AdminView extends View
     protected function helpers(): array
     {
         return PHP::parseFile(ADMIN_PATH . 'helpers.php') + parent::helpers();
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        if ($this->rendering && method_exists(AdminTrait::class, $name)) {
-            return Admin::instance()->$name(...$arguments);
-        }
-        return parent::__call($name, $arguments);
     }
 }

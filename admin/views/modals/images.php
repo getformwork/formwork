@@ -17,7 +17,7 @@
 <?php
         foreach ($page->images() as $image):
 ?>
-            <option value="<?= $this->pageUri($page) . $image ?>"><?= $image ?></option>
+            <option value="<?= $admin->pageUri($page) . $image ?>"><?= $image ?></option>
 <?php
         endforeach;
 ?>

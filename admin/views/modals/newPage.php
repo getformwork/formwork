@@ -1,7 +1,7 @@
 <div id="newPageModal" class="modal">
     <div class="modal-content">
         <h3 class="caption"><?= $this->translate('pages.new-page') ?></h3>
-        <form action="<?= $this->uri('/pages/new/') ?>" method="post">
+        <form action="<?= $admin->uri('/pages/new/') ?>" method="post">
             <label class="label-required" for="page-title"><?= $this->translate('pages.new-page.title') ?>:</label>
             <input id="page-title" type="text" required name="title" autofocus>
             <label class="label-required" for="page-slug"><?= $this->translate('pages.new-page.slug') ?>:</label>
@@ -12,7 +12,7 @@
                 <option value="." selected><?= $this->translate('pages.new-page.site') ?> (/)</option>
 <?php
                 foreach ($pages as $page):
-                    $scheme = $this->scheme($page->template()->name());
+                    $scheme = $admin->scheme($page->template()->name());
                     if (!$scheme->get('children', true)) continue;
 ?>
                 <option value="<?= $page->route() ?>"<?php if ($scheme->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('children.templates'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
@@ -24,7 +24,7 @@
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):
-                $scheme = $this->scheme($template);
+                $scheme = $admin->scheme($template);
 ?>
                 <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php

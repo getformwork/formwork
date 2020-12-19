@@ -51,7 +51,7 @@
 <?php
                         foreach ($availableLanguages as $languageCode => $languageLabel):
 ?>
-                            <a href="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $languageCode . '/') ?>" class="dropdown-item"><?= $page->hasLanguage($languageCode) ? $this->translate('pages.languages.edit-language', $languageLabel) : $this->translate('pages.languages.add-language', $languageLabel); ?></a>
+                            <a href="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $languageCode . '/') ?>" class="dropdown-item"><?= $page->hasLanguage($languageCode) ? $this->translate('pages.languages.edit-language', $languageLabel) : $this->translate('pages.languages.add-language', $languageLabel); ?></a>
 <?php
                         endforeach;
 ?>
@@ -64,11 +64,11 @@
 <?php
                 if ($admin->user()->permissions()->has('pages.delete')):
 ?>
-                    <button type="button" class="button-link button-right" data-modal="deletePageModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('pages.delete-page') ?>" aria-label="<?= $this->translate('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                    <button type="button" class="button-link button-right" data-modal="deletePageModal" data-modal-action="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('pages.delete-page') ?>" aria-label="<?= $this->translate('pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
 <?php
                 endif;
 ?>
-                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $this->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('pages.preview') ?>" aria-label="<?= $this->translate('pages.preview') ?>"><i class="i-eye"></i></a>
+                    <a class="button button-link button-right<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $admin->pageUri($page, $currentLanguage ?: true) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('pages.preview') ?>" aria-label="<?= $this->translate('pages.preview') ?>"><i class="i-eye"></i></a>
                 </div>
 <?php
             if ($admin->user()->permissions()->has('pages.upload_files') || !$page->files()->isEmpty()):
@@ -83,11 +83,11 @@
                             <div class="files-item">
                                 <div class="files-item-cell file-name <?= is_null($file->type()) ? '' : 'file-type-' . $file->type() ?>" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                                 <div class="files-item-cell file-actions">
-                                    <a class="button button-link" role="button" href="<?= $this->pageUri($page) . $file->name() ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->translate('pages.preview-file') ?>" aria-label="title="<?= $this->translate('pages.preview-file') ?>""><i class="i-eye"></i></a>
+                                    <a class="button button-link" role="button" href="<?= $admin->pageUri($page) . $file->name() ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->translate('pages.preview-file') ?>" aria-label="title="<?= $this->translate('pages.preview-file') ?>""><i class="i-eye"></i></a>
 <?php
                         if ($admin->user()->permissions()->has('pages.delete_files')):
 ?>
-                                    <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $this->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->translate('pages.delete-file') ?>" aria-label="<?= $this->translate('pages.delete-file') ?>">
+                                    <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->translate('pages.delete-file') ?>" aria-label="<?= $this->translate('pages.delete-file') ?>">
                                         <i class="i-trash"></i>
                                     </button>
 <?php
@@ -127,7 +127,7 @@
                         <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->translate('pages.new-page.site') ?> (/)</option>
 <?php
                         foreach ($parents as $parent):
-                            $scheme = $this->scheme($parent->template()->name());
+                            $scheme = $admin->scheme($parent->template()->name());
                             if (!$scheme->get('pages', true)) continue;
                             if ($parent === $page) continue;
 ?>
@@ -140,7 +140,7 @@
                     <select id="page-template" name="template">
 <?php
                     foreach ($templates as $template):
-                        $scheme = $this->scheme($template);
+                        $scheme = $admin->scheme($template);
 ?>
                         <option value="<?= $template ?>"<?php if ($page->template()->name() === $template): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php

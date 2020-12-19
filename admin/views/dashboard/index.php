@@ -28,7 +28,7 @@
 
                 if ($admin->user()->permissions()->has('options.updates')):
 ?>
-                <a class="button" role="button" href="<?= $this->uri('/options/updates/'); ?>"><i class="i-sync"></i> <?= $this->translate('updates.check') ?></a>
+                <a class="button" role="button" href="<?= $admin->uri('/options/updates/'); ?>"><i class="i-sync"></i> <?= $this->translate('updates.check') ?></a>
 <?php
                 endif;
 ?>

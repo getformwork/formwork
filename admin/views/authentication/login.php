@@ -1,6 +1,6 @@
 <?php $this->layout('login') ?>
 <div class="caption"><?= $this->translate('login.login') ?></div>
-<form action="<?= $this->uri('/login/') ?>" method="post">
+<form action="<?= $admin->uri('/login/') ?>" method="post">
     <label for="username"><?= $this->translate('login.username') ?>:</label>
     <input id="username" type="text" required name="username" <?php if (!empty($username)): ?>value="<?= $username ?>"<?php else: ?>autofocus<?php endif; ?> maxlength="20">
     <label for="password"><?= $this->translate('login.password') ?>:</label>

@@ -12,7 +12,7 @@
     <main>
         <div class="container-full">
             <div class="login-modal-container">
-            <?php if ($notification = $this->notification()): ?>
+            <?php if ($notification = $admin->notification()): ?>
                 <div class="login-modal-<?= $notification['type'] ?>"><?= $notification['text'] ?></div>
             <?php endif; ?>
                 <?= $this->content() ?>
