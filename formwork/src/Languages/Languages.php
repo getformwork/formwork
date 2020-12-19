@@ -3,7 +3,6 @@
 namespace Formwork\Languages;
 
 use Formwork\Core\Formwork;
-use Formwork\Translations\Translation;
 use Formwork\Utils\HTTPNegotiation;
 
 class Languages
@@ -98,15 +97,6 @@ class Languages
     public function isDefault(): bool
     {
         return $this->current === $this->default;
-    }
-
-    /**
-     * Get the translation for the current language or the fallback one
-     */
-    public function getTranslation(): Translation
-    {
-        $fallback = Formwork::instance()->config()->get('translations.fallback');
-        return Formwork::instance()->translations()->get($this->current ?? $fallback, true);
     }
 
     /**
