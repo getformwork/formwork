@@ -1,3 +1,10 @@
+date.duration.days: ['день', 'д']
+date.duration.hours: ['час', 'ч']
+date.duration.minutes: ['минута', 'мин']
+date.duration.months: ['месяц', 'мес']
+date.duration.seconds: ['секунда', 'сек']
+date.duration.weeks: ['неделя', 'нед']
+date.duration.years: ['год', 'г']
 date.months.long: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октября', 'Ноябрь', 'Декабрь']
 date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
 date.today: Сегодня
