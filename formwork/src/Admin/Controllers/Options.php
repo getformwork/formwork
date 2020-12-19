@@ -3,8 +3,8 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\Fields\Fields;
-use Formwork\Admin\Fields\Validator;
+use Formwork\Fields\Fields;
+use Formwork\Fields\Validator;
 use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\JSON;

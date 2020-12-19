@@ -10,6 +10,9 @@ date.months.short: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set
 date.today: Oggi
 date.weekdays.long: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+fields.array.add: Aggiungi
+fields.array.remove: Rimuovi
+fields.file.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
 zip.error.already-exists: L’archivio esiste già
 zip.error.cannot-open: Impossibile aprire l’archivio
 zip.error.cannot-read: Impossibile leggere l’archivio

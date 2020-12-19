@@ -3,7 +3,6 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\Fields\Fields;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
@@ -11,6 +10,7 @@ use Formwork\Core\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Data\DataSetter;
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Fields\Fields;
 use Formwork\Files\Image;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;

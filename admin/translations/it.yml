@@ -26,8 +26,6 @@ errors.error.internal-server-error.status: Errore interno del server
 errors.error.not-found.description: La pagina non esiste o la richiesta non è valida.
 errors.error.not-found.heading: Oops, pagina non trovata!
 errors.error.not-found.status: Non trovato
-fields.array.add: Aggiungi
-fields.array.remove: Rimuovi
 login.attempt.failed: Tentativo di accesso fallito! Riprova.
 login.attempt.too-many: Sono stati sbagliati troppi tentativi di accesso. Riprova tra %d minuti.
 login.logged-out: Sei stato disconnesso
@@ -125,7 +123,6 @@ pages.editor.redo: Ripeti
 pages.editor.summary: Sommario
 pages.editor.undo: Annulla
 pages.files: File
-pages.files.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
 pages.languages: Lingue
 pages.languages.add-language: Aggiungi %s
 pages.languages.edit-language: Modifica %s

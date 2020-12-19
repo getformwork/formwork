@@ -26,8 +26,6 @@ errors.error.internal-server-error.status: Внутренняя Ошибка С�
 errors.error.not-found.description: Страница не существует или запрос не является действительным.
 errors.error.not-found.heading: К сожалению, страница не найдена!
 errors.error.not-found.status: Не обнаружена
-fields.array.add: Добавлять
-fields.array.remove: Удалить
 login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.
 login.attempt.too-many: Слишком много попыток входа в систему. Пожалуйста, попробуйте еще раз% D минут.
 login.logged-out: Вы вышли из системы
@@ -115,7 +113,6 @@ pages.editor.redo: Выбор
 pages.editor.summary: Краткий
 pages.editor.undo: Открыть
 pages.files: Файлы
-pages.files.upload-label: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
 pages.languages: Языки
 pages.languages.add-language: Добавлять %s
 pages.languages.edit-language: Редактировать %s

@@ -3,6 +3,9 @@ date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 
 date.today: Сегодня
 date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+fields.array.add: Добавлять
+fields.array.remove: Удалить
+fields.file.upload-label: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
 zip.error.already-exists: Архив уже существует
 zip.error.cannot-open: Не удается открыть архив
 zip.error.cannot-read: Не удается прочитать архив

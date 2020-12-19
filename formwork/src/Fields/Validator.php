@@ -1,9 +1,10 @@
 <?php
 
-namespace Formwork\Admin\Fields;
+namespace Formwork\Fields;
 
 use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
+use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 use InvalidArgumentException;

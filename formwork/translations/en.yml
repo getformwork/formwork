@@ -10,6 +10,9 @@ date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep
 date.today: Today
 date.weekdays.long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+fields.array.add: Add
+fields.array.remove: Remove
+fields.file.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 zip.error.already-exists: The archive already exists
 zip.error.cannot-open: Cannot open the archive
 zip.error.cannot-read: Cannot read the archive

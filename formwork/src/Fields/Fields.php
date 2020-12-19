@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Admin\Fields;
+namespace Formwork\Fields;
 
 use Formwork\Data\AssociativeCollection;
 use Formwork\Data\DataGetter;
