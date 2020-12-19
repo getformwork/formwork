@@ -44,6 +44,21 @@ class Date
     ];
 
     /**
+     * Time intervals in seconds
+     *
+     * @var array
+     */
+    protected const TIME_INTERVALS = [
+        'years'   => 60 * 60 * 24 * 365,
+        'months'  => 60 * 60 * 24 * 30,
+        'weeks'   => 60 * 60 * 24 * 7,
+        'days'    => 60 * 60 * 24,
+        'hours'   => 60 * 60,
+        'minutes' => 60,
+        'seconds' => 1
+    ];
+
+    /**
      * Parse a date according to a given format (or the default format if not given) and return the timestamp
      */
     public static function toTimestamp(string $date, string $format = null): int
@@ -149,6 +164,54 @@ class Date
     public static function formatTimestamp(int $timestamp, string $format = null, string $language = null): string
     {
         return static::formatDateTime(new DateTime('@' . $timestamp), $format, $language);
+    }
+
+    /**
+     * Formats a DateTime object as a time distance from now
+     */
+    public static function formatDateTimeAsDistance(DateTime $dateTime, string $language = null): string
+    {
+        if ($language === null) {
+            $language = Formwork::instance()->translations()->getCurrent()->code();
+        }
+
+        $translation = Formwork::instance()->translations()->get($language);
+
+        $time = $dateTime->getTimestamp();
+        $now = time();
+
+        if ($time < $now) {
+            $difference = $now - $time;
+            $format = 'date.distance.ago';
+        } elseif ($time === $now) {
+            $difference = 0;
+            $format = 'date.now';
+        } else {
+            $difference = $time - $now;
+            $format = 'date.distance.in';
+        }
+
+        foreach (self::TIME_INTERVALS as $intervalName => $seconds) {
+            if (($interval = (int) round($difference / $seconds)) > 0) {
+                $number = $interval !== 1 ? 1 : 0;
+                $distance = sprintf(
+                    '%d %s',
+                    $interval,
+                    $translation->translate('date.duration.' . $intervalName)[$number]
+                );
+                break;
+            }
+        }
+
+        return $translation->translate($format, $distance ?? '');
+    }
+
+    /**
+     * The same as self::formatDateTimeAsDistance() but takes a timestamp instead of a DateTime object
+     */
+    public static function formatTimestampAsDistance(int $timestamp, string $language = null): string
+    {
+        return static::formatDateTimeAsDistance(new DateTime('@' . $timestamp), $language);
     }
 
     /**

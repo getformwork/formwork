@@ -1,3 +1,5 @@
+date.distance.ago: '%s назад'
+date.distance.in: 'через %s'
 date.duration.days: ['день', 'д']
 date.duration.hours: ['час', 'ч']
 date.duration.minutes: ['минута', 'мин']
@@ -7,6 +9,7 @@ date.duration.weeks: ['неделя', 'нед']
 date.duration.years: ['год', 'г']
 date.months.long: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октября', 'Ноябрь', 'Декабрь']
 date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+date.now: теперь
 date.today: Сегодня
 date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']

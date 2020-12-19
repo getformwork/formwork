@@ -1,3 +1,5 @@
+date.distance.ago: 'il y a %s'
+date.distance.in: 'dans %s'
 date.duration.days: ['jour', 'jours']
 date.duration.hours: ['heure', 'heures']
 date.duration.minutes: ['minute', 'minutes']
@@ -7,6 +9,7 @@ date.duration.weeks: ['semaine', 'semaines']
 date.duration.years: ['an', 'ans']
 date.months.long: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 date.months.short: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc']
+date.now: maintenant
 date.today: Aujourd’hui
 date.weekdays.long: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 date.weekdays.short: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
