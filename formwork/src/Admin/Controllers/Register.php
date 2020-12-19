@@ -22,7 +22,7 @@ class Register extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 $this->view('register.register', [
-                    'title' => $this->translate('register.register')
+                    'title' => $this->admin()->translate('register.register')
                 ]);
 
                 break;
@@ -31,8 +31,8 @@ class Register extends AbstractController
                 $data = new DataGetter(HTTPRequest::postData());
 
                 if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
-                    $this->notify($this->translate('users.user.cannot-create.var-missing'), 'error');
-                    $this->redirectToPanel();
+                    $this->admin()->notify($this->admin()->translate('users.user.cannot-create.var-missing'), 'error');
+                    $this->admin()->redirectToPanel();
                 }
 
                 $userData = [
@@ -47,10 +47,10 @@ class Register extends AbstractController
                 YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
 
                 Session::set('FORMWORK_USERNAME', $data->get('username'));
-                $time = $this->log('access')->log($data->get('username'));
-                $this->registry('lastAccess')->set($data->get('username'), $time);
+                $time = $this->admin()->log('access')->log($data->get('username'));
+                $this->admin()->registry('lastAccess')->set($data->get('username'), $time);
 
-                $this->redirectToPanel();
+                $this->admin()->redirectToPanel();
 
                 break;
         }

@@ -18,28 +18,28 @@ class Authentication extends AbstractController
     public function login(): void
     {
         $limiter = new AccessLimiter(
-            $this->registry('accessAttempts'),
+            $this->admin()->registry('accessAttempts'),
             Formwork::instance()->config()->get('admin.login_attempts'),
             Formwork::instance()->config()->get('admin.login_reset_time')
         );
 
         if ($limiter->hasReachedLimit()) {
             $minutes = round(Formwork::instance()->config()->get('admin.login_reset_time') / 60);
-            $this->error($this->translate('login.attempt.too-many', $minutes));
+            $this->error($this->admin()->translate('login.attempt.too-many', $minutes));
             return;
         }
 
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
-                    $this->redirectToPanel();
+                    $this->admin()->redirectToPanel();
                 }
 
                 // Always generate a new CSRF token
                 CSRFToken::generate();
 
                 $this->view('authentication.login', [
-                    'title' => $this->translate('login.login')
+                    'title' => $this->admin()->translate('login.login')
                 ]);
 
                 break;
@@ -52,7 +52,7 @@ class Authentication extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {
-                    $this->error($this->translate('login.attempt.failed'));
+                    $this->error($this->admin()->translate('login.attempt.failed'));
                 }
 
                 $limiter->registerAttempt();
@@ -66,20 +66,20 @@ class Authentication extends AbstractController
                     // Regenerate CSRF token
                     CSRFToken::generate();
 
-                    $time = $this->log('access')->log($data->get('username'));
-                    $this->registry('lastAccess')->set($data->get('username'), $time);
+                    $time = $this->admin()->log('access')->log($data->get('username'));
+                    $this->admin()->registry('lastAccess')->set($data->get('username'), $time);
 
                     $limiter->resetAttempts();
 
                     if (($destination = Session::get('FORMWORK_REDIRECT_TO')) !== null) {
                         Session::remove('FORMWORK_REDIRECT_TO');
-                        $this->redirect($destination);
+                        $this->admin()->redirect($destination);
                     }
 
-                    $this->redirectToPanel();
+                    $this->admin()->redirectToPanel();
                 }
 
-                $this->error($this->translate('login.attempt.failed'), [
+                $this->error($this->admin()->translate('login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true
                 ]);
@@ -98,10 +98,10 @@ class Authentication extends AbstractController
         Session::destroy();
 
         if (Formwork::instance()->config()->get('admin.logout_redirect') === 'home') {
-            $this->redirectToSite();
+            $this->admin()->redirectToSite();
         } else {
-            $this->notify($this->translate('login.logged-out'), 'info');
-            $this->redirectToPanel();
+            $this->admin()->notify($this->admin()->translate('login.logged-out'), 'info');
+            $this->admin()->redirectToPanel();
         }
     }
 
@@ -116,8 +116,8 @@ class Authentication extends AbstractController
         // Ensure CSRF token is re-generated
         CSRFToken::generate();
 
-        $defaults = ['title' => $this->translate('login.login')];
-        $this->notify($message, 'error');
+        $defaults = ['title' => $this->admin()->translate('login.login')];
+        $this->admin()->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
     }
 }

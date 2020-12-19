@@ -22,12 +22,12 @@ class Backup extends AbstractController
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
-            JSONResponse::error($this->translate('backup.error.cannot-make', $e->getTranslatedMessage()), 500)->send();
+            JSONResponse::error($this->admin()->translate('backup.error.cannot-make', $e->getTranslatedMessage()), 500)->send();
         }
         $filename = basename($file);
-        JSONResponse::success($this->translate('backup.ready'), 200, [
+        JSONResponse::success($this->admin()->translate('backup.ready'), 200, [
             'filename' => $filename,
-            'uri'      => $this->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
+            'uri'      => $this->admin()->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
         ])->send();
     }
 
@@ -42,11 +42,11 @@ class Backup extends AbstractController
             if (FileSystem::isFile($file, false)) {
                 HTTPResponse::download($file);
             } else {
-                throw new RuntimeException($this->translate('backup.error.cannot-download.invalid-filename'));
+                throw new RuntimeException($this->admin()->translate('backup.error.cannot-download.invalid-filename'));
             }
         } catch (TranslatedException $e) {
-            $this->notify($this->translate('backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
-            $this->redirectToReferer(302, '/dashboard/');
+            $this->admin()->notify($this->admin()->translate('backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
+            $this->admin()->redirectToReferer(302, '/dashboard/');
         }
     }
 }

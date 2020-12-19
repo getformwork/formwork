@@ -54,7 +54,7 @@ class Pages extends AbstractController
         $this->modal('deletePage');
 
         $this->view('pages.index', [
-            'title'     => $this->translate('pages.pages'),
+            'title'     => $this->admin()->translate('pages.pages'),
             'pagesList' => $this->view('pages.list', [
                 'pages'    => $this->site()->pages(),
                 'subpages' => true,
@@ -79,13 +79,13 @@ class Pages extends AbstractController
         try {
             $page = $this->createPage($data);
             Session::set('FORMWORK_PAGE_TO_PUBLISH', $page->route());
-            $this->notify($this->translate('pages.page.created'), 'success');
+            $this->admin()->notify($this->admin()->translate('pages.page.created'), 'success');
         } catch (TranslatedException $e) {
-            $this->notify($e->getTranslatedMessage(), 'error');
-            $this->redirectToReferer(302, '/pages/');
+            $this->admin()->notify($e->getTranslatedMessage(), 'error');
+            $this->admin()->redirectToReferer(302, '/pages/');
         }
 
-        $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+        $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
     }
 
     /**
@@ -101,14 +101,14 @@ class Pages extends AbstractController
 
         if ($params->has('language')) {
             if (empty(Formwork::instance()->config()->get('languages.available'))) {
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
             }
 
             $language = $params->get('language');
 
             if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-                $this->notify($this->translate('pages.page.cannot-edit.invalid-language', $language), 'error');
-                $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
+                $this->admin()->notify($this->admin()->translate('pages.page.cannot-edit.invalid-language', $language), 'error');
+                $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
             if ($page->hasLanguage($language)) {
@@ -116,7 +116,7 @@ class Pages extends AbstractController
             }
         } elseif ($page->language() !== null) {
             // Redirect to proper language
-            $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+            $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
         }
 
         // Check if page has to be published on next save
@@ -153,22 +153,22 @@ class Pages extends AbstractController
                 // Update the page
                 try {
                     $page = $this->updatePage($page, $data, $fields);
-                    $this->notify($this->translate('pages.page.edited'), 'success');
+                    $this->admin()->notify($this->admin()->translate('pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
-                    $this->notify($e->getTranslatedMessage(), 'error');
+                    $this->admin()->notify($e->getTranslatedMessage(), 'error');
                 }
 
                 if (HTTPRequest::hasFiles()) {
                     try {
                         $this->processPageUploads($page);
                     } catch (TranslatedException $e) {
-                        $this->notify($this->translate('uploader.error', $e->getTranslatedMessage()), 'error');
+                        $this->admin()->notify($this->admin()->translate('uploader.error', $e->getTranslatedMessage()), 'error');
                     }
                 }
 
                 // Redirect if page route has changed
                 if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
-                    $this->redirect('/pages/' . $route . '/edit/');
+                    $this->admin()->redirect('/pages/' . $route . '/edit/');
                 }
 
                 break;
@@ -187,7 +187,7 @@ class Pages extends AbstractController
         $this->modal('deleteFile');
 
         $this->view('pages.editor', [
-            'title'              => $this->translate('pages.edit-page', $page->title()),
+            'title'              => $this->admin()->translate('pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields->render(true),
             'templates'          => $this->site()->templates(),
@@ -207,16 +207,16 @@ class Pages extends AbstractController
         $data = new DataGetter(HTTPRequest::postData());
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            JSONResponse::error($this->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            JSONResponse::error($this->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            JSONResponse::error($this->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
         }
 
         $pages = $parent->children()->toArray();
@@ -240,7 +240,7 @@ class Pages extends AbstractController
             }
         }
 
-        JSONResponse::success($this->translate('pages.page.moved'))->send();
+        JSONResponse::success($this->admin()->translate('pages.page.moved'))->send();
     }
 
     /**
@@ -259,14 +259,14 @@ class Pages extends AbstractController
             if ($page->hasLanguage($language)) {
                 $page->setLanguage($language);
             } else {
-                $this->notify($this->translate('pages.page.cannot-delete.invalid-language', $language), 'error');
-                $this->redirectToReferer(302, '/pages/');
+                $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete.invalid-language', $language), 'error');
+                $this->admin()->redirectToReferer(302, '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
-            $this->notify($this->translate('pages.page.cannot-delete.not-deletable'), 'error');
-            $this->redirectToReferer(302, '/pages/');
+            $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete.not-deletable'), 'error');
+            $this->admin()->redirectToReferer(302, '/pages/');
         }
 
         // Delete just the content file only if there are more than one language
@@ -276,13 +276,13 @@ class Pages extends AbstractController
             FileSystem::delete($page->path(), true);
         }
 
-        $this->notify($this->translate('pages.page.deleted'), 'success');
+        $this->admin()->notify($this->admin()->translate('pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
-        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->uri('/pages/' . $params->get('page') . '/edit/')]))) {
-            $this->redirectToReferer(302, '/pages/');
+        if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->admin()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
+            $this->admin()->redirectToReferer(302, '/pages/');
         } else {
-            $this->redirect('/pages/');
+            $this->admin()->redirect('/pages/');
         }
     }
 
@@ -301,13 +301,13 @@ class Pages extends AbstractController
             try {
                 $this->processPageUploads($page);
             } catch (TranslatedException $e) {
-                $this->notify($this->translate('uploader.error', $e->getTranslatedMessage()), 'error');
-                $this->redirect('/pages/' . $params->get('page') . '/edit/');
+                $this->admin()->notify($this->admin()->translate('uploader.error', $e->getTranslatedMessage()), 'error');
+                $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
 
-        $this->notify($this->translate('uploader.uploaded'), 'success');
-        $this->redirect('/pages/' . $params->get('page') . '/edit/');
+        $this->admin()->notify($this->admin()->translate('uploader.uploaded'), 'success');
+        $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
@@ -322,14 +322,14 @@ class Pages extends AbstractController
         $this->ensurePageExists($page, 'pages.page.cannot-delete-file.page-not-found');
 
         if (!$page->files()->has($params->get('filename'))) {
-            $this->notify($this->translate('pages.page.cannot-delete-file.file-not-found'), 'error');
-            $this->redirect('/pages/' . $params->get('page') . '/edit/');
+            $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete-file.file-not-found'), 'error');
+            $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
         }
 
         FileSystem::delete($page->path() . $params->get('filename'));
 
-        $this->notify($this->translate('pages.page.file-deleted'), 'success');
-        $this->redirect('/pages/' . $params->get('page') . '/edit/');
+        $this->admin()->notify($this->admin()->translate('pages.page.file-deleted'), 'success');
+        $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
@@ -365,7 +365,7 @@ class Pages extends AbstractController
             throw new TranslatedException('Invalid page template', 'pages.page.cannot-create.invalid-template');
         }
 
-        $scheme = $this->scheme($data->get('template'));
+        $scheme = $this->admin()->scheme($data->get('template'));
 
         $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
 
@@ -527,8 +527,8 @@ class Pages extends AbstractController
     protected function ensurePageExists(?Page $page, string $errorLanguageString): void
     {
         if ($page === null) {
-            $this->notify($this->translate($errorLanguageString), 'error');
-            $this->redirectToReferer(302, '/pages/');
+            $this->admin()->notify($this->admin()->translate($errorLanguageString), 'error');
+            $this->admin()->redirectToReferer(302, '/pages/');
         }
     }
 

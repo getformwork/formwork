@@ -3,7 +3,6 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\AdminTrait;
 use Formwork\Admin\AdminView;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
@@ -15,8 +14,6 @@ use Formwork\Utils\Str;
 
 abstract class AbstractController
 {
-    use AdminTrait;
-
     /**
      * Current panel location
      *
@@ -40,6 +37,14 @@ abstract class AbstractController
     }
 
     /**
+     * Return admin instance
+     */
+    protected function admin(): Admin
+    {
+        return Admin::instance();
+    }
+
+    /**
      * Return site instance
      */
     protected function site(): Site
@@ -59,25 +64,25 @@ abstract class AbstractController
             'modals'      => implode($this->modals),
             'colorScheme' => $this->getColorScheme(),
             'appConfig'   => JSON::encode([
-                'baseUri'    => $this->panelUri(),
+                'baseUri'    => $this->admin()->panelUri(),
                 'DatePicker' => [
                     'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
                     'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format')),
                     'labels'     => [
-                        'today'    => $this->translate('date.today'),
-                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' =>  $this->translate('date.weekdays.short')],
-                        'months'   => ['long' => $this->translate('date.months.long'), 'short' =>  $this->translate('date.months.short')]
+                        'today'    => $this->admin()->translate('date.today'),
+                        'weekdays' => ['long' => $this->admin()->translate('date.weekdays.long'), 'short' =>  $this->admin()->translate('date.weekdays.short')],
+                        'months'   => ['long' => $this->admin()->translate('date.months.long'), 'short' =>  $this->admin()->translate('date.months.short')]
                     ]
                 ],
                 'DurationInput' => [
                     'labels' => [
-                        'years'   => $this->translate('date.duration.years'),
-                        'months'  => $this->translate('date.duration.months'),
-                        'weeks'   => $this->translate('date.duration.weeks'),
-                        'days'    => $this->translate('date.duration.days'),
-                        'hours'   => $this->translate('date.duration.hours'),
-                        'minutes' => $this->translate('date.duration.minutes'),
-                        'seconds' => $this->translate('date.duration.seconds')
+                        'years'   => $this->admin()->translate('date.duration.years'),
+                        'months'  => $this->admin()->translate('date.duration.months'),
+                        'weeks'   => $this->admin()->translate('date.duration.weeks'),
+                        'days'    => $this->admin()->translate('date.duration.days'),
+                        'hours'   => $this->admin()->translate('date.duration.hours'),
+                        'minutes' => $this->admin()->translate('date.duration.minutes'),
+                        'seconds' => $this->admin()->translate('date.duration.seconds')
                     ]
                 ]
             ])

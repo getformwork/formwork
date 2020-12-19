@@ -16,6 +16,6 @@ class Cache extends AbstractController
         if (Formwork::instance()->config()->get('cache.enabled')) {
             Formwork::instance()->cache()->clear();
         }
-        JSONResponse::success($this->translate('cache.cleared'))->send();
+        JSONResponse::success($this->admin()->translate('cache.cleared'))->send();
     }
 }

@@ -29,7 +29,7 @@ class Options extends AbstractController
     public function index(): void
     {
         $this->ensurePermission('options.system');
-        $this->redirect('/options/system/');
+        $this->admin()->redirect('/options/system/');
     }
 
     /**
@@ -55,8 +55,8 @@ class Options extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->notify($this->translate('options.updated'), 'success');
-            $this->redirect('/options/system/');
+            $this->admin()->notify($this->admin()->translate('options.updated'), 'success');
+            $this->admin()->redirect('/options/system/');
         }
 
         $fields->validate(Formwork::instance()->config());
@@ -64,7 +64,7 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('options.system', [
-            'title'   => $this->translate('options.options'),
+            'title'   => $this->admin()->translate('options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system'
@@ -96,8 +96,8 @@ class Options extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->notify($this->translate('options.updated'), 'success');
-            $this->redirect('/options/site/');
+            $this->admin()->notify($this->admin()->translate('options.updated'), 'success');
+            $this->admin()->redirect('/options/site/');
         }
 
         $fields->validate(new DataGetter($this->site()->data()));
@@ -105,7 +105,7 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('options.site', [
-            'title'   => $this->translate('options.options'),
+            'title'   => $this->admin()->translate('options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site'
@@ -122,7 +122,7 @@ class Options extends AbstractController
         $this->ensurePermission('options.updates');
 
         $this->view('options.updates', [
-            'title'   => $this->translate('options.updates'),
+            'title'   => $this->admin()->translate('options.updates'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates'
@@ -218,7 +218,7 @@ class Options extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         $this->view('options.info', [
-            'title'   => $this->translate('options.options'),
+            'title'   => $this->admin()->translate('options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info'

@@ -24,7 +24,7 @@ class Dashboard extends AbstractController
         $this->modal('deletePage');
 
         $this->view('dashboard.index', [
-            'title'             => $this->translate('dashboard.dashboard'),
+            'title'             => $this->admin()->translate('dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.list', [
                 'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
                 'subpages' => false,
