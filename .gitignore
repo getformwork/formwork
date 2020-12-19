@@ -3,11 +3,11 @@
 
 php_error.log
 
-/backup
-/cache
-/logs
+/backup/*
+/cache/*
+/logs/*
 
-/vendor
+/vendor/*
 
 /admin/accounts/*
 /admin/avatars/*
