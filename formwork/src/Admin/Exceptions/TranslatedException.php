@@ -41,6 +41,6 @@ class TranslatedException extends Exception
      */
     public function getTranslatedMessage(): string
     {
-        return Admin::instance()->label($this->languageString);
+        return Admin::instance()->translate($this->languageString);
     }
 }
