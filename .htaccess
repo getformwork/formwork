@@ -4,18 +4,20 @@ AddDefaultCharset UTF-8
     ## Enable rewrite rules
     RewriteEngine on
 
-    ## Prevent direct access to Formwork folders
-    ## but allow access to template assets
-    RewriteRule ^templates/assets/.* - [L]
-    RewriteRule ^(backup|cache|config|formwork|templates|vendor)/.* index.php [L]
+    ## Prevent direct access to Formwork folders but allow access to assets
+    RewriteRule ^site/templates/assets/.* - [L]
+    RewriteRule ^admin/(assets|avatars)/.* - [L]
+    RewriteRule ^(admin|backup|cache|formwork|site|vendor)/.* index.php [L]
 
-    RewriteRule ^(.*)\.(md|yml|json|php)/?$ index.php [L]
+    ## Prevent access to specific files
+    RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L]
-
-    RewriteRule ^admin/(accounts|logs|schemes|src|translations|views)/.* index.php [L]
-    RewriteRule ^admin/(\.(.*)|rollup\.config\.js)/?$ index.php [L]
 
     ## Let all URI be processed by index.php
     RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^.* index.php
 </IfModule>
+
+## Disable access to directory indexes
+Options -Indexes
