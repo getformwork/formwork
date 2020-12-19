@@ -4,6 +4,7 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Backupper;
 use Formwork\Admin\Exceptions\TranslatedException;
+use Formwork\Core\Formwork;
 use Formwork\Utils\JSONResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
