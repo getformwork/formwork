@@ -2,8 +2,8 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Formwork;
 use Formwork\Data\Collection;
+use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;

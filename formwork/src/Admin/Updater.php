@@ -2,12 +2,12 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Utils\Registry;
-use Formwork\Utils\SemVer;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Registry;
+use Formwork\Utils\SemVer;
 use Formwork\Utils\Str;
 use RuntimeException;
 use ZipArchive;

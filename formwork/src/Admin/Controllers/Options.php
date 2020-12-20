@@ -3,10 +3,10 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
+use Formwork\Data\DataGetter;
 use Formwork\Fields\Fields;
 use Formwork\Fields\Validator;
 use Formwork\Formwork;
-use Formwork\Data\DataGetter;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
 use Formwork\Schemes\Scheme;

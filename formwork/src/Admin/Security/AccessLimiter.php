@@ -2,8 +2,8 @@
 
 namespace Formwork\Admin\Security;
 
-use Formwork\Utils\Registry;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Registry;
 use Formwork\Utils\Uri;
 
 class AccessLimiter

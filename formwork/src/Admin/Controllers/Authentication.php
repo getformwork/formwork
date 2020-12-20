@@ -5,10 +5,10 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
-use Formwork\Formwork;
-use Formwork\Utils\Session;
 use Formwork\Data\DataGetter;
+use Formwork\Formwork;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Session;
 
 class Authentication extends AbstractController
 {

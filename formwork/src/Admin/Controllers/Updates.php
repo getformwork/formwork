@@ -4,9 +4,9 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Backupper;
 use Formwork\Admin\Updater;
-use Formwork\Utils\JSONResponse;
-use Formwork\Formwork;
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Formwork;
+use Formwork\Utils\JSONResponse;
 use RuntimeException;
 
 class Updates extends AbstractController
