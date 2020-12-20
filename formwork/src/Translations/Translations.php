@@ -2,7 +2,7 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Data\Collection;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;

@@ -2,7 +2,7 @@
 
 namespace Formwork\Parsers;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\Str;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 

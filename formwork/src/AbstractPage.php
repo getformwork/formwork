@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Metadata\Metadata;
 use Formwork\Utils\Arr;

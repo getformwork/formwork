@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Fields\Fields;
 use Formwork\Fields\Validator;
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;

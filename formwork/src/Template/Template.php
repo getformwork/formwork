@@ -2,9 +2,9 @@
 
 namespace Formwork\Template;
 
-use Formwork\Core\Assets;
-use Formwork\Core\Formwork;
-use Formwork\Core\Page;
+use Formwork\Assets;
+use Formwork\Formwork;
+use Formwork\Page;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;

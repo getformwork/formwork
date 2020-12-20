@@ -2,7 +2,7 @@
 
 namespace Formwork\Languages;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\HTTPNegotiation;
 
 class Languages

@@ -6,7 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Data\DataGetter;
 use Formwork\Data\DataSetter;
 use Formwork\Exceptions\TranslatedException;

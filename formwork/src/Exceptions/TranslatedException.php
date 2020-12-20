@@ -2,7 +2,7 @@
 
 namespace Formwork\Exceptions;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Exception;
 
 class TranslatedException extends Exception

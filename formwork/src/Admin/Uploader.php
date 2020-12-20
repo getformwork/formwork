@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;

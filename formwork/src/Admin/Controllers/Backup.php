@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Backupper;
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\JSONResponse;
 use Formwork\Router\RouteParams;

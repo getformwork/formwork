@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Utils\FileSystem;
 

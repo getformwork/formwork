@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Utils\JSONResponse;
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 
 class Cache extends AbstractController
 {

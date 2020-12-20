@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
 use Throwable;

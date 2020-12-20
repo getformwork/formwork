@@ -38,7 +38,7 @@ return [
         'readingTime'
     ],
     'markdown' => static function (string $markdown): string {
-        $currentPage = \Formwork\Core\Formwork::instance()->site()->currentPage();
+        $currentPage = \Formwork\Formwork::instance()->site()->currentPage();
         return \Formwork\Parsers\Markdown::parse(
             $markdown,
             ['baseRoute' => $currentPage ? $currentPage->route() : '/']
@@ -47,16 +47,16 @@ return [
     'date' => static function (int $timestamp, string $format = null): string {
         return \Formwork\Utils\Date::formatTimestamp(
             $timestamp,
-            $format ?? \Formwork\Core\Formwork::instance()->config()->get('date.format')
+            $format ?? \Formwork\Formwork::instance()->config()->get('date.format')
         );
     },
     'datetime' => static function (int $timestamp): string {
         return \Formwork\Utils\Date::formatTimestamp(
             $timestamp,
-            \Formwork\Core\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Core\Formwork::instance()->config()->get('date.hour_format')
+            \Formwork\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Formwork::instance()->config()->get('date.hour_format')
         );
     },
     'translate' => static function (string $key, ...$arguments) {
-        return \Formwork\Core\Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments);
+        return \Formwork\Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments);
     }
 ];

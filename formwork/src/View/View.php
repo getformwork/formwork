@@ -2,7 +2,7 @@
 
 namespace Formwork\View;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Parsers\PHP;
 use BadMethodCallException;

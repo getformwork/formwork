@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;

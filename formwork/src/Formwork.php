@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;

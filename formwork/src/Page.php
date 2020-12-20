@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Files\Files;
 use Formwork\Metadata\Metadata;

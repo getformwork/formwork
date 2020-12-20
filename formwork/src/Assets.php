@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;

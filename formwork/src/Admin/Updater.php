@@ -4,7 +4,7 @@ namespace Formwork\Admin;
 
 use Formwork\Utils\Registry;
 use Formwork\Utils\SemVer;
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;

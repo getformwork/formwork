@@ -2,7 +2,7 @@
 
 namespace Formwork\Cache;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 
 class SiteCache extends FilesCache

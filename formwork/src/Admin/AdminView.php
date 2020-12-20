@@ -2,8 +2,8 @@
 
 namespace Formwork\Admin;
 
-use Formwork\Core\Assets;
-use Formwork\Core\Formwork;
+use Formwork\Assets;
+use Formwork\Formwork;
 use Formwork\Parsers\PHP;
 use Formwork\View\View;
 

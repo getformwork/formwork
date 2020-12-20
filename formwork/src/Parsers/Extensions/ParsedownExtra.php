@@ -2,7 +2,7 @@
 
 namespace Formwork\Parsers\Extensions;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\Uri;
 
 class ParsedownExtra extends \ParsedownExtra

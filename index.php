@@ -1,6 +1,6 @@
 <?php
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 
 const DS = DIRECTORY_SEPARATOR;
 const ROOT_PATH = __DIR__ . DS;

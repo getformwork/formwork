@@ -2,7 +2,7 @@
 
 namespace Formwork\Utils;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 
 class Session
 {

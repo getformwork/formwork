@@ -2,7 +2,7 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use InvalidArgumentException;
 
 class Translation

@@ -2,7 +2,7 @@
 
 namespace Formwork\Fields;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 
 class Translator
 {

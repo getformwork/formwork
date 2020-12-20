@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Core;
+namespace Formwork;
 
 use Formwork\Languages\Languages;
 use Formwork\Metadata\Metadata;

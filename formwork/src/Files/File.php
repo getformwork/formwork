@@ -2,7 +2,7 @@
 
 namespace Formwork\Files;
 
-use Formwork\Core\Formwork;
+use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;
