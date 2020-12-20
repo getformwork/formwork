@@ -47,7 +47,7 @@ class CSRFToken
     {
         if ($token === null) {
             $postData = HTTPRequest::postData();
-            $valid = isset($postData[self::INPUT_NAME]) && $postData[self::INPUT_NAME] === static::get();
+            $valid = $postData->has(self::INPUT_NAME) && $postData->get(self::INPUT_NAME) === static::get();
         } else {
             $valid = $token === static::get();
         }

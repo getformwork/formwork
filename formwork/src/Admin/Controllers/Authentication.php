@@ -5,7 +5,6 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
-use Formwork\Data\DataGetter;
 use Formwork\Formwork;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Session;
@@ -48,7 +47,7 @@ class Authentication extends AbstractController
                 // Delay request processing for 0.5-1s
                 usleep(random_int(500, 1000) * 1e3);
 
-                $data = new DataGetter(HTTPRequest::postData());
+                $data = HTTPRequest::postData();
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {

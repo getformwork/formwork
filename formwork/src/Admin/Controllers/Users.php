@@ -44,7 +44,7 @@ class Users extends AbstractController
     {
         $this->ensurePermission('users.create');
 
-        $data = new DataGetter(HTTPRequest::postData());
+        $data = HTTPRequest::postData();
 
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
@@ -126,7 +126,7 @@ class Users extends AbstractController
         if (HTTPRequest::method() === 'POST') {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $data = new DataSetter(HTTPRequest::postData());
+                $data = DataSetter::fromGetter(HTTPRequest::postData());
                 $fields->validate($data);
                 $this->updateUser($user, $data);
                 $this->admin()->notify($this->admin()->translate('admin.users.user.edited'), 'success');

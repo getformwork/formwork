@@ -42,7 +42,7 @@ class Options extends AbstractController
         $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'system.yml'))->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
-            $data = new DataGetter(HTTPRequest::postData());
+            $data = HTTPRequest::postData();
             $options = Formwork::instance()->config();
             $defaults = Formwork::instance()->defaults();
             $differ = $this->updateOptions('system', $fields->validate($data), $options->toArray(), $defaults);
@@ -80,7 +80,7 @@ class Options extends AbstractController
         $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'site.yml'))->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
-            $data = new DataGetter(HTTPRequest::postData());
+            $data = HTTPRequest::postData();
             $options = $this->site()->data();
             $defaults = Formwork::instance()->site()->defaults();
             $differ = $this->updateOptions('site', $fields->validate($data), $options, $defaults);
@@ -146,7 +146,7 @@ class Options extends AbstractController
                 'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
             ],
-            'HTTP Request Headers'  => HTTPRequest::headers(),
+            'HTTP Request Headers'  => HTTPRequest::headers()->toArray(),
             'HTTP Response Headers' => HTTPResponse::headers(),
             'Server'                => [
                 'IP Address'   => $_SERVER['SERVER_ADDR'],

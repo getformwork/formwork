@@ -72,7 +72,7 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.create');
 
-        $data = new DataGetter(HTTPRequest::postData());
+        $data = HTTPRequest::postData();
 
         // Let's create the page
         try {
@@ -141,7 +141,7 @@ class Pages extends AbstractController
 
             case 'POST':
                 // Load data from POST variables
-                $data = new DataGetter(HTTPRequest::postData());
+                $data = HTTPRequest::postData();
 
                 // Validate fields against data
                 $fields->validate($data);
@@ -200,7 +200,7 @@ class Pages extends AbstractController
     {
         $this->ensurePermission('pages.reorder');
 
-        $data = new DataGetter(HTTPRequest::postData());
+        $data = HTTPRequest::postData();
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
             JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();

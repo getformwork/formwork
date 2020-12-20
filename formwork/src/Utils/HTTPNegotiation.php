@@ -41,10 +41,10 @@ class HTTPNegotiation
      */
     public static function parseHeader(string $header): array
     {
-        if (!HTTPRequest::hasHeader($header)) {
+        if (!HTTPRequest::headers()->has($header)) {
             return [];
         }
-        return static::parseCommaSeparatedList(HTTPRequest::headers()[$header]);
+        return static::parseCommaSeparatedList(HTTPRequest::headers()->get($header));
     }
 
     /**

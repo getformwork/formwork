@@ -67,6 +67,6 @@ class Visitor
      */
     public static function isTrackable(): bool
     {
-        return !HTTPRequest::hasHeader('Dnt') || HTTPRequest::headers()['Dnt'] !== '1';
+        return HTTPRequest::headers()->get('Dnt') !== '1';
     }
 }

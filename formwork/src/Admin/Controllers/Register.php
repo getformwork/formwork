@@ -5,7 +5,6 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
-use Formwork\Data\DataGetter;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Session;
@@ -28,7 +27,7 @@ class Register extends AbstractController
                 break;
 
             case 'POST':
-                $data = new DataGetter(HTTPRequest::postData());
+                $data = HTTPRequest::postData();
 
                 if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
                     $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-create.var-missing'), 'error');

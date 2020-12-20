@@ -2,6 +2,9 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Data\Collection;
+use Formwork\Data\DataGetter;
+
 class HTTPRequest
 {
     /**
@@ -12,18 +15,32 @@ class HTTPRequest
     protected const LOCALHOST_IP_ADDRESSES = ['127.0.0.1', '::1'];
 
     /**
-     * Array containing HTTP request headers
+     * DataGetter containing HTTP GET data
      *
-     * @var array
+     * @var DataGetter
      */
-    protected static $headers = [];
+    protected static $getData;
 
     /**
-     * Array containing HTTP request files
+     * DataGetter containing HTTP POST data
      *
-     * @var array
+     * @var DataGetter
      */
-    protected static $files = [];
+    protected static $postData;
+
+    /**
+     * DataGetter containing HTTP headers
+     *
+     * @var DataGetter
+     */
+    protected static $headers;
+
+    /**
+     * Collection containing HTTP request files
+     *
+     * @var Collection
+     */
+    protected static $files;
 
     /**
      * Get request method
@@ -96,7 +113,7 @@ class HTTPRequest
      */
     public static function referer(): ?string
     {
-        return static::hasHeader('Referer') ? static::$headers['Referer'] : null;
+        return static::headers()->get('Referer');
     }
 
     /**
@@ -115,7 +132,7 @@ class HTTPRequest
      */
     public static function origin(): ?string
     {
-        return static::hasHeader('Origin') ? static::$headers['Origin'] : null;
+        return static::headers()->get('Origin');
     }
 
     /**
@@ -123,7 +140,7 @@ class HTTPRequest
      */
     public static function userAgent(): ?string
     {
-        return static::hasHeader('User-Agent') ? static::$headers['User-Agent'] : null;
+        return static::headers()->get('User-Agent');
     }
 
     /**
@@ -150,7 +167,7 @@ class HTTPRequest
      */
     public static function isXHR(): bool
     {
-        return static::hasHeader('X-Requested-With') && strtolower(static::$headers['X-Requested-With']) === 'xmlhttprequest';
+        return strtolower(static::headers()->get('X-Requested-With')) === 'xmlhttprequest';
     }
 
     /**
@@ -188,17 +205,23 @@ class HTTPRequest
     /**
      * Return an array containing GET data
      */
-    public static function getData(): array
+    public static function getData(): DataGetter
     {
-        return $_GET;
+        if (static::$getData !== null) {
+            return static::$getData;
+        }
+        return static::$getData = new DataGetter($_GET);
     }
 
     /**
      * Return an array containing POST data
      */
-    public static function postData(): array
+    public static function postData(): DataGetter
     {
-        return $_POST;
+        if (static::$postData !== null) {
+            return static::$postData;
+        }
+        return static::$postData = new DataGetter($_POST);
     }
 
     /**
@@ -220,53 +243,46 @@ class HTTPRequest
     /**
      * Return an array containing request incoming files
      */
-    public static function files(): array
+    public static function files(): Collection
     {
-        if (!empty(static::$files)) {
+        if (static::$files !== null) {
             return static::$files;
         }
-        if (!is_array($_FILES)) {
-            return static::$files;
-        }
-        foreach ($_FILES as $data) {
-            if (!is_array($data)) {
-                return static::$files;
-            }
-            foreach ($data as $param => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $index => $v) {
-                        static::$files[$index][$param] = $v;
+        $files = [];
+        if (is_array($_FILES)) {
+            foreach ($_FILES as $data) {
+                if (!is_array($data)) {
+                    break;
+                }
+                foreach ($data as $param => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $index => $v) {
+                            $files[$index][$param] = $v;
+                        }
+                    } else {
+                        $files[0][$param] = $value;
                     }
-                } else {
-                    static::$files[0][$param] = $value;
                 }
             }
         }
-        return static::$files;
-    }
-
-    /**
-     * Return whether request as a given header
-     */
-    public static function hasHeader(string $header): bool
-    {
-        return isset(static::headers()[$header]);
+        return static::$files = new Collection($files);
     }
 
     /**
      * Return an array containing request headers
      */
-    public static function headers(): array
+    public static function headers(): DataGetter
     {
-        if (!empty(static::$headers)) {
+        if (static::$headers !== null) {
             return static::$headers;
         }
+        $headers = [];
         foreach ($_SERVER as $key => $value) {
             if (Str::startsWith($key, 'HTTP_')) {
                 $key = str_replace('_', '-', ucwords(strtolower(substr($key, 5)), '_'));
-                static::$headers[$key] = $value;
+                $headers[$key] = $value;
             }
         }
-        return static::$headers;
+        return static::$headers = new DataGetter($headers);
     }
 }
