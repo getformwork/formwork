@@ -120,9 +120,7 @@ class Updater
                 'assets/*',
                 'backup/*',
                 'cache/*',
-                'config/*',
-                'content/*',
-                'templates/*'
+                'site/*'
             ]
         ];
     }
