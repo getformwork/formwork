@@ -51,6 +51,14 @@ class DataGetter
     }
 
     /**
+     * Return whether data is present
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->data);
+    }
+
+    /**
      * Return an array containing data
      */
     public function toArray(): array
