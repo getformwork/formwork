@@ -1,7 +1,7 @@
 title: Roles
 data:
     admin:
-        title: '{{user.role.admin}}'
+        title: '{{admin.user.role.admin}}'
         permissions:
             dashboard: true
             cache: true
@@ -12,7 +12,7 @@ data:
             users: true
 
     user:
-        title: '{{user.role.user}}'
+        title: '{{admin.user.role.user}}'
         permissions:
             dashboard: true
             pages: true

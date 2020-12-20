@@ -1,263 +1,261 @@
+admin.backup.backup: Backup
+admin.backup.error.cannot-download: Cannot download backup. %s.
+admin.backup.error.cannot-download.invalid-filename: Invalid backup file
+admin.backup.error.cannot-make: Cannot make backup. %s.
+admin.backup.ready: Backup ready. Starting download...
+admin.cache.clear: Clear Cache
+admin.cache.cleared: Cache cleared
+admin.dashboard.dashboard: Dashboard
+admin.dashboard.last-modified-pages: Last Edited Pages
+admin.dashboard.quick-actions: Quick Actions
+admin.dashboard.statistics: Statistics
+admin.dashboard.statistics.unique-visitors: Unique Visitors
+admin.dashboard.statistics.visits: Visits
+admin.dashboard.welcome: Welcome
+admin.errors.action.report-to-github: Report an issue to GitHub
+admin.errors.action.return-to-dashboard: Return to Dashboard
+admin.errors.error.forbidden.description: You don’t have permission to access this page.
+admin.errors.error.forbidden.heading: Oops, permission required!
+admin.errors.error.forbidden.status: Forbidden
+admin.errors.error.internal-server-error.description: Formwork Admin encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
+admin.errors.error.internal-server-error.heading: Oops, something went wrong!
+admin.errors.error.internal-server-error.status: Internal Server Error
+admin.errors.error.not-found.description: The page does not exist or the request is not valid.
+admin.errors.error.not-found.heading: Oops, page not found!
+admin.errors.error.not-found.status: Not Found
+admin.login.attempt.failed: Login attempt failed! Try again.
+admin.login.attempt.too-many: Too many login attempts. Please try again in %d minutes.
+admin.login.logged-out: You have been logged out
+admin.login.login: Login
+admin.login.logout: Logout
+admin.login.password: Password
+admin.login.suspicious-request-detected: A suspicious request has been detected, and for security reasons you have been logged out. Please log in again.
+admin.login.username: Username
 admin.manage: Manage
+admin.modal.action.cancel: Cancel
+admin.modal.action.continue: Continue
+admin.modal.action.delete: Delete
+admin.modal.action.save: Save
+admin.modal.action.upload-file: Upload a File
+admin.modal.images.no-images: There are no images here
+admin.modal.images.no-images.upload: Please upload some images
+admin.modal.images.title: Select an Image
+admin.options.info: Info
+admin.options.options: Options
+admin.options.site: Site
+admin.options.site.advanced: Advanced Options
+admin.options.site.advanced.aliases: Aliases
+admin.options.site.advanced.aliases.alias: Alias
+admin.options.site.advanced.aliases.route: Route
+admin.options.site.advanced.metadata: HTML Metadata
+admin.options.site.advanced.metadata.content: Content
+admin.options.site.advanced.metadata.name: Name
+admin.options.site.info: Info
+admin.options.site.info.author: Author
+admin.options.site.info.description: Description
+admin.options.site.info.language: Language
+admin.options.site.info.title: Title
+admin.options.system: System
+admin.options.system.admin-panel: Admin Panel
+admin.options.system.admin-panel.default-color-scheme: Default Color Scheme
+admin.options.system.admin-panel.default-color-scheme.dark: Dark
+admin.options.system.admin-panel.default-color-scheme.light: Light
+admin.options.system.admin-panel.default-language: Default Language
+admin.options.system.admin-panel.logout-redirects-to: Logout Redirects to
+admin.options.system.admin-panel.logout-redirects-to.home: Home
+admin.options.system.admin-panel.logout-redirects-to.login: Login
+admin.options.system.admin-panel.session-timeout: Session Timeout (min)
+admin.options.system.backup: Backup
+admin.options.system.backup.backup-files-to-keep: Backups to keep on the server
+admin.options.system.cache: Cache
+admin.options.system.cache.disabled: Disabled
+admin.options.system.cache.enabled: Enabled
+admin.options.system.cache.time: Cache Time (sec)
+admin.options.system.date-and-time: Date and Time
+admin.options.system.date-and-time.date-format: Date Format
+admin.options.system.date-and-time.first-weekday: First Weekday
+admin.options.system.date-and-time.first-weekday.monday: Monday
+admin.options.system.date-and-time.first-weekday.sunday: Sunday
+admin.options.system.date-and-time.hour-format: Hour Format
+admin.options.system.date-and-time.timezone: Timezone
+admin.options.system.files: Files
+admin.options.system.files.allowed-extensions: Allowed Extensions
+admin.options.system.images: Images
+admin.options.system.images.jpeg-quality: JPEG Quality
+admin.options.system.images.jpeg-save-progressive: Save JPEG images as progressive
+admin.options.system.images.jpeg-save-progressive.disabled: Disabled
+admin.options.system.images.jpeg-save-progressive.enabled: Enabled
+admin.options.system.images.png-compression-level: PNG Compression Level
+admin.options.system.images.process-uploads: Process (optimize) uploaded images
+admin.options.system.images.process-uploads.disabled: Disabled
+admin.options.system.images.process-uploads.enabled: Enabled
+admin.options.system.images.webp-quality: WebP Quality
+admin.options.system.languages: Languages
+admin.options.system.languages.available-languages: Available Languages
+admin.options.system.languages.available-languages.no-languages: No Languages
+admin.options.system.languages.preferred-language: Use Browser Prefered Language
+admin.options.system.languages.preferred-language.disabled: Disabled
+admin.options.system.languages.preferred-language.enabled: Enabled
+admin.options.updated: Options updated
+admin.options.updates: Updates
+admin.pages.attributes: Attributes
+admin.pages.change-slug: Edit Slug
+admin.pages.change-slug.generate: Generate From Title
+admin.pages.changes.continue: Continue without Saving
+admin.pages.changes.detected: Changes Detected
+admin.pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
+admin.pages.content: Content
+admin.pages.delete-file: Delete File
+admin.pages.delete-file.prompt: Are you sure you want to delete this file? This action can’t be undone.
+admin.pages.delete-page: Delete Page
+admin.pages.delete-page.prompt: Are you sure you want to delete this page? This action can’t be undone.
+admin.pages.edit-page: Edit Page %s
+admin.pages.editor.bold: Bold
+admin.pages.editor.bullet-list: Bullet list
+admin.pages.editor.image: Image
+admin.pages.editor.italic: Italic
+admin.pages.editor.link: Link
+admin.pages.editor.numbered-list: Ordered list
+admin.pages.editor.quote: Quote
+admin.pages.editor.redo: Redo
+admin.pages.editor.summary: Summary
+admin.pages.editor.undo: Undo
+admin.pages.files: Files
+admin.pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
+admin.pages.languages: Languages
+admin.pages.languages.add-language: Add %s
+admin.pages.languages.edit-language: Edit %s
+admin.pages.new-page: New Page
+admin.pages.new-page.parent: Parent Page
+admin.pages.new-page.site: Site
+admin.pages.new-page.slug-suggestion: letters, numbers and dashes only
+admin.pages.new-page.slug: Page Slug
+admin.pages.new-page.template: Template
+admin.pages.new-page.title: Title
+admin.pages.options: Options
+admin.pages.page.actions: Actions
+admin.pages.page.cacheable: Cacheable
+admin.pages.page.cannot-change-num: Cannot change page number
+admin.pages.page.cannot-create: Cannot create page
+admin.pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
+admin.pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
+admin.pages.page.cannot-create.invalid-slug: Cannot create page, page slug must contain only letters and numbers separated by dashes
+admin.pages.page.cannot-create.invalid-template: Cannot create page, invalid template
+admin.pages.page.cannot-create.var-missing: Cannot create page, missing a variable
+admin.pages.page.cannot-delete-file.file-not-found: Cannot delete file, file not found
+admin.pages.page.cannot-delete-file.page-not-found: Cannot delete file, file not found
+admin.pages.page.cannot-delete.invalid-language: 'Cannot delete page, invalid language: %s'
+admin.pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
+admin.pages.page.cannot-delete.page-not-found: Cannot delete page, page not found
+admin.pages.page.cannot-edit.already-exists: Cannot edit page, a page with the same uri already exists
+admin.pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
+admin.pages.page.cannot-edit.invalid-language: 'Cannot edit page, invalid language: %s'
+admin.pages.page.cannot-edit.invalid-parent: Cannot edit page, invalid parent page
+admin.pages.page.cannot-edit.invalid-slug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
+admin.pages.page.cannot-edit.invalid-template: Cannot edit page, invalid template
+admin.pages.page.cannot-edit.page-not-found: Cannot edit page, page not found
+admin.pages.page.cannot-edit.var-missing: Cannot edit page, missing a variable
+admin.pages.page.cannot-move: Cannot move page
+admin.pages.page.cannot-upload-file.page-not-found: Cannot upload file, page not found
+admin.pages.page.created: Page created!
+admin.pages.page.deleted: Page deleted
+admin.pages.page.edited: Page edited
+admin.pages.page.file-deleted: File deleted
+admin.pages.page.image: Image
+admin.pages.page.last-modified: Last Modified
+admin.pages.page.moved: Page moved!
+admin.pages.page.no-date: No Date
+admin.pages.page.no-image: No Image
+admin.pages.page.no-tags: No Tags
+admin.pages.page.not-found: Page not found
+admin.pages.page.posts-per-page: Posts per page
+admin.pages.page.publish-date: Publish Date
+admin.pages.page.status: Status
+admin.pages.page.tags: Tags
+admin.pages.page.title: Title
+admin.pages.page.unpublish-date: Unpublish Date
+admin.pages.page.visible: Visible in the menu
+admin.pages.pages: Pages
+admin.pages.pages.collapse-all: Collapse All
+admin.pages.pages.expand-all: Expand All
+admin.pages.pages.reorder: Reorder
+admin.pages.pages.search: Search Pages...
+admin.pages.parent: Parent Page
+admin.pages.preview-file: Preview
+admin.pages.preview: Preview
+admin.pages.save: Save
+admin.pages.status.not-published: Not Published
+admin.pages.status.not-routable: Not Routable
+admin.pages.status.published: Published
+admin.pages.status.routable: Routable
+admin.pages.template: Template
+admin.pages.toggle-children: Toggle Children Pages
 admin.panel: Administration Panel
+admin.register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
+admin.register.register: Register New User
+admin.request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
+admin.updates.available-for-install: is available for install
+admin.updates.check: Check Updates
+admin.updates.install-prompt: Would you like to install the update?
+admin.updates.install: Install
+admin.updates.installed: Update installed!
+admin.updates.latest-version-available: is the latest version available
+admin.updates.status.cannot-check: Cannot check for updates. Try again later.
+admin.updates.status.cannot-install: Cannot install update
+admin.updates.status.cannot-make-backup: Cannot make backup before updating
+admin.updates.status.checking: Checking for updates...
+admin.updates.status.found: Updates found
+admin.updates.status.installing: Installing updates...
+admin.updates.status.up-to-date: Up-to-date!
+admin.uploader.error: Cannot upload file. %s.
+admin.uploader.error.already-exists: A file with the same name already exists
+admin.uploader.error.cannot-move-to-destination: Failed to move uploaded file to destination
+admin.uploader.error.cannot-write: Failed to write file to disk
+admin.uploader.error.destination-too-long: Destination path too long
+admin.uploader.error.file-name-too-long: File name too long
+admin.uploader.error.file-name: Invalid file name
+admin.uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
+admin.uploader.error.mime-type: File type not allowed
+admin.uploader.error.no-file: No file was uploaded
+admin.uploader.error.no-temp: Missing a temporary folder
+admin.uploader.error.partial: The uploaded file was only partially uploaded
+admin.uploader.error.php-extension: File upload stopped by extension
+admin.uploader.error.size: The uploaded file exceeds the maximum file size
+admin.uploader.uploaded: File uploaded
+admin.user.actions: Actions
+admin.user.avatar: Avatar
+admin.user.avatar.uploaded: Avatar uploaded
+admin.user.color-scheme: Color Scheme
+admin.user.color-scheme.auto: Auto
+admin.user.color-scheme.dark: Dark
+admin.user.color-scheme.light: Light
+admin.user.email: Email
+admin.user.fullname: Full Name
+admin.user.language: Language
+admin.user.last-access: Last access
+admin.user.password: Password
+admin.user.password.type-new-password: Type a new password to change...
+admin.user.role: Role
+admin.user.role.admin: Administrator
+admin.user.role.user: User
+admin.user.username: Username
+admin.users.delete-user: Delete User
+admin.users.delete-user.prompt: Are you sure you want to delete this user? This action can’t be undone.
+admin.users.new-user: New User
+admin.users.new-user.password-suggestion: at least 8 characters
+admin.users.new-user.username-suggestion: between 3-20 letters, digits and dashes
+admin.users.options: Options
+admin.users.user-profile: '%s User Profile'
+admin.users.user: User
+admin.users.user.cannot-change-password: Cannot change the password of another user. The action is not allowed.
+admin.users.user.cannot-change-role: Cannot change the role of %s. The action is not allowed.
+admin.users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
+admin.users.user.cannot-create.var-missing: Cannot create user, missing a variable
+admin.users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
+admin.users.user.cannot-edit: Cannot edit user %s. The action is not allowed.
+admin.users.user.created: User created
+admin.users.user.deleted: User deleted
+admin.users.user.edited: User data updated
+admin.users.user.not-found: User not found
+admin.users.users: Users
 admin.view-site: View Site
-backup.backup: Backup
-backup.error.cannot-download: Cannot download backup. %s.
-backup.error.cannot-download.invalid-filename: Invalid backup file
-backup.error.cannot-make: Cannot make backup. %s.
-backup.ready: Backup ready. Starting download...
-cache.clear: Clear Cache
-cache.cleared: Cache cleared
-dashboard.dashboard: Dashboard
-dashboard.last-modified-pages: Last Edited Pages
-dashboard.quick-actions: Quick Actions
-dashboard.statistics: Statistics
-dashboard.statistics.unique-visitors: Unique Visitors
-dashboard.statistics.visits: Visits
-dashboard.welcome: Welcome
-errors.action.report-to-github: Report an issue to GitHub
-errors.action.return-to-dashboard: Return to Dashboard
-errors.error.forbidden.description: You don’t have permission to access this page.
-errors.error.forbidden.heading: Oops, permission required!
-errors.error.forbidden.status: Forbidden
-errors.error.internal-server-error.description: Formwork Admin encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
-errors.error.internal-server-error.heading: Oops, something went wrong!
-errors.error.internal-server-error.status: Internal Server Error
-errors.error.not-found.description: The page does not exist or the request is not valid.
-errors.error.not-found.heading: Oops, page not found!
-errors.error.not-found.status: Not Found
-fields.array.add: Add
-fields.array.remove: Remove
-login.attempt.failed: Login attempt failed! Try again.
-login.attempt.too-many: Too many login attempts. Please try again in %d minutes.
-login.logged-out: You have been logged out
-login.login: Login
-login.logout: Logout
-login.password: Password
-login.suspicious-request-detected: A suspicious request has been detected, and for security reasons you have been logged out. Please log in again.
-login.username: Username
-modal.action.cancel: Cancel
-modal.action.continue: Continue
-modal.action.delete: Delete
-modal.action.save: Save
-modal.action.upload-file: Upload a File
-modal.images.no-images: There are no images here
-modal.images.no-images.upload: Please upload some images
-modal.images.title: Select an Image
-options.info: Info
-options.options: Options
-options.site: Site
-options.site.advanced: Advanced Options
-options.site.advanced.aliases: Aliases
-options.site.advanced.aliases.alias: Alias
-options.site.advanced.aliases.route: Route
-options.site.advanced.metadata: HTML Metadata
-options.site.advanced.metadata.content: Content
-options.site.advanced.metadata.name: Name
-options.site.info: Info
-options.site.info.author: Author
-options.site.info.description: Description
-options.site.info.language: Language
-options.site.info.title: Title
-options.system: System
-options.system.admin-panel: Admin Panel
-options.system.admin-panel.default-color-scheme: Default Color Scheme
-options.system.admin-panel.default-color-scheme.dark: Dark
-options.system.admin-panel.default-color-scheme.light: Light
-options.system.admin-panel.default-language: Default Language
-options.system.admin-panel.logout-redirects-to: Logout Redirects to
-options.system.admin-panel.logout-redirects-to.home: Home
-options.system.admin-panel.logout-redirects-to.login: Login
-options.system.admin-panel.session-timeout: Session Timeout (min)
-options.system.backup: Backup
-options.system.backup.backup-files-to-keep: Backups to keep on the server
-options.system.cache: Cache
-options.system.cache.disabled: Disabled
-options.system.cache.enabled: Enabled
-options.system.cache.time: Cache Time (sec)
-options.system.date-and-time: Date and Time
-options.system.date-and-time.date-format: Date Format
-options.system.date-and-time.first-weekday: First Weekday
-options.system.date-and-time.first-weekday.monday: Monday
-options.system.date-and-time.first-weekday.sunday: Sunday
-options.system.date-and-time.hour-format: Hour Format
-options.system.date-and-time.timezone: Timezone
-options.system.files: Files
-options.system.files.allowed-extensions: Allowed Extensions
-options.system.images: Images
-options.system.images.jpeg-quality: JPEG Quality
-options.system.images.jpeg-save-progressive: Save JPEG images as progressive
-options.system.images.jpeg-save-progressive.disabled: Disabled
-options.system.images.jpeg-save-progressive.enabled: Enabled
-options.system.images.png-compression-level: PNG Compression Level
-options.system.images.process-uploads: Process (optimize) uploaded images
-options.system.images.process-uploads.disabled: Disabled
-options.system.images.process-uploads.enabled: Enabled
-options.system.images.webp-quality: WebP Quality
-options.system.languages: Languages
-options.system.languages.available-languages: Available Languages
-options.system.languages.available-languages.no-languages: No Languages
-options.system.languages.preferred-language: Use Browser Prefered Language
-options.system.languages.preferred-language.disabled: Disabled
-options.system.languages.preferred-language.enabled: Enabled
-options.updated: Options updated
-options.updates: Updates
-pages.attributes: Attributes
-pages.change-slug: Edit Slug
-pages.change-slug.generate: Generate From Title
-pages.changes.continue: Continue without Saving
-pages.changes.detected: Changes Detected
-pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
-pages.content: Content
-pages.delete-file: Delete File
-pages.delete-file.prompt: Are you sure you want to delete this file? This action can’t be undone.
-pages.delete-page: Delete Page
-pages.delete-page.prompt: Are you sure you want to delete this page? This action can’t be undone.
-pages.edit-page: Edit Page %s
-pages.editor.bold: Bold
-pages.editor.bullet-list: Bullet list
-pages.editor.image: Image
-pages.editor.italic: Italic
-pages.editor.link: Link
-pages.editor.numbered-list: Ordered list
-pages.editor.quote: Quote
-pages.editor.redo: Redo
-pages.editor.summary: Summary
-pages.editor.undo: Undo
-pages.files: Files
-pages.files.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
-pages.languages: Languages
-pages.languages.add-language: Add %s
-pages.languages.edit-language: Edit %s
-pages.new-page: New Page
-pages.new-page.parent: Parent Page
-pages.new-page.site: Site
-pages.new-page.slug-suggestion: letters, numbers and dashes only
-pages.new-page.slug: Page Slug
-pages.new-page.template: Template
-pages.new-page.title: Title
-pages.options: Options
-pages.page.actions: Actions
-pages.page.cacheable: Cacheable
-pages.page.cannot-change-num: Cannot change page number
-pages.page.cannot-create: Cannot create page
-pages.page.cannot-create.already-exists: Cannot create page, a page with the same uri already exists
-pages.page.cannot-create.invalid-parent: Cannot create page, invalid parent page
-pages.page.cannot-create.invalid-slug: Cannot create page, page slug must contain only letters and numbers separated by dashes
-pages.page.cannot-create.invalid-template: Cannot create page, invalid template
-pages.page.cannot-create.var-missing: Cannot create page, missing a variable
-pages.page.cannot-delete-file.file-not-found: Cannot delete file, file not found
-pages.page.cannot-delete-file.page-not-found: Cannot delete file, file not found
-pages.page.cannot-delete.invalid-language: 'Cannot delete page, invalid language: %s'
-pages.page.cannot-delete.not-deletable: Cannot delete page, the page is not deletable
-pages.page.cannot-delete.page-not-found: Cannot delete page, page not found
-pages.page.cannot-edit.already-exists: Cannot edit page, a page with the same uri already exists
-pages.page.cannot-edit.index-or-error-page-slug: Cannot edit page slug of index and error pages
-pages.page.cannot-edit.invalid-language: 'Cannot edit page, invalid language: %s'
-pages.page.cannot-edit.invalid-parent: Cannot edit page, invalid parent page
-pages.page.cannot-edit.invalid-slug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
-pages.page.cannot-edit.invalid-template: Cannot edit page, invalid template
-pages.page.cannot-edit.page-not-found: Cannot edit page, page not found
-pages.page.cannot-edit.var-missing: Cannot edit page, missing a variable
-pages.page.cannot-move: Cannot move page
-pages.page.cannot-upload-file.page-not-found: Cannot upload file, page not found
-pages.page.created: Page created!
-pages.page.deleted: Page deleted
-pages.page.edited: Page edited
-pages.page.file-deleted: File deleted
-pages.page.image: Image
-pages.page.last-modified: Last Modified
-pages.page.moved: Page moved!
-pages.page.no-date: No Date
-pages.page.no-image: No Image
-pages.page.no-tags: No Tags
-pages.page.not-found: Page not found
-pages.page.posts-per-page: Posts per page
-pages.page.publish-date: Publish Date
-pages.page.status: Status
-pages.page.tags: Tags
-pages.page.title: Title
-pages.page.unpublish-date: Unpublish Date
-pages.page.visible: Visible in the menu
-pages.pages: Pages
-pages.pages.collapse-all: Collapse All
-pages.pages.expand-all: Expand All
-pages.pages.reorder: Reorder
-pages.pages.search: Search Pages...
-pages.parent: Parent Page
-pages.preview-file: Preview
-pages.preview: Preview
-pages.save: Save
-pages.status.not-published: Not Published
-pages.status.not-routable: Not Routable
-pages.status.published: Published
-pages.status.routable: Routable
-pages.template: Template
-pages.toggle-children: Toggle Children Pages
-register.create-user: Formwork Admin is installed but no users were found. Please register a user now.
-register.register: Register New User
-request.error.post-max-size: The HTTP POST request exceeds the maximum allowed size
-updates.available-for-install: is available for install
-updates.check: Check Updates
-updates.install-prompt: Would you like to install the update?
-updates.install: Install
-updates.installed: Update installed!
-updates.latest-version-available: is the latest version available
-updates.status.cannot-check: Cannot check for updates. Try again later.
-updates.status.cannot-install: Cannot install update
-updates.status.cannot-make-backup: Cannot make backup before updating
-updates.status.checking: Checking for updates...
-updates.status.found: Updates found
-updates.status.installing: Installing updates...
-updates.status.up-to-date: Up-to-date!
-uploader.error: Cannot upload file. %s.
-uploader.error.already-exists: A file with the same name already exists
-uploader.error.cannot-move-to-destination: Failed to move uploaded file to destination
-uploader.error.cannot-write: Failed to write file to disk
-uploader.error.destination-too-long: Destination path too long
-uploader.error.file-name: Invalid file name
-uploader.error.file-name-too-long: File name too long
-uploader.error.hidden-files: Cannot upload hidden files beginning with a dot
-uploader.error.mime-type: File type not allowed
-uploader.error.no-file: No file was uploaded
-uploader.error.no-temp: Missing a temporary folder
-uploader.error.partial: The uploaded file was only partially uploaded
-uploader.error.php-extension: File upload stopped by extension
-uploader.error.size: The uploaded file exceeds the maximum file size
-uploader.uploaded: File uploaded
-user.actions: Actions
-user.avatar: Avatar
-user.avatar.uploaded: Avatar uploaded
-user.color-scheme: Color Scheme
-user.color-scheme.auto: Auto
-user.color-scheme.dark: Dark
-user.color-scheme.light: Light
-user.email: Email
-user.fullname: Full Name
-user.language: Language
-user.last-access: Last access
-user.password: Password
-user.password.type-new-password: Type a new password to change...
-user.role: Role
-user.role.admin: Administrator
-user.role.user: User
-user.username: Username
-users.delete-user: Delete User
-users.delete-user.prompt: Are you sure you want to delete this user? This action can’t be undone.
-users.new-user: New User
-users.new-user.password-suggestion: at least 8 characters
-users.new-user.username-suggestion: between 3-20 letters, digits and dashes
-users.options: Options
-users.user-profile: '%s User Profile'
-users.user: User
-users.user.cannot-change-password: Cannot change the password of another user. The action is not allowed.
-users.user.cannot-change-role: Cannot change the role of %s. The action is not allowed.
-users.user.cannot-create.already-exists: Cannot create user, a user with the same name already exists
-users.user.cannot-create.var-missing: Cannot create user, missing a variable
-users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
-users.user.cannot-edit: Cannot edit user %s. The action is not allowed.
-users.user.created: User created
-users.user.deleted: User deleted
-users.user.edited: User data updated
-users.user.not-found: User not found
-users.users: Users

@@ -1,248 +1,248 @@
+admin.backup.backup: Sauvegarde
+admin.backup.error.cannot-download: Impossible de télécharger la sauvegarde. %s.
+admin.backup.error.cannot-download.invalid-filename: Fichier de sauvegarde invalide
+admin.backup.error.cannot-make: Impossible de faire une sauvegarde. %s.
+admin.backup.ready: Sauvegarde prête. Démarrage du téléchargement…
+admin.cache.clear: Vider le cache
+admin.cache.cleared: Cache effacé
+admin.dashboard.dashboard: Tableau de bord
+admin.dashboard.last-modified-pages: Dernières pages éditées
+admin.dashboard.quick-actions: Actions rapides
+admin.dashboard.statistics: Statistiques
+admin.dashboard.statistics.unique-visitors: Visiteurs uniques
+admin.dashboard.statistics.visits: Visites
+admin.dashboard.welcome: Bienvenue
+admin.errors.action.report-to-github: Signaler le problème sur GitHub
+admin.errors.action.return-to-dashboard: Retour au tableau de bord
+admin.errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
+admin.errors.error.forbidden.heading: Oups, permission requise!
+admin.errors.error.forbidden.status: Interdit
+admin.errors.error.internal-server-error.description: Une erreur s’est produite lors du traitement de votre demande. Veuillez vérifier la configuration du CMS ou le journal du serveur pour rechercher des erreurs.
+admin.errors.error.internal-server-error.heading: Oups, quelque chose s’est mal passé!
+admin.errors.error.internal-server-error.status: Erreur Interne du Serveur
+admin.errors.error.not-found.description: La page n’existe pas ou la demande n’est pas valide.
+admin.errors.error.not-found.heading: Oups, page non trouvée!
+admin.errors.error.not-found.status: Pas trouvé
+admin.login.attempt.failed: La tentative de connexion a échoué! Réessayer.
+admin.login.attempt.too-many: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
+admin.login.logged-out: Vous avez été déconnecté
+admin.login.login: S’identifier
+admin.login.logout: Déconnexion
+admin.login.password: Mot de passe
+admin.login.suspicious-request-detected: Une demande suspecte a été détectée et pour des raisons de sécurité, vous avez été déconnecté. Veuillez vous reconnecter.
+admin.login.username: Nom d’utilisateur
 admin.manage: Gérer
+admin.modal.action.cancel: Annuler
+admin.modal.action.continue: Continuer
+admin.modal.action.delete: Supprimer
+admin.modal.action.save: Enregistrer
+admin.modal.action.upload-file: Parcourir…
+admin.modal.images.no-images: Aucun fichier média n’a été trouvé.
+admin.modal.images.no-images.upload: Sélectionnez vos fichiers à téléverser.
+admin.modal.images.title: Bibliothèque de médias
+admin.options.info: Information
+admin.options.options: Paramètres
+admin.options.site: Site
+admin.options.site.advanced: Options avancées
+admin.options.site.advanced.aliases: Alias
+admin.options.site.advanced.aliases.alias: Alias
+admin.options.site.advanced.aliases.route: Route
+admin.options.site.advanced.metadata: Métadonnées HTML
+admin.options.site.advanced.metadata.content: Contenu
+admin.options.site.advanced.metadata.name: Nom
+admin.options.site.info: Info
+admin.options.site.info.author: Auteur
+admin.options.site.info.description: Description
+admin.options.site.info.language: Langue
+admin.options.site.info.title: Titre
+admin.options.system: Système
+admin.options.system.admin-panel: Panneau d’administration
+admin.options.system.admin-panel.default-language: Langue par défaut
+admin.options.system.admin-panel.logout-redirects-to: Après déconnexion, redirection vers
+admin.options.system.admin-panel.logout-redirects-to.home: Page d’accueil
+admin.options.system.admin-panel.logout-redirects-to.login: Page d’identification
+admin.options.system.admin-panel.session-timeout: Expiration de la session (min)
+admin.options.system.backup: Sauvegarde
+admin.options.system.backup.backup-files-to-keep: Sauvegardes à conserver sur le serveur
+admin.options.system.cache: Cache
+admin.options.system.cache.disabled: Désactivé
+admin.options.system.cache.enabled: Activé
+admin.options.system.cache.time: Temps de mise cache (sec)
+admin.options.system.date-and-time: Date et heure
+admin.options.system.date-and-time.date-format: Format de date
+admin.options.system.date-and-time.first-weekday: La semaine débute le
+admin.options.system.date-and-time.first-weekday.monday: Lundi
+admin.options.system.date-and-time.first-weekday.sunday: Dimanche
+admin.options.system.date-and-time.hour-format: Format d’heure
+admin.options.system.date-and-time.timezone: Fuseau horaire
+admin.options.system.files: Fichiers
+admin.options.system.files.allowed-extensions: Extensions autorisées
+admin.options.system.images: Images
+admin.options.system.images.jpeg-quality: Qualité JPEG
+admin.options.system.images.jpeg-save-progressive: Enregistrer les images JPEG en progressif
+admin.options.system.images.jpeg-save-progressive.disabled: Désactivé
+admin.options.system.images.jpeg-save-progressive.enabled: Activé
+admin.options.system.images.png-compression-level: Niveau de compression PNG
+admin.options.system.images.process-uploads: Traitement (optimisé) des images envoyées
+admin.options.system.images.process-uploads.disabled: Désactivé
+admin.options.system.images.process-uploads.enabled: Activé
+admin.options.system.images.webp-quality: Qualité WebP
+admin.options.system.languages: Langues
+admin.options.system.languages.available-languages: Langues disponibles
+admin.options.system.languages.available-languages.no-languages: Aucune langue
+admin.options.system.languages.preferred-language: Utiliser la langue préférée du navigateur
+admin.options.system.languages.preferred-language.disabled: Désactivé
+admin.options.system.languages.preferred-language.enabled: Activé
+admin.options.updated: Options mises à jour
+admin.options.updates: Mises à jour
+admin.pages.attributes: Attributs
+admin.pages.change-slug: Modifier le permalien
+admin.pages.change-slug.generate: Générer automatiquement à partir du titre
+admin.pages.changes.continue: Continuer sans sauvegarder
+admin.pages.changes.detected: Changements détectés
+admin.pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
+admin.pages.content: Contenu
+admin.pages.delete-file: Supprimer le fichier
+admin.pages.delete-file.prompt: Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
+admin.pages.delete-page: Supprimer la page
+admin.pages.delete-page.prompt: Êtes-vous sûr de vouloir supprimer cette page ? Cette action est irréversible.
+admin.pages.edit-page: Modifier la page %s
+admin.pages.editor.bold: Gras
+admin.pages.editor.bullet-list: Liste à puce
+admin.pages.editor.image: Image
+admin.pages.editor.italic: Italique
+admin.pages.editor.link: Lien
+admin.pages.editor.numbered-list: Liste ordonnée
+admin.pages.editor.quote: Citer
+admin.pages.editor.redo: Refaire
+admin.pages.editor.summary: Résumé
+admin.pages.editor.undo: Annuler
+admin.pages.files: Fichiers
+admin.pages.languages: Langues
+admin.pages.languages.add-language: Ajouter %s
+admin.pages.languages.edit-language: Éditer %s
+admin.pages.new-page: Nouvelle page
+admin.pages.new-page.parent: Parent
+admin.pages.new-page.site: Site
+admin.pages.new-page.slug-suggestion: lettres, chiffres et tirets seulement
+admin.pages.new-page.slug: Permalien
+admin.pages.new-page.template: Modèle (Template)
+admin.pages.new-page.title: Titre
+admin.pages.options: Options
+admin.pages.page.actions: Actions
+admin.pages.page.cacheable: Activer le cache
+admin.pages.page.cannot-change-num: Impossible de changer le numéro de page
+admin.pages.page.cannot-create: Impossible de créer une page
+admin.pages.page.cannot-create.already-exists: Impossible de créer une page, une page avec le même uri existe déjà
+admin.pages.page.cannot-create.invalid-parent: Impossible de créer une page, page parente non valide
+admin.pages.page.cannot-create.invalid-slug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
+admin.pages.page.cannot-create.invalid-template: Impossible de créer une page, modèle non valide
+admin.pages.page.cannot-create.var-missing: Impossible de créer une page, il manque une variable
+admin.pages.page.cannot-delete-file.file-not-found: Impossible de supprimer le fichier, fichier introuvable
+admin.pages.page.cannot-delete-file.page-not-found: Impossible de supprimer le fichier, page non trouvée
+admin.pages.page.cannot-delete.invalid-language: 'Impossible de supprimer la page, terme non défini : %s'
+admin.pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page ne peut être supprimée
+admin.pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
+admin.pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
+admin.pages.page.cannot-edit.index-or-error-page-slug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
+admin.pages.page.cannot-edit.invalid-language: 'Impossible de modifier la page, terme non défini : %s'
+admin.pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parente non valide
+admin.pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
+admin.pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
+admin.pages.page.cannot-edit.page-not-found: Impossible de modifier la page, page non trouvée
+admin.pages.page.cannot-edit.var-missing: Impossible de modifier la page, il manque une variable
+admin.pages.page.cannot-move: Impossible de déplacer la page
+admin.pages.page.cannot-upload-file.page-not-found: Impossible de téléverser le fichier, page introuvable
+admin.pages.page.created: Page créée !
+admin.pages.page.deleted: Page supprimée
+admin.pages.page.edited: Page éditée
+admin.pages.page.file-deleted: Fichier supprimé
+admin.pages.page.image: Image d’accroche
+admin.pages.page.last-modified: Dernière modification
+admin.pages.page.moved: Page déplacée !
+admin.pages.page.no-date: Aucune date
+admin.pages.page.no-image: Aucune image
+admin.pages.page.no-tags: Aucun tag
+admin.pages.page.not-found: Page non trouvée
+admin.pages.page.posts-per-page: Articles par page
+admin.pages.page.publish-date: Date de publication
+admin.pages.page.status: Statut
+admin.pages.page.tags: Tags
+admin.pages.page.title: Titre
+admin.pages.page.unpublish-date: Date de péremption
+admin.pages.page.visible: Visible dans le menu
+admin.pages.pages: Pages
+admin.pages.pages.collapse-all: Tout réduire
+admin.pages.pages.expand-all: Tout développer
+admin.pages.pages.reorder: Réorganiser
+admin.pages.pages.search: Rechercher dans les Pages…
+admin.pages.parent: Parent
+admin.pages.preview-file: Aperçu
+admin.pages.preview: Aperçu
+admin.pages.save: Enregistrer
+admin.pages.status.not-published: Brouillon
+admin.pages.status.not-routable: Inaccessible
+admin.pages.status.published: Publié
+admin.pages.status.routable: Accessible
+admin.pages.template: Modèle
 admin.panel: Panneau d’administration
+admin.register.create-user: Le compte admin est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
+admin.register.register: Enregistrer un nouvel utilisateur
+admin.request.error.post-max-size: La demande HTTP POST dépasse la taille maximale autorisée
+admin.updates.available-for-install: est disponible pour l’installation
+admin.updates.check: Vérifier les mises à jour
+admin.updates.install-prompt: Voulez-vous installer la mise à jour ?
+admin.updates.install: Installer
+admin.updates.installed: Mise à jour installée !
+admin.updates.latest-version-available: est la dernière version disponible
+admin.updates.status.cannot-install: Impossible d’installer la mise à jour
+admin.updates.status.cannot-make-backup: Impossible de faire une sauvegarde avant la mise à jour
+admin.updates.status.checking: Vérification des mises à jour…
+admin.updates.status.found: Mises à jour trouvées
+admin.updates.status.installing: Installation de mises à jour…
+admin.updates.status.up-to-date: À jour !
+admin.uploader.error: Impossible de télécharger le fichier. %s.
+admin.uploader.error.already-exists: Un fichier du même nom existe déjà
+admin.uploader.error.cannot-write: Échec de l’écriture du fichier sur le disque
+admin.uploader.error.file-name: Nom de fichier non valide
+admin.uploader.error.hidden-files: Impossible de téléverser des fichiers cachés commençant par un point
+admin.uploader.error.mime-type: Type de fichier non autorisé
+admin.uploader.error.no-file: Aucun fichier n’a été téléchargé
+admin.uploader.error.no-temp: Absence du dossier temporaire
+admin.uploader.error.partial: Le fichier envoyé n’a été que partiellement téléversé
+admin.uploader.error.php-extension: Téléversement du fichier arrêté par extension
+admin.uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
+admin.uploader.uploaded: Fichier envoyé !
+admin.user.actions: Actions
+admin.user.avatar: Photo de profil
+admin.user.avatar.uploaded: Photo de profil téléversée avec succès.
+admin.user.email: Adresse de messagerie
+admin.user.fullname: Nom complet
+admin.user.language: Langue
+admin.user.last-access: Dernier accès
+admin.user.password: Mot de passe
+admin.user.password.type-new-password: Tapez un nouveau mot de passe pour le modifier...
+admin.user.role: Rôle
+admin.user.role.admin: Administrateur
+admin.user.role.user: Éditeur
+admin.user.username: Nom d’utilisateur
+admin.users.delete-user: Supprimer l’utilisateur
+admin.users.delete-user.prompt: Êtes-vous sûr de vouloir supprimer cet utilisateur? Cette action est irréversible.
+admin.users.new-user: Nouvel utilisateur
+admin.users.new-user.password-suggestion: au moins 8 caractères
+admin.users.new-user.username-suggestion: entre 3-20 lettres, chiffres et tirets
+admin.users.options: Options
+admin.users.user-profile: 'Profil utilisateur de %s'
+admin.users.user: Utilisateur
+admin.users.user.cannot-change-password: Impossible de changer le mot de passe d’un autre utilisateur. L’action n’est pas autorisée.
+admin.users.user.cannot-change-role: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
+admin.users.user.cannot-create.already-exists: Impossible de créer l’utilisateur, un utilisateur portant le même nom existe déjà
+admin.users.user.cannot-create.var-missing: Impossible de créer l’utilisateur, il manque une variable
+admin.users.user.cannot-delete: Impossible de supprimer l’utilisateur. Vous devez être un administrateur et l’utilisateur ne doit pas être connecté.
+admin.users.user.cannot-edit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.
+admin.users.user.created: Compte utilisateur créé
+admin.users.user.deleted: Utilisateur supprimé
+admin.users.user.edited: Profil utilisateur mises à jour
+admin.users.user.not-found: Utilisateur non trouvé
+admin.users.users: Utilisateurs
 admin.view-site: Voir le site
-backup.backup: Sauvegarde
-backup.error.cannot-download: Impossible de télécharger la sauvegarde. %s.
-backup.error.cannot-download.invalid-filename: Fichier de sauvegarde invalide
-backup.error.cannot-make: Impossible de faire une sauvegarde. %s.
-backup.ready: Sauvegarde prête. Démarrage du téléchargement…
-cache.clear: Vider le cache
-cache.cleared: Cache effacé
-dashboard.dashboard: Tableau de bord
-dashboard.last-modified-pages: Dernières pages éditées
-dashboard.quick-actions: Actions rapides
-dashboard.statistics: Statistiques
-dashboard.statistics.unique-visitors: Visiteurs uniques
-dashboard.statistics.visits: Visites
-dashboard.welcome: Bienvenue
-errors.action.report-to-github: Signaler le problème sur GitHub
-errors.action.return-to-dashboard: Retour au tableau de bord
-errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
-errors.error.forbidden.heading: Oups, permission requise!
-errors.error.forbidden.status: Interdit
-errors.error.internal-server-error.description: Une erreur s’est produite lors du traitement de votre demande. Veuillez vérifier la configuration du CMS ou le journal du serveur pour rechercher des erreurs.
-errors.error.internal-server-error.heading: Oups, quelque chose s’est mal passé!
-errors.error.internal-server-error.status: Erreur Interne du Serveur
-errors.error.not-found.description: La page n’existe pas ou la demande n’est pas valide.
-errors.error.not-found.heading: Oups, page non trouvée!
-errors.error.not-found.status: Pas trouvé
-login.attempt.failed: La tentative de connexion a échoué! Réessayer.
-login.attempt.too-many: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
-login.logged-out: Vous avez été déconnecté
-login.login: S’identifier
-login.logout: Déconnexion
-login.password: Mot de passe
-login.suspicious-request-detected: Une demande suspecte a été détectée et pour des raisons de sécurité, vous avez été déconnecté. Veuillez vous reconnecter.
-login.username: Nom d’utilisateur
-modal.action.cancel: Annuler
-modal.action.continue: Continuer
-modal.action.delete: Supprimer
-modal.action.save: Enregistrer
-modal.action.upload-file: Parcourir…
-modal.images.no-images: Aucun fichier média n’a été trouvé.
-modal.images.no-images.upload: Sélectionnez vos fichiers à téléverser.
-modal.images.title: Bibliothèque de médias
-options.info: Information
-options.options: Paramètres
-options.site: Site
-options.site.advanced: Options avancées
-options.site.advanced.aliases: Alias
-options.site.advanced.aliases.alias: Alias
-options.site.advanced.aliases.route: Route
-options.site.advanced.metadata: Métadonnées HTML
-options.site.advanced.metadata.content: Contenu
-options.site.advanced.metadata.name: Nom
-options.site.info: Info
-options.site.info.author: Auteur
-options.site.info.description: Description
-options.site.info.language: Langue
-options.site.info.title: Titre
-options.system: Système
-options.system.admin-panel: Panneau d’administration
-options.system.admin-panel.default-language: Langue par défaut
-options.system.admin-panel.logout-redirects-to: Après déconnexion, redirection vers
-options.system.admin-panel.logout-redirects-to.home: Page d’accueil
-options.system.admin-panel.logout-redirects-to.login: Page d’identification
-options.system.admin-panel.session-timeout: Expiration de la session (min)
-options.system.backup: Sauvegarde
-options.system.backup.backup-files-to-keep: Sauvegardes à conserver sur le serveur
-options.system.cache: Cache
-options.system.cache.disabled: Désactivé
-options.system.cache.enabled: Activé
-options.system.cache.time: Temps de mise cache (sec)
-options.system.date-and-time: Date et heure
-options.system.date-and-time.date-format: Format de date
-options.system.date-and-time.first-weekday: La semaine débute le
-options.system.date-and-time.first-weekday.monday: Lundi
-options.system.date-and-time.first-weekday.sunday: Dimanche
-options.system.date-and-time.hour-format: Format d’heure
-options.system.date-and-time.timezone: Fuseau horaire
-options.system.files: Fichiers
-options.system.files.allowed-extensions: Extensions autorisées
-options.system.images: Images
-options.system.images.jpeg-quality: Qualité JPEG
-options.system.images.jpeg-save-progressive: Enregistrer les images JPEG en progressif
-options.system.images.jpeg-save-progressive.disabled: Désactivé
-options.system.images.jpeg-save-progressive.enabled: Activé
-options.system.images.png-compression-level: Niveau de compression PNG
-options.system.images.process-uploads: Traitement (optimisé) des images envoyées
-options.system.images.process-uploads.disabled: Désactivé
-options.system.images.process-uploads.enabled: Activé
-options.system.images.webp-quality: Qualité WebP
-options.system.languages: Langues
-options.system.languages.available-languages: Langues disponibles
-options.system.languages.available-languages.no-languages: Aucune langue
-options.system.languages.preferred-language: Utiliser la langue préférée du navigateur
-options.system.languages.preferred-language.disabled: Désactivé
-options.system.languages.preferred-language.enabled: Activé
-options.updated: Options mises à jour
-options.updates: Mises à jour
-pages.attributes: Attributs
-pages.change-slug: Modifier le permalien
-pages.change-slug.generate: Générer automatiquement à partir du titre
-pages.changes.continue: Continuer sans sauvegarder
-pages.changes.detected: Changements détectés
-pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
-pages.content: Contenu
-pages.delete-file: Supprimer le fichier
-pages.delete-file.prompt: Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
-pages.delete-page: Supprimer la page
-pages.delete-page.prompt: Êtes-vous sûr de vouloir supprimer cette page ? Cette action est irréversible.
-pages.edit-page: Modifier la page %s
-pages.editor.bold: Gras
-pages.editor.bullet-list: Liste à puce
-pages.editor.image: Image
-pages.editor.italic: Italique
-pages.editor.link: Lien
-pages.editor.numbered-list: Liste ordonnée
-pages.editor.quote: Citer
-pages.editor.redo: Refaire
-pages.editor.summary: Résumé
-pages.editor.undo: Annuler
-pages.files: Fichiers
-pages.languages: Langues
-pages.languages.add-language: Ajouter %s
-pages.languages.edit-language: Éditer %s
-pages.new-page: Nouvelle page
-pages.new-page.parent: Parent
-pages.new-page.site: Site
-pages.new-page.slug-suggestion: lettres, chiffres et tirets seulement
-pages.new-page.slug: Permalien
-pages.new-page.template: Modèle (Template)
-pages.new-page.title: Titre
-pages.options: Options
-pages.page.actions: Actions
-pages.page.cacheable: Activer le cache
-pages.page.cannot-change-num: Impossible de changer le numéro de page
-pages.page.cannot-create: Impossible de créer une page
-pages.page.cannot-create.already-exists: Impossible de créer une page, une page avec le même uri existe déjà
-pages.page.cannot-create.invalid-parent: Impossible de créer une page, page parente non valide
-pages.page.cannot-create.invalid-slug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
-pages.page.cannot-create.invalid-template: Impossible de créer une page, modèle non valide
-pages.page.cannot-create.var-missing: Impossible de créer une page, il manque une variable
-pages.page.cannot-delete-file.file-not-found: Impossible de supprimer le fichier, fichier introuvable
-pages.page.cannot-delete-file.page-not-found: Impossible de supprimer le fichier, page non trouvée
-pages.page.cannot-delete.invalid-language: 'Impossible de supprimer la page, terme non défini : %s'
-pages.page.cannot-delete.not-deletable: Impossible de supprimer la page, la page ne peut être supprimée
-pages.page.cannot-delete.page-not-found: Impossible de supprimer la page, page introuvable
-pages.page.cannot-edit.already-exists: Impossible de modifier la page, une page avec la même URL existe déjà
-pages.page.cannot-edit.index-or-error-page-slug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
-pages.page.cannot-edit.invalid-language: 'Impossible de modifier la page, terme non défini : %s'
-pages.page.cannot-edit.invalid-parent: Impossible de modifier la page, page parente non valide
-pages.page.cannot-edit.invalid-slug: Impossible de modifier l’identifiant de la page, il doit contenir que des lettres et des chiffres séparés par des tirets
-pages.page.cannot-edit.invalid-template: Impossible de modifier la page, modèle non valide
-pages.page.cannot-edit.page-not-found: Impossible de modifier la page, page non trouvée
-pages.page.cannot-edit.var-missing: Impossible de modifier la page, il manque une variable
-pages.page.cannot-move: Impossible de déplacer la page
-pages.page.cannot-upload-file.page-not-found: Impossible de téléverser le fichier, page introuvable
-pages.page.created: Page créée !
-pages.page.deleted: Page supprimée
-pages.page.edited: Page éditée
-pages.page.file-deleted: Fichier supprimé
-pages.page.image: Image d’accroche
-pages.page.last-modified: Dernière modification
-pages.page.moved: Page déplacée !
-pages.page.no-date: Aucune date
-pages.page.no-image: Aucune image
-pages.page.no-tags: Aucun tag
-pages.page.not-found: Page non trouvée
-pages.page.posts-per-page: Articles par page
-pages.page.publish-date: Date de publication
-pages.page.status: Statut
-pages.page.tags: Tags
-pages.page.title: Titre
-pages.page.unpublish-date: Date de péremption
-pages.page.visible: Visible dans le menu
-pages.pages: Pages
-pages.pages.collapse-all: Tout réduire
-pages.pages.expand-all: Tout développer
-pages.pages.reorder: Réorganiser
-pages.pages.search: Rechercher dans les Pages…
-pages.parent: Parent
-pages.preview-file: Aperçu
-pages.preview: Aperçu
-pages.save: Enregistrer
-pages.status.not-published: Brouillon
-pages.status.not-routable: Inaccessible
-pages.status.published: Publié
-pages.status.routable: Accessible
-pages.template: Modèle
-register.create-user: Le compte admin est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
-register.register: Enregistrer un nouvel utilisateur
-request.error.post-max-size: La demande HTTP POST dépasse la taille maximale autorisée
-updates.available-for-install: est disponible pour l’installation
-updates.check: Vérifier les mises à jour
-updates.install-prompt: Voulez-vous installer la mise à jour ?
-updates.install: Installer
-updates.installed: Mise à jour installée !
-updates.latest-version-available: est la dernière version disponible
-updates.status.cannot-install: Impossible d’installer la mise à jour
-updates.status.cannot-make-backup: Impossible de faire une sauvegarde avant la mise à jour
-updates.status.checking: Vérification des mises à jour…
-updates.status.found: Mises à jour trouvées
-updates.status.installing: Installation de mises à jour…
-updates.status.up-to-date: À jour !
-uploader.error: Impossible de télécharger le fichier. %s.
-uploader.error.already-exists: Un fichier du même nom existe déjà
-uploader.error.cannot-write: Échec de l’écriture du fichier sur le disque
-uploader.error.file-name: Nom de fichier non valide
-uploader.error.hidden-files: Impossible de téléverser des fichiers cachés commençant par un point
-uploader.error.mime-type: Type de fichier non autorisé
-uploader.error.no-file: Aucun fichier n’a été téléchargé
-uploader.error.no-temp: Absence du dossier temporaire
-uploader.error.partial: Le fichier envoyé n’a été que partiellement téléversé
-uploader.error.php-extension: Téléversement du fichier arrêté par extension
-uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
-uploader.uploaded: Fichier envoyé !
-user.actions: Actions
-user.avatar: Photo de profil
-user.avatar.uploaded: Photo de profil téléversée avec succès.
-user.email: Adresse de messagerie
-user.fullname: Nom complet
-user.language: Langue
-user.last-access: Dernier accès
-user.password: Mot de passe
-user.password.type-new-password: Tapez un nouveau mot de passe pour le modifier...
-user.role: Rôle
-user.role.admin: Administrateur
-user.role.user: Éditeur
-user.username: Nom d’utilisateur
-users.delete-user: Supprimer l’utilisateur
-users.delete-user.prompt: Êtes-vous sûr de vouloir supprimer cet utilisateur? Cette action est irréversible.
-users.new-user: Nouvel utilisateur
-users.new-user.password-suggestion: au moins 8 caractères
-users.new-user.username-suggestion: entre 3-20 lettres, chiffres et tirets
-users.options: Options
-users.user-profile: 'Profil utilisateur de %s'
-users.user: Utilisateur
-users.user.cannot-change-password: Impossible de changer le mot de passe d’un autre utilisateur. L’action n’est pas autorisée.
-users.user.cannot-change-role: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
-users.user.cannot-create.already-exists: Impossible de créer l’utilisateur, un utilisateur portant le même nom existe déjà
-users.user.cannot-create.var-missing: Impossible de créer l’utilisateur, il manque une variable
-users.user.cannot-delete: Impossible de supprimer l’utilisateur. Vous devez être un administrateur et l’utilisateur ne doit pas être connecté.
-users.user.cannot-edit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.
-users.user.created: Compte utilisateur créé
-users.user.deleted: Utilisateur supprimé
-users.user.edited: Profil utilisateur mises à jour
-users.user.not-found: Utilisateur non trouvé
-users.users: Utilisateurs

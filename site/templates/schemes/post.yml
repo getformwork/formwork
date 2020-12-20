@@ -7,9 +7,9 @@ fields:
     image:
         type: image
         default: null
-        label: '{{pages.page.image}}'
-        placeholder: '{{pages.page.no-image}}'
+        label: '{{admin.pages.page.image}}'
+        placeholder: '{{admin.pages.page.no-image}}'
     tags:
         type: tags
-        label: '{{pages.page.tags}}'
-        placeholder: '{{pages.page.no-tags}}'
+        label: '{{admin.pages.page.tags}}'
+        placeholder: '{{admin.pages.page.no-tags}}'

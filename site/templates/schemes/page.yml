@@ -4,26 +4,26 @@ fields:
     published:
         type: checkbox
         default: true
-        label: '{{pages.status.published}}'
+        label: '{{admin.pages.status.published}}'
     publish-date:
         type: date
         default: null
-        label: '{{pages.page.publish-date}}'
-        placeholder: '{{pages.page.no-date}}'
+        label: '{{admin.pages.page.publish-date}}'
+        placeholder: '{{admin.pages.page.no-date}}'
     unpublish-date:
         type: date
         default: null
-        label: '{{pages.page.unpublish-date}}'
-        placeholder: '{{pages.page.no-date}}'
+        label: '{{admin.pages.page.unpublish-date}}'
+        placeholder: '{{admin.pages.page.no-date}}'
     routable:
         type: checkbox
         default: true
-        label: '{{pages.status.routable}}'
+        label: '{{admin.pages.status.routable}}'
     visible:
         type: checkbox
         default: true
-        label: '{{pages.page.visible}}'
+        label: '{{admin.pages.page.visible}}'
     cacheable:
         type: checkbox
         default: true
-        label: '{{pages.page.cacheable}}'
+        label: '{{admin.pages.page.cacheable}}'

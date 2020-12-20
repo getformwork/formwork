@@ -19,7 +19,7 @@
             if ($admin->user()->permissions()->has('dashboard')):
 ?>
             <li class="<?= ($location === 'dashboard') ? 'active' : '' ?>">
-                <a href="<?= $admin->uri('/dashboard/') ?>"><?= $this->translate('dashboard.dashboard') ?></a>
+                <a href="<?= $admin->uri('/dashboard/') ?>"><?= $this->translate('admin.dashboard.dashboard') ?></a>
             </li>
 <?php
             endif;
@@ -27,7 +27,7 @@
             if ($admin->user()->permissions()->has('pages')):
 ?>
             <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
-                <a href="<?= $admin->uri('/pages/') ?>"><?= $this->translate('pages.pages') ?></a>
+                <a href="<?= $admin->uri('/pages/') ?>"><?= $this->translate('admin.pages.pages') ?></a>
             </li>
 <?php
             endif;
@@ -35,7 +35,7 @@
             if ($admin->user()->permissions()->has('options')):
 ?>
             <li class="<?= ($location === 'options') ? 'active' : '' ?>">
-                <a href="<?= $admin->uri('/options/') ?>"><?= $this->translate('options.options') ?></a>
+                <a href="<?= $admin->uri('/options/') ?>"><?= $this->translate('admin.options.options') ?></a>
             </li>
 <?php
             endif;
@@ -43,13 +43,13 @@
             if ($admin->user()->permissions()->has('users')):
 ?>
             <li class="<?= ($location === 'users') ? 'active' : '' ?>">
-                <a href="<?= $admin->uri('/users/') ?>"><?= $this->translate('users.users') ?></a>
+                <a href="<?= $admin->uri('/users/') ?>"><?= $this->translate('admin.users.users') ?></a>
             </li>
 <?php
             endif;
 ?>
             <li>
-                <a href="<?= $admin->uri('/logout/') ?>"><?= $this->translate('login.logout') ?></a>
+                <a href="<?= $admin->uri('/logout/') ?>"><?= $this->translate('admin.login.logout') ?></a>
             </li>
         </ul>
     </div>

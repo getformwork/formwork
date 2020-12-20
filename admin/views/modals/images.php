@@ -1,14 +1,14 @@
 <div id="imagesModal" class="modal">
     <div class="modal-content modal-size-large">
-        <h3 class="caption"><?= $this->translate('modal.images.title') ?></h3>
+        <h3 class="caption"><?= $this->translate('admin.modal.images.title') ?></h3>
         <div class="image-picker-empty-state">
             <i class="image-picker-empty-state-icon i-images"></i>
-            <h4 class="h5"><?= $this->translate('modal.images.no-images') ?></h4>
+            <h4 class="h5"><?= $this->translate('admin.modal.images.no-images') ?></h4>
 <?php
             if ($admin->user()->permissions()->has('pages.upload_files')):
 ?>
-            <p><?= $this->translate('modal.images.no-images.upload') ?></p>
-            <button type="button" data-command="upload" data-upload-target="file-uploader"><i class="i-cloud-upload"></i> <?= $this->translate('modal.action.upload-file') ?></button>
+            <p><?= $this->translate('admin.modal.images.no-images.upload') ?></p>
+            <button type="button" data-command="upload" data-upload-target="file-uploader"><i class="i-cloud-upload"></i> <?= $this->translate('admin.modal.action.upload-file') ?></button>
 <?php
             endif;
 ?>
@@ -22,7 +22,7 @@
         endforeach;
 ?>
         </select>
-        <button type="button" data-dismiss="imagesModal"><?= $this->translate('modal.action.cancel') ?></button>
-        <button type="button" class="button-accent button-right image-picker-confirm" data-dismiss="imagesModal"><?= $this->translate('modal.action.continue') ?></button>
+        <button type="button" data-dismiss="imagesModal"><?= $this->translate('admin.modal.action.cancel') ?></button>
+        <button type="button" class="button-accent button-right image-picker-confirm" data-dismiss="imagesModal"><?= $this->translate('admin.modal.action.continue') ?></button>
     </div>
 </div>

@@ -52,7 +52,7 @@ class Options extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->admin()->notify($this->admin()->translate('options.updated'), 'success');
+            $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
             $this->admin()->redirect('/options/system/');
         }
 
@@ -61,7 +61,7 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('options.system', [
-            'title'   => $this->admin()->translate('options.options'),
+            'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system'
@@ -90,7 +90,7 @@ class Options extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->admin()->notify($this->admin()->translate('options.updated'), 'success');
+            $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
             $this->admin()->redirect('/options/site/');
         }
 
@@ -99,7 +99,7 @@ class Options extends AbstractController
         $this->modal('changes');
 
         $this->view('options.site', [
-            'title'   => $this->admin()->translate('options.options'),
+            'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site'
@@ -116,7 +116,7 @@ class Options extends AbstractController
         $this->ensurePermission('options.updates');
 
         $this->view('options.updates', [
-            'title'   => $this->admin()->translate('options.updates'),
+            'title'   => $this->admin()->translate('admin.options.updates'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates'
@@ -212,7 +212,7 @@ class Options extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         $this->view('options.info', [
-            'title'   => $this->admin()->translate('options.options'),
+            'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info'

@@ -140,11 +140,11 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'uploader.error.mime-type');
+            throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'admin.uploader.error.mime-type');
         }
 
         if (basename($filename)[0] === '.') {
-            throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'uploader.error.hidden-files');
+            throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'admin.uploader.error.hidden-files');
         }
 
         $name = str_replace([' ', '.'], '-', FileSystem::name($filename));
@@ -157,7 +157,7 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (strlen($filename) > FileSystem::MAX_NAME_LENGTH) {
-            throw new TranslatedException('File name too long', 'uploader.error.file-name-too-long');
+            throw new TranslatedException('File name too long', 'admin.uploader.error.file-name-too-long');
         }
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
@@ -167,11 +167,11 @@ class Uploader
         $destinationPath = FileSystem::joinPaths($destination, $filename);
 
         if (strlen($destinationPath) > FileSystem::MAX_PATH_LENGTH) {
-            throw new TranslatedException('Destination path too long', 'uploader.error.destination-too-long');
+            throw new TranslatedException('Destination path too long', 'admin.uploader.error.destination-too-long');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
-            throw new TranslatedException('File ' . $filename . ' already exists', 'uploader.error.already-exists');
+            throw new TranslatedException('File ' . $filename . ' already exists', 'admin.uploader.error.already-exists');
         }
 
         if (@move_uploaded_file($source, $destinationPath)) {
@@ -179,7 +179,7 @@ class Uploader
             return true;
         }
 
-        throw new TranslatedException('Cannot move uploaded file to destination', 'uploader.error.cannot-move-to-destination');
+        throw new TranslatedException('Cannot move uploaded file to destination', 'admin.uploader.error.cannot-move-to-destination');
 
         return false;
     }

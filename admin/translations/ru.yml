@@ -1,240 +1,240 @@
+admin.backup.backup: Резерв
+admin.backup.error.cannot-download: Невозможно загрузить резервную копию. %s.
+admin.backup.error.cannot-download.invalid-filename: Недопустимый файл резервной копии
+admin.backup.error.cannot-make: Невозможно сделать резервную копию. %s.
+admin.backup.ready: Резервное копирование готовы. Начинается загрузка ...
+admin.cache.clear: Очистить кэш
+admin.cache.cleared: Кэш очищается
+admin.dashboard.dashboard: Приборная панель
+admin.dashboard.last-modified-pages: В последний раз редактировали Страницы
+admin.dashboard.quick-actions: Быстрые действия
+admin.dashboard.statistics: Статистика
+admin.dashboard.statistics.unique-visitors: Уникальные посетители
+admin.dashboard.statistics.visits: Просмотров
+admin.dashboard.welcome: Добро пожаловать
+admin.errors.action.report-to-github: Сообщить о проблеме на GitHub
+admin.errors.action.return-to-dashboard: Вернуться к панели управления
+admin.errors.error.forbidden.description: У вас нет разрешения на доступ к этой странице.
+admin.errors.error.forbidden.heading: К сожалению, разрешение не требуется!
+admin.errors.error.forbidden.status: Запрещено
+admin.errors.error.internal-server-error.description: Formwork Администратор обнаружил ошибку при обслуживании вашего запроса. Пожалуйста, проверьте конфигурацию опалубки или журнал сервера на наличие ошибок.
+admin.errors.error.internal-server-error.heading: Упс! Что-то пошло не так!
+admin.errors.error.internal-server-error.status: Внутренняя Ошибка Сервера
+admin.errors.error.not-found.description: Страница не существует или запрос не является действительным.
+admin.errors.error.not-found.heading: К сожалению, страница не найдена!
+admin.errors.error.not-found.status: Не обнаружена
+admin.login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.
+admin.login.attempt.too-many: Слишком много попыток входа в систему. Пожалуйста, попробуйте еще раз% D минут.
+admin.login.logged-out: Вы вышли из системы
+admin.login.login: Авторизация
+admin.login.logout: Выйти
+admin.login.password: Пароль
+admin.login.suspicious-request-detected: Подозрительный запрос был обнаружен, и по соображениям безопасности вы вышли из системы. Пожалуйста, войдите снова.
+admin.login.username: Имя пользователя
 admin.manage: Меню
+admin.modal.action.cancel: Отмена
+admin.modal.action.continue: Продолжить
+admin.modal.action.delete: Удалить
+admin.modal.action.save: Сохранить
+admin.modal.action.upload-file: Загрузить файл
+admin.modal.images.no-images: Там нет изображений здесь
+admin.modal.images.no-images.upload: Пожалуйста, загрузите некоторые изображения
+admin.modal.images.title: Выберите изображение
+admin.options.info: Информация
+admin.options.options: Параметры
+admin.options.site: Сайт
+admin.options.site.advanced: Расширенные настройки
+admin.options.site.advanced.aliases: Псевдонимы
+admin.options.site.advanced.aliases.alias: Псевдоним
+admin.options.site.advanced.aliases.route: Маршрут
+admin.options.site.advanced.metadata: Метаданные HTML
+admin.options.site.advanced.metadata.content: Содержание
+admin.options.site.advanced.metadata.name: Имя
+admin.options.site.info: Информация
+admin.options.site.info.author: Автор
+admin.options.site.info.description: Описание
+admin.options.site.info.language: Язык
+admin.options.site.info.title: Заглавие
+admin.options.system: Система
+admin.options.system.admin-panel: Панель администратора
+admin.options.system.admin-panel.default-language: Язык по умолчанию
+admin.options.system.admin-panel.logout-redirects-to: Выход Перенаправление
+admin.options.system.admin-panel.logout-redirects-to.home: Главная
+admin.options.system.admin-panel.logout-redirects-to.login: Логин
+admin.options.system.admin-panel.session-timeout: Тайм-аут сеанса (мин)
+admin.options.system.backup: Резервный
+admin.options.system.backup.backup-files-to-keep: Резервные копии, чтобы сохранить на сервере
+admin.options.system.cache: Кэш
+admin.options.system.cache.disabled: Выключить
+admin.options.system.cache.enabled: Включить
+admin.options.system.cache.time: Кэш Время (сек)
+admin.options.system.date-and-time: Дата и время
+admin.options.system.date-and-time.date-format: Формат даты
+admin.options.system.date-and-time.first-weekday: Первый день недели
+admin.options.system.date-and-time.first-weekday.monday: Понедельник
+admin.options.system.date-and-time.first-weekday.sunday: Воскресенье
+admin.options.system.date-and-time.hour-format: Часовой формат
+admin.options.system.date-and-time.timezone: Часовой пояс
+admin.options.system.files: Файлы
+admin.options.system.files.allowed-extensions: Допустимые расширения
+admin.options.system.images: Картинки
+admin.options.system.images.jpeg-quality: JPEG Качество
+admin.options.system.images.png-compression-level: PNG Уровень сжатия
+admin.options.system.languages: Языки
+admin.options.system.languages.available-languages: Доступные Языки
+admin.options.system.languages.available-languages.no-languages: Нет Языков
+admin.options.system.languages.preferred-language: Использовать предпочитаемый язык браузера
+admin.options.system.languages.preferred-language.disabled: Выключить
+admin.options.system.languages.preferred-language.enabled: Включить
+admin.options.updated: Опции обновляются
+admin.options.updates: Обновления
+admin.pages.attributes: Атрибуты
+admin.pages.change-slug: Редактировать Slug
+admin.pages.change-slug.generate: Сформировать из названия
+admin.pages.changes.continue: Продолжить без сохранения
+admin.pages.changes.detected: Изменения Обнаружены
+admin.pages.changes.detected.prompt: У вас есть какие-то изменения, которые не были сохранены. Вы уверены, что хотите покинуть эту страницу?
+admin.pages.content: Содержание
+admin.pages.delete-file: Удалить файл
+admin.pages.delete-file.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
+admin.pages.delete-page: Удалить страницу
+admin.pages.delete-page.prompt: Вы уверены, что хотите удалить эту страницу? Это действие не может быть отменено.
+admin.pages.edit-page: Отредактировать страницу %s
+admin.pages.editor.bold: Жирный
+admin.pages.editor.bullet-list: Маркированный список
+admin.pages.editor.image: Изображение
+admin.pages.editor.italic: Курсивный
+admin.pages.editor.link: Ссылка
+admin.pages.editor.numbered-list: Нумерованный список
+admin.pages.editor.quote: Кавычки
+admin.pages.editor.redo: Выбор
+admin.pages.editor.summary: Краткий
+admin.pages.editor.undo: Открыть
+admin.pages.files: Файлы
+admin.pages.languages: Языки
+admin.pages.languages.add-language: Добавлять %s
+admin.pages.languages.edit-language: Редактировать %s
+admin.pages.new-page: Новая страница
+admin.pages.new-page.parent: Родитель страницы
+admin.pages.new-page.site: Сайт
+admin.pages.new-page.slug-suggestion: буквы, цифры и дефис только
+admin.pages.new-page.slug: Страница Slug
+admin.pages.new-page.template: Шаблон
+admin.pages.new-page.title: Заглавие
+admin.pages.options: Параметры
+admin.pages.page.actions: Действия
+admin.pages.page.cacheable: Кешируемый
+admin.pages.page.cannot-change-num: Невозможно изменить номер страницы
+admin.pages.page.cannot-create: Не удается создать страницу
+admin.pages.page.cannot-create.already-exists: Невозможно создать страницу, страницу с тем же URI уже существует
+admin.pages.page.cannot-create.invalid-parent: Не удается создать страницу, недействительны родительской страницы
+admin.pages.page.cannot-create.invalid-slug: Невозможно создать страницу, страницу пробкового должны содержать только буквы и цифры, разделенные тире
+admin.pages.page.cannot-create.invalid-template: Не удается создать страницу, недопустимый шаблон
+admin.pages.page.cannot-create.var-missing: Не удается создать страницу, отсутствует переменная
+admin.pages.page.cannot-delete-file.file-not-found: Не удается удалить файл, файл не найден
+admin.pages.page.cannot-delete-file.page-not-found: Не удается удалить файл, файл не найден
+admin.pages.page.cannot-delete.invalid-language: 'Невозможно удалить страницу, недопустимый язык: %s'
+admin.pages.page.cannot-delete.not-deletable: Невозможно удалить страницу, страница не файл удаляемая
+admin.pages.page.cannot-delete.page-not-found: Невозможно удалить страницу, страница не найдена
+admin.pages.page.cannot-edit.already-exists: Не могу редактировать страницу, страница с той же URI уже существует
+admin.pages.page.cannot-edit.index-or-error-page-slug: Не могу редактировать страницу слизняка индекса и ошибок страниц
+admin.pages.page.cannot-edit.invalid-language: 'Не могу редактировать страницы, недопустимый язык: %s'
+admin.pages.page.cannot-edit.invalid-parent: Не могу редактировать страницы, недопустимую родительскую страницу
+admin.pages.page.cannot-edit.invalid-slug: Не можете редактировать страницу слизняка, он должен содержать только буквы и цифры, разделенные тире
+admin.pages.page.cannot-edit.invalid-template: Не могу редактировать страницы, неверный шаблон
+admin.pages.page.cannot-edit.page-not-found: Не могу редактировать страницу, страница не найдена
+admin.pages.page.cannot-edit.var-missing: Не могу редактировать страницу, отсутствует переменный
+admin.pages.page.cannot-move: Невозможно переместить страницу
+admin.pages.page.cannot-upload-file.page-not-found: Невозможно загрузить файл, страница не найдена
+admin.pages.page.created: Страница сгенерирована!
+admin.pages.page.deleted: Страница удалена
+admin.pages.page.edited: Страница отредактирован
+admin.pages.page.file-deleted: Файл удален
+admin.pages.page.image: Изображение
+admin.pages.page.last-modified: Последнее изменение
+admin.pages.page.moved: Страница переехала!
+admin.pages.page.no-date: Без даты
+admin.pages.page.no-image: Нет изображения
+admin.pages.page.no-tags: Нет тегов
+admin.pages.page.not-found: Страница не найдена
+admin.pages.page.posts-per-page: Сообщения на странице
+admin.pages.page.publish-date: Дата публикации
+admin.pages.page.status: Статус
+admin.pages.page.tags: Теги
+admin.pages.page.title: Заглавие
+admin.pages.page.unpublish-date: Дата Отменить публикацию
+admin.pages.page.visible: Видимые в меню
+admin.pages.pages: Страницы
+admin.pages.pages.collapse-all: Свернуть все
+admin.pages.pages.expand-all: Расширить все
+admin.pages.pages.reorder: Изменение порядка
+admin.pages.pages.search: Поиск Страницы ...
+admin.pages.parent: Родитель страницы
+admin.pages.preview-file: Предварительный просмотр
+admin.pages.preview: Предварительный просмотр
+admin.pages.save: Сохранить
+admin.pages.status.not-published: Не Опубликовано
+admin.pages.status.not-routable: Не маршрутизируемый
+admin.pages.status.published: Опубликованный
+admin.pages.status.routable: Маршрутизируемый
+admin.pages.template: Шаблон
 admin.panel: Панель администрирования
+admin.register.create-user: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
+admin.register.register: Регистрация нового пользователя
+admin.request.error.post-max-size: Запрос HTTP POST превышает максимально допустимый размер
+admin.updates.available-for-install: доступен для установки
+admin.updates.check: Проверка обновлений
+admin.updates.install-prompt: Вы хотите установить обновление?
+admin.updates.install: Устанавливать
+admin.updates.installed: Обновление установлено!
+admin.updates.latest-version-available: это последняя версия доступна
+admin.updates.status.cannot-install: Не удается установить обновление
+admin.updates.status.cannot-make-backup: Невозможно сделать резервную копию перед обновлением
+admin.updates.status.checking: Проверка обновлений...
+admin.updates.status.found: Обновления найдены
+admin.updates.status.installing: Установка обновлений ...
+admin.updates.status.up-to-date: До настоящего времени!
+admin.uploader.error: Невозможно загрузить файл. %s.
+admin.uploader.error.cannot-write: Не удалось записать файл на диск
+admin.uploader.error.file-name: Неверное имя файла
+admin.uploader.error.hidden-files: Невозможно загрузить скрытые файлы, начинающиеся с точки
+admin.uploader.error.mime-type: Тип файла не допускается
+admin.uploader.error.no-file: Файл не был загружен
+admin.uploader.error.no-temp: Отсутствующие временную папку
+admin.uploader.error.partial: Загруженный файл был загружен только частично
+admin.uploader.error.php-extension: Загрузка файла останавливали расширения
+admin.uploader.error.size: Загруженный файл превышает максимальный размер файла
+admin.uploader.uploaded: Файл загружен
+admin.user.actions: Действия
+admin.user.avatar: Аватар
+admin.user.avatar.uploaded: Аватар закачанный
+admin.user.email: Email
+admin.user.fullname: Полное имя
+admin.user.language: Язык
+admin.user.last-access: Последний доступ
+admin.user.password: Пароль
+admin.user.password.type-new-password: Введите новый пароль для изменения ...
+admin.user.role: Роль
+admin.user.role.admin: Администратор
+admin.user.role.user: Пользователь
+admin.user.username: Имя пользователя
+admin.users.delete-user: Удалить пользователя
+admin.users.delete-user.prompt: Вы уверены, что хотите удалить этого пользователя? Это действие не может быть отменено.
+admin.users.new-user: Новый пользователь
+admin.users.new-user.password-suggestion: не менее 8 символов
+admin.users.new-user.username-suggestion: между 3-20 букв, цифр и тире
+admin.users.options: Параметры
+admin.users.user-profile: '%s Профиль пользователя'
+admin.users.user: Пользователь
+admin.users.user.cannot-change-password: Невозможно изменить пароль другого пользователя. Действие не допускается.
+admin.users.user.cannot-change-role: Невозможно изменить роль %s. Действие не допускается.
+admin.users.user.cannot-create.already-exists: Невозможно создать пользователь, пользователь с таким именем уже существует
+admin.users.user.cannot-create.var-missing: Невозможно создать пользователя, пропуская переменную
+admin.users.user.cannot-delete: Невозможно удалить пользователь. Вы должны быть администратором, и пользователь не должен быть авторизован.
+admin.users.user.cannot-edit: Невозможно изменить пользователя %s. Действие не допускается.
+admin.users.user.created: Пользователь создан
+admin.users.user.deleted: Пользователь удален
+admin.users.user.edited: Пользовательские данные обновляются
+admin.users.user.not-found: Пользователь не найден
+admin.users.users: Пользователей
 admin.view-site: Просмотр сайта
-backup.backup: Резерв
-backup.error.cannot-download: Невозможно загрузить резервную копию. %s.
-backup.error.cannot-download.invalid-filename: Недопустимый файл резервной копии
-backup.error.cannot-make: Невозможно сделать резервную копию. %s.
-backup.ready: Резервное копирование готовы. Начинается загрузка ...
-cache.clear: Очистить кэш
-cache.cleared: Кэш очищается
-dashboard.dashboard: Приборная панель
-dashboard.last-modified-pages: В последний раз редактировали Страницы
-dashboard.quick-actions: Быстрые действия
-dashboard.statistics: Статистика
-dashboard.statistics.unique-visitors: Уникальные посетители
-dashboard.statistics.visits: Просмотров
-dashboard.welcome: Добро пожаловать
-errors.action.report-to-github: Сообщить о проблеме на GitHub
-errors.action.return-to-dashboard: Вернуться к панели управления
-errors.error.forbidden.description: У вас нет разрешения на доступ к этой странице.
-errors.error.forbidden.heading: К сожалению, разрешение не требуется!
-errors.error.forbidden.status: Запрещено
-errors.error.internal-server-error.description: Formwork Администратор обнаружил ошибку при обслуживании вашего запроса. Пожалуйста, проверьте конфигурацию опалубки или журнал сервера на наличие ошибок.
-errors.error.internal-server-error.heading: Упс! Что-то пошло не так!
-errors.error.internal-server-error.status: Внутренняя Ошибка Сервера
-errors.error.not-found.description: Страница не существует или запрос не является действительным.
-errors.error.not-found.heading: К сожалению, страница не найдена!
-errors.error.not-found.status: Не обнаружена
-login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.
-login.attempt.too-many: Слишком много попыток входа в систему. Пожалуйста, попробуйте еще раз% D минут.
-login.logged-out: Вы вышли из системы
-login.login: Авторизация
-login.logout: Выйти
-login.password: Пароль
-login.suspicious-request-detected: Подозрительный запрос был обнаружен, и по соображениям безопасности вы вышли из системы. Пожалуйста, войдите снова.
-login.username: Имя пользователя
-modal.action.cancel: Отмена
-modal.action.continue: Продолжить
-modal.action.delete: Удалить
-modal.action.save: Сохранить
-modal.action.upload-file: Загрузить файл
-modal.images.no-images: Там нет изображений здесь
-modal.images.no-images.upload: Пожалуйста, загрузите некоторые изображения
-modal.images.title: Выберите изображение
-options.info: Информация
-options.options: Параметры
-options.site: Сайт
-options.site.advanced: Расширенные настройки
-options.site.advanced.aliases: Псевдонимы
-options.site.advanced.aliases.alias: Псевдоним
-options.site.advanced.aliases.route: Маршрут
-options.site.advanced.metadata: Метаданные HTML
-options.site.advanced.metadata.content: Содержание
-options.site.advanced.metadata.name: Имя
-options.site.info: Информация
-options.site.info.author: Автор
-options.site.info.description: Описание
-options.site.info.language: Язык
-options.site.info.title: Заглавие
-options.system: Система
-options.system.admin-panel: Панель администратора
-options.system.admin-panel.default-language: Язык по умолчанию
-options.system.admin-panel.logout-redirects-to: Выход Перенаправление
-options.system.admin-panel.logout-redirects-to.home: Главная
-options.system.admin-panel.logout-redirects-to.login: Логин
-options.system.admin-panel.session-timeout: Тайм-аут сеанса (мин)
-options.system.backup: Резервный
-options.system.backup.backup-files-to-keep: Резервные копии, чтобы сохранить на сервере
-options.system.cache: Кэш
-options.system.cache.disabled: Выключить
-options.system.cache.enabled: Включить
-options.system.cache.time: Кэш Время (сек)
-options.system.date-and-time: Дата и время
-options.system.date-and-time.date-format: Формат даты
-options.system.date-and-time.first-weekday: Первый день недели
-options.system.date-and-time.first-weekday.monday: Понедельник
-options.system.date-and-time.first-weekday.sunday: Воскресенье
-options.system.date-and-time.hour-format: Часовой формат
-options.system.date-and-time.timezone: Часовой пояс
-options.system.files: Файлы
-options.system.files.allowed-extensions: Допустимые расширения
-options.system.images: Картинки
-options.system.images.jpeg-quality: JPEG Качество
-options.system.images.png-compression-level: PNG Уровень сжатия
-options.system.languages: Языки
-options.system.languages.available-languages: Доступные Языки
-options.system.languages.available-languages.no-languages: Нет Языков
-options.system.languages.preferred-language: Использовать предпочитаемый язык браузера
-options.system.languages.preferred-language.disabled: Выключить
-options.system.languages.preferred-language.enabled: Включить
-options.updated: Опции обновляются
-options.updates: Обновления
-pages.attributes: Атрибуты
-pages.change-slug: Редактировать Slug
-pages.change-slug.generate: Сформировать из названия
-pages.changes.continue: Продолжить без сохранения
-pages.changes.detected: Изменения Обнаружены
-pages.changes.detected.prompt: У вас есть какие-то изменения, которые не были сохранены. Вы уверены, что хотите покинуть эту страницу?
-pages.content: Содержание
-pages.delete-file: Удалить файл
-pages.delete-file.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
-pages.delete-page: Удалить страницу
-pages.delete-page.prompt: Вы уверены, что хотите удалить эту страницу? Это действие не может быть отменено.
-pages.edit-page: Отредактировать страницу %s
-pages.editor.bold: Жирный
-pages.editor.bullet-list: Маркированный список
-pages.editor.image: Изображение
-pages.editor.italic: Курсивный
-pages.editor.link: Ссылка
-pages.editor.numbered-list: Нумерованный список
-pages.editor.quote: Кавычки
-pages.editor.redo: Выбор
-pages.editor.summary: Краткий
-pages.editor.undo: Открыть
-pages.files: Файлы
-pages.languages: Языки
-pages.languages.add-language: Добавлять %s
-pages.languages.edit-language: Редактировать %s
-pages.new-page: Новая страница
-pages.new-page.parent: Родитель страницы
-pages.new-page.site: Сайт
-pages.new-page.slug-suggestion: буквы, цифры и дефис только
-pages.new-page.slug: Страница Slug
-pages.new-page.template: Шаблон
-pages.new-page.title: Заглавие
-pages.options: Параметры
-pages.page.actions: Действия
-pages.page.cacheable: Кешируемый
-pages.page.cannot-change-num: Невозможно изменить номер страницы
-pages.page.cannot-create: Не удается создать страницу
-pages.page.cannot-create.already-exists: Невозможно создать страницу, страницу с тем же URI уже существует
-pages.page.cannot-create.invalid-parent: Не удается создать страницу, недействительны родительской страницы
-pages.page.cannot-create.invalid-slug: Невозможно создать страницу, страницу пробкового должны содержать только буквы и цифры, разделенные тире
-pages.page.cannot-create.invalid-template: Не удается создать страницу, недопустимый шаблон
-pages.page.cannot-create.var-missing: Не удается создать страницу, отсутствует переменная
-pages.page.cannot-delete-file.file-not-found: Не удается удалить файл, файл не найден
-pages.page.cannot-delete-file.page-not-found: Не удается удалить файл, файл не найден
-pages.page.cannot-delete.invalid-language: 'Невозможно удалить страницу, недопустимый язык: %s'
-pages.page.cannot-delete.not-deletable: Невозможно удалить страницу, страница не файл удаляемая
-pages.page.cannot-delete.page-not-found: Невозможно удалить страницу, страница не найдена
-pages.page.cannot-edit.already-exists: Не могу редактировать страницу, страница с той же URI уже существует
-pages.page.cannot-edit.index-or-error-page-slug: Не могу редактировать страницу слизняка индекса и ошибок страниц
-pages.page.cannot-edit.invalid-language: 'Не могу редактировать страницы, недопустимый язык: %s'
-pages.page.cannot-edit.invalid-parent: Не могу редактировать страницы, недопустимую родительскую страницу
-pages.page.cannot-edit.invalid-slug: Не можете редактировать страницу слизняка, он должен содержать только буквы и цифры, разделенные тире
-pages.page.cannot-edit.invalid-template: Не могу редактировать страницы, неверный шаблон
-pages.page.cannot-edit.page-not-found: Не могу редактировать страницу, страница не найдена
-pages.page.cannot-edit.var-missing: Не могу редактировать страницу, отсутствует переменный
-pages.page.cannot-move: Невозможно переместить страницу
-pages.page.cannot-upload-file.page-not-found: Невозможно загрузить файл, страница не найдена
-pages.page.created: Страница сгенерирована!
-pages.page.deleted: Страница удалена
-pages.page.edited: Страница отредактирован
-pages.page.file-deleted: Файл удален
-pages.page.image: Изображение
-pages.page.last-modified: Последнее изменение
-pages.page.moved: Страница переехала!
-pages.page.no-date: Без даты
-pages.page.no-image: Нет изображения
-pages.page.no-tags: Нет тегов
-pages.page.not-found: Страница не найдена
-pages.page.posts-per-page: Сообщения на странице
-pages.page.publish-date: Дата публикации
-pages.page.status: Статус
-pages.page.tags: Теги
-pages.page.title: Заглавие
-pages.page.unpublish-date: Дата Отменить публикацию
-pages.page.visible: Видимые в меню
-pages.pages: Страницы
-pages.pages.collapse-all: Свернуть все
-pages.pages.expand-all: Расширить все
-pages.pages.reorder: Изменение порядка
-pages.pages.search: Поиск Страницы ...
-pages.parent: Родитель страницы
-pages.preview-file: Предварительный просмотр
-pages.preview: Предварительный просмотр
-pages.save: Сохранить
-pages.status.not-published: Не Опубликовано
-pages.status.not-routable: Не маршрутизируемый
-pages.status.published: Опубликованный
-pages.status.routable: Маршрутизируемый
-pages.template: Шаблон
-register.create-user: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
-register.register: Регистрация нового пользователя
-request.error.post-max-size: Запрос HTTP POST превышает максимально допустимый размер
-updates.available-for-install: доступен для установки
-updates.check: Проверка обновлений
-updates.install-prompt: Вы хотите установить обновление?
-updates.install: Устанавливать
-updates.installed: Обновление установлено!
-updates.latest-version-available: это последняя версия доступна
-updates.status.cannot-install: Не удается установить обновление
-updates.status.cannot-make-backup: Невозможно сделать резервную копию перед обновлением
-updates.status.checking: Проверка обновлений...
-updates.status.found: Обновления найдены
-updates.status.installing: Установка обновлений ...
-updates.status.up-to-date: До настоящего времени!
-uploader.error: Невозможно загрузить файл. %s.
-uploader.error.cannot-write: Не удалось записать файл на диск
-uploader.error.file-name: Неверное имя файла
-uploader.error.hidden-files: Невозможно загрузить скрытые файлы, начинающиеся с точки
-uploader.error.mime-type: Тип файла не допускается
-uploader.error.no-file: Файл не был загружен
-uploader.error.no-temp: Отсутствующие временную папку
-uploader.error.partial: Загруженный файл был загружен только частично
-uploader.error.php-extension: Загрузка файла останавливали расширения
-uploader.error.size: Загруженный файл превышает максимальный размер файла
-uploader.uploaded: Файл загружен
-user.actions: Действия
-user.avatar: Аватар
-user.avatar.uploaded: Аватар закачанный
-user.email: Email
-user.fullname: Полное имя
-user.language: Язык
-user.last-access: Последний доступ
-user.password: Пароль
-user.password.type-new-password: Введите новый пароль для изменения ...
-user.role: Роль
-user.role.admin: Администратор
-user.role.user: Пользователь
-user.username: Имя пользователя
-users.delete-user: Удалить пользователя
-users.delete-user.prompt: Вы уверены, что хотите удалить этого пользователя? Это действие не может быть отменено.
-users.new-user: Новый пользователь
-users.new-user.password-suggestion: не менее 8 символов
-users.new-user.username-suggestion: между 3-20 букв, цифр и тире
-users.options: Параметры
-users.user-profile: '%s Профиль пользователя'
-users.user: Пользователь
-users.user.cannot-change-password: Невозможно изменить пароль другого пользователя. Действие не допускается.
-users.user.cannot-change-role: Невозможно изменить роль %s. Действие не допускается.
-users.user.cannot-create.already-exists: Невозможно создать пользователь, пользователь с таким именем уже существует
-users.user.cannot-create.var-missing: Невозможно создать пользователя, пропуская переменную
-users.user.cannot-delete: Невозможно удалить пользователь. Вы должны быть администратором, и пользователь не должен быть авторизован.
-users.user.cannot-edit: Невозможно изменить пользователя %s. Действие не допускается.
-users.user.created: Пользователь создан
-users.user.deleted: Пользователь удален
-users.user.edited: Пользовательские данные обновляются
-users.user.not-found: Пользователь не найден
-users.users: Пользователей

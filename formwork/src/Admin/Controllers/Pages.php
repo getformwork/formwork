@@ -53,7 +53,7 @@ class Pages extends AbstractController
         $this->modal('deletePage');
 
         $this->view('pages.index', [
-            'title'     => $this->admin()->translate('pages.pages'),
+            'title'     => $this->admin()->translate('admin.pages.pages'),
             'pagesList' => $this->view('pages.list', [
                 'pages'    => $this->site()->pages(),
                 'subpages' => true,
@@ -78,7 +78,7 @@ class Pages extends AbstractController
         try {
             $page = $this->createPage($data);
             Session::set('FORMWORK_PAGE_TO_PUBLISH', $page->route());
-            $this->admin()->notify($this->admin()->translate('pages.page.created'), 'success');
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->admin()->notify($e->getTranslatedMessage(), 'error');
             $this->admin()->redirectToReferer(302, '/pages/');
@@ -106,7 +106,7 @@ class Pages extends AbstractController
             $language = $params->get('language');
 
             if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-                $this->admin()->notify($this->admin()->translate('pages.page.cannot-edit.invalid-language', $language), 'error');
+                $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-edit.invalid-language', $language), 'error');
                 $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
@@ -149,7 +149,7 @@ class Pages extends AbstractController
                 // Update the page
                 try {
                     $page = $this->updatePage($page, $data, $fields);
-                    $this->admin()->notify($this->admin()->translate('pages.page.edited'), 'success');
+                    $this->admin()->notify($this->admin()->translate('admin.pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
                     $this->admin()->notify($e->getTranslatedMessage(), 'error');
                 }
@@ -158,7 +158,7 @@ class Pages extends AbstractController
                     try {
                         $this->processPageUploads($page);
                     } catch (TranslatedException $e) {
-                        $this->admin()->notify($this->admin()->translate('uploader.error', $e->getTranslatedMessage()), 'error');
+                        $this->admin()->notify($this->admin()->translate('admin.uploader.error', $e->getTranslatedMessage()), 'error');
                     }
                 }
 
@@ -183,7 +183,7 @@ class Pages extends AbstractController
         $this->modal('deleteFile');
 
         $this->view('pages.editor', [
-            'title'              => $this->admin()->translate('pages.edit-page', $page->title()),
+            'title'              => $this->admin()->translate('admin.pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields->render(true),
             'templates'          => $this->site()->templates(),
@@ -203,16 +203,16 @@ class Pages extends AbstractController
         $data = new DataGetter(HTTPRequest::postData());
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            JSONResponse::error($this->admin()->translate('pages.page.cannot-move'))->send();
+            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
         }
 
         $pages = $parent->children()->toArray();
@@ -236,7 +236,7 @@ class Pages extends AbstractController
             }
         }
 
-        JSONResponse::success($this->admin()->translate('pages.page.moved'))->send();
+        JSONResponse::success($this->admin()->translate('admin.pages.page.moved'))->send();
     }
 
     /**
@@ -255,13 +255,13 @@ class Pages extends AbstractController
             if ($page->hasLanguage($language)) {
                 $page->setLanguage($language);
             } else {
-                $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete.invalid-language', $language), 'error');
+                $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete.invalid-language', $language), 'error');
                 $this->admin()->redirectToReferer(302, '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
-            $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete.not-deletable'), 'error');
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete.not-deletable'), 'error');
             $this->admin()->redirectToReferer(302, '/pages/');
         }
 
@@ -272,7 +272,7 @@ class Pages extends AbstractController
             FileSystem::delete($page->path(), true);
         }
 
-        $this->admin()->notify($this->admin()->translate('pages.page.deleted'), 'success');
+        $this->admin()->notify($this->admin()->translate('admin.pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
         if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->admin()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
@@ -297,12 +297,12 @@ class Pages extends AbstractController
             try {
                 $this->processPageUploads($page);
             } catch (TranslatedException $e) {
-                $this->admin()->notify($this->admin()->translate('uploader.error', $e->getTranslatedMessage()), 'error');
+                $this->admin()->notify($this->admin()->translate('admin.uploader.error', $e->getTranslatedMessage()), 'error');
                 $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
 
-        $this->admin()->notify($this->admin()->translate('uploader.uploaded'), 'success');
+        $this->admin()->notify($this->admin()->translate('admin.uploader.uploaded'), 'success');
         $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
@@ -318,13 +318,13 @@ class Pages extends AbstractController
         $this->ensurePageExists($page, 'pages.page.cannot-delete-file.page-not-found');
 
         if (!$page->files()->has($params->get('filename'))) {
-            $this->admin()->notify($this->admin()->translate('pages.page.cannot-delete-file.file-not-found'), 'error');
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete-file.file-not-found'), 'error');
             $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
         }
 
         FileSystem::delete($page->path() . $params->get('filename'));
 
-        $this->admin()->notify($this->admin()->translate('pages.page.file-deleted'), 'success');
+        $this->admin()->notify($this->admin()->translate('admin.pages.page.file-deleted'), 'success');
         $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
@@ -335,30 +335,30 @@ class Pages extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->hasMultiple(['title', 'slug', 'template', 'parent'])) {
-            throw new TranslatedException('Missing required POST data', 'pages.page.cannot-create.var-missing');
+            throw new TranslatedException('Missing required POST data', 'admin.pages.page.cannot-create.var-missing');
         }
 
         $parent = $this->resolveParent($data->get('parent'));
 
         if ($parent === null) {
-            throw new TranslatedException('Parent page not found', 'pages.page.cannot-create.invalid-parent');
+            throw new TranslatedException('Parent page not found', 'admin.pages.page.cannot-create.invalid-parent');
         }
 
         // Validate page slug
         if (!$this->validateSlug($data->get('slug'))) {
-            throw new TranslatedException('Invalid page slug', 'pages.page.cannot-create.invalid-slug');
+            throw new TranslatedException('Invalid page slug', 'admin.pages.page.cannot-create.invalid-slug');
         }
 
         $route = $parent->route() . $data->get('slug') . '/';
 
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route)) {
-            throw new TranslatedException('A page with the same route already exists', 'pages.page.cannot-create.already-exists');
+            throw new TranslatedException('A page with the same route already exists', 'admin.pages.page.cannot-create.already-exists');
         }
 
         // Validate page template
         if (!$this->site()->hasTemplate($data->get('template'))) {
-            throw new TranslatedException('Invalid page template', 'pages.page.cannot-create.invalid-template');
+            throw new TranslatedException('Invalid page template', 'admin.pages.page.cannot-create.invalid-template');
         }
 
         $scheme = $this->admin()->scheme($data->get('template'));
@@ -394,7 +394,7 @@ class Pages extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->hasMultiple(['title', 'content'])) {
-            throw new TranslatedException('Missing required POST data', 'pages.page.cannot-edit.var-missing');
+            throw new TranslatedException('Missing required POST data', 'admin.pages.page.cannot-edit.var-missing');
         }
 
         // Load current page frontmatter
@@ -428,7 +428,7 @@ class Pages extends AbstractController
 
         // Validate language
         if (!empty($language) && !in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-            throw new TranslatedException('Invalid page language', 'pages.page.cannot-edit.invalid-language');
+            throw new TranslatedException('Invalid page language', 'admin.pages.page.cannot-edit.invalid-language');
         }
 
         $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
@@ -457,7 +457,7 @@ class Pages extends AbstractController
                 try {
                     $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
-                    throw new TranslatedException('Cannot change page num', 'pages.page.cannot-change-num');
+                    throw new TranslatedException('Cannot change page num', 'admin.pages.page.cannot-change-num');
                 }
             }
         }
@@ -465,7 +465,7 @@ class Pages extends AbstractController
         // Check if parent page has to change
         if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
             if ($parent === null) {
-                throw new TranslatedException('Invalid parent page', 'pages.page.cannot-edit.invalid-parent');
+                throw new TranslatedException('Invalid parent page', 'admin.pages.page.cannot-edit.invalid-parent');
             }
             $page = $this->changePageParent($page, $parent);
         }
@@ -473,7 +473,7 @@ class Pages extends AbstractController
         // Check if page template has to change
         if ($page->template()->name() !== ($template = $data->get('template'))) {
             if (!$this->site()->hasTemplate($template)) {
-                throw new TranslatedException('Invalid page template', 'pages.page.cannot-edit.invalid-template');
+                throw new TranslatedException('Invalid page template', 'admin.pages.page.cannot-edit.invalid-template');
             }
             $page = $this->changePageTemplate($page, $template);
         }
@@ -481,14 +481,14 @@ class Pages extends AbstractController
         // Check if page slug has to change
         if ($page->slug() !== ($slug = $data->get('slug'))) {
             if (!$this->validateSlug($slug)) {
-                throw new TranslatedException('Invalid page slug', 'pages.page.cannot-edit.invalid-slug');
+                throw new TranslatedException('Invalid page slug', 'admin.pages.page.cannot-edit.invalid-slug');
             }
             // Don't change index and error pages slug
             if ($page->isIndexPage() || $page->isErrorPage()) {
-                throw new TranslatedException('Cannot change slug of index or error pages', 'pages.page.cannot-edit.index-or-error-page-slug');
+                throw new TranslatedException('Cannot change slug of index or error pages', 'admin.pages.page.cannot-edit.index-or-error-page-slug');
             }
             if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
-                throw new TranslatedException('A page with the same route already exists', 'pages.page.cannot-edit.already-exists');
+                throw new TranslatedException('A page with the same route already exists', 'admin.pages.page.cannot-edit.already-exists');
             }
             $page = $this->changePageName($page, ltrim($page->num() . '-', '-') . $slug);
         }

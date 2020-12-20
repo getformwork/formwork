@@ -15,4 +15,4 @@ fields:
             15: 15
             20: 20
         default: 5
-        label: '{{pages.page.posts-per-page}}'
+        label: '{{admin.pages.page.posts-per-page}}'

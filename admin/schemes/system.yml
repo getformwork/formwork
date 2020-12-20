@@ -2,7 +2,7 @@ title: System
 fields:
     section1:
         type: header
-        label: '{{options.system.date-and-time}}'
+        label: '{{admin.options.system.date-and-time}}'
 
     rows1:
         type: rows
@@ -13,7 +13,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.date-and-time.date-format}}'
+                        label: '{{admin.options.system.date-and-time.date-format}}'
                     column2:
                         type: column
                         width: 2-3
@@ -28,7 +28,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.date-and-time.hour-format}}'
+                        label: '{{admin.options.system.date-and-time.hour-format}}'
                     column2:
                         type: column
                         width: 2-3
@@ -43,7 +43,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.date-and-time.timezone}}'
+                        label: '{{admin.options.system.date-and-time.timezone}}'
                     column2:
                         type: column
                         width: 2-3
@@ -58,7 +58,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.date-and-time.first-weekday}}'
+                        label: '{{admin.options.system.date-and-time.first-weekday}}'
                     column2:
                         type: column
                         width: 2-3
@@ -66,12 +66,12 @@ fields:
                             date.week_starts:
                                 type: select
                                 options:
-                                    0: '{{options.system.date-and-time.first-weekday.sunday}}'
-                                    1: '{{options.system.date-and-time.first-weekday.monday}}'
+                                    0: '{{admin.options.system.date-and-time.first-weekday.sunday}}'
+                                    1: '{{admin.options.system.date-and-time.first-weekday.monday}}'
 
     section2:
         type: header
-        label: '{{options.system.languages}}'
+        label: '{{admin.options.system.languages}}'
 
     rows2:
         type: rows
@@ -82,14 +82,14 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.languages.available-languages}}'
+                        label: '{{admin.options.system.languages.available-languages}}'
                     column2:
                         type: column
                         width: 2-3
                         fields:
                             languages.available:
                                 type: tags
-                                placeholder: '{{options.system.languages.available-languages.no-languages}}'
+                                placeholder: '{{admin.options.system.languages.available-languages.no-languages}}'
                                 pattern: '^[a-z]{2,3}$'
                                 translate: [placeholder]
                                 import:
@@ -100,7 +100,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.languages.preferred-language}}'
+                        label: '{{admin.options.system.languages.preferred-language}}'
                     column2:
                         type: column
                         width: 2-3
@@ -108,12 +108,12 @@ fields:
                             languages.http_preferred:
                                 type: togglegroup
                                 options:
-                                    1: '{{options.system.languages.preferred-language.enabled}}'
-                                    0: '{{options.system.languages.preferred-language.disabled}}'
+                                    1: '{{admin.options.system.languages.preferred-language.enabled}}'
+                                    0: '{{admin.options.system.languages.preferred-language.disabled}}'
 
     section3:
         type: header
-        label: '{{options.system.files}}'
+        label: '{{admin.options.system.files}}'
 
     rows3:
         type: rows
@@ -124,7 +124,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.files.allowed-extensions}}'
+                        label: '{{admin.options.system.files.allowed-extensions}}'
                     column2:
                         type: column
                         width: 2-3
@@ -136,7 +136,7 @@ fields:
 
     section4:
         type: header
-        label: '{{options.system.cache}}'
+        label: '{{admin.options.system.cache}}'
 
     rows4:
         type: rows
@@ -147,7 +147,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.cache}}'
+                        label: '{{admin.options.system.cache}}'
                     column2:
                         type: column
                         width: 2-3
@@ -155,15 +155,15 @@ fields:
                             cache.enabled:
                                 type: togglegroup
                                 options:
-                                    1: '{{options.system.cache.enabled}}'
-                                    0: '{{options.system.cache.disabled}}'
+                                    1: '{{admin.options.system.cache.enabled}}'
+                                    0: '{{admin.options.system.cache.disabled}}'
             row2:
                 type: row
                 fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.cache.time}}'
+                        label: '{{admin.options.system.cache.time}}'
                     column2:
                         type: column
                         width: 2-3
@@ -178,7 +178,7 @@ fields:
 
     section5:
         type: header
-        label: '{{options.system.admin-panel}}'
+        label: '{{admin.options.system.admin-panel}}'
 
     rows5:
         type: rows
@@ -189,7 +189,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.admin-panel.default-language}}'
+                        label: '{{admin.options.system.admin-panel.default-language}}'
                     column2:
                         type: column
                         width: 2-3
@@ -205,7 +205,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.admin-panel.logout-redirects-to}}'
+                        label: '{{admin.options.system.admin-panel.logout-redirects-to}}'
                     column2:
                         type: column
                         width: 2-3
@@ -213,15 +213,15 @@ fields:
                             admin.logout_redirect:
                                 type: togglegroup
                                 options:
-                                    login: '{{options.system.admin-panel.logout-redirects-to.login}}'
-                                    home: '{{options.system.admin-panel.logout-redirects-to.home}}'
+                                    login: '{{admin.options.system.admin-panel.logout-redirects-to.login}}'
+                                    home: '{{admin.options.system.admin-panel.logout-redirects-to.home}}'
             row3:
                 type: row
                 fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.admin-panel.session-timeout}}'
+                        label: '{{admin.options.system.admin-panel.session-timeout}}'
                     column2:
                         type: column
                         width: 2-3
@@ -239,7 +239,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.admin-panel.default-color-scheme}}'
+                        label: '{{admin.options.system.admin-panel.default-color-scheme}}'
                     column2:
                         type: column
                         width: 2-3
@@ -247,12 +247,12 @@ fields:
                             admin.color_scheme:
                                 type: togglegroup
                                 options:
-                                    light: '{{options.system.admin-panel.default-color-scheme.light}}'
-                                    dark: '{{options.system.admin-panel.default-color-scheme.dark}}'
+                                    light: '{{admin.options.system.admin-panel.default-color-scheme.light}}'
+                                    dark: '{{admin.options.system.admin-panel.default-color-scheme.dark}}'
 
     section6:
         type: header
-        label: '{{options.system.images}}'
+        label: '{{admin.options.system.images}}'
 
     rows6:
         type: rows
@@ -263,7 +263,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.images.jpeg-quality}}'
+                        label: '{{admin.options.system.images.jpeg-quality}}'
                     column2:
                         type: column
                         width: 2-3
@@ -279,7 +279,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.images.png-compression-level}}'
+                        label: '{{admin.options.system.images.png-compression-level}}'
                     column2:
                         type: column
                         width: 2-3
@@ -294,7 +294,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.images.webp-quality}}'
+                        label: '{{admin.options.system.images.webp-quality}}'
                     column2:
                         type: column
                         width: 2-3
@@ -310,7 +310,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.images.jpeg-save-progressive}}'
+                        label: '{{admin.options.system.images.jpeg-save-progressive}}'
                     column2:
                         type: column
                         width: 2-3
@@ -318,15 +318,15 @@ fields:
                             images.jpeg_progressive:
                                 type: togglegroup
                                 options:
-                                    1: '{{options.system.images.jpeg-save-progressive.enabled}}'
-                                    0: '{{options.system.images.jpeg-save-progressive.disabled}}'
+                                    1: '{{admin.options.system.images.jpeg-save-progressive.enabled}}'
+                                    0: '{{admin.options.system.images.jpeg-save-progressive.disabled}}'
             row5:
                 type: row
                 fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.images.process-uploads}}'
+                        label: '{{admin.options.system.images.process-uploads}}'
                     column2:
                         type: column
                         width: 2-3
@@ -334,12 +334,12 @@ fields:
                             images.process_uploads:
                                 type: togglegroup
                                 options:
-                                    1: '{{options.system.images.process-uploads.enabled}}'
-                                    0: '{{options.system.images.process-uploads.disabled}}'
+                                    1: '{{admin.options.system.images.process-uploads.enabled}}'
+                                    0: '{{admin.options.system.images.process-uploads.disabled}}'
 
     section7:
         type: header
-        label: '{{options.system.backup}}'
+        label: '{{admin.options.system.backup}}'
 
     rows7:
         type: rows
@@ -350,7 +350,7 @@ fields:
                     column1:
                         type: column
                         width: 1-3
-                        label: '{{options.system.backup.backup-files-to-keep}}'
+                        label: '{{admin.options.system.backup.backup-files-to-keep}}'
                     column2:
                         type: column
                         width: 2-3

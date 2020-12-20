@@ -25,7 +25,7 @@ class Authentication extends AbstractController
 
         if ($limiter->hasReachedLimit()) {
             $minutes = round(Formwork::instance()->config()->get('admin.login_reset_time') / 60);
-            $this->error($this->admin()->translate('login.attempt.too-many', $minutes));
+            $this->error($this->admin()->translate('admin.login.attempt.too-many', $minutes));
             return;
         }
 
@@ -39,7 +39,7 @@ class Authentication extends AbstractController
                 CSRFToken::generate();
 
                 $this->view('authentication.login', [
-                    'title' => $this->admin()->translate('login.login')
+                    'title' => $this->admin()->translate('admin.login.login')
                 ]);
 
                 break;
@@ -52,7 +52,7 @@ class Authentication extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {
-                    $this->error($this->admin()->translate('login.attempt.failed'));
+                    $this->error($this->admin()->translate('admin.login.attempt.failed'));
                 }
 
                 $limiter->registerAttempt();
@@ -79,7 +79,7 @@ class Authentication extends AbstractController
                     $this->admin()->redirectToPanel();
                 }
 
-                $this->error($this->admin()->translate('login.attempt.failed'), [
+                $this->error($this->admin()->translate('admin.login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true
                 ]);
@@ -100,7 +100,7 @@ class Authentication extends AbstractController
         if (Formwork::instance()->config()->get('admin.logout_redirect') === 'home') {
             $this->admin()->redirectToSite();
         } else {
-            $this->admin()->notify($this->admin()->translate('login.logged-out'), 'info');
+            $this->admin()->notify($this->admin()->translate('admin.login.logged-out'), 'info');
             $this->admin()->redirectToPanel();
         }
     }
@@ -116,7 +116,7 @@ class Authentication extends AbstractController
         // Ensure CSRF token is re-generated
         CSRFToken::generate();
 
-        $defaults = ['title' => $this->admin()->translate('login.login')];
+        $defaults = ['title' => $this->admin()->translate('admin.login.login')];
         $this->admin()->notify($message, 'error');
         $this->view('authentication.login', array_merge($defaults, $data));
     }

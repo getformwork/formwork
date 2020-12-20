@@ -16,7 +16,7 @@ class Errors extends AbstractController
     {
         $this->displayError(404, 'not-found', [
             'href'  => $this->admin()->uri('/dashboard/'),
-            'label' => $this->admin()->translate('errors.action.return-to-dashboard')
+            'label' => $this->admin()->translate('admin.errors.action.return-to-dashboard')
         ]);
     }
 
@@ -27,7 +27,7 @@ class Errors extends AbstractController
     {
         $this->displayError(500, 'internal-server-error', [
             'href'  => $this->makeGitHubIssueUri($exception),
-            'label' => $this->admin()->translate('errors.action.report-to-github')
+            'label' => $this->admin()->translate('admin.errors.action.report-to-github')
         ]);
     }
 
@@ -38,7 +38,7 @@ class Errors extends AbstractController
     {
         $this->displayError(403, 'forbidden', [
             'href'  => $this->admin()->uri('/dashboard/'),
-            'label' => $this->admin()->translate('errors.action.return-to-dashboard')
+            'label' => $this->admin()->translate('admin.errors.action.return-to-dashboard')
         ]);
     }
 
@@ -54,11 +54,11 @@ class Errors extends AbstractController
         HTTPResponse::cleanOutputBuffers();
         Header::status($status);
         $this->view('errors.error', [
-            'title'       => $this->admin()->translate('errors.error.' . $name . '.status'),
+            'title'       => $this->admin()->translate('admin.errors.error.' . $name . '.status'),
             'code'        => $status,
-            'status'      => $this->admin()->translate('errors.error.' . $name . '.status'),
-            'heading'     => $this->admin()->translate('errors.error.' . $name . '.heading'),
-            'description' => $this->admin()->translate('errors.error.' . $name . '.description'),
+            'status'      => $this->admin()->translate('admin.errors.error.' . $name . '.status'),
+            'heading'     => $this->admin()->translate('admin.errors.error.' . $name . '.heading'),
+            'description' => $this->admin()->translate('admin.errors.error.' . $name . '.description'),
             'action'      => $action
         ]);
         // Don't exit, otherwise the error will not be logged
