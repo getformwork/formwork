@@ -66,6 +66,14 @@ class DataGetter
         return $this->data;
     }
 
+    /**
+     * Create an instance from another getter
+     */
+    public static function fromGetter(DataGetter $getter): self
+    {
+        return new static($getter->data);
+    }
+
     public function __debugInfo(): array
     {
         return $this->toArray();
