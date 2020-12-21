@@ -7,6 +7,8 @@ use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Formwork;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Log;
+use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
 class Authentication extends AbstractController
@@ -16,8 +18,10 @@ class Authentication extends AbstractController
      */
     public function login(): void
     {
+        $attemptsRegistry = new Registry(Admin::LOGS_PATH . 'accessAttempts.json');
+
         $limiter = new AccessLimiter(
-            $this->admin()->registry('accessAttempts'),
+            $attemptsRegistry,
             Formwork::instance()->config()->get('admin.login_attempts'),
             Formwork::instance()->config()->get('admin.login_reset_time')
         );
@@ -65,8 +69,11 @@ class Authentication extends AbstractController
                     // Regenerate CSRF token
                     CSRFToken::generate();
 
-                    $time = $this->admin()->log('access')->log($data->get('username'));
-                    $this->admin()->registry('lastAccess')->set($data->get('username'), $time);
+                    $accessLog = new Log(Admin::LOGS_PATH . 'access.json');
+                    $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+
+                    $time = $accessLog->log($data->get('username'));
+                    $lastAccessRegistry->set($data->get('username'), $time);
 
                     $limiter->resetAttempts();
 

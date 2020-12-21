@@ -17,6 +17,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Registry;
 
 class Users extends AbstractController
 {
@@ -98,8 +99,10 @@ class Users extends AbstractController
             $this->admin()->redirectToReferer(302, '/users/');
         }
 
+        $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+
         // Remove user last access from registry
-        $this->admin()->registry('lastAccess')->remove($user->username());
+        $lastAccessRegistry->remove($user->username());
 
         $this->admin()->notify($this->admin()->translate('admin.users.user.deleted'), 'success');
         $this->admin()->redirect('/users/');

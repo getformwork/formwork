@@ -5,6 +5,7 @@ namespace Formwork\Admin\Users;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
 use Formwork\Data\DataGetter;
+use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
 class User extends DataGetter
@@ -222,8 +223,9 @@ class User extends DataGetter
         if ($this->lastAccess !== null) {
             return $this->lastAccess;
         }
-        $lastAccess = (int) Admin::instance()->registry('lastAccess')->get($this->username);
-        return $this->lastAccess = $lastAccess;
+        $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+        $lastAccess = (int) $lastAccessRegistry->get($this->username);
+        return $this->lastAccess = $lastAccess ?: null;
     }
 
     /**

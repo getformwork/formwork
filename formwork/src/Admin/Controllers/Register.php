@@ -7,6 +7,8 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Log;
+use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
 class Register extends AbstractController
@@ -46,8 +48,12 @@ class Register extends AbstractController
                 YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
 
                 Session::set('FORMWORK_USERNAME', $data->get('username'));
-                $time = $this->admin()->log('access')->log($data->get('username'));
-                $this->admin()->registry('lastAccess')->set($data->get('username'), $time);
+
+                $accessLog = new Log(Admin::LOGS_PATH . 'access.json');
+                $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+
+                $time = $accessLog->log($data->get('username'));
+                $lastAccessRegistry->set($data->get('username'), $time);
 
                 $this->admin()->redirectToPanel();
 

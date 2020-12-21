@@ -16,9 +16,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\JSONResponse;
-use Formwork\Utils\Log;
 use Formwork\Utils\Notification;
-use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -270,22 +268,6 @@ final class Admin
     public function scheme(string $template): Scheme
     {
         return new Scheme(Formwork::instance()->config()->get('templates.path') . 'schemes' . DS . $template . '.yml');
-    }
-
-    /**
-     * Get a Registry object by name from logs path
-     */
-    public function registry(string $name): Registry
-    {
-        return new Registry(Admin::LOGS_PATH . $name . '.json');
-    }
-
-    /**
-     * Get a Log object by name from logs path
-     */
-    public function log(string $name): Log
-    {
-        return new Log(Admin::LOGS_PATH . $name . '.json');
     }
 
     /**
