@@ -244,14 +244,18 @@ final class Formwork
      */
     protected function loadConfig(): void
     {
+        // Default config is needed to parse YAML
+        $this->config = new Config($this->defaults());
+
         $data = YAML::parseFile(CONFIG_PATH . 'system.yml');
 
-        if (isset($data['admin.root'])) {
-            // Trim slashes from admin.root
-            $data['admin.root'] = trim($data['admin.root'], '/');
+        if ($data !== []) {
+            if (isset($data['admin.root'])) {
+                // Trim slashes from admin.root
+                $data['admin.root'] = trim($data['admin.root'], '/');
+            }
+            $this->config = new Config($data + $this->defaults());
         }
-
-        $this->config = new Config($data + $this->defaults());
 
         date_default_timezone_set($this->config->get('date.timezone'));
     }
