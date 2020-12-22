@@ -34,7 +34,7 @@ class Users extends AbstractController
 
         $this->view('users.index', [
             'title'   => $this->admin()->translate('admin.users.users'),
-            'users'   => Admin::instance()->users()
+            'users'   => $this->admin()->users()
         ]);
     }
 
@@ -54,7 +54,7 @@ class Users extends AbstractController
         }
 
         // Ensure there isn't a user with the same username
-        if (Admin::instance()->users()->has($data->get('username'))) {
+        if ($this->admin()->users()->has($data->get('username'))) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-create.already-exists'), 'error');
             $this->admin()->redirect('/users/');
         }
@@ -80,7 +80,7 @@ class Users extends AbstractController
     {
         $this->ensurePermission('users.delete');
 
-        $user = Admin::instance()->users()->get($params->get('user'));
+        $user = $this->admin()->users()->get($params->get('user'));
 
         try {
             if (!$user) {
@@ -115,7 +115,7 @@ class Users extends AbstractController
     {
         $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'user.yml'))->get('fields'));
 
-        $user = Admin::instance()->users()->get($params->get('user'));
+        $user = $this->admin()->users()->get($params->get('user'));
 
         if ($user === null) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.not-found'), 'error');

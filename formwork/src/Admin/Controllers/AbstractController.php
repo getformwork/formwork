@@ -94,7 +94,7 @@ abstract class AbstractController
      */
     protected function user(): User
     {
-        return Admin::instance()->user();
+        return $this->admin()->user();
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class AbstractController
     private function getColorScheme(): string
     {
         $default = Formwork::instance()->config()->get('admin.color_scheme');
-        if (Admin::instance()->isLoggedIn()) {
+        if ($this->admin()->isLoggedIn()) {
             if ($this->user()->colorScheme() === 'auto') {
                 return $_COOKIE['formwork_preferred_color_scheme'] ?? $default;
             }

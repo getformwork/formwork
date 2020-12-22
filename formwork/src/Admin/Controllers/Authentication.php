@@ -60,7 +60,7 @@ class Authentication extends AbstractController
 
                 $limiter->registerAttempt();
 
-                $user = Admin::instance()->users()->get($data->get('username'));
+                $user = $this->admin()->users()->get($data->get('username'));
 
                 // Authenticate user
                 if ($user !== null && $user->authenticate($data->get('password'))) {
