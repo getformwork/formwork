@@ -79,6 +79,13 @@ final class Formwork
     protected $cache;
 
     /**
+     * Admin instance
+     *
+     * @var Admin|null
+     */
+    protected $admin;
+
+    /**
      * Create a new Formwork instance
      */
     public function __construct()
@@ -151,6 +158,14 @@ final class Formwork
     public function translations(): Translations
     {
         return $this->translations;
+    }
+
+    /**
+     * Return admin instance
+     */
+    public function admin(): ?Admin
+    {
+        return $this->admin;
     }
 
     /**
@@ -296,7 +311,10 @@ final class Formwork
                 '/' . $this->config()->get('admin.root') . '/',
                 '/' . $this->config()->get('admin.root') . '/{route}/'
             ],
-            Admin::class . '@run'
+            function () {
+                $this->admin = new Admin();
+                $this->admin->run();
+            }
         );
     }
 

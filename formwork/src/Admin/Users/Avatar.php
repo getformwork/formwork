@@ -2,7 +2,7 @@
 
 namespace Formwork\Admin\Users;
 
-use Formwork\Admin\Admin;
+use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 
 class Avatar
@@ -35,10 +35,10 @@ class Avatar
     {
         $path = ADMIN_PATH . 'avatars/' . $filename;
         if ($filename !== null && FileSystem::exists($path)) {
-            $this->uri = Admin::instance()->realUri('/avatars/' . basename($path));
+            $this->uri = Formwork::instance()->admin()->realUri('/avatars/' . basename($path));
             $this->path = $path;
         } else {
-            $this->uri = Admin::instance()->realUri(self::DEFAULT_AVATAR_URI);
+            $this->uri = Formwork::instance()->admin()->realUri(self::DEFAULT_AVATAR_URI);
         }
     }
 

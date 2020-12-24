@@ -42,7 +42,7 @@ class AdminView extends View
         if ($this->assets !== null) {
             return $this->assets;
         }
-        return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, Admin::instance()->realUri('/assets/'));
+        return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, Formwork::instance()->admin()->realUri('/assets/'));
     }
 
     /**
@@ -53,7 +53,7 @@ class AdminView extends View
         return [
             'formwork' => Formwork::instance(),
             'site'     => Formwork::instance()->site(),
-            'admin'    => Admin::instance()
+            'admin'    => Formwork::instance()->admin()
         ];
     }
 

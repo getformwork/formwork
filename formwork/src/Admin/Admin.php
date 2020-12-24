@@ -10,7 +10,6 @@ use Formwork\Page;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Schemes\Scheme;
-use Formwork\Traits\SingletonTrait;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
@@ -25,8 +24,6 @@ use Throwable;
 
 final class Admin
 {
-    use SingletonTrait;
-
     /**
      * Admin accounts path
      *
@@ -81,13 +78,7 @@ final class Admin
      */
     public function __construct()
     {
-        $this->initializeSingleton();
-
         $this->router = new Router(Uri::removeQuery($this->route()));
-        $this->users = Users::load();
-
-        $this->loadTranslations();
-        $this->loadErrorHandler();
     }
 
     /**
@@ -134,6 +125,8 @@ final class Admin
             $this->validateCSRFToken();
         }
 
+        $this->users = Users::load();
+
         if ($this->users->isEmpty()) {
             $this->registerAdmin();
         }
@@ -142,6 +135,9 @@ final class Admin
             Session::set('FORMWORK_REDIRECT_TO', $this->route());
             $this->redirect('/login/');
         }
+
+        $this->loadTranslations();
+        $this->loadErrorHandler();
 
         $this->loadRoutes();
 

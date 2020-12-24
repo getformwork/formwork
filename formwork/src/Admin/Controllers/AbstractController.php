@@ -41,7 +41,7 @@ abstract class AbstractController
      */
     protected function admin(): Admin
     {
-        return Admin::instance();
+        return Formwork::instance()->admin();
     }
 
     /**
