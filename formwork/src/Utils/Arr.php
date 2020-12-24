@@ -41,6 +41,46 @@ class Arr
     }
 
     /**
+     * Set data by key using dot notation to traverse if literal key is not found
+     */
+    public static function set(array &$array, string $key, $value): void
+    {
+        if (array_key_exists($key, $array)) {
+            $array[$key] = $value;
+            return;
+        }
+        $segments = explode('.', $key);
+        $key = array_pop($segments);
+        foreach ($segments as $segment) {
+            if (!array_key_exists($segment, $array)) {
+                $array[$segment] = [];
+            }
+            $array = &$array[$segment];
+        }
+        $array[$key] = $value;
+    }
+
+    /**
+     * Remove data by key using dot notation to traverse if literal key is not found
+     */
+    public static function remove(array &$array, string $key): void
+    {
+        if (array_key_exists($key, $array)) {
+            unset($array[$key]);
+            return;
+        }
+        $segments = explode('.', $key);
+        $key = array_pop($segments);
+        foreach ($segments as $segment) {
+            if (!array_key_exists($segment, $array)) {
+                $array[$segment] = [];
+            }
+            $array = &$array[$segment];
+        }
+        unset($array[$key]);
+    }
+
+    /**
      * Recursively append elements from the second array that are missing in the first
      */
     public static function appendMissing(array $array1, array $array2): array
