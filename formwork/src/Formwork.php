@@ -6,6 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;
 use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
+use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
@@ -157,50 +158,7 @@ final class Formwork
      */
     public function defaults(): array
     {
-        return [
-            'charset'                      => 'utf-8',
-            'date.format'                  => 'm/d/Y',
-            'date.hour_format'             => 'h:i A',
-            'date.timezone'                => 'UTC',
-            'date.week_starts'             => 0,
-            'languages.available'          => [],
-            'languages.http_preferred'     => false,
-            'content.path'                 => SITE_PATH . 'content' . DS,
-            'content.extension'            => '.md',
-            'files.allowed_extensions'     => ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.pdf'],
-            'parsers.use_php_yaml'         => 'parse',
-            'templates.path'               => SITE_PATH . 'templates' . DS,
-            'templates.extension'          => '.php',
-            'pages.index'                  => 'index',
-            'pages.error'                  => '404',
-            'cache.enabled'                => false,
-            'cache.path'                   => ROOT_PATH . 'cache' . DS,
-            'cache.time'                   => 604800,
-            'images.jpeg_quality'          => 85,
-            'images.jpeg_progressive'      => true,
-            'images.png_compression'       => 6,
-            'images.webp_quality'          => 85,
-            'images.process_uploads'       => true,
-            'backup.path'                  => ROOT_PATH . 'backup' . DS,
-            'backup.max_files'             => 10,
-            'updates.backup_before'        => true,
-            'metadata.set_generator'       => true,
-            'statistics.enabled'           => true,
-            'translations.fallback'        => 'en',
-            'translations.paths.admin'     => ADMIN_PATH . 'translations' . DS,
-            'translations.paths.system'    => FORMWORK_PATH . 'translations' . DS,
-            'views.paths.admin'            => ADMIN_PATH . 'views' . DS,
-            'views.paths.system'           => FORMWORK_PATH . 'views' . DS,
-            'admin.enabled'                => true,
-            'admin.root'                   => 'admin',
-            'admin.lang'                   => 'en',
-            'admin.login_attempts'         => 10,
-            'admin.login_reset_time'       => 300,
-            'admin.logout_redirect'        => 'login',
-            'admin.session_timeout'        => 20,
-            'admin.avatar_size'            => 512,
-            'admin.color_scheme'           => 'light'
-        ];
+        return PHP::parseFile(FORMWORK_PATH . 'defaults.php');
     }
 
     /**
@@ -254,7 +212,7 @@ final class Formwork
                 // Trim slashes from admin.root
                 $data['admin.root'] = trim($data['admin.root'], '/');
             }
-            $this->config = new Config($data + $this->defaults());
+            $this->config = new Config(array_replace_recursive($this->defaults(), $data));
         }
 
         date_default_timezone_set($this->config->get('date.timezone'));

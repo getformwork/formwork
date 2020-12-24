@@ -10,6 +10,7 @@ use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
 use Formwork\Schemes\Scheme;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
@@ -237,6 +238,7 @@ class Options extends AbstractController
         $fields = $fields->toArray(true);
 
         $old = $options;
+        $options = [];
 
         // Update options with new values
         foreach ($fields as $field) {
@@ -246,13 +248,8 @@ class Options extends AbstractController
             if ($field->isRequired() && $field->isEmpty()) {
                 continue;
             }
-            $options[$field->name()] = $field->value();
-        }
-
-        // Unset default values
-        foreach ($options as $key => $value) {
-            if (array_key_exists($key, $defaults) && $defaults[$key] == $value) {
-                unset($options[$key]);
+            if (!Arr::has($defaults, $field->name()) || Arr::get($defaults, $field->name()) !== $field->value()) {
+                Arr::set($options, $field->name(), $field->value());
             }
         }
 

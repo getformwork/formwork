@@ -45,7 +45,7 @@ class Site extends AbstractPage
         $this->path = FileSystem::normalizePath(Formwork::instance()->config()->get('content.path'));
         $this->relativePath = DS;
         $this->route = '/';
-        $this->data = array_merge($this->defaults(), $data);
+        $this->data = array_replace_recursive($this->defaults(), $data);
         $this->loadTemplates();
     }
 
