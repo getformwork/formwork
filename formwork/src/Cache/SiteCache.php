@@ -13,7 +13,6 @@ class SiteCache extends FilesCache
     protected function isValid(string $key): bool
     {
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
-        $expires = $lastModified + $this->time;
-        return !Formwork::instance()->site()->modifiedSince($lastModified) && time() < $expires;
+        return parent::isValid($key) && !Formwork::instance()->site()->modifiedSince($lastModified);
     }
 }

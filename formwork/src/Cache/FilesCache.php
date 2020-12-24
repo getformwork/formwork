@@ -19,15 +19,15 @@ class FilesCache extends AbstractCache
      *
      * @var int
      */
-    protected $time;
+    protected $defaultTtl;
 
     /**
      * Create a new FilesCache instance
      */
-    public function __construct(string $path, int $time)
+    public function __construct(string $path, int $defaultTtl)
     {
         $this->path = $path;
-        $this->time = $time;
+        $this->defaultTtl = $defaultTtl;
         if (!FileSystem::exists($this->path)) {
             FileSystem::createDirectory($this->path, true);
         }
@@ -51,9 +51,10 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function save(string $key, $value): void
+    public function save(string $key, $value, int $ttl = null): void
     {
-        PHP::encodeToFile(['value' => $value], $this->getFile($key));
+        $data = ['value' => $value, 'expires' => time() + ($ttl ?? $this->defaultTtl)];
+        PHP::encodeToFile($data, $this->getFile($key));
     }
 
     /**
@@ -96,8 +97,7 @@ class FilesCache extends AbstractCache
      */
     protected function isValid(string $key): bool
     {
-        $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
-        $expires = $lastModified + $this->time;
-        return time() < $expires;
+        $data = PHP::parseFile($this->getFile($key));
+        return time() < $data['expires'];
     }
 }
