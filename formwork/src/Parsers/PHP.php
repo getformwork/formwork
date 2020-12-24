@@ -106,7 +106,7 @@ class PHP extends AbstractEncoder
                 }
 
                 // Check if the class has a callable __set_state() magic method
-                if (is_callable([$data, '__set_state'])) {
+                if (method_exists($data, '__set_state') && is_callable([$data, '__set_state'])) {
                     $properties = [];
                     foreach ((array) $data as $property => $value) {
                         // Private and protected properties begin with the class name or an asterisk enclosed
