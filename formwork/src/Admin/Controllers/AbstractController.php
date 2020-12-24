@@ -60,6 +60,7 @@ abstract class AbstractController
     {
         return [
             'location'    => $this->location,
+            'admin'       => $this->admin(),
             'csrfToken'   => CSRFToken::get(),
             'modals'      => implode($this->modals),
             'colorScheme' => $this->getColorScheme(),

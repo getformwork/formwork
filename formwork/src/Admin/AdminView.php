@@ -48,18 +48,6 @@ class AdminView extends View
     /**
      * @inheritdoc
      */
-    protected function defaults(): array
-    {
-        return [
-            'formwork' => Formwork::instance(),
-            'site'     => Formwork::instance()->site(),
-            'admin'    => Formwork::instance()->admin()
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function helpers(): array
     {
         return PHP::parseFile(ADMIN_PATH . 'helpers.php') + parent::helpers();
