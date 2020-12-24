@@ -2,6 +2,8 @@
 
 namespace Formwork\Data;
 
+use Formwork\Utils\Arr;
+
 class DataSetter extends DataGetter
 {
     /**
@@ -9,7 +11,7 @@ class DataSetter extends DataGetter
      */
     public function set(string $key, $value): void
     {
-        $this->data[$key] = $value;
+        Arr::set($this->data, $key, $value);
     }
 
     /**
@@ -17,6 +19,6 @@ class DataSetter extends DataGetter
      */
     public function remove(string $key): void
     {
-        unset($this->data[$key]);
+        Arr::remove($this->data, $key);
     }
 }

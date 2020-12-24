@@ -336,7 +336,7 @@ abstract class AbstractPage
      */
     public function set(string $key, $value): void
     {
-        $this->data[$key] = $value;
+        Arr::set($this->data, $key, $value);
     }
 
     public function __call(string $name, array $arguments)
