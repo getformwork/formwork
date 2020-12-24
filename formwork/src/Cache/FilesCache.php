@@ -100,12 +100,4 @@ class FilesCache extends AbstractCache
         $expires = $lastModified + $this->time;
         return time() < $expires;
     }
-
-    public function __debugInfo(): array
-    {
-        return [
-            'path' => $this->path,
-            'time' => $this->time
-        ];
-    }
 }
