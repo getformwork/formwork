@@ -73,12 +73,12 @@ class Date
 
         if ($dateTime === false) {
             if ($isFormatGiven) {
-                throw new InvalidArgumentException('Date "' . $date . '" is not formatted according to the format "' . $format . '": ' . static::getLastDateTimeError());
+                throw new InvalidArgumentException(sprintf('Date "%s" is not formatted according to the format "%s": %s', $date, $format, static::getLastDateTimeError()));
             }
             try {
                 $dateTime = new DateTime($date);
             } catch (Exception $e) {
-                throw new InvalidArgumentException('Invalid date "' . $date . '": ' . static::getLastDateTimeError(), $e->getCode(), $e->getPrevious());
+                throw new InvalidArgumentException(sprintf('Invalid date "%s": %s', $date, static::getLastDateTimeError()), $e->getCode(), $e->getPrevious());
             }
         }
 

@@ -30,7 +30,7 @@ class Cookie
     {
         $options = array_merge(static::defaults(), (array) $options);
         if (array_key_exists(strtolower($name), $options)) {
-            throw new InvalidArgumentException('Invalid cookie name "' . $name . '"');
+            throw new InvalidArgumentException(sprintf('Invalid cookie name "%s"', $name));
         }
         $data = [$name => rawurlencode($value)] + static::parseOptions($options);
         Header::send('Set-Cookie', static::makeHeader($data), $replace);

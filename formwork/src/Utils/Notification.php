@@ -47,7 +47,7 @@ class Notification
     public static function send(string $text, string $type = self::INFO): void
     {
         if (!in_array($type, [self::INFO, self::SUCCESS, self::WARNING, self::ERROR], true)) {
-            throw new InvalidArgumentException('Invalid notification type: ' . $type);
+            throw new InvalidArgumentException(sprintf('Invalid notification type "%s"', $type));
         }
         Session::set(self::SESSION_KEY, ['text' => $text, 'type' => $type]);
     }

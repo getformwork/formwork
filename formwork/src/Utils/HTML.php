@@ -61,7 +61,7 @@ class HTML
         $html .= '>';
         if (count($content) > 0) {
             if (static::isVoid($name)) {
-                throw new InvalidArgumentException('Cannot set tag content, <' . $name . '> is a void element');
+                throw new InvalidArgumentException(sprintf('Cannot set tag content, <%s> is a void element', $name));
             }
             $html .= implode($content);
         }

@@ -135,7 +135,7 @@ class MimeType
         $mimeType = null;
 
         if (!extension_loaded('fileinfo')) {
-            throw new RuntimeException(__METHOD__ . '() requires the extension "fileinfo" to be enabled');
+            throw new RuntimeException(sprintf('%s() requires the extension "fileinfo" to be enabled', __METHOD__));
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);

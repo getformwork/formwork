@@ -83,7 +83,7 @@ class Site extends AbstractPage
     public function template(string $name): string
     {
         if (!$this->hasTemplate($name)) {
-            throw new RuntimeException('Invalid template ' . $name);
+            throw new RuntimeException(sprintf('Invalid template "%s"', $name));
         }
         return $this->templates[$name];
     }

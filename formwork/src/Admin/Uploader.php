@@ -140,11 +140,11 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new TranslatedException('MIME type ' . $mimeType . ' is not allowed', 'admin.uploader.error.mime-type');
+            throw new TranslatedException(sprintf('MIME type %s is not allowed', $mimeType), 'admin.uploader.error.mime-type');
         }
 
         if (basename($filename)[0] === '.') {
-            throw new TranslatedException('Hidden file ' . $filename . ' not allowed', 'admin.uploader.error.hidden-files');
+            throw new TranslatedException(sprintf('Hidden file "%s" not allowed', $filename), 'admin.uploader.error.hidden-files');
         }
 
         $name = str_replace([' ', '.'], '-', FileSystem::name($filename));
@@ -161,7 +161,7 @@ class Uploader
         }
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new TranslatedException('Invalid file name ' . $filename, 'uploader.error.file-name');
+            throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'uploader.error.file-name');
         }
 
         $destinationPath = FileSystem::joinPaths($destination, $filename);
@@ -171,7 +171,7 @@ class Uploader
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
-            throw new TranslatedException('File ' . $filename . ' already exists', 'admin.uploader.error.already-exists');
+            throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'admin.uploader.error.already-exists');
         }
 
         if (@move_uploaded_file($source, $destinationPath)) {

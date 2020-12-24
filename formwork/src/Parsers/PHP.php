@@ -101,7 +101,7 @@ class PHP extends AbstractEncoder
 
                 foreach (self::UNENCODABLE_CLASSES as $c) {
                     if ($data instanceof $c) {
-                        throw new UnexpectedValueException('Objects of class "' . $class . '" cannot be encoded');
+                        throw new UnexpectedValueException(sprintf('Objects of class "%s" cannot be encoded', $class));
                     }
                 }
 
@@ -121,7 +121,7 @@ class PHP extends AbstractEncoder
 
             default:
                 // Resources and unknown types cannot be encoded
-                throw new UnexpectedValueException('Data of type "' . $type . '" cannot be encoded');
+                throw new UnexpectedValueException(sprintf('Data of type "%s" cannot be encoded', $type));
         }
     }
 }

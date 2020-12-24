@@ -31,7 +31,7 @@ class IPAnonymizer
             case 16:
                 return static::anonymizeIPv6($ip);
             default:
-                throw new InvalidArgumentException('Invalid IP address ' . $ip);
+                throw new InvalidArgumentException(sprintf('Invalid IP address %s', $ip));
                 break;
         }
     }

@@ -267,7 +267,7 @@ class Uri
     {
         $result = parse_url($uri, $component);
         if ($result === false) {
-            throw new InvalidArgumentException('Invalid URI "' . $uri . '"');
+            throw new InvalidArgumentException(sprintf('Invalid URI "%s"', $uri));
         }
         return $result;
     }

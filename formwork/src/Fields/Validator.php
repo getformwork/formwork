@@ -56,7 +56,7 @@ class Validator
             $value = $data->get($field->name());
 
             if ($field->isRequired() && in_array($value, self::EMPTY_VALUES, true)) {
-                throw new ValidationException('Required field "' . $field->name() . '" of type "' . $field->type() . '" cannot be empty');
+                throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()));
             }
 
             $method = 'validate' . ucfirst(strtolower($field->type()));
@@ -86,7 +86,7 @@ class Validator
             return false;
         }
 
-        throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+        throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
     }
 
     /**
@@ -117,7 +117,7 @@ class Validator
         try {
             return date('Y-m-d', Date::toTimestamp($value));
         } catch (InvalidArgumentException $e) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '":' . Str::after($e->getMessage(), ':'));
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
         }
     }
 
@@ -131,19 +131,19 @@ class Validator
         $value = static::parse($value);
 
         if (!is_numeric($value)) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
         if ($field->has('min') && $value < $field->get('min')) {
-            throw new ValidationException('The value of field "' . $field->name() . '" of type "' . $field->type() . '" must be greater than or equal to ' . $field->get('min'));
+            throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be greater than or equal to %d', $field->name(), $field->type(), $field->get('min')));
         }
 
         if ($field->has('max') && $value > $field->get('max')) {
-            throw new ValidationException('The value of field "' . $field->name() . '" of type "' . $field->type() . '" must be less than or equal to ' . $field->get('max'));
+            throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be less than or equal to %d', $field->name(), $field->type(), $field->get('max')));
         }
 
         if ($field->has('step') && ($value - $field->get('min', 0)) % $field->get('step') !== 0) {
-            throw new ValidationException('The value of field "' . $field->name() . '" of type "' . $field->type() . '" does not conform to the step value ' . $field->get('step'));
+            throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not conform to the step value %d', $field->name(), $field->value(), $field->get('step')));
         }
 
         return $value;
@@ -181,7 +181,7 @@ class Validator
         }
 
         if (!is_array($value)) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
         if ($field->has('pattern')) {
@@ -207,7 +207,7 @@ class Validator
         }
 
         if (!is_array($value)) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
         if ($field->get('associative')) {
@@ -231,19 +231,19 @@ class Validator
         }
 
         if (!is_string($value) && !is_numeric($value)) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
         if ($field->has('min') && strlen($value) < $field->get('min')) {
-            throw new ValidationException('The minimum allowed length for field "' . $field->name() . '" of type "' . $field->type() . '" is ' . $field->get('min'));
+            throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('min')));
         }
 
         if ($field->has('max') && strlen($value) > $field->get('max')) {
-            throw new ValidationException('The maximum allowed length for field "' . $field->name() . '" of type "' . $field->type() . '" is ' . $field->get('max'));
+            throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('max')));
         }
 
         if ($field->has('pattern') && !static::regex($value, $field->get('pattern'))) {
-            throw new ValidationException('The value of field "' . $field->name() . '" of type "' . $field->type() . '" does not match the required pattern');
+            throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not match the required pattern', $field->name(), $field->value()));
         }
 
         return (string) $value;
@@ -263,7 +263,7 @@ class Validator
     public static function validateEmail($value, Field $field): string
     {
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new ValidationException('The value of field "' . $field->name() . '" of type "' . $field->type() . '" is not a valid e-mail address');
+            throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not a valid e-mail address', $field->name(), $field->value()));
         }
 
         return static::validateText($value, $field);
@@ -287,7 +287,7 @@ class Validator
         }
 
         if (!is_string($value)) {
-            throw new ValidationException('Invalid value for field "' . $field->name() . '" of type "' . $field->type() . '"');
+            throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
         return $value;

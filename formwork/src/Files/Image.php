@@ -194,7 +194,7 @@ class Image extends File
     public function resize(int $destinationWidth = null, int $destinationHeight = null): self
     {
         if ($destinationWidth === null && $destinationHeight === null) {
-            throw new InvalidArgumentException(__METHOD__ . '() must be called with at least one of $destinationWidth or $destinationHeight arguments');
+            throw new InvalidArgumentException(sprintf('%s() must be called with at least one of $destinationWidth or $destinationHeight arguments', __METHOD__));
         }
 
         if ($this->image === null) {
@@ -372,7 +372,7 @@ class Image extends File
     public function brightness(int $amount): self
     {
         if ($amount < -255 || $amount > 255) {
-            throw new InvalidArgumentException('$amount value must be in range -255-+255, ' . $amount . ' given');
+            throw new InvalidArgumentException(sprintf('$amount value must be in range -255-+255, %d given', $amount));
         }
         if ($this->image === null) {
             $this->initialize();
@@ -389,7 +389,7 @@ class Image extends File
     public function contrast(int $amount): self
     {
         if ($amount < -100 || $amount > 100) {
-            throw new InvalidArgumentException('$amount value must be in range -100-+100, ' . $amount . ' given');
+            throw new InvalidArgumentException(sprintf('$amount value must be in range -100-+100, %d given', $amount));
         }
         if ($this->image === null) {
             $this->initialize();
@@ -410,16 +410,16 @@ class Image extends File
     public function colorize(int $red, int $green, int $blue, int $alpha = 0): self
     {
         if ($red < 0 || $red > 255) {
-            throw new InvalidArgumentException('$red value must be in range 0-255, ' . $red . ' given');
+            throw new InvalidArgumentException(sprintf('$red value must be in range 0-255, %d given', $red));
         }
         if ($green < 0 || $green > 255) {
-            throw new InvalidArgumentException('$green value must be in range 0-255, ' . $green . ' given');
+            throw new InvalidArgumentException(sprintf('$green value must be in range 0-255, %d given', $green));
         }
         if ($blue < 0 || $blue > 255) {
-            throw new InvalidArgumentException('$blue value must be in range 0-255, ' . $blue . ' given');
+            throw new InvalidArgumentException(sprintf('$blue value must be in range 0-255, %d given', $blue));
         }
         if ($alpha < 0 || $alpha > 127) {
-            throw new InvalidArgumentException('$alpha value must be in range 0-127, ' . $alpha . ' given');
+            throw new InvalidArgumentException(sprintf('$alpha value must be in range 0-127, %d given', $alpha));
         }
         if ($this->image === null) {
             $this->initialize();
@@ -468,7 +468,7 @@ class Image extends File
     public function blur(int $amount): self
     {
         if ($amount < 0 || $amount > 100) {
-            throw new InvalidArgumentException('$amount value must be in range 0-100, ' . $amount . ' given');
+            throw new InvalidArgumentException(sprintf('$amount value must be in range 0-100, %d given', $amount));
         }
         if ($this->image === null) {
             $this->initialize();
@@ -549,7 +549,7 @@ class Image extends File
                 imagewebp($this->image, $filename, $this->WEBPQuality);
                 break;
             default:
-                throw new RuntimeException('Unknown image MIME type for .' . $filename . ' extension');
+                throw new RuntimeException(sprintf('Unknown image MIME type for .%s extension', $extension));
                 break;
         }
 
@@ -608,17 +608,17 @@ class Image extends File
     protected function initialize(): void
     {
         if (!extension_loaded('gd')) {
-            throw new RuntimeException('Class ' . static::class . ' requires the extension "gd" to be enabled');
+            throw new RuntimeException(sprintf('Class %s requires the extension "gd" to be enabled', static::class));
         }
 
         if (!FileSystem::isReadable($this->path)) {
-            throw new RuntimeException('Image ' . $this->path . ' must be readable to be processed');
+            throw new RuntimeException(sprintf('Image %s must be readable to be processed', $this->path));
         }
 
         $this->JPEGQuality = Formwork::instance()->config()->get('images.jpeg_quality');
 
         if ($this->JPEGQuality < 0 || $this->JPEGQuality > 100) {
-            throw new UnexpectedValueException('JPEG quality must be in the range 0-100, ' . $this->JPEGQuality . ' given');
+            throw new UnexpectedValueException(sprintf('JPEG quality must be in the range 0-100, %d given', $this->JPEGQuality));
         }
 
         $this->JPEGSaveProgressive = Formwork::instance()->config()->get('images.jpeg_progressive');
@@ -626,19 +626,19 @@ class Image extends File
         $this->PNGCompression = Formwork::instance()->config()->get('images.png_compression');
 
         if ($this->PNGCompression < 0 || $this->PNGCompression > 9) {
-            throw new UnexpectedValueException('PNG compression level must be in range 0-9, ' . $this->PNGCompression . ' given');
+            throw new UnexpectedValueException(sprintf('PNG compression level must be in range 0-9, %d given', $this->PNGCompression));
         }
 
         $this->WEBPQuality = Formwork::instance()->config()->get('images.webp_quality');
 
         if ($this->WEBPQuality < 0 || $this->WEBPQuality > 100) {
-            throw new UnexpectedValueException('WebP quality must be in the range 0-100, ' . $this->WEBPQuality . ' given');
+            throw new UnexpectedValueException(sprintf('WebP quality must be in the range 0-100, %d given', $this->WEBPQuality));
         }
 
         $this->info = getimagesize($this->path);
 
         if (!$this->info) {
-            throw new RuntimeException('Cannot load image ' . $this->path);
+            throw new RuntimeException(sprintf('Cannot load image %s', $this->path));
         }
 
         switch ($this->info['mime']) {

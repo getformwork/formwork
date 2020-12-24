@@ -32,13 +32,13 @@ trait SingletonTrait
     protected function initializeSingleton(): void
     {
         if (static::$instance !== null) {
-            throw new LogicException('Cannot create ' . static::class . ', the class is a singleton and cannot be instiantated again');
+            throw new LogicException(sprintf('Cannot create %s, the class is a singleton and cannot be instiantated again', static::class));
         }
         static::$instance = $this;
     }
 
     public function __clone()
     {
-        throw new LogicException('Cannot clone ' . static::class . ', the class is a singleton');
+        throw new LogicException(sprintf('Cannot clone %s, the class is a singleton', static::class));
     }
 }

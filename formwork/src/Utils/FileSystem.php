@@ -124,10 +124,10 @@ class FileSystem
     public static function assertExists(string $path, bool $value = true): void
     {
         if ($value === true && !static::exists($path)) {
-            throw new RuntimeException('File not found: ' . $path);
+            throw new RuntimeException(sprintf('File not found: %s', $path));
         }
         if ($value === false && static::exists($path)) {
-            throw new RuntimeException('File ' . $path . ' already exists');
+            throw new RuntimeException(sprintf('File %s already exists', $path));
         }
     }
 
@@ -396,7 +396,7 @@ class FileSystem
     public static function fetch(string $source, $context = null): string
     {
         if (filter_var($source, FILTER_VALIDATE_URL) === false) {
-            throw new RuntimeException('Cannot fetch ' . $source . ': invalid URI');
+            throw new RuntimeException(sprintf('Cannot fetch %s: invalid URI', $source));
         }
         if ($context !== null) {
             $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
@@ -406,7 +406,7 @@ class FileSystem
         }
         $data = @file_get_contents($source, false, $context);
         if ($data === false) {
-            throw new RuntimeException('Cannot fetch ' . $source . ': ' . static::getLastStreamErrorMessage());
+            throw new RuntimeException(sprintf('Cannot fetch %s: %s', $source, static::getLastStreamErrorMessage()));
         }
         return $data;
     }
@@ -417,11 +417,11 @@ class FileSystem
     public static function write(string $file, string $content): bool
     {
         if (static::exists($file) && !static::isWritable($file)) {
-            throw new RuntimeException('Cannot write ' . $file . ': file exists but is not writable');
+            throw new RuntimeException(sprintf('Cannot write %s: file exists but is not writable', $file));
         }
         $temporaryFile = static::createTemporaryFile(dirname($file));
         if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
-            throw new RuntimeException('Cannot write ' . $file . ': ' . static::getLastStreamErrorMessage());
+            throw new RuntimeException(sprintf('Cannot write %s: %s', $file, static::getLastStreamErrorMessage()));
         }
         if (static::exists($file)) {
             @chmod($temporaryFile, @fileperms($file));
@@ -440,7 +440,7 @@ class FileSystem
             @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
             return true;
         }
-        throw new RuntimeException('Cannot create file ' . $file . ': ' . static::getLastStreamErrorMessage());
+        throw new RuntimeException(sprintf('Cannot create file %s: %s', $file, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -471,7 +471,7 @@ class FileSystem
         if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
             return true;
         }
-        throw new RuntimeException('Cannot create directory ' . $directory);
+        throw new RuntimeException(sprintf('Cannot create directory %s', $directory));
     }
 
     /**
@@ -500,7 +500,7 @@ class FileSystem
         static::assertExists($path);
         $handle = @opendir($path);
         if ($handle === false) {
-            throw new RuntimeException('Cannot open the directory ' . $path);
+            throw new RuntimeException(sprintf('Cannot open the directory %s', $path));
         }
         while (($item = @readdir($handle)) !== false) {
             if (in_array($item, self::IGNORED_FILES, true)) {

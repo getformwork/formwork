@@ -402,7 +402,7 @@ class Page extends AbstractPage
     public function setLanguage(string $language): void
     {
         if (!$this->hasLanguage($language)) {
-            throw new RuntimeException('Invalid page language "' . $language . '"');
+            throw new RuntimeException(sprintf('Invalid page language "%s"', $language));
         }
         $this->language = $language;
         $this->__construct($this->path);

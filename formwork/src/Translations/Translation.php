@@ -61,6 +61,6 @@ class Translation
             return $fallback->translate($key, ...$arguments);
         }
 
-        throw new InvalidArgumentException('Invalid language string "' . $key . '"');
+        throw new InvalidArgumentException(sprintf('Invalid language string "%s"', $key));
     }
 }

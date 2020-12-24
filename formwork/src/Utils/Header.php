@@ -98,7 +98,7 @@ class Header
     public static function status(int $code, bool $send = true, bool $exit = false)
     {
         if (!isset(self::HTTP_STATUS[$code])) {
-            throw new InvalidArgumentException('Unknown HTTP status code ' . $code);
+            throw new InvalidArgumentException(sprintf('Unknown HTTP status code %d', $code));
         }
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0';
         $status = $protocol . ' ' . $code . ' ' . self::HTTP_STATUS[$code];
@@ -119,7 +119,7 @@ class Header
     public static function send(string $fieldName, string $fieldValue, bool $replace = true): void
     {
         if (headers_sent()) {
-            throw new RuntimeException('Cannot send ' . $fieldName . ' header, HTTP headers already sent');
+            throw new RuntimeException(sprintf('Cannot send %d header, HTTP headers already sent', $fieldName));
         }
         header($fieldName . ': ' . trim($fieldValue), $replace);
     }

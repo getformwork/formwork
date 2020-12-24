@@ -104,7 +104,7 @@ class Router
                 [$type, $method, $route, $callback] = $arguments;
                 break;
             default:
-                throw new InvalidArgumentException('Invalid arguments for ' . __METHOD__);
+                throw new InvalidArgumentException(sprintf('Invalid arguments for %s()', __METHOD__));
         }
         if (is_array($type)) {
             foreach ($type as $t) {
@@ -119,10 +119,10 @@ class Router
             return;
         }
         if (!in_array($type, self::REQUEST_TYPES, true)) {
-            throw new InvalidArgumentException('Invalid request type "' . $type . '"');
+            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
         }
         if (!in_array($method, self::REQUEST_METHODS, true)) {
-            throw new InvalidArgumentException('Invalid HTTP method "' . $method . '"');
+            throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
         }
         if (is_array($route)) {
             foreach ($route as $r) {
@@ -152,7 +152,7 @@ class Router
                     $route['callback'] = [new $class(), $method];
                 }
                 if (!is_callable($route['callback'])) {
-                    throw new UnexpectedValueException('Invalid callback for ' . $route['route'] . ' route');
+                    throw new UnexpectedValueException(sprintf('Invalid callback for "%s" route', $route['route']));
                 }
                 return $route['callback']($this->params);
             }

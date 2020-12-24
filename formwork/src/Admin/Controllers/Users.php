@@ -84,11 +84,11 @@ class Users extends AbstractController
 
         try {
             if (!$user) {
-                throw new TranslatedException('User ' . $params->get('user') . ' not found', 'admin.users.user.not-found');
+                throw new TranslatedException(sprintf('User "%s" not found', $params->get('user')), 'admin.users.user.not-found');
             }
             if (!$this->user()->canDeleteUser($user)) {
                 throw new TranslatedException(
-                    'Cannot delete user ' . $user->username() . ', you must be an administrator and the user must not be logged in',
+                    sprintf('Cannot delete user "%s", you must be an administrator and the user must not be logged in', $user->username()),
                     'users.user.cannot-delete'
                 );
             }

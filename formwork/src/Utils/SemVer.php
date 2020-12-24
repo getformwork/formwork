@@ -198,7 +198,7 @@ class SemVer
     public function compareWith(self $version, string $operator): bool
     {
         if (!in_array($operator, self::COMPARISON_OPERATORS)) {
-            throw new InvalidArgumentException('Invalid operator for version comparison: "' . $operator . '". Use one of the following: "' . implode('", "', self::COMPARISON_OPERATORS) . '"');
+            throw new InvalidArgumentException(sprintf('Invalid operator for version comparison: "%s". Use one of the following: "%s"', $operator, implode('", "', self::COMPARISON_OPERATORS)));
         }
         if ($operator === '~') {
             return $this->compareWith($version, '<=') && $this->nextMinor()->compareWith($version->onlyNumbers(), '>');
@@ -223,7 +223,7 @@ class SemVer
     public static function fromString(string $version): self
     {
         if (!preg_match(self::SEMVER_REGEX, $version, $matches, PREG_UNMATCHED_AS_NULL)) {
-            throw new InvalidArgumentException('Invalid version string: "' . $version . '"');
+            throw new InvalidArgumentException(sprintf('Invalid version string: "%s"', $version));
         }
         // TODO: null coalescing will not be needed from PHP 7.4 (see https://github.com/php/php-src/pull/3964)
         return new static(
@@ -259,7 +259,7 @@ class SemVer
         }
 
         if (!in_array($parts[0], self::PRERELEASE_TAGS, true)) {
-            throw new InvalidArgumentException('Invalid prerelease tag: "' . $parts[0] . '". Use one of the following: "' . implode('", "', self::PRERELEASE_TAGS) . '"');
+            throw new InvalidArgumentException(sprintf('Invalid prerelease tag: "%s". Use one of the following: "%s"', $parts[0], implode('", "', self::PRERELEASE_TAGS)));
         }
 
         return implode('.', $parts);

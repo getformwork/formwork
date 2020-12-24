@@ -155,7 +155,7 @@ class Field extends DataSetter
             }
             $callback = explode('::', $value, 2);
             if (!is_callable($callback)) {
-                throw new UnexpectedValueException('Invalid import callback "' . $value . '"');
+                throw new UnexpectedValueException(sprintf('Invalid import callback "%s"', $value));
             }
             $this->data[$key] = $callback();
         }

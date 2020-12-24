@@ -98,7 +98,7 @@ class View
     public function layout(string $name): void
     {
         if ($this->layout !== null) {
-            throw new RuntimeException('The layout for the ' . static::TYPE . ' "' . $this->name . '" is already set');
+            throw new RuntimeException(sprintf('The layout for the %s "%s" is already set', static::TYPE, $this->name));
         }
         $this->layout = $this->createLayoutView($name);
     }
@@ -109,13 +109,13 @@ class View
     public function insert(string $name, array $vars = []): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
+            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
         $file = $this->path() . str_replace('.', DS, $name) . '.php';
 
         if (!FileSystem::exists($file)) {
-            throw new RuntimeException(ucfirst(static::TYPE) . ' "' . $name . '" not found');
+            throw new RuntimeException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $name));
         }
 
         Renderer::load($file, array_merge($this->vars, $vars), $this);
@@ -127,7 +127,7 @@ class View
     public function render(bool $return = false)
     {
         if ($this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() not allowed while rendering');
+            throw new RuntimeException(sprintf('%s() not allowed while rendering', __METHOD__));
         }
 
         ob_start();
@@ -146,7 +146,7 @@ class View
         $this->rendering = false;
 
         if ($this->incompleteBlocks !== []) {
-            throw new RuntimeException('Incomplete blocks found: "' . implode('", "', $this->incompleteBlocks) . '". Use "$this->end()" to properly close them');
+            throw new RuntimeException(sprintf('Incomplete blocks found: "%s". Use "$this->end()" to properly close them', implode('", "', $this->incompleteBlocks)));
         }
 
         if ($return) {
@@ -161,7 +161,7 @@ class View
     public function define(string $block): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
+            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
         if ($block === 'content') {
@@ -177,7 +177,7 @@ class View
     public function end(): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
+            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
         if ($this->incompleteBlocks === []) {
             throw new RuntimeException('There are no blocks to end');
@@ -192,10 +192,10 @@ class View
     public function block(string $name): string
     {
         if (!$this->rendering) {
-            throw new RuntimeException(__METHOD__ . '() is allowed only in rendering context');
+            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
         if (!isset($this->blocks[$name])) {
-            throw new RuntimeException('The block "' . $name . '" is undefined');
+            throw new RuntimeException(sprintf('The block "%s" is undefined', $name));
         }
         return $this->blocks[$name];
     }
@@ -250,6 +250,6 @@ class View
         if ($this->rendering && isset(static::$helpers[$name])) {
             return static::$helpers[$name](...$arguments);
         }
-        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
 }

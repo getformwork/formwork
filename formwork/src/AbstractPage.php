@@ -344,6 +344,6 @@ abstract class AbstractPage
         if ($this->has($name)) {
             return $this->get($name);
         }
-        throw new BadMethodCallException('Call to undefined method ' . static::class . '::' . $name . '()');
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
 }

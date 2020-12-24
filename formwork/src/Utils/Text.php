@@ -64,7 +64,7 @@ class Text
     public static function truncate(string $text, int $length, string $ellipsis = self::DEFAULT_ELLIPSIS_SEQUENCE): string
     {
         if (!extension_loaded('mbstring')) {
-            throw new RuntimeException(__METHOD__ . '() requires the extension "mbstring" to be enabled');
+            throw new RuntimeException(sprintf('%s() requires the extension "mbstring" to be enabled', __METHOD__));
         }
 
         $text = static::normalizeWhitespace($text);
