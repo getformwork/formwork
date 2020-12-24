@@ -57,7 +57,7 @@ class PHP extends AbstractEncoder
             // Invalidate OPcache when a file is encoded again
             opcache_invalidate($file, true);
         }
-        return FileSystem::write($file, "<?php\n\nreturn " . static::encodeData($data) . ";\n");
+        return FileSystem::write($file, sprintf("<?php\n\nreturn %s;\n", static::encodeData($data)));
     }
 
     /**
@@ -80,7 +80,7 @@ class PHP extends AbstractEncoder
                         . static::encodeData($value, $indent + self::INDENT_SPACES);
                 }
 
-                return '[' . Str::wrap(implode(",\n", $parts), "\n") . str_repeat(' ', $indent) . ']';
+                return sprintf("[\n%s\n%s]", implode(",\n", $parts), str_repeat(' ', $indent));
 
             case 'boolean':
             case 'double':
@@ -96,7 +96,7 @@ class PHP extends AbstractEncoder
 
                 // stdClass objects are encoded as object casts
                 if ($class === \stdClass::class) {
-                    return '(object) ' . static::encodeData((array) $data, $indent);
+                    return sprintf('(object) %s', static::encodeData((array) $data, $indent));
                 }
 
                 foreach (self::UNENCODABLE_CLASSES as $c) {
@@ -113,11 +113,11 @@ class PHP extends AbstractEncoder
                         // between two NUL bytes, so we need to skip that sequence
                         $properties[Str::afterLast($property, "\0")] = $value;
                     }
-                    return '\\' . $class . '::__set_state(' . static::encodeData($properties, $indent) . ')';
+                    return sprintf('\\%s::__set_state(%s)', $class, static::encodeData($properties, $indent));
                 }
 
                 // In the end we try to serialize the object
-                return 'unserialize(' . static::encodeData(serialize($data), $indent) . ')';
+                return sprintf('unserialize(%s)', var_export(serialize($data), true));
 
             default:
                 // Resources and unknown types cannot be encoded
