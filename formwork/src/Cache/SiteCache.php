@@ -10,9 +10,12 @@ class SiteCache extends FilesCache
     /**
      * @inheritdoc
      */
-    protected function isValid(string $key): bool
+    protected function hasExpired(string $key): bool
     {
+        if (parent::hasExpired($key)) {
+            return true;
+        }
         $lastModified = FileSystem::lastModifiedTime($this->getFile($key));
-        return parent::isValid($key) && !Formwork::instance()->site()->modifiedSince($lastModified);
+        return Formwork::instance()->site()->modifiedSince($lastModified);
     }
 }

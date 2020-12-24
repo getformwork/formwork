@@ -42,7 +42,7 @@ class FilesCache extends AbstractCache
             $data = PHP::parseFile($this->getFile($key));
             return $data['value'];
         }
-        if (!$this->isValid($key)) {
+        if ($this->hasExpired($key)) {
             FileSystem::delete($this->getFile($key));
         }
         return null;
@@ -81,7 +81,7 @@ class FilesCache extends AbstractCache
      */
     public function has(string $key): bool
     {
-        return FileSystem::exists($this->getFile($key)) && $this->isValid($key);
+        return FileSystem::exists($this->getFile($key)) && !$this->hasExpired($key);
     }
 
     /**
@@ -95,9 +95,9 @@ class FilesCache extends AbstractCache
     /**
      * Return whether a cached resource has not expired
      */
-    protected function isValid(string $key): bool
+    protected function hasExpired(string $key): bool
     {
         $data = PHP::parseFile($this->getFile($key));
-        return time() < $data['expires'];
+        return time() >= $data['expires'];
     }
 }
