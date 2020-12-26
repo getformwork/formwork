@@ -11,7 +11,6 @@ use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Traits\SingletonTrait;
 use Formwork\Translations\Translations;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;
@@ -261,7 +260,6 @@ final class Formwork
      */
     protected function loadSite(): void
     {
-        FileSystem::assertExists(CONFIG_PATH . 'site.yml');
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = new Site($config);
         $this->site->setLanguages($this->languages);
