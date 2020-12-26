@@ -5,6 +5,7 @@ namespace Formwork\Utils;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\Exceptions\FileSystemException;
 use Generator;
+use InvalidArgumentException;
 
 class FileSystem
 {
@@ -164,6 +165,9 @@ class FileSystem
      */
     public static function directoryModifiedSince(string $directory, int $time): bool
     {
+        if (!static::isDirectory($directory)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
+        }
         if (static::lastModifiedTime($directory) > $time) {
             return true;
         }
@@ -188,7 +192,9 @@ class FileSystem
      */
     public static function size(string $file, bool $unit = true)
     {
-        static::assertExists($file);
+        if (!static::isFile($file)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
+        }
         if (($bytes = @filesize($file)) !== false) {
             return $unit ? static::bytesToSize($bytes) : $bytes;
         }
@@ -204,7 +210,9 @@ class FileSystem
      */
     public static function directorySize(string $path, bool $unit = true)
     {
-        static::assertExists($path);
+        if (!static::isDirectory($path)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
+        }
         $bytes = 0;
         foreach (static::listContents($path, self::LIST_ALL) as $item) {
             $itemPath = static::joinPaths($path, $item);
@@ -299,16 +307,57 @@ class FileSystem
      */
     public static function delete(string $path, bool $recursive = false): bool
     {
-        static::assertExists($path);
         if (static::isFile($path)) {
-            return @unlink($path);
+            return static::deleteFile($path);
+        }
+        return static::deleteDirectory($path, $recursive);
+    }
+
+    /**
+     * Delete a file
+     */
+    public static function deleteFile(string $path): bool
+    {
+        if (!static::isFile($path)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $path argument', __METHOD__));
+        }
+        return @unlink($path);
+    }
+
+    /**
+     * Delete a directory
+     *
+     * @param bool $recursive Whether to delete files recursively or not
+     */
+    public static function deleteDirectory(string $path, bool $recursive = false): bool
+    {
+        if (!static::isDirectory($path)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
         }
         if ($recursive) {
             foreach (static::listContents($path, self::LIST_ALL) as $item) {
-                static::delete(static::joinPaths($path, $item), true);
+                $itemPath = static::joinPaths($path, $item);
+                static::delete($itemPath, $recursive);
+            }
+        } else {
+            if (!static::isEmptyDirectory($path)) {
+                throw new FileSystemException(sprintf('Directory %s must be empty to be deleted', $path));
             }
         }
         return @rmdir($path);
+    }
+
+    /**
+     * Copy a file or a directory
+     *
+     * @param bool $overwrite Whether to overwrite destination file or not
+     */
+    public static function copy(string $source, string $destination, bool $overwrite = false): bool
+    {
+        if (static::isFile($source)) {
+            return static::copyFile($source, $destination, $overwrite);
+        }
+        return static::copyDirectory($source, $destination);
     }
 
     /**
@@ -316,13 +365,39 @@ class FileSystem
      *
      * @param bool $overwrite Whether to overwrite destination file or not
      */
-    public static function copy(string $source, string $destination, bool $overwrite = false): bool
+    public static function copyFile(string $source, string $destination, bool $overwrite = false): bool
     {
-        static::assertExists($source);
+        if (!static::isFile($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $source argument', __METHOD__));
+        }
         if (!$overwrite) {
             static::assertExists($destination, false);
         }
         return @copy($source, $destination);
+    }
+
+    /**
+     * Copy a directory to another path
+     *
+     * @param bool $overwrite Whether to overwrite destination directory or not
+     */
+    public static function copyDirectory(string $source, string $destination, bool $overwrite = false): bool
+    {
+        if (!static::isDirectory($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $source argument', __METHOD__));
+        }
+        if (!$overwrite) {
+            static::assertExists($destination, false);
+        }
+        if (!static::exists($destination)) {
+            static::createDirectory($destination, true);
+        }
+        foreach (static::listContents($source, self::LIST_ALL) as $item) {
+            $sourceItemPath = static::joinPaths($source, $item);
+            $destinationItemPath = static::joinPaths($destination, $item);
+            static::copy($sourceItemPath, $destinationItemPath, $overwrite);
+        }
+        return true;
     }
 
     /**
@@ -342,13 +417,28 @@ class FileSystem
     }
 
     /**
-     * Move a file to another path
+     * Move a file or a directory
      *
      * @param bool $overwrite Whether to overwrite destination file or not
      */
     public static function move(string $source, string $destination, bool $overwrite = false): bool
     {
-        static::assertExists($source);
+        if (static::isFile($source)) {
+            return static::moveFile($source, $destination, $overwrite);
+        }
+        return static::moveDirectory($source, $destination);
+    }
+
+    /**
+     * Move a file to another path
+     *
+     * @param bool $overwrite Whether to overwrite destination file or not
+     */
+    public static function moveFile(string $source, string $destination, bool $overwrite = false): bool
+    {
+        if (!static::isFile($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $source argument', __METHOD__));
+        }
         if (!$overwrite) {
             static::assertExists($destination, false);
         }
@@ -360,24 +450,14 @@ class FileSystem
      *
      * @param bool $overwrite Whether to overwrite destination directory or not
      */
-    public static function moveDirectory(string $source, string $destination, bool $overwrite = false): void
+    public static function moveDirectory(string $source, string $destination, bool $overwrite = false): bool
     {
-        if (!$overwrite) {
-            static::assertExists($destination, false);
+        if (!static::isDirectory($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $source argument', __METHOD__));
         }
-        if (!static::exists($destination)) {
-            static::createDirectory($destination);
-        }
-        foreach (static::listContents($source, self::LIST_ALL) as $item) {
-            $sourceItemPath = static::joinPaths($source, $item);
-            $destinationItemPath = static::joinPaths($destination, $item);
-            if (static::isFile($sourceItemPath)) {
-                static::move($sourceItemPath, $destinationItemPath, $overwrite);
-            } else {
-                static::moveDirectory($sourceItemPath, $destinationItemPath, $overwrite);
-            }
-        }
-        static::delete($source, true);
+        static::copyDirectory($source, $destination, $overwrite);
+        static::deleteDirectory($source, true);
+        return true;
     }
 
     /**
@@ -385,6 +465,9 @@ class FileSystem
      */
     public static function read(string $file): string
     {
+        if (!static::isFile($file)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
+        }
         if (!static::isReadable($file)) {
             throw new FileSystemException(sprintf('Cannot read %s: file exists but is not readable', $file));
         }
@@ -419,6 +502,9 @@ class FileSystem
      */
     public static function write(string $file, string $content): bool
     {
+        if (static::exists($file) && !static::isFile($file)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
+        }
         if (static::exists($file) && !static::isWritable($file)) {
             throw new FileSystemException(sprintf('Cannot write %s: file exists but is not writable', $file));
         }
@@ -429,7 +515,7 @@ class FileSystem
         if (static::exists($file)) {
             @chmod($temporaryFile, @fileperms($file));
         }
-        return static::move($temporaryFile, $file, true);
+        return static::moveFile($temporaryFile, $file, true);
     }
 
     /**
@@ -500,7 +586,9 @@ class FileSystem
      */
     public static function listContents(string $path, int $flags = self::LIST_VISIBLE): Generator
     {
-        static::assertExists($path);
+        if (!static::isDirectory($path)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
+        }
         $handle = @opendir($path);
         if ($handle === false) {
             throw new FileSystemException(sprintf('Cannot open the directory %s', $path));
