@@ -8,15 +8,12 @@ use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
-use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Traits\SingletonTrait;
 use Formwork\Translations\Translations;
-use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 
@@ -289,14 +286,17 @@ final class Formwork
             $this->loadAdminRoute();
         }
 
-        $this->router->add([
-            '/',
-            '/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
-            '/{page}/tag/{tagName:aln}/',
-            '/{page}/page/{paginationPage:num}/',
-            '/{page}/'
-        ], $this->defaultRoute());
+        $this->router->add(
+            [
+                '/',
+                '/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
+                '/{page}/tag/{tagName:aln}/',
+                '/{page}/page/{paginationPage:num}/',
+                '/{page}/'
+            ],
+            [Controllers\PageController::class . '@load']
+        );
     }
 
     /**
@@ -316,54 +316,5 @@ final class Formwork
                 $this->admin->run();
             }
         );
-    }
-
-    /**
-     * Get default route
-     */
-    protected function defaultRoute(): callable
-    {
-        return function (RouteParams $params) {
-            $route = $params->get('page', $this->config()->get('pages.index'));
-
-            if ($this->site->has('aliases') && $alias = $this->site->alias($route)) {
-                $route = trim($alias, '/');
-            }
-
-            if ($page = $this->site->findPage($route)) {
-                if ($page->has('canonical')) {
-                    $canonical = trim($page->canonical(), '/');
-                    if ($params->get('page', '') !== $canonical) {
-                        $route = empty($canonical) ? '' : $this->router->rewrite(['page' => $canonical]);
-                        Header::redirect($this->site->uri($route), 301);
-                    }
-                }
-                if (($params->has('tagName') || $params->has('paginationPage')) && $page->template()->scheme()->get('type') !== 'listing') {
-                    return $this->site->errorPage();
-                }
-                if ($this->config()->get('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
-                    if (($page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
-                    || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
-                        // Clear cache if the site was not modified since the page has been published or unpublished
-                        $this->cache->clear();
-                        FileSystem::touch($this->config()->get('content.path'));
-                    }
-                }
-                if ($page->routable() && $page->published()) {
-                    return $page;
-                }
-            } else {
-                $filename = basename($route);
-                $upperLevel = dirname($route);
-                if ($upperLevel === '.') {
-                    $upperLevel = $this->config()->get('pages.index');
-                }
-                if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
-                    return HTTPResponse::file($parent->files()->get($filename)->path());
-                }
-            }
-
-            return $this->site->errorPage();
-        };
     }
 }
