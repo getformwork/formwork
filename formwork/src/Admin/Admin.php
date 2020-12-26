@@ -5,6 +5,7 @@ namespace Formwork\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
 use Formwork\Admin\Users\Users;
+use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Page;
 use Formwork\Router\RouteParams;
@@ -72,6 +73,13 @@ final class Admin
      * @var Controllers\Errors
      */
     protected $errors;
+
+    /**
+     * Assets instance
+     *
+     * @var Assets
+     */
+    protected $assets;
 
     /**
      * Create a new Admin instance
@@ -288,6 +296,17 @@ final class Admin
     public function translate(...$arguments)
     {
         return Formwork::instance()->translations()->getCurrent()->translate(...$arguments);
+    }
+
+    /**
+     * Get Assets instance
+     */
+    public function assets(): Assets
+    {
+        if ($this->assets !== null) {
+            return $this->assets;
+        }
+        return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, Formwork::instance()->admin()->realUri('/assets/'));
     }
 
     /**
