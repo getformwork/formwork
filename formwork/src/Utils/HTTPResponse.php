@@ -27,11 +27,9 @@ class HTTPResponse
     public static function file(string $file, bool $download = false): void
     {
         $data = FileSystem::read($file);
-        $mimeType = FileSystem::mimeType($file);
-        Header::contentType($mimeType);
-        if ($download) {
-            Header::send('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
-        }
+        Header::send('Content-Type', FileSystem::mimeType($file));
+        Header::send('Content-Disposition', $download ? 'attachment; filename="' . basename($file) . '"' : 'inline');
+        Header::send('Content-Length', FileSystem::size($file, false));
         static::cleanOutputBuffers(); // Clean output buffers to prevent displayed file alteration
         echo $data;
         exit;
