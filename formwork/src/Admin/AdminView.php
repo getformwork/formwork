@@ -27,14 +27,6 @@ class AdminView extends View
     protected $assets;
 
     /**
-     * @inheritdoc
-     */
-    public function path(): string
-    {
-        return Formwork::instance()->config()->get('views.paths.admin');
-    }
-
-    /**
      * Get Assets instance
      */
     public function assets(): Assets

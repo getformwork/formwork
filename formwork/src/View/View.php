@@ -32,6 +32,13 @@ class View
     protected $vars = [];
 
     /**
+     * View path
+     *
+     * @var string
+     */
+    protected $path;
+
+    /**
      * View blocks
      *
      * @var array
@@ -69,10 +76,11 @@ class View
     /**
      * Create a new View instance
      */
-    public function __construct(string $name, array $vars = [])
+    public function __construct(string $name, array $vars = [], string $path = null)
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
+        $this->path = $path ?? Formwork::instance()->config()->get('views.paths.system');
         $this->initializeHelpers();
     }
 
@@ -89,7 +97,7 @@ class View
      */
     public function path(): string
     {
-        return Formwork::instance()->config()->get('views.paths.system');
+        return $this->path;
     }
 
     /**
@@ -112,7 +120,7 @@ class View
             throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
-        $file = $this->path() . str_replace('.', DS, $name) . '.php';
+        $file = $this->path . str_replace('.', DS, $name) . '.php';
 
         if (!FileSystem::exists($file)) {
             throw new RuntimeException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $name));
@@ -242,7 +250,7 @@ class View
      */
     protected function createLayoutView(string $name): View
     {
-        return new static('layouts' . DS . $name, $this->vars);
+        return new static('layouts' . DS . $name, $this->vars, $this->path);
     }
 
     public function __call(string $name, array $arguments)

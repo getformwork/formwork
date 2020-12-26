@@ -50,15 +50,7 @@ class Template extends View
     public function __construct(string $name, Page $page)
     {
         $this->page = $page;
-        parent::__construct($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function path(): string
-    {
-        return Formwork::instance()->config()->get('templates.path');
+        parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'));
     }
 
     /**
@@ -140,7 +132,7 @@ class Template extends View
      */
     protected function loadController(): void
     {
-        $controllerFile = $this->path() . 'controllers' . DS . $this->name . '.php';
+        $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
             $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));

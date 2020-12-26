@@ -132,7 +132,7 @@ abstract class AbstractController
      */
     protected function view(string $name, array $data = [], bool $return = false)
     {
-        $view = new AdminView($name, array_merge($this->defaults(), $data));
+        $view = new AdminView($name, array_merge($this->defaults(), $data), Formwork::instance()->config()->get('views.paths.admin'));
         return $view->render($return);
     }
 
