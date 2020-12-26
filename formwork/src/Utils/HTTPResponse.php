@@ -2,6 +2,8 @@
 
 namespace Formwork\Utils;
 
+use RuntimeException;
+
 class HTTPResponse
 {
     /**
@@ -24,14 +26,14 @@ class HTTPResponse
      */
     public static function file(string $file, bool $download = false): void
     {
-        FileSystem::assertExists($file);
+        $data = FileSystem::read($file);
         $mimeType = FileSystem::mimeType($file);
         Header::contentType($mimeType);
         if ($download) {
             Header::send('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
         }
         static::cleanOutputBuffers(); // Clean output buffers to prevent displayed file alteration
-        readfile($file);
+        echo $data;
         exit;
     }
 
