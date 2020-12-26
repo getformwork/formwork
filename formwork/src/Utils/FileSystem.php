@@ -384,7 +384,9 @@ class FileSystem
      */
     public static function read(string $file): string
     {
-        static::assertExists($file);
+        if (!static::isReadable($file)) {
+            throw new RuntimeException(sprintf('Cannot read %s: file exists but is not readable', $file));
+        }
         return @file_get_contents($file);
     }
 
