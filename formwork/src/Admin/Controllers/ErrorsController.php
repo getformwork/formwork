@@ -7,7 +7,7 @@ use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
 use Throwable;
 
-class Errors extends AbstractController
+class ErrorsController extends AbstractController
 {
     /**
      * Errors@notFound action

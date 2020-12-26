@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Statistics;
 use Formwork\Parsers\JSON;
 
-class Dashboard extends AbstractController
+class DashboardController extends AbstractController
 {
     /**
      * Dashboard@index action

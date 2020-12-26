@@ -34,7 +34,7 @@ abstract class AbstractController
      */
     public function __construct()
     {
-        $this->location = strtolower(Str::afterLast(static::class, '\\'));
+        $this->location = strtolower(Str::beforeLast(Str::afterLast(static::class, '\\'), 'Controller'));
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class AbstractController
     protected function ensurePermission(string $permission): void
     {
         if (!$this->user()->permissions()->has($permission)) {
-            $errors = new Errors();
+            $errors = new ErrorsController();
             $errors->forbidden();
             exit;
         }

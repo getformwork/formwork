@@ -11,7 +11,7 @@ use Formwork\Utils\Log;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
-class Authentication extends AbstractController
+class AuthenticationController extends AbstractController
 {
     /**
      * Authentication@login action

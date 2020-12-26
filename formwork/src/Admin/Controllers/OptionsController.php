@@ -15,7 +15,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\HTTPResponse;
 
-class Options extends AbstractController
+class OptionsController extends AbstractController
 {
     /**
      * All options tabs

@@ -11,7 +11,7 @@ use Formwork\Utils\HTTPResponse;
 use Formwork\Utils\JSONResponse;
 use RuntimeException;
 
-class Backup extends AbstractController
+class BackupController extends AbstractController
 {
     /**
      * Backup@make action

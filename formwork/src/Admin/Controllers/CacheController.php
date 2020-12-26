@@ -5,7 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Formwork;
 use Formwork\Utils\JSONResponse;
 
-class Cache extends AbstractController
+class CacheController extends AbstractController
 {
     /**
      * Cache@clear action

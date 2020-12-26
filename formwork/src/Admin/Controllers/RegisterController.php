@@ -11,7 +11,7 @@ use Formwork\Utils\Log;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
-class Register extends AbstractController
+class RegisterController extends AbstractController
 {
     /**
      * Register@register action

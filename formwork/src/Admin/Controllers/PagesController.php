@@ -22,7 +22,7 @@ use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use RuntimeException;
 
-class Pages extends AbstractController
+class PagesController extends AbstractController
 {
     /**
      * Valid page slug regex

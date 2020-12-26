@@ -19,7 +19,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Registry;
 
-class Users extends AbstractController
+class UsersController extends AbstractController
 {
     /**
      * Users@index action

@@ -9,7 +9,7 @@ use Formwork\Formwork;
 use Formwork\Utils\JSONResponse;
 use RuntimeException;
 
-class Updates extends AbstractController
+class UpdatesController extends AbstractController
 {
     /**
      * Updates@check action
