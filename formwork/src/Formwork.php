@@ -303,8 +303,6 @@ final class Formwork
     protected function loadAdminRoute(): void
     {
         $this->router->add(
-            ['HTTP', 'XHR'],
-            ['GET', 'POST'],
             [
                 '/' . $this->config()->get('admin.root') . '/',
                 '/' . $this->config()->get('admin.root') . '/{route}/'
@@ -312,7 +310,9 @@ final class Formwork
             function () {
                 $this->admin = new Admin();
                 $this->admin->run();
-            }
+            },
+            ['GET', 'POST'],
+            ['HTTP', 'XHR']
         );
     }
 }

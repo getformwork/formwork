@@ -26,6 +26,20 @@ class Router
     protected const REQUEST_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
+     * Default request type
+     *
+     * @var string
+     */
+    protected const DEFAULT_TYPE = 'HTTP';
+
+    /**
+     * Default request method
+     *
+     * @var string
+     */
+    protected const DEFAULT_METHOD = 'GET';
+
+    /**
      * Array containing route regex shortcuts
      *
      * @var array
@@ -83,59 +97,47 @@ class Router
     /**
      * Add a route
      *
-     * @param mixed ...$arguments
+     * @param array|string    $route
+     * @param callable|string $callback
+     * @param array|string    $method
+     * @param array|string    $type
      */
-    public function add(...$arguments): void
+    public function add($route, $callback, $method = self::DEFAULT_METHOD, $type = self::DEFAULT_TYPE): void
     {
-        $type = 'HTTP';
-        $method = 'GET';
-        $callback = null;
-        switch (count($arguments)) {
-            case 1:
-                [$route] = $arguments;
-                break;
-            case 2:
-                [$route, $callback] = $arguments;
-                break;
-            case 3:
-                [$method, $route, $callback] = $arguments;
-                break;
-            case 4:
-                [$type, $method, $route, $callback] = $arguments;
-                break;
-            default:
-                throw new InvalidArgumentException(sprintf('Invalid arguments for %s()', __METHOD__));
-        }
-        if (is_array($type)) {
-            foreach ($type as $t) {
-                $this->add($t, $method, $route, $callback);
+        if (is_array($route)) {
+            foreach ($route as $r) {
+                $this->add($r, $callback, $method, $type);
             }
             return;
+        }
+        if (!is_string($route)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $route argument', __METHOD__));
         }
         if (is_array($method)) {
             foreach ($method as $m) {
-                $this->add($type, $m, $route, $callback);
+                $this->add($route, $callback, $m, $type);
             }
             return;
         }
-        if (!in_array($type, self::REQUEST_TYPES, true)) {
-            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
+        if (!is_string($route)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $method argument', __METHOD__));
+        }
+        if (is_array($type)) {
+            foreach ($type as $t) {
+                $this->add($route, $callback, $method, $t);
+            }
+            return;
+        }
+        if (!is_string($type)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $type argument', __METHOD__));
         }
         if (!in_array($method, self::REQUEST_METHODS, true)) {
             throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
         }
-        if (is_array($route)) {
-            foreach ($route as $r) {
-                $this->add($type, $method, $r, $callback);
-            }
-            return;
+        if (!in_array($type, self::REQUEST_TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
         }
-        $this->routes[] = [
-            'type'     => $type,
-            'method'   => $method,
-            'route'    => $route,
-            'callback' => $callback
-        ];
+        $this->routes[] = compact('route', 'callback', 'method', 'type');
     }
 
     /**
@@ -197,7 +199,7 @@ class Router
     protected function match(string $route): bool
     {
         $compiledRoute = $this->compileRoute($route);
-        if ($compiledRoute !== false && preg_match($compiledRoute['regex'], $this->request, $matches)) {
+        if (preg_match($compiledRoute['regex'], $this->request, $matches)) {
             // Remove entire matches from $matches array
             array_shift($matches);
             // Build an associative array using params as keys and matches as values
@@ -230,11 +232,7 @@ class Router
         }
         // Wrap the regex in tilde delimiters, so we don't need to escape slashes
         $regex = '~^' . trim($regex, '^$') . '$~';
-        return [
-            'regex'  => $regex,
-            'tokens' => $tokens,
-            'params' => $params
-        ];
+        return compact('regex', 'tokens', 'params');
     }
 
     /**
