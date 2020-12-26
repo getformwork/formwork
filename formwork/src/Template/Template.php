@@ -19,11 +19,6 @@ class Template extends View
     protected const TYPE = 'template';
 
     /**
-     * @inheritdoc
-     */
-    protected static $helpers = [];
-
-    /**
      * Page passed to the template
      *
      * @var Page

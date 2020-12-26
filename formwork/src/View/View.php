@@ -64,7 +64,7 @@ class View
      *
      * @var array
      */
-    protected static $helpers = [];
+    protected $helpers = [];
 
     /**
      * Whether the view is being rendered
@@ -76,12 +76,12 @@ class View
     /**
      * Create a new View instance
      */
-    public function __construct(string $name, array $vars = [], string $path = null)
+    public function __construct(string $name, array $vars = [], string $path = null, array $helpers = [])
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
         $this->path = $path ?? Formwork::instance()->config()->get('views.paths.system');
-        $this->initializeHelpers();
+        $this->helpers = array_merge(PHP::parseFile(FORMWORK_PATH . 'helpers.php'), $helpers);
     }
 
     /**
@@ -228,35 +228,17 @@ class View
     }
 
     /**
-     * Return an array containing view helpers
-     */
-    protected function helpers(): array
-    {
-        return PHP::parseFile(FORMWORK_PATH . 'helpers.php');
-    }
-
-    /**
-     * Initialize view helpers
-     */
-    protected function initializeHelpers(): void
-    {
-        if (empty(static::$helpers)) {
-            static::$helpers = $this->helpers();
-        }
-    }
-
-    /**
      * Return the layout view instance
      */
     protected function createLayoutView(string $name): View
     {
-        return new static('layouts' . DS . $name, $this->vars, $this->path);
+        return new static('layouts' . DS . $name, $this->vars, $this->path, $this->helpers);
     }
 
     public function __call(string $name, array $arguments)
     {
-        if ($this->rendering && isset(static::$helpers[$name])) {
-            return static::$helpers[$name](...$arguments);
+        if ($this->rendering && isset($this->helpers[$name])) {
+            return $this->helpers[$name](...$arguments);
         }
         throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
