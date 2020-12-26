@@ -3,14 +3,15 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Admin;
-use Formwork\Admin\AdminView;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
+use Formwork\Parsers\PHP;
 use Formwork\Site;
 use Formwork\Utils\Date;
 use Formwork\Utils\Str;
+use Formwork\View\View;
 
 abstract class AbstractController
 {
@@ -132,7 +133,12 @@ abstract class AbstractController
      */
     protected function view(string $name, array $data = [], bool $return = false)
     {
-        $view = new AdminView($name, array_merge($this->defaults(), $data), Formwork::instance()->config()->get('views.paths.admin'));
+        $view = new View(
+            $name,
+            array_merge($this->defaults(), $data),
+            Formwork::instance()->config()->get('views.paths.admin'),
+            PHP::parseFile(ADMIN_PATH . 'helpers.php')
+        );
         return $view->render($return);
     }
 
