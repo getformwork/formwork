@@ -28,7 +28,7 @@ return [
     ],
     'date' => [
         'format'      => 'm/d/Y',
-        'hour_format' => 'h:i A',
+        'time_format' => 'h:i A',
         'timezone'    => 'UTC',
         'week_starts' => 0
     ],

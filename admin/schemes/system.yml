@@ -33,7 +33,7 @@ fields:
                         type: column
                         width: 2-3
                         fields:
-                            date.hour_format:
+                            date.time_format:
                                 type: select
                                 import:
                                     options: 'Formwork\Admin\Utils\DateFormats::hour'
