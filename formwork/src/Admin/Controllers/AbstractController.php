@@ -5,37 +5,22 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Users\User;
+use Formwork\Controllers\AbstractController as BaseAbstractController;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\PHP;
 use Formwork\Site;
 use Formwork\Utils\Date;
-use Formwork\Utils\Str;
 use Formwork\View\View;
 
-abstract class AbstractController
+abstract class AbstractController extends BaseAbstractController
 {
-    /**
-     * Current panel location
-     *
-     * @var string
-     */
-    protected $location;
-
     /**
      * All loaded modals
      *
      * @var array
      */
     protected $modals = [];
-
-    /**
-     * Create a new Controller instance
-     */
-    public function __construct()
-    {
-        $this->location = strtolower(Str::beforeLast(Str::afterLast(static::class, '\\'), 'Controller'));
-    }
 
     /**
      * Return admin instance
@@ -60,7 +45,7 @@ abstract class AbstractController
     protected function defaults(): array
     {
         return [
-            'location'    => $this->location,
+            'location'    => $this->name,
             'admin'       => $this->admin(),
             'csrfToken'   => CSRFToken::get(),
             'modals'      => implode($this->modals),
