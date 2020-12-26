@@ -357,7 +357,7 @@ class FileSystem
         if (static::isFile($source)) {
             return static::copyFile($source, $destination, $overwrite);
         }
-        return static::copyDirectory($source, $destination);
+        return static::copyDirectory($source, $destination, $overwrite);
     }
 
     /**
@@ -426,7 +426,7 @@ class FileSystem
         if (static::isFile($source)) {
             return static::moveFile($source, $destination, $overwrite);
         }
-        return static::moveDirectory($source, $destination);
+        return static::moveDirectory($source, $destination, $overwrite);
     }
 
     /**
