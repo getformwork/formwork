@@ -69,7 +69,7 @@ class Router
      *
      * @var string
      */
-    protected $route;
+    protected $matchedRoute;
 
     /**
      * Route params
@@ -190,7 +190,7 @@ class Router
      */
     public function rewrite(array $params): string
     {
-        return $this->rewriteRoute($this->route, array_merge($this->params->toArray(), $params));
+        return $this->rewriteRoute($this->matchedRoute, array_merge($this->params->toArray(), $params));
     }
 
     /**
@@ -204,7 +204,7 @@ class Router
             array_shift($matches);
             // Build an associative array using params as keys and matches as values
             $params = array_combine($compiledRoute['params'], $matches);
-            $this->route = $route;
+            $this->matchedRoute = $route;
             $this->params = new RouteParams($params);
             return true;
         }
