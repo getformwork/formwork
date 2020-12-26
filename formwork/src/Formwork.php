@@ -293,7 +293,7 @@ final class Formwork
                 '/{page}/page/{paginationPage:num}/',
                 '/{page}/'
             ],
-            [Controllers\PageController::class . '@load']
+            Controllers\PageController::class . '@load'
         );
     }
 
