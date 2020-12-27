@@ -2,8 +2,6 @@
 
 namespace Formwork\Utils;
 
-use RuntimeException;
-
 class HTTPResponse
 {
     /**
@@ -29,7 +27,7 @@ class HTTPResponse
         $data = FileSystem::read($file);
         Header::send('Content-Type', FileSystem::mimeType($file));
         Header::send('Content-Disposition', $download ? 'attachment; filename="' . basename($file) . '"' : 'inline');
-        Header::send('Content-Length', FileSystem::size($file, false));
+        Header::send('Content-Length', FileSystem::fileSize($file));
         static::cleanOutputBuffers(); // Clean output buffers to prevent displayed file alteration
         echo $data;
         exit;

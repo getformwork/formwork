@@ -578,8 +578,8 @@ class Image extends File
 
         $this->save($tempFilename, false);
 
-        $tempFilesize = FileSystem::size($tempFilename, false);
-        $sourceFilesize = FileSystem::size($this->path, false);
+        $tempFilesize = FileSystem::fileSize($tempFilename);
+        $sourceFilesize = FileSystem::fileSize($this->path);
 
         if ($tempFilesize < $sourceFilesize) {
             FileSystem::move($tempFilename, $this->path, true);
