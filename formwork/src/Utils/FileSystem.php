@@ -87,6 +87,22 @@ class FileSystem
     protected const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
 
     /**
+     * Normalize path slashes
+     */
+    public static function normalizePath(string $path): string
+    {
+        return Path::normalize($path, DS);
+    }
+
+    /**
+     * Join paths and normalize the result
+     */
+    public static function joinPaths(string ...$paths): string
+    {
+        return Path::join($paths, DS);
+    }
+
+    /**
      * Get file name without extension given a file
      */
     public static function name(string $file): string
@@ -100,6 +116,14 @@ class FileSystem
     public static function extension(string $file): string
     {
         return pathinfo($file, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Return whether a file or a directory is visible (starts with a dot) or not
+     */
+    public static function isVisible(string $path): bool
+    {
+        return !Str::startsWith(basename($path), '.');
     }
 
     /**
@@ -131,6 +155,64 @@ class FileSystem
         if ($value === false && static::exists($path)) {
             throw new FileSystemException(sprintf('%s "%s" already exists', static::isFile($path) ? 'File' : 'Directory', $path));
         }
+    }
+
+    /**
+     * Return whether a file or directory is readable
+     */
+    public static function isReadable(string $path, bool $assertExists = true): bool
+    {
+        if ($assertExists) {
+            static::assertExists($path);
+        }
+        return @is_readable($path);
+    }
+
+    /**
+     * Return whether a file or a directory is writable
+     */
+    public static function isWritable(string $path, bool $assertExists = true): bool
+    {
+        if ($assertExists) {
+            static::assertExists($path);
+        }
+        return @is_writable($path);
+    }
+
+    /**
+     * Return whether a path corresponds to a file
+     */
+    public static function isFile(string $path, bool $assertExists = true): bool
+    {
+        if ($assertExists) {
+            static::assertExists($path);
+        }
+        return @is_file($path);
+    }
+
+    /**
+     * Return whether a path corresponds to a directory
+     */
+    public static function isDirectory(string $path, bool $assertExists = true): bool
+    {
+        if ($assertExists) {
+            static::assertExists($path);
+        }
+        return @is_dir($path);
+    }
+
+    /**
+     * Return whether a directory is empty
+     */
+    public static function isEmptyDirectory(string $path, bool $assertExists = true): bool
+    {
+        if (!static::isDirectory($path, $assertExists)) {
+            return false;
+        }
+        foreach (static::listContents($path, self::LIST_ALL) as $item) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -193,6 +275,30 @@ class FileSystem
     }
 
     /**
+     * Update last modified and access time of a file or a directory
+     */
+    public static function touch(string $path): bool
+    {
+        static::assertExists($path, true);
+        if (@touch($path)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot touch "%s": %s', $path, static::getLastStreamErrorMessage()));
+    }
+
+    /**
+     * Get an integer representing permissions of a file or a directory
+     */
+    public static function mode(string $path): int
+    {
+        static::assertExists($path);
+        if (($mode = @fileperms($path)) !== false) {
+            return $mode;
+        }
+        throw new FileSystemException(sprintf('Cannot get permissions of "%s": %s', $path, static::getLastStreamErrorMessage()));
+    }
+
+    /**
      * Get file size
      *
      * @param bool $unit Whether to return size with unit of measurement or not
@@ -232,84 +338,6 @@ class FileSystem
             }
         }
         return $unit ? static::bytesToSize($bytes) : $bytes;
-    }
-
-    /**
-     * Get an integer representing permissions of a file or a directory
-     */
-    public static function mode(string $path): int
-    {
-        static::assertExists($path);
-        if (($mode = @fileperms($path)) !== false) {
-            return $mode;
-        }
-        throw new FileSystemException(sprintf('Cannot get permissions of "%s": %s', $path, static::getLastStreamErrorMessage()));
-    }
-
-    /**
-     * Return whether a file or a directory is visible (starts with a dot) or not
-     */
-    public static function isVisible(string $path): bool
-    {
-        return !Str::startsWith(basename($path), '.');
-    }
-
-    /**
-     * Return whether a file or directory is readable
-     */
-    public static function isReadable(string $path, bool $assertExists = true): bool
-    {
-        if ($assertExists) {
-            static::assertExists($path);
-        }
-        return @is_readable($path);
-    }
-
-    /**
-     * Return whether a file or a directory is writable
-     */
-    public static function isWritable(string $path, bool $assertExists = true): bool
-    {
-        if ($assertExists) {
-            static::assertExists($path);
-        }
-        return @is_writable($path);
-    }
-
-    /**
-     * Return whether a path corresponds to a file
-     */
-    public static function isFile(string $path, bool $assertExists = true): bool
-    {
-        if ($assertExists) {
-            static::assertExists($path);
-        }
-        return @is_file($path);
-    }
-
-    /**
-     * Return whether a path corresponds to a directory
-     */
-    public static function isDirectory(string $path, bool $assertExists = true): bool
-    {
-        if ($assertExists) {
-            static::assertExists($path);
-        }
-        return @is_dir($path);
-    }
-
-    /**
-     * Return whether a directory is empty
-     */
-    public static function isEmptyDirectory(string $path, bool $assertExists = true): bool
-    {
-        if (!static::isDirectory($path, $assertExists)) {
-            return false;
-        }
-        foreach (static::listContents($path, self::LIST_ALL) as $item) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -428,22 +456,6 @@ class FileSystem
     }
 
     /**
-     * Download a file to a destination
-     *
-     * @param bool     $overwrite Whether to overwrite destination if already exists
-     * @param resource $context   A stream context resource
-     */
-    public static function download(string $source, string $destination, bool $overwrite = false, $context = null): bool
-    {
-        if (!$overwrite) {
-            static::assertExists($destination, false);
-        }
-        $data = static::fetch($source, $context);
-        static::write($destination, $data);
-        return true;
-    }
-
-    /**
      * Move a file or a directory
      *
      * @param bool $overwrite Whether to overwrite destination file or not
@@ -507,110 +519,6 @@ class FileSystem
             return $data;
         }
         throw new FileSystemException(sprintf('Cannot read "%s": %s', $file, static::getLastStreamErrorMessage()));
-    }
-
-    /**
-     * Fetch a remote file
-     *
-     * @param resource $context A stream context resource
-     */
-    public static function fetch(string $source, $context = null): string
-    {
-        if (filter_var($source, FILTER_VALIDATE_URL) === false) {
-            throw new FileSystemException(sprintf('Cannot fetch "%s": invalid URI', $source));
-        }
-        if ($context !== null) {
-            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
-            if (!$valid) {
-                throw new FileSystemException('Invalid stream context resource');
-            }
-        }
-        if (($data = @file_get_contents($source, false, $context)) !== false) {
-            return $data;
-        }
-        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastStreamErrorMessage()));
-    }
-
-    /**
-     * Write content to file atomically
-     */
-    public static function write(string $file, string $content): bool
-    {
-        if (static::exists($file) && !static::isFile($file)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
-        }
-        if (static::exists($file) && !static::isWritable($file)) {
-            throw new FileSystemException(sprintf('Cannot write "%s": file exists but is not writable', $file));
-        }
-        $temporaryFile = static::createTemporaryFile(dirname($file));
-        if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
-            throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, static::getLastStreamErrorMessage()));
-        }
-        if (static::exists($file)) {
-            @chmod($temporaryFile, @fileperms($file));
-        }
-        return static::moveFile($temporaryFile, $file, true);
-    }
-
-    /**
-     * Create a new file with empty content
-     */
-    public static function createFile(string $file): bool
-    {
-        // x+ mode checks file existence atomically
-        if (($handle = @fopen($file, 'x+')) !== false) {
-            @fclose($handle);
-            @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
-            return true;
-        }
-        throw new FileSystemException(sprintf('Cannot create file "%s": %s', $file, static::getLastStreamErrorMessage()));
-    }
-
-    /**
-     * Try to create a temporary file in the specified directory and return its path
-     */
-    public static function createTemporaryFile(string $directory, string $prefix = ''): string
-    {
-        $attempts = 0;
-        while ($attempts++ < 10) {
-            $temporaryFile = static::joinPaths($directory, static::randomName($prefix));
-            try {
-                static::createFile($temporaryFile);
-            } catch (FileSystemException $e) {
-                continue;
-            }
-            return $temporaryFile;
-        }
-        throw new FileSystemException('Cannot create a temporary file');
-    }
-
-    /**
-     * Create a empty directory
-     *
-     * @param bool $recursive Whether to create directory recursively
-     */
-    public static function createDirectory(string $directory, bool $recursive = false): bool
-    {
-        if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
-            return true;
-        }
-        throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
-    }
-
-    /**
-     * Normalize path slashes
-     */
-    public static function normalizePath(string $path): string
-    {
-        return Path::normalize($path, DS);
-    }
-
-    /**
-     * Join paths and normalize the result
-     */
-    public static function joinPaths(string ...$paths): string
-    {
-        return Path::join($paths, DS);
     }
 
     /**
@@ -689,15 +597,107 @@ class FileSystem
     }
 
     /**
-     * Update last modified and access time of a file or a directory
+     * Fetch a remote file
+     *
+     * @param resource $context A stream context resource
      */
-    public static function touch(string $path): bool
+    public static function fetch(string $source, $context = null): string
     {
-        static::assertExists($path, true);
-        if (@touch($path)) {
+        if (filter_var($source, FILTER_VALIDATE_URL) === false) {
+            throw new FileSystemException(sprintf('Cannot fetch "%s": invalid URI', $source));
+        }
+        if ($context !== null) {
+            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
+            if (!$valid) {
+                throw new FileSystemException('Invalid stream context resource');
+            }
+        }
+        if (($data = @file_get_contents($source, false, $context)) !== false) {
+            return $data;
+        }
+        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastStreamErrorMessage()));
+    }
+
+    /**
+     * Create a new file with empty content
+     */
+    public static function createFile(string $file): bool
+    {
+        // x+ mode checks file existence atomically
+        if (($handle = @fopen($file, 'x+')) !== false) {
+            @fclose($handle);
+            @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot touch "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot create file "%s": %s', $file, static::getLastStreamErrorMessage()));
+    }
+
+    /**
+     * Try to create a temporary file in the specified directory and return its path
+     */
+    public static function createTemporaryFile(string $directory, string $prefix = ''): string
+    {
+        $attempts = 0;
+        while ($attempts++ < 10) {
+            $temporaryFile = static::joinPaths($directory, static::randomName($prefix));
+            try {
+                static::createFile($temporaryFile);
+            } catch (FileSystemException $e) {
+                continue;
+            }
+            return $temporaryFile;
+        }
+        throw new FileSystemException('Cannot create a temporary file');
+    }
+
+    /**
+     * Write content to file atomically
+     */
+    public static function write(string $file, string $content): bool
+    {
+        if (static::exists($file) && !static::isFile($file)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
+        }
+        if (static::exists($file) && !static::isWritable($file)) {
+            throw new FileSystemException(sprintf('Cannot write "%s": file exists but is not writable', $file));
+        }
+        $temporaryFile = static::createTemporaryFile(dirname($file));
+        if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
+            throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, static::getLastStreamErrorMessage()));
+        }
+        if (static::exists($file)) {
+            @chmod($temporaryFile, @fileperms($file));
+        }
+        return static::moveFile($temporaryFile, $file, true);
+    }
+
+    /**
+     * Create a empty directory
+     *
+     * @param bool $recursive Whether to create directory recursively
+     */
+    public static function createDirectory(string $directory, bool $recursive = false): bool
+    {
+        if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
+    }
+
+    /**
+     * Download a file to a destination
+     *
+     * @param bool     $overwrite Whether to overwrite destination if already exists
+     * @param resource $context   A stream context resource
+     */
+    public static function download(string $source, string $destination, bool $overwrite = false, $context = null): bool
+    {
+        if (!$overwrite) {
+            static::assertExists($destination, false);
+        }
+        $data = static::fetch($source, $context);
+        static::write($destination, $data);
+        return true;
     }
 
     /**
