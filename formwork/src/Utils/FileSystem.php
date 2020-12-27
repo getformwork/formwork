@@ -299,9 +299,20 @@ class FileSystem
     }
 
     /**
-     * Get file size
+     * Get file or directory size in bytes
      */
-    public static function size(string $file): int
+    public static function size(string $path): int
+    {
+        if (static::isFile($path)) {
+            return static::fileSize($path);
+        }
+        return static::directorySize($path);
+    }
+
+    /**
+     * Get file size in bytes
+     */
+    public static function fileSize(string $file): int
     {
         if (!static::isFile($file)) {
             throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
@@ -313,7 +324,7 @@ class FileSystem
     }
 
     /**
-     * Get directory size recursively
+     * Get directory size in bytes recursively
      */
     public static function directorySize(string $directory): int
     {
@@ -323,11 +334,7 @@ class FileSystem
         $size = 0;
         foreach (static::listContents($directory, self::LIST_ALL) as $item) {
             $itemPath = static::joinPaths($directory, $item);
-            if (static::isFile($itemPath)) {
-                $size += static::size($itemPath);
-            } else {
-                $size += static::directorySize($itemPath);
-            }
+            $size += static::size($itemPath);
         }
         return $size;
     }
