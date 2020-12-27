@@ -134,30 +134,39 @@ class FileSystem
     }
 
     /**
-     * Get access time of a file
+     * Get access time of a file or a directory
      */
-    public static function accessTime(string $file): ?int
+    public static function accessTime(string $path): int
     {
-        static::assertExists($file);
-        return @fileatime($file) ?: null;
+        static::assertExists($path);
+        if (($time = @fileatime($path)) !== false) {
+            return $time;
+        }
+        throw new FileSystemException(sprintf('Cannot get access time of "%s": %s', $path, static::getLastStreamErrorMessage()));
     }
 
     /**
-     * Get creation time of a file
+     * Get creation time of a file or a directory
      */
-    public static function creationTime(string $file): ?int
+    public static function creationTime(string $path): int
     {
-        static::assertExists($file);
-        return @filectime($file) ?: null;
+        static::assertExists($path);
+        if (($time = @filectime($path)) !== false) {
+            return $time;
+        }
+        throw new FileSystemException(sprintf('Cannot get creation time of "%s": %s', $path, static::getLastStreamErrorMessage()));
     }
 
     /**
-     * Get last modified time of a file
+     * Get last modified time of a file or a directory
      */
-    public static function lastModifiedTime(string $file): ?int
+    public static function lastModifiedTime(string $path): int
     {
-        static::assertExists($file);
-        return @filemtime($file) ?: null;
+        static::assertExists($path);
+        if (($time = @filemtime($path)) !== false) {
+            return $time;
+        }
+        throw new FileSystemException(sprintf('Cannot get last modified time of "%s": %s', $path, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -188,7 +197,7 @@ class FileSystem
      *
      * @param bool $unit Whether to return size with unit of measurement or not
      *
-     * @return int|string|null
+     * @return int|string
      */
     public static function size(string $file, bool $unit = true)
     {
@@ -198,7 +207,7 @@ class FileSystem
         if (($bytes = @filesize($file)) !== false) {
             return $unit ? static::bytesToSize($bytes) : $bytes;
         }
-        return null;
+        throw new FileSystemException(sprintf('Cannot get file size for "%s": %s', $file, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -206,16 +215,16 @@ class FileSystem
      *
      * @param bool $unit Whether to return size with unit of measurement or not
      *
-     * @return int|string|null
+     * @return int|string
      */
-    public static function directorySize(string $path, bool $unit = true)
+    public static function directorySize(string $directory, bool $unit = true)
     {
-        if (!static::isDirectory($path)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
+        if (!static::isDirectory($directory)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
         }
         $bytes = 0;
-        foreach (static::listContents($path, self::LIST_ALL) as $item) {
-            $itemPath = static::joinPaths($path, $item);
+        foreach (static::listContents($directory, self::LIST_ALL) as $item) {
+            $itemPath = static::joinPaths($directory, $item);
             if (static::isFile($itemPath)) {
                 $bytes += (int) static::size($itemPath, false);
             } else {
@@ -226,16 +235,19 @@ class FileSystem
     }
 
     /**
-     * Get an integer representing permissions of a file
+     * Get an integer representing permissions of a file or a directory
      */
-    public static function mode(string $file): int
+    public static function mode(string $path): int
     {
-        static::assertExists($file);
-        return @fileperms($file);
+        static::assertExists($path);
+        if (($mode = @fileperms($path)) !== false) {
+            return $mode;
+        }
+        throw new FileSystemException(sprintf('Cannot get permissions of "%s": %s', $path, static::getLastStreamErrorMessage()));
     }
 
     /**
-     * Return whether a file is visible (starts with a dot) or not
+     * Return whether a file or a directory is visible (starts with a dot) or not
      */
     public static function isVisible(string $path): bool
     {
@@ -243,25 +255,25 @@ class FileSystem
     }
 
     /**
-     * Return whether a file is readable
+     * Return whether a file or directory is readable
      */
-    public static function isReadable(string $file, bool $assertExists = true): bool
+    public static function isReadable(string $path, bool $assertExists = true): bool
     {
         if ($assertExists) {
-            static::assertExists($file);
+            static::assertExists($path);
         }
-        return @is_readable($file);
+        return @is_readable($path);
     }
 
     /**
-     * Return whether a file is writable
+     * Return whether a file or a directory is writable
      */
-    public static function isWritable(string $file, bool $assertExists = true): bool
+    public static function isWritable(string $path, bool $assertExists = true): bool
     {
         if ($assertExists) {
-            static::assertExists($file);
+            static::assertExists($path);
         }
-        return @is_writable($file);
+        return @is_writable($path);
     }
 
     /**
@@ -316,41 +328,47 @@ class FileSystem
     /**
      * Delete a file
      */
-    public static function deleteFile(string $path): bool
+    public static function deleteFile(string $file): bool
     {
-        if (!static::isFile($path)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only files as $path argument', __METHOD__));
+        if (!static::isFile($file)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
         }
-        return @unlink($path);
+        if (@unlink($file)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot delete file "%s": %s', $file, static::getLastStreamErrorMessage()));
     }
 
     /**
      * Delete a directory
      *
-     * @param bool $recursive Whether to delete files recursively or not
+     * @param bool $recursive Whether to delete directory content recursively or not
      */
-    public static function deleteDirectory(string $path, bool $recursive = false): bool
+    public static function deleteDirectory(string $directory, bool $recursive = false): bool
     {
-        if (!static::isDirectory($path)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
+        if (!static::isDirectory($directory)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
         }
         if ($recursive) {
-            foreach (static::listContents($path, self::LIST_ALL) as $item) {
-                $itemPath = static::joinPaths($path, $item);
+            foreach (static::listContents($directory, self::LIST_ALL) as $item) {
+                $itemPath = static::joinPaths($directory, $item);
                 static::delete($itemPath, $recursive);
             }
         } else {
-            if (!static::isEmptyDirectory($path)) {
-                throw new FileSystemException(sprintf('Directory "%s" must be empty to be deleted', $path));
+            if (!static::isEmptyDirectory($directory)) {
+                throw new FileSystemException(sprintf('Directory "%s" must be empty to be deleted', $directory));
             }
         }
-        return @rmdir($path);
+        if (@rmdir($directory)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot delete directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
     }
 
     /**
      * Copy a file or a directory
      *
-     * @param bool $overwrite Whether to overwrite destination file or not
+     * @param bool $overwrite Whether to overwrite destination or not
      */
     public static function copy(string $source, string $destination, bool $overwrite = false): bool
     {
@@ -363,7 +381,7 @@ class FileSystem
     /**
      * Copy a file to another path
      *
-     * @param bool $overwrite Whether to overwrite destination file or not
+     * @param bool $overwrite Whether to overwrite destination or not
      */
     public static function copyFile(string $source, string $destination, bool $overwrite = false): bool
     {
@@ -373,13 +391,16 @@ class FileSystem
         if (!$overwrite) {
             static::assertExists($destination, false);
         }
-        return @copy($source, $destination);
+        if (@copy($source, $destination)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastStreamErrorMessage()));
     }
 
     /**
      * Copy a directory to another path
      *
-     * @param bool $overwrite Whether to overwrite destination directory or not
+     * @param bool $overwrite Whether to overwrite destination or not
      */
     public static function copyDirectory(string $source, string $destination, bool $overwrite = false): bool
     {
@@ -392,10 +413,16 @@ class FileSystem
         if (!static::exists($destination)) {
             static::createDirectory($destination, true);
         }
-        foreach (static::listContents($source, self::LIST_ALL) as $item) {
-            $sourceItemPath = static::joinPaths($source, $item);
-            $destinationItemPath = static::joinPaths($destination, $item);
-            static::copy($sourceItemPath, $destinationItemPath, $overwrite);
+        try {
+            foreach (static::listContents($source, self::LIST_ALL) as $item) {
+                $sourceItemPath = static::joinPaths($source, $item);
+                $destinationItemPath = static::joinPaths($destination, $item);
+                static::copy($sourceItemPath, $destinationItemPath, $overwrite);
+            }
+        } catch (FileSystemException $e) {
+            // Delete destination directory if something fails
+            static::deleteDirectory($destination, true);
+            throw $e;
         }
         return true;
     }
@@ -442,7 +469,10 @@ class FileSystem
         if (!$overwrite) {
             static::assertExists($destination, false);
         }
-        return @rename($source, $destination);
+        if (@rename($source, $destination)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot move file "%s": %s', $source, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -455,6 +485,8 @@ class FileSystem
         if (!static::isDirectory($source)) {
             throw new InvalidArgumentException(sprintf('%s() accepts only directories as $source argument', __METHOD__));
         }
+        // Make a copy instead of directly trasferring files to avoid messing up
+        // with an incomplete state if something fails
         static::copyDirectory($source, $destination, $overwrite);
         static::deleteDirectory($source, true);
         return true;
@@ -471,7 +503,10 @@ class FileSystem
         if (!static::isReadable($file)) {
             throw new FileSystemException(sprintf('Cannot read "%s": file exists but is not readable', $file));
         }
-        return @file_get_contents($file);
+        if (($data = @file_get_contents($file)) !== false) {
+            return $data;
+        }
+        throw new FileSystemException(sprintf('Cannot read "%s": %s', $file, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -490,11 +525,10 @@ class FileSystem
                 throw new FileSystemException('Invalid stream context resource');
             }
         }
-        $data = @file_get_contents($source, false, $context);
-        if ($data === false) {
-            throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastStreamErrorMessage()));
+        if (($data = @file_get_contents($source, false, $context)) !== false) {
+            return $data;
         }
-        return $data;
+        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -560,7 +594,7 @@ class FileSystem
         if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot create directory "%s"', $directory));
+        throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
     }
 
     /**
@@ -584,14 +618,14 @@ class FileSystem
      *
      * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
      */
-    public static function listContents(string $path, int $flags = self::LIST_VISIBLE): Generator
+    public static function listContents(string $directory, int $flags = self::LIST_VISIBLE): Generator
     {
-        if (!static::isDirectory($path)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $path argument', __METHOD__));
+        if (!static::isDirectory($directory)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
         }
-        $handle = @opendir($path);
+        $handle = @opendir($directory);
         if ($handle === false) {
-            throw new FileSystemException(sprintf('Cannot open the directory "%s"', $path));
+            throw new FileSystemException(sprintf('Cannot open the directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
         }
         while (($item = @readdir($handle)) !== false) {
             if (in_array($item, self::IGNORED_FILES, true)) {
@@ -600,7 +634,7 @@ class FileSystem
             if (!($flags & self::LIST_HIDDEN) && !static::isVisible($item)) {
                 continue;
             }
-            $itemPath = static::joinPaths($path, $item);
+            $itemPath = static::joinPaths($directory, $item);
             if (!($flags & self::LIST_FILES) && static::isFile($itemPath)) {
                 continue;
             }
@@ -617,10 +651,13 @@ class FileSystem
      *
      * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
      */
-    public static function listRecursive(string $path, int $flags = self::LIST_VISIBLE): Generator
+    public static function listRecursive(string $directory, int $flags = self::LIST_VISIBLE): Generator
     {
-        foreach (static::listContents($path, $flags) as $item) {
-            $itemPath = static::joinPaths($path, $item);
+        if (!static::isDirectory($directory)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
+        }
+        foreach (static::listContents($directory, $flags) as $item) {
+            $itemPath = static::joinPaths($directory, $item);
             if (static::isDirectory($itemPath)) {
                 foreach (static::listRecursive($itemPath, $flags) as $item) {
                     yield $item;
@@ -636,9 +673,9 @@ class FileSystem
      *
      * @param bool $all Whether to return only visible or all files
      */
-    public static function listFiles(string $path, bool $all = false): Generator
+    public static function listFiles(string $directory, bool $all = false): Generator
     {
-        return static::listContents($path, $all ? self::LIST_FILES | self::LIST_HIDDEN : self::LIST_FILES);
+        return static::listContents($directory, $all ? self::LIST_FILES | self::LIST_HIDDEN : self::LIST_FILES);
     }
 
     /**
@@ -646,18 +683,21 @@ class FileSystem
      *
      * @param bool $all Whether to return only visible or all directories
      */
-    public static function listDirectories(string $path, bool $all = false): Generator
+    public static function listDirectories(string $directory, bool $all = false): Generator
     {
-        return static::listContents($path, $all ? self::LIST_DIRECTORIES | self::LIST_HIDDEN : self::LIST_DIRECTORIES);
+        return static::listContents($directory, $all ? self::LIST_DIRECTORIES | self::LIST_HIDDEN : self::LIST_DIRECTORIES);
     }
 
     /**
-     * Touch a file or directory
+     * Update last modified and access time of a file or a directory
      */
     public static function touch(string $path): bool
     {
         static::assertExists($path, true);
-        return @touch($path);
+        if (@touch($path)) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot touch "%s": %s', $path, static::getLastStreamErrorMessage()));
     }
 
     /**
