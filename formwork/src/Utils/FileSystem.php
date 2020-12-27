@@ -224,7 +224,7 @@ class FileSystem
         if (($time = @fileatime($path)) !== false) {
             return $time;
         }
-        throw new FileSystemException(sprintf('Cannot get access time of "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot get access time of "%s": %s', $path, static::getLastErrorMessage()));
     }
 
     /**
@@ -236,7 +236,7 @@ class FileSystem
         if (($time = @filectime($path)) !== false) {
             return $time;
         }
-        throw new FileSystemException(sprintf('Cannot get creation time of "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot get creation time of "%s": %s', $path, static::getLastErrorMessage()));
     }
 
     /**
@@ -248,7 +248,7 @@ class FileSystem
         if (($time = @filemtime($path)) !== false) {
             return $time;
         }
-        throw new FileSystemException(sprintf('Cannot get last modified time of "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot get last modified time of "%s": %s', $path, static::getLastErrorMessage()));
     }
 
     /**
@@ -283,7 +283,7 @@ class FileSystem
         if (@touch($path)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot touch "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot touch "%s": %s', $path, static::getLastErrorMessage()));
     }
 
     /**
@@ -295,7 +295,7 @@ class FileSystem
         if (($mode = @fileperms($path)) !== false) {
             return $mode;
         }
-        throw new FileSystemException(sprintf('Cannot get permissions of "%s": %s', $path, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot get permissions of "%s": %s', $path, static::getLastErrorMessage()));
     }
 
     /**
@@ -320,7 +320,7 @@ class FileSystem
         if (($size = @filesize($file)) !== false) {
             return $size;
         }
-        throw new FileSystemException(sprintf('Cannot get file size for "%s": %s', $file, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot get file size for "%s": %s', $file, static::getLastErrorMessage()));
     }
 
     /**
@@ -363,7 +363,7 @@ class FileSystem
         if (@unlink($file)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot delete file "%s": %s', $file, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot delete file "%s": %s', $file, static::getLastErrorMessage()));
     }
 
     /**
@@ -389,7 +389,7 @@ class FileSystem
         if (@rmdir($directory)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot delete directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot delete directory "%s": %s', $directory, static::getLastErrorMessage()));
     }
 
     /**
@@ -421,7 +421,7 @@ class FileSystem
         if (@copy($source, $destination)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastErrorMessage()));
     }
 
     /**
@@ -483,7 +483,7 @@ class FileSystem
         if (@rename($source, $destination)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot move file "%s": %s', $source, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot move file "%s": %s', $source, static::getLastErrorMessage()));
     }
 
     /**
@@ -517,7 +517,7 @@ class FileSystem
         if (($data = @file_get_contents($file)) !== false) {
             return $data;
         }
-        throw new FileSystemException(sprintf('Cannot read "%s": %s', $file, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot read "%s": %s', $file, static::getLastErrorMessage()));
     }
 
     /**
@@ -532,7 +532,7 @@ class FileSystem
         }
         $handle = @opendir($directory);
         if ($handle === false) {
-            throw new FileSystemException(sprintf('Cannot open the directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
+            throw new FileSystemException(sprintf('Cannot open the directory "%s": %s', $directory, static::getLastErrorMessage()));
         }
         while (($item = @readdir($handle)) !== false) {
             if (in_array($item, self::IGNORED_FILES, true)) {
@@ -614,7 +614,7 @@ class FileSystem
         if (($data = @file_get_contents($source, false, $context)) !== false) {
             return $data;
         }
-        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastErrorMessage()));
     }
 
     /**
@@ -628,7 +628,7 @@ class FileSystem
             @chmod($file, self::DEFAULT_FILE_MODE & ~umask());
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot create file "%s": %s', $file, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot create file "%s": %s', $file, static::getLastErrorMessage()));
     }
 
     /**
@@ -662,7 +662,7 @@ class FileSystem
         }
         $temporaryFile = static::createTemporaryFile(dirname($file));
         if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
-            throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, static::getLastStreamErrorMessage()));
+            throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, static::getLastErrorMessage()));
         }
         if (static::exists($file)) {
             @chmod($temporaryFile, @fileperms($file));
@@ -680,7 +680,7 @@ class FileSystem
         if (@mkdir($directory, self::DEFAULT_DIRECTORY_MODE, $recursive)) {
             return true;
         }
-        throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastStreamErrorMessage()));
+        throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastErrorMessage()));
     }
 
     /**
@@ -741,15 +741,10 @@ class FileSystem
     }
 
     /**
-     * Return the message string of the last stream error
+     * Return the message string of the last error
      */
-    protected static function getLastStreamErrorMessage(string $default = ''): string
+    protected static function getLastErrorMessage(): string
     {
-        $message = error_get_last()['message'] ?? '';
-        // Stream errors are in the form %s(%s): %s, we only need the trailing part
-        if (preg_match('/^.*\(.*\): (.*)/', $message, $matches)) {
-            return $matches[1];
-        }
-        return $default;
+        return Str::after(error_get_last()['message'] ?? '', ': ');
     }
 }
