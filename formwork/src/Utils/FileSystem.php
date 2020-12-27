@@ -702,7 +702,7 @@ class FileSystem
     /**
      * Convert bytes to a human-readable size
      */
-    public static function bytesToSize(int $bytes): string
+    public static function formatSize(int $bytes): string
     {
         if ($bytes <= 0) {
             return '0 B';
