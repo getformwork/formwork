@@ -300,44 +300,36 @@ class FileSystem
 
     /**
      * Get file size
-     *
-     * @param bool $unit Whether to return size with unit of measurement or not
-     *
-     * @return int|string
      */
-    public static function size(string $file, bool $unit = true)
+    public static function size(string $file): int
     {
         if (!static::isFile($file)) {
             throw new InvalidArgumentException(sprintf('%s() accepts only files as $file argument', __METHOD__));
         }
-        if (($bytes = @filesize($file)) !== false) {
-            return $unit ? static::bytesToSize($bytes) : $bytes;
+        if (($size = @filesize($file)) !== false) {
+            return $size;
         }
         throw new FileSystemException(sprintf('Cannot get file size for "%s": %s', $file, static::getLastStreamErrorMessage()));
     }
 
     /**
      * Get directory size recursively
-     *
-     * @param bool $unit Whether to return size with unit of measurement or not
-     *
-     * @return int|string
      */
-    public static function directorySize(string $directory, bool $unit = true)
+    public static function directorySize(string $directory): int
     {
         if (!static::isDirectory($directory)) {
             throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
         }
-        $bytes = 0;
+        $size = 0;
         foreach (static::listContents($directory, self::LIST_ALL) as $item) {
             $itemPath = static::joinPaths($directory, $item);
             if (static::isFile($itemPath)) {
-                $bytes += (int) static::size($itemPath, false);
+                $size += static::size($itemPath);
             } else {
-                $bytes += static::directorySize($itemPath, false);
+                $size += static::directorySize($itemPath);
             }
         }
-        return $unit ? static::bytesToSize($bytes) : $bytes;
+        return $size;
     }
 
     /**
