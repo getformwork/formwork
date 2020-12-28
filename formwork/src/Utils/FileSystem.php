@@ -306,7 +306,10 @@ class FileSystem
         if (static::isFile($path)) {
             return static::fileSize($path);
         }
-        return static::directorySize($path);
+        if (static::isDirectory($path)) {
+            return static::directorySize($path);
+        }
+        throw new FileSystemException(sprintf('Cannot get size for "%s": unsupported file type', $path));
     }
 
     /**
@@ -349,7 +352,10 @@ class FileSystem
         if (static::isFile($path)) {
             return static::deleteFile($path);
         }
-        return static::deleteDirectory($path, $recursive);
+        if (static::isDirectory($path)) {
+            return static::deleteDirectory($path, $recursive);
+        }
+        throw new FileSystemException(sprintf('Cannot delete "%s": unsupported file type', $path));
     }
 
     /**
@@ -402,7 +408,10 @@ class FileSystem
         if (static::isFile($source)) {
             return static::copyFile($source, $destination, $overwrite);
         }
-        return static::copyDirectory($source, $destination, $overwrite);
+        if (static::isDirectory($source)) {
+            return static::copyDirectory($source, $destination, $overwrite);
+        }
+        throw new FileSystemException(sprintf('Cannot copy "%s": unsupported file type', $source));
     }
 
     /**
@@ -464,7 +473,10 @@ class FileSystem
         if (static::isFile($source)) {
             return static::moveFile($source, $destination, $overwrite);
         }
-        return static::moveDirectory($source, $destination, $overwrite);
+        if (static::isDirectory($source)) {
+            return static::moveDirectory($source, $destination, $overwrite);
+        }
+        throw new FileSystemException(sprintf('Cannot move "%s": unsupported file type', $source));
     }
 
     /**
