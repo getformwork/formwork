@@ -103,6 +103,14 @@ class FileSystem
     }
 
     /**
+     * Resolve a relative path against current working directory
+     */
+    public static function resolvePath(string $path): string
+    {
+        return Path::resolve($path, static::cwd(), DS);
+    }
+
+    /**
      * Get file name without extension given a file
      */
     public static function name(string $file): string
@@ -116,6 +124,17 @@ class FileSystem
     public static function extension(string $file): string
     {
         return pathinfo($file, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Return current working directory
+     */
+    public static function cwd(): string
+    {
+        if (($cwd = @getcwd()) !== false) {
+            return $cwd;
+        }
+        throw new FileSystemException('Cannot get current working directory');
     }
 
     /**
