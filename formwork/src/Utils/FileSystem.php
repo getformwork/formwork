@@ -235,6 +235,21 @@ class FileSystem
     }
 
     /**
+     * Return whether a path corresponds to a symbolic link
+     */
+    public static function isLink(string $path, bool $assertExists = true): bool
+    {
+        if (@is_link($path)) {
+            return true;
+        }
+        if ($assertExists) {
+            // Assert existence after we are sure it's not a link because `exists()` would check its target
+            static::assertExists($path);
+        }
+        return false;
+    }
+
+    /**
      * Get access time of a file or a directory
      */
     public static function accessTime(string $path): int
@@ -362,12 +377,15 @@ class FileSystem
     }
 
     /**
-     * Delete a file or a directory
+     * Delete a file, a directory or a symbolic link
      *
      * @param bool $recursive Whether to delete files recursively or not
      */
     public static function delete(string $path, bool $recursive = false): bool
     {
+        if (static::isLink($path)) {
+            return static::deleteLink($path);
+        }
         if (static::isFile($path)) {
             return static::deleteFile($path);
         }
@@ -418,12 +436,31 @@ class FileSystem
     }
 
     /**
-     * Copy a file or a directory
+     * Delete a symbolic link
+     */
+    public static function deleteLink(string $link): bool
+    {
+        if (!static::isLink($link)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only links as $link argument', __METHOD__));
+        }
+        // On Windows symbolic links pointing to a directory have to be removed with `rmdir()`
+        // see https://bugs.php.net/bug.php?id=52176
+        if (@unlink($link) || (DS === '\\' && @rmdir($link))) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot delete symbolic link "%s": %s', $link, static::getLastErrorMessage()));
+    }
+
+    /**
+     * Copy a file, a directory or a symbolic link
      *
      * @param bool $overwrite Whether to overwrite destination or not
      */
     public static function copy(string $source, string $destination, bool $overwrite = false): bool
     {
+        if (static::isLink($source)) {
+            return static::copyLink($source, $destination, $overwrite);
+        }
         if (static::isFile($source)) {
             return static::copyFile($source, $destination, $overwrite);
         }
@@ -483,12 +520,33 @@ class FileSystem
     }
 
     /**
-     * Move a file or a directory
+     * Copy a symbolic link to another path
+     *
+     * @param bool $overwrite Whether to overwrite destination or not
+     */
+    public static function copyLink(string $source, string $destination, bool $overwrite = false): bool
+    {
+        if (!static::isLink($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only links as $source argument', __METHOD__));
+        }
+        if (!$overwrite) {
+            static::assertExists($destination, false);
+        } elseif (FileSystem::exists($destination)) {
+            FileSystem::delete($destination, true);
+        }
+        return static::createLink(static::readLink($source), $destination, false);
+    }
+
+    /**
+     * Move a file, a directory or a symbolic link
      *
      * @param bool $overwrite Whether to overwrite destination file or not
      */
     public static function move(string $source, string $destination, bool $overwrite = false): bool
     {
+        if (static::isLink($source)) {
+            return static::moveLink($source, $destination, $overwrite);
+        }
         if (static::isFile($source)) {
             return static::moveFile($source, $destination, $overwrite);
         }
@@ -531,6 +589,21 @@ class FileSystem
         // with an incomplete state if something fails
         static::copyDirectory($source, $destination, $overwrite);
         static::deleteDirectory($source, true);
+        return true;
+    }
+
+    /**
+     * Move a symbolic link to another path
+     *
+     * @param bool $overwrite Whether to overwrite destination directory or not
+     */
+    public static function moveLink(string $source, string $destination, bool $overwrite = false): bool
+    {
+        if (!static::isLink($source)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only links as $source argument', __METHOD__));
+        }
+        static::copyLink($source, $destination, $overwrite);
+        static::deleteLink($source);
         return true;
     }
 
@@ -627,6 +700,21 @@ class FileSystem
     }
 
     /**
+     * Read the target of a symbolic link
+     */
+    public static function readLink(string $link): string
+    {
+        if (!static::isLink($link)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only links as $link argument', __METHOD__));
+        }
+        // Use `realpath()` on Windows because `readlink()` returns the canonicalized path
+        if (($target = DS === '\\' ? @realpath($link) : @readlink($link)) !== false) {
+            return $target;
+        }
+        throw new FileSystemException(sprintf('Cannot resolve symbolic link "%s": %s', $link, static::getLastErrorMessage()));
+    }
+
+    /**
      * Fetch a remote file
      *
      * @param resource $context A stream context resource
@@ -712,6 +800,23 @@ class FileSystem
             return true;
         }
         throw new FileSystemException(sprintf('Cannot create directory "%s": %s', $directory, static::getLastErrorMessage()));
+    }
+
+    /**
+     * Create a symbolic link
+     *
+     * @param bool $assertExists Whether to assert the existence of the link target
+     */
+    public static function createLink(string $target, string $link, bool $assertExists = true): bool
+    {
+        if ($assertExists) {
+            static::assertExists($target);
+        }
+        // On Windows `symlink()` may require an absolute path
+        if (@symlink($target, $link) || (DS === '\\' && @symlink(static::resolvePath($target), $link))) {
+            return true;
+        }
+        throw new FileSystemException(sprintf('Cannot create symbolic link "%s": %s', $link, static::getLastErrorMessage()));
     }
 
     /**
