@@ -484,6 +484,7 @@ class FileSystem
             static::assertExists($destination, false);
         }
         if (@copy($source, $destination)) {
+            @chmod($destination, @fileperms($source));
             return true;
         }
         throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastErrorMessage()));
@@ -505,6 +506,7 @@ class FileSystem
         if (!static::exists($destination)) {
             static::createDirectory($destination, true);
         }
+        @chmod($destination, @fileperms($source));
         try {
             foreach (static::listContents($source, self::LIST_ALL) as $item) {
                 $sourceItemPath = static::joinPaths($source, $item);
