@@ -172,7 +172,7 @@ class FileSystem
             throw new FileNotFoundException(sprintf('File "%s" not found', $path));
         }
         if ($value === false && static::exists($path)) {
-            throw new FileSystemException(sprintf('%s "%s" already exists', static::isFile($path) ? 'File' : 'Directory', $path));
+            throw new FileSystemException(sprintf('%s "%s" already exists', !static::isDirectory($path) ? 'File' : 'Directory', $path));
         }
     }
 
@@ -343,7 +343,7 @@ class FileSystem
         if (static::isDirectory($path)) {
             return static::directorySize($path);
         }
-        throw new FileSystemException(sprintf('Cannot get size for "%s": unsupported file type', $path));
+        throw new FileSystemException(sprintf('Cannot get size for "%s": unsupported file type (%s)', $path, @filetype($path)));
     }
 
     /**
@@ -392,7 +392,7 @@ class FileSystem
         if (static::isDirectory($path)) {
             return static::deleteDirectory($path, $recursive);
         }
-        throw new FileSystemException(sprintf('Cannot delete "%s": unsupported file type', $path));
+        throw new FileSystemException(sprintf('Cannot delete "%s": unsupported file type (%s)', $path, @filetype($path)));
     }
 
     /**
@@ -467,7 +467,7 @@ class FileSystem
         if (static::isDirectory($source)) {
             return static::copyDirectory($source, $destination, $overwrite);
         }
-        throw new FileSystemException(sprintf('Cannot copy "%s": unsupported file type', $source));
+        throw new FileSystemException(sprintf('Cannot copy "%s": unsupported file type (%s)', $source, @filetype($source)));
     }
 
     /**
@@ -555,7 +555,7 @@ class FileSystem
         if (static::isDirectory($source)) {
             return static::moveDirectory($source, $destination, $overwrite);
         }
-        throw new FileSystemException(sprintf('Cannot move "%s": unsupported file type', $source));
+        throw new FileSystemException(sprintf('Cannot move "%s": unsupported file type (%s)', $source, @filetype($source)));
     }
 
     /**
