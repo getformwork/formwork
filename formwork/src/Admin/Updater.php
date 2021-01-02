@@ -109,7 +109,7 @@ class Updater
         return [
             'time'                => 900,
             'force'               => false,
-            'registryFile'        => Admin::LOGS_PATH . 'updates.json',
+            'registryFile'        => Formwork::instance()->config()->get('admin.paths.logs') . 'updates.json',
             'tempFile'            => ROOT_PATH . '.formwork-update.zip',
             'preferDistAssets'    => false,
             'cleanupAfterInstall' => false,

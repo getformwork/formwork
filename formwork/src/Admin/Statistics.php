@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Formwork;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -86,7 +87,7 @@ class Statistics
      */
     public function __construct()
     {
-        $base = Admin::LOGS_PATH . 'statistics' . DS;
+        $base = Formwork::instance()->config()->get('admin.paths.logs') . 'statistics' . DS;
 
         if (!FileSystem::exists($base)) {
             FileSystem::createDirectory($base);

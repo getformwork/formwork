@@ -2,7 +2,6 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
@@ -66,7 +65,7 @@ class UsersController extends AbstractController
             'language' => $data->get('language')
         ];
 
-        YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
+        YAML::encodeToFile($userData, Formwork::instance()->config()->get('admin.paths.accounts') . $data->get('username') . '.yml');
 
         $this->admin()->notify($this->admin()->translate('admin.users.user.created'), 'success');
         $this->admin()->redirect('/users/');
@@ -91,14 +90,14 @@ class UsersController extends AbstractController
                     'users.user.cannot-delete'
                 );
             }
-            FileSystem::delete(Admin::ACCOUNTS_PATH . $user->username() . '.yml');
+            FileSystem::delete(Formwork::instance()->config()->get('admin.paths.accounts') . $user->username() . '.yml');
             $this->deleteAvatar($user);
         } catch (TranslatedException $e) {
             $this->admin()->notify($e->getTranslatedMessage(), 'error');
             $this->admin()->redirectToReferer(302, '/users/');
         }
 
-        $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+        $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('admin.paths.logs') . 'lastAccess.json');
 
         // Remove user last access from registry
         $lastAccessRegistry->remove($user->username());
@@ -188,7 +187,7 @@ class UsersController extends AbstractController
         // Filter empty elements from $data and merge them with $user ones
         $userData = array_merge($user->toArray(), $data->toArray());
 
-        YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $user->username() . '.yml');
+        YAML::encodeToFile($userData, Formwork::instance()->config()->get('admin.paths.accounts') . $user->username() . '.yml');
     }
 
     /**

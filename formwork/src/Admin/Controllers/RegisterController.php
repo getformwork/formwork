@@ -2,9 +2,9 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
+use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Log;
@@ -45,12 +45,12 @@ class RegisterController extends AbstractController
                     'role'     => 'admin'
                 ];
 
-                YAML::encodeToFile($userData, Admin::ACCOUNTS_PATH . $data->get('username') . '.yml');
+                YAML::encodeToFile($userData, Formwork::instance()->config()->get('admin.paths.accounts') . $data->get('username') . '.yml');
 
                 Session::set('FORMWORK_USERNAME', $data->get('username'));
 
-                $accessLog = new Log(Admin::LOGS_PATH . 'access.json');
-                $lastAccessRegistry = new Registry(Admin::LOGS_PATH . 'lastAccess.json');
+                $accessLog = new Log(Formwork::instance()->config()->get('admin.paths.logs') . 'access.json');
+                $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('admin.paths.logs') . 'lastAccess.json');
 
                 $time = $accessLog->log($data->get('username'));
                 $lastAccessRegistry->set($data->get('username'), $time);

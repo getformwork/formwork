@@ -25,27 +25,6 @@ use Throwable;
 final class Admin
 {
     /**
-     * Admin accounts path
-     *
-     * @var string
-     */
-    public const ACCOUNTS_PATH = ADMIN_PATH . 'accounts' . DS;
-
-    /**
-     * Admin logs path
-     *
-     * @var string
-     */
-    public const LOGS_PATH = ADMIN_PATH . 'logs' . DS;
-
-    /**
-     * Admin views path
-     *
-     * @var string
-     */
-    public const VIEWS_PATH = ADMIN_PATH . 'views' . DS;
-
-    /**
      * Router instance
      *
      * @var Router

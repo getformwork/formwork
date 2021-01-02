@@ -10,7 +10,11 @@ return [
         'logout_redirect'  => 'login',
         'session_timeout'  => 20,
         'avatar_size'      => 512,
-        'color_scheme'     => 'light'
+        'color_scheme'     => 'light',
+        'paths'            => [
+            'accounts' => ADMIN_PATH . 'accounts' . DS,
+            'logs'     => ADMIN_PATH . 'logs' . DS
+        ]
     ],
     'backup' => [
         'path'      => ROOT_PATH . 'backup' . DS,
