@@ -127,7 +127,7 @@
                         <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->translate('admin.pages.new-page.site') ?> (/)</option>
 <?php
                         foreach ($parents as $parent):
-                            $scheme = $admin->scheme($parent->template()->name());
+                            $scheme = $formwork->schemes()->get('templates', $parent->template()->name());
                             if (!$scheme->get('pages', true)) continue;
                             if ($parent === $page) continue;
 ?>
@@ -140,7 +140,7 @@
                     <select id="page-template" name="template">
 <?php
                     foreach ($templates as $template):
-                        $scheme = $admin->scheme($template);
+                        $scheme = $formwork->schemes()->get('templates', $template);
 ?>
                         <option value="<?= $template ?>"<?php if ($page->template()->name() === $template): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php

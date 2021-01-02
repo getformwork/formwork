@@ -10,7 +10,6 @@ use Formwork\Formwork;
 use Formwork\Page;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
-use Formwork\Schemes\Scheme;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
@@ -31,13 +30,6 @@ final class Admin
      * @var string
      */
     public const ACCOUNTS_PATH = ADMIN_PATH . 'accounts' . DS;
-
-    /**
-     * Admin schemes path
-     *
-     * @var string
-     */
-    public const SCHEMES_PATH = ADMIN_PATH . 'schemes' . DS;
 
     /**
      * Admin logs path
@@ -132,6 +124,8 @@ final class Admin
             $this->validateContentLength();
             $this->validateCSRFToken();
         }
+
+        $this->loadSchemes();
 
         $this->users = Users::load();
 
@@ -267,14 +261,6 @@ final class Admin
     }
 
     /**
-     * Get scheme object from template name
-     */
-    public function scheme(string $template): Scheme
-    {
-        return new Scheme(Formwork::instance()->config()->get('templates.path') . 'schemes' . DS . $template . '.yml');
-    }
-
-    /**
      * Send a notification
      */
     public function notify(string $text, string $type = Notification::INFO): void
@@ -321,6 +307,12 @@ final class Admin
         $path = Formwork::instance()->config()->get('translations.paths.admin');
         Formwork::instance()->translations()->loadFromPath($path);
         Formwork::instance()->translations()->setCurrent($languageCode);
+    }
+
+    protected function loadSchemes(): void
+    {
+        $path = Formwork::instance()->config()->get('schemes.paths.admin');
+        Formwork::instance()->schemes()->loadFromPath('admin', $path);
     }
 
     /**

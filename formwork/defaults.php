@@ -64,6 +64,13 @@ return [
     'parsers' => [
         'use_php_yaml' => 'parse'
     ],
+    'schemes' => [
+        'paths' => [
+            'admin'     => ADMIN_PATH . 'schemes' . DS,
+            'config'    => CONFIG_PATH . 'schemes' . DS,
+            'templates' => SITE_PATH . 'templates' . DS . 'schemes' . DS
+        ]
+    ],
     'statistics' => [
         'enabled' => true
     ],

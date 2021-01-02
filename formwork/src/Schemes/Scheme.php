@@ -3,12 +3,20 @@
 namespace Formwork\Schemes;
 
 use Formwork\Data\DataGetter;
+use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 
 class Scheme extends DataGetter
 {
+    /**
+     * Scheme type
+     *
+     * @var string
+     */
+    protected $type;
+
     /**
      * Scheme path
      *
@@ -26,15 +34,16 @@ class Scheme extends DataGetter
     /**
      * Create a new Scheme instance
      */
-    public function __construct(string $path)
+    public function __construct(string $type, string $path)
     {
+        $this->type = $type;
         $this->path = $path;
         $this->name = FileSystem::name($path);
 
         parent::__construct(YAML::parseFile($this->path));
 
         if ($this->has('extend') && $this->get('extend') !== $this->name) {
-            $parent = new static(dirname($this->path) . DS . $this->get('extend') . '.yml');
+            $parent = Formwork::instance()->schemes()->get($type, $this->get('extend'));
             $this->data = Arr::appendMissing($this->data, $parent->toArray());
         }
 

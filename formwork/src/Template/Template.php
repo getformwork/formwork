@@ -42,9 +42,10 @@ class Template extends View
     /**
      * Create a new Template instance
      */
-    public function __construct(string $name, Page $page)
+    public function __construct(string $name, Page $page, Scheme $scheme = null)
     {
         $this->page = $page;
+        $this->scheme = $scheme;
         parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'));
     }
 
@@ -56,7 +57,7 @@ class Template extends View
         if ($this->scheme !== null) {
             return $this->scheme;
         }
-        return $this->scheme = new Scheme($this->path() . 'schemes' . DS . $this->name . '.yml');
+        return $this->scheme = Formwork::instance()->schemes()->get('templates', $this->name);
     }
 
     /**
@@ -119,7 +120,7 @@ class Template extends View
      */
     protected function createLayoutView(string $name): View
     {
-        return new static('layouts' . DS . $name, $this->page);
+        return new static('layouts' . DS . $name, $this->page, $this->scheme());
     }
 
     /**

@@ -2,14 +2,12 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Admin\Admin;
 use Formwork\Data\DataGetter;
 use Formwork\Fields\Fields;
 use Formwork\Fields\Validator;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
-use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -40,7 +38,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'system.yml'))->get('fields'));
+        $fields = new Fields(Formwork::instance()->schemes()->get('config', 'system')->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = HTTPRequest::postData();
@@ -78,7 +76,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'site.yml'))->get('fields'));
+        $fields = new Fields(Formwork::instance()->schemes()->get('config', 'site')->get('fields'));
 
         if (HTTPRequest::method() === 'POST') {
             $data = HTTPRequest::postData();

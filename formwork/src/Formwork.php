@@ -9,6 +9,7 @@ use Formwork\Languages\Languages;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
+use Formwork\Schemes\Schemes;
 use Formwork\Traits\SingletonTrait;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Header;
@@ -54,6 +55,11 @@ final class Formwork
     protected $translations;
 
     /**
+     * @var Schemes
+     */
+    protected $schemes;
+
+    /**
      * Site instance
      *
      * @var Site
@@ -95,6 +101,7 @@ final class Formwork
         $this->loadConfig();
         $this->loadLanguages();
         $this->loadTranslations();
+        $this->loadSchemes();
         $this->loadSite();
         $this->loadCache();
         $this->loadRoutes();
@@ -154,6 +161,14 @@ final class Formwork
     public function translations(): Translations
     {
         return $this->translations;
+    }
+
+    /**
+     * Return translations instance
+     */
+    public function schemes(): Schemes
+    {
+        return $this->schemes;
     }
 
     /**
@@ -253,6 +268,12 @@ final class Formwork
     {
         $this->translations = Translations::fromPath($this->config()->get('translations.paths.system'));
         $this->translations->setCurrent($this->languages->current() ?? $this->config()->get('translations.fallback'));
+    }
+
+    protected function loadSchemes(): void
+    {
+        $this->schemes = Schemes::fromPath('config', $this->config()->get('schemes.paths.config'));
+        $this->schemes->loadFromPath('templates', $this->config()->get('schemes.paths.templates'));
     }
 
     /**

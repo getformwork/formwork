@@ -14,7 +14,6 @@ use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Router\RouteParams;
-use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Registry;
@@ -113,7 +112,7 @@ class UsersController extends AbstractController
      */
     public function profile(RouteParams $params): void
     {
-        $fields = new Fields((new Scheme(Admin::SCHEMES_PATH . 'user.yml'))->get('fields'));
+        $fields = new Fields(Formwork::instance()->schemes()->get('admin', 'user')->get('fields'));
 
         $user = $this->admin()->users()->get($params->get('user'));
 
