@@ -34,7 +34,7 @@ class PageController extends AbstractController
                 }
             }
 
-            if (($params->has('tagName') || $params->has('paginationPage')) && $page->template()->scheme()->get('type') !== 'listing') {
+            if (($params->has('tagName') || $params->has('paginationPage')) && $page->scheme()->get('type') !== 'listing') {
                 return $site->errorPage();
             }
 

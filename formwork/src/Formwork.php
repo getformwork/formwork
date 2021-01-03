@@ -273,7 +273,7 @@ final class Formwork
     protected function loadSchemes(): void
     {
         $this->schemes = Schemes::fromPath('config', $this->config()->get('schemes.paths.config'));
-        $this->schemes->loadFromPath('templates', $this->config()->get('schemes.paths.templates'));
+        $this->schemes->loadFromPath('pages', $this->config()->get('schemes.paths.pages'));
     }
 
     /**

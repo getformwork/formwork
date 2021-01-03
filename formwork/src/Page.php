@@ -6,6 +6,7 @@ use Formwork\Files\Files;
 use Formwork\Metadata\Metadata;
 use Formwork\Parsers\Markdown;
 use Formwork\Parsers\YAML;
+use Formwork\Schemes\Scheme;
 use Formwork\Template\Template;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
@@ -94,6 +95,13 @@ class Page extends AbstractPage
      * @var Template
      */
     protected $template;
+
+    /**
+     * Page scheme
+     *
+     * @var Scheme
+     */
+    protected $scheme;
 
     /**
      * Page files
@@ -234,7 +242,7 @@ class Page extends AbstractPage
         ];
 
         // Merge with scheme default field values
-        $defaults = array_merge($defaults, $this->template->scheme()->defaultFieldValues());
+        $defaults = array_merge($defaults, $this->scheme->defaultFieldValues());
 
         // If the page hasn't a num, by default it won't be visible
         if ($this->num() === null) {
@@ -540,6 +548,7 @@ class Page extends AbstractPage
 
             $this->filename = $contentFiles[$key]['filename'];
             $this->template = new Template($contentFiles[$key]['template'], $this);
+            $this->scheme = Formwork::instance()->schemes()->get('pages', $this->template);
         }
 
         $this->files = Files::fromPath($this->path, $files);
@@ -585,7 +594,7 @@ class Page extends AbstractPage
 
         $this->sortable = $this->data['sortable'];
 
-        if ($this->num() === null || $this->template()->scheme()->get('num') === 'date') {
+        if ($this->num() === null || $this->scheme->get('num') === 'date') {
             $this->sortable = false;
         }
 

@@ -70,9 +70,9 @@ return [
     ],
     'schemes' => [
         'paths' => [
-            'admin'     => ADMIN_PATH . 'schemes' . DS,
-            'config'    => CONFIG_PATH . 'schemes' . DS,
-            'templates' => SITE_PATH . 'templates' . DS . 'schemes' . DS
+            'admin'  => ADMIN_PATH . 'schemes' . DS,
+            'config' => CONFIG_PATH . 'schemes' . DS,
+            'pages'  => SITE_PATH . 'schemes' . DS
         ]
     ],
     'statistics' => [

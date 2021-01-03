@@ -5,7 +5,6 @@ namespace Formwork\Template;
 use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Page;
-use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\Renderer;
@@ -26,13 +25,6 @@ class Template extends View
     protected $page;
 
     /**
-     * Template scheme
-     *
-     * @var Scheme
-     */
-    protected $scheme;
-
-    /**
      * Template assets instance
      *
      * @var Assets
@@ -42,22 +34,10 @@ class Template extends View
     /**
      * Create a new Template instance
      */
-    public function __construct(string $name, Page $page, Scheme $scheme = null)
+    public function __construct(string $name, Page $page)
     {
         $this->page = $page;
-        $this->scheme = $scheme;
         parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'));
-    }
-
-    /**
-     * Get template Scheme
-     */
-    public function scheme(): Scheme
-    {
-        if ($this->scheme !== null) {
-            return $this->scheme;
-        }
-        return $this->scheme = Formwork::instance()->schemes()->get('templates', $this->name);
     }
 
     /**
@@ -120,7 +100,7 @@ class Template extends View
      */
     protected function createLayoutView(string $name): View
     {
-        return new static('layouts' . DS . $name, $this->page, $this->scheme());
+        return new static('layouts' . DS . $name, $this->page);
     }
 
     /**

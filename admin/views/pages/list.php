@@ -66,7 +66,7 @@
                     </div>
 <?php
                     if ($subpages && $page->hasChildren()):
-                        $scheme = $page->template()->scheme();
+                        $scheme = $page->scheme();
                         $reverseChildren = $scheme->get('children.reverse', false);
                         $sortableChildren = $scheme->get('children.sortable', true);
 

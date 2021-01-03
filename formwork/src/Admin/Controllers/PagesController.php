@@ -127,7 +127,7 @@ class PagesController extends AbstractController
         }
 
         // Load page fields
-        $fields = new Fields($page->template()->scheme()->get('fields'));
+        $fields = new Fields($page->scheme()->get('fields'));
 
         switch (HTTPRequest::method()) {
             case 'GET':
@@ -452,7 +452,7 @@ class PagesController extends AbstractController
             }
 
             // Check if page number has to change
-            if (!empty($page->date()) && $page->template()->scheme()->get('num') === 'date' && $page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
+            if (!empty($page->date()) && $page->scheme()->get('num') === 'date' && $page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
                 $name = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->name());
                 try {
                     $page = $this->changePageName($page, $name);
