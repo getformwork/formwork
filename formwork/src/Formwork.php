@@ -8,6 +8,7 @@ use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
+use Formwork\Response\Response;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Traits\SingletonTrait;
@@ -203,16 +204,12 @@ final class Formwork
 
             if ($this->config()->get('cache.enabled') && $this->cache->has($this->request)) {
                 $response = $this->cache->fetch($this->request);
-                $response->render();
+                $response->send();
             } else {
-                $content = $page->render();
-
+                $response = new Response($page->renderToString(), $page->get('response_status', 200), $page->headers());
+                $response->send();
                 if ($this->config()->get('cache.enabled') && $page->cacheable()) {
-                    $this->cache->save($this->request, new Response(
-                        $content,
-                        $page->get('response_status'),
-                        $page->headers()
-                    ));
+                    $this->cache->save($this->request, $response);
                 }
             }
         }

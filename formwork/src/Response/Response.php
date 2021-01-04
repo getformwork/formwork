@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Response;
 
 use Formwork\Utils\Header;
 
@@ -16,7 +16,7 @@ class Response
     /**
      * Response HTTP status
      *
-     * @var int|null
+     * @var int
      */
     protected $status;
 
@@ -30,7 +30,7 @@ class Response
     /**
      * Create a new Response instance
      */
-    public function __construct(string $content, int $status = null, array $headers = [])
+    public function __construct(string $content, int $status = 200, array $headers = [])
     {
         $this->content = $content;
         $this->status = $status;
@@ -66,9 +66,7 @@ class Response
      */
     public function sendStatus(): void
     {
-        if ($this->status !== null) {
-            Header::status($this->status);
-        }
+        Header::status($this->status);
     }
 
     /**
@@ -86,7 +84,7 @@ class Response
     /**
      * Send HTTP status, headers and render content
      */
-    public function render(): void
+    public function send(): void
     {
         $this->sendHeaders();
         echo $this->content;
