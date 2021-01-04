@@ -108,6 +108,11 @@ final class Admin
 
         $this->users = Users::load();
 
+        $this->loadTranslations();
+        $this->loadErrorHandler();
+
+        $this->loadRoutes();
+
         if ($this->users->isEmpty()) {
             $this->registerAdmin();
         }
@@ -116,11 +121,6 @@ final class Admin
             Session::set('FORMWORK_REDIRECT_TO', $this->route());
             $this->redirect('/login/');
         }
-
-        $this->loadTranslations();
-        $this->loadErrorHandler();
-
-        $this->loadRoutes();
 
         $this->router->dispatch();
 
