@@ -5,10 +5,10 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Backupper;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
+use Formwork\Response\FileResponse;
 use Formwork\Response\JSONResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPResponse;
 use RuntimeException;
 
 class BackupController extends AbstractController
@@ -41,7 +41,8 @@ class BackupController extends AbstractController
         $file = Formwork::instance()->config()->get('backup.path') . base64_decode($params->get('backup'));
         try {
             if (FileSystem::isFile($file, false)) {
-                HTTPResponse::download($file);
+                $response = new FileResponse($file, true);
+                $response->send();
             } else {
                 throw new RuntimeException($this->admin()->translate('admin.backup.error.cannot-download.invalid-filename'));
             }

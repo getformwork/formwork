@@ -4,11 +4,11 @@ namespace Formwork\Controllers;
 
 use Formwork\Formwork;
 use Formwork\Page;
+use Formwork\Response\FileResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Header;
-use Formwork\Utils\HTTPResponse;
 
 class PageController extends AbstractController
 {
@@ -59,7 +59,8 @@ class PageController extends AbstractController
             }
 
             if (($parent = $site->findPage($upperLevel)) && $parent->files()->has($filename)) {
-                return HTTPResponse::file($parent->files()->get($filename)->path());
+                $response = new FileResponse($parent->files()->get($filename)->path());
+                return $response->send();
             }
         }
 
