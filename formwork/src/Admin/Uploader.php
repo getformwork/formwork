@@ -31,13 +31,13 @@ class Uploader
      * @var array
      */
     protected const ERROR_LANGUAGE_STRINGS = [
-        UPLOAD_ERR_INI_SIZE   => 'uploader.error.size',
-        UPLOAD_ERR_FORM_SIZE  => 'uploader.error.size',
-        UPLOAD_ERR_PARTIAL    => 'uploader.error.partial',
-        UPLOAD_ERR_NO_FILE    => 'uploader.error.no-file',
-        UPLOAD_ERR_NO_TMP_DIR => 'uploader.error.no-temp',
-        UPLOAD_ERR_CANT_WRITE => 'uploader.error.cannot-write',
-        UPLOAD_ERR_EXTENSION  => 'uploader.error.php-extension'
+        UPLOAD_ERR_INI_SIZE   => 'admin.uploader.error.size',
+        UPLOAD_ERR_FORM_SIZE  => 'admin.uploader.error.size',
+        UPLOAD_ERR_PARTIAL    => 'admin.uploader.error.partial',
+        UPLOAD_ERR_NO_FILE    => 'admin.uploader.error.no-file',
+        UPLOAD_ERR_NO_TMP_DIR => 'admin.uploader.error.no-temp',
+        UPLOAD_ERR_CANT_WRITE => 'admin.uploader.error.cannot-write',
+        UPLOAD_ERR_EXTENSION  => 'admin.uploader.error.php-extension'
     ];
 
     /**
@@ -161,7 +161,7 @@ class Uploader
         }
 
         if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'uploader.error.file-name');
+            throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'admin.uploader.error.file-name');
         }
 
         $destinationPath = FileSystem::joinPaths($destination, $filename);
