@@ -49,18 +49,16 @@ class Session
     public static function set(string $key, $value): void
     {
         static::start();
-        $_SESSION[$key] = $value;
+        Arr::set($_SESSION, $key, $value);
     }
 
     /**
      * Get a session key
      */
-    public static function get(string $key)
+    public static function get(string $key, $default = null)
     {
         static::start();
-        if (static::has($key)) {
-            return $_SESSION[$key];
-        }
+        return Arr::get($_SESSION, $key, $default);
     }
 
     /**
@@ -69,7 +67,7 @@ class Session
     public static function has(string $key): bool
     {
         static::start();
-        return isset($_SESSION[$key]);
+        return Arr::has($_SESSION, $key);
     }
 
     /**
@@ -78,9 +76,7 @@ class Session
     public static function remove(string $key): void
     {
         static::start();
-        if (static::has($key)) {
-            unset($_SESSION[$key]);
-        }
+        Arr::remove($_SESSION, $key);
     }
 
     /**

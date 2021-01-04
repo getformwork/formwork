@@ -37,7 +37,7 @@ class CSRFToken
      */
     public static function get(): ?string
     {
-        return Session::has(self::SESSION_KEY) ? Session::get(self::SESSION_KEY) : null;
+        return Session::get(self::SESSION_KEY);
     }
 
     /**
