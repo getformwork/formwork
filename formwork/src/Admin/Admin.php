@@ -99,11 +99,6 @@ final class Admin
      */
     public function run(): void
     {
-        if (HTTPRequest::method() === 'POST') {
-            $this->validateContentLength();
-            $this->validateCSRFToken();
-        }
-
         $this->loadSchemes();
 
         $this->users = Users::load();
@@ -112,6 +107,11 @@ final class Admin
         $this->loadErrorHandler();
 
         $this->loadRoutes();
+
+        if (HTTPRequest::method() === 'POST') {
+            $this->validateContentLength();
+            $this->validateCSRFToken();
+        }
 
         if ($this->users->isEmpty()) {
             $this->registerAdmin();
