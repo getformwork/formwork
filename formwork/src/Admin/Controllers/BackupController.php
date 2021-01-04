@@ -5,10 +5,10 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Backupper;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
+use Formwork\Response\JSONResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPResponse;
-use Formwork\Utils\JSONResponse;
 use RuntimeException;
 
 class BackupController extends AbstractController
