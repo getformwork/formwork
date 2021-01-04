@@ -361,7 +361,7 @@ class PagesController extends AbstractController
             throw new TranslatedException('Invalid page template', 'admin.pages.page.cannot-create.invalid-template');
         }
 
-        $scheme = Formwork::instance()->schemes()->get('template', $data->get('template'));
+        $scheme = Formwork::instance()->schemes()->get('pages', $data->get('template'));
 
         $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
 
