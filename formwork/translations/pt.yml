@@ -16,12 +16,12 @@ date.weekdays.short: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 fields.array.add: Adicionar
 fields.array.remove: Remover
 fields.file.upload-label: <strong>Pressione</strong> para escolher ficheiro para upload ou <strong>puxe</strong> para aqui.
-zip.error.already-exists: O arquivo já existe
-zip.error.cannot-open: Erro de abertura do arquivo
-zip.error.cannot-read: Erro de leitura do arquivo
-zip.error.inconsistent-archive: Arquivo Inconsistente
+zip.error.already-exists: O ficheiro já existe
+zip.error.cannot-open: Erro de abertura do ficheiro
+zip.error.cannot-read: Erro de leitura do ficheiro
+zip.error.inconsistent-archive: Ficheiro Inconsistente
 zip.error.invalid-argument: Argumento Inválido
 zip.error.memory-failure: Falha de Memória
-zip.error.not-found: Arquivo não encontrado
-zip.error.not-zip-archive: Not a ZIP archive
+zip.error.not-found: Ficheiro não encontrado
+zip.error.not-zip-archive: Não é um ficheiro ZIP
 zip.error.unspecified: Erro não especificado
