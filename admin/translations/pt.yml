@@ -1,0 +1,261 @@
+admin.backup.backup: Cópia de Segurança
+admin.backup.error.cannot-download: Não é possível efectuar download da cópia de segurança. %s.
+admin.backup.error.cannot-download.invalid-filename: Arquivo de backup inválido
+admin.backup.error.cannot-make: Não é possível fazer cópia de segurança. %s.
+admin.backup.ready: Cópia de segurança pronta. A iniciar o download...
+admin.cache.clear: Limpar cache
+admin.cache.cleared: Cache limpa
+admin.dashboard.dashboard: Painel
+admin.dashboard.last-modified-pages: Últimas páginas editadas
+admin.dashboard.quick-actions: Acções Rápidas
+admin.dashboard.statistics: Estatisticas
+admin.dashboard.statistics.unique-visitors: Visitantes Únicos
+admin.dashboard.statistics.visits: Visitas
+admin.dashboard.welcome: Bem-Vindo
+admin.errors.action.report-to-github: Denúncie um problema no GitHub
+admin.errors.action.return-to-dashboard: Voltar ao Painel
+admin.errors.error.forbidden.description: Não tem permissões para aceder a esta página.
+admin.errors.error.forbidden.heading: Oops, permissão necessária!
+admin.errors.error.forbidden.status: Proibido
+admin.errors.error.internal-server-error.description: Formwork Admin encontrou um erro ao atender sua solicitação. Verifique a configuração do Formwork ou o log do servidor para erros.
+admin.errors.error.internal-server-error.heading: Ops, algo deu errado!
+admin.errors.error.internal-server-error.status: Erro Interno do Servidor
+admin.errors.error.not-found.description: A página não existe ou a solicitação não é válida.
+admin.errors.error.not-found.heading: Ops, página não encontrada!
+admin.errors.error.not-found.status: Não Encontrado
+admin.login.attempt.failed: Falha ao tentar efetuar login! Tente novamente.
+admin.login.attempt.too-many: Demasiadas tentativas de login. Tente novamente em %d minutos.
+admin.login.logged-out: Você foi desconectado
+admin.login.login: Login
+admin.login.logout: Logout
+admin.login.password: Password
+admin.login.suspicious-request-detected: Uma solicitação suspeita foi detectada e, por motivos de segurança, você foi desconectado. Por favor faça login novamente.
+admin.login.username: Nome do Utilizador
+admin.manage: Administrar
+admin.modal.action.cancel: Cancelar
+admin.modal.action.continue: Continuar
+admin.modal.action.delete: Remover
+admin.modal.action.save: Guardar
+admin.modal.action.upload-file: Enviar um arquivo
+admin.modal.images.no-images: Não há imagens aqui
+admin.modal.images.no-images.upload: Por favor carregue algumas imagens
+admin.modal.images.title: Escolha uma Imagem
+admin.options.info: Informações
+admin.options.options: Opções
+admin.options.site: Site
+admin.options.site.advanced: Opções Avançadas
+admin.options.site.advanced.aliases: Aliases
+admin.options.site.advanced.aliases.alias: Alias
+admin.options.site.advanced.aliases.route: Rota
+admin.options.site.advanced.metadata: Metadados HTML
+admin.options.site.advanced.metadata.content: Conteúdo
+admin.options.site.advanced.metadata.name: Nome
+admin.options.site.info: Informações
+admin.options.site.info.author: Autor
+admin.options.site.info.description: Descrição
+admin.options.site.info.language: Idiomas
+admin.options.site.info.title: Título
+admin.options.system: Sistema
+admin.options.system.admin-panel: Painel de Administração
+admin.options.system.admin-panel.default-color-scheme: Esquema de cores padrão
+admin.options.system.admin-panel.default-color-scheme.dark: Escuro
+admin.options.system.admin-panel.default-color-scheme.light: Claro
+admin.options.system.admin-panel.default-language: Idioma Padrão
+admin.options.system.admin-panel.logout-redirects-to: Logout redireciona para
+admin.options.system.admin-panel.logout-redirects-to.home: Principal
+admin.options.system.admin-panel.logout-redirects-to.login: Login
+admin.options.system.admin-panel.session-timeout: Tempo limite da sessão (min)
+admin.options.system.backup: Cópia de Segurança
+admin.options.system.backup.backup-files-to-keep: Backups para manter no servidor
+admin.options.system.cache: Cache
+admin.options.system.cache.disabled: Desactivado
+admin.options.system.cache.enabled: Activado
+admin.options.system.cache.time: Tempo de Cache (s)
+admin.options.system.date-and-time: Data e Hora
+admin.options.system.date-and-time.date-format: Formato de Data
+admin.options.system.date-and-time.first-weekday: Primeiro Dia da Semana
+admin.options.system.date-and-time.first-weekday.monday: Segunda
+admin.options.system.date-and-time.first-weekday.sunday: Domingo
+admin.options.system.date-and-time.hour-format: Formato de Hora
+admin.options.system.date-and-time.timezone: Fuso Horário
+admin.options.system.files: Ficheiros
+admin.options.system.files.allowed-extensions: Extensões Permitidas
+admin.options.system.images: Imagens
+admin.options.system.images.jpeg-quality: Qualidade JPEG
+admin.options.system.images.jpeg-save-progressive: Guardar imagens JPEG como progressivas
+admin.options.system.images.jpeg-save-progressive.disabled: Desactivado
+admin.options.system.images.jpeg-save-progressive.enabled: Activado
+admin.options.system.images.png-compression-level: Nível de compressão PNG
+admin.options.system.images.process-uploads: Processar (optimizar) imagens enviadas
+admin.options.system.images.process-uploads.disabled: Desactivado
+admin.options.system.images.process-uploads.enabled: Activado
+admin.options.system.images.webp-quality: Qualidade WebP
+admin.options.system.languages: Idiomas
+admin.options.system.languages.available-languages: Idiomas Disponiveis
+admin.options.system.languages.available-languages.no-languages: Sem Idiomas
+admin.options.system.languages.preferred-language: Use o idioma preferido do browser
+admin.options.system.languages.preferred-language.disabled: Desactivado
+admin.options.system.languages.preferred-language.enabled: Activado
+admin.options.updated: Opções Actualizadas
+admin.options.updates: Actualizações
+admin.pages.attributes: Atributos
+admin.pages.change-slug: Editar Slug
+admin.pages.change-slug.generate: Criar a partir do Título
+admin.pages.changes.continue: Continuar sem Guardar
+admin.pages.changes.detected: Alterações Encontradas
+admin.pages.changes.detected.prompt: Tem algumas alterações que não foram guardadas. Tem certeza que deseja sair desta página?
+admin.pages.content: Conteúdo
+admin.pages.delete-file: Remover Ficheiro
+admin.pages.delete-file.prompt: Are you sure you want to delete this file? This action can’t be undone.
+admin.pages.delete-page: Remover Página
+admin.pages.delete-page.prompt: Are you sure you want to delete this page? This action can’t be undone.
+admin.pages.edit-page: Editar Página %s
+admin.pages.editor.bold: Negrito
+admin.pages.editor.bullet-list: Lista de marcadores
+admin.pages.editor.image: Imagem
+admin.pages.editor.italic: Itálico
+admin.pages.editor.link: Ligação
+admin.pages.editor.numbered-list: Lista ordenada
+admin.pages.editor.quote: Citar
+admin.pages.editor.redo: Refazer
+admin.pages.editor.summary: Sumário
+admin.pages.editor.undo: Desfazer
+admin.pages.files: Ficheiros
+admin.pages.files.upload-label: <strong>Click</strong> para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
+admin.pages.languages: Idiomas
+admin.pages.languages.add-language: Criar %s
+admin.pages.languages.edit-language: Editar %s
+admin.pages.new-page: Criar Página
+admin.pages.new-page.parent: Página Parente
+admin.pages.new-page.site: Site
+admin.pages.new-page.slug-suggestion: letras, números e hifens apenas
+admin.pages.new-page.slug: Slug da Página
+admin.pages.new-page.template: Template
+admin.pages.new-page.title: Título
+admin.pages.options: Opções
+admin.pages.page.actions: Acções
+admin.pages.page.cacheable: Cache
+admin.pages.page.cannot-change-num: Não é possível alterar o número da página
+admin.pages.page.cannot-create: Não é possível criar página
+admin.pages.page.cannot-create.already-exists: Não é possível criar a página, já existe uma página com o mesmo uri
+admin.pages.page.cannot-create.invalid-parent: Não é possível criar página, página parente inválida
+admin.pages.page.cannot-create.invalid-slug: Não é possível criar a página, o slug da página deve conter apenas letras e números separados por hifens
+admin.pages.page.cannot-create.invalid-template: Não é possível criar página, template inválido
+admin.pages.page.cannot-create.var-missing: Não é possível criar página, falta uma variável
+admin.pages.page.cannot-delete-file.file-not-found: Não é possível excluir o ficheiro, ficheiro não encontrado
+admin.pages.page.cannot-delete-file.page-not-found: Não é possível excluir a página, página não encontrado
+admin.pages.page.cannot-delete.invalid-language: 'Não é possível excluir página, idioma inválido: %s'
+admin.pages.page.cannot-delete.not-deletable: Não é possível excluir a página, a página não pode ser excluída
+admin.pages.page.cannot-delete.page-not-found: Não é possível excluir página, página não encontrada
+admin.pages.page.cannot-edit.already-exists: Não é possível editar a página, já existe uma página com o mesmo uri
+admin.pages.page.cannot-edit.index-or-error-page-slug: Não é possível editar slug de página de índice e páginas de erro
+admin.pages.page.cannot-edit.invalid-language: 'Não é possível editar a página, idioma inválido: %s'
+admin.pages.page.cannot-edit.invalid-parent: Não é possível editar a página, página parente inválida
+admin.pages.page.cannot-edit.invalid-slug: Não é possível editar o slug da página, deve conter apenas letras e números separados por hifens.
+admin.pages.page.cannot-edit.invalid-template: Não é possível editar a página, template inválido
+admin.pages.page.cannot-edit.page-not-found: Não é possível editar a página, página não encontrada
+admin.pages.page.cannot-edit.var-missing: Não é possível editar a página, falta uma variável
+admin.pages.page.cannot-move: Não é possível mover a página
+admin.pages.page.cannot-upload-file.page-not-found: Não é possível efectuar envio do ficheiro, página não encontrada
+admin.pages.page.created: Página criada!
+admin.pages.page.deleted: Página removida
+admin.pages.page.edited: Página editada
+admin.pages.page.file-deleted: Ficheiro removido
+admin.pages.page.image: Imagem
+admin.pages.page.last-modified: Última Modificação
+admin.pages.page.moved: Página Movida!
+admin.pages.page.no-date: Sem Data
+admin.pages.page.no-image: Sem Imagem
+admin.pages.page.no-tags: Sem Tags
+admin.pages.page.not-found: Página não encontrada
+admin.pages.page.posts-per-page: Items por página
+admin.pages.page.publish-date: Data de Publicação
+admin.pages.page.status: Estado
+admin.pages.page.tags: Tags
+admin.pages.page.title: Titulo
+admin.pages.page.unpublish-date: Data de Cancelamento da Publicação
+admin.pages.page.visible: Visivel no menu
+admin.pages.pages: Páginas
+admin.pages.pages.collapse-all: Recolher Todas
+admin.pages.pages.expand-all: Expandir Todas
+admin.pages.pages.reorder: Reordenar
+admin.pages.pages.search: Procurar Páginas...
+admin.pages.parent: Página Parente
+admin.pages.preview-file: Preview
+admin.pages.preview: Preview
+admin.pages.save: Guardar
+admin.pages.status.not-published: Não Publicado
+admin.pages.status.not-routable: Não Roteável
+admin.pages.status.published: Publicado
+admin.pages.status.routable: Roteável
+admin.pages.template: Template
+admin.pages.toggle-children: Expandir Páginas
+admin.panel: Painel de Administração
+admin.register.create-user: O Formwork Admin está instalado, mas nenhum utilizador foi encontrado. Por favor, registre um agora.
+admin.register.register: Registrar Novo Utilizador
+admin.request.error.post-max-size: O pedido HTTP POST excede o tamanho máximo permitido
+admin.updates.available-for-install: está disponível para instalação
+admin.updates.check: Verificar actualizações
+admin.updates.install-prompt: Gostaria instalar a actualização?
+admin.updates.install: Instalar
+admin.updates.installed: Actualização instalada!
+admin.updates.latest-version-available: é a última versão disponível
+admin.updates.status.cannot-check: Não é possível verificar se há actualizações. Tente mais tarde.
+admin.updates.status.cannot-install: Não é possível instalar actualização
+admin.updates.status.cannot-make-backup: Não é possível efectuar cópia de segurança antes de actualizar
+admin.updates.status.checking: Verificando actualizações...
+admin.updates.status.found: Actualizações encontradas
+admin.updates.status.installing: Instalando actualizações...
+admin.updates.status.up-to-date: Actualizado!
+admin.uploader.error: Não é possível fazer upload do ficheiro. %s.
+admin.uploader.error.already-exists: Já existe um ficheiro com o mesmo nome
+admin.uploader.error.cannot-move-to-destination: Falha ao mover o ficheiro enviado para o destino
+admin.uploader.error.cannot-write: Falha ao gravar ficheiro no disco
+admin.uploader.error.destination-too-long: Caminho de destino demasiado longo
+admin.uploader.error.file-name-too-long: Nome do ficheiro demasiado longo
+admin.uploader.error.file-name: Nome do ficheiro inválido
+admin.uploader.error.hidden-files: Não é possível efectuar envio de ficheros ocultos que começam com um ponto
+admin.uploader.error.mime-type: Tipo de ficheiro inválido
+admin.uploader.error.no-file: Nenhum ficheiro foi enviado
+admin.uploader.error.no-temp: Pasta temporária inexistente
+admin.uploader.error.partial: O ficheiro foi enviado apenas parcialmente
+admin.uploader.error.php-extension: Envio de ficheiro interrompido por extensão
+admin.uploader.error.size: O ficheiro enviado excede o tamanho máximo permitido.
+admin.uploader.uploaded: Ficheiro enviado
+admin.user.actions: Acções
+admin.user.avatar: Avatar
+admin.user.avatar.uploaded: Avatar enviado
+admin.user.color-scheme: Esquema de cores
+admin.user.color-scheme.auto: Auto
+admin.user.color-scheme.dark: Escuro
+admin.user.color-scheme.light: Claro
+admin.user.email: E'mail
+admin.user.fullname: Nome Completo
+admin.user.language: Idioma
+admin.user.last-access: Último acesso
+admin.user.password: Password
+admin.user.password.type-new-password: Insira nova password para alterar...
+admin.user.role: Cargo
+admin.user.role.admin: Administrador
+admin.user.role.user: Utilizador
+admin.user.username: Nome do utilizador
+admin.users.delete-user: Apagar Utilizador
+admin.users.delete-user.prompt: Tem a certeza de que deseja excluir este utilizador? Esta acção não pode ser revertida.
+admin.users.new-user: Novo Utilizador
+admin.users.new-user.password-suggestion: pelo menos 8 caracteres
+admin.users.new-user.username-suggestion: entre 3 a 20 letras, números e hifens.
+admin.users.options: Opções
+admin.users.user-profile: 'Perfil de Utilizador %s'
+admin.users.user: Utilizador
+admin.users.user.cannot-change-password: Não é possível alterar a senha de outro utilizador. A acção não é permitida.
+admin.users.user.cannot-change-role: Não é possível alterar o cargo de %s. A acção não é permitida.
+admin.users.user.cannot-create.already-exists: Não é possível criar utilizador, já existe um utilizador com o mesmo nome
+admin.users.user.cannot-create.var-missing: Não é possível criar o utilizador, falta uma variável
+admin.users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
+admin.users.user.cannot-edit: Não é possível editar o utilizador %s. A acção não é permitida.
+admin.users.user.created: Utilizador criado.
+admin.users.user.deleted: Utilizador removido.
+admin.users.user.edited: Informação do utilizador actualizada
+admin.users.user.not-found: Utilizador não encontrado
+admin.users.users: Utilizadores
+admin.view-site: Ver Site

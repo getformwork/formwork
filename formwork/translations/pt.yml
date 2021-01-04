@@ -1,0 +1,27 @@
+date.distance.ago: '%s atrás'
+date.distance.in: 'em %s'
+date.duration.days: ['dia', 'dias']
+date.duration.hours: ['hora', 'horas']
+date.duration.minutes: ['minuto', 'minutos']
+date.duration.months: ['mês', 'meses']
+date.duration.seconds: ['second', 'seconds']
+date.duration.weeks: ['semana', 'semanas']
+date.duration.years: ['ano', 'anos']
+date.months.long: ['Janeiro', 'Fevereiro', 'Narço', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+date.months.short: ['Jan', 'Fev', 'Mar', 'Abr', 'Mar', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+date.now: agora
+date.today: Hoje
+date.weekdays.long: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+date.weekdays.short: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+fields.array.add: Adicionar
+fields.array.remove: Remover
+fields.file.upload-label: <strong>Pressione</strong> para escolher ficheiro para upload ou <strong>puxe</strong> para aqui.
+zip.error.already-exists: O arquivo já existe
+zip.error.cannot-open: Erro de abertura do arquivo
+zip.error.cannot-read: Erro de leitura do arquivo
+zip.error.inconsistent-archive: Arquivo Inconsistente
+zip.error.invalid-argument: Argumento Inválido
+zip.error.memory-failure: Falha de Memória
+zip.error.not-found: Arquivo não encontrado
+zip.error.not-zip-archive: Not a ZIP archive
+zip.error.unspecified: Erro não especificado
