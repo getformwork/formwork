@@ -1,6 +1,6 @@
 admin.backup.backup: Cópia de Segurança
 admin.backup.error.cannot-download: Não é possível efectuar download da cópia de segurança. %s.
-admin.backup.error.cannot-download.invalid-filename: Arquivo de backup inválido
+admin.backup.error.cannot-download.invalid-filename: Ficheiro de backup inválido
 admin.backup.error.cannot-make: Não é possível fazer cópia de segurança. %s.
 admin.backup.ready: Cópia de segurança pronta. A iniciar o download...
 admin.cache.clear: Limpar cache
@@ -18,7 +18,7 @@ admin.errors.error.forbidden.description: Não tem permissões para aceder a est
 admin.errors.error.forbidden.heading: Oops, permissão necessária!
 admin.errors.error.forbidden.status: Proibido
 admin.errors.error.internal-server-error.description: Formwork Admin encontrou um erro ao atender sua solicitação. Verifique a configuração do Formwork ou o log do servidor para erros.
-admin.errors.error.internal-server-error.heading: Ops, algo deu errado!
+admin.errors.error.internal-server-error.heading: Ops, algo errado aconteceu!
 admin.errors.error.internal-server-error.status: Erro Interno do Servidor
 admin.errors.error.not-found.description: A página não existe ou a solicitação não é válida.
 admin.errors.error.not-found.heading: Ops, página não encontrada!
@@ -36,7 +36,7 @@ admin.modal.action.cancel: Cancelar
 admin.modal.action.continue: Continuar
 admin.modal.action.delete: Remover
 admin.modal.action.save: Guardar
-admin.modal.action.upload-file: Enviar um arquivo
+admin.modal.action.upload-file: Enviar um ficheiro
 admin.modal.images.no-images: Não há imagens aqui
 admin.modal.images.no-images.upload: Por favor carregue algumas imagens
 admin.modal.images.title: Escolha uma Imagem
@@ -103,12 +103,12 @@ admin.pages.change-slug: Editar Slug
 admin.pages.change-slug.generate: Criar a partir do Título
 admin.pages.changes.continue: Continuar sem Guardar
 admin.pages.changes.detected: Alterações Encontradas
-admin.pages.changes.detected.prompt: Tem algumas alterações que não foram guardadas. Tem certeza que deseja sair desta página?
+admin.pages.changes.detected.prompt: Tem algumas alterações que não foram guardadas. Tem a certeza que deseja sair desta página?
 admin.pages.content: Conteúdo
 admin.pages.delete-file: Remover Ficheiro
-admin.pages.delete-file.prompt: Are you sure you want to delete this file? This action can’t be undone.
+admin.pages.delete-file.prompt: Tem certeza de que deseja remover este ficheiro? Esta acção não pode ser desfeita.
 admin.pages.delete-page: Remover Página
-admin.pages.delete-page.prompt: Are you sure you want to delete this page? This action can’t be undone.
+admin.pages.delete-page.prompt: Tem certeza que deseja remover esta página? Esta ação não pode ser desfeita.
 admin.pages.edit-page: Editar Página %s
 admin.pages.editor.bold: Negrito
 admin.pages.editor.bullet-list: Lista de marcadores
@@ -121,7 +121,7 @@ admin.pages.editor.redo: Refazer
 admin.pages.editor.summary: Sumário
 admin.pages.editor.undo: Desfazer
 admin.pages.files: Ficheiros
-admin.pages.files.upload-label: <strong>Click</strong> para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
+admin.pages.files.upload-label: <strong>Clique</strong> aqui para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
 admin.pages.languages: Idiomas
 admin.pages.languages.add-language: Criar %s
 admin.pages.languages.edit-language: Editar %s
@@ -251,7 +251,7 @@ admin.users.user.cannot-change-password: Não é possível alterar a senha de ou
 admin.users.user.cannot-change-role: Não é possível alterar o cargo de %s. A acção não é permitida.
 admin.users.user.cannot-create.already-exists: Não é possível criar utilizador, já existe um utilizador com o mesmo nome
 admin.users.user.cannot-create.var-missing: Não é possível criar o utilizador, falta uma variável
-admin.users.user.cannot-delete: Cannot delete user. You must be an administrator and the user must not be logged in.
+admin.users.user.cannot-delete: Não é possível remover o utilizador. Você deve ser um administrador e o utilizador não deve estar logado.
 admin.users.user.cannot-edit: Não é possível editar o utilizador %s. A acção não é permitida.
 admin.users.user.created: Utilizador criado.
 admin.users.user.deleted: Utilizador removido.
