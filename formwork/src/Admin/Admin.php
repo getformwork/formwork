@@ -9,12 +9,12 @@ use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Page;
 use Formwork\Response\JSONResponse;
+use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Notification;
 use Formwork\Utils\Session;
@@ -115,12 +115,12 @@ final class Admin
         }
 
         if ($this->users->isEmpty()) {
-            $this->registerAdmin();
+            return $this->registerAdmin();
         }
 
         if (!$this->isLoggedIn() && $this->route() !== '/login/') {
             Session::set('FORMWORK_REDIRECT_TO', $this->route());
-            $this->redirect('/login/');
+            return $this->redirect('/login/');
         }
 
         $response = $this->router->dispatch();
@@ -202,9 +202,9 @@ final class Admin
      *
      * @param int $code HTTP redirect status code
      */
-    public function redirect(string $route, int $code = 302): void
+    public function redirect(string $route, int $code = 302): RedirectResponse
     {
-        Header::redirect($this->uri($route), $code);
+        return new RedirectResponse($this->uri($route), $code);
     }
 
     /**
@@ -212,9 +212,9 @@ final class Admin
      *
      * @param int $code HTTP redirect status code
      */
-    public function redirectToSite(int $code = 302): void
+    public function redirectToSite(int $code = 302): RedirectResponse
     {
-        Header::redirect($this->siteUri(), $code);
+        return new RedirectResponse($this->siteUri(), $code);
     }
 
     /**
@@ -222,9 +222,9 @@ final class Admin
      *
      * @param int $code HTTP redirect status code
      */
-    public function redirectToPanel(int $code = 302): void
+    public function redirectToPanel(int $code = 302): RedirectResponse
     {
-        $this->redirect('/', $code);
+        return $this->redirect('/', $code);
     }
 
     /**
@@ -233,13 +233,12 @@ final class Admin
      * @param int    $code    HTTP redirect status code
      * @param string $default Default route if HTTP referer is not available
      */
-    public function redirectToReferer(int $code = 302, string $default = '/'): void
+    public function redirectToReferer(int $code = 302, string $default = '/'): RedirectResponse
     {
         if (HTTPRequest::validateReferer($this->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
-            Header::redirect(HTTPRequest::referer(), $code);
-        } else {
-            Header::redirect($this->uri($default), $code);
+            return new RedirectResponse(HTTPRequest::referer(), $code);
         }
+        return new RedirectResponse($this->uri($default), $code);
     }
 
     /**
@@ -319,7 +318,7 @@ final class Admin
             $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
             if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
                 $this->notify($this->translate('admin.request.error.post-max-size'), 'error');
-                $this->redirectToReferer();
+                $this->redirectToReferer()->send(true);
             }
         }
     }
@@ -338,24 +337,23 @@ final class Admin
             if (HTTPRequest::isXHR()) {
                 JSONResponse::error('Bad Request: the CSRF token is not valid', 400)->send();
             }
-            $this->redirect('/login/');
+            $this->redirect('/login/')->send(true);
         }
     }
 
     /**
      * Register administration panel if no user exists
      */
-    protected function registerAdmin(): void
+    protected function registerAdmin(): Response
     {
         if (!HTTPRequest::isLocalhost()) {
-            $this->redirectToSite();
+            return $this->redirectToSite();
         }
         if ($this->router->request() !== '/') {
-            $this->redirectToPanel();
+            return $this->redirectToPanel();
         }
         $controller = new Controllers\RegisterController();
-        $controller->register();
-        exit;
+        return $controller->register();
     }
 
     /**
@@ -366,8 +364,8 @@ final class Admin
         // Default route
         $this->router->add(
             '/',
-            function (RouteParams $params): void {
-                $this->redirect('/dashboard/');
+            function (RouteParams $params): Response {
+                return $this->redirect('/dashboard/');
             }
         );
 

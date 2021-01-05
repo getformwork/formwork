@@ -8,6 +8,7 @@ use Formwork\Fields\Validator;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
+use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
@@ -26,10 +27,10 @@ class OptionsController extends AbstractController
     /**
      * Options@index action
      */
-    public function index(): void
+    public function index(): RedirectResponse
     {
         $this->ensurePermission('options.system');
-        $this->admin()->redirect('/options/system/');
+        return $this->admin()->redirect('/options/system/');
     }
 
     /**
@@ -53,7 +54,7 @@ class OptionsController extends AbstractController
             }
 
             $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
-            $this->admin()->redirect('/options/system/');
+            return $this->admin()->redirect('/options/system/');
         }
 
         $fields->validate(Formwork::instance()->config());
@@ -91,7 +92,7 @@ class OptionsController extends AbstractController
             }
 
             $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
-            $this->admin()->redirect('/options/site/');
+            return $this->admin()->redirect('/options/site/');
         }
 
         $fields->validate(new DataGetter($this->site()->data()));

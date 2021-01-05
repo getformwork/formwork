@@ -7,6 +7,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
 use Formwork\Response\FileResponse;
 use Formwork\Response\JSONResponse;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
@@ -35,7 +36,7 @@ class BackupController extends AbstractController
     /**
      * Backup@download action
      */
-    public function download(RouteParams $params): FileResponse
+    public function download(RouteParams $params): Response
     {
         $this->ensurePermission('backup.download');
         $file = Formwork::instance()->config()->get('backup.path') . base64_decode($params->get('backup'));
@@ -46,7 +47,7 @@ class BackupController extends AbstractController
             throw new RuntimeException($this->admin()->translate('admin.backup.error.cannot-download.invalid-filename'));
         } catch (TranslatedException $e) {
             $this->admin()->notify($this->admin()->translate('admin.backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
-            $this->admin()->redirectToReferer(302, '/dashboard/');
+            return $this->admin()->redirectToReferer(302, '/dashboard/');
         }
     }
 }

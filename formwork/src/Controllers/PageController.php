@@ -5,11 +5,11 @@ namespace Formwork\Controllers;
 use Formwork\Formwork;
 use Formwork\Page;
 use Formwork\Response\FileResponse;
+use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Header;
 
 class PageController extends AbstractController
 {
@@ -28,7 +28,7 @@ class PageController extends AbstractController
                 $canonical = trim($page->canonical(), '/');
                 if ($params->get('page', '') !== $canonical) {
                     $route = empty($canonical) ? '' : $formwork->router()->rewrite(['page' => $canonical]);
-                    Header::redirect($formwork->site()->uri($route), 301);
+                    return new RedirectResponse($formwork->site()->uri($route), 301);
                 }
             }
 

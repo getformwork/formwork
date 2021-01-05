@@ -5,6 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Security\AccessLimiter;
 use Formwork\Admin\Security\CSRFToken;
 use Formwork\Formwork;
+use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Log;
@@ -34,7 +35,7 @@ class AuthenticationController extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 if (Session::has('FORMWORK_USERNAME')) {
-                    $this->admin()->redirectToPanel();
+                    return $this->admin()->redirectToPanel();
                 }
 
                 // Always generate a new CSRF token
@@ -78,10 +79,10 @@ class AuthenticationController extends AbstractController
 
                     if (($destination = Session::get('FORMWORK_REDIRECT_TO')) !== null) {
                         Session::remove('FORMWORK_REDIRECT_TO');
-                        $this->admin()->redirect($destination);
+                        return $this->admin()->redirect($destination);
                     }
 
-                    $this->admin()->redirectToPanel();
+                    return $this->admin()->redirectToPanel();
                 }
 
                 return $this->error($this->admin()->translate('admin.login.attempt.failed'), [
@@ -96,18 +97,17 @@ class AuthenticationController extends AbstractController
     /**
      * Authentication@logout action
      */
-    public function logout(): void
+    public function logout(): RedirectResponse
     {
         CSRFToken::destroy();
         Session::remove('FORMWORK_USERNAME');
         Session::destroy();
 
         if (Formwork::instance()->config()->get('admin.logout_redirect') === 'home') {
-            $this->admin()->redirectToSite();
-        } else {
-            $this->admin()->notify($this->admin()->translate('admin.login.logged-out'), 'info');
-            $this->admin()->redirectToPanel();
+            return $this->admin()->redirectToSite();
         }
+        $this->admin()->notify($this->admin()->translate('admin.login.logged-out'), 'info');
+        return $this->admin()->redirectToPanel();
     }
 
     /**

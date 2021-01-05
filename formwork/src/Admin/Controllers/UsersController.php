@@ -12,6 +12,7 @@ use Formwork\Fields\Fields;
 use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
+use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
@@ -40,7 +41,7 @@ class UsersController extends AbstractController
     /**
      * Users@create action
      */
-    public function create(): void
+    public function create(): RedirectResponse
     {
         $this->ensurePermission('users.create');
 
@@ -49,13 +50,13 @@ class UsersController extends AbstractController
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-create.var-missing'), 'error');
-            $this->admin()->redirect('/users/');
+            return $this->admin()->redirect('/users/');
         }
 
         // Ensure there isn't a user with the same username
         if ($this->admin()->users()->has($data->get('username'))) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-create.already-exists'), 'error');
-            $this->admin()->redirect('/users/');
+            return $this->admin()->redirect('/users/');
         }
 
         $userData = [
@@ -69,13 +70,13 @@ class UsersController extends AbstractController
         YAML::encodeToFile($userData, Formwork::instance()->config()->get('admin.paths.accounts') . $data->get('username') . '.yml');
 
         $this->admin()->notify($this->admin()->translate('admin.users.user.created'), 'success');
-        $this->admin()->redirect('/users/');
+        return $this->admin()->redirect('/users/');
     }
 
     /**
      * Users@delete action
      */
-    public function delete(RouteParams $params): void
+    public function delete(RouteParams $params): RedirectResponse
     {
         $this->ensurePermission('users.delete');
 
@@ -95,7 +96,7 @@ class UsersController extends AbstractController
             $this->deleteAvatar($user);
         } catch (TranslatedException $e) {
             $this->admin()->notify($e->getTranslatedMessage(), 'error');
-            $this->admin()->redirectToReferer(302, '/users/');
+            return $this->admin()->redirectToReferer(302, '/users/');
         }
 
         $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('admin.paths.logs') . 'lastAccess.json');
@@ -104,7 +105,7 @@ class UsersController extends AbstractController
         $lastAccessRegistry->remove($user->username());
 
         $this->admin()->notify($this->admin()->translate('admin.users.user.deleted'), 'success');
-        $this->admin()->redirect('/users/');
+        return $this->admin()->redirect('/users/');
     }
 
     /**
@@ -118,7 +119,7 @@ class UsersController extends AbstractController
 
         if ($user === null) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.not-found'), 'error');
-            $this->admin()->redirect('/users/');
+            return $this->admin()->redirect('/users/');
         }
 
         // Disable password and/or role fields if they cannot be changed
@@ -136,7 +137,7 @@ class UsersController extends AbstractController
                 $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-edit', $user->username()), 'error');
             }
 
-            $this->admin()->redirect('/users/' . $user->username() . '/profile/');
+            return $this->admin()->redirect('/users/' . $user->username() . '/profile/');
         }
 
         $fields->validate(new DataGetter($user->toArray()));
@@ -164,7 +165,7 @@ class UsersController extends AbstractController
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
                 $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-change-password'), 'error');
-                $this->admin()->redirect('/users/' . $user->username() . '/profile/');
+                $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
             }
 
             // Hash the new password
@@ -177,7 +178,7 @@ class UsersController extends AbstractController
         // Ensure that user role can be changed
         if ($data->get('role', $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
             $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-change-role', $user->username()), 'error');
-            $this->admin()->redirect('/users/' . $user->username() . '/profile/');
+            $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
         }
 
         // Handle incoming files
@@ -209,7 +210,7 @@ class UsersController extends AbstractController
             $hasUploaded = $uploader->upload(FileSystem::randomName());
         } catch (TranslatedException $e) {
             $this->admin()->notify($this->admin()->translate('admin.uploader.error', $e->getTranslatedMessage()), 'error');
-            $this->admin()->redirect('/users/' . $user->username() . '/profile/');
+            $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
         }
 
         if ($hasUploaded) {
