@@ -67,7 +67,7 @@ fields:
                                 required: true
                                 translate: false
                                 import:
-                                    options: 'Formwork\Admin\Translation::availableLanguages'
+                                    options: 'Formwork\Admin\Admin::availableTranslations'
 
             row5:
                 type: row

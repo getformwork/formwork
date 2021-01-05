@@ -15,7 +15,7 @@
             <label class="label-required" for="language"><?= $this->translate('admin.user.language') ?>:</label>
             <select id="language" name="language">
 <?php
-            foreach (\Formwork\Admin\Translation::availableLanguages() as $key => $value):
+            foreach (\Formwork\Admin\Admin::availableTranslations() as $key => $value):
 ?>
                 <option value="<?= $key ?>"<?php if ($key === $admin->user()->language()): ?> selected<?php endif; ?>><?= $value ?></option>
 <?php

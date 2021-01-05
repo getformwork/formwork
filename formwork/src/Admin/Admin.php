@@ -7,6 +7,7 @@ use Formwork\Admin\Users\User;
 use Formwork\Admin\Users\Users;
 use Formwork\Assets;
 use Formwork\Formwork;
+use Formwork\Languages\LanguageCodes;
 use Formwork\Page;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
@@ -272,6 +273,31 @@ final class Admin
             return $this->assets;
         }
         return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, Formwork::instance()->admin()->realUri('/assets/'));
+    }
+
+    /**
+     * Available translations helper
+     */
+    public static function availableTranslations(): array
+    {
+        static $translations = [];
+
+        if (!empty($translations)) {
+            return $translations;
+        }
+
+        $path = Formwork::instance()->config()->get('translations.paths.admin');
+
+        foreach (FileSystem::listFiles($path) as $file) {
+            if (FileSystem::extension($file) === 'yml') {
+                $code = FileSystem::name($file);
+                $translations[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
+            }
+        }
+
+        ksort($translations);
+
+        return $translations;
     }
 
     /**

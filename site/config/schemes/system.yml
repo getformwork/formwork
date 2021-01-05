@@ -198,7 +198,7 @@ fields:
                                 type: select
                                 translate: false
                                 import:
-                                    options: 'Formwork\Admin\Translation::availableLanguages'
+                                    options: 'Formwork\Admin\Admin::availableTranslations'
             row2:
                 type: row
                 fields:
