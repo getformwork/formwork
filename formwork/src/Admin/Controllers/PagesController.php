@@ -12,6 +12,7 @@ use Formwork\Languages\LanguageCodes;
 use Formwork\Page;
 use Formwork\Parsers\YAML;
 use Formwork\Response\JSONResponse;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Site;
 use Formwork\Utils\FileSystem;
@@ -41,7 +42,7 @@ class PagesController extends AbstractController
     /**
      * Pages@index action
      */
-    public function index(): void
+    public function index(): Response
     {
         $this->ensurePermission('pages.index');
 
@@ -52,7 +53,7 @@ class PagesController extends AbstractController
 
         $this->modal('deletePage');
 
-        $this->view('pages.index', [
+        return new Response($this->view('pages.index', [
             'title'     => $this->admin()->translate('admin.pages.pages'),
             'pagesList' => $this->view('pages.list', [
                 'pages'    => $this->site()->pages(),
@@ -62,7 +63,7 @@ class PagesController extends AbstractController
                 'sortable' => $this->user()->permissions()->has('pages.reorder'),
                 'headers'  => true
             ], true)
-        ]);
+        ], true));
     }
 
     /**
@@ -90,7 +91,7 @@ class PagesController extends AbstractController
     /**
      * Pages@edit action
      */
-    public function edit(RouteParams $params): void
+    public function edit(RouteParams $params): Response
     {
         $this->ensurePermission('pages.edit');
 
@@ -182,7 +183,7 @@ class PagesController extends AbstractController
 
         $this->modal('deleteFile');
 
-        $this->view('pages.editor', [
+        return new Response($this->view('pages.editor', [
             'title'              => $this->admin()->translate('admin.pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields->render(true),
@@ -190,29 +191,29 @@ class PagesController extends AbstractController
             'parents'            => $this->site()->descendants()->sort('path'),
             'currentLanguage'    => $params->get('language', $page->language()),
             'availableLanguages' => $this->availableSiteLanguages()
-        ]);
+        ], true));
     }
 
     /**
      * Pages@reorder action
      */
-    public function reorder(): void
+    public function reorder(): JSONResponse
     {
         $this->ensurePermission('pages.reorder');
 
         $data = HTTPRequest::postData();
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         $pages = $parent->children()->toArray();
@@ -236,7 +237,7 @@ class PagesController extends AbstractController
             }
         }
 
-        JSONResponse::success($this->admin()->translate('admin.pages.page.moved'))->send();
+        return JSONResponse::success($this->admin()->translate('admin.pages.page.moved'));
     }
 
     /**

@@ -12,6 +12,7 @@ use Formwork\Fields\Fields;
 use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -22,7 +23,7 @@ class UsersController extends AbstractController
     /**
      * Users@index action
      */
-    public function index(): void
+    public function index(): Response
     {
         $this->ensurePermission('users.index');
 
@@ -30,10 +31,10 @@ class UsersController extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('users.index', [
+        return new Response($this->view('users.index', [
             'title'   => $this->admin()->translate('admin.users.users'),
             'users'   => $this->admin()->users()
-        ]);
+        ], true));
     }
 
     /**
@@ -109,7 +110,7 @@ class UsersController extends AbstractController
     /**
      * Users@profile action
      */
-    public function profile(RouteParams $params): void
+    public function profile(RouteParams $params): Response
     {
         $fields = new Fields(Formwork::instance()->schemes()->get('admin', 'user')->get('fields'));
 
@@ -144,11 +145,11 @@ class UsersController extends AbstractController
 
         $this->modal('deleteUser');
 
-        $this->view('users.profile', [
+        return new Response($this->view('users.profile', [
             'title'   => $this->admin()->translate('admin.users.user-profile', $user->username()),
             'user'    => $user,
             'fields'  => $fields->render(true)
-        ]);
+        ], true));
     }
 
     /**

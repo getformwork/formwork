@@ -9,6 +9,7 @@ use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Page;
 use Formwork\Response\JSONResponse;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Translations\Translation;
@@ -97,7 +98,7 @@ final class Admin
     /**
      * Run the administration panel
      */
-    public function run(): void
+    public function run(): Response
     {
         $this->loadSchemes();
 
@@ -122,11 +123,13 @@ final class Admin
             $this->redirect('/login/');
         }
 
-        $this->router->dispatch();
+        $response = $this->router->dispatch();
 
         if (!$this->router->hasDispatched()) {
-            $this->errors->notFound();
+            $response = $this->errors->notFound();
         }
+
+        return $response;
     }
 
     /**

@@ -91,7 +91,7 @@ abstract class AbstractController extends BaseAbstractController
     {
         if (!$this->user()->permissions()->has($permission)) {
             $errors = new ErrorsController();
-            $errors->forbidden();
+            $errors->forbidden()->send();
             exit;
         }
     }

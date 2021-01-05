@@ -8,7 +8,6 @@ use Formwork\Cache\SiteCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
-use Formwork\Response\Response;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Traits\SingletonTrait;
@@ -193,28 +192,11 @@ final class Formwork
      */
     public function run(): void
     {
-        $resource = $this->router->dispatch();
+        $response = $this->router->dispatch();
 
-        if ($resource instanceof Page) {
-            if ($this->site->currentPage() === null) {
-                $this->site->setCurrentPage($resource);
-            }
+        $response->send();
 
-            $page = $this->site->currentPage();
-
-            if ($this->config()->get('cache.enabled') && $this->cache->has($this->request)) {
-                $response = $this->cache->fetch($this->request);
-                $response->send();
-            } else {
-                $response = new Response($page->renderToString(), $page->get('response_status', 200), $page->headers());
-                $response->send();
-                if ($this->config()->get('cache.enabled') && $page->cacheable()) {
-                    $this->cache->save($this->request, $response);
-                }
-            }
-        }
-
-        if ($this->config()->get('statistics.enabled') && isset($page) && !$page->isErrorPage()) {
+        if ($this->config()->get('statistics.enabled') && $this->site->currentPage() !== null && !$this->site->currentPage()->isErrorPage()) {
             $statistics = new Statistics();
             $statistics->trackVisit();
         }
@@ -327,7 +309,7 @@ final class Formwork
             ],
             function () {
                 $this->admin = new Admin();
-                $this->admin->run();
+                return $this->admin->run();
             },
             ['GET', 'POST'],
             ['HTTP', 'XHR']

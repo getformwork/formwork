@@ -6,6 +6,7 @@ use Formwork\Admin\Security\CSRFToken;
 use Formwork\Admin\Security\Password;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
+use Formwork\Response\Response;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Log;
 use Formwork\Utils\Registry;
@@ -16,15 +17,15 @@ class RegisterController extends AbstractController
     /**
      * Register@register action
      */
-    public function register(): void
+    public function register(): Response
     {
         CSRFToken::generate();
 
         switch (HTTPRequest::method()) {
             case 'GET':
-                $this->view('register.register', [
+                return new Response($this->view('register.register', [
                     'title' => $this->admin()->translate('admin.register.register')
-                ]);
+                ], true));
 
                 break;
 
