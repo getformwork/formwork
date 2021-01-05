@@ -304,7 +304,7 @@ final class Admin
     {
         $this->errors = new Controllers\ErrorsController();
         set_exception_handler(function (Throwable $exception): void {
-            $this->errors->internalServerError($exception);
+            $this->errors->internalServerError($exception)->send();
             throw $exception;
         });
     }
