@@ -58,6 +58,13 @@ class Router
     protected $routes = [];
 
     /**
+     * Array containing callbacks to be executed before routes
+     *
+     * @var array
+     */
+    protected $beforeCallbacks = [];
+
+    /**
      * The request to match routes against
      *
      * @var string
@@ -141,22 +148,66 @@ class Router
     }
 
     /**
+     * Add a callback to be executed before routes
+     *
+     * @param callable|string $callback
+     * @param array|string    $method
+     * @param array|string    $type
+     */
+    public function before($callback, $method = self::REQUEST_METHODS, $type = self::REQUEST_TYPES): void
+    {
+        if (is_array($method)) {
+            foreach ($method as $m) {
+                $this->before($callback, $m, $type);
+            }
+            return;
+        }
+        if (!is_string($method)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $method argument', __METHOD__));
+        }
+        if (is_array($type)) {
+            foreach ($type as $t) {
+                $this->before($callback, $method, $t);
+            }
+            return;
+        }
+        if (!is_string($type)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $type argument', __METHOD__));
+        }
+        if (!in_array($method, self::REQUEST_METHODS, true)) {
+            throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
+        }
+        if (!in_array($type, self::REQUEST_TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
+        }
+        $this->beforeCallbacks[] = compact('callback', 'method', 'type');
+    }
+
+    /**
      * Dispatch matching route
      */
     public function dispatch()
     {
+        foreach ($this->beforeCallbacks as $before) {
+            if (HTTPRequest::type() === $before['type'] && HTTPRequest::method() === $before['method']) {
+                $beforeCallback = $this->parseCallback($before['callback']);
+                if (!is_callable($beforeCallback)) {
+                    throw new UnexpectedValueException('Invalid before callback');
+                }
+                if (($result = $beforeCallback($this->params)) !== null) {
+                    $this->dispatched = true;
+                    return $result;
+                }
+            }
+        }
         foreach ($this->routes as $route) {
             if (HTTPRequest::type() === $route['type'] && HTTPRequest::method() === $route['method'] && $this->match($route['route'])) {
                 $this->dispatched = true;
-                // Parse Class@method callback syntax
-                if (is_string($route['callback']) && Str::contains($route['callback'], '@')) {
-                    [$class, $method] = explode('@', $route['callback']);
-                    $route['callback'] = [new $class(), $method];
-                }
-                if (!is_callable($route['callback'])) {
+                $routeCallback = $this->parseCallback($route['callback']);
+                if (!is_callable($routeCallback)) {
                     throw new UnexpectedValueException(sprintf('Invalid callback for "%s" route', $route['route']));
                 }
-                return $route['callback']($this->params);
+                return $routeCallback($this->params);
             }
         }
     }
@@ -191,6 +242,21 @@ class Router
     public function rewrite(array $params): string
     {
         return $this->rewriteRoute($this->matchedRoute, array_merge($this->params->toArray(), $params));
+    }
+
+    /**
+     * Parse callback
+     *
+     * @param callable|string $callback
+     */
+    protected function parseCallback($callback)
+    {
+        // Parse Class@method callback syntax
+        if (is_string($callback) && Str::contains($callback, '@')) {
+            [$class, $method] = explode('@', $callback);
+            return [new $class(), $method];
+        }
+        return $callback;
     }
 
     /**
