@@ -3,8 +3,7 @@
 namespace PhpCsFixer;
 
 $finder = Finder::create()
-    ->exclude('admin/views')
-    ->in(__DIR__);
+    ->in('formwork/src');
 
 return Config::create()
     ->setRules([
