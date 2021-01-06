@@ -2,15 +2,20 @@
 
 namespace Formwork\Admin\Users;
 
-use Formwork\Admin\Admin;
 use Formwork\Admin\Security\Password;
-use Formwork\Data\DataGetter;
 use Formwork\Formwork;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
-class User extends DataGetter
+class User
 {
+    /**
+     * Array containing user data
+     *
+     * @var array
+     */
+    protected $data = [];
+
     /**
      * Default data of the user
      *
@@ -95,7 +100,7 @@ class User extends DataGetter
      */
     public function __construct(array $data)
     {
-        parent::__construct(array_merge($this->defaults, $data));
+        $this->data = array_merge($this->defaults, $data);
         foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
             $this->$var = $this->data[$var];
         }
@@ -235,6 +240,14 @@ class User extends DataGetter
     public function colorScheme(): string
     {
         return $this->data['color-scheme'];
+    }
+
+    /**
+     * Return an array containing user data
+     */
+    public function toArray(): array
+    {
+        return $this->data;
     }
 
     public function __debugInfo(): array
