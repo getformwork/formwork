@@ -102,39 +102,6 @@ final class Admin
 
         $this->loadRoutes();
 
-        if (HTTPRequest::method() === 'POST') {
-            // Validate HTTP request Content-Length according to post_max_size directive
-            if (HTTPRequest::contentLength() !== null) {
-                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
-                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                    $this->notify($this->translate('admin.request.error.post-max-size'), 'error');
-                    return $this->redirectToReferer();
-                }
-            }
-
-            // Validate CSRF token
-            try {
-                CSRFToken::validate();
-            } catch (RuntimeException $e) {
-                CSRFToken::destroy();
-                Session::remove('FORMWORK_USERNAME');
-                $this->notify($this->translate('admin.login.suspicious-request-detected'), 'warning');
-                if (HTTPRequest::isXHR()) {
-                    return JSONResponse::error('Bad Request: the CSRF token is not valid', 400);
-                }
-                return $this->redirect('/login/');
-            }
-        }
-
-        if ($this->users->isEmpty()) {
-            return $this->registerAdmin();
-        }
-
-        if (!$this->isLoggedIn() && $this->route() !== '/login/') {
-            Session::set('FORMWORK_REDIRECT_TO', $this->route());
-            return $this->redirect('/login/');
-        }
-
         $response = $this->router->dispatch();
 
         if (!$this->router->hasDispatched()) {
@@ -346,25 +313,58 @@ final class Admin
     }
 
     /**
-     * Register administration panel if no user exists
-     */
-    protected function registerAdmin(): Response
-    {
-        if (!HTTPRequest::isLocalhost()) {
-            return $this->redirectToSite();
-        }
-        if ($this->router->request() !== '/') {
-            return $this->redirectToPanel();
-        }
-        $controller = new Controllers\RegisterController();
-        return $controller->register();
-    }
-
-    /**
      * Load administration panel routes
      */
     protected function loadRoutes(): void
     {
+        // Validate HTTP request Content-Length according to post_max_size directive
+        $this->router->before(function () {
+            if (HTTPRequest::contentLength() !== null) {
+                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                    $this->notify($this->translate('admin.request.error.post-max-size'), 'error');
+                    return $this->redirectToReferer();
+                }
+            }
+        }, 'POST');
+
+        // Validate CSRF token
+        $this->router->before(function () {
+            try {
+                CSRFToken::validate();
+            } catch (RuntimeException $e) {
+                CSRFToken::destroy();
+                Session::remove('FORMWORK_USERNAME');
+                $this->notify($this->translate('admin.login.suspicious-request-detected'), 'warning');
+                if (HTTPRequest::isXHR()) {
+                    return JSONResponse::error('Bad Request: the CSRF token is not valid', 400);
+                }
+                return $this->redirect('/login/');
+            }
+        }, 'POST');
+
+        // Register admin if no user exists
+        $this->router->before(function () {
+            if ($this->users->isEmpty()) {
+                if (!HTTPRequest::isLocalhost()) {
+                    return $this->redirectToSite();
+                }
+                if ($this->router->request() !== '/') {
+                    return $this->redirectToPanel();
+                }
+                $controller = new Controllers\RegisterController();
+                return $controller->register();
+            }
+        });
+
+        // Redirect to login if no user is logged
+        $this->router->before(function () {
+            if (!$this->isLoggedIn() && $this->route() !== '/login/') {
+                Session::set('FORMWORK_REDIRECT_TO', $this->route());
+                return $this->redirect('/login/');
+            }
+        });
+
         // Default route
         $this->router->add(
             '/',
