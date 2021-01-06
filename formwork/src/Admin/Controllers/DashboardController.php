@@ -4,13 +4,14 @@ namespace Formwork\Admin\Controllers;
 
 use Formwork\Admin\Statistics;
 use Formwork\Parsers\JSON;
+use Formwork\Response\Response;
 
 class DashboardController extends AbstractController
 {
     /**
      * Dashboard@index action
      */
-    public function index(): void
+    public function index(): Response
     {
         $this->ensurePermission('dashboard');
 
@@ -23,7 +24,7 @@ class DashboardController extends AbstractController
 
         $this->modal('deletePage');
 
-        $this->view('dashboard.index', [
+        return new Response($this->view('dashboard.index', [
             'title'             => $this->admin()->translate('admin.dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.list', [
                 'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
@@ -34,6 +35,6 @@ class DashboardController extends AbstractController
                 'headers'  => true
                 ], true),
             'statistics' => JSON::encode($statistics->getChartData())
-        ]);
+        ], true));
     }
 }

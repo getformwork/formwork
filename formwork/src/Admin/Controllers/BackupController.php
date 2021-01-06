@@ -5,10 +5,11 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Backupper;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
+use Formwork\Response\FileResponse;
+use Formwork\Response\JSONResponse;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPResponse;
-use Formwork\Utils\JSONResponse;
 use RuntimeException;
 
 class BackupController extends AbstractController
@@ -16,38 +17,37 @@ class BackupController extends AbstractController
     /**
      * Backup@make action
      */
-    public function make(): void
+    public function make(): JSONResponse
     {
         $this->ensurePermission('backup.make');
         $backupper = new Backupper();
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
-            JSONResponse::error($this->admin()->translate('admin.backup.error.cannot-make', $e->getTranslatedMessage()), 500)->send();
+            return JSONResponse::error($this->admin()->translate('admin.backup.error.cannot-make', $e->getTranslatedMessage()), 500);
         }
         $filename = basename($file);
-        JSONResponse::success($this->admin()->translate('admin.backup.ready'), 200, [
+        return JSONResponse::success($this->admin()->translate('admin.backup.ready'), 200, [
             'filename' => $filename,
             'uri'      => $this->admin()->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
-        ])->send();
+        ]);
     }
 
     /**
      * Backup@download action
      */
-    public function download(RouteParams $params): void
+    public function download(RouteParams $params): Response
     {
         $this->ensurePermission('backup.download');
         $file = Formwork::instance()->config()->get('backup.path') . base64_decode($params->get('backup'));
         try {
             if (FileSystem::isFile($file, false)) {
-                HTTPResponse::download($file);
-            } else {
-                throw new RuntimeException($this->admin()->translate('admin.backup.error.cannot-download.invalid-filename'));
+                return new FileResponse($file, true);
             }
+            throw new RuntimeException($this->admin()->translate('admin.backup.error.cannot-download.invalid-filename'));
         } catch (TranslatedException $e) {
             $this->admin()->notify($this->admin()->translate('admin.backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
-            $this->admin()->redirectToReferer(302, '/dashboard/');
+            return $this->admin()->redirectToReferer(302, '/dashboard/');
         }
     }
 }

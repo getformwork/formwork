@@ -6,6 +6,7 @@ use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
 use Formwork\View\View;
 use ErrorException;
+use Formwork\Response\Response;
 use Throwable;
 
 class Errors
@@ -28,9 +29,9 @@ class Errors
     public static function displayErrorPage(int $status = 500): void
     {
         HTTPResponse::cleanOutputBuffers();
-        Header::status($status);
         $view = new View('error', ['status' => $status, 'message' => Header::HTTP_STATUS[$status]]);
-        $view->render();
+        $response = new Response($view->render(true), $status);
+        $response->send();
         // Don't exit, otherwise the error will not be logged
     }
 

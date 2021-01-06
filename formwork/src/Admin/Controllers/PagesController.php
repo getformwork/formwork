@@ -11,11 +11,13 @@ use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Page;
 use Formwork\Parsers\YAML;
+use Formwork\Response\JSONResponse;
+use Formwork\Response\RedirectResponse;
+use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Site;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\JSONResponse;
 use Formwork\Utils\Session;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -41,7 +43,7 @@ class PagesController extends AbstractController
     /**
      * Pages@index action
      */
-    public function index(): void
+    public function index(): Response
     {
         $this->ensurePermission('pages.index');
 
@@ -52,7 +54,7 @@ class PagesController extends AbstractController
 
         $this->modal('deletePage');
 
-        $this->view('pages.index', [
+        return new Response($this->view('pages.index', [
             'title'     => $this->admin()->translate('admin.pages.pages'),
             'pagesList' => $this->view('pages.list', [
                 'pages'    => $this->site()->pages(),
@@ -62,13 +64,13 @@ class PagesController extends AbstractController
                 'sortable' => $this->user()->permissions()->has('pages.reorder'),
                 'headers'  => true
             ], true)
-        ]);
+        ], true));
     }
 
     /**
      * Pages@create action
      */
-    public function create(): void
+    public function create(): RedirectResponse
     {
         $this->ensurePermission('pages.create');
 
@@ -81,33 +83,36 @@ class PagesController extends AbstractController
             $this->admin()->notify($this->admin()->translate('admin.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->admin()->notify($e->getTranslatedMessage(), 'error');
-            $this->admin()->redirectToReferer(302, '/pages/');
+            return $this->admin()->redirectToReferer(302, '/pages/');
         }
 
-        $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+        return $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
     }
 
     /**
      * Pages@edit action
      */
-    public function edit(RouteParams $params): void
+    public function edit(RouteParams $params): Response
     {
         $this->ensurePermission('pages.edit');
 
         $page = $this->site()->findPage($params->get('page'));
 
-        $this->ensurePageExists($page, 'pages.page.cannot-edit.page-not-found');
+        if ($page === null) {
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-edit.page-not-found'), 'error');
+            return $this->admin()->redirectToReferer(302, '/pages/');
+        }
 
         if ($params->has('language')) {
             if (empty(Formwork::instance()->config()->get('languages.available'))) {
-                $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                return $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
             }
 
             $language = $params->get('language');
 
             if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
                 $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-edit.invalid-language', $language), 'error');
-                $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
+                return $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
             if ($page->hasLanguage($language)) {
@@ -115,7 +120,7 @@ class PagesController extends AbstractController
             }
         } elseif ($page->language() !== null) {
             // Redirect to proper language
-            $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+            return $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
         }
 
         // Check if page has to be published on next save
@@ -164,7 +169,7 @@ class PagesController extends AbstractController
 
                 // Redirect if page route has changed
                 if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
-                    $this->admin()->redirect('/pages/' . $route . '/edit/');
+                    return $this->admin()->redirect('/pages/' . $route . '/edit/');
                 }
 
                 break;
@@ -182,7 +187,7 @@ class PagesController extends AbstractController
 
         $this->modal('deleteFile');
 
-        $this->view('pages.editor', [
+        return new Response($this->view('pages.editor', [
             'title'              => $this->admin()->translate('admin.pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields->render(true),
@@ -190,29 +195,29 @@ class PagesController extends AbstractController
             'parents'            => $this->site()->descendants()->sort('path'),
             'currentLanguage'    => $params->get('language', $page->language()),
             'availableLanguages' => $this->availableSiteLanguages()
-        ]);
+        ], true));
     }
 
     /**
      * Pages@reorder action
      */
-    public function reorder(): void
+    public function reorder(): JSONResponse
     {
         $this->ensurePermission('pages.reorder');
 
         $data = HTTPRequest::postData();
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'))->send();
+            return JSONResponse::error($this->admin()->translate('admin.pages.page.cannot-move'));
         }
 
         $pages = $parent->children()->toArray();
@@ -236,19 +241,22 @@ class PagesController extends AbstractController
             }
         }
 
-        JSONResponse::success($this->admin()->translate('admin.pages.page.moved'))->send();
+        return JSONResponse::success($this->admin()->translate('admin.pages.page.moved'));
     }
 
     /**
      * Pages@delete action
      */
-    public function delete(RouteParams $params): void
+    public function delete(RouteParams $params): RedirectResponse
     {
         $this->ensurePermission('pages.delete');
 
         $page = $this->site()->findPage($params->get('page'));
 
-        $this->ensurePageExists($page, 'pages.page.cannot-delete.page-not-found');
+        if ($page === null) {
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete.page-not-found'), 'error');
+            return $this->admin()->redirectToReferer(302, '/pages/');
+        }
 
         if ($params->has('language')) {
             $language = $params->get('language');
@@ -256,13 +264,13 @@ class PagesController extends AbstractController
                 $page->setLanguage($language);
             } else {
                 $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete.invalid-language', $language), 'error');
-                $this->admin()->redirectToReferer(302, '/pages/');
+                return $this->admin()->redirectToReferer(302, '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
             $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete.not-deletable'), 'error');
-            $this->admin()->redirectToReferer(302, '/pages/');
+            return $this->admin()->redirectToReferer(302, '/pages/');
         }
 
         // Delete just the content file only if there are more than one language
@@ -276,56 +284,61 @@ class PagesController extends AbstractController
 
         // Don't redirect to referer if it's to Pages@edit
         if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->admin()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
-            $this->admin()->redirectToReferer(302, '/pages/');
-        } else {
-            $this->admin()->redirect('/pages/');
+            return $this->admin()->redirectToReferer(302, '/pages/');
         }
+        return $this->admin()->redirect('/pages/');
     }
 
     /**
      * Pages@uploadFile action
      */
-    public function uploadFile(RouteParams $params): void
+    public function uploadFile(RouteParams $params): RedirectResponse
     {
         $this->ensurePermission('pages.upload_files');
 
         $page = $this->site()->findPage($params->get('page'));
 
-        $this->ensurePageExists($page, 'pages.page.cannot-upload-file.page-not-found');
+        if ($page === null) {
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-upload-file.page-not-found'), 'error');
+            return $this->admin()->redirectToReferer(302, '/pages/');
+        }
 
         if (HTTPRequest::hasFiles()) {
             try {
                 $this->processPageUploads($page);
             } catch (TranslatedException $e) {
                 $this->admin()->notify($this->admin()->translate('admin.uploader.error', $e->getTranslatedMessage()), 'error');
-                $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
+                return $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
 
         $this->admin()->notify($this->admin()->translate('admin.uploader.uploaded'), 'success');
-        $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
+        return $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
      * Pages@deleteFile action
      */
-    public function deleteFile(RouteParams $params): void
+    public function deleteFile(RouteParams $params): RedirectResponse
     {
         $this->ensurePermission('pages.delete_files');
 
         $page = $this->site()->findPage($params->get('page'));
 
-        $this->ensurePageExists($page, 'pages.page.cannot-delete-file.page-not-found');
+        if ($page === null) {
+            $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete-file.page-not-found'), 'error');
+            return $this->admin()->redirectToReferer(302, '/pages/');
+        }
 
         if (!$page->files()->has($params->get('filename'))) {
             $this->admin()->notify($this->admin()->translate('admin.pages.page.cannot-delete-file.file-not-found'), 'error');
-            $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
+            return $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
         }
 
         FileSystem::delete($page->path() . $params->get('filename'));
 
         $this->admin()->notify($this->admin()->translate('admin.pages.page.file-deleted'), 'success');
-        $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
+        return $this->admin()->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
@@ -514,17 +527,6 @@ class PagesController extends AbstractController
                 $image->saveOptimized();
                 $page->reload();
             }
-        }
-    }
-
-    /**
-     * Ensure a page exists
-     */
-    protected function ensurePageExists(?Page $page, string $errorLanguageString): void
-    {
-        if ($page === null) {
-            $this->admin()->notify($this->admin()->translate($errorLanguageString), 'error');
-            $this->admin()->redirectToReferer(302, '/pages/');
         }
     }
 

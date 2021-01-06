@@ -3,7 +3,7 @@
 namespace Formwork\Admin\Controllers;
 
 use Formwork\Formwork;
-use Formwork\Utils\Header;
+use Formwork\Response\Response;
 use Formwork\Utils\HTTPResponse;
 use Throwable;
 
@@ -12,9 +12,9 @@ class ErrorsController extends AbstractController
     /**
      * Errors@notFound action
      */
-    public function notFound(): void
+    public function notFound(): Response
     {
-        $this->displayError(404, 'not-found', [
+        return $this->makeErrorResponse(404, 'not-found', [
             'href'  => $this->admin()->uri('/dashboard/'),
             'label' => $this->admin()->translate('admin.errors.action.return-to-dashboard')
         ]);
@@ -23,9 +23,9 @@ class ErrorsController extends AbstractController
     /**
      * Errors@internalServerError action
      */
-    public function internalServerError(Throwable $exception): void
+    public function internalServerError(Throwable $exception): Response
     {
-        $this->displayError(500, 'internal-server-error', [
+        return $this->makeErrorResponse(500, 'internal-server-error', [
             'href'  => $this->makeGitHubIssueUri($exception),
             'label' => $this->admin()->translate('admin.errors.action.report-to-github')
         ]);
@@ -34,34 +34,32 @@ class ErrorsController extends AbstractController
     /**
      * Errors@forbidden action
      */
-    public function forbidden(): void
+    public function forbidden(): Response
     {
-        $this->displayError(403, 'forbidden', [
+        return $this->makeErrorResponse(403, 'forbidden', [
             'href'  => $this->admin()->uri('/dashboard/'),
             'label' => $this->admin()->translate('admin.errors.action.return-to-dashboard')
         ]);
     }
 
     /**
-     * Display error view with error description
+     * Make error response with error description
      *
      * @param int    $status HTTP error status
      * @param string $name   Error name
      * @param array  $action Action link data
      */
-    protected function displayError(int $status, string $name, array $action): void
+    protected function makeErrorResponse(int $status, string $name, array $action): Response
     {
         HTTPResponse::cleanOutputBuffers();
-        Header::status($status);
-        $this->view('errors.error', [
+        return new Response($this->view('errors.error', [
             'title'       => $this->admin()->translate('admin.errors.error.' . $name . '.status'),
             'code'        => $status,
             'status'      => $this->admin()->translate('admin.errors.error.' . $name . '.status'),
             'heading'     => $this->admin()->translate('admin.errors.error.' . $name . '.heading'),
             'description' => $this->admin()->translate('admin.errors.error.' . $name . '.description'),
             'action'      => $action
-        ]);
-        // Don't exit, otherwise the error will not be logged
+        ], true), $status);
     }
 
     /**

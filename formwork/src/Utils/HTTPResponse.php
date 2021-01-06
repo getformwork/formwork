@@ -18,32 +18,6 @@ class HTTPResponse
     }
 
     /**
-     * Put file data into response content
-     *
-     * @param bool $download Whether to download file or not
-     */
-    public static function file(string $file, bool $download = false): void
-    {
-        $data = FileSystem::read($file);
-        Header::send('Content-Type', FileSystem::mimeType($file));
-        Header::send('Content-Disposition', $download ? 'attachment; filename="' . basename($file) . '"' : 'inline');
-        Header::send('Content-Length', FileSystem::fileSize($file));
-        static::cleanOutputBuffers(); // Clean output buffers to prevent displayed file alteration
-        echo $data;
-        exit;
-    }
-
-    /**
-     * Put file data into response content and tell the browser to download
-     *
-     * @see HTTPResponse::file()
-     */
-    public static function download(string $file): void
-    {
-        static::file($file, true);
-    }
-
-    /**
      * Clean all output buffers which were not sent
      */
     public static function cleanOutputBuffers(): void

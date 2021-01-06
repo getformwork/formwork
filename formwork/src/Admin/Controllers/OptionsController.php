@@ -8,6 +8,8 @@ use Formwork\Fields\Validator;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
+use Formwork\Response\RedirectResponse;
+use Formwork\Response\Response;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -25,16 +27,16 @@ class OptionsController extends AbstractController
     /**
      * Options@index action
      */
-    public function index(): void
+    public function index(): RedirectResponse
     {
         $this->ensurePermission('options.system');
-        $this->admin()->redirect('/options/system/');
+        return $this->admin()->redirect('/options/system/');
     }
 
     /**
      * Options@systemOptions action
      */
-    public function systemOptions(): void
+    public function systemOptions(): Response
     {
         $this->ensurePermission('options.system');
 
@@ -52,27 +54,27 @@ class OptionsController extends AbstractController
             }
 
             $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
-            $this->admin()->redirect('/options/system/');
+            return $this->admin()->redirect('/options/system/');
         }
 
         $fields->validate(Formwork::instance()->config());
 
         $this->modal('changes');
 
-        $this->view('options.system', [
+        return new Response($this->view('options.system', [
             'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system'
             ], true),
             'fields' => $fields->render(true)
-        ]);
+        ], true));
     }
 
     /**
      * Options@siteOptions action
      */
-    public function siteOptions(): void
+    public function siteOptions(): Response
     {
         $this->ensurePermission('options.site');
 
@@ -90,44 +92,44 @@ class OptionsController extends AbstractController
             }
 
             $this->admin()->notify($this->admin()->translate('admin.options.updated'), 'success');
-            $this->admin()->redirect('/options/site/');
+            return $this->admin()->redirect('/options/site/');
         }
 
         $fields->validate(new DataGetter($this->site()->data()));
 
         $this->modal('changes');
 
-        $this->view('options.site', [
+        return new Response($this->view('options.site', [
             'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site'
             ], true),
             'fields' => $fields->render(true)
-        ]);
+        ], true));
     }
 
     /**
      * Options@updates action
      */
-    public function updates(): void
+    public function updates(): Response
     {
         $this->ensurePermission('options.updates');
 
-        $this->view('options.updates', [
+        return new Response($this->view('options.updates', [
             'title'   => $this->admin()->translate('admin.options.updates'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates'
             ], true),
             'currentVersion' => Formwork::VERSION
-        ]);
+        ], true));
     }
 
     /**
      * Options@info action
      */
-    public function info(): void
+    public function info(): Response
     {
         $this->ensurePermission('options.info');
 
@@ -210,14 +212,14 @@ class OptionsController extends AbstractController
         ksort($data['HTTP Request Headers']);
         ksort($data['HTTP Response Headers']);
 
-        $this->view('options.info', [
+        return new Response($this->view('options.info', [
             'title'   => $this->admin()->translate('admin.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info'
             ], true),
             'info' => $data
-        ]);
+        ], true));
     }
 
     /**

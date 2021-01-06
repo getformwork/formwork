@@ -1,45 +1,20 @@
 <?php
 
-namespace Formwork\Utils;
+namespace Formwork\Response;
 
 use Formwork\Parsers\JSON;
 
-class JSONResponse
+class JSONResponse extends Response
 {
     /**
-     * Response HTTP status code
-     *
-     * @var int
+     * @inheritdoc
      */
-    protected $status;
-
-    /**
-     * Response data
-     *
-     * @var array
-     */
-    protected $data = [];
-
-    /**
-     * Create a new JSONResponse instance
-     */
-    public function __construct(array $data, int $status = 200)
+    public function __construct(array $data, int $status = 200, array $headers = [])
     {
-        $this->status = $status;
-        $this->data = $data;
-    }
-
-    /**
-     * Send the JSON response with proper Content-Type
-     */
-    public function send(): void
-    {
-        Header::contentType('application/json; charset=utf-8');
-        if ($this->status !== 200) {
-            Header::status($this->status);
-        }
-        echo JSON::encode($this->data);
-        exit;
+        $headers += [
+            'Content-Type' => 'application/json; charset=utf-8'
+        ];
+        parent::__construct(JSON::encode($data), $status, $headers);
     }
 
     /**
