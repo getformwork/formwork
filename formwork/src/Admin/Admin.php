@@ -89,14 +89,6 @@ final class Admin
     }
 
     /**
-     * Get current translation
-     */
-    public function translation(): Translation
-    {
-        return $this->translation;
-    }
-
-    /**
      * Run the administration panel
      */
     public function run(): Response
