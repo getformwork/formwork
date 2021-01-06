@@ -131,8 +131,12 @@ class UsersController extends AbstractController
             if ($this->user()->canChangeOptionsOf($user)) {
                 $data = DataSetter::fromGetter(HTTPRequest::postData());
                 $fields->validate($data);
-                $this->updateUser($user, $data);
-                $this->admin()->notify($this->admin()->translate('admin.users.user.edited'), 'success');
+                try {
+                    $this->updateUser($user, $data);
+                    $this->admin()->notify($this->admin()->translate('admin.users.user.edited'), 'success');
+                } catch (TranslatedException $e) {
+                    $this->admin()->notify($this->admin()->translate($e->getLanguageString(), $user->username()), 'error');
+                }
             } else {
                 $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-edit', $user->username()), 'error');
             }
@@ -164,8 +168,7 @@ class UsersController extends AbstractController
         if (!empty($data->get('password'))) {
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
-                $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-change-password'), 'error');
-                $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
+                throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'admin.users.user.cannot-change-password');
             }
 
             // Hash the new password
@@ -177,8 +180,7 @@ class UsersController extends AbstractController
 
         // Ensure that user role can be changed
         if ($data->get('role', $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
-            $this->admin()->notify($this->admin()->translate('admin.users.user.cannot-change-role', $user->username()), 'error');
-            $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
+            throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'admin.users.user.cannot-change-role');
         }
 
         // Handle incoming files
@@ -206,12 +208,7 @@ class UsersController extends AbstractController
             ]
         );
 
-        try {
-            $hasUploaded = $uploader->upload(FileSystem::randomName());
-        } catch (TranslatedException $e) {
-            $this->admin()->notify($this->admin()->translate('admin.uploader.error', $e->getTranslatedMessage()), 'error');
-            $this->admin()->redirect('/users/' . $user->username() . '/profile/')->send(true);
-        }
+        $hasUploaded = $uploader->upload(FileSystem::randomName());
 
         if ($hasUploaded) {
             $avatarSize = Formwork::instance()->config()->get('admin.avatar_size');
