@@ -45,7 +45,7 @@ class Permissions
 
         $superPermission = Str::before($permission, '.');
 
-        if ($superPermission !== false) {
+        if ($superPermission !== $permission) {
             return $this->has($superPermission);
         }
 
