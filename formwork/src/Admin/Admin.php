@@ -110,8 +110,27 @@ final class Admin
         $this->loadRoutes();
 
         if (HTTPRequest::method() === 'POST') {
-            $this->validateContentLength();
-            $this->validateCSRFToken();
+            // Validate HTTP request Content-Length according to post_max_size directive
+            if (HTTPRequest::contentLength() !== null) {
+                $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+                if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                    $this->notify($this->translate('admin.request.error.post-max-size'), 'error');
+                    return $this->redirectToReferer();
+                }
+            }
+
+            // Validate CSRF token
+            try {
+                CSRFToken::validate();
+            } catch (RuntimeException $e) {
+                CSRFToken::destroy();
+                Session::remove('FORMWORK_USERNAME');
+                $this->notify($this->translate('admin.login.suspicious-request-detected'), 'warning');
+                if (HTTPRequest::isXHR()) {
+                    return JSONResponse::error('Bad Request: the CSRF token is not valid', 400);
+                }
+                return $this->redirect('/login/');
+            }
         }
 
         if ($this->users->isEmpty()) {
@@ -306,39 +325,6 @@ final class Admin
             $this->errors->internalServerError($exception)->send();
             throw $exception;
         });
-    }
-
-    /**
-     * Validate HTTP request Content-Length according to post_max_size directive
-     * and notify if not valid
-     */
-    protected function validateContentLength(): void
-    {
-        if (HTTPRequest::contentLength() !== null) {
-            $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
-            if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                $this->notify($this->translate('admin.request.error.post-max-size'), 'error');
-                $this->redirectToReferer()->send(true);
-            }
-        }
-    }
-
-    /**
-     * Validate CSRF token and redirect to login view if not valid
-     */
-    protected function validateCSRFToken(): void
-    {
-        try {
-            CSRFToken::validate();
-        } catch (RuntimeException $e) {
-            CSRFToken::destroy();
-            Session::remove('FORMWORK_USERNAME');
-            $this->notify($this->translate('admin.login.suspicious-request-detected'), 'warning');
-            if (HTTPRequest::isXHR()) {
-                JSONResponse::error('Bad Request: the CSRF token is not valid', 400)->send();
-            }
-            $this->redirect('/login/')->send(true);
-        }
     }
 
     /**
