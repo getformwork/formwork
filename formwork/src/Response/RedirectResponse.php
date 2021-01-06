@@ -14,15 +14,4 @@ class RedirectResponse extends Response
         ];
         parent::__construct('', $status, $headers);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function send(bool $forceExit = false): void
-    {
-        parent::send();
-        if ($forceExit) {
-            exit;
-        }
-    }
 }
