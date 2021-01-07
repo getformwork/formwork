@@ -86,4 +86,16 @@ class Session
     {
         session_destroy();
     }
+
+    /**
+     * Regenerate session id
+     */
+    public static function regenerate(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        session_id(session_create_id());
+        static::start();
+    }
 }
