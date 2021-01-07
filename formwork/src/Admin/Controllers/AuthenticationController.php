@@ -64,6 +64,9 @@ class AuthenticationController extends AbstractController
 
                 // Authenticate user
                 if ($user !== null && $user->authenticate($data->get('password'))) {
+                    // Regenerate session id
+                    Session::regenerate();
+
                     Session::set('FORMWORK_USERNAME', $data->get('username'));
 
                     // Regenerate CSRF token
