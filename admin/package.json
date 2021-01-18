@@ -22,7 +22,7 @@
   "dependencies": {
     "chartist": "^0.11.4",
     "codemirror": "^5.58.3",
-    "sortablejs": "~1.10.0"
+    "sortablejs": "^1.13.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
