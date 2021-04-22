@@ -717,28 +717,6 @@ class FileSystem
     }
 
     /**
-     * Fetch a remote file
-     *
-     * @param resource $context A stream context resource
-     */
-    public static function fetch(string $source, $context = null): string
-    {
-        if (filter_var($source, FILTER_VALIDATE_URL) === false) {
-            throw new FileSystemException(sprintf('Cannot fetch "%s": invalid URI', $source));
-        }
-        if ($context !== null) {
-            $valid = is_resource($context) && get_resource_type($context) === 'stream-context';
-            if (!$valid) {
-                throw new FileSystemException('Invalid stream context resource');
-            }
-        }
-        if (($data = @file_get_contents($source, false, $context)) !== false) {
-            return $data;
-        }
-        throw new FileSystemException(sprintf('Cannot fetch "%s": %s', $source, static::getLastErrorMessage()));
-    }
-
-    /**
      * Create a new file with empty content
      */
     public static function createFile(string $file): bool
@@ -819,22 +797,6 @@ class FileSystem
             return true;
         }
         throw new FileSystemException(sprintf('Cannot create symbolic link "%s": %s', $link, static::getLastErrorMessage()));
-    }
-
-    /**
-     * Download a file to a destination
-     *
-     * @param bool     $overwrite Whether to overwrite destination if already exists
-     * @param resource $context   A stream context resource
-     */
-    public static function download(string $source, string $destination, bool $overwrite = false, $context = null): bool
-    {
-        if (!$overwrite) {
-            static::assertExists($destination, false);
-        }
-        $data = static::fetch($source, $context);
-        static::write($destination, $data);
-        return true;
     }
 
     /**
