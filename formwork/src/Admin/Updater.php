@@ -6,6 +6,7 @@ use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\HTTPClient;
 use Formwork\Utils\Registry;
 use Formwork\Utils\SemVer;
 use Formwork\Utils\Str;
@@ -56,11 +57,11 @@ class Updater
     ];
 
     /**
-     * Stream context to make HTTP(S) requests
+     * HTTP Client to make requests
      *
-     * @var resource
+     * @var HTTPClient
      */
-    protected $context;
+    protected $client;
 
     /**
      * Array containing release information
@@ -96,9 +97,7 @@ class Updater
             $this->initializeRegistry();
         }
 
-        $this->context = stream_context_create([
-            'http' => ['user_agent' => 'PHP Formwork-Updater']
-        ]);
+        $this->client = new HTTPClient(['headers' => ['Accept' => 'application/vnd.github.v3+json']]);
     }
 
     /**
@@ -148,8 +147,8 @@ class Updater
             return true;
         }
 
-        if (isset($this->getHeaders()['ETag'])) {
-            $ETag = trim($this->headers['ETag'], '"');
+        if (isset($this->getHeaders()['Etag'])) {
+            $ETag = trim($this->headers['Etag'], '"');
 
             if ($this->registry->get('etag') === $ETag) {
                 $this->registry->set('up-to-date', true);
@@ -178,7 +177,7 @@ class Updater
 
         $this->loadRelease();
 
-        FileSystem::download($this->release['archive'], $this->options['tempFile'], true, $this->context);
+        $this->client->download($this->release['archive'], $this->options['tempFile']);
 
         if (!FileSystem::exists($this->options['tempFile'])) {
             throw new RuntimeException('Cannot update Formwork, archive not downloaded');
@@ -216,8 +215,8 @@ class Updater
 
         $this->registry->set('last-update', time());
 
-        if (isset($this->getHeaders()['ETag'])) {
-            $ETag = trim($this->headers['ETag'], '"');
+        if (isset($this->getHeaders()['Etag'])) {
+            $ETag = trim($this->headers['Etag'], '"');
             $this->registry->set('etag', $ETag);
         }
 
@@ -244,7 +243,7 @@ class Updater
             return;
         }
 
-        $data = JSON::parse(FileSystem::fetch(self::API_RELEASE_URI, $this->context));
+        $data = JSON::parse($this->client->fetch(self::API_RELEASE_URI)->content());
 
         if (!$data) {
             throw new RuntimeException('Cannot fetch latest Formwork release data');
@@ -275,7 +274,7 @@ class Updater
         if ($this->headers !== null) {
             return $this->headers;
         }
-        return $this->headers = get_headers($this->release['archive'], 1, $this->context);
+        return $this->headers = $this->client->fetchHeaders($this->release['archive']);
     }
 
     /**
