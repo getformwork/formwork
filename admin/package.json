@@ -31,7 +31,7 @@
     "onchange": "^7.0.2",
     "rollup": "^2.35.1",
     "sass": "^1.30.0",
-    "stylelint": "^13.8.0",
+    "stylelint": "^13.13.0",
     "stylelint-config-standard": "^21.0.0",
     "stylelint-order": "^4.1.0",
     "uglify-js": "^3.12.1"
