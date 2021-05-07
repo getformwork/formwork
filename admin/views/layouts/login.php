@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="<?= $formwork->translations()->getCurrent()->code() ?>">
 <head>
     <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
