@@ -153,7 +153,7 @@ class UsersController extends AbstractController
         return new Response($this->view('users.profile', [
             'title'   => $this->admin()->translate('admin.users.user-profile', $user->username()),
             'user'    => $user,
-            'fields'  => $fields->render(true)
+            'fields'  => $fields
         ], true));
     }
 

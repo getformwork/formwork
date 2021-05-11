@@ -49,23 +49,6 @@ class Fields extends AssociativeCollection
     }
 
     /**
-     * Render all the visible fields
-     *
-     * @param bool $return Whether to return or render the fields
-     */
-    public function render(bool $return = false)
-    {
-        $output = '';
-        foreach ($this->items as $field) {
-            $output .= $field->render(true);
-        }
-        if ($return) {
-            return $output;
-        }
-        echo $output;
-    }
-
-    /**
      * Convert fields to array
      *
      * @param bool $flatten Whether to recursively convert Fields instances

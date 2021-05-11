@@ -2,7 +2,6 @@
 namespace Formwork\Fields;
 
 use Formwork\Data\DataSetter;
-use Formwork\View\View;
 use UnexpectedValueException;
 
 class Field extends DataSetter
@@ -129,19 +128,6 @@ class Field extends DataSetter
     public function is(string $key, bool $default = false): bool
     {
         return $this->get($key, $default) === true;
-    }
-
-    /**
-     * Render the field
-     *
-     * @param bool $return Whether to return or render the field
-     */
-    public function render(bool $return = false)
-    {
-        if ($this->isVisible()) {
-            $view = new View('fields.' . $this->type(), ['field' => $this]);
-            return $view->render($return);
-        }
     }
 
     /**

@@ -67,7 +67,7 @@ class OptionsController extends AbstractController
                 'tabs'    => $this->tabs,
                 'current' => 'system'
             ], true),
-            'fields' => $fields->render(true)
+            'fields' => $fields
         ], true));
     }
 
@@ -105,7 +105,7 @@ class OptionsController extends AbstractController
                 'tabs'    => $this->tabs,
                 'current' => 'site'
             ], true),
-            'fields' => $fields->render(true)
+            'fields' => $fields
         ], true));
     }
 

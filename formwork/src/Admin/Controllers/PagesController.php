@@ -190,7 +190,7 @@ class PagesController extends AbstractController
         return new Response($this->view('pages.editor', [
             'title'              => $this->admin()->translate('admin.pages.edit-page', $page->title()),
             'page'               => $page,
-            'fields'             => $fields->render(true),
+            'fields'             => $fields,
             'templates'          => $this->site()->templates(),
             'parents'            => $this->site()->descendants()->sort('path'),
             'currentLanguage'    => $params->get('language', $page->language()),
