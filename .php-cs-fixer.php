@@ -5,7 +5,9 @@ namespace PhpCsFixer;
 $finder = Finder::create()
     ->in('formwork/src');
 
-return Config::create()
+$config = new Config();
+
+return $config
     ->setRules([
         '@PSR1' => true,
         '@PSR2' => true,
@@ -34,7 +36,7 @@ return Config::create()
         'no_unused_imports' => true,
         'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => false],
-        'ordered_class_elements' => ['use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic'],
+        'ordered_class_elements' => ['order' => ['use_trait', 'constant_public', 'constant_protected', 'constant_private', 'property_public', 'property_protected', 'property_private', 'construct', 'method_public', 'method_protected', 'method_private', 'destruct', 'magic']],
         'phpdoc_align' => true,
         'phpdoc_annotation_without_dot' => true,
         'phpdoc_indent' => true,
