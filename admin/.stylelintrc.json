@@ -246,7 +246,7 @@
             "user-zoom",
             "orientation",
             "unicode-range",
-            "user-select",
+            "user-select"
         ],
         "rule-empty-line-before": ["always", {
             "except": [
