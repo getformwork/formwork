@@ -23,5 +23,8 @@
         "erusev/parsedown": "^1.7",
         "erusev/parsedown-extra": "^0.8.1",
         "symfony/yaml": "^5.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0"
     }
 }
