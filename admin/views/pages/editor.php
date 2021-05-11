@@ -118,7 +118,7 @@
             <div class="col-l-1-4">
                 <div class="component">
                     <h3 class="caption"><?= $this->translate('admin.pages.options') ?></h3>
-                    <?= $fields ?>
+                    <?php $this->insert('fields', ['fields' => $fields]) ?>
                 </div>
                 <div class="component">
                     <h3 class="caption"><?= $this->translate('admin.pages.attributes') ?></h3>
