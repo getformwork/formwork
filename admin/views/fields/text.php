@@ -1,6 +1,6 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <input <?= $this->attr([
-    'type'        => 'email',
+    'type'        => 'text',
     'id'          => $field->name(),
     'name'        => $field->formName(),
     'value'       => $field->value(),

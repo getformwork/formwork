@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <select <?= $this->attr([
     'id'       => $field->name(),
     'name'     => $field->formName(),

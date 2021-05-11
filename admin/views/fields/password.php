@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <input <?= $this->attr([
     'type'         => 'password',
     'id'           => $field->name(),

@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <div <?= $this->attr([
     'class'     => ['array-input', $field->get('associative') ? 'array-input-associative' : ''],
     'id'        => $field->name(),

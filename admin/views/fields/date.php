@@ -1,13 +1,14 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <div class="input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',
-        'class'       => 'image-input',
+        'class'       => 'date-input',
         'id'          => $field->name(),
         'name'        => $field->formName(),
-        'value'       => basename($field->value()),
+        'value'       => $field->value(),
         'placeholder' => $field->placeholder(),
-        'readonly'    => true
+        'required'    => $field->isRequired(),
+        'disabled'    => $field->isDisabled()
     ]) ?>>
     <span class="input-reset" data-reset="<?= $field->name() ?>"><i class="i-times-circle"></i></span>
 </div>

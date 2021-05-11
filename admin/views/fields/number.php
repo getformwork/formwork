@@ -1,13 +1,13 @@
-<?= $this->insert('fields.label') ?>
+<?= $this->insert('fields.label', ['field' => $field]) ?>
 <input <?= $this->attr([
-    'type'        => 'text',
+    'type'        => 'number',
     'id'          => $field->name(),
     'name'        => $field->formName(),
+    'min'         => $field->get('min'),
+    'max'         => $field->get('max'),
+    'step'        => $field->get('step'),
     'value'       => $field->value(),
     'placeholder' => $field->placeholder(),
-    'minlength'   => $field->get('min'),
-    'maxlength'   => $field->get('max'),
-    'pattern'     => $field->get('pattern'),
     'required'    => $field->isRequired(),
     'disabled'    => $field->isDisabled()
 ]) ?>>
