@@ -26,5 +26,8 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0"
+    },
+    "scripts": {
+        "fix": "php-cs-fixer fix --verbose"
     }
 }
