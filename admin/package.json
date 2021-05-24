@@ -30,7 +30,7 @@
     "eslint": "^7.27.0",
     "onchange": "^7.0.2",
     "rollup": "^2.49.0",
-    "sass": "^1.33.0",
+    "sass": "^1.34.0",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-order": "^4.1.0",
