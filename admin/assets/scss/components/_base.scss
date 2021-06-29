@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 html {
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
@@ -69,13 +71,13 @@ mark {
     color: $color-base-300;
 }
 
-@each $breakpoint-name in map-keys($responsive-breakpoints) {
-    @media (min-width: map-get($responsive-breakpoints, $breakpoint-name)) {
+@each $breakpoint-name in map.keys($responsive-breakpoints) {
+    @media (min-width: map.get($responsive-breakpoints, $breakpoint-name)) {
         .hide-from-#{$breakpoint-name} {
             display: none;
         }
     }
-    @media (max-width: map-get($responsive-breakpoints, $breakpoint-name)) {
+    @media (max-width: map.get($responsive-breakpoints, $breakpoint-name)) {
         .show-from-#{$breakpoint-name} {
             display: none;
         }

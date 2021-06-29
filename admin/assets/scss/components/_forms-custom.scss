@@ -1,3 +1,7 @@
+@use 'sass:map';
+
+@use 'sass:math';
+
 .custom-checkbox {
     position: absolute;
     opacity: 0;
@@ -76,7 +80,7 @@
     box-sizing: border-box;
     margin-top: 0;
     margin-bottom: $input-margin-bottom;
-    padding: $input-padding-v $input-padding-h / 2;
+    padding: $input-padding-v math.div($input-padding-h, 2);
     padding-bottom: 0;
     border: 1px solid $color-base-500;
     border-radius: $border-radius;
@@ -93,7 +97,7 @@
     display: inline-block;
     box-sizing: border-box;
     margin-bottom: $input-padding-v;
-    padding: 0 $input-padding-h / 2;
+    padding: 0 math.div($input-padding-h, 2);
     max-width: 100%;
     width: auto;
     outline: none;
@@ -154,7 +158,7 @@
     box-sizing: border-box;
     margin-top: 0;
     margin-bottom: $input-margin-bottom;
-    padding: $input-padding-v $input-padding-h / 2;
+    padding: $input-padding-v math.div($input-padding-h, 2);
     border: 1px solid $color-base-500;
     border-radius: $border-radius;
     font-size: $input-font-size;
@@ -294,12 +298,12 @@ input[type=range] {
         width: 100%;
         height: $range-input-track-height;
         border: 0;
-        border-radius: $range-input-track-height / 2;
+        border-radius: math.div($range-input-track-height, 2);
         background-color: $color-base-600;
         cursor: default;
     }
     &::-webkit-slider-thumb {
-        margin-top: -($range-input-thumb-height - $range-input-track-height) / 2;
+        margin-top: math.div(-($range-input-thumb-height - $range-input-track-height), 2);
         width: $range-input-thumb-width;
         height: $range-input-thumb-height;
         border: 0;
@@ -312,7 +316,7 @@ input[type=range] {
         width: 100%;
         height: $range-input-track-height;
         border: 0;
-        border-radius: $range-input-track-height / 2;
+        border-radius: math.div($range-input-track-height, 2);
         background-color: $color-base-600;
     }
     &::-moz-range-thumb {
@@ -333,7 +337,7 @@ input[type=range] {
     }
     &::-ms-fill-lower, &::-ms-fill-upper {
         border: 0;
-        border-radius: $range-input-track-height / 2;
+        border-radius: math.div($range-input-track-height, 2);
         background: $color-base-600;
         box-shadow: none;
     }
@@ -404,7 +408,7 @@ input[type=range] {
 .array-input-value {
     margin-right: $array-input-value-margin-right;
     width: $array-input-value-width-xs;
-    @media (min-width: map-get($responsive-breakpoints, 'xs')) {
+    @media (min-width: map.get($responsive-breakpoints, 'xs')) {
         width: $array-input-value-width-s;
     }
 }
@@ -412,7 +416,7 @@ input[type=range] {
 .array-input-associative .array-input-value {
     margin-right: $array-input-value-margin-right;
     width: $array-input-associative-value-width-xs;
-    @media (min-width: map-get($responsive-breakpoints, 'xs')) {
+    @media (min-width: map.get($responsive-breakpoints, 'xs')) {
         width: $array-input-associative-value-width-s;
     }
 }

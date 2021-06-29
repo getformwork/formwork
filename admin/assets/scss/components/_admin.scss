@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 .title-bar {
     position: fixed;
     top: 0;
@@ -11,7 +13,7 @@
     color: $color-base-100;
     @include user-select-none;
     @include ellipsis;
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
         left: $sidebar-width;
         padding-left: $title-bar-padding-left;
     }
@@ -84,7 +86,7 @@
     font-weight: 600;
     font-size: $logo-font-size;
     line-height: $logo-line-height;
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
         text-align: left;
     }
 }
@@ -172,7 +174,7 @@
 
 .main {
     margin-top: $main-margin-top;
-    @media (min-width: map-get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
         margin: $main-margin;
         margin-top: $main-margin-top;
         margin-left: $main-margin-left;

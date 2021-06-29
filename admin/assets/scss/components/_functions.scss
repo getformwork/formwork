@@ -1,3 +1,7 @@
+@use 'sass:color';
+
+@use 'sass:string';
+
 @function gcd($a, $b) {
     @if $b == 0 {
         @return $a;
@@ -7,13 +11,13 @@
 }
 
 @function tint($color, $percentage) {
-    @return mix(#fff, $color, $percentage);
+    @return color.mix(#fff, $color, $percentage);
 }
 
 @function shade($color, $percentage) {
-    @return mix(#000, $color, $percentage);
+    @return color.mix(#000, $color, $percentage);
 }
 
 @function urlencode-color($color) {
-    @return '%23' + str-slice(inspect($color), 2);
+    @return '%23' + string.slice('#{$color}', 2);
 }

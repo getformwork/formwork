@@ -1,3 +1,7 @@
+@use 'sass:color';
+
+@use 'sass:map';
+
 .pages-list {
     margin: 0;
     padding: 0;
@@ -135,7 +139,7 @@ button .page-language,
     font-size: $font-size-m;
 }
 
-@media (min-width: map-get($responsive-breakpoints, 'xs')) {
+@media (min-width: map.get($responsive-breakpoints, 'xs')) {
     .pages-item,
     .pages-list-headers {
         display: flex;
@@ -224,6 +228,6 @@ button .page-language,
 }
 
 .dragging [data-sortable=false] .pages-item:hover {
-    background-color: lighten($color-error-500, 37.5%);
+    background-color: color.adjust($color-error-500, $lightness: 37.5%);
     cursor: no-drop;
 }

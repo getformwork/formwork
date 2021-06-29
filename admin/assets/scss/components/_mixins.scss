@@ -1,3 +1,7 @@
+@use 'sass:map';
+
+@use 'sass:math';
+
 @mixin clearfix {
     &::before,
     &::after {
@@ -49,7 +53,7 @@
         }
 
         content: ' ';
-        vertical-align: $caret-width / 2;
+        vertical-align: math.div($caret-width, 2);
     }
 }
 
@@ -60,7 +64,7 @@
 @mixin make-columns-globals($columns-count, $breakpoints) {
     $selectors: '';
 
-    @each $breakpoint-name in map-keys($breakpoints) {
+    @each $breakpoint-name in map.keys($breakpoints) {
         @if $selectors != '' {
             $selectors: '#{$selectors}, .col-#{$breakpoint-name}';
         } @else {
@@ -71,14 +75,14 @@
             $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
             $gcd: gcd($i, $columns-count);
             @if $gcd > 1 {
-                $f: $i / $gcd;
-                $g: $columns-count / $gcd;
+                $f: math.div($i, $gcd);
+                $g: math.div($columns-count, $gcd);
                 $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
             }
         }
     }
     #{$selectors} {
-        padding: 0 $columns-gutter / 2;
+        padding: 0 math.div($columns-gutter, 2);
         width: 100%;
     }
 }
@@ -94,13 +98,13 @@
         $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
         $gcd: gcd($i, $columns-count);
         @if $gcd > 1 {
-            $f: $i / $gcd;
-            $g: $columns-count / $gcd;
+            $f: math.div($i, $gcd);
+            $g: math.div($columns-count, $gcd);
             $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
         }
         #{$selectors} {
-            flex: 0 0 percentage($i / $columns-count);
-            max-width: percentage($i / $columns-count);
+            flex: 0 0 math.percentage(math.div($i, $columns-count));
+            max-width: math.percentage(math.div($i, $columns-count));
         }
     }
 }

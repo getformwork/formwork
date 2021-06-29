@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 input,
 select,
 textarea {
@@ -111,7 +113,7 @@ textarea {
 .input-reset {
     position: absolute;
     top: calc(#{$input-padding-v} + #{$input-border-width});
-    right: $input-padding-h / 2;
+    right: math.div($input-padding-h, 2);
     color: $color-base-100;
     font-size: $font-size-s;
     line-height: $input-line-height;

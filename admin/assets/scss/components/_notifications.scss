@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .notification-container {
     position: fixed;
     top: $notification-container-top;
@@ -50,17 +52,17 @@
 }
 
 .notification-success {
-    background-color: darken($color-success-500, 10%);
+    background-color: color.adjust($color-success-500, $lightness: -10%);
     color: $color-white;
 }
 
 .notification-warning {
-    background-color: darken($color-warning-500, 10%);
+    background-color: color.adjust($color-warning-500, $lightness: -10%);
     color: $color-white;
 }
 
 .notification-error {
-    background-color: darken($color-error-500, 10%);
+    background-color: color.adjust($color-error-500, $lightness: -10%);
     color: $color-white;
 }
 
