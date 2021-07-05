@@ -68,6 +68,12 @@ return [
     'parsers' => [
         'use_php_yaml' => 'parse'
     ],
+    'routes' => [
+        'files' => [
+            'admin'  => ADMIN_PATH . 'routes.php',
+            'system' => FORMWORK_PATH . 'routes.php'
+        ]
+    ],
     'schemes' => [
         'paths' => [
             'admin'  => ADMIN_PATH . 'schemes' . DS,

@@ -104,6 +104,8 @@ final class Formwork
         $this->loadSchemes();
         $this->loadSite();
         $this->loadCache();
+        $this->loadRouter();
+        $this->loadAdmin();
         $this->loadRoutes();
     }
 
@@ -273,46 +275,24 @@ final class Formwork
         $this->cache = new SiteCache($this->config()->get('cache.path'), $this->config()->get('cache.time'));
     }
 
+    protected function loadRouter(): void
+    {
+        $this->router = new Router($this->request);
+    }
+
+    protected function loadAdmin(): void
+    {
+        if ($this->config->get('admin.enabled')) {
+            $this->admin = new Admin();
+            $this->admin->load();
+        }
+    }
+
     /**
      * Load routes
      */
     protected function loadRoutes(): void
     {
-        $this->router = new Router($this->request);
-
-        if ($this->config()->get('admin.enabled')) {
-            $this->loadAdminRoute();
-        }
-
-        $this->router->add(
-            [
-                '/',
-                '/page/{paginationPage:num}/',
-                '/{page}/tag/{tagName:aln}/page/{paginationPage:num}/',
-                '/{page}/tag/{tagName:aln}/',
-                '/{page}/page/{paginationPage:num}/',
-                '/{page}/'
-            ],
-            Controllers\PageController::class . '@load'
-        );
-    }
-
-    /**
-     * Load admin route
-     */
-    protected function loadAdminRoute(): void
-    {
-        $this->router->add(
-            [
-                '/' . $this->config()->get('admin.root') . '/',
-                '/' . $this->config()->get('admin.root') . '/{route}/'
-            ],
-            function () {
-                $this->admin = new Admin();
-                return $this->admin->run();
-            },
-            ['GET', 'POST'],
-            ['HTTP', 'XHR']
-        );
+        $this->router->loadFromFile($this->config()->get('routes.files.system'));
     }
 }
