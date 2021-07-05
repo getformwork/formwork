@@ -90,12 +90,25 @@ class Session
     /**
      * Regenerate session id
      */
-    public static function regenerate(): void
+    public static function regenerate(bool $preserveData = true): void
     {
+        $data = [];
+        $moveData = static function (array &$source, array &$destination): void {
+            foreach ($source as $key => $value) {
+                $destination[$key] = $value;
+                unset($source[$key]);
+            }
+        };
         if (session_status() === PHP_SESSION_ACTIVE) {
+            if ($preserveData) {
+                $moveData($_SESSION, $data);
+            }
             session_destroy();
         }
         session_id(session_create_id());
         static::start();
+        if ($preserveData) {
+            $moveData($data, $_SESSION);
+        }
     }
 }
