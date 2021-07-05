@@ -225,14 +225,7 @@ class SemVer
         if (!preg_match(self::SEMVER_REGEX, $version, $matches, PREG_UNMATCHED_AS_NULL)) {
             throw new InvalidArgumentException(sprintf('Invalid version string: "%s"', $version));
         }
-        // TODO: null coalescing will not be needed from PHP 7.4 (see https://github.com/php/php-src/pull/3964)
-        return new static(
-            (int) ($matches['major'] ?? 0),
-            (int) ($matches['minor'] ?? 0),
-            (int) ($matches['patch'] ?? 0),
-            $matches['prerelease'] ?? null,
-            $matches['metadata'] ?? null
-        );
+        return new static((int) ($matches['major']), (int) ($matches['minor']), (int) ($matches['patch']), $matches['prerelease'], $matches['metadata']);
     }
 
     /**
