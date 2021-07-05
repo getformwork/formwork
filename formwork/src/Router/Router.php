@@ -2,234 +2,90 @@
 
 namespace Formwork\Router;
 
+use Formwork\Parsers\PHP;
+use Formwork\Router\Exceptions\InvalidRouteException;
+use Formwork\Router\Exceptions\RouteNotFoundException;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
-use RuntimeException;
-use UnexpectedValueException;
 
 class Router
 {
     /**
-     * Valid router request types
+     * Valid request types
      *
      * @var array
      */
     protected const REQUEST_TYPES = ['HTTP', 'XHR'];
 
     /**
-     * Valid router request methods
+     * Valid request methods
      *
      * @var array
      */
     protected const REQUEST_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
-     * Default request type
+     * Valid param separators
      *
      * @var string
      */
-    protected const DEFAULT_TYPE = 'HTTP';
+    protected const PARAMS_SEPARATORS = '/,;.:-_';
 
     /**
-     * Default request method
+     * Route params regex
      *
      * @var string
      */
-    protected const DEFAULT_METHOD = 'GET';
+    protected const PARAMS_REGEX = '~([' . self::PARAMS_SEPARATORS . '])?{([A-Za-z0-9_]+)(?::([^{]+))?}(\?)?~';
 
     /**
-     * Array containing route regex shortcuts
+     * Array containing route patterns shortcuts
      *
      * @var array
      */
-    protected const REGEX_SHORTCUTS = [
+    protected const PATTERN_SHORTCUTS = [
         'num' => '[0-9]+',
         'aln' => '[A-Za-z0-9-]+',
         'all' => '.+'
     ];
 
     /**
-     * Array containing loaded routes
-     *
-     * @var array
+     * Route collection
      */
-    protected $routes = [];
+    protected RouteCollection $routes;
 
     /**
-     * Array containing callbacks to be executed before routes
-     *
-     * @var array
+     * Route filters collection
      */
-    protected $beforeCallbacks = [];
+    protected RouteFilterCollection $filters;
 
     /**
      * The request to match routes against
-     *
-     * @var string
      */
-    protected $request;
+    protected string $request;
 
     /**
      * Currently matched route
-     *
-     * @var string
      */
-    protected $matchedRoute;
+    protected ?Route $current;
 
     /**
      * Route params
-     *
-     * @var RouteParams
      */
-    protected $params;
+    protected ?RouteParams $params;
 
-    /**
-     * Whether router has dispatched
-     *
-     * @var bool
-     */
-    protected $dispatched = false;
-
-    /**
-     * Create a new Router instance
-     */
-    public function __construct(string $request)
+    public function __construct(string $request = null)
     {
-        $this->request = Uri::normalize($request);
-        $this->params = new RouteParams([]);
+        $this->routes = new RouteCollection();
+        $this->filters = new RouteFilterCollection();
+        $this->request = $request ?? Str::wrap(Uri::path(HTTPRequest::uri()), '/');
     }
 
     /**
-     * Add a route
-     *
-     * @param array|string    $route
-     * @param callable|string $callback
-     * @param array|string    $method
-     * @param array|string    $type
-     */
-    public function add($route, $callback, $method = self::DEFAULT_METHOD, $type = self::DEFAULT_TYPE): void
-    {
-        if (is_array($route)) {
-            foreach ($route as $r) {
-                $this->add($r, $callback, $method, $type);
-            }
-            return;
-        }
-        if (!is_string($route)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $route argument', __METHOD__));
-        }
-        if (is_array($method)) {
-            foreach ($method as $m) {
-                $this->add($route, $callback, $m, $type);
-            }
-            return;
-        }
-        if (!is_string($route)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $method argument', __METHOD__));
-        }
-        if (is_array($type)) {
-            foreach ($type as $t) {
-                $this->add($route, $callback, $method, $t);
-            }
-            return;
-        }
-        if (!is_string($type)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $type argument', __METHOD__));
-        }
-        if (!in_array($method, self::REQUEST_METHODS, true)) {
-            throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
-        }
-        if (!in_array($type, self::REQUEST_TYPES, true)) {
-            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
-        }
-        $this->routes[] = compact('route', 'callback', 'method', 'type');
-    }
-
-    /**
-     * Add a callback to be executed before routes
-     *
-     * @param callable|string $callback
-     * @param array|string    $method
-     * @param array|string    $type
-     */
-    public function before($callback, $method = self::REQUEST_METHODS, $type = self::REQUEST_TYPES): void
-    {
-        if (is_array($method)) {
-            foreach ($method as $m) {
-                $this->before($callback, $m, $type);
-            }
-            return;
-        }
-        if (!is_string($method)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $method argument', __METHOD__));
-        }
-        if (is_array($type)) {
-            foreach ($type as $t) {
-                $this->before($callback, $method, $t);
-            }
-            return;
-        }
-        if (!is_string($type)) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only strings and arrays as $type argument', __METHOD__));
-        }
-        if (!in_array($method, self::REQUEST_METHODS, true)) {
-            throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
-        }
-        if (!in_array($type, self::REQUEST_TYPES, true)) {
-            throw new InvalidArgumentException(sprintf('Invalid request type "%s"', $type));
-        }
-        $this->beforeCallbacks[] = compact('callback', 'method', 'type');
-    }
-
-    /**
-     * Dispatch matching route
-     */
-    public function dispatch()
-    {
-        foreach ($this->beforeCallbacks as $before) {
-            if (HTTPRequest::type() === $before['type'] && HTTPRequest::method() === $before['method']) {
-                $beforeCallback = $this->parseCallback($before['callback']);
-                if (!is_callable($beforeCallback)) {
-                    throw new UnexpectedValueException('Invalid before callback');
-                }
-                if (($result = $beforeCallback($this->params)) !== null) {
-                    $this->dispatched = true;
-                    return $result;
-                }
-            }
-        }
-        foreach ($this->routes as $route) {
-            if (HTTPRequest::type() === $route['type'] && HTTPRequest::method() === $route['method'] && $this->match($route['route'])) {
-                $this->dispatched = true;
-                $routeCallback = $this->parseCallback($route['callback']);
-                if (!is_callable($routeCallback)) {
-                    throw new UnexpectedValueException(sprintf('Invalid callback for "%s" route', $route['route']));
-                }
-                return $routeCallback($this->params);
-            }
-        }
-    }
-
-    /**
-     * Return whether router has dispatched
-     */
-    public function hasDispatched(): bool
-    {
-        return $this->dispatched;
-    }
-
-    /**
-     * Get route params
-     */
-    public function params(): RouteParams
-    {
-        return $this->params;
-    }
-
-    /**
-     * Get the request handled by the router
+     * Get request
      */
     public function request(): string
     {
@@ -237,82 +93,343 @@ class Router
     }
 
     /**
-     * Rewrite current route
+     * Add a new route
+     */
+    public function addRoute(string $name, string $path): Route
+    {
+        return $this->routes->add(new Route($name, $path));
+    }
+
+    /**
+     * Return the route collection
+     */
+    public function routes(): RouteCollection
+    {
+        return $this->routes;
+    }
+
+    /**
+     * Add a new filter
+     *
+     * @param callable|string $action
+     */
+    public function addFilter(string $name, $action): RouteFilter
+    {
+        return $this->filters->add(new RouteFilter($name, $action));
+    }
+
+    /**
+     * Return the route filter collection
+     */
+    public function filters(): RouteFilterCollection
+    {
+        return $this->filters;
+    }
+
+    /**
+     * Return the current route
+     */
+    public function current(): ?Route
+    {
+        return $this->current;
+    }
+
+    /**
+     * Return the current route params
+     */
+    public function params(): ?RouteParams
+    {
+        return $this->params;
+    }
+
+    /**
+     * Dispatch matching route
+     */
+    public function dispatch()
+    {
+        /**
+         * @var RouteFilter
+         */
+        foreach ($this->filters as $filter) {
+            if (!$this->matchFilter($filter)) {
+                continue;
+            }
+
+            $filterCallback = $this->parseAction($filter->getAction());
+
+            if (($result = $filterCallback()) !== null) {
+                return $result;
+            }
+        }
+
+        /**
+         * @var Route
+         */
+        foreach ($this->routes as $route) {
+            if (!$this->matchRoute($route)) {
+                continue;
+            }
+
+            $compiledRoute = $this->compileRoute($route);
+
+            if (preg_match($compiledRoute->regex(), $this->request, $matches, PREG_UNMATCHED_AS_NULL)) {
+                // Remove entire matches from $matches array
+                array_shift($matches);
+
+                $this->current = $route;
+
+                $this->params = $this->buildParams($compiledRoute->params(), $matches);
+
+                $routeCallback = $this->parseAction($route->getAction());
+
+                return $routeCallback($this->params);
+            }
+        }
+
+        throw new RouteNotFoundException(sprintf('No route matches with "%s"', $this->request));
+    }
+
+    /**
+     * Generate a route with given params
+     */
+    public function generate(string $name, array $params): string
+    {
+        return $this->generateRoute($this->routes->get($name), $params);
+    }
+
+    /**
+     * Rewrite current route with given params
      */
     public function rewrite(array $params): string
     {
-        return $this->rewriteRoute($this->matchedRoute, array_merge($this->params->toArray(), $params));
+        return $this->generateRoute($this->current, $params + $this->params->toArray());
     }
 
     /**
-     * Parse callback
-     *
-     * @param callable|string $callback
+     * Load routes and filters from file
      */
-    protected function parseCallback($callback)
+    public function loadFromFile(string $path, string $prefix = null): void
     {
-        // Parse Class@method callback syntax
-        if (is_string($callback) && Str::contains($callback, '@')) {
-            [$class, $method] = explode('@', $callback);
-            return [new $class(), $method];
-        }
-        return $callback;
-    }
+        $data = PHP::parseFile($path);
 
-    /**
-     * Match route against request
-     */
-    protected function match(string $route): bool
-    {
-        $compiledRoute = $this->compileRoute($route);
-        if (preg_match($compiledRoute['regex'], $this->request, $matches)) {
-            // Remove entire matches from $matches array
-            array_shift($matches);
-            // Build an associative array using params as keys and matches as values
-            $params = array_combine($compiledRoute['params'], $matches);
-            $this->matchedRoute = $route;
-            $this->params = new RouteParams($params);
-            return true;
+        /**
+         * @param Route|RouteFilter $o
+         */
+        $setProps = static function ($o, array $props) use ($prefix): void {
+            if (isset($props['methods'])) {
+                $o->methods(...$props['methods']);
+            }
+
+            if (isset($props['types'])) {
+                $o->types(...$props['types']);
+            }
+
+            if ($prefix !== null) {
+                $o->prefix($prefix);
+            }
+        };
+
+        if (isset($data['routes'])) {
+            foreach ($data['routes'] as $routeName => $route) {
+                $r = $this->addRoute($routeName, $route['path'])
+                    ->action($route['action']);
+                $setProps($r, $route);
+            }
         }
-        return false;
+
+        if (isset($data['filters'])) {
+            foreach ($data['filters'] as $filterName => $filter) {
+                $f = $this->addFilter($filterName, $filter['action']);
+                $setProps($f, $filter);
+            }
+        }
     }
 
     /**
      * Compile a route to a valid regex and params list
      */
-    protected function compileRoute(string $route): array
+    protected function compileRoute(Route $route): CompiledRoute
     {
-        preg_match_all('/{([A-Za-z0-9_]+)(?::([^{]+))?}/', $route, $matches);
-        [$tokens, $params, $patterns] = $matches;
-        $regex = $route;
-        foreach ($tokens as $i => $token) {
-            // Make sure current pattern is not wrapped in a capture group
-            $pattern = trim($patterns[$i], '()');
-            if (empty($pattern)) {
-                $pattern = 'all';
-            }
-            if (array_key_exists($pattern, self::REGEX_SHORTCUTS)) {
-                $pattern = self::REGEX_SHORTCUTS[$pattern];
-            }
-            $regex = str_replace($token, '(' . $pattern . ')', $regex);
-        }
+        $path = Str::wrap(Path::join([$route->getPrefix(), $route->getPath()]), '/');
+
+        $params = [];
+
+        $regex = preg_replace_callback(self::PARAMS_REGEX, function (array $matches) use (&$params): string {
+            [, $separator, $param, $pattern, $optional] = $matches;
+
+            $this->validateSeparator($separator, $param);
+
+            $this->validateParamName($param, $params);
+
+            $params[] = $param;
+
+            $pattern = $this->resolvePatternShortcut($pattern);
+
+            return sprintf($optional !== null ? '(?:%s(%s))?' : '%s(%s)', preg_quote($separator), $pattern);
+        }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
+
         // Wrap the regex in tilde delimiters, so we don't need to escape slashes
         $regex = '~^' . trim($regex, '^$') . '$~';
-        return compact('regex', 'tokens', 'params');
+
+        return new CompiledRoute($path, $regex, $params);
     }
 
     /**
-     * Rewrite a route given new params
+     * Generate route path with given parameters
      */
-    protected function rewriteRoute(string $route, array $params): string
+    protected function generateRoute(Route $route, array $params): string
     {
-        $compiledRoute = $this->compileRoute($route);
-        foreach ($compiledRoute['params'] as $i => $param) {
-            $route = str_replace($compiledRoute['tokens'][$i], $params[$param], $route);
+        $path = Str::wrap(Path::join([$route->getPrefix(), $route->getPath()]), '/');
+
+        $result = preg_replace_callback(self::PARAMS_REGEX, function (array $matches) use ($params): string {
+            [, $separator, $param, $pattern, $optional] = $matches;
+
+            $this->validateSeparator($separator, $param);
+
+            $this->validateParamName($param, $params);
+
+            if (!isset($params[$param])) {
+                if ($optional === null) {
+                    throw new InvalidArgumentException(sprintf('Non-optional parameter "%s" requires a value to generate route', $param));
+                }
+                return '';
+            }
+
+            $pattern = $this->resolvePatternShortcut($pattern);
+
+            if (!(bool) preg_match('~^' . trim($pattern, '^$') . '$~', $params[$param])) {
+                throw new InvalidArgumentException(sprintf('Invalid value for param "%s"', $param));
+            }
+
+            return $separator . $params[$param];
+        }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
+
+        return Path::normalize($result);
+    }
+
+    /**
+     * Build route params
+     *
+     * @internal
+     */
+    protected function buildParams(array $names, array $matches): RouteParams
+    {
+        $params = [];
+
+        // Build an associative array using params as keys and matches as values
+        foreach ($matches as $i => $match) {
+            if ($match !== null) {
+                $param = $names[$i];
+                $params[$param] = $match;
+            }
         }
-        if (!preg_match($compiledRoute['regex'], $route)) {
-            throw new RuntimeException('Cannot rewrite route, one or more params do not match with their regex');
+
+        return new RouteParams($params);
+    }
+
+    /**
+     * Resolve pattern shortcut
+     */
+    protected function resolvePatternShortcut(?string $pattern): string
+    {
+        return self::PATTERN_SHORTCUTS[$pattern ?? 'all'] ?? $pattern;
+    }
+
+    /**
+     * Parse callback
+     *
+     * @param callable|string $action
+     */
+    protected function parseAction($action): callable
+    {
+        // Parse Class@method callback syntax
+        if (is_string($action) && Str::contains($action, '@')) {
+            [$class, $method] = explode('@', $action, 2);
+            return [new $class(), $method];
         }
-        return $route;
+
+        if (is_callable($action)) {
+            return $action;
+        }
+
+        throw new InvalidRouteException('Invalid callback');
+    }
+
+    /**
+     * Validate param separator
+     *
+     * @internal
+     */
+    protected function validateSeparator(?string $separator, string $param): void
+    {
+        if ($separator === null) {
+            throw new InvalidRouteException(sprintf('Parameter "%s" must be preceded by a separator', $param));
+        }
+    }
+
+    /**
+     * Validate param name
+     *
+     * @internal
+     */
+    protected function validateParamName(string $param, array $params): void
+    {
+        if (in_array($param, $params, true)) {
+            throw new InvalidRouteException(sprintf('Parameter "%s" cannot be used more than once', $param));
+        }
+    }
+
+    /**
+     * Match current HTTP method with the given ones
+     *
+     * @internal
+     */
+    protected function matchMethods(array $methods): bool
+    {
+        return in_array(HTTPRequest::method(), $methods, true);
+    }
+
+    /**
+     * Match current request type (HTTP, XHR) with the given ones
+     *
+     * @internal
+     */
+    protected function matchTypes(array $types): bool
+    {
+        return in_array(HTTPRequest::type(), $types, true);
+    }
+
+    /**
+     * Match prefix with current request
+     *
+     * @internal
+     */
+    protected function matchPrefix(?string $prefix): bool
+    {
+        return $prefix === null || Str::startsWith($this->request, Str::wrap($prefix, '/'));
+    }
+
+    /**
+     * Match route filter requirements
+     *
+     * @internal
+     */
+    protected function matchFilter(RouteFilter $filter): bool
+    {
+        return $this->matchMethods($filter->getMethods())
+            && $this->matchTypes($filter->getTypes())
+            && $this->matchPrefix($filter->getPrefix());
+    }
+
+    /**
+     * Match route requirements
+     *
+     * @internal
+     */
+    protected function matchRoute(Route $route): bool
+    {
+        return $this->matchMethods($route->getMethods())
+            && $this->matchTypes($route->getTypes())
+            && $this->matchPrefix($route->getPrefix());
     }
 }
