@@ -25,6 +25,6 @@ return [
         'page' => [
             'path'   => '/{page}/',
             'action' => 'Formwork\\Controllers\\PageController@load'
-        ],
+        ]
     ]
 ];
