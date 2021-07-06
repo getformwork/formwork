@@ -7,9 +7,11 @@
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/getformwork/formwork.svg)]()
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getformwork/formwork.svg)](#requirements)
 
-Formwork is a flat file-based Content Management System (CMS) to make and manage simple sites.
+🏗 Formwork is a flat file-based Content Management System (CMS) to build and manage simple sites.
 
-Latest version: [**1.11.0**](https://github.com/getformwork/formwork/releases/latest) | [**Changelog**](CHANGELOG.md)
+⚠️ **This is the `README` file for the [`2.x`](https://github.com/getformwork/formwork/tree/2.x) branch, currently in development and NOT STABLE.**
+
+👉 **See the [`1.x`](https://github.com/getformwork/formwork/tree/1.x) branch for the latest stable version.**
 
 ## Features
 - ⚡️ Lightweight
@@ -20,7 +22,7 @@ Latest version: [**1.11.0**](https://github.com/getformwork/formwork/releases/la
 ![](assets/images/formwork.png)
 
 ## Requirements
-- PHP **7.3.5** or higher
+- PHP **7.4.0** or higher
 - PHP extensions `fileinfo`, `gd`, `mbstring` and `zip`
 
 ## Installing
