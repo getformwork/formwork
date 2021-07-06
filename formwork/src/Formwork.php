@@ -277,7 +277,7 @@ final class Formwork
 
     protected function loadRouter(): void
     {
-        $this->router = new Router($this->request);
+        $this->router = new Router();
     }
 
     protected function loadAdmin(): void
