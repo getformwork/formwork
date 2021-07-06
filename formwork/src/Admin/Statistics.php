@@ -14,43 +14,31 @@ class Statistics
 {
     /**
      * Date format
-     *
-     * @var string
      */
     protected const DATE_FORMAT = 'Ymd';
 
     /**
      * Number of days displayed in the statistics chart
-     *
-     * @var int
      */
     protected const CHART_LIMIT = 7;
 
     /**
      * Visits registry filename
-     *
-     * @var string
      */
     protected const VISITS_FILENAME = 'visits.json';
 
     /**
      * Unique visits registry filename
-     *
-     * @var string
      */
     protected const UNIQUE_VISITS_FILENAME = 'uniqueVisits.json';
 
     /**
      * Visitors registry filename
-     *
-     * @var string
      */
     protected const VISITORS_FILENAME = 'visitors.json';
 
     /**
      * Page views registry filename
-     *
-     * @var string
      */
     protected const PAGE_VIEWS_FILENAME = 'pageViews.json';
 

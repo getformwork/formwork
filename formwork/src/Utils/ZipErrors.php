@@ -8,8 +8,6 @@ class ZipErrors
 {
     /**
      * Human-readable ZipArchive error messages
-     *
-     * @var array
      */
     public const ERROR_MESSAGES = [
         ZipArchive::ER_MULTIDISK   => 'Multi-disk zip archives not supported',
@@ -39,8 +37,6 @@ class ZipErrors
 
     /**
      * ZipArchive errors language strings
-     *
-     * @var array
      */
     public const ERROR_LANGUAGE_STRINGS = [
         ZipArchive::ER_MULTIDISK   => 'zip.error.unspecified',

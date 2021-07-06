@@ -17,15 +17,11 @@ class Updater
 {
     /**
      * GitHub repository from which updates are retrieved
-     *
-     * @var string
      */
     protected const REPOSITORY = 'getformwork/formwork';
 
     /**
      * GitHub API latest release URI
-     *
-     * @var string
      */
     protected const API_RELEASE_URI = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
 

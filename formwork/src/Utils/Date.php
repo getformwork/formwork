@@ -11,29 +11,21 @@ class Date
 {
     /**
      * Characters used in formats accepted by date()
-     *
-     * @var string
      */
     protected const DATE_FORMAT_CHARACTERS = 'AaBcDdeFgGHhIijlLMmnNoOpPrsSTtUuvWwyYzZ';
 
     /**
      * Regex used to parse formats accepted by date()
-     *
-     * @var string
      */
     protected const DATE_FORMAT_REGEX = '/((?:\\\\[A-Za-z])+)|[' . self::DATE_FORMAT_CHARACTERS . ']/';
 
     /**
      * Regex used to parse date patterns like 'DD/MM/YYYY hh:mm:ss'
-     *
-     * @var string
      */
     protected const PATTERN_REGEX = '/(?:\[([^\]]+)\])|[YR]{4}|uuu|[YR]{2}|[MD]{1,4}|[WHhms]{1,2}|[AaZz]/';
 
     /**
      * Array used to translate pattern tokens to their date() format counterparts
-     *
-     * @var array
      */
     protected const PATTERN_TO_DATE_FORMAT = [
         'YY' => 'y', 'YYYY' => 'Y', 'M' => 'n', 'MM' => 'm', 'MMM' => 'M', 'MMMM' => 'F',
@@ -45,8 +37,6 @@ class Date
 
     /**
      * Time intervals in seconds
-     *
-     * @var array
      */
     protected const TIME_INTERVALS = [
         'years'   => 60 * 60 * 24 * 365,

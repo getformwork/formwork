@@ -8,8 +8,6 @@ class LanguageCodes
 {
     /**
      * All available language codes
-     *
-     * @var array
      */
     protected const LANGUAGE_CODES = [
         'af' => ['name' => 'Afrikaans', 'native' => 'Afrikaans', 'continents' => ['AF']],

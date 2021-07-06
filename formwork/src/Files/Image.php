@@ -13,36 +13,26 @@ class Image extends File
 {
     /**
      * Constant indicating the landscape orientation of an image
-     *
-     * @var string
      */
     public const ORIENTATION_LANDSCAPE = 'landscape';
 
     /**
      * Constant indicating the portrait orientation of an image
-     *
-     * @var string
      */
     public const ORIENTATION_PORTRAIT = 'portrait';
 
     /**
      * Constant indicating the 'cover' resize to fit mode
-     *
-     * @var string
      */
     public const RESIZE_FIT_COVER = 'cover';
 
     /**
      * Constant indicating the 'contain' resize to fit mode
-     *
-     * @var string
      */
     public const RESIZE_FIT_CONTAIN = 'contain';
 
     /**
      * Image formats supporting alpha
-     *
-     * @var array
      */
     protected const FORMATS_SUPPORTING_ALPHA = ['image/gif', 'image/png', 'image/webp'];
 
@@ -63,8 +53,6 @@ class Image extends File
 
     /**
      * Image resource
-     *
-     * @var resource
      */
     protected $image;
 

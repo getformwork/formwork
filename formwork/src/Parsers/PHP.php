@@ -12,15 +12,11 @@ class PHP extends AbstractEncoder
 {
     /**
      * Number of spaces used to indent arrays
-     *
-     * @var int
      */
     protected const INDENT_SPACES = 4;
 
     /**
      * Class names of objects which cannot be encoded
-     *
-     * @var array
      */
     protected const UNENCODABLE_CLASSES = [\Closure::class, \Reflector::class, \ReflectionGenerator::class, \ReflectionType::class, \IteratorIterator::class, \RecursiveIteratorIterator::class];
 

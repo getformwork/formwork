@@ -6,22 +6,16 @@ class JSON extends AbstractEncoder
 {
     /**
      * Default flags used to parse JSON
-     *
-     * @var int
      */
     protected const DEFAULT_PARSE_FLAGS = JSON_THROW_ON_ERROR;
 
     /**
      * Default flags used to encode JSON
-     *
-     * @var int
      */
     protected const DEFAULT_ENCODE_FLAGS = JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR;
 
     /**
      * Default options used to encode JSON
-     *
-     * @var array
      */
     protected const DEFAULT_ENCODE_OPTIONS = [
         'forceObject'   => false,

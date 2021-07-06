@@ -14,29 +14,21 @@ class Languages
 
     /**
      * Default language code
-     *
-     * @var string
      */
     protected ?string $default = null;
 
     /**
      * Current language code
-     *
-     * @var string
      */
     protected ?string $current = null;
 
     /**
      * Requested language code
-     *
-     * @var string
      */
     protected ?string $requested = null;
 
     /**
      * Preferred language code
-     *
-     * @var string
      */
     protected ?string $preferred = null;
 

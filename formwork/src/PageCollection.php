@@ -12,8 +12,6 @@ class PageCollection extends Collection
 {
     /**
      * Default property used to sort pages
-     *
-     * @var string
      */
     protected const DEFAULT_SORT_PROPERTY = 'relativePath';
 

@@ -28,15 +28,11 @@ class PagesController extends AbstractController
 {
     /**
      * Valid page slug regex
-     *
-     * @var string
      */
     protected const SLUG_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/i';
 
     /**
      * Page prefix date format
-     *
-     * @var string
      */
     protected const DATE_NUM_FORMAT = 'Ymd';
 

@@ -15,36 +15,26 @@ class Router
 {
     /**
      * Valid request types
-     *
-     * @var array
      */
     protected const REQUEST_TYPES = ['HTTP', 'XHR'];
 
     /**
      * Valid request methods
-     *
-     * @var array
      */
     protected const REQUEST_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Valid param separators
-     *
-     * @var string
      */
     protected const PARAMS_SEPARATORS = '/,;.:-_';
 
     /**
      * Route params regex
-     *
-     * @var string
      */
     protected const PARAMS_REGEX = '~([' . self::PARAMS_SEPARATORS . '])?{([A-Za-z0-9_]+)(?::([^{]+))?}(\?)?~';
 
     /**
      * Array containing route patterns shortcuts
-     *
-     * @var array
      */
     protected const PATTERN_SHORTCUTS = [
         'num' => '[0-9]+',

@@ -9,8 +9,6 @@ class Avatar
 {
     /**
      * Default avatar URI
-     *
-     * @var string
      */
     protected const DEFAULT_AVATAR_URI = '/assets/images/avatar.svg';
 

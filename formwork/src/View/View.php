@@ -12,8 +12,6 @@ class View
 {
     /**
      * View type
-     *
-     * @var string
      */
     protected const TYPE = 'view';
 
@@ -44,8 +42,6 @@ class View
 
     /**
      * Layout view
-     *
-     * @var static
      */
     protected self $layout;
 

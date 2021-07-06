@@ -11,8 +11,6 @@ class Header
      * Associative array containing HTTP response status codes
      *
      * @see https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     *
-     * @var array
      */
     public const HTTP_STATUS = [
         // Informational

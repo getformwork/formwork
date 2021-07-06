@@ -6,15 +6,11 @@ class Route
 {
     /**
      * Default route methods
-     *
-     * @var array
      */
     protected const DEFAULT_METHODS = ['GET'];
 
     /**
      * Default route types
-     *
-     * @var array
      */
     protected const DEFAULT_TYPES = ['HTTP'];
 

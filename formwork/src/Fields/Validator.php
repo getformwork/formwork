@@ -13,29 +13,21 @@ class Validator
 {
     /**
      * Field types ignored by the validator
-     *
-     * @var array
      */
     public const IGNORED_FIELDS = ['column', 'header', 'row', 'rows'];
 
     /**
      * Values considered true when parsed as boolean
-     *
-     * @var array
      */
     public const TRUTHY_VALUES = [true, 1, 'true', '1', 'on', 'yes'];
 
     /**
      * Values considered false when parsed as boolean
-     *
-     * @var array
      */
     public const FALSY_VALUES = [false, 0, 'false', '0', 'off', 'no'];
 
     /**
      * Values considered null when parsed as such
-     *
-     * @var array
      */
     public const EMPTY_VALUES = [null, '', []];
 

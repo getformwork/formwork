@@ -16,8 +16,6 @@ class Site extends AbstractPage
 
     /**
      * Current page
-     *
-     * @var Page
      */
     protected ?Page $currentPage = null;
 

@@ -8,15 +8,11 @@ class IPAnonymizer
 {
     /**
      * IPv4 addresses mask
-     *
-     * @var string
      */
     protected const IPV4_MASK = '255.255.255.0';
 
     /**
      * IPv6 addresses mask
-     *
-     * @var string
      */
     protected const IPV6_MASK = 'ffff:ffff:ffff:ffff::';
 

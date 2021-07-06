@@ -9,8 +9,6 @@ class HTTPRequest
 {
     /**
      * Localhost IP addresses
-     *
-     * @var array
      */
     protected const LOCALHOST_IP_ADDRESSES = ['127.0.0.1', '::1'];
 

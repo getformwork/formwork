@@ -13,15 +13,11 @@ class HTTPClient
 {
     /**
      * Default Formwork user agent
-     *
-     * @var string
      */
     protected const DEFAULT_USER_AGENT = 'PHP Formwork/' . Formwork::VERSION;
 
     /**
      * Regex matching HTTP status line
-     *
-     * @var string
      */
     protected const STATUS_LINE_REGEX = '~^(HTTP/\d+\.\d+)\s+(\d+)\s+(.+)~i';
 

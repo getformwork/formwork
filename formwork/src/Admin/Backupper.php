@@ -14,8 +14,6 @@ class Backupper
 {
     /**
      * Date format used in backup archive name
-     *
-     * @var string
      */
     protected const DATE_FORMAT = 'YmdHis';
 

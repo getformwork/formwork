@@ -8,8 +8,6 @@ class MimeType
 {
     /**
      * Default MIME type for unknown files
-     *
-     * @var string
      */
     protected const DEFAULT_MIME_TYPE = 'application/octet-stream';
 
@@ -17,8 +15,6 @@ class MimeType
      * Associative array containing common MIME types
      *
      * @see https://www.iana.org/assignments/media-types/media-types.xhtml
-     *
-     * @var array
      */
     protected const MIME_TYPES = [
         'atom'     => 'application/atom+xml',

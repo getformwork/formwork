@@ -19,29 +19,21 @@ class Page extends AbstractPage
 {
     /**
      * Page num regex
-     *
-     * @var string
      */
     public const NUM_REGEX = '/^(\d+)-/';
 
     /**
      * Page 'published' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_PUBLISHED = 'published';
 
     /**
      * Page 'not published' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
     /**
      * Page 'not routable' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
@@ -64,8 +56,6 @@ class Page extends AbstractPage
 
     /**
      * Page language
-     *
-     * @var string
      */
     protected ?string $language = null;
 

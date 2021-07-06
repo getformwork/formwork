@@ -8,8 +8,6 @@ class Visitor
      * Array containing regex tokens that identify bots based on monperrus/crawler-user-agents list
      *
      * @see https://raw.githubusercontent.com/monperrus/crawler-user-agents/master/crawler-user-agents.json
-     *
-     * @var array
      */
     protected const BOTS_REGEX_TOKENS = [
         '(apache-http|btweb|go-http-|http_)client', '(apis|appengine|mediapartners)-google',

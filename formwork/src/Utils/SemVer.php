@@ -8,22 +8,16 @@ class SemVer
 {
     /**
      * Regex matching version components
-     *
-     * @var string
      */
     protected const SEMVER_REGEX = '/^(?<major>0|(?:[1-9]\d*))(?:\.(?<minor>0|(?:[1-9]\d*))?(?:\.(?<patch>0|(?:[1-9]\d*)))?(?:\-(?<prerelease>[0-9A-Z\.-]+))?(?:\+(?<metadata>[0-9A-Z\.-]+))?)?$/i';
 
     /**
      * Valid operators to compare versions
-     *
-     * @var array
      */
     protected const COMPARISON_OPERATORS = ['<', '<=', '==', '>=', '>', '!=', '~', '^'];
 
     /**
      * Valid prerelease tags, compatible with version_compare()
-     *
-     * @var array
      */
     protected const PRERELEASE_TAGS = ['dev', 'alpha', 'beta', 'RC', 'pl'];
 

@@ -23,8 +23,6 @@ final class Formwork
 
     /**
      * Current Formwork version
-     *
-     * @var string
      */
     public const VERSION = '1.11.0';
 

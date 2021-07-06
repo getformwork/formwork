@@ -9,15 +9,11 @@ class Cookie
 {
     /**
      * 'Strict' value for SameSite directive
-     *
-     * @var string
      */
     public const SAMESITE_STRICT = 'Strict';
 
     /**
      * 'Lax' value for SameSite directive
-     *
-     * @var string
      */
     public const SAMESITE_LAX = 'Lax';
 

@@ -8,15 +8,11 @@ class Uri
 {
     /**
      * Default ports which will not be present in generated URI
-     *
-     * @var array
      */
     protected const DEFAULT_PORTS = ['http' => 80, 'https' => 443];
 
     /**
      * Current URI
-     *
-     * @var string
      */
     protected static ?string $current = null;
 

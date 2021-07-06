@@ -10,15 +10,11 @@ class YAML extends AbstractEncoder
 {
     /**
      * Document start delimiter required by yaml_parse()
-     *
-     * @var string
      */
     protected const DOCUMENT_START = "---\n";
 
     /**
      * Regex matching document delimiters to be removed from yaml_emit() output
-     *
-     * @var string
      */
     protected const DOCUMENT_DELIMITERS_REGEX = '/^-{3}[\n ]|\n\.{3}$/';
 

@@ -10,15 +10,11 @@ class CSRFToken
 {
     /**
      * Session key to store the CSRF token
-     *
-     * @var string
      */
     protected const SESSION_KEY = 'CSRF_TOKEN';
 
     /**
      * Input name to retrieve the CSRF token
-     *
-     * @var string
      */
     protected const INPUT_NAME = 'csrf-token';
 
