@@ -12,24 +12,18 @@ class Scheme extends DataGetter
 {
     /**
      * Scheme type
-     *
-     * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * Scheme path
-     *
-     * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Scheme name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new Scheme instance

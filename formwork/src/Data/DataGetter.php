@@ -8,10 +8,8 @@ class DataGetter
 {
     /**
      * Array containing data
-     *
-     * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * Create a new instance

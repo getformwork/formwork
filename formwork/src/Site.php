@@ -11,31 +11,25 @@ class Site extends AbstractPage
 {
     /**
      * Array containing all loaded pages
-     *
-     * @var array
      */
-    protected $storage = [];
+    protected array $storage = [];
 
     /**
      * Current page
      *
      * @var Page
      */
-    protected $currentPage;
+    protected ?Page $currentPage = null;
 
     /**
      * Array containing all available templates
-     *
-     * @var array
      */
-    protected $templates = [];
+    protected array $templates = [];
 
     /**
      * Site languages
-     *
-     * @var Languages
      */
-    protected $languages;
+    protected Languages $languages;
 
     /**
      * Create a new Site instance
@@ -218,7 +212,7 @@ class Site extends AbstractPage
      */
     public function metadata(): Metadata
     {
-        if ($this->metadata !== null) {
+        if (isset($this->metadata)) {
             return $this->metadata;
         }
         $defaults = [

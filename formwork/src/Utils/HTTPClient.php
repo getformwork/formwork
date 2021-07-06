@@ -27,10 +27,8 @@ class HTTPClient
 
     /**
      * Client options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     public function __construct(array $options = [])
     {

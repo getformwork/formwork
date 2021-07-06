@@ -16,31 +16,23 @@ class HTTPRequest
 
     /**
      * DataGetter containing HTTP GET data
-     *
-     * @var DataGetter
      */
-    protected static $getData;
+    protected static DataGetter $getData;
 
     /**
      * DataGetter containing HTTP POST data
-     *
-     * @var DataGetter
      */
-    protected static $postData;
+    protected static DataGetter $postData;
 
     /**
      * DataGetter containing HTTP headers
-     *
-     * @var DataGetter
      */
-    protected static $headers;
+    protected static DataGetter $headers;
 
     /**
      * Collection containing HTTP request files
-     *
-     * @var Collection
      */
-    protected static $files;
+    protected static Collection $files;
 
     /**
      * Get request method
@@ -207,7 +199,7 @@ class HTTPRequest
      */
     public static function getData(): DataGetter
     {
-        if (static::$getData !== null) {
+        if (isset(static::$getData)) {
             return static::$getData;
         }
         return static::$getData = new DataGetter($_GET);
@@ -218,7 +210,7 @@ class HTTPRequest
      */
     public static function postData(): DataGetter
     {
-        if (static::$postData !== null) {
+        if (isset(static::$postData)) {
             return static::$postData;
         }
         return static::$postData = new DataGetter($_POST);
@@ -245,7 +237,7 @@ class HTTPRequest
      */
     public static function files(): Collection
     {
-        if (static::$files !== null) {
+        if (isset(static::$files)) {
             return static::$files;
         }
         $files = [];
@@ -273,7 +265,7 @@ class HTTPRequest
      */
     public static function headers(): DataGetter
     {
-        if (static::$headers !== null) {
+        if (isset(static::$headers)) {
             return static::$headers;
         }
         $headers = [];

@@ -9,38 +9,36 @@ class Languages
 {
     /**
      * Array containing available languages
-     *
-     * @var array
      */
-    protected $available = [];
+    protected array $available = [];
 
     /**
      * Default language code
      *
      * @var string
      */
-    protected $default;
+    protected ?string $default = null;
 
     /**
      * Current language code
      *
      * @var string
      */
-    protected $current;
+    protected ?string $current = null;
 
     /**
      * Requested language code
      *
      * @var string
      */
-    protected $requested;
+    protected ?string $requested = null;
 
     /**
      * Preferred language code
      *
      * @var string
      */
-    protected $preferred;
+    protected ?string $preferred = null;
 
     /**
      * Create a new Languages instance

@@ -18,14 +18,14 @@ class Uri
      *
      * @var string
      */
-    protected static $current = null;
+    protected static ?string $current = null;
 
     /**
      * Get current URI
      */
     public static function current(): string
     {
-        if (static::$current === null) {
+        if (!isset(static::$current)) {
             static::$current = static::base() . rtrim(HTTPRequest::root(), '/') . HTTPRequest::uri();
         }
         return static::$current;

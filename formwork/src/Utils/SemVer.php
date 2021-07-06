@@ -29,38 +29,28 @@ class SemVer
 
     /**
      * Major version number
-     *
-     * @var int
      */
-    protected $major = 0;
+    protected int $major = 0;
 
     /**
      * Minor version number
-     *
-     * @var int
      */
-    protected $minor = 0;
+    protected int $minor = 0;
 
     /**
      * Patch version number
-     *
-     * @var int
      */
-    protected $patch = 0;
+    protected int $patch = 0;
 
     /**
      * Version prerelease stability
-     *
-     * @var string
      */
-    protected $prerelease;
+    protected ?string $prerelease;
 
     /**
      * Version metadata string
-     *
-     * @var string
      */
-    protected $metadata;
+    protected ?string $metadata;
 
     /**
      * Create a new SemVer instance

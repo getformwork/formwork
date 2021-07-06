@@ -2,6 +2,7 @@
 
 namespace Formwork\Admin;
 
+use Formwork\Admin\Controllers\ErrorsController;
 use Formwork\Admin\Users\User;
 use Formwork\Admin\Users\Users;
 use Formwork\Assets;
@@ -21,24 +22,18 @@ final class Admin
 {
     /**
      * All the registered users
-     *
-     * @var Users
      */
-    protected $users;
+    protected Users $users;
 
     /**
      * Errors controller
-     *
-     * @var Controllers\ErrorsController
      */
-    protected $errors;
+    protected ErrorsController $errors;
 
     /**
      * Assets instance
-     *
-     * @var Assets
      */
-    protected $assets;
+    protected Assets $assets;
 
     /**
      * Create a new Admin instance
@@ -223,7 +218,7 @@ final class Admin
      */
     public function assets(): Assets
     {
-        if ($this->assets !== null) {
+        if (isset($this->assets)) {
             return $this->assets;
         }
         return $this->assets = new Assets(ADMIN_PATH . 'assets' . DS, Formwork::instance()->admin()->realUri('/assets/'));

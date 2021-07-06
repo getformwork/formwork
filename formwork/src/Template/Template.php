@@ -19,17 +19,13 @@ class Template extends View
 
     /**
      * Page passed to the template
-     *
-     * @var Page
      */
-    protected $page;
+    protected Page $page;
 
     /**
      * Template assets instance
-     *
-     * @var Assets
      */
-    protected $assets;
+    protected Assets $assets;
 
     /**
      * Create a new Template instance
@@ -45,7 +41,7 @@ class Template extends View
      */
     public function assets(): Assets
     {
-        if ($this->assets !== null) {
+        if (isset($this->assets)) {
             return $this->assets;
         }
         return $this->assets = new Assets(

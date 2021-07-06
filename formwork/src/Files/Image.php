@@ -48,24 +48,18 @@ class Image extends File
 
     /**
      * Array containing image information
-     *
-     * @var array
      */
-    protected $info = [];
+    protected array $info = [];
 
     /**
      * Image width
-     *
-     * @var int
      */
-    protected $width;
+    protected int $width;
 
     /**
      * Image height
-     *
-     * @var int
      */
-    protected $height;
+    protected int $height;
 
     /**
      * Image resource
@@ -76,38 +70,30 @@ class Image extends File
 
     /**
      * JPEG export quality (0-100)
-     *
-     * @var int
      */
-    protected $JPEGQuality = 85;
+    protected int $JPEGQuality = 85;
 
     /**
      * Whether to save JPEG images as progressive
-     *
-     * @var bool
      */
-    protected $JPEGSaveProgressive = true;
+    protected bool $JPEGSaveProgressive = true;
 
     /**
      * PNG compression level 0-9
-     *
-     * @var int
      */
-    protected $PNGCompression = 9;
+    protected int $PNGCompression = 9;
 
     /**
      * WEBP export quality (0-100)
-     *
-     * @var int
      */
-    protected $WEBPQuality = 85;
+    protected int $WEBPQuality = 85;
 
     /**
      * Return image width
      */
     public function width(): int
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         return $this->width;
@@ -118,7 +104,7 @@ class Image extends File
      */
     public function height(): int
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         return $this->height;
@@ -129,7 +115,7 @@ class Image extends File
      */
     public function orientation(): string
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         if ($this->width >= $this->height) {
@@ -143,7 +129,7 @@ class Image extends File
      */
     public function rotate(int $angle): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         $backgroundColor = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
@@ -156,7 +142,7 @@ class Image extends File
      */
     public function flipHorizontal(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imageflip($this->image, IMG_FLIP_HORIZONTAL);
@@ -168,7 +154,7 @@ class Image extends File
      */
     public function flipVertical(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imageflip($this->image, IMG_FLIP_VERTICAL);
@@ -180,7 +166,7 @@ class Image extends File
      */
     public function flipBoth(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imageflip($this->image, IMG_FLIP_BOTH);
@@ -197,7 +183,7 @@ class Image extends File
             throw new InvalidArgumentException(sprintf('%s() must be called with at least one of $destinationWidth or $destinationHeight arguments', __METHOD__));
         }
 
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
 
@@ -250,7 +236,7 @@ class Image extends File
      */
     public function resizeToFit(int $destinationWidth, int $destinationHeight, string $mode = self::RESIZE_FIT_COVER): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
 
@@ -314,7 +300,7 @@ class Image extends File
      */
     public function crop(int $originX, int $originY, int $width, int $height): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
 
@@ -345,7 +331,7 @@ class Image extends File
      */
     public function desaturate(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_GRAYSCALE);
@@ -357,7 +343,7 @@ class Image extends File
      */
     public function invert(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_NEGATE);
@@ -374,7 +360,7 @@ class Image extends File
         if ($amount < -255 || $amount > 255) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range -255-+255, %d given', $amount));
         }
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_BRIGHTNESS, $amount);
@@ -391,7 +377,7 @@ class Image extends File
         if ($amount < -100 || $amount > 100) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range -100-+100, %d given', $amount));
         }
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         // For GD -100 = max contrast, 100 = min contrast; we change $amount sign for a more predictable behavior
@@ -421,7 +407,7 @@ class Image extends File
         if ($alpha < 0 || $alpha > 127) {
             throw new InvalidArgumentException(sprintf('$alpha value must be in range 0-127, %d given', $alpha));
         }
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_COLORIZE, $red, $green, $blue, $alpha);
@@ -441,7 +427,7 @@ class Image extends File
      */
     public function edgedetect(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_EDGEDETECT);
@@ -453,7 +439,7 @@ class Image extends File
      */
     public function emboss(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_EMBOSS);
@@ -470,7 +456,7 @@ class Image extends File
         if ($amount < 0 || $amount > 100) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range 0-100, %d given', $amount));
         }
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         for ($i = 0; $i < $amount; $i++) {
@@ -484,7 +470,7 @@ class Image extends File
      */
     public function sharpen(): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_MEAN_REMOVAL);
@@ -496,7 +482,7 @@ class Image extends File
      */
     public function smoothen(int $amount): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_SMOOTH, $amount);
@@ -508,7 +494,7 @@ class Image extends File
      */
     public function pixelate(int $amount): self
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
         imagefilter($this->image, IMG_FILTER_PIXELATE, $amount);
@@ -523,7 +509,7 @@ class Image extends File
      */
     public function save(string $filename = null, bool $destroy = true): void
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
 
@@ -566,7 +552,7 @@ class Image extends File
      */
     public function saveOptimized(string $filename = null, bool $destroy = true): void
     {
-        if ($this->image === null) {
+        if (!isset($this->image)) {
             $this->initialize();
         }
 

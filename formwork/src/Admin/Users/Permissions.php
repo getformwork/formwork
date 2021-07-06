@@ -8,10 +8,8 @@ class Permissions
 {
     /**
      * The permission values
-     *
-     * @var array
      */
-    protected $permissions = [
+    protected array $permissions = [
         'dashboard' => false,
         'cache'     => false,
         'backup'    => false,

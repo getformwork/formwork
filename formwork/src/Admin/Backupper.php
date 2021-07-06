@@ -21,10 +21,8 @@ class Backupper
 
     /**
      * Backupper options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Return a new Backupper instance

@@ -9,17 +9,13 @@ class Translation
 {
     /**
      * Translation language code
-     *
-     * @var string
      */
-    protected $code;
+    protected string $code;
 
     /**
      * Translation data
-     *
-     * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     public function __construct(string $code, array $data)
     {

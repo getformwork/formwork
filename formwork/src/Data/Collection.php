@@ -10,10 +10,8 @@ class Collection implements Countable, Iterator
 {
     /**
      * Array containing collection items
-     *
-     * @var array
      */
-    protected $items = [];
+    protected array $items = [];
 
     /**
      * Create a new Collection instance

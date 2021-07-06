@@ -42,24 +42,18 @@ class Uploader
 
     /**
      * Destination of uploaded file
-     *
-     * @var string
      */
-    protected $destination;
+    protected string $destination;
 
     /**
      * Uploader options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Array containing uploaded files
-     *
-     * @var array
      */
-    protected $uploadedFiles = [];
+    protected array $uploadedFiles = [];
 
     /**
      * Create a new Uploader instance

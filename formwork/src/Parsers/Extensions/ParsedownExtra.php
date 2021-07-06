@@ -9,10 +9,8 @@ class ParsedownExtra extends \ParsedownExtra
 {
     /**
      * Base route to resolve links
-     *
-     * @var string
      */
-    protected $baseRoute;
+    protected string $baseRoute;
 
     /**
      * @inheritdoc

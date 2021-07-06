@@ -38,17 +38,15 @@ class Visitor
 
     /**
      * Compiled bots regex
-     *
-     * @var string
      */
-    protected static $regex;
+    protected static string $regex;
 
     /**
      * Return whether current visitor is a bot
      */
     public static function isBot(): bool
     {
-        if (static::$regex === null) {
+        if (!isset(static::$regex)) {
             static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
         }
         return (bool) preg_match(static::$regex, HTTPRequest::userAgent());

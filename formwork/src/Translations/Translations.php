@@ -12,17 +12,13 @@ class Translations extends Collection
 {
     /**
      * Translation objects storage
-     *
-     * @var array
      */
-    protected $storage = [];
+    protected array $storage = [];
 
     /**
      * Current translation
-     *
-     * @var Translation
      */
-    protected $current;
+    protected Translation $current;
 
     /**
      * Load a translation file

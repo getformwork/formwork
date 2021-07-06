@@ -9,17 +9,13 @@ class Assets
 {
     /**
      * Base path where asset files are located
-     *
-     * @var string
      */
-    protected $basePath;
+    protected string $basePath;
 
     /**
      * Base URI from which assets are accessible
-     *
-     * @var string
      */
-    protected $baseUri;
+    protected string $baseUri;
 
     /**
      * Create a new Assets instance

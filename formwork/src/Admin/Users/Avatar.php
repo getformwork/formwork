@@ -16,17 +16,13 @@ class Avatar
 
     /**
      * Avatar URI
-     *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * Avatar file path
-     *
-     * @var string|null
      */
-    protected $path;
+    protected ?string $path = null;
 
     /**
      * Create a new Avatar instance

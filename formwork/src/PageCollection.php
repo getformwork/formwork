@@ -19,10 +19,8 @@ class PageCollection extends Collection
 
     /**
      * Pagination related to the collection
-     *
-     * @var Pagination
      */
-    protected $pagination;
+    protected Pagination $pagination;
 
     /**
      * Return the Pagination object related to the collection

@@ -56,31 +56,23 @@ class Statistics
 
     /**
      * Visits registry
-     *
-     * @var Registry
      */
-    protected $visitsRegistry;
+    protected Registry $visitsRegistry;
 
     /**
      * Unique visits registry
-     *
-     * @var Registry
      */
-    protected $uniqueVisitsRegistry;
+    protected Registry $uniqueVisitsRegistry;
 
     /**
      * Visitors registry
-     *
-     * @var Registry
      */
-    protected $visitorsRegistry;
+    protected Registry $visitorsRegistry;
 
     /**
      * Page views registry
-     *
-     * @var Registry
      */
-    protected $pageViewsRegistry;
+    protected Registry $pageViewsRegistry;
 
     /**
      * Create a new Statistics instance

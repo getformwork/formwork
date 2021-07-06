@@ -8,24 +8,18 @@ class Registry
 {
     /**
      * Stored registry entries
-     *
-     * @var array
      */
-    protected $storage = [];
+    protected array $storage = [];
 
     /**
      * Registry filename
-     *
-     * @var string
      */
-    protected $filename;
+    protected string $filename;
 
     /**
      * Whether the registry is saved
-     *
-     * @var bool
      */
-    protected $saved = false;
+    protected bool $saved = false;
 
     /**
      * Create a new Registry instance
