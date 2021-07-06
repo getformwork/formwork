@@ -71,7 +71,7 @@ class User
     /**
      * User last access time
      */
-    protected ?string $lastAccess;
+    protected ?int $lastAccess;
 
     /**
      * Create a new User instance
