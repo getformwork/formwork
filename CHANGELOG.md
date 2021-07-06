@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/getformwork/formwork/releases/tag/1.10.3) (2021-07-06)
+
+**Bug fixes**
+
+- Fix `PHP::encodeData()` failing to check if `__set_state()` method exists when `__call()` is implemented
+
+
 ## [1.11.0](https://github.com/getformwork/formwork/releases/tag/1.11.0) (2020-12-16)
 
 **Enhancements**
