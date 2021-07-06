@@ -94,11 +94,10 @@ final class Formwork
     {
         $this->initializeSingleton();
 
-        Errors::setHandlers();
-
         $this->request = Uri::removeQuery(HTTPRequest::uri());
 
         $this->loadConfig();
+        $this->loadErrorHandlers();
         $this->loadLanguages();
         $this->loadTranslations();
         $this->loadSchemes();
@@ -223,6 +222,16 @@ final class Formwork
         }
 
         date_default_timezone_set($this->config->get('date.timezone'));
+    }
+
+    /**
+     * Load error handlers
+     */
+    protected function loadErrorHandlers(): void
+    {
+        if ($this->config()->get('errors.set_handlers')) {
+            Errors::setHandlers();
+        }
     }
 
     /**

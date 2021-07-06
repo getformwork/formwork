@@ -279,11 +279,13 @@ final class Admin
      */
     protected function loadErrorHandler(): void
     {
-        $this->errors = new Controllers\ErrorsController();
-        set_exception_handler(function (Throwable $exception): void {
-            $this->errors->internalServerError($exception)->send();
-            throw $exception;
-        });
+        if (Formwork::instance()->config()->get('errors.set_handlers')) {
+            $this->errors = new Controllers\ErrorsController();
+            set_exception_handler(function (Throwable $exception): void {
+                $this->errors->internalServerError($exception)->send();
+                throw $exception;
+            });
+        }
     }
 
     /**

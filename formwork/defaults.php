@@ -36,6 +36,9 @@ return [
         'timezone'    => 'UTC',
         'week_starts' => 0
     ],
+    'errors' => [
+        'set_handlers' => true
+    ],
     'files' => [
         'allowed_extensions' => [
             '.jpg',
