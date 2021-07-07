@@ -1,7 +1,5 @@
 <?php
 
 return [
-    'assets' => static function () {
-        return \Formwork\Formwork::instance()->admin()->assets();
-    }
+    'assets' => static fn () => \Formwork\Formwork::instance()->admin()->assets()
 ];

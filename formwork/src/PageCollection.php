@@ -131,9 +131,7 @@ class PageCollection extends Collection
             throw new InvalidArgumentException('Invalid sorting direction. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending');
         }
 
-        usort($pageCollection->items, static function (Page $item1, Page $item2) use ($property, $direction): int {
-            return $direction * strnatcasecmp($item1->get($property), $item2->get($property));
-        });
+        usort($pageCollection->items, static fn (Page $item1, Page $item2): int => $direction * strnatcasecmp($item1->get($property), $item2->get($property)));
 
         return $pageCollection;
     }
@@ -163,9 +161,7 @@ class PageCollection extends Collection
 
         $keywords = explode(' ', $query);
         $keywords = array_diff($keywords, (array) Formwork::instance()->config()->get('search.stopwords'));
-        $keywords = array_filter($keywords, static function (string $item) use ($min): bool {
-            return strlen($item) > $min;
-        });
+        $keywords = array_filter($keywords, static fn (string $item): bool => strlen($item) > $min);
 
         $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';

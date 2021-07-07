@@ -56,7 +56,5 @@ return [
             \Formwork\Formwork::instance()->config()->get('date.format') . ' ' . \Formwork\Formwork::instance()->config()->get('date.time_format')
         );
     },
-    'translate' => static function (string $key, ...$arguments) {
-        return \Formwork\Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments);
-    }
+    'translate' => static fn (string $key, ...$arguments) => \Formwork\Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments)
 ];

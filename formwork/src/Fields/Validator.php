@@ -177,9 +177,7 @@ class Validator
         }
 
         if ($field->has('pattern')) {
-            $value = array_filter($value, static function ($item) use ($field): bool {
-                return static::regex($item, $field->get('pattern'));
-            });
+            $value = array_filter($value, static fn ($item): bool => static::regex($item, $field->get('pattern')));
         }
 
         return array_values(array_filter($value));

@@ -123,9 +123,7 @@ class HTTPClient
 
         if (($handle = @fopen($uri, 'r', false, $context)) === false) {
             $messages = implode("\n", array_map(
-                static function (int $i, array $error): string {
-                    return sprintf('#%d %s', $i, str_replace("\n", ' ', $error['message']));
-                },
+                static fn (int $i, array $error): string => sprintf('#%d %s', $i, str_replace("\n", ' ', $error['message'])),
                 array_keys($errors),
                 $errors
             ));

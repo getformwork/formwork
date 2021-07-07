@@ -68,9 +68,7 @@ class Translator
     protected static function interpolate($value)
     {
         if (is_array($value)) {
-            return array_map(static function ($value) {
-                return static::interpolate($value);
-            }, $value);
+            return array_map(static fn ($value) => static::interpolate($value), $value);
         }
         if (is_string($value) && (bool) preg_match(self::INTERPOLATION_REGEX, $value, $matches)) {
             return Formwork::instance()->translations()->getCurrent()->translate($matches[1]);

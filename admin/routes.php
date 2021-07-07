@@ -4,9 +4,7 @@ return [
     'routes' => [
         'admin.index' => [
             'path'   => '/',
-            'action' => function () {
-                return \Formwork\Formwork::instance()->admin()->redirect('/dashboard/');
-            }
+            'action' => fn () => \Formwork\Formwork::instance()->admin()->redirect('/dashboard/')
         ],
         'admin.login' => [
             'path'    => '/login/',
