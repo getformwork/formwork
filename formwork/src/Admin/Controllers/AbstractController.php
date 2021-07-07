@@ -17,10 +17,8 @@ abstract class AbstractController extends BaseAbstractController
 {
     /**
      * All loaded modals
-     *
-     * @var array
      */
-    protected $modals = [];
+    protected array $modals = [];
 
     /**
      * Return admin instance

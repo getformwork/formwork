@@ -13,73 +13,53 @@ abstract class AbstractPage
 {
     /**
      * Page path
-     *
-     * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Page path relative to content path
-     *
-     * @var string
      */
-    protected $relativePath;
+    protected string $relativePath;
 
     /**
      * Page unique identifier
-     *
-     * @var string
      */
-    protected $uid;
+    protected string $uid;
 
     /**
      * Page route
-     *
-     * @var string
      */
-    protected $route;
+    protected string $route;
 
     /**
      * Page data
-     *
-     * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * Page uri
-     *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * Page absolute uri
-     *
-     * @var string
      */
-    protected $absoluteUri;
+    protected string $absoluteUri;
 
     /**
      * Page last modified time
-     *
-     * @var int
      */
-    protected $lastModifiedTime;
+    protected int $lastModifiedTime;
 
     /**
      * Page modified date
-     *
-     * @var string
      */
-    protected $date;
+    protected string $date;
 
     /**
      * Page metadata
-     *
-     * @var Metadata
      */
-    protected $metadata;
+    protected Metadata $metadata;
 
     /**
      * Page parent
@@ -90,31 +70,23 @@ abstract class AbstractPage
 
     /**
      * PageCollection containing page parents
-     *
-     * @var PageCollection
      */
-    protected $parents;
+    protected PageCollection $parents;
 
     /**
      * Page level
-     *
-     * @var int
      */
-    protected $level;
+    protected int $level;
 
     /**
      * PageCollection containing page children
-     *
-     * @var PageCollection
      */
-    protected $children;
+    protected PageCollection $children;
 
     /**
      * PageCollection containing page descendants
-     *
-     * @var PageCollection
      */
-    protected $descendants;
+    protected PageCollection $descendants;
 
     /**
      * Return a URI relative to page
@@ -142,7 +114,7 @@ abstract class AbstractPage
      */
     public function uid(): string
     {
-        if ($this->uid !== null) {
+        if (isset($this->uid)) {
             return $this->uid;
         }
         return $this->uid = substr(hash('sha256', $this->relativePath), 0, 32);
@@ -153,7 +125,7 @@ abstract class AbstractPage
      */
     public function absoluteUri(): string
     {
-        if ($this->absoluteUri !== null) {
+        if (isset($this->absoluteUri)) {
             return $this->absoluteUri;
         }
         return $this->absoluteUri = Uri::resolveRelative($this->uri());
@@ -164,7 +136,7 @@ abstract class AbstractPage
      */
     public function lastModifiedTime(): int
     {
-        if ($this->lastModifiedTime !== null) {
+        if (isset($this->lastModifiedTime)) {
             return $this->lastModifiedTime;
         }
         return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path);
@@ -190,7 +162,7 @@ abstract class AbstractPage
      */
     public function parent()
     {
-        if ($this->parent !== null) {
+        if (isset($this->parent)) {
             return $this->parent;
         }
         $parentPath = dirname($this->path) . DS;
@@ -206,7 +178,7 @@ abstract class AbstractPage
      */
     public function parents(): PageCollection
     {
-        if ($this->parents !== null) {
+        if (isset($this->parents)) {
             return $this->parents;
         }
         $parentPages = [];
@@ -231,7 +203,7 @@ abstract class AbstractPage
      */
     public function children(): PageCollection
     {
-        if ($this->children !== null) {
+        if (isset($this->children)) {
             return $this->children;
         }
         return $this->children = PageCollection::fromPath($this->path);
@@ -250,7 +222,7 @@ abstract class AbstractPage
      */
     public function descendants(): PageCollection
     {
-        if ($this->descendants !== null) {
+        if (isset($this->descendants)) {
             return $this->descendants;
         }
         return $this->descendants = PageCollection::fromPath($this->path, true);
@@ -274,7 +246,7 @@ abstract class AbstractPage
      */
     public function level(): int
     {
-        if ($this->level !== null) {
+        if (isset($this->level)) {
             return $this->level;
         }
         return $this->level = $this->parents()->count();
@@ -312,7 +284,7 @@ abstract class AbstractPage
     {
         if (property_exists($this, $key)) {
             // Call getter method if exists and property is null
-            if ($this->$key === null && method_exists($this, $key)) {
+            if (!isset($this->$key) && method_exists($this, $key)) {
                 return $this->$key();
             }
             return $this->$key;

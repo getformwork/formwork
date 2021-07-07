@@ -6,10 +6,8 @@ class Log extends Registry
 {
     /**
      * Limit of registry entries
-     *
-     * @var int
      */
-    protected $limit;
+    protected int $limit;
 
     /**
      * Create a new Log instance

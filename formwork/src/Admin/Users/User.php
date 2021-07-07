@@ -11,17 +11,13 @@ class User
 {
     /**
      * Array containing user data
-     *
-     * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * Default data of the user
-     *
-     * @var array
      */
-    protected $defaults = [
+    protected array $defaults = [
         'username'     => null,
         'fullname'     => null,
         'hash'         => null,
@@ -34,66 +30,48 @@ class User
 
     /**
      * User username
-     *
-     * @var string
      */
-    protected $username;
+    protected string $username;
 
     /**
      * User full name
-     *
-     * @var string
      */
-    protected $fullname;
+    protected string $fullname;
 
     /**
      * User password hash
-     *
-     * @var string
      */
-    protected $hash;
+    protected string $hash;
 
     /**
      * User email
-     *
-     * @var string
      */
-    protected $email;
+    protected string $email;
 
     /**
      * User language
-     *
-     * @var string
      */
-    protected $language;
+    protected string $language;
 
     /**
      * User role
-     *
-     * @var string
      */
-    protected $role;
+    protected string $role;
 
     /**
      * User avatar
-     *
-     * @var Avatar
      */
-    protected $avatar;
+    protected Avatar $avatar;
 
     /**
      * User permissions
-     *
-     * @var Permissions
      */
-    protected $permissions;
+    protected Permissions $permissions;
 
     /**
      * User last access time
-     *
-     * @var string|null
      */
-    protected $lastAccess;
+    protected ?int $lastAccess;
 
     /**
      * Create a new User instance
@@ -226,7 +204,7 @@ class User
      */
     public function lastAccess(): ?int
     {
-        if ($this->lastAccess !== null) {
+        if (isset($this->lastAccess)) {
             return $this->lastAccess;
         }
         $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('admin.paths.logs') . 'lastAccess.json');

@@ -12,66 +12,48 @@ class View
 {
     /**
      * View type
-     *
-     * @var string
      */
     protected const TYPE = 'view';
 
     /**
      * View name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * View variables
-     *
-     * @var array
      */
-    protected $vars = [];
+    protected array $vars = [];
 
     /**
      * View path
-     *
-     * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * View blocks
-     *
-     * @var array
      */
-    protected $blocks = [];
+    protected array $blocks = [];
 
     /**
      * View incomplete blocks
-     *
-     * @var array
      */
-    protected $incompleteBlocks = [];
+    protected array $incompleteBlocks = [];
 
     /**
      * Layout view
-     *
-     * @var static
      */
-    protected $layout;
+    protected self $layout;
 
     /**
      * Helper functions to be used in views
-     *
-     * @var array
      */
-    protected $helpers = [];
+    protected array $helpers = [];
 
     /**
      * Whether the view is being rendered
-     *
-     * @var bool
      */
-    protected $rendering = false;
+    protected bool $rendering = false;
 
     /**
      * Create a new View instance
@@ -105,7 +87,7 @@ class View
      */
     public function layout(string $name): void
     {
-        if ($this->layout !== null) {
+        if (isset($this->layout)) {
             throw new RuntimeException(sprintf('The layout for the %s "%s" is already set', static::TYPE, $this->name));
         }
         $this->layout = $this->createLayoutView($name);
@@ -144,7 +126,7 @@ class View
 
         $this->insert($this->name);
 
-        if ($this->layout !== null) {
+        if (isset($this->layout)) {
             $this->layout->vars = $this->vars;
             $this->layout->blocks['content'] = ob_get_contents();
             ob_clean(); // Clean but don't end output buffer

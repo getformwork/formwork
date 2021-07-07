@@ -8,29 +8,21 @@ class Text
 {
     /**
      * Regex matching whitespace characters
-     *
-     * @var string
      */
     protected const WHITESPACE_REGEX = '/[\s\xb\p{Z}]+/u';
 
     /**
      * Normalized whitespace sequence
-     *
-     * @var string
      */
     protected const WHITESPACE_SEQUENCE = ' ';
 
     /**
      * Default sequence appended when text is truncated
-     *
-     * @var string
      */
     protected const DEFAULT_ELLIPSIS_SEQUENCE = '…';
 
     /**
      * Default words per minute used to determine reading time
-     *
-     * @var int
      */
     protected const DEFAULT_WORDS_PER_MINUTE = 180;
 

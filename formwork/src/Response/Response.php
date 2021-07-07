@@ -8,24 +8,18 @@ class Response
 {
     /**
      * Response content
-     *
-     * @var string
      */
-    protected $content;
+    protected string $content;
 
     /**
      * Response HTTP status
-     *
-     * @var int
      */
-    protected $status;
+    protected int $status;
 
     /**
      * Response HTTP headers
-     *
-     * @var array
      */
-    protected $headers;
+    protected array $headers;
 
     /**
      * Create a new Response instance

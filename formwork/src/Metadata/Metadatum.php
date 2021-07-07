@@ -10,24 +10,18 @@ class Metadatum
 
     /**
      * Metadatum name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Metadatum content
-     *
-     * @var string
      */
-    protected $content;
+    protected string $content;
 
     /**
      * Metadatum prefix
-     *
-     * @var string
      */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * Create a new Metadatum instance

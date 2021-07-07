@@ -8,8 +8,6 @@ class Session
 {
     /**
      * Session name
-     *
-     * @var string
      */
     protected const SESSION_NAME = 'formwork_session';
 

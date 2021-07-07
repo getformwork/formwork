@@ -12,8 +12,6 @@ class Uploader
 {
     /**
      * Human-readable Uploader error messages
-     *
-     * @var array
      */
     protected const ERROR_MESSAGES = [
         UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
@@ -27,8 +25,6 @@ class Uploader
 
     /**
      * Uploader errors language strings
-     *
-     * @var array
      */
     protected const ERROR_LANGUAGE_STRINGS = [
         UPLOAD_ERR_INI_SIZE   => 'admin.uploader.error.size',
@@ -42,24 +38,18 @@ class Uploader
 
     /**
      * Destination of uploaded file
-     *
-     * @var string
      */
-    protected $destination;
+    protected string $destination;
 
     /**
      * Uploader options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Array containing uploaded files
-     *
-     * @var array
      */
-    protected $uploadedFiles = [];
+    protected array $uploadedFiles = [];
 
     /**
      * Create a new Uploader instance

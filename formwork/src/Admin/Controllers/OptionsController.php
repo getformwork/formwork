@@ -19,10 +19,8 @@ class OptionsController extends AbstractController
 {
     /**
      * All options tabs
-     *
-     * @var array
      */
-    protected $tabs = ['system', 'site', 'updates', 'info'];
+    protected array $tabs = ['system', 'site', 'updates', 'info'];
 
     /**
      * Options@index action

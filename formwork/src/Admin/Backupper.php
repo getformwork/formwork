@@ -14,17 +14,13 @@ class Backupper
 {
     /**
      * Date format used in backup archive name
-     *
-     * @var string
      */
     protected const DATE_FORMAT = 'YmdHis';
 
     /**
      * Backupper options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Return a new Backupper instance

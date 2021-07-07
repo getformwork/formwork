@@ -8,10 +8,8 @@ trait SingletonTrait
 {
     /**
      * Singleton instance
-     *
-     * @var self
      */
-    protected static $instance;
+    protected static self $instance;
 
     /**
      * Return self instance
@@ -20,7 +18,7 @@ trait SingletonTrait
      */
     public static function instance(): self
     {
-        if (static::$instance !== null) {
+        if (isset(static::$instance)) {
             return static::$instance;
         }
         return static::$instance = new static();
@@ -31,7 +29,7 @@ trait SingletonTrait
      */
     protected function initializeSingleton(): void
     {
-        if (static::$instance !== null) {
+        if (isset(static::$instance)) {
             throw new LogicException(sprintf('Cannot create %s, the class is a singleton and cannot be instiantated again', static::class));
         }
         static::$instance = $this;

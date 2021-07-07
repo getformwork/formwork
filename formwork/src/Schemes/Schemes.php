@@ -10,10 +10,8 @@ class Schemes extends Collection
 {
     /**
      * Scheme objects storage
-     *
-     * @var array
      */
-    protected $storage = [];
+    protected array $storage = [];
 
     /**
      * Load a scheme

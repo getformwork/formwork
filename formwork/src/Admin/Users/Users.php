@@ -11,10 +11,8 @@ class Users extends AssociativeCollection
 {
     /**
      * All available roles
-     *
-     * @var array
      */
-    protected static $roles = [];
+    protected static array $roles = [];
 
     /**
      * Load all users and roles

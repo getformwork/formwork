@@ -8,22 +8,16 @@ class Translator
 {
     /**
      * Language string interpolation regex
-     *
-     * @var string
      */
     protected const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
 
     /**
      * Fields not to translate
-     *
-     * @var array
      */
     protected const IGNORED_PROPERTIES = ['name', 'type', 'import', 'fields'];
 
     /**
      * Keys of which array value has to be ignored
-     *
-     * @var array
      */
     protected const IGNORED_ARRAY_KEYS = ['value', 'options'];
 

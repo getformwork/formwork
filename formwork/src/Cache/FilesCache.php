@@ -9,17 +9,13 @@ class FilesCache extends AbstractCache
 {
     /**
      * Cache path
-     *
-     * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Cached data time-to-live
-     *
-     * @var int
      */
-    protected $defaultTtl;
+    protected int $defaultTtl;
 
     /**
      * Create a new FilesCache instance

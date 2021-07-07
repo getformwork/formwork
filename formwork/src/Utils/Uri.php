@@ -8,24 +8,20 @@ class Uri
 {
     /**
      * Default ports which will not be present in generated URI
-     *
-     * @var array
      */
     protected const DEFAULT_PORTS = ['http' => 80, 'https' => 443];
 
     /**
      * Current URI
-     *
-     * @var string
      */
-    protected static $current = null;
+    protected static ?string $current = null;
 
     /**
      * Get current URI
      */
     public static function current(): string
     {
-        if (static::$current === null) {
+        if (!isset(static::$current)) {
             static::$current = static::base() . rtrim(HTTPRequest::root(), '/') . HTTPRequest::uri();
         }
         return static::$current;

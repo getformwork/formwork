@@ -9,24 +9,18 @@ class Avatar
 {
     /**
      * Default avatar URI
-     *
-     * @var string
      */
     protected const DEFAULT_AVATAR_URI = '/assets/images/avatar.svg';
 
     /**
      * Avatar URI
-     *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * Avatar file path
-     *
-     * @var string|null
      */
-    protected $path;
+    protected ?string $path = null;
 
     /**
      * Create a new Avatar instance

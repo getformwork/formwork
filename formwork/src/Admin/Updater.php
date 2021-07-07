@@ -17,38 +17,28 @@ class Updater
 {
     /**
      * GitHub repository from which updates are retrieved
-     *
-     * @var string
      */
     protected const REPOSITORY = 'getformwork/formwork';
 
     /**
      * GitHub API latest release URI
-     *
-     * @var string
      */
     protected const API_RELEASE_URI = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
 
     /**
      * Updater options
-     *
-     * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Updates registry
-     *
-     * @var Registry
      */
-    protected $registry;
+    protected Registry $registry;
 
     /**
      * Updates registry default data
-     *
-     * @var array
      */
-    protected $registryDefaults = [
+    protected array $registryDefaults = [
         'last-check'  => null,
         'last-update' => null,
         'etag'        => null,
@@ -58,31 +48,23 @@ class Updater
 
     /**
      * HTTP Client to make requests
-     *
-     * @var HTTPClient
      */
-    protected $client;
+    protected HTTPClient $client;
 
     /**
      * Array containing release information
-     *
-     * @var array
      */
-    protected $release;
+    protected array $release;
 
     /**
      * Headers to send in HTTP(S) requests
-     *
-     * @var array
      */
-    protected $headers;
+    protected array $headers;
 
     /**
      * Whether Formwork is up-to-date
-     *
-     * @var bool
      */
-    protected $upToDate;
+    protected bool $upToDate;
 
     /**
      * Create a new Updater instance
@@ -239,7 +221,7 @@ class Updater
      */
     protected function loadRelease(): void
     {
-        if ($this->release !== null) {
+        if (isset($this->release)) {
             return;
         }
 
@@ -271,7 +253,7 @@ class Updater
      */
     protected function getHeaders(): array
     {
-        if ($this->headers !== null) {
+        if (isset($this->headers)) {
             return $this->headers;
         }
         return $this->headers = $this->client->fetchHeaders($this->release['archive']);

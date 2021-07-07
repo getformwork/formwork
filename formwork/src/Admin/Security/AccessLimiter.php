@@ -10,45 +10,33 @@ class AccessLimiter
 {
     /**
      * Registry which contains access attempts
-     *
-     * @var Registry
      */
-    protected $registry;
+    protected Registry $registry;
 
     /**
      * Limit of valid attempts
-     *
-     * @var int
      */
-    protected $limit;
+    protected int $limit;
 
     /**
      * Seconds after which registry is reset
-     *
-     * @var int
      */
-    protected $resetTime;
+    protected int $resetTime;
 
     /**
      * Hash which identifies the visitor which make attempts
-     *
-     * @var string
      */
-    protected $attemptHash;
+    protected string $attemptHash;
 
     /**
      * The number of access attempts
-     *
-     * @var int
      */
-    protected $attempts;
+    protected int $attempts = 0;
 
     /**
      * Time of last valid attempt
-     *
-     * @var int
      */
-    protected $lastAttemptTime;
+    protected int $lastAttemptTime;
 
     /**
      * Create a new AccessLimiter instance
@@ -72,7 +60,7 @@ class AccessLimiter
      */
     public function hasReachedLimit(): bool
     {
-        if (time() - $this->lastAttemptTime > $this->resetTime) {
+        if (isset($this->lastAttemptTime) && time() - $this->lastAttemptTime > $this->resetTime) {
             $this->resetAttempts();
         }
         return $this->attempts > $this->limit;

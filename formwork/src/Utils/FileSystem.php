@@ -11,78 +11,56 @@ class FileSystem
 {
     /**
      * List only files flag
-     *
-     * @var int
      */
     public const LIST_FILES = 1;
 
     /**
      * List only directories flag
-     *
-     * @var int
      */
     public const LIST_DIRECTORIES = 2;
 
     /**
      * List hidden files flag
-     *
-     * @var int
      */
     public const LIST_HIDDEN = 4;
 
     /**
      * List visible files and directories flag
-     *
-     * @var int
      */
     public const LIST_VISIBLE = self::LIST_FILES | self::LIST_DIRECTORIES;
 
     /**
      * List visible and hidden files and directories flag
-     *
-     * @var int
      */
     public const LIST_ALL = self::LIST_FILES | self::LIST_DIRECTORIES | self::LIST_HIDDEN;
 
     /**
      * Maximum path length provided by the system
-     *
-     * @var int
      */
     public const MAX_PATH_LENGTH = PHP_MAXPATHLEN - 2;
 
     /**
      * Maximum directory or filename length
-     *
-     * @var int
      */
     public const MAX_NAME_LENGTH = 255;
 
     /**
      * Default mode for created files
-     *
-     * @var int
      */
     protected const DEFAULT_FILE_MODE = 0666;
 
     /**
      * Default mode for created directories
-     *
-     * @var int
      */
     protected const DEFAULT_DIRECTORY_MODE = 0777;
 
     /**
      * Array containing files to ignore
-     *
-     * @var array
      */
     protected const IGNORED_FILES = ['.', '..'];
 
     /**
      * Array containing units of measurement for human-readable file sizes
-     *
-     * @var array
      */
     protected const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
 

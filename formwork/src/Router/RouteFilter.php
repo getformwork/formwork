@@ -6,15 +6,11 @@ class RouteFilter
 {
     /**
      * Default filter methods
-     *
-     * @var array
      */
     protected const DEFAULT_METHODS = ['GET'];
 
     /**
      * Default filter types
-     *
-     * @var array
      */
     protected const DEFAULT_TYPES = ['HTTP'];
 

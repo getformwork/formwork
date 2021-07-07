@@ -8,15 +8,11 @@ class Path
 {
     /**
      * Default path separator (forward slash)
-     *
-     * @var string
      */
     protected const DEFAULT_SEPARATOR = '/';
 
     /**
      * Regex matching multiple separators (forward and backward slash) to split paths into segments
-     *
-     * @var string
      */
     protected const SEPARATORS_REGEX = '~[/\\\\]+~';
 

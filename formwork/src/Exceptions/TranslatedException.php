@@ -9,10 +9,8 @@ class TranslatedException extends Exception
 {
     /**
      * Language string of the translated message
-     *
-     * @var string
      */
-    protected $languageString;
+    protected string $languageString;
 
     /**
      * Create a new TranslatedException instance

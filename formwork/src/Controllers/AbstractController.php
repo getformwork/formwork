@@ -8,10 +8,8 @@ abstract class AbstractController
 {
     /**
      * Controller name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     public function __construct()
     {

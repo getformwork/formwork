@@ -12,59 +12,43 @@ class File
 {
     /**
      * File path
-     *
-     * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * File name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * File extension
-     *
-     * @var string
      */
-    protected $extension;
+    protected string $extension;
 
     /**
      * File uri
-     *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * File MIME type
-     *
-     * @var string
      */
-    protected $mimeType;
+    protected string $mimeType;
 
     /**
      * File type (image, text, audio, video or document)
-     *
-     * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * File size in a human-readable format
-     *
-     * @var string
      */
-    protected $size;
+    protected string $size;
 
     /**
      * File hash
-     *
-     * @var string
      */
-    protected $hash;
+    protected string $hash;
 
     /**
      * Create a new File instance
@@ -125,7 +109,7 @@ class File
      */
     public function type(): ?string
     {
-        if ($this->type !== null) {
+        if (isset($this->type)) {
             return $this->type;
         }
         if (Str::startsWith($this->mimeType, 'image')) {
@@ -162,7 +146,7 @@ class File
      */
     public function hash(): string
     {
-        if ($this->hash !== null) {
+        if (isset($this->hash)) {
             return $this->hash;
         }
         return $this->hash = hash_file('sha256', $this->path);

@@ -19,194 +19,140 @@ class Page extends AbstractPage
 {
     /**
      * Page num regex
-     *
-     * @var string
      */
     public const NUM_REGEX = '/^(\d+)-/';
 
     /**
      * Page 'published' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_PUBLISHED = 'published';
 
     /**
      * Page 'not published' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
     /**
      * Page 'not routable' status
-     *
-     * @var string
      */
     public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
     /**
      * Page id
      *
-     * @var string
-     *
      * @deprecated Use the name property
      */
-    protected $id;
+    protected string $id;
 
     /**
      * Page name (the name of the containing directory)
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Page slug
-     *
-     * @var string
      */
-    protected $slug;
+    protected string $slug;
 
     /**
      * Page language
-     *
-     * @var string
      */
-    protected $language;
+    protected ?string $language = null;
 
     /**
      * Available page languages
-     *
-     * @var array
      */
-    protected $availableLanguages = [];
+    protected array $availableLanguages = [];
 
     /**
      * Page filename
-     *
-     * @var string
      */
-    protected $filename;
+    protected string $filename;
 
     /**
      * Page template
-     *
-     * @var Template
      */
-    protected $template;
+    protected Template $template;
 
     /**
      * Page scheme
-     *
-     * @var Scheme
      */
-    protected $scheme;
+    protected Scheme $scheme;
 
     /**
      * Page files
-     *
-     * @var Files
      */
-    protected $files;
+    protected Files $files;
 
     /**
      * Unprocessed page frontmatter
-     *
-     * @var string
      */
-    protected $rawFrontmatter;
+    protected string $rawFrontmatter;
 
     /**
      * Page frontmatter
-     *
-     * @var array
      */
-    protected $frontmatter = [];
+    protected array $frontmatter = [];
 
     /**
      * Unprocessed page content
-     *
-     * @var string
      */
-    protected $rawContent;
+    protected string $rawContent;
 
     /**
      * Page content
-     *
-     * @var string
      */
-    protected $content;
+    protected string $content;
 
     /**
      * Unprocessed page summary
-     *
-     * @var string
      */
-    protected $rawSummary;
+    protected string $rawSummary;
 
     /**
      * Page summary
-     *
-     * @var string
      */
-    protected $summary;
+    protected string $summary;
 
     /**
      * Unprocessed page body text
-     *
-     * @var string
      */
-    protected $rawBody;
+    protected string $rawBody;
 
     /**
      * Page body text
-     *
-     * @var string
      */
-    protected $body;
+    protected string $body;
 
     /**
      * Page status
-     *
-     * @var string
      */
-    protected $status;
+    protected string $status;
 
     /**
      * Whether page is published
-     *
-     * @var bool
      */
-    protected $published;
+    protected bool $published;
 
     /**
      * Whether page is routable
-     *
-     * @var bool
      */
-    protected $routable;
+    protected bool $routable;
 
     /**
      * Whether page is visible
-     *
-     * @var bool
      */
-    protected $visible;
+    protected bool $visible;
 
     /**
      * Whether page is sortable
-     *
-     * @var bool
      */
-    protected $sortable;
+    protected bool $sortable;
 
     /**
      * PageCollection containing page siblings
-     *
-     * @var PageCollection
      */
-    protected $siblings;
+    protected PageCollection $siblings;
 
     /**
      * Create a new Page instance
@@ -259,7 +205,7 @@ class Page extends AbstractPage
     {
         $vars = ['filename', 'template', 'rawContent', 'rawSummary', 'summary', 'rawBody', 'body', 'status', 'absoluteUri', 'lastModifiedTime', 'parent', 'parents', 'level', 'children', 'descendants', 'siblings'];
         foreach ($vars as $var) {
-            $this->$var = null;
+            unset($this->$var);
         }
         $this->__construct($this->path);
     }
@@ -316,7 +262,7 @@ class Page extends AbstractPage
      */
     public function status(): string
     {
-        if ($this->status !== null) {
+        if (isset($this->status)) {
             return $this->status;
         }
         if ($this->published()) {
@@ -336,7 +282,7 @@ class Page extends AbstractPage
      */
     public function siblings(): PageCollection
     {
-        if ($this->siblings !== null) {
+        if (isset($this->siblings)) {
             return $this->siblings;
         }
         $parentPath = dirname($this->path) . DS;
@@ -388,7 +334,7 @@ class Page extends AbstractPage
      */
     public function metadata(): Metadata
     {
-        if ($this->metadata !== null) {
+        if (isset($this->metadata)) {
             return $this->metadata;
         }
         $metadata = clone Formwork::instance()->site()->metadata();
@@ -470,7 +416,7 @@ class Page extends AbstractPage
      */
     public function rawContent(): string
     {
-        if ($this->rawContent !== null) {
+        if (isset($this->rawContent)) {
             return $this->rawContent;
         }
         return $this->rawContent = str_replace("\r\n", "\n", empty($this->rawSummary) ? $this->rawBody : $this->rawSummary . "\n\n===\n\n" . $this->rawBody);
@@ -481,7 +427,7 @@ class Page extends AbstractPage
      */
     public function summary(): string
     {
-        if ($this->summary !== null) {
+        if (isset($this->summary)) {
             return $this->summary;
         }
         return $this->summary = Markdown::parse($this->rawSummary, ['baseRoute' => $this->route]);
@@ -492,7 +438,7 @@ class Page extends AbstractPage
      */
     public function body(): string
     {
-        if ($this->body !== null) {
+        if (isset($this->body)) {
             return $this->body;
         }
         return $this->body = Markdown::parse($this->rawBody, ['baseRoute' => $this->route]);

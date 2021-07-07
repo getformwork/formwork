@@ -8,36 +8,26 @@ class Notification
 {
     /**
      * Info notification type
-     *
-     * @var string
      */
     public const INFO = 'info';
 
     /**
      * Success notification type
-     *
-     * @var string
      */
     public const SUCCESS = 'success';
 
     /**
      * Warning notification type
-     *
-     * @var string
      */
     public const WARNING = 'warning';
 
     /**
      * Error notification type
-     *
-     * @var string
      */
     public const ERROR = 'error';
 
     /**
      * Session key to store the notification
-     *
-     * @var string
      */
     protected const SESSION_KEY = 'FORMWORK_NOTIFICATION';
 

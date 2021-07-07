@@ -8,8 +8,6 @@ class Visitor
      * Array containing regex tokens that identify bots based on monperrus/crawler-user-agents list
      *
      * @see https://raw.githubusercontent.com/monperrus/crawler-user-agents/master/crawler-user-agents.json
-     *
-     * @var array
      */
     protected const BOTS_REGEX_TOKENS = [
         '(apache-http|btweb|go-http-|http_)client', '(apis|appengine|mediapartners)-google',
@@ -38,17 +36,15 @@ class Visitor
 
     /**
      * Compiled bots regex
-     *
-     * @var string
      */
-    protected static $regex;
+    protected static string $regex;
 
     /**
      * Return whether current visitor is a bot
      */
     public static function isBot(): bool
     {
-        if (static::$regex === null) {
+        if (!isset(static::$regex)) {
             static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
         }
         return (bool) preg_match(static::$regex, HTTPRequest::userAgent());

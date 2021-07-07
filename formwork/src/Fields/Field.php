@@ -8,10 +8,8 @@ class Field extends DataSetter
 {
     /**
      * Field name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new Field instance

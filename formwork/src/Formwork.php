@@ -23,69 +23,47 @@ final class Formwork
 
     /**
      * Current Formwork version
-     *
-     * @var string
      */
     public const VERSION = '1.11.0';
 
     /**
      * Formwork config
-     *
-     * @var Config
      */
-    protected $config = [];
+    protected Config $config;
 
     /**
      * Current request URI
-     *
-     * @var string
      */
-    protected $request;
+    protected string $request;
 
     /**
      * Languages instance
-     *
-     * @var Languages
      */
-    protected $languages;
+    protected Languages $languages;
 
-    /**
-     * @var Translations
-     */
-    protected $translations;
+    protected Translations $translations;
 
-    /**
-     * @var Schemes
-     */
-    protected $schemes;
+    protected Schemes $schemes;
 
     /**
      * Site instance
-     *
-     * @var Site
      */
-    protected $site;
+    protected Site $site;
 
     /**
      * Router instance
-     *
-     * @var Router
      */
-    protected $router;
+    protected Router $router;
 
     /**
      * Cache instance
-     *
-     * @var SiteCache
      */
-    protected $cache;
+    protected SiteCache $cache;
 
     /**
      * Admin instance
-     *
-     * @var Admin|null
      */
-    protected $admin;
+    protected ?Admin $admin;
 
     /**
      * Create a new Formwork instance

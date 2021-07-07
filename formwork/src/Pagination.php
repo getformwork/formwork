@@ -9,38 +9,28 @@ class Pagination
 {
     /**
      * Number of all items to paginate
-     *
-     * @var int
      */
-    protected $count = 0;
+    protected int $count = 0;
 
     /**
      * Number of items in each pagination page
-     *
-     * @var int
      */
-    protected $length = 0;
+    protected int $length = 0;
 
     /**
      * Number of pagination pages
-     *
-     * @var int
      */
-    protected $pages = 0;
+    protected int $pages = 0;
 
     /**
      * Base URI to which append pagination page number
-     *
-     * @var string
      */
-    protected $baseUri;
+    protected string $baseUri;
 
     /**
      * Current pagination page
-     *
-     * @var int
      */
-    protected $currentPage = 1;
+    protected int $currentPage = 1;
 
     /**
      * Create a new Pagination instance

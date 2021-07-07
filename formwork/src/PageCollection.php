@@ -12,17 +12,13 @@ class PageCollection extends Collection
 {
     /**
      * Default property used to sort pages
-     *
-     * @var string
      */
     protected const DEFAULT_SORT_PROPERTY = 'relativePath';
 
     /**
      * Pagination related to the collection
-     *
-     * @var Pagination
      */
-    protected $pagination;
+    protected Pagination $pagination;
 
     /**
      * Return the Pagination object related to the collection
