@@ -70,14 +70,14 @@
                         $reverseChildren = $scheme->get('children.reverse', false);
                         $sortableChildren = $scheme->get('children.sortable', true);
 
-                        $this->insert('pages.list', array(
+                        $this->insert('pages.list', [
                             'pages'    => $reverseChildren ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
                             'class'    => 'pages-children',
                             'parent'   => $sortableChildren ? $page->route() : null,
                             'sortable' => $sortable && $sortableChildren,
                             'headers'  => false
-                        ));
+                        ]);
 
                     endif;
 ?>
