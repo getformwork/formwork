@@ -9,8 +9,7 @@ $config = new Config();
 
 return $config
     ->setRules([
-        '@PSR1' => true,
-        '@PSR2' => true,
+        '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
         'binary_operator_spaces' => ['default' => 'single_space', 'operators' => ['=>' => 'align']],
         'cast_spaces' => ['space' => 'single'],
