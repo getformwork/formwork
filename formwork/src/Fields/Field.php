@@ -1,4 +1,5 @@
 <?php
+
 namespace Formwork\Fields;
 
 use Formwork\Data\DataSetter;
