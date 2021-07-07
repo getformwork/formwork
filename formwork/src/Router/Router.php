@@ -258,7 +258,7 @@ class Router
             return sprintf($optional !== null ? '(?:%s(%s))?' : '%s(%s)', preg_quote($separator), $pattern);
         }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
 
-        // Wrap the regex in tilde delimiters, so we don't need to escape slashes
+        // Wrap the regex in tilde delimiters, so we don't need to escape slashes
         $regex = '~^' . trim($regex, '^$') . '$~';
 
         return new CompiledRoute($path, $regex, $params);
