@@ -46,7 +46,7 @@ abstract class AbstractController extends BaseAbstractController
             'location'    => $this->name,
             'admin'       => $this->admin(),
             'csrfToken'   => CSRFToken::get(),
-            'modals'      => implode($this->modals),
+            'modals'      => implode('', $this->modals),
             'colorScheme' => $this->getColorScheme(),
             'appConfig'   => JSON::encode([
                 'baseUri'    => $this->admin()->panelUri(),
