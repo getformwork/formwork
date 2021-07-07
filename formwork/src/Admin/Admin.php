@@ -42,7 +42,7 @@ final class Admin
     {
     }
 
-    public function load()
+    public function load(): void
     {
         $this->loadSchemes();
 
