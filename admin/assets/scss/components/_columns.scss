@@ -1,12 +1,10 @@
 @use 'sass:map';
 
-@use 'sass:math';
-
 .container,
 .container-full,
 .container-no-margin {
     margin: 0 auto;
-    padding: 0 math.div($columns-gutter, 2);
+    padding: 0 $columns-gutter * 0.5;
 }
 
 .container {
@@ -21,7 +19,7 @@
 .row {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 math.div($columns-gutter, -2);
+    margin: 0 $columns-gutter * -0.5;
 }
 
 @media (max-width: map.get($responsive-breakpoints, 's')) {

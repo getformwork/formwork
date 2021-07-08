@@ -53,7 +53,7 @@
         }
 
         content: ' ';
-        vertical-align: math.div($caret-width, 2);
+        vertical-align: $caret-width * 0.5;
     }
 }
 
@@ -82,7 +82,7 @@
         }
     }
     #{$selectors} {
-        padding: 0 math.div($columns-gutter, 2);
+        padding: 0 $columns-gutter * 0.5;
         width: 100%;
     }
 }
