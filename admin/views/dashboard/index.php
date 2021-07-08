@@ -1,7 +1,7 @@
 <?php $this->layout('admin') ?>
 <div class="container-no-margin">
     <div class="row">
-        <div class="col-m-5-12">
+        <div class="col-m-1-3">
             <div class="component">
                 <span class="h4"><?= $this->translate('admin.dashboard.welcome') ?></span>
             </div>
@@ -34,7 +34,7 @@
 ?>
             </div>
         </div>
-        <div class="col-m-7-12">
+        <div class="col-m-2-3">
             <div class="component">
                 <div class="row">
                     <div class="col-xs-1-2"><h3 class="caption"><?= $this->translate('admin.dashboard.statistics') ?></h3></div>

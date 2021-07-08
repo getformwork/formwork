@@ -4,8 +4,8 @@
     position: relative;
     display: block;
     width: 100%;
+    height: $dashboard-chart-height;
     @include user-select-none;
-    @extend .ct-major-twelfth;
 }
 
 .ct-label {
