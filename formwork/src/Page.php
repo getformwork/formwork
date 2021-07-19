@@ -215,7 +215,7 @@ class Page extends AbstractPage
      */
     public function isEmpty(): bool
     {
-        return $this->filename === null;
+        return !isset($this->filename);
     }
 
     /**
