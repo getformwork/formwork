@@ -14,7 +14,7 @@
 <?php
     if ($notification = $admin->notification()):
 ?>
-    <meta name="notification" content="<?= $notification['text']?>" data-type="<?= $notification['type']?>" data-interval="5000">
+    <meta name="notification" content='<?= $this->escapeAttr(Formwork\Parsers\JSON::encode([$notification])) ?>'>
 <?php
     endif;
 ?>

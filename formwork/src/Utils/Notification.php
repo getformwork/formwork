@@ -32,14 +32,29 @@ class Notification
     protected const SESSION_KEY = 'FORMWORK_NOTIFICATION';
 
     /**
+     * Default notification interval
+     */
+    protected const DEFAULT_INTERVAL = 5000;
+
+    /**
+     * Default notification icons by type
+     */
+    protected const ICON = [
+        self::INFO    => 'info-circle',
+        self::SUCCESS => 'check-circle',
+        self::WARNING => 'exclamation-triangle',
+        self::ERROR   => 'exclamation-octagon'
+    ];
+
+    /**
      * Send a notification
      */
-    public static function send(string $text, string $type = self::INFO): void
+    public static function send(string $text, string $type = self::INFO, string $interval = self::DEFAULT_INTERVAL): void
     {
         if (!in_array($type, [self::INFO, self::SUCCESS, self::WARNING, self::ERROR], true)) {
             throw new InvalidArgumentException(sprintf('Invalid notification type "%s"', $type));
         }
-        Session::set(self::SESSION_KEY, ['text' => $text, 'type' => $type]);
+        Session::set(self::SESSION_KEY, ['text' => $text, 'type' => $type, 'interval' => $interval, 'icon' => self::ICON[$type]]);
     }
 
     /**
