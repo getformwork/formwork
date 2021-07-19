@@ -377,7 +377,12 @@ input[type=range] {
     @include user-select-none;
 }
 
+.array-input .sort-handle .icon {
+    vertical-align: middle;
+}
+
 .array-input-row {
+    display: flex;
     margin: 0 (-$array-input-row-padding-h);
     padding: $array-input-row-padding-v $array-input-row-padding-h;
     white-space: nowrap;
@@ -396,22 +401,11 @@ input[type=range] {
 
 .array-input-value {
     margin-right: $array-input-value-margin-right;
-    width: $array-input-value-width-xs;
-    @media (min-width: map.get($responsive-breakpoints, 'xs')) {
-        width: $array-input-value-width-s;
-    }
-}
-
-.array-input-associative .array-input-value {
-    margin-right: $array-input-value-margin-right;
-    width: $array-input-associative-value-width-xs;
-    @media (min-width: map.get($responsive-breakpoints, 'xs')) {
-        width: $array-input-associative-value-width-s;
-    }
 }
 
 .array-input-add,
 .array-input-remove {
+    margin-right: $array-input-actions-margin-right;
     padding: 0;
-    min-width: 0;
+    min-width: 1rem;
 }
