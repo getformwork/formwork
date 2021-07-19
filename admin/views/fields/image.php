@@ -9,5 +9,5 @@
         'placeholder' => $field->placeholder(),
         'readonly'    => true
     ]) ?>>
-    <span class="input-reset" data-reset="<?= $field->name() ?>"><i class="i-times-circle"></i></span>
+    <span class="input-reset" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
 </div>

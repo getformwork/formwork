@@ -42,6 +42,10 @@ button,
         border-color: $color-base-500;
         background-color: $color-base-500;
     }
+    & .icon {
+        display: inline-block;
+        margin-right: 0.25rem;
+    }
 }
 
 a.button {
@@ -134,5 +138,8 @@ a.button {
     &.disabled:hover {
         background-color: transparent;
         cursor: default;
+    }
+    & .icon {
+        margin-right: 0;
     }
 }

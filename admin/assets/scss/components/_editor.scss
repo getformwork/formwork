@@ -22,6 +22,9 @@
     &:focus {
         @include focusring;
     }
+    & .icon {
+        margin-right: 0;
+    }
 }
 
 .editor-textarea {
@@ -158,7 +161,6 @@
     margin-right: 0.25rem;
     color: $color-base-300;
     content: ' ';
-    @include icon('quote');
 }
 
 .cm-s-formwork .CodeMirror-activeline .cm-formatting-quote + .cm-quote::before {
@@ -192,7 +194,6 @@
         margin-right: 0.25rem;
         color: $color-base-300;
         content: ' ';
-        @include icon('image');
     }
 }
 

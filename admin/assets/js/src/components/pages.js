@@ -63,7 +63,7 @@ export default {
             commandReorderPages.addEventListener('click', function () {
                 this.classList.toggle('active');
                 $$('.pages-list .sort-handle').forEach(function (element) {
-                    Utils.toggleElement(element, 'inline');
+                    Utils.toggleElement(element, 'inline-block');
                 });
                 this.blur();
             });
@@ -256,7 +256,7 @@ export default {
                         data: data
                     }, function (response) {
                         if (response.status) {
-                            notification = new Notification(response.message, response.status, 5000);
+                            notification = new Notification(response.message, response.status, {icon: 'check-cricle'});
                             notification.show();
                         }
                         if (!response.status || response.status === 'error') {

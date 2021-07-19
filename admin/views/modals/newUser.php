@@ -24,8 +24,8 @@
             </select>
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             <div class="separator"></div>
-            <button type="button" data-dismiss="newUserModal"><?= $this->translate('admin.modal.action.cancel') ?></button>
-            <button type="submit" class="button-accent button-right"><i class="i-check"></i> <?= $this->translate('admin.modal.action.continue') ?></button>
+            <button type="button" data-dismiss="newUserModal"><?= $this->icon('times-circle') ?> <?= $this->translate('admin.modal.action.cancel') ?></button>
+            <button type="submit" class="button-accent button-right"><?= $this->icon('check-circle') ?> <?= $this->translate('admin.modal.action.continue') ?></button>
         </form>
     </div>
 </div>

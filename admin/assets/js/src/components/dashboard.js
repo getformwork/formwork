@@ -14,7 +14,7 @@ export default {
                     url: Formwork.config.baseUri + 'cache/clear/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
-                    var notification = new Notification(response.message, response.status, 5000);
+                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
                     notification.show();
                 });
             });
@@ -29,7 +29,7 @@ export default {
                     url: Formwork.config.baseUri + 'backup/make/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
-                    var notification = new Notification(response.message, response.status, 5000);
+                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
                     notification.show();
                     setTimeout(function () {
                         if (response.status === 'success') {

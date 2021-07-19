@@ -31,11 +31,6 @@
     white-space: nowrap;
 }
 
-@mixin icon($name) {
-    font-family: Icons, sans-serif;
-    @extend .i-#{$name};
-}
-
 @mixin caret($direction: bottom) {
     &::after {
         display: inline-block;

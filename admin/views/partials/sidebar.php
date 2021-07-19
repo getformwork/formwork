@@ -1,4 +1,4 @@
-<button type="button" class="toggle-navigation hide-from-s"><i class="i-bars"></i></button>
+<button type="button" class="toggle-navigation hide-from-s"><?= $this->icon('list') ?></button>
 <div class="sidebar show-from-s">
     <div class="logo"><a href="<?= $admin->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a></div>
     <a href="<?= $admin->uri('/users/' . $admin->user()->username() . '/profile/') ?>">

@@ -61,15 +61,7 @@
 }
 
 .image-input {
-    padding-right: $image-input-padding-right;
-    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 576 512\'><path fill=\'#{urlencode-color($color-base-300)}\' d=\'M480 416v16a48 48 0 0 1-48 48H48a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48a48 48 0 0 1 48 48v256a48 48 0 0 1-48 48H144a48 48 0 0 1-48-48V80a48 48 0 0 1 48-48h384zM264 144a40 40 0 1 1-80 0 40 40 0 0 1 80 0zm-72 96l39.52-39.52a12 12 0 0 1 16.97 0L288 240l103.52-103.52a12 12 0 0 1 16.97 0L480 208v80H192v-48z\'/></svg>') no-repeat right 0.5rem center;
-    background-size: 1rem 1rem;
     cursor: default;
-}
-
-.input-wrap .image-input {
-    padding-right: $image-input-padding-right + $input-wrap-padding-right;
-    background-position: right ($input-wrap-padding-right + 0.25rem) center;
 }
 
 .tag-input {
@@ -101,7 +93,6 @@
     outline: none;
     border: 0;
     border-radius: 0;
-    vertical-align: baseline;
     font-size: $font-size-s;
     font-family: inherit;
     line-height: inherit;
@@ -423,12 +414,4 @@ input[type=range] {
 .array-input-remove {
     padding: 0;
     min-width: 0;
-}
-
-.array-input-add::before {
-    @include icon(plus-circle);
-}
-
-.array-input-remove::before {
-    @include icon(times-circle);
 }

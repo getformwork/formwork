@@ -1,7 +1,10 @@
+import Icons from './icons';
 import Utils from './utils';
 
-export default function Notification(text, type, interval, options) {
+export default function Notification(text, type, options) {
     var defaults = {
+        interval: 5000,
+        icon: null,
         newestOnTop: true,
         fadeOutDelay: 300,
         mouseleaveDelay: 1000
@@ -13,7 +16,7 @@ export default function Notification(text, type, interval, options) {
 
     options = Utils.extendObject({}, defaults, options);
 
-    function show() {
+    function create(text, type, interval) {
         if (!container) {
             container = document.createElement('div');
             container.className = 'notification-container';
@@ -43,14 +46,25 @@ export default function Notification(text, type, interval, options) {
         });
     }
 
+    function show() {
+        if (options.icon !== null) {
+            Icons.pass(options.icon, function (icon) {
+                create(text, type, options.interval);
+                notification.insertAdjacentHTML('afterBegin', icon);
+            });
+        } else {
+            create(text, type, options.interval);
+        }
+    }
+
     function remove() {
         notification.classList.add('fadeout');
 
         setTimeout(function () {
-            if (notification.parentNode) {
+            if (notification && notification.parentNode) {
                 container.removeChild(notification);
             }
-            if (container.childNodes.length < 1) {
+            if (container && container.childNodes.length < 1) {
                 if (container.parentNode) {
                     document.body.removeChild(container);
                 }

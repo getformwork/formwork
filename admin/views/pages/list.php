@@ -23,17 +23,18 @@
 <?php
                     if ($sortable && $page->sortable()):
 ?>
-                            <span class="sort-handle"></span>
+                            <span class="sort-handle" title="<?= $this->translate('admin.drag-to-reorder') ?>"><?= $this->icon('grabber') ?></span>
 <?php
                     endif;
 ?>
 <?php
                     if ($subpages && $page->hasChildren()):
 ?>
-                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->translate('admin.pages.toggle-children') ?>"></button>
+                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->translate('admin.pages.toggle-children') ?>"><?= $this->icon('chevron-down') ?></button>
 <?php
                     endif;
 ?>
+                                <?= $this->icon($page->get('icon', 'page')) ?>
                                 <a href="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
 <?php
                                 foreach ($page->availableLanguages() as $code):
@@ -51,14 +52,15 @@
                             <div class="page-date-inner" data-overflow-tooltip="true"><?= $date ?></div>
                         </div>
                         <div class="pages-item-cell page-status page-status-<?= $page->status() ?>">
-                            <div class="page-status-label" data-overflow-tooltip="true"><?= $this->translate('admin.pages.status.' . $page->status()) ?></div>
+                            <?= $this->icon('circle-small-fill'); ?>
+                            <span class="page-status-label" data-overflow-tooltip="true"><?= $this->translate('admin.pages.status.' . $page->status()) ?></span>
                         </div>
                         <div class="pages-item-cell page-actions">
-                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $admin->pageUri($page) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('admin.pages.preview') ?>" aria-label="<?= $this->translate('admin.pages.preview') ?>"><i class="i-eye"></i></a>
+                            <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif; ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $admin->pageUri($page) ?>"<?php endif; ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('admin.pages.preview') ?>" aria-label="<?= $this->translate('admin.pages.preview') ?>"><?= $this->icon('eye') ?></a>
 <?php
                         if ($admin->user()->permissions()->has('pages.delete')):
 ?>
-                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('admin.pages.delete-page') ?>" aria-label="<?= $this->translate('admin.pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><i class="i-trash"></i></button>
+                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $admin->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('admin.pages.delete-page') ?>" aria-label="<?= $this->translate('admin.pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
 <?php
                         endif;
 ?>
