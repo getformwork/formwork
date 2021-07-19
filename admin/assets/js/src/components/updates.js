@@ -1,3 +1,4 @@
+import Icons from './icons';
 import Notification from './notification';
 import Request from './request';
 
@@ -34,6 +35,7 @@ export default {
                         }
                     } else {
                         spinner.classList.add('spinner-error');
+                        Icons.inject('exclamation', spinner);
                     }
                 });
             }, 1000);
@@ -48,7 +50,7 @@ export default {
                     url: Formwork.config.baseUri + 'updates/update/',
                     data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
                 }, function (response) {
-                    var notification = new Notification(response.message, response.status, 5000);
+                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
                     notification.show();
 
                     updateStatus.innerHTML = response.data.status;
@@ -57,6 +59,7 @@ export default {
                         showInstalledVersion();
                     } else {
                         spinner.classList.add('spinner-error');
+                        Icons.inject('exclamation', spinner);
                     }
                 });
             });
@@ -64,17 +67,20 @@ export default {
 
         function showNewVersion(name) {
             spinner.classList.add('spinner-info');
+            Icons.inject('info', spinner);
             newVersionName.innerHTML = name;
             newVersion.style.display = 'block';
         }
 
         function showCurrentVersion() {
             spinner.classList.add('spinner-success');
+            Icons.inject('check', spinner);
             currentVersion.style.display = 'block';
         }
 
         function showInstalledVersion() {
             spinner.classList.add('spinner-success');
+            Icons.inject('check', spinner);
             currentVersionName.innerHTML = newVersionName.innerHTML;
             currentVersion.style.display = 'block';
         }

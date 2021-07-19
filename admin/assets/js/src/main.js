@@ -35,7 +35,10 @@ export default Formwork = {
         });
 
         $$('meta[name=notification]').forEach(function (element) {
-            var notification = new Notification(element.getAttribute('content'), element.getAttribute('data-type'), element.getAttribute('data-interval'));
+            var data = JSON.parse(element.getAttribute('content'))[0];
+            var notification = new Notification(data.text, data.type, {
+                interval: data.interval, icon: data.icon
+            });
             notification.show();
             element.parentNode.removeChild(element);
         });

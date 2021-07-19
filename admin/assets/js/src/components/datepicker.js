@@ -1,3 +1,4 @@
+import Icons from './icons';
 import Utils from './utils';
 
 export default function DatePicker(input, options) {
@@ -324,8 +325,11 @@ export default function DatePicker(input, options) {
     function generateCalendar() {
         calendar = document.createElement('div');
         calendar.className = 'calendar';
-        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"><i class="i-chevron-left"></i></button><button class="currentMonth">' + options.labels.today + '</button><button type="button" class="nextMonth"><i class="i-chevron-right"></i></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
+        calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"></button><button class="currentMonth">' + options.labels.today + '</button><button type="button" class="nextMonth"></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
         document.body.appendChild(calendar);
+
+        Icons.inject('chevron-left', $('.prevMonth', calendar));
+        Icons.inject('chevron-right', $('.nextMonth', calendar));
 
         $('.currentMonth', calendar).addEventListener('mousedown', function (event) {
             var input = getCurrentInput();
