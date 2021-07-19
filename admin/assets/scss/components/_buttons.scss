@@ -2,15 +2,14 @@ button,
 .button {
     display: inline-block;
     overflow: visible;
-    margin: 0;
     margin-right: $button-margin-h;
     margin-bottom: $button-margin-bottom;
     padding: $button-padding-v $button-padding-h;
     min-width: $button-min-width;
     outline: none;
-    border: $button-border-width solid $color-base-700;
+    border: $button-border-width solid $color-base-600;
     border-radius: $button-border-radius;
-    background-color: $color-base-700;
+    background-color: $color-base-600;
     color: $color-base-100;
     vertical-align: middle;
     white-space: nowrap;
@@ -23,8 +22,8 @@ button,
     @include user-select-none;
     &:hover,
     &:focus {
-        border-color: $color-base-600;
-        background-color: $color-base-600;
+        border-color: $color-base-500;
+        background-color: $color-base-500;
         color: $color-base-100;
     }
     &:focus {
@@ -81,7 +80,7 @@ a.button {
         color: $color-white;
     }
     &:focus {
-        @include focusring($color-success-400);
+        @include focusring($color-success-500);
     }
 }
 
@@ -96,7 +95,7 @@ a.button {
         color: $color-white;
     }
     &:focus {
-        @include focusring($color-warning-400);
+        @include focusring($color-warning-500);
     }
 }
 
@@ -111,7 +110,7 @@ a.button {
         color: $color-white;
     }
     &:focus {
-        @include focusring($color-error-400);
+        @include focusring($color-error-500);
     }
 }
 

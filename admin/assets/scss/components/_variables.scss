@@ -77,7 +77,7 @@ $mark-background-color: $color-yellow-500;
 $selection-background-color: rgba($color-accent-500, 0.25);
 
 $focusring-width: 2px;
-$focusring-opacity: 0.25;
+$focusring-opacity: 0.375;
 $focusring-default-color: color.adjust($color-accent-500, $saturation: 21%);
 
 $link-outline-color: rgba($focusring-default-color, $focusring-opacity);
