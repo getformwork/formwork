@@ -23,7 +23,7 @@
 <?php
                     if ($sortable && $page->sortable()):
 ?>
-                            <span class="sort-handle"><?= $this->icon('grabber') ?></span>
+                            <span class="sort-handle" title="<?= $this->translate('admin.drag-to-reorder') ?>"><?= $this->icon('grabber') ?></span>
 <?php
                     endif;
 ?>

@@ -12,6 +12,7 @@ admin.dashboard.statistics: Statistiche
 admin.dashboard.statistics.unique-visitors: Visitatori unici
 admin.dashboard.statistics.visits: Visite
 admin.dashboard.welcome: Benvenuto/a
+admin.drag-to-reorder: Trascina per riordinare
 admin.errors.action.report-to-github: Segnala un problema su GitHub
 admin.errors.action.return-to-dashboard: Torna al Riepilogo
 admin.errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.

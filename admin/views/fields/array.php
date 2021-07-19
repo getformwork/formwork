@@ -6,7 +6,7 @@
 ]) ?>>
 <?php foreach ($field->value() ?: ['' => ''] as $key => $value): ?>
     <div class="array-input-row">
-        <span class="sort-handle"><?= $this->icon('grabber') ?></span>
+        <span class="sort-handle" title="<?= $this->translate('admin.drag-to-reorder') ?>"><?= $this->icon('grabber') ?></span>
         <?php if ($field->get('associative')): ?>
         <input <?= $this->attr([
             'type'        => 'text',
