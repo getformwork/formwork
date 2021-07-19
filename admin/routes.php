@@ -184,6 +184,7 @@ return [
                     return $controller->register();
                 }
             },
+            'methods' => ['GET', 'POST']
         ],
         'admin.redirect-to-login' => [
             'action' => static function () {
