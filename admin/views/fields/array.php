@@ -6,7 +6,7 @@
 ]) ?>>
 <?php foreach ($field->value() ?: ['' => ''] as $key => $value): ?>
     <div class="array-input-row">
-        <span class="sort-handle"></span>
+        <span class="sort-handle"><?= $this->icon('grabber') ?></span>
         <?php if ($field->get('associative')): ?>
         <input <?= $this->attr([
             'type'        => 'text',
@@ -22,8 +22,8 @@
             'value'       => $value,
             'placeholder' => $field->get('placeholder_value')
         ]) ?>>
-        <button type="button" class="button-link array-input-remove" title="<?= $this->translate('fields.array.remove') ?>" aria-label="<?= $this->translate('fields.array.remove') ?>"></button>
-        <button type="button" class="button-link array-input-add" title="<?= $this->translate('fields.array.add') ?>" aria-label="<?= $this->translate('fields.array.add') ?>"></button>
+        <button type="button" class="button-link array-input-remove" title="<?= $this->translate('fields.array.remove') ?>" aria-label="<?= $this->translate('fields.array.remove') ?>"><?= $this->icon('minus-circle') ?></button>
+        <button type="button" class="button-link array-input-add" title="<?= $this->translate('fields.array.add') ?>" aria-label="<?= $this->translate('fields.array.add') ?>"><?= $this->icon('plus-circle') ?></button>
     </div>
 <?php endforeach; ?>
 </div>

@@ -6,6 +6,6 @@
         <?php $this->insert('fields', ['fields' => $fields]) ?>
         <div class="separator-l"></div>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-        <button type="submit" class="button-accent button-right" data-command="save"><i class="i-check"></i> <?= $this->translate('admin.modal.action.save') ?></button>
+        <button type="submit" class="button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('admin.modal.action.save') ?></button>
     </form>
 </div>

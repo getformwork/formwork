@@ -19,8 +19,8 @@
     <form method="post" enctype="multipart/form-data" data-form="user-profile-form">
         <?php $this->insert('fields', ['fields' => $fields]) ?>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-        <button type="submit" class="button-accent button-right" data-command="save"><i class="i-check"></i> <?= $this->translate('admin.modal.action.save') ?></button>
-        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $admin->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('admin.users.delete-user') ?>" aria-label="<?= $this->translate('admin.users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><i class="i-trash"></i></button>
+        <button type="submit" class="button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('admin.modal.action.save') ?></button>
+        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $admin->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('admin.users.delete-user') ?>" aria-label="<?= $this->translate('admin.users.delete-user') ?>" <?php if (!$admin->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
     </form>
 </div>
 <?php endif; ?>

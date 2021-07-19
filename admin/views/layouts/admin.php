@@ -26,7 +26,7 @@
     <?php $this->insert('partials.sidebar') ?>
     <div class="title-bar">
         <span class="panel-title"><?= $this->translate('admin.panel') ?></span>
-        <a href="<?= $admin->siteUri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('admin.view-site') ?></span> <i class="i-external-link-square"></i></a>
+        <a href="<?= $admin->siteUri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('admin.view-site') ?></span> <?= $this->icon('arrow-right-up-box') ?></a>
     </div>
     <main class="main">
         <?= $this->content() ?>
