@@ -157,7 +157,7 @@ $input-border-radius: $border-radius;
 
 $input-invalid-animation-duration: 500ms;
 
-$input-wrap-padding-right: 1.5rem;
+$input-wrap-padding-right: 1.625rem;
 
 $label-margin-bottom: 0.25rem;
 $label-font-size: $font-size-s;
@@ -363,12 +363,10 @@ $tooltip-background-color: rgba($color-base-100, 0.8);
 // Spinner
 // ===
 
-$spinner-margin-right: 0.5rem;
-$spinner-width: 0.8rem;
-$spinner-height: 0.8rem;
+$spinner-margin-right: 0.75rem;
+$spinner-width: 1.5rem;
+$spinner-height: 1.5rem;
 $spinner-border-width: 0.2rem;
-$spinner-font-size: 0.625rem;
-$spinner-line-height: 1.3;
 $spinner-border-transition-duration: 500ms;
 $spinner-animation-duration: 750ms;
 

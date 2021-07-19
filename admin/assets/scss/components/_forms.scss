@@ -58,6 +58,10 @@ input[type='number']::-webkit-outer-spin-button {
     height: auto;
 }
 
+input[type='search']::-webkit-search-cancel-button {
+    display: none;
+}
+
 // stylelint-disable-next-line no-descending-specificity
 select {
     padding: $select-padding-h $select-padding-left $select-padding-h $select-padding-right;
@@ -102,20 +106,21 @@ textarea {
 
 .input-wrap {
     position: relative;
+    margin-bottom: $input-margin-bottom;
 }
 
 .input-wrap input {
+    margin-bottom: 0;
     padding-right: $input-wrap-padding-right;
 }
 
 .input-reset {
     position: absolute;
-    top: calc(#{$input-padding-v} + #{$input-border-width});
-    right: $input-padding-h * 0.5;
+    top: 50%;
+    right: $input-padding-h;
     color: $color-base-100;
-    font-size: $font-size-s;
-    line-height: $input-line-height;
     transition: color $transition-time-s;
+    transform: translateY(-50%);
     &:hover {
         color: $color-accent-500;
     }

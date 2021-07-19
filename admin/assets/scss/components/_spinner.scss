@@ -1,10 +1,7 @@
 .spinner {
+    position: relative;
     display: inline-block;
     margin-right: $spinner-margin-right;
-}
-
-.spinner::before {
-    display: inline-block;
     width: $spinner-width;
     height: $spinner-height;
     border-width: $spinner-border-width;
@@ -13,34 +10,34 @@
     border-bottom-color: transparent;
     border-left-color: transparent;
     border-radius: $border-radius-round;
-    color: transparent;
-    content: '\00a0';
-    vertical-align: text-top;
+    vertical-align: -0.375rem;
     text-align: center;
-    font-size: $spinner-font-size;
-    line-height: $spinner-line-height;
     transition: border $spinner-border-transition-duration;
     transition-timing-function: ease-out;
     animation: $spinner-animation-duration spin infinite linear;
 }
 
-.spinner-info::before {
+.spinner .icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner-info {
     border-color: $color-accent-500;
     color: $color-accent-500;
     animation: none;
-    @include icon(info);
 }
 
-.spinner-success::before {
+.spinner-success {
     border-color: $color-success-500;
     color: $color-success-500;
     animation: none;
-    @include icon(check);
 }
 
-.spinner-error::before {
+.spinner-error {
     border-color: $color-error-500;
     color: $color-error-500;
     animation: none;
-    @include icon(exclamation);
 }

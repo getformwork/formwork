@@ -25,31 +25,9 @@
     @include ellipsis;
 }
 
-.file-name::before {
+.file-name .icon {
     margin-right: $file-name-icon-margin-right;
     color: $color-base-100;
-    font-size: $font-size-m;
-    @include icon(file);
-}
-
-.file-name.file-type-image::before {
-    @include icon(file-image);
-}
-
-.file-name.file-type-document::before {
-    @include icon(file-text);
-}
-
-.file-name.file-type-audio::before {
-    @include icon(file-audio);
-}
-
-.file-name.file-type-video::before {
-    @include icon(file-video);
-}
-
-.file-name.file-type-archive::before {
-    @include icon(file-archive);
 }
 
 .file-size {

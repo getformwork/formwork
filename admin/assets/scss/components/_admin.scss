@@ -216,18 +216,20 @@
     @include user-select-none;
 }
 
-.sort-handle {
-    margin-right: $sort-handle-margin-right;
-    margin-bottom: 0;
-    width: $sort-handle-width;
-    cursor: grab;
+.icon {
+    display: inline-block;
+    min-width: 16px;
+    min-height: 16px;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125rem;
 }
 
-.sort-handle::before {
-    color: $color-base-400;
-    font-size: $font-size-xs;
-    cursor: inherit;
-    @include icon(bars);
+.sort-handle {
+    display: inline-block;
+    margin-bottom: 0;
+    color: $color-base-300;
+    cursor: grab;
 }
 
 .sortable-chosen,
