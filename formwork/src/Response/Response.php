@@ -2,6 +2,7 @@
 
 namespace Formwork\Response;
 
+use Formwork\Formwork;
 use Formwork\Utils\Header;
 
 class Response
@@ -26,6 +27,10 @@ class Response
      */
     public function __construct(string $content, int $status = 200, array $headers = [])
     {
+        $headers += [
+            'Content-Type' => Header::make(['text/html', 'charset' => Formwork::instance()->config()->get('charset')])
+        ];
+
         $this->content = $content;
         $this->status = $status;
         $this->headers = $headers;
