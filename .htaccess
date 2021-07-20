@@ -1,4 +1,8 @@
-AddDefaultCharset UTF-8
+AddDefaultCharset utf-8
+
+<IfModule mod_mime.c>
+    AddCharset utf-8 .css .js .svg
+</IfModule>
 
 <IfModule mod_rewrite.c>
     ## Enable rewrite rules
