@@ -149,4 +149,16 @@ class Header
         static::send('Location', $uri);
         exit;
     }
+
+    /**
+     * Make header content
+     */
+    public static function make(array $data): string
+    {
+        $parts = [];
+        foreach ($data as $key => $value) {
+            $parts[] = is_int($key) ? $value : $key . '=' . $value;
+        }
+        return implode('; ', $parts);
+    }
 }

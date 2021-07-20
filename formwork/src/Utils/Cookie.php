@@ -29,7 +29,7 @@ class Cookie
             throw new InvalidArgumentException(sprintf('Invalid cookie name "%s"', $name));
         }
         $data = [$name => rawurlencode($value)] + static::parseOptions($options);
-        Header::send('Set-Cookie', static::makeHeader($data), $replace);
+        Header::send('Set-Cookie', Header::make($data), $replace);
     }
 
     /**
@@ -79,17 +79,5 @@ class Cookie
             $data['SameSite'] = $options['samesite'];
         }
         return $data;
-    }
-
-    /**
-     * Make Set-Cookie header string
-     */
-    protected static function makeHeader(array $data): string
-    {
-        $parts = [];
-        foreach ($data as $key => $value) {
-            $parts[] = is_int($key) ? $value : $key . '=' . $value;
-        }
-        return implode('; ', $parts);
     }
 }
