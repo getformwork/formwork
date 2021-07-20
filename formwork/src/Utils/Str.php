@@ -88,7 +88,7 @@ class Str
      */
     public static function escape(string $string): string
     {
-        return htmlspecialchars($string, ENT_COMPAT | ENT_SUBSTITUTE, 'utf-8', false);
+        return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'utf-8', false);
     }
 
     /**
