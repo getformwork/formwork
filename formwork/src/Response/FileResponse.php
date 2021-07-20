@@ -3,6 +3,7 @@
 namespace Formwork\Response;
 
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Header;
 use Formwork\Utils\HTTPResponse;
 
 class FileResponse extends Response
@@ -14,7 +15,7 @@ class FileResponse extends Response
     {
         $headers += [
             'Content-Type'        => FileSystem::mimeType($path),
-            'Content-Disposition' => $download ? 'attachment; filename="' . basename($path) . '"' : 'inline',
+            'Content-Disposition' => !$download ? 'inline' : Header::make(['attachment', 'filename' => basename($path)]),
             'Content-Length'      => FileSystem::fileSize($path)
         ];
         parent::__construct(FileSystem::read($path), $status, $headers);

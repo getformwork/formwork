@@ -3,6 +3,7 @@
 namespace Formwork\Response;
 
 use Formwork\Parsers\JSON;
+use Formwork\Utils\Header;
 
 class JSONResponse extends Response
 {
@@ -12,7 +13,7 @@ class JSONResponse extends Response
     public function __construct(array $data, int $status = 200, array $headers = [])
     {
         $headers += [
-            'Content-Type' => 'application/json; charset=utf-8'
+            'Content-Type' => Header::make(['application/json', 'charset' => 'utf-8'])
         ];
         parent::__construct(JSON::encode($data), $status, $headers);
     }
