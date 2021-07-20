@@ -142,7 +142,6 @@ class OptionsController extends AbstractController
                 'Server API'          => PHP_SAPI,
                 'Loaded php.ini'      => php_ini_loaded_file(),
                 'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
-                'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
                 'Zend Engine Version' => zend_version()
             ],
             'HTTP Request Headers'  => HTTPRequest::headers()->toArray(),
@@ -176,6 +175,10 @@ class OptionsController extends AbstractController
                 'Memory Limit'       => ini_get('memory_limit'),
                 'Default MIME-Type'  => ini_get('default_mimetype'),
                 'Default Charset'    => ini_get('default_charset')
+            ],
+            'Streams' => [
+                'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
+                'Allow URL Fopen'     => ini_get('allow_url_fopen') ? 'true' : 'false'
             ],
             'OPcache' => [
                 'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
