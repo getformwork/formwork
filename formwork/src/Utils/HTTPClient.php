@@ -28,6 +28,14 @@ class HTTPClient
 
     public function __construct(array $options = [])
     {
+        if (!extension_loaded('openssl')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "openssl" to be enabled', static::class));
+        }
+
+        if (ini_get('allow_url_fopen') !== '1') {
+            throw new RuntimeException(sprintf('Class %s requires "allow_url_fopen" to be enabled in PHP configuration', static::class));
+        }
+
         $this->options = array_replace_recursive($this->defaults(), $options);
     }
 
