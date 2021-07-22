@@ -23,7 +23,7 @@
 
 ## Requirements
 - PHP **7.4.0** or higher
-- PHP extensions `fileinfo`, `gd`, `mbstring` and `zip`
+- PHP extensions `fileinfo`, `gd`, `mbstring`, `openssl` and `zip`
 
 ## Installing
 
