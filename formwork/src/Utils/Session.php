@@ -35,7 +35,7 @@ class Session
                 Cookie::send(self::SESSION_NAME, session_id(), $options, true);
             } elseif (HTTPRequest::cookies()->get(self::SESSION_NAME) !== session_id()) {
                 // Remove cookie if session id is not valid
-                Cookie::send(self::SESSION_NAME, '', ['expires' => time() - 3600] + $options, true);
+                Cookie::remove(self::SESSION_NAME, $options, true);
             }
         }
     }

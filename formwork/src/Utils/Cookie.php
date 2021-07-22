@@ -33,6 +33,16 @@ class Cookie
     }
 
     /**
+     * Remove a cookie
+     *
+     * @param bool $replace Whether to replace existing Set-Cookie header
+     */
+    public static function remove(string $name, array $options = [], bool $replace = false): void
+    {
+        static::send($name, '', ['expires' => time() - 3600] + $options, $replace);
+    }
+
+    /**
      * Return an array containing the default cookie directives
      */
     protected static function defaults(): array
