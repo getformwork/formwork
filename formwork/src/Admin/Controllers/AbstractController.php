@@ -11,6 +11,7 @@ use Formwork\Parsers\JSON;
 use Formwork\Parsers\PHP;
 use Formwork\Site;
 use Formwork\Utils\Date;
+use Formwork\Utils\HTTPRequest;
 use Formwork\View\View;
 
 abstract class AbstractController extends BaseAbstractController
@@ -134,7 +135,7 @@ abstract class AbstractController extends BaseAbstractController
         $default = Formwork::instance()->config()->get('admin.color_scheme');
         if ($this->admin()->isLoggedIn()) {
             if ($this->user()->colorScheme() === 'auto') {
-                return $_COOKIE['formwork_preferred_color_scheme'] ?? $default;
+                return HTTPRequest::cookies()->get('formwork_preferred_color_scheme', $default);
             }
             return $this->user()->colorScheme();
         }

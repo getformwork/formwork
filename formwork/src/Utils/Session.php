@@ -30,12 +30,11 @@ class Session
             }
             session_name(self::SESSION_NAME);
             session_start();
-            if (!isset($_COOKIE[self::SESSION_NAME]) || $options['expires'] > 0) {
+            if (HTTPRequest::cookies()->has(self::SESSION_NAME) || $options['expires'] > 0) {
                 // Send session cookie if not already sent or timeout is set
                 Cookie::send(self::SESSION_NAME, session_id(), $options, true);
-            } elseif ($_COOKIE[self::SESSION_NAME] !== session_id()) {
+            } elseif (HTTPRequest::cookies()->get(self::SESSION_NAME) !== session_id()) {
                 // Remove cookie if session id is not valid
-                unset($_COOKIE[self::SESSION_NAME]);
                 Cookie::send(self::SESSION_NAME, '', ['expires' => time() - 3600] + $options, true);
             }
         }
