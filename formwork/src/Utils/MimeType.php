@@ -2,6 +2,7 @@
 
 namespace Formwork\Utils;
 
+use DOMDocument;
 use RuntimeException;
 
 class MimeType
@@ -145,8 +146,10 @@ class MimeType
 
         // Fix wrong type for image/svg+xml
         if ($mimeType === 'text/html') {
-            $node = @simplexml_load_file($file);
-            if ($node && $node->getName() === 'svg') {
+            $dom = new DOMDocument();
+            $dom->load($file);
+            $node = $dom->documentElement;
+            if ($node !== null && $node->nodeName === 'svg') {
                 $mimeType = static::fromExtension('svg');
             }
         }
