@@ -107,7 +107,7 @@ class Validator
         }
 
         try {
-            return date('Y-m-d', Date::toTimestamp($value));
+            return date('Y-m-d H:i:s', Date::toTimestamp($value));
         } catch (InvalidArgumentException $e) {
             throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
         }
