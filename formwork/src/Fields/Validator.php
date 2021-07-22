@@ -32,6 +32,11 @@ class Validator
     public const EMPTY_VALUES = [null, '', []];
 
     /**
+     * Date format used for date fields
+     */
+    public const DATE_FORMAT = 'Y-m-d H:i:s';
+
+    /**
      * Validate all Fields against given data
      */
     public static function validate(Fields $fields, DataGetter $data): void
@@ -107,7 +112,7 @@ class Validator
         }
 
         try {
-            return date('Y-m-d H:i:s', Date::toTimestamp($value));
+            return date(self::DATE_FORMAT, Date::toTimestamp($value));
         } catch (InvalidArgumentException $e) {
             throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
         }
