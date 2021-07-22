@@ -23,6 +23,11 @@ class HTTPRequest
     protected static DataGetter $postData;
 
     /**
+     * DataGetter containing HTTP Cookies
+     */
+    protected static DataGetter $cookies;
+
+    /**
      * DataGetter containing HTTP headers
      */
     protected static DataGetter $headers;
@@ -212,6 +217,17 @@ class HTTPRequest
             return static::$postData;
         }
         return static::$postData = new DataGetter($_POST);
+    }
+
+    /**
+     * Return a DataGetter containing cookies
+     */
+    public static function cookies(): DataGetter
+    {
+        if (isset(static::$cookies)) {
+            return static::$cookies;
+        }
+        return static::$cookies = new DataGetter($_COOKIE);
     }
 
     /**
