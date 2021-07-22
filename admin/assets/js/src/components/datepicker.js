@@ -5,6 +5,7 @@ export default function DatePicker(input, options) {
     var defaults = {
         weekStarts: 0,
         format: 'YYYY-MM-DD',
+        time: false,
         labels: {
             today: 'Today',
             weekdays: {
@@ -27,10 +28,16 @@ export default function DatePicker(input, options) {
         year: today.getFullYear(),
         month: today.getMonth(),
         day: today.getDate(),
+        hours: today.getHours(),
+        minutes: today.getMinutes(),
+        seconds: today.getSeconds(),
         setDate: function (date) {
             this.year = date.getFullYear();
             this.month = date.getMonth();
             this.day = date.getDate();
+            this.hours = date.getHours();
+            this.minutes = date.getMinutes();
+            this.seconds = date.getSeconds();
         },
         lastDay: function () {
             this.day = dateHelpers.daysInMonth(this.month, this.year);
@@ -86,6 +93,42 @@ export default function DatePicker(input, options) {
                 this.nextMonth();
                 this.day = 1;
             }
+        },
+        nextHour: function () {
+            this.hours = dateHelpers.mod(this.hours + 1, 24);
+            if (this.hours === 0) {
+                this.nextDay();
+            }
+        },
+        prevHour: function () {
+            this.hours = dateHelpers.mod(this.hours - 1, 24);
+            if (this.hours === 23) {
+                this.prevDay();
+            }
+        },
+        nextMinute: function () {
+            this.minutes = dateHelpers.mod(this.minutes + 1, 60);
+            if (this.minutes === 0) {
+                this.nextHour();
+            }
+        },
+        prevMinute: function () {
+            this.minutes = dateHelpers.mod(this.minutes - 1, 60);
+            if (this.minutes === 59) {
+                this.prevHour();
+            }
+        },
+        nextSecond: function () {
+            this.seconds = dateHelpers.mod(this.seconds + 1, 60);
+            if (this.seconds === 0) {
+                this.nextMinute();
+            }
+        },
+        prevSecond: function () {
+            this.seconds = dateHelpers.mod(this.seconds - 1, 60);
+            if (this.minutes === 59) {
+                this.prevMinute();
+            }
         }
     };
 
@@ -94,6 +137,13 @@ export default function DatePicker(input, options) {
         mod: function (x, y) {
             // Return x mod y (always rounded downwards, differs from x % y which is the remainder)
             return x - y * Math.floor(x / y);
+        },
+        pad: function (num, length) {
+            var result = num.toString();
+            while (result.length < length) {
+                result = '0' + result;
+            }
+            return result;
         },
         isValidDate: function (date) {
             return date && !isNaN(Date.parse(date));
@@ -129,19 +179,16 @@ export default function DatePicker(input, options) {
             var weekStart = this.weekStart(date, 1);
             return Math.round((weekStart.getTime() - firstWeekStart.getTime()) / 604800000) + 1;
         },
+        has12HourFormat: function (format) {
+            var match = format.match(/\[([^\]]*)\]|H{1,2}/);
+            return match !== null && match[0][0] === 'H';
+        },
         formatDateTime: function (date, format) {
             var regex = /\[([^\]]*)\]|[YR]{4}|uuu|[YR]{2}|[MD]{1,4}|[WHhms]{1,2}|[AaZz]/g;
+            var self = this;
 
             if (typeof format === 'undefined') {
                 format = options.format;
-            }
-
-            function pad(num, length) {
-                var result = num.toString();
-                while (result.length < length) {
-                    result = '0' + result;
-                }
-                return result;
             }
 
             function splitTimezoneOffset(offset) {
@@ -150,7 +197,7 @@ export default function DatePicker(input, options) {
                 var sign = offset > 0 ? '-' : '+';
                 var hours = Math.floor(Math.abs(offset) / 60);
                 var minutes = Math.abs(offset) % 60;
-                return [sign + pad(hours, 2), pad(minutes, 2)];
+                return [sign + dateHelpers.pad(hours, 2), dateHelpers.pad(minutes, 2)];
             }
 
             return format.replace(regex, function (match, $1) {
@@ -162,7 +209,7 @@ export default function DatePicker(input, options) {
                 case 'M':
                     return date.getMonth() + 1;
                 case 'MM':
-                    return pad(date.getMonth() + 1, 2);
+                    return self.pad(date.getMonth() + 1, 2);
                 case 'MMM':
                     return options.labels.months.short[date.getMonth()];
                 case 'MMMM':
@@ -170,37 +217,37 @@ export default function DatePicker(input, options) {
                 case 'D':
                     return date.getDate();
                 case 'DD':
-                    return pad(date.getDate(), 2);
+                    return self.pad(date.getDate(), 2);
                 case 'DDD':
-                    return options.labels.weekdays.short[dateHelpers.mod(date.getDay() + options.weekStarts, 7)];
+                    return options.labels.weekdays.short[self.mod(date.getDay() + options.weekStarts, 7)];
                 case 'DDDD':
-                    return options.labels.weekdays.long[dateHelpers.mod(date.getDay() + options.weekStarts, 7)];
+                    return options.labels.weekdays.long[self.mod(date.getDay() + options.weekStarts, 7)];
                 case 'W':
-                    return dateHelpers.weekOfYear(date);
+                    return self.weekOfYear(date);
                 case 'WW':
-                    return pad(dateHelpers.weekOfYear(date), 2);
+                    return self.pad(self.weekOfYear(date), 2);
                 case 'RR':
-                    return dateHelpers.weekNumberingYear(date).toString().substr(-2);
+                    return self.weekNumberingYear(date).toString().substr(-2);
                 case 'RRRR':
-                    return dateHelpers.weekNumberingYear(date);
+                    return self.weekNumberingYear(date);
                 case 'H':
-                    return dateHelpers.mod(date.getHours(), 12) || 12;
+                    return self.mod(date.getHours(), 12) || 12;
                 case 'HH':
-                    return pad(dateHelpers.mod(date.getHours(), 12) || 12, 2);
+                    return self.pad(self.mod(date.getHours(), 12) || 12, 2);
                 case 'h':
                     return date.getHours();
                 case 'hh':
-                    return pad(date.getHours(), 2);
+                    return self.pad(date.getHours(), 2);
                 case 'm':
                     return date.getMinutes();
                 case 'mm':
-                    return pad(date.getMinutes(), 2);
+                    return self.pad(date.getMinutes(), 2);
                 case 's':
                     return date.getSeconds();
                 case 'ss':
-                    return pad(date.getSeconds(), 2);
+                    return self.pad(date.getSeconds(), 2);
                 case 'uuu':
-                    return pad(date.getMilliseconds(), 3);
+                    return self.pad(date.getMilliseconds(), 3);
                 case 'A':
                     return date.getHours() < 12 ? 'AM' : 'PM';
                 case 'a':
@@ -302,6 +349,7 @@ export default function DatePicker(input, options) {
             var date = dateHelpers.isValidDate(this.getAttribute('data-date')) ? new Date(this.getAttribute('data-date')) : new Date();
             dateKeeper.setDate(date);
             generateCalendarTable(dateKeeper.year, dateKeeper.month, dateKeeper.day);
+            updateCalendarTime(dateKeeper.hours, dateKeeper.minutes);
             calendar.style.display = 'block';
             setCalendarPosition();
         });
@@ -312,8 +360,9 @@ export default function DatePicker(input, options) {
     }
 
     function updateInput(input) {
-        var date = new Date(dateKeeper.year, dateKeeper.month, dateKeeper.day);
+        var date = new Date(dateKeeper.year, dateKeeper.month, dateKeeper.day, dateKeeper.hours, dateKeeper.minutes);
         generateCalendarTable(dateKeeper.year, dateKeeper.month, dateKeeper.day);
+        updateCalendarTime(dateKeeper.hours, dateKeeper.minutes);
         input.value = dateHelpers.formatDateTime(date);
         input.setAttribute('data-date', date);
     }
@@ -322,11 +371,67 @@ export default function DatePicker(input, options) {
         return document.activeElement.classList.contains('date-input') ? document.activeElement : null;
     }
 
+    function updateCalendarTime(hours, minutes) {
+        var meridiem = '';
+        var timeFormat = dateHelpers.has12HourFormat(options.format) ? 12 : 24;
+
+        if (!options.time) {
+            return;
+        }
+
+        if (timeFormat === 12) {
+            meridiem = hours < 12 ? 'AM' : 'PM';
+        }
+
+        hours = timeFormat === 12 ? (dateHelpers.mod(hours, 12) || 12) : hours;
+
+        $('.calendar-hours', calendar).innerHTML = dateHelpers.pad(hours, 2);
+        $('.calendar-minutes', calendar).innerHTML = dateHelpers.pad(minutes, 2);
+        $('.calendar-meridiem', calendar).innerHTML = meridiem;
+    }
+
     function generateCalendar() {
         calendar = document.createElement('div');
         calendar.className = 'calendar';
         calendar.innerHTML = '<div class="calendar-buttons"><button type="button" class="prevMonth"></button><button class="currentMonth">' + options.labels.today + '</button><button type="button" class="nextMonth"></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>';
+
+        if (options.time === true) {
+            calendar.innerHTML += '<div class="calendar-separator"></div><table class="calendar-time"><tr><td><button type="button" class="nextHour"></button></td><td></td><td><button type="button" class="nextMinute"></button></td></tr><tr><td class="calendar-hours"></td><td>:</td><td class="calendar-minutes"></td><td class="calendar-meridiem"></td></tr><tr><td><button type="button" class="prevHour"></button></td><td></td><td><button type="button" class="prevMinute"></button></td></tr></table></div>';
+
+            Icons.inject('chevron-down', $('.prevHour', calendar));
+            Icons.inject('chevron-up', $('.nextHour', calendar));
+
+            Icons.inject('chevron-down', $('.prevMinute', calendar));
+            Icons.inject('chevron-up', $('.nextMinute', calendar));
+
+            Utils.longClick($('.nextHour', calendar), function (event) {
+                dateKeeper.nextHour();
+                updateInput(input);
+                event.preventDefault();
+            }, 750, 250);
+
+            Utils.longClick($('.prevHour', calendar), function (event) {
+                dateKeeper.prevHour();
+                updateInput(input);
+                event.preventDefault();
+            }, 750, 250);
+
+            Utils.longClick($('.nextMinute', calendar), function (event) {
+                dateKeeper.nextMinute();
+                updateInput(input);
+                event.preventDefault();
+            }, 750, 250);
+
+            Utils.longClick($('.prevMinute', calendar), function (event) {
+                dateKeeper.prevMinute();
+                updateInput(input);
+                event.preventDefault();
+            }, 750, 250);
+        }
+
         document.body.appendChild(calendar);
+
+        Icons.inject('calendar-clock', $('.currentMonth', calendar));
 
         Icons.inject('chevron-left', $('.prevMonth', calendar));
         Icons.inject('chevron-right', $('.nextMonth', calendar));
@@ -342,13 +447,13 @@ export default function DatePicker(input, options) {
 
         Utils.longClick($('.prevMonth', calendar), function (event) {
             dateKeeper.prevMonth();
-            generateCalendarTable(dateKeeper.year, dateKeeper.month);
+            updateInput(input);
             event.preventDefault();
         }, 750, 500);
 
         Utils.longClick($('.nextMonth', calendar), function (event) {
             dateKeeper.nextMonth();
-            generateCalendarTable(dateKeeper.year, dateKeeper.month);
+            updateInput(input);
             event.preventDefault();
         }, 750, 500);
 

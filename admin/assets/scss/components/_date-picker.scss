@@ -26,7 +26,7 @@
     font-size: 0;
 }
 
-.calendar-buttons button {
+.calendar button {
     margin: 0;
     padding: $calendar-button-padding-v $calendar-button-padding-h;
     width: 33.3%;
@@ -57,6 +57,12 @@
     text-align: center;
     cursor: default;
     @include user-select-none;
+}
+
+.calendar-time {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
 }
 
 .calendar-header-day {
