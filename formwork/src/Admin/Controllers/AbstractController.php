@@ -52,7 +52,8 @@ abstract class AbstractController extends BaseAbstractController
                 'baseUri'    => $this->admin()->panelUri(),
                 'DatePicker' => [
                     'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
-                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format')),
+                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')),
+                    'time'       => true,
                     'labels'     => [
                         'today'    => $this->admin()->translate('date.today'),
                         'weekdays' => ['long' => $this->admin()->translate('date.weekdays.long'), 'short' =>  $this->admin()->translate('date.weekdays.short')],
