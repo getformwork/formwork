@@ -19,6 +19,7 @@ class RegisterController extends AbstractController
      */
     public function register(): Response
     {
+        Session::regenerate(false);
         CSRFToken::generate();
 
         switch (HTTPRequest::method()) {
