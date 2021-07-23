@@ -7,5 +7,5 @@
     <input <?php if (!empty($error)): ?>class="input-invalid" autofocus <?php endif; ?>id="password" type="password" required name="password">
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
     <div class="separator"></div>
-    <button type="submit"><?= $this->icon('arrow-right-circle') ?> <?= $this->translate('admin.login.login') ?></button>
+    <button type="submit" class="button-accent"><?= $this->icon('arrow-right-circle') ?> <?= $this->translate('admin.login.login') ?></button>
 </form>
