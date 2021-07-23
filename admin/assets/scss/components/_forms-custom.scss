@@ -175,7 +175,7 @@
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
         margin: 0;
-        -webkit-appearance: none;
+        @include appearance-none;
     }
 }
 
@@ -282,7 +282,7 @@ input[type=range] {
     padding: $range-input-padding-v $range-input-padding-h;
     width: $range-input-width;
     border: 0;
-    -webkit-appearance: none;
+    @include appearance-none;
     &::-webkit-slider-runnable-track {
         width: 100%;
         height: $range-input-track-height;
@@ -299,7 +299,7 @@ input[type=range] {
         border-radius: $range-input-thumb-border-radius;
         background-color: $color-accent-500;
         transition: background-color $transition-time-s;
-        -webkit-appearance: none;
+        @include appearance-none;
     }
     &::-moz-range-track {
         width: 100%;
