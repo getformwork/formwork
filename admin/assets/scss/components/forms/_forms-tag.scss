@@ -1,0 +1,78 @@
+.tag-input {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: $input-margin-bottom;
+    padding: $input-padding-v $input-padding-h * 0.5;
+    padding-bottom: 0;
+    border: 1px solid $color-base-500;
+    border-radius: $border-radius;
+    font-size: $input-font-size;
+    line-height: $input-line-height;
+    @include user-select-none;
+}
+
+.tag-input.focused {
+    border-color: $color-accent-500;
+}
+
+.tag-inner-input {
+    display: inline-block;
+    box-sizing: border-box;
+    margin-bottom: $input-padding-v;
+    padding: 0 $input-padding-h * 0.5;
+    max-width: 100%;
+    width: auto;
+    outline: none;
+    border: 0;
+    border-radius: 0;
+    font-size: $font-size-s;
+    font-family: inherit;
+    line-height: inherit;
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.tag-hidden-input {
+    display: none;
+}
+
+.tag-input .tag {
+    display: inline-block;
+    box-sizing: border-box;
+    margin-bottom: $input-padding-v;
+    padding: $tag-input-tag-padding-v $tag-input-tag-padding-h;
+    border-radius: $border-radius;
+    background-color: $color-base-700;
+    font-size: $font-size-s;
+    cursor: default;
+    @include user-select-none;
+}
+
+.tag-input.disabled,
+.tag-input.disabled .tag-inner-input {
+    background-color: $color-base-800;
+}
+
+.tag-input.disabled .tag {
+    background-color: $color-base-600;
+}
+
+.tag-remove {
+    display: inline-block;
+    margin-left: $tag-remove-margin-left;
+    padding: $tag-remove-padding-v $tag-remove-padding-h;
+    color: $color-base-100;
+    font-style: normal;
+    transition: color $transition-time-s;
+    &:hover {
+        color: $color-accent-500;
+    }
+}
+
+.tag-remove::after {
+    content: '\00d7';
+    font-weight: 600;
+}

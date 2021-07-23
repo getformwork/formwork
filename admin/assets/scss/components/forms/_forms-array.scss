@@ -1,0 +1,37 @@
+.array-input {
+    margin-bottom: $array-input-margin-bottom;
+    @include user-select-none;
+}
+
+.array-input .sort-handle .icon {
+    vertical-align: middle;
+}
+
+.array-input-row {
+    display: flex;
+    margin: 0 (-$array-input-row-padding-h);
+    padding: $array-input-row-padding-v $array-input-row-padding-h;
+    white-space: nowrap;
+}
+
+.array-input-key,
+.array-input-value {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.array-input-key {
+    margin-right: $array-input-key-margin-right;
+    width: $array-input-key-width;
+}
+
+.array-input-value {
+    margin-right: $array-input-value-margin-right;
+}
+
+.array-input-add,
+.array-input-remove {
+    margin-right: $array-input-actions-margin-right;
+    padding: 0;
+    min-width: 1rem;
+}

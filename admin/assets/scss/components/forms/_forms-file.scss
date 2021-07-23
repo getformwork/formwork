@@ -1,0 +1,24 @@
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    clear: both;
+    margin-bottom: $file-input-label-margin-bottom;
+    padding: $file-input-label-padding;
+    background-color: $color-base-800;
+}
+
+.file-input-label > span {
+    display: block;
+    padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
+    border: $file-input-label-inner-border-width dashed $color-base-500;
+    color: $color-base-100;
+    text-align: center;
+    transition: background-color $transition-time-m;
+}
+
+.file-input-label.drag > span {
+    background-color: $color-base-900;
+}

@@ -1,0 +1,56 @@
+.toggle-group {
+    display: inline-block;
+    margin: 0;
+    margin-bottom: $input-margin-bottom;
+    border: 1px solid $color-base-500;
+    border-radius: $border-radius;
+    font-size: 0;
+}
+
+.toggle-group:focus-within {
+    border-color: $color-accent-500;
+    @include focusring;
+}
+
+.toggle-group label {
+    margin: 0;
+}
+
+.toggle-group input[type=radio] {
+    position: absolute;
+    opacity: 0;
+}
+
+.toggle-group input[type=radio] + span {
+    display: inline-block;
+    padding: $toggle-group-inner-padding-v $toggle-group-inner-padding-h;
+    border-radius: $border-radius - 1px;
+    font-size: $font-size-s;
+    transition: background-color $transition-time-s, color $transition-time-s;
+}
+
+.toggle-group input[type=radio]:hover + span {
+    background-color: $color-base-800;
+}
+
+.toggle-group input[type=radio]:checked + span {
+    background-color: $color-accent-500;
+    color: $color-white;
+}
+
+.toggle-group input[type=radio]:focus + span {
+    background-color: $color-accent-400;
+}
+
+.toggle-group[disabled] input[type=radio] + span {
+    background-color: transparent;
+    color: $color-base-100;
+}
+
+.toggle-group[disabled] input[type=radio]:checked + span {
+    background-color: $color-base-600;
+}
+
+.toggle-group input[type=radio]:checked:hover + span {
+    background-color: $color-accent-400;
+}
