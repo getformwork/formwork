@@ -25,5 +25,5 @@
     </select>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
     <div class="separator"></div>
-    <button type="submit" class="button-accent"><?= $this->translate('admin.modal.action.continue') ?></button>
+    <button type="submit" class="button-accent"><?= $this->icon('check-circle') ?> <?= $this->translate('admin.modal.action.continue') ?></button>
 </form>
