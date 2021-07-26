@@ -100,7 +100,7 @@ $component-box-shadow: 0 0 0.75rem -0.25rem rgba($color-black, 0.05);
 $base-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 $mono-font-family: 'SFMono-Regular', 'SF Mono', 'Cascadia Mono', 'Liberation Mono', Menlo, Consolas, monospace;
 
-$base-font-size: 16px;
+$base-font-size: 100%;
 $base-line-height: 1.5;
 
 $font-size-xs: 0.75rem;
@@ -177,8 +177,6 @@ $custom-checkbox-margin-right: 0.5rem;
 $custom-checkbox-width: 1rem;
 $custom-checkbox-height: 1rem;
 $custom-checkbox-border-width: 1px;
-
-$image-input-padding-right: 1.875rem;
 
 $tag-input-tag-padding-v: 0;
 $tag-input-tag-padding-h: 0.375rem;
@@ -444,9 +442,6 @@ $section-header-margin-bottom: 0.5rem;
 $section-header-padding-v: 0.25rem;
 $section-header-padding-h: 0.5rem;
 
-$sort-handle-margin-right: 0.25rem;
-$sort-handle-width: 0.75rem;
-
 $sortable-fallback-box-shadow: 0 0 0.75rem 0.25rem rgba($color-black, 0.15);
 
 // ===
@@ -482,14 +477,12 @@ $pages-level-3-padding-left: 3rem;
 $pages-level-4-padding-left: 4.5rem;
 $pages-level-5-padding-left: 6rem;
 
-$page-search-padding-right: 1.5rem;
+$page-search-padding-left: 2rem;
 $page-search-width: 28rem;
 
 $page-info-margin-bottom: 0.75rem;
 $page-info-padding-v: 0;
 $page-info-padding-h: 0.25rem;
-
-$page-slug-change-icon-margin-left: 0.25rem;
 
 // ===
 // Options
