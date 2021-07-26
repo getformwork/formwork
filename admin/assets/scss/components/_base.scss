@@ -67,7 +67,7 @@ mark {
             display: none;
         }
     }
-    @media (max-width: map.get($responsive-breakpoints, $breakpoint-name)) {
+    @media (max-width: map.get($responsive-breakpoints, $breakpoint-name) - 1) {
         .show-from-#{$breakpoint-name} {
             display: none;
         }
