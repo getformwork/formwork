@@ -1,7 +1,7 @@
-import Icons from './icons';
-import Utils from './utils';
+import Icons from '../icons';
+import Utils from '../utils';
 
-export default function DatePicker(input, options) {
+export default function DateInput(input, options) {
     var defaults = {
         weekStarts: 0,
         format: 'YYYY-MM-DD',

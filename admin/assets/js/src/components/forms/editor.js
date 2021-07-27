@@ -1,6 +1,6 @@
 import CodeMirror from 'codemirror/lib/codemirror.js';
-import Modals from './modals';
-import Utils from './utils';
+import Modals from '../modals';
+import Utils from '../utils';
 
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/addon/edit/continuelist.js';

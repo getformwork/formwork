@@ -1,13 +1,13 @@
-import ArrayInput from './arrayinput';
-import DatePicker from './datepicker';
-import DurationInput from './durationinput';
-import Editor from './editor';
-import FileInput from './fileinput';
+import ArrayInput from './forms/array';
+import DateInput from './forms/date';
+import DurationInput from './forms/duration';
+import Editor from './forms/editor';
+import FileInput from './forms/file';
 import Form from './form';
-import ImagePicker from './imagepicker';
+import ImagePicker from './forms/image';
 import Modals from './modals';
-import RangeInput from './rangeinput';
-import TagInput from './taginput';
+import RangeInput from './forms/range';
+import TagInput from './forms/tag';
 import Utils from './utils';
 
 export default {
@@ -37,7 +37,7 @@ export default {
         });
 
         $$('.input-date').forEach(function (element) {
-            DatePicker(element, Formwork.config.DatePicker);
+            DateInput(element, Formwork.config.DateInput);
         });
 
         $$('.input-image').forEach(function (element) {

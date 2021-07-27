@@ -1,4 +1,4 @@
-import Utils from './utils';
+import Utils from '../utils';
 
 export default function TagInput(input) {
     var options = {addKeyCodes: [32]};

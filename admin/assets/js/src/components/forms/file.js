@@ -1,4 +1,4 @@
-import Utils from './utils';
+import Utils from '../utils';
 
 export default function FileInput(input) {
     var label = $('label[for="' + input.id + '"]');

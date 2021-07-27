@@ -51,7 +51,7 @@ abstract class AbstractController extends BaseAbstractController
             'colorScheme' => $this->getColorScheme(),
             'appConfig'   => JSON::encode([
                 'baseUri'    => $this->admin()->panelUri(),
-                'DatePicker' => [
+                'DateInput' => [
                     'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
                     'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')),
                     'time'       => true,
