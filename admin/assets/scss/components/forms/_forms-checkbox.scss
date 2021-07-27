@@ -1,59 +1,59 @@
-.custom-checkbox {
+.input-checkbox {
     position: absolute;
     opacity: 0;
 }
 
-.custom-checkbox + .custom-checkbox-text::before {
+.input-checkbox + .input-checkbox-text::before {
     position: relative;
-    top: $custom-checkbox-top;
+    top: $input-checkbox-top;
     display: inline-block;
     box-sizing: border-box;
-    margin-right: $custom-checkbox-margin-right;
-    width: $custom-checkbox-width;
-    height: $custom-checkbox-height;
-    border: $custom-checkbox-border-width solid $color-base-500;
+    margin-right: $input-checkbox-margin-right;
+    width: $input-checkbox-width;
+    height: $input-checkbox-height;
+    border: $input-checkbox-border-width solid $color-base-500;
     border-radius: $border-radius;
     content: ' ';
     transition: border-color $transition-time-s, background-color $transition-time-s;
 }
 
-.custom-checkbox + .custom-checkbox-text:hover::before,
-.custom-checkbox[disabled] + .custom-checkbox-text::before {
+.input-checkbox + .input-checkbox-text:hover::before,
+.input-checkbox[disabled] + .input-checkbox-text::before {
     background-color: $color-base-800;
 }
 
-.custom-checkbox:checked + .custom-checkbox-text::before {
+.input-checkbox:checked + .input-checkbox-text::before {
     border-color: $color-accent-500;
     background-color: $color-accent-500;
 }
 
-.custom-checkbox:focus + .custom-checkbox-text::before {
+.input-checkbox:focus + .input-checkbox-text::before {
     border-color: $color-accent-500;
     @include focusring;
 }
 
-.custom-checkbox:checked + .custom-checkbox-text:hover::before {
+.input-checkbox:checked + .input-checkbox-text:hover::before {
     border-color: $color-accent-400;
     background-color: $color-accent-400;
 }
 
-.custom-checkbox:checked + .custom-checkbox-text::after {
+.input-checkbox:checked + .input-checkbox-text::after {
     position: absolute;
-    top: $custom-checkbox-top;
+    top: $input-checkbox-top;
     left: 0;
     display: block;
-    width: $custom-checkbox-width;
-    height: $custom-checkbox-height;
+    width: $input-checkbox-width;
+    height: $input-checkbox-height;
     background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 11 11\'%3E%3Cpath fill=\'%23fff\' d=\'M4.727 7.036L8.263 3.5l.707.707L4.727 8.45 2 5.722l.707-.707z\'/%3E%3C/svg%3E');
     content: ' ';
 }
 
-.custom-checkbox:checked[disabled] + .custom-checkbox-text::before {
+.input-checkbox:checked[disabled] + .input-checkbox-text::before {
     border-color: $color-base-500;
     background-color: $color-base-500;
 }
 
-.checkbox-label {
+.input-checkbox-label {
     position: relative;
     line-height: $input-line-height;
 }

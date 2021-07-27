@@ -15,7 +15,7 @@ export default function TagInput(input) {
         var isDisabled = input.hasAttribute('disabled');
 
         field = document.createElement('div');
-        field.className = 'tag-input';
+        field.className = 'input-tag';
 
         innerInput = document.createElement('input');
         innerInput.className = 'tag-inner-input';
@@ -25,7 +25,7 @@ export default function TagInput(input) {
         innerInput.setAttribute('size', '');
 
         hiddenInput = document.createElement('input');
-        hiddenInput.className = 'tag-hidden-input';
+        hiddenInput.className = 'input-tag-hidden';
         hiddenInput.name = input.name;
         hiddenInput.id = input.id;
         hiddenInput.type = 'text';

@@ -1,7 +1,7 @@
 <?= $this->insert('fields.label', ['field' => $field]) ?>
 <fieldset <?= $this->attr([
     'id'       => $field->name(),
-    'class'    => 'toggle-group',
+    'class'    => 'input-togglegroup',
     'disabled' => $field->isDisabled()
 ]) ?>>
 <?php foreach ((array) $field->get('options') as $value => $label): ?>

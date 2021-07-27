@@ -2,7 +2,7 @@
 <div class="input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',
-        'class'       => 'date-input',
+        'class'       => 'input-date',
         'id'          => $field->name(),
         'name'        => $field->formName(),
         'value'       => $field->value(),

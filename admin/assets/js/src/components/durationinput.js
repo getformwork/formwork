@@ -118,7 +118,7 @@ export default function DurationInput(input, options) {
         var wrap, name, innerInput, label, i;
 
         field = document.createElement('div');
-        field.className = 'duration-input';
+        field.className = 'input-duration';
 
         for (i = 0; i < options.intervals.length; i++) {
             name = options.intervals[i];
@@ -186,7 +186,7 @@ export default function DurationInput(input, options) {
     function createField() {
         var field, valueSeconds, stepSeconds;
         hiddenInput = document.createElement('input');
-        hiddenInput.className = 'duration-hidden-input';
+        hiddenInput.className = 'input-duration-hidden';
         hiddenInput.name = input.name;
         hiddenInput.id = input.id;
         hiddenInput.type = 'text';

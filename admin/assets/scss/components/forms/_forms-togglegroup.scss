@@ -1,4 +1,4 @@
-.toggle-group {
+.input-togglegroup {
     display: inline-block;
     margin: 0;
     margin-bottom: $input-margin-bottom;
@@ -7,50 +7,50 @@
     font-size: 0;
 }
 
-.toggle-group:focus-within {
+.input-togglegroup:focus-within {
     border-color: $color-accent-500;
     @include focusring;
 }
 
-.toggle-group label {
+.input-togglegroup label {
     margin: 0;
 }
 
-.toggle-group input[type=radio] {
+.input-togglegroup input[type=radio] {
     position: absolute;
     opacity: 0;
 }
 
-.toggle-group input[type=radio] + span {
+.input-togglegroup input[type=radio] + span {
     display: inline-block;
-    padding: $toggle-group-inner-padding-v $toggle-group-inner-padding-h;
+    padding: $input-togglegroup-inner-padding-v $input-togglegroup-inner-padding-h;
     border-radius: $border-radius - 1px;
     font-size: $font-size-s;
     transition: background-color $transition-time-s, color $transition-time-s;
 }
 
-.toggle-group input[type=radio]:hover + span {
+.input-togglegroup input[type=radio]:hover + span {
     background-color: $color-base-800;
 }
 
-.toggle-group input[type=radio]:checked + span {
+.input-togglegroup input[type=radio]:checked + span {
     background-color: $color-accent-500;
     color: $color-white;
 }
 
-.toggle-group input[type=radio]:focus + span {
+.input-togglegroup input[type=radio]:focus + span {
     background-color: $color-accent-400;
 }
 
-.toggle-group[disabled] input[type=radio] + span {
+.input-togglegroup[disabled] input[type=radio] + span {
     background-color: transparent;
     color: $color-base-100;
 }
 
-.toggle-group[disabled] input[type=radio]:checked + span {
+.input-togglegroup[disabled] input[type=radio]:checked + span {
     background-color: $color-base-600;
 }
 
-.toggle-group input[type=radio]:checked:hover + span {
+.input-togglegroup input[type=radio]:checked:hover + span {
     background-color: $color-accent-400;
 }

@@ -368,7 +368,7 @@ export default function DatePicker(input, options) {
     }
 
     function getCurrentInput() {
-        return document.activeElement.classList.contains('date-input') ? document.activeElement : null;
+        return document.activeElement.classList.contains('input-date') ? document.activeElement : null;
     }
 
     function updateCalendarTime(hours, minutes) {

@@ -1,14 +1,14 @@
 <div>
-    <label class="checkbox-label">
+    <label class="input-checkbox-label">
         <input <?= $this->attr([
             'type'     => 'checkbox',
-            'class'    => 'custom-checkbox',
+            'class'    => 'input-checkbox',
             'id'       => $field->name(),
             'name'     => $field->formName(),
             'checked'  => $field->value() == true,
             'required' => $field->isRequired(),
             'disabled' => $field->isDisabled()
         ]) ?>>
-        <span class="custom-checkbox-text"><?= $field->label() ?></span>
+        <span class="input-checkbox-text"><?= $field->label() ?></span>
     </label>
 </div>

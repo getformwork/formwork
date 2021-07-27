@@ -1,24 +1,24 @@
-.file-input {
+.input-file {
     display: none;
 }
 
-.file-input-label {
+.input-file-label {
     display: block;
     clear: both;
-    margin-bottom: $file-input-label-margin-bottom;
-    padding: $file-input-label-padding;
+    margin-bottom: $input-file-label-margin-bottom;
+    padding: $input-file-label-padding;
     background-color: $color-base-800;
 }
 
-.file-input-label > span {
+.input-file-label > span {
     display: block;
-    padding: $file-input-label-inner-padding-v $file-input-label-inner-padding-h;
-    border: $file-input-label-inner-border-width dashed $color-base-500;
+    padding: $input-file-label-inner-padding-v $input-file-label-inner-padding-h;
+    border: $input-file-label-inner-border-width dashed $color-base-500;
     color: $color-base-100;
     text-align: center;
     transition: background-color $transition-time-m;
 }
 
-.file-input-label.drag > span {
+.input-file-label.drag > span {
     background-color: $color-base-900;
 }

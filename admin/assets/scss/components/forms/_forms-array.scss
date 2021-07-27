@@ -1,37 +1,37 @@
-.array-input {
-    margin-bottom: $array-input-margin-bottom;
+.input-array {
+    margin-bottom: $input-array-margin-bottom;
     @include user-select-none;
 }
 
-.array-input .sort-handle .icon {
+.input-array .sort-handle .icon {
     vertical-align: middle;
 }
 
-.array-input-row {
+.input-array-row {
     display: flex;
-    margin: 0 (-$array-input-row-padding-h);
-    padding: $array-input-row-padding-v $array-input-row-padding-h;
+    margin: 0 (-$input-array-row-padding-h);
+    padding: $input-array-row-padding-v $input-array-row-padding-h;
     white-space: nowrap;
 }
 
-.array-input-key,
-.array-input-value {
+.input-array-key,
+.input-array-value {
     display: inline-block;
     margin-bottom: 0;
 }
 
-.array-input-key {
-    margin-right: $array-input-key-margin-right;
-    width: $array-input-key-width;
+.input-array-key {
+    margin-right: $input-array-key-margin-right;
+    width: $input-array-key-width;
 }
 
-.array-input-value {
-    margin-right: $array-input-value-margin-right;
+.input-array-value {
+    margin-right: $input-array-value-margin-right;
 }
 
-.array-input-add,
-.array-input-remove {
-    margin-right: $array-input-actions-margin-right;
+.input-array-add,
+.input-array-remove {
+    margin-right: $input-array-actions-margin-right;
     padding: 0;
     min-width: 1rem;
 }

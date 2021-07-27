@@ -2,7 +2,7 @@
 <div class="input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',
-        'class'       => 'image-input',
+        'class'       => 'input-image',
         'id'          => $field->name(),
         'name'        => $field->formName(),
         'value'       => basename($field->value()),

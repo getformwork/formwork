@@ -36,11 +36,11 @@ export default {
             });
         });
 
-        $$('.date-input').forEach(function (element) {
+        $$('.input-date').forEach(function (element) {
             DatePicker(element, Formwork.config.DatePicker);
         });
 
-        $$('.image-input').forEach(function (element) {
+        $$('.input-image').forEach(function (element) {
             element.addEventListener('click', function () {
                 Modals.show('imagesModal', null, function (modal) {
                     var selected = $('.image-picker-thumbnail.selected', modal);
@@ -83,7 +83,7 @@ export default {
             RangeInput(element);
         });
 
-        $$('.array-input').forEach(function (element) {
+        $$('.input-array').forEach(function (element) {
             ArrayInput(element);
         });
 

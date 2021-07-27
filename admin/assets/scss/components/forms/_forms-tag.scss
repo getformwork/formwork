@@ -1,4 +1,4 @@
-.tag-input {
+.input-tag {
     position: relative;
     display: block;
     box-sizing: border-box;
@@ -13,7 +13,7 @@
     @include user-select-none;
 }
 
-.tag-input.focused {
+.input-tag.focused {
     border-color: $color-accent-500;
 }
 
@@ -35,15 +35,15 @@
     }
 }
 
-.tag-hidden-input {
+.input-tag-hidden {
     display: none;
 }
 
-.tag-input .tag {
+.input-tag .tag {
     display: inline-block;
     box-sizing: border-box;
     margin-bottom: $input-padding-v;
-    padding: $tag-input-tag-padding-v $tag-input-tag-padding-h;
+    padding: $input-tag-tag-padding-v $input-tag-tag-padding-h;
     border-radius: $border-radius;
     background-color: $color-base-700;
     font-size: $font-size-s;
@@ -51,12 +51,12 @@
     @include user-select-none;
 }
 
-.tag-input.disabled,
-.tag-input.disabled .tag-inner-input {
+.input-tag.disabled,
+.input-tag.disabled .tag-inner-input {
     background-color: $color-base-800;
 }
 
-.tag-input.disabled .tag {
+.input-tag.disabled .tag {
     background-color: $color-base-600;
 }
 

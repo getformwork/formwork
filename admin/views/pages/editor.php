@@ -102,8 +102,8 @@
 <?php
                 if ($admin->user()->permissions()->has('pages.upload_files')):
 ?>
-                <input class="file-input" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $formwork->config()->get('files.allowed_extensions')) ?>">
-                <label for="file-uploader" class="file-input-label">
+                <input class="input-file" id="file-uploader" type="file" name="uploaded-file" data-auto-upload="true" accept="<?= implode(', ', $formwork->config()->get('files.allowed_extensions')) ?>">
+                <label for="file-uploader" class="input-file-label">
                     <span><?= $this->translate('fields.file.upload-label') ?></span>
                 </label>
 <?php

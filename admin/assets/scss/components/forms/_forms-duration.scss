@@ -1,4 +1,4 @@
-.duration-input {
+.input-duration {
     box-sizing: border-box;
     margin-top: 0;
     margin-bottom: $input-margin-bottom;
@@ -10,18 +10,18 @@
     @include user-select-none;
 }
 
-.duration-input.focused {
+.input-duration.focused {
     border-color: $color-accent-500;
 }
 
-.duration-input > span {
+.input-duration > span {
     text-align: center;
 }
 
-.duration-input input {
+.input-duration input {
     margin: 0;
     padding: 0;
-    width: $duration-input-inner-width;
+    width: $input-duration-inner-width;
     border: 0;
     background-color: $color-base-700;
     vertical-align: baseline;
@@ -34,15 +34,15 @@
     }
 }
 
-.duration-input input:focus {
+.input-duration input:focus {
     box-shadow: none;
 }
 
-.duration-input label {
+.input-duration label {
     margin: 0;
-    padding: 0 $duration-input-label-padding-h;
+    padding: 0 $input-duration-label-padding-h;
 }
 
-.duration-hidden-input {
+.input-duration-hidden {
     display: none;
 }
