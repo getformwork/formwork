@@ -143,20 +143,19 @@
     align-items: center;
     margin-bottom: $admin-user-card-margin-bottom;
     cursor: pointer;
-    &:hover img {
-        box-shadow: 0 0 0 0.5rem $color-base-600;
-    }
 }
 
 .admin-user-avatar {
     width: $admin-user-avatar-width;
 }
 
-// stylelint-disable-next-line no-descending-specificity
 .admin-user-avatar img {
     width: $admin-user-avatar-width;
     border-radius: $border-radius-round;
     transition: box-shadow $transition-time-m ease-out;
+    .admin-user-card:hover & {
+        box-shadow: 0 0 0 0.5rem $color-base-600;
+    }
 }
 
 .admin-user-details {
