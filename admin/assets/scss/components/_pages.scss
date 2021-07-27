@@ -27,6 +27,7 @@
     min-width: auto;
     border-color: transparent;
     background-color: transparent;
+    box-shadow: none;
     cursor: pointer;
     &:hover,
     &:focus {
@@ -191,6 +192,7 @@ button .page-language,
     padding: 0;
     border-color: transparent;
     background-color: transparent;
+    box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
     &:hover,
