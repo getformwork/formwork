@@ -46,16 +46,17 @@ input[type=file] {
     padding: 0;
     border: none;
     border-radius: 0;
+    &::-webkit-file-upload-button {
+        font: inherit;
+        -webkit-appearance: button;
+    }
 }
 
-input[type=file]::-webkit-file-upload-button {
-    font: inherit;
-    -webkit-appearance: button;
-}
-
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-    height: auto;
+input[type=number] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        height: auto;
+    }
 }
 
 input[type=search] {
