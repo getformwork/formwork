@@ -5,6 +5,7 @@ namespace Formwork\Files;
 use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 
@@ -36,7 +37,7 @@ class File
     protected string $mimeType;
 
     /**
-     * File type (image, text, audio, video or document)
+     * File type in a human-readable format
      */
     protected ?string $type;
 
@@ -59,7 +60,6 @@ class File
         $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
-        $this->type = $this->type();
         $this->uri = Uri::resolveRelative($this->name, HTTPRequest::root() . ltrim(Formwork::instance()->request(), '/'));
         $this->size = FileSystem::formatSize(FileSystem::fileSize($path));
     }
@@ -105,7 +105,7 @@ class File
     }
 
     /**
-     * Get file type
+     * Get file type in a human-readable format
      */
     public function type(): ?string
     {
@@ -113,22 +113,31 @@ class File
             return $this->type;
         }
         if (Str::startsWith($this->mimeType, 'image')) {
-            return 'image';
+            return $this->type = 'image';
         }
         if (Str::startsWith($this->mimeType, 'text')) {
-            return 'text';
+            return $this->type = 'text';
         }
         if (Str::startsWith($this->mimeType, 'audio')) {
-            return 'audio';
+            return $this->type = 'audio';
         }
         if (Str::startsWith($this->mimeType, 'video')) {
-            return 'video';
+            return $this->type = 'video';
         }
-        if (in_array($this->extension, ['pdf', 'doc', 'docx', 'odt'], true)) {
-            return 'document';
+        if ($this->mimeType === MimeType::fromExtension('pdf')) {
+            return $this->type = 'pdf';
         }
-        if (in_array($this->extension, ['gz', '7z', 'bz2', 'rar', 'tar', 'zip'], true)) {
-            return 'archive';
+        if ($this->matchExtensions(['doc', 'docx', 'odt', 'odm', 'ott'])) {
+            return $this->type = 'document';
+        }
+        if ($this->matchExtensions(['ppt', 'pptx', 'pps', 'odp', 'otp'])) {
+            return $this->type = 'presentation';
+        }
+        if ($this->matchExtensions(['xls', 'xlsx', 'ods', 'ots'])) {
+            return $this->type = 'spreadsheet';
+        }
+        if ($this->matchExtensions(['gz', '7z', 'bz2', 'rar', 'tar', 'zip'])) {
+            return $this->type = 'archive';
         }
         return null;
     }
@@ -150,6 +159,18 @@ class File
             return $this->hash;
         }
         return $this->hash = hash_file('sha256', $this->path);
+    }
+
+    /**
+     * Match MIME type with an array of extensions
+     */
+    private function matchExtensions(array $extensions): bool
+    {
+        $mimeTypes = array_map(
+            static fn (string $extension): string => MimeType::fromExtension($extension),
+            $extensions
+        );
+        return in_array($this->mimeType, $mimeTypes, true);
     }
 
     public function __toString(): string
