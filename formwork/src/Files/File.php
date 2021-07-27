@@ -38,7 +38,7 @@ class File
     /**
      * File type (image, text, audio, video or document)
      */
-    protected string $type;
+    protected ?string $type;
 
     /**
      * File size in a human-readable format
