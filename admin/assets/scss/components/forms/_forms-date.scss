@@ -10,7 +10,7 @@
     margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
     padding: $calendar-padding;
     width: $calendar-width;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     border-radius: $border-radius;
     background-color: $color-base-900;
     box-shadow: $dropdown-box-shadow;
@@ -91,5 +91,5 @@
 .calendar-separator {
     margin: $calendar-padding (-$calendar-padding);
     height: 0;
-    border-top: 1px solid $color-base-500;
+    border-top: $input-border-width solid $color-base-500;
 }

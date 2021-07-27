@@ -230,7 +230,7 @@ $dropdown-menu-padding-v: 0.25rem;
 $dropdown-menu-padding-h: 0;
 $dropdown-menu-min-width: 8rem;
 $dropdown-menu-border-width: 1px;
-$dropdown-menu-border-radius: 3px;
+$dropdown-menu-border-radius: $border-radius;
 
 $dropdown-item-padding-v: 0.25rem;
 $dropdown-item-padding-h: 1rem;
@@ -266,6 +266,13 @@ $calendar-width: 18rem;
 
 $calendar-button-padding-v: 0;
 $calendar-button-padding-h: 0.5rem;
+
+// ===
+// Duration input
+// ===
+
+$duration-input-inner-width: 2rem;
+$duration-input-label-padding-h: 0.5rem;
 
 // ===
 // Image picker

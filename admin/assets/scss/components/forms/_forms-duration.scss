@@ -3,7 +3,7 @@
     margin-top: 0;
     margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h * 0.5;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;
@@ -21,7 +21,7 @@
 .duration-input input {
     margin: 0;
     padding: 0;
-    width: 2rem;
+    width: $duration-input-inner-width;
     border: 0;
     background-color: $color-base-700;
     vertical-align: baseline;
@@ -40,7 +40,7 @@
 
 .duration-input label {
     margin: 0;
-    padding: 0 0.5rem;
+    padding: 0 $duration-input-label-padding-h;
 }
 
 .duration-hidden-input {

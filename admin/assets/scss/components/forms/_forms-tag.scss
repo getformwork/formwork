@@ -6,7 +6,7 @@
     margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h * 0.5;
     padding-bottom: 0;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;

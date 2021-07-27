@@ -59,7 +59,7 @@ a.button {
 }
 
 .button-accent {
-    border: 1px solid $color-accent-500;
+    border: $button-border-width solid $color-accent-500;
     background-color: $color-accent-500;
     color: $color-white;
     &:hover,
@@ -74,7 +74,7 @@ a.button {
 }
 
 .button-success {
-    border: 1px solid $color-success-500;
+    border: $button-border-width solid $color-success-500;
     background-color: $color-success-500;
     color: $color-white;
     &:hover,
@@ -89,7 +89,7 @@ a.button {
 }
 
 .button-warning {
-    border: 1px solid $color-warning-500;
+    border: $button-border-width solid $color-warning-500;
     background-color: $color-warning-500;
     color: $color-white;
     &:hover,
@@ -104,7 +104,7 @@ a.button {
 }
 
 .button-error {
-    border: 1px solid $color-error-500;
+    border: $button-border-width solid $color-error-500;
     background-color: $color-error-500;
     color: $color-white;
     &:hover,

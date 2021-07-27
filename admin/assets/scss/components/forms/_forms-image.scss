@@ -17,7 +17,7 @@
     padding: $image-picker-thumbnail-padding;
     width: $image-picker-thumbnail-width;
     height: $image-picker-thumbnail-height;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     background-position: center;
     background-origin: content-box;
     background-size: contain;

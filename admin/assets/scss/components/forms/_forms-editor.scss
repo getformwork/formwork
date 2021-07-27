@@ -2,7 +2,7 @@
 
 .editor-toolbar {
     padding: $editor-toolbar-padding-v $editor-toolbar-padding-h;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
     background-color: $color-base-800;

@@ -2,7 +2,7 @@
     display: inline-block;
     margin: 0;
     margin-bottom: $input-margin-bottom;
-    border: 1px solid $color-base-500;
+    border: $input-border-width solid $color-base-500;
     border-radius: $border-radius;
     font-size: 0;
 }
