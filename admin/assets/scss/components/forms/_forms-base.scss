@@ -83,6 +83,10 @@ textarea {
     resize: vertical;
 }
 
+.input-large {
+    font-size: $font-size-l;
+}
+
 .input-accent {
     border-color: $color-accent-500;
 }
