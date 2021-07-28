@@ -66,9 +66,9 @@
     margin: 0;
     border: none;
     background-color: transparent;
+    box-shadow: none;
     font-size: $font-size-m;
     cursor: pointer;
-    box-shadow: none;
     &:hover {
         background-color: transparent;
         box-shadow: none;
