@@ -6,6 +6,7 @@
         "./assets/scss/vendor/*.scss"
     ],
     "plugins": [
+        "stylelint-scss",
         "stylelint-order"
     ],
     "rules": {
@@ -45,6 +46,22 @@
         "no-descending-specificity": true,
         "no-duplicate-selectors": true,
         "number-leading-zero": "always",
+        "scss/at-import-no-partial-leading-underscore": true,
+        "scss/at-rule-no-unknown": true,
+        "scss/dollar-variable-colon-space-after": "always",
+        "scss/dollar-variable-colon-space-before": "never",
+        "scss/dollar-variable-first-in-block": [true, {
+            "ignore": [
+                "comments", "imports"
+            ]
+        }],
+        "scss/dollar-variable-no-missing-interpolation": true,
+        "scss/no-duplicate-dollar-variables": [true, {
+            "ignoreInside": "at-rule"
+        }],
+        "scss/no-duplicate-mixins": true,
+        "scss/no-global-function-names": true,
+        "scss/operator-no-unspaced": true,
         "order/properties-order": [
             "position",
             "top",
