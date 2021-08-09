@@ -15,14 +15,12 @@
     right: 0;
     bottom: 0;
     left: 0;
-    display: flex;
     display: none;
     align-items: center;
     outline: 0;
 }
 
 .modal.show {
-    display: block;
     display: flex;
 }
 
