@@ -2,11 +2,11 @@
     position: relative;
     display: block;
     box-sizing: border-box;
-    margin-top: 0;
-    margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h * 0.5;
     padding-bottom: 0;
     border: $input-border-width solid $color-base-500;
+    margin-top: 0;
+    margin-bottom: $input-margin-bottom;
     border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;
@@ -19,17 +19,17 @@
 
 .tag-inner-input {
     display: inline-block;
-    box-sizing: border-box;
-    margin-bottom: $input-padding-v;
-    padding: 0 $input-padding-h * 0.5;
-    max-width: 100%;
     width: auto;
-    outline: none;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 $input-padding-h * 0.5;
     border: 0;
+    margin-bottom: $input-padding-v;
     border-radius: 0;
-    font-size: $font-size-s;
     font-family: inherit;
+    font-size: $font-size-s;
     line-height: inherit;
+    outline: none;
     &:focus {
         box-shadow: none;
     }
@@ -42,12 +42,12 @@
 .input-tag .tag {
     display: inline-block;
     box-sizing: border-box;
-    margin-bottom: $input-padding-v;
     padding: $input-tag-tag-padding-v $input-tag-tag-padding-h;
-    border-radius: $border-radius;
+    margin-bottom: $input-padding-v;
     background-color: $color-base-700;
-    font-size: $font-size-s;
+    border-radius: $border-radius;
     cursor: default;
+    font-size: $font-size-s;
     @include user-select-none;
 }
 
@@ -62,8 +62,8 @@
 
 .tag-remove {
     display: inline-block;
-    margin-left: $tag-remove-margin-left;
     padding: $tag-remove-padding-v $tag-remove-padding-h;
+    margin-left: $tag-remove-margin-left;
     color: $color-base-100;
     font-style: normal;
     transition: color $transition-time-s;

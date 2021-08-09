@@ -1,21 +1,21 @@
 input {
     display: inline-block;
+    width: 100%;
+    padding: $input-padding-v $input-padding-h;
+    border: $input-border-width solid $color-base-500;
     margin: 0;
     margin-bottom: $input-margin-bottom;
-    padding: $input-padding-v $input-padding-h;
-    width: 100%;
-    border: $input-border-width solid $color-base-500;
-    border-radius: $input-border-radius;
     background-color: $color-base-900;
+    border-radius: $input-border-radius;
     color: $color-base-100;
-    vertical-align: middle;
-    font-size: $input-font-size;
     font-family: $base-font-family;
+    font-size: $input-font-size;
     line-height: $input-line-height;
+    vertical-align: middle;
     @include appearance-none;
     &:focus {
-        outline: none;
         border-color: $color-accent-500;
+        outline: none;
         @include focusring;
     }
     &[disabled] {
@@ -30,10 +30,10 @@ input {
 
 input[type=checkbox],
 input[type=radio] {
-    margin-bottom: 0;
-    padding: 0;
     width: auto;
     height: inherit;
+    padding: 0;
+    margin-bottom: 0;
     vertical-align: text-top;
     &:focus {
         box-shadow: none;
@@ -45,8 +45,8 @@ input[type=file] {
     border: none;
     border-radius: 0;
     &::-webkit-file-upload-button {
-        font: inherit;
         -webkit-appearance: button;
+        font: inherit;
     }
 }
 
@@ -58,8 +58,8 @@ input[type=number] {
 }
 
 input[type=search] {
-    padding-left: $input-search-padding-left;
     max-width: $input-search-width;
+    padding-left: $input-search-padding-left;
     background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2 7a5 5 0 007.965 4.026l.005.004 2.5 2.5a.75.75 0 101.06-1.06l-2.5-2.5-.004-.005A5 5 0 102 7zm1.5 0a3.5 3.5 0 107 0 3.5 3.5 0 00-7 0z" clip-rule="evenodd"/></svg>') no-repeat left 0.5rem top 0.375rem;
     background-size: 1rem 1rem;
     &::-webkit-search-cancel-button {
@@ -81,9 +81,9 @@ select {
 
 textarea {
     overflow: auto;
+    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
     min-height: 2 * $input-font-size * $input-line-height + $input-padding-v * 2;
     max-height: 12 * $input-font-size * $input-line-height + $input-padding-v * 2;
-    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
     resize: vertical;
     @extend input;
 }
@@ -119,8 +119,8 @@ textarea {
 }
 
 .input-wrap input {
-    margin-bottom: 0;
     padding-right: $input-wrap-padding-right;
+    margin-bottom: 0;
 }
 
 .input-reset {
@@ -128,8 +128,8 @@ textarea {
     top: 50%;
     right: $input-padding-h;
     color: $color-base-100;
-    transition: color $transition-time-s;
     transform: translateY(-50%);
+    transition: color $transition-time-s;
     &:hover {
         color: $color-accent-500;
     }

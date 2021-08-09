@@ -3,8 +3,8 @@
 @use 'sass:map';
 
 .pages-list {
-    margin: 0;
     padding: 0;
+    margin: 0;
     list-style-type: none;
     @include user-select-none;
 }
@@ -22,10 +22,10 @@
 
 .page-children-toggle {
     display: inline-block;
-    margin: 0 $page-children-toggle-margin-right $page-children-toggle-margin-bottom 0;
-    padding: 0;
     min-width: auto;
+    padding: 0;
     border-color: transparent;
+    margin: 0 $page-children-toggle-margin-right $page-children-toggle-margin-bottom 0;
     background-color: transparent;
     box-shadow: none;
     cursor: pointer;
@@ -76,22 +76,22 @@
 }
 
 .page-title {
-    margin: -$focusring-width;
     padding: $focusring-width;
+    margin: -$focusring-width;
     font-size: $font-size-m;
 }
 
 .page-language {
     display: inline-block;
-    padding: $page-language-padding-v $page-language-padding-h;
     min-width: $page-language-min-width;
-    border-radius: $border-radius;
+    padding: $page-language-padding-v $page-language-padding-h;
     background-color: $color-accent-900;
+    border-radius: $border-radius;
     color: $color-accent-500;
-    text-align: center;
-    font-weight: 600;
     font-size: $font-size-s;
+    font-weight: 600;
     line-height: 1;
+    text-align: center;
 }
 
 button .page-language,
@@ -105,8 +105,8 @@ button .page-language,
 }
 
 .page-route-changeable {
-    margin: -$focusring-width;
     padding: $focusring-width;
+    margin: -$focusring-width;
 }
 
 .page-status .icon {
@@ -149,15 +149,15 @@ button .page-language,
     }
 
     .page-details {
-        flex: 0 0 55%;
         max-width: 55%;
+        flex: 0 0 55%;
     }
 
     .page-date,
     .page-status,
     .page-actions {
-        flex: 0 0 15%;
         max-width: 15%;
+        flex: 0 0 15%;
         text-align: center;
     }
 }
@@ -179,8 +179,8 @@ button .page-language,
 }
 
 .page-info {
-    margin-bottom: $page-info-margin-bottom;
     padding: $page-info-padding-v $page-info-padding-h;
+    margin-bottom: $page-info-margin-bottom;
 }
 
 .page-info > div {
@@ -188,9 +188,9 @@ button .page-language,
 }
 
 .page-slug-change {
-    margin: 0;
     padding: 0;
     border-color: transparent;
+    margin: 0;
     background-color: transparent;
     box-shadow: none;
     color: $color-base-300;

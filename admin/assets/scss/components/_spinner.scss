@@ -1,7 +1,6 @@
 .spinner {
     position: relative;
     display: inline-block;
-    margin-right: $spinner-margin-right;
     width: $spinner-width;
     height: $spinner-height;
     border-width: $spinner-border-width;
@@ -9,12 +8,13 @@
     border-color: $color-accent-500;
     border-bottom-color: transparent;
     border-left-color: transparent;
+    margin-right: $spinner-margin-right;
+    animation: $spinner-animation-duration spin infinite linear;
     border-radius: $border-radius-round;
-    vertical-align: -0.375rem;
     text-align: center;
     transition: border $spinner-border-transition-duration;
     transition-timing-function: ease-out;
-    animation: $spinner-animation-duration spin infinite linear;
+    vertical-align: -0.375rem;
 }
 
 .spinner .icon {
@@ -26,18 +26,18 @@
 
 .spinner-info {
     border-color: $color-accent-500;
-    color: $color-accent-500;
     animation: none;
+    color: $color-accent-500;
 }
 
 .spinner-success {
     border-color: $color-success-500;
-    color: $color-success-500;
     animation: none;
+    color: $color-success-500;
 }
 
 .spinner-error {
     border-color: $color-error-500;
-    color: $color-error-500;
     animation: none;
+    color: $color-error-500;
 }

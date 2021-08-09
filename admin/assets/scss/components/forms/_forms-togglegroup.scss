@@ -1,8 +1,8 @@
 .input-togglegroup {
     display: inline-block;
+    border: $input-border-width solid $color-base-500;
     margin: 0;
     margin-bottom: $input-margin-bottom;
-    border: $input-border-width solid $color-base-500;
     border-radius: $border-radius;
     font-size: 0;
 }

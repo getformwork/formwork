@@ -1,7 +1,7 @@
 .error-container {
-    margin: $error-container-margin-v $error-container-margin-h;
-    padding: $error-container-padding;
     max-width: $error-container-max-width;
+    padding: $error-container-padding;
+    margin: $error-container-margin-v $error-container-margin-h;
     text-align: center;
 }
 
@@ -17,8 +17,8 @@
 
 .error-code {
     display: block;
-    font-weight: 400;
     font-size: 8rem;
+    font-weight: 400;
 }
 
 .error-status {
@@ -31,10 +31,10 @@
 }
 
 .error-container .logo {
-    margin: 2rem auto;
     width: 3.5rem;
     height: 3.5rem;
+    margin: 2rem auto;
     background-position: center;
-    background-size: cover;
     background-repeat: no-repeat;
+    background-size: cover;
 }

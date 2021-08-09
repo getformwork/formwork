@@ -2,10 +2,10 @@
 
 .title-bar {
     position: fixed;
+    z-index: 8;
     top: 0;
     right: 0;
     left: 0;
-    z-index: 8;
     padding: $title-bar-padding;
     padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
     background-color: $color-base-700;
@@ -24,8 +24,8 @@
 }
 
 .view-site {
-    float: right;
     color: $color-base-100;
+    float: right;
     &:hover {
         color: $color-accent-500;
     }
@@ -37,12 +37,12 @@
 
 .sidebar {
     position: fixed;
+    z-index: 10;
     top: 0;
     bottom: 0;
     left: 0;
-    z-index: 10;
-    padding: $sidebar-padding-h $sidebar-padding-v;
     width: $sidebar-width;
+    padding: $sidebar-padding-h $sidebar-padding-v;
     background: $sidebar-background-gradient;
     background-color: $sidebar-background-gradient-color-0;
     box-shadow: $component-box-shadow;
@@ -54,21 +54,21 @@
 }
 
 .sidebar-wrapper {
-    overflow-y: auto;
     height: calc(100% - 9rem);
+    overflow-y: auto;
 }
 
 .toggle-navigation {
     position: fixed;
+    z-index: 12;
     top: $toggle-navigation-top;
     left: $toggle-navigation-left;
-    z-index: 12;
-    margin: 0;
     border: none;
+    margin: 0;
     background-color: transparent;
     box-shadow: none;
-    font-size: $font-size-m;
     cursor: pointer;
+    font-size: $font-size-m;
     &:hover {
         background-color: transparent;
         box-shadow: none;
@@ -83,18 +83,18 @@
 .logo {
     margin-bottom: $logo-margin-bottom;
     color: $color-base-100;
-    text-align: center;
-    font-weight: 600;
     font-size: $logo-font-size;
+    font-weight: 600;
     line-height: $logo-line-height;
+    text-align: center;
     @media (min-width: map.get($responsive-breakpoints, 's')) {
         text-align: left;
     }
 }
 
 .logo img {
-    margin-right: $logo-image-margin-right;
     height: $logo-image-height;
+    margin-right: $logo-image-margin-right;
     vertical-align: $logo-image-vertical-align;
 }
 
@@ -104,9 +104,9 @@
 }
 
 .sidebar-navigation {
+    padding: 0;
     margin: 0;
     margin-bottom: $sidebar-navigation-margin-bottom;
-    padding: 0;
     list-style-type: none;
     &:last-child {
         margin-bottom: 0;
@@ -115,10 +115,10 @@
 
 .sidebar-navigation > li {
     position: relative;
-    margin: 0;
-    margin-bottom: $sidebar-navigation-li-margin-bottom;
     padding: $sidebar-navigation-li-padding-v $sidebar-navigation-li-padding-h;
     padding-left: $sidebar-navigation-li-padding-left;
+    margin: 0;
+    margin-bottom: $sidebar-navigation-li-margin-bottom;
 }
 
 .sidebar-navigation > li a {
@@ -182,20 +182,20 @@
 }
 
 .component {
-    margin-bottom: $component-margin-bottom;
     padding: $component-padding;
-    border-radius: $border-radius;
+    margin-bottom: $component-margin-bottom;
     background-color: $color-base-900;
+    border-radius: $border-radius;
     box-shadow: $component-box-shadow;
     @include clearfix;
 }
 
 .caption {
     margin-bottom: $caption-margin-bottom;
-    text-transform: uppercase;
-    letter-spacing: $caption-letter-spacing;
-    font-weight: 500;
     font-size: $caption-font-size;
+    font-weight: 500;
+    letter-spacing: $caption-letter-spacing;
+    text-transform: uppercase;
     @include user-select-none;
 }
 
@@ -208,20 +208,20 @@
 }
 
 .section-header {
-    margin-bottom: $section-header-margin-bottom;
     padding: $section-header-padding-v $section-header-padding-h;
     border-bottom: 1px solid $color-base-600;
-    font-weight: 600;
+    margin-bottom: $section-header-margin-bottom;
     font-size: $font-size-m;
+    font-weight: 600;
     @include user-select-none;
 }
 
 .icon {
     display: inline-block;
-    min-width: 16px;
-    min-height: 16px;
     width: 1em;
+    min-width: 16px;
     height: 1em;
+    min-height: 16px;
     vertical-align: -0.125rem;
 }
 

@@ -1,31 +1,31 @@
 .notification-container {
     position: fixed;
+    z-index: 12;
     top: $notification-container-top;
     right: $notification-container-right;
-    z-index: 12;
 }
 
 .notification {
     position: relative;
     overflow: hidden;
-    margin-bottom: $notification-margin-bottom;
-    padding: $notification-padding-v $notification-padding-h;
     width: $notification-width;
-    border-radius: $border-radius;
-    background-color: $color-base-700;
-    box-shadow: $notification-box-shadow;
-    text-overflow: ellipsis;
-    cursor: default;
-    transition: top $transition-time-m ease-in, opacity $transition-time-s;
+    padding: $notification-padding-v $notification-padding-h;
+    margin-bottom: $notification-margin-bottom;
     animation: fadeInRight $notification-animation-duration $notification-animation-easing;
+    background-color: $color-base-700;
+    border-radius: $border-radius;
+    box-shadow: $notification-box-shadow;
+    cursor: default;
+    text-overflow: ellipsis;
+    transition: top $transition-time-m ease-in, opacity $transition-time-s;
     &:hover {
         opacity: $notification-hover-opacity;
     }
 }
 
 .notification.fadeout {
-    opacity: 0;
     animation: fadeOutRight $notification-animation-duration $notification-animation-easing;
+    opacity: 0;
 }
 
 .notification .icon {

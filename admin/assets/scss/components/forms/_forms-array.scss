@@ -9,8 +9,8 @@
 
 .input-array-row {
     display: flex;
-    margin: 0 (-$input-array-row-padding-h);
     padding: $input-array-row-padding-v $input-array-row-padding-h;
+    margin: 0 (-$input-array-row-padding-h);
     white-space: nowrap;
 }
 
@@ -21,8 +21,8 @@
 }
 
 .input-array-key {
-    margin-right: $input-array-key-margin-right;
     width: $input-array-key-width;
+    margin-right: $input-array-key-margin-right;
 }
 
 .input-array-value {
@@ -31,7 +31,7 @@
 
 .input-array-add,
 .input-array-remove {
-    margin-right: $input-array-actions-margin-right;
-    padding: 0;
     min-width: 1rem;
+    padding: 0;
+    margin-right: $input-array-actions-margin-right;
 }

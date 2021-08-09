@@ -1,8 +1,8 @@
 .tabs {
-    overflow-x: auto;
-    margin-bottom: $tabs-margin-bottom;
     padding: $focusring-width $focusring-width 0;
     border-bottom: 1px solid $color-base-600;
+    margin-bottom: $tabs-margin-bottom;
+    overflow-x: auto;
     white-space: nowrap;
     @include user-select-none;
 }

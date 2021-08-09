@@ -4,24 +4,24 @@
 
 .image-picker-thumbnails {
     overflow: auto;
-    margin-bottom: $image-picker-thumbnails-margin-bottom;
-    padding: $image-picker-thumbnails-padding;
     height: $image-picker-thumbnails-height;
+    padding: $image-picker-thumbnails-padding;
+    margin-bottom: $image-picker-thumbnails-margin-bottom;
 }
 
 .image-picker-thumbnail {
     position: relative;
     display: inline-block;
-    box-sizing: border-box;
-    margin: $image-picker-thumbnail-margin;
-    padding: $image-picker-thumbnail-padding;
     width: $image-picker-thumbnail-width;
     height: $image-picker-thumbnail-height;
+    box-sizing: border-box;
+    padding: $image-picker-thumbnail-padding;
     border: $input-border-width solid $color-base-500;
-    background-position: center;
+    margin: $image-picker-thumbnail-margin;
     background-origin: content-box;
-    background-size: contain;
+    background-position: center;
     background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .image-picker-thumbnail::after {
@@ -31,11 +31,11 @@
     left: $image-picker-thumbnail-caption-left;
     display: block;
     padding: $image-picker-thumbnail-caption-padding-v $image-picker-thumbnail-caption-padding-h;
-    border-radius: $border-radius;
     background-color: $image-picker-thumbnail-caption-background-color;
+    border-radius: $border-radius;
     content: attr(data-filename);
-    text-align: center;
     font-size: $font-size-xs;
+    text-align: center;
     @include ellipsis;
 }
 

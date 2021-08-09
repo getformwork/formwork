@@ -1,7 +1,7 @@
 .files-list {
+    padding: 0;
     margin: 0;
     margin-bottom: $files-list-margin-bottom;
-    padding: 0;
     list-style-type: none;
     @include user-select-none;
 }
@@ -14,13 +14,13 @@
 .files-item-cell {
     overflow: hidden;
     padding: $files-item-cell-padding;
-    white-space: nowrap;
     font-size: $font-size-s;
+    white-space: nowrap;
 }
 
 .file-name {
-    flex: 0 0 80%;
     max-width: 80%;
+    flex: 0 0 80%;
     font-size: $file-name-font-size;
     @include ellipsis;
 }
@@ -35,8 +35,8 @@
 }
 
 .file-actions {
-    flex: 0 0 20%;
     max-width: 20%;
-    text-align: right;
+    flex: 0 0 20%;
     font-size: $font-size-m;
+    text-align: right;
 }

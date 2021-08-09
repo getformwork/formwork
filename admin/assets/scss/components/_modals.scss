@@ -1,20 +1,20 @@
 .modal-backdrop {
     position: fixed;
+    z-index: 16;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 16;
     background-color: $backdrop-background-color;
 }
 
 .modal {
     position: fixed;
+    z-index: 20;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 20;
     display: flex;
     display: none;
     align-items: center;
@@ -27,27 +27,27 @@
 }
 
 .modal-content {
-    margin: $modal-margin-v $modal-margin-h;
-    padding: $modal-padding;
     max-width: $modal-width-s;
-    border-radius: $border-radius;
+    padding: $modal-padding;
+    margin: $modal-margin-v $modal-margin-h;
     background-color: $color-base-900;
+    border-radius: $border-radius;
     @media (min-width: $modal-width-s) {
         margin: $modal-margin-v auto;
     }
 }
 
 .modal-size-large {
-    max-width: $modal-width-l;
     width: $modal-width-l;
+    max-width: $modal-width-l;
     @media (max-width: $modal-width-l) {
         margin: $modal-margin-v $modal-margin-h;
     }
 }
 
 .modal-error {
-    margin: $modal-error-margin $modal-error-margin $modal-error-margin-bottom $modal-error-margin;
     padding: $modal-error-padding;
+    margin: $modal-error-margin $modal-error-margin $modal-error-margin-bottom $modal-error-margin;
     background-color: $color-error-500;
     color: $color-base-900;
 }

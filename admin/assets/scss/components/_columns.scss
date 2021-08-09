@@ -3,8 +3,8 @@
 .container,
 .container-full,
 .container-no-margin {
-    margin: 0 auto;
     padding: 0 $columns-gutter * 0.5;
+    margin: 0 auto;
 }
 
 .container {

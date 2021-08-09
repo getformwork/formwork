@@ -23,9 +23,9 @@ main {
 }
 
 a {
-    outline-color: $link-outline-color;
     background-color: transparent;
     color: $color-accent-500;
+    outline-color: $link-outline-color;
     text-decoration: none;
     transition: color $transition-time-s;
     &:hover {

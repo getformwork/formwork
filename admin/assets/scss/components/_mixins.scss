@@ -34,8 +34,10 @@
 @mixin caret($direction: bottom) {
     &::after {
         display: inline-block;
-        margin-left: $caret-width;
         height: 0;
+        margin-left: $caret-width;
+        content: ' ';
+        vertical-align: $caret-width * 0.5;
 
         @if $direction == bottom {
             border-top: $caret-width solid;
@@ -46,9 +48,6 @@
             border-bottom: $caret-width solid;
             border-left: $caret-width solid transparent;
         }
-
-        content: ' ';
-        vertical-align: $caret-width * 0.5;
     }
 }
 
@@ -77,16 +76,16 @@
         }
     }
     #{$selectors} {
-        padding: 0 $columns-gutter * 0.5;
         width: 100%;
+        padding: 0 $columns-gutter * 0.5;
     }
 }
 
 @mixin make-breakpoint-columns($columns-count, $breakpoint-name) {
     .col-#{$breakpoint-name} {
-        flex: 1 0 auto;
-        max-width: 100%;
         width: auto;
+        max-width: 100%;
+        flex: 1 0 auto;
     }
 
     @for $i from 1 through $columns-count {
@@ -98,8 +97,8 @@
             $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
         }
         #{$selectors} {
-            flex: 0 0 math.percentage(math.div($i, $columns-count));
             max-width: math.percentage(math.div($i, $columns-count));
+            flex: 0 0 math.percentage(math.div($i, $columns-count));
         }
     }
 }

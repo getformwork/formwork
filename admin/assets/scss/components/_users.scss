@@ -6,9 +6,9 @@
 }
 
 .user-summary-avatar {
+    max-width: 33.33333%;
     flex: 0 0 33.33333%;
     padding: $user-summary-cell-padding;
-    max-width: 33.33333%;
     text-align: center;
 }
 
@@ -42,8 +42,8 @@
 .users-item-cell,
 .users-headers-cell {
     padding: $users-item-cell-padding-v-s $users-item-cell-padding-h-s;
-    vertical-align: middle;
     font-size: $font-size-s;
+    vertical-align: middle;
     @include ellipsis;
 }
 
@@ -84,14 +84,14 @@
 
     .user-username,
     .user-last-access {
-        flex: 0 0 20%;
         max-width: 20%;
+        flex: 0 0 20%;
     }
 
     .user-fullname,
     .user-email {
-        flex: 0 0 25%;
         max-width: 25%;
+        flex: 0 0 25%;
     }
 
     .user-last-access,
@@ -100,7 +100,7 @@
     }
 
     .user-actions {
-        flex: 0 0 10%;
         max-width: 10%;
+        flex: 0 0 10%;
     }
 }

@@ -4,8 +4,8 @@
 }
 
 .info-data {
-    margin-bottom: $info-data-margin-bottom;
     width: 100%;
+    margin-bottom: $info-data-margin-bottom;
     table-layout: fixed;
 }
 
@@ -21,7 +21,7 @@
 
 .info-data-value {
     width: 75%;
-    word-break: break-word;
-    font-size: $font-size-s;
     font-family: $mono-font-family;
+    font-size: $font-size-s;
+    word-break: break-word;
 }

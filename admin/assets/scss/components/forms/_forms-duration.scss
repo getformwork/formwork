@@ -1,9 +1,9 @@
 .input-duration {
     box-sizing: border-box;
-    margin-top: 0;
-    margin-bottom: $input-margin-bottom;
     padding: $input-padding-v $input-padding-h * 0.5;
     border: $input-border-width solid $color-base-500;
+    margin-top: 0;
+    margin-bottom: $input-margin-bottom;
     border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;
@@ -19,14 +19,14 @@
 }
 
 .input-duration input {
-    margin: 0;
-    padding: 0;
     width: $input-duration-inner-width;
+    padding: 0;
     border: 0;
-    background-color: $color-base-700;
-    vertical-align: baseline;
-    text-align: center;
+    margin: 0;
     -moz-appearance: textfield;
+    background-color: $color-base-700;
+    text-align: center;
+    vertical-align: baseline;
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
         margin: 0;
@@ -39,8 +39,8 @@
 }
 
 .input-duration label {
-    margin: 0;
     padding: 0 $input-duration-label-padding-h;
+    margin: 0;
 }
 
 .input-duration-hidden {

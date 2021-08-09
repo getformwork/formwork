@@ -1,23 +1,23 @@
 input[type=range] {
-    padding: $input-range-padding-v $input-range-padding-h;
     width: $input-range-width;
+    padding: $input-range-padding-v $input-range-padding-h;
     border: 0;
     @include appearance-none;
     &::-webkit-slider-runnable-track {
         width: 100%;
         height: $input-range-track-height;
         border: 0;
-        border-radius: $input-range-track-height * 0.5;
         background-color: $color-base-600;
+        border-radius: $input-range-track-height * 0.5;
         cursor: default;
     }
     &::-webkit-slider-thumb {
-        margin-top: -($input-range-thumb-height - $input-range-track-height) * 0.5;
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
-        border-radius: $input-range-thumb-border-radius;
+        margin-top: -($input-range-thumb-height - $input-range-track-height) * 0.5;
         background-color: $color-accent-500;
+        border-radius: $input-range-thumb-border-radius;
         transition: background-color $transition-time-s;
         @include appearance-none;
     }
@@ -25,15 +25,15 @@ input[type=range] {
         width: 100%;
         height: $input-range-track-height;
         border: 0;
-        border-radius: $input-range-track-height * 0.5;
         background-color: $color-base-600;
+        border-radius: $input-range-track-height * 0.5;
     }
     &::-moz-range-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
-        border-radius: $input-range-thumb-border-radius;
         background-color: $color-accent-500;
+        border-radius: $input-range-thumb-border-radius;
         cursor: default;
     }
     &::-ms-track {
@@ -46,17 +46,17 @@ input[type=range] {
     }
     &::-ms-fill-lower, &::-ms-fill-upper {
         border: 0;
-        border-radius: $input-range-track-height * 0.5;
         background: $color-base-600;
+        border-radius: $input-range-track-height * 0.5;
         box-shadow: none;
     }
     &::-ms-thumb {
-        margin-top: 0;
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
-        border-radius: $input-range-thumb-border-radius;
+        margin-top: 0;
         background-color: $color-accent-500;
+        border-radius: $input-range-thumb-border-radius;
         cursor: default;
     }
     &:focus {
@@ -87,7 +87,7 @@ input[type=range] {
 
 .input-range-value {
     padding: $input-range-value-padding-v $input-range-value-padding-h;
-    vertical-align: 0.1875rem;
     font-size: $font-size-s;
+    vertical-align: 0.1875rem;
     @include user-select-none;
 }

@@ -2,24 +2,24 @@ button,
 .button {
     display: inline-block;
     overflow: visible;
+    min-width: $button-min-width;
+    padding: $button-padding-v $button-padding-h;
+    border: $button-border-width solid $color-base-600;
     margin-right: $button-margin-h;
     margin-bottom: $button-margin-bottom;
-    padding: $button-padding-v $button-padding-h;
-    min-width: $button-min-width;
-    outline: none;
-    border: $button-border-width solid $color-base-600;
-    border-radius: $button-border-radius;
     background-color: $color-base-600;
+    border-radius: $button-border-radius;
     box-shadow: $button-box-shadow;
     color: $color-base-100;
+    cursor: default;
+    font-family: $base-font-family;
+    font-size: $button-font-size;
+    font-weight: 500;
+    line-height: $button-line-height;
+    outline: none;
+    transition: border-color $transition-time-s, background-color $transition-time-s, color $transition-time-s;
     vertical-align: middle;
     white-space: nowrap;
-    font-weight: 500;
-    font-size: $button-font-size;
-    font-family: $base-font-family;
-    line-height: $button-line-height;
-    cursor: default;
-    transition: border-color $transition-time-s, background-color $transition-time-s, color $transition-time-s;
     @include user-select-none;
     &:hover,
     &:focus {
@@ -55,9 +55,9 @@ a.button {
 }
 
 .button-right {
-    float: right;
     margin-right: 0;
     margin-left: $button-margin-h;
+    float: right;
 }
 
 .button-accent {
@@ -121,12 +121,12 @@ a.button {
 }
 
 .button-link {
-    margin: 0;
     border: 0;
+    margin: 0;
     background-color: transparent;
     box-shadow: none;
-    font-size: inherit;
     cursor: pointer;
+    font-size: inherit;
     &:hover,
     &:focus {
         background-color: transparent;

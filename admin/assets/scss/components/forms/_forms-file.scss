@@ -4,10 +4,10 @@
 
 .input-file-label {
     display: block;
-    clear: both;
-    margin-bottom: $input-file-label-margin-bottom;
     padding: $input-file-label-padding;
+    margin-bottom: $input-file-label-margin-bottom;
     background-color: $color-base-800;
+    clear: both;
 }
 
 .input-file-label > span {

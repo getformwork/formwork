@@ -1,9 +1,9 @@
 .login-modal-container {
-    margin: $login-modal-margin-v $login-modal-margin-h;
-    padding: $login-modal-padding;
     max-width: $login-modal-width;
-    border-radius: $border-radius;
+    padding: $login-modal-padding;
+    margin: $login-modal-margin-v $login-modal-margin-h;
     background-color: $color-base-900;
+    border-radius: $border-radius;
 }
 
 @media (min-width: $login-modal-width) {
@@ -17,8 +17,8 @@
 .login-modal-warning,
 .login-modal-error {
     position: relative;
-    margin: $login-modal-notification-margin $login-modal-notification-margin $login-modal-notification-margin-bottom $login-modal-notification-margin;
     padding: $login-modal-notification-padding-v $login-modal-notification-padding-right $login-modal-notification-padding-v $login-modal-notification-padding-left;
+    margin: $login-modal-notification-margin $login-modal-notification-margin $login-modal-notification-margin-bottom $login-modal-notification-margin;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
     a {
