@@ -4,6 +4,7 @@
     margin: $login-modal-margin-v $login-modal-margin-h;
     background-color: $color-base-900;
     border-radius: $border-radius;
+    box-shadow: $component-box-shadow;
 }
 
 @media (min-width: $login-modal-width) {
