@@ -3,6 +3,6 @@ export default function RangeInput(input) {
     input.addEventListener('input', updateValueLabel);
 
     function updateValueLabel() {
-        $('.input-range-value', this.parentNode).innerHTML = this.value;
+        $('output[for="' + this.id + '"]').innerHTML = this.value;
     }
 }

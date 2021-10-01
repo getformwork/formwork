@@ -10,4 +10,4 @@
     'required' => $field->isRequired(),
     'disabled' => $field->isDisabled()
 ]) ?>>
-<span class="input-range-value"><?= $field->value() ?></span>
+<output class="input-range-value" for="<?= $field->name() ?>"><?= $field->value() ?></output>
