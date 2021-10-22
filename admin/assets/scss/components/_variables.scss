@@ -15,15 +15,15 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-base-100: hsl(0, 0%, 15%) !default;
-$color-base-200: hsl(0, 0%, 32%) !default;
-$color-base-300: hsl(0, 0%, 49%) !default;
-$color-base-400: hsl(0, 0%, 59%) !default;
-$color-base-500: hsl(0, 0%, 79%) !default;
-$color-base-600: hsl(0, 0%, 89%) !default;
-$color-base-700: hsl(0, 0%, 93%) !default;
-$color-base-800: hsl(0, 0%, 97%) !default;
-$color-base-900: hsl(0, 0%, 99%) !default;
+$color-base-100: hsl(0deg, 0%, 15%) !default;
+$color-base-200: hsl(0deg, 0%, 32%) !default;
+$color-base-300: hsl(0deg, 0%, 49%) !default;
+$color-base-400: hsl(0deg, 0%, 59%) !default;
+$color-base-500: hsl(0deg, 0%, 79%) !default;
+$color-base-600: hsl(0deg, 0%, 89%) !default;
+$color-base-700: hsl(0deg, 0%, 93%) !default;
+$color-base-800: hsl(0deg, 0%, 97%) !default;
+$color-base-900: hsl(0deg, 0%, 99%) !default;
 
 $color-accent-100: $color-blue-100;
 $color-accent-200: $color-blue-200;

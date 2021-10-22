@@ -1,21 +1,21 @@
 @keyframes fadeInRight {
     from {
-        opacity: 0;
+        opacity: 0%;
         transform: translate3d(150%, 0, 0);
     }
     to {
-        opacity: 1;
+        opacity: 100%;
         transform: none;
     }
 }
 
 @keyframes fadeOutRight {
     from {
-        opacity: 1;
+        opacity: 100%;
         transform: none;
     }
     to {
-        opacity: 0;
+        opacity: 0%;
         transform: translate3d(150%, 0, 0);
     }
 }

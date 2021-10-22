@@ -16,12 +16,12 @@
     margin: 0;
 }
 
-.input-togglegroup input[type=radio] {
+.input-togglegroup input[type='radio'] {
     position: absolute;
-    opacity: 0;
+    opacity: 0%;
 }
 
-.input-togglegroup input[type=radio] + span {
+.input-togglegroup input[type='radio'] + span {
     display: inline-block;
     padding: $input-togglegroup-inner-padding-v $input-togglegroup-inner-padding-h;
     border-radius: $border-radius - 1px;
@@ -29,28 +29,28 @@
     transition: background-color $transition-time-s, color $transition-time-s;
 }
 
-.input-togglegroup input[type=radio]:hover + span {
+.input-togglegroup input[type='radio']:hover + span {
     background-color: $color-base-800;
 }
 
-.input-togglegroup input[type=radio]:checked + span {
+.input-togglegroup input[type='radio']:checked + span {
     background-color: $color-accent-500;
     color: $color-white;
 }
 
-.input-togglegroup input[type=radio]:focus + span {
+.input-togglegroup input[type='radio']:focus + span {
     background-color: $color-accent-400;
 }
 
-.input-togglegroup[disabled] input[type=radio] + span {
+.input-togglegroup[disabled] input[type='radio'] + span {
     background-color: transparent;
     color: $color-base-100;
 }
 
-.input-togglegroup[disabled] input[type=radio]:checked + span {
+.input-togglegroup[disabled] input[type='radio']:checked + span {
     background-color: $color-base-600;
 }
 
-.input-togglegroup input[type=radio]:checked:hover + span {
+.input-togglegroup input[type='radio']:checked:hover + span {
     background-color: $color-accent-400;
 }
