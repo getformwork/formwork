@@ -27,7 +27,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
-    "eslint": "^8.0.1",
+    "eslint": "^8.1.0",
     "onchange": "^7.0.2",
     "rollup": "^2.58.3",
     "sass": "^1.43.3",
