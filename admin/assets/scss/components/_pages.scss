@@ -208,11 +208,11 @@ button .page-language,
         display: inline-block;
         margin-right: 0;
         color: $color-base-100;
-        opacity: 0%;
+        opacity: 0;
         transition: opacity $transition-time-s;
     }
     &:hover .icon, &:focus .icon {
-        opacity: 100%;
+        opacity: 1;
     }
 }
 

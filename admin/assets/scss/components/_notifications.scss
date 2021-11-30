@@ -25,7 +25,7 @@
 
 .notification.fadeout {
     animation: fadeOutRight $notification-animation-duration $notification-animation-easing;
-    opacity: 0%;
+    opacity: 0;
 }
 
 .notification .icon {
