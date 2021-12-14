@@ -29,7 +29,7 @@
     "@rollup/plugin-node-resolve": "^13.1.1",
     "eslint": "^8.4.1",
     "onchange": "^7.0.2",
-    "rollup": "^2.60.2",
+    "rollup": "^2.61.1",
     "sass": "^1.45.0",
     "stylelint": "^14.1.0",
     "stylelint-config-idiomatic-order": "^8.1.0",
