@@ -5,6 +5,7 @@ namespace Formwork\Data;
 use Formwork\Utils\Arr;
 use Countable;
 use Iterator;
+use ReturnTypeWillChange;
 
 class Collection implements Countable, Iterator
 {
@@ -32,6 +33,7 @@ class Collection implements Countable, Iterator
     /**
      * Return the current element
      */
+    #[ReturnTypeWillChange]
     public function current()
     {
         return current($this->items);
@@ -40,6 +42,7 @@ class Collection implements Countable, Iterator
     /**
      * Return the key of the current element
      */
+    #[ReturnTypeWillChange]
     public function key()
     {
         return key($this->items);
@@ -48,9 +51,9 @@ class Collection implements Countable, Iterator
     /**
      * Move forward to next element
      */
-    public function next()
+    public function next(): void
     {
-        return next($this->items);
+        next($this->items);
     }
 
     /**

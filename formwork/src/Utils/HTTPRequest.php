@@ -162,7 +162,7 @@ class HTTPRequest
      */
     public static function isXHR(): bool
     {
-        return strtolower(static::headers()->get('X-Requested-With')) === 'xmlhttprequest';
+        return static::headers()->has('X-Requested-With') && strtolower(static::headers()->get('X-Requested-With')) === 'xmlhttprequest';
     }
 
     /**
