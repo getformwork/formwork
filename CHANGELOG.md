@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.11.1](https://github.com/getformwork/formwork/releases/tag/1.10.3) (2021-07-06)
+## [1.12.0](https://github.com/getformwork/formwork/releases/tag/1.12.0) (2022-02-11)
+
+**Bug fixes**
+
+- Ensure compatibility with PHP 8.1
+
+## [1.11.1](https://github.com/getformwork/formwork/releases/tag/1.11.1) (2021-07-06)
 
 **Bug fixes**
 
