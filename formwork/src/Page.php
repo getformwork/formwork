@@ -248,9 +248,7 @@ class Page extends AbstractPage
      */
     public function date(string $format = null): string
     {
-        if ($format === null) {
-            $format = Formwork::instance()->config()->get('date.format');
-        }
+        $format ??= Formwork::instance()->config()->get('date.format');
         if ($this->has('publish-date')) {
             return date($format, Date::toTimestamp($this->data['publish-date']));
         }

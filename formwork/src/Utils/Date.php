@@ -116,13 +116,9 @@ class Date
      */
     public static function formatDateTime(DateTime $dateTime, string $format = null, string $language = null): string
     {
-        if ($format === null) {
-            $format = Formwork::instance()->config()->get('date.format');
-        }
+        $format ??= Formwork::instance()->config()->get('date.format');
 
-        if ($language === null) {
-            $language = Formwork::instance()->translations()->getCurrent()->code();
-        }
+        $language ??= Formwork::instance()->translations()->getCurrent()->code();
 
         $translation = Formwork::instance()->translations()->get($language);
 
@@ -161,9 +157,7 @@ class Date
      */
     public static function formatDateTimeAsDistance(DateTime $dateTime, string $language = null): string
     {
-        if ($language === null) {
-            $language = Formwork::instance()->translations()->getCurrent()->code();
-        }
+        $language ??= Formwork::instance()->translations()->getCurrent()->code();
 
         $translation = Formwork::instance()->translations()->get($language);
 

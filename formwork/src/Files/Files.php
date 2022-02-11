@@ -24,9 +24,7 @@ class Files extends AssociativeCollection
      */
     public static function fromPath(string $path, array $filenames = null): self
     {
-        if ($filenames === null) {
-            $filenames = FileSystem::listFiles($path);
-        }
+        $filenames ??= FileSystem::listFiles($path);
 
         $files = [];
 

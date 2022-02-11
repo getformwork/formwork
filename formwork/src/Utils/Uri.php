@@ -67,9 +67,7 @@ class Uri
      */
     public static function getDefaultPort(string $scheme = null): ?int
     {
-        if ($scheme === null) {
-            $scheme = static::scheme();
-        }
+        $scheme ??= static::scheme();
         return self::DEFAULT_PORTS[$scheme] ?? null;
     }
 
@@ -78,12 +76,8 @@ class Uri
      */
     public static function isDefaultPort(int $port = null, string $scheme = null): bool
     {
-        if ($port === null) {
-            $port = static::port();
-        }
-        if ($scheme === null) {
-            $scheme = static::scheme();
-        }
+        $port ??= static::port();
+        $scheme ??= static::scheme();
         return $port !== null && $scheme !== null && $port === static::getDefaultPort($scheme);
     }
 
@@ -92,9 +86,7 @@ class Uri
      */
     public static function path(string $uri = null): ?string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::parseComponent($uri, PHP_URL_PATH);
     }
 
@@ -103,9 +95,7 @@ class Uri
      */
     public static function absolutePath(string $uri = null): string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::base($uri) . static::path($uri);
     }
 
@@ -114,9 +104,7 @@ class Uri
      */
     public static function query(string $uri = null): ?string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::parseComponent($uri, PHP_URL_QUERY);
     }
 
@@ -125,9 +113,7 @@ class Uri
      */
     public static function fragment(string $uri = null): ?string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::parseComponent($uri, PHP_URL_FRAGMENT);
     }
 
@@ -145,9 +131,7 @@ class Uri
      */
     public static function queryToArray(string $uri = null): array
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         parse_str(static::query($uri), $array);
         return $array;
     }
@@ -158,9 +142,7 @@ class Uri
      */
     public static function parse(string $uri = null): array
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return [
             'scheme'   => static::scheme($uri),
             'host'     => static::host($uri),
@@ -220,9 +202,7 @@ class Uri
      */
     public static function removeQuery(string $uri = null): string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::make(['query' => ''], $uri);
     }
 
@@ -231,9 +211,7 @@ class Uri
      */
     public static function removeFragment(string $uri = null): string
     {
-        if ($uri === null) {
-            $uri = static::current();
-        }
+        $uri ??= static::current();
         return static::make(['fragment' => ''], $uri);
     }
 
@@ -242,9 +220,7 @@ class Uri
      */
     public static function resolveRelative(string $uri, string $base = null): string
     {
-        if ($base === null) {
-            $base = static::current();
-        }
+        $base ??= static::current();
         if (Str::startsWith($uri, '#')) {
             return static::make(['fragment' => $uri], $base);
         }

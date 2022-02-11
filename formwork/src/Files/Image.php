@@ -501,9 +501,7 @@ class Image extends File
             $this->initialize();
         }
 
-        if ($filename === null) {
-            $filename = $this->path;
-        }
+        $filename ??= $this->path;
 
         $extension = strtolower(FileSystem::extension($filename));
         $mimeType = MimeType::fromExtension($extension);
@@ -544,9 +542,7 @@ class Image extends File
             $this->initialize();
         }
 
-        if ($filename === null) {
-            $filename = $this->path;
-        }
+        $filename ??= $this->path;
 
         $tempFilename = FileSystem::joinPaths(dirname($filename), '.tmp-' . basename($filename));
 

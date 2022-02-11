@@ -149,9 +149,7 @@ abstract class AbstractPage
      */
     public function date(string $format = null): string
     {
-        if ($format === null) {
-            $format = Formwork::instance()->config()->get('date.format');
-        }
+        $format ??= Formwork::instance()->config()->get('date.format');
         return date($format, $this->lastModifiedTime());
     }
 
