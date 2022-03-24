@@ -11,7 +11,6 @@ input {
     font-family: $base-font-family;
     font-size: $input-font-size;
     line-height: $input-line-height;
-    vertical-align: middle;
     @include appearance-none;
     &:focus {
         border-color: $color-accent-500;

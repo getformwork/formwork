@@ -18,7 +18,6 @@ button,
     line-height: $button-line-height;
     outline: none;
     transition: border-color $transition-time-s, background-color $transition-time-s, color $transition-time-s;
-    vertical-align: middle;
     white-space: nowrap;
     @include user-select-none;
     &:hover,

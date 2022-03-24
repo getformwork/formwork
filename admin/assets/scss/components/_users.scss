@@ -43,7 +43,6 @@
 .users-headers-cell {
     padding: $users-item-cell-padding-v-s $users-item-cell-padding-h-s;
     font-size: $font-size-s;
-    vertical-align: middle;
     @include ellipsis;
 }
 
