@@ -28,7 +28,8 @@
         "symfony/yaml": "^5.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0"
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "symfony/var-dumper": "^6.0"
     },
     "scripts": {
         "fix": "php-cs-fixer fix --verbose"
