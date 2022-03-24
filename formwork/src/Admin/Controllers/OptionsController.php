@@ -147,13 +147,14 @@ class OptionsController extends AbstractController
             'HTTP Request Headers'  => HTTPRequest::headers()->toArray(),
             'HTTP Response Headers' => HTTPResponse::headers(),
             'Server'                => [
-                'IP Address'   => $_SERVER['SERVER_ADDR'],
-                'Port'         => $_SERVER['SERVER_PORT'],
-                'Name'         => $_SERVER['SERVER_NAME'],
-                'Software'     => $_SERVER['SERVER_SOFTWARE'],
-                'Protocol'     => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS'        => HTTPRequest::isHTTPS() ? 'on' : 'off',
-                'Request Time' => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
+                'IP Address'     => $_SERVER['SERVER_ADDR'],
+                'Port'           => $_SERVER['SERVER_PORT'],
+                'Name'           => $_SERVER['SERVER_NAME'],
+                'Software'       => $_SERVER['SERVER_SOFTWARE'],
+                'Apache Modules' => implode(', ', apache_get_modules()),
+                'Protocol'       => $_SERVER['SERVER_PROTOCOL'],
+                'HTTPS'          => HTTPRequest::isHTTPS() ? 'on' : 'off',
+                'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
             ],
             'Client' => [
                 'IP Address' => HTTPRequest::ip(),
