@@ -5,7 +5,6 @@ namespace Formwork\Fields;
 use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
 use Formwork\Fields\Exceptions\ValidationException;
-use Formwork\Formwork;
 use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 use InvalidArgumentException;
@@ -113,8 +112,7 @@ class Validator
         }
 
         try {
-            $format = Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format');
-            return date(self::DATE_FORMAT, Date::toTimestamp($value, $format));
+            return date(self::DATE_FORMAT, Date::toTimestamp($value));
         } catch (InvalidArgumentException $e) {
             throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
         }

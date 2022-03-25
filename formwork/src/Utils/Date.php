@@ -53,18 +53,13 @@ class Date
      */
     public static function toTimestamp(string $date, string $format = null): int
     {
-        $isFormatGiven = $format !== null;
-
-        if (!$isFormatGiven) {
-            $format = Formwork::instance()->config()->get('date.format');
-        }
-
-        $dateTime = DateTime::createFromFormat($format, $date);
-
-        if ($dateTime === false) {
-            if ($isFormatGiven) {
-                throw new InvalidArgumentException(sprintf('Date "%s" is not formatted according to the format "%s": %s', $date, $format, static::getLastDateTimeError()));
+        try {
+            $dateTime = static::createDateTime($date, (array) ($format ?? static::getDefaultFormats()));
+        } catch (InvalidArgumentException $e) {
+            if ($format !== null) {
+                throw $e;
             }
+            // Try to parse the date anyway if the format is not given
             try {
                 $dateTime = new DateTime($date);
             } catch (Exception $e) {
@@ -196,6 +191,31 @@ class Date
     public static function formatTimestampAsDistance(int $timestamp, string $language = null): string
     {
         return static::formatDateTimeAsDistance(new DateTime('@' . $timestamp), $language);
+    }
+
+    /**
+     * Get default date formats from config
+     */
+    protected static function getDefaultFormats(): array
+    {
+        return [
+            Formwork::instance()->config()->get('date.format'),
+            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')
+        ];
+    }
+
+    /**
+     * Create a DateTime object from a date string and a list of formats
+     */
+    protected static function createDateTime(string $date, array $formats): DateTime
+    {
+        foreach ($formats as $format) {
+            $dateTime = DateTime::createFromFormat($format, $date);
+            if ($dateTime !== false) {
+                return $dateTime;
+            }
+        }
+        throw new InvalidArgumentException(sprintf('Date "%s" is not formatted according to the format "%s": %s', $date, $format, static::getLastDateTimeError()));
     }
 
     /**
