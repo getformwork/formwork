@@ -133,6 +133,8 @@ class OptionsController extends AbstractController
 
         $opcacheStatus = ini_get('opcache.enable') ? opcache_get_status(false) : [];
 
+        $gdInfo = extension_loaded('gd') ? gd_info() : [];
+
         $dependencies = $this->getDependencies();
 
         $data = @[
@@ -191,6 +193,14 @@ class OptionsController extends AbstractController
                 'Wasted Memory'             => $opcacheStatus['memory_usage']['wasted_memory'] ?? 0,
                 'Current Wasted Percentage' => $opcacheStatus['memory_usage']['current_wasted_percentage'] ?? 0,
                 'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage')
+            ],
+            'GD' => [
+                'Version' => $gdInfo['GD Version'] ?? '',
+                'JPEG Support' => $gdInfo['JPEG Support'] ?? '' ? 'true' : 'false',
+                'PNG Support' => $gdInfo['PNG Support'] ?? '' ? 'true' : 'false',
+                'GIF Read Support' => $gdInfo['GIF Read Support'] ?? '' ? 'true' : 'false',
+                'GIF Create Support' => $gdInfo['GIF Create Support'] ?? '' ? 'true' : 'false',
+                'WebP Support' => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false'
             ],
             'System' => [
                 'Directory Separator' => DS,
