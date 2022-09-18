@@ -20,7 +20,7 @@
     "lint:js": "eslint './assets/js/src/**' --fix"
   },
   "dependencies": {
-    "chartist": "^0.11.4",
+    "chartist": "^1.1.2",
     "codemirror": "^6.0.1",
     "sortablejs": "^1.15.0"
   },
