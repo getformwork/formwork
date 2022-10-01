@@ -31,7 +31,7 @@
     "onchange": "^7.0.2",
     "rollup": "^2.79.0",
     "sass": "^1.54.9",
-    "stylelint": "^14.11.0",
+    "stylelint": "^14.13.0",
     "stylelint-config-idiomatic-order": "^8.1.0",
     "stylelint-config-standard-scss": "^5.0.0",
     "stylelint-order": "^5.0.0",
