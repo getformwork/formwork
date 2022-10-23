@@ -195,12 +195,12 @@ class OptionsController extends AbstractController
                 'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage')
             ],
             'GD' => [
-                'Version' => $gdInfo['GD Version'] ?? '',
-                'JPEG Support' => $gdInfo['JPEG Support'] ?? '' ? 'true' : 'false',
-                'PNG Support' => $gdInfo['PNG Support'] ?? '' ? 'true' : 'false',
-                'GIF Read Support' => $gdInfo['GIF Read Support'] ?? '' ? 'true' : 'false',
+                'Version'            => $gdInfo['GD Version'] ?? '',
+                'JPEG Support'       => $gdInfo['JPEG Support'] ?? '' ? 'true' : 'false',
+                'PNG Support'        => $gdInfo['PNG Support'] ?? '' ? 'true' : 'false',
+                'GIF Read Support'   => $gdInfo['GIF Read Support'] ?? '' ? 'true' : 'false',
                 'GIF Create Support' => $gdInfo['GIF Create Support'] ?? '' ? 'true' : 'false',
-                'WebP Support' => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false'
+                'WebP Support'       => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false'
             ],
             'System' => [
                 'Directory Separator' => DS,
