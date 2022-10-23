@@ -5,7 +5,7 @@
         'class'       => 'input-image',
         'id'          => $field->name(),
         'name'        => $field->formName(),
-        'value'       => basename($field->value()),
+        'value'       => basename($field->value() ?? ''),
         'placeholder' => $field->placeholder(),
         'readonly'    => true
     ]) ?>>

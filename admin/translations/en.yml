@@ -134,6 +134,7 @@ admin.pages.new-page.slug: Page Slug
 admin.pages.new-page.template: Template
 admin.pages.new-page.title: Title
 admin.pages.options: Options
+admin.pages.page: Page
 admin.pages.page.actions: Actions
 admin.pages.page.cacheable: Cacheable
 admin.pages.page.cannot-change-num: Cannot change page number

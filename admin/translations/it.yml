@@ -133,6 +133,7 @@ admin.pages.new-page.slug: Indirizzo pagina
 admin.pages.new-page.template: Template
 admin.pages.new-page.title: Titolo
 admin.pages.options: Opzioni
+admin.pages.page: Pagina
 admin.pages.page.actions: Azioni
 admin.pages.page.cacheable: Abilita cache
 admin.pages.page.cannot-change-num: Impossibile cambiare il numero della pagina

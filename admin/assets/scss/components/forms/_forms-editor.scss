@@ -32,7 +32,7 @@
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
     border: $input-border-width solid $color-base-500;
-    margin-bottom: $editor-textarea-margin-bottom;
+    margin-bottom: $input-margin-bottom;
     border-radius: $input-border-radius;
     font-family: $base-font-family;
     font-size: $font-size-m;
@@ -45,7 +45,7 @@
     min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: 0 $editor-textarea-padding-h;
     border: $input-border-width solid $color-base-500;
-    margin-bottom: $editor-textarea-margin-bottom;
+    margin-bottom: $input-margin-bottom;
     background: $color-base-900;
     border-radius: $input-border-radius;
     color: $color-base-100;

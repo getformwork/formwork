@@ -43,6 +43,13 @@ export default Formwork = {
             element.parentNode.removeChild(element);
         });
 
+        $$('.collapsible .section-header').forEach(function (element) {
+            element.addEventListener('click', function () {
+                var section = element.parentNode;
+                section.classList.toggle('collapsed');
+            });
+        });
+
         if ($('[data-command=save]')) {
             document.addEventListener('keydown', function (event) {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {

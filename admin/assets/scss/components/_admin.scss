@@ -207,6 +207,10 @@
     height: $separator-height-l;
 }
 
+.section {
+    margin-bottom: $section-margin-bottom;
+}
+
 .section-header {
     padding: $section-header-padding-v $section-header-padding-h;
     border-bottom: 1px solid $color-base-600;
@@ -214,6 +218,18 @@
     font-size: $font-size-m;
     font-weight: 600;
     @include user-select-none;
+}
+
+.section-toggle .icon {
+    transition: transform $transition-time-s;
+}
+
+.section.collapsed .section-toggle .icon {
+    transform: rotate(180deg);
+}
+
+.section.collapsed .section-content {
+    display: none;
 }
 
 .icon {

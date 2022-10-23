@@ -36,6 +36,8 @@ class PagesController extends AbstractController
      */
     protected const DATE_NUM_FORMAT = 'Ymd';
 
+    protected const IGNORED_FIELD_NAMES = ['content', 'template', 'parent'];
+
     /**
      * Pages@index action
      */
@@ -133,7 +135,7 @@ class PagesController extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 // Load data from the page itself
-                $data = new DataGetter($page->data());
+                $data = new DataGetter(array_merge($page->data(), ['content' => $page->rawContent()]));
 
                 // Validate fields against data
                 $fields->validate($data);
@@ -418,11 +420,11 @@ class PagesController extends AbstractController
         $defaults = $page->defaults();
 
         // Handle data from fields
-        foreach ($fields as $field) {
+        foreach ($fields->toArray(true) as $field) {
             $default = array_key_exists($field->name(), $defaults) && $field->value() === $defaults[$field->name()];
 
             // Remove empty and default values
-            if ($field->isEmpty() || $default) {
+            if ($field->isEmpty() || $default || in_array($field->name(), self::IGNORED_FIELD_NAMES, true)) {
                 unset($frontmatter[$field->name()]);
                 continue;
             }

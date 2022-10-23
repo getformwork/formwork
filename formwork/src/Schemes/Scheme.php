@@ -5,7 +5,6 @@ namespace Formwork\Schemes;
 use Formwork\Data\DataGetter;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 
 class Scheme extends DataGetter
@@ -38,7 +37,7 @@ class Scheme extends DataGetter
 
         if ($this->has('extend') && $this->get('extend') !== $this->name) {
             $parent = Formwork::instance()->schemes()->get($type, $this->get('extend'));
-            $this->data = Arr::appendMissing($this->data, $parent->toArray());
+            $this->data = array_replace_recursive($parent->toArray(), $this->data);
         }
 
         if (!$this->has('title')) {

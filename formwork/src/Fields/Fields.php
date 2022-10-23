@@ -16,6 +16,9 @@ class Fields extends AssociativeCollection
     {
         parent::__construct();
         foreach ($fields as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
             if ($value instanceof Field) {
                 if (is_int($key)) {
                     $key = $value->name();

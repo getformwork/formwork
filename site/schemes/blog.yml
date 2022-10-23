@@ -7,12 +7,16 @@ children:
     reverse: true
     sortable: true
 fields:
-    posts-per-page:
-        type: select
-        options:
-            5: 5
-            10: 10
-            15: 15
-            20: 20
-        default: 5
-        label: '{{admin.pages.page.posts-per-page}}'
+    tabs:
+        fields:
+            options-section:
+                fields:
+                    posts-per-page:
+                        type: select
+                        options:
+                            5: 5
+                            10: 10
+                            15: 15
+                            20: 20
+                        default: 5
+                        label: '{{admin.pages.page.posts-per-page}}'
