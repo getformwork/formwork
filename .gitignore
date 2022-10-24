@@ -12,6 +12,5 @@ php_error.log
 /admin/accounts/*
 /admin/avatars/*
 /admin/logs/*
-/admin/node_modules/*
 
 !.gitkeep
