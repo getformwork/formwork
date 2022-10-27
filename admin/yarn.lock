@@ -623,10 +623,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chartist@npm:^0.11.4":
-  version: 0.11.4
-  resolution: "chartist@npm:0.11.4"
-  checksum: 857102d0d82d67541f776984732464fc664d0880fcf1339097b8d47a0033e7073f54bd5e0be473e3188b685f09e23c0e78b7a17bc2b8769afc3d0cdcdc5e3c21
+"chartist@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "chartist@npm:1.2.1"
+  checksum: 47a57810ff8df3328f90b44d5f343cdd62b36ec51770ac36a8be69be8ed609be5a37ad10312fbb180740b9d2c90f509a2fef1dd3a2032689edf5d13a464f32d3
   languageName: node
   linkType: hard
 
@@ -1167,7 +1167,7 @@ __metadata:
     "@rollup/plugin-commonjs": ^22.0.2
     "@rollup/plugin-node-resolve": ^14.1.0
     "@rollup/plugin-terser": ^0.1.0
-    chartist: ^0.11.4
+    chartist: ^1.2.1
     codemirror: ^5.65.2
     eslint: ^8.26.0
     onchange: ^7.0.2

@@ -1,4 +1,4 @@
-import Chartist from 'chartist';
+import {LineChart} from 'chartist';
 import Tooltip from './tooltip';
 
 export default function Chart(element, data) {
@@ -25,7 +25,7 @@ export default function Chart(element, data) {
         }
     };
 
-    var chart = new Chartist.Line(element, data, options);
+    var chart = new LineChart(element, data, options);
 
     chart.container.addEventListener('mouseover', function (event) {
         var tooltipOffset, tooltip, strokeWidth;
