@@ -7,17 +7,17 @@ input[type='range'] {
         width: 100%;
         height: $input-range-track-height;
         border: 0;
-        background-color: $color-base-600;
         border-radius: $input-range-track-height * 0.5;
+        background-color: $color-base-600;
         cursor: default;
     }
     &::-webkit-slider-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
+        border-radius: $input-range-thumb-border-radius;
         margin-top: -($input-range-thumb-height - $input-range-track-height) * 0.5;
         background-color: $color-accent-500;
-        border-radius: $input-range-thumb-border-radius;
         transition: background-color $transition-time-s;
         @include appearance-none;
     }
@@ -25,15 +25,15 @@ input[type='range'] {
         width: 100%;
         height: $input-range-track-height;
         border: 0;
-        background-color: $color-base-600;
         border-radius: $input-range-track-height * 0.5;
+        background-color: $color-base-600;
     }
     &::-moz-range-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
-        background-color: $color-accent-500;
         border-radius: $input-range-thumb-border-radius;
+        background-color: $color-accent-500;
         cursor: default;
     }
     &::-ms-track {
@@ -46,17 +46,17 @@ input[type='range'] {
     }
     &::-ms-fill-lower, &::-ms-fill-upper {
         border: 0;
-        background: $color-base-600;
         border-radius: $input-range-track-height * 0.5;
+        background: $color-base-600;
         box-shadow: none;
     }
     &::-ms-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
         border: 0;
+        border-radius: $input-range-thumb-border-radius;
         margin-top: 0;
         background-color: $color-accent-500;
-        border-radius: $input-range-thumb-border-radius;
         cursor: default;
     }
     &:focus {

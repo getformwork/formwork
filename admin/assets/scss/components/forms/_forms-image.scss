@@ -31,8 +31,8 @@
     left: $image-picker-thumbnail-caption-left;
     display: block;
     padding: $image-picker-thumbnail-caption-padding-v $image-picker-thumbnail-caption-padding-h;
-    background-color: $image-picker-thumbnail-caption-background-color;
     border-radius: $border-radius;
+    background-color: $image-picker-thumbnail-caption-background-color;
     content: attr(data-filename);
     font-size: $font-size-xs;
     text-align: center;

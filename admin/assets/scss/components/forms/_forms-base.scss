@@ -3,10 +3,10 @@ input {
     width: 100%;
     padding: $input-padding-v $input-padding-h;
     border: $input-border-width solid $color-base-500;
+    border-radius: $input-border-radius;
     margin: 0;
     margin-bottom: $input-margin-bottom;
     background-color: $color-base-900;
-    border-radius: $input-border-radius;
     color: $color-base-100;
     font-family: $base-font-family;
     font-size: $input-font-size;

@@ -4,8 +4,8 @@
     display: none;
     min-width: $tooltip-min-width;
     padding: $tooltip-padding;
-    background-color: $tooltip-background-color;
     border-radius: $border-radius;
+    background-color: $tooltip-background-color;
     color: $color-base-900;
     font-size: $font-size-xs;
     pointer-events: none;

@@ -10,10 +10,10 @@
     overflow: hidden;
     width: $notification-width;
     padding: $notification-padding-v $notification-padding-h;
+    border-radius: $border-radius;
     margin-bottom: $notification-margin-bottom;
     animation: fadeInRight $notification-animation-duration $notification-animation-easing;
     background-color: $color-base-700;
-    border-radius: $border-radius;
     box-shadow: $notification-box-shadow;
     cursor: default;
     text-overflow: ellipsis;

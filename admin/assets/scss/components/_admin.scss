@@ -183,9 +183,9 @@
 
 .component {
     padding: $component-padding;
+    border-radius: $border-radius;
     margin-bottom: $component-margin-bottom;
     background-color: $color-base-900;
-    border-radius: $border-radius;
     box-shadow: $component-box-shadow;
     @include clearfix;
 }
@@ -220,6 +220,15 @@
     @include user-select-none;
 }
 
+.icon {
+    display: inline-block;
+    width: 1em;
+    min-width: 16px;
+    height: 1em;
+    min-height: 16px;
+    vertical-align: -0.125rem;
+}
+
 .section-toggle .icon {
     transition: transform $transition-time-s;
 }
@@ -230,15 +239,6 @@
 
 .section.collapsed .section-content {
     display: none;
-}
-
-.icon {
-    display: inline-block;
-    width: 1em;
-    min-width: 16px;
-    height: 1em;
-    min-height: 16px;
-    vertical-align: -0.125rem;
 }
 
 .sort-handle {

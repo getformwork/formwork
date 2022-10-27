@@ -19,9 +19,9 @@
     min-width: $dropdown-menu-min-width;
     padding: $dropdown-menu-padding-v $dropdown-menu-padding-h;
     border: $dropdown-menu-border-width solid $color-base-500;
+    border-radius: $dropdown-menu-border-radius;
     margin-top: $dropdown-menu-margin-top;
     background-color: $color-base-900;
-    border-radius: $dropdown-menu-border-radius;
     box-shadow: $dropdown-box-shadow;
     float: left;
 }

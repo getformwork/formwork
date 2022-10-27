@@ -6,11 +6,11 @@
     border-width: $spinner-border-width;
     border-style: solid;
     border-color: $color-accent-500;
+    border-radius: $border-radius-round;
     border-bottom-color: transparent;
     border-left-color: transparent;
     margin-right: $spinner-margin-right;
     animation: $spinner-animation-duration spin infinite linear;
-    border-radius: $border-radius-round;
     text-align: center;
     transition: border $spinner-border-transition-duration;
     transition-timing-function: ease-out;

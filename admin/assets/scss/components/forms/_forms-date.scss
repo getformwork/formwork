@@ -10,9 +10,9 @@
     width: $calendar-width;
     padding: $calendar-padding;
     border: $input-border-width solid $color-base-500;
+    border-radius: $border-radius;
     margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
     background-color: $color-base-900;
-    border-radius: $border-radius;
     box-shadow: $dropdown-box-shadow;
     color: $color-base-100;
 }

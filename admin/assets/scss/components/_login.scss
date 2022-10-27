@@ -1,9 +1,9 @@
 .login-modal-container {
     max-width: $login-modal-width;
     padding: $login-modal-padding;
+    border-radius: $border-radius;
     margin: $login-modal-margin-v $login-modal-margin-h;
     background-color: $color-base-900;
-    border-radius: $border-radius;
     box-shadow: $component-box-shadow;
 }
 

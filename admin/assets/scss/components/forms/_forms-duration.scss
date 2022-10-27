@@ -2,9 +2,9 @@
     box-sizing: border-box;
     padding: $input-padding-v $input-padding-h * 0.5;
     border: $input-border-width solid $color-base-500;
+    border-radius: $border-radius;
     margin-top: 0;
     margin-bottom: $input-margin-bottom;
-    border-radius: $border-radius;
     font-size: $input-font-size;
     line-height: $input-line-height;
     @include user-select-none;

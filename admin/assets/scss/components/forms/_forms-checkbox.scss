@@ -11,8 +11,8 @@
     height: $input-checkbox-height;
     box-sizing: border-box;
     border: $input-checkbox-border-width solid $color-base-500;
-    margin-right: $input-checkbox-margin-right;
     border-radius: $border-radius;
+    margin-right: $input-checkbox-margin-right;
     content: ' ';
     transition: border-color $transition-time-s, background-color $transition-time-s;
 }
