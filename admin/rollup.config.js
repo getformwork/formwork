@@ -1,5 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
 
 export default {
     input: 'assets/js/src/main.js',
@@ -8,5 +9,5 @@ export default {
         format: 'iife',
         name: 'Formwork'
     },
-    plugins: [resolve(), commonjs()]
+    plugins: [resolve(), commonjs(), terser({format: {comments: false}})]
 };
