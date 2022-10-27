@@ -11,11 +11,11 @@
     "url": "https://github.com/getformwork/formwork/issues"
   },
   "scripts": {
-    "build": "npm run build:css && npm run build:js",
+    "build": "yarn build:css && yarn build:js",
     "build:css": "sass ./assets/scss/admin.scss:./assets/css/admin.min.css ./assets/scss/admin-dark.scss:./assets/css/admin-dark.min.css --style=compressed --no-source-map",
     "build:js": "rollup -c",
-    "watch:css": "onchange 'assets/scss/**/*.scss' -- npm run build:css",
-    "watch:js": "onchange 'assets/js/src/**/*.js' -- npm run build:js",
+    "watch:css": "onchange 'assets/scss/**/*.scss' -- yarn build:css",
+    "watch:js": "onchange 'assets/js/src/**/*.js' -- yarn build:js",
     "lint:css": "stylelint './assets/scss/**/*.scss' --fix",
     "lint:js": "eslint './assets/js/src/**' --fix"
   },
