@@ -41,6 +41,18 @@ class Assets
     }
 
     /**
+     * Get a SHA-256 integrity hash for an asset if possible
+     */
+    public function integrityHash(string $path): ?string
+    {
+        $file = FileSystem::joinPaths($this->basePath, $path);
+        if (FileSystem::exists($file)) {
+            return 'sha256-' . base64_encode(hash('sha256', FileSystem::read($file), true));
+        }
+        return null;
+    }
+
+    /**
      * Get asset URI optionally followed by a version query parameter
      *
      * @param string $path           Requested asset path
