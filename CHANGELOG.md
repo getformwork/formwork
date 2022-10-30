@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.12.1](https://github.com/getformwork/formwork/releases/tag/1.12.1) (2022-10-30)
+
+**Bug fixes**
+
+- **Fix path traversal vulnerability on backup download** (thanks to [@xanhacks](https://github.com/xanhacks) for the discovery, see [#380](https://github.com/getformwork/formwork/pull/380), [#381](https://github.com/getformwork/formwork/pull/381))
+
 ## [1.12.0](https://github.com/getformwork/formwork/releases/tag/1.12.0) (2022-02-11)
 
 **Bug fixes**
