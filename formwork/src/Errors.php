@@ -29,7 +29,7 @@ class Errors
     public static function displayErrorPage(int $status = 500): void
     {
         HTTPResponse::cleanOutputBuffers();
-        $view = new View('error', ['status' => $status, 'message' => Header::HTTP_STATUS[$status]]);
+        $view = new View('errors.error', ['status' => $status, 'message' => Header::HTTP_STATUS[$status]]);
         $response = new Response($view->render(true), $status);
         $response->send();
         // Don't exit, otherwise the error will not be logged
