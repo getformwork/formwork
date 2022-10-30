@@ -39,7 +39,7 @@ class BackupController extends AbstractController
     public function download(RouteParams $params): Response
     {
         $this->ensurePermission('backup.download');
-        $file = Formwork::instance()->config()->get('backup.path') . base64_decode($params->get('backup'));
+        $file = Formwork::instance()->config()->get('backup.path') . basename(base64_decode($params->get('backup')));
         try {
             if (FileSystem::isFile($file, false)) {
                 return new FileResponse($file, true);
