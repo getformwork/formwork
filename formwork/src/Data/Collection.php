@@ -109,7 +109,7 @@ class Collection implements Countable, Iterator
     }
 
     /**
-     * Return the ollection item at the specified index
+     * Return the collection item at the specified index
      *
      *  @return mixed|null
      */
