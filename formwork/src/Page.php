@@ -297,6 +297,46 @@ class Page extends AbstractPage
     }
 
     /**
+     * Return the index of the page among its siblings
+     */
+    public function ord(): int
+    {
+        return $this->siblings(true)->indexOf($this);
+    }
+
+    /**
+     * Return the next sibling page
+     */
+    public function nextSibling(): ?static
+    {
+        return $this->siblings(true)->nth($this->ord() + 1);
+    }
+
+    /**
+     * Return whether the page has a next sibling
+     */
+    public function hasNextSibling(): bool
+    {
+        return $this->ord() < count($this->siblings(true)) - 1;
+    }
+
+    /**
+     * Return the previous sibling page
+     */
+    public function previousSibling(): ?static
+    {
+        return $this->siblings(true)->nth($this->ord() - 1);
+    }
+
+    /**
+     * Return whether the page has a previous sibling
+     */
+    public function hasPreviousSibling(): bool
+    {
+        return $this->ord() > 0;
+    }
+
+    /**
      * @inheritdoc
      */
     public function isSite(): bool
