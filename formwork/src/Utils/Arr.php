@@ -2,6 +2,8 @@
 
 namespace Formwork\Utils;
 
+use UnexpectedValueException;
+
 class Arr
 {
     /**
@@ -120,6 +122,61 @@ class Arr
             $result[$key] = $array[$key];
         }
         return $result;
+    }
+
+    /**
+     * Sort array elements with options
+     * `array_multisort()` is used internally to do the sorting.
+     *
+     * @see https://www.php.net/manual/en/function.array-multisort.php
+     *
+     * @param array $options An array of sort options:
+     *                       - `direction`: sets the direction used to sort the given array,
+     *                       possible values are `SORT_ASC` and `SORT_DESC`. Default: `SORT_ASC`.
+     *                       - `type`: sets the type of the sorting, possible values are `SORT_REGULAR`,
+     *                       `SORT_NUMERIC`, `SORT_STRING` and `SORT_NATURAL`. Default: `SORT_NATURAL`.
+     *                       - `caseSensitive` (bool): whether to perform a case-sensitive sorting.
+     *                       Default: `false`.
+     *                       - `sortBy` (?array): a second optional array on which the sorting
+     *                       will be based. The elements of the first array will be ordered based on
+     *                       the result of sorting `sortBy` with the other options given. Default: `null`.
+     */
+    public static function sort(array $array, array $options = []): array
+    {
+        $options += [
+            'direction'     => SORT_ASC,
+            'type'          => SORT_NATURAL,
+            'caseSensitive' => false,
+            'sortBy'        => null
+        ];
+
+        if (!in_array($options['direction'], [SORT_ASC, SORT_DESC], true)) {
+            throw new UnexpectedValueException(sprintf('%s() only accepts SORT_ASC and SORT_DESC as "direction" option', __METHOD__));
+        }
+
+        if (!in_array($options['type'], [SORT_REGULAR, SORT_NUMERIC, SORT_STRING, SORT_NATURAL], true)) {
+            throw new UnexpectedValueException(sprintf('%s() only accepts SORT_REGULAR, SORT_NUMERIC, SORT_STRING and SORT_NATURAL as "type" option', __METHOD__));
+        }
+
+        $flags = $options['type'];
+
+        if (!is_bool($options['caseSensitive'])) {
+            throw new UnexpectedValueException(sprintf('%s() only accepts booleans as "caseSensitive" option', __METHOD__));
+        }
+
+        if ($options['caseSensitive'] === false) {
+            $flags |= SORT_FLAG_CASE;
+        }
+
+        if ($options['sortBy'] === null) {
+            array_multisort($array, $options['direction'], $flags);
+        } elseif (is_array($options['sortBy'])) {
+            array_multisort($options['sortBy'], $options['direction'], $flags, $array);
+        } else {
+            throw new UnexpectedValueException(sprintf('%s() only accepts arrays or "null" as "sortBy" option', __METHOD__));
+        }
+
+        return $array;
     }
 
     /**
