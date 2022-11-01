@@ -1,9 +1,9 @@
 <?php
 
-    $posts = $page->children()->filter('published');
+    $posts = $page->children()->filterBy('published');
 
     if ($params->has('tagName')) {
-        $posts = $posts->filter('tags', $params->get('tagName'), 'Formwork\Utils\Str::slug');
+        $posts = $posts->filterBy('tags', $params->get('tagName'), 'Formwork\Utils\Str::slug');
     }
 
     $posts = $posts->reverse()->paginate($page->get('posts-per-page', 5));

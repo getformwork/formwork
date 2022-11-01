@@ -277,14 +277,15 @@ class Page extends AbstractPage
 
     /**
      * Return a PageCollection containing page siblings
+     *
+     * @param bool $includeSelf Include this page in the sibling collections. Default: `false`
      */
-    public function siblings(): PageCollection
+    public function siblings($includeSelf = false): PageCollection
     {
-        if (isset($this->siblings)) {
-            return $this->siblings;
+        if (!isset($this->siblings)) {
+            $this->siblings = $this->parent()->children();
         }
-        $parentPath = dirname($this->path) . DS;
-        return $this->siblings = PageCollection::fromPath($parentPath)->remove($this);
+        return $includeSelf ? $this->siblings : $this->siblings->pull($this);
     }
 
     /**
