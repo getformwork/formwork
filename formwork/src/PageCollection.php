@@ -3,10 +3,9 @@
 namespace Formwork;
 
 use Formwork\Data\Collection;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class PageCollection extends Collection
 {
@@ -29,67 +28,43 @@ class PageCollection extends Collection
     }
 
     /**
-     * Reverse the order of collection items
-     */
-    public function reverse(): self
-    {
-        $pageCollection = clone $this;
-        $pageCollection->items = array_reverse($pageCollection->items);
-        return $pageCollection;
-    }
-
-    /**
-     * Extract a slice from the collection containing a given number of items
-     * and starting from a given offset
-     *
-     * @param int $length
-     */
-    public function slice(int $offset, int $length = null): self
-    {
-        $pageCollection = clone $this;
-        $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
-        return $pageCollection;
-    }
-
-    /**
-     * Remove a given element from the collection
-     */
-    public function remove(Page $element): self
-    {
-        $pageCollection = clone $this;
-        foreach ($pageCollection->items as $key => $item) {
-            if ($item->path() === $element->path()) {
-                unset($pageCollection->items[$key]);
-            }
-        }
-        return $pageCollection;
-    }
-
-    /**
      * Paginate the collection
      *
      * @param int $length Number of items in the pagination
      */
-    public function paginate(int $length): self
+    public function paginate(int $length): static
     {
         $pagination = new Pagination($this->count(), $length);
-        $pageCollection = $this->slice($pagination->offset(), $pagination->length());
-        $pageCollection->pagination = $pagination;
-        return $pageCollection;
+        $collection = $this->slice($pagination->offset(), $pagination->length());
+        $collection->pagination = $pagination;
+        return $collection;
     }
 
     /**
-     * Filter collection items
+     * Return an array containing the specified property of each collection item
+     */
+    public function pluck(string $property): array
+    {
+        $result = [];
+
+        foreach ($this->items as $item) {
+            $result[] = $item->get($property);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Filter collection items by the specified property.
+     * The method returns a new collection instance
      *
      * @param string   $property Property to find in filtered items
      * @param          $value    Value to check in filtered items (default: true)
      * @param callable $process  Callable to process items before filtering
      */
-    public function filter(string $property, $value = true, callable $process = null): self
+    public function filterBy(string $property, $value = true, callable $process = null): static
     {
-        $pageCollection = clone $this;
-
-        $pageCollection->items = array_filter($pageCollection->items, static function (Page $item) use ($property, $value, $process): bool {
+        return parent::filter(static function (Page $item) use ($property, $value, $process): bool {
             if ($item->has($property)) {
                 $propertyValue = $item->get($property);
 
@@ -106,44 +81,27 @@ class PageCollection extends Collection
 
             return false;
         });
-
-        return $pageCollection;
     }
 
     /**
-     * Sort collection items
-     *
-     * @param int $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
+     * Sort collection items. By default the sorting is based on `relativePath`.
+     * The method returns a new collection instance
      */
-    public function sort(string $property = self::DEFAULT_SORT_PROPERTY, int $direction = SORT_ASC): self
+    public function sort(array $options = []): static
     {
-        $pageCollection = clone $this;
-
-        if ($pageCollection->count() <= 1) {
-            return $pageCollection;
-        }
-
-        if ($direction === SORT_ASC || $direction === 1) {
-            $direction = 1;
-        } elseif ($direction === SORT_DESC || $direction === -1) {
-            $direction = -1;
-        } else {
-            throw new InvalidArgumentException('Invalid sorting direction. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending');
-        }
-
-        usort($pageCollection->items, static fn (Page $item1, Page $item2): int => $direction * strnatcasecmp($item1->get($property), $item2->get($property)));
-
-        return $pageCollection;
+        return parent::sort(['sortBy' => $this->pluck(self::DEFAULT_SORT_PROPERTY)] + $options);
     }
 
     /**
-     * Shuffle collection items
+     * Sort collection items by the specified property.
+     * The method returns a new collection instance
      */
-    public function shuffle(): self
+    public function sortBy(string $property, array $options = []): static
     {
-        $pageCollection = clone $this;
-        $pageCollection->items = Arr::shuffle($pageCollection->items);
-        return $pageCollection;
+        if (isset($options['sortBy'])) {
+            throw new UnexpectedValueException(sprintf('Use %s::sort() if you want to specify "sortBy" option.', static::class));
+        }
+        return parent::sort(['sortBy' => $this->pluck($property)] + $options);
     }
 
     /**
@@ -152,7 +110,7 @@ class PageCollection extends Collection
      * @param string $query Query to search for
      * @param int    $min   Minimum query length (default: 4)
      */
-    public function search(string $query, int $min = 4): self
+    public function search(string $query, int $min = 4): static
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
@@ -174,9 +132,9 @@ class PageCollection extends Collection
             'uri'      => 1
         ];
 
-        $pageCollection = clone $this;
+        $collection = $this->clone();
 
-        foreach ($pageCollection->items as $page) {
+        foreach ($collection->items as $page) {
             $score = 0;
             foreach (array_keys($scores) as $key) {
                 $value = Str::removeHTML((string) $page->get($key));
@@ -192,7 +150,7 @@ class PageCollection extends Collection
             }
         }
 
-        return $pageCollection->filter('score')->sort('score', SORT_DESC);
+        return $collection->filterBy('score')->sortBy('score', SORT_DESC);
     }
 
     /**
@@ -200,7 +158,7 @@ class PageCollection extends Collection
      *
      * @param bool $recursive Whether to recursively search for pages
      */
-    public static function fromPath(string $path, bool $recursive = false): self
+    public static function fromPath(string $path, bool $recursive = false): static
     {
         $pages = [];
 
