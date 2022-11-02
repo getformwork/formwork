@@ -81,6 +81,14 @@ class FilesCache extends AbstractCache
     }
 
     /**
+     * @inheritdoc
+     */
+    public function cachedTime(string $key): ?int
+    {
+        return $this->has($key) ? FileSystem::lastModifiedTime($this->getFile($key)) : null;
+    }
+
+    /**
      * Return the file that corresponds to the given key
      */
     protected function getFile(string $key): string

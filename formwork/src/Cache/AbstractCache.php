@@ -30,6 +30,11 @@ abstract class AbstractCache
     abstract public function has(string $key): bool;
 
     /**
+     * Return the time when a resource was cached
+     */
+    abstract public function cachedTime(string $key): ?int;
+
+    /**
      * Fetch multiple data from cache
      */
     public function fetchMultiple(array $keys): array
