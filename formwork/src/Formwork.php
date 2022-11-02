@@ -4,7 +4,7 @@ namespace Formwork;
 
 use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;
-use Formwork\Cache\SiteCache;
+use Formwork\Cache\FilesCache;
 use Formwork\Languages\Languages;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
@@ -58,7 +58,7 @@ final class Formwork
     /**
      * Cache instance
      */
-    protected SiteCache $cache;
+    protected FilesCache $cache;
 
     /**
      * Admin instance
@@ -121,7 +121,7 @@ final class Formwork
     /**
      * Return cache instance
      */
-    public function cache(): SiteCache
+    public function cache(): FilesCache
     {
         return $this->cache;
     }
@@ -259,7 +259,7 @@ final class Formwork
      */
     protected function loadCache(): void
     {
-        $this->cache = new SiteCache($this->config()->get('cache.path'), $this->config()->get('cache.time'));
+        $this->cache = new FilesCache($this->config()->get('cache.path'), $this->config()->get('cache.time'));
     }
 
     protected function loadRouter(): void
