@@ -27,7 +27,7 @@ class Translations extends Collection
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yml') {
             $code = FileSystem::name($path);
-            $this->items[$code][] = $path;
+            $this->data[$code][] = $path;
             unset($this->storage[$code]);
         }
     }
@@ -47,7 +47,7 @@ class Translations extends Collection
      */
     public function has(string $code): bool
     {
-        return isset($this->items[$code]);
+        return isset($this->data[$code]);
     }
 
     /**
@@ -68,7 +68,7 @@ class Translations extends Collection
 
         $data = [];
 
-        foreach ($this->items[$code] as $file) {
+        foreach ($this->data[$code] as $file) {
             $data = array_merge($data, YAML::parseFile($file));
         }
 

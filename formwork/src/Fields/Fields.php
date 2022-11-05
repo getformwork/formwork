@@ -23,9 +23,9 @@ class Fields extends AssociativeCollection
                 if (is_int($key)) {
                     $key = $value->name();
                 }
-                $this->items[$key] = $value;
+                $this->data[$key] = $value;
             } else {
-                $this->items[$key] = new Field($key, $value);
+                $this->data[$key] = new Field($key, $value);
             }
         }
     }
@@ -37,9 +37,9 @@ class Fields extends AssociativeCollection
      */
     public function find(string $field): ?Field
     {
-        foreach ($this->items as $key => $value) {
+        foreach ($this->data as $key => $value) {
             if ($key === $field) {
-                return $this->items[$key];
+                return $this->data[$key];
             }
             if ($value->has('fields')) {
                 $found = $value->get('fields')->find($field);
@@ -59,10 +59,10 @@ class Fields extends AssociativeCollection
     public function toArray(bool $flatten = false): array
     {
         if (!$flatten) {
-            return $this->items;
+            return $this->data;
         }
         $result = [];
-        foreach ($this->items as $key => $value) {
+        foreach ($this->data as $key => $value) {
             if ($value->has('fields')) {
                 $result = array_merge($result, $value->get('fields')->toArray(true));
             } else {
@@ -83,6 +83,6 @@ class Fields extends AssociativeCollection
 
     public function __debugInfo(): array
     {
-        return $this->items;
+        return $this->data;
     }
 }

@@ -2,82 +2,24 @@
 
 namespace Formwork\Data;
 
-use Formwork\Utils\Arr;
 use Countable;
+use Formwork\Data\Contracts\Arrayable;
+use Formwork\Utils\Arr;
+use Formwork\Data\Traits\DataArrayable;
+use Formwork\Data\Traits\DataCountableIterator;
 use Iterator;
-use ReturnTypeWillChange;
 
-class Collection implements Countable, Iterator
+class Collection implements Arrayable, Countable, Iterator
 {
-    /**
-     * Array containing collection items
-     */
-    protected array $items = [];
+    use DataArrayable;
+    use DataCountableIterator;
 
     /**
      * Create a new Collection instance
      */
-    public function __construct(array $items = [])
+    public function __construct(array $data = [])
     {
-        $this->items = $items;
-    }
-
-    /**
-     * Rewind the iterator to the first element
-     */
-    public function rewind(): void
-    {
-        reset($this->items);
-    }
-
-    /**
-     * Return the current element
-     */
-    #[ReturnTypeWillChange]
-    public function current()
-    {
-        return current($this->items);
-    }
-
-    /**
-     * Return the key of the current element
-     */
-    #[ReturnTypeWillChange]
-    public function key()
-    {
-        return key($this->items);
-    }
-
-    /**
-     * Move forward to next element
-     */
-    public function next(): void
-    {
-        next($this->items);
-    }
-
-    /**
-     * Check if current position is valid
-     */
-    public function valid(): bool
-    {
-        return $this->key() !== null;
-    }
-
-    /**
-     * Return the number of items
-     */
-    public function count(): int
-    {
-        return count($this->items);
-    }
-
-    /**
-     * Return an array containing collection items
-     */
-    public function toArray(): array
-    {
-        return $this->items;
+        $this->data = $data;
     }
 
     /**
@@ -87,7 +29,7 @@ class Collection implements Countable, Iterator
      */
     public function first()
     {
-        return $this->items[0] ?? null;
+        return $this->data[0] ?? null;
     }
 
     /**
@@ -97,7 +39,7 @@ class Collection implements Countable, Iterator
      */
     public function last()
     {
-        return $this->items[$this->count() - 1] ?? null;
+        return $this->data[$this->count() - 1] ?? null;
     }
 
     /**
@@ -105,7 +47,7 @@ class Collection implements Countable, Iterator
      */
     public function random($default = null)
     {
-        return Arr::random($this->items, $default);
+        return Arr::random($this->data, $default);
     }
 
     /**
@@ -113,6 +55,6 @@ class Collection implements Countable, Iterator
      */
     public function isEmpty(): bool
     {
-        return empty($this->items);
+        return empty($this->data);
     }
 }
