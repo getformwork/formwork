@@ -35,8 +35,8 @@ class FilesCache extends AbstractCache
     public function fetch(string $key)
     {
         if ($this->has($key)) {
-            $data = PHP::parseFile($this->getFile($key));
-            return $data['value'];
+            $cacheItem = CacheItem::fromArray(PHP::parseFile($this->getFile($key)));
+            return $cacheItem->value();
         }
         if ($this->hasExpired($key)) {
             FileSystem::delete($this->getFile($key));
@@ -49,8 +49,8 @@ class FilesCache extends AbstractCache
      */
     public function save(string $key, $value, int $ttl = null): void
     {
-        $data = ['value' => $value, 'expires' => time() + ($ttl ?? $this->defaultTtl)];
-        PHP::encodeToFile($data, $this->getFile($key));
+        $cacheItem = new CacheItem($value, time() + ($ttl ?? $this->defaultTtl), time());
+        PHP::encodeToFile($cacheItem->toArray(), $this->getFile($key));
     }
 
     /**
@@ -81,6 +81,14 @@ class FilesCache extends AbstractCache
     }
 
     /**
+     * @inheritdoc
+     */
+    public function cachedTime(string $key): ?int
+    {
+        return $this->has($key) ? FileSystem::lastModifiedTime($this->getFile($key)) : null;
+    }
+
+    /**
      * Return the file that corresponds to the given key
      */
     protected function getFile(string $key): string
@@ -93,7 +101,7 @@ class FilesCache extends AbstractCache
      */
     protected function hasExpired(string $key): bool
     {
-        $data = PHP::parseFile($this->getFile($key));
-        return time() >= $data['expires'];
+        $cacheItem = CacheItem::fromArray(PHP::parseFile($this->getFile($key)));
+        return time() >= $cacheItem->expirationTime();
     }
 }

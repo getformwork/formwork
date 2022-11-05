@@ -68,20 +68,33 @@ class PageController extends AbstractController
     {
         $formwork = Formwork::instance();
 
-        if ($formwork->site()->currentPage() === null) {
-            $formwork->site()->setCurrentPage($page);
+        $site = $formwork->site();
+
+        if ($site->currentPage() === null) {
+            $site->setCurrentPage($page);
         }
 
-        $page = $formwork->site()->currentPage();
+        $page = $site->currentPage();
 
-        if ($formwork->config()->get('cache.enabled') && $formwork->cache()->has($formwork->request())) {
-            return $formwork->cache()->fetch($formwork->request());
+        $config = $formwork->config();
+
+        $cache = $formwork->cache();
+
+        $cacheKey = $page->route();
+
+        if ($config->get('cache.enabled') && $cache->has($cacheKey)) {
+            // Validate cached response
+            if (!$site->modifiedSince($cache->cachedTime($cacheKey))) {
+                return $cache->fetch($cacheKey);
+            }
+
+            $cache->delete($cacheKey);
         }
 
         $response = new Response($page->renderToString(), (int) $page->get('response_status', 200), $page->headers());
 
-        if ($formwork->config()->get('cache.enabled') && $page->cacheable()) {
-            $formwork->cache()->save($formwork->request(), $response);
+        if ($config->get('cache.enabled') && $page->cacheable()) {
+            $cache->save($cacheKey, $response);
         }
 
         return $response;
