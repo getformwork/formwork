@@ -542,14 +542,14 @@ class PagesController extends AbstractController
         switch ($mode) {
             case 'date':
                 $num = date(self::DATE_NUM_FORMAT);
-            break;
+                break;
             default:
                 $num = 0;
                 foreach ($parent->children() as $child) {
                     $num = max($num, $child->num());
                 }
                 $num++;
-            break;
+                break;
         }
         return $num;
     }
