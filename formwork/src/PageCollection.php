@@ -34,7 +34,7 @@ class PageCollection extends Collection
     public function reverse(): self
     {
         $pageCollection = clone $this;
-        $pageCollection->items = array_reverse($pageCollection->items);
+        $pageCollection->data = array_reverse($pageCollection->data);
         return $pageCollection;
     }
 
@@ -47,7 +47,7 @@ class PageCollection extends Collection
     public function slice(int $offset, int $length = null): self
     {
         $pageCollection = clone $this;
-        $pageCollection->items = array_slice($pageCollection->items, $offset, $length);
+        $pageCollection->data = array_slice($pageCollection->data, $offset, $length);
         return $pageCollection;
     }
 
@@ -57,9 +57,9 @@ class PageCollection extends Collection
     public function remove(Page $element): self
     {
         $pageCollection = clone $this;
-        foreach ($pageCollection->items as $key => $item) {
+        foreach ($pageCollection->data as $key => $item) {
             if ($item->path() === $element->path()) {
-                unset($pageCollection->items[$key]);
+                unset($pageCollection->data[$key]);
             }
         }
         return $pageCollection;
@@ -89,7 +89,7 @@ class PageCollection extends Collection
     {
         $pageCollection = clone $this;
 
-        $pageCollection->items = array_filter($pageCollection->items, static function (Page $item) use ($property, $value, $process): bool {
+        $pageCollection->data = array_filter($pageCollection->data, static function (Page $item) use ($property, $value, $process): bool {
             if ($item->has($property)) {
                 $propertyValue = $item->get($property);
 
@@ -131,7 +131,7 @@ class PageCollection extends Collection
             throw new InvalidArgumentException('Invalid sorting direction. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending');
         }
 
-        usort($pageCollection->items, static fn (Page $item1, Page $item2): int => $direction * strnatcasecmp($item1->get($property), $item2->get($property)));
+        usort($pageCollection->data, static fn (Page $item1, Page $item2): int => $direction * strnatcasecmp($item1->get($property), $item2->get($property)));
 
         return $pageCollection;
     }
@@ -142,7 +142,7 @@ class PageCollection extends Collection
     public function shuffle(): self
     {
         $pageCollection = clone $this;
-        $pageCollection->items = Arr::shuffle($pageCollection->items);
+        $pageCollection->data = Arr::shuffle($pageCollection->data);
         return $pageCollection;
     }
 
@@ -176,7 +176,7 @@ class PageCollection extends Collection
 
         $pageCollection = clone $this;
 
-        foreach ($pageCollection->items as $page) {
+        foreach ($pageCollection->data as $page) {
             $score = 0;
             foreach (array_keys($scores) as $key) {
                 $value = Str::removeHTML((string) $page->get($key));
@@ -227,7 +227,7 @@ class PageCollection extends Collection
     public function __debugInfo(): array
     {
         return [
-            'items' => $this->items
+            'items' => $this->data
         ];
     }
 }

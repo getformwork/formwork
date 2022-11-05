@@ -11,6 +11,6 @@ class RouteCollection extends AssociativeCollection
      */
     public function add(Route $route): Route
     {
-        return $this->items[$route->getName()] = $route;
+        return $this->data[$route->getName()] = $route;
     }
 }

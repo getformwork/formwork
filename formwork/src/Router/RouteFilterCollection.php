@@ -11,6 +11,6 @@ class RouteFilterCollection extends AssociativeCollection
      */
     public function add(RouteFilter $filter): RouteFilter
     {
-        return $this->items[$filter->getName()] = $filter;
+        return $this->data[$filter->getName()] = $filter;
     }
 }

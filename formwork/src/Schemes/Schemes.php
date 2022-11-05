@@ -20,7 +20,7 @@ class Schemes extends Collection
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yml') {
             $name = FileSystem::name($path);
-            $this->items[$type][$name] = $path;
+            $this->data[$type][$name] = $path;
             unset($this->storage[$type][$name]);
         }
     }
@@ -40,7 +40,7 @@ class Schemes extends Collection
      */
     public function has(string $type, string $name): bool
     {
-        return isset($this->items[$type][$name]);
+        return isset($this->data[$type][$name]);
     }
 
     /**
@@ -56,7 +56,7 @@ class Schemes extends Collection
             return $this->storage[$type][$name];
         }
 
-        return $this->storage[$type][$name] = new Scheme($type, $this->items[$type][$name]);
+        return $this->storage[$type][$name] = new Scheme($type, $this->data[$type][$name]);
     }
 
     /**
