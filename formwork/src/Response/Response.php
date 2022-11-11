@@ -2,10 +2,11 @@
 
 namespace Formwork\Response;
 
+use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Formwork;
 use Formwork\Utils\Header;
 
-class Response
+class Response implements ArraySerializable
 {
     /**
      * Response content
@@ -87,6 +88,20 @@ class Response
     {
         $this->sendHeaders();
         echo $this->content;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'content' => $this->content,
+            'status'  => $this->status,
+            'headers' => $this->headers
+        ];
+    }
+
+    public static function fromArray(array $data): static
+    {
+        return new static($data['content'], $data['status'], $data['headers']);
     }
 
     public static function __set_state(array $properties): self
