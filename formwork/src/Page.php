@@ -284,7 +284,7 @@ class Page extends AbstractPage
             return $this->siblings;
         }
         $parentPath = dirname($this->path) . DS;
-        return $this->siblings = PageCollection::fromPath($parentPath)->remove($this);
+        return $this->siblings = PageCollection::fromPath($parentPath)->without($this);
     }
 
     /**

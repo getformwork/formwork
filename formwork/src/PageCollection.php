@@ -2,18 +2,19 @@
 
 namespace Formwork;
 
+use Formwork\Data\AbstractCollection;
 use Formwork\Data\Collection;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
-use InvalidArgumentException;
 
-class PageCollection extends Collection
+class PageCollection extends AbstractCollection
 {
     /**
      * Default property used to sort pages
      */
     protected const DEFAULT_SORT_PROPERTY = 'relativePath';
+
+    protected ?string $dataType = AbstractPage::class;
 
     /**
      * Pagination related to the collection
@@ -29,53 +30,30 @@ class PageCollection extends Collection
     }
 
     /**
-     * Reverse the order of collection items
-     */
-    public function reverse(): self
-    {
-        $pageCollection = clone $this;
-        $pageCollection->data = array_reverse($pageCollection->data);
-        return $pageCollection;
-    }
-
-    /**
-     * Extract a slice from the collection containing a given number of items
-     * and starting from a given offset
-     *
-     * @param int $length
-     */
-    public function slice(int $offset, int $length = null): self
-    {
-        $pageCollection = clone $this;
-        $pageCollection->data = array_slice($pageCollection->data, $offset, $length);
-        return $pageCollection;
-    }
-
-    /**
-     * Remove a given element from the collection
-     */
-    public function remove(Page $element): self
-    {
-        $pageCollection = clone $this;
-        foreach ($pageCollection->data as $key => $item) {
-            if ($item->path() === $element->path()) {
-                unset($pageCollection->data[$key]);
-            }
-        }
-        return $pageCollection;
-    }
-
-    /**
      * Paginate the collection
      *
      * @param int $length Number of items in the pagination
      */
-    public function paginate(int $length): self
+    public function paginate(int $length): static
     {
         $pagination = new Pagination($this->count(), $length);
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
         $pageCollection->pagination = $pagination;
         return $pageCollection;
+    }
+
+    /**
+     * Return an array containing the specified property of each collection item
+     */
+    public function pluck(string $property): array
+    {
+        $result = [];
+
+        foreach ($this->data as $page) {
+            $result[] = $page->get($property);
+        }
+
+        return $result;
     }
 
     /**
@@ -85,11 +63,9 @@ class PageCollection extends Collection
      * @param          $value    Value to check in filtered items (default: true)
      * @param callable $process  Callable to process items before filtering
      */
-    public function filter(string $property, $value = true, callable $process = null): self
+    public function filterBy(string $property, $value = true, callable $process = null): static
     {
-        $pageCollection = clone $this;
-
-        $pageCollection->data = array_filter($pageCollection->data, static function (Page $item) use ($property, $value, $process): bool {
+        return $this->filter(static function (Page $item) use ($property, $value, $process): bool {
             if ($item->has($property)) {
                 $propertyValue = $item->get($property);
 
@@ -106,44 +82,19 @@ class PageCollection extends Collection
 
             return false;
         });
-
-        return $pageCollection;
     }
 
     /**
      * Sort collection items
-     *
-     * @param int $direction Sorting direction (SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending)
      */
-    public function sort(string $property = self::DEFAULT_SORT_PROPERTY, int $direction = SORT_ASC): self
-    {
-        $pageCollection = clone $this;
-
-        if ($pageCollection->count() <= 1) {
-            return $pageCollection;
-        }
-
-        if ($direction === SORT_ASC || $direction === 1) {
-            $direction = 1;
-        } elseif ($direction === SORT_DESC || $direction === -1) {
-            $direction = -1;
-        } else {
-            throw new InvalidArgumentException('Invalid sorting direction. Use SORT_ASC or 1 for ascending order, SORT_DESC or -1 for descending');
-        }
-
-        usort($pageCollection->data, static fn (Page $item1, Page $item2): int => $direction * strnatcasecmp($item1->get($property), $item2->get($property)));
-
-        return $pageCollection;
-    }
-
-    /**
-     * Shuffle collection items
-     */
-    public function shuffle(): self
-    {
-        $pageCollection = clone $this;
-        $pageCollection->data = Arr::shuffle($pageCollection->data);
-        return $pageCollection;
+    public function sortBy(
+        string $property = self::DEFAULT_SORT_PROPERTY,
+        int $direction = SORT_ASC,
+        int $type = SORT_NATURAL,
+        bool $caseSensitive = false,
+        bool $preserveKeys = true
+    ): static {
+        return parent::sort($direction, $type, $this->pluck($property), $caseSensitive, $preserveKeys);
     }
 
     /**
@@ -152,7 +103,7 @@ class PageCollection extends Collection
      * @param string $query Query to search for
      * @param int    $min   Minimum query length (default: 4)
      */
-    public function search(string $query, int $min = 4): self
+    public function search(string $query, int $min = 4): static
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (strlen($query) < $min) {
@@ -192,7 +143,7 @@ class PageCollection extends Collection
             }
         }
 
-        return $pageCollection->filter('score')->sort('score', SORT_DESC);
+        return $pageCollection->filterBy('score')->sortBy('score', direction: SORT_DESC);
     }
 
     /**
@@ -221,13 +172,7 @@ class PageCollection extends Collection
         }
 
         $pages = new static($pages);
-        return $pages->sort();
-    }
 
-    public function __debugInfo(): array
-    {
-        return [
-            'items' => $this->data
-        ];
+        return $pages->sortBy('path');
     }
 }

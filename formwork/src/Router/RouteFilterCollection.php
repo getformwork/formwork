@@ -2,15 +2,22 @@
 
 namespace Formwork\Router;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 
-class RouteFilterCollection extends AssociativeCollection
+class RouteFilterCollection extends AbstractCollection
 {
+    protected bool $associative = true;
+
+    protected ?string $dataType = RouteFilter::class;
+
+    protected bool $mutable = true;
+
     /**
      * Add filter to collection
      */
-    public function add(RouteFilter $filter): RouteFilter
+    public function add($filter): RouteFilter
     {
-        return $this->data[$filter->getName()] = $filter;
+        $this->set($filter->getName(), $filter);
+        return $filter;
     }
 }

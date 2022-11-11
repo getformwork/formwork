@@ -2,13 +2,12 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Data\Collection;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 
-class Translations extends Collection
+class Translations
 {
     /**
      * Translation objects storage

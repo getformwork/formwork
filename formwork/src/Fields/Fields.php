@@ -2,11 +2,13 @@
 
 namespace Formwork\Fields;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 use Formwork\Data\DataGetter;
 
-class Fields extends AssociativeCollection
+class Fields extends AbstractCollection
 {
+    protected ?string $dataType = Field::class;
+
     /**
      * Create a new Fields instance
      *

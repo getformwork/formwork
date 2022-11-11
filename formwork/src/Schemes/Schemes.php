@@ -2,11 +2,10 @@
 
 namespace Formwork\Schemes;
 
-use Formwork\Data\Collection;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 
-class Schemes extends Collection
+class Schemes
 {
     /**
      * Scheme objects storage
