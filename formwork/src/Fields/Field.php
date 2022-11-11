@@ -2,7 +2,7 @@
 
 namespace Formwork\Fields;
 
-use Formwork\Data\DataSetter;
+use Formwork\Utils\Constraint;
 use UnexpectedValueException;
 
 class Field extends DataSetter
@@ -94,7 +94,7 @@ class Field extends DataSetter
      */
     public function isEmpty(): bool
     {
-        return in_array($this->value(), Validator::EMPTY_VALUES, true);
+        return Constraint::isEmpty($this->value());
     }
 
     /**

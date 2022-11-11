@@ -2,9 +2,10 @@
 
 namespace Formwork\Fields;
 
-use Formwork\Data\Collection;
+use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\DataGetter;
 use Formwork\Fields\Exceptions\ValidationException;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 use InvalidArgumentException;
@@ -15,21 +16,6 @@ class Validator
      * Field types ignored by the validator
      */
     public const IGNORED_FIELDS = ['column', 'header', 'row', 'rows'];
-
-    /**
-     * Values considered true when parsed as boolean
-     */
-    public const TRUTHY_VALUES = [true, 1, 'true', '1', 'on', 'yes'];
-
-    /**
-     * Values considered false when parsed as boolean
-     */
-    public const FALSY_VALUES = [false, 0, 'false', '0', 'off', 'no'];
-
-    /**
-     * Values considered null when parsed as such
-     */
-    public const EMPTY_VALUES = [null, '', []];
 
     /**
      * Date format used for date fields
@@ -52,7 +38,7 @@ class Validator
 
             $value = $data->get($field->name());
 
-            if ($field->isRequired() && in_array($value, self::EMPTY_VALUES, true)) {
+            if ($field->isRequired() && Constraint::isEmpty($value)) {
                 throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()));
             }
 
@@ -71,11 +57,11 @@ class Validator
      */
     public static function validateCheckbox($value, Field $field): bool
     {
-        if (in_array($value, self::TRUTHY_VALUES, true)) {
+        if (Constraint::isTruthy($value)) {
             return true;
         }
 
-        if (in_array($value, self::FALSY_VALUES, true)) {
+        if (Constraint::isFalsy($value)) {
             return false;
         }
 
@@ -91,11 +77,11 @@ class Validator
      */
     public static function validateTogglegroup($value, Field $field)
     {
-        if (in_array($value, self::TRUTHY_VALUES, true)) {
+        if (Constraint::isTruthy($value)) {
             return true;
         }
 
-        if (in_array($value, self::FALSY_VALUES, true)) {
+        if (Constraint::isFalsy($value)) {
             return false;
         }
 
@@ -107,7 +93,7 @@ class Validator
      */
     public static function validateDate($value, Field $field): ?string
     {
-        if (in_array($value, self::EMPTY_VALUES, true)) {
+        if (Constraint::isEmpty($value)) {
             return null;
         }
 
@@ -169,7 +155,7 @@ class Validator
      */
     public static function validateTags($value, Field $field): array
     {
-        if (in_array($value, self::EMPTY_VALUES, true)) {
+        if (Constraint::isEmpty($value)) {
             return [];
         }
 
@@ -182,7 +168,7 @@ class Validator
         }
 
         if ($field->has('pattern')) {
-            $value = array_filter($value, static fn ($item): bool => static::regex($item, $field->get('pattern')));
+            $value = array_filter($value, static fn ($item): bool => Constraint::matchesRegex($item, $field->get('pattern')));
         }
 
         return array_values(array_filter($value));
@@ -193,11 +179,11 @@ class Validator
      */
     public static function validateArray($value, Field $field): array
     {
-        if (in_array($value, self::EMPTY_VALUES, true)) {
+        if (Constraint::isEmpty($value)) {
             return [];
         }
 
-        if ($value instanceof Collection || $value instanceof DataGetter) {
+        if ($value instanceof Arrayable) {
             $value = $value->toArray();
         }
 
@@ -221,7 +207,7 @@ class Validator
      */
     public static function validateText($value, Field $field): string
     {
-        if (in_array($value, self::EMPTY_VALUES, true)) {
+        if (Constraint::isEmpty($value)) {
             return '';
         }
 
@@ -237,7 +223,7 @@ class Validator
             throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('max')));
         }
 
-        if ($field->has('pattern') && !static::regex($value, $field->get('pattern'))) {
+        if ($field->has('pattern') && !Constraint::matchesRegex($value, $field->get('pattern'))) {
             throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not match the required pattern', $field->name(), $field->value()));
         }
 
@@ -277,7 +263,7 @@ class Validator
      */
     public static function validateImage($value, Field $field): ?string
     {
-        if (in_array($value, self::EMPTY_VALUES, true)) {
+        if (Constraint::isEmpty($value)) {
             return null;
         }
 
@@ -306,13 +292,5 @@ class Validator
             return $value + 0;
         }
         return $value;
-    }
-
-    /**
-     * Return whether a value matches a regex
-     */
-    protected static function regex($value, string $regex): bool
-    {
-        return (bool) @preg_match('/' . $regex . '/', $value);
     }
 }
