@@ -2,15 +2,22 @@
 
 namespace Formwork\Router;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 
-class RouteCollection extends AssociativeCollection
+class RouteCollection extends AbstractCollection
 {
+    protected bool $associative = true;
+
+    protected ?string $dataType = Route::class;
+
+    protected bool $mutable = true;
+
     /**
      * Add route to the collection
      */
-    public function add(Route $route): Route
+    public function add($route): Route
     {
-        return $this->data[$route->getName()] = $route;
+        $this->set($route->getName(), $route);
+        return $route;
     }
 }

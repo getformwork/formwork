@@ -47,7 +47,7 @@ class PagesController extends AbstractController
 
         $this->modal('newPage', [
             'templates' => $this->site()->templates(),
-            'pages'     => $this->site()->descendants()->sort('path')
+            'pages'     => $this->site()->descendants()->sortBy('path')
         ]);
 
         $this->modal('deletePage');
@@ -190,7 +190,7 @@ class PagesController extends AbstractController
             'page'               => $page,
             'fields'             => $fields,
             'templates'          => $this->site()->templates(),
-            'parents'            => $this->site()->descendants()->sort('path'),
+            'parents'            => $this->site()->descendants()->sortBy('path'),
             'currentLanguage'    => $params->get('language', $page->language()),
             'availableLanguages' => $this->availableSiteLanguages()
         ], true));

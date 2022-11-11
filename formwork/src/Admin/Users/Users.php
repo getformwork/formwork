@@ -2,13 +2,17 @@
 
 namespace Formwork\Admin\Users;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 
-class Users extends AssociativeCollection
+class Users extends AbstractCollection
 {
+    protected bool $associative = true;
+
+    protected ?string $dataType = User::class;
+
     /**
      * All available roles
      */

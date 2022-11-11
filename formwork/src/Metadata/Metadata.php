@@ -2,10 +2,16 @@
 
 namespace Formwork\Metadata;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 
-class Metadata extends AssociativeCollection
+class Metadata extends AbstractCollection
 {
+    protected bool $associative = true;
+
+    protected ?string $dataType = Metadatum::class;
+
+    protected bool $mutable = true;
+
     /**
      * Create a new Metadata instance
      */
@@ -18,18 +24,8 @@ class Metadata extends AssociativeCollection
     /**
      * Set a metadatum
      */
-    public function set(string $name, string $content): void
+    public function set(string $key, $value)
     {
-        $this->data[$name] = new Metadatum($name, $content);
-    }
-
-    /**
-     * Set multiple metadata
-     */
-    public function setMultiple(array $data): void
-    {
-        foreach ($data as $name => $content) {
-            $this->set($name, $content);
-        }
+        $this->data[$key] = new Metadatum($key, $value);
     }
 }

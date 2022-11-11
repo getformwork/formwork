@@ -2,11 +2,15 @@
 
 namespace Formwork\Files;
 
-use Formwork\Data\AssociativeCollection;
+use Formwork\Data\AbstractCollection;
 use Formwork\Utils\FileSystem;
 
-class Files extends AssociativeCollection
+class Files extends AbstractCollection
 {
+    protected bool $associative = true;
+
+    protected ?string $dataType = File::class;
+
     /**
      * Filter files by a given type
      */

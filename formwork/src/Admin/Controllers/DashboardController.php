@@ -19,7 +19,7 @@ class DashboardController extends AbstractController
 
         $this->modal('newPage', [
             'templates' => $this->site()->templates(),
-            'pages'     => $this->site()->descendants()->sort('path')
+            'pages'     => $this->site()->descendants()->sortBy('path')
         ]);
 
         $this->modal('deletePage');
@@ -27,7 +27,7 @@ class DashboardController extends AbstractController
         return new Response($this->view('dashboard.index', [
             'title'             => $this->admin()->translate('admin.dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.list', [
-                'pages'    => $this->site()->descendants()->sort('lastModifiedTime', SORT_DESC)->slice(0, 5),
+                'pages'    => $this->site()->descendants()->sortBy('lastModifiedTime', direction: SORT_DESC)->slice(0, 5),
                 'subpages' => false,
                 'class'    => 'pages-list-top',
                 'parent'   => null,
