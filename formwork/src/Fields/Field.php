@@ -2,11 +2,19 @@
 
 namespace Formwork\Fields;
 
+use Formwork\Data\Contracts\Arrayable;
+use Formwork\Data\Traits\DataArrayable;
+use Formwork\Data\Traits\DataMultipleGetter;
+use Formwork\Data\Traits\DataMultipleSetter;
 use Formwork\Utils\Constraint;
 use UnexpectedValueException;
 
-class Field extends DataSetter
+class Field implements Arrayable
 {
+    use DataArrayable;
+    use DataMultipleGetter;
+    use DataMultipleSetter;
+
     /**
      * Field name
      */
@@ -18,7 +26,7 @@ class Field extends DataSetter
     public function __construct(string $name, array $data = [])
     {
         $this->name = $name;
-        parent::__construct($data);
+        $this->data = $data;
         if ($this->has('import')) {
             $this->importData();
         }

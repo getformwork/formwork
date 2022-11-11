@@ -6,7 +6,7 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 
-class DataGetter implements Arrayable
+final class DataGetter implements Arrayable
 {
     use DataArrayable;
     use DataMultipleGetter;
