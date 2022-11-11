@@ -2,6 +2,10 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Data\Contracts\Arrayable;
+use Traversable;
+use UnexpectedValueException;
+
 class Arr
 {
     /**
@@ -81,6 +85,45 @@ class Arr
     }
 
     /**
+     * Remove from an array all the occurrences of the given value
+     */
+    public static function pull(array &$array, $value): void
+    {
+        foreach ($array as $key => $v) {
+            if ($v === $value) {
+                unset($array[$key]);
+            }
+        }
+    }
+
+    /**
+     * Get the array value at the given index,
+     * negative indices are allowed and start from the end
+     */
+    public static function at(array $array, int $index)
+    {
+        return array_values($array)[$index >= 0 ? $index : count($array) + $index];
+    }
+
+    /**
+     * Get the index of the given value or null if not found
+     */
+    public static function indexOf(array $array, $value): ?int
+    {
+        $index = array_search($value, array_values($array), true);
+        return $index !== false ? $index : null;
+    }
+
+    /**
+     * Get the key of the given value or null if not found
+     */
+    public static function keyOf(array $array, $value): int|string|null
+    {
+        $key = array_search($value, $array, true);
+        return $key !== false ? $key : null;
+    }
+
+    /**
      * Recursively append elements from the second array that are missing in the first
      */
     public static function appendMissing(array $array1, array $array2): array
@@ -128,5 +171,143 @@ class Arr
     public static function isAssociative(array $array): bool
     {
         return $array !== [] && array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * Apply a callback to the given array and return the result
+     *
+     * The key of each element is passed to the callback as second argument
+     */
+    public static function map(array $array, callable $callback): array
+    {
+        return array_map($callback, $array, array_keys($array));
+    }
+
+    /**
+     * Filter an array keeping only the values for which the callback returns `true`
+     *
+     * The key of each element is passed to the callback as second argument
+     */
+    public static function filter(array $array, callable $callback): array
+    {
+        return array_filter($array, $callback, ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
+     * Reject values from an array keeping only the values for which the callback returns `false`
+     *
+     * The key of each element is passed to the callback as second argument
+     */
+    public static function reject(array $array, callable $callback): array
+    {
+        return static::filter($array, fn ($value, $key) => !$callback($value, $key));
+    }
+
+    /**
+     * Return whether every element of the array passes a test callback
+     *
+     * The key of each element is passed to the callback as second argument
+     */
+    public static function every(array $array, callable $callback): bool
+    {
+        foreach ($array as $key => $value) {
+            if (!$callback($value, $key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Return whether some element of the array passes a test callback
+     *
+     * The key of each element is passed to the callback as second argument
+     */
+    public static function some(array $array, callable $callback): bool
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sort an array with the given options
+     *
+     * @param $direction     Direction of sorting. Possible values are `SORT_ASC` and `SORT_DESC`.
+     * @param $type          Type of sorting. Possible values are `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_NATURAL`.
+     * @param $caseSensitive Whether to perform a case-sensitive sorting
+     * @param $sortBy        A callback or second array of values used to sort the first
+     * @param $preserveKeys Whether to preserve array keys after sorting
+     */
+    public static function sort(
+        array $array,
+        int $direction = SORT_ASC,
+        int $type = SORT_NATURAL,
+        array|callable $sortBy = null,
+        bool $caseSensitive = false,
+        bool $preserveKeys = true
+    ): array {
+        if (!in_array($direction, [SORT_ASC, SORT_DESC], true)) {
+            throw new UnexpectedValueException(sprintf('%s() only accepts SORT_ASC and SORT_DESC as "direction" option', __METHOD__));
+        }
+
+        if (!in_array($type, [SORT_REGULAR, SORT_NUMERIC, SORT_STRING, SORT_NATURAL], true)) {
+            throw new UnexpectedValueException(sprintf('%s() only accepts SORT_REGULAR, SORT_NUMERIC, SORT_STRING and SORT_NATURAL as "type" option', __METHOD__));
+        }
+
+        $flags = $type;
+
+        if ($caseSensitive === false) {
+            $flags |= SORT_FLAG_CASE;
+        }
+
+        if (is_callable($sortBy)) {
+            $function = $preserveKeys ? 'uasort' : 'usort';
+            $function($array, $sortBy);
+        } else {
+            $keys = $preserveKeys ? array_keys($array) : [];
+
+            $arguments = [];
+
+            if ($sortBy === null) {
+                $arguments = [&$array, $direction, $flags];
+            } elseif (is_array($sortBy)) {
+                $arguments = [&$sortBy, $direction, $flags, &$array];
+            }
+
+            if ($preserveKeys) {
+                $arguments[] = &$keys;
+            }
+
+            array_multisort(...$arguments);
+
+            if ($preserveKeys) {
+                $array = array_combine($keys, $array);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Try to convert the given object to array
+     */
+    public static function from($object): array
+    {
+        switch (true) {
+            case is_array($object):
+                return $object;
+
+            case $object instanceof Arrayable:
+                return $object->toArray();
+
+            case $object instanceof Traversable:
+                return iterator_to_array($object);
+        }
+
+        throw new UnexpectedValueException(sprintf('Cannot convert to array an object of type %s', get_debug_type($object)));
     }
 }
