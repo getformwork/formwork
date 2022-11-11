@@ -2,59 +2,93 @@
 
 namespace Formwork\Data;
 
-use Countable;
-use Formwork\Data\Contracts\Arrayable;
 use Formwork\Utils\Arr;
-use Formwork\Data\Traits\DataArrayable;
-use Formwork\Data\Traits\DataCountableIterator;
-use Iterator;
+use LogicException;
 
-class Collection implements Arrayable, Countable, Iterator
+final class Collection extends AbstractCollection
 {
-    use DataArrayable;
-    use DataCountableIterator;
-
     /**
-     * Create a new Collection instance
-     */
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Return first collection item
+     * Convert a collection to mutable
      *
-     * @return mixed|null
+     * @throws LogicException If collection is already mutable
      */
-    public function first()
+    public function toMutable(): static
     {
-        return $this->data[0] ?? null;
+        if ($this->isMutable()) {
+            throw new LogicException('Cannot convert an already mutable collection to mutable');
+        }
+        $collection = $this->clone();
+        $collection->mutable = true;
+        return $collection;
     }
 
     /**
-     * Return last collection item
+     * Convert a collection to immutable
      *
-     * @return mixed|null
+     * @throws LogicException If collection is already immutable
      */
-    public function last()
+    public function toImmutable(): static
     {
-        return $this->data[$this->count() - 1] ?? null;
+        if (!$this->isMutable()) {
+            throw new LogicException('Cannot convert an already immmutable collection to immmutable');
+        }
+        $collection = $this->clone();
+        $collection->mutable = false;
+        return $collection;
     }
 
     /**
-     * Return a random item or a given default value if the collection is empty
+     * Create a collection with the given options
      */
-    public function random($default = null)
+    public static function create(array $data = [], string $dataType = null, bool $associative = false, bool $mutable = false): static
     {
-        return Arr::random($this->data, $default);
+        $collection = new static();
+
+        $collection->associative = $associative;
+        $collection->dataType = $dataType;
+        $collection->mutable = $mutable;
+
+        $collection->__construct($data);
+
+        return $collection;
     }
 
     /**
-     * Return whether collection is empty
+     * Create a collection of the given type
      */
-    public function isEmpty(): bool
+    public static function of(string $dataType, array $data = [], bool $associative = false, bool $mutable = false): static
     {
-        return empty($this->data);
+        return static::create($data, $dataType, $associative, $mutable);
+    }
+
+    /**
+     * Convert an arrayable object to a collection trying to guess its data type
+     */
+    public static function from($object, bool $typed = null, bool $mutable = false): static
+    {
+        $data = Arr::from($object);
+
+        if ($typed !== false) {
+            $dataType = null;
+
+            foreach ($data as $value) {
+                $type = get_debug_type($value);
+
+                // A type was guessed but a different one is found
+                if ($dataType !== null && $type !== $dataType) {
+                    // Cannot enforce a typed collection when values have different types
+                    if ($typed === true) {
+                        throw new LogicException('Cannot create a typed collection with data of different types');
+                    }
+
+                    $dataType = null;
+                    break;
+                }
+
+                $dataType = $type;
+            }
+        }
+
+        return static::create($data, $dataType, Arr::isAssociative($data), $mutable);
     }
 }
