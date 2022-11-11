@@ -2,7 +2,9 @@
 
 namespace Formwork\Cache;
 
-class CacheItem
+use Formwork\Data\Contracts\ArraySerializable;
+
+class CacheItem implements ArraySerializable
 {
     /**
      * Cached value

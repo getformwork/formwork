@@ -35,7 +35,7 @@ class FilesCache extends AbstractCache
     public function fetch(string $key)
     {
         if ($this->has($key)) {
-            $cacheItem = CacheItem::fromArray(PHP::parseFile($this->getFile($key)));
+            $cacheItem = PHP::parseFile($this->getFile($key));
             return $cacheItem->value();
         }
         if ($this->hasExpired($key)) {
@@ -50,7 +50,7 @@ class FilesCache extends AbstractCache
     public function save(string $key, $value, int $ttl = null): void
     {
         $cacheItem = new CacheItem($value, time() + ($ttl ?? $this->defaultTtl), time());
-        PHP::encodeToFile($cacheItem->toArray(), $this->getFile($key));
+        PHP::encodeToFile($cacheItem, $this->getFile($key));
     }
 
     /**
@@ -101,7 +101,7 @@ class FilesCache extends AbstractCache
      */
     protected function hasExpired(string $key): bool
     {
-        $cacheItem = CacheItem::fromArray(PHP::parseFile($this->getFile($key)));
+        $cacheItem = PHP::parseFile($this->getFile($key));
         return time() >= $cacheItem->expirationTime();
     }
 }
