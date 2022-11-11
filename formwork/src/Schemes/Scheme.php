@@ -2,13 +2,18 @@
 
 namespace Formwork\Schemes;
 
-use Formwork\Data\DataGetter;
+use Formwork\Data\Contracts\Arrayable;
+use Formwork\Data\Traits\DataArrayable;
+use Formwork\Data\Traits\DataGetter;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 
-class Scheme extends DataGetter
+class Scheme implements Arrayable
 {
+    use DataArrayable;
+    use DataGetter;
+
     /**
      * Scheme type
      */
@@ -33,11 +38,11 @@ class Scheme extends DataGetter
         $this->path = $path;
         $this->name = FileSystem::name($path);
 
-        parent::__construct(YAML::parseFile($this->path));
+        $this->data = YAML::parseFile($this->path);
 
         if ($this->has('extend') && $this->get('extend') !== $this->name) {
             $parent = Formwork::instance()->schemes()->get($type, $this->get('extend'));
-            $this->data = array_replace_recursive($parent->toArray(), $this->data);
+            $this->data = array_replace_recursive($parent->data, $this->data);
         }
 
         if (!$this->has('title')) {

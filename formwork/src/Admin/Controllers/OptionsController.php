@@ -55,7 +55,7 @@ class OptionsController extends AbstractController
             return $this->admin()->redirect('/options/system/');
         }
 
-        $fields->validate(Formwork::instance()->config());
+        $fields->validate(new DataGetter(Formwork::instance()->config()->toArray()));
 
         $this->modal('changes');
 
