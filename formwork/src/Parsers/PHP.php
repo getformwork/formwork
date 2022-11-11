@@ -2,6 +2,7 @@
 
 namespace Formwork\Parsers;
 
+use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -47,7 +48,7 @@ class PHP extends AbstractEncoder
     /**
      * @inheritdoc
      */
-    public static function encodeToFile(array $data, string $file, array $options = []): bool
+    public static function encodeToFile($data, string $file, array $options = []): bool
     {
         if (function_exists('opcache_invalidate') && ($options['invalidateOPcache'] ?? true)) {
             // Invalidate OPcache when a file is encoded again
@@ -99,6 +100,10 @@ class PHP extends AbstractEncoder
                     if ($data instanceof $c) {
                         throw new UnexpectedValueException(sprintf('Objects of class "%s" cannot be encoded', $class));
                     }
+                }
+
+                if ($data instanceof ArraySerializable) {
+                    return sprintf('\\%s::fromArray(%s)', $class, static::encodeData($data->toArray(), $indent));
                 }
 
                 // Check if the class has a callable __set_state() magic method
