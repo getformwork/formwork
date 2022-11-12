@@ -180,7 +180,8 @@ class Arr
      */
     public static function map(array $array, callable $callback): array
     {
-        return array_map($callback, $array, array_keys($array));
+        $keys = array_keys($array);
+        return array_combine($keys, array_map($callback, $array, $keys));
     }
 
     /**
