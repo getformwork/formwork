@@ -200,6 +200,16 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Clone the collection and its items
+     */
+    public function deepClone(): static
+    {
+        $clone = $this->clone();
+        $clone->data = Arr::map($clone->data, fn ($value) => is_object($value) ? clone $value : $value);
+        return $clone;
+    }
+
+    /**
      * Return a copy of the collection with its items reversed
      */
     public function reverse(): static
