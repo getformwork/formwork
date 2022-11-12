@@ -264,7 +264,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function map(callable $callback): static
     {
         $collection = $this->clone();
-        $collection->data = array_map($callback, $collection->data);
+        $collection->data = Arr::map($callback, $collection->data);
         return $collection;
     }
 
