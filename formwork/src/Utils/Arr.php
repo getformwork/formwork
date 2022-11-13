@@ -102,7 +102,7 @@ class Arr
      */
     public static function nth(array $array, int $index)
     {
-        return array_values($array)[$index];
+        return array_values($array)[$index] ?? null;
     }
 
     /**
@@ -111,7 +111,7 @@ class Arr
      */
     public static function at(array $array, int $index)
     {
-        return array_values($array)[$index >= 0 ? $index : count($array) + $index];
+        return array_values($array)[$index >= 0 ? $index : count($array) + $index] ?? null;
     }
 
     /**
