@@ -106,7 +106,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      */
     public function nth(int $index)
     {
-        return $this->data[$index] ?? null;
+        return Arr::nth($this->data, $index);
     }
 
     /**
@@ -235,7 +235,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function unique(): static
     {
         $collection = $this->clone();
-        $collection->data = array_unique($this->data);
+        $collection->data = array_unique($collection->data);
         return $collection;
     }
 
@@ -245,7 +245,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function duplicates(): static
     {
         $collection = $this->clone();
-        $collection->data = array_diff_key($this->data, array_unique($this->data));
+        $collection->data = Arr::duplicates($collection->data);
         return $collection;
     }
 
@@ -300,7 +300,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function reject(callable $callback): static
     {
         $collection = $this->clone();
-        return $collection->data = Arr::reject($collection->data, $callback);
+        $collection->data = Arr::reject($collection->data, $callback);
         return $collection;
     }
 
@@ -317,7 +317,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         bool $preserveKeys = null
     ): static {
         $collection = $this->clone();
-        $collection->data = Arr::sort($collection->data, $direction, $type, $sortBy, $caseSensitive, $preserveKeys ?? $this->isAssociative());
+        $collection->data = Arr::sort(
+            $collection->data,
+            $direction,
+            $type,
+            $sortBy,
+            $caseSensitive,
+            $preserveKeys ?? $this->isAssociative()
+        );
         return $collection;
     }
 
