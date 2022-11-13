@@ -98,6 +98,15 @@ class Arr
 
     /**
      * Get the array value at the given index,
+     * negative indices are not allowed, use `Arr:at()` instead
+     */
+    public static function nth(array $array, int $index)
+    {
+        return array_values($array)[$index];
+    }
+
+    /**
+     * Get the array value at the given index,
      * negative indices are allowed and start from the end
      */
     public static function at(array $array, int $index)
@@ -121,6 +130,14 @@ class Arr
     {
         $key = array_search($value, $array, true);
         return $key !== false ? $key : null;
+    }
+
+    /**
+     * Return the duplicate elements of the array
+     */
+    public static function duplicates(array $array): array
+    {
+        return array_diff_key($array, array_unique($array));
     }
 
     /**
