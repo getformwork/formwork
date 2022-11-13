@@ -2,11 +2,12 @@
 
 namespace Formwork\Data;
 
+use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
 
-final class DataSetter
+final class DataSetter implements Arrayable
 {
     use DataArrayable;
     use DataMultipleGetter;
