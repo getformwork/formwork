@@ -2,10 +2,13 @@
 
 namespace Formwork\Languages;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class LanguageCodes
 {
+    use StaticClass;
+
     /**
      * All available language codes
      */

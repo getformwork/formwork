@@ -2,10 +2,13 @@
 
 namespace Formwork\Admin\Utils;
 
+use Formwork\Traits\StaticClass;
 use Formwork\Utils\Date;
 
 class DateFormats
 {
+    use StaticClass;
+
     /**
      * Return common date formats
      */

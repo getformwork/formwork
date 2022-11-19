@@ -3,10 +3,13 @@
 namespace Formwork\Utils;
 
 use DOMDocument;
+use Formwork\Traits\StaticClass;
 use RuntimeException;
 
 class MimeType
 {
+    use StaticClass;
+
     /**
      * Default MIME type for unknown files
      */

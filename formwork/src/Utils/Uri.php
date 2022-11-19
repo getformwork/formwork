@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class Uri
 {
+    use StaticClass;
+
     /**
      * Default ports which will not be present in generated URI
      */

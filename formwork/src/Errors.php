@@ -7,10 +7,13 @@ use Formwork\Utils\HTTPResponse;
 use Formwork\View\View;
 use ErrorException;
 use Formwork\Response\Response;
+use Formwork\Traits\StaticClass;
 use Throwable;
 
 class Errors
 {
+    use StaticClass;
+
     /**
      * Set error handlers
      */

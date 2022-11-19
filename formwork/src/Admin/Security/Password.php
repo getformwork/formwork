@@ -2,8 +2,12 @@
 
 namespace Formwork\Admin\Security;
 
+use Formwork\Traits\StaticClass;
+
 class Password
 {
+    use StaticClass;
+
     /**
      * Hash a password
      */

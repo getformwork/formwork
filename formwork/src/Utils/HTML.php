@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class HTML
 {
+    use StaticClass;
+
     /**
      * Void HTML elements without content and end tag
      *

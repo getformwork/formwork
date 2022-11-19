@@ -2,8 +2,12 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
+
 class Str
 {
+    use StaticClass;
+
     /**
      * Translate map to make slugs
      */

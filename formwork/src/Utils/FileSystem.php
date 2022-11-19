@@ -2,6 +2,7 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\Exceptions\FileSystemException;
 use Generator;
@@ -9,6 +10,8 @@ use InvalidArgumentException;
 
 class FileSystem
 {
+    use StaticClass;
+
     /**
      * List only files flag
      */

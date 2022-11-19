@@ -2,8 +2,12 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
+
 class HTTPNegotiation
 {
+    use StaticClass;
+
     /**
      * Return an array containing client preferred MIME types as keys and quality factors as values
      */

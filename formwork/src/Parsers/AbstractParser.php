@@ -2,10 +2,13 @@
 
 namespace Formwork\Parsers;
 
+use Formwork\Traits\StaticClass;
 use Formwork\Utils\FileSystem;
 
 abstract class AbstractParser
 {
+    use StaticClass;
+
     /**
      * Parse input from a string
      */

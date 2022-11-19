@@ -5,10 +5,13 @@ namespace Formwork\Utils;
 use Formwork\Formwork;
 use DateTime;
 use Exception;
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class Date
 {
+    use StaticClass;
+
     /**
      * Characters used in formats accepted by date()
      */

@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class IPAnonymizer
 {
+    use StaticClass;
+
     /**
      * IPv4 addresses mask
      */

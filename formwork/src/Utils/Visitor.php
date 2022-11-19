@@ -2,8 +2,12 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
+
 class Visitor
 {
+    use StaticClass;
+
     /**
      * Array containing regex tokens that identify bots based on monperrus/crawler-user-agents list
      *

@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class Path
 {
+    use StaticClass;
+
     /**
      * Default path separator (forward slash)
      */

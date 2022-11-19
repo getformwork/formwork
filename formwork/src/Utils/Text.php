@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use RuntimeException;
 
 class Text
 {
+    use StaticClass;
+
     /**
      * Regex matching whitespace characters
      */

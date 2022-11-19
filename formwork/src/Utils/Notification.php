@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
 class Notification
 {
+    use StaticClass;
+
     /**
      * Info notification type
      */

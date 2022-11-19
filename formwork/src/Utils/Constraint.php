@@ -2,8 +2,12 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
+
 class Constraint
 {
+    use StaticClass;
+
     /**
      * Values considered true when parsed as boolean
      */

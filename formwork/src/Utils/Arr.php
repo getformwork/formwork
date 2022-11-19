@@ -3,11 +3,14 @@
 namespace Formwork\Utils;
 
 use Formwork\Data\Contracts\Arrayable;
+use Formwork\Traits\StaticClass;
 use Traversable;
 use UnexpectedValueException;
 
 class Arr
 {
+    use StaticClass;
+
     /**
      * Get data by key returning a default value if key is not present in a given array,
      * using dot notation to traverse if literal key is not found

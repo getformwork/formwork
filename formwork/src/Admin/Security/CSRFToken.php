@@ -2,12 +2,15 @@
 
 namespace Formwork\Admin\Security;
 
+use Formwork\Traits\StaticClass;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Session;
 use RuntimeException;
 
 class CSRFToken
 {
+    use StaticClass;
+
     /**
      * Session key to store the CSRF token
      */

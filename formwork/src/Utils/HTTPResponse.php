@@ -2,8 +2,12 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
+
 class HTTPResponse
 {
+    use StaticClass;
+
     /**
      * Return an array containing response headers
      */

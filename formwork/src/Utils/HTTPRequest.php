@@ -4,9 +4,12 @@ namespace Formwork\Utils;
 
 use Formwork\Data\Collection;
 use Formwork\Data\DataGetter;
+use Formwork\Traits\StaticClass;
 
 class HTTPRequest
 {
+    use StaticClass;
+
     /**
      * Localhost IP addresses
      */

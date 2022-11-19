@@ -2,11 +2,14 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
 class Cookie
 {
+    use StaticClass;
+
     /**
      * 'Strict' value for SameSite directive
      */

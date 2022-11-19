@@ -3,9 +3,12 @@
 namespace Formwork\View;
 
 use Closure;
+use Formwork\Traits\StaticClass;
 
 class Renderer
 {
+    use StaticClass;
+
     /**
      * Load a script passing variables and binding to given instance and context
      */

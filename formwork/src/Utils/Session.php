@@ -3,9 +3,12 @@
 namespace Formwork\Utils;
 
 use Formwork\Formwork;
+use Formwork\Traits\StaticClass;
 
 class Session
 {
+    use StaticClass;
+
     /**
      * Session name
      */

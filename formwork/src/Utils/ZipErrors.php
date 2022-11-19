@@ -2,10 +2,13 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use ZipArchive;
 
 class ZipErrors
 {
+    use StaticClass;
+
     /**
      * Human-readable ZipArchive error messages
      */

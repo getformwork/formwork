@@ -2,11 +2,14 @@
 
 namespace Formwork\Utils;
 
+use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 use RuntimeException;
 
 class Header
 {
+    use StaticClass;
+
     /**
      * Associative array containing HTTP response status codes
      *
