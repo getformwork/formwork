@@ -54,7 +54,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             ));
         }
 
-        if ($this->isTyped() && !Arr::every($data, fn ($value) => Constraint::isOfType($value, $this->dataType()))) {
+        if ($this->isTyped() && !Arr::every($data, fn ($value) => Constraint::isOfType($value, $this->dataType(), unionTypes: true))) {
             throw new LogicException('Typed collections cannot be created from data of different types');
         }
 
@@ -379,7 +379,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             throw new LogicException('Values can be added only to mutable and non-associative collections');
         }
 
-        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType())) {
+        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType(), unionTypes: true)) {
             throw new LogicException(sprintf('Value must be of type %s to be added, %s given', $this->dataType(), get_debug_type($value)));
         }
 
@@ -450,7 +450,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             throw new LogicException('Values can be set only to associative and mutable collections');
         }
 
-        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType())) {
+        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType(), unionTypes: true)) {
             throw new LogicException(sprintf('Value must be of type %s, %s given', $this->dataType(), get_debug_type($value)));
         }
 
