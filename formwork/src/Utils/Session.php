@@ -18,16 +18,7 @@ class Session
     {
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_strict_mode', true);
-            $options = [
-                'expires'  => 0,
-                'path'     => HTTPRequest::root(),
-                'secure'   => HTTPRequest::isHTTPS(),
-                'httponly' => true,
-                'samesite' => Cookie::SAMESITE_STRICT
-            ];
-            if (($timeout = Formwork::instance()->config()->get('admin.session_timeout')) > 0) {
-                $options['expires'] = time() + $timeout * 60;
-            }
+            $options = static::cookieOptions();
             session_name(self::SESSION_NAME);
             session_start();
             if (HTTPRequest::cookies()->has(self::SESSION_NAME) || $options['expires'] > 0) {
@@ -82,6 +73,7 @@ class Session
     public static function destroy(): void
     {
         session_destroy();
+        Cookie::remove(self::SESSION_NAME, static::cookieOptions(), true);
     }
 
     /**
@@ -107,5 +99,20 @@ class Session
         if ($preserveData) {
             $moveData($data, $_SESSION);
         }
+    }
+
+    protected static function cookieOptions(): array
+    {
+        $options = [
+            'expires'  => 0,
+            'path'     => HTTPRequest::root(),
+            'secure'   => HTTPRequest::isHTTPS(),
+            'httponly' => true,
+            'samesite' => Cookie::SAMESITE_STRICT
+        ];
+        if (($timeout = Formwork::instance()->config()->get('admin.session_timeout')) > 0) {
+            $options['expires'] = time() + $timeout * 60;
+        }
+        return $options;
     }
 }
