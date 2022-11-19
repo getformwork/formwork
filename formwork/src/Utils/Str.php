@@ -163,4 +163,19 @@ class Str
         $segments = explode('.', $string);
         return array_shift($segments) . implode('', Arr::map($segments, fn ($segment) => '[' . $segment . ']'));
     }
+
+    /**
+     * Interpolate values between `{{` and `}}` in a string using an array or a callback
+     */
+    public static function interpolate(string $string, array|callable $data): string
+    {
+        return preg_replace_callback(
+            self::INTERPOLATION_REGEX,
+            static function (array $matches) use ($data): string {
+                $key = $matches[1];
+                return is_array($data) ? $data[$key] : $data($key);
+            },
+            $string
+        );
+    }
 }
