@@ -154,4 +154,13 @@ class Str
     {
         return static::endsWith($haystack, $needle) ? substr($haystack, 0, -strlen($needle)) : $haystack;
     }
+
+    /**
+     * Convert dot notation to brackets notation
+     */
+    public static function dotNotationToBrackets(string $string): string
+    {
+        $segments = explode('.', $string);
+        return array_shift($segments) . implode('', Arr::map($segments, fn ($segment) => '[' . $segment . ']'));
+    }
 }
