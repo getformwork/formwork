@@ -86,8 +86,11 @@ class Constraint
     /**
      * Return whether a value is of the specified type
      */
-    public static function isOfType($value, string $type): bool
+    public static function isOfType($value, string $type, bool $unionTypes = false): bool
     {
+        if ($unionTypes) {
+            return Arr::some(explode('|', $type), fn ($type) => static::isOfType($value, $type, unionTypes: false));
+        }
         if (is_object($value)) {
             return $value instanceof $type;
         }
