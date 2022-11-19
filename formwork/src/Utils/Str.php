@@ -178,4 +178,13 @@ class Str
             $string
         );
     }
+
+    /**
+     * Split a string in chunks of given length with a delimiter
+     */
+    public static function chunk(string $string, string $length, string $delimiter): string
+    {
+        return implode($delimiter, str_split($string, $length));
+    }
+
 }
