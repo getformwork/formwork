@@ -16,6 +16,11 @@ class Str
     ];
 
     /**
+     * Regex to match interpolated sequences in strings
+     */
+    protected const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
+
+    /**
      * Return whether $haystack string starts with $needle
      */
     public static function startsWith(string $haystack, string $needle): bool
