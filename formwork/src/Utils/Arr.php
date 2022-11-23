@@ -205,6 +205,17 @@ class Arr
     }
 
     /**
+     * Apply a callback to the given array keys and return the result
+     *
+     * The value of each element is passed to the callback as second argument
+     */
+    public static function mapKeys(array $array, callable $callback): array
+    {
+        $keys = array_keys($array);
+        return array_combine(array_map($callback, $keys, $array), $array);
+    }
+
+    /**
      * Filter an array keeping only the values for which the callback returns `true`
      *
      * The key of each element is passed to the callback as second argument
