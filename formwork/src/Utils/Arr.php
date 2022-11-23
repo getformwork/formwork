@@ -266,6 +266,20 @@ class Arr
     }
 
     /**
+     * Get the value corresponding to the specified key from each element of an array
+     */
+    public static function pluck(array $array, string $key, $default = null): array
+    {
+        $result = [];
+
+        foreach ($array as $k => $value) {
+            $result[$k] = static::get(static::from($value), $key, $default);
+        }
+
+        return $result;
+    }
+
+    /**
      * Sort an array with the given options
      *
      * @param $direction     Direction of sorting. Possible values are `SORT_ASC` and `SORT_DESC`.
