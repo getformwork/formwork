@@ -11,14 +11,12 @@ trait DataIterator // implements \Iterator
         reset($this->data);
     }
 
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): mixed
     {
         return current($this->data);
     }
 
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
         return key($this->data);
     }
