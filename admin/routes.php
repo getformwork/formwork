@@ -133,6 +133,10 @@ return [
             'path'    => '/users/{user}/profile/',
             'action'  => '\Formwork\Admin\Controllers\UsersController@profile',
             'methods' => ['GET', 'POST']
+        ],
+        'admin.notfound' => [
+            'path' => '/{route}/',
+            'action' => '\Formwork\Admin\Controllers\ErrorsController@notFound'
         ]
     ],
     'filters' => [
