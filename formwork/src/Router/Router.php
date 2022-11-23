@@ -3,6 +3,7 @@
 namespace Formwork\Router;
 
 use Formwork\Parsers\PHP;
+use Formwork\Response\Response;
 use Formwork\Router\Exceptions\InvalidRouteException;
 use Formwork\Router\Exceptions\RouteNotFoundException;
 use Formwork\Utils\HTTPRequest;
@@ -135,7 +136,7 @@ class Router
     /**
      * Dispatch matching route
      */
-    public function dispatch()
+    public function dispatch(): Response
     {
         /**
          * @var RouteFilter
