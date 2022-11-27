@@ -270,10 +270,25 @@ class Arr
      */
     public static function pluck(array $array, string $key, $default = null): array
     {
+        return static::map($array, fn ($value) => static::get(static::from($value), $key, $default));
+    }
+
+    /**
+     * Group array elements using the return value of the given callback
+     */
+    public static function group(array $array, callable $callback): array
+    {
         $result = [];
 
-        foreach ($array as $k => $value) {
-            $result[$k] = static::get(static::from($value), $key, $default);
+        foreach (static::map($array, $callback) as $key => $value) {
+            // Try to cast objects to string as `$value` will be used as key
+            // in the resulting array
+            if (is_object($value)) {
+                $value = (string) $value;
+            }
+
+            $result[$value] ??= [];
+            $result[$value][] = $array[$key];
         }
 
         return $result;
