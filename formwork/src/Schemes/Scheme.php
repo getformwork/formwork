@@ -5,6 +5,8 @@ namespace Formwork\Schemes;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataGetter;
+use Formwork\Fields\FieldCollection;
+use Formwork\Fields\Layout\Layout;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
@@ -69,30 +71,11 @@ class Scheme implements Arrayable
     /**
      * Get scheme fields
      */
-    public function fields(): array
+    public function fields(): FieldCollection
     {
-        return $this->get('fields', []);
-    }
-
-    /**
-     * Get scheme data
-     */
-    public function data(): array
-    {
-        return $this->get('data', []);
-    }
-
-    /**
-     * Return default field values
-     */
-    public function defaultFieldValues(): array
-    {
-        $result = [];
-        foreach ($this->fields() as $name => $value) {
-            if (isset($value['default'])) {
-                $result[$name] = $value['default'];
-            }
-        }
-        return $result;
+        return new FieldCollection(
+            $this->get('fields', []),
+            new Layout($this->get('layout', ['type' => 'default', 'sections' => []]))
+        );
     }
 }

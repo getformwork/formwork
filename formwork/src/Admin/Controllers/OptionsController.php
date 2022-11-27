@@ -2,9 +2,7 @@
 
 namespace Formwork\Admin\Controllers;
 
-use Formwork\Data\DataGetter;
-use Formwork\Fields\Fields;
-use Formwork\Fields\Validator;
+use Formwork\Fields\FieldCollection;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\YAML;
@@ -38,13 +36,16 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $fields = new Fields(Formwork::instance()->schemes()->get('config', 'system')->get('fields'));
+        $scheme = Formwork::instance()->schemes()->get('config', 'system');
+        $fields = $scheme->fields();
 
         if (HTTPRequest::method() === 'POST') {
             $data = HTTPRequest::postData();
             $options = Formwork::instance()->config();
             $defaults = Formwork::instance()->defaults();
-            $differ = $this->updateOptions('system', $fields->validate($data), $options->toArray(), $defaults);
+            $fields->validate($data);
+
+            $differ = $this->updateOptions('system', $fields, $options->toArray(), $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
@@ -55,7 +56,7 @@ class OptionsController extends AbstractController
             return $this->admin()->redirect('/options/system/');
         }
 
-        $fields->validate(new DataGetter(Formwork::instance()->config()->toArray()));
+        $fields->validate(Formwork::instance()->config());
 
         $this->modal('changes');
 
@@ -76,13 +77,15 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $fields = new Fields(Formwork::instance()->schemes()->get('config', 'site')->get('fields'));
+        $scheme = Formwork::instance()->schemes()->get('config', 'site');
+        $fields = $scheme->fields();
 
         if (HTTPRequest::method() === 'POST') {
             $data = HTTPRequest::postData();
             $options = $this->site()->data();
             $defaults = Formwork::instance()->site()->defaults();
-            $differ = $this->updateOptions('site', $fields->validate($data), $options, $defaults);
+            $fields->validate($data);
+            $differ = $this->updateOptions('site', $fields, $options, $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
@@ -93,7 +96,7 @@ class OptionsController extends AbstractController
             return $this->admin()->redirect('/options/site/');
         }
 
-        $fields->validate(new DataGetter($this->site()->data()));
+        $fields->validate($this->site()->data());
 
         $this->modal('changes');
 
@@ -237,26 +240,20 @@ class OptionsController extends AbstractController
     /**
      * Update options of a given type with given data
      *
-     * @param string $type     Options type ('system' or 'site')
-     * @param Fields $fields   Fields object
-     * @param array  $options  Current options
-     * @param array  $defaults Default values
+     * @param string          $type     Options type ('system' or 'site')
+     * @param FieldCollection $fields   FieldCollection object
+     * @param array           $options  Current options
+     * @param array           $defaults Default values
      *
      * @return bool Whether new values were applied or not
      */
-    protected function updateOptions(string $type, Fields $fields, array $options, array $defaults): bool
+    protected function updateOptions(string $type, FieldCollection $fields, array $options, array $defaults): bool
     {
-        // Flatten fields
-        $fields = $fields->toArray(true);
-
         $old = $options;
         $options = [];
 
         // Update options with new values
         foreach ($fields as $field) {
-            if (in_array($field->type(), Validator::IGNORED_FIELDS, true)) {
-                continue;
-            }
             if ($field->isRequired() && $field->isEmpty()) {
                 continue;
             }

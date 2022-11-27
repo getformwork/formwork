@@ -5,7 +5,7 @@
     <div>
         <?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?>
             <div class="page-route page-route-changeable">
-                <button type="button" class="page-slug-change" data-command="change-slug" title="<?= $this->translate('admin.pages.change-slug') ?>"><?= $page->route() ?></button><?= $this->icon('pencil') ?>
+                <button type="button" class="page-slug-change" data-command="change-slug" title="<?= $this->translate('admin.pages.change-slug') ?>"><?= $page->route() ?><?= $this->icon('pencil') ?></button>
             </div>
         <?php else: ?>
             <div class="page-route"><span><?= $page->route() ?></span></div>

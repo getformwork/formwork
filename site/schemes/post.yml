@@ -1,19 +1,30 @@
 title: Blog Post
+
 extend: page
+
 default: false
+
 children: false
+
 num: date
+
+layout:
+    sections:
+        content:
+            fields: [title, image, tags, content, summary]
+
 fields:
-    tabs:
-        fields:
-            options-section:
-                fields:
-                    image:
-                        type: image
-                        default: null
-                        label: '{{admin.pages.page.image}}'
-                        placeholder: '{{admin.pages.page.no-image}}'
-                    tags:
-                        type: tags
-                        label: '{{admin.pages.page.tags}}'
-                        placeholder: '{{admin.pages.page.no-tags}}'
+    summary:
+        type: markdown
+        label: '{{admin.pages.summary}}'
+
+    image:
+        type: image
+        default: null
+        label: '{{admin.pages.page.image}}'
+        placeholder: '{{admin.pages.page.no-image}}'
+
+    tags:
+        type: tags
+        label: '{{admin.pages.page.tags}}'
+        placeholder: '{{admin.pages.page.no-tags}}'

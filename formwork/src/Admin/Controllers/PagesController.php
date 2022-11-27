@@ -5,20 +5,19 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Uploader;
 use Formwork\Data\DataGetter;
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Fields\Fields;
+use Formwork\Fields\FieldCollection;
 use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Page;
+use Formwork\Pages\Page;
 use Formwork\Parsers\YAML;
 use Formwork\Response\JSONResponse;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
-use Formwork\Site;
+use Formwork\Pages\Site;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Session;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
@@ -46,8 +45,8 @@ class PagesController extends AbstractController
         $this->ensurePermission('pages.index');
 
         $this->modal('newPage', [
-            'templates' => $this->site()->templates(),
-            'pages'     => $this->site()->descendants()->sortBy('path')
+            'templates' => $this->site()->templates()->keys(),
+            'pages'     => $this->site()->descendants()->sortBy('relativePath')
         ]);
 
         $this->modal('deletePage');
@@ -55,12 +54,12 @@ class PagesController extends AbstractController
         return new Response($this->view('pages.index', [
             'title'     => $this->admin()->translate('admin.pages.pages'),
             'pagesList' => $this->view('pages.list', [
-                'pages'    => $this->site()->pages(),
-                'subpages' => true,
-                'class'    => 'pages-list-top',
-                'parent'   => '.',
-                'sortable' => $this->user()->permissions()->has('pages.reorder'),
-                'headers'  => true
+                'pages'     => $this->site()->pages(),
+                'subpages'  => true,
+                'class'     => 'pages-list-top',
+                'parent'    => '.',
+                'orderable' => $this->user()->permissions()->has('pages.reorder'),
+                'headers'   => true
             ], true)
         ], true));
     }
@@ -77,7 +76,6 @@ class PagesController extends AbstractController
         // Let's create the page
         try {
             $page = $this->createPage($data);
-            Session::set('FORMWORK_PAGE_TO_PUBLISH', $page->route());
             $this->admin()->notify($this->admin()->translate('admin.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->admin()->notify($e->getTranslatedMessage(), 'error');
@@ -121,21 +119,13 @@ class PagesController extends AbstractController
             return $this->admin()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
         }
 
-        // Check if page has to be published on next save
-        if (Session::has('FORMWORK_PAGE_TO_PUBLISH')) {
-            if ($page->route() === Session::get('FORMWORK_PAGE_TO_PUBLISH')) {
-                $page->set('published', true);
-            }
-            Session::remove('FORMWORK_PAGE_TO_PUBLISH');
-        }
-
         // Load page fields
-        $fields = new Fields($page->scheme()->get('fields'));
+        $fields = $page->scheme()->fields();
 
         switch (HTTPRequest::method()) {
             case 'GET':
                 // Load data from the page itself
-                $data = new DataGetter(array_merge($page->data(), ['content' => $page->rawContent()]));
+                $data = $page->data();
 
                 // Validate fields against data
                 $fields->validate($data);
@@ -189,8 +179,8 @@ class PagesController extends AbstractController
             'title'              => $this->admin()->translate('admin.pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields,
-            'templates'          => $this->site()->templates(),
-            'parents'            => $this->site()->descendants()->sortBy('path'),
+            'templates'          => $this->site()->templates()->keys(),
+            'parents'            => $this->site()->descendants()->sortBy('relativePath'),
             'currentLanguage'    => $params->get('language', $page->language()),
             'availableLanguages' => $this->availableSiteLanguages()
         ], true));
@@ -368,7 +358,7 @@ class PagesController extends AbstractController
         }
 
         // Validate page template
-        if (!$this->site()->hasTemplate($data->get('template'))) {
+        if (!$this->site()->templates()->has($data->get('template'))) {
             throw new TranslatedException('Invalid page template', 'admin.pages.page.cannot-create.invalid-template');
         }
 
@@ -401,7 +391,7 @@ class PagesController extends AbstractController
     /**
      * Update a page
      */
-    protected function updatePage(Page $page, DataGetter $data, Fields $fields): Page
+    protected function updatePage(Page $page, DataGetter $data, FieldCollection $fields): Page
     {
         // Ensure no required data is missing
         if (!$data->hasMultiple(['title', 'content'])) {
@@ -420,7 +410,7 @@ class PagesController extends AbstractController
         $defaults = $page->defaults();
 
         // Handle data from fields
-        foreach ($fields->toArray(true) as $field) {
+        foreach ($fields as $field) {
             $default = array_key_exists($field->name(), $defaults) && $field->value() === $defaults[$field->name()];
 
             // Remove empty and default values
@@ -442,7 +432,7 @@ class PagesController extends AbstractController
             throw new TranslatedException('Invalid page language', 'admin.pages.page.cannot-edit.invalid-language');
         }
 
-        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->rawContent() || $language !== $page->language();
+        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
 
         if ($differ) {
             $filename = $data->get('template');
@@ -463,8 +453,8 @@ class PagesController extends AbstractController
             }
 
             // Check if page number has to change
-            if (!empty($page->date()) && $page->scheme()->get('num') === 'date' && $page->num() !== (int) $page->date(self::DATE_NUM_FORMAT)) {
-                $name = preg_replace(Page::NUM_REGEX, $page->date(self::DATE_NUM_FORMAT) . '-', $page->name());
+            if ($page->scheme()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $page->timestamp()))) {
+                $name = preg_replace(Page::NUM_REGEX, $num . '-', $page->name());
                 try {
                     $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
@@ -483,7 +473,7 @@ class PagesController extends AbstractController
 
         // Check if page template has to change
         if ($page->template()->name() !== ($template = $data->get('template'))) {
-            if (!$this->site()->hasTemplate($template)) {
+            if (!$this->site()->templates()->has($template)) {
                 throw new TranslatedException('Invalid page template', 'admin.pages.page.cannot-edit.invalid-template');
             }
             $page = $this->changePageTemplate($page, $template);
@@ -531,10 +521,9 @@ class PagesController extends AbstractController
     /**
      * Make a page num according to 'date' or default mode
      *
-     * @param Page|Site $parent
-     * @param string    $mode   'date' for pages with a publish date
+     * @param string $mode 'date' for pages with a publish date
      */
-    protected function makePageNum($parent, ?string $mode): string
+    protected function makePageNum(Page|Site $parent, ?string $mode): string
     {
         if (!$parent instanceof Page && !$parent instanceof Site) {
             throw new InvalidArgumentException(sprintf('%s() accepts only instances of %s or %s as $parent argument', __METHOD__, Page::class, Site::class));
@@ -567,14 +556,9 @@ class PagesController extends AbstractController
 
     /**
      * Change the parent of a page
-     *
-     * @param Page|Site $parent
      */
-    protected function changePageParent(Page $page, $parent): Page
+    protected function changePageParent(Page $page, Page|Site $parent): Page
     {
-        if (!$parent instanceof Page && !$parent instanceof Site) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only instances of %s or %s as $parent argument', __METHOD__, Page::class, Site::class));
-        }
         $destination = FileSystem::joinPaths($parent->path(), $page->name(), DS);
         FileSystem::moveDirectory($page->path(), $destination);
         return new Page($destination);
@@ -595,10 +579,8 @@ class PagesController extends AbstractController
      * Resolve parent page helper
      *
      * @param string $parent Page URI or '.' for site
-     *
-     * @return Page|Site|null
      */
-    protected function resolveParent(string $parent)
+    protected function resolveParent(string $parent): Page|Site
     {
         if ($parent === '.') {
             return $this->site();

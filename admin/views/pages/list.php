@@ -10,18 +10,18 @@
 <?php
         endif;
 ?>
-            <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $sortable ? 'true' : 'false' ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
+            <ul class="pages-list <?= $class ?>" data-sortable-children="<?= $orderable ? 'true' : 'false' ?>"<?php if ($parent): ?> data-parent="<?= $parent ?>"<?php endif; ?>>
 <?php
             foreach ($pages as $page):
                 $routable = $page->published() && $page->routable();
                 $date = $this->datetime($page->lastModifiedTime());
 ?>
-                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?>" <?php if (!$page->sortable()): ?>data-sortable="false"<?php endif; ?>>
+                <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?>" <?php if (!$page->orderable()): ?>data-sortable="false"<?php endif; ?>>
                     <div class="pages-item">
                         <div class="pages-item-cell page-details">
                             <div class="page-title">
 <?php
-                    if ($sortable && $page->sortable()):
+                    if ($orderable && $page->orderable()):
 ?>
                             <span class="sort-handle" title="<?= $this->translate('admin.drag-to-reorder') ?>"><?= $this->icon('grabber') ?></span>
 <?php
@@ -70,14 +70,14 @@
                     if ($subpages && $page->hasChildren()):
                         $scheme = $page->scheme();
                         $reverseChildren = $scheme->get('children.reverse', false);
-                        $sortableChildren = $scheme->get('children.sortable', true);
+                        $orderableChildren = $scheme->get('children.sortable', true);
 
                         $this->insert('pages.list', [
                             'pages'    => $reverseChildren ? $page->children()->reverse() : $page->children(),
                             'subpages' => true,
                             'class'    => 'pages-children',
-                            'parent'   => $sortableChildren ? $page->route() : null,
-                            'sortable' => $sortable && $sortableChildren,
+                            'parent'   => $orderableChildren ? $page->route() : null,
+                            'sortable' => $orderable && $orderableChildren,
                             'headers'  => false
                         ]);
 

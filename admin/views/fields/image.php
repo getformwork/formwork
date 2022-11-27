@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <div class="input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',
@@ -7,7 +7,10 @@
         'name'        => $field->formName(),
         'value'       => basename($field->value() ?? ''),
         'placeholder' => $field->placeholder(),
-        'readonly'    => true
+        'readonly'    => true,
+        'required'    => $field->isRequired(),
+        'disabled'    => $field->isDisabled(),
+        'hidden'      => $field->isHidden()
     ]) ?>>
     <span class="input-reset" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
 </div>

@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <input <?= $this->attr([
     'type'           => 'number',
     'id'             => $field->name(),
@@ -9,6 +9,7 @@
     'value'          => $field->value(),
     'required'       => $field->isRequired(),
     'disabled'       => $field->isDisabled(),
+    'hidden'         => $field->isHidden(),
     'data-field'     => 'duration',
     'data-unit'      => $field->get('unit', 'seconds'),
     'data-intervals' => $field->has('intervals') ? implode(', ', $field->get('intervals')) : null

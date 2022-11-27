@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <input <?= $this->attr([
     'type'        => 'number',
     'id'          => $field->name(),
@@ -9,5 +9,6 @@
     'value'       => $field->value(),
     'placeholder' => $field->placeholder(),
     'required'    => $field->isRequired(),
-    'disabled'    => $field->isDisabled()
+    'disabled'    => $field->isDisabled(),
+    'hidden'      => $field->isHidden()
 ]) ?>>

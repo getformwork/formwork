@@ -9,7 +9,7 @@ use Formwork\Controllers\AbstractController as BaseAbstractController;
 use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\PHP;
-use Formwork\Site;
+use Formwork\Pages\Site;
 use Formwork\Utils\Date;
 use Formwork\Utils\HTTPRequest;
 use Formwork\View\View;

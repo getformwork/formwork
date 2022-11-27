@@ -6,6 +6,7 @@ use Formwork\Admin\Admin;
 use Formwork\Admin\Statistics;
 use Formwork\Cache\FilesCache;
 use Formwork\Languages\Languages;
+use Formwork\Pages\Site;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;

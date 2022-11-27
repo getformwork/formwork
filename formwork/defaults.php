@@ -39,6 +39,9 @@ return [
     'errors' => [
         'set_handlers' => true
     ],
+    'fields' => [
+        'path' => FORMWORK_PATH . 'fields' . DS
+    ],
     'files' => [
         'allowed_extensions' => [
             '.jpg',

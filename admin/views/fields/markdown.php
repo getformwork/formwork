@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <div class="editor-wrap">
     <div class="editor-toolbar" data-for="<?= $field->name() ?>">
         <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->translate('admin.pages.editor.bold') ?>"><?= $this->icon('bold') ?></button>
@@ -18,9 +18,15 @@
         'class'        => 'editor-textarea',
         'id'           => $field->name(),
         'name'         => $field->formName(),
+        'value'        => $field->value(),
         'placeholder'  => $field->placeholder(),
+        'minlength'    => $field->get('min'),
+        'maxlength'    => $field->get('max'),
+        'autocomplete' => $field->get('autocomplete', 'off'),
+        'rows'         => $field->get('rows'),
+        'cols'         => $field->get('cols'),
         'required'     => $field->isRequired(),
         'disabled'     => $field->isDisabled(),
-        'autocomplete' => 'off'
+        'hidden'       => $field->isHidden()
     ]) ?>><?= $this->escape($field->value() ?? '') ?></textarea>
 </div>

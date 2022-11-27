@@ -5,10 +5,7 @@ namespace Formwork\Admin\Controllers;
 use Formwork\Admin\Security\Password;
 use Formwork\Admin\Uploader;
 use Formwork\Admin\Users\User;
-use Formwork\Data\DataGetter;
-use Formwork\Data\DataSetter;
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Fields\Fields;
 use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Parsers\YAML;
@@ -113,7 +110,9 @@ class UsersController extends AbstractController
      */
     public function profile(RouteParams $params): Response
     {
-        $fields = new Fields(Formwork::instance()->schemes()->get('admin', 'user')->get('fields'));
+        $scheme = Formwork::instance()->schemes()->get('admin', 'user');
+
+        $fields = $scheme->fields();
 
         $user = $this->admin()->users()->get($params->get('user'));
 
@@ -123,13 +122,13 @@ class UsersController extends AbstractController
         }
 
         // Disable password and/or role fields if they cannot be changed
-        $fields->find('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
-        $fields->find('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
+        $fields->get('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
+        $fields->get('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
 
         if (HTTPRequest::method() === 'POST') {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $data = DataSetter::fromGetter(HTTPRequest::postData());
+                $data = HTTPRequest::postData()->toArray();
                 $fields->validate($data);
                 try {
                     $this->updateUser($user, $data);
@@ -144,7 +143,7 @@ class UsersController extends AbstractController
             return $this->admin()->redirect('/users/' . $user->username() . '/profile/');
         }
 
-        $fields->validate(new DataGetter($user->toArray()));
+        $fields = $fields->validate($user);
 
         $this->modal('changes');
 
@@ -160,36 +159,36 @@ class UsersController extends AbstractController
     /**
      * Update user data from POST request
      */
-    protected function updateUser(User $user, DataSetter $data): void
+    protected function updateUser(User $user, array $data): void
     {
         // Remove CSRF token from $data
-        $data->remove('csrf-token');
+        unset($data['csrf-token']);
 
-        if (!empty($data->get('password'))) {
+        if (!empty($data['password'])) {
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
                 throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'admin.users.user.cannot-change-password');
             }
 
             // Hash the new password
-            $data->set('hash', Password::hash($data->get('password')));
+            $data['hash'] = Password::hash($data['password']);
         }
 
         // Remove password from $data
-        $data->remove('password');
+        unset($data['password']);
 
         // Ensure that user role can be changed
-        if ($data->get('role', $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
+        if (($data['role'] ?? $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
             throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'admin.users.user.cannot-change-role');
         }
 
         // Handle incoming files
         if (HTTPRequest::hasFiles() && ($avatar = $this->uploadAvatar($user)) !== null) {
-            $data->set('avatar', $avatar);
+            $data['avatar'] = $avatar;
         }
 
         // Filter empty elements from $data and merge them with $user ones
-        $userData = array_merge($user->toArray(), $data->toArray());
+        $userData = array_merge($user->toArray(), $data);
 
         YAML::encodeToFile($userData, Formwork::instance()->config()->get('admin.paths.accounts') . $user->username() . '.yml');
     }

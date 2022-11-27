@@ -1,5 +1,1 @@
-<?php foreach ($fields as $field): ?>
-    <?php if ($field->isVisible()): ?>
-        <?php $this->insert('fields.' . $field->type(), ['field' => $field]) ?>
-    <?php endif; ?>
-<?php endforeach; ?>
+<?php $this->insert('fields.layout.' . $fields->layout()->type(), ['sections' => $fields->layout()->sections()]) ?>

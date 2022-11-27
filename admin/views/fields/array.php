@@ -1,7 +1,8 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <div <?= $this->attr([
     'class'     => ['input-array', $field->get('associative') ? 'input-array-associative' : ''],
     'id'        => $field->name(),
+    'hidden'    => $field->isHidden(),
     'data-name' => $field->formName()
 ]) ?>>
 <?php foreach ($field->value() ?: ['' => ''] as $key => $value): ?>

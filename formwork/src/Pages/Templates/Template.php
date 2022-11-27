@@ -1,12 +1,11 @@
 <?php
 
-namespace Formwork\Template;
+namespace Formwork\Pages\Templates;
 
 use Formwork\Assets;
 use Formwork\Formwork;
-use Formwork\Page;
+use Formwork\Pages\Page;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use Formwork\View\Renderer;
 use Formwork\View\View;
 
@@ -33,7 +32,7 @@ class Template extends View
     public function __construct(string $name, Page $page)
     {
         $this->page = $page;
-        parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'));
+        parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'), $this->defaultMethods());
     }
 
     /**
@@ -51,21 +50,9 @@ class Template extends View
     }
 
     /**
-     * Insert a template
-     */
-    public function insert(string $name, array $vars = []): void
-    {
-        if (Str::startsWith($name, '_')) {
-            $name = 'partials' . DS . Str::removeStart($name, '_');
-        }
-
-        parent::insert($name, $vars);
-    }
-
-    /**
      * Render template
      */
-    public function render(bool $return = false)
+    public function render(): string
     {
         $isCurrentPage = $this->page->isCurrent();
 
@@ -73,10 +60,10 @@ class Template extends View
 
         // Render correct page if the controller has changed the current one
         if ($isCurrentPage && !$this->page->isCurrent()) {
-            return Formwork::instance()->site()->currentPage()->template()->render($return);
+            return Formwork::instance()->site()->currentPage()->render();
         }
 
-        return parent::render($return);
+        return parent::render();
     }
 
     /**
@@ -92,11 +79,13 @@ class Template extends View
     }
 
     /**
-     * @inheritdoc
+     * Default template methods
      */
-    protected function createLayoutView(string $name): View
+    protected function defaultMethods(): array
     {
-        return new static('layouts' . DS . $name, $this->page);
+        return [
+            'assets' => fn () => $this->assets()
+        ];
     }
 
     /**
@@ -107,7 +96,9 @@ class Template extends View
         $controllerFile = $this->path . 'controllers' . DS . $this->name . '.php';
 
         if (FileSystem::exists($controllerFile)) {
+            $this->allowMethods = true;
             $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
+            $this->allowMethods = false;
         }
     }
 

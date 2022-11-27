@@ -1,20 +1,16 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Pages;
 
 use Formwork\Data\AbstractCollection;
-use Formwork\Data\Collection;
+use Formwork\Data\Contracts\Paginable;
+use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
-class PageCollection extends AbstractCollection
+class PageCollection extends AbstractCollection implements Paginable
 {
-    /**
-     * Default property used to sort pages
-     */
-    protected const DEFAULT_SORT_PROPERTY = 'relativePath';
-
-    protected ?string $dataType = AbstractPage::class;
+    protected ?string $dataType = Page::class . '|' . Site::class;
 
     /**
      * Pagination related to the collection
@@ -34,67 +30,29 @@ class PageCollection extends AbstractCollection
      *
      * @param int $length Number of items in the pagination
      */
-    public function paginate(int $length): static
+    public function paginate(int $length, int $currentPage): self
     {
-        $pagination = new Pagination($this->count(), $length);
+        $pagination = new Pagination($this, $length);
+        $pagination->setCurrentPage($currentPage);
+
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
         $pageCollection->pagination = $pagination;
         return $pageCollection;
     }
 
-    /**
-     * Return an array containing the specified property of each collection item
-     */
-    public function pluck(string $property): array
+    public function pluck(string $key, $default = null): array
     {
-        $result = [];
-
-        foreach ($this->data as $page) {
-            $result[] = $page->get($property);
-        }
-
-        return $result;
+        return $this->everyItem()->get($key, $default)->toArray();
     }
 
-    /**
-     * Filter collection items
-     *
-     * @param string   $property Property to find in filtered items
-     * @param          $value    Value to check in filtered items (default: true)
-     * @param callable $process  Callable to process items before filtering
-     */
-    public function filterBy(string $property, $value = true, callable $process = null): static
+    public function listed(): static
     {
-        return $this->filter(static function (Page $item) use ($property, $value, $process): bool {
-            if ($item->has($property)) {
-                $propertyValue = $item->get($property);
-
-                if (is_callable($process)) {
-                    $propertyValue = is_array($propertyValue) ? array_map($process, $propertyValue) : $process($propertyValue);
-                    $value = $process($value);
-                }
-
-                if (is_array($propertyValue)) {
-                    return in_array($value, $propertyValue);
-                }
-                return $propertyValue == $value;
-            }
-
-            return false;
-        });
+        return $this->filterBy('listed');
     }
 
-    /**
-     * Sort collection items
-     */
-    public function sortBy(
-        string $property = self::DEFAULT_SORT_PROPERTY,
-        int $direction = SORT_ASC,
-        int $type = SORT_NATURAL,
-        bool $caseSensitive = false,
-        bool $preserveKeys = true
-    ): static {
-        return parent::sort($direction, $type, $this->pluck($property), $caseSensitive, $preserveKeys);
+    public function published(): static
+    {
+        return $this->filterBy('status', 'published');
     }
 
     /**
@@ -112,7 +70,7 @@ class PageCollection extends AbstractCollection
 
         $keywords = explode(' ', $query);
         $keywords = array_diff($keywords, (array) Formwork::instance()->config()->get('search.stopwords'));
-        $keywords = array_filter($keywords, static fn (string $item): bool => strlen($item) > $min);
+        $keywords = array_filter($keywords, fn (string $item): bool => strlen($item) > $min);
 
         $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';
@@ -173,6 +131,6 @@ class PageCollection extends AbstractCollection
 
         $pages = new static($pages);
 
-        return $pages->sortBy('path');
+        return $pages->sortBy('relativePath');
     }
 }

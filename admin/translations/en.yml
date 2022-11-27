@@ -176,7 +176,7 @@ admin.pages.page.status: Status
 admin.pages.page.tags: Tags
 admin.pages.page.title: Title
 admin.pages.page.unpublish-date: Unpublish Date
-admin.pages.page.visible: Visible in the menu
+admin.pages.page.listed: Visible in the menu
 admin.pages.pages: Pages
 admin.pages.pages.collapse-all: Collapse All
 admin.pages.pages.expand-all: Expand All
@@ -190,7 +190,9 @@ admin.pages.status.not-published: Not Published
 admin.pages.status.not-routable: Not Routable
 admin.pages.status.published: Published
 admin.pages.status.routable: Routable
+admin.pages.summary: Summary
 admin.pages.template: Template
+admin.pages.text: Text
 admin.pages.toggle-children: Toggle Children Pages
 admin.panel: Administration Panel
 admin.register.create-user: Formwork Admin is installed but no users were found. Please register a user now.

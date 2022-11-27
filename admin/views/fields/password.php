@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <input <?= $this->attr([
     'type'         => 'password',
     'id'           => $field->name(),
@@ -10,5 +10,6 @@
     'pattern'      => $field->get('pattern'),
     'autocomplete' => $field->get('autocomplete'),
     'required'     => $field->isRequired(),
-    'disabled'     => $field->isDisabled()
+    'disabled'     => $field->isDisabled(),
+    'hidden'       => $field->isHidden()
 ]) ?>>

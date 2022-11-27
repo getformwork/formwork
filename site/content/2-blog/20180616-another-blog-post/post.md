@@ -1,6 +1,6 @@
 ---
 title: 'Another Blog Post'
-publish-date: '2018-06-16'
+publishDate: '2018-06-16 00:00:00'
 ---
 This is the summary of another blog post.
 

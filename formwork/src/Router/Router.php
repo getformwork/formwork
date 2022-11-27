@@ -72,7 +72,9 @@ class Router
     {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
-        $this->request = $request ?? Str::wrap(Uri::path(HTTPRequest::uri()), '/');
+
+        // Ensure requested route is wrapped in slashes
+        $this->request = Str::wrap($request ?? Uri::path(HTTPRequest::uri()), '/');
     }
 
     /**
@@ -186,6 +188,14 @@ class Router
     public function generate(string $name, array $params): string
     {
         return $this->generateRoute($this->routes->get($name), $params);
+    }
+
+    /**
+     * Generate a route with given params overriding the current ones
+     */
+    public function generateWith(string $name, array $params): string
+    {
+        return $this->generateRoute($this->routes->get($name), $params + $this->params->toArray());
     }
 
     /**

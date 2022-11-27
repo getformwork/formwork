@@ -1,4 +1,4 @@
-<?= $this->insert('fields.label', ['field' => $field]) ?>
+<?= $this->layout('fields.field') ?>
 <input <?= $this->attr([
     'class'       => $field->get('class'),
     'type'        => 'text',
@@ -10,5 +10,6 @@
     'maxlength'   => $field->get('max'),
     'pattern'     => $field->get('pattern'),
     'required'    => $field->isRequired(),
-    'disabled'    => $field->isDisabled()
+    'disabled'    => $field->isDisabled(),
+    'hidden'      => $field->isHidden()
 ]) ?>>

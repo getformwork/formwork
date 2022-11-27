@@ -18,8 +18,8 @@ class DashboardController extends AbstractController
         $statistics = new Statistics();
 
         $this->modal('newPage', [
-            'templates' => $this->site()->templates(),
-            'pages'     => $this->site()->descendants()->sortBy('path')
+            'templates' => $this->site()->templates()->keys(),
+            'pages'     => $this->site()->descendants()->sortBy('relativePath')
         ]);
 
         $this->modal('deletePage');
@@ -27,12 +27,12 @@ class DashboardController extends AbstractController
         return new Response($this->view('dashboard.index', [
             'title'             => $this->admin()->translate('admin.dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.list', [
-                'pages'    => $this->site()->descendants()->sortBy('lastModifiedTime', direction: SORT_DESC)->slice(0, 5),
-                'subpages' => false,
-                'class'    => 'pages-list-top',
-                'parent'   => null,
-                'sortable' => false,
-                'headers'  => true
+                'pages'     => $this->site()->descendants()->sortBy('lastModifiedTime', direction: SORT_DESC)->slice(0, 5),
+                'subpages'  => false,
+                'class'     => 'pages-list-top',
+                'parent'    => null,
+                'orderable' => false,
+                'headers'   => true
                 ], true),
             'statistics' => JSON::encode($statistics->getChartData())
         ], true));

@@ -6,14 +6,24 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
+use Formwork\Formwork;
+use Formwork\Traits\Methods;
+use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
+use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 use UnexpectedValueException;
 
 class Field implements Arrayable
 {
     use DataArrayable;
-    use DataMultipleGetter;
+    use DataMultipleGetter {
+        get as protected baseGet;
+    }
     use DataMultipleSetter;
+    use Methods;
+
+    protected const UNTRANSLATABLE_KEYS = ['name', 'type', 'value', 'default', 'translate', 'import'];
 
     /**
      * Field name
@@ -27,13 +37,16 @@ class Field implements Arrayable
     {
         $this->name = $name;
         $this->data = $data;
+
         if ($this->has('import')) {
             $this->importData();
         }
+
         if ($this->has('fields')) {
-            $this->data['fields'] = new Fields($this->data['fields']);
+            throw new UnexpectedValueException('Fields may not have other fields inside');
         }
-        Translator::translate($this);
+
+        $this->loadMethods();
     }
 
     /**
@@ -49,12 +62,7 @@ class Field implements Arrayable
      */
     public function formName(): string
     {
-        $segments = explode('.', $this->name);
-        $formName = array_shift($segments);
-        foreach ($segments as $segment) {
-            $formName .= '[' . $segment . ']';
-        }
-        return $formName;
+        return Str::dotNotationToBrackets($this->name());
     }
 
     /**
@@ -62,7 +70,7 @@ class Field implements Arrayable
      */
     public function type(): string
     {
-        return $this->get('type');
+        return $this->baseGet('type');
     }
 
     /**
@@ -86,7 +94,7 @@ class Field implements Arrayable
      */
     public function value()
     {
-        return $this->get('value', $this->defaultValue());
+        return $this->baseGet('value', $this->defaultValue());
     }
 
     /**
@@ -94,7 +102,7 @@ class Field implements Arrayable
      */
     public function defaultValue()
     {
-        return $this->get('default');
+        return $this->baseGet('default');
     }
 
     /**
@@ -129,12 +137,37 @@ class Field implements Arrayable
         return $this->is('visible', true);
     }
 
+    public function isHidden(): bool
+    {
+        return $this->is('visible', false);
+    }
+
     /**
      * Get a value by key and return whether it is equal to boolean `true`
      */
     public function is(string $key, bool $default = false): bool
     {
-        return $this->get($key, $default) === true;
+        return $this->baseGet($key, $default) === true;
+    }
+
+    public function get(string $key, $default = null)
+    {
+        $value = $this->baseGet($key, $default);
+
+        if ($this->isTranslatable($key)) {
+            return $this->translate($value);
+        }
+
+        return $value;
+    }
+
+    protected function loadMethods()
+    {
+        $config = Formwork::instance()->config()->get('fields.path') . $this->get('type') . '.php';
+
+        if (FileSystem::exists($config)) {
+            $this->methods = include $config;
+        }
     }
 
     /**
@@ -146,29 +179,68 @@ class Field implements Arrayable
             if ($key === 'import') {
                 throw new UnexpectedValueException('Invalid key for import');
             }
+
             $callback = explode('::', $value, 2);
+
             if (!is_callable($callback)) {
                 throw new UnexpectedValueException(sprintf('Invalid import callback "%s"', $value));
             }
+
             $this->data[$key] = $callback();
         }
     }
 
-    public function __debugInfo(): array
+    /**
+     * Return whether a field key is translatable
+     */
+    protected function isTranslatable(string $key): bool
     {
-        $return['name'] = $this->name;
-        if ($this->has('type')) {
-            $return['type'] = $this->type();
+        if (in_array($key, self::UNTRANSLATABLE_KEYS, true)) {
+            return false;
         }
-        if ($this->has('default')) {
-            $return['default'] = $this->defaultValue();
+
+        $translatable = $this->baseGet('translate', true);
+
+        if (is_array($translatable)) {
+            return in_array($key, $translatable, true);
         }
-        if ($this->has('value')) {
-            $return['value'] = $this->value();
+
+        return $translatable;
+    }
+
+    protected function translate($value)
+    {
+        $translation = Formwork::instance()->translations()->getCurrent();
+        $language = $translation->code();
+
+        if (is_array($value)) {
+            if (isset($value[$language])) {
+                $value = $value[$language];
+            }
+        } elseif (!is_string($value)) {
+            return $value;
         }
-        if ($this->has('fields')) {
-            $return['fields'] = $this->get('fields');
+
+        $interpolate = fn ($value) => Str::interpolate($value, fn ($key) => $translation->translate($key));
+
+        if (is_array($value)) {
+            return Arr::map($value, $interpolate);
         }
-        return $return;
+
+        return $interpolate($value);
+    }
+
+    protected function callMethod(string $method, array $arguments = [])
+    {
+        return $this->methods[$method](...[$this, ...$arguments]);
+    }
+
+    public function __toString(): string
+    {
+        if ($this->hasMethod('toString')) {
+            return $this->callMethod('toString');
+        }
+
+        return (string) $this->value();
     }
 }
