@@ -2,8 +2,8 @@
 
 namespace Formwork;
 
-use Formwork\Admin\Admin;
-use Formwork\Admin\Statistics;
+use Formwork\Panel\Panel;
+use Formwork\Panel\Statistics;
 use Formwork\Cache\FilesCache;
 use Formwork\Languages\Languages;
 use Formwork\Pages\Site;
@@ -62,9 +62,9 @@ final class Formwork
     protected FilesCache $cache;
 
     /**
-     * Admin instance
+     * Panel instance
      */
-    protected ?Admin $admin;
+    protected ?Panel $panel;
 
     /**
      * Create a new Formwork instance
@@ -151,15 +151,15 @@ final class Formwork
     }
 
     /**
-     * Return admin instance
+     * Return panel instance
      */
-    public function admin(): ?Admin
+    public function panel(): ?Panel
     {
-        if (isset($this->admin)) {
-            return $this->admin;
+        if (isset($this->panel)) {
+            return $this->panel;
         }
-        return $this->admin = $this->config->get('admin.enabled')
-            ? new Admin()
+        return $this->panel = $this->config->get('panel.enabled')
+            ? new Panel()
             : null;
     }
 
@@ -197,9 +197,9 @@ final class Formwork
         $data = YAML::parseFile(CONFIG_PATH . 'system.yml');
 
         if ($data !== []) {
-            if (isset($data['admin.root'])) {
-                // Trim slashes from admin.root
-                $data['admin.root'] = trim($data['admin.root'], '/');
+            if (isset($data['panel.root'])) {
+                // Trim slashes from panel.root
+                $data['panel.root'] = trim($data['panel.root'], '/');
             }
             $this->config = new Config(array_replace_recursive($this->defaults(), $data));
         }
@@ -227,8 +227,8 @@ final class Formwork
         if ($this->languages->requested() !== null) {
             $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
         } elseif ($this->languages->preferred() !== null) {
-            // Don't redirect if we are in Admin
-            if (!Str::startsWith($this->request, '/' . $this->config()->get('admin.root'))) {
+            // Don't redirect if we are in Panel
+            if (!Str::startsWith($this->request, '/' . $this->config()->get('panel.root'))) {
                 Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }
@@ -277,10 +277,10 @@ final class Formwork
      */
     protected function loadRoutes(): void
     {
-        if ($this->config->get('admin.enabled')) {
+        if ($this->config->get('panel.enabled')) {
             $this->router->loadFromFile(
-                $this->config()->get('routes.files.admin'),
-                Str::wrap($this->config()->get('admin.root'), '/')
+                $this->config()->get('routes.files.panel'),
+                Str::wrap($this->config()->get('panel.root'), '/')
             );
         }
 

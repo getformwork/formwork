@@ -7,25 +7,25 @@ layout:
 
     sections:
         content:
-            label: '{{admin.pages.content}}'
+            label: '{{panel.pages.content}}'
             active: true
             fields: [title, content]
 
         options:
             collapsible: true
-            label: '{{admin.pages.options}}'
+            label: '{{panel.pages.options}}'
             fields: [published, publishDate, unpublishDate, routable, listed, cacheable]
 
         attributes:
             collapsible: true
             collapsed: true
-            label: '{{admin.pages.attributes}}'
+            label: '{{panel.pages.attributes}}'
             fields: [parent, template]
 
         files:
             collapsible: true
             collapsed: false
-            label: '{{admin.pages.files}}'
+            label: '{{panel.pages.files}}'
             fields: [uploadedFile, files]
 
 fields:
@@ -36,49 +36,49 @@ fields:
 
     content:
         type: markdown
-        label: '{{admin.pages.text}}'
+        label: '{{panel.pages.text}}'
 
     published:
         type: checkbox
-        label: '{{admin.pages.status.published}}'
+        label: '{{panel.pages.status.published}}'
         default: true
 
     publishDate:
         type: date
-        label: '{{admin.pages.page.publish-date}}'
-        placeholder: '{{admin.pages.page.no-date}}'
+        label: '{{panel.pages.page.publish-date}}'
+        placeholder: '{{panel.pages.page.no-date}}'
         default: null
 
     unpublishDate:
         type: date
-        label: '{{admin.pages.page.unpublish-date}}'
-        placeholder: '{{admin.pages.page.no-date}}'
+        label: '{{panel.pages.page.unpublish-date}}'
+        placeholder: '{{panel.pages.page.no-date}}'
         default: null
 
     routable:
         type: checkbox
-        label: '{{admin.pages.status.routable}}'
+        label: '{{panel.pages.status.routable}}'
         default: true
 
     listed:
         type: checkbox
-        label: '{{admin.pages.page.listed}}'
+        label: '{{panel.pages.page.listed}}'
         default: true
 
     cacheable:
         type: checkbox
-        label: '{{admin.pages.page.cacheable}}'
+        label: '{{panel.pages.page.cacheable}}'
         default: true
 
     parent:
         type: page.parents
         access: panel
-        label: '{{admin.pages.parent}}'
+        label: '{{panel.pages.parent}}'
 
     template:
         type: page.template
         access: panel
-        label: '{{admin.pages.template}}'
+        label: '{{panel.pages.template}}'
 
     uploadedFile:
         type: file

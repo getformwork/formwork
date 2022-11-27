@@ -5,69 +5,69 @@ layout:
     sections:
         dateTime:
             collapsible: true
-            label: '{{admin.options.system.date-and-time}}'
+            label: '{{panel.options.system.date-and-time}}'
             fields: [date.format, date.time_format, date.timezone, date.week_starts]
 
         languages:
             collapsible: true
-            label: '{{admin.options.system.languages}}'
+            label: '{{panel.options.system.languages}}'
             fields: [languages.available, languages.http_preferred]
 
         files:
             collapsible: true
-            label: '{{admin.options.system.files}}'
+            label: '{{panel.options.system.files}}'
             fields: [files.allowed_extensions]
 
         cache:
             collapsible: true
-            label: '{{admin.options.system.cache}}'
+            label: '{{panel.options.system.cache}}'
             fields: [cache.enabled, cache.time]
 
-        admin:
+        panel:
             collapsible: true
-            label: '{{admin.options.system.admin-panel}}'
-            fields: [admin.lang, admin.logout_redirect, admin.session_timeout, admin.color_scheme]
+            label: '{{panel.options.system.admin-panel}}'
+            fields: [panel.lang, panel.logout_redirect, panel.session_timeout, panel.color_scheme]
 
         images:
             collapsible: true
-            label: '{{admin.options.system.images}}'
+            label: '{{panel.options.system.images}}'
             fields: [images.jpeg_quality, images.png_compression, images.webp_quality, images.jpeg_progressive, images.process_uploads]
 
         backup:
             collapsible: true
-            label: '{{admin.options.system.backup}}'
+            label: '{{panel.options.system.backup}}'
             fields: [backup.max_files]
 
 fields:
     date.format:
         type: select
-        label: '{{admin.options.system.date-and-time.date-format}}'
+        label: '{{panel.options.system.date-and-time.date-format}}'
         import:
-            options: 'Formwork\Admin\Utils\DateFormats::date'
+            options: 'Formwork\Panel\Utils\DateFormats::date'
 
     date.time_format:
         type: select
-        label: '{{admin.options.system.date-and-time.hour-format}}'
+        label: '{{panel.options.system.date-and-time.hour-format}}'
         import:
-            options: 'Formwork\Admin\Utils\DateFormats::hour'
+            options: 'Formwork\Panel\Utils\DateFormats::hour'
 
     date.timezone:
         type: select
-        label: '{{admin.options.system.date-and-time.timezone}}'
+        label: '{{panel.options.system.date-and-time.timezone}}'
         import:
-            options: 'Formwork\Admin\Utils\DateFormats::timezones'
+            options: 'Formwork\Panel\Utils\DateFormats::timezones'
 
     date.week_starts:
         type: select
-        label: '{{admin.options.system.date-and-time.first-weekday}}'
+        label: '{{panel.options.system.date-and-time.first-weekday}}'
         options:
-            0: '{{admin.options.system.date-and-time.first-weekday.sunday}}'
-            1: '{{admin.options.system.date-and-time.first-weekday.monday}}'
+            0: '{{panel.options.system.date-and-time.first-weekday.sunday}}'
+            1: '{{panel.options.system.date-and-time.first-weekday.monday}}'
 
     languages.available:
         type: tags
-        label: '{{admin.options.system.languages.available-languages}}'
-        placeholder: '{{admin.options.system.languages.available-languages.no-languages}}'
+        label: '{{panel.options.system.languages.available-languages}}'
+        placeholder: '{{panel.options.system.languages.available-languages.no-languages}}'
         pattern: '^[a-z]{2,3}$'
         translate: [label, placeholder]
         import:
@@ -75,100 +75,100 @@ fields:
 
     languages.http_preferred:
         type: togglegroup
-        label: '{{admin.options.system.languages.preferred-language}}'
+        label: '{{panel.options.system.languages.preferred-language}}'
         options:
-            1: '{{admin.options.system.languages.preferred-language.enabled}}'
-            0: '{{admin.options.system.languages.preferred-language.disabled}}'
+            1: '{{panel.options.system.languages.preferred-language.enabled}}'
+            0: '{{panel.options.system.languages.preferred-language.disabled}}'
 
     files.allowed_extensions:
         type: tags
-        label: '{{admin.options.system.files.allowed-extensions}}'
+        label: '{{panel.options.system.files.allowed-extensions}}'
         pattern: '^\.[a-zA-Z0-9]+$'
         required: true
 
     cache.enabled:
         type: togglegroup
-        label: '{{admin.options.system.cache}}'
+        label: '{{panel.options.system.cache}}'
         options:
-            1: '{{admin.options.system.cache.enabled}}'
-            0: '{{admin.options.system.cache.disabled}}'
+            1: '{{panel.options.system.cache.enabled}}'
+            0: '{{panel.options.system.cache.disabled}}'
 
     cache.time:
         type: duration
-        label: '{{admin.options.system.cache.time}}'
+        label: '{{panel.options.system.cache.time}}'
         min: 900
         step: 900
         intervals: [weeks, days, hours, minutes]
         translate: [label]
         required: true
 
-    admin.lang:
+    panel.lang:
         type: select
-        label: '{{admin.options.system.admin-panel.default-language}}'
+        label: '{{panel.options.system.admin-panel.default-language}}'
         translate: [label]
         import:
-            options: 'Formwork\Admin\Admin::availableTranslations'
+            options: 'Formwork\Panel\Panel::availableTranslations'
 
-    admin.logout_redirect:
+    panel.logout_redirect:
         type: togglegroup
-        label: '{{admin.options.system.admin-panel.logout-redirects-to}}'
+        label: '{{panel.options.system.admin-panel.logout-redirects-to}}'
         options:
-            login: '{{admin.options.system.admin-panel.logout-redirects-to.login}}'
-            home: '{{admin.options.system.admin-panel.logout-redirects-to.home}}'
+            login: '{{panel.options.system.admin-panel.logout-redirects-to.login}}'
+            home: '{{panel.options.system.admin-panel.logout-redirects-to.home}}'
 
-    admin.session_timeout:
+    panel.session_timeout:
         type: duration
-        label: '{{admin.options.system.admin-panel.session-timeout}}'
+        label: '{{panel.options.system.admin-panel.session-timeout}}'
         min: 0
         unit: minutes
         intervals: [hours, minutes]
         translate: [label]
         required: true
 
-    admin.color_scheme:
+    panel.color_scheme:
         type: togglegroup
-        label: '{{admin.options.system.admin-panel.default-color-scheme}}'
+        label: '{{panel.options.system.admin-panel.default-color-scheme}}'
         options:
-            light: '{{admin.options.system.admin-panel.default-color-scheme.light}}'
-            dark: '{{admin.options.system.admin-panel.default-color-scheme.dark}}'
+            light: '{{panel.options.system.admin-panel.default-color-scheme.light}}'
+            dark: '{{panel.options.system.admin-panel.default-color-scheme.dark}}'
 
     images.jpeg_quality:
         type: range
-        label: '{{admin.options.system.images.jpeg-quality}}'
+        label: '{{panel.options.system.images.jpeg-quality}}'
         min: 0
         max: 100
         step: 5
 
     images.png_compression:
         type: range
-        label: '{{admin.options.system.images.png-compression-level}}'
+        label: '{{panel.options.system.images.png-compression-level}}'
         min: 0
         max: 9
 
     images.webp_quality:
         type: range
-        label: '{{admin.options.system.images.webp-quality}}'
+        label: '{{panel.options.system.images.webp-quality}}'
         min: 0
         max: 100
         step: 5
 
     images.jpeg_progressive:
         type: togglegroup
-        label: '{{admin.options.system.images.jpeg-save-progressive}}'
+        label: '{{panel.options.system.images.jpeg-save-progressive}}'
         options:
-            1: '{{admin.options.system.images.jpeg-save-progressive.enabled}}'
-            0: '{{admin.options.system.images.jpeg-save-progressive.disabled}}'
+            1: '{{panel.options.system.images.jpeg-save-progressive.enabled}}'
+            0: '{{panel.options.system.images.jpeg-save-progressive.disabled}}'
 
     images.process_uploads:
         type: togglegroup
-        label: '{{admin.options.system.images.process-uploads}}'
+        label: '{{panel.options.system.images.process-uploads}}'
         options:
-            1: '{{admin.options.system.images.process-uploads.enabled}}'
-            0: '{{admin.options.system.images.process-uploads.disabled}}'
+            1: '{{panel.options.system.images.process-uploads.enabled}}'
+            0: '{{panel.options.system.images.process-uploads.disabled}}'
 
     backup.max_files:
         type: select
-        label: '{{admin.options.system.backup.backup-files-to-keep}}'
+        label: '{{panel.options.system.backup.backup-files-to-keep}}'
         options:
             5: 5
             10: 10

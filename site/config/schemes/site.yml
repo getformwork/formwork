@@ -4,12 +4,12 @@ layout:
     type: sections
     sections:
         info:
-            label: '{{admin.options.site.info}}'
+            label: '{{panel.options.site.info}}'
             collapsible: true
             fields: [title, author, description]
 
         advanced:
-            label: '{{admin.options.site.advanced}}'
+            label: '{{panel.options.site.advanced}}'
             collapsible: true
             collapsed: true
             fields: [metadata, aliases]
@@ -17,30 +17,30 @@ layout:
 fields:
     title:
         type: text
-        label: '{{admin.options.site.info.title}}'
+        label: '{{panel.options.site.info.title}}'
         required: true
 
     author:
         type: text
-        label: '{{admin.options.site.info.author}}'
+        label: '{{panel.options.site.info.author}}'
         default: null
 
 
     description:
         type: textarea
-        label: '{{admin.options.site.info.description}}'
+        label: '{{panel.options.site.info.description}}'
         default: null
 
     metadata:
         type: array
-        label: '{{admin.options.site.advanced.metadata}}'
+        label: '{{panel.options.site.advanced.metadata}}'
         associative: true
-        placeholder_key: '{{admin.options.site.advanced.metadata.name}}'
-        placeholder_value: '{{admin.options.site.advanced.metadata.content}}'
+        placeholder_key: '{{panel.options.site.advanced.metadata.name}}'
+        placeholder_value: '{{panel.options.site.advanced.metadata.content}}'
 
     aliases:
         type: array
-        label: '{{admin.options.site.advanced.aliases}}'
+        label: '{{panel.options.site.advanced.aliases}}'
         associative: true
-        placeholder_key: '{{admin.options.site.advanced.aliases.alias}}'
-        placeholder_value: '{{admin.options.site.advanced.aliases.route}}'
+        placeholder_key: '{{panel.options.site.advanced.aliases.alias}}'
+        placeholder_value: '{{panel.options.site.advanced.aliases.route}}'

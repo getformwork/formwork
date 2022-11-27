@@ -9,8 +9,8 @@ php_error.log
 
 /vendor/*
 
-/admin/accounts/*
-/admin/avatars/*
-/admin/logs/*
+/panel/accounts/*
+/panel/avatars/*
+/panel/logs/*
 
 !.gitkeep

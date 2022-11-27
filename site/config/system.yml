@@ -1,4 +1,4 @@
 languages:
     available: [it, en]
-admin:
+panel:
     logout_redirect: home

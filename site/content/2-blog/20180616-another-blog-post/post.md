@@ -10,7 +10,7 @@ This is the summary of another blog post.
 
 ➡️ Here we go. This is the rest of the blog post.
 
-If you open this post in the [Administration Panel](/admin), you will find that three equal signs `===` mark the transition from the summary to the rest:
+If you open this post in the [Administration Panel](/panel), you will find that three equal signs `===` mark the transition from the summary to the rest:
 
 ```
 💡 Tip: click on post title to reveal the rest of content.

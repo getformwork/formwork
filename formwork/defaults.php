@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'admin' => [
+    'panel' => [
         'enabled'          => true,
-        'root'             => 'admin',
+        'root'             => 'panel',
         'lang'             => 'en',
         'login_attempts'   => 10,
         'login_reset_time' => 300,
@@ -12,8 +12,8 @@ return [
         'avatar_size'      => 512,
         'color_scheme'     => 'light',
         'paths'            => [
-            'accounts' => ADMIN_PATH . 'accounts' . DS,
-            'logs'     => ADMIN_PATH . 'logs' . DS
+            'accounts' => PANEL_PATH . 'accounts' . DS,
+            'logs'     => PANEL_PATH . 'logs' . DS
         ]
     ],
     'backup' => [
@@ -76,13 +76,13 @@ return [
     ],
     'routes' => [
         'files' => [
-            'admin'  => ADMIN_PATH . 'routes.php',
+            'panel'  => PANEL_PATH . 'routes.php',
             'system' => FORMWORK_PATH . 'routes.php'
         ]
     ],
     'schemes' => [
         'paths' => [
-            'admin'  => ADMIN_PATH . 'schemes' . DS,
+            'panel'  => PANEL_PATH . 'schemes' . DS,
             'config' => CONFIG_PATH . 'schemes' . DS,
             'pages'  => SITE_PATH . 'schemes' . DS
         ]
@@ -97,7 +97,7 @@ return [
     'translations' => [
         'fallback' => 'en',
         'paths'    => [
-            'admin'  => ADMIN_PATH . 'translations' . DS,
+            'panel'  => PANEL_PATH . 'translations' . DS,
             'system' => FORMWORK_PATH . 'translations' . DS
         ]
     ],
@@ -106,7 +106,7 @@ return [
     ],
     'views' => [
         'paths' => [
-            'admin'  => ADMIN_PATH . 'views' . DS,
+            'panel'  => PANEL_PATH . 'views' . DS,
             'system' => FORMWORK_PATH . 'views' . DS
         ]
     ]

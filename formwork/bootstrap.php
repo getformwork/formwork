@@ -4,7 +4,7 @@
 const FORMWORK_PATH = ROOT_PATH . 'formwork' . DS;
 const SITE_PATH = ROOT_PATH . 'site' . DS;
 const CONFIG_PATH = SITE_PATH . 'config' . DS;
-const ADMIN_PATH = ROOT_PATH . 'admin' . DS;
+const PANEL_PATH = ROOT_PATH . 'panel' . DS;
 
 // Check PHP version requirements
 if (!version_compare(PHP_VERSION, '8.0.2', '>=')) {

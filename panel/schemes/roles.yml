@@ -1,0 +1,18 @@
+title: Roles
+data:
+    admin:
+        title: '{{panel.user.role.admin}}'
+        permissions:
+            dashboard: true
+            cache: true
+            backup: true
+            pages: true
+            options: true
+            updates: true
+            users: true
+
+    user:
+        title: '{{panel.user.role.user}}'
+        permissions:
+            dashboard: true
+            pages: true
