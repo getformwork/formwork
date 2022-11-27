@@ -8,7 +8,7 @@ use Formwork\Admin\Users\Users;
 use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Page;
+use Formwork\Pages\Page;
 use Formwork\Response\RedirectResponse;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -40,18 +40,15 @@ final class Admin
      */
     public function __construct()
     {
+        $this->load();
     }
 
     public function load(): void
     {
         $this->loadSchemes();
-
         $this->users = Users::load();
-
         $this->loadTranslations();
         $this->loadErrorHandler();
-
-        $this->loadRoutes();
     }
 
     /**
@@ -254,13 +251,12 @@ final class Admin
      */
     protected function loadTranslations(): void
     {
-        $languageCode = Formwork::instance()->config()->get('admin.lang');
-        if ($this->isLoggedIn()) {
-            $languageCode = $this->user()->language();
-        }
         $path = Formwork::instance()->config()->get('translations.paths.admin');
         Formwork::instance()->translations()->loadFromPath($path);
-        Formwork::instance()->translations()->setCurrent($languageCode);
+
+        if ($this->isLoggedIn()) {
+            Formwork::instance()->translations()->setCurrent($this->user()->language());
+        }
     }
 
     protected function loadSchemes(): void
@@ -281,16 +277,5 @@ final class Admin
                 throw $exception;
             });
         }
-    }
-
-    /**
-     * Load administration panel routes
-     */
-    protected function loadRoutes(): void
-    {
-        Formwork::instance()->router()->loadFromFile(
-            Formwork::instance()->config()->get('routes.files.admin'),
-            Str::wrap(Formwork::instance()->config()->get('admin.root'), '/')
-        );
     }
 }

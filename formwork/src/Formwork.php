@@ -83,7 +83,6 @@ final class Formwork
         $this->loadSite();
         $this->loadCache();
         $this->loadRouter();
-        $this->loadAdmin();
         $this->loadRoutes();
     }
 
@@ -156,7 +155,12 @@ final class Formwork
      */
     public function admin(): ?Admin
     {
-        return $this->admin;
+        if (isset($this->admin)) {
+            return $this->admin;
+        }
+        return $this->admin = $this->config->get('admin.enabled')
+            ? new Admin()
+            : null;
     }
 
     /**
@@ -265,15 +269,7 @@ final class Formwork
 
     protected function loadRouter(): void
     {
-        $this->router = new Router();
-    }
-
-    protected function loadAdmin(): void
-    {
-        if ($this->config->get('admin.enabled')) {
-            $this->admin = new Admin();
-            $this->admin->load();
-        }
+        $this->router = new Router($this->request);
     }
 
     /**
@@ -281,6 +277,13 @@ final class Formwork
      */
     protected function loadRoutes(): void
     {
+        if ($this->config->get('admin.enabled')) {
+            $this->router->loadFromFile(
+                $this->config()->get('routes.files.admin'),
+                Str::wrap($this->config()->get('admin.root'), '/')
+            );
+        }
+
         $this->router->loadFromFile($this->config()->get('routes.files.system'));
     }
 }

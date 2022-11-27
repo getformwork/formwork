@@ -3,11 +3,12 @@
 namespace Formwork\Admin\Users;
 
 use Formwork\Admin\Security\Password;
+use Formwork\Data\Contracts\Arrayable;
 use Formwork\Formwork;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
-class User
+class User implements Arrayable
 {
     /**
      * Array containing user data
@@ -83,7 +84,6 @@ class User
             $this->$var = $this->data[$var];
         }
 
-        $this->avatar = new Avatar($this->data['avatar']);
         $this->permissions = new Permissions($this->role);
     }
 
@@ -132,7 +132,11 @@ class User
      */
     public function avatar(): Avatar
     {
-        return $this->avatar;
+        if (isset($this->avatar)) {
+            return $this->avatar;
+        }
+
+        return $this->avatar = new Avatar($this->data['avatar']);
     }
 
     /**
