@@ -4,7 +4,7 @@ namespace Formwork\Traits;
 
 use LogicException;
 
-trait SingletonTrait
+trait SingletonClass
 {
     /**
      * Singleton instance

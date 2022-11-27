@@ -11,7 +11,7 @@ use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
-use Formwork\Traits\SingletonTrait;
+use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
@@ -20,7 +20,7 @@ use Formwork\Utils\Uri;
 
 final class Formwork
 {
-    use SingletonTrait;
+    use SingletonClass;
 
     /**
      * Current Formwork version
