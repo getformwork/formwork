@@ -1,4 +1,0 @@
-languages:
-    available: [it, en]
-panel:
-    logout_redirect: home
