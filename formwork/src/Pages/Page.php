@@ -286,9 +286,10 @@ class Page implements Arrayable
         if (!$this->hasLanguage($language)) {
             throw new RuntimeException(sprintf('Invalid page language "%s"', $language));
         }
+        $path = $this->path;
         $this->resetProperties();
         $this->language = $language;
-        $this->__construct($this->path);
+        $this->__construct($path);
     }
 
     public function files(): Files
