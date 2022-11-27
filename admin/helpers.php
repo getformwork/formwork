@@ -1,6 +1,9 @@
 <?php
 
+use Formwork\Formwork;
+use Formwork\Utils\FileSystem;
+
 return [
-    'assets' => static fn () => \Formwork\Formwork::instance()->admin()->assets(),
-    'icon' => static fn (string $icon) => \Formwork\Utils\FileSystem::read(ADMIN_PATH . 'assets' . DS . 'icons' . DS . 'svg' . DS . $icon . '.svg')
+    'assets' => fn () => Formwork::instance()->admin()->assets(),
+    'icon' => fn (string $icon) => FileSystem::read(ADMIN_PATH . 'assets' . DS . 'icons' . DS . 'svg' . DS . $icon . '.svg')
 ];
