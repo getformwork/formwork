@@ -48,6 +48,14 @@ class Constraint
     }
 
     /**
+     * Return whether a value is equal to another
+     */
+    public static function isEqualTo($value, $comparison, bool $strict = true): bool
+    {
+        return $strict ? $value === $comparison : $value == $comparison;
+    }
+
+    /**
      * Return whether a value matches the specified regex pattern
      */
     public static function matchesRegex($value, string $regex): bool
