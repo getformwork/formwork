@@ -4,7 +4,7 @@ return [
     'panel' => [
         'enabled'          => true,
         'root'             => 'panel',
-        'lang'             => 'en',
+        'translation'      => 'en',
         'login_attempts'   => 10,
         'login_reset_time' => 300,
         'logout_redirect'  => 'login',

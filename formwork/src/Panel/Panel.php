@@ -256,6 +256,8 @@ final class Panel
 
         if ($this->isLoggedIn()) {
             Formwork::instance()->translations()->setCurrent($this->user()->language());
+        } else {
+            Formwork::instance()->translations()->setCurrent(Formwork::instance()->config()->get('panel.translation'));
         }
     }
 

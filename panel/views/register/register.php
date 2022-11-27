@@ -18,7 +18,7 @@
 <?php
     foreach (\Formwork\Panel\Panel::availableTranslations() as $key => $value):
 ?>
-        <option value="<?= $key ?>"<?php if ($key === $formwork->config()->get('panel.lang')): ?> selected<?php endif; ?>><?= $value ?></option>
+        <option value="<?= $key ?>"<?php if ($key === $formwork->config()->get('panel.translation')): ?> selected<?php endif; ?>><?= $value ?></option>
 <?php
     endforeach;
 ?>
