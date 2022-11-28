@@ -1,9 +1,10 @@
 <?php
 
-use Formwork\Panel\Controllers\RegisterController;
 use Formwork\Panel\Security\CSRFToken;
 use Formwork\Formwork;
 use Formwork\Response\JSONResponse;
+use Formwork\Response\RedirectResponse;
+use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Session;
 
@@ -11,7 +12,7 @@ return [
     'routes' => [
         'panel.index' => [
             'path'   => '/',
-            'action' => fn () => Formwork::instance()->panel()->redirect('/dashboard/')
+            'action' => fn () => new RedirectResponse(Formwork::instance()->panel()->uri('/dashboard/'))
         ],
         'panel.login' => [
             'path'    => '/login/',
@@ -141,6 +142,11 @@ return [
             'action'  => 'Formwork\Panel\Controllers\UsersController@profile',
             'methods' => ['GET', 'POST']
         ],
+        'panel.register' => [
+            'path'    => '/register/',
+            'action'  => 'Formwork\Panel\Controllers\RegisterController@register',
+            'methods' => ['GET']
+        ],
         'panel.errors.notfound' => [
             'path' => '/{route}/',
             'action' => 'Formwork\Panel\Controllers\ErrorsController@notFound'
@@ -149,18 +155,23 @@ return [
     'filters' => [
         'request.validate-size' => [
             'action' => static function () {
-                // Validate HTTP request Content-Length according to post_max_size directive
-                if (\Formwork\Utils\HTTPRequest::contentLength() !== null) {
-                    $maxSize = \Formwork\Utils\FileSystem::shorthandToBytes(ini_get('post_max_size'));
-                    if (\Formwork\Utils\HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                        $panel = \Formwork\Formwork::instance()->panel();
-                        $panel->notify($panel->translate('panel.request.error.post-max-size'), 'error');
-                        return $panel->redirectToReferer();
+                // Validate HTTP request Content-Length according to `post_max_size` directive
+                if (HTTPRequest::contentLength() !== null) {
+                    $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+
+                    if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
+                        $panel = Formwork::instance()->panel();
+                        $panel->notify(
+                            Formwork::instance()->translations()->getCurrent()->translate('panel.request.error.post-max-size'),
+                            'error'
+                        );
+                        return new RedirectResponse($panel->uri());
                     }
                 }
             },
             'methods' => ['POST']
         ],
+
         'request.validate-csrf' => [
             'action' => static function () {
                 // Validate CSRF token
@@ -169,41 +180,51 @@ return [
                 } catch (RuntimeException $e) {
                     CSRFToken::destroy();
                     Session::remove('FORMWORK_USERNAME');
-                    $panel = \Formwork\Formwork::instance()->panel();
-                    $panel->notify($panel->translate('panel.login.suspicious-request-detected'), 'warning');
+
+                    $panel = Formwork::instance()->panel();
+                    $panel->notify(
+                        Formwork::instance()->translations()->getCurrent()->translate('panel.login.suspicious-request-detected'),
+                        'warning'
+                    );
+
                     if (HTTPRequest::isXHR()) {
                         return JSONResponse::error('Bad Request: the CSRF token is not valid', 400);
                     }
-                    return $panel->redirect('/login/');
+
+                    return new RedirectResponse($panel->uri('/login/'));
                 }
             },
             'methods' => ['POST'],
             'types'   => ['HTTP', 'XHR']
         ],
+
         'panel.register' => [
             'action' => static function () {
                 $panel = Formwork::instance()->panel();
+
                 // Register panel if no user exists
                 if ($panel->users()->isEmpty()) {
                     if (!HTTPRequest::isLocalhost()) {
-                        return $panel->redirectToSite();
+                        return new RedirectResponse(Formwork::instance()->site()->uri());
                     }
-                    if ($panel->route() !== '/') {
-                        return $panel->redirectToPanel();
+
+                    if ($panel->route() !== '/register/') {
+                        return new RedirectResponse($panel->uri('/register/'));
                     }
-                    $controller = new RegisterController();
-                    return $controller->register();
+
                 }
             },
             'methods' => ['GET', 'POST']
         ],
+
         'panel.redirect-to-login' => [
             'action' => static function () {
                 $panel = Formwork::instance()->panel();
+
                 // Redirect to login if no user is logged
-                if (!$panel->isLoggedIn() && $panel->route() !== '/login/') {
+                if (!$panel->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
                     Session::set('FORMWORK_REDIRECT_TO', $panel->route());
-                    return $panel->redirect('/login/');
+                    return new RedirectResponse($panel->uri('/login/'));
                 }
             }
         ]

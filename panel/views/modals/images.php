@@ -17,7 +17,7 @@
 <?php
         foreach ($page->images() as $image):
 ?>
-            <option value="<?= $panel->pageUri($page) . $image ?>"><?= $image ?></option>
+            <option value="<?= $page->uri($image, includeLanguage: false) ?>"><?= $image ?></option>
 <?php
         endforeach;
 ?>

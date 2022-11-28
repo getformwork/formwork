@@ -8,8 +8,6 @@ use Formwork\Panel\Users\Users;
 use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Pages\Page;
-use Formwork\Response\RedirectResponse;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Notification;
@@ -80,7 +78,7 @@ final class Panel
     /**
      * Return a URI relative to the request root
      */
-    public function uri(string $route): string
+    public function uri(string $route = ''): string
     {
         return $this->panelUri() . ltrim($route, '/');
     }
@@ -91,14 +89,6 @@ final class Panel
     public function realUri(string $route): string
     {
         return HTTPRequest::root() . 'panel/' . ltrim($route, '/');
-    }
-
-    /**
-     * Get the URI of the site
-     */
-    public function siteUri(): string
-    {
-        return HTTPRequest::root();
     }
 
     /**
@@ -118,72 +108,11 @@ final class Panel
     }
 
     /**
-     * Return the URI of a page
-     *
-     * @param bool|string $includeLanguage
-     */
-    public function pageUri(Page $page, $includeLanguage = true): string
-    {
-        $base = $this->siteUri();
-        if ($includeLanguage) {
-            $language = is_string($includeLanguage) ? $includeLanguage : $page->language();
-            if ($language !== null) {
-                $base .= $language . '/';
-            }
-        }
-        return $base . ltrim($page->route(), '/');
-    }
-
-    /**
      * Return current route
      */
     public function route(): string
     {
         return '/' . Str::removeStart(HTTPRequest::uri(), $this->panelRoot());
-    }
-
-    /**
-     * Redirect to a given route
-     *
-     * @param int $code HTTP redirect status code
-     */
-    public function redirect(string $route, int $code = 302): RedirectResponse
-    {
-        return new RedirectResponse($this->uri($route), $code);
-    }
-
-    /**
-     * Redirect to the site index page
-     *
-     * @param int $code HTTP redirect status code
-     */
-    public function redirectToSite(int $code = 302): RedirectResponse
-    {
-        return new RedirectResponse($this->siteUri(), $code);
-    }
-
-    /**
-     * Redirect to the administration panel
-     *
-     * @param int $code HTTP redirect status code
-     */
-    public function redirectToPanel(int $code = 302): RedirectResponse
-    {
-        return $this->redirect('/', $code);
-    }
-
-    /**
-     * Redirect to the referer page
-     *
-     * @param int    $code    HTTP redirect status code
-     * @param string $default Default route if HTTP referer is not available
-     */
-    public function redirectToReferer(int $code = 302, string $default = '/'): RedirectResponse
-    {
-        if (HTTPRequest::validateReferer($this->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
-            return new RedirectResponse(HTTPRequest::referer(), $code);
-        }
-        return new RedirectResponse($this->uri($default), $code);
     }
 
     /**
@@ -200,14 +129,6 @@ final class Panel
     public function notification(): ?array
     {
         return Notification::exists() ? Notification::get() : null;
-    }
-
-    /**
-     * Get a translation
-     */
-    public function translate(...$arguments)
-    {
-        return Formwork::instance()->translations()->getCurrent()->translate(...$arguments);
     }
 
     /**

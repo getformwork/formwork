@@ -10,8 +10,10 @@ use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\PHP;
 use Formwork\Pages\Site;
+use Formwork\Response\RedirectResponse;
 use Formwork\Utils\Date;
 use Formwork\Utils\HTTPRequest;
+use Formwork\Utils\Uri;
 use Formwork\View\View;
 
 abstract class AbstractController extends BaseAbstractController
@@ -37,6 +39,55 @@ abstract class AbstractController extends BaseAbstractController
         return Formwork::instance()->site();
     }
 
+    /**
+     * Redirect to a given route
+     *
+     * @param int $code HTTP redirect status code
+     */
+    protected function redirect(string $route, int $code = 302): RedirectResponse
+    {
+        return new RedirectResponse($this->panel()->uri($route), $code);
+    }
+
+    /**
+     * Redirect to the site index page
+     *
+     * @param int $code HTTP redirect status code
+     */
+    protected function redirectToSite(int $code = 302): RedirectResponse
+    {
+        return new RedirectResponse($this->site()->uri(), $code);
+    }
+
+    /**
+     * Redirect to the administration panel
+     *
+     * @param int $code HTTP redirect status code
+     */
+    protected function redirectToPanel(int $code = 302): RedirectResponse
+    {
+        return $this->redirect('/', $code);
+    }
+
+    /**
+     * Redirect to the referer page
+     *
+     * @param int    $code    HTTP redirect status code
+     * @param string $default Default route if HTTP referer is not available
+     */
+    protected function redirectToReferer(int $code = 302, string $default = '/'): RedirectResponse
+    {
+        if (HTTPRequest::validateReferer($this->panel()->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
+            return new RedirectResponse(HTTPRequest::referer(), $code);
+        }
+        return new RedirectResponse($this->panel()->uri($default), $code);
+    }
+
+    protected function translate(...$arguments)
+    {
+        return Formwork::instance()->translations()->getCurrent()->translate(...$arguments);
+    }
+
     /*
      * Return default data passed to views
      *
@@ -45,6 +96,7 @@ abstract class AbstractController extends BaseAbstractController
     {
         return [
             'location'    => $this->name,
+            'site'        => $this->site(),
             'panel'       => $this->panel(),
             'csrfToken'   => CSRFToken::get(),
             'modals'      => implode('', $this->modals),
@@ -56,20 +108,20 @@ abstract class AbstractController extends BaseAbstractController
                     'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')),
                     'time'       => true,
                     'labels'     => [
-                        'today'    => $this->panel()->translate('date.today'),
-                        'weekdays' => ['long' => $this->panel()->translate('date.weekdays.long'), 'short' =>  $this->panel()->translate('date.weekdays.short')],
-                        'months'   => ['long' => $this->panel()->translate('date.months.long'), 'short' =>  $this->panel()->translate('date.months.short')]
+                        'today'    => $this->translate('date.today'),
+                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' =>  $this->translate('date.weekdays.short')],
+                        'months'   => ['long' => $this->translate('date.months.long'), 'short' =>  $this->translate('date.months.short')]
                     ]
                 ],
                 'DurationInput' => [
                     'labels' => [
-                        'years'   => $this->panel()->translate('date.duration.years'),
-                        'months'  => $this->panel()->translate('date.duration.months'),
-                        'weeks'   => $this->panel()->translate('date.duration.weeks'),
-                        'days'    => $this->panel()->translate('date.duration.days'),
-                        'hours'   => $this->panel()->translate('date.duration.hours'),
-                        'minutes' => $this->panel()->translate('date.duration.minutes'),
-                        'seconds' => $this->panel()->translate('date.duration.seconds')
+                        'years'   => $this->translate('date.duration.years'),
+                        'months'  => $this->translate('date.duration.months'),
+                        'weeks'   => $this->translate('date.duration.weeks'),
+                        'days'    => $this->translate('date.duration.days'),
+                        'hours'   => $this->translate('date.duration.hours'),
+                        'minutes' => $this->translate('date.duration.minutes'),
+                        'seconds' => $this->translate('date.duration.seconds')
                     ]
                 ]
             ])

@@ -19,13 +19,17 @@ class RegisterController extends AbstractController
      */
     public function register(): Response
     {
+        if (!$this->panel()->users()->isEmpty()) {
+            return $this->redirectToReferer();
+        }
+
         Session::regenerate(false);
         CSRFToken::generate();
 
         switch (HTTPRequest::method()) {
             case 'GET':
                 return new Response($this->view('register.register', [
-                    'title' => $this->panel()->translate('panel.register.register')
+                    'title' => $this->translate('panel.register.register')
                 ], true));
 
                 break;
@@ -34,8 +38,8 @@ class RegisterController extends AbstractController
                 $data = HTTPRequest::postData();
 
                 if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
-                    $this->panel()->notify($this->panel()->translate('panel.users.user.cannot-create.var-missing'), 'error');
-                    return $this->panel()->redirectToPanel();
+                    $this->panel()->notify($this->translate('panel.users.user.cannot-create.var-missing'), 'error');
+                    return $this->redirectToPanel();
                 }
 
                 $userData = [
@@ -57,7 +61,7 @@ class RegisterController extends AbstractController
                 $time = $accessLog->log($data->get('username'));
                 $lastAccessRegistry->set($data->get('username'), $time);
 
-                return $this->panel()->redirectToPanel();
+                return $this->redirectToPanel();
 
                 break;
         }

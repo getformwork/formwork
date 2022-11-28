@@ -26,7 +26,7 @@ class OptionsController extends AbstractController
     public function index(): RedirectResponse
     {
         $this->ensurePermission('options.system');
-        return $this->panel()->redirect('/options/system/');
+        return $this->redirect('/options/system/');
     }
 
     /**
@@ -52,8 +52,8 @@ class OptionsController extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->panel()->notify($this->panel()->translate('panel.options.updated'), 'success');
-            return $this->panel()->redirect('/options/system/');
+            $this->panel()->notify($this->translate('panel.options.updated'), 'success');
+            return $this->redirect('/options/system/');
         }
 
         $fields->validate(Formwork::instance()->config());
@@ -61,7 +61,7 @@ class OptionsController extends AbstractController
         $this->modal('changes');
 
         return new Response($this->view('options.system', [
-            'title'   => $this->panel()->translate('panel.options.options'),
+            'title'   => $this->translate('panel.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system'
@@ -92,8 +92,8 @@ class OptionsController extends AbstractController
                 FileSystem::touch(Formwork::instance()->config()->get('content.path'));
             }
 
-            $this->panel()->notify($this->panel()->translate('panel.options.updated'), 'success');
-            return $this->panel()->redirect('/options/site/');
+            $this->panel()->notify($this->translate('panel.options.updated'), 'success');
+            return $this->redirect('/options/site/');
         }
 
         $fields->validate($this->site()->data());
@@ -101,7 +101,7 @@ class OptionsController extends AbstractController
         $this->modal('changes');
 
         return new Response($this->view('options.site', [
-            'title'   => $this->panel()->translate('panel.options.options'),
+            'title'   => $this->translate('panel.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site'
@@ -118,7 +118,7 @@ class OptionsController extends AbstractController
         $this->ensurePermission('options.updates');
 
         return new Response($this->view('options.updates', [
-            'title'   => $this->panel()->translate('panel.options.updates'),
+            'title'   => $this->translate('panel.options.updates'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates'
@@ -228,7 +228,7 @@ class OptionsController extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         return new Response($this->view('options.info', [
-            'title'   => $this->panel()->translate('panel.options.options'),
+            'title'   => $this->translate('panel.options.options'),
             'tabs'    => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info'

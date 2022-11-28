@@ -16,7 +16,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(404, 'not-found', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->panel()->translate('panel.errors.action.return-to-dashboard')
+            'label' => $this->translate('panel.errors.action.return-to-dashboard')
         ]);
     }
 
@@ -27,7 +27,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(500, 'internal-server-error', [
             'href'  => $this->makeGitHubIssueUri($exception),
-            'label' => $this->panel()->translate('panel.errors.action.report-to-github')
+            'label' => $this->translate('panel.errors.action.report-to-github')
         ]);
     }
 
@@ -38,7 +38,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(403, 'forbidden', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->panel()->translate('panel.errors.action.return-to-dashboard')
+            'label' => $this->translate('panel.errors.action.return-to-dashboard')
         ]);
     }
 
@@ -53,11 +53,11 @@ class ErrorsController extends AbstractController
     {
         HTTPResponse::cleanOutputBuffers();
         return new Response($this->view('errors.error', [
-            'title'       => $this->panel()->translate('panel.errors.error.' . $name . '.status'),
+            'title'       => $this->translate('panel.errors.error.' . $name . '.status'),
             'code'        => $status,
-            'status'      => $this->panel()->translate('panel.errors.error.' . $name . '.status'),
-            'heading'     => $this->panel()->translate('panel.errors.error.' . $name . '.heading'),
-            'description' => $this->panel()->translate('panel.errors.error.' . $name . '.description'),
+            'status'      => $this->translate('panel.errors.error.' . $name . '.status'),
+            'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
+            'description' => $this->translate('panel.errors.error.' . $name . '.description'),
             'action'      => $action
         ], true), $status);
     }

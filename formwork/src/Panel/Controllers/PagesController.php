@@ -52,7 +52,7 @@ class PagesController extends AbstractController
         $this->modal('deletePage');
 
         return new Response($this->view('pages.index', [
-            'title'     => $this->panel()->translate('panel.pages.pages'),
+            'title'     => $this->translate('panel.pages.pages'),
             'pagesList' => $this->view('pages.list', [
                 'pages'     => $this->site()->pages(),
                 'subpages'  => true,
@@ -76,13 +76,13 @@ class PagesController extends AbstractController
         // Let's create the page
         try {
             $page = $this->createPage($data);
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.created'), 'success');
+            $this->panel()->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
-        return $this->panel()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+        return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
     }
 
     /**
@@ -95,20 +95,20 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-edit.page-not-found'), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-edit.page-not-found'), 'error');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
         if ($params->has('language')) {
             if (empty(Formwork::instance()->config()->get('languages.available'))) {
-                return $this->panel()->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
+                return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/');
             }
 
             $language = $params->get('language');
 
             if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-                $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-edit.invalid-language', $language), 'error');
-                return $this->panel()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
+                $this->panel()->notify($this->translate('panel.pages.page.cannot-edit.invalid-language', $language), 'error');
+                return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
             if ($page->hasLanguage($language)) {
@@ -116,7 +116,7 @@ class PagesController extends AbstractController
             }
         } elseif ($page->language() !== null) {
             // Redirect to proper language
-            return $this->panel()->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
+            return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $page->language() . '/');
         }
 
         // Load page fields
@@ -142,7 +142,7 @@ class PagesController extends AbstractController
                 // Update the page
                 try {
                     $page = $this->updatePage($page, $data, $fields);
-                    $this->panel()->notify($this->panel()->translate('panel.pages.page.edited'), 'success');
+                    $this->panel()->notify($this->translate('panel.pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
                     $this->panel()->notify($e->getTranslatedMessage(), 'error');
                 }
@@ -151,13 +151,13 @@ class PagesController extends AbstractController
                     try {
                         $this->processPageUploads($page);
                     } catch (TranslatedException $e) {
-                        $this->panel()->notify($this->panel()->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
+                        $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
                     }
                 }
 
                 // Redirect if page route has changed
                 if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
-                    return $this->panel()->redirect('/pages/' . $route . '/edit/');
+                    return $this->redirect('/pages/' . $route . '/edit/');
                 }
 
                 break;
@@ -176,7 +176,7 @@ class PagesController extends AbstractController
         $this->modal('deleteFile');
 
         return new Response($this->view('pages.editor', [
-            'title'              => $this->panel()->translate('panel.pages.edit-page', $page->title()),
+            'title'              => $this->translate('panel.pages.edit-page', $page->title()),
             'page'               => $page,
             'fields'             => $fields,
             'templates'          => $this->site()->templates()->keys(),
@@ -196,16 +196,16 @@ class PagesController extends AbstractController
         $data = HTTPRequest::postData();
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            return JSONResponse::error($this->panel()->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            return JSONResponse::error($this->panel()->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            return JSONResponse::error($this->panel()->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
         }
 
         $pages = $parent->children()->toArray();
@@ -229,7 +229,7 @@ class PagesController extends AbstractController
             }
         }
 
-        return JSONResponse::success($this->panel()->translate('panel.pages.page.moved'));
+        return JSONResponse::success($this->translate('panel.pages.page.moved'));
     }
 
     /**
@@ -242,8 +242,8 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-delete.page-not-found'), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.page-not-found'), 'error');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
         if ($params->has('language')) {
@@ -251,14 +251,14 @@ class PagesController extends AbstractController
             if ($page->hasLanguage($language)) {
                 $page->setLanguage($language);
             } else {
-                $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-delete.invalid-language', $language), 'error');
-                return $this->panel()->redirectToReferer(302, '/pages/');
+                $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.invalid-language', $language), 'error');
+                return $this->redirectToReferer(302, '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-delete.not-deletable'), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.not-deletable'), 'error');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
         // Delete just the content file only if there are more than one language
@@ -268,13 +268,13 @@ class PagesController extends AbstractController
             FileSystem::delete($page->path(), true);
         }
 
-        $this->panel()->notify($this->panel()->translate('panel.pages.page.deleted'), 'success');
+        $this->panel()->notify($this->translate('panel.pages.page.deleted'), 'success');
 
         // Don't redirect to referer if it's to Pages@edit
         if (!Str::startsWith(Uri::normalize(HTTPRequest::referer()), Uri::make(['path' => $this->panel()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            return $this->redirectToReferer(302, '/pages/');
         }
-        return $this->panel()->redirect('/pages/');
+        return $this->redirect('/pages/');
     }
 
     /**
@@ -287,21 +287,21 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-upload-file.page-not-found'), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-upload-file.page-not-found'), 'error');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
         if (HTTPRequest::hasFiles()) {
             try {
                 $this->processPageUploads($page);
             } catch (TranslatedException $e) {
-                $this->panel()->notify($this->panel()->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
-                return $this->panel()->redirect('/pages/' . $params->get('page') . '/edit/');
+                $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
+                return $this->redirect('/pages/' . $params->get('page') . '/edit/');
             }
         }
 
-        $this->panel()->notify($this->panel()->translate('panel.uploader.uploaded'), 'success');
-        return $this->panel()->redirect('/pages/' . $params->get('page') . '/edit/');
+        $this->panel()->notify($this->translate('panel.uploader.uploaded'), 'success');
+        return $this->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**
@@ -314,19 +314,19 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-delete-file.page-not-found'), 'error');
-            return $this->panel()->redirectToReferer(302, '/pages/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete-file.page-not-found'), 'error');
+            return $this->redirectToReferer(302, '/pages/');
         }
 
         if (!$page->files()->has($params->get('filename'))) {
-            $this->panel()->notify($this->panel()->translate('panel.pages.page.cannot-delete-file.file-not-found'), 'error');
-            return $this->panel()->redirect('/pages/' . $params->get('page') . '/edit/');
+            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete-file.file-not-found'), 'error');
+            return $this->redirect('/pages/' . $params->get('page') . '/edit/');
         }
 
         FileSystem::delete($page->path() . $params->get('filename'));
 
-        $this->panel()->notify($this->panel()->translate('panel.pages.page.file-deleted'), 'success');
-        return $this->panel()->redirect('/pages/' . $params->get('page') . '/edit/');
+        $this->panel()->notify($this->translate('panel.pages.page.file-deleted'), 'success');
+        return $this->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
     /**

@@ -24,10 +24,10 @@ class BackupController extends AbstractController
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
-            return JSONResponse::error($this->panel()->translate('panel.backup.error.cannot-make', $e->getTranslatedMessage()), 500);
+            return JSONResponse::error($this->translate('panel.backup.error.cannot-make', $e->getTranslatedMessage()), 500);
         }
         $filename = basename($file);
-        return JSONResponse::success($this->panel()->translate('panel.backup.ready'), 200, [
+        return JSONResponse::success($this->translate('panel.backup.ready'), 200, [
             'filename' => $filename,
             'uri'      => $this->panel()->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
         ]);
@@ -44,10 +44,10 @@ class BackupController extends AbstractController
             if (FileSystem::isFile($file, false)) {
                 return new FileResponse($file, true);
             }
-            throw new RuntimeException($this->panel()->translate('panel.backup.error.cannot-download.invalid-filename'));
+            throw new RuntimeException($this->translate('panel.backup.error.cannot-download.invalid-filename'));
         } catch (TranslatedException $e) {
-            $this->panel()->notify($this->panel()->translate('panel.backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
-            return $this->panel()->redirectToReferer(302, '/dashboard/');
+            $this->panel()->notify($this->translate('panel.backup.error.cannot-download', $e->getTranslatedMessage()), 'error');
+            return $this->redirectToReferer(302, '/dashboard/');
         }
     }
 }

@@ -30,7 +30,7 @@ class UsersController extends AbstractController
         $this->modal('deleteUser');
 
         return new Response($this->view('users.index', [
-            'title'   => $this->panel()->translate('panel.users.users'),
+            'title'   => $this->translate('panel.users.users'),
             'users'   => $this->panel()->users()
         ], true));
     }
@@ -46,14 +46,14 @@ class UsersController extends AbstractController
 
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
-            $this->panel()->notify($this->panel()->translate('panel.users.user.cannot-create.var-missing'), 'error');
-            return $this->panel()->redirect('/users/');
+            $this->panel()->notify($this->translate('panel.users.user.cannot-create.var-missing'), 'error');
+            return $this->redirect('/users/');
         }
 
         // Ensure there isn't a user with the same username
         if ($this->panel()->users()->has($data->get('username'))) {
-            $this->panel()->notify($this->panel()->translate('panel.users.user.cannot-create.already-exists'), 'error');
-            return $this->panel()->redirect('/users/');
+            $this->panel()->notify($this->translate('panel.users.user.cannot-create.already-exists'), 'error');
+            return $this->redirect('/users/');
         }
 
         $userData = [
@@ -66,8 +66,8 @@ class UsersController extends AbstractController
 
         YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');
 
-        $this->panel()->notify($this->panel()->translate('panel.users.user.created'), 'success');
-        return $this->panel()->redirect('/users/');
+        $this->panel()->notify($this->translate('panel.users.user.created'), 'success');
+        return $this->redirect('/users/');
     }
 
     /**
@@ -93,7 +93,7 @@ class UsersController extends AbstractController
             $this->deleteAvatar($user);
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
-            return $this->panel()->redirectToReferer(302, '/users/');
+            return $this->redirectToReferer(302, '/users/');
         }
 
         $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('panel.paths.logs') . 'lastAccess.json');
@@ -101,8 +101,8 @@ class UsersController extends AbstractController
         // Remove user last access from registry
         $lastAccessRegistry->remove($user->username());
 
-        $this->panel()->notify($this->panel()->translate('panel.users.user.deleted'), 'success');
-        return $this->panel()->redirect('/users/');
+        $this->panel()->notify($this->translate('panel.users.user.deleted'), 'success');
+        return $this->redirect('/users/');
     }
 
     /**
@@ -117,8 +117,8 @@ class UsersController extends AbstractController
         $user = $this->panel()->users()->get($params->get('user'));
 
         if ($user === null) {
-            $this->panel()->notify($this->panel()->translate('panel.users.user.not-found'), 'error');
-            return $this->panel()->redirect('/users/');
+            $this->panel()->notify($this->translate('panel.users.user.not-found'), 'error');
+            return $this->redirect('/users/');
         }
 
         // Disable password and/or role fields if they cannot be changed
@@ -132,15 +132,15 @@ class UsersController extends AbstractController
                 $fields->validate($data);
                 try {
                     $this->updateUser($user, $data);
-                    $this->panel()->notify($this->panel()->translate('panel.users.user.edited'), 'success');
+                    $this->panel()->notify($this->translate('panel.users.user.edited'), 'success');
                 } catch (TranslatedException $e) {
-                    $this->panel()->notify($this->panel()->translate($e->getLanguageString(), $user->username()), 'error');
+                    $this->panel()->notify($this->translate($e->getLanguageString(), $user->username()), 'error');
                 }
             } else {
-                $this->panel()->notify($this->panel()->translate('panel.users.user.cannot-edit', $user->username()), 'error');
+                $this->panel()->notify($this->translate('panel.users.user.cannot-edit', $user->username()), 'error');
             }
 
-            return $this->panel()->redirect('/users/' . $user->username() . '/profile/');
+            return $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
         $fields = $fields->validate($user);
@@ -150,7 +150,7 @@ class UsersController extends AbstractController
         $this->modal('deleteUser');
 
         return new Response($this->view('users.profile', [
-            'title'   => $this->panel()->translate('panel.users.user-profile', $user->username()),
+            'title'   => $this->translate('panel.users.user-profile', $user->username()),
             'user'    => $user,
             'fields'  => $fields
         ], true));
@@ -219,7 +219,7 @@ class UsersController extends AbstractController
             // Delete old avatar
             $this->deleteAvatar($user);
 
-            $this->panel()->notify($this->panel()->translate('panel.user.avatar.uploaded'), 'success');
+            $this->panel()->notify($this->translate('panel.user.avatar.uploaded'), 'success');
             return $uploader->uploadedFiles()[0];
         }
     }

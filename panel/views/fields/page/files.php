@@ -6,7 +6,7 @@ foreach ($page->files() as $file):
         <div class="files-item">
             <?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?> <div class="files-item-cell file-name" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
             <div class="files-item-cell file-actions">
-                <a class="button button-link" role="button" href="<?= $panel->pageUri($page) . $file->name() ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->translate('panel.pages.preview-file') ?>" aria-label="title="<?= $this->translate('panel.pages.preview-file') ?>""><?= $this->icon('eye') ?></a>
+                <a class="button button-link" role="button" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->translate('panel.pages.preview-file') ?>" aria-label="title="<?= $this->translate('panel.pages.preview-file') ?>""><?= $this->icon('eye') ?></a>
 <?php
         if ($panel->user()->permissions()->has('pages.delete_files')):
             ?>

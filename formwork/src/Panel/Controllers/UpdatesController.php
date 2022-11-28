@@ -21,16 +21,16 @@ class UpdatesController extends AbstractController
         try {
             $upToDate = $updater->checkUpdates();
         } catch (RuntimeException $e) {
-            return JSONResponse::error($this->panel()->translate('panel.updates.status.cannot-check'), 500, [
-                'status' => $this->panel()->translate('panel.updates.status.cannot-check')
+            return JSONResponse::error($this->translate('panel.updates.status.cannot-check'), 500, [
+                'status' => $this->translate('panel.updates.status.cannot-check')
             ]);
         }
         if ($upToDate) {
-            return JSONResponse::success($this->panel()->translate('panel.updates.status.up-to-date'), 200, [
+            return JSONResponse::success($this->translate('panel.updates.status.up-to-date'), 200, [
                 'uptodate' => true
             ]);
         }
-        return JSONResponse::success($this->panel()->translate('panel.updates.status.found'), 200, [
+        return JSONResponse::success($this->translate('panel.updates.status.found'), 200, [
             'uptodate' => false,
             'release'  => $updater->latestRelease()
         ]);
@@ -48,23 +48,23 @@ class UpdatesController extends AbstractController
             try {
                 $backupper->backup();
             } catch (TranslatedException $e) {
-                return JSONResponse::error($this->panel()->translate('panel.updates.status.cannot-make-backup'), 500, [
-                    'status' => $this->panel()->translate('panel.updates.status.cannot-make-backup')
+                return JSONResponse::error($this->translate('panel.updates.status.cannot-make-backup'), 500, [
+                    'status' => $this->translate('panel.updates.status.cannot-make-backup')
                 ]);
             }
         }
         try {
             $updater->update();
         } catch (RuntimeException $e) {
-            return JSONResponse::error($this->panel()->translate('panel.updates.status.cannot-install'), 500, [
-                'status' => $this->panel()->translate('panel.updates.status.cannot-install')
+            return JSONResponse::error($this->translate('panel.updates.status.cannot-install'), 500, [
+                'status' => $this->translate('panel.updates.status.cannot-install')
             ]);
         }
         if (Formwork::instance()->config()->get('cache.enabled')) {
             Formwork::instance()->cache()->clear();
         }
-        return JSONResponse::success($this->panel()->translate('panel.updates.installed'), 200, [
-            'status' => $this->panel()->translate('panel.updates.status.up-to-date')
+        return JSONResponse::success($this->translate('panel.updates.installed'), 200, [
+            'status' => $this->translate('panel.updates.status.up-to-date')
         ]);
     }
 }
