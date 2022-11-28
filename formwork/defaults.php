@@ -69,7 +69,7 @@ return [
     ],
     'pages' => [
         'index' => 'index',
-        'error' => '404'
+        'error' => 'error'
     ],
     'parsers' => [
         'use_php_yaml' => 'parse'
