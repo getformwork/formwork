@@ -6,6 +6,7 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
+use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Formwork;
 use Formwork\Traits\Methods;
 use Formwork\Utils\Arr;
@@ -165,6 +166,22 @@ class Field implements Arrayable
         }
 
         return $value;
+    }
+
+    /**
+     * Validate field value
+     */
+    public function validate(): static
+    {
+        if ($this->isRequired() && Constraint::isEmpty($this->value())) {
+            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()));
+        }
+
+        if ($this->hasMethod('validate')) {
+            $this->callMethod('validate', [$this->value()]);
+        }
+
+        return $this;
     }
 
     /**

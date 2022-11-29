@@ -3,10 +3,8 @@
 namespace Formwork\Fields;
 
 use Formwork\Data\AbstractCollection;
-use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Layout\Layout;
 use Formwork\Utils\Arr;
-use Formwork\Utils\Constraint;
 
 class FieldCollection extends AbstractCollection
 {
@@ -54,19 +52,9 @@ class FieldCollection extends AbstractCollection
     {
         $data = Arr::from($data);
 
-        foreach ($this->data as $field) {
-            $value = Arr::get($data, $field->name());
-
-            // TODO: move to field
-            if ($field->isRequired() && Constraint::isEmpty($value)) {
-                throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()));
-            }
-
-            if ($field->hasMethod('validate')) {
-                $value = $field->validate($value);
-            }
-
-            $field->set('value', $value);
+        foreach ($this->data as $name => $field) {
+            $field->set('value', Arr::get($data, $name));
+            $field->validate();
         }
 
         return $this;
