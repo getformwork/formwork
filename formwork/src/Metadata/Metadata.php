@@ -77,7 +77,7 @@ class Metadata
     }
 
     /**
-     * Return whether the metadata has a prefix (e.g. 'twitter' for 'twitter:card', 'og' for 'og:image')
+     * Return whether the metadata has a prefix (e.g. `twitter` for `twitter:card`, `og` for `og:image`)
      */
     public function hasPrefix(): bool
     {

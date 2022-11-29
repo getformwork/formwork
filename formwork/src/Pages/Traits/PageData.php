@@ -12,11 +12,17 @@ trait PageData
     use DataMultipleGetter;
     use DataMultipleSetter;
 
+    /**
+     * Return whether a key is present
+     */
     public function has(string $key): bool
     {
         return property_exists($this, $key) || $this->fields->has($key) || Arr::has($this->data, $key);
     }
 
+    /**
+     * Get data by key returning a default value if key is not present
+     */
     public function get(string $key, $default = null)
     {
         // Get values from property
@@ -46,6 +52,9 @@ trait PageData
         return Arr::get($this->data, $key, $default);
     }
 
+    /**
+     * Set a data value by key
+     */
     public function set(string $key, $value): void
     {
         if (property_exists($this, $key)) {
@@ -55,6 +64,9 @@ trait PageData
         }
     }
 
+    /**
+     * Return page data as array
+     */
     public function toArray(): array
     {
         $properties = array_keys(get_class_vars($this::class));

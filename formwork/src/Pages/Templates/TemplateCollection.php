@@ -11,6 +11,9 @@ class TemplateCollection extends AbstractCollection
 
     protected ?string $dataType = Template::class;
 
+    /**
+     * Load template from file
+     */
     public function load(string $path): void
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'php') {
@@ -19,6 +22,9 @@ class TemplateCollection extends AbstractCollection
         }
     }
 
+    /**
+     * Load templates from path
+     */
     public function loadFromPath(string $path): void
     {
         foreach (FileSystem::listFiles($path) as $file) {
@@ -26,6 +32,9 @@ class TemplateCollection extends AbstractCollection
         }
     }
 
+    /**
+     * Create an instance with templates from the specified path
+     */
     public static function fromPath(string $path): self
     {
         $instance = new static();

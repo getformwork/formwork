@@ -9,8 +9,14 @@ use Formwork\Utils\Uri;
 
 trait PageUri
 {
+    /**
+     * Page route
+     */
     protected string $route;
 
+    /**
+     * Page absolute URI
+     */
     protected string $absoluteUri;
 
     /**

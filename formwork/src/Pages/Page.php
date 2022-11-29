@@ -136,14 +136,29 @@ class Page implements Arrayable
      */
     protected array $frontmatter;
 
+    /**
+     * Page fields
+     */
     protected FieldCollection $fields;
 
+    /**
+     * Page canonical URI
+     */
     protected ?string $canonical;
 
+    /**
+     * Page metadata
+     */
     protected MetadataCollection $metadata;
 
+    /**
+     * Page response status
+     */
     protected int $responseStatus;
 
+    /**
+     * Page num (used to order pages)
+     */
     protected ?int $num;
 
     /**
@@ -206,6 +221,9 @@ class Page implements Arrayable
         return $defaults;
     }
 
+    /**
+     * Get the canonical page URI, or `null` if not available
+     */
     public function canonical(): ?string
     {
         if (isset($this->canonical)) {
@@ -217,6 +235,9 @@ class Page implements Arrayable
             : null;
     }
 
+    /**
+     * Get page metadata
+     */
     public function metadata(): MetadataCollection
     {
         if (isset($this->metadata)) {
@@ -228,6 +249,9 @@ class Page implements Arrayable
         return $this->metadata = $metadata;
     }
 
+    /**
+     * Get the page response status
+     */
     public function responseStatus(): int
     {
         if (isset($this->responseStatus)) {
@@ -237,7 +261,7 @@ class Page implements Arrayable
         // Normalize response status
         $this->responseStatus = (int) $this->data['responseStatus'];
 
-        // Set default 404 Not Found status to error page
+        // Get a default 404 Not Found status for the error page
         if ($this->isErrorPage() && $this->responseStatus() === 200 && !isset($this->frontmatter['responseStatus'])) {
             $this->responseStatus = 404;
         }
@@ -245,6 +269,9 @@ class Page implements Arrayable
         return $this->responseStatus;
     }
 
+    /**
+     * Page last modified time
+     */
     public function lastModifiedTime(): int
     {
         if (isset($this->lastModifiedTime)) {
@@ -254,6 +281,9 @@ class Page implements Arrayable
         return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path . $this->filename);
     }
 
+    /**
+     * Timestamp representing the publication date (modification time as fallback)
+     */
     public function timestamp(): int
     {
         if (isset($this->timestamp)) {
@@ -292,6 +322,9 @@ class Page implements Arrayable
         $this->__construct($path);
     }
 
+    /**
+     * Get page files
+     */
     public function files(): Files
     {
         return $this->files;
@@ -334,26 +367,41 @@ class Page implements Arrayable
         return Formwork::instance()->site()->currentPage() === $this;
     }
 
+    /**
+     * Return whether the page is site
+     */
     public function isSite(): bool
     {
         return false;
     }
 
+    /**
+     * Return whether the page is the index page
+     */
     public function isIndexPage(): bool
     {
         return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.index');
     }
 
+    /**
+     * Return whether the page is the error page
+     */
     public function isErrorPage(): bool
     {
         return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.error');
     }
 
+    /**
+     * Return whether the page is deletable
+     */
     public function isDeletable(): bool
     {
         return !($this->hasChildren() || $this->isIndexPage() || $this->isErrorPage());
     }
 
+    /**
+     * Return whether the page has the specified language
+     */
     public function hasLanguage(string $language): bool
     {
         return in_array($language, $this->availableLanguages, true);
@@ -451,6 +499,9 @@ class Page implements Arrayable
         $this->fields->validate($this->data);
     }
 
+    /**
+     * Reset page properties
+     */
     protected function resetProperties(): void
     {
         foreach (array_keys(get_class_vars(static::class)) as $property) {

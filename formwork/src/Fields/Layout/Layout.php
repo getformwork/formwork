@@ -4,8 +4,14 @@ namespace Formwork\Fields\Layout;
 
 class Layout
 {
+    /**
+     * Layout type
+     */
     protected string $type;
 
+    /**
+     * Layout sections collection
+     */
     protected SectionCollection $sections;
 
     public function __construct(array $data)

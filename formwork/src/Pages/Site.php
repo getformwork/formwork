@@ -22,26 +22,59 @@ class Site implements Arrayable
     use PageUid;
     use PageUri;
 
+    /**
+     * Site relative path
+     */
     protected string $relativePath;
 
+    /**
+     * Site route
+     */
     protected string $route;
 
+    /**
+     * Site last modified time
+     */
     protected int $lastModifiedTime;
 
+    /**
+     * Site storage (loaded pages)
+     */
     protected array $storage = [];
 
+    /**
+     * Site current page
+     */
     protected ?Page $currentPage = null;
 
+    /**
+     * Site languages
+     */
     protected Languages $languages;
 
+    /**
+     * Site scheme
+     */
     protected Scheme $scheme;
 
+    /**
+     * Site fields
+     */
     protected FieldCollection $fields;
 
+    /**
+     * Site templates
+     */
     protected TemplateCollection $templates;
 
+    /**
+     * Site aliases
+     */
     protected array $aliases;
 
+    /**
+     * Site metadata
+     */
     protected MetadataCollection $metadata;
 
     /**
@@ -80,6 +113,9 @@ class Site implements Arrayable
         ];
     }
 
+    /**
+     * Get the site last modified time
+     */
     public function lastModifiedTime(): int
     {
         if (isset($this->lastModifiedTime)) {
@@ -178,6 +214,9 @@ class Site implements Arrayable
         return $this->aliases[$route] ?? null;
     }
 
+    /**
+     * Get site metadata
+     */
     public function metadata(): MetadataCollection
     {
         if (isset($this->metadata)) {
@@ -216,26 +255,49 @@ class Site implements Arrayable
         return $this->findPage(Formwork::instance()->config()->get('pages.error'));
     }
 
+    /**
+     * Return whether the page is site
+     */
     public function isSite(): bool
     {
         return true;
     }
 
+    /**
+     * Return whether the page is the index page
+     */
     public function isIndexPage(): bool
     {
         return false;
     }
 
+    /**
+     * Return whether the page is the error page
+     */
     public function isErrorPage(): bool
     {
         return false;
     }
 
+    /**
+     * Return whether the page is deletable
+     */
     public function isDeletable(): bool
     {
         return false;
     }
 
+    /**
+     * Return whether the page has the specified language
+     */
+    public function hasLanguage(string $language): bool
+    {
+        return in_array($language, $this->availableLanguages, true);
+    }
+
+    /**
+     * Load site aliases
+     */
     protected function loadAliases(): void
     {
         foreach ($this->data['aliases'] as $from => $to) {

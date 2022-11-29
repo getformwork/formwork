@@ -6,8 +6,14 @@ use Formwork\Utils\Str;
 
 trait PageUid
 {
+    /**
+     * Page uid (unique identifier)
+     */
     protected string $uid;
 
+    /**
+     * Get the page unique identifier
+     */
     public function uid(): string
     {
         if (isset($this->uid)) {

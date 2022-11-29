@@ -14,6 +14,9 @@ class FieldCollection extends AbstractCollection
 
     protected ?string $dataType = Field::class;
 
+    /**
+     * Fields layout
+     */
     protected Layout $layout;
 
     /**
@@ -28,11 +31,17 @@ class FieldCollection extends AbstractCollection
         $this->layout = $layout;
     }
 
+    /**
+     * Return fields layout
+     */
     public function layout(): Layout
     {
         return $this->layout;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function pluck(string $key, $default = null): array
     {
         return $this->everyItem()->get($key, $default)->toArray();

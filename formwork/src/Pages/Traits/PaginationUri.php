@@ -10,14 +10,29 @@ use UnexpectedValueException;
 
 trait PaginationUri
 {
+    /**
+     * Route param used to get the pagination page
+     */
     protected static string $routeParam = 'paginationPage';
 
+    /**
+     * Route suffix to make pagination URIs
+     */
     protected static string $routeSuffix = '.pagination';
 
+    /**
+     * Base route (without the pagination)
+     */
     protected Route $baseRoute;
 
+    /**
+     * Pagination route (with the pagination page)
+     */
     protected Route $paginationRoute;
 
+    /**
+     * Get the route of the given pagination page
+     */
     public function route(int $pageNumber): string
     {
         if (!$this->has($pageNumber)) {
@@ -35,26 +50,41 @@ trait PaginationUri
         ]);
     }
 
+    /**
+     * Get the URI of the given pagination page
+     */
     public function uri(int $pageNumber): string
     {
         return Formwork::instance()->site()->uri($this->route($pageNumber));
     }
 
+    /**
+     * Get the route of the first page
+     */
     public function firstPageRoute(): string
     {
         return $this->route($this->firstPage());
     }
 
+    /**
+     * Get the URI of the first page
+     */
     public function firstPageUri(): string
     {
         return $this->uri($this->firstPage());
     }
 
+    /**
+     * Get the route of the last page
+     */
     public function lastPageRoute(): string
     {
         return $this->route($this->lastPage());
     }
 
+    /**
+     * Get the route of the last page
+     */
     public function lastPageUri(): string
     {
         return $this->uri($this->lastPage());
@@ -92,6 +122,9 @@ trait PaginationUri
         return $this->uri($this->nextPage());
     }
 
+    /**
+     * Get the base route (without pagination)
+     */
     protected function baseRoute(): ?Route
     {
         if (isset($this->baseRoute)) {
@@ -108,6 +141,9 @@ trait PaginationUri
         return $this->baseRoute = $router->routes()->get($routeName);
     }
 
+    /**
+     * Get the pagination route (with the pagination page)
+     */
     protected function paginationRoute(): ?Route
     {
         if (isset($this->paginationRoute)) {

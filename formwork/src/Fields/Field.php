@@ -137,6 +137,9 @@ class Field implements Arrayable
         return $this->is('visible', true);
     }
 
+    /**
+     * Return whether the field is not visible
+     */
     public function isHidden(): bool
     {
         return $this->is('visible', false);
@@ -150,6 +153,9 @@ class Field implements Arrayable
         return $this->baseGet($key, $default) === true;
     }
 
+    /**
+     * Get field data
+     */
     public function get(string $key, $default = null)
     {
         $value = $this->baseGet($key, $default);
@@ -161,7 +167,10 @@ class Field implements Arrayable
         return $value;
     }
 
-    protected function loadMethods()
+    /**
+     * Load field methods
+     */
+    protected function loadMethods(): void
     {
         $config = Formwork::instance()->config()->get('fields.path') . $this->get('type') . '.php';
 
@@ -208,6 +217,9 @@ class Field implements Arrayable
         return $translatable;
     }
 
+    /**
+     * Translate field value
+     */
     protected function translate($value)
     {
         $translation = Formwork::instance()->translations()->getCurrent();
@@ -230,6 +242,9 @@ class Field implements Arrayable
         return $interpolate($value);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function callMethod(string $method, array $arguments = [])
     {
         return $this->methods[$method](...[$this, ...$arguments]);
