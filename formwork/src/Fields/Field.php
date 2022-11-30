@@ -178,7 +178,7 @@ class Field implements Arrayable
         }
 
         if ($this->hasMethod('validate')) {
-            $this->callMethod('validate', [$this->value()]);
+            $this->set('value', $this->callMethod('validate', [$this->value()]));
         }
 
         return $this;
