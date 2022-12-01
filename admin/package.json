@@ -30,7 +30,7 @@
     "@rollup/plugin-terser": "^0.1.0",
     "eslint": "^8.26.0",
     "onchange": "^7.0.2",
-    "postcss": "^8.4.18",
+    "postcss": "^8.4.19",
     "rollup": "^2.79.0",
     "sass": "^1.55.0",
     "stylelint": "^14.13.0",
