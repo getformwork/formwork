@@ -8,20 +8,24 @@ use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 
 return [
-    'format' => function (Field $field, string $format = null): string {
-        return Date::formatTimestamp($field->toTimestamp(), $format);
+    'format' => function (Field $field, string $format = null, string $type = 'pattern'): string {
+        $format = match (strtolower($type)) {
+            'pattern' => Date::patternToFormat($format),
+            'date'    => $format
+        };
+        return $field->isEmpty() ? '' : Date::formatTimestamp($field->toTimestamp(), $format);
     },
 
-    'toTimestamp' => function (Field $field): string {
-        return Date::toTimestamp($field->value());
+    'toTimestamp' => function (Field $field): ?int {
+        return $field->isEmpty() ? null : Date::toTimestamp($field->value());
     },
 
     'toDuration' => function (Field $field): string {
-        return Date::formatTimestampAsDistance($field->toTimestamp(), Formwork::instance()->languages()->current());
+        return $field->isEmpty() ? '' : Date::formatTimestampAsDistance($field->toTimestamp(), Formwork::instance()->languages()->current());
     },
 
     'toString' => function (Field $field): string {
-        return $field->format();
+        return $field->isEmpty() ? '' : $field->format();
     },
 
     'return' => function (Field $field): Field {
