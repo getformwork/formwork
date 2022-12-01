@@ -7,11 +7,11 @@ use Formwork\Utils\Constraint;
 
 return [
     'toString' => function ($field) {
-        return implode(', ', $field->value());
+        return implode(', ', $field->value() ?? []);
     },
 
     'return' => function (Field $field): Collection {
-        return Collection::from($field->value());
+        return Collection::from($field->value() ?? []);
     },
 
     'validate' => function (Field $field, $value): array {
