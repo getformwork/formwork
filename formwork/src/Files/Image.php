@@ -5,6 +5,7 @@ namespace Formwork\Files;
 use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
+use GdImage;
 use InvalidArgumentException;
 use RuntimeException;
 use UnexpectedValueException;
@@ -54,7 +55,7 @@ class Image extends File
     /**
      * Image resource
      */
-    protected $image;
+    protected GdImage $image;
 
     /**
      * JPEG export quality (0-100)
@@ -567,7 +568,7 @@ class Image extends File
      */
     public function destroy(): void
     {
-        if (is_resource($this->image)) {
+        if (isset($this->image)) {
             imagedestroy($this->image);
         }
     }
@@ -639,10 +640,8 @@ class Image extends File
 
     /**
      * Enable transparency for PNG and GIF images
-     *
-     * @param resource $image
      */
-    protected function enableTransparency($image): void
+    protected function enableTransparency(GdImage $image): void
     {
         $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
         imagealphablending($image, true);
