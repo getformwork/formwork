@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "chartist": "^1.2.1",
-    "codemirror": "^5.65.2",
+    "codemirror": "^5.65.10",
     "sortablejs": "^1.15.0"
   },
   "devDependencies": {
