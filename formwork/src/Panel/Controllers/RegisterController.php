@@ -2,9 +2,9 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Formwork;
 use Formwork\Panel\Security\CSRFToken;
 use Formwork\Panel\Security\Password;
-use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Response\Response;
 use Formwork\Utils\HTTPRequest;

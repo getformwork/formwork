@@ -2,11 +2,11 @@
 
 namespace Formwork;
 
-use Formwork\Panel\Panel;
-use Formwork\Panel\Statistics;
 use Formwork\Cache\FilesCache;
 use Formwork\Languages\Languages;
 use Formwork\Pages\Site;
+use Formwork\Panel\Panel;
+use Formwork\Panel\Statistics;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;

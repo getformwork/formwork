@@ -47,7 +47,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function save(string $key, $value, int $ttl = null): void
+    public function save(string $key, $value, ?int $ttl = null): void
     {
         $cacheItem = new CacheItem($value, time() + ($ttl ?? $this->defaultTtl), time());
         PHP::encodeToFile($cacheItem, $this->getFile($key));

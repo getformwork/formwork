@@ -19,6 +19,11 @@ final class DataGetter implements Arrayable
         $this->data = $data;
     }
 
+    public function __debugInfo(): array
+    {
+        return $this->toArray();
+    }
+
     /**
      * Return whether data is present
      */
@@ -33,10 +38,5 @@ final class DataGetter implements Arrayable
     public static function fromGetter(DataGetter $getter): self
     {
         return new static($getter->data);
-    }
-
-    public function __debugInfo(): array
-    {
-        return $this->toArray();
     }
 }

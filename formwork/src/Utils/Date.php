@@ -2,9 +2,9 @@
 
 namespace Formwork\Utils;
 
-use Formwork\Formwork;
 use DateTime;
 use Exception;
+use Formwork\Formwork;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -54,7 +54,7 @@ class Date
     /**
      * Parse a date according to a given format (or the default format if not given) and return the timestamp
      */
-    public static function toTimestamp(string $date, string $format = null): int
+    public static function toTimestamp(string $date, ?string $format = null): int
     {
         try {
             $dateTime = static::createDateTime($date, (array) ($format ?? static::getDefaultFormats()));
@@ -112,7 +112,7 @@ class Date
     /**
      * Formats a DateTime object using the current translation for weekdays and months
      */
-    public static function formatDateTime(DateTime $dateTime, string $format = null, string $language = null): string
+    public static function formatDateTime(DateTime $dateTime, ?string $format = null, ?string $language = null): string
     {
         $format ??= Formwork::instance()->config()->get('date.format');
 
@@ -137,7 +137,7 @@ class Date
     /**
      * The same as self::formatDateTime() but takes a timestamp instead of a DateTime object
      */
-    public static function formatTimestamp(int $timestamp, string $format = null, string $language = null): string
+    public static function formatTimestamp(int $timestamp, ?string $format = null, ?string $language = null): string
     {
         return static::formatDateTime(new DateTime('@' . $timestamp), $format, $language);
     }
@@ -145,7 +145,7 @@ class Date
     /**
      * Formats a DateTime object as a time distance from now
      */
-    public static function formatDateTimeAsDistance(DateTime $dateTime, string $language = null): string
+    public static function formatDateTimeAsDistance(DateTime $dateTime, ?string $language = null): string
     {
         $language ??= Formwork::instance()->translations()->getCurrent()->code();
 
@@ -183,7 +183,7 @@ class Date
     /**
      * The same as self::formatDateTimeAsDistance() but takes a timestamp instead of a DateTime object
      */
-    public static function formatTimestampAsDistance(int $timestamp, string $language = null): string
+    public static function formatTimestampAsDistance(int $timestamp, ?string $language = null): string
     {
         return static::formatDateTimeAsDistance(new DateTime('@' . $timestamp), $language);
     }

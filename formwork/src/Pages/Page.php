@@ -7,14 +7,14 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Files\Files;
 use Formwork\Formwork;
 use Formwork\Metadata\MetadataCollection;
+use Formwork\Pages\Templates\Template;
+use Formwork\Pages\Traits\PageData;
 use Formwork\Pages\Traits\PageStatus;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Parsers\YAML;
 use Formwork\Schemes\Scheme;
-use Formwork\Pages\Templates\Template;
-use Formwork\Pages\Traits\PageData;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
@@ -187,22 +187,27 @@ class Page implements Arrayable
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->title() ?? $this->slug();
+    }
+
     /**
      * Return page default data
      */
     public function defaults(): array
     {
         $defaults = [
-            'published'        => true,
-            'routable'         => true,
-            'listed'           => true,
-            'searchable'       => true,
-            'cacheable'        => true,
-            'orderable'        => true,
-            'canonical'        => null,
-            'headers'          => [],
-            'responseStatus'   => 200,
-            'metadata'         => []
+            'published'      => true,
+            'routable'       => true,
+            'listed'         => true,
+            'searchable'     => true,
+            'cacheable'      => true,
+            'orderable'      => true,
+            'canonical'      => null,
+            'headers'        => [],
+            'responseStatus' => 200,
+            'metadata'       => []
         ];
 
         // Merge with scheme default field values
@@ -507,10 +512,5 @@ class Page implements Arrayable
         foreach (array_keys(get_class_vars(static::class)) as $property) {
             unset($this->$property);
         }
-    }
-
-    public function __toString(): string
-    {
-        return $this->title() ?? $this->slug();
     }
 }

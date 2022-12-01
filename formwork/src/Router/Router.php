@@ -68,7 +68,7 @@ class Router
      */
     protected ?RouteParams $params;
 
-    public function __construct(string $request = null)
+    public function __construct(?string $request = null)
     {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
@@ -209,7 +209,7 @@ class Router
     /**
      * Load routes and filters from file
      */
-    public function loadFromFile(string $path, string $prefix = null): void
+    public function loadFromFile(string $path, ?string $prefix = null): void
     {
         $data = PHP::parseFile($path);
 

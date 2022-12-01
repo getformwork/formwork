@@ -11,6 +11,14 @@ trait Methods
      */
     protected array $methods = [];
 
+    public function __call(string $name, array $arguments)
+    {
+        if ($this->hasMethod($name)) {
+            return $this->callMethod($name, $arguments);
+        }
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+    }
+
     /**
      * Return whether a method is defined in the `$method` property
      */
@@ -25,13 +33,5 @@ trait Methods
     protected function callMethod(string $method, array $arguments)
     {
         return $this->methods[$method](...$arguments);
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        if ($this->hasMethod($name)) {
-            return $this->callMethod($name, $arguments);
-        }
-        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
 }

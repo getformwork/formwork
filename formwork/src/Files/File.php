@@ -64,6 +64,11 @@ class File
         $this->size = FileSystem::formatSize(FileSystem::fileSize($path));
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     /**
      * Get file path
      */
@@ -171,10 +176,5 @@ class File
             $extensions
         );
         return in_array($this->mimeType, $mimeTypes, true);
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 }

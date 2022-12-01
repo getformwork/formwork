@@ -2,9 +2,9 @@
 
 namespace Formwork\Panel\Users;
 
-use Formwork\Panel\Security\Password;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Formwork;
+use Formwork\Panel\Security\Password;
 use Formwork\Utils\Registry;
 use Formwork\Utils\Session;
 
@@ -85,6 +85,14 @@ class User implements Arrayable
         }
 
         $this->permissions = new Permissions($this->role);
+    }
+
+    public function __debugInfo(): array
+    {
+        $data = $this->data;
+        // Unset hash to avoid exposure
+        unset($data['hash']);
+        return $data;
     }
 
     /**
@@ -230,13 +238,5 @@ class User implements Arrayable
     public function toArray(): array
     {
         return $this->data;
-    }
-
-    public function __debugInfo(): array
-    {
-        $data = $this->data;
-        // Unset hash to avoid exposure
-        unset($data['hash']);
-        return $data;
     }
 }

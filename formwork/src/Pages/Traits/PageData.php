@@ -12,6 +12,15 @@ trait PageData
     use DataMultipleGetter;
     use DataMultipleSetter;
 
+    public function __call(string $name, array $arguments)
+    {
+        if ($this->has($name)) {
+            return $this->get($name);
+        }
+
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+    }
+
     /**
      * Return whether a key is present
      */
@@ -78,14 +87,5 @@ trait PageData
         ksort($data);
 
         return $data;
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        if ($this->has($name)) {
-            return $this->get($name);
-        }
-
-        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
 }

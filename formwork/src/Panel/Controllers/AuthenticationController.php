@@ -2,9 +2,9 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Formwork;
 use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Panel\Security\CSRFToken;
-use Formwork\Formwork;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Utils\HTTPRequest;

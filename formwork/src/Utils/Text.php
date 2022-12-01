@@ -40,7 +40,7 @@ class Text
     /**
      * Split a text into words
      */
-    public static function splitWords(string $text, int $limit = null): array
+    public static function splitWords(string $text, ?int $limit = null): array
     {
         return explode(self::WHITESPACE_SEQUENCE, static::normalizeWhitespace($text), $limit ?? PHP_INT_MAX);
     }

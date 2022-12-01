@@ -80,7 +80,7 @@ class Uploader
      *
      * @return bool Whether files were uploaded or not
      */
-    public function upload(string $name = null): bool
+    public function upload(?string $name = null): bool
     {
         if (!HTTPRequest::hasFiles()) {
             return false;

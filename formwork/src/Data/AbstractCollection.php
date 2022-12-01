@@ -326,7 +326,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         int $type = SORT_NATURAL,
         array|callable $sortBy = null,
         bool $caseSensitive = false,
-        bool $preserveKeys = null
+        ?bool $preserveKeys = null
     ): static {
         $collection = $this->clone();
         $collection->data = Arr::sort(
@@ -361,7 +361,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Filter the collection using the key from each item
      */
-    public function filterBy(string $key, $value = true, $default = null, bool $strict = null): static
+    public function filterBy(string $key, $value = true, $default = null, ?bool $strict = null): static
     {
         $values = $this->pluck($key, $default);
 

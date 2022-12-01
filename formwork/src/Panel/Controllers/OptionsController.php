@@ -61,8 +61,8 @@ class OptionsController extends AbstractController
         $this->modal('changes');
 
         return new Response($this->view('options.system', [
-            'title'   => $this->translate('panel.options.options'),
-            'tabs'    => $this->view('options.tabs', [
+            'title' => $this->translate('panel.options.options'),
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system'
             ], true),
@@ -101,8 +101,8 @@ class OptionsController extends AbstractController
         $this->modal('changes');
 
         return new Response($this->view('options.site', [
-            'title'   => $this->translate('panel.options.options'),
-            'tabs'    => $this->view('options.tabs', [
+            'title' => $this->translate('panel.options.options'),
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site'
             ], true),
@@ -118,8 +118,8 @@ class OptionsController extends AbstractController
         $this->ensurePermission('options.updates');
 
         return new Response($this->view('options.updates', [
-            'title'   => $this->translate('panel.options.updates'),
-            'tabs'    => $this->view('options.tabs', [
+            'title' => $this->translate('panel.options.updates'),
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates'
             ], true),
@@ -183,8 +183,8 @@ class OptionsController extends AbstractController
                 'Default Charset'    => ini_get('default_charset')
             ],
             'Streams' => [
-                'Stream Wrappers'     => implode(', ', stream_get_wrappers()),
-                'Allow URL Fopen'     => ini_get('allow_url_fopen') ? 'true' : 'false'
+                'Stream Wrappers' => implode(', ', stream_get_wrappers()),
+                'Allow URL Fopen' => ini_get('allow_url_fopen') ? 'true' : 'false'
             ],
             'OPcache' => [
                 'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
@@ -228,8 +228,8 @@ class OptionsController extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         return new Response($this->view('options.info', [
-            'title'   => $this->translate('panel.options.options'),
-            'tabs'    => $this->view('options.tabs', [
+            'title' => $this->translate('panel.options.options'),
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info'
             ], true),

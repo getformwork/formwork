@@ -50,6 +50,15 @@ class Field implements Arrayable
         $this->loadMethods();
     }
 
+    public function __toString(): string
+    {
+        if ($this->hasMethod('toString')) {
+            return $this->callMethod('toString');
+        }
+
+        return (string) $this->value();
+    }
+
     /**
      * Get field name
      */
@@ -265,14 +274,5 @@ class Field implements Arrayable
     protected function callMethod(string $method, array $arguments = [])
     {
         return $this->methods[$method](...[$this, ...$arguments]);
-    }
-
-    public function __toString(): string
-    {
-        if ($this->hasMethod('toString')) {
-            return $this->callMethod('toString');
-        }
-
-        return (string) $this->value();
     }
 }

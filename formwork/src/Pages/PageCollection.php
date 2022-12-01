@@ -76,11 +76,11 @@ class PageCollection extends AbstractCollection implements Paginable
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';
 
         $scores = [
-            'title'    => 8,
-            'summary'  => 4,
-            'content'  => 3,
-            'author'   => 2,
-            'uri'      => 1
+            'title'   => 8,
+            'summary' => 4,
+            'content' => 3,
+            'author'  => 2,
+            'uri'     => 1
         ];
 
         $pageCollection = clone $this;

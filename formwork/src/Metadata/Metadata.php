@@ -36,6 +36,11 @@ class Metadata
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->content();
+    }
+
     /**
      * Return metadata name
      */
@@ -82,10 +87,5 @@ class Metadata
     public function hasPrefix(): bool
     {
         return $this->prefix !== null;
-    }
-
-    public function __toString(): string
-    {
-        return $this->content();
     }
 }

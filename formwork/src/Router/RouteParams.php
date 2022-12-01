@@ -2,9 +2,9 @@
 
 namespace Formwork\Router;
 
-use Formwork\Data\Traits\DataGetter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
+use Formwork\Data\Traits\DataGetter;
 
 class RouteParams implements Arrayable
 {

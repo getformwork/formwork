@@ -26,7 +26,7 @@ class Files extends AbstractCollection
      *
      * @param array|null $filenames Array of file names to include (all files by default)
      */
-    public static function fromPath(string $path, array $filenames = null): self
+    public static function fromPath(string $path, ?array $filenames = null): self
     {
         $filenames ??= FileSystem::listFiles($path);
 

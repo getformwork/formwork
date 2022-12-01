@@ -119,7 +119,7 @@ class HTTPRequest
      *
      * @param string $path Optional URI path
      */
-    public static function validateReferer(string $path = null): bool
+    public static function validateReferer(?string $path = null): bool
     {
         $base = Uri::normalize(Uri::base() . '/' . $path);
         return Str::startsWith((string) static::referer(), $base);

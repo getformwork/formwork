@@ -2,12 +2,12 @@
 
 namespace Formwork\Panel;
 
-use Formwork\Panel\Controllers\ErrorsController;
-use Formwork\Panel\Users\User;
-use Formwork\Panel\Users\Users;
 use Formwork\Assets;
 use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
+use Formwork\Panel\Controllers\ErrorsController;
+use Formwork\Panel\Users\User;
+use Formwork\Panel\Users\Users;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Notification;

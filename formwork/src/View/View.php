@@ -4,9 +4,9 @@ namespace Formwork\View;
 
 use Formwork\Formwork;
 use Formwork\Parsers\PHP;
-use Formwork\Utils\FileSystem;
 use Formwork\Traits\Methods;
 use Formwork\Utils\Exceptions\FileNotFoundException;
+use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\Exceptions\RenderingException;
 use Throwable;
@@ -68,7 +68,7 @@ class View
     /**
      * Create a new View instance
      */
-    public function __construct(string $name, array $vars = [], string $path = null, array $methods = [])
+    public function __construct(string $name, array $vars = [], ?string $path = null, array $methods = [])
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);

@@ -2,10 +2,10 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Panel\Backupper;
-use Formwork\Panel\Updater;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
+use Formwork\Panel\Backupper;
+use Formwork\Panel\Updater;
 use Formwork\Response\JSONResponse;
 use RuntimeException;
 

@@ -2,8 +2,8 @@
 
 namespace Formwork\Exceptions;
 
-use Formwork\Formwork;
 use Exception;
+use Formwork\Formwork;
 
 class TranslatedException extends Exception
 {
@@ -20,7 +20,7 @@ class TranslatedException extends Exception
      * @param int       $code           Exception code
      * @param Exception $previous       Previous Exception
      */
-    public function __construct(string $message, string $languageString, int $code = 0, Exception $previous = null)
+    public function __construct(string $message, string $languageString, int $code = 0, ?Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->languageString = $languageString;

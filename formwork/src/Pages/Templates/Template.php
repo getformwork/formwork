@@ -35,6 +35,11 @@ class Template extends View
         parent::__construct($name, [], Formwork::instance()->config()->get('templates.path'), $this->defaultMethods());
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     /**
      * Get Assets instance
      */
@@ -100,10 +105,5 @@ class Template extends View
             $this->vars = array_merge($this->vars, (array) Renderer::load($controllerFile, $this->vars, $this));
             $this->allowMethods = false;
         }
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 }

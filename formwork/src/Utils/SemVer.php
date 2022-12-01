@@ -49,7 +49,7 @@ class SemVer
     /**
      * Create a new SemVer instance
      */
-    public function __construct(int $major, int $minor, int $patch, string $prerelease = null, string $metadata = null)
+    public function __construct(int $major, int $minor, int $patch, ?string $prerelease = null, ?string $metadata = null)
     {
         if ($major < 0 || $minor < 0 || $patch < 0) {
             throw new InvalidArgumentException('$major, $minor and $patch arguments must be non-negative integers');
@@ -62,6 +62,18 @@ class SemVer
         $this->patch = $patch;
         $this->prerelease = $prerelease;
         $this->metadata = $metadata;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%u.%u.%u%s%s',
+            $this->major,
+            $this->minor,
+            $this->patch,
+            $this->prerelease !== null ? '-' . $this->prerelease : '',
+            $this->metadata !== null ? '+' . $this->metadata : ''
+        );
     }
 
     /**
@@ -240,17 +252,5 @@ class SemVer
         }
 
         return implode('.', $parts);
-    }
-
-    public function __toString(): string
-    {
-        return sprintf(
-            '%u.%u.%u%s%s',
-            $this->major,
-            $this->minor,
-            $this->patch,
-            $this->prerelease !== null ? '-' . $this->prerelease : '',
-            $this->metadata !== null ? '+' . $this->metadata : ''
-        );
     }
 }

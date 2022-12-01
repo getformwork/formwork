@@ -2,7 +2,6 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Panel\Uploader;
 use Formwork\Data\DataGetter;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\FieldCollection;
@@ -10,12 +9,13 @@ use Formwork\Files\Image;
 use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Pages\Page;
+use Formwork\Pages\Site;
+use Formwork\Panel\Uploader;
 use Formwork\Parsers\YAML;
 use Formwork\Response\JSONResponse;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
-use Formwork\Pages\Site;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;

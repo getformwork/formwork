@@ -2,14 +2,14 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Controllers\AbstractController as BaseAbstractController;
+use Formwork\Formwork;
+use Formwork\Pages\Site;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Security\CSRFToken;
 use Formwork\Panel\Users\User;
-use Formwork\Controllers\AbstractController as BaseAbstractController;
-use Formwork\Formwork;
 use Formwork\Parsers\JSON;
 use Formwork\Parsers\PHP;
-use Formwork\Pages\Site;
 use Formwork\Response\RedirectResponse;
 use Formwork\Utils\Date;
 use Formwork\Utils\HTTPRequest;
@@ -109,8 +109,8 @@ abstract class AbstractController extends BaseAbstractController
                     'time'       => true,
                     'labels'     => [
                         'today'    => $this->translate('date.today'),
-                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' =>  $this->translate('date.weekdays.short')],
-                        'months'   => ['long' => $this->translate('date.months.long'), 'short' =>  $this->translate('date.months.short')]
+                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' => $this->translate('date.weekdays.short')],
+                        'months'   => ['long' => $this->translate('date.months.long'), 'short' => $this->translate('date.months.short')]
                     ]
                 ],
                 'DurationInput' => [

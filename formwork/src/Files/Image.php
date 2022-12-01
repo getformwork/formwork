@@ -77,6 +77,11 @@ class Image extends File
      */
     protected int $WEBPQuality = 85;
 
+    public function __destruct()
+    {
+        $this->destroy();
+    }
+
     /**
      * Return image width
      */
@@ -166,7 +171,7 @@ class Image extends File
      * Resize image to a given width and height. If an argument is null its value will be chosen
      * preserving the aspect ratio
      */
-    public function resize(int $destinationWidth = null, int $destinationHeight = null): self
+    public function resize(?int $destinationWidth = null, ?int $destinationHeight = null): self
     {
         if ($destinationWidth === null && $destinationHeight === null) {
             throw new InvalidArgumentException(sprintf('%s() must be called with at least one of $destinationWidth or $destinationHeight arguments', __METHOD__));
@@ -496,7 +501,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function save(string $filename = null, bool $destroy = true): void
+    public function save(?string $filename = null, bool $destroy = true): void
     {
         if (!isset($this->image)) {
             $this->initialize();
@@ -537,7 +542,7 @@ class Image extends File
      * @param string $filename
      * @param bool   $destroy  Whether to destroy image after saving
      */
-    public function saveOptimized(string $filename = null, bool $destroy = true): void
+    public function saveOptimized(?string $filename = null, bool $destroy = true): void
     {
         if (!isset($this->image)) {
             $this->initialize();
@@ -648,10 +653,5 @@ class Image extends File
         imagesavealpha($image, true);
         imagecolortransparent($image, $transparent);
         imagefill($image, 0, 0, $transparent);
-    }
-
-    public function __destruct()
-    {
-        $this->destroy();
     }
 }

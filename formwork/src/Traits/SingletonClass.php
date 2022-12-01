@@ -11,6 +11,11 @@ trait SingletonClass
      */
     protected static self $instance;
 
+    public function __clone()
+    {
+        throw new LogicException(sprintf('Cannot clone %s, the class is a singleton', static::class));
+    }
+
     /**
      * Return self instance
      *
@@ -33,10 +38,5 @@ trait SingletonClass
             throw new LogicException(sprintf('Cannot create %s, the class is a singleton and cannot be instiantated again', static::class));
         }
         static::$instance = $this;
-    }
-
-    public function __clone()
-    {
-        throw new LogicException(sprintf('Cannot clone %s, the class is a singleton', static::class));
     }
 }

@@ -99,6 +99,11 @@ class Site implements Arrayable
         $this->loadAliases();
     }
 
+    public function __toString()
+    {
+        return $this->title();
+    }
+
     /**
      * Return site default data
      */
@@ -303,10 +308,5 @@ class Site implements Arrayable
         foreach ($this->data['aliases'] as $from => $to) {
             $this->aliases[trim($from, '/')] = trim($to, '/');
         }
-    }
-
-    public function __toString()
-    {
-        return $this->title();
     }
 }

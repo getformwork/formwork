@@ -2,12 +2,12 @@
 
 namespace Formwork;
 
-use Formwork\Utils\Header;
-use Formwork\Utils\HTTPResponse;
-use Formwork\View\View;
 use ErrorException;
 use Formwork\Response\Response;
 use Formwork\Traits\StaticClass;
+use Formwork\Utils\Header;
+use Formwork\Utils\HTTPResponse;
+use Formwork\View\View;
 use Throwable;
 
 class Errors

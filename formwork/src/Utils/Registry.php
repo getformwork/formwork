@@ -34,6 +34,16 @@ class Registry
     }
 
     /**
+     * Save the registry on instance destruction
+     */
+    public function __destruct()
+    {
+        if (!$this->saved) {
+            $this->save();
+        }
+    }
+
+    /**
      * Return whether a key is in the registry
      */
     public function has(string $key): bool
@@ -86,15 +96,5 @@ class Registry
     public function toArray(): array
     {
         return $this->storage;
-    }
-
-    /**
-     * Save the registry on instance destruction
-     */
-    public function __destruct()
-    {
-        if (!$this->saved) {
-            $this->save();
-        }
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Panel\Security\Password;
-use Formwork\Panel\Uploader;
-use Formwork\Panel\Users\User;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\Image;
 use Formwork\Formwork;
+use Formwork\Panel\Security\Password;
+use Formwork\Panel\Uploader;
+use Formwork\Panel\Users\User;
 use Formwork\Parsers\YAML;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
@@ -30,8 +30,8 @@ class UsersController extends AbstractController
         $this->modal('deleteUser');
 
         return new Response($this->view('users.index', [
-            'title'   => $this->translate('panel.users.users'),
-            'users'   => $this->panel()->users()
+            'title' => $this->translate('panel.users.users'),
+            'users' => $this->panel()->users()
         ], true));
     }
 
@@ -150,9 +150,9 @@ class UsersController extends AbstractController
         $this->modal('deleteUser');
 
         return new Response($this->view('users.profile', [
-            'title'   => $this->translate('panel.users.user-profile', $user->username()),
-            'user'    => $user,
-            'fields'  => $fields
+            'title'  => $this->translate('panel.users.user-profile', $user->username()),
+            'user'   => $user,
+            'fields' => $fields
         ], true));
     }
 
