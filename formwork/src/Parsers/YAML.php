@@ -35,7 +35,7 @@ class YAML extends AbstractEncoder
     /**
      * Encode data to YAML format
      */
-    public static function encode(array $data, array $options = []): string
+    public static function encode($data, array $options = []): string
     {
         if (empty($data)) {
             return '';
