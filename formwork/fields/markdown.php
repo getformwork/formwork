@@ -5,6 +5,7 @@ use Formwork\Fields\Field;
 use Formwork\Formwork;
 use Formwork\Parsers\Markdown;
 use Formwork\Utils\Constraint;
+use Formwork\Utils\Str;
 
 return [
     'toHTML' => function (Field $field): string {
@@ -14,6 +15,10 @@ return [
 
     'toString' => function (Field $field): string {
         return $field->toHTML();
+    },
+
+    'toPlainText' => function (Field $field): string {
+        return Str::removeHTML($field->toHTML());
     },
 
     'return' => function (Field $field): Field {
