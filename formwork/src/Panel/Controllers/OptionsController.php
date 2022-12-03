@@ -215,7 +215,8 @@ class OptionsController extends AbstractController
                 'Formwork Version' => Formwork::VERSION,
                 'Root Path'        => ROOT_PATH,
                 'Formwork Path'    => FORMWORK_PATH,
-                'Config Path'      => CONFIG_PATH
+                'Config Path'      => CONFIG_PATH,
+                'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH))
             ],
             'Dependencies' => [
                 'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
