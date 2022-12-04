@@ -100,6 +100,20 @@ class Arr
     }
 
     /**
+     * Return an array of `[$key, $value]` pairs from the given array
+     */
+    public static function entries(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $result[] = [$key, $value];
+        }
+
+        return $result;
+    }
+
+    /**
      * Get the array value at the given index,
      * negative indices are not allowed, use `Arr:at()` instead
      */
@@ -370,5 +384,19 @@ class Arr
         }
 
         throw new UnexpectedValueException(sprintf('Cannot convert to array an object of type %s', get_debug_type($object)));
+    }
+
+    /**
+     * Create an array from `[$key, $value]` pairs
+     */
+    public static function fromEntries(array $entries): array
+    {
+        $result = [];
+
+        foreach ($entries as [$key, $value]) {
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }
