@@ -12,7 +12,7 @@ class Renderer
     /**
      * Load a script passing variables and binding to given instance and context
      */
-    public static function load(string $filename, array $vars, object $instance, string $context = null)
+    public static function load(string $filename, array $vars, object $instance, ?string $context = null)
     {
         $closure = static::getClosure($instance, $context);
         return $closure($filename, $vars);
@@ -21,7 +21,7 @@ class Renderer
     /**
      * Return rendering closure bound to given instance and context
      */
-    protected static function getClosure(object $instance, string $context = null): Closure
+    protected static function getClosure(object $instance, ?string $context = null): Closure
     {
         return Closure::bind(function (string $_filename, array $_vars) {
             extract($_vars);

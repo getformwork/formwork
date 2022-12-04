@@ -10,41 +10,48 @@ class Languages
     /**
      * Array containing available languages
      */
-    protected array $available = [];
+    protected LanguageCollection $available;
 
     /**
      * Default language code
      */
-    protected ?string $default = null;
+    protected ?Language $default = null;
 
     /**
      * Current language code
      */
-    protected ?string $current = null;
+    protected ?Language $current = null;
 
     /**
      * Requested language code
      */
-    protected ?string $requested = null;
+    protected ?Language $requested = null;
 
     /**
      * Preferred language code
      */
-    protected ?string $preferred = null;
+    protected ?Language $preferred = null;
 
     /**
      * Create a new Languages instance
      */
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        $this->available = (array) Formwork::instance()->config()->get('languages.available');
-        $this->current = $this->default = Formwork::instance()->config()->get('languages.default', $this->available[0] ?? null);
+        $this->available = new LanguageCollection($options['available'] ?? []);
+
+        $this->default = $this->resolveLanguage($options['default'] ?? null);
+
+        $this->current = $this->resolveLanguage($options['current'] ?? $this->default);
+
+        $this->requested = $this->resolveLanguage($options['requested'] ?? null);
+
+        $this->preferred = $this->resolveLanguage($options['preferred'] ?? null);
     }
 
     /**
      * Get available languages
      */
-    public function available(): array
+    public function available(): LanguageCollection
     {
         return $this->available;
     }
@@ -52,7 +59,7 @@ class Languages
     /**
      * Get default language code
      */
-    public function default(): ?string
+    public function default(): ?Language
     {
         return $this->default;
     }
@@ -60,7 +67,7 @@ class Languages
     /**
      * Get current language code
      */
-    public function current(): ?string
+    public function current(): ?Language
     {
         return $this->current;
     }
@@ -68,7 +75,7 @@ class Languages
     /**
      * Get requested language code
      */
-    public function requested(): ?string
+    public function requested(): ?Language
     {
         return $this->requested;
     }
@@ -76,7 +83,7 @@ class Languages
     /**
      * Get preferred language code
      */
-    public function preferred(): ?string
+    public function preferred(): ?Language
     {
         return $this->preferred;
     }
@@ -94,21 +101,52 @@ class Languages
      */
     public static function fromRequest(string $request): self
     {
-        $languages = new static();
+        $config = Formwork::instance()->config();
 
-        if (preg_match('~^/(' . implode('|', $languages->available) . ')/~i', $request, $matches)) {
-            $languages->requested = $languages->current = $matches[1];
+        /**
+         * @var array<string>
+         */
+        $available = (array) $config->get('languages.available');
+
+        if (preg_match('~^/(' . implode('|', $available) . ')/~i', $request, $matches)) {
+            $requested = $current = $matches[1];
         }
 
-        if (Formwork::instance()->config()->get('languages.http_preferred')) {
+        /**
+         * @var bool
+         */
+        if ($config->get('languages.http_preferred')) {
             foreach (array_keys(HTTPNegotiation::language()) as $code) {
-                if (in_array($code, $languages->available, true)) {
-                    $languages->preferred = $code;
+                if (in_array($code, $available, true)) {
+                    $preferred = $available[$code];
                     break;
                 }
             }
         }
 
-        return $languages;
+        return new static([
+            'available' => $available,
+            'default'   => $config->get('languages.default', $available[0] ?? null),
+            'current'   => $current ?? null,
+            'requested' => $requested ?? null,
+            'preferred' => $preferred ?? null
+        ]);
+    }
+
+    /**
+     * Get the proper `Language` instance
+     */
+    protected function resolveLanguage(Language|string|null $language): ?Language
+    {
+        switch (true) {
+            case $language instanceof Language:
+                return $language;
+
+            case is_string($language):
+                return $this->available->get($language, null);
+
+            default:
+                return null;
+        }
     }
 }

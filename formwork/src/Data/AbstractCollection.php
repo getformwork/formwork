@@ -168,6 +168,18 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Get the keys of all items
+     */
+    public function keys(): array
+    {
+        if (!$this->isAssociative()) {
+            throw new LogicException('Only associative collections support keys');
+        }
+
+        return array_keys($this->data);
+    }
+
+    /**
      * Return whether the collection contains the given value
      */
     public function contains($value): bool
@@ -274,7 +286,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function map(callable $callback): static
     {
         $collection = $this->clone();
-        $collection->data = Arr::map($callback, $collection->data);
+        $collection->data = Arr::map($collection->data, $callback);
         return $collection;
     }
 
@@ -314,7 +326,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         int $type = SORT_NATURAL,
         array|callable $sortBy = null,
         bool $caseSensitive = false,
-        bool $preserveKeys = null
+        ?bool $preserveKeys = null
     ): static {
         $collection = $this->clone();
         $collection->data = Arr::sort(
@@ -326,6 +338,62 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             $preserveKeys ?? $this->isAssociative()
         );
         return $collection;
+    }
+
+    /**
+     * Group collection items using a callback
+     */
+    public function group(callable $callback): array
+    {
+        return Arr::group($this->data, $callback);
+    }
+
+    /**
+     * Get the value corresponding to the specified key from each item in the collection
+     *
+     * Typed collection should implement their own version of this method, optimised for their data type
+     */
+    public function pluck(string $key, $default = null): array
+    {
+        return Arr::pluck($this->data, $key, $default);
+    }
+
+    /**
+     * Filter the collection using the key from each item
+     */
+    public function filterBy(string $key, $value = true, $default = null, ?bool $strict = null): static
+    {
+        $values = $this->pluck($key, $default);
+
+        if (is_callable($value)) {
+            $values = Arr::map($values, $value);
+            $comparison = true;
+            $strict ??= true;
+        }
+
+        return $this->filter(fn ($v, $k) => Constraint::isEqualTo($values[$k], $comparison ??= $value, $strict ??= false));
+    }
+
+    /**
+     * Sort the collection using the given key from each item
+     */
+    public function sortBy(
+        string $key,
+        int $direction = SORT_ASC,
+        int $type = SORT_NATURAL,
+        bool $caseSensitive = false,
+        bool $preserveKeys = true
+    ): static {
+        return $this->sort($direction, $type, $this->pluck($key), $caseSensitive, $preserveKeys);
+    }
+
+    /**
+     * Group the collection using the given key from each item
+     */
+    public function groupBy(string $key, $default = null): array
+    {
+        $values = $this->pluck($key, $default);
+        return $this->group(fn ($v, $k) => $values[$k]);
     }
 
     /**

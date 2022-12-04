@@ -58,9 +58,9 @@ class CacheItem implements ArraySerializable
     public function toArray(): array
     {
         return [
-            'value'              => $this->value,
-            'expirationTime'     => $this->expirationTime,
-            'cachedTime'         => $this->cachedTime
+            'value'          => $this->value,
+            'expirationTime' => $this->expirationTime,
+            'cachedTime'     => $this->cachedTime
         ];
     }
 

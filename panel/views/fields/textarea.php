@@ -1,0 +1,9 @@
+<?= $this->layout('fields.field') ?>
+<textarea <?= $this->attr([
+    'id'          => $field->name(),
+    'name'        => $field->formName(),
+    'placeholder' => $field->placeholder(),
+    'required'    => $field->isRequired(),
+    'disabled'    => $field->isDisabled(),
+    'hidden'      => $field->isHidden()
+]) ?>><?= $field->value() ?></textarea>

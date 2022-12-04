@@ -195,5 +195,4 @@ class Str
     {
         return implode($delimiter, str_split($string, $length));
     }
-
 }

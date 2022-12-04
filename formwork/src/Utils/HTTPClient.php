@@ -156,10 +156,10 @@ class HTTPClient
         }
 
         return [
-            'status' => $currentResponse['statusCode'],
-            'headers'=> $currentResponse['headers'],
-            'length' => $length,
-            'handle' => $handle
+            'status'  => $currentResponse['statusCode'],
+            'headers' => $currentResponse['headers'],
+            'length'  => $length,
+            'handle'  => $handle
         ];
     }
 

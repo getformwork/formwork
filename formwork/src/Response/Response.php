@@ -37,6 +37,11 @@ class Response implements ArraySerializable
         $this->headers = $headers;
     }
 
+    public static function __set_state(array $properties): self
+    {
+        return new static($properties['content'], $properties['status'], $properties['headers']);
+    }
+
     /**
      * Return Response content
      */
@@ -102,10 +107,5 @@ class Response implements ArraySerializable
     public static function fromArray(array $data): static
     {
         return new static($data['content'], $data['status'], $data['headers']);
-    }
-
-    public static function __set_state(array $properties): self
-    {
-        return new static($properties['content'], $properties['status'], $properties['headers']);
     }
 }

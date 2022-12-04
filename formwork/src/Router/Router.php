@@ -66,13 +66,17 @@ class Router
     /**
      * Route params
      */
-    protected ?RouteParams $params;
+    protected RouteParams $params;
 
-    public function __construct(string $request = null)
+    public function __construct(?string $request = null)
     {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
-        $this->request = $request ?? Str::wrap(Uri::path(HTTPRequest::uri()), '/');
+
+        // Ensure requested route is wrapped in slashes
+        $this->request = Str::wrap($request ?? Uri::path(HTTPRequest::uri()), '/');
+
+        $this->params = new RouteParams([]);
     }
 
     /**
@@ -189,6 +193,14 @@ class Router
     }
 
     /**
+     * Generate a route with given params overriding the current ones
+     */
+    public function generateWith(string $name, array $params): string
+    {
+        return $this->generateRoute($this->routes->get($name), $params + $this->params->toArray());
+    }
+
+    /**
      * Rewrite current route with given params
      */
     public function rewrite(array $params): string
@@ -199,7 +211,7 @@ class Router
     /**
      * Load routes and filters from file
      */
-    public function loadFromFile(string $path, string $prefix = null): void
+    public function loadFromFile(string $path, ?string $prefix = null): void
     {
         $data = PHP::parseFile($path);
 

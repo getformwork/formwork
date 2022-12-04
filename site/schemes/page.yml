@@ -1,79 +1,91 @@
 title: Page
+
 default: true
 
+layout:
+    type: sections
+
+    sections:
+        content:
+            label: '{{panel.pages.content}}'
+            active: true
+            fields: [title, content]
+
+        options:
+            collapsible: true
+            label: '{{panel.pages.options}}'
+            fields: [published, publishDate, unpublishDate, routable, listed, cacheable]
+
+        attributes:
+            collapsible: true
+            collapsed: true
+            label: '{{panel.pages.attributes}}'
+            fields: [parent, template]
+
+        files:
+            collapsible: true
+            collapsed: false
+            label: '{{panel.pages.files}}'
+            fields: [uploadedFile, files]
+
 fields:
-    tabs:
-        type: sections
-        fields:
+    title:
+        type: text
+        class: input-large
+        required: true
 
-            content-section:
-                type: section
-                label: '{{admin.pages.content}}'
-                active: true
-                fields:
-                    title:
-                        type: text
-                        class: input-large
-                        required: true
-                    content:
-                        type: editor
+    content:
+        type: markdown
+        label: '{{panel.pages.text}}'
 
-            options-section:
-                type: section
-                collapsible: true
-                collapsed: true
-                label: '{{admin.pages.options}}'
-                fields:
-                    published:
-                        type: checkbox
-                        default: true
-                        label: '{{admin.pages.status.published}}'
-                    publish-date:
-                        type: date
-                        default: null
-                        label: '{{admin.pages.page.publish-date}}'
-                        placeholder: '{{admin.pages.page.no-date}}'
-                    unpublish-date:
-                        type: date
-                        default: null
-                        label: '{{admin.pages.page.unpublish-date}}'
-                        placeholder: '{{admin.pages.page.no-date}}'
-                    routable:
-                        type: checkbox
-                        default: true
-                        label: '{{admin.pages.status.routable}}'
-                    visible:
-                        type: checkbox
-                        default: true
-                        label: '{{admin.pages.page.visible}}'
-                    cacheable:
-                        type: checkbox
-                        default: true
-                        label: '{{admin.pages.page.cacheable}}'
+    published:
+        type: checkbox
+        label: '{{panel.pages.status.published}}'
+        default: true
 
-            attributes-section:
-                type: section
-                collapsible: true
-                collapsed: true
-                label: '{{admin.pages.attributes}}'
-                fields:
-                    parent:
-                        type: page-parents
-                        label: '{{admin.pages.parent}}'
-                    template:
-                        type: page.template
-                        label: '{{admin.pages.template}}'
+    publishDate:
+        type: date
+        label: '{{panel.pages.page.publish-date}}'
+        placeholder: '{{panel.pages.page.no-date}}'
+        default: null
 
+    unpublishDate:
+        type: date
+        label: '{{panel.pages.page.unpublish-date}}'
+        placeholder: '{{panel.pages.page.no-date}}'
+        default: null
 
-            files-section:
-                type: section
-                collapsible: true
-                collapsed: false
-                label: '{{admin.pages.files}}'
-                fields:
-                    uploaded-file:
-                        type: file
-                        auto-upload: true
-                        multiple: true
-                    files:
-                        type: page-files
+    routable:
+        type: checkbox
+        label: '{{panel.pages.status.routable}}'
+        default: true
+
+    listed:
+        type: checkbox
+        label: '{{panel.pages.page.listed}}'
+        default: true
+
+    cacheable:
+        type: checkbox
+        label: '{{panel.pages.page.cacheable}}'
+        default: true
+
+    parent:
+        type: page.parents
+        access: panel
+        label: '{{panel.pages.parent}}'
+
+    template:
+        type: page.template
+        access: panel
+        label: '{{panel.pages.template}}'
+
+    uploadedFile:
+        type: file
+        access: panel
+        auto-upload: true
+        multiple: true
+
+    files:
+        type: page.files
+        access: panel

@@ -14,6 +14,8 @@ class Translations
      */
     protected array $storage = [];
 
+    protected array $data = [];
+
     /**
      * Current translation
      */

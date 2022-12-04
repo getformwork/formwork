@@ -1,0 +1,57 @@
+title: User
+
+layout:
+    type: sections
+    sections:
+        user:
+            label: '{{panel.users.user}}'
+            fields: [fullname, email, password, language, role, color-scheme, avatar]
+
+fields:
+    fullname:
+        type: text
+        label: '{{panel.user.fullname}}'
+        required: true
+
+
+    email:
+        type: email
+        label: '{{panel.user.email}}'
+        required: true
+
+    password:
+        type: password
+        label: '{{panel.user.password}}'
+        placeholder: '{{panel.user.password.type-new-password}}'
+        disabled: true
+        pattern: '^.{8,}$'
+        autocomplete: new-password
+
+    language:
+        type: select
+        label: '{{panel.user.language}}'
+        required: true
+        translate: [label]
+        import:
+            options: 'Formwork\Panel\Panel::availableTranslations'
+
+    role:
+        type: select
+        label: '{{panel.user.role}}'
+        disabled: true
+        import:
+            options: 'Formwork\Panel\Users\UserCollection::availableRoles'
+
+
+    color-scheme:
+        type: togglegroup
+        label: '{{panel.user.color-scheme}}'
+        options:
+            light: '{{panel.user.color-scheme.light}}'
+            dark: '{{panel.user.color-scheme.dark}}'
+            auto: '{{panel.user.color-scheme.auto}}'
+
+    avatar:
+        type: file
+        label: '{{panel.user.avatar}}'
+        accept: .jpg, .jpeg, .png, .gif

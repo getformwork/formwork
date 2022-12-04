@@ -2,9 +2,9 @@
 
 namespace Formwork\Utils;
 
-use Formwork\Formwork;
 use DateTime;
 use Exception;
+use Formwork\Formwork;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -20,12 +20,12 @@ class Date
     /**
      * Regex used to parse formats accepted by date()
      */
-    protected const DATE_FORMAT_REGEX = '/((?:\\\\[A-Za-z])+)|[' . self::DATE_FORMAT_CHARACTERS . ']/';
+    protected const DATE_FORMAT_REGEX = '/(?P<escaped>(?:\\\\[A-Za-z])+)|[' . self::DATE_FORMAT_CHARACTERS . ']|(?P<invalid>[A-Za-z])/';
 
     /**
      * Regex used to parse date patterns like 'DD/MM/YYYY hh:mm:ss'
      */
-    protected const PATTERN_REGEX = '/(?:\[([^\]]+)\])|[YR]{4}|uuu|[YR]{2}|[MD]{1,4}|[WHhms]{1,2}|[AaZz]/';
+    protected const PATTERN_REGEX = '/(?:\[(?P<escaped>[^\]]+)\])|[YR]{4}|uuu|[YR]{2}|[MD]{1,4}|[WHhms]{1,2}|[AaZz]|(?P<invalid>[A-Za-z]+)/';
 
     /**
      * Array used to translate pattern tokens to their date() format counterparts
@@ -54,7 +54,7 @@ class Date
     /**
      * Parse a date according to a given format (or the default format if not given) and return the timestamp
      */
-    public static function toTimestamp(string $date, string $format = null): int
+    public static function toTimestamp(string $date, ?string $format = null): int
     {
         try {
             $dateTime = static::createDateTime($date, (array) ($format ?? static::getDefaultFormats()));
@@ -82,10 +82,10 @@ class Date
         $map = array_flip(self::PATTERN_TO_DATE_FORMAT);
         return preg_replace_callback(
             self::DATE_FORMAT_REGEX,
-            static function (array $matches) use ($map): string {
-                return isset($matches[1])
-                    ? '[' . str_replace('\\', '', $matches[1]) . ']'
-                    : ($map[$matches[0]] ?? $matches[0]);
+            fn (array $matches): string => match (true) {
+                isset($matches['invalid']) => '',
+                isset($matches['escaped']) => '[' . str_replace('\\', '', $matches['escaped']) . ']',
+                default                    => $map[$matches[0]] ?? ''
             },
             $format
         );
@@ -100,10 +100,10 @@ class Date
     {
         return preg_replace_callback(
             self::PATTERN_REGEX,
-            static function (array $matches): string {
-                return isset($matches[1])
-                    ? addcslashes($matches[1], 'A..Za..z')
-                    : (self::PATTERN_TO_DATE_FORMAT[$matches[0]] ?? $matches[0]);
+            fn (array $matches): string => match (true) {
+                isset($matches['invalid']) => '',
+                isset($matches['escaped']) => addcslashes($matches['escaped'], 'A..Za..z'),
+                default                    => self::PATTERN_TO_DATE_FORMAT[$matches[0]] ?? ''
             },
             $pattern
         );
@@ -112,7 +112,7 @@ class Date
     /**
      * Formats a DateTime object using the current translation for weekdays and months
      */
-    public static function formatDateTime(DateTime $dateTime, string $format = null, string $language = null): string
+    public static function formatDateTime(DateTime $dateTime, ?string $format = null, ?string $language = null): string
     {
         $format ??= Formwork::instance()->config()->get('date.format');
 
@@ -122,21 +122,13 @@ class Date
 
         return preg_replace_callback(
             self::DATE_FORMAT_REGEX,
-            static function (array $matches) use ($dateTime, $translation): string {
-                switch ($matches[0]) {
-                    case 'M':
-                        return $translation->translate('date.months.short')[$dateTime->format('n') - 1];
-                    case 'F':
-                        return $translation->translate('date.months.long')[$dateTime->format('n') - 1];
-                    case 'D':
-                        return $translation->translate('date.weekdays.short')[$dateTime->format('w')];
-                    case 'l':
-                        return $translation->translate('date.weekdays.long')[$dateTime->format('w')];
-                    case 'r':
-                        return static::formatDateTime($dateTime, DateTime::RFC2822);
-                    default:
-                        return $dateTime->format($matches[1] ?? $matches[0]);
-                }
+            fn (array $matches): string => match ($matches[0]) {
+                'M'     => $translation->translate('date.months.short')[$dateTime->format('n') - 1],
+                'F'     => $translation->translate('date.months.long')[$dateTime->format('n') - 1],
+                'D'     => $translation->translate('date.weekdays.short')[$dateTime->format('w')],
+                'l'     => $translation->translate('date.weekdays.long')[$dateTime->format('w')],
+                'r'     => static::formatDateTime($dateTime, DateTime::RFC2822),
+                default => $dateTime->format($matches[1] ?? $matches[0])
             },
             $format
         );
@@ -145,7 +137,7 @@ class Date
     /**
      * The same as self::formatDateTime() but takes a timestamp instead of a DateTime object
      */
-    public static function formatTimestamp(int $timestamp, string $format = null, string $language = null): string
+    public static function formatTimestamp(int $timestamp, ?string $format = null, ?string $language = null): string
     {
         return static::formatDateTime(new DateTime('@' . $timestamp), $format, $language);
     }
@@ -153,7 +145,7 @@ class Date
     /**
      * Formats a DateTime object as a time distance from now
      */
-    public static function formatDateTimeAsDistance(DateTime $dateTime, string $language = null): string
+    public static function formatDateTimeAsDistance(DateTime $dateTime, ?string $language = null): string
     {
         $language ??= Formwork::instance()->translations()->getCurrent()->code();
 
@@ -191,7 +183,7 @@ class Date
     /**
      * The same as self::formatDateTimeAsDistance() but takes a timestamp instead of a DateTime object
      */
-    public static function formatTimestampAsDistance(int $timestamp, string $language = null): string
+    public static function formatTimestampAsDistance(int $timestamp, ?string $language = null): string
     {
         return static::formatDateTimeAsDistance(new DateTime('@' . $timestamp), $language);
     }

@@ -9,7 +9,7 @@ updates:
           update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
-    directory: "/admin"
+    directory: "/panel"
     schedule:
       interval: "monthly"
     ignore:

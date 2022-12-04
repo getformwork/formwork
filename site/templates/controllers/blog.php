@@ -1,18 +1,36 @@
 <?php
 
-    $posts = $page->children()->filterBy('published');
+// Posts are the published children of the blog page
+$posts = $page->children()->published();
 
-    if ($params->has('tagName')) {
-        $posts = $posts->filterBy('tags', $params->get('tagName'), 'Formwork\Utils\Str::slug');
-    }
+// If the route has the param `{tagName}`
+if ($params->has('tagName')) {
+    $posts = $posts->filterBy('tags',             // Filter posts by tags...
+        fn ($tags) => $tags
+            ->map(fn ($tag) => $this->slug($tag)) // where the collection of their slugs...
+            ->contains($params->get('tagName'))   // contains the value of the `tagName` param.
+    );
+}
 
-    $posts = $posts->reverse()->paginate($page->get('posts-per-page', 5));
+// Get the param `{paginationPage}` from the route and cast its value to integer
+$paginationPage = (int) $params->get('paginationPage', 1);
 
-    if ($posts->isEmpty()) {
-        $site->errorPage(true);
-    }
+// Reverse the order and paginate the posts
+$posts = $posts->reverse()->paginate($page->postsPerPage(), $paginationPage);
 
-    return [
-        'posts'      => $posts,
-        'pagination' => $posts->pagination()
-    ];
+// Permanently redirect to the URI of the first page (without the `/page/{paginationPage}/`)
+// if the `paginationPage` param is given and equals `1`
+if ($params->has('paginationPage') && $paginationPage === 1) {
+    $this->redirect($posts->pagination()->firstPageUri(), 301);
+}
+
+// If we have no posts or the `paginationPage` params refer to an nonexistent page
+// go to the error page
+if ($posts->isEmpty() || !$posts->pagination()->has($paginationPage)) {
+    $site->setCurrentPage($site->errorPage());
+}
+
+return [
+    'posts'      => $posts,
+    'pagination' => $posts->pagination()
+];

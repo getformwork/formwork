@@ -3,12 +3,11 @@
 namespace Formwork\Controllers;
 
 use Formwork\Formwork;
-use Formwork\Page;
+use Formwork\Pages\Page;
 use Formwork\Response\FileResponse;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
-use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 
 class PageController extends AbstractController
@@ -19,15 +18,16 @@ class PageController extends AbstractController
 
         $route = $params->get('page', $formwork->config()->get('pages.index'));
 
-        if ($formwork->site()->has('aliases') && $alias = $formwork->site()->alias($route)) {
-            $route = trim($alias, '/');
+        if ($resolvedAlias = $formwork->site()->resolveRouteAlias($route)) {
+            $route = $resolvedAlias;
         }
 
         if ($page = $formwork->site()->findPage($route)) {
-            if ($page->has('canonical')) {
-                $canonical = trim($page->canonical(), '/');
-                if ($params->get('page', '') !== $canonical) {
-                    $route = empty($canonical) ? '' : $formwork->router()->rewrite(['page' => $canonical]);
+            if ($page->canonicalRoute() !== null) {
+                $canonical = $page->canonicalRoute();
+
+                if ($params->get('page', '/') !== $canonical) {
+                    $route = $formwork->router()->rewrite(['page' => $canonical]);
                     return new RedirectResponse($formwork->site()->uri($route), 301);
                 }
             }
@@ -37,15 +37,15 @@ class PageController extends AbstractController
             }
 
             if ($formwork->config()->get('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
-                if (($page->published() && !$formwork->site()->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
-                || (!$page->published() && !$formwork->site()->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
+                if (($page->isPublished() && !$formwork->site()->modifiedSince($page->publishDate()->toTimestamp()))
+                || (!$page->isPublished() && !$formwork->site()->modifiedSince($page->unpublishDate()->toTimestamp()))) {
                     // Clear cache if the site was not modified since the page has been published or unpublished
                     $formwork->cache()->clear();
-                    FileSystem::touch($formwork->config()->get('content.path'));
+                    FileSystem::touch($formwork->site()->path());
                 }
             }
 
-            if ($page->routable() && $page->published()) {
+            if ($page->isPublished() && $page->routable()) {
                 return $this->getPageResponse($page);
             }
         } else {
@@ -80,7 +80,7 @@ class PageController extends AbstractController
 
         $cache = $formwork->cache();
 
-        $cacheKey = $page->route();
+        $cacheKey = $page->uri(includeLanguage: true);
 
         if ($config->get('cache.enabled') && $cache->has($cacheKey)) {
             // Validate cached response
@@ -91,7 +91,7 @@ class PageController extends AbstractController
             $cache->delete($cacheKey);
         }
 
-        $response = new Response($page->renderToString(), (int) $page->get('response_status', 200), $page->headers());
+        $response = new Response($page->render(), $page->responseStatus(), $page->headers());
 
         if ($config->get('cache.enabled') && $page->cacheable()) {
             $cache->save($cacheKey, $response);

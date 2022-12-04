@@ -34,7 +34,7 @@ class JSON extends AbstractEncoder
     /**
      * Encode data to JSON format
      */
-    public static function encode(array $data, array $options = []): string
+    public static function encode($data, array $options = []): string
     {
         $options = array_merge(self::DEFAULT_ENCODE_OPTIONS, $options);
         $flags = self::DEFAULT_ENCODE_FLAGS;

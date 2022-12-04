@@ -4,12 +4,17 @@ namespace Formwork\View;
 
 use Formwork\Formwork;
 use Formwork\Parsers\PHP;
+use Formwork\Traits\Methods;
+use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
-use BadMethodCallException;
-use RuntimeException;
+use Formwork\Utils\Str;
+use Formwork\View\Exceptions\RenderingException;
+use Throwable;
 
 class View
 {
+    use Methods;
+
     /**
      * View type
      */
@@ -31,6 +36,11 @@ class View
     protected string $path;
 
     /**
+     * View file
+     */
+    protected string $file;
+
+    /**
      * View blocks
      */
     protected array $blocks = [];
@@ -46,24 +56,29 @@ class View
     protected self $layout;
 
     /**
-     * Helper functions to be used in views
-     */
-    protected array $helpers = [];
-
-    /**
      * Whether the view is being rendered
      */
     protected bool $rendering = false;
 
     /**
+     * Whether it is allowed to call view methods
+     */
+    protected bool $allowMethods = false;
+
+    /**
      * Create a new View instance
      */
-    public function __construct(string $name, array $vars = [], string $path = null, array $helpers = [])
+    public function __construct(string $name, array $vars = [], ?string $path = null, array $methods = [])
     {
         $this->name = $name;
         $this->vars = array_merge($this->defaults(), $vars);
         $this->path = $path ?? Formwork::instance()->config()->get('views.paths.system');
-        $this->helpers = array_merge(PHP::parseFile(FORMWORK_PATH . 'helpers.php'), $helpers);
+        $this->file = $this->getFile($this->name);
+        $this->methods = array_merge(PHP::parseFile(FORMWORK_PATH . 'helpers.php'), $methods);
+
+        if (!FileSystem::exists($this->file)) {
+            throw new FileNotFoundException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $this->name));
+        }
     }
 
     /**
@@ -88,7 +103,7 @@ class View
     public function layout(string $name): void
     {
         if (isset($this->layout)) {
-            throw new RuntimeException(sprintf('The layout for the %s "%s" is already set', static::TYPE, $this->name));
+            throw new RenderingException(sprintf('The layout for the %s "%s" is already set', static::TYPE, $this->name));
         }
         $this->layout = $this->createLayoutView($name);
     }
@@ -99,50 +114,42 @@ class View
     public function insert(string $name, array $vars = []): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
+            throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
-        $file = $this->path . str_replace('.', DS, $name) . '.php';
+        $view = new self($name, array_merge($this->vars, $vars), $this->path, $this->methods);
 
-        if (!FileSystem::exists($file)) {
-            throw new RuntimeException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $name));
-        }
-
-        Renderer::load($file, array_merge($this->vars, $vars), $this);
+        $view->output();
     }
 
     /**
      * Render the view
      */
-    public function render(bool $return = false)
+    public function render(): string
     {
         if ($this->rendering) {
-            throw new RuntimeException(sprintf('%s() not allowed while rendering', __METHOD__));
+            throw new RenderingException(sprintf('%s() not allowed while rendering', __METHOD__));
         }
+
+        // Keep track of the output buffer level,
+        // so we can revert to this level if an error occurs
+        $level = ob_get_level();
 
         ob_start();
 
-        $this->rendering = true;
+        try {
+            $this->output();
+        } catch (Throwable $e) {
+            // Clean the output buffer until we get
+            // to the level before rendering
+            while (ob_get_level() > $level) {
+                ob_end_clean();
+            }
 
-        $this->insert($this->name);
-
-        if (isset($this->layout)) {
-            $this->layout->vars = $this->vars;
-            $this->layout->blocks['content'] = ob_get_contents();
-            ob_clean(); // Clean but don't end output buffer
-            $this->layout->render();
+            throw $e;
         }
 
-        $this->rendering = false;
-
-        if ($this->incompleteBlocks !== []) {
-            throw new RuntimeException(sprintf('Incomplete blocks found: "%s". Use "$this->end()" to properly close them', implode('", "', $this->incompleteBlocks)));
-        }
-
-        if ($return) {
-            return ob_get_clean();
-        }
-        ob_end_flush();
+        return ob_get_clean();
     }
 
     /**
@@ -151,11 +158,11 @@ class View
     public function define(string $block): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
+            throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
         if ($block === 'content') {
-            throw new RuntimeException('The block "content" is reserved');
+            throw new RenderingException('The block "content" is reserved');
         }
         $this->incompleteBlocks[] = $block;
         ob_start();
@@ -167,10 +174,10 @@ class View
     public function end(): void
     {
         if (!$this->rendering) {
-            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
+            throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
         if ($this->incompleteBlocks === []) {
-            throw new RuntimeException('There are no blocks to end');
+            throw new RenderingException('There are no blocks to end');
         }
         $block = array_pop($this->incompleteBlocks);
         $this->blocks[$block] = ob_get_clean();
@@ -182,10 +189,10 @@ class View
     public function block(string $name): string
     {
         if (!$this->rendering) {
-            throw new RuntimeException(sprintf('%s() is allowed only in rendering context', __METHOD__));
+            throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
         if (!isset($this->blocks[$name])) {
-            throw new RuntimeException(sprintf('The block "%s" is undefined', $name));
+            throw new RenderingException(sprintf('The block "%s" is undefined', $name));
         }
         return $this->blocks[$name];
     }
@@ -204,24 +211,61 @@ class View
     protected function defaults(): array
     {
         return [
-            'formwork' => Formwork::instance(),
-            'site'     => Formwork::instance()->site()
+            'formwork' => Formwork::instance()
         ];
+    }
+
+    /**
+     * Get the view file
+     */
+    protected function getFile(string $name): string
+    {
+        if (Str::startsWith($name, '_')) {
+            $name = 'partials' . DS . Str::removeStart($name, '_');
+        }
+        return $this->path . str_replace('.', DS, $name) . '.php';
     }
 
     /**
      * Return the layout view instance
      */
-    protected function createLayoutView(string $name): View
+    protected function createLayoutView(string $name, array $vars = []): View
     {
-        return new static('layouts' . DS . $name, $this->vars, $this->path, $this->helpers);
+        return new self('layouts' . DS . $name, array_merge($this->vars, $vars), $this->path, $this->methods);
     }
 
-    public function __call(string $name, array $arguments)
+    /**
+     * Output the contents of the view
+     */
+    protected function output()
     {
-        if ($this->rendering && isset($this->helpers[$name])) {
-            return $this->helpers[$name](...$arguments);
+        ob_start();
+
+        $this->rendering = true;
+
+        Renderer::load($this->file, $this->vars, $this);
+
+        if (isset($this->layout)) {
+            $this->layout->vars = $this->vars;
+            $this->layout->blocks['content'] = ob_get_contents();
+            ob_clean(); // Clean but don't end output buffer
+            $this->layout->output();
         }
-        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+
+        $this->rendering = false;
+
+        if ($this->incompleteBlocks !== []) {
+            throw new RenderingException(sprintf('Incomplete blocks found: "%s". Use "$this->end()" to properly close them', implode('", "', $this->incompleteBlocks)));
+        }
+
+        ob_end_flush();
+    }
+
+    protected function callMethod($method, $arguments)
+    {
+        if (!$this->rendering && !$this->allowMethods) {
+            throw new RenderingException(sprintf('%s::%s() is allowed only in rendering context', static::class, $method));
+        }
+        return $this->methods[$method](...$arguments);
     }
 }

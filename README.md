@@ -1,4 +1,4 @@
-# <img src="admin/assets/images/icon.svg" height="28"> Formwork
+# <img src="panel/assets/images/icon.svg" height="28"> Formwork
 
 [![Discord](https://img.shields.io/discord/637658168754831380?color=%235865f2&label=chat&logo=discord&logoColor=%23fff)](https://discord.gg/5Q3BmNY)
 [![GitHub Release Date](https://img.shields.io/github/release-date/getformwork/formwork.svg)](https://github.com/getformwork/formwork/releases/latest)

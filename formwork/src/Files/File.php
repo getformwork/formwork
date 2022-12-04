@@ -2,12 +2,9 @@
 
 namespace Formwork\Files;
 
-use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
-use Formwork\Utils\Uri;
 
 class File
 {
@@ -27,11 +24,6 @@ class File
     protected string $extension;
 
     /**
-     * File uri
-     */
-    protected string $uri;
-
-    /**
      * File MIME type
      */
     protected string $mimeType;
@@ -47,6 +39,11 @@ class File
     protected string $size;
 
     /**
+     * File last modified time
+     */
+    protected int $lastModifiedTime;
+
+    /**
      * File hash
      */
     protected string $hash;
@@ -60,8 +57,12 @@ class File
         $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
         $this->mimeType = FileSystem::mimeType($path);
-        $this->uri = Uri::resolveRelative($this->name, HTTPRequest::root() . ltrim(Formwork::instance()->request(), '/'));
         $this->size = FileSystem::formatSize(FileSystem::fileSize($path));
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 
     /**
@@ -86,14 +87,6 @@ class File
     public function extension(): string
     {
         return $this->extension;
-    }
-
-    /**
-     * Get file URI
-     */
-    public function uri(): string
-    {
-        return $this->uri;
     }
 
     /**
@@ -151,6 +144,17 @@ class File
     }
 
     /**
+     * Get file last modified time
+     */
+    public function lastModifiedTime(): int
+    {
+        if (isset($this->lastModifiedTime)) {
+            return $this->lastModifiedTime;
+        }
+        return FileSystem::lastModifiedTime($this->path);
+    }
+
+    /**
      * Get file hash
      */
     public function hash(): string
@@ -171,10 +175,5 @@ class File
             $extensions
         );
         return in_array($this->mimeType, $mimeTypes, true);
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 }

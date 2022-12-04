@@ -1,22 +1,32 @@
 title: Blog
+
+# Extend the `page` scheme
 extend: page
+
 default: false
+
+# Specify the page type, in this case `listing`, which means it can show children
 type: listing
+
+# This controls which template can have children, their order and other attributes
 children:
     templates: [post, blog]
     reverse: true
-    sortable: true
+    orderable: false
+
+layout:
+    type: sections
+    sections:
+        options:
+            fields: [postsPerPage, published, publishDate, unpublishDate, routable, listed, cacheable]
+
 fields:
-    tabs:
-        fields:
-            options-section:
-                fields:
-                    posts-per-page:
-                        type: select
-                        options:
-                            5: 5
-                            10: 10
-                            15: 15
-                            20: 20
-                        default: 5
-                        label: '{{admin.pages.page.posts-per-page}}'
+    postsPerPage:
+        type: select
+        label: '{{panel.pages.page.posts-per-page}}'
+        options:
+            5: 5
+            10: 10
+            15: 15
+            20: 20
+        default: 5

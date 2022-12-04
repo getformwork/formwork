@@ -2,15 +2,16 @@
 
 namespace Formwork;
 
-use Formwork\Admin\Admin;
-use Formwork\Admin\Statistics;
 use Formwork\Cache\FilesCache;
 use Formwork\Languages\Languages;
+use Formwork\Pages\Site;
+use Formwork\Panel\Panel;
+use Formwork\Panel\Statistics;
 use Formwork\Parsers\PHP;
 use Formwork\Parsers\YAML;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
-use Formwork\Traits\SingletonTrait;
+use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Header;
 use Formwork\Utils\HTTPRequest;
@@ -19,7 +20,7 @@ use Formwork\Utils\Uri;
 
 final class Formwork
 {
-    use SingletonTrait;
+    use SingletonClass;
 
     /**
      * Current Formwork version
@@ -61,9 +62,9 @@ final class Formwork
     protected FilesCache $cache;
 
     /**
-     * Admin instance
+     * Panel instance
      */
-    protected ?Admin $admin;
+    protected ?Panel $panel;
 
     /**
      * Create a new Formwork instance
@@ -82,7 +83,6 @@ final class Formwork
         $this->loadSite();
         $this->loadCache();
         $this->loadRouter();
-        $this->loadAdmin();
         $this->loadRoutes();
     }
 
@@ -151,11 +151,16 @@ final class Formwork
     }
 
     /**
-     * Return admin instance
+     * Return panel instance
      */
-    public function admin(): ?Admin
+    public function panel(): ?Panel
     {
-        return $this->admin;
+        if (isset($this->panel)) {
+            return $this->panel;
+        }
+        return $this->panel = $this->config->get('panel.enabled')
+            ? new Panel()
+            : null;
     }
 
     /**
@@ -192,9 +197,9 @@ final class Formwork
         $data = YAML::parseFile(CONFIG_PATH . 'system.yml');
 
         if ($data !== []) {
-            if (isset($data['admin.root'])) {
-                // Trim slashes from admin.root
-                $data['admin.root'] = trim($data['admin.root'], '/');
+            if (isset($data['panel.root'])) {
+                // Trim slashes from panel.root
+                $data['panel.root'] = trim($data['panel.root'], '/');
             }
             $this->config = new Config(array_replace_recursive($this->defaults(), $data));
         }
@@ -222,8 +227,8 @@ final class Formwork
         if ($this->languages->requested() !== null) {
             $this->request = Str::removeStart($this->request, '/' . $this->languages->current());
         } elseif ($this->languages->preferred() !== null) {
-            // Don't redirect if we are in Admin
-            if (!Str::startsWith($this->request, '/' . $this->config()->get('admin.root'))) {
+            // Don't redirect if we are in Panel
+            if (!Str::startsWith($this->request, '/' . $this->config()->get('panel.root'))) {
                 Header::redirect(HTTPRequest::root() . $this->languages->preferred() . $this->request);
             }
         }
@@ -250,8 +255,10 @@ final class Formwork
     protected function loadSite(): void
     {
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
-        $this->site = new Site($config);
-        $this->site->setLanguages($this->languages);
+        $this->site = Site::fromPath(
+            $this->config()->get('content.path'),
+            ['languages' => $this->languages] + $config
+        );
     }
 
     /**
@@ -264,15 +271,7 @@ final class Formwork
 
     protected function loadRouter(): void
     {
-        $this->router = new Router();
-    }
-
-    protected function loadAdmin(): void
-    {
-        if ($this->config->get('admin.enabled')) {
-            $this->admin = new Admin();
-            $this->admin->load();
-        }
+        $this->router = new Router($this->request);
     }
 
     /**
@@ -280,6 +279,13 @@ final class Formwork
      */
     protected function loadRoutes(): void
     {
+        if ($this->config->get('panel.enabled')) {
+            $this->router->loadFromFile(
+                $this->config()->get('routes.files.panel'),
+                Str::wrap($this->config()->get('panel.root'), '/')
+            );
+        }
+
         $this->router->loadFromFile($this->config()->get('routes.files.system'));
     }
 }

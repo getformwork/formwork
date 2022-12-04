@@ -40,7 +40,7 @@ class PHP extends AbstractEncoder
     /**
      * @inheritdoc
      */
-    public static function encode(array $data, array $options = []): string
+    public static function encode($data, array $options = []): string
     {
         return static::encodeData($data);
     }

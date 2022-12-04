@@ -1,0 +1,263 @@
+@use 'sass:map';
+
+.title-bar {
+    position: fixed;
+    z-index: 8;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: $title-bar-padding;
+    padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
+    background-color: $color-base-700;
+    box-shadow: $component-box-shadow;
+    color: $color-base-100;
+    @include user-select-none;
+    @include ellipsis;
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
+        left: $sidebar-width;
+        padding-left: $title-bar-padding-left;
+    }
+}
+
+.panel-title {
+    float: left;
+}
+
+.view-site {
+    color: $color-base-100;
+    float: right;
+    &:hover {
+        color: $color-accent-500;
+    }
+}
+
+.view-site i {
+    margin-left: 0.5rem;
+}
+
+.sidebar {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $sidebar-width;
+    padding: $sidebar-padding-h $sidebar-padding-v;
+    background: $sidebar-background-gradient;
+    background-color: $sidebar-background-gradient-color-0;
+    box-shadow: $component-box-shadow;
+    @include user-select-none;
+}
+
+.sidebar.show {
+    display: block;
+}
+
+.sidebar-wrapper {
+    height: calc(100% - 9rem);
+    overflow-y: auto;
+}
+
+.toggle-navigation {
+    position: fixed;
+    z-index: 12;
+    top: $toggle-navigation-top;
+    left: $toggle-navigation-left;
+    border: none;
+    margin: 0;
+    background-color: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: $font-size-m;
+    &:hover {
+        background-color: transparent;
+        box-shadow: none;
+        color: $color-accent-500;
+    }
+    &:focus {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+.logo {
+    margin-bottom: $logo-margin-bottom;
+    color: $color-base-100;
+    font-size: $logo-font-size;
+    font-weight: 600;
+    line-height: $logo-line-height;
+    text-align: center;
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
+        text-align: left;
+    }
+}
+
+.logo img {
+    height: $logo-image-height;
+    margin-right: $logo-image-margin-right;
+    vertical-align: $logo-image-vertical-align;
+}
+
+.logo a {
+    padding-top: $focusring-width;
+    color: $color-base-100;
+}
+
+.sidebar-navigation {
+    padding: 0;
+    margin: 0;
+    margin-bottom: $sidebar-navigation-margin-bottom;
+    list-style-type: none;
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.sidebar-navigation > li {
+    position: relative;
+    padding: $sidebar-navigation-li-padding-v $sidebar-navigation-li-padding-h;
+    padding-left: $sidebar-navigation-li-padding-left;
+    margin: 0;
+    margin-bottom: $sidebar-navigation-li-margin-bottom;
+}
+
+.sidebar-navigation > li a {
+    color: $color-base-100;
+}
+
+.sidebar-navigation > li.active {
+    font-weight: 600;
+}
+
+.sidebar-navigation > li.active::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $sidebar-navigation-notch-width;
+    background-color: $color-accent-500;
+    content: ' ';
+}
+
+.panel-user-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: $panel-user-card-margin-bottom;
+    cursor: pointer;
+}
+
+.panel-user-avatar {
+    width: $panel-user-avatar-width;
+}
+
+.panel-user-avatar img {
+    width: $panel-user-avatar-width;
+    border-radius: $border-radius-round;
+    transition: box-shadow $transition-time-m ease-out;
+    .panel-user-card:hover & {
+        box-shadow: 0 0 0 0.5rem $color-base-600;
+    }
+}
+
+.panel-user-details {
+    padding: $panel-user-details-padding-v $panel-user-details-padding-h;
+}
+
+.panel-user-fullname {
+    color: $color-base-100;
+}
+
+.panel-user-username {
+    color: $color-base-300;
+    font-size: $font-size-s;
+}
+
+.main {
+    margin-top: $main-margin-top;
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
+        margin: $main-margin;
+        margin-top: $main-margin-top;
+        margin-left: $main-margin-left;
+    }
+}
+
+.component {
+    padding: $component-padding;
+    border-radius: $border-radius;
+    margin-bottom: $component-margin-bottom;
+    background-color: $color-base-900;
+    box-shadow: $component-box-shadow;
+    @include clearfix;
+}
+
+.caption {
+    margin-bottom: $caption-margin-bottom;
+    font-size: $caption-font-size;
+    font-weight: 500;
+    letter-spacing: $caption-letter-spacing;
+    text-transform: uppercase;
+    @include user-select-none;
+}
+
+.separator {
+    height: $separator-height;
+}
+
+.separator-l {
+    height: $separator-height-l;
+}
+
+.section {
+    margin-bottom: $section-margin-bottom;
+}
+
+.section-header {
+    padding: $section-header-padding-v $section-header-padding-h;
+    border-bottom: 1px solid $color-base-600;
+    margin-bottom: $section-header-margin-bottom;
+    font-size: $font-size-m;
+    font-weight: 600;
+    @include user-select-none;
+}
+
+.icon {
+    display: inline-block;
+    width: 1em;
+    min-width: 16px;
+    height: 1em;
+    min-height: 16px;
+    vertical-align: -0.125rem;
+}
+
+.section-toggle .icon {
+    transition: transform $transition-time-s;
+}
+
+.section.collapsed .section-toggle .icon {
+    transform: rotate(180deg);
+}
+
+.section.collapsed .section-content {
+    display: none;
+}
+
+.sort-handle {
+    display: inline-block;
+    margin-bottom: 0;
+    color: $color-base-300;
+    cursor: grab;
+}
+
+.sortable-chosen,
+.sortable-ghost {
+    background-color: $color-base-900;
+    cursor: grabbing;
+}
+
+.sortable-chosen * {
+    cursor: grabbing;
+}
+
+.sortable-fallback {
+    box-shadow: $sortable-fallback-box-shadow;
+}

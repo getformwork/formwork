@@ -113,7 +113,7 @@ class Session
             'httponly' => true,
             'samesite' => Cookie::SAMESITE_STRICT
         ];
-        if (($timeout = Formwork::instance()->config()->get('admin.session_timeout')) > 0) {
+        if (($timeout = Formwork::instance()->config()->get('panel.session_timeout')) > 0) {
             $options['expires'] = time() + $timeout * 60;
         }
         return $options;

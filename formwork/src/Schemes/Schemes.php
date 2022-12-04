@@ -12,6 +12,8 @@ class Schemes
      */
     protected array $storage = [];
 
+    protected array $data = [];
+
     /**
      * Load a scheme
      */

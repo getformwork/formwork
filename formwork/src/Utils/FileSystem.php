@@ -611,6 +611,8 @@ class FileSystem
      * List files and directories contained in a path
      *
      * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
+     *
+     * @return Generator<int, string>
      */
     public static function listContents(string $directory, int $flags = self::LIST_VISIBLE): Generator
     {
@@ -644,6 +646,8 @@ class FileSystem
      * Recursively list files and directories contained in a path
      *
      * @param int $flags Any of FileSystem::LIST_FILES, FileSystem::LIST_DIRECTORIES, FileSystem::LIST_HIDDEN, FileSystem::LIST_VISIBLE, FileSystem::LIST_ALL flags
+     *
+     * @return Generator<int, string>
      */
     public static function listRecursive(string $directory, int $flags = self::LIST_VISIBLE): Generator
     {
@@ -666,6 +670,8 @@ class FileSystem
      * List files contained in a path
      *
      * @param bool $all Whether to return only visible or all files
+     *
+     * @return Generator<int, string>
      */
     public static function listFiles(string $directory, bool $all = false): Generator
     {
@@ -676,6 +682,8 @@ class FileSystem
      * List directories contained in a path
      *
      * @param bool $all Whether to return only visible or all directories
+     *
+     * @return Generator<int, string>
      */
     public static function listDirectories(string $directory, bool $all = false): Generator
     {

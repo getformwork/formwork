@@ -1,91 +1,44 @@
 title: Site
+
+layout:
+    type: sections
+    sections:
+        info:
+            label: '{{panel.options.site.info}}'
+            collapsible: true
+            fields: [title, author, description]
+
+        advanced:
+            label: '{{panel.options.site.advanced}}'
+            collapsible: true
+            collapsed: true
+            fields: [metadata, routeAliases]
+
 fields:
-    section1:
-        type: header
-        label: '{{admin.options.site.info}}'
+    title:
+        type: text
+        label: '{{panel.options.site.info.title}}'
+        required: true
 
-    rows1:
-        type: rows
-        fields:
-            row1:
-                type: row
-                fields:
-                    column1:
-                        type: column
-                        width: 1-3
-                        label: '{{admin.options.site.info.title}}'
-                    column2:
-                        type: column
-                        width: 2-3
-                        fields:
-                            title:
-                                type: text
-                                required: true
+    author:
+        type: text
+        label: '{{panel.options.site.info.author}}'
 
-            row2:
-                type: row
-                fields:
-                    column1:
-                        type: column
-                        width: 1-3
-                        label: '{{admin.options.site.info.author}}'
-                    column2:
-                        type: column
-                        width: 2-3
-                        fields:
-                            author:
-                                type: text
 
-            row3:
-                type: row
-                fields:
-                    column1:
-                        type: column
-                        width: 1-3
-                        label: '{{admin.options.site.info.description}}'
-                    column2:
-                        type: column
-                        width: 2-3
-                        fields:
-                            description:
-                                type: textarea
+    description:
+        type: textarea
+        label: '{{panel.options.site.info.description}}'
 
-    section2:
-        type: header
-        label: '{{admin.options.site.advanced}}'
+    metadata:
+        type: array
+        label: '{{panel.options.site.advanced.metadata}}'
+        associative: true
+        placeholder_key: '{{panel.options.site.advanced.metadata.name}}'
+        placeholder_value: '{{panel.options.site.advanced.metadata.content}}'
 
-    rows2:
-        type: rows
-        fields:
-            row1:
-                type: row
-                fields:
-                    column1:
-                        type: column
-                        width: 1-3
-                        label: '{{admin.options.site.advanced.metadata}}'
-                    column2:
-                        type: column
-                        width: 2-3
-                        fields:
-                            metadata:
-                                type: array
-                                associative: true
-                                placeholder_key: '{{admin.options.site.advanced.metadata.name}}'
-                                placeholder_value: '{{admin.options.site.advanced.metadata.content}}'
-            row2:
-                type: row
-                fields:
-                    column1:
-                        type: column
-                        width: 1-3
-                        label: '{{admin.options.site.advanced.aliases}}'
-                    column2:
-                        type: column
-                        width: 2-3
-                        fields:
-                            aliases:
-                                type: array
-                                associative: true
-                                placeholder_key: '{{admin.options.site.advanced.aliases.alias}}'
-                                placeholder_value: '{{admin.options.site.advanced.aliases.route}}'
+    routeAliases:
+        type: array
+        label: '{{panel.options.site.advanced.aliases}}'
+        associative: true
+        placeholder_key: '{{panel.options.site.advanced.aliases.alias}}'
+        placeholder_value: '{{panel.options.site.advanced.aliases.route}}'
