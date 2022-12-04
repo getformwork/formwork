@@ -12,7 +12,7 @@ layout:
             label: '{{panel.options.site.advanced}}'
             collapsible: true
             collapsed: true
-            fields: [metadata, aliases]
+            fields: [metadata, routeAliases]
 
 fields:
     title:
@@ -23,13 +23,11 @@ fields:
     author:
         type: text
         label: '{{panel.options.site.info.author}}'
-        default: null
 
 
     description:
         type: textarea
         label: '{{panel.options.site.info.description}}'
-        default: null
 
     metadata:
         type: array
@@ -38,7 +36,7 @@ fields:
         placeholder_key: '{{panel.options.site.advanced.metadata.name}}'
         placeholder_value: '{{panel.options.site.advanced.metadata.content}}'
 
-    aliases:
+    routeAliases:
         type: array
         label: '{{panel.options.site.advanced.aliases}}'
         associative: true

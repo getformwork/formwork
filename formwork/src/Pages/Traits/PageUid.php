@@ -12,6 +12,11 @@ trait PageUid
     protected string $uid;
 
     /**
+     * Get page or site relative path
+     */
+    abstract public function relativePath(): ?string;
+
+    /**
      * Get the page unique identifier
      */
     public function uid(): string
@@ -19,6 +24,9 @@ trait PageUid
         if (isset($this->uid)) {
             return $this->uid;
         }
-        return $this->uid = Str::chunk(substr(hash('sha256', $this->relativePath), 0, 32), 8, '-');
+
+        $id = $this->relativePath() ?: spl_object_hash($this);
+
+        return $this->uid = Str::chunk(substr(hash('sha256', (string) $id), 0, 32), 8, '-');
     }
 }

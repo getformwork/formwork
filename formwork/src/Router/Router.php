@@ -66,7 +66,7 @@ class Router
     /**
      * Route params
      */
-    protected ?RouteParams $params;
+    protected RouteParams $params;
 
     public function __construct(?string $request = null)
     {
@@ -75,6 +75,8 @@ class Router
 
         // Ensure requested route is wrapped in slashes
         $this->request = Str::wrap($request ?? Uri::path(HTTPRequest::uri()), '/');
+
+        $this->params = new RouteParams([]);
     }
 
     /**

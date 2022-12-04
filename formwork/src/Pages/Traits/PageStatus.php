@@ -8,6 +8,11 @@ use Formwork\Utils\Date;
 trait PageStatus
 {
     /**
+     * Page data
+     */
+    protected array $data = [];
+
+    /**
      * Page status
      */
     protected string $status;
@@ -21,14 +26,19 @@ trait PageStatus
             return $this->status;
         }
 
-        $published = $this->data['published'];
+        /**
+         * @var bool
+         */
+        $published = $this->get('published', true);
 
         $now = time();
 
+        /** @var ?string */
         if ($publishDate = $this->data['publishDate'] ?? null) {
             $published = $published && Date::toTimestamp($publishDate) < $now;
         }
 
+        /** @var ?string */
         if ($unpublishDate = $this->data['unpublishDate'] ?? null) {
             $published = $published && Date::toTimestamp($unpublishDate) > $now;
         }

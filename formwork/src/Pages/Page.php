@@ -4,8 +4,10 @@ namespace Formwork\Pages;
 
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Fields\FieldCollection;
-use Formwork\Files\Files;
+use Formwork\Files\FileCollection;
 use Formwork\Formwork;
+use Formwork\Languages\Language;
+use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
 use Formwork\Pages\Templates\Template;
 use Formwork\Pages\Traits\PageData;
@@ -13,14 +15,14 @@ use Formwork\Pages\Traits\PageStatus;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
-use Formwork\Parsers\YAML;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
-use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
+use InvalidArgumentException;
+use ReflectionClass;
 use RuntimeException;
 
 class Page implements Arrayable
@@ -37,89 +39,64 @@ class Page implements Arrayable
     public const NUM_REGEX = '/^(\d+)-/';
 
     /**
-     * Page 'published' status
+     * Page `published` status
      */
     public const PAGE_STATUS_PUBLISHED = 'published';
 
     /**
-     * Page 'not published' status
+     * Page `not published` status
      */
     public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
 
     /**
-     * Page 'not routable' status
+     * Page `not routable` status
      */
     public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
 
     /**
-     * Page path relative to content path
+     * Page path
      */
-    protected string $relativePath;
+    protected ?string $path = null;
 
     /**
-     * Page unique identifier
+     * Page path relative to the content path
      */
-    protected string $uid;
+    protected ?string $relativePath = null;
+
+    /**
+     * Page content file
+     */
+    protected ?ContentFile $contentFile = null;
 
     /**
      * Page route
      */
-    protected string $route;
+    protected ?string $route = null;
 
     /**
-     * Page data
+     * Page canonical route
      */
-    protected array $data = [];
-
-    /**
-     * Page uri
-     */
-    protected string $uri;
-
-    /**
-     * Page absolute uri
-     */
-    protected string $absoluteUri;
-
-    /**
-     * Page last modified time
-     */
-    protected int $lastModifiedTime;
-
-    /**
-     * Page modified date
-     */
-    protected string $timestamp;
-
-    /**
-     * Page name (the name of the containing directory)
-     */
-    protected string $name;
+    protected ?string $canonicalRoute = null;
 
     /**
      * Page slug
      */
-    protected string $slug;
+    protected ?string $slug = null;
 
     /**
-     * Page language
+     * Page num used to order pages
      */
-    protected ?string $language;
+    protected ?int $num = null;
 
     /**
      * Available page languages
      */
-    protected array $availableLanguages;
+    protected Languages $languages;
 
     /**
-     * Page filename
+     * Current page language
      */
-    protected string $filename;
-
-    /**
-     * Page template
-     */
-    protected Template $template;
+    protected ?Language $language = null;
 
     /**
      * Page scheme
@@ -127,24 +104,14 @@ class Page implements Arrayable
     protected Scheme $scheme;
 
     /**
-     * Page files
-     */
-    protected Files $files;
-
-    /**
-     * Page frontmatter
-     */
-    protected array $frontmatter;
-
-    /**
      * Page fields
      */
     protected FieldCollection $fields;
 
     /**
-     * Page canonical URI
+     * Page template
      */
-    protected ?string $canonical;
+    protected Template $template;
 
     /**
      * Page metadata
@@ -152,44 +119,50 @@ class Page implements Arrayable
     protected MetadataCollection $metadata;
 
     /**
-     * Page response status
+     * Page files
+     */
+    protected FileCollection $files;
+
+    /**
+     * Page HTTP response status
      */
     protected int $responseStatus;
 
     /**
-     * Page num (used to order pages)
+     * Page loading state
      */
-    protected ?int $num;
+    protected bool $loaded = false;
 
-    /**
-     * Create a new Page instance
-     */
-    public function __construct(string $path)
+    public function __construct(array $data = [])
     {
-        $this->path = FileSystem::normalizePath($path . DS);
-
-        $this->relativePath = Str::prepend(Path::makeRelative($this->path, Formwork::instance()->site()->path(), DS), DS);
-
-        $this->route = Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
-
-        $this->name = basename($this->relativePath);
-
-        $this->slug = basename($this->route);
-
-        $this->language = null;
-
-        $this->availableLanguages = [];
+        $this->setMultiple($data);
 
         $this->loadFiles();
 
-        if (!$this->isEmpty()) {
-            $this->loadContents();
+        if ($this->hasContentFile() && !$this->contentFile->isEmpty()) {
+            $this->data = array_merge(
+                $this->data,
+                $this->contentFile->frontmatter(),
+                ['content' => $this->contentFile->content()]
+            );
         }
+
+        $this->fields->validate($this->data);
+
+        $this->loaded = true;
     }
 
     public function __toString(): string
     {
         return $this->title() ?? $this->slug();
+    }
+
+    /**
+     * Create page from the given path
+     */
+    public static function fromPath(string $path, array $data = []): static
+    {
+        return new static(['path' => $path] + $data);
     }
 
     /**
@@ -204,21 +177,28 @@ class Page implements Arrayable
             'searchable'     => true,
             'cacheable'      => true,
             'orderable'      => true,
-            'canonical'      => null,
+            'canonicalRoute' => null,
             'headers'        => [],
             'responseStatus' => 200,
-            'metadata'       => []
+            'metadata'       => [],
+            'content'        => ''
         ];
 
         // Merge with scheme default field values
         $defaults = array_merge($defaults, Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null));
 
-        // If the page hasn't a num, by default it won't be listed
+        // If the page doesn't have a route, by default it won't be routable nor cacheable
+        if ($this->route() === null) {
+            $defaults['routable'] = false;
+            $defaults['cacheable'] = false;
+        }
+
+        // If the page doesn't have a num, by default it won't be listed
         if ($this->num() === null) {
             $defaults['listed'] = false;
         }
 
-        // If the page hasn't a num or numbering is 'date', by default it won't be orderable
+        // If the page doesn't have a num or numbering is `date`, by default it won't be orderable
         if ($this->num() === null || $this->scheme->get('num') === 'date') {
             $defaults['orderable'] = false;
         }
@@ -227,17 +207,110 @@ class Page implements Arrayable
     }
 
     /**
+     * Get page path
+     */
+    public function path(): ?string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Get page relative path
+     */
+    public function relativePath(): ?string
+    {
+        return $this->relativePath;
+    }
+
+    /**
+     * Get page filename
+     */
+    public function contentFile(): ?ContentFile
+    {
+        return $this->contentFile;
+    }
+
+    /**
+     * Get page route
+     */
+    public function route(): ?string
+    {
+        return $this->route;
+    }
+
+    /**
      * Get the canonical page URI, or `null` if not available
      */
-    public function canonical(): ?string
+    public function canonicalRoute(): ?string
     {
-        if (isset($this->canonical)) {
-            return $this->canonical;
+        if (isset($this->canonicalRoute)) {
+            return $this->canonicalRoute;
         }
 
-        return $this->canonical = !empty($this->data['canonical'])
-            ? Path::normalize($this->data['canonical'])
+        return $this->canonicalRoute = !empty($this->data['canonicalRoute'])
+            ? Path::normalize($this->data['canonicalRoute'])
             : null;
+    }
+
+    /**
+     * Get page slug
+     */
+    public function slug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Get page num
+     */
+    public function num(): ?int
+    {
+        if (isset($this->num)) {
+            return $this->num;
+        }
+
+        preg_match(self::NUM_REGEX, basename($this->relativePath()), $matches);
+        return $this->num = isset($matches[1]) ? (int) $matches[1] : null;
+    }
+
+    /**
+     * Get page languages
+     */
+    public function languages(): Languages
+    {
+        return $this->languages;
+    }
+
+    /**
+     * Get page language
+     */
+    public function language(): ?Language
+    {
+        return $this->language;
+    }
+
+    /**
+     * Get page scheme
+     */
+    public function scheme(): Scheme
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * Get page fields
+     */
+    public function fields(): FieldCollection
+    {
+        return $this->fields;
+    }
+
+    /**
+     * Get page template
+     */
+    public function template(): Template
+    {
+        return $this->template;
     }
 
     /**
@@ -255,7 +328,15 @@ class Page implements Arrayable
     }
 
     /**
-     * Get the page response status
+     * Get page files
+     */
+    public function files(): FileCollection
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get page HTTP response status
      */
     public function responseStatus(): int
     {
@@ -267,7 +348,8 @@ class Page implements Arrayable
         $this->responseStatus = (int) $this->data['responseStatus'];
 
         // Get a default 404 Not Found status for the error page
-        if ($this->isErrorPage() && $this->responseStatus() === 200 && !isset($this->frontmatter['responseStatus'])) {
+        if ($this->isErrorPage() && $this->responseStatus() === 200
+            && !isset($this->contentFile, $this->contentFile->frontmatter()['responseStatus'])) {
             $this->responseStatus = 404;
         }
 
@@ -275,70 +357,31 @@ class Page implements Arrayable
     }
 
     /**
-     * Page last modified time
-     */
-    public function lastModifiedTime(): int
-    {
-        if (isset($this->lastModifiedTime)) {
-            return $this->lastModifiedTime;
-        }
-
-        return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path . $this->filename);
-    }
-
-    /**
-     * Timestamp representing the publication date (modification time as fallback)
-     */
-    public function timestamp(): int
-    {
-        if (isset($this->timestamp)) {
-            return $this->timestamp;
-        }
-
-        return $this->timestamp = isset($this->data['publishDate'])
-            ? Date::toTimestamp($this->data['publishDate'])
-            : $this->lastModifiedTime();
-    }
-
-    /**
-     * Get page num
-     */
-    public function num(): ?int
-    {
-        if (isset($this->num)) {
-            return $this->num;
-        }
-
-        preg_match(self::NUM_REGEX, $this->name, $matches);
-        return $this->num = isset($matches[1]) ? (int) $matches[1] : null;
-    }
-
-    /**
      * Set page language
      */
-    public function setLanguage(string $language): void
+    public function setLanguage(Language|string $language): void
     {
-        if (!$this->hasLanguage($language)) {
-            throw new RuntimeException(sprintf('Invalid page language "%s"', $language));
+        if (is_string($language)) {
+            $language = new Language($language);
         }
-        $path = $this->path;
-        $this->resetProperties();
-        $this->language = $language;
-        $this->__construct($path);
-    }
 
-    /**
-     * Get page files
-     */
-    public function files(): Files
-    {
-        return $this->files;
+        if (!$this->hasLoaded()) {
+            $this->language = $language;
+            return;
+        }
+
+        if ($this->languages()->current()->code() !== ($code = $language->code())) {
+            if (!$this->languages()->available()->has($code)) {
+                throw new InvalidArgumentException(sprintf('Invalid page language "%s"', $code));
+            }
+            $this->reload(['language' => $language]);
+        }
     }
 
     /**
      * Return a Files collection containing only images
      */
-    public function images(): Files
+    public function images(): FileCollection
     {
         return $this->files()->filterByType('image');
     }
@@ -352,13 +395,24 @@ class Page implements Arrayable
     }
 
     /**
-     * Return whether page is empty
+     * Return whether the page has a content file
+     */
+    public function hasContentFile(): bool
+    {
+        return $this->contentFile !== null;
+    }
+
+    /**
+     * Return whether the page content data is empty
      */
     public function isEmpty(): bool
     {
-        return !isset($this->filename);
+        return $this->contentFile?->frontmatter() !== [];
     }
 
+    /**
+     * Return whether the page is published
+     */
     public function isPublished(): bool
     {
         return $this->status() === self::PAGE_STATUS_PUBLISHED;
@@ -405,11 +459,11 @@ class Page implements Arrayable
     }
 
     /**
-     * Return whether the page has the specified language
+     * Return whether the page has loaded
      */
-    public function hasLanguage(string $language): bool
+    public function hasLoaded(): bool
     {
-        return in_array($language, $this->availableLanguages, true);
+        return $this->loaded;
     }
 
     /**
@@ -417,11 +471,28 @@ class Page implements Arrayable
      *
      * @internal
      */
-    public function reload(): void
+    public function reload(array $data = []): void
     {
+        if (!$this->hasLoaded()) {
+            throw new RuntimeException('Unable to reload, the page has not been loaded yet');
+        }
         $path = $this->path;
         $this->resetProperties();
-        $this->__construct($path);
+        $this->__construct($data + ['path' => $path]);
+    }
+
+    /**
+     * Set page path
+     */
+    protected function setPath(string $path): void
+    {
+        $this->path = FileSystem::normalizePath($path . DS);
+
+        $this->relativePath = Str::prepend(Path::makeRelative($this->path, Formwork::instance()->site()->path(), DS), DS);
+
+        $this->route ??= Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
+
+        $this->slug ??= basename($this->route);
     }
 
     /**
@@ -429,33 +500,52 @@ class Page implements Arrayable
      */
     protected function loadFiles(): void
     {
+        /**
+         * @var array<string, string>
+         */
         $contentFiles = [];
+
+        /**
+         * @var array<string>
+         */
         $files = [];
 
-        foreach (FileSystem::listFiles($this->path) as $file) {
-            $name = FileSystem::name($file);
+        /**
+         * @var array<string>
+         */
+        $languages = [];
 
-            $extension = '.' . FileSystem::extension($file);
+        $config = Formwork::instance()->config();
 
-            if ($extension === Formwork::instance()->config()->get('content.extension')) {
-                $language = null;
+        $site = Formwork::instance()->site();
 
-                if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
-                    // Parse double extension
-                    [$match, $name, $language] = $matches;
-                }
+        if (isset($this->path) && FileSystem::isDirectory($this->path, assertExists: false)) {
+            foreach (FileSystem::listFiles($this->path) as $file) {
+                $name = FileSystem::name($file);
 
-                if (Formwork::instance()->site()->templates()->has($name)) {
-                    $contentFiles[$language] = [
-                        'filename' => $file,
-                        'template' => $name
-                    ];
-                    if ($language !== null && !in_array($language, $this->availableLanguages, true)) {
-                        $this->availableLanguages[] = $language;
+                $extension = '.' . FileSystem::extension($file);
+
+                if ($extension === $config->get('content.extension')) {
+                    $language = null;
+
+                    if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
+                        // Parse double extension
+                        [, $name, $language] = $matches;
                     }
+
+                    if ($site->templates()->has($name)) {
+                        $contentFiles[$language] = [
+                            'path'     => FileSystem::joinPaths($this->path, $file),
+                            'filename' => $file,
+                            'template' => $name
+                        ];
+                        if ($language !== null && !in_array($language, $languages, true)) {
+                            $languages[] = $language;
+                        }
+                    }
+                } elseif (in_array($extension, $config->get('files.allowed_extensions'), true)) {
+                    $files[] = $file;
                 }
-            } elseif (in_array($extension, Formwork::instance()->config()->get('files.allowed_extensions'), true)) {
-                $files[] = $file;
             }
         }
 
@@ -463,45 +553,47 @@ class Page implements Arrayable
             // Get correct content file based on current language
             ksort($contentFiles);
 
-            $currentLanguage = $this->language ?? Formwork::instance()->site()->languages()->current();
+            // Language may already be set
+            $currentLanguage = $this->language ?? $site->languages()->current();
 
-            $key = isset($contentFiles[$currentLanguage]) ? $currentLanguage : array_keys($contentFiles)[0];
+            /**
+             * @var string
+             */
+            $key = isset($currentLanguage, $contentFiles[$currentLanguage->code()])
+                ? $currentLanguage->code()
+                : array_keys($contentFiles)[0];
 
             // Set actual language
-            $this->language = $key ?: null;
+            $this->language ??= $key ? new Language($key) : null;
 
-            $this->filename = $contentFiles[$key]['filename'];
+            $this->contentFile ??= new ContentFile($contentFiles[$key]['path']);
 
-            $this->template = new Template($contentFiles[$key]['template'], $this);
+            $this->template ??= new Template($contentFiles[$key]['template'], $this);
 
-            $this->scheme = Formwork::instance()->schemes()->get('pages', $this->template);
+            $this->scheme ??= Formwork::instance()->schemes()->get('pages', $this->template);
+        } else {
+            $this->template ??= new Template('default', $this);
 
-            $this->fields = $this->scheme()->fields();
+            $this->scheme ??= Formwork::instance()->schemes()->get('pages', 'default');
         }
 
-        $this->files = Files::fromPath($this->path, $files);
-    }
+        $this->fields ??= $this->scheme()->fields();
 
-    /**
-     * Parse page content
-     */
-    protected function loadContents(): void
-    {
-        $contents = FileSystem::read($this->path . $this->filename);
+        $defaultLanguage = in_array((string) $site->languages()->default(), $languages, true)
+            ? $site->languages()->default()
+            : null;
 
-        if (!preg_match('/(?:\s|^)-{3}\s*(.+?)\s*-{3}\s*(.*?)\s*$/s', $contents, $matches)) {
-            throw new RuntimeException('Invalid page format');
-        }
+        $this->languages ??= new Languages([
+            'available' => $languages,
+            'default'   => $defaultLanguage,
+            'current'   => $this->language ?? null,
+            'requested' => $site->languages()->requested(),
+            'preferred' => $site->languages()->preferred()
+        ]);
 
-        [, $rawFrontmatter, $rawContent] = $matches;
+        $this->files ??= isset($this->path) ? FileCollection::fromPath($this->path, $files) : new FileCollection();
 
-        $this->frontmatter = YAML::parse($rawFrontmatter);
-
-        $rawContent = str_replace("\r\n", "\n", $rawContent);
-
-        $this->data = array_merge($this->defaults(), $this->frontmatter, ['content' => $rawContent]);
-
-        $this->fields->validate($this->data);
+        $this->data = array_merge($this->defaults(), $this->data);
     }
 
     /**
@@ -509,8 +601,14 @@ class Page implements Arrayable
      */
     protected function resetProperties(): void
     {
-        foreach (array_keys(get_class_vars(static::class)) as $property) {
-            unset($this->$property);
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            unset($this->{$property->getName()});
+
+            if ($property->hasDefaultValue()) {
+                $this->{$property->getName()} = $property->getDefaultValue();
+            }
         }
     }
 }

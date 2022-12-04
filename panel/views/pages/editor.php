@@ -31,15 +31,15 @@
         endif;
 ?>
 <?php
-        if ($availableLanguages):
+        if (!$site->languages()->available()->isEmpty()):
 ?>
         <div class="dropdown">
             <button type="button" class="dropdown-button button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage): ?> <span class="page-language"><?= $currentLanguage ?></span><?php endif; ?></button>
             <div class="dropdown-menu" id="languages-dropdown">
 <?php
-            foreach ($availableLanguages as $languageCode => $languageLabel):
+            foreach ($site->languages()->available() as $language):
 ?>
-                <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $languageCode . '/') ?>" class="dropdown-item"><?= $page->hasLanguage($languageCode) ? $this->translate('panel.pages.languages.edit-language', $languageLabel) : $this->translate('panel.pages.languages.add-language', $languageLabel); ?></a>
+                <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.edit-language', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.add-language', $language->nativeName() . ' (' . $language->code() . ')'); ?></a>
 <?php
             endforeach;
 ?>

@@ -14,7 +14,7 @@
 <?php
             foreach ($pages as $page):
                 $routable = $page->published() && $page->routable();
-                $date = $this->datetime($page->lastModifiedTime());
+                $date = $this->datetime($page->contentFile()->lastModifiedTime());
 ?>
                 <li class="<?php if ($subpages): ?>pages-level-<?= $page->level() ?><?php endif; ?>" <?php if (!$page->orderable()): ?>data-sortable="false"<?php endif; ?>>
                     <div class="pages-item">
@@ -37,9 +37,9 @@
                                 <?= $this->icon($page->get('icon', 'page')) ?>
                                 <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a>
 <?php
-                                foreach ($page->availableLanguages() as $code):
+                                foreach ($page->languages()->available() as $language):
 ?>
-                                <span class="page-language"><?= $code ?></span>
+                                <span class="page-language"><?= $language->code() ?></span>
 <?php
                                 endforeach;
 ?>

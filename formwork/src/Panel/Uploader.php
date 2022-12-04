@@ -3,6 +3,7 @@
 namespace Formwork\Panel;
 
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Files\FileCollection;
 use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -49,7 +50,7 @@ class Uploader
     /**
      * Array containing uploaded files
      */
-    protected array $uploadedFiles = [];
+    protected FileCollection $uploadedFiles;
 
     /**
      * Create a new Uploader instance
@@ -85,18 +86,24 @@ class Uploader
         if (!HTTPRequest::hasFiles()) {
             return false;
         }
+
         $count = count(HTTPRequest::files());
+
+        $filenames = [];
 
         foreach (HTTPRequest::files() as $file) {
             if ($file['error'] === 0) {
                 if ($name === null || $count > 1) {
                     $name = $file['name'];
                 }
-                $this->move($file['tmp_name'], $this->destination, $name);
+
+                $filenames[] = $this->move($file['tmp_name'], $this->destination, $name);
             } else {
                 throw new TranslatedException(self::ERROR_MESSAGES[$file['error']], self::ERROR_LANGUAGE_STRINGS[$file['error']]);
             }
         }
+
+        $this->uploadedFiles = FileCollection::fromPath($this->destination, $filenames);
 
         return true;
     }
@@ -115,17 +122,15 @@ class Uploader
     /**
      * Return uploaded files
      */
-    public function uploadedFiles(): array
+    public function uploadedFiles(): FileCollection
     {
         return $this->uploadedFiles;
     }
 
     /**
      * Move uploaded file to a destination
-     *
-     * @return bool Whether file was successfully moved or not
      */
-    protected function move(string $source, string $destination, string $filename): bool
+    protected function move(string $source, string $destination, string $filename): string
     {
         $mimeType = FileSystem::mimeType($source);
 
@@ -165,12 +170,9 @@ class Uploader
         }
 
         if (@move_uploaded_file($source, $destinationPath)) {
-            $this->uploadedFiles[] = $filename;
-            return true;
+            return $filename;
         }
 
         throw new TranslatedException('Cannot move uploaded file to destination', 'panel.uploader.error.cannot-move-to-destination');
-
-        return false;
     }
 }

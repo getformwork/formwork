@@ -49,7 +49,7 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch(Formwork::instance()->config()->get('content.path'));
+                FileSystem::touch(Formwork::instance()->site()->path());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');
@@ -89,7 +89,7 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch(Formwork::instance()->config()->get('content.path'));
+                FileSystem::touch(Formwork::instance()->site()->path());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');

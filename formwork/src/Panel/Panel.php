@@ -7,7 +7,7 @@ use Formwork\Formwork;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Controllers\ErrorsController;
 use Formwork\Panel\Users\User;
-use Formwork\Panel\Users\Users;
+use Formwork\Panel\Users\UserCollection;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Notification;
@@ -21,7 +21,7 @@ final class Panel
     /**
      * All the registered users
      */
-    protected Users $users;
+    protected UserCollection $users;
 
     /**
      * Errors controller
@@ -44,7 +44,7 @@ final class Panel
     public function load(): void
     {
         $this->loadSchemes();
-        $this->users = Users::load();
+        $this->users = UserCollection::load();
         $this->loadTranslations();
         $this->loadErrorHandler();
     }
@@ -61,7 +61,7 @@ final class Panel
     /**
      * Return all registered users
      */
-    public function users(): Users
+    public function users(): UserCollection
     {
         return $this->users;
     }

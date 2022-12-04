@@ -12,6 +12,8 @@ class PageCollection extends AbstractCollection implements Paginable
 {
     protected ?string $dataType = Page::class . '|' . Site::class;
 
+    protected bool $associative = true;
+
     /**
      * Pagination related to the collection
      */
@@ -111,6 +113,9 @@ class PageCollection extends AbstractCollection implements Paginable
      */
     public static function fromPath(string $path, bool $recursive = false): self
     {
+        /**
+         * @var array<string, Page>
+         */
         $pages = [];
 
         foreach (FileSystem::listDirectories($path) as $dir) {
@@ -119,8 +124,8 @@ class PageCollection extends AbstractCollection implements Paginable
             if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
                 $page = Formwork::instance()->site()->retrievePage($pagePath);
 
-                if (!$page->isEmpty()) {
-                    $pages[] = $page;
+                if ($page->hasContentFile()) {
+                    $pages[$page->route()] = $page;
                 }
 
                 if ($recursive) {
@@ -129,8 +134,8 @@ class PageCollection extends AbstractCollection implements Paginable
             }
         }
 
-        $pages = new static($pages);
+        $pageCollection = new static($pages);
 
-        return $pages->sortBy('relativePath');
+        return $pageCollection->sortBy('relativePath');
     }
 }

@@ -1,0 +1,25 @@
+title: Default
+
+fields:
+    title:
+        type: text
+        class: input-large
+        required: true
+
+    content:
+        type: markdown
+
+    published:
+        type: checkbox
+        label: '{{panel.pages.status.published}}'
+        default: true
+
+    parent:
+        type: page.parents
+        access: panel
+        label: '{{panel.pages.parent}}'
+
+    template:
+        type: page.template
+        access: panel
+        label: '{{panel.pages.template}}'

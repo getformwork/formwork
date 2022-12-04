@@ -39,10 +39,10 @@ trait PageData
             // Call getter method if exists. We check property existence before
             // to avoid using get to call methods arbitrarily
             if (method_exists($this, $key)) {
-                return $this->$key();
+                return $this->{$key}();
             }
 
-            return $this->$key;
+            return $this->{$key} ?? $default;
         }
 
         // Get values from fields
@@ -67,10 +67,17 @@ trait PageData
     public function set(string $key, $value): void
     {
         if (property_exists($this, $key)) {
-            $this->$key = $value;
-        } else {
-            Arr::set($this->data, $key, $value);
+            // If defined use a setter
+            if (method_exists($this, $setter = 'set' . ucfirst($key))) {
+                $this->{$setter}($value);
+                return;
+            }
+
+            $this->{$key} = $value;
+            return;
         }
+
+        Arr::set($this->data, $key, $value);
     }
 
     /**
@@ -87,5 +94,13 @@ trait PageData
         ksort($data);
 
         return $data;
+    }
+
+    /**
+     * Get page data
+     */
+    public function data(): array
+    {
+        return $this->data;
     }
 }

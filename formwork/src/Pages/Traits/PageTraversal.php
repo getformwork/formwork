@@ -10,11 +10,6 @@ use Formwork\Pages\Site;
 trait PageTraversal
 {
     /**
-     * Page path
-     */
-    protected string $path;
-
-    /**
      * Parent page
      */
     protected Page|Site|null $parent;
@@ -45,6 +40,16 @@ trait PageTraversal
     protected PageCollection $inclusiveSiblings;
 
     /**
+     * Get page or site path
+     */
+    abstract public function path(): ?string;
+
+    /**
+     * Get page or site route
+     */
+    abstract public function route(): ?string;
+
+    /**
      * Return whether the page is site
      */
     abstract public function isSite(): bool;
@@ -58,13 +63,13 @@ trait PageTraversal
             return $this->parent;
         }
 
-        if ($this->isSite()) {
+        if ($this->isSite() || $this->path() === null) {
             return $this->parent = null;
         }
 
-        $parentPath = dirname($this->path) . DS;
+        $parentPath = dirname($this->path()) . DS;
 
-        if ($parentPath === Formwork::instance()->config()->get('content.path')) {
+        if ($parentPath === Formwork::instance()->site()->path()) {
             return $this->parent = Formwork::instance()->site();
         }
 
@@ -96,7 +101,11 @@ trait PageTraversal
             return $this->children;
         }
 
-        return $this->children = PageCollection::fromPath($this->path);
+        if ($this->path() === null) {
+            return $this->children = new PageCollection();
+        }
+
+        return $this->children = PageCollection::fromPath($this->path());
     }
 
     /**
@@ -124,7 +133,11 @@ trait PageTraversal
             return $this->descendants;
         }
 
-        return $this->descendants = PageCollection::fromPath($this->path, recursive: true);
+        if ($this->path() === null) {
+            return $this->descendants = new PageCollection();
+        }
+
+        return $this->descendants = PageCollection::fromPath($this->path(), recursive: true);
     }
 
     /**
@@ -157,7 +170,7 @@ trait PageTraversal
         $page = $this;
 
         while (($parent = $page->parent()) !== null) {
-            $ancestors[] = $parent;
+            $ancestors[$parent->route()] = $parent;
             $page = $parent;
         }
 
@@ -205,8 +218,8 @@ trait PageTraversal
             return $this->inclusiveSiblings;
         }
 
-        if ($this->isSite()) {
-            return $this->inclusiveSiblings = new PageCollection([$this]);
+        if ($this->isSite() || $this->path() === null) {
+            return $this->inclusiveSiblings = new PageCollection([$this->route() => $this]);
         }
 
         return $this->inclusiveSiblings = $this->parent()->children();

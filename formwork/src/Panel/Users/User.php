@@ -81,7 +81,7 @@ class User implements Arrayable
     {
         $this->data = array_merge($this->defaults, $data);
         foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
-            $this->$var = $this->data[$var];
+            $this->{$var} = $this->data[$var];
         }
 
         $this->permissions = new Permissions($this->role);

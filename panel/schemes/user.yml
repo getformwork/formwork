@@ -40,7 +40,7 @@ fields:
         label: '{{panel.user.role}}'
         disabled: true
         import:
-            options: 'Formwork\Panel\Users\Users::availableRoles'
+            options: 'Formwork\Panel\Users\UserCollection::availableRoles'
 
 
     color-scheme:

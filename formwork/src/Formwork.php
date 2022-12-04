@@ -255,8 +255,10 @@ final class Formwork
     protected function loadSite(): void
     {
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
-        $this->site = new Site($config);
-        $this->site->setLanguages($this->languages);
+        $this->site = Site::fromPath(
+            $this->config()->get('content.path'),
+            ['languages' => $this->languages] + $config
+        );
     }
 
     /**

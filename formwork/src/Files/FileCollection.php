@@ -5,7 +5,7 @@ namespace Formwork\Files;
 use Formwork\Data\AbstractCollection;
 use Formwork\Utils\FileSystem;
 
-class Files extends AbstractCollection
+class FileCollection extends AbstractCollection
 {
     protected bool $associative = true;
 

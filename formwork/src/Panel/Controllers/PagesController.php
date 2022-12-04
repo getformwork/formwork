@@ -5,9 +5,9 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Data\DataGetter;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\FieldCollection;
+use Formwork\Files\File;
 use Formwork\Files\Image;
 use Formwork\Formwork;
-use Formwork\Languages\LanguageCodes;
 use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Panel\Uploader;
@@ -16,6 +16,7 @@ use Formwork\Response\JSONResponse;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
+use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;
@@ -111,7 +112,7 @@ class PagesController extends AbstractController
                 return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
-            if ($page->hasLanguage($language)) {
+            if ($page->languages()->available()->has($language)) {
                 $page->setLanguage($language);
             }
         } elseif ($page->language() !== null) {
@@ -150,6 +151,7 @@ class PagesController extends AbstractController
                 if (HTTPRequest::hasFiles()) {
                     try {
                         $this->processPageUploads($page);
+                        $page->reload();
                     } catch (TranslatedException $e) {
                         $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
                     }
@@ -176,13 +178,12 @@ class PagesController extends AbstractController
         $this->modal('deleteFile');
 
         return new Response($this->view('pages.editor', [
-            'title'              => $this->translate('panel.pages.edit-page', $page->title()),
-            'page'               => $page,
-            'fields'             => $fields,
-            'templates'          => $this->site()->templates()->keys(),
-            'parents'            => $this->site()->descendants()->sortBy('relativePath'),
-            'currentLanguage'    => $params->get('language', $page->language()),
-            'availableLanguages' => $this->availableSiteLanguages()
+            'title'           => $this->translate('panel.pages.edit-page', $page->title()),
+            'page'            => $page,
+            'fields'          => $fields,
+            'templates'       => $this->site()->templates()->keys(),
+            'parents'         => $this->site()->descendants()->sortBy('relativePath'),
+            'currentLanguage' => $params->get('language', $page->language()?->code())
         ], true));
     }
 
@@ -208,6 +209,9 @@ class PagesController extends AbstractController
             return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
         }
 
+        /**
+         * @var array<string, Page>
+         */
         $pages = $parent->children()->toArray();
 
         $from = max(0, $data->get('from'));
@@ -218,8 +222,8 @@ class PagesController extends AbstractController
 
         array_splice($pages, $to, 0, array_splice($pages, $from, 1));
 
-        foreach ($pages as $i => $page) {
-            $name = $page->name();
+        foreach (array_values($pages) as $i => $page) {
+            $name = basename($page->relativePath());
             if ($name === null) {
                 continue;
             }
@@ -248,7 +252,7 @@ class PagesController extends AbstractController
 
         if ($params->has('language')) {
             $language = $params->get('language');
-            if ($page->hasLanguage($language)) {
+            if ($page->languages()->available()->has($language)) {
                 $page->setLanguage($language);
             } else {
                 $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.invalid-language', $language), 'error');
@@ -262,8 +266,8 @@ class PagesController extends AbstractController
         }
 
         // Delete just the content file only if there are more than one language
-        if ($params->has('language') && count($page->availableLanguages()) > 1) {
-            FileSystem::delete($page->path() . $page->filename());
+        if ($params->has('language') && count($page->languages()->available()) > 1) {
+            FileSystem::delete($page->contentFile()->path());
         } else {
             FileSystem::delete($page->path(), true);
         }
@@ -376,16 +380,16 @@ class PagesController extends AbstractController
 
         FileSystem::createFile($path . $filename);
 
-        $frontmatter = [
+        $contentData = [
             'title'     => $data->get('title'),
             'published' => false
         ];
 
-        $fileContent = Str::wrap(YAML::encode($frontmatter), '---' . PHP_EOL);
+        $fileContent = Str::wrap(YAML::encode($contentData), '---' . PHP_EOL);
 
         FileSystem::write($path . $filename, $fileContent);
 
-        return new Page($path);
+        return Page::fromPath($path);
     }
 
     /**
@@ -399,7 +403,7 @@ class PagesController extends AbstractController
         }
 
         // Load current page frontmatter
-        $frontmatter = $page->frontmatter();
+        $frontmatter = $page->contentFile()->frontmatter();
 
         // Preserve the title if not given
         if (!empty($data->get('title'))) {
@@ -432,7 +436,7 @@ class PagesController extends AbstractController
             throw new TranslatedException('Invalid page language', 'panel.pages.page.cannot-edit.invalid-language');
         }
 
-        $differ = $frontmatter !== $page->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
+        $differ = $frontmatter !== $page->contentFile()->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
 
         if ($differ) {
             $filename = $data->get('template');
@@ -442,19 +446,24 @@ class PagesController extends AbstractController
             $fileContent = Str::wrap(YAML::encode($frontmatter), '---' . PHP_EOL) . $content;
 
             FileSystem::write($page->path() . $filename, $fileContent);
-            FileSystem::touch(Formwork::instance()->config()->get('content.path'));
+            FileSystem::touch(Formwork::instance()->site()->path());
 
             // Update page with the new data
             $page->reload();
 
             // Set correct page language if it has changed
-            if ($language !== $page->language()) {
+            if ($language !== $page->language()?->code()) {
                 $page->setLanguage($language);
             }
 
             // Check if page number has to change
-            if ($page->scheme()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $page->timestamp()))) {
-                $name = preg_replace(Page::NUM_REGEX, $num . '-', $page->name());
+
+            $timestamp = isset($page->data()['publishDate'])
+                ? Date::toTimestamp($page->data()['publishDate'])
+                : $page->contentFile()->lastModifiedTime();
+
+            if ($page->scheme()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $timestamp))) {
+                $name = preg_replace(Page::NUM_REGEX, $num . '-', basename($page->relativePath()));
                 try {
                     $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
@@ -504,16 +513,15 @@ class PagesController extends AbstractController
     {
         $uploader = new Uploader($page->path());
         $uploader->upload();
-        $page->reload();
 
+        /**
+         * @var File
+         */
         foreach ($uploader->uploadedFiles() as $file) {
-            $file = $page->files()->get($file);
-
             // Process JPEG and PNG images according to system options (e.g. quality)
             if (Formwork::instance()->config()->get('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($file->path());
                 $image->saveOptimized();
-                $page->reload();
             }
         }
     }
@@ -551,7 +559,7 @@ class PagesController extends AbstractController
         $directory = dirname($page->path());
         $destination = FileSystem::joinPaths($directory, $name, DS);
         FileSystem::moveDirectory($page->path(), $destination);
-        return new Page($destination);
+        return Page::fromPath($destination);
     }
 
     /**
@@ -559,9 +567,9 @@ class PagesController extends AbstractController
      */
     protected function changePageParent(Page $page, Page|Site $parent): Page
     {
-        $destination = FileSystem::joinPaths($parent->path(), $page->name(), DS);
+        $destination = FileSystem::joinPaths($parent->path(), basename($page->relativePath()), DS);
         FileSystem::moveDirectory($page->path(), $destination);
-        return new Page($destination);
+        return Page::fromPath($destination);
     }
 
     /**
@@ -570,9 +578,8 @@ class PagesController extends AbstractController
     protected function changePageTemplate(Page $page, string $template): Page
     {
         $destination = $page->path() . $template . Formwork::instance()->config()->get('content.extension');
-        FileSystem::move($page->path() . $page->filename(), $destination);
-        $page->reload();
-        return $page;
+        FileSystem::move($page->contentFile()->path(), $destination);
+        return Page::fromPath($page->path());
     }
 
     /**
@@ -594,17 +601,5 @@ class PagesController extends AbstractController
     protected function validateSlug(string $slug): bool
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
-    }
-
-    /**
-     * Return an array containing the available site languages as keys with proper labels as values
-     */
-    protected function availableSiteLanguages(): array
-    {
-        $languages = [];
-        foreach (Formwork::instance()->config()->get('languages.available') as $code) {
-            $languages[$code] = LanguageCodes::hasCode($code) ? LanguageCodes::codeToNativeName($code) . ' (' . $code . ')' : $code;
-        }
-        return $languages;
     }
 }

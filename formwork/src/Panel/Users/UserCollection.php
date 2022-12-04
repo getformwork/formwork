@@ -7,7 +7,7 @@ use Formwork\Formwork;
 use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
 
-class Users extends AbstractCollection
+class UserCollection extends AbstractCollection
 {
     protected bool $associative = true;
 

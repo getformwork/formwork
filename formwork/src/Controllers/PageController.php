@@ -18,13 +18,13 @@ class PageController extends AbstractController
 
         $route = $params->get('page', $formwork->config()->get('pages.index'));
 
-        if ($resolvedAlias = $formwork->site()->resolveAlias($route)) {
+        if ($resolvedAlias = $formwork->site()->resolveRouteAlias($route)) {
             $route = $resolvedAlias;
         }
 
         if ($page = $formwork->site()->findPage($route)) {
-            if ($page->canonical() !== null) {
-                $canonical = $page->canonical();
+            if ($page->canonicalRoute() !== null) {
+                $canonical = $page->canonicalRoute();
 
                 if ($params->get('page', '/') !== $canonical) {
                     $route = $formwork->router()->rewrite(['page' => $canonical]);
@@ -41,7 +41,7 @@ class PageController extends AbstractController
                 || (!$page->isPublished() && !$formwork->site()->modifiedSince($page->unpublishDate()->toTimestamp()))) {
                     // Clear cache if the site was not modified since the page has been published or unpublished
                     $formwork->cache()->clear();
-                    FileSystem::touch($formwork->config()->get('content.path'));
+                    FileSystem::touch($formwork->site()->path());
                 }
             }
 
@@ -80,7 +80,7 @@ class PageController extends AbstractController
 
         $cache = $formwork->cache();
 
-        $cacheKey = $page->route();
+        $cacheKey = $page->uri(includeLanguage: true);
 
         if ($config->get('cache.enabled') && $cache->has($cacheKey)) {
             // Validate cached response

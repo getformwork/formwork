@@ -13,6 +13,7 @@ use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Schemes\Scheme;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 
 class Site implements Arrayable
@@ -23,29 +24,34 @@ class Site implements Arrayable
     use PageUri;
 
     /**
+     * Site path
+     */
+    protected ?string $path = null;
+
+    /**
      * Site relative path
      */
-    protected string $relativePath;
+    protected ?string $relativePath = null;
+
+    /**
+     * Site content file
+     */
+    protected ?ContentFile $contentFile = null;
 
     /**
      * Site route
      */
-    protected string $route;
+    protected ?string $route = null;
 
     /**
-     * Site last modified time
+     * Site canonical route
      */
-    protected int $lastModifiedTime;
+    protected ?string $canonicalRoute = null;
 
     /**
-     * Site storage (loaded pages)
+     * Site slug
      */
-    protected array $storage = [];
-
-    /**
-     * Site current page
-     */
-    protected ?Page $currentPage = null;
+    protected ?string $slug = null;
 
     /**
      * Site languages
@@ -68,35 +74,35 @@ class Site implements Arrayable
     protected TemplateCollection $templates;
 
     /**
-     * Site aliases
-     */
-    protected array $aliases;
-
-    /**
      * Site metadata
      */
     protected MetadataCollection $metadata;
 
     /**
+     * Site storage (loaded pages)
+     */
+    protected array $storage = [];
+
+    /**
+     * Site current page
+     */
+    protected ?Page $currentPage = null;
+
+    /**
+     * Site aliases
+     */
+    protected array $routeAliases;
+
+    /**
      * Create a new Site instance
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
-        $this->path = FileSystem::normalizePath(Formwork::instance()->config()->get('content.path'));
+        $this->setMultiple($data);
 
-        $this->relativePath = DS;
+        $this->load();
 
-        $this->route = '/';
-
-        $this->scheme = Formwork::instance()->schemes()->get('config', 'site');
-
-        $this->data = array_replace_recursive($this->defaults(), $data);
-
-        $this->fields = $this->scheme->fields()->validate($this->data);
-
-        $this->templates = TemplateCollection::fromPath(Formwork::instance()->config()->get('templates.path'));
-
-        $this->loadAliases();
+        $this->fields->validate($this->data);
     }
 
     public function __toString()
@@ -104,29 +110,150 @@ class Site implements Arrayable
         return $this->title();
     }
 
+    public static function fromPath(string $path, array $data = []): static
+    {
+        return new static(['path' => $path] + $data);
+    }
+
     /**
      * Return site default data
      */
     public function defaults(): array
     {
-        // Formwork::instance()->schemes()->get('config', 'site')->fields();
-        return [
-            'title'     => 'Formwork',
-            'aliases'   => [],
-            'metadata'  => [],
-            'canonical' => null
+        $defaults = [
+            'title'          => 'Formwork',
+            'author'         => '',
+            'description'    => '',
+            'metadata'       => [],
+            'canonicalRoute' => null,
+            'routeAliases'   => []
         ];
+
+        $defaults = array_merge($defaults, Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null));
+
+        return $defaults;
     }
 
     /**
-     * Get the site last modified time
+     * Get site path
      */
-    public function lastModifiedTime(): int
+    public function path(): ?string
     {
-        if (isset($this->lastModifiedTime)) {
-            return $this->lastModifiedTime;
+        return $this->path;
+    }
+
+    /**
+     * Get site relative path
+     */
+    public function relativePath(): string
+    {
+        return $this->relativePath;
+    }
+
+    /**
+     * Get site filename
+     */
+    public function contentFile(): ?ContentFile
+    {
+        return $this->contentFile;
+    }
+
+    /**
+     * Get site route
+     */
+    public function route(): string
+    {
+        return $this->route;
+    }
+
+    /**
+     * Get site canonical route
+     */
+    public function canonicalRoute(): ?string
+    {
+        return $this->canonicalRoute;
+    }
+
+    /**
+     * Get site slug
+     */
+    public function slug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Get site languages
+     */
+    public function languages(): Languages
+    {
+        return $this->languages;
+    }
+
+    /**
+     * Get site scheme
+     */
+    public function scheme(): Scheme
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * Get site fields
+     */
+    public function fields(): FieldCollection
+    {
+        return $this->fields;
+    }
+
+    /**
+     * Get site templates
+     */
+    public function templates(): TemplateCollection
+    {
+        return $this->templates;
+    }
+
+    /**
+     * Get the current page of the site
+     */
+    public function currentPage(): ?Page
+    {
+        return $this->currentPage;
+    }
+
+    /**
+     * Get site route aliases
+     */
+    public function routeAliases(): array
+    {
+        return $this->routeAliases;
+    }
+
+    /**
+     * Get site metadata
+     */
+    public function metadata(): MetadataCollection
+    {
+        if (isset($this->metadata)) {
+            return $this->metadata;
         }
-        return $this->lastModifiedTime = FileSystem::lastModifiedTime($this->path);
+
+        $defaults = [
+            'charset'      => Formwork::instance()->config()->get('charset'),
+            'author'       => $this->get('author'),
+            'description'  => $this->get('description'),
+            'generator'    => 'Formwork',
+            'routeAliases' => []
+        ];
+
+        $data = array_filter(array_merge($defaults, $this->data['metadata']));
+
+        if (!Formwork::instance()->config()->get('metadata.set_generator')) {
+            unset($data['generator']);
+        }
+
+        return $this->metadata = new MetadataCollection($data);
     }
 
     /**
@@ -161,7 +288,7 @@ class Site implements Arrayable
         if (isset($this->storage[$path])) {
             return $this->storage[$path];
         }
-        return $this->storage[$path] = new Page($path);
+        return $this->storage[$path] = Page::fromPath($path);
     }
 
     /**
@@ -192,7 +319,7 @@ class Site implements Arrayable
 
         $page = $this->retrievePage($path);
 
-        return !$page->isEmpty() ? $page : null;
+        return $page->hasContentFile() ? $page : null;
     }
 
     /**
@@ -204,44 +331,11 @@ class Site implements Arrayable
     }
 
     /**
-     * Set site languages
-     */
-    public function setLanguages(Languages $languages): void
-    {
-        $this->languages = $languages;
-    }
-
-    /**
      * Return alias of a given route
      */
-    public function resolveAlias(string $route): ?string
+    public function resolveRouteAlias(string $route): ?string
     {
-        return $this->aliases[$route] ?? null;
-    }
-
-    /**
-     * Get site metadata
-     */
-    public function metadata(): MetadataCollection
-    {
-        if (isset($this->metadata)) {
-            return $this->metadata;
-        }
-
-        $defaults = [
-            'charset'     => Formwork::instance()->config()->get('charset'),
-            'author'      => $this->get('author'),
-            'description' => $this->get('description'),
-            'generator'   => 'Formwork'
-        ];
-
-        $data = array_filter(array_merge($defaults, $this->data['metadata']));
-
-        if (!Formwork::instance()->config()->get('metadata.set_generator')) {
-            unset($data['generator']);
-        }
-
-        return $this->metadata = new MetadataCollection($data);
+        return $this->routeAliases[$route] ?? null;
     }
 
     /**
@@ -292,21 +386,46 @@ class Site implements Arrayable
         return false;
     }
 
-    /**
-     * Return whether the page has the specified language
-     */
-    public function hasLanguage(string $language): bool
+    protected function load()
     {
-        return in_array($language, $this->availableLanguages, true);
+        $this->scheme = Formwork::instance()->schemes()->get('config', 'site');
+
+        $this->fields = $this->scheme->fields();
+
+        $this->templates = TemplateCollection::fromPath(Formwork::instance()->config()->get('templates.path'));
+
+        $this->data = array_merge($this->defaults(), $this->data);
+
+        $this->loadRouteAliases();
+    }
+
+    /**
+     * Site storage
+     */
+    protected function storage(): array
+    {
+        return $this->storage;
+    }
+
+    protected function setPath(string $path): void
+    {
+        $this->path = FileSystem::normalizePath($path . DS);
+
+        $this->relativePath = DS;
+
+        $this->route = '/';
+
+        $this->slug = '';
     }
 
     /**
      * Load site aliases
      */
-    protected function loadAliases(): void
+    protected function loadRouteAliases(): void
     {
-        foreach ($this->data['aliases'] as $from => $to) {
-            $this->aliases[trim($from, '/')] = trim($to, '/');
+        $this->routeAliases = [];
+        foreach ($this->data['routeAliases'] as $from => $to) {
+            $this->routeAliases[trim($from, '/')] = trim($to, '/');
         }
     }
 }

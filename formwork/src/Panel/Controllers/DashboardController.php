@@ -24,10 +24,14 @@ class DashboardController extends AbstractController
 
         $this->modal('deletePage');
 
+        $timestamps = $this->site()->descendants()
+            ->everyItem()->contentFile()
+            ->everyItem()->lastModifiedTime();
+
         return new Response($this->view('dashboard.index', [
             'title'             => $this->translate('panel.dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.list', [
-                'pages'     => $this->site()->descendants()->sortBy('lastModifiedTime', direction: SORT_DESC)->slice(0, 5),
+                'pages'     => $this->site()->descendants()->sort(direction: SORT_DESC, sortBy: $timestamps->toArray())->limit(5),
                 'subpages'  => false,
                 'class'     => 'pages-list-top',
                 'parent'    => null,

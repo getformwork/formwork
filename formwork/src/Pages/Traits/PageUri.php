@@ -10,14 +10,14 @@ use Formwork\Utils\Uri;
 trait PageUri
 {
     /**
-     * Page route
+     * Get page or site route
      */
-    protected string $route;
+    abstract public function route(): ?string;
 
     /**
-     * Page absolute URI
+     * Get page or site canonical route
      */
-    protected string $absoluteUri;
+    abstract public function canonicalRoute(): ?string;
 
     /**
      * Return a URI relative to page
@@ -26,7 +26,7 @@ trait PageUri
     {
         $base = HTTPRequest::root();
 
-        $route = $this->canonical() ?? $this->route;
+        $route = $this->canonicalRoute() ?? $this->route();
 
         if ($includeLanguage) {
             $language = is_string($includeLanguage) ? $includeLanguage : Formwork::instance()->site()->languages()->current();
@@ -45,11 +45,8 @@ trait PageUri
     /**
      * Get page absolute URI
      */
-    public function absoluteUri(): string
+    public function absoluteUri(string $path = '', bool|string $includeLanguage = true): string
     {
-        if (isset($this->absoluteUri)) {
-            return $this->absoluteUri;
-        }
-        return $this->absoluteUri = Uri::resolveRelative($this->uri());
+        return Uri::resolveRelative($this->uri($path, $includeLanguage));
     }
 }
