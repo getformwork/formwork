@@ -9,7 +9,6 @@
         <button type="button" class="toolbar-button" data-command="quote" title="<?= $this->translate('panel.pages.editor.quote') ?>"><?= $this->icon('blockquote') ?></button>
         <button type="button" class="toolbar-button" data-command="link" title="<?= $this->translate('panel.pages.editor.link') ?>"><?= $this->icon('link') ?></button>
         <button type="button" class="toolbar-button" data-command="image" title="<?= $this->translate('panel.pages.editor.image') ?>"><?= $this->icon('image') ?></button>
-        <button type="button" class="toolbar-button" data-command="summary" title="<?= $this->translate('panel.pages.editor.summary') ?>"><?= $this->icon('readmore') ?></button>
         <span class="spacer"></span>
         <button type="button" class="toolbar-button" data-command="undo" title="<?= $this->translate('panel.pages.editor.undo') ?>" disabled><?= $this->icon('rotate-left') ?></button>
         <button type="button" class="toolbar-button" data-command="redo" title="<?= $this->translate('panel.pages.editor.redo') ?>" disabled><?= $this->icon('rotate-right') ?></button>

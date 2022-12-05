@@ -90,16 +90,6 @@ export default function Editor(textarea) {
         });
     });
 
-    $('[data-command=summary]', toolbar).addEventListener('click', function () {
-        var prevChar, prepend;
-        if (!hasSummarySequence()) {
-            prevChar = prevCursorChar();
-            prepend = (prevChar === undefined || prevChar === '\n') ? '' : '\n';
-            insertAtCursor(prepend + '\n===\n\n', '');
-            this.setAttribute('disabled', '');
-        }
-    });
-
     $('[data-command=undo]', toolbar).addEventListener('click', function () {
         editor.undo();
         editor.focus();
@@ -110,11 +100,8 @@ export default function Editor(textarea) {
         editor.focus();
     });
 
-    disableSummaryCommand();
-
     editor.on('changes', Utils.debounce(function () {
         textarea.value = editor.getValue();
-        disableSummaryCommand();
         if (editor.historySize().undo < 1) {
             $('[data-command=undo]').setAttribute('disabled', '');
         } else {
@@ -171,18 +158,6 @@ export default function Editor(textarea) {
             }
         }
     });
-
-    function hasSummarySequence() {
-        return /\n+===\n+/.test(editor.getValue());
-    }
-
-    function disableSummaryCommand() {
-        if (hasSummarySequence()) {
-            $('[data-command=summary]', toolbar).setAttribute('disabled', '');
-        } else {
-            $('[data-command=summary]', toolbar).removeAttribute('disabled');
-        }
-    }
 
     function lastLine(text) {
         var index = text.lastIndexOf('\n');
