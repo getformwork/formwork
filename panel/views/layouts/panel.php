@@ -29,7 +29,9 @@
         <a href="<?= $site->uri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('panel.view-site') ?></span> <?= $this->icon('arrow-right-up-box') ?></a>
     </div>
     <main class="main">
-        <?= $this->content() ?>
+        <div class="container">
+            <?= $this->content() ?>
+        </div>
     </main>
     <?= $modals ?>
     <script src="<?= $this->assets()->uri('js/app.min.js', true) ?>" integrity="<?= $this->assets()->integrityHash('js/app.min.js') ?>"></script>
