@@ -3,9 +3,12 @@ import Modals from '../modals';
 import Utils from '../utils';
 
 import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/addon/edit/continuelist.js';
 
 export default function Editor(textarea) {
+    var height = textarea.offsetHeight;
+
     var editor = CodeMirror.fromTextArea(textarea, {
         mode: {
             name: 'markdown',
@@ -29,6 +32,8 @@ export default function Editor(textarea) {
     var wrap = textarea.parentNode.classList.contains('editor-wrap') ? textarea.parentNode : null;
 
     var activeLines = [];
+
+    editor.getWrapperElement().style.height = height + 'px';
 
     $('[data-command=bold]', toolbar).addEventListener('click', function () {
         insertAtCursor('**');

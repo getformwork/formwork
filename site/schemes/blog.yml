@@ -21,6 +21,9 @@ layout:
             fields: [postsPerPage, published, publishDate, unpublishDate, routable, listed, cacheable]
 
 fields:
+    content:
+        rows: 5
+
     postsPerPage:
         type: select
         label: '{{panel.pages.page.posts-per-page}}'

@@ -80,9 +80,8 @@ select {
 
 textarea {
     overflow: auto;
-    height: 4 * $input-line-height * $input-font-size + $input-padding-v * 2;
-    min-height: 2 * $input-font-size * $input-line-height + $input-padding-v * 2;
-    max-height: 12 * $input-font-size * $input-line-height + $input-padding-v * 2;
+    min-height: 3 * $input-font-size * $input-line-height + $input-padding-v * 2;
+    max-height: 30 * $input-font-size * $input-line-height + $input-padding-v * 2;
     resize: vertical;
     @extend input;
 }

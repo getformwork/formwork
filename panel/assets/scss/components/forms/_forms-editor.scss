@@ -29,7 +29,8 @@
 }
 
 .editor-textarea {
-    min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    min-height: 3 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    max-height: 30 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
     border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
@@ -42,7 +43,8 @@
 }
 
 .CodeMirror {
-    min-height: 15 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    min-height: 3 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
+    max-height: 30 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: 0 $editor-textarea-padding-h;
     border: $input-border-width solid $color-base-500;
     border-radius: $input-border-radius;
@@ -51,6 +53,11 @@
     color: $color-base-100;
     font-family: $base-font-family;
     font-size: $font-size-m;
+    resize: vertical;
+}
+
+.CodeMirror-wrap pre.CodeMirror-line-like.CodeMirror-placeholder {
+    color: $color-base-300;
 }
 
 .CodeMirror-lines {

@@ -11,12 +11,13 @@ num: date
 layout:
     sections:
         content:
-            fields: [title, image, tags, content, summary]
+            fields: [title, image, tags, summary, content]
 
 fields:
     summary:
         type: markdown
         label: '{{panel.pages.summary}}'
+        rows: 5
 
     image:
         type: image
