@@ -38,7 +38,7 @@ class RegisterController extends AbstractController
                 $data = HTTPRequest::postData();
 
                 if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
-                    $this->panel()->notify($this->translate('panel.users.user.cannot-create.var-missing'), 'error');
+                    $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
                     return $this->redirectToPanel();
                 }
 

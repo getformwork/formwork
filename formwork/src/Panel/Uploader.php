@@ -31,10 +31,10 @@ class Uploader
         UPLOAD_ERR_INI_SIZE   => 'panel.uploader.error.size',
         UPLOAD_ERR_FORM_SIZE  => 'panel.uploader.error.size',
         UPLOAD_ERR_PARTIAL    => 'panel.uploader.error.partial',
-        UPLOAD_ERR_NO_FILE    => 'panel.uploader.error.no-file',
-        UPLOAD_ERR_NO_TMP_DIR => 'panel.uploader.error.no-temp',
-        UPLOAD_ERR_CANT_WRITE => 'panel.uploader.error.cannot-write',
-        UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.php-extension'
+        UPLOAD_ERR_NO_FILE    => 'panel.uploader.error.noFile',
+        UPLOAD_ERR_NO_TMP_DIR => 'panel.uploader.error.noTemp',
+        UPLOAD_ERR_CANT_WRITE => 'panel.uploader.error.cannotWrite',
+        UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.phpExtension'
     ];
 
     /**
@@ -68,7 +68,7 @@ class Uploader
     {
         $mimeTypes = array_map(
             [MimeType::class, 'fromExtension'],
-            Formwork::instance()->config()->get('files.allowed_extensions')
+            Formwork::instance()->config()->get('files.allowedExtensions')
         );
         return [
             'allowedMimeTypes' => $mimeTypes,
@@ -135,11 +135,11 @@ class Uploader
         $mimeType = FileSystem::mimeType($source);
 
         if (!$this->isAllowedMimeType($mimeType)) {
-            throw new TranslatedException(sprintf('MIME type %s is not allowed', $mimeType), 'panel.uploader.error.mime-type');
+            throw new TranslatedException(sprintf('MIME type %s is not allowed', $mimeType), 'panel.uploader.error.mimeType');
         }
 
         if (basename($filename)[0] === '.') {
-            throw new TranslatedException(sprintf('Hidden file "%s" not allowed', $filename), 'panel.uploader.error.hidden-files');
+            throw new TranslatedException(sprintf('Hidden file "%s" not allowed', $filename), 'panel.uploader.error.hiddenFiles');
         }
 
         $name = str_replace([' ', '.'], '-', FileSystem::name($filename));
@@ -152,27 +152,27 @@ class Uploader
         $filename = $name . '.' . $extension;
 
         if (strlen($filename) > FileSystem::MAX_NAME_LENGTH) {
-            throw new TranslatedException('File name too long', 'panel.uploader.error.file-name-too-long');
+            throw new TranslatedException('File name too long', 'panel.uploader.error.fileNameTooLong');
         }
 
-        if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
-            throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'panel.uploader.error.file-name');
+        if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[aZ0-9]+)?$/i', $filename)) {
+            throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'panel.uploader.error.fileName');
         }
 
         $destinationPath = FileSystem::joinPaths($destination, $filename);
 
         if (strlen($destinationPath) > FileSystem::MAX_PATH_LENGTH) {
-            throw new TranslatedException('Destination path too long', 'panel.uploader.error.destination-too-long');
+            throw new TranslatedException('Destination path too long', 'panel.uploader.error.destinationTooLong');
         }
 
         if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
-            throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'panel.uploader.error.already-exists');
+            throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'panel.uploader.error.alreadyExists');
         }
 
         if (@move_uploaded_file($source, $destinationPath)) {
             return $filename;
         }
 
-        throw new TranslatedException('Cannot move uploaded file to destination', 'panel.uploader.error.cannot-move-to-destination');
+        throw new TranslatedException('Cannot move uploaded file to destination', 'panel.uploader.error.cannotMoveToDestination');
     }
 }

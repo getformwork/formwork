@@ -46,12 +46,12 @@ class Page implements Arrayable
     /**
      * Page `not published` status
      */
-    public const PAGE_STATUS_NOT_PUBLISHED = 'not-published';
+    public const PAGE_STATUS_NOT_PUBLISHED = 'notPublished';
 
     /**
      * Page `not routable` status
      */
-    public const PAGE_STATUS_NOT_ROUTABLE = 'not-routable';
+    public const PAGE_STATUS_NOT_ROUTABLE = 'notRoutable';
 
     /**
      * Page path
@@ -543,7 +543,7 @@ class Page implements Arrayable
                             $languages[] = $language;
                         }
                     }
-                } elseif (in_array($extension, $config->get('files.allowed_extensions'), true)) {
+                } elseif (in_array($extension, $config->get('files.allowedExtensions'), true)) {
                     $files[] = $file;
                 }
             }

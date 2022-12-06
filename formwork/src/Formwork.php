@@ -212,7 +212,7 @@ final class Formwork
      */
     protected function loadErrorHandlers(): void
     {
-        if ($this->config()->get('errors.set_handlers')) {
+        if ($this->config()->get('errors.setHandlers')) {
             Errors::setHandlers();
         }
     }

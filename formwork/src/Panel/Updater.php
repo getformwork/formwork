@@ -39,11 +39,11 @@ class Updater
      * Updates registry default data
      */
     protected array $registryDefaults = [
-        'last-check'  => null,
-        'last-update' => null,
-        'etag'        => null,
-        'release'     => null,
-        'up-to-date'  => false
+        'lastCheck'  => null,
+        'lastUpdate' => null,
+        'etag'       => null,
+        'release'    => null,
+        'upToDate'   => false
     ];
 
     /**
@@ -91,7 +91,7 @@ class Updater
             'time'                => 900,
             'force'               => false,
             'registryFile'        => Formwork::instance()->config()->get('panel.paths.logs') . 'updates.json',
-            'tempFile'            => ROOT_PATH . '.formwork-update.zip',
+            'tempFile'            => ROOT_PATH . '.formworkUpdate.zip',
             'preferDistAssets'    => false,
             'cleanupAfterInstall' => false,
             'ignore'              => [
@@ -113,18 +113,18 @@ class Updater
      */
     public function checkUpdates(): bool
     {
-        if (time() - $this->registry->get('last-check') < $this->options['time']) {
-            return $this->registry->get('up-to-date');
+        if (time() - $this->registry->get('lastCheck') < $this->options['time']) {
+            return $this->registry->get('upToDate');
         }
 
         $this->loadRelease();
 
         $this->registry->set('release', $this->release);
 
-        $this->registry->set('last-check', time());
+        $this->registry->set('lastCheck', time());
 
         if (!$this->isVersionInstallable($this->release['tag'])) {
-            $this->registry->set('up-to-date', true);
+            $this->registry->set('upToDate', true);
             $this->registry->save();
             return true;
         }
@@ -133,13 +133,13 @@ class Updater
             $ETag = trim($this->headers['Etag'], '"');
 
             if ($this->registry->get('etag') === $ETag) {
-                $this->registry->set('up-to-date', true);
+                $this->registry->set('upToDate', true);
                 $this->registry->save();
                 return true;
             }
         }
 
-        $this->registry->set('up-to-date', false);
+        $this->registry->set('upToDate', false);
         $this->registry->save();
         return false;
     }
@@ -153,7 +153,7 @@ class Updater
     {
         $this->checkUpdates();
 
-        if (!$this->options['force'] && $this->registry->get('up-to-date')) {
+        if (!$this->options['force'] && $this->registry->get('upToDate')) {
             return null;
         }
 
@@ -195,14 +195,14 @@ class Updater
             }
         }
 
-        $this->registry->set('last-update', time());
+        $this->registry->set('lastUpdate', time());
 
         if (isset($this->getHeaders()['Etag'])) {
             $ETag = trim($this->headers['Etag'], '"');
             $this->registry->set('etag', $ETag);
         }
 
-        $this->registry->set('up-to-date', true);
+        $this->registry->set('upToDate', true);
         $this->registry->save();
 
         return true;

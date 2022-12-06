@@ -62,7 +62,7 @@ return [
     'datetime' => static function (int $timestamp): string {
         return Date::formatTimestamp(
             $timestamp,
-            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')
+            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')
         );
     },
     'translate' => fn (string $key, ...$arguments) => Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments),

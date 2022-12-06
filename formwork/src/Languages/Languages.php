@@ -115,7 +115,7 @@ class Languages
         /**
          * @var bool
          */
-        if ($config->get('languages.http_preferred')) {
+        if ($config->get('languages.httpPreferred')) {
             foreach (array_keys(HTTPNegotiation::language()) as $code) {
                 if (in_array($code, $available, true)) {
                     $preferred = $available[$code];

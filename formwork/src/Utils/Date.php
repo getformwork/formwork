@@ -195,7 +195,7 @@ class Date
     {
         return [
             Formwork::instance()->config()->get('date.format'),
-            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')
+            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')
         ];
     }
 

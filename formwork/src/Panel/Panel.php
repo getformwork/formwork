@@ -193,7 +193,7 @@ final class Panel
      */
     protected function loadErrorHandler(): void
     {
-        if (Formwork::instance()->config()->get('errors.set_handlers')) {
+        if (Formwork::instance()->config()->get('errors.setHandlers')) {
             $this->errors = new Controllers\ErrorsController();
             set_exception_handler(function (Throwable $exception): void {
                 $this->errors->internalServerError($exception)->send();

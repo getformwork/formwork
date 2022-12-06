@@ -23,13 +23,13 @@ class AuthenticationController extends AbstractController
 
         $limiter = new AccessLimiter(
             $attemptsRegistry,
-            Formwork::instance()->config()->get('panel.login_attempts'),
-            Formwork::instance()->config()->get('panel.login_reset_time')
+            Formwork::instance()->config()->get('panel.loginAttempts'),
+            Formwork::instance()->config()->get('panel.loginResetTime')
         );
 
         if ($limiter->hasReachedLimit()) {
-            $minutes = round(Formwork::instance()->config()->get('panel.login_reset_time') / 60);
-            return $this->error($this->translate('panel.login.attempt.too-many', $minutes));
+            $minutes = round(Formwork::instance()->config()->get('panel.loginResetTime') / 60);
+            return $this->error($this->translate('panel.login.attempt.tooMany', $minutes));
         }
 
         switch (HTTPRequest::method()) {
@@ -106,10 +106,10 @@ class AuthenticationController extends AbstractController
         Session::remove('FORMWORK_USERNAME');
         Session::destroy();
 
-        if (Formwork::instance()->config()->get('panel.logout_redirect') === 'home') {
+        if (Formwork::instance()->config()->get('panel.logoutRedirect') === 'home') {
             return $this->redirectToSite();
         }
-        $this->panel()->notify($this->translate('panel.login.logged-out'), 'info');
+        $this->panel()->notify($this->translate('panel.login.loggedOut'), 'info');
         return $this->redirectToPanel();
     }
 

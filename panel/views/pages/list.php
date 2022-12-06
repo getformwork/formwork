@@ -3,7 +3,7 @@
 ?>
             <div class="pages-list-headers" aria-hidden="true">
                 <div class="pages-headers-cell page-details"><?= $this->translate('panel.pages.page.title') ?></div>
-                <div class="pages-headers-cell page-date"><?= $this->translate('panel.pages.page.last-modified') ?></div>
+                <div class="pages-headers-cell page-date"><?= $this->translate('panel.pages.page.lastModified') ?></div>
                 <div class="pages-headers-cell page-status"><?= $this->translate('panel.pages.page.status') ?></div>
                 <div class="pages-headers-cell page-actions"><?= $this->translate('panel.pages.page.actions') ?></div>
             </div>
@@ -23,14 +23,14 @@
 <?php
                     if ($orderable && $page->orderable()):
 ?>
-                            <span class="sort-handle" title="<?= $this->translate('panel.drag-to-reorder') ?>"><?= $this->icon('grabber') ?></span>
+                            <span class="sort-handle" title="<?= $this->translate('panel.dragToReorder') ?>"><?= $this->icon('grabber') ?></span>
 <?php
                     endif;
 ?>
 <?php
                     if ($subpages && $page->hasChildren()):
 ?>
-                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->translate('panel.pages.toggle-children') ?>"><?= $this->icon('chevron-down') ?></button>
+                            <button type="button" class="page-children-toggle toggle-collapsed" title="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
 <?php
                     endif;
 ?>
@@ -60,7 +60,7 @@
 <?php
                         if ($panel->user()->permissions()->has('pages.delete')):
 ?>
-                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('panel.pages.delete-page') ?>" aria-label="<?= $this->translate('panel.pages.delete-page') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
+                            <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>"<?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
 <?php
                         endif;
 ?>

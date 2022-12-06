@@ -51,7 +51,7 @@ class YAML extends AbstractEncoder
      */
     protected static function usePHPYAMLparse(): bool
     {
-        $option = Formwork::instance()->config()->get('parsers.use_php_yaml');
+        $option = Formwork::instance()->config()->get('parsers.usePhpYaml');
         return $option === 'parse' || $option === 'all';
     }
 
@@ -60,7 +60,7 @@ class YAML extends AbstractEncoder
      */
     protected static function usePHPYAMLemit(): bool
     {
-        $option = Formwork::instance()->config()->get('parsers.use_php_yaml');
+        $option = Formwork::instance()->config()->get('parsers.usePhpYaml');
         return $option === 'emit' || $option === 'all';
     }
 }

@@ -153,7 +153,7 @@ return [
         ]
     ],
     'filters' => [
-        'request.validate-size' => [
+        'request.validateSize' => [
             'action' => static function () {
                 // Validate HTTP request Content-Length according to `post_max_size` directive
                 if (HTTPRequest::contentLength() !== null) {
@@ -162,7 +162,7 @@ return [
                     if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
                         $panel = Formwork::instance()->panel();
                         $panel->notify(
-                            Formwork::instance()->translations()->getCurrent()->translate('panel.request.error.post-max-size'),
+                            Formwork::instance()->translations()->getCurrent()->translate('panel.request.error.postMaxSize'),
                             'error'
                         );
                         return new RedirectResponse($panel->uri());
@@ -172,7 +172,7 @@ return [
             'methods' => ['POST']
         ],
 
-        'request.validate-csrf' => [
+        'request.validateCsrf' => [
             'action' => static function () {
                 // Validate CSRF token
                 try {
@@ -183,7 +183,7 @@ return [
 
                     $panel = Formwork::instance()->panel();
                     $panel->notify(
-                        Formwork::instance()->translations()->getCurrent()->translate('panel.login.suspicious-request-detected'),
+                        Formwork::instance()->translations()->getCurrent()->translate('panel.login.suspiciousRequestDetected'),
                         'warning'
                     );
 
@@ -217,7 +217,7 @@ return [
             'methods' => ['GET', 'POST']
         ],
 
-        'panel.redirect-to-login' => [
+        'panel.redirectToLogin' => [
             'action' => static function () {
                 $panel = Formwork::instance()->panel();
 

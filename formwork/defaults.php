@@ -2,23 +2,23 @@
 
 return [
     'panel' => [
-        'enabled'          => true,
-        'root'             => 'panel',
-        'translation'      => 'en',
-        'login_attempts'   => 10,
-        'login_reset_time' => 300,
-        'logout_redirect'  => 'login',
-        'session_timeout'  => 20,
-        'avatar_size'      => 512,
-        'color_scheme'     => 'light',
-        'paths'            => [
+        'enabled'        => true,
+        'root'           => 'panel',
+        'translation'    => 'en',
+        'loginAttempts'  => 10,
+        'loginResetTime' => 300,
+        'logoutRedirect' => 'login',
+        'sessionTimeout' => 20,
+        'avatarSize'     => 512,
+        'colorScheme'    => 'light',
+        'paths'          => [
             'accounts' => PANEL_PATH . 'accounts' . DS,
             'logs'     => PANEL_PATH . 'logs' . DS
         ]
     ],
     'backup' => [
-        'path'      => ROOT_PATH . 'backup' . DS,
-        'max_files' => 10
+        'path'     => ROOT_PATH . 'backup' . DS,
+        'maxFiles' => 10
     ],
     'cache' => [
         'enabled' => false,
@@ -31,19 +31,19 @@ return [
         'extension' => '.md'
     ],
     'date' => [
-        'format'      => 'm/d/Y',
-        'time_format' => 'h:i A',
-        'timezone'    => 'UTC',
-        'week_starts' => 0
+        'format'     => 'm/d/Y',
+        'timeFormat' => 'h:i A',
+        'timezone'   => 'UTC',
+        'weekStarts' => 0
     ],
     'errors' => [
-        'set_handlers' => true
+        'setHandlers' => true
     ],
     'fields' => [
         'path' => FORMWORK_PATH . 'fields' . DS
     ],
     'files' => [
-        'allowed_extensions' => [
+        'allowedExtensions' => [
             '.jpg',
             '.jpeg',
             '.png',
@@ -54,25 +54,25 @@ return [
         ]
     ],
     'images' => [
-        'jpeg_quality'     => 85,
-        'jpeg_progressive' => true,
-        'png_compression'  => 6,
-        'webp_quality'     => 85,
-        'process_uploads'  => true
+        'jpegQuality'     => 85,
+        'jpegProgressive' => true,
+        'pngCompression'  => 6,
+        'webpQuality'     => 85,
+        'processUploads'  => true
     ],
     'languages' => [
-        'available'      => [],
-        'http_preferred' => false
+        'available'     => [],
+        'httpPreferred' => false
     ],
     'metadata' => [
-        'set_generator' => true
+        'setGenerator' => true
     ],
     'pages' => [
         'index' => 'index',
         'error' => 'error'
     ],
     'parsers' => [
-        'use_php_yaml' => 'parse'
+        'usePhpYaml' => 'parse'
     ],
     'routes' => [
         'files' => [
@@ -102,7 +102,7 @@ return [
         ]
     ],
     'updates' => [
-        'backup_before' => true
+        'backupBefore' => true
     ],
     'views' => [
         'paths' => [

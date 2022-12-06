@@ -1,6 +1,6 @@
 <?= $this->layout('fields.field') ?>
 <select id="page-parent" name="parent">
-    <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->translate('panel.pages.new-page.site') ?> (/)</option>
+    <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
 <?php
     foreach ($parents as $parent):
         $scheme = $formwork->schemes()->get('pages', $parent->template()->name());

@@ -45,14 +45,14 @@ fields:
 
     publishDate:
         type: date
-        label: '{{panel.pages.page.publish-date}}'
-        placeholder: '{{panel.pages.page.no-date}}'
+        label: '{{panel.pages.page.publishDate}}'
+        placeholder: '{{panel.pages.page.noDate}}'
         default: null
 
     unpublishDate:
         type: date
-        label: '{{panel.pages.page.unpublish-date}}'
-        placeholder: '{{panel.pages.page.no-date}}'
+        label: '{{panel.pages.page.unpublishDate}}'
+        placeholder: '{{panel.pages.page.noDate}}'
         default: null
 
     routable:
@@ -83,7 +83,7 @@ fields:
     uploadedFile:
         type: file
         access: panel
-        auto-upload: true
+        autoUpload: true
         multiple: true
 
     files:

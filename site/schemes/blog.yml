@@ -26,7 +26,7 @@ fields:
 
     postsPerPage:
         type: select
-        label: '{{panel.pages.page.posts-per-page}}'
+        label: '{{panel.pages.page.postsPerPage}}'
         options:
             5: 5
             10: 10

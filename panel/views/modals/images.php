@@ -3,12 +3,12 @@
         <h3 class="caption"><?= $this->translate('panel.modal.images.title') ?></h3>
         <div class="image-picker-empty-state">
             <span class="image-picker-empty-state-icon"><?= $this->icon('image') ?></span>
-            <h4 class="h5"><?= $this->translate('panel.modal.images.no-images') ?></h4>
+            <h4 class="h5"><?= $this->translate('panel.modal.images.noImages') ?></h4>
 <?php
-            if ($panel->user()->permissions()->has('pages.upload_files')):
+            if ($panel->user()->permissions()->has('pages.uploadFiles')):
 ?>
-            <p><?= $this->translate('panel.modal.images.no-images.upload') ?></p>
-            <button type="button" data-command="upload" data-upload-target="file-uploader"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.modal.action.upload-file') ?></button>
+            <p><?= $this->translate('panel.modal.images.noImages.upload') ?></p>
+            <button type="button" data-command="upload" data-upload-target="file-uploader"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.modal.action.uploadFile') ?></button>
 <?php
             endif;
 ?>

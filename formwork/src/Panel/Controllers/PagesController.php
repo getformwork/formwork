@@ -96,7 +96,7 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-edit.page-not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.pageNotFound'), 'error');
             return $this->redirectToReferer(302, '/pages/');
         }
 
@@ -108,7 +108,7 @@ class PagesController extends AbstractController
             $language = $params->get('language');
 
             if (!in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-                $this->panel()->notify($this->translate('panel.pages.page.cannot-edit.invalid-language', $language), 'error');
+                $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.invalidLanguage', $language), 'error');
                 return $this->redirect('/pages/' . trim($page->route(), '/') . '/edit/language/' . $this->site()->languages()->default() . '/');
             }
 
@@ -178,7 +178,7 @@ class PagesController extends AbstractController
         $this->modal('deleteFile');
 
         return new Response($this->view('pages.editor', [
-            'title'           => $this->translate('panel.pages.edit-page', $page->title()),
+            'title'           => $this->translate('panel.pages.editPage', $page->title()),
             'page'            => $page,
             'fields'          => $fields,
             'templates'       => $this->site()->templates()->keys(),
@@ -197,16 +197,16 @@ class PagesController extends AbstractController
         $data = HTTPRequest::postData();
 
         if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
         if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
-            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
         $parent = $this->resolveParent($data->get('parent'));
         if ($parent === null || !$parent->hasChildren()) {
-            return JSONResponse::error($this->translate('panel.pages.page.cannot-move'));
+            return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
         /**
@@ -246,7 +246,7 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.page-not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.pageNotFound'), 'error');
             return $this->redirectToReferer(302, '/pages/');
         }
 
@@ -255,13 +255,13 @@ class PagesController extends AbstractController
             if ($page->languages()->available()->has($language)) {
                 $page->setLanguage($language);
             } else {
-                $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.invalid-language', $language), 'error');
+                $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.invalidLanguage', $language), 'error');
                 return $this->redirectToReferer(302, '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete.not-deletable'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.notDeletable'), 'error');
             return $this->redirectToReferer(302, '/pages/');
         }
 
@@ -286,12 +286,12 @@ class PagesController extends AbstractController
      */
     public function uploadFile(RouteParams $params): RedirectResponse
     {
-        $this->ensurePermission('pages.upload_files');
+        $this->ensurePermission('pages.uploadFiles');
 
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-upload-file.page-not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotUploadFile.cannotUploadFound'), 'error');
             return $this->redirectToReferer(302, '/pages/');
         }
 
@@ -313,23 +313,23 @@ class PagesController extends AbstractController
      */
     public function deleteFile(RouteParams $params): RedirectResponse
     {
-        $this->ensurePermission('pages.delete_files');
+        $this->ensurePermission('pages.deleteFiles');
 
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete-file.page-not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.cannotDeleteFound'), 'error');
             return $this->redirectToReferer(302, '/pages/');
         }
 
         if (!$page->files()->has($params->get('filename'))) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannot-delete-file.file-not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.cannotDeleteFound'), 'error');
             return $this->redirect('/pages/' . $params->get('page') . '/edit/');
         }
 
         FileSystem::delete($page->path() . $params->get('filename'));
 
-        $this->panel()->notify($this->translate('panel.pages.page.file-deleted'), 'success');
+        $this->panel()->notify($this->translate('panel.pages.page.fileDeleted'), 'success');
         return $this->redirect('/pages/' . $params->get('page') . '/edit/');
     }
 
@@ -340,30 +340,30 @@ class PagesController extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->hasMultiple(['title', 'slug', 'template', 'parent'])) {
-            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannot-create.var-missing');
+            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotCreate.varMissing');
         }
 
         $parent = $this->resolveParent($data->get('parent'));
 
         if ($parent === null) {
-            throw new TranslatedException('Parent page not found', 'panel.pages.page.cannot-create.invalid-parent');
+            throw new TranslatedException('Parent page not found', 'panel.pages.page.cannotCreate.invalidParent');
         }
 
         // Validate page slug
         if (!$this->validateSlug($data->get('slug'))) {
-            throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannot-create.invalid-slug');
+            throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotCreate.invalidSlug');
         }
 
         $route = $parent->route() . $data->get('slug') . '/';
 
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route)) {
-            throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannot-create.already-exists');
+            throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannotCreate.alreadyExists');
         }
 
         // Validate page template
         if (!$this->site()->templates()->has($data->get('template'))) {
-            throw new TranslatedException('Invalid page template', 'panel.pages.page.cannot-create.invalid-template');
+            throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotCreate.invalidTemplate');
         }
 
         $scheme = Formwork::instance()->schemes()->get('pages', $data->get('template'));
@@ -399,7 +399,7 @@ class PagesController extends AbstractController
     {
         // Ensure no required data is missing
         if (!$data->hasMultiple(['title', 'content'])) {
-            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannot-edit.var-missing');
+            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotEdit.varMissing');
         }
 
         // Load current page frontmatter
@@ -433,7 +433,7 @@ class PagesController extends AbstractController
 
         // Validate language
         if (!empty($language) && !in_array($language, Formwork::instance()->config()->get('languages.available'), true)) {
-            throw new TranslatedException('Invalid page language', 'panel.pages.page.cannot-edit.invalid-language');
+            throw new TranslatedException('Invalid page language', 'panel.pages.page.cannotEdit.invalidLanguage');
         }
 
         $differ = $frontmatter !== $page->contentFile()->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
@@ -467,7 +467,7 @@ class PagesController extends AbstractController
                 try {
                     $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
-                    throw new TranslatedException('Cannot change page num', 'panel.pages.page.cannot-change-num');
+                    throw new TranslatedException('Cannot change page num', 'panel.pages.page.cannotChangeNum');
                 }
             }
         }
@@ -475,7 +475,7 @@ class PagesController extends AbstractController
         // Check if parent page has to change
         if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
             if ($parent === null) {
-                throw new TranslatedException('Invalid parent page', 'panel.pages.page.cannot-edit.invalid-parent');
+                throw new TranslatedException('Invalid parent page', 'panel.pages.page.cannotEdit.invalidParent');
             }
             $page = $this->changePageParent($page, $parent);
         }
@@ -483,7 +483,7 @@ class PagesController extends AbstractController
         // Check if page template has to change
         if ($page->template()->name() !== ($template = $data->get('template'))) {
             if (!$this->site()->templates()->has($template)) {
-                throw new TranslatedException('Invalid page template', 'panel.pages.page.cannot-edit.invalid-template');
+                throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotEdit.invalidTemplate');
             }
             $page = $this->changePageTemplate($page, $template);
         }
@@ -491,14 +491,14 @@ class PagesController extends AbstractController
         // Check if page slug has to change
         if ($page->slug() !== ($slug = $data->get('slug'))) {
             if (!$this->validateSlug($slug)) {
-                throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannot-edit.invalid-slug');
+                throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotEdit.invalidSlug');
             }
             // Don't change index and error pages slug
             if ($page->isIndexPage() || $page->isErrorPage()) {
-                throw new TranslatedException('Cannot change slug of index or error pages', 'panel.pages.page.cannot-edit.index-or-error-page-slug');
+                throw new TranslatedException('Cannot change slug of index or error pages', 'panel.pages.page.cannotEdit.indexOrErrorPageSlug');
             }
             if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
-                throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannot-edit.already-exists');
+                throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannotEdit.alreadyExists');
             }
             $page = $this->changePageName($page, ltrim($page->num() . '-', '-') . $slug);
         }
@@ -519,7 +519,7 @@ class PagesController extends AbstractController
          */
         foreach ($uploader->uploadedFiles() as $file) {
             // Process JPEG and PNG images according to system options (e.g. quality)
-            if (Formwork::instance()->config()->get('images.process_uploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
+            if (Formwork::instance()->config()->get('images.processUploads') && in_array($file->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($file->path());
                 $image->saveOptimized();
             }

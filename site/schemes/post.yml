@@ -23,9 +23,9 @@ fields:
         type: image
         default: null
         label: '{{panel.pages.page.image}}'
-        placeholder: '{{panel.pages.page.no-image}}'
+        placeholder: '{{panel.pages.page.noImage}}'
 
     tags:
         type: tags
         label: '{{panel.pages.page.tags}}'
-        placeholder: '{{panel.pages.page.no-tags}}'
+        placeholder: '{{panel.pages.page.noTags}}'

@@ -15,13 +15,13 @@ date.weekdays.long: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì'
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 fields.array.add: Aggiungi
 fields.array.remove: Rimuovi
-fields.file.upload-label: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
-zip.error.already-exists: L’archivio esiste già
-zip.error.cannot-open: Impossibile aprire l’archivio
-zip.error.cannot-read: Impossibile leggere l’archivio
-zip.error.inconsistent-archive: Archivio non valido
-zip.error.invalid-argument: Argomento non valido
-zip.error.memory-failure: Errore di memoria
-zip.error.not-found: Archivio non trovato
-zip.error.not-zip-archive: Non è un archivio ZIP
+fields.file.uploadLabel: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
+zip.error.alreadyExists: L’archivio esiste già
+zip.error.cannotOpen: Impossibile aprire l’archivio
+zip.error.cannotRead: Impossibile leggere l’archivio
+zip.error.inconsistentArchive: Archivio non valido
+zip.error.invalidArgument: Argomento non valido
+zip.error.memoryFailure: Errore di memoria
+zip.error.notFound: Archivio non trovato
+zip.error.notZipArchive: Non è un archivio ZIP
 zip.error.unspecified: Errore non specificato

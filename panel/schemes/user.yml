@@ -5,7 +5,7 @@ layout:
     sections:
         user:
             label: '{{panel.users.user}}'
-            fields: [fullname, email, password, language, role, color-scheme, avatar]
+            fields: [fullname, email, password, language, role, colorScheme, avatar]
 
 fields:
     fullname:
@@ -22,7 +22,7 @@ fields:
     password:
         type: password
         label: '{{panel.user.password}}'
-        placeholder: '{{panel.user.password.type-new-password}}'
+        placeholder: '{{panel.user.password.typeNewPassword}}'
         disabled: true
         pattern: '^.{8,}$'
         autocomplete: new-password
@@ -43,13 +43,13 @@ fields:
             options: 'Formwork\Panel\Users\UserCollection::availableRoles'
 
 
-    color-scheme:
+    colorScheme:
         type: togglegroup
-        label: '{{panel.user.color-scheme}}'
+        label: '{{panel.user.colorScheme}}'
         options:
-            light: '{{panel.user.color-scheme.light}}'
-            dark: '{{panel.user.color-scheme.dark}}'
-            auto: '{{panel.user.color-scheme.auto}}'
+            light: '{{panel.user.colorScheme.light}}'
+            dark: '{{panel.user.colorScheme.dark}}'
+            auto: '{{panel.user.colorScheme.auto}}'
 
     avatar:
         type: file

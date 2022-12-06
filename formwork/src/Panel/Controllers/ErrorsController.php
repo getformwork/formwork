@@ -14,9 +14,9 @@ class ErrorsController extends AbstractController
      */
     public function notFound(): Response
     {
-        return $this->makeErrorResponse(404, 'not-found', [
+        return $this->makeErrorResponse(404, 'notFound', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->translate('panel.errors.action.return-to-dashboard')
+            'label' => $this->translate('panel.errors.action.returnToDashboard')
         ]);
     }
 
@@ -25,9 +25,9 @@ class ErrorsController extends AbstractController
      */
     public function internalServerError(Throwable $exception): Response
     {
-        return $this->makeErrorResponse(500, 'internal-server-error', [
+        return $this->makeErrorResponse(500, 'internalServerError', [
             'href'  => $this->makeGitHubIssueUri($exception),
-            'label' => $this->translate('panel.errors.action.report-to-github')
+            'label' => $this->translate('panel.errors.action.reportToGithub')
         ]);
     }
 
@@ -38,7 +38,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(403, 'forbidden', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->translate('panel.errors.action.return-to-dashboard')
+            'label' => $this->translate('panel.errors.action.returnToDashboard')
         ]);
     }
 

@@ -249,7 +249,7 @@ class Site implements Arrayable
 
         $data = array_filter(array_merge($defaults, $this->data['metadata']));
 
-        if (!Formwork::instance()->config()->get('metadata.set_generator')) {
+        if (!Formwork::instance()->config()->get('metadata.setGenerator')) {
             unset($data['generator']);
         }
 

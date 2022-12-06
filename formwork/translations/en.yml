@@ -15,13 +15,13 @@ date.weekdays.long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fr
 date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 fields.array.add: Add
 fields.array.remove: Remove
-fields.file.upload-label: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
-zip.error.already-exists: The archive already exists
-zip.error.cannot-open: Cannot open the archive
-zip.error.cannot-read: Cannot read the archive
-zip.error.inconsistent-archive: Inconsistent archive
-zip.error.invalid-argument: Invalid argument
-zip.error.memory-failure: Memory failure
-zip.error.not-found: Archive not found
-zip.error.not-zip-archive: Not a ZIP archive
+fields.file.uploadLabel: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
+zip.error.alreadyExists: The archive already exists
+zip.error.cannotOpen: Cannot open the archive
+zip.error.cannotRead: Cannot read the archive
+zip.error.inconsistentArchive: Inconsistent archive
+zip.error.invalidArgument: Invalid argument
+zip.error.memoryFailure: Memory failure
+zip.error.notFound: Archive not found
+zip.error.notZipArchive: Not a ZIP archive
 zip.error.unspecified: Unspecified error

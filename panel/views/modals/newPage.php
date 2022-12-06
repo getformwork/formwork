@@ -1,15 +1,15 @@
 <div id="newPageModal" class="modal">
     <div class="modal-content">
-        <h3 class="caption"><?= $this->translate('panel.pages.new-page') ?></h3>
+        <h3 class="caption"><?= $this->translate('panel.pages.newPage') ?></h3>
         <form action="<?= $panel->uri('/pages/new/') ?>" method="post">
-            <label class="label-required" for="page-title"><?= $this->translate('panel.pages.new-page.title') ?>:</label>
+            <label class="label-required" for="page-title"><?= $this->translate('panel.pages.newPage.title') ?>:</label>
             <input id="page-title" type="text" required name="title" autofocus>
-            <label class="label-required" for="page-slug"><?= $this->translate('panel.pages.new-page.slug') ?>:</label>
-            <span class="label-suggestion">(<?= $this->translate('panel.pages.new-page.slug-suggestion') ?>)</span>
+            <label class="label-required" for="page-slug"><?= $this->translate('panel.pages.newPage.slug') ?>:</label>
+            <span class="label-suggestion">(<?= $this->translate('panel.pages.newPage.slugSuggestion') ?>)</span>
             <input id="page-slug" type="text" required name="slug">
-            <label class="label-required" for="page-parent"><?= $this->translate('panel.pages.new-page.parent') ?>:</label>
+            <label class="label-required" for="page-parent"><?= $this->translate('panel.pages.newPage.parent') ?>:</label>
             <select id="page-parent" name="parent">
-                <option value="." selected><?= $this->translate('panel.pages.new-page.site') ?> (/)</option>
+                <option value="." selected><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
 <?php
                 foreach ($pages as $page):
                     $scheme = $formwork->schemes()->get('pages', $page->template()->name());
@@ -20,7 +20,7 @@
                 endforeach;
 ?>
             </select>
-            <label class="label-required" for="page-template"><?= $this->translate('panel.pages.new-page.template') ?>:</label>
+            <label class="label-required" for="page-template"><?= $this->translate('panel.pages.newPage.template') ?>:</label>
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):

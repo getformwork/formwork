@@ -19,14 +19,14 @@ class User implements Arrayable
      * Default data of the user
      */
     protected array $defaults = [
-        'username'     => null,
-        'fullname'     => null,
-        'hash'         => null,
-        'email'        => null,
-        'language'     => 'en',
-        'role'         => 'user',
-        'avatar'       => null,
-        'color-scheme' => 'auto'
+        'username'    => null,
+        'fullname'    => null,
+        'hash'        => null,
+        'email'       => null,
+        'language'    => 'en',
+        'role'        => 'user',
+        'avatar'      => null,
+        'colorScheme' => 'auto'
     ];
 
     /**
@@ -229,7 +229,7 @@ class User implements Arrayable
      */
     public function colorScheme(): string
     {
-        return $this->data['color-scheme'];
+        return $this->data['colorScheme'];
     }
 
     /**

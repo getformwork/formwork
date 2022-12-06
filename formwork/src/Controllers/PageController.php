@@ -36,7 +36,7 @@ class PageController extends AbstractController
                 return $this->getPageResponse($formwork->site()->errorPage());
             }
 
-            if ($formwork->config()->get('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
+            if ($formwork->config()->get('cache.enabled') && ($page->has('publishDate') || $page->has('unpublishDate'))) {
                 if (($page->isPublished() && !$formwork->site()->modifiedSince($page->publishDate()->toTimestamp()))
                 || (!$page->isPublished() && !$formwork->site()->modifiedSince($page->unpublishDate()->toTimestamp()))) {
                     // Clear cache if the site was not modified since the page has been published or unpublished

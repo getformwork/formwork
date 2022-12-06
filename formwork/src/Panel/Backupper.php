@@ -39,7 +39,7 @@ class Backupper
             'maxExecutionTime' => 180,
             'name'             => str_replace([' ', '.'], '-', Uri::host()) . '-formwork-backup',
             'path'             => Formwork::instance()->config()->get('backup.path'),
-            'maxFiles'         => Formwork::instance()->config()->get('backup.max_files'),
+            'maxFiles'         => Formwork::instance()->config()->get('backup.maxFiles'),
             'ignore'           => [
                 '.git/*',
                 '*.DS_Store',

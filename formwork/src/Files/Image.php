@@ -591,21 +591,21 @@ class Image extends File
             throw new RuntimeException(sprintf('Image %s must be readable to be processed', $this->path));
         }
 
-        $this->JPEGQuality = Formwork::instance()->config()->get('images.jpeg_quality');
+        $this->JPEGQuality = Formwork::instance()->config()->get('images.jpegQuality');
 
         if ($this->JPEGQuality < 0 || $this->JPEGQuality > 100) {
             throw new UnexpectedValueException(sprintf('JPEG quality must be in the range 0-100, %d given', $this->JPEGQuality));
         }
 
-        $this->JPEGSaveProgressive = Formwork::instance()->config()->get('images.jpeg_progressive');
+        $this->JPEGSaveProgressive = Formwork::instance()->config()->get('images.jpegProgressive');
 
-        $this->PNGCompression = Formwork::instance()->config()->get('images.png_compression');
+        $this->PNGCompression = Formwork::instance()->config()->get('images.pngCompression');
 
         if ($this->PNGCompression < 0 || $this->PNGCompression > 9) {
             throw new UnexpectedValueException(sprintf('PNG compression level must be in range 0-9, %d given', $this->PNGCompression));
         }
 
-        $this->WEBPQuality = Formwork::instance()->config()->get('images.webp_quality');
+        $this->WEBPQuality = Formwork::instance()->config()->get('images.webpQuality');
 
         if ($this->WEBPQuality < 0 || $this->WEBPQuality > 100) {
             throw new UnexpectedValueException(sprintf('WebP quality must be in the range 0-100, %d given', $this->WEBPQuality));

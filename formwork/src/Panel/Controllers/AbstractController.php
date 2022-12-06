@@ -104,8 +104,8 @@ abstract class AbstractController extends BaseAbstractController
             'appConfig'   => JSON::encode([
                 'baseUri'   => $this->panel()->panelUri(),
                 'DateInput' => [
-                    'weekStarts' => Formwork::instance()->config()->get('date.week_starts'),
-                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.time_format')),
+                    'weekStarts' => Formwork::instance()->config()->get('date.weekStarts'),
+                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')),
                     'time'       => true,
                     'labels'     => [
                         'today'    => $this->translate('date.today'),
@@ -184,7 +184,7 @@ abstract class AbstractController extends BaseAbstractController
      */
     private function getColorScheme(): string
     {
-        $default = Formwork::instance()->config()->get('panel.color_scheme');
+        $default = Formwork::instance()->config()->get('panel.colorScheme');
         if ($this->panel()->isLoggedIn()) {
             if ($this->user()->colorScheme() === 'auto') {
                 return HTTPRequest::cookies()->get('formwork_preferred_color_scheme', $default);

@@ -5,11 +5,11 @@
             <span class="h4"><?= $this->translate('panel.dashboard.welcome') ?></span>
         </div>
         <div class="component">
-            <h3 class="caption"><?= $this->translate('panel.dashboard.quick-actions') ?></h3>
+            <h3 class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></h3>
 <?php
             if ($panel->user()->permissions()->has('pages.create')):
 ?>
-            <button type="button" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.new-page') ?></button>
+            <button type="button" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
 <?php
             endif;
 
@@ -40,7 +40,7 @@
                 <div class="col-xs-1-2">
                     <div class="ct-legend ct-legend-right">
                         <span class="ct-legend-label ct-series-a"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.visits') ?></span>
-                        <span class="ct-legend-label ct-series-b"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.unique-visitors') ?></span>
+                        <span class="ct-legend-label ct-series-b"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.uniqueVisitors') ?></span>
                     </div>
                 </div>
             </div>
@@ -49,6 +49,6 @@
     </div>
 </div>
 <div class="component">
-<h3 class="caption"><?= $this->translate('panel.dashboard.last-modified-pages') ?></h3>
+<h3 class="caption"><?= $this->translate('panel.dashboard.lastModifiedPages') ?></h3>
     <?= $lastModifiedPages ?>
 </div>

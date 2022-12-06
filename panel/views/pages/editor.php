@@ -5,7 +5,7 @@
     <div>
         <?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?>
             <div class="page-route page-route-changeable">
-                <button type="button" class="page-slug-change" data-command="change-slug" title="<?= $this->translate('panel.pages.change-slug') ?>"><?= $page->route() ?><?= $this->icon('pencil') ?></button>
+                <button type="button" class="page-slug-change" data-command="change-slug" title="<?= $this->translate('panel.pages.changeSlug') ?>"><?= $page->route() ?><?= $this->icon('pencil') ?></button>
             </div>
         <?php else: ?>
             <div class="page-route"><span><?= $page->route() ?></span></div>
@@ -26,7 +26,7 @@
 <?php
         if ($panel->user()->permissions()->has('pages.delete')):
 ?>
-        <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('panel.pages.delete-page') ?>" aria-label="<?= $this->translate('panel.pages.delete-page') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
+        <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
 <?php
         endif;
 ?>
@@ -39,7 +39,7 @@
 <?php
             foreach ($site->languages()->available() as $language):
 ?>
-                <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.edit-language', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.add-language', $language->nativeName() . ' (' . $language->code() . ')'); ?></a>
+                <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')'); ?></a>
 <?php
             endforeach;
 ?>

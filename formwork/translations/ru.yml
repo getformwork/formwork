@@ -15,13 +15,13 @@ date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вто
 date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 fields.array.add: Добавлять
 fields.array.remove: Удалить
-fields.file.upload-label: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
-zip.error.already-exists: Архив уже существует
-zip.error.cannot-open: Не удается открыть архив
-zip.error.cannot-read: Не удается прочитать архив
-zip.error.inconsistent-archive: Противоречивый архив
-zip.error.invalid-argument: Недопустимый аргумент
-zip.error.memory-failure: Сбой памяти
-zip.error.not-found: Архив не найден
-zip.error.not-zip-archive: Не ZIP архив
+fields.file.uploadLabel: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
+zip.error.alreadyExists: Архив уже существует
+zip.error.cannotOpen: Не удается открыть архив
+zip.error.cannotRead: Не удается прочитать архив
+zip.error.inconsistentArchive: Противоречивый архив
+zip.error.invalidArgument: Недопустимый аргумент
+zip.error.memoryFailure: Сбой памяти
+zip.error.notFound: Архив не найден
+zip.error.notZipArchive: Не ZIP архив
 zip.error.unspecified: Неизвестная ошибка

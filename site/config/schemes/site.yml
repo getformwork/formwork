@@ -33,12 +33,12 @@ fields:
         type: array
         label: '{{panel.options.site.advanced.metadata}}'
         associative: true
-        placeholder_key: '{{panel.options.site.advanced.metadata.name}}'
-        placeholder_value: '{{panel.options.site.advanced.metadata.content}}'
+        placeholderKey: '{{panel.options.site.advanced.metadata.name}}'
+        placeholderValue: '{{panel.options.site.advanced.metadata.content}}'
 
     routeAliases:
         type: array
         label: '{{panel.options.site.advanced.aliases}}'
         associative: true
-        placeholder_key: '{{panel.options.site.advanced.aliases.alias}}'
-        placeholder_value: '{{panel.options.site.advanced.aliases.route}}'
+        placeholderKey: '{{panel.options.site.advanced.aliases.alias}}'
+        placeholderValue: '{{panel.options.site.advanced.aliases.route}}'

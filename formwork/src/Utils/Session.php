@@ -20,7 +20,7 @@ class Session
     public static function start(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
-            ini_set('session.use_strict_mode', true);
+            ini_set('session.useStrict_mode', true);
             $options = static::cookieOptions();
             session_name(self::SESSION_NAME);
             session_start();
@@ -113,7 +113,7 @@ class Session
             'httponly' => true,
             'samesite' => Cookie::SAMESITE_STRICT
         ];
-        if (($timeout = Formwork::instance()->config()->get('panel.session_timeout')) > 0) {
+        if (($timeout = Formwork::instance()->config()->get('panel.sessionTimeout')) > 0) {
             $options['expires'] = time() + $timeout * 60;
         }
         return $options;

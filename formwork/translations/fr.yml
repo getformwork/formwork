@@ -15,13 +15,13 @@ date.weekdays.long: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendred
 date.weekdays.short: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
 fields.array.add: Ajouter
 fields.array.remove: Supprimer
-pages.file.upload-label: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
-zip.error.already-exists: L’archive existe déjà
-zip.error.cannot-open: Impossible d’ouvrir l’archive
-zip.error.cannot-read: Impossible de lire l’archive
-zip.error.inconsistent-archive: Archive incohérente
-zip.error.invalid-argument: Argument invalide
-zip.error.memory-failure: Défaillance de la mémoire
-zip.error.not-found: Archive non trouvée
-zip.error.not-zip-archive: N’est pas une archive ZIP
+pages.file.uploadLabel: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
+zip.error.alreadyExists: L’archive existe déjà
+zip.error.cannotOpen: Impossible d’ouvrir l’archive
+zip.error.cannotRead: Impossible de lire l’archive
+zip.error.inconsistentArchive: Archive incohérente
+zip.error.invalidArgument: Argument invalide
+zip.error.memoryFailure: Défaillance de la mémoire
+zip.error.notFound: Archive non trouvée
+zip.error.notZipArchive: N’est pas une archive ZIP
 zip.error.unspecified: Erreur non spécifiée

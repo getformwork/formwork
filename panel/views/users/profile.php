@@ -9,7 +9,7 @@
             <h3><?= $this->escape($user->fullname()) ?></h3>
             <?= $this->escape($user->username()) ?><br>
             <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
-            <?= $this->translate('panel.user.last-access') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?>
+            <?= $this->translate('panel.user.lastAccess') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?>
         </div>
     </div>
 </div>
@@ -20,7 +20,7 @@
         <?php $this->insert('fields', ['fields' => $fields]) ?>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
         <button type="submit" class="button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
-        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.delete-user') ?>" aria-label="<?= $this->translate('panel.users.delete-user') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
+        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
     </form>
 </div>
 <?php endif; ?>

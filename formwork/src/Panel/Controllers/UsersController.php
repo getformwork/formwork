@@ -46,13 +46,13 @@ class UsersController extends AbstractController
 
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
-            $this->panel()->notify($this->translate('panel.users.user.cannot-create.var-missing'), 'error');
+            $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
             return $this->redirect('/users/');
         }
 
         // Ensure there isn't a user with the same username
         if ($this->panel()->users()->has($data->get('username'))) {
-            $this->panel()->notify($this->translate('panel.users.user.cannot-create.already-exists'), 'error');
+            $this->panel()->notify($this->translate('panel.users.user.cannotCreate.alreadyExists'), 'error');
             return $this->redirect('/users/');
         }
 
@@ -81,12 +81,12 @@ class UsersController extends AbstractController
 
         try {
             if (!$user) {
-                throw new TranslatedException(sprintf('User "%s" not found', $params->get('user')), 'panel.users.user.not-found');
+                throw new TranslatedException(sprintf('User "%s" not found', $params->get('user')), 'panel.users.user.notFound');
             }
             if (!$this->user()->canDeleteUser($user)) {
                 throw new TranslatedException(
                     sprintf('Cannot delete user "%s", you must be an administrator and the user must not be logged in', $user->username()),
-                    'users.user.cannot-delete'
+                    'users.user.cannotDelete'
                 );
             }
             FileSystem::delete(Formwork::instance()->config()->get('panel.paths.accounts') . $user->username() . '.yml');
@@ -117,7 +117,7 @@ class UsersController extends AbstractController
         $user = $this->panel()->users()->get($params->get('user'));
 
         if ($user === null) {
-            $this->panel()->notify($this->translate('panel.users.user.not-found'), 'error');
+            $this->panel()->notify($this->translate('panel.users.user.notFound'), 'error');
             return $this->redirect('/users/');
         }
 
@@ -137,7 +137,7 @@ class UsersController extends AbstractController
                     $this->panel()->notify($this->translate($e->getLanguageString(), $user->username()), 'error');
                 }
             } else {
-                $this->panel()->notify($this->translate('panel.users.user.cannot-edit', $user->username()), 'error');
+                $this->panel()->notify($this->translate('panel.users.user.cannotEdit', $user->username()), 'error');
             }
 
             return $this->redirect('/users/' . $user->username() . '/profile/');
@@ -150,7 +150,7 @@ class UsersController extends AbstractController
         $this->modal('deleteUser');
 
         return new Response($this->view('users.profile', [
-            'title'  => $this->translate('panel.users.user-profile', $user->username()),
+            'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
             'fields' => $fields
         ], true));
@@ -167,7 +167,7 @@ class UsersController extends AbstractController
         if (!empty($data['password'])) {
             // Ensure that password can be changed
             if (!$this->user()->canChangePasswordOf($user)) {
-                throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannot-change-password');
+                throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannotChangePassword');
             }
 
             // Hash the new password
@@ -179,7 +179,7 @@ class UsersController extends AbstractController
 
         // Ensure that user role can be changed
         if (($data['role'] ?? $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
-            throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannot-change-role');
+            throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannotChangeRole');
         }
 
         // Handle incoming files
@@ -210,7 +210,7 @@ class UsersController extends AbstractController
         $hasUploaded = $uploader->upload(FileSystem::randomName());
 
         if ($hasUploaded) {
-            $avatarSize = Formwork::instance()->config()->get('panel.avatar_size');
+            $avatarSize = Formwork::instance()->config()->get('panel.avatarSize');
 
             // Square off uploaded avatar
             $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
