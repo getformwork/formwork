@@ -21,7 +21,10 @@ class Field implements Arrayable
     use DataMultipleGetter {
         get as protected baseGet;
     }
-    use DataMultipleSetter;
+    use DataMultipleSetter {
+        set as protected baseSet;
+        remove as protected baseRemove;
+    }
     use Methods;
 
     protected const UNTRANSLATABLE_KEYS = ['name', 'type', 'value', 'default', 'translate', 'import'];
@@ -32,12 +35,25 @@ class Field implements Arrayable
     protected string $name;
 
     /**
+     * Parent field collection
+     */
+    protected FieldCollection $parent;
+
+    /**
+     * Field validation status
+     */
+    protected bool $validated = false;
+
+    /**
      * Create a new Field instance
      */
-    public function __construct(string $name, array $data = [])
+    public function __construct(string $name, array $data = [], FieldCollection $parent)
     {
         $this->name = $name;
-        $this->data = $data;
+
+        $this->parent = $parent;
+
+        $this->setMultiple($data);
 
         if ($this->has('import')) {
             $this->importData();
@@ -65,6 +81,14 @@ class Field implements Arrayable
     public function name(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Return the parent field collection
+     */
+    public function parent(): FieldCollection
+    {
+        return $this->parent;
     }
 
     /**
@@ -104,7 +128,7 @@ class Field implements Arrayable
      */
     public function value()
     {
-        return $this->baseGet('value', $this->defaultValue());
+        return $this->get('value', $this->defaultValue());
     }
 
     /**
@@ -156,6 +180,48 @@ class Field implements Arrayable
     }
 
     /**
+     * Validate field value
+     */
+    public function validate(): static
+    {
+        $value = $this->value();
+
+        if ($this->isRequired() && Constraint::isEmpty($value)) {
+            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()));
+        }
+
+        if ($this->hasMethod('validate')) {
+            $value = $this->callMethod('validate', [$value]);
+            $this->set('value', $value);
+        }
+
+        $this->validated = true;
+
+        return $this;
+    }
+
+    /**
+     * Return whether the field is valid
+     */
+    public function isValid(): bool
+    {
+        try {
+            $this->validate();
+        } catch (ValidationException) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Return whether the field has been validated
+     */
+    public function isValidated(): bool
+    {
+        return $this->validated;
+    }
+
+    /**
      * Get a value by key and return whether it is equal to boolean `true`
      */
     public function is(string $key, bool $default = false): bool
@@ -163,34 +229,33 @@ class Field implements Arrayable
         return $this->baseGet($key, $default) === true;
     }
 
-    /**
-     * Get field data
-     */
     public function get(string $key, $default = null)
     {
         $value = $this->baseGet($key, $default);
 
         if ($this->isTranslatable($key)) {
-            return $this->translate($value);
+            $value = $this->translate($value);
         }
 
         return $value;
     }
 
-    /**
-     * Validate field value
-     */
-    public function validate(): static
+    public function set(string $key, $value): void
     {
-        if ($this->isRequired() && Constraint::isEmpty($this->value())) {
-            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()));
+        if ($key === 'value') {
+            $this->validated = false;
         }
 
-        if ($this->hasMethod('validate')) {
-            $this->set('value', $this->callMethod('validate', [$this->value()]));
+        $this->baseSet($key, $value);
+    }
+
+    public function remove(string $key): void
+    {
+        if ($key === 'value') {
+            $this->validated = false;
         }
 
-        return $this;
+        $this->baseRemove($key);
     }
 
     /**
@@ -259,7 +324,7 @@ class Field implements Arrayable
             return $value;
         }
 
-        $interpolate = fn ($value) => Str::interpolate($value, fn ($key) => $translation->translate($key));
+        $interpolate = fn ($value) => is_string($value) ? Str::interpolate($value, fn ($key) => $translation->translate($key)) : $value;
 
         if (is_array($value)) {
             return Arr::map($value, $interpolate);

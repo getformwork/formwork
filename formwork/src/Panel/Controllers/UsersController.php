@@ -129,7 +129,9 @@ class UsersController extends AbstractController
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
                 $data = HTTPRequest::postData()->toArray();
-                $fields->validate($data);
+
+                $fields->setValues($data)->validate();
+
                 try {
                     $this->updateUser($user, $data);
                     $this->panel()->notify($this->translate('panel.users.user.edited'), 'success');
@@ -143,7 +145,7 @@ class UsersController extends AbstractController
             return $this->redirect('/users/' . $user->username() . '/profile/');
         }
 
-        $fields = $fields->validate($user);
+        $fields = $fields->setValues($user);
 
         $this->modal('changes');
 

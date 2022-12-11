@@ -102,7 +102,7 @@ class Site implements Arrayable
 
         $this->load();
 
-        $this->fields->validate($this->data);
+        $this->fields->setValues($this->data);
     }
 
     public function __toString()

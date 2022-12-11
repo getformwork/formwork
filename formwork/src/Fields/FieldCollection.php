@@ -24,7 +24,7 @@ class FieldCollection extends AbstractCollection
      */
     public function __construct(array $fields, Layout $layout)
     {
-        parent::__construct(Arr::map($fields, fn ($data, $name) => new Field($name, $data)));
+        parent::__construct(Arr::map($fields, fn ($data, $name) => new Field($name, $data, $this)));
 
         $this->layout = $layout;
     }
@@ -46,15 +46,41 @@ class FieldCollection extends AbstractCollection
     }
 
     /**
-     * Validate fields against data
+     * Validate every field in the collection
      */
-    public function validate($data): self
+    public function validate(): static
+    {
+        $this->everyItem()->validate();
+        return $this;
+    }
+
+    /**
+     * Return whether every field in the collection is valid
+     */
+    public function isValid(): bool
+    {
+        return $this->every(fn ($field) => $field->isValid());
+    }
+
+    /**
+     * Return whether every field in the collection has been validated
+     */
+    public function isValidated(): bool
+    {
+        return $this->every(fn ($field) => $field->isValidated());
+    }
+
+    /**
+     * Set field values from the given data
+     */
+    public function setValues($data): static
     {
         $data = Arr::from($data);
 
-        foreach ($this->data as $name => $field) {
-            $field->set('value', Arr::get($data, $name));
-            $field->validate();
+        foreach ($this as $field) {
+            if (Arr::has($data, $field->name())) {
+                $field->set('value', Arr::get($data, $field->name()));
+            }
         }
 
         return $this;

@@ -43,7 +43,7 @@ class OptionsController extends AbstractController
             $data = HTTPRequest::postData();
             $options = Formwork::instance()->config();
             $defaults = Formwork::instance()->defaults();
-            $fields->validate($data);
+            $fields->setValues($data);
 
             $differ = $this->updateOptions('system', $fields, $options->toArray(), $defaults);
 
@@ -56,7 +56,7 @@ class OptionsController extends AbstractController
             return $this->redirect('/options/system/');
         }
 
-        $fields->validate(Formwork::instance()->config());
+        $fields->setValues(Formwork::instance()->config());
 
         $this->modal('changes');
 
@@ -84,7 +84,7 @@ class OptionsController extends AbstractController
             $data = HTTPRequest::postData();
             $options = $this->site()->data();
             $defaults = Formwork::instance()->site()->defaults();
-            $fields->validate($data);
+            $fields->setValues($data)->validate();
             $differ = $this->updateOptions('site', $fields, $options, $defaults);
 
             // Touch content folder to invalidate cache
@@ -96,7 +96,7 @@ class OptionsController extends AbstractController
             return $this->redirect('/options/site/');
         }
 
-        $fields->validate($this->site()->data());
+        $fields->setValues($this->site()->data());
 
         $this->modal('changes');
 

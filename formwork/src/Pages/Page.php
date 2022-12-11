@@ -147,7 +147,7 @@ class Page implements Arrayable
             );
         }
 
-        $this->fields->validate($this->data);
+        $this->fields->setValues($this->data);
 
         $this->loaded = true;
     }
