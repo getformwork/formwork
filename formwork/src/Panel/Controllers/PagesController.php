@@ -21,7 +21,6 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
-use InvalidArgumentException;
 use RuntimeException;
 
 class PagesController extends AbstractController
@@ -533,22 +532,10 @@ class PagesController extends AbstractController
      */
     protected function makePageNum(Page|Site $parent, ?string $mode): string
     {
-        if (!$parent instanceof Page && !$parent instanceof Site) {
-            throw new InvalidArgumentException(sprintf('%s() accepts only instances of %s or %s as $parent argument', __METHOD__, Page::class, Site::class));
-        }
-        switch ($mode) {
-            case 'date':
-                $num = date(self::DATE_NUM_FORMAT);
-                break;
-            default:
-                $num = 0;
-                foreach ($parent->children() as $child) {
-                    $num = max($num, $child->num());
-                }
-                $num++;
-                break;
-        }
-        return $num;
+        return match ($mode) {
+            'date'  => date(self::DATE_NUM_FORMAT),
+            default => 1 + max(0, ...$parent->children()->everyItem()->num()->values())
+        };
     }
 
     /**
