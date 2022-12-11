@@ -42,20 +42,17 @@ fields:
     date.format:
         type: select
         label: '{{panel.options.system.dateAndTime.dateFormat}}'
-        import:
-            options: 'Formwork\Panel\Utils\DateFormats::date'
+        options@: dateFormats.date
 
     date.timeFormat:
         type: select
         label: '{{panel.options.system.dateAndTime.hourFormat}}'
-        import:
-            options: 'Formwork\Panel\Utils\DateFormats::hour'
+        options@: dateFormats.hour
 
     date.timezone:
         type: select
         label: '{{panel.options.system.dateAndTime.timezone}}'
-        import:
-            options: 'Formwork\Panel\Utils\DateFormats::timezones'
+        options@: dateFormats.timezones
 
     date.weekStarts:
         type: select
@@ -70,8 +67,7 @@ fields:
         placeholder: '{{panel.options.system.languages.availableLanguages.noLanguages}}'
         pattern: '^[a-z]{2,3}$'
         translate: [label, placeholder]
-        import:
-            options: 'Formwork\Languages\LanguageCodes::names'
+        options@: languages.names
 
     languages.httpPreferred:
         type: togglegroup
@@ -106,8 +102,7 @@ fields:
         type: select
         label: '{{panel.options.system.adminPanel.defaultLanguage}}'
         translate: [label]
-        import:
-            options: 'Formwork\Panel\Panel::availableTranslations'
+        options@: formwork.panel().availableTranslations()
 
     panel.logoutRedirect:
         type: togglegroup
