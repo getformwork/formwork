@@ -180,6 +180,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Get the values of all items
+     */
+    public function values(): array
+    {
+        return array_values($this->data);
+    }
+
+    /**
      * Return whether the collection contains the given value
      */
     public function contains($value): bool
