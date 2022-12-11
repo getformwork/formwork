@@ -40,7 +40,12 @@ return [
         'setHandlers' => true
     ],
     'fields' => [
-        'path' => FORMWORK_PATH . 'fields' . DS
+        'path'    => FORMWORK_PATH . 'fields' . DS,
+        'dynamic' => [
+            'vars' => [
+                'file' => FORMWORK_PATH . 'fields' . DS . 'dynamic' . DS . 'vars.php'
+            ]
+        ]
     ],
     'files' => [
         'allowedExtensions' => [
