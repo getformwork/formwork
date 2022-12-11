@@ -3,7 +3,8 @@
 namespace PhpCsFixer;
 
 $finder = Finder::create()
-    ->in('formwork/src');
+    ->in(__DIR__)
+    ->exclude(['formwork/views', 'panel/views', 'site/templates']);
 
 $config = new Config();
 

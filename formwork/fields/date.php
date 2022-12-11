@@ -8,7 +8,7 @@ use Formwork\Utils\Date;
 use Formwork\Utils\Str;
 
 return [
-    'format' => function (Field $field, string $format = null, string $type = 'pattern'): string {
+    'format' => function (Field $field, ?string $format = null, string $type = 'pattern'): string {
         $format = match (strtolower($type)) {
             'pattern' => Date::patternToFormat($format),
             'date'    => $format
