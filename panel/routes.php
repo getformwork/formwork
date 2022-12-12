@@ -172,7 +172,7 @@ return [
         'panel.register' => [
             'path'    => '/register/',
             'action'  => 'Formwork\Panel\Controllers\RegisterController@register',
-            'methods' => ['GET']
+            'methods' => ['GET', 'POST']
         ],
 
         'panel.errors.notfound' => [

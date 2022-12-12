@@ -2,7 +2,7 @@
 <div class="caption"><?= $this->translate('panel.register.register') ?></div>
 <p><?= $this->translate('panel.register.createUser') ?></p>
 <div class="separator"></div>
-<form action="<?= $panel->uri('/') ?>" method="post">
+<form action="<?= $panel->uri('/register/') ?>" method="post">
     <label class="label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>
     <input id="fullname" type="text" required name="fullname" autofocus>
     <label class="label-required" for="username"><?= $this->translate('panel.user.username') ?>:</label>

@@ -48,7 +48,7 @@ class RegisterController extends AbstractController
                     'hash'     => Password::hash($data->get('password')),
                     'email'    => $data->get('email'),
                     'language' => $data->get('language'),
-                    'role'     => 'panel'
+                    'role'     => 'admin'
                 ];
 
                 YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');
