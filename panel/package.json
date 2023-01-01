@@ -33,7 +33,7 @@
     "postcss": "^8.4.19",
     "rollup": "^2.79.0",
     "sass": "^1.56.1",
-    "stylelint": "^14.13.0",
+    "stylelint": "^14.16.1",
     "stylelint-config-idiomatic-order": "^9.0.0",
     "stylelint-config-standard-scss": "^5.0.0",
     "stylelint-order": "^5.0.0",
