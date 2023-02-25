@@ -19,7 +19,7 @@ return [
             throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
         }
 
-        if ($field->get('associative')) {
+        if ($field->is('associative')) {
             foreach (array_keys($value) as $key) {
                 if (is_int($key)) {
                     unset($value[$key]);
