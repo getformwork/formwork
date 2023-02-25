@@ -50,7 +50,7 @@ class Schemes
     public function get(string $type, string $name): Scheme
     {
         if (!$this->has($type, $name)) {
-            throw new InvalidArgumentException('Invalid scheme "' . $name . '" of type "' . $type . '"');
+            throw new InvalidArgumentException(sprintf('Invalid scheme "%s" of type "%s"', $name, $type));
         }
 
         if (isset($this->storage[$type][$name])) {
