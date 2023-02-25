@@ -33,9 +33,47 @@ class Image extends File
     public const RESIZE_FIT_CONTAIN = 'contain';
 
     /**
+     * Constant indicating the 'smooth' blur mode
+     */
+    public const BLUR_SMOOTH = 'smooth';
+
+    /**
+     * Constant indicating the 'mean' blur mode
+     */
+    public const BLUR_MEAN = 'mean';
+
+    /**
+     * Constant indicating the 'gaussian' blur mode
+     */
+    public const BLUR_GAUSSIAN = 'gaussian';
+
+    /**
      * Image formats supporting alpha
      */
     protected const FORMATS_SUPPORTING_ALPHA = ['image/gif', 'image/png', 'image/webp'];
+
+    /**
+     * Convolution kernels used for image effects
+     */
+    protected const CONVOLUTION_KERNELS = [
+        self::BLUR_SMOOTH => [
+            [0.075, 0.125, 0.075],
+            [0.125, 0.200, 0.125],
+            [0.075, 0.125, 0.075]
+        ],
+
+        self::BLUR_MEAN => [
+            [1 / 9, 1 / 9, 1 / 9],
+            [1 / 9, 1 / 9, 1 / 9],
+            [1 / 9, 1 / 9, 1 / 9]
+        ],
+
+        self::BLUR_GAUSSIAN => [
+            [0.075, 0.125, 0.075],
+            [0.125, 0.200, 0.125],
+            [0.075, 0.125, 0.075]
+        ]
+    ];
 
     /**
      * Array containing image information
@@ -413,7 +451,7 @@ class Image extends File
      */
     public function sepia(): self
     {
-        return $this->desaturate()->colorize(76, 48, 0);
+        return $this->desaturate()->colorize(112, 66, 20);
     }
 
     /**
@@ -445,16 +483,19 @@ class Image extends File
      *
      * @param int $amount Amount of blur from 0 to 100
      */
-    public function blur(int $amount): self
+    public function blur(int $amount, string $mode = self::BLUR_MEAN): self
     {
         if ($amount < 0 || $amount > 100) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range 0-100, %d given', $amount));
+        }
+        if (!isset(self::CONVOLUTION_KERNELS[$mode])) {
+            throw new InvalidArgumentException(sprintf('Invalid blur mode, "%s" given', $mode));
         }
         if (!isset($this->image)) {
             $this->initialize();
         }
         for ($i = 0; $i < $amount; $i++) {
-            imagefilter($this->image, IMG_FILTER_GAUSSIAN_BLUR);
+            imageconvolution($this->image, self::CONVOLUTION_KERNELS[$mode], 1, 0.55);
         }
         return $this;
     }
