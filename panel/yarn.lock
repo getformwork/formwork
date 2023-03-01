@@ -1181,7 +1181,7 @@ __metadata:
     stylelint-config-idiomatic-order: ^9.0.0
     stylelint-config-standard-scss: ^5.0.0
     stylelint-order: ^5.0.0
-    stylelint-scss: ^4.3.0
+    stylelint-scss: ^4.4.0
   languageName: unknown
   linkType: soft
 
@@ -2920,7 +2920,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-scss@npm:^4.0.0, stylelint-scss@npm:^4.3.0":
+"stylelint-scss@npm:^4.0.0":
   version: 4.3.0
   resolution: "stylelint-scss@npm:4.3.0"
   dependencies:
@@ -2932,6 +2932,21 @@ __metadata:
   peerDependencies:
     stylelint: ^14.5.1
   checksum: fdf6119add2a3ccbf79f3a928acd7f90fc0f77fc45e5cf6f67d97419fe1a39dc6feec56307e1c45e0ec5ae677b0f18f83ce70e644df52aa6600706cf3551d0db
+  languageName: node
+  linkType: hard
+
+"stylelint-scss@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "stylelint-scss@npm:4.4.0"
+  dependencies:
+    lodash: ^4.17.21
+    postcss-media-query-parser: ^0.2.3
+    postcss-resolve-nested-selector: ^0.1.1
+    postcss-selector-parser: ^6.0.6
+    postcss-value-parser: ^4.1.0
+  peerDependencies:
+    stylelint: ^14.5.1 || ^15.0.0
+  checksum: f206bb9014d59af5ccc16f7c0d81bc9126c908f09f3aba296695a200f31c354386d6e2d6177821af761bcfc10fe4be41f3d00d6b2057561710b06d0c30407cc0
   languageName: node
   linkType: hard
 
