@@ -665,10 +665,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:^5.65.11":
-  version: 5.65.11
-  resolution: "codemirror@npm:5.65.11"
-  checksum: b3ace051cdf0809b377d50cc6ddfe5a40e6425aa980a55c2f965b6ba15f0315a77ea60dfd20f40624b3f944fb1d7bf0d68be4bc157f9b24899423df94ea9c878
+"codemirror@npm:^5.65.12":
+  version: 5.65.12
+  resolution: "codemirror@npm:5.65.12"
+  checksum: 6fca4434ef781b0c393c0c24766c53a9a21e7bc5b48b22414032aa458574be5e6ec5d4d95e8d179769937c6c39a54564af8aebbf7f9dc289165bbcd0ae765be7
   languageName: node
   linkType: hard
 
@@ -1170,7 +1170,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^14.1.0
     "@rollup/plugin-terser": ^0.4.0
     chartist: ^1.3.0
-    codemirror: ^5.65.11
+    codemirror: ^5.65.12
     eslint: ^8.34.0
     onchange: ^7.0.2
     postcss: ^8.4.19
