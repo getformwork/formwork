@@ -365,9 +365,9 @@ class PagesController extends AbstractController
             throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotCreate.invalidTemplate');
         }
 
-        $scheme = Formwork::instance()->schemes()->get('pages', $data->get('template'));
+        $scheme = Formwork::instance()->schemes()->get('pages.' . $data->get('template'));
 
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->get('num')) . '-' . $data->get('slug') . DS;
+        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $data->get('slug') . DS;
 
         FileSystem::createDirectory($path, true);
 
@@ -461,7 +461,7 @@ class PagesController extends AbstractController
                 ? Date::toTimestamp($page->data()['publishDate'])
                 : $page->contentFile()->lastModifiedTime();
 
-            if ($page->scheme()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $timestamp))) {
+            if ($page->scheme()->options()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $timestamp))) {
                 $name = preg_replace(Page::NUM_REGEX, $num . '-', basename($page->relativePath()));
                 try {
                     $page = $this->changePageName($page, $name);

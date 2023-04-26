@@ -2,24 +2,16 @@
 
 namespace Formwork\Schemes;
 
+use Exception;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
-use Formwork\Data\Traits\DataGetter;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\Layout\Layout;
 use Formwork\Formwork;
-use Formwork\Parsers\YAML;
-use Formwork\Utils\FileSystem;
 
 class Scheme implements Arrayable
 {
     use DataArrayable;
-    use DataGetter;
-
-    /**
-     * Scheme type
-     */
-    protected string $type;
 
     /**
      * Scheme path
@@ -29,27 +21,27 @@ class Scheme implements Arrayable
     /**
      * Scheme name
      */
-    protected string $name;
+    protected string $id;
 
-    /**
-     * Create a new Scheme instance
-     */
-    public function __construct(string $type, string $path)
+    protected SchemeOptions $options;
+
+    public function __construct(string $id, array $data)
     {
-        $this->type = $type;
-        $this->path = $path;
-        $this->name = FileSystem::name($path);
+        $this->id = $id;
+        $this->data = $data;
 
-        $this->data = YAML::parseFile($this->path);
-
-        if ($this->has('extend') && $this->get('extend') !== $this->name) {
-            $parent = Formwork::instance()->schemes()->get($type, $this->get('extend'));
-            $this->data = array_replace_recursive($parent->data, $this->data);
+        if (isset($this->data['extend'])) {
+            $this->extend($this->data['extend']);
         }
 
-        if (!$this->has('title')) {
-            $this->data['title'] = $this->name;
-        }
+        $this->data['title'] ??= $this->id;
+
+        $this->options = new SchemeOptions($this->data['options'] ?? []);
+    }
+
+    public function options(): SchemeOptions
+    {
+        return $this->options;
     }
 
     /**
@@ -57,7 +49,7 @@ class Scheme implements Arrayable
      */
     public function title(): string
     {
-        return $this->get('title');
+        return $this->data['title'];
     }
 
     /**
@@ -65,7 +57,7 @@ class Scheme implements Arrayable
      */
     public function isDefault(): bool
     {
-        return $this->get('default', false);
+        return $this->data['default'] ?? false;
     }
 
     /**
@@ -74,8 +66,19 @@ class Scheme implements Arrayable
     public function fields(): FieldCollection
     {
         return new FieldCollection(
-            $this->get('fields', []),
-            new Layout($this->get('layout', ['type' => 'default', 'sections' => []]))
+            $this->data['fields'] ?? [],
+            new Layout($this->data['layout'] ?? ['type' => 'default', 'sections' => []])
         );
+    }
+
+    protected function extend(string $id): void
+    {
+        if ($id === $this->id) {
+            throw new Exception(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
+        }
+
+        $parent = Formwork::instance()->schemes()->get($id);
+
+        $this->data = array_replace_recursive($parent->data, $this->data);
     }
 }

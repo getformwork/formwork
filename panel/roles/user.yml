@@ -1,0 +1,5 @@
+title: '{{panel.user.role.user}}'
+
+permissions:
+    dashboard: true
+    pages: true

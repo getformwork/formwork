@@ -1,0 +1,10 @@
+title: '{{panel.user.role.admin}}'
+
+permissions:
+    dashboard: true
+    cache: true
+    backup: true
+    pages: true
+    options: true
+    updates: true
+    users: true

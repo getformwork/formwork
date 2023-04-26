@@ -3,8 +3,8 @@
     <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif; ?>><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
 <?php
     foreach ($parents as $parent):
-        $scheme = $formwork->schemes()->get('pages', $parent->template()->name());
-        if (!$scheme->get('pages', true)) {
+        $scheme = $formwork->schemes()->get('pages.' . $parent->template()->name());
+        if (!$scheme->options()->get('pages', true)) {
             continue;
         }
         if ($parent === $page) {

@@ -110,7 +110,7 @@ class UsersController extends AbstractController
      */
     public function profile(RouteParams $params): Response
     {
-        $scheme = Formwork::instance()->schemes()->get('panel', 'user');
+        $scheme = Formwork::instance()->schemes()->get('users.user');
 
         $fields = $scheme->fields();
 

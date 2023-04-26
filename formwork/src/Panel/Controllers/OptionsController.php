@@ -36,7 +36,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.system');
 
-        $scheme = Formwork::instance()->schemes()->get('config', 'system');
+        $scheme = Formwork::instance()->schemes()->get('config.system');
         $fields = $scheme->fields();
 
         if (HTTPRequest::method() === 'POST') {
@@ -77,7 +77,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.site');
 
-        $scheme = Formwork::instance()->schemes()->get('config', 'site');
+        $scheme = Formwork::instance()->schemes()->get('config.site');
         $fields = $scheme->fields();
 
         if (HTTPRequest::method() === 'POST') {

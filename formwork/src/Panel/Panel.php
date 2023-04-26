@@ -185,7 +185,7 @@ final class Panel
     protected function loadSchemes(): void
     {
         $path = Formwork::instance()->config()->get('schemes.paths.panel');
-        Formwork::instance()->schemes()->loadFromPath('panel', $path);
+        Formwork::instance()->schemes()->loadFromPath($path);
     }
 
     /**

@@ -245,8 +245,7 @@ final class Formwork
 
     protected function loadSchemes(): void
     {
-        $this->schemes = Schemes::fromPath('config', $this->config()->get('schemes.paths.config'));
-        $this->schemes->loadFromPath('pages', $this->config()->get('schemes.paths.pages'));
+        $this->schemes = Schemes::fromPath($this->config()->get('schemes.paths.system'));
     }
 
     /**
@@ -254,6 +253,7 @@ final class Formwork
      */
     protected function loadSite(): void
     {
+        $this->schemes()->loadFromPath($this->config()->get('schemes.paths.site'));
         $config = YAML::parseFile(CONFIG_PATH . 'site.yml');
         $this->site = Site::fromPath(
             $this->config()->get('content.path'),

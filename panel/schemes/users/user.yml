@@ -13,7 +13,6 @@ fields:
         label: '{{panel.user.fullname}}'
         required: true
 
-
     email:
         type: email
         label: '{{panel.user.email}}'
@@ -41,7 +40,6 @@ fields:
         disabled: true
         import:
             options: 'Formwork\Panel\Users\UserCollection::availableRoles'
-
 
     colorScheme:
         type: togglegroup

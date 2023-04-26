@@ -199,7 +199,7 @@ class Page implements Arrayable
         }
 
         // If the page doesn't have a num or numbering is `date`, by default it won't be orderable
-        if ($this->num() === null || $this->scheme->get('num') === 'date') {
+        if ($this->num() === null || $this->scheme->options()->get('num') === 'date') {
             $defaults['orderable'] = false;
         }
 
@@ -570,11 +570,11 @@ class Page implements Arrayable
 
             $this->template ??= new Template($contentFiles[$key]['template'], $this);
 
-            $this->scheme ??= Formwork::instance()->schemes()->get('pages', $this->template);
+            $this->scheme ??= Formwork::instance()->schemes()->get('pages.' . $this->template);
         } else {
             $this->template ??= new Template('default', $this);
 
-            $this->scheme ??= Formwork::instance()->schemes()->get('pages', 'default');
+            $this->scheme ??= Formwork::instance()->schemes()->get('pages.default');
         }
 
         $this->fields ??= $this->scheme()->fields();

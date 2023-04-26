@@ -657,11 +657,11 @@ class FileSystem
         foreach (static::listContents($directory, $flags) as $item) {
             $itemPath = static::joinPaths($directory, $item);
             if (static::isDirectory($itemPath)) {
-                foreach (static::listRecursive($itemPath, $flags) as $item) {
-                    yield $item;
+                foreach (static::listRecursive($itemPath, $flags) as $childItem) {
+                    yield static::joinPaths($item, $childItem);
                 }
             } else {
-                yield $itemPath;
+                yield $item;
             }
         }
     }

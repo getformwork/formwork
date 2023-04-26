@@ -12,10 +12,10 @@
                 <option value="." selected><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
 <?php
                 foreach ($pages as $page):
-                    $scheme = $formwork->schemes()->get('pages', $page->template()->name());
-                    if (!$scheme->get('children', true)) continue;
+                    $scheme = $formwork->schemes()->get('pages.' . $page->template()->name());
+                    if (!$scheme->options()->get('children', true)) continue;
 ?>
-                <option value="<?= $page->route() ?>"<?php if ($scheme->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->get('children.templates'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
+                <option value="<?= $page->route() ?>"<?php if ($scheme->options()->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->options()->get('children.templates'))?>"<?php endif; ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
 <?php
                 endforeach;
 ?>
@@ -24,7 +24,7 @@
             <select id="page-template" name="template">
 <?php
             foreach ($templates as $template):
-                $scheme = $formwork->schemes()->get('pages', $template);
+                $scheme = $formwork->schemes()->get('pages.' . $template);
 ?>
                 <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif; ?>><?= $scheme->title() ?></option>
 <?php

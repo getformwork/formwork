@@ -388,7 +388,7 @@ class Site implements Arrayable
 
     protected function load()
     {
-        $this->scheme = Formwork::instance()->schemes()->get('config', 'site');
+        $this->scheme = Formwork::instance()->schemes()->get('config.site');
 
         $this->fields = $this->scheme->fields();
 

@@ -1,12 +1,11 @@
 title: Blog Post
 
-extend: page
+extend: pages.page
 
-default: false
-
-children: false
-
-num: date
+options:
+    default: false
+    children: false
+    num: date
 
 layout:
     sections:

@@ -5,7 +5,6 @@ namespace Formwork\Panel;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use Formwork\Utils\ZipErrors;
 use ZipArchive;
@@ -73,9 +72,8 @@ class Backupper
 
         if (($status = $zip->open($destination, ZipArchive::CREATE)) === true) {
             foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
-                $relative = Str::removeStart($file, $source);
-                if ($this->isCopiable($relative)) {
-                    $zip->addFile($file, $relative);
+                if ($this->isCopiable($file)) {
+                    $zip->addFile($file, $file);
                 }
             }
             $zip->close();

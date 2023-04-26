@@ -23,10 +23,14 @@ class UserCollection extends AbstractCollection
      */
     public static function load(): self
     {
-        static::$roles = Formwork::instance()->schemes()->get('panel', 'roles')->get('data');
+        foreach (FileSystem::listFiles($path = Formwork::instance()->config()->get('panel.paths.roles')) as $file) {
+            $parsedData = YAML::parseFile($path . $file);
+            $role = FileSystem::name($file);
+            static::$roles[$role] = $parsedData;
+        }
         $users = [];
-        foreach (FileSystem::listFiles(Formwork::instance()->config()->get('panel.paths.accounts')) as $file) {
-            $parsedData = YAML::parseFile(Formwork::instance()->config()->get('panel.paths.accounts') . $file);
+        foreach (FileSystem::listFiles($path = Formwork::instance()->config()->get('panel.paths.accounts')) as $file) {
+            $parsedData = YAML::parseFile($path . $file);
             $users[$parsedData['username']] = new User($parsedData);
         }
         return new static($users);

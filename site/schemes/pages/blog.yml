@@ -1,18 +1,19 @@
 title: Blog
 
 # Extend the `page` scheme
-extend: page
+extend: pages.page
 
 default: false
 
-# Specify the page type, in this case `listing`, which means it can show children
-type: listing
+options:
+    # Specify the page type, in this case `listing`, which means it can show children
+    type: listing
 
-# This controls which template can have children, their order and other attributes
-children:
-    templates: [post, blog]
-    reverse: true
-    orderable: false
+    # This controls which template can have children, their order and other attributes
+    children:
+        templates: [post, blog]
+        reverse: true
+        orderable: false
 
 layout:
     type: sections

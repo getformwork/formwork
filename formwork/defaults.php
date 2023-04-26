@@ -13,7 +13,8 @@ return [
         'colorScheme'    => 'light',
         'paths'          => [
             'accounts' => PANEL_PATH . 'accounts' . DS,
-            'logs'     => PANEL_PATH . 'logs' . DS
+            'logs'     => PANEL_PATH . 'logs' . DS,
+            'roles'    => PANEL_PATH . 'roles' . DS
         ]
     ],
     'backup' => [
@@ -83,8 +84,8 @@ return [
     'schemes' => [
         'paths' => [
             'panel'  => PANEL_PATH . 'schemes' . DS,
-            'config' => CONFIG_PATH . 'schemes' . DS,
-            'pages'  => SITE_PATH . 'schemes' . DS
+            'system' => FORMWORK_PATH . 'schemes' . DS,
+            'site'   => SITE_PATH . 'schemes' . DS
         ]
     ],
     'statistics' => [

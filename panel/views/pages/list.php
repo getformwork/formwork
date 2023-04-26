@@ -69,8 +69,8 @@
 <?php
                     if ($subpages && $page->hasChildren()):
                         $scheme = $page->scheme();
-                        $reverseChildren = $scheme->get('children.reverse', false);
-                        $orderableChildren = $scheme->get('children.sortable', true);
+                        $reverseChildren = $scheme->options()->get('children.reverse', false);
+                        $orderableChildren = $scheme->options()->get('children.sortable', true);
 
                         $this->insert('pages.list', [
                             'pages'    => $reverseChildren ? $page->children()->reverse() : $page->children(),

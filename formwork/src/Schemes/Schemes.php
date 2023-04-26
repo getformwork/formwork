@@ -2,7 +2,10 @@
 
 namespace Formwork\Schemes;
 
+use Formwork\Parsers\YAML;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Path;
+use Formwork\Utils\Str;
 use InvalidArgumentException;
 
 class Schemes
@@ -17,56 +20,56 @@ class Schemes
     /**
      * Load a scheme
      */
-    public function load(string $type, string $path): void
+    public function load(string $id, string $path): void
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yml') {
-            $name = FileSystem::name($path);
-            $this->data[$type][$name] = $path;
-            unset($this->storage[$type][$name]);
+            $this->data[$id] = $path;
+            unset($this->storage[$id]);
         }
     }
 
     /**
      * Load scheme files from a path
      */
-    public function loadFromPath(string $type, string $path): void
+    public function loadFromPath(string $path): void
     {
-        foreach (FileSystem::listFiles($path) as $file) {
-            $this->load($type, FileSystem::joinPaths($path, $file));
+        foreach (FileSystem::listRecursive($path) as $item) {
+            $id = str_replace(DS, '.', Str::beforeLast($item, '.'));
+            $this->load($id, FileSystem::joinPaths($path, $item));
         }
     }
 
     /**
-     * Return whether a scheme matching the given type and name is available
+     * Return whether a scheme matching the given id is available
      */
-    public function has(string $type, string $name): bool
+    public function has(string $id): bool
     {
-        return isset($this->data[$type][$name]);
+        return isset($this->data[$id]);
     }
 
     /**
-     * Get a scheme from type and name
+     * Get a scheme from id
      */
-    public function get(string $type, string $name): Scheme
+    public function get(string $id): Scheme
     {
-        if (!$this->has($type, $name)) {
-            throw new InvalidArgumentException(sprintf('Invalid scheme "%s" of type "%s"', $name, $type));
+        if (!$this->has($id)) {
+            throw new InvalidArgumentException(sprintf('Invalid scheme "%s"', $id));
         }
 
-        if (isset($this->storage[$type][$name])) {
-            return $this->storage[$type][$name];
+        if (isset($this->storage[$id])) {
+            return $this->storage[$id];
         }
 
-        return $this->storage[$type][$name] = new Scheme($type, $this->data[$type][$name]);
+        return $this->storage[$id] = new Scheme($id, YAML::parseFile($this->data[$id]));
     }
 
     /**
      * Create a collection from the given path
      */
-    public static function fromPath(string $type, string $path): self
+    public static function fromPath(string $path): self
     {
         $instance = new static();
-        $instance->loadFromPath($type, $path);
+        $instance->loadFromPath($path);
         return $instance;
     }
 }
