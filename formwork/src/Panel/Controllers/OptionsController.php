@@ -43,7 +43,7 @@ class OptionsController extends AbstractController
             $data = HTTPRequest::postData();
             $options = Formwork::instance()->config();
             $defaults = Formwork::instance()->defaults();
-            $fields->setValues($data);
+            $fields->setValues($data)->validate();
 
             $differ = $this->updateOptions('system', $fields, $options->toArray(), $defaults);
 
