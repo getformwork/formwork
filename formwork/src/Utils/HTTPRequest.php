@@ -92,10 +92,10 @@ class HTTPRequest
      */
     public static function ip(bool $strict = false): string
     {
-        if (!$strict && getenv('HTTP_X_FORWARDED_FOR')) {
-            return getenv('HTTP_X_FORWARDED_FOR');
+        if (!$strict && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
-        return getenv('REMOTE_ADDR');
+        return $_SERVER['REMOTE_ADDR'];
     }
 
     /**
