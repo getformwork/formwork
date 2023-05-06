@@ -13,9 +13,9 @@
   "scripts": {
     "build": "yarn build:css && yarn build:js",
     "build:css": "sass ./assets/scss/panel.scss:./assets/css/panel.min.css ./assets/scss/panel-dark.scss:./assets/css/panel-dark.min.css --style=compressed --no-source-map",
-    "build:js": "rollup -c",
-    "watch:css": "onchange 'assets/scss/**/*.scss' -- yarn build:css",
-    "watch:js": "onchange 'assets/js/src/**/*.js' -- yarn build:js",
+    "build:js": "esbuild ./assets/js/src/main.js --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
+    "watch:css": "yarn build:css --watch",
+    "watch:js": "yarn build:js --watch",
     "lint:css": "stylelint './assets/scss/**/*.scss' --fix",
     "lint:js": "eslint './assets/js/src/**' --fix"
   },
@@ -25,18 +25,14 @@
     "sortablejs": "^1.15.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^14.1.0",
-    "@rollup/plugin-terser": "^0.4.0",
-    "eslint": "^8.34.0",
-    "onchange": "^7.0.2",
+    "esbuild": "^0.17.18",
+    "eslint": "^8.40.0",
     "postcss": "^8.4.19",
-    "rollup": "^2.79.0",
-    "sass": "^1.58.3",
+    "sass": "^1.62.1",
     "stylelint": "^14.16.1",
     "stylelint-config-idiomatic-order": "^9.0.0",
-    "stylelint-config-standard-scss": "^5.0.0",
-    "stylelint-order": "^5.0.0",
-    "stylelint-scss": "^4.3.0"
+    "stylelint-config-standard-scss": "^6.1.0",
+    "stylelint-order": "^6.0.1",
+    "stylelint-scss": "^4.7.0"
   }
 }
