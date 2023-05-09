@@ -138,12 +138,14 @@ fields:
         min: 0
         max: 100
         step: 5
+        ticks: true
 
     images.pngCompression:
         type: range
         label: '{{panel.options.system.images.pngCompressionLevel}}'
         min: 0
         max: 9
+        ticks: true
 
     images.webpQuality:
         type: range
@@ -151,6 +153,7 @@ fields:
         min: 0
         max: 100
         step: 5
+        ticks: true
 
     images.jpegProgressive:
         type: togglegroup

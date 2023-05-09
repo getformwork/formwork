@@ -1,14 +1,20 @@
 input[type='range'] {
-    width: $input-range-width;
+    --progress: 0;
+
+    position: relative;
+    z-index: 1;
     padding: $input-range-padding-v $input-range-padding-h;
     border: 0;
+    margin-bottom: 0;
+    background-color: transparent;
     @include appearance-none;
     &::-webkit-slider-runnable-track {
         width: 100%;
         height: $input-range-track-height;
         border: 0;
         border-radius: $input-range-track-height * 0.5;
-        background-color: $color-base-600;
+        background: linear-gradient(90deg, $color-accent-500 var(--progress), $color-base-500 var(--progress));
+        background-color: $color-base-500;
         cursor: default;
     }
     &::-webkit-slider-thumb {
@@ -18,6 +24,7 @@ input[type='range'] {
         border-radius: $input-range-thumb-border-radius;
         margin-top: -($input-range-thumb-height - $input-range-track-height) * 0.5;
         background-color: $color-accent-500;
+        cursor: default;
         transition: background-color $transition-time-s;
         @include appearance-none;
     }
@@ -26,7 +33,8 @@ input[type='range'] {
         height: $input-range-track-height;
         border: 0;
         border-radius: $input-range-track-height * 0.5;
-        background-color: $color-base-600;
+        background: linear-gradient(90deg, $color-accent-500 var(--progress), $color-base-500 var(--progress));
+        background-color: $color-base-500;
     }
     &::-moz-range-thumb {
         width: $input-range-thumb-width;
@@ -35,39 +43,18 @@ input[type='range'] {
         border-radius: $input-range-thumb-border-radius;
         background-color: $color-accent-500;
         cursor: default;
-    }
-    &::-ms-track {
-        width: 100%;
-        height: $input-range-track-height;
-        border-color: transparent;
-        background-color: transparent;
-        color: transparent;
-        cursor: default;
-    }
-    &::-ms-fill-lower, &::-ms-fill-upper {
-        border: 0;
-        border-radius: $input-range-track-height * 0.5;
-        background: $color-base-600;
-        box-shadow: none;
-    }
-    &::-ms-thumb {
-        width: $input-range-thumb-width;
-        height: $input-range-thumb-height;
-        border: 0;
-        border-radius: $input-range-thumb-border-radius;
-        margin-top: 0;
-        background-color: $color-accent-500;
-        cursor: default;
+        transition: background-color $transition-time-s;
+        @include appearance-none;
     }
     &:focus {
         box-shadow: none;
     }
-    &:hover::-webkit-slider-thumb {
+    &:hover::-webkit-slider-thumb, &:hover::-moz-range-thumb {
         background-color: $color-accent-400;
     }
     &[disabled] {
         background-color: transparent;
-        &::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb {
+        &::-webkit-slider-thumb, &::-moz-range-thumb {
             background-color: $color-base-300;
         }
     }
@@ -79,15 +66,33 @@ input[type='range'] {
         background-color: $color-accent-400;
         @include focusring;
     }
-    &:focus::-ms-thumb {
-        background-color: $color-accent-400;
-        @include focusring;
-    }
 }
 
 .input-range-value {
+    min-width: 3rem;
     padding: $input-range-value-padding-v $input-range-value-padding-h;
     font-size: $font-size-s;
-    vertical-align: 0.1875rem;
     @include user-select-none;
+}
+
+.input-range {
+    position: relative;
+    width: 100%;
+    margin-bottom: $input-margin-bottom;
+}
+
+.input-range-ticks {
+    position: absolute;
+    right: 0;
+    bottom: 0.625rem;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 $input-range-thumb-width * 0.5;
+}
+
+.input-range-ticks .tick {
+    width: 1px;
+    height: $input-range-track-height;
+    background-color: $color-base-500;
 }
