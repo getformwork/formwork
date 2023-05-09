@@ -89,6 +89,7 @@
         "selector-list-comma-newline-after": "always-multi-line",
         "selector-no-vendor-prefix": null,
         "selector-pseudo-element-colon-notation": "double",
+        "shorthand-property-no-redundant-values": null,
         "string-quotes": "single",
         "value-keyword-case": ["lower", {
             "ignoreProperties": [
