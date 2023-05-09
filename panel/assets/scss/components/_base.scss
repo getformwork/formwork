@@ -45,6 +45,23 @@ mark {
     background-color: $mark-background-color;
 }
 
+code, pre {
+    border-radius: $border-radius;
+    background-color: $color-base-600;
+    font-family: $mono-font-family;
+    font-size: 0.875em;
+}
+
+code {
+    padding: 0.125rem 0.25rem;
+    color: $color-accent-400;
+}
+
+pre {
+    padding: 1rem;
+    white-space: pre-wrap;
+}
+
 [hidden] {
     display: none;
 }
@@ -67,7 +84,7 @@ mark {
             display: none;
         }
     }
-    @media (max-width: map.get($responsive-breakpoints, $breakpoint-name) - 1) {
+    @media (max-width: (map.get($responsive-breakpoints, $breakpoint-name) - 1)) {
         .show-from-#{$breakpoint-name} {
             display: none;
         }
