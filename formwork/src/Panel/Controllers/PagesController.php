@@ -16,6 +16,7 @@ use Formwork\Response\JSONResponse;
 use Formwork\Response\RedirectResponse;
 use Formwork\Response\Response;
 use Formwork\Router\RouteParams;
+use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\HTTPRequest;
@@ -51,12 +52,18 @@ class PagesController extends AbstractController
 
         $this->modal('deletePage');
 
+        $indexOffset = $this->site()->pages()->indexOf($this->site()->indexPage());
+
+        $pages = $this->site()->pages();
+
+        $pages->moveItem($indexOffset, 0);
+
         return new Response($this->view('pages.index', [
             'title'     => $this->translate('panel.pages.pages'),
             'pagesList' => $this->view('pages.list', [
-                'pages'     => $this->site()->pages(),
+                'pages'     => $pages,
                 'subpages'  => true,
-                'class'     => 'pages-list-top',
+                'class'     => 'pages-list-root',
                 'parent'    => '.',
                 'orderable' => $this->user()->permissions()->has('pages.reorder'),
                 'headers'   => true
@@ -195,11 +202,7 @@ class PagesController extends AbstractController
 
         $data = HTTPRequest::postData();
 
-        if (!$data->hasMultiple(['parent', 'from', 'to'])) {
-            return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
-        }
-
-        if (!is_numeric($data->get('from')) || !is_numeric($data->get('to'))) {
+        if (!$data->hasMultiple(['page', 'before', 'parent'])) {
             return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
@@ -208,20 +211,19 @@ class PagesController extends AbstractController
             return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        /**
-         * @var array<string, Page>
-         */
-        $pages = $parent->children()->toArray();
+        $pages = $parent->children();
+        $keys = $pages->keys();
 
-        $from = max(0, $data->get('from'));
-        $to = max(0, $data->get('to'));
-        if ($to === $from) {
-            exit;
+        $from = Arr::indexOf($keys, $data->get('page'));
+        $to = Arr::indexOf($keys, $data->get('before'));
+
+        if ($from === null || $to === null) {
+            return JSONResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        array_splice($pages, $to, 0, array_splice($pages, $from, 1));
+        $pages->moveItem($from, $to);
 
-        foreach (array_values($pages) as $i => $page) {
+        foreach ($pages->values() as $i => $page) {
             $name = basename($page->relativePath());
             if ($name === null) {
                 continue;

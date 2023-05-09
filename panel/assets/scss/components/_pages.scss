@@ -25,7 +25,7 @@
     min-width: auto;
     padding: 0;
     border-color: transparent;
-    margin: 0 $page-children-toggle-margin-right $page-children-toggle-margin-bottom 0;
+    margin: 0;
     background-color: transparent;
     box-shadow: none;
     cursor: pointer;
@@ -39,16 +39,7 @@
     }
 }
 
-.page-children-toggle .icon {
-    margin-right: 0;
-    transition: transform $transition-time-s;
-}
-
-.toggle-expanded .icon {
-    transform: rotate(-180deg);
-}
-
-.pages-item {
+.pages-item-row {
     padding: $pages-item-padding-v $pages-item-padding-h;
     border-bottom: 1px solid $color-base-600;
     &:hover {
@@ -56,11 +47,31 @@
     }
 }
 
-.pages-item .sort-handle {
+.pages-item-row .sort-handle {
     display: none;
 }
 
-.pages-list-top {
+.pages-list.is-filtered .sort-handle {
+    display: none;
+}
+
+.pages-list.is-filtered .page-children-toggle {
+    display: none;
+}
+
+.pages-list.is-filtered .pages-item .page-details {
+    padding-left: 0;
+}
+
+.pages-list.is-reordering .pages-item-row:hover {
+    background-color: transparent;
+}
+
+.pages-list.is-reordering .sort-handle {
+    display: block;
+}
+
+.pages-list-root {
     border-top: 1px solid $color-base-600;
 }
 
@@ -68,10 +79,6 @@
 .pages-headers-cell {
     padding: $pages-item-cell-padding-v $pages-item-cell-padding-h;
     font-size: $font-size-s;
-}
-
-.pages-item-cell div,
-.pages-headers-cell {
     @include ellipsis;
 }
 
@@ -79,19 +86,6 @@
     padding: $focusring-width;
     margin: -$focusring-width;
     font-size: $font-size-m;
-}
-
-.page-language {
-    display: inline-block;
-    min-width: $page-language-min-width;
-    padding: $page-language-padding-v $page-language-padding-h;
-    border-radius: $border-radius;
-    background-color: $color-accent-900;
-    color: $color-accent-500;
-    font-size: $font-size-s;
-    font-weight: 600;
-    line-height: 1;
-    text-align: center;
 }
 
 button .page-language,
@@ -112,6 +106,11 @@ button .page-language,
 .page-status .icon {
     display: inline-block;
     margin-right: $page-status-label-margin-right;
+}
+
+.page-children-toggle .icon {
+    margin-right: 0;
+    transition: transform $transition-time-s;
 }
 
 .page-status-published .icon {
@@ -137,7 +136,7 @@ button .page-language,
 }
 
 @media (min-width: map.get($responsive-breakpoints, 'xs')) {
-    .pages-item,
+    .pages-item-row,
     .pages-list-headers {
         display: flex;
         align-items: center;
@@ -162,21 +161,75 @@ button .page-language,
     }
 }
 
-.pages-level-2 .page-details {
-    padding-left: $pages-level-2-padding-left;
+.pages-item {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        z-index: 1;
+        top: -2.125rem;
+        width: 1.625rem;
+        height: 3.625rem;
+        border-bottom: 2px solid $color-base-600;
+        border-left: 2px solid $color-base-600;
+    }
+
+    &::after {
+        position: absolute;
+        z-index: 1;
+        top: -2.125rem;
+        width: 1.625rem;
+        height: 100%;
+        border-left: 2px solid $color-base-600;
+    }
+
+    .is-filtered &::before,
+    .is-filtered &::after {
+        display: none;
+    }
+
+    &:last-child::after,
+    .is-dragging > &:nth-last-child(2)::after {
+        display: none;
+    }
+
+    &.has-children::before,
+    &.has-children::after,
+    &.is-orderable::before,
+    &.is-orderable::after {
+        width: 0.875rem;
+    }
+
+    .is-reordering &:not(.is-orderable, .has-children)::before,
+    .is-reordering &:not(.is-orderable, .has-children)::after {
+        width: 2.375rem;
+    }
 }
 
-.pages-level-3 .page-details {
-    padding-left: $pages-level-3-padding-left;
+@mixin make-page-levels($levels) {
+    @for $i from 2 through $levels {
+        $indent: 0.5rem;
+
+        @if $i == 2 {
+            $indent: 0.625rem;
+        } @else {
+            $indent: $indent + $pages-level-padding * ($i - 2);
+        }
+
+        .pages-level-#{$i} {
+            &::before,
+            &::after {
+                left: $indent;
+                content: '';
+            }
+            .page-details {
+                padding-left: $pages-level-padding * ($i - 1);
+            }
+        }
+    }
 }
 
-.pages-level-4 .page-details {
-    padding-left: $pages-level-4-padding-left;
-}
-
-.pages-level-5 .page-details {
-    padding-left: $pages-level-5-padding-left;
-}
+@include make-page-levels(10);
 
 .page-info {
     padding: $page-info-padding-v $page-info-padding-h;
@@ -216,7 +269,54 @@ button .page-language,
     }
 }
 
-.dragging [data-sortable='false'] .pages-item:hover {
-    background-color: color.adjust($color-error-500, $lightness: 37.5%);
-    cursor: no-drop;
+.pages-children {
+    display: none;
+}
+
+.sortable-fallback::before,
+.sortable-fallback::after {
+    display: none;
+}
+
+.sortable-chosen .pages-item-cell {
+    background-color: transparent;
+    opacity: 0.5;
+}
+
+.sortable-chosen .pages-children,
+.sortable-fallback .pages-children {
+    display: none !important;
+}
+
+.sortable-chosen .page-children-toggle .icon,
+.sortable-fallback .page-children-toggle .icon {
+    transform: none !important;
+}
+
+.sortable-fallback .pages-item-cell {
+    opacity: 1;
+}
+
+.pages-item.is-expanded > .pages-children {
+    display: block;
+}
+
+.pages-item.is-expanded > .pages-item-row .page-children-toggle .icon {
+    transform: rotate(-180deg);
+}
+
+.is-dragging {
+    cursor: grab !important;
+}
+
+.is-dragging .page-title {
+    pointer-events: none;
+}
+
+.is-dragging > .is-not-orderable * {
+    cursor: no-drop !important;
+}
+
+.is-dragging > .is-not-orderable .pages-item-row:hover {
+    background-color: $color-error-900;
 }

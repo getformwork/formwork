@@ -33,7 +33,7 @@ class DashboardController extends AbstractController
             'lastModifiedPages' => $this->view('pages.list', [
                 'pages'     => $this->site()->descendants()->sort(direction: SORT_DESC, sortBy: $timestamps->toArray())->limit(5),
                 'subpages'  => false,
-                'class'     => 'pages-list-top',
+                'class'     => 'pages-list-root',
                 'parent'    => null,
                 'orderable' => false,
                 'headers'   => true

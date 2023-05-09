@@ -258,6 +258,13 @@
     vertical-align: -0.125rem;
 }
 
+.sort-handle .icon {
+    display: inline-block;
+    margin-bottom: 0;
+    color: $color-base-300;
+    cursor: grab;
+}
+
 .section-toggle .icon {
     transition: transform $transition-time-s;
 }
@@ -268,13 +275,6 @@
 
 .section.collapsed .section-content {
     display: none;
-}
-
-.sort-handle {
-    display: inline-block;
-    margin-bottom: 0;
-    color: $color-base-300;
-    cursor: grab;
 }
 
 .sortable-chosen,

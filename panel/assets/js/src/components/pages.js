@@ -1,7 +1,7 @@
 import Modals from './modals';
 import Notification from './notification';
 import Request from './request';
-import Sortable from 'sortablejs';
+import {Sortable} from 'sortablejs';
 import Utils from './utils';
 
 export default {
@@ -18,16 +18,16 @@ export default {
         var slugModal = document.getElementById('slugModal');
 
         $$('.pages-list').forEach(function (element) {
-            if (element.getAttribute('data-sortable-children') === 'true') {
+            if (element.getAttribute('data-orderable-children') === 'true') {
                 initSortable(element);
             }
         });
 
         $$('.page-details').forEach(function (element) {
-            var toggle = $('.page-children-toggle', element);
-            if (toggle) {
-                element.addEventListener('click', function () {
-                    toggle.click();
+            if ($('.page-children-toggle', element)) {
+                element.addEventListener('click', function (event) {
+                    togglePageItem(this);
+                    event.stopPropagation();
                 });
             }
         });
@@ -38,9 +38,8 @@ export default {
             });
         });
 
-        $$('.page-children-toggle').forEach(function (element) {
+        $$('.pages-list .sort-handle').forEach(function (element) {
             element.addEventListener('click', function (event) {
-                togglePagesList(this);
                 event.stopPropagation();
             });
         });
@@ -62,17 +61,15 @@ export default {
         if (commandReorderPages) {
             commandReorderPages.addEventListener('click', function () {
                 this.classList.toggle('active');
-                $$('.pages-list .sort-handle').forEach(function (element) {
-                    Utils.toggleElement(element, 'inline-block');
-                });
+                $('.pages-list').classList.toggle('is-reordering');
                 this.blur();
             });
         }
 
         if (searchInput) {
             searchInput.addEventListener('focus', function () {
-                $$('.pages-children').forEach(function (element) {
-                    element.setAttribute('data-display', getComputedStyle(element).display);
+                $$('.pages-item').forEach(function (element) {
+                    element.setAttribute('data-expanded', element.classList.contains('expanded') ? 'true' : 'false');
                 });
             });
 
@@ -168,34 +165,20 @@ export default {
         }
 
         function expandAllPages() {
-            $$('.pages-children').forEach(function (element) {
-                element.style.display = 'block';
-            });
-            $$('.pages-list .page-children-toggle').forEach(function (element) {
-                element.classList.remove('toggle-collapsed');
-                element.classList.add('toggle-expanded');
+            $$('.pages-item').forEach(function (element) {
+                element.classList.add('is-expanded');
             });
         }
 
         function collapseAllPages() {
-            $$('.pages-children').forEach(function (element) {
-                element.style.display = 'none';
-            });
-            $$('.pages-list .page-children-toggle').forEach(function (element) {
-                element.classList.remove('toggle-expanded');
-                element.classList.add('toggle-collapsed');
+            $$('.pages-item').forEach(function (element) {
+                element.classList.remove('is-expanded');
             });
         }
 
-        function togglePagesList(list) {
-            var parent = list.closest('li');
-            $$('.pages-list', parent).forEach(function (element) {
-                if (element.parentNode === parent) {
-                    Utils.toggleElement(element);
-                }
-            });
-            list.classList.toggle('toggle-expanded');
-            list.classList.toggle('toggle-collapsed');
+        function togglePageItem(list) {
+            var element = list.closest('.pages-item');
+            element.classList.toggle('is-expanded');
         }
 
         function initSortable(element) {
@@ -203,39 +186,38 @@ export default {
 
             var sortable = Sortable.create(element, {
                 handle: '.sort-handle',
-                filter: '[data-sortable=false]',
+                filter: '.is-not-orderable',
                 forceFallback: true,
+                swapThreshold: 0.75,
+                invertSwap: true,
+                animation: 150,
 
-                onClone: function (event) {
-                    event.item.closest('.pages-list').classList.add('dragging');
+                onChoose: function () {
+                    var height = document.body.offsetHeight;
+                    document.body.style.height = height + 'px';
 
-                    $$('.pages-children', event.item).forEach(function (element) {
-                        element.style.display = 'none';
+                    var e = window.addEventListener('scroll', function () {
+                        this.document.body.style.height = '';
+                        this.removeEventListener('scroll', e);
                     });
-                    $$('.page-children-toggle').forEach(function (element) {
-                        element.classList.remove('toggle-expanded');
-                        element.classList.add('toggle-collapsed');
-                        element.style.opacity = '0.5';
-                    });
+                },
+
+                onStart: function () {
+                    element.classList.add('is-dragging');
                 },
 
                 onMove: function (event) {
-                    if (event.related.getAttribute('data-sortable') === 'false') {
+                    if (event.related.classList.contains('is-not-orderable')) {
                         return false;
                     }
-                    $$('.pages-children', event.related).forEach(function (element) {
-                        element.style.display = 'none';
-                    });
                 },
 
                 onEnd: function (event) {
+                    element.classList.remove('is-dragging');
+
+                    document.body.style.height = '';
+
                     var data, notification;
-
-                    event.item.closest('.pages-list').classList.remove('dragging');
-
-                    $$('.page-children-toggle').forEach(function (element) {
-                        element.style.opacity = '';
-                    });
 
                     if (event.newIndex === event.oldIndex) {
                         return;
@@ -245,9 +227,9 @@ export default {
 
                     data = {
                         'csrf-token': $('meta[name=csrf-token]').getAttribute('content'),
-                        parent: element.getAttribute('data-parent'),
-                        from: event.oldIndex,
-                        to: event.newIndex
+                        page: element.children[event.newIndex].getAttribute('data-route'),
+                        before: element.children[event.oldIndex].getAttribute('data-route'),
+                        parent: element.getAttribute('data-parent')
                     };
 
                     Request({
@@ -256,7 +238,7 @@ export default {
                         data: data
                     }, function (response) {
                         if (response.status) {
-                            notification = new Notification(response.message, response.status, {icon: 'check-cricle'});
+                            notification = new Notification(response.message, response.status, {icon: 'check-circle'});
                             notification.show();
                         }
                         if (!response.status || response.status === 'error') {
@@ -276,39 +258,32 @@ export default {
             var value = this.value;
             var regexp;
             if (value.length === 0) {
-                $$('.pages-children').forEach(function (element) {
-                    element.style.display = element.getAttribute('data-display');
-                });
-                $$('.pages-item, .page-children-toggle').forEach(function (element) {
-                    element.style.display = '';
-                });
-                $$('.page-details').forEach(function (element) {
-                    element.style.paddingLeft = '';
-                });
-                $$('.page-title a').forEach(function (element) {
-                    element.innerHTML = element.textContent;
+                $('.pages-list-root').classList.remove('is-filtered');
+
+                $$('.pages-item').forEach(function (element) {
+                    var title = $('.page-title a', element);
+                    title.innerHTML = title.textContent;
+                    $('.pages-item-row', element).style.display = '';
+                    element.classList.toggle('is-expanded', element.getAttribute('data-expanded') === true);
                 });
             } else {
+                $('.pages-list-root').classList.add('is-filtered');
+
                 regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'gi');
-                $$('.pages-children').forEach(function (element) {
-                    element.style.display = 'block';
-                });
-                $$('.page-children-toggle').forEach(function (element) {
-                    element.style.display = 'none';
-                });
-                $$('.page-details').forEach(function (element) {
-                    element.style.paddingLeft = '0';
-                });
-                $$('.page-title a').forEach(function (element) {
-                    var pagesItem = element.closest('.pages-item');
-                    var text = element.textContent;
+
+                $$('.pages-item').forEach(function (element) {
+                    var title = $('.page-title a', element);
+                    var text = title.textContent;
+                    var pagesItem = $('.pages-item-row', element);
                     if (text.match(regexp) !== null) {
-                        element.innerHTML = text.replace(regexp, '<mark>$&</mark>');
+                        title.innerHTML = text.replace(regexp, '<mark>$&</mark>');
                         pagesItem.style.display = '';
                     } else {
                         pagesItem.style.display = 'none';
                     }
+                    element.classList.add('is-expanded');
                 });
+
             }
         }
 
