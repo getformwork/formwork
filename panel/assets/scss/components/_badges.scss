@@ -1,0 +1,38 @@
+.badge {
+    display: inline-block;
+    min-width: 1.375em;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2em;
+    margin-left: 0.25rem;
+    background-color: $color-base-600;
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1.125;
+    text-align: center;
+}
+
+button .badge {
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.button-accent .badge {
+    background-color: $color-accent-900;
+    color: $color-accent-500;
+}
+
+.button-success .badge {
+    background-color: $color-success-900;
+    color: $color-success-500;
+}
+
+.button-warning .badge {
+    background-color: $color-warning-900;
+    color: $color-warning-500;
+}
+
+.button-error .badge {
+    background-color: $color-error-900;
+    color: $color-error-500;
+}
