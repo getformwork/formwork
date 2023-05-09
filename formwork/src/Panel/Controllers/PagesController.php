@@ -137,7 +137,7 @@ class PagesController extends AbstractController
                 $data = HTTPRequest::postData();
 
                 // Validate fields against data
-                $fields->setValues($data)->validate();
+                $fields->setValues($data, null)->validate();
 
                 // Update the page
                 try {

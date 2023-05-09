@@ -130,7 +130,7 @@ class UsersController extends AbstractController
             if ($this->user()->canChangeOptionsOf($user)) {
                 $data = HTTPRequest::postData()->toArray();
 
-                $fields->setValues($data)->validate();
+                $fields->setValues($data, null)->validate();
 
                 try {
                     $this->updateUser($user, $data);
@@ -189,7 +189,7 @@ class UsersController extends AbstractController
             $data['avatar'] = $avatar;
         }
 
-        // Filter empty elements from $data and merge them with $user ones
+        // Filter empty items from $data and merge them with $user ones
         $userData = array_merge($user->toArray(), $data);
 
         YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $user->username() . '.yml');
