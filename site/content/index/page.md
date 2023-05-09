@@ -1,6 +1,6 @@
 ---
 title: Home
-canonical: /
+canonicalRoute: /
 icon: page-home
 ---
 # Formwork is Installed!
