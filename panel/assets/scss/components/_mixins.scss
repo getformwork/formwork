@@ -102,3 +102,17 @@
         }
     }
 }
+
+@mixin make-util($name, $property, $list) {
+    @each $k, $v in $list {
+        $suffix: '';
+
+        @if $k != '' {
+            $suffix: '-#{$k}';
+        }
+
+        .#{$name}#{$suffix} {
+            #{$property}: #{$v};
+        }
+    }
+}
