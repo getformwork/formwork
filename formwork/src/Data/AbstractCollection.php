@@ -301,7 +301,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Filter the collection items using a callback
      *
-     * Only the elements on which the callback returns `true` are retained
+     * Only the items on which the callback returns `true` are retained
      */
     public function filter(callable $callback): static
     {
@@ -313,7 +313,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Reject the collection items using a callback
      *
-     * Only the elements on which the callback returns `false` are retained
+     * Only the items on which the callback returns `false` are retained
      *
      * This is the opposite of `Collection::filter()`
      */
@@ -492,6 +492,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         foreach ($values as $value) {
             $this->pull($value);
         }
+    }
+
+    /**
+     * Move a collection item from the given index to another
+     */
+    public function moveItem(int $fromIndex, int $toIndex): void
+    {
+        Arr::moveItem($this->data, $fromIndex, $toIndex);
     }
 
     /**
