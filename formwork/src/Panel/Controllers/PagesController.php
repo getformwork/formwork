@@ -534,7 +534,7 @@ class PagesController extends AbstractController
     {
         return match ($mode) {
             'date'  => date(self::DATE_NUM_FORMAT),
-            default => 1 + max(0, ...$parent->children()->everyItem()->num()->values())
+            default => 1 + max([0, ...$parent->children()->everyItem()->num()->values()])
         };
     }
 
