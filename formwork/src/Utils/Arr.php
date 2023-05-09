@@ -100,6 +100,54 @@ class Arr
     }
 
     /**
+     * Remove a portion of the array and replace it with something else like `array_splice` but also preserve string keys from the replacement array
+     *
+     * @throws UnexpectedValueException if some keys in the replacement array are the same of the resulting array
+     */
+    public static function splice(array &$array, int $offset, ?int $length = null, $replacement = []): array
+    {
+        $replacement = (array) $replacement;
+
+        if (!static::isAssociative($replacement)) {
+            return array_splice($array, $offset, $length, $replacement);
+        }
+
+        $replaced = array_slice($array, $offset, $length, true);
+
+        // Normalize negative offsets
+        if ($offset < 0) {
+            $offset += count($array);
+        }
+
+        // Normalize negative lengths
+        if ($length < 0) {
+            $length = max(0, count($array) + $length - $offset);
+        }
+
+        $before = array_slice($array, 0, $offset, true);
+
+        $after = $length === null ? [] : array_slice($array, $offset + $length, null, true);
+
+        if (array_intersect_key($before, $replacement) || array_intersect_key($after, $replacement)) {
+            throw new UnexpectedValueException(sprintf('Cannot replace %s items from offset %d: some keys in the replacement array are the same of the resulting array', $length, $offset));
+        }
+
+        $array = array_merge($before, $replacement, $after);
+
+        return $replaced;
+    }
+
+    /**
+     * Move an item from the given index to another
+     */
+    public static function moveItem(array &$array, int $fromIndex, int $toIndex): void
+    {
+        if ($toIndex !== $fromIndex) {
+            static::splice($array, $toIndex, 0, static::splice($array, $fromIndex, 1));
+        }
+    }
+
+    /**
      * Return an array of `[$key, $value]` pairs from the given array
      */
     public static function entries(array $array): array
@@ -150,7 +198,7 @@ class Arr
     }
 
     /**
-     * Return the duplicate elements of the array
+     * Return the duplicate items of the array
      */
     public static function duplicates(array $array): array
     {
@@ -158,7 +206,7 @@ class Arr
     }
 
     /**
-     * Recursively append elements from the second array that are missing in the first
+     * Recursively append items from the second array that are missing in the first
      */
     public static function appendMissing(array $array1, array $array2): array
     {
@@ -288,7 +336,7 @@ class Arr
     }
 
     /**
-     * Group array elements using the return value of the given callback
+     * Group array items using the return value of the given callback
      */
     public static function group(array $array, callable $callback): array
     {
