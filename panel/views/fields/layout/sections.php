@@ -13,7 +13,7 @@
         ?>
             <?= $section->label() ?>
         </div>
-        <div class="section-content" style="padding: 0 .5rem;">
+        <div class="section-content pr-4 pl-4">
 <?php
             foreach ($fields->getMultiple($section->get('fields', [])) as $field):
                 ?>

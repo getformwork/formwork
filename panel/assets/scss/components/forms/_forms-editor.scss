@@ -17,7 +17,7 @@
     box-shadow: none;
     &:hover,
     &:focus {
-        background-color: transparent;
+        background-color: $color-base-600;
         color: $color-accent-500;
     }
     &:focus {

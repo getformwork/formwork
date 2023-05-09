@@ -27,7 +27,8 @@
             if ($panel->user()->permissions()->has('pages')):
 ?>
             <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/pages/') ?>"><?= $this->translate('panel.pages.pages') ?></a>
+                    <a href="<?= $panel->uri('/pages/') ?>"><?= $this->translate('panel.pages.pages') ?></a>
+                    <span class="badge"><?= $formwork->site()->descendants()->count() ?></span>
             </li>
 <?php
             endif;
@@ -44,6 +45,7 @@
 ?>
             <li class="<?= ($location === 'users') ? 'active' : '' ?>">
                 <a href="<?= $panel->uri('/users/') ?>"><?= $this->translate('panel.users.users') ?></a>
+                <span class="badge"><?= $panel->users()->count() ?></span>
             </li>
 <?php
             endif;
