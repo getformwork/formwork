@@ -72,14 +72,18 @@ class FieldCollection extends AbstractCollection
 
     /**
      * Set field values from the given data
+     *
+     * If the `$default` argument is given, it will be used instead of missing data
      */
-    public function setValues($data): static
+    public function setValues($data, $default = null): static
     {
         $data = Arr::from($data);
 
         foreach ($this as $field) {
             if (Arr::has($data, $field->name())) {
                 $field->set('value', Arr::get($data, $field->name()));
+            } elseif (func_num_args() === 2) {
+                $field->set('value', $default);
             }
         }
 
