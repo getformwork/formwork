@@ -2,13 +2,13 @@
 
 .title-bar {
     position: fixed;
-    z-index: 8;
+    z-index: 10;
     top: 0;
     right: 0;
     left: 0;
     padding: $title-bar-padding;
     padding-left: $title-bar-padding-left + $toggle-navigation-width + 2 * $toggle-navigation-left;
-    background-color: $color-base-700;
+    background-color: $color-base-600;
     box-shadow: $component-box-shadow;
     color: $color-base-100;
     @include user-select-none;
@@ -37,7 +37,7 @@
 
 .sidebar {
     position: fixed;
-    z-index: 10;
+    z-index: 8;
     top: 0;
     bottom: 0;
     left: 0;
@@ -172,12 +172,41 @@
     font-size: $font-size-s;
 }
 
-.main {
-    margin-top: $main-margin-top;
+.header {
+    position: sticky;
+    z-index: 7;
+    top: 3.5rem;
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid $color-base-600;
+    margin-bottom: 2rem;
+    background-color: $color-base-800;
+    white-space: nowrap;
+
     @media (min-width: map.get($responsive-breakpoints, 's')) {
-        margin: $main-margin;
-        margin-top: $main-margin-top;
-        margin-left: $main-margin-left;
+        padding: 1rem 1.5rem;
+        margin-right: -1.5rem;
+        margin-left: -1.5rem;
+    }
+}
+
+.header-title {
+    overflow: hidden;
+    flex-grow: 1;
+    font-size: $h5-font-size;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main {
+    padding-top: $main-margin-top;
+    @media (min-width: map.get($responsive-breakpoints, 's')) {
+        padding: $main-margin;
+        padding-top: $main-margin-top;
+        padding-left: $main-margin-left;
     }
 }
 

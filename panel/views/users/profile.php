@@ -1,6 +1,15 @@
 <?php $this->layout('panel') ?>
+<form method="post" enctype="multipart/form-data" data-form="user-profile-form">
+
+<div class="header">
+        <div class="header-title"><?= $this->translate('panel.users.user') ?></div>
+        <div>
+            <button type="button" class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
+            <button type="submit" class="button-accent" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
+        </div>
+</div>
+
 <div class="component">
-    <h3 class="caption"><?= $this->translate('panel.users.user') ?></h3>
     <div class="user-summary">
         <div class="user-summary-avatar">
             <img src="<?= $user->avatar()->uri() ?>">
@@ -15,12 +24,8 @@
 </div>
 <?php if ($panel->user()->canChangeOptionsOf($user)): ?>
 <div class="component">
-    <h3 class="caption"><?= $this->translate('panel.users.options') ?></h3>
-    <form method="post" enctype="multipart/form-data" data-form="user-profile-form">
         <?php $this->insert('fields', ['fields' => $fields]) ?>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-        <button type="submit" class="button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
-        <button type="button" class="button-link button-right" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
-    </form>
 </div>
 <?php endif; ?>
+</form>

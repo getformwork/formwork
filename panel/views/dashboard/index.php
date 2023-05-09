@@ -1,4 +1,9 @@
 <?php $this->layout('panel') ?>
+
+<div class="header">
+        <div class="header-title"><?= $this->translate('panel.dashboard.dashboard') ?></div>
+</div>
+
 <div class="row">
     <div class="col-m-1-3">
         <div class="component">

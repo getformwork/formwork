@@ -1,4 +1,4 @@
-<div class="tabs">
+<div class="tabs" style="margin-top:-1.5rem">
 <?php
     foreach ($tabs as $tab):
         if ($panel->user()->permissions()->has('options.' . $tab)) :

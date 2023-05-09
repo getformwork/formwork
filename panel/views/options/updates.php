@@ -1,7 +1,12 @@
 <?php $this->layout('panel') ?>
+
+<div class="header">
+        <div class="header-title"><?= $this->translate('panel.options.options') ?></div>
+</div>
+
+<?= $tabs ?>
+
 <div id="updater-component" class="component">
-    <h3 class="caption"><?= $this->translate('panel.options.options') ?></h3>
-    <?= $tabs ?>
     <div class="row">
         <div class="col-m-1-1">
             <div class="checker"><span class="spinner"></span><span class="update-status" data-checking-text="<?= $this->translate('panel.updates.status.checking') ?>" data-installing-text="<?= $this->translate('panel.updates.status.installing') ?>"><?= $this->translate('panel.updates.status.checking') ?></span></div>

@@ -1,7 +1,12 @@
 <?php $this->layout('panel') ?>
+
+<div class="header">
+        <div class="header-title"><?= $this->translate('panel.options.options') ?></div>
+</div>
+
+<?= $tabs ?>
+
 <div class="component">
-    <h3 class="caption"><?= $this->translate('panel.options.options') ?></h3>
-    <?= $tabs ?>
 <?php
     foreach ($info as $section => $data):
 ?>

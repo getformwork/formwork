@@ -1,8 +1,13 @@
 <?php $this->layout('panel') ?>
+
+<div class="header">
+    <div class="header-title"><?= $this->translate('panel.users.users') ?></div>
+    <div>
+        <button type="button" class="button-accent" data-modal="newUserModal"<?php if (!$panel->user()->permissions()->has('users.create')): ?> disabled<?php endif; ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
+    </div>
+</div>
+
 <div class="component">
-    <h3 class="caption"><?= $this->translate('panel.users.users') ?></h3>
-    <button type="button" data-modal="newUserModal"<?php if (!$panel->user()->permissions()->has('users.create')): ?> disabled<?php endif; ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
-    <div class="separator"></div>
     <div class="users-list-headers" aria-hidden="true">
         <div class="users-headers-cell user-username"><?= $this->translate('panel.user.username') ?></div>
         <div class="users-headers-cell user-fullname"><?= $this->translate('panel.user.fullname') ?></div>
