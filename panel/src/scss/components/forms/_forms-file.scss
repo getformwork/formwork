@@ -14,11 +14,15 @@
     display: block;
     padding: $input-file-label-inner-padding-v $input-file-label-inner-padding-h;
     border: $input-file-label-inner-border-width dashed $color-base-500;
+    border-radius: $border-radius;
     color: $color-base-100;
     text-align: center;
     transition: background-color $transition-time-m;
+    &:hover {
+        background-color: $color-base-700;
+    }
 }
 
 .input-file-label.drag > span {
-    background-color: $color-base-900;
+    background-color: $color-base-700;
 }

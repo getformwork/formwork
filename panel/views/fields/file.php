@@ -12,5 +12,5 @@
     'hidden'           => $field->isHidden()
 ]) ?>>
 <label for="<?= $field->name() ?>" class="input-file-label">
-    <span><?= $this->translate('fields.file.uploadLabel') ?></span>
+    <span><?= $this->icon('cloud-upload') ?> <?= $this->translate('fields.file.uploadLabel') ?></span>
 </label>
