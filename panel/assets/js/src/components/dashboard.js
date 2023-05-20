@@ -4,17 +4,17 @@ import Utils from './utils';
 
 export default {
     init: function () {
-        var clearCacheCommand = $('[data-command=clear-cache]');
-        var makeBackupCommand = $('[data-command=make-backup]');
+        const clearCacheCommand = $('[data-command=clear-cache]');
+        const makeBackupCommand = $('[data-command=make-backup]');
 
         if (clearCacheCommand) {
-            clearCacheCommand.addEventListener('click', function () {
+            clearCacheCommand.addEventListener('click', () => {
                 Request({
                     method: 'POST',
-                    url: Formwork.config.baseUri + 'cache/clear/',
-                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
-                }, function (response) {
-                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
+                    url: `${Formwork.config.baseUri}cache/clear/`,
+                    data: { 'csrf-token': $('meta[name=csrf-token]').getAttribute('content') },
+                }, (response) => {
+                    const notification = new Notification(response.message, response.status, { icon: 'check-circle' });
                     notification.show();
                 });
             });
@@ -22,16 +22,16 @@ export default {
 
         if (makeBackupCommand) {
             makeBackupCommand.addEventListener('click', function () {
-                var button = this;
+                const button = this;
                 button.setAttribute('disabled', '');
                 Request({
                     method: 'POST',
-                    url: Formwork.config.baseUri + 'backup/make/',
-                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
-                }, function (response) {
-                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
+                    url: `${Formwork.config.baseUri}backup/make/`,
+                    data: { 'csrf-token': $('meta[name=csrf-token]').getAttribute('content') },
+                }, (response) => {
+                    const notification = new Notification(response.message, response.status, { icon: 'check-circle' });
                     notification.show();
-                    setTimeout(function () {
+                    setTimeout(() => {
                         if (response.status === 'success') {
                             Utils.triggerDownload(response.data.uri, $('meta[name=csrf-token]').getAttribute('content'));
                         }
@@ -40,5 +40,5 @@ export default {
                 });
             });
         }
-    }
+    },
 };

@@ -1,8 +1,8 @@
-import {LineChart} from 'chartist';
+import { LineChart } from 'chartist';
 import Tooltip from './tooltip';
 
 export default function Chart(element, data) {
-    var options = {
+    const options = {
         showArea: true,
         fullWidth: true,
         scaleMinSpace: 20,
@@ -13,35 +13,36 @@ export default function Chart(element, data) {
         axisX: {
             showGrid: false,
             labelOffset: {
-                x: 0, y: 10
-            }
+                x: 0,
+                y: 10,
+            },
         },
         axisY: {
             onlyInteger: true,
             offset: 15,
             labelOffset: {
-                x: 0, y: 5
-            }
-        }
+                x: 0,
+                y: 5,
+            },
+        },
     };
 
-    var chart = new LineChart(element, data, options);
+    const chart = new LineChart(element, data, options);
 
-    chart.container.addEventListener('mouseover', function (event) {
-        var tooltipOffset, tooltip, strokeWidth;
-
+    chart.container.addEventListener('mouseover', (event) => {
         if (event.target.getAttribute('class') === 'ct-point') {
-            tooltipOffset = {
-                x: 0, y: -8
+            const tooltipOffset = {
+                x: 0,
+                y: -8,
             };
-            if (navigator.userAgent.indexOf('Firefox') !== -1) {
-                strokeWidth = parseFloat(getComputedStyle(event.target)['stroke-width']);
+            if (navigator.userAgent.includes('Firefox')) {
+                const strokeWidth = parseFloat(getComputedStyle(event.target)['stroke-width']);
                 tooltipOffset.x += strokeWidth / 2;
                 tooltipOffset.y += strokeWidth / 2;
             }
-            tooltip = new Tooltip(event.target.getAttribute('ct:value'), {
+            const tooltip = new Tooltip(event.target.getAttribute('ct:value'), {
                 referenceElement: event.target,
-                offset: tooltipOffset
+                offset: tooltipOffset,
             });
             tooltip.show();
         }

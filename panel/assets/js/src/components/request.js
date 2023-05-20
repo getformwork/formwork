@@ -2,9 +2,7 @@ import Utils from './utils';
 
 export default function Request(options, callback) {
 
-    var request = new XMLHttpRequest();
-
-    var handler, response, code;
+    const request = new XMLHttpRequest();
 
     request.open(options.method, options.url, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -12,9 +10,9 @@ export default function Request(options, callback) {
     request.send(Utils.serializeObject(options.data));
 
     if (typeof callback === 'function') {
-        handler = function () {
-            response = JSON.parse(this.response);
-            code = response.code || this.status;
+        const handler = function () {
+            const response = JSON.parse(this.response);
+            const code = response.code || this.status;
             if (parseInt(code) === 400) {
                 location.reload();
             } else {

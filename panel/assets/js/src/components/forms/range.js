@@ -23,8 +23,8 @@ export default function RangeInput(input) {
     }
 
     function updateValueLabel() {
-        this.style.setProperty('--progress', Math.round(this.value / (this.max - this.min) * 100) + '%');
-        $('output[for="' + this.id + '"]').innerHTML = this.value;
+        this.style.setProperty('--progress', `${Math.round(this.value / (this.max - this.min) * 100)}%`);
+        $(`output[for="${this.id}"]`).innerHTML = this.value;
     }
 
     function addTicks(count) {

@@ -4,27 +4,44 @@ import Request from './request';
 
 export default {
     init: function () {
-        var updaterComponent = document.getElementById('updater-component');
-        var updateStatus, spinner,
-            currentVersion, currentVersionName,
-            newVersion, newVersionName;
+        const updaterComponent = document.getElementById('updater-component');
 
         if (updaterComponent) {
-            updateStatus = $('.update-status');
-            spinner = $('.spinner');
-            currentVersion = $('.current-version');
-            currentVersionName = $('.current-version-name');
-            newVersion = $('.new-version');
-            newVersionName = $('.new-version-name');
+            const updateStatus = $('.update-status');
+            const spinner = $('.spinner');
+            const currentVersion = $('.current-version');
+            const currentVersionName = $('.current-version-name');
+            const newVersion = $('.new-version');
+            const newVersionName = $('.new-version-name');
 
-            setTimeout(function () {
-                var data = {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')};
+            const showNewVersion = (name) => {
+                spinner.classList.add('spinner-info');
+                Icons.inject('info', spinner);
+                newVersionName.innerHTML = name;
+                newVersion.style.display = 'block';
+            };
+
+            const showCurrentVersion = () => {
+                spinner.classList.add('spinner-success');
+                Icons.inject('check', spinner);
+                currentVersion.style.display = 'block';
+            };
+
+            const showInstalledVersion = () => {
+                spinner.classList.add('spinner-success');
+                Icons.inject('check', spinner);
+                currentVersionName.innerHTML = newVersionName.innerHTML;
+                currentVersion.style.display = 'block';
+            };
+
+            setTimeout(() => {
+                const data = { 'csrf-token': $('meta[name=csrf-token]').getAttribute('content') };
 
                 Request({
                     method: 'POST',
-                    url: Formwork.config.baseUri + 'updates/check/',
-                    data: data
-                }, function (response) {
+                    url: `${Formwork.config.baseUri}updates/check/`,
+                    data: data,
+                }, (response) => {
                     updateStatus.innerHTML = response.message;
 
                     if (response.status === 'success') {
@@ -40,17 +57,17 @@ export default {
                 });
             }, 1000);
 
-            $('[data-command=install-updates]').addEventListener('click', function () {
+            $('[data-command=install-updates]').addEventListener('click', () => {
                 newVersion.style.display = 'none';
                 spinner.classList.remove('spinner-info');
                 updateStatus.innerHTML = updateStatus.getAttribute('data-installing-text');
 
                 Request({
                     method: 'POST',
-                    url: Formwork.config.baseUri + 'updates/update/',
-                    data: {'csrf-token': $('meta[name=csrf-token]').getAttribute('content')}
-                }, function (response) {
-                    var notification = new Notification(response.message, response.status, {icon: 'check-circle'});
+                    url: `${Formwork.config.baseUri}updates/update/`,
+                    data: { 'csrf-token': $('meta[name=csrf-token]').getAttribute('content') },
+                }, (response) => {
+                    const notification = new Notification(response.message, response.status, { icon: 'check-circle' });
                     notification.show();
 
                     updateStatus.innerHTML = response.data.status;
@@ -64,25 +81,5 @@ export default {
                 });
             });
         }
-
-        function showNewVersion(name) {
-            spinner.classList.add('spinner-info');
-            Icons.inject('info', spinner);
-            newVersionName.innerHTML = name;
-            newVersion.style.display = 'block';
-        }
-
-        function showCurrentVersion() {
-            spinner.classList.add('spinner-success');
-            Icons.inject('check', spinner);
-            currentVersion.style.display = 'block';
-        }
-
-        function showInstalledVersion() {
-            spinner.classList.add('spinner-success');
-            Icons.inject('check', spinner);
-            currentVersionName.innerHTML = newVersionName.innerHTML;
-            currentVersion.style.display = 'block';
-        }
-    }
+    },
 };

@@ -7,82 +7,80 @@ import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/addon/edit/continuelist.js';
 
 export default function Editor(textarea) {
-    var height = textarea.offsetHeight;
+    const height = textarea.offsetHeight;
 
-    var editor = CodeMirror.fromTextArea(textarea, {
+    const editor = CodeMirror.fromTextArea(textarea, {
         mode: {
             name: 'markdown',
-            highlightFormatting: true
+            highlightFormatting: true,
         },
         theme: 'formwork',
         indentUnit: 4,
         lineWrapping: true,
         addModeClass: true,
-        extraKeys: {'Enter': 'newlineAndIndentContinueMarkdownList'},
-        configureMouse: function () {
-            return {
-                extend: false,
-                addNew: false
-            };
-        }
+        extraKeys: { 'Enter': 'newlineAndIndentContinueMarkdownList' },
+        configureMouse: () => ({
+            extend: false,
+            addNew: false,
+        }),
     });
 
-    var toolbar = $('.editor-toolbar[data-for=' + textarea.id + ']');
+    const toolbar = $(`.editor-toolbar[data-for=${textarea.id}]`);
 
-    var wrap = textarea.parentNode.classList.contains('editor-wrap') ? textarea.parentNode : null;
+    const wrap = textarea.parentNode.classList.contains('editor-wrap') ? textarea.parentNode : null;
 
-    var activeLines = [];
+    let activeLines = [];
 
-    editor.getWrapperElement().style.height = height + 'px';
+    editor.getWrapperElement().style.height = `${height}px`;
 
-    $('[data-command=bold]', toolbar).addEventListener('click', function () {
+    $('[data-command=bold]', toolbar).addEventListener('click', () => {
         insertAtCursor('**');
     });
 
-    $('[data-command=italic]', toolbar).addEventListener('click', function () {
+    $('[data-command=italic]', toolbar).addEventListener('click', () => {
         insertAtCursor('_');
     });
 
-    $('[data-command=ul]', toolbar).addEventListener('click', function () {
-        insertAtCursor(prependSequence() + '- ', '');
+    $('[data-command=ul]', toolbar).addEventListener('click', () => {
+        insertAtCursor(`${prependSequence()}- `, '');
     });
 
-    $('[data-command=ol]', toolbar).addEventListener('click', function () {
-        var num = /^\d+\./.exec(lastLine(editor.getValue()));
+    $('[data-command=ol]', toolbar).addEventListener('click', () => {
+        const num = /^\d+\./.exec(lastLine(editor.getValue()));
         if (num) {
-            insertAtCursor('\n' + (parseInt(num) + 1) + '. ', '');
+            insertAtCursor(`\n${parseInt(num) + 1}. `, '');
         } else {
-            insertAtCursor(prependSequence() + '1. ', '');
+            insertAtCursor(`${prependSequence()}1. `, '');
         }
     });
 
-    $('[data-command=quote]', toolbar).addEventListener('click', function () {
-        insertAtCursor(prependSequence() + '> ', '');
+    $('[data-command=quote]', toolbar).addEventListener('click', () => {
+        insertAtCursor(`${prependSequence()}> `, '');
     });
 
-    $('[data-command=link]', toolbar).addEventListener('click', function () {
-        var selection = editor.getSelection();
+    $('[data-command=link]', toolbar).addEventListener('click', () => {
+        const selection = editor.getSelection();
         if (/^(https?:\/\/|mailto:)/i.test(selection)) {
-            insertAtCursor('[', '](' + selection + ')', true);
+            insertAtCursor('[', `](${selection})`, true);
         } else if (selection !== '') {
-            insertAtCursor('[' + selection + '](http://', ')', true);
+            insertAtCursor(`[${selection}](http://`, ')', true);
         } else {
             insertAtCursor('[', '](http://)');
         }
     });
 
-    $('[data-command=image]', toolbar).addEventListener('click', function () {
-        Modals.show('imagesModal', null, function (modal) {
-            var selected = $('.image-picker-thumbnail.selected', modal);
+    $('[data-command=image]', toolbar).addEventListener('click', () => {
+        Modals.show('imagesModal', null, (modal) => {
+            const selected = $('.image-picker-thumbnail.selected', modal);
             if (selected) {
                 selected.classList.remove('selected');
             }
             function confirmImage() {
-                var filename = $('.image-picker-thumbnail.selected', $('#imagesModal')).getAttribute('data-filename');
+                const filename = $('.image-picker-thumbnail.selected', $('#imagesModal')).getAttribute('data-filename');
                 if (filename !== undefined) {
-                    insertAtCursor(prependSequence() + '![', '](' + filename + ')');
+                    insertAtCursor(`${prependSequence()}![`, `](${filename})`);
                 } else {
-                    insertAtCursor(prependSequence() + '![](', ')');
+                    insertAtCursor(`${prependSequence()}![](`, ')');
                 }
                 this.removeEventListener('click', confirmImage);
             }
@@ -90,17 +88,17 @@ export default function Editor(textarea) {
         });
     });
 
-    $('[data-command=undo]', toolbar).addEventListener('click', function () {
+    $('[data-command=undo]', toolbar).addEventListener('click', () => {
         editor.undo();
         editor.focus();
     });
 
-    $('[data-command=redo]', toolbar).addEventListener('click', function () {
+    $('[data-command=redo]', toolbar).addEventListener('click', () => {
         editor.redo();
         editor.focus();
     });
 
-    editor.on('changes', Utils.debounce(function () {
+    editor.on('changes', Utils.debounce(() => {
         textarea.value = editor.getValue();
         if (editor.historySize().undo < 1) {
             $('[data-command=undo]').setAttribute('disabled', '');
@@ -114,9 +112,9 @@ export default function Editor(textarea) {
         }
     }, 500));
 
-    editor.on('beforeSelectionChange', function (editor, selection) {
-        var lines = getLinesFromRange(selection.ranges);
-        editor.operation(function () {
+    editor.on('beforeSelectionChange', (editor, selection) => {
+        const lines = getLinesFromRange(selection.ranges);
+        editor.operation(() => {
             if (!Utils.sameArray(lines, activeLines)) {
                 removeActiveLines(editor, activeLines);
                 addActiveLines(editor, lines);
@@ -126,13 +124,13 @@ export default function Editor(textarea) {
         editor.refresh();
     });
 
-    editor.on('focus', function () {
+    editor.on('focus', () => {
         if (wrap !== null) {
             wrap.classList.add('focused');
         }
     });
 
-    editor.on('blur', function (editor) {
+    editor.on('blur', (editor) => {
         if (wrap !== null) {
             wrap.classList.remove('focused');
         }
@@ -140,7 +138,7 @@ export default function Editor(textarea) {
         activeLines = [];
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', (event) => {
         if (!event.altKey && (event.ctrlKey || event.metaKey)) {
             switch (event.which) {
             case 66: // ctrl/cmd + B
@@ -160,7 +158,7 @@ export default function Editor(textarea) {
     });
 
     function lastLine(text) {
-        var index = text.lastIndexOf('\n');
+        const index = text.lastIndexOf('\n');
         if (index === -1) {
             return text;
         }
@@ -168,7 +166,7 @@ export default function Editor(textarea) {
     }
 
     function prevCursorChar() {
-        var line = editor.getLine(editor.getCursor().line);
+        const line = editor.getLine(editor.getCursor().line);
         return line.length === 0 ? undefined : line.slice(-1);
     }
 
@@ -184,38 +182,34 @@ export default function Editor(textarea) {
     }
 
     function insertAtCursor(leftValue, rightValue, dropSelection) {
-        var selection, cursor, lineBreaks;
         if (rightValue === undefined) {
             rightValue = leftValue;
         }
-        selection = dropSelection === true ? '' : editor.getSelection();
-        cursor = editor.getCursor();
-        lineBreaks = leftValue.split('\n').length - 1;
+        const selection = dropSelection === true ? '' : editor.getSelection();
+        const cursor = editor.getCursor();
+        const lineBreaks = leftValue.split('\n').length - 1;
         editor.replaceSelection(leftValue + selection + rightValue);
         editor.setCursor(cursor.line + lineBreaks, cursor.ch + leftValue.length - lineBreaks);
         editor.focus();
     }
 
     function getLinesFromRange(ranges) {
-        var i;
-        var lines = [];
-        for (i = 0; i < ranges.length; i++) {
-            lines.push(ranges[i].head.line);
+        const lines = [];
+        for (const range of ranges) {
+            lines.push(range.head.line);
         }
         return lines;
     }
 
     function removeActiveLines(editor, lines) {
-        var i;
-        for (i = 0; i < lines.length; i++) {
-            editor.removeLineClass(lines[i], 'wrap', 'CodeMirror-activeline');
+        for (const line of lines) {
+            editor.removeLineClass(line, 'wrap', 'CodeMirror-activeline');
         }
     }
 
     function addActiveLines(editor, lines) {
-        var i;
-        for (i = 0; i < lines.length; i++) {
-            editor.addLineClass(lines[i], 'wrap', 'CodeMirror-activeline');
+        for (const line of lines) {
+            editor.addLineClass(line, 'wrap', 'CodeMirror-activeline');
         }
     }
 }

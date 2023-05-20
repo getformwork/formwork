@@ -1,22 +1,20 @@
 export default function ImagePicker(element) {
-    var options = $$('option', element);
-    var confirmCommand = $('.image-picker-confirm', element.parentNode);
-    var uploadCommand = $('[data-command=upload]', element.parentNode);
-
-    var container, thumbnail, i;
+    const options = $$('option', element);
+    const confirmCommand = $('.image-picker-confirm', element.parentNode);
+    const uploadCommand = $('[data-command=upload]', element.parentNode);
 
     element.style.display = 'none';
 
     if (options.length > 0) {
-        container = document.createElement('div');
+        const container = document.createElement('div');
         container.className = 'image-picker-thumbnails';
 
-        for (i = 0; i < options.length; i++) {
-            thumbnail = document.createElement('div');
+        for (const option of options) {
+            const thumbnail = document.createElement('div');
             thumbnail.className = 'image-picker-thumbnail';
-            thumbnail.style.backgroundImage = 'url(' + options[i].value + ')';
-            thumbnail.setAttribute('data-uri', options[i].value);
-            thumbnail.setAttribute('data-filename', options[i].text);
+            thumbnail.style.backgroundImage = `url(${option.value})`;
+            thumbnail.setAttribute('data-uri', option.value);
+            thumbnail.setAttribute('data-filename', option.text);
             thumbnail.addEventListener('click', handleThumbnailClick);
             thumbnail.addEventListener('dblclick', handleThumbnailDblclick);
             container.appendChild(thumbnail);
@@ -27,8 +25,8 @@ export default function ImagePicker(element) {
     }
 
     confirmCommand.addEventListener('click', function () {
-        var selectedThumbnail = $('.image-picker-thumbnail.selected');
-        var target = document.getElementById(this.getAttribute('data-target'));
+        const selectedThumbnail = $('.image-picker-thumbnail.selected');
+        const target = document.getElementById(this.getAttribute('data-target'));
         if (selectedThumbnail && target) {
             target.value = selectedThumbnail.getAttribute('data-filename');
         }
@@ -39,11 +37,11 @@ export default function ImagePicker(element) {
     });
 
     function handleThumbnailClick() {
-        var target = document.getElementById($('.image-picker-confirm').getAttribute('data-target'));
+        const target = document.getElementById($('.image-picker-confirm').getAttribute('data-target'));
         if (target) {
             target.value = this.getAttribute('data-filename');
         }
-        $$('.image-picker-thumbnail').forEach(function (element) {
+        $$('.image-picker-thumbnail').forEach((element) => {
             element.classList.remove('selected');
         });
         this.classList.add('selected');

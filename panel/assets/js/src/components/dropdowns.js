@@ -1,21 +1,23 @@
 export default {
     init: function () {
         if ($('.dropdown')) {
-            document.addEventListener('click', function (event) {
-                var button = event.target.closest('.dropdown-button');
-                var dropdown, isVisible;
+            document.addEventListener('click', (event) => {
+                const button = event.target.closest('.dropdown-button');
+
                 if (button) {
-                    dropdown = document.getElementById(button.getAttribute('data-dropdown'));
-                    isVisible = getComputedStyle(dropdown).display !== 'none';
+                    const dropdown = document.getElementById(button.getAttribute('data-dropdown'));
+                    const isVisible = getComputedStyle(dropdown).display !== 'none';
                     event.preventDefault();
+                    if (dropdown && !isVisible) {
+                        dropdown.style.display = 'block';
+                    }
                 }
-                $$('.dropdown-menu').forEach(function (element) {
+
+                $$('.dropdown-menu').forEach((element) => {
                     element.style.display = '';
                 });
-                if (dropdown && !isVisible) {
-                    dropdown.style.display = 'block';
-                }
             });
         }
-    }
+    },
 };
+

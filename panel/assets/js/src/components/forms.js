@@ -13,12 +13,11 @@ import Utils from './utils';
 export default {
     init: function () {
 
-        $$('input[data-enable]').forEach(function (element) {
+        $$('input[data-enable]').forEach((element) => {
             element.addEventListener('change', function () {
-                var i, input;
-                var inputs = this.getAttribute('data-enable').split(',');
-                for (i = 0; i < inputs.length; i++) {
-                    input = $('input[name="' + inputs[i] + '"]');
+                const inputs = this.getAttribute('data-enable').split(',');
+                for (const name of inputs) {
+                    const input = $(`input[name="${name}"]`);
                     if (!this.checked) {
                         input.setAttribute('disabled', '');
                     } else {
@@ -28,28 +27,27 @@ export default {
             });
         });
 
-        $$('.input-reset').forEach(function (element) {
+        $$('.input-reset').forEach((element) => {
             element.addEventListener('click', function () {
-                var target = document.getElementById(this.getAttribute('data-reset'));
+                const target = document.getElementById(this.getAttribute('data-reset'));
                 target.value = '';
                 Utils.triggerEvent(target, 'change');
             });
         });
 
-        $$('.input-date').forEach(function (element) {
+        $$('.input-date').forEach((element) => {
             DateInput(element, Formwork.config.DateInput);
         });
 
-        $$('.input-image').forEach(function (element) {
-            element.addEventListener('click', function () {
-                Modals.show('imagesModal', null, function (modal) {
-                    var selected = $('.image-picker-thumbnail.selected', modal);
-                    var thumbnail;
+        $$('.input-image').forEach((element) => {
+            element.addEventListener('click', () => {
+                Modals.show('imagesModal', null, (modal) => {
+                    const selected = $('.image-picker-thumbnail.selected', modal);
                     if (selected) {
                         selected.classList.remove('selected');
                     }
                     if (element.value) {
-                        thumbnail = $('.image-picker-thumbnail[data-filename="' + element.value + '"]', modal);
+                        const thumbnail = $(`.image-picker-thumbnail[data-filename="${element.value}"]`, modal);
                         if (thumbnail) {
                             thumbnail.classList.add('selected');
                         }
@@ -59,37 +57,37 @@ export default {
             });
         });
 
-        $$('.image-picker').forEach(function (element) {
+        $$('.image-picker').forEach((element) => {
             ImagePicker(element);
         });
 
-        $$('.editor-textarea').forEach(function (element) {
+        $$('.editor-textarea').forEach((element) => {
             Editor(element);
         });
 
-        $$('input[type=file]').forEach(function (element) {
+        $$('input[type=file]').forEach((element) => {
             FileInput(element);
         });
 
-        $$('input[data-field=tags]').forEach(function (element) {
+        $$('input[data-field=tags]').forEach((element) => {
             TagInput(element);
         });
 
-        $$('input[data-field=duration]').forEach(function (element) {
+        $$('input[data-field=duration]').forEach((element) => {
             DurationInput(element, Formwork.config.DurationInput);
         });
 
-        $$('input[type=range]').forEach(function (element) {
+        $$('input[type=range]').forEach((element) => {
             RangeInput(element);
         });
 
-        $$('.input-array').forEach(function (element) {
+        $$('.input-array').forEach((element) => {
             ArrayInput(element);
         });
 
         // Load the Form component at the end, after initialization of elements
-        $$('[data-form]').forEach(function (element) {
+        $$('[data-form]').forEach((element) => {
             Form(element);
         });
-    }
+    },
 };

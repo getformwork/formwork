@@ -9,7 +9,7 @@ import Tooltips from './components/tooltips';
 import Updates from './components/updates';
 import Utils from './components/utils';
 
-var Formwork;
+let Formwork;
 
 export default Formwork = {
     config: {},
@@ -24,34 +24,35 @@ export default Formwork = {
         Updates.init();
 
         if ($('.toggle-navigation')) {
-            $('.toggle-navigation').addEventListener('click', function () {
+            $('.toggle-navigation').addEventListener('click', () => {
                 $('.sidebar').classList.toggle('show');
             });
         }
 
-        $$('[data-chart-data]').forEach(function (element) {
-            var data = JSON.parse(element.getAttribute('data-chart-data'));
+        $$('[data-chart-data]').forEach((element) => {
+            const data = JSON.parse(element.getAttribute('data-chart-data'));
             Chart(element, data);
         });
 
-        $$('meta[name=notification]').forEach(function (element) {
-            var data = JSON.parse(element.getAttribute('content'))[0];
-            var notification = new Notification(data.text, data.type, {
-                interval: data.interval, icon: data.icon
+        $$('meta[name=notification]').forEach((element) => {
+            const data = JSON.parse(element.getAttribute('content'))[0];
+            const notification = new Notification(data.text, data.type, {
+                interval: data.interval,
+                icon: data.icon,
             });
             notification.show();
             element.parentNode.removeChild(element);
         });
 
-        $$('.collapsible .section-header').forEach(function (element) {
-            element.addEventListener('click', function () {
-                var section = element.parentNode;
+        $$('.collapsible .section-header').forEach((element) => {
+            element.addEventListener('click', () => {
+                const section = element.parentNode;
                 section.classList.toggle('collapsed');
             });
         });
 
         if ($('[data-command=save]')) {
-            document.addEventListener('keydown', function (event) {
+            document.addEventListener('keydown', (event) => {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {
                     if (event.which === 83) { // ctrl/cmd + S
                         $('[data-command=save]').click();
@@ -65,10 +66,10 @@ export default Formwork = {
         window.addEventListener('pagehide', setPreferredColorScheme);
 
         function setPreferredColorScheme() {
-            var cookies = Utils.getCookies();
-            var cookieName = 'formwork_preferred_color_scheme';
-            var oldValue = cookieName in cookies ? cookies[cookieName] : null;
-            var value = null;
+            const cookies = Utils.getCookies();
+            const cookieName = 'formwork_preferred_color_scheme';
+            const oldValue = cookieName in cookies ? cookies[cookieName] : null;
+            let value = null;
 
             if (window.matchMedia('(prefers-color-scheme: light)').matches) {
                 value = 'light';
@@ -80,50 +81,20 @@ export default Formwork = {
                 Utils.setCookie(cookieName, value, {
                     'max-age': 2592000, // 1 month
                     'path': Formwork.config.baseUri,
-                    'samesite': 'strict'
+                    'samesite': 'strict',
                 });
             }
         }
     },
 
     initGlobals: function (global) {
-        global.$ = function (selector, parent) {
-            if (typeof parent === 'undefined') {
-                parent = document;
-            }
+        global.$ = function (selector, parent = document) {
             return parent.querySelector(selector);
         };
 
-        global.$$ = function (selector, parent) {
-            if (typeof parent === 'undefined') {
-                parent = document;
-            }
+        global.$$ = function (selector, parent = document) {
             return parent.querySelectorAll(selector);
         };
-
-        // NodeList.prototype.forEach polyfill
-        if (!('forEach' in global.NodeList.prototype)) {
-            global.NodeList.prototype.forEach = global.Array.prototype.forEach;
-        }
-
-        // Element.prototype.matches polyfill
-        if (!('matches' in global.Element.prototype)) {
-            global.Element.prototype.matches = global.Element.prototype.msMatchesSelector || global.Element.prototype.webkitMatchesSelector;
-        }
-
-        // Element.prototype.closest polyfill
-        if (!('closest' in global.Element.prototype)) {
-            global.Element.prototype.closest = function (selectors) {
-                var element = this;
-                do {
-                    if (element.matches(selectors)) {
-                        return element;
-                    }
-                    element = element.parentElement || element.parentNode;
-                } while (element !== null && element.nodeType === 1);
-                return null;
-            };
-        }
 
         // HTMLFormElement.prototype.requestSubmit polyfill
         // see https://github.com/javan/form-request-submit-polyfill
@@ -150,14 +121,14 @@ export default Formwork = {
                 }
 
                 function raise(error, message, name) {
-                    throw new error('Failed to execute \'requestSubmit\' on \'HTMLFormElement\': ' + message + '.', name);
+                    throw new error(`Failed to execute 'requestSubmit' on 'HTMLFormElement': ${message}.`, name);
                 }
             };
         }
-    }
+    },
 };
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     Formwork.init();
 });
 

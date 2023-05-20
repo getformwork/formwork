@@ -1,20 +1,20 @@
 import Sortable from 'sortablejs';
 
 export default function ArrayInput(input) {
-    var isAssociative = input.classList.contains('input-array-associative');
-    var inputName = input.getAttribute('data-name');
+    const isAssociative = input.classList.contains('input-array-associative');
+    const inputName = input.getAttribute('data-name');
 
-    $$('.input-array-row', input).forEach(function (element) {
+    $$('.input-array-row', input).forEach((element) => {
         bindRowEvents(element);
     });
 
     Sortable.create(input, {
         handle: '.sort-handle',
-        forceFallback: true
+        forceFallback: true,
     });
 
     function addRow(row) {
-        var clone = row.cloneNode(true);
+        const clone = row.cloneNode(true);
         clearRow(clone);
         bindRowEvents(clone);
         if (row.nextSibling) {
@@ -33,35 +33,33 @@ export default function ArrayInput(input) {
     }
 
     function clearRow(row) {
-        var inputKey, inputValue;
         if (isAssociative) {
-            inputKey = $('.input-array-key', row);
+            const inputKey = $('.input-array-key', row);
             inputKey.value = '';
             inputKey.removeAttribute('value');
         }
-        inputValue = $('.input-array-value', row);
+        const inputValue = $('.input-array-value', row);
         inputValue.value = '';
         inputValue.removeAttribute('value');
-        inputValue.name = inputName + '[]';
+        inputValue.name = `${inputName}[]`;
     }
 
     function updateAssociativeRow(row) {
-        var inputKey = $('.input-array-key', row);
-        var inputValue = $('.input-array-value', row);
-        inputValue.name = inputName + '[' + inputKey.value.trim() + ']';
+        const inputKey = $('.input-array-key', row);
+        const inputValue = $('.input-array-value', row);
+        inputValue.name = `${inputName}[${inputKey.value.trim()}]`;
     }
 
     function bindRowEvents(row) {
-        var inputAdd = $('.input-array-add', row);
-        var inputRemove = $('.input-array-remove', row);
-        var inputKey, inputValue;
+        const inputAdd = $('.input-array-add', row);
+        const inputRemove = $('.input-array-remove', row);
 
         inputAdd.addEventListener('click', addRow.bind(inputAdd, row));
         inputRemove.addEventListener('click', removeRow.bind(inputRemove, row));
 
         if (isAssociative) {
-            inputKey = $('.input-array-key', row);
-            inputValue = $('.input-array-value', row);
+            const inputKey = $('.input-array-key', row);
+            const inputValue = $('.input-array-value', row);
             inputKey.addEventListener('keyup', updateAssociativeRow.bind(inputKey, row));
             inputValue.addEventListener('keyup',updateAssociativeRow.bind(inputValue, row));
         }

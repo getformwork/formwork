@@ -2,17 +2,17 @@ import Icons from './icons';
 import Utils from './utils';
 
 export default function Notification(text, type, options) {
-    var defaults = {
+    const defaults = {
         interval: 5000,
         icon: null,
         newestOnTop: true,
         fadeOutDelay: 300,
-        mouseleaveDelay: 1000
+        mouseleaveDelay: 1000,
     };
 
-    var container = $('.notification-container');
+    let container = $('.notification-container');
 
-    var notification, timer;
+    let notification;
 
     options = Utils.extendObject({}, defaults, options);
 
@@ -24,7 +24,7 @@ export default function Notification(text, type, options) {
         }
 
         notification = document.createElement('div');
-        notification.className = 'notification notification-' + type;
+        notification.className = `notification notification-${type}`;
         notification.innerHTML = text;
 
         if (options.newestOnTop && container.childNodes.length > 0) {
@@ -33,22 +33,22 @@ export default function Notification(text, type, options) {
             container.appendChild(notification);
         }
 
-        timer = setTimeout(remove, interval);
+        let timer = setTimeout(remove, interval);
 
         notification.addEventListener('click', remove);
 
-        notification.addEventListener('mouseenter', function () {
+        notification.addEventListener('mouseenter', () => {
             clearTimeout(timer);
         });
 
-        notification.addEventListener('mouseleave', function () {
+        notification.addEventListener('mouseleave', () => {
             timer = setTimeout(remove, options.mouseleaveDelay);
         });
     }
 
     function show() {
         if (options.icon !== null) {
-            Icons.pass(options.icon, function (icon) {
+            Icons.pass(options.icon, (icon) => {
                 create(text, type, options.interval);
                 notification.insertAdjacentHTML('afterBegin', icon);
             });
@@ -60,7 +60,7 @@ export default function Notification(text, type, options) {
     function remove() {
         notification.classList.add('fadeout');
 
-        setTimeout(function () {
+        setTimeout(() => {
             if (notification && notification.parentNode) {
                 container.removeChild(notification);
             }
@@ -75,6 +75,6 @@ export default function Notification(text, type, options) {
 
     return {
         show: show,
-        remove: remove
+        remove: remove,
     };
 }

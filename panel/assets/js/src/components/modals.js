@@ -1,13 +1,13 @@
 import Utils from './utils';
 
-var Modals;
+let Modals;
 
 export default Modals = {
     init: function () {
-        $$('[data-modal]').forEach(function (element) {
+        $$('[data-modal]').forEach((element) => {
             element.addEventListener('click', function () {
-                var modal = this.getAttribute('data-modal');
-                var action = this.getAttribute('data-modal-action');
+                const modal = this.getAttribute('data-modal');
+                const action = this.getAttribute('data-modal-action');
                 if (action) {
                     Modals.show(modal, action);
                 } else {
@@ -16,11 +16,10 @@ export default Modals = {
             });
         });
 
-        $$('.modal [data-dismiss]').forEach(function (element) {
+        $$('.modal [data-dismiss]').forEach((element) => {
             element.addEventListener('click', function () {
-                var valid;
                 if (this.hasAttribute('data-validate')) {
-                    valid = Modals.validate(this.getAttribute('data-dismiss'));
+                    const valid = Modals.validate(this.getAttribute('data-dismiss'));
                     if (!valid) {
                         return;
                     }
@@ -29,7 +28,7 @@ export default Modals = {
             });
         });
 
-        $$('.modal').forEach(function (element) {
+        $$('.modal').forEach((element) => {
             element.addEventListener('click', function (event) {
                 if (event.target === this) {
                     Modals.hide();
@@ -37,15 +36,15 @@ export default Modals = {
             });
         });
 
-        document.addEventListener('keyup', function (event) {
+        document.addEventListener('keyup', (event) => {
             // ESC key
             if (event.which === 27) {
                 Modals.hide();
             }
         });
 
-        window.addEventListener('focus', function () {
-            var modal = $('.modal.show');
+        window.addEventListener('focus', () => {
+            const modal = $('.modal.show');
             if (modal) {
                 Utils.firstFocusableElement(modal).focus();
             }
@@ -53,7 +52,7 @@ export default Modals = {
     },
 
     show: function (id, action, callback) {
-        var modal = document.getElementById(id);
+        const modal = document.getElementById(id);
         if (!modal) {
             return;
         }
@@ -70,7 +69,7 @@ export default Modals = {
         if (typeof callback === 'function') {
             callback(modal);
         }
-        $$('.tooltip').forEach(function (element) {
+        $$('.tooltip').forEach((element) => {
             element.parentNode.removeChild(element);
         });
         this.createBackdrop();
@@ -80,7 +79,7 @@ export default Modals = {
         if (typeof id !== 'undefined') {
             document.getElementById(id).classList.remove('show');
         } else {
-            $$('.modal').forEach(function (element) {
+            $$('.modal').forEach((element) => {
                 element.classList.remove('show');
             });
         }
@@ -88,25 +87,26 @@ export default Modals = {
     },
 
     createBackdrop: function () {
-        var backdrop;
         if (!$('.modal-backdrop')) {
-            backdrop = document.createElement('div');
+            const backdrop = document.createElement('div');
             backdrop.className = 'modal-backdrop';
             document.body.appendChild(backdrop);
         }
     },
 
     removeBackdrop: function () {
-        var backdrop = $('.modal-backdrop');
+        const backdrop = $('.modal-backdrop');
         if (backdrop) {
             backdrop.parentNode.removeChild(backdrop);
         }
     },
 
     validate: function (id) {
-        var valid = false;
-        var modal = document.getElementById(id);
-        $$('[required]', id).forEach(function (element) {
+        let valid = false;
+
+        const modal = document.getElementById(id);
+
+        $$('[required]', id).forEach((element) => {
             if (element.value === '') {
                 element.classList('input-invalid');
                 element.focus();
@@ -114,8 +114,10 @@ export default Modals = {
                 valid = false;
                 return false;
             }
+
             valid = true;
         });
+
         return valid;
-    }
+    },
 };

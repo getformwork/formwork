@@ -1,7 +1,7 @@
 import Utils from '../utils';
 
 export default function DurationInput(input, options) {
-    var defaults = {
+    const defaults = {
         unit: 'seconds',
         intervals: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'],
         labels: {
@@ -11,39 +11,35 @@ export default function DurationInput(input, options) {
             days: ['day', 'days'],
             hours: ['hour', 'hours'],
             minutes: ['minute', 'minutes'],
-            seconds: ['second', 'seconds']
-        }
+            seconds: ['second', 'seconds'],
+        },
     };
 
-    var TIME_INTERVALS = {
+    const TIME_INTERVALS = {
         years: 60 * 60 * 24 * 365,
         months: 60 * 60 * 24 * 30,
         weeks: 60 * 60 * 24 * 7,
         days: 60 * 60 * 24,
         hours: 60 * 60,
         minutes: 60,
-        seconds: 1
+        seconds: 1,
     };
 
-    var field, hiddenInput;
+    let field, hiddenInput;
 
-    var innerInputs = {};
+    const innerInputs = {};
 
-    var labels = {};
+    const labels = {};
 
     options = Utils.extendObject({}, defaults, options);
 
     createField();
 
-    function secondsToIntervals(seconds, intervalNames) {
-        var intervals = {};
-        var t;
+    function secondsToIntervals(seconds, intervalNames = options.intervals) {
+        const intervals = {};
         seconds = Utils.toSafeInteger(seconds);
-        if (typeof intervalNames === 'undefined') {
-            intervalNames = options.intervals;
-        }
-        for (t in TIME_INTERVALS) {
-            if (Object.prototype.hasOwnProperty.call(TIME_INTERVALS, t) && intervalNames.indexOf(t) !== -1) {
+        for (const t in TIME_INTERVALS) {
+            if (intervalNames.includes(t)) {
                 intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
                 seconds -= intervals[t] * TIME_INTERVALS[t];
             }
@@ -52,25 +48,19 @@ export default function DurationInput(input, options) {
     }
 
     function intervalsToSeconds(intervals) {
-        var seconds = 0;
-        var i;
-        for (i in intervals) {
-            if (Object.prototype.hasOwnProperty.call(intervals, i) && Object.prototype.hasOwnProperty.call(TIME_INTERVALS, i)) {
-                seconds += intervals[i] * TIME_INTERVALS[i];
-            }
+        let seconds = 0;
+        for (const interval in intervals) {
+            seconds += intervals[interval] * TIME_INTERVALS[interval];
         }
         return Utils.toSafeInteger(seconds);
     }
 
     function updateHiddenInput() {
-        var intervals = {};
-        var seconds = 0;
-        var step = 0;
-        var i = 0;
-        for (i in innerInputs) {
-            if (Object.prototype.hasOwnProperty.call(innerInputs, i)) {
-                intervals[i] = innerInputs[i].value;
-            }
+        const intervals = {};
+        let seconds = 0;
+        let step = 0;
+        for (const i in innerInputs) {
+            intervals[i] = innerInputs[i].value;
         }
         seconds = intervalsToSeconds(intervals);
         if (hiddenInput.step) {
@@ -87,47 +77,37 @@ export default function DurationInput(input, options) {
     }
 
     function updateInnerInputs() {
-        var intervals = secondsToIntervals(hiddenInput.value * TIME_INTERVALS[options.unit]);
-        var i;
-        for (i in innerInputs) {
-            if (Object.prototype.hasOwnProperty.call(innerInputs, i)) {
-                innerInputs[i].value = intervals[i];
-            }
+        const intervals = secondsToIntervals(hiddenInput.value * TIME_INTERVALS[options.unit]);
+        for (const i in innerInputs) {
+            innerInputs[i].value = intervals[i];
         }
     }
 
     function updateInnerInputsLength() {
-        var i;
-        for (i in innerInputs) {
-            if (Object.prototype.hasOwnProperty.call(innerInputs, i)) {
-                innerInputs[i].style.width = Math.max(3, innerInputs[i].value.length + 2) + 'ch';
-            }
+        for (const i in innerInputs) {
+            innerInputs[i].style.width = `${Math.max(3, innerInputs[i].value.length + 2)}ch`;
         }
     }
 
     function updateLabels() {
-        var i;
-        for (i in innerInputs) {
-            if (Object.prototype.hasOwnProperty.call(innerInputs, i)) {
-                labels[i].innerHTML = options.labels[i][parseInt(innerInputs[i].value) === 1 ? 0 : 1];
-            }
+        for (const i in innerInputs) {
+            labels[i].innerHTML = options.labels[i][parseInt(innerInputs[i].value) === 1 ? 0 : 1];
         }
     }
 
     function createInnerInputs(intervals, steps) {
-        var wrap, name, innerInput, label, i;
-
         field = document.createElement('div');
         field.className = 'input-duration';
 
-        for (i = 0; i < options.intervals.length; i++) {
-            name = options.intervals[i];
-            wrap = document.createElement('span');
-            wrap.className = 'duration-' + name;
+        let innerInput;
+
+        for (const name of options.intervals) {
             innerInput = document.createElement('input');
+            const wrap = document.createElement('span');
+            wrap.className = `duration-${name}`;
             innerInput.type = 'number';
             innerInput.value = intervals[name] || 0;
-            innerInput.style.width = Math.max(3, innerInput.value.length + 2) + 'ch';
+            innerInput.style.width = `${Math.max(3, innerInput.value.length + 2)}ch`;
             if (steps[name] > 1) {
                 innerInput.step = steps[name];
             }
@@ -146,26 +126,26 @@ export default function DurationInput(input, options) {
                 updateHiddenInput();
                 updateLabels();
             });
-            innerInput.addEventListener('blur', function () {
+            innerInput.addEventListener('blur', () => {
                 updateHiddenInput();
                 updateInnerInputs();
                 updateInnerInputsLength();
                 updateLabels();
             });
-            innerInput.addEventListener('focus', function () {
+            innerInput.addEventListener('focus', () => {
                 field.classList.add('focused');
             });
-            innerInput.addEventListener('blur', function () {
+            innerInput.addEventListener('blur', () => {
                 field.classList.remove('focused');
             });
             wrap.addEventListener('mousedown', function (event) {
-                var input = $('input', this);
+                const input = $('input', this);
                 if (input && event.target !== input) {
                     input.focus();
                     event.preventDefault();
                 }
             });
-            label = document.createElement('label');
+            const label = document.createElement('label');
             label.innerHTML = options.labels[name][parseInt(innerInput.value) === 1 ? 0 : 1];
             labels[name] = label;
             wrap.appendChild(innerInput);
@@ -184,7 +164,6 @@ export default function DurationInput(input, options) {
     }
 
     function createField() {
-        var field, valueSeconds, stepSeconds;
         hiddenInput = document.createElement('input');
         hiddenInput.className = 'input-duration-hidden';
         hiddenInput.name = input.name;
@@ -214,9 +193,9 @@ export default function DurationInput(input, options) {
         if (input.hasAttribute('data-unit')) {
             options.unit = input.getAttribute('data-unit');
         }
-        valueSeconds = input.value * TIME_INTERVALS[options.unit];
-        stepSeconds = input.step * TIME_INTERVALS[options.unit];
-        field = createInnerInputs(secondsToIntervals(valueSeconds || 0), secondsToIntervals(stepSeconds || 1));
+        const valueSeconds = input.value * TIME_INTERVALS[options.unit];
+        const stepSeconds = input.step * TIME_INTERVALS[options.unit];
+        const field = createInnerInputs(secondsToIntervals(valueSeconds || 0), secondsToIntervals(stepSeconds || 1));
         input.parentNode.replaceChild(field, input);
         field.appendChild(hiddenInput);
     }

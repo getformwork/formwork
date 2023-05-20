@@ -1,29 +1,29 @@
 import Modals from './modals';
 import Notification from './notification';
 import Request from './request';
-import {Sortable} from 'sortablejs';
+import { Sortable } from 'sortablejs';
 import Utils from './utils';
 
 export default {
     init: function () {
 
-        var commandExpandAllPages = $('[data-command=expand-all-pages]');
-        var commandCollapseAllPages = $('[data-command=collapse-all-pages]');
-        var commandReorderPages = $('[data-command=reorder-pages]');
-        var commandChangeSlug = $('[data-command=change-slug]');
+        const commandExpandAllPages = $('[data-command=expand-all-pages]');
+        const commandCollapseAllPages = $('[data-command=collapse-all-pages]');
+        const commandReorderPages = $('[data-command=reorder-pages]');
+        const commandChangeSlug = $('[data-command=change-slug]');
 
-        var searchInput = $('.page-search');
+        const searchInput = $('.page-search');
 
-        var newPageModal = document.getElementById('newPageModal');
-        var slugModal = document.getElementById('slugModal');
+        const newPageModal = document.getElementById('newPageModal');
+        const slugModal = document.getElementById('slugModal');
 
-        $$('.pages-list').forEach(function (element) {
+        $$('.pages-list').forEach((element) => {
             if (element.getAttribute('data-orderable-children') === 'true') {
                 initSortable(element);
             }
         });
 
-        $$('.page-details').forEach(function (element) {
+        $$('.page-details').forEach((element) => {
             if ($('.page-children-toggle', element)) {
                 element.addEventListener('click', function (event) {
                     togglePageItem(this);
@@ -32,14 +32,14 @@ export default {
             }
         });
 
-        $$('.page-details a').forEach(function (element) {
-            element.addEventListener('click', function (event) {
+        $$('.page-details a').forEach((element) => {
+            element.addEventListener('click', (event) => {
                 event.stopPropagation();
             });
         });
 
-        $$('.pages-list .sort-handle').forEach(function (element) {
-            element.addEventListener('click', function (event) {
+        $$('.pages-list .sort-handle').forEach((element) => {
+            element.addEventListener('click', (event) => {
                 event.stopPropagation();
             });
         });
@@ -67,8 +67,8 @@ export default {
         }
 
         if (searchInput) {
-            searchInput.addEventListener('focus', function () {
-                $$('.pages-item').forEach(function (element) {
+            searchInput.addEventListener('focus', () => {
+                $$('.pages-item').forEach((element) => {
                     element.setAttribute('data-expanded', element.classList.contains('expanded') ? 'true' : 'false');
                 });
             });
@@ -76,7 +76,7 @@ export default {
             searchInput.addEventListener('keyup', Utils.debounce(handleSearch, 100));
             searchInput.addEventListener('search', handleSearch);
 
-            document.addEventListener('keydown', function (event) {
+            document.addEventListener('keydown', (event) => {
                 if (event.ctrlKey || event.metaKey) {
                     // ctrl/cmd + F
                     if (event.which === 70 && document.activeElement !== searchInput) {
@@ -96,43 +96,45 @@ export default {
             $('#page-slug', newPageModal).addEventListener('blur', handleSlugChange);
 
             $('#page-parent', newPageModal).addEventListener('change', function () {
-                var option = this.options[this.selectedIndex];
-                var pageTemplate = $('#page-template', newPageModal);
-                var allowedTemplates = option.getAttribute('data-allowed-templates');
-                var i = 0;
+                const option = this.options[this.selectedIndex];
+                const pageTemplate = $('#page-template', newPageModal);
+                let allowedTemplates = option.getAttribute('data-allowed-templates');
 
                 if (allowedTemplates !== null) {
                     allowedTemplates = allowedTemplates.split(', ');
                     pageTemplate.setAttribute('data-previous-value', pageTemplate.value);
                     pageTemplate.value = allowedTemplates[0];
-                    for (i = 0; i < pageTemplate.options.length; i++) {
-                        if (allowedTemplates.indexOf(pageTemplate.options[i].value) === -1) {
-                            pageTemplate.options[i].setAttribute('disabled', '');
+
+                    for (const option of pageTemplate.options) {
+                        if (!allowedTemplates.includes(option.value)) {
+                            option.setAttribute('disabled', '');
                         }
                     }
+
                 } else {
                     if (pageTemplate.hasAttribute('data-previous-value')) {
                         pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
                         pageTemplate.removeAttribute('data-previous-value');
                     }
-                    for (i = 0; i < pageTemplate.options.length; i++) {
-                        pageTemplate.options[i].disabled = false;
+
+                    for (const option of pageTemplate.options) {
+                        option.disabled = false;
                     }
                 }
             });
         }
 
         if (slugModal && commandChangeSlug) {
-            commandChangeSlug.addEventListener('click', function () {
-                Modals.show('slugModal', null, function (modal) {
-                    var slug = document.getElementById('slug').value;
-                    var slugInput = $('#page-slug', modal);
+            commandChangeSlug.addEventListener('click', () => {
+                Modals.show('slugModal', null, (modal) => {
+                    const slug = document.getElementById('slug').value;
+                    const slugInput = $('#page-slug', modal);
                     slugInput.value = slug;
                     slugInput.setAttribute('placeholder', slug);
                 });
             });
 
-            $('#page-slug', slugModal).addEventListener('keydown', function (event) {
+            $('#page-slug', slugModal).addEventListener('keydown', (event) => {
                 // enter
                 if (event.which === 13) {
                     $('[data-command=continue]', slugModal).click();
@@ -142,49 +144,50 @@ export default {
             $('#page-slug', slugModal).addEventListener('keyup', handleSlugChange);
             $('#page-slug', slugModal).addEventListener('blur', handleSlugChange);
 
-            $('[data-command=generate-slug]', slugModal).addEventListener('click', function () {
-                var slug = Utils.slug(document.getElementById('title').value);
+            $('[data-command=generate-slug]', slugModal).addEventListener('click', () => {
+                const slug = Utils.slug(document.getElementById('title').value);
                 $('#page-slug', slugModal).value = slug;
                 $('#page-slug', slugModal).focus();
             });
 
-            $('[data-command=continue]', slugModal).addEventListener('click', function () {
-                var slug = $('#page-slug', slugModal).value.replace(/^-+|-+$/, '');
-                var route;
+            $('[data-command=continue]', slugModal).addEventListener('click', () => {
+                const slug = $('#page-slug', slugModal).value.replace(/^-+|-+$/, '');
+
                 if (slug.length > 0) {
-                    route = $('.page-slug-change').innerHTML;
-                    $$('#page-slug, #slug').forEach(function (element) {
+                    const route = $('.page-slug-change').innerHTML;
+                    $$('#page-slug, #slug').forEach((element) => {
                         element.value = slug;
                     });
                     $('#page-slug', slugModal).value = slug;
                     document.getElementById('slug').value = slug;
-                    $('.page-slug-change').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, '/' + slug + '/');
+                    $('.page-slug-change').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
+
                 Modals.hide('slugModal');
             });
         }
 
         function expandAllPages() {
-            $$('.pages-item').forEach(function (element) {
+            $$('.pages-item').forEach((element) => {
                 element.classList.add('is-expanded');
             });
         }
 
         function collapseAllPages() {
-            $$('.pages-item').forEach(function (element) {
+            $$('.pages-item').forEach((element) => {
                 element.classList.remove('is-expanded');
             });
         }
 
         function togglePageItem(list) {
-            var element = list.closest('.pages-item');
+            const element = list.closest('.pages-item');
             element.classList.toggle('is-expanded');
         }
 
         function initSortable(element) {
-            var originalOrder = [];
+            let originalOrder = [];
 
-            var sortable = Sortable.create(element, {
+            const sortable = Sortable.create(element, {
                 handle: '.sort-handle',
                 filter: '.is-not-orderable',
                 forceFallback: true,
@@ -193,13 +196,14 @@ export default {
                 animation: 150,
 
                 onChoose: function () {
-                    var height = document.body.offsetHeight;
-                    document.body.style.height = height + 'px';
+                    const height = document.body.offsetHeight;
+                    document.body.style.height = `${height}px`;
 
-                    var e = window.addEventListener('scroll', function () {
+                    const e = window.addEventListener('scroll', function () {
                         this.document.body.style.height = '';
                         this.removeEventListener('scroll', e);
                     });
+
                 },
 
                 onStart: function () {
@@ -217,28 +221,26 @@ export default {
 
                     document.body.style.height = '';
 
-                    var data, notification;
-
                     if (event.newIndex === event.oldIndex) {
                         return;
                     }
 
                     sortable.option('disabled', true);
 
-                    data = {
+                    const data = {
                         'csrf-token': $('meta[name=csrf-token]').getAttribute('content'),
                         page: element.children[event.newIndex].getAttribute('data-route'),
                         before: element.children[event.oldIndex].getAttribute('data-route'),
-                        parent: element.getAttribute('data-parent')
+                        parent: element.getAttribute('data-parent'),
                     };
 
                     Request({
                         method: 'POST',
-                        url: Formwork.config.baseUri + 'pages/reorder/',
-                        data: data
-                    }, function (response) {
+                        url: `${Formwork.config.baseUri}pages/reorder/`,
+                        data: data,
+                    }, (response) => {
                         if (response.status) {
-                            notification = new Notification(response.message, response.status, {icon: 'check-circle'});
+                            const notification = new Notification(response.message, response.status, { icon: 'check-circle' });
                             notification.show();
                         }
                         if (!response.status || response.status === 'error') {
@@ -248,20 +250,19 @@ export default {
                         originalOrder = sortable.toArray();
                     });
 
-                }
+                },
             });
 
             originalOrder = sortable.toArray();
         }
 
         function handleSearch() {
-            var value = this.value;
-            var regexp;
+            const value = this.value;
             if (value.length === 0) {
                 $('.pages-list-root').classList.remove('is-filtered');
 
-                $$('.pages-item').forEach(function (element) {
-                    var title = $('.page-title a', element);
+                $$('.pages-item').forEach((element) => {
+                    const title = $('.page-title a', element);
                     title.innerHTML = title.textContent;
                     $('.pages-item-row', element).style.display = '';
                     element.classList.toggle('is-expanded', element.getAttribute('data-expanded') === true);
@@ -269,18 +270,20 @@ export default {
             } else {
                 $('.pages-list-root').classList.add('is-filtered');
 
-                regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'gi');
+                const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'gi');
 
-                $$('.pages-item').forEach(function (element) {
-                    var title = $('.page-title a', element);
-                    var text = title.textContent;
-                    var pagesItem = $('.pages-item-row', element);
+                $$('.pages-item').forEach((element) => {
+                    const title = $('.page-title a', element);
+                    const text = title.textContent;
+                    const pagesItem = $('.pages-item-row', element);
+
                     if (text.match(regexp) !== null) {
                         title.innerHTML = text.replace(regexp, '<mark>$&</mark>');
                         pagesItem.style.display = '';
                     } else {
                         pagesItem.style.display = 'none';
                     }
+
                     element.classList.add('is-expanded');
                 });
 
@@ -290,5 +293,5 @@ export default {
         function handleSlugChange() {
             this.value = Utils.validateSlug(this.value);
         }
-    }
+    },
 };

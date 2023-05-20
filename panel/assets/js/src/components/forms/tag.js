@@ -1,9 +1,13 @@
 import Utils from '../utils';
 
 export default function TagInput(input) {
-    var options = {addKeyCodes: [32]};
-    var tags = [];
-    var field, innerInput, hiddenInput, placeholder, dropdown;
+    const options = { addKeyCodes: [32] };
+    let tags = [];
+    let placeholder, dropdown;
+
+    const field = document.createElement('div');
+    const innerInput = document.createElement('input');
+    const hiddenInput = document.createElement('input');
 
     createField();
     createDropdown();
@@ -11,20 +15,16 @@ export default function TagInput(input) {
     registerInputEvents();
 
     function createField() {
-        var isRequired = input.hasAttribute('required');
-        var isDisabled = input.hasAttribute('disabled');
+        const isRequired = input.hasAttribute('required');
+        const isDisabled = input.hasAttribute('disabled');
 
-        field = document.createElement('div');
         field.className = 'input-tag';
 
-        innerInput = document.createElement('input');
         innerInput.className = 'tag-inner-input';
         innerInput.type = 'text';
         innerInput.placeholder = input.placeholder;
-
         innerInput.setAttribute('size', '');
 
-        hiddenInput = document.createElement('input');
         hiddenInput.className = 'input-tag-hidden';
         hiddenInput.name = input.name;
         hiddenInput.id = input.id;
@@ -49,7 +49,7 @@ export default function TagInput(input) {
 
         if (hiddenInput.value) {
             tags = hiddenInput.value.split(', ');
-            tags.forEach(function (value, index) {
+            tags.forEach((value, index) => {
                 value = value.trim();
                 tags[index] = value;
                 insertTag(value);
@@ -63,38 +63,34 @@ export default function TagInput(input) {
             placeholder = '';
         }
 
-        field.addEventListener('mousedown', function (event) {
+        field.addEventListener('mousedown', (event) => {
             innerInput.focus();
             event.preventDefault();
         });
     }
 
     function createDropdown() {
-        var list, key, item;
-
         if (input.hasAttribute('data-options')) {
 
-            list = JSON.parse(input.getAttribute('data-options'));
+            const list = JSON.parse(input.getAttribute('data-options'));
 
             dropdown = document.createElement('div');
             dropdown.className = 'dropdown-list';
 
-            for (key in list) {
-                if (Object.prototype.hasOwnProperty.call(list, key)) {
-                    item = document.createElement('div');
-                    item.className = 'dropdown-item';
-                    item.innerHTML = list[key];
-                    item.setAttribute('data-value', key);
-                    item.addEventListener('click', function () {
-                        addTag(this.getAttribute('data-value'));
-                    });
-                    dropdown.appendChild(item);
-                }
+            for (const key in list) {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.innerHTML = list[key];
+                item.setAttribute('data-value', key);
+                item.addEventListener('click', function () {
+                    addTag(this.getAttribute('data-value'));
+                });
+                dropdown.appendChild(item);
             }
 
             field.appendChild(dropdown);
 
-            innerInput.addEventListener('focus', function () {
+            innerInput.addEventListener('focus', () => {
                 if (getComputedStyle(dropdown).display === 'none') {
                     updateDropdown();
                     dropdown.scrollTop = 0;
@@ -102,14 +98,14 @@ export default function TagInput(input) {
                 }
             });
 
-            innerInput.addEventListener('blur', function () {
+            innerInput.addEventListener('blur', () => {
                 if (getComputedStyle(dropdown).display !== 'none') {
                     updateDropdown();
                     dropdown.style.display = 'none';
                 }
             });
 
-            innerInput.addEventListener('keydown', function (event) {
+            innerInput.addEventListener('keydown', (event) => {
                 switch (event.which) {
                 case 8: // backspace
                     updateDropdown();
@@ -133,15 +129,15 @@ export default function TagInput(input) {
                     }
                     break;
                 default:
-                    if (options.addKeyCodes.indexOf(event.which) > -1) {
+                    if (options.addKeyCodes.includes(event.which)) {
                         addTagFromSelectedDropdownItem();
                         event.preventDefault();
                     }
                 }
             });
 
-            innerInput.addEventListener('keyup', Utils.debounce(function (event) {
-                var value = innerInput.value.trim();
+            innerInput.addEventListener('keyup', Utils.debounce((event) => {
+                const value = innerInput.value.trim();
                 switch (event.which) {
                 case 27: // escape
                     dropdown.style.display = 'none';
@@ -161,20 +157,20 @@ export default function TagInput(input) {
     }
 
     function registerInputEvents() {
-        innerInput.addEventListener('focus', function () {
+        innerInput.addEventListener('focus', () => {
             field.classList.add('focused');
         });
 
-        innerInput.addEventListener('blur', function () {
-            var value = innerInput.value.trim();
+        innerInput.addEventListener('blur', () => {
+            const value = innerInput.value.trim();
             if (value !== '') {
                 addTag(value);
             }
             field.classList.remove('focused');
         });
 
-        innerInput.addEventListener('keydown', function () {
-            var value = innerInput.value.trim();
+        innerInput.addEventListener('keydown', () => {
+            const value = innerInput.value.trim();
             switch (event.which) {
             case 8: // backspace
                 if (value === '') {
@@ -200,7 +196,7 @@ export default function TagInput(input) {
                 event.preventDefault();
                 break;
             default:
-                if (value !== '' && options.addKeyCodes.indexOf(event.which) > -1) {
+                if (value !== '' && options.addKeyCodes.includes(event.which)) {
                     addTag(value);
                     event.preventDefault();
                     break;
@@ -231,9 +227,9 @@ export default function TagInput(input) {
     }
 
     function validateTag(value) {
-        if (tags.indexOf(value) === -1) {
+        if (!tags.includes(value)) {
             if (dropdown) {
-                return $('[data-value="' + value + '"]', dropdown) !== null;
+                return $(`[data-value="${value}"]`, dropdown) !== null;
             }
             return true;
         }
@@ -241,8 +237,8 @@ export default function TagInput(input) {
     }
 
     function insertTag(value) {
-        var tag = document.createElement('span');
-        var tagRemove = document.createElement('i');
+        const tag = document.createElement('span');
+        const tagRemove = document.createElement('i');
         tag.className = 'tag';
         tag.innerHTML = value;
         tag.style.marginRight = '.25rem';
@@ -250,7 +246,7 @@ export default function TagInput(input) {
 
         tagRemove.className = 'tag-remove';
         tagRemove.setAttribute('role', 'button');
-        tagRemove.addEventListener('mousedown', function (event) {
+        tagRemove.addEventListener('mousedown', (event) => {
             removeTag(value);
             tag.parentNode.removeChild(tag);
             event.preventDefault();
@@ -273,7 +269,7 @@ export default function TagInput(input) {
     }
 
     function removeTag(value) {
-        var index = tags.indexOf(value);
+        const index = tags.indexOf(value);
         if (index > -1) {
             tags.splice(index, 1);
             updateTags();
@@ -289,12 +285,12 @@ export default function TagInput(input) {
     }
 
     function updateDropdown() {
-        var visibleItems = 0;
-        $$('.dropdown-item', dropdown).forEach(function (element) {
+        let visibleItems = 0;
+        $$('.dropdown-item', dropdown).forEach((element) => {
             if (getComputedStyle(element).display !== 'none') {
                 visibleItems++;
             }
-            if (tags.indexOf(element.getAttribute('data-value')) === -1) {
+            if (!tags.includes(element.getAttribute('data-value'))) {
                 element.style.display = 'block';
             } else {
                 element.style.display = 'none';
@@ -309,11 +305,11 @@ export default function TagInput(input) {
     }
 
     function filterDropdown(value) {
-        var visibleItems = 0;
+        let visibleItems = 0;
         dropdown.style.display = 'block';
-        $$('.dropdown-item', dropdown).forEach(function (element) {
-            var text = element.textContent;
-            var regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'i');
+        $$('.dropdown-item', dropdown).forEach((element) => {
+            const text = element.textContent;
+            const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'i');
             if (text.match(regexp) !== null && element.style.display !== 'none') {
                 element.style.display = 'block';
                 visibleItems++;
@@ -329,15 +325,15 @@ export default function TagInput(input) {
     }
 
     function scrollToDropdownItem(item) {
-        var dropdownScrollTop = dropdown.scrollTop;
-        var dropdownHeight = dropdown.clientHeight;
-        var dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
-        var dropdownStyle = getComputedStyle(dropdown);
-        var dropdownPaddingTop = parseInt(dropdownStyle.paddingTop);
-        var dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom);
-        var itemTop = item.offsetTop;
-        var itemHeight = item.clientHeight;
-        var itemBottom = itemTop + itemHeight;
+        const dropdownScrollTop = dropdown.scrollTop;
+        const dropdownHeight = dropdown.clientHeight;
+        const dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
+        const dropdownStyle = getComputedStyle(dropdown);
+        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop);
+        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom);
+        const itemTop = item.offsetTop;
+        const itemHeight = item.clientHeight;
+        const itemBottom = itemTop + itemHeight;
         if (itemTop < dropdownScrollTop) {
             dropdown.scrollTop = itemTop - dropdownPaddingTop;
         } else if (itemBottom > dropdownScrollBottom) {
@@ -346,14 +342,14 @@ export default function TagInput(input) {
     }
 
     function addTagFromSelectedDropdownItem() {
-        var selectedItem = $('.dropdown-item.selected', dropdown);
+        const selectedItem = $('.dropdown-item.selected', dropdown);
         if (getComputedStyle(selectedItem).display !== 'none') {
             innerInput.value = selectedItem.getAttribute('data-value');
         }
     }
 
     function selectDropdownItem(item) {
-        var selectedItem = $('.dropdown-item.selected', dropdown);
+        const selectedItem = $('.dropdown-item.selected', dropdown);
         if (selectedItem) {
             selectedItem.classList.remove('selected');
         }
@@ -364,9 +360,8 @@ export default function TagInput(input) {
     }
 
     function selectFirstDropdownItem() {
-        var items = $$('.dropdown-item', dropdown);
-        var i;
-        for (i = 0; i < items.length; i++) {
+        const items = $$('.dropdown-item', dropdown);
+        for (let i = 0; i < items.length; i++) {
             if (getComputedStyle(items[i]).display !== 'none') {
                 selectDropdownItem(items[i]);
                 return;
@@ -375,9 +370,8 @@ export default function TagInput(input) {
     }
 
     function selectLastDropdownItem() {
-        var items = $$('.dropdown-item', dropdown);
-        var i;
-        for (i = items.length - 1; i >= 0; i--) {
+        const items = $$('.dropdown-item', dropdown);
+        for (let i = items.length - 1; i >= 0; i--) {
             if (getComputedStyle(items[i]).display !== 'none') {
                 selectDropdownItem(items[i]);
                 return;
@@ -386,10 +380,9 @@ export default function TagInput(input) {
     }
 
     function selectPrevDropdownItem() {
-        var selectedItem = $('.dropdown-item.selected', dropdown);
-        var previousItem;
+        const selectedItem = $('.dropdown-item.selected', dropdown);
         if (selectedItem) {
-            previousItem = selectedItem.previousSibling;
+            let previousItem = selectedItem.previousSibling;
             while (previousItem && previousItem.style.display === 'none') {
                 previousItem = previousItem.previousSibling;
             }
@@ -402,10 +395,9 @@ export default function TagInput(input) {
     }
 
     function selectNextDropdownItem() {
-        var selectedItem = $('.dropdown-item.selected', dropdown);
-        var nextItem;
+        const selectedItem = $('.dropdown-item.selected', dropdown);
         if (selectedItem) {
-            nextItem = selectedItem.nextSibling;
+            let nextItem = selectedItem.nextSibling;
             while (nextItem && nextItem.style.display === 'none') {
                 nextItem = nextItem.nextSibling;
             }
