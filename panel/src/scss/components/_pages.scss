@@ -195,8 +195,8 @@ button .page-language,
 
     &.has-children::before,
     &.has-children::after,
-    &.is-orderable::before,
-    &.is-orderable::after {
+    .is-reordering &.is-orderable::before,
+    .is-reordering &.is-orderable::after {
         width: 0.875rem;
     }
 
