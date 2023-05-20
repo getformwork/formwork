@@ -155,7 +155,7 @@ class Uploader
             throw new TranslatedException('File name too long', 'panel.uploader.error.fileNameTooLong');
         }
 
-        if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[aZ0-9]+)?$/i', $filename)) {
+        if (!(bool) preg_match('/^[a-z0-9_-]+(?:\.[a-z0-9]+)?$/i', $filename)) {
             throw new TranslatedException(sprintf('Invalid file name "%s"', $filename), 'panel.uploader.error.fileName');
         }
 
