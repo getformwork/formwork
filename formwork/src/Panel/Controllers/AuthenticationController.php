@@ -42,7 +42,7 @@ class AuthenticationController extends AbstractController
                 CSRFToken::generate();
 
                 return new Response($this->view('authentication.login', [
-                    'title' => $this->translate('panel.login.login')
+                    'title' => $this->translate('panel.login.login'),
                 ], true));
 
                 break;
@@ -90,7 +90,7 @@ class AuthenticationController extends AbstractController
 
                 return $this->error($this->translate('panel.login.attempt.failed'), [
                     'username' => $data->get('username'),
-                    'error'    => true
+                    'error'    => true,
                 ]);
 
                 break;

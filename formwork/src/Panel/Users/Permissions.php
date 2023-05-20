@@ -16,7 +16,7 @@ class Permissions
         'pages'     => false,
         'options'   => false,
         'updates'   => false,
-        'users'     => false
+        'users'     => false,
     ];
 
     /**

@@ -19,7 +19,7 @@ class DashboardController extends AbstractController
 
         $this->modal('newPage', [
             'templates' => $this->site()->templates()->keys(),
-            'pages'     => $this->site()->descendants()->sortBy('relativePath')
+            'pages'     => $this->site()->descendants()->sortBy('relativePath'),
         ]);
 
         $this->modal('deletePage');
@@ -36,9 +36,9 @@ class DashboardController extends AbstractController
                 'class'     => 'pages-list-root',
                 'parent'    => null,
                 'orderable' => false,
-                'headers'   => true
+                'headers'   => true,
                 ], true),
-            'statistics' => JSON::encode($statistics->getChartData())
+            'statistics' => JSON::encode($statistics->getChartData()),
         ], true));
     }
 }

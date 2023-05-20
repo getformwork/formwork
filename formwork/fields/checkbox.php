@@ -19,5 +19,5 @@ return [
         }
 
         throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
-    }
+    },
 ];

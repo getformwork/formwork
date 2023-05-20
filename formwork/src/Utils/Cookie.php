@@ -57,7 +57,7 @@ class Cookie
             'path'     => null,
             'secure'   => false,
             'httponly' => false,
-            'samesite' => false
+            'samesite' => false,
         ];
     }
 

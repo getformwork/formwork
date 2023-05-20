@@ -13,7 +13,7 @@ class LinkBaseExtension implements ConfigurableExtensionInterface
     public function configureSchema(ConfigurationBuilderInterface $builder): void
     {
         $builder->addSchema('formwork', Expect::structure([
-            'baseRoute' => Expect::string('/')
+            'baseRoute' => Expect::string('/'),
         ]));
     }
 

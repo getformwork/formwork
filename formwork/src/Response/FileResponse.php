@@ -16,7 +16,7 @@ class FileResponse extends Response
         $headers += [
             'Content-Type'        => FileSystem::mimeType($path),
             'Content-Disposition' => !$download ? 'inline' : Header::make(['attachment', 'filename' => basename($path)]),
-            'Content-Length'      => FileSystem::fileSize($path)
+            'Content-Length'      => FileSystem::fileSize($path),
         ];
         parent::__construct(FileSystem::read($path), $status, $headers);
     }

@@ -43,7 +43,7 @@ class Updater
         'lastUpdate' => null,
         'etag'       => null,
         'release'    => null,
-        'upToDate'   => false
+        'upToDate'   => false,
     ];
 
     /**
@@ -101,8 +101,8 @@ class Updater
                 'assets/*',
                 'backup/*',
                 'cache/*',
-                'site/*'
-            ]
+                'site/*',
+            ],
         ];
     }
 
@@ -235,7 +235,7 @@ class Updater
             'name'    => $data['name'],
             'tag'     => $data['tag_name'],
             'date'    => Date::toTimestamp($data['published_at'], DATE_ISO8601),
-            'archive' => $data['zipball_url']
+            'archive' => $data['zipball_url'],
         ];
 
         if ($this->options['preferDistAssets'] && !empty($data['assets'])) {

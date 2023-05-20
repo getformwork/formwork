@@ -35,7 +35,7 @@ class ZipErrors
         ZipArchive::ER_INTERNAL    => 'Internal error',
         ZipArchive::ER_INCONS      => 'Zip archive inconsistent',
         ZipArchive::ER_REMOVE      => 'Cannot remove file',
-        ZipArchive::ER_DELETED     => 'Entry has been deleted'
+        ZipArchive::ER_DELETED     => 'Entry has been deleted',
     ];
 
     /**
@@ -64,6 +64,6 @@ class ZipErrors
         ZipArchive::ER_INTERNAL    => 'zip.error.unspecified',
         ZipArchive::ER_INCONS      => 'zip.error.inconsistentArchive',
         ZipArchive::ER_REMOVE      => 'zip.error.unspecified',
-        ZipArchive::ER_DELETED     => 'zip.error.unspecified'
+        ZipArchive::ER_DELETED     => 'zip.error.unspecified',
     ];
 }

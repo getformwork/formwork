@@ -45,8 +45,8 @@ class Backupper
                 '*.gitignore',
                 '*.gitkeep',
                 'panel/node_modules/*',
-                'backup/*'
-            ]
+                'backup/*',
+            ],
         ];
     }
 

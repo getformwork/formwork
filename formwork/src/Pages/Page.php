@@ -181,7 +181,7 @@ class Page implements Arrayable
             'headers'        => [],
             'responseStatus' => 200,
             'metadata'       => [],
-            'content'        => ''
+            'content'        => '',
         ];
 
         // Merge with scheme default field values
@@ -537,7 +537,7 @@ class Page implements Arrayable
                         $contentFiles[$language] = [
                             'path'     => FileSystem::joinPaths($this->path, $file),
                             'filename' => $file,
-                            'template' => $name
+                            'template' => $name,
                         ];
                         if ($language !== null && !in_array($language, $languages, true)) {
                             $languages[] = $language;
@@ -588,7 +588,7 @@ class Page implements Arrayable
             'default'   => $defaultLanguage,
             'current'   => $this->language ?? null,
             'requested' => $site->languages()->requested(),
-            'preferred' => $site->languages()->preferred()
+            'preferred' => $site->languages()->preferred(),
         ]);
 
         $this->files ??= isset($this->path) ? FileCollection::fromPath($this->path, $files) : new FileCollection();

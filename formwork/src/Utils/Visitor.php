@@ -35,7 +35,7 @@ class Visitor
         'snacktory', 'sniff', 'spy', 'summify', 'sweep', 'sysomos', 'teoma', 'thinklab', 'thumb',
         'traackr', 'twingly', 'twurly', 'um-ln', 'upflow', 'utility', 'verif(y|ier)', 'vkshare',
         'w3c(-mobileok|_unicorn)', 'web(datastats|inator)', 'web[-\s]?search', 'whatsapp', 'worth',
-        'xenu link sleuth', 'yahoo', 'zabbix', 'zgrab'
+        'xenu link sleuth', 'yahoo', 'zabbix', 'zgrab',
     ];
 
     /**

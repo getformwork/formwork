@@ -46,7 +46,7 @@ class Notification
         self::INFO    => 'info-circle',
         self::SUCCESS => 'check-circle',
         self::WARNING => 'exclamation-triangle',
-        self::ERROR   => 'exclamation-octagon'
+        self::ERROR   => 'exclamation-octagon',
     ];
 
     /**

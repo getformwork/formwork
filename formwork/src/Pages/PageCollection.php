@@ -82,7 +82,7 @@ class PageCollection extends AbstractCollection implements Paginable
             'summary' => 4,
             'content' => 3,
             'author'  => 2,
-            'uri'     => 1
+            'uri'     => 1,
         ];
 
         $pageCollection = clone $this;

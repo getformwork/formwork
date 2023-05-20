@@ -12,173 +12,173 @@ return [
     'routes' => [
         'panel.index' => [
             'path'   => '/',
-            'action' => fn () => new RedirectResponse(Formwork::instance()->panel()->uri('/dashboard/'))
+            'action' => fn () => new RedirectResponse(Formwork::instance()->panel()->uri('/dashboard/')),
         ],
 
         'panel.login' => [
             'path'    => '/login/',
             'action'  => 'Formwork\\Panel\\Controllers\\AuthenticationController@login',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.logout' => [
             'path'   => '/logout/',
-            'action' => 'Formwork\\Panel\\Controllers\\AuthenticationController@logout'
+            'action' => 'Formwork\\Panel\\Controllers\\AuthenticationController@logout',
         ],
 
         'panel.backup.make' => [
             'path'    => '/backup/make/',
             'action'  => 'Formwork\\Panel\\Controllers\\BackupController@make',
             'methods' => ['POST'],
-            'types'   => ['XHR']
+            'types'   => ['XHR'],
         ],
 
         'panel.backup.download' => [
             'path'    => '/backup/download/{backup}/',
             'action'  => 'Formwork\\Panel\\Controllers\\BackupController@download',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.cache.clear' => [
             'path'    => '/cache/clear/',
             'action'  => 'Formwork\\Panel\\Controllers\\CacheController@clear',
             'methods' => ['POST'],
-            'types'   => ['XHR']
+            'types'   => ['XHR'],
         ],
 
         'panel.dashboard' => [
             'path'   => '/dashboard/',
-            'action' => 'Formwork\Panel\Controllers\DashboardController@index'
+            'action' => 'Formwork\Panel\Controllers\DashboardController@index',
         ],
 
         'panel.options' => [
             'path'   => '/options/',
-            'action' => 'Formwork\Panel\Controllers\OptionsController@index'
+            'action' => 'Formwork\Panel\Controllers\OptionsController@index',
         ],
 
         'panel.options.system' => [
             'path'    => '/options/system/',
             'action'  => 'Formwork\Panel\Controllers\OptionsController@systemOptions',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.options.site' => [
             'path'    => '/options/site/',
             'action'  => 'Formwork\Panel\Controllers\OptionsController@siteOptions',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.options.updates' => [
             'path'   => '/options/updates/',
-            'action' => 'Formwork\Panel\Controllers\OptionsController@updates'
+            'action' => 'Formwork\Panel\Controllers\OptionsController@updates',
         ],
 
         'panel.options.info' => [
             'path'   => '/options/info/',
-            'action' => 'Formwork\Panel\Controllers\OptionsController@info'
+            'action' => 'Formwork\Panel\Controllers\OptionsController@info',
         ],
 
         'panel.pages' => [
             'path'   => '/pages/',
-            'action' => 'Formwork\Panel\Controllers\PagesController@index'
+            'action' => 'Formwork\Panel\Controllers\PagesController@index',
         ],
 
         'panel.pages.new' => [
             'path'    => '/pages/new/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@create',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.pages.edit' => [
             'path'    => '/pages/{page}/edit/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@edit',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.pages.edit.lang' => [
             'path'    => '/pages/{page}/edit/language/{language}/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@edit',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.pages.reorder' => [
             'path'    => '/pages/reorder/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@reorder',
             'methods' => ['POST'],
-            'types'   => ['XHR']
+            'types'   => ['XHR'],
         ],
 
         'panel.pages.uploadfile' => [
             'path'    => '/pages/{page}/file/upload/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@uploadFile',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.pages.deletefile' => [
             'path'    => '/pages/{page}/file/{filename}/delete/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@deleteFile',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.pages.delete' => [
             'path'    => '/pages/{page}/delete/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@delete',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.pages.delete.lang' => [
             'path'    => '/pages/{page}/delete/language/{language}/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@delete',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.updates.check' => [
             'path'    => '/updates/check/',
             'action'  => 'Formwork\Panel\Controllers\UpdatesController@check',
             'methods' => ['POST'],
-            'types'   => ['XHR']
+            'types'   => ['XHR'],
         ],
 
         'panel.updates.update' => [
             'path'    => '/updates/update/',
             'action'  => 'Formwork\Panel\Controllers\UpdatesController@update',
             'methods' => ['POST'],
-            'types'   => ['XHR']
+            'types'   => ['XHR'],
         ],
 
         'panel.users' => [
             'path'   => '/users/',
-            'action' => 'Formwork\Panel\Controllers\UsersController@index'
+            'action' => 'Formwork\Panel\Controllers\UsersController@index',
         ],
 
         'panel.users.new' => [
             'path'    => '/users/new/',
             'action'  => 'Formwork\Panel\Controllers\UsersController@create',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.users.delete' => [
             'path'    => '/users/{user}/delete/',
             'action'  => 'Formwork\Panel\Controllers\UsersController@delete',
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'panel.users.profile' => [
             'path'    => '/users/{user}/profile/',
             'action'  => 'Formwork\Panel\Controllers\UsersController@profile',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.register' => [
             'path'    => '/register/',
             'action'  => 'Formwork\Panel\Controllers\RegisterController@register',
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.errors.notfound' => [
             'path'   => '/{route}/',
-            'action' => 'Formwork\Panel\Controllers\ErrorsController@notFound'
-        ]
+            'action' => 'Formwork\Panel\Controllers\ErrorsController@notFound',
+        ],
     ],
 
     'filters' => [
@@ -198,7 +198,7 @@ return [
                     }
                 }
             },
-            'methods' => ['POST']
+            'methods' => ['POST'],
         ],
 
         'request.validateCsrf' => [
@@ -224,7 +224,7 @@ return [
                 }
             },
             'methods' => ['POST'],
-            'types'   => ['HTTP', 'XHR']
+            'types'   => ['HTTP', 'XHR'],
         ],
 
         'panel.register' => [
@@ -242,7 +242,7 @@ return [
                     }
                 }
             },
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.redirectToLogin' => [
@@ -254,7 +254,7 @@ return [
                     Session::set('FORMWORK_REDIRECT_TO', $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));
                 }
-            }
-        ]
-    ]
+            },
+        ],
+    ],
 ];

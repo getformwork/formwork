@@ -64,9 +64,9 @@ class OptionsController extends AbstractController
             'title' => $this->translate('panel.options.options'),
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
-                'current' => 'system'
+                'current' => 'system',
             ], true),
-            'fields' => $fields
+            'fields' => $fields,
         ], true));
     }
 
@@ -104,9 +104,9 @@ class OptionsController extends AbstractController
             'title' => $this->translate('panel.options.options'),
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
-                'current' => 'site'
+                'current' => 'site',
             ], true),
-            'fields' => $fields
+            'fields' => $fields,
         ], true));
     }
 
@@ -121,9 +121,9 @@ class OptionsController extends AbstractController
             'title' => $this->translate('panel.options.updates'),
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
-                'current' => 'updates'
+                'current' => 'updates',
             ], true),
-            'currentVersion' => Formwork::VERSION
+            'currentVersion' => Formwork::VERSION,
         ], true));
     }
 
@@ -147,7 +147,7 @@ class OptionsController extends AbstractController
                 'Server API'          => PHP_SAPI,
                 'Loaded php.ini'      => php_ini_loaded_file(),
                 'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
-                'Zend Engine Version' => zend_version()
+                'Zend Engine Version' => zend_version(),
             ],
             'HTTP Request Headers'  => HTTPRequest::headers()->toArray(),
             'HTTP Response Headers' => HTTPResponse::headers(),
@@ -159,32 +159,32 @@ class OptionsController extends AbstractController
                 'Apache Modules' => implode(', ', function_exists('apache_get_modules') ? apache_get_modules() : []),
                 'Protocol'       => $_SERVER['SERVER_PROTOCOL'],
                 'HTTPS'          => HTTPRequest::isHTTPS() ? 'on' : 'off',
-                'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME'])
+                'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME']),
             ],
             'Client' => [
                 'IP Address' => HTTPRequest::ip(),
-                'Port'       => $_SERVER['REMOTE_PORT']
+                'Port'       => $_SERVER['REMOTE_PORT'],
             ],
             'Session' => [
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Strict Mode'     => ini_get('session.use_strict_mode') ? 'true' : 'false'
+                'Session Strict Mode'     => ini_get('session.use_strict_mode') ? 'true' : 'false',
             ],
             'Uploads' => [
                 'File Uploads'         => ini_get('file_uploads') ? 'true' : 'false',
                 'POST Max Size'        => ini_get('post_max_size'),
                 'Maximum File Size'    => ini_get('upload_max_filesize'),
-                'Maximum File Uploads' => ini_get('max_file_uploads')
+                'Maximum File Uploads' => ini_get('max_file_uploads'),
             ],
             'Script' => [
                 'Max Execution Time' => ini_get('max_execution_time'),
                 'Max Input Time'     => ini_get('max_input_time'),
                 'Memory Limit'       => ini_get('memory_limit'),
                 'Default MIME-Type'  => ini_get('default_mimetype'),
-                'Default Charset'    => ini_get('default_charset')
+                'Default Charset'    => ini_get('default_charset'),
             ],
             'Streams' => [
                 'Stream Wrappers' => implode(', ', stream_get_wrappers()),
-                'Allow URL Fopen' => ini_get('allow_url_fopen') ? 'true' : 'false'
+                'Allow URL Fopen' => ini_get('allow_url_fopen') ? 'true' : 'false',
             ],
             'OPcache' => [
                 'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
@@ -195,7 +195,7 @@ class OptionsController extends AbstractController
                 'Free Memory'               => $opcacheStatus['memory_usage']['free_memory'] ?? 0,
                 'Wasted Memory'             => $opcacheStatus['memory_usage']['wasted_memory'] ?? 0,
                 'Current Wasted Percentage' => $opcacheStatus['memory_usage']['current_wasted_percentage'] ?? 0,
-                'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage')
+                'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage'),
             ],
             'GD' => [
                 'Version'            => $gdInfo['GD Version'] ?? '',
@@ -203,26 +203,26 @@ class OptionsController extends AbstractController
                 'PNG Support'        => $gdInfo['PNG Support'] ?? '' ? 'true' : 'false',
                 'GIF Read Support'   => $gdInfo['GIF Read Support'] ?? '' ? 'true' : 'false',
                 'GIF Create Support' => $gdInfo['GIF Create Support'] ?? '' ? 'true' : 'false',
-                'WebP Support'       => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false'
+                'WebP Support'       => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false',
             ],
             'System' => [
                 'Directory Separator' => DS,
                 'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n"),
                 'Max Path Length'     => FileSystem::MAX_PATH_LENGTH,
-                'File Creation Mask'  => sprintf('0%03o', umask())
+                'File Creation Mask'  => sprintf('0%03o', umask()),
             ],
             'Formwork' => [
                 'Formwork Version' => Formwork::VERSION,
                 'Root Path'        => ROOT_PATH,
                 'Formwork Path'    => FORMWORK_PATH,
                 'Config Path'      => CONFIG_PATH,
-                'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH))
+                'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH)),
             ],
             'Dependencies' => [
                 'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
                 'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
-                'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version']
-            ]
+                'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version'],
+            ],
         ];
 
         ksort($data['HTTP Request Headers']);
@@ -232,9 +232,9 @@ class OptionsController extends AbstractController
             'title' => $this->translate('panel.options.options'),
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
-                'current' => 'info'
+                'current' => 'info',
             ], true),
-            'info' => $data
+            'info' => $data,
         ], true));
     }
 

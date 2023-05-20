@@ -45,5 +45,5 @@ return [
         $value = str_replace("\r\n", "\n", $value);
 
         return $value;
-    }
+    },
 ];

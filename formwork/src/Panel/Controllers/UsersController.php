@@ -31,7 +31,7 @@ class UsersController extends AbstractController
 
         return new Response($this->view('users.index', [
             'title' => $this->translate('panel.users.users'),
-            'users' => $this->panel()->users()
+            'users' => $this->panel()->users(),
         ], true));
     }
 
@@ -61,7 +61,7 @@ class UsersController extends AbstractController
             'fullname' => $data->get('fullname'),
             'hash'     => Password::hash($data->get('password')),
             'email'    => $data->get('email'),
-            'language' => $data->get('language')
+            'language' => $data->get('language'),
         ];
 
         YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');
@@ -154,7 +154,7 @@ class UsersController extends AbstractController
         return new Response($this->view('users.profile', [
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
-            'fields' => $fields
+            'fields' => $fields,
         ], true));
     }
 
@@ -205,7 +205,7 @@ class UsersController extends AbstractController
         $uploader = new Uploader(
             $avatarsPath,
             [
-                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png', 'image/webp']
+                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png', 'image/webp'],
             ]
         );
 

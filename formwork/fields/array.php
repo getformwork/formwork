@@ -28,5 +28,5 @@ return [
         }
 
         return array_filter($value);
-    }
+    },
 ];

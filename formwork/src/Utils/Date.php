@@ -35,7 +35,7 @@ class Date
         'D'  => 'j', 'DD' => 'd', 'DDD' => 'D', 'DDDD' => 'l', 'W' => 'W', 'WW' => 'W',
         'RR' => 'o', 'RRRR' => 'o', 'H' => 'g', 'HH' => 'h', 'h' => 'G', 'hh' => 'H',
         'm'  => 'i', 'mm' => 'i', 's' => 's', 'ss' => 's', 'uuu' => 'v', 'A' => 'A',
-        'a'  => 'a', 'Z' => 'P', 'z' => 'O'
+        'a'  => 'a', 'Z' => 'P', 'z' => 'O',
     ];
 
     /**
@@ -48,7 +48,7 @@ class Date
         'days'    => 60 * 60 * 24,
         'hours'   => 60 * 60,
         'minutes' => 60,
-        'seconds' => 1
+        'seconds' => 1,
     ];
 
     /**
@@ -195,7 +195,7 @@ class Date
     {
         return [
             Formwork::instance()->config()->get('date.format'),
-            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')
+            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat'),
         ];
     }
 

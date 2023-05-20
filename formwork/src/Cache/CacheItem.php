@@ -60,7 +60,7 @@ class CacheItem implements ArraySerializable
         return [
             'value'          => $this->value,
             'expirationTime' => $this->expirationTime,
-            'cachedTime'     => $this->cachedTime
+            'cachedTime'     => $this->cachedTime,
         ];
     }
 

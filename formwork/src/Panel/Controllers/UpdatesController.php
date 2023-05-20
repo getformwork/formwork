@@ -22,17 +22,17 @@ class UpdatesController extends AbstractController
             $upToDate = $updater->checkUpdates();
         } catch (RuntimeException $e) {
             return JSONResponse::error($this->translate('panel.updates.status.cannotCheck'), 500, [
-                'status' => $this->translate('panel.updates.status.cannotCheck')
+                'status' => $this->translate('panel.updates.status.cannotCheck'),
             ]);
         }
         if ($upToDate) {
             return JSONResponse::success($this->translate('panel.updates.status.upToDate'), 200, [
-                'uptodate' => true
+                'uptodate' => true,
             ]);
         }
         return JSONResponse::success($this->translate('panel.updates.status.found'), 200, [
             'uptodate' => false,
-            'release'  => $updater->latestRelease()
+            'release'  => $updater->latestRelease(),
         ]);
     }
 
@@ -49,7 +49,7 @@ class UpdatesController extends AbstractController
                 $backupper->backup();
             } catch (TranslatedException $e) {
                 return JSONResponse::error($this->translate('panel.updates.status.cannotMakeBackup'), 500, [
-                    'status' => $this->translate('panel.updates.status.cannotMakeBackup')
+                    'status' => $this->translate('panel.updates.status.cannotMakeBackup'),
                 ]);
             }
         }
@@ -57,14 +57,14 @@ class UpdatesController extends AbstractController
             $updater->update();
         } catch (RuntimeException $e) {
             return JSONResponse::error($this->translate('panel.updates.status.cannotInstall'), 500, [
-                'status' => $this->translate('panel.updates.status.cannotInstall')
+                'status' => $this->translate('panel.updates.status.cannotInstall'),
             ]);
         }
         if (Formwork::instance()->config()->get('cache.enabled')) {
             Formwork::instance()->cache()->clear();
         }
         return JSONResponse::success($this->translate('panel.updates.installed'), 200, [
-            'status' => $this->translate('panel.updates.status.upToDate')
+            'status' => $this->translate('panel.updates.status.upToDate'),
         ]);
     }
 }

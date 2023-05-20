@@ -29,7 +29,7 @@ class RegisterController extends AbstractController
         switch (HTTPRequest::method()) {
             case 'GET':
                 return new Response($this->view('register.register', [
-                    'title' => $this->translate('panel.register.register')
+                    'title' => $this->translate('panel.register.register'),
                 ], true));
 
                 break;
@@ -48,7 +48,7 @@ class RegisterController extends AbstractController
                     'hash'     => Password::hash($data->get('password')),
                     'email'    => $data->get('email'),
                     'language' => $data->get('language'),
-                    'role'     => 'admin'
+                    'role'     => 'admin',
                 ];
 
                 YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');

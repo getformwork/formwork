@@ -115,7 +115,7 @@ class MimeType
         'mkv'      => 'video/x-matroska',
         'asf'      => 'video/x-ms-asf',
         'wmv'      => 'video/x-ms-wmv',
-        'avi'      => 'video/x-msvideo'
+        'avi'      => 'video/x-msvideo',
     ];
 
     /**

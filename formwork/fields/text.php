@@ -27,5 +27,5 @@ return [
         }
 
         return (string) $value;
-    }
+    },
 ];

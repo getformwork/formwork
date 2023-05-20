@@ -110,8 +110,8 @@ abstract class AbstractController extends BaseAbstractController
                     'labels'     => [
                         'today'    => $this->translate('date.today'),
                         'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' => $this->translate('date.weekdays.short')],
-                        'months'   => ['long' => $this->translate('date.months.long'), 'short' => $this->translate('date.months.short')]
-                    ]
+                        'months'   => ['long' => $this->translate('date.months.long'), 'short' => $this->translate('date.months.short')],
+                    ],
                 ],
                 'DurationInput' => [
                     'labels' => [
@@ -121,10 +121,10 @@ abstract class AbstractController extends BaseAbstractController
                         'days'    => $this->translate('date.duration.days'),
                         'hours'   => $this->translate('date.duration.hours'),
                         'minutes' => $this->translate('date.duration.minutes'),
-                        'seconds' => $this->translate('date.duration.seconds')
-                    ]
-                ]
-            ])
+                        'seconds' => $this->translate('date.duration.seconds'),
+                    ],
+                ],
+            ]),
         ];
     }
 

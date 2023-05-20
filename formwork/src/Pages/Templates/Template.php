@@ -79,7 +79,7 @@ class Template extends View
         return [
             'params' => Formwork::instance()->router()->params(),
             'site'   => Formwork::instance()->site(),
-            'page'   => $this->page
+            'page'   => $this->page,
         ];
     }
 
@@ -89,7 +89,7 @@ class Template extends View
     protected function defaultMethods(): array
     {
         return [
-            'assets' => fn () => $this->assets()
+            'assets' => fn () => $this->assets(),
         ];
     }
 

@@ -129,7 +129,7 @@ class Languages
             'default'   => $config->get('languages.default', $available[0] ?? null),
             'current'   => $current ?? null,
             'requested' => $requested ?? null,
-            'preferred' => $preferred ?? null
+            'preferred' => $preferred ?? null,
         ]);
     }
 

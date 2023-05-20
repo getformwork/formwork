@@ -15,7 +15,7 @@ class HTML
      * @see https://html.spec.whatwg.org/multipage/syntax.html#void-elements
      */
     protected const VOID_ELEMENTS = [
-        'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
+        'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
     ];
 
     /**

@@ -51,7 +51,7 @@ class HTTPClient
             'headers'   => ['User-Agent' => ini_get('user_agent') ?: self::DEFAULT_USER_AGENT],
             'content'   => '',
             'redirects' => ['follow' => true, 'limit' => 5],
-            'ssl'       => ['verify' => true, 'cabundle' => null]
+            'ssl'       => ['verify' => true, 'cabundle' => null],
         ];
     }
 
@@ -74,7 +74,7 @@ class HTTPClient
     public function fetchHeaders(string $uri, array $options = []): array
     {
         $options += [
-            'method' => 'HEAD'
+            'method' => 'HEAD',
         ];
 
         return $this->fetch($uri, $options)->headers();
@@ -159,7 +159,7 @@ class HTTPClient
             'status'  => $currentResponse['statusCode'],
             'headers' => $currentResponse['headers'],
             'length'  => $length,
-            'handle'  => $handle
+            'handle'  => $handle,
         ];
     }
 
@@ -179,13 +179,13 @@ class HTTPClient
                 'follow_location'  => $options['redirects']['follow'] ? 1 : 0,
                 'max_redirects'    => $options['redirects']['limit'],
                 'timeout'          => $options['timeout'],
-                'ignore_errors'    => true
+                'ignore_errors'    => true,
             ],
             'ssl' => [
                 'verify_peer'       => $options['ssl']['verify'],
                 'verify_peer_name'  => $options['ssl']['verify'],
-                'allow_self_signed' => false
-            ]
+                'allow_self_signed' => false,
+            ],
         ];
 
         if (($bundle = $options['ssl']['cabundle']) !== null) {

@@ -46,7 +46,7 @@ trait PaginationUri
         }
 
         return $router->generateWith($this->paginationRoute()->getName(), [
-            static::$routeParam => $pageNumber
+            static::$routeParam => $pageNumber,
         ]);
     }
 

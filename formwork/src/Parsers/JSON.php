@@ -20,7 +20,7 @@ class JSON extends AbstractEncoder
     protected const DEFAULT_ENCODE_OPTIONS = [
         'forceObject'   => false,
         'prettyPrint'   => false,
-        'escapeUnicode' => false
+        'escapeUnicode' => false,
     ];
 
     /**

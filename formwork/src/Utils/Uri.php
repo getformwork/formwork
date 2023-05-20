@@ -152,7 +152,7 @@ class Uri
             'port'     => static::port($uri),
             'path'     => static::path($uri),
             'query'    => static::query($uri),
-            'fragment' => static::fragment($uri)
+            'fragment' => static::fragment($uri),
         ];
     }
 

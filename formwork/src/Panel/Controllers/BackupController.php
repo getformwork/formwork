@@ -29,7 +29,7 @@ class BackupController extends AbstractController
         $filename = basename($file);
         return JSONResponse::success($this->translate('panel.backup.ready'), 200, [
             'filename' => $filename,
-            'uri'      => $this->panel()->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/')
+            'uri'      => $this->panel()->uri('/backup/download/' . urlencode(base64_encode($filename)) . '/'),
         ]);
     }
 

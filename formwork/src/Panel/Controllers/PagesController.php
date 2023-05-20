@@ -47,7 +47,7 @@ class PagesController extends AbstractController
 
         $this->modal('newPage', [
             'templates' => $this->site()->templates()->keys(),
-            'pages'     => $this->site()->descendants()->sortBy('relativePath')
+            'pages'     => $this->site()->descendants()->sortBy('relativePath'),
         ]);
 
         $this->modal('deletePage');
@@ -66,8 +66,8 @@ class PagesController extends AbstractController
                 'class'     => 'pages-list-root',
                 'parent'    => '.',
                 'orderable' => $this->user()->permissions()->has('pages.reorder'),
-                'headers'   => true
-            ], true)
+                'headers'   => true,
+            ], true),
         ], true));
     }
 
@@ -176,7 +176,7 @@ class PagesController extends AbstractController
         $this->modal('slug');
 
         $this->modal('images', [
-            'page' => $page
+            'page' => $page,
         ]);
 
         $this->modal('deletePage');
@@ -189,7 +189,7 @@ class PagesController extends AbstractController
             'fields'          => $fields,
             'templates'       => $this->site()->templates()->keys(),
             'parents'         => $this->site()->descendants()->sortBy('relativePath'),
-            'currentLanguage' => $params->get('language', $page->language()?->code())
+            'currentLanguage' => $params->get('language', $page->language()?->code()),
         ], true));
     }
 
@@ -383,7 +383,7 @@ class PagesController extends AbstractController
 
         $contentData = [
             'title'     => $data->get('title'),
-            'published' => false
+            'published' => false,
         ];
 
         $fileContent = Str::wrap(YAML::encode($contentData), '---' . PHP_EOL);

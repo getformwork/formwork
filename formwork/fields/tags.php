@@ -32,5 +32,5 @@ return [
         }
 
         return array_values(array_filter($value));
-    }
+    },
 ];

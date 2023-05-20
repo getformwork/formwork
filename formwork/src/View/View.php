@@ -211,7 +211,7 @@ class View
     protected function defaults(): array
     {
         return [
-            'formwork' => Formwork::instance()
+            'formwork' => Formwork::instance(),
         ];
     }
 

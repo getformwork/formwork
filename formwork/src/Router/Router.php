@@ -40,7 +40,7 @@ class Router
     protected const PATTERN_SHORTCUTS = [
         'num' => '[0-9]+',
         'aln' => '[A-Za-z0-9-]+',
-        'all' => '.+'
+        'all' => '.+',
     ];
 
     /**

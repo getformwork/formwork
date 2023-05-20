@@ -29,7 +29,7 @@ class Response implements ArraySerializable
     public function __construct(string $content, int $status = 200, array $headers = [])
     {
         $headers += [
-            'Content-Type' => Header::make(['text/html', 'charset' => Formwork::instance()->config()->get('charset')])
+            'Content-Type' => Header::make(['text/html', 'charset' => Formwork::instance()->config()->get('charset')]),
         ];
 
         $this->content = $content;
@@ -100,7 +100,7 @@ class Response implements ArraySerializable
         return [
             'content' => $this->content,
             'status'  => $this->status,
-            'headers' => $this->headers
+            'headers' => $this->headers,
         ];
     }
 

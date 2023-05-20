@@ -16,7 +16,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(404, 'notFound', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->translate('panel.errors.action.returnToDashboard')
+            'label' => $this->translate('panel.errors.action.returnToDashboard'),
         ]);
     }
 
@@ -27,7 +27,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(500, 'internalServerError', [
             'href'  => $this->makeGitHubIssueUri($exception),
-            'label' => $this->translate('panel.errors.action.reportToGithub')
+            'label' => $this->translate('panel.errors.action.reportToGithub'),
         ]);
     }
 
@@ -38,7 +38,7 @@ class ErrorsController extends AbstractController
     {
         return $this->makeErrorResponse(403, 'forbidden', [
             'href'  => $this->panel()->uri('/dashboard/'),
-            'label' => $this->translate('panel.errors.action.returnToDashboard')
+            'label' => $this->translate('panel.errors.action.returnToDashboard'),
         ]);
     }
 
@@ -58,7 +58,7 @@ class ErrorsController extends AbstractController
             'status'      => $this->translate('panel.errors.error.' . $name . '.status'),
             'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
             'description' => $this->translate('panel.errors.error.' . $name . '.description'),
-            'action'      => $action
+            'action'      => $action,
         ], true), $status);
     }
 
@@ -83,7 +83,7 @@ class ErrorsController extends AbstractController
                 $exception->getFile(),
                 $exception->getLine(),
                 $exception->getTraceAsString()
-            )
+            ),
         ]);
 
         return 'https://github.com/getformwork/formwork/issues/new/?' . $query;

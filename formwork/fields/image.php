@@ -19,5 +19,5 @@ return [
         }
 
         return $value;
-    }
+    },
 ];

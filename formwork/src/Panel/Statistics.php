@@ -146,8 +146,8 @@ class Statistics
             'labels' => $labels,
             'series' => [
                 array_values($interpolate($visits)),
-                array_values($interpolate($uniqueVisits))
-            ]
+                array_values($interpolate($uniqueVisits)),
+            ],
         ];
     }
 }

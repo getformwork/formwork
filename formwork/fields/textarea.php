@@ -25,5 +25,5 @@ return [
         $value = str_replace("\r\n", "\n", (string) $value);
 
         return $value;
-    }
+    },
 ];

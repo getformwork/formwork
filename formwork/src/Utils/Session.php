@@ -111,7 +111,7 @@ class Session
             'path'     => HTTPRequest::root(),
             'secure'   => HTTPRequest::isHTTPS(),
             'httponly' => true,
-            'samesite' => Cookie::SAMESITE_STRICT
+            'samesite' => Cookie::SAMESITE_STRICT,
         ];
         if (($timeout = Formwork::instance()->config()->get('panel.sessionTimeout')) > 0) {
             $options['expires'] = time() + $timeout * 60;

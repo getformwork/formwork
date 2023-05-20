@@ -126,7 +126,7 @@ class Site implements Arrayable
             'description'    => '',
             'metadata'       => [],
             'canonicalRoute' => null,
-            'routeAliases'   => []
+            'routeAliases'   => [],
         ];
 
         $defaults = array_merge($defaults, Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null));
@@ -244,7 +244,7 @@ class Site implements Arrayable
             'author'       => $this->get('author'),
             'description'  => $this->get('description'),
             'generator'    => 'Formwork',
-            'routeAliases' => []
+            'routeAliases' => [],
         ];
 
         $data = array_filter(array_merge($defaults, $this->data['metadata']));

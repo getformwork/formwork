@@ -21,7 +21,7 @@ class Uploader
         UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
         UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload'
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload',
     ];
 
     /**
@@ -34,7 +34,7 @@ class Uploader
         UPLOAD_ERR_NO_FILE    => 'panel.uploader.error.noFile',
         UPLOAD_ERR_NO_TMP_DIR => 'panel.uploader.error.noTemp',
         UPLOAD_ERR_CANT_WRITE => 'panel.uploader.error.cannotWrite',
-        UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.phpExtension'
+        UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.phpExtension',
     ];
 
     /**

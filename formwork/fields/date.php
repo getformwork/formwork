@@ -42,5 +42,5 @@ return [
         } catch (InvalidArgumentException $e) {
             throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
         }
-    }
+    },
 ];

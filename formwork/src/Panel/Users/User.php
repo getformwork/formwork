@@ -26,7 +26,7 @@ class User implements Arrayable
         'language'    => 'en',
         'role'        => 'user',
         'avatar'      => null,
-        'colorScheme' => 'auto'
+        'colorScheme' => 'auto',
     ];
 
     /**

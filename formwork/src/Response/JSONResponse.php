@@ -13,7 +13,7 @@ class JSONResponse extends Response
     public function __construct(array $data, int $status = 200, array $headers = [])
     {
         $headers += [
-            'Content-Type' => Header::make(['application/json', 'charset' => 'utf-8'])
+            'Content-Type' => Header::make(['application/json', 'charset' => 'utf-8']),
         ];
         parent::__construct(JSON::encode($data), $status, $headers);
     }
@@ -27,7 +27,7 @@ class JSONResponse extends Response
             'status'  => 'success',
             'message' => $message,
             'code'    => $status,
-            'data'    => $data
+            'data'    => $data,
         ], $status);
     }
 
@@ -40,7 +40,7 @@ class JSONResponse extends Response
             'status'  => 'error',
             'message' => $message,
             'code'    => $status,
-            'data'    => $data
+            'data'    => $data,
         ], $status);
     }
 }

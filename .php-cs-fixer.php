@@ -51,6 +51,7 @@ return $config
         'phpdoc_trim' => true,
         'phpdoc_types_order' => ['null_adjustment' => 'always_last'],
         'phpdoc_var_without_name' => true,
-        'single_quote' => true
+        'single_quote' => true,
+        'trailing_comma_in_multiline' => true,
     ])
     ->setFinder($finder);

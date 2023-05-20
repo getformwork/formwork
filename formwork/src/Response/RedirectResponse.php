@@ -10,7 +10,7 @@ class RedirectResponse extends Response
     public function __construct(string $uri, int $status = 302, array $headers = [])
     {
         $headers += [
-            'Location' => $uri
+            'Location' => $uri,
         ];
         parent::__construct('', $status, $headers);
     }
