@@ -6,6 +6,9 @@
 
 .dropdown-button {
     margin-bottom: 0;
+}
+
+.dropdown-button.caret {
     @include caret;
 }
 
@@ -37,6 +40,7 @@
     width: 100%;
     padding: $dropdown-item-padding-v $dropdown-item-padding-h;
     color: $color-base-100;
+    cursor: pointer !important;
     font-size: $dropdown-item-font-size;
     white-space: nowrap;
     &:hover {

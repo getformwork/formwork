@@ -6,37 +6,111 @@
     @include user-select-none;
 }
 
+.is-thumbnails .files-items {
+    margin: 0 (-$image-picker-thumbnail-margin);
+}
+
 .files-item {
     display: flex;
     align-items: center;
+    padding: 0.5rem;
+    &:hover {
+        background-color: $color-base-800;
+    }
+
+    border-bottom: 1px solid $color-base-600;
+    font-size: $font-size-s;
 }
 
-.files-item-cell {
-    overflow: hidden;
-    padding: $files-item-cell-padding;
-    font-size: $font-size-s;
-    white-space: nowrap;
+.files-item:first-child {
+    border-top: 1px solid $color-base-600;
+}
+
+.files-item .dropdown {
+    margin-bottom: 0;
 }
 
 .file-name {
-    max-width: 80%;
-    flex: 0 0 80%;
-    font-size: $file-name-font-size;
+    flex-grow: 1;
     @include ellipsis;
 }
 
-.file-name .icon {
+.file-icon {
     margin-right: $file-name-icon-margin-right;
-    color: $color-base-100;
 }
 
 .file-size {
     color: $color-base-300;
 }
 
-.file-actions {
-    max-width: 20%;
-    flex: 0 0 20%;
-    font-size: $font-size-m;
-    text-align: right;
+.is-thumbnails .files-item {
+    position: relative;
+    display: inline-block;
+    width: 10rem;
+    height: 10rem;
+    box-sizing: border-box;
+    padding: $image-picker-thumbnail-padding;
+    border: $input-border-width solid $color-base-500;
+    border-radius: $border-radius;
+    margin: $image-picker-thumbnail-margin;
+}
+
+.file-thumbnail {
+    position: relative;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-origin: content-box;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.is-thumbnails .file-thumbnail {
+    display: block;
+}
+
+.is-thumbnails .file-name {
+    position: absolute;
+    right: $image-picker-thumbnail-caption-right;
+    bottom: $image-picker-thumbnail-caption-bottom;
+    left: $image-picker-thumbnail-caption-left;
+    display: block;
+    padding: $image-picker-thumbnail-caption-padding-v $image-picker-thumbnail-caption-padding-h;
+    border-radius: $border-radius;
+    background-color: $image-picker-thumbnail-caption-background-color;
+    font-size: $font-size-xs;
+    text-align: center;
+    @include ellipsis;
+    @include user-select-none;
+}
+
+.is-thumbnails .dropdown {
+    position: absolute;
+    top: $image-picker-thumbnail-padding;
+    right: $image-picker-thumbnail-padding;
+}
+
+.is-thumbnails .dropdown-button {
+    background-color: $image-picker-thumbnail-caption-background-color;
+    &:hover, &:focus {
+        background-color: $color-base-500;
+        color: inherit;
+    }
+}
+
+.is-thumbnails .file-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: $color-base-500;
+    font-size: 4rem;
+    line-height: 0;
+    transform: translate(-50%, -50%);
+}
+
+.is-thumbnails .file-thumbnail + .file-icon {
+    display: none;
 }

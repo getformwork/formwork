@@ -15,7 +15,7 @@ date.weekdays.long: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì'
 date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 fields.array.add: Aggiungi
 fields.array.remove: Rimuovi
-fields.file.uploadLabel: <strong>Fai click</strong> per selezionare un file da caricare o <strong>trascinalo</strong> qui
+fields.file.uploadLabel: <strong>Fare click</strong> per selezionare un file da caricare o <strong>trascinarlo</strong> qui
 zip.error.alreadyExists: L’archivio esiste già
 zip.error.cannotOpen: Impossibile aprire l’archivio
 zip.error.cannotRead: Impossibile leggere l’archivio

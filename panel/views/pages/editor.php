@@ -27,7 +27,7 @@
         if (!$site->languages()->available()->isEmpty()):
 ?>
         <div class="dropdown">
-            <button type="button" class="dropdown-button button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage): ?> <span class="badge"><?= $currentLanguage ?></span><?php endif; ?></button>
+            <button type="button" class="dropdown-button caret button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage): ?> <span class="badge"><?= $currentLanguage ?></span><?php endif; ?></button>
             <div class="dropdown-menu" id="languages-dropdown">
 <?php
             foreach ($site->languages()->available() as $language):

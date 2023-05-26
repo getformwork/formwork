@@ -280,7 +280,7 @@ export default {
     serializeForm: function (form) {
         const serialized = [];
         for (const field of form.elements) {
-            if (field.name && !field.disabled && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
+            if (field.name && !field.disabled && field.getAttribute('data-form-ignore') !== 'true' && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
                 if (field.type === 'select-multiple') {
                     for (const option of field.options) {
                         if (option.selected) {

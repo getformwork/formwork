@@ -26,7 +26,7 @@ layout:
             collapsible: true
             collapsed: false
             label: '{{panel.pages.files}}'
-            fields: [uploadedFile, files]
+            fields: [files, uploadedFile]
 
 fields:
     title:

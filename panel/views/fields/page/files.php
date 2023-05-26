@@ -1,25 +1,33 @@
-<ul class="files-list">
+<div class="files-list">
+    <div>
+        <fieldset class="input-togglegroup">
+            <label><input type="radio" checked name="files-list-view-as" value="list" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>
+            <label><input type="radio" name="files-list-view-as" value="thumbnails" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsThumbnails') ?>"><?= $this->icon('file-icons') ?></span></label>
+        </fieldset>
+    </div>
+
+    <div class="files-items">
 <?php
-foreach ($page->files() as $file):
+foreach ($page->files()->sort() as $file):
     ?>
-    <li>
         <div class="files-item">
-            <?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?> <div class="files-item-cell file-name" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
-            <div class="files-item-cell file-actions">
-                <a class="button button-link" role="button" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>" title="<?= $this->translate('panel.pages.previewFile') ?>" aria-label="title="<?= $this->translate('panel.pages.previewFile') ?>""><?= $this->icon('eye') ?></a>
-<?php
-        if ($panel->user()->permissions()->has('pages.deleteFiles')):
-            ?>
-                <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->translate('panel.pages.deleteFile') ?>" aria-label="<?= $this->translate('panel.pages.deleteFile') ?>">
-                    <?= $this->icon('trash') ?>
-                </button>
-<?php
-        endif;
-    ?>
+            <?php if ($file->type() === 'image'): ?>
+            <div class="file-thumbnail" style="background-image:url('<?= $page->uri($file->name(), includeLanguage: false) ?>');"></div>
+            <?php endif ?>
+            <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
+            <div class="file-name" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
+            <div class="dropdown">
+                <button type="button" class="button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
+                <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">
+                    <a class="dropdown-item" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>"><?= $this->icon('eye') ?> <?= $this->translate('panel.pages.previewFile') ?></a>
+                    <?php if ($panel->user()->permissions()->has('pages.deleteFiles')): ?>
+                    <a class="dropdown-item" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>"><?= $this->icon('trash') ?> <?= $this->translate('panel.pages.deleteFile') ?></a>
+                    <?php endif ?>
+                </div>
             </div>
         </div>
-    </li>
 <?php
 endforeach;
 ?>
-</ul>
+</div>
+</div>
