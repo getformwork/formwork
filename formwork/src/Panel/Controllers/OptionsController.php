@@ -219,8 +219,7 @@ class OptionsController extends AbstractController
                 'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH)),
             ],
             'Dependencies' => [
-                'Parsedown Version'       => $dependencies['erusev/parsedown']['version'],
-                'Parsedown Extra Version' => $dependencies['erusev/parsedown-extra']['version'],
+                'CommonMark Version'       => $dependencies['league/commonmark']['version'],
                 'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version'],
             ],
         ];
