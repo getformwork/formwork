@@ -37,7 +37,7 @@ class Field implements Arrayable
     /**
      * Parent field collection
      */
-    protected FieldCollection $parent;
+    protected ?FieldCollection $parent;
 
     /**
      * Field validation status
@@ -47,7 +47,7 @@ class Field implements Arrayable
     /**
      * Create a new Field instance
      */
-    public function __construct(string $name, array $data = [], FieldCollection $parent)
+    public function __construct(string $name, array $data = [], ?FieldCollection $parent = null)
     {
         $this->name = $name;
 
@@ -86,7 +86,7 @@ class Field implements Arrayable
     /**
      * Return the parent field collection
      */
-    public function parent(): FieldCollection
+    public function parent(): ?FieldCollection
     {
         return $this->parent;
     }
