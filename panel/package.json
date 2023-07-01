@@ -30,7 +30,7 @@
     "esbuild": "^0.17.18",
     "eslint": "^8.40.0",
     "globals": "^13.20.0",
-    "postcss": "^8.4.19",
+    "postcss": "^8.4.24",
     "sass": "^1.62.1",
     "stylelint": "^14.16.1",
     "stylelint-config-idiomatic-order": "^9.0.0",
