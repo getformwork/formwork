@@ -7,7 +7,7 @@ $path = $_SERVER['SCRIPT_NAME'];
 if ($path !== '/index.php' && is_file($root . $path)) {
     switch (true) {
         case preg_match('~^/site/templates/assets/.*~i', $path):
-        case preg_match('~^/panel/(assets|avatars)/.*~i', $path):
+        case preg_match('~^/panel/assets/.*~i', $path):
             return false;
 
         case preg_match('~^/(panel|backup|bin|cache|formwork|site|vendor)/.*~i', $path):
