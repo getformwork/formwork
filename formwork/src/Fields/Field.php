@@ -6,6 +6,8 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
+use Formwork\Exceptions\RecursionException;
+use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Formwork;
 use Formwork\Traits\Methods;
@@ -27,7 +29,7 @@ class Field implements Arrayable
     }
     use Methods;
 
-    protected const UNTRANSLATABLE_KEYS = ['name', 'type', 'value', 'default', 'translate', 'import'];
+    protected const UNTRANSLATABLE_KEYS = ['name', 'type', 'value', 'default', 'translate'];
 
     /**
      * Field name
@@ -45,6 +47,11 @@ class Field implements Arrayable
     protected bool $validated = false;
 
     /**
+     * Whether the field is being validated
+     */
+    protected bool $validating = false;
+
+    /**
      * Create a new Field instance
      */
     public function __construct(string $name, array $data = [], ?FieldCollection $parent = null)
@@ -54,10 +61,6 @@ class Field implements Arrayable
         $this->parent = $parent;
 
         $this->setMultiple($data);
-
-        if ($this->has('import')) {
-            $this->importData();
-        }
 
         if ($this->has('fields')) {
             throw new UnexpectedValueException('Fields may not have other fields inside');
@@ -184,7 +187,19 @@ class Field implements Arrayable
      */
     public function validate(): static
     {
+        if ($this->validating) {
+            throw new RecursionException(sprintf('Recursion in the validation of field "%s" of type "%s"', $this->name(), $this->type()));
+        }
+
+        $this->validating = true;
+
         $value = $this->value();
+
+        $dynamic = $value instanceof DynamicFieldValue ? $value : null;
+
+        if ($dynamic !== null) {
+            $value = $value->value();
+        }
 
         if ($this->isRequired() && Constraint::isEmpty($value)) {
             throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()));
@@ -192,10 +207,17 @@ class Field implements Arrayable
 
         if ($this->hasMethod('validate')) {
             $value = $this->callMethod('validate', [$value]);
+
+            if ($dynamic !== null) {
+                $value = DynamicFieldValue::withComputed($value, $dynamic);
+            }
+
             $this->set('value', $value);
         }
 
         $this->validated = true;
+
+        $this->validating = false;
 
         return $this;
     }
@@ -233,6 +255,14 @@ class Field implements Arrayable
     {
         $value = $this->baseGet($key, $default);
 
+        if ($value instanceof DynamicFieldValue) {
+            if ($key === 'value' && !$value->isComputed()) {
+                $this->validated = false;
+            }
+
+            $value = $value->value();
+        }
+
         if ($this->isTranslatable($key)) {
             $value = $this->translate($value);
         }
@@ -242,6 +272,11 @@ class Field implements Arrayable
 
     public function set(string $key, $value): void
     {
+        if (Str::endsWith($key, '@')) {
+            $key = Str::beforeLast($key, '@');
+            $value = new DynamicFieldValue($key, $value, $this);
+        }
+
         if ($key === 'value') {
             $this->validated = false;
         }
@@ -267,26 +302,6 @@ class Field implements Arrayable
 
         if (FileSystem::exists($config)) {
             $this->methods = include $config;
-        }
-    }
-
-    /**
-     * Import data helper
-     */
-    protected function importData(): void
-    {
-        foreach ((array) $this->data['import'] as $key => $value) {
-            if ($key === 'import') {
-                throw new UnexpectedValueException('Invalid key for import');
-            }
-
-            $callback = explode('::', $value, 2);
-
-            if (!is_callable($callback)) {
-                throw new UnexpectedValueException(sprintf('Invalid import callback "%s"', $value));
-            }
-
-            $this->data[$key] = $callback();
         }
     }
 

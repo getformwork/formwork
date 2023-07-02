@@ -31,15 +31,13 @@ fields:
         label: '{{panel.user.language}}'
         required: true
         translate: [label]
-        import:
-            options: 'Formwork\Panel\Panel::availableTranslations'
+        options@: formwork.panel().availableTranslations()
 
     role:
         type: select
         label: '{{panel.user.role}}'
         disabled: true
-        import:
-            options: 'Formwork\Panel\Users\UserCollection::availableRoles'
+        options@: formwork.panel().users().availableRoles()
 
     colorScheme:
         type: togglegroup

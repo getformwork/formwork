@@ -39,7 +39,7 @@ class UserCollection extends AbstractCollection
     /**
      * Get all available roles
      */
-    public static function availableRoles(): array
+    public function availableRoles(): array
     {
         $roles = [];
         foreach (static::$roles as $role => $data) {
