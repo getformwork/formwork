@@ -19,7 +19,7 @@
 - 📦 Easy to [install](#installing)
 - ✨ Out-of-the-box Administration Panel
 
-![](assets/images/formwork.png)
+![](site/content/index/formwork.png)
 
 ## Requirements
 - PHP **8.0.2** or higher

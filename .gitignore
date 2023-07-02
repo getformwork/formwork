@@ -3,6 +3,7 @@
 
 php_error.log
 
+/assets/*
 /backup/*
 /cache/*
 /logs/*
