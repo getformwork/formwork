@@ -8,6 +8,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use LogicException;
 use UnexpectedValueException;
+use UnitEnum;
 
 class PHP extends AbstractEncoder
 {
@@ -100,6 +101,10 @@ class PHP extends AbstractEncoder
                     if ($data instanceof $c) {
                         throw new UnexpectedValueException(sprintf('Objects of class "%s" cannot be encoded', $class));
                     }
+                }
+
+                if ($data instanceof UnitEnum) {
+                    return sprintf('\\%s::%s', $class, $data->name);
                 }
 
                 if ($data instanceof ArraySerializable) {
