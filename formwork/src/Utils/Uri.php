@@ -167,7 +167,7 @@ class Uri
         $parts = array_merge(static::parse($uri), $parts);
         $result = '';
         if (!empty($parts['host'])) {
-            $scheme = strtolower($parts['scheme']) ?? 'http';
+            $scheme = strtolower($parts['scheme'] ?? 'http');
             $port = $parts['port'] ?? static::getDefaultPort($scheme);
             $result = $scheme . '://' . strtolower($parts['host']);
             if ($forcePort || (in_array('port', $givenParts, true) && !static::isDefaultPort($port, $scheme))) {
