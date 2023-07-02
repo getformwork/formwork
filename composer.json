@@ -23,7 +23,7 @@
         "ext-openssl": "*",
         "ext-zip": "*",
         "symfony/polyfill-ctype": "^1.23",
-        "symfony/yaml": "^5.1",
+        "symfony/yaml": "^6.2",
         "league/commonmark": "^2.4"
     },
     "require-dev": {
