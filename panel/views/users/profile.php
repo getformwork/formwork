@@ -12,7 +12,7 @@
 <div class="component">
     <div class="user-summary">
         <div class="user-summary-avatar">
-            <img src="<?= $user->avatar()->uri() ?>">
+            <img src="<?= $user->image()->uri() ?>">
         </div>
         <div class="user-summary-data">
             <h3><?= $this->escape($user->fullname()) ?></h3>

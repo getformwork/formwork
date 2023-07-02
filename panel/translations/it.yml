@@ -229,8 +229,8 @@ panel.uploader.error.phpExtension: Il caricamento è stato interrotto da un’es
 panel.uploader.error.size: Il file caricato supera la dimensione massima consentita
 panel.uploader.uploaded: File caricato
 panel.user.actions: Azioni
-panel.user.avatar: Immagine
-panel.user.avatar.uploaded: Immagine caricata
+panel.user.image: Immagine
+panel.user.image.uploaded: Immagine caricata
 panel.user.colorScheme: Combinazione di colori
 panel.user.colorScheme.auto: Automatica
 panel.user.colorScheme.dark: Scura

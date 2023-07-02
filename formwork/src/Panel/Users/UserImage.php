@@ -5,39 +5,36 @@ namespace Formwork\Panel\Users;
 use Formwork\Formwork;
 use Formwork\Utils\FileSystem;
 
-class Avatar
+class UserImage
 {
     /**
-     * Default avatar URI
+     * Default image URI
      */
-    protected const DEFAULT_AVATAR_URI = '/assets/images/avatar.svg';
+    protected const DEFAULT_IMAGE_URI = '/assets/images/user-image.svg';
 
     /**
-     * Avatar URI
+     * Image URI
      */
     protected string $uri;
 
     /**
-     * Avatar file path
+     * Image file path
      */
     protected ?string $path = null;
 
-    /**
-     * Create a new Avatar instance
-     */
     public function __construct(?string $filename)
     {
-        $path = PANEL_PATH . 'avatars/' . $filename;
+        $path = PANEL_PATH . 'assets' . DS . 'images' . DS . 'users' . DS . $filename;
         if ($filename !== null && FileSystem::exists($path)) {
-            $this->uri = Formwork::instance()->panel()->realUri('/avatars/' . basename($path));
+            $this->uri = Formwork::instance()->panel()->realUri('/assets/images/users/' . basename($path));
             $this->path = $path;
         } else {
-            $this->uri = Formwork::instance()->panel()->realUri(self::DEFAULT_AVATAR_URI);
+            $this->uri = Formwork::instance()->panel()->realUri(self::DEFAULT_IMAGE_URI);
         }
     }
 
     /**
-     * Return avatar URI
+     * Return image URI
      */
     public function uri(): string
     {
@@ -45,7 +42,7 @@ class Avatar
     }
 
     /**
-     * Return avatar path
+     * Return image path
      */
     public function path(): ?string
     {

@@ -96,7 +96,7 @@ class Updater
             'cleanupAfterInstall' => false,
             'ignore'              => [
                 'panel/accounts/*',
-                'panel/avatars/*',
+                'panel/assets/images/users/*',
                 'panel/logs/*',
                 'assets/*',
                 'backup/*',

@@ -25,7 +25,7 @@ class User implements Arrayable
         'email'       => null,
         'language'    => 'en',
         'role'        => 'user',
-        'avatar'      => null,
+        'image'       => null,
         'colorScheme' => 'auto',
     ];
 
@@ -60,9 +60,9 @@ class User implements Arrayable
     protected string $role;
 
     /**
-     * User avatar
+     * User image
      */
-    protected Avatar $avatar;
+    protected UserImage $image;
 
     /**
      * User permissions
@@ -136,15 +136,15 @@ class User implements Arrayable
     }
 
     /**
-     * Return user avatar
+     * Return user image
      */
-    public function avatar(): Avatar
+    public function image(): UserImage
     {
-        if (isset($this->avatar)) {
-            return $this->avatar;
+        if (isset($this->image)) {
+            return $this->image;
         }
 
-        return $this->avatar = new Avatar($this->data['avatar']);
+        return $this->image = new UserImage($this->data['image']);
     }
 
     /**

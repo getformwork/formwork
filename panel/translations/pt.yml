@@ -223,8 +223,8 @@ panel.uploader.error.phpExtension: Envio de ficheiro interrompido por extensão
 panel.uploader.error.size: O ficheiro enviado excede o tamanho máximo permitido.
 panel.uploader.uploaded: Ficheiro enviado
 panel.user.actions: Acções
-panel.user.avatar: Avatar
-panel.user.avatar.uploaded: Avatar enviado
+panel.user.image: Imagem
+panel.user.image.uploaded: Imagem do utilizador enviada
 panel.user.colorScheme: Esquema de cores
 panel.user.colorScheme.auto: Auto
 panel.user.colorScheme.dark: Escuro

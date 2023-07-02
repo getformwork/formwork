@@ -9,7 +9,7 @@ return [
         'loginResetTime' => 300,
         'logoutRedirect' => 'login',
         'sessionTimeout' => 20,
-        'avatarSize'     => 512,
+        'userImageSize'  => 512,
         'colorScheme'    => 'light',
         'paths'          => [
             'accounts' => PANEL_PATH . 'accounts' . DS,

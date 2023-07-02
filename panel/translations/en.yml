@@ -229,8 +229,8 @@ panel.uploader.error.phpExtension: File upload stopped by extension
 panel.uploader.error.size: The uploaded file exceeds the maximum file size
 panel.uploader.uploaded: File uploaded
 panel.user.actions: Actions
-panel.user.avatar: Avatar
-panel.user.avatar.uploaded: Avatar uploaded
+panel.user.image: Image
+panel.user.image.uploaded: User image uploaded
 panel.user.colorScheme: Color Scheme
 panel.user.colorScheme.auto: Auto
 panel.user.colorScheme.dark: Dark

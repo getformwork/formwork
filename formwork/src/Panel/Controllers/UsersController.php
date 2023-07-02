@@ -90,7 +90,7 @@ class UsersController extends AbstractController
                 );
             }
             FileSystem::delete(Formwork::instance()->config()->get('panel.paths.accounts') . $user->username() . '.yml');
-            $this->deleteAvatar($user);
+            $this->deleteImage($user);
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
             return $this->redirectToReferer(302, '/users/');
@@ -185,8 +185,8 @@ class UsersController extends AbstractController
         }
 
         // Handle incoming files
-        if (HTTPRequest::hasFiles() && ($avatar = $this->uploadAvatar($user)) !== null) {
-            $data['avatar'] = $avatar;
+        if (HTTPRequest::hasFiles() && ($image = $this->uploadImage($user)) !== null) {
+            $data['image'] = $image;
         }
 
         // Filter empty items from $data and merge them with $user ones
@@ -196,14 +196,14 @@ class UsersController extends AbstractController
     }
 
     /**
-     * Upload a new avatar for a user
+     * Upload a new image for a user
      */
-    protected function uploadAvatar(User $user): ?string
+    protected function uploadImage(User $user): ?string
     {
-        $avatarsPath = PANEL_PATH . 'avatars' . DS;
+        $imagesPath = PANEL_PATH . 'assets' . DS . 'images' . DS . 'users' . DS;
 
         $uploader = new Uploader(
-            $avatarsPath,
+            $imagesPath,
             [
                 'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png', 'image/webp'],
             ]
@@ -212,28 +212,28 @@ class UsersController extends AbstractController
         $hasUploaded = $uploader->upload(FileSystem::randomName());
 
         if ($hasUploaded) {
-            $avatarSize = Formwork::instance()->config()->get('panel.avatarSize');
+            $userImageSize = Formwork::instance()->config()->get('panel.userImageSize');
 
-            // Square off uploaded avatar
-            $image = new Image($avatarsPath . $uploader->uploadedFiles()[0]);
-            $image->square($avatarSize)->save();
+            // Square off uploaded image
+            $image = new Image($imagesPath . $uploader->uploadedFiles()[0]);
+            $image->square($userImageSize)->save();
 
-            // Delete old avatar
-            $this->deleteAvatar($user);
+            // Delete old image
+            $this->deleteImage($user);
 
-            $this->panel()->notify($this->translate('panel.user.avatar.uploaded'), 'success');
+            $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
             return $uploader->uploadedFiles()[0];
         }
     }
 
     /**
-     * Delete the avatar of a given user
+     * Delete the image of a given user
      */
-    protected function deleteAvatar(User $user): void
+    protected function deleteImage(User $user): void
     {
-        $avatar = $user->avatar()->path();
-        if ($avatar !== null && FileSystem::exists($avatar)) {
-            FileSystem::delete($avatar);
+        $image = $user->image()->path();
+        if ($image !== null && FileSystem::exists($image)) {
+            FileSystem::delete($image);
         }
     }
 }

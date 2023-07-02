@@ -214,8 +214,8 @@ panel.uploader.error.phpExtension: Téléversement du fichier arrêté par exten
 panel.uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
 panel.uploader.uploaded: Fichier envoyé !
 panel.user.actions: Actions
-panel.user.avatar: Photo de profil
-panel.user.avatar.uploaded: Photo de profil téléversée avec succès.
+panel.user.image: Photo de profil
+panel.user.image.uploaded: Photo de profil téléversée avec succès.
 panel.user.email: Adresse de messagerie
 panel.user.fullname: Nom complet
 panel.user.language: Langue

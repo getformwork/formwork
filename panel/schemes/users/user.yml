@@ -5,7 +5,7 @@ layout:
     sections:
         user:
             label: '{{panel.users.user}}'
-            fields: [fullname, email, password, language, role, colorScheme, avatar]
+            fields: [fullname, email, password, language, role, colorScheme, image]
 
 fields:
     fullname:
@@ -49,7 +49,7 @@ fields:
             dark: '{{panel.user.colorScheme.dark}}'
             auto: '{{panel.user.colorScheme.auto}}'
 
-    avatar:
+    image:
         type: file
-        label: '{{panel.user.avatar}}'
+        label: '{{panel.user.image}}'
         accept: .jpg, .jpeg, .png, .gif

@@ -206,8 +206,8 @@ panel.uploader.error.phpExtension: Загрузка файла останавл�
 panel.uploader.error.size: Загруженный файл превышает максимальный размер файла
 panel.uploader.uploaded: Файл загружен
 panel.user.actions: Действия
-panel.user.avatar: Аватар
-panel.user.avatar.uploaded: Аватар закачанный
+panel.user.image: Аватар
+panel.user.image.uploaded: Аватар закачанный
 panel.user.email: Email
 panel.user.fullname: Полное имя
 panel.user.language: Язык
