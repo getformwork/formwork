@@ -3,18 +3,18 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Files\Image;
-use Formwork\Formwork;
+use Formwork\Http\Files\UploadedFile;
+use Formwork\Http\RedirectResponse;
+use Formwork\Http\RequestMethod;
+use Formwork\Http\Response;
+use Formwork\Images\Image;
+use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
-use Formwork\Panel\Uploader;
 use Formwork\Panel\Users\User;
-use Formwork\Parsers\YAML;
-use Formwork\Response\RedirectResponse;
-use Formwork\Response\Response;
+use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
+use Formwork\Uploader;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Registry;
 
 class UsersController extends AbstractController
 {
@@ -32,7 +32,7 @@ class UsersController extends AbstractController
         return new Response($this->view('users.index', [
             'title' => $this->translate('panel.users.users'),
             'users' => $this->panel()->users(),
-        ], true));
+        ], return: true));
     }
 
     /**
@@ -42,18 +42,18 @@ class UsersController extends AbstractController
     {
         $this->ensurePermission('users.create');
 
-        $data = HTTPRequest::postData();
+        $data = $this->request->input();
 
         // Ensure no required data is missing
         if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
-            return $this->redirect('/users/');
+            return $this->redirect($this->generateRoute('panel.users'));
         }
 
         // Ensure there isn't a user with the same username
         if ($this->panel()->users()->has($data->get('username'))) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.alreadyExists'), 'error');
-            return $this->redirect('/users/');
+            return $this->redirect($this->generateRoute('panel.users'));
         }
 
         $userData = [
@@ -64,10 +64,10 @@ class UsersController extends AbstractController
             'language' => $data->get('language'),
         ];
 
-        YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');
+        Yaml::encodeToFile($userData, $this->config->get('system.panel.paths.accounts') . $data->get('username') . '.yaml');
 
         $this->panel()->notify($this->translate('panel.users.user.created'), 'success');
-        return $this->redirect('/users/');
+        return $this->redirect($this->generateRoute('panel.users'));
     }
 
     /**
@@ -89,20 +89,20 @@ class UsersController extends AbstractController
                     'users.user.cannotDelete'
                 );
             }
-            FileSystem::delete(Formwork::instance()->config()->get('panel.paths.accounts') . $user->username() . '.yml');
+            FileSystem::delete($this->config->get('system.panel.paths.accounts') . $user->username() . '.yaml');
             $this->deleteImage($user);
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
-            return $this->redirectToReferer(302, '/users/');
+            return $this->redirectToReferer(default: '/users/');
         }
 
-        $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('panel.paths.logs') . 'lastAccess.json');
+        $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
 
         // Remove user last access from registry
         $lastAccessRegistry->remove($user->username());
 
         $this->panel()->notify($this->translate('panel.users.user.deleted'), 'success');
-        return $this->redirect('/users/');
+        return $this->redirect($this->generateRoute('panel.users'));
     }
 
     /**
@@ -110,7 +110,7 @@ class UsersController extends AbstractController
      */
     public function profile(RouteParams $params): Response
     {
-        $scheme = Formwork::instance()->schemes()->get('users.user');
+        $scheme = $this->app->schemes()->get('users.user');
 
         $fields = $scheme->fields();
 
@@ -118,17 +118,17 @@ class UsersController extends AbstractController
 
         if ($user === null) {
             $this->panel()->notify($this->translate('panel.users.user.notFound'), 'error');
-            return $this->redirect('/users/');
+            return $this->redirect($this->generateRoute('panel.users'));
         }
 
         // Disable password and/or role fields if they cannot be changed
         $fields->get('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
         $fields->get('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
 
-        if (HTTPRequest::method() === 'POST') {
+        if ($this->request->method() === RequestMethod::POST) {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $data = HTTPRequest::postData()->toArray();
+                $data = $this->request->input()->toArray();
 
                 $fields->setValues($data, null)->validate();
 
@@ -142,7 +142,7 @@ class UsersController extends AbstractController
                 $this->panel()->notify($this->translate('panel.users.user.cannotEdit', $user->username()), 'error');
             }
 
-            return $this->redirect('/users/' . $user->username() . '/profile/');
+            return $this->redirect($this->generateRoute('panel.users.profile', ['user' => $user->username()]));
         }
 
         $fields = $fields->setValues($user);
@@ -155,7 +155,7 @@ class UsersController extends AbstractController
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
             'fields' => $fields,
-        ], true));
+        ], return: true));
     }
 
     /**
@@ -185,44 +185,40 @@ class UsersController extends AbstractController
         }
 
         // Handle incoming files
-        if (HTTPRequest::hasFiles() && ($image = $this->uploadImage($user)) !== null) {
+        if ($this->request->files()->get('image')?->isUploaded() && ($image = $this->uploadImage($user, $this->request->files()->get('image'))) !== null) {
             $data['image'] = $image;
         }
 
         // Filter empty items from $data and merge them with $user ones
-        $userData = array_merge($user->toArray(), $data);
+        $userData = [...$user->toArray(), ...$data];
 
-        YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $user->username() . '.yml');
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
+
     }
 
     /**
      * Upload a new image for a user
      */
-    protected function uploadImage(User $user): ?string
+    protected function uploadImage(User $user, UploadedFile $file): ?string
     {
-        $imagesPath = PANEL_PATH . 'assets' . DS . 'images' . DS . 'users' . DS;
+        $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
 
-        $uploader = new Uploader(
-            $imagesPath,
-            [
-                'allowedMimeTypes' => ['image/gif', 'image/jpeg', 'image/png', 'image/webp'],
-            ]
-        );
+        $uploader = new Uploader($this->config);
 
-        $hasUploaded = $uploader->upload(FileSystem::randomName());
+        $uploadedFile = $uploader->upload($file, $imagesPath, FileSystem::randomName());
 
-        if ($hasUploaded) {
-            $userImageSize = Formwork::instance()->config()->get('panel.userImageSize');
+        if ($uploadedFile && $uploadedFile->type() === 'image') {
+            $userImageSize = $this->config->get('system.panel.userImageSize');
 
             // Square off uploaded image
-            $image = new Image($imagesPath . $uploader->uploadedFiles()[0]);
+            $image = new Image($uploadedFile->path(), $this->config->get('system.images'));
             $image->square($userImageSize)->save();
 
             // Delete old image
             $this->deleteImage($user);
 
             $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
-            return $uploader->uploadedFiles()[0];
+            return $uploadedFile->name();
         }
     }
 

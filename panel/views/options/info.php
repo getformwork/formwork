@@ -9,21 +9,21 @@
 <div class="component">
 <?php
     foreach ($info as $section => $data):
-?>
+        ?>
     <div class="section-header"><?= $section ?></div>
     <table class="info-data">
 <?php
-        foreach ($data as $key => $value):
-?>
+                foreach ($data as $key => $value):
+                    ?>
         <tr>
             <td class="info-data-key"><?= $key ?></td>
             <td class="info-data-value"><?= $value ?></td>
         </tr>
 <?php
-        endforeach;
-?>
+                endforeach
+        ?>
     </table>
 <?php
-    endforeach;
+    endforeach
 ?>
 </div>

@@ -2,16 +2,20 @@
 
 namespace Formwork\Panel;
 
+use Formwork\App;
 use Formwork\Assets;
-use Formwork\Formwork;
+use Formwork\Config;
+use Formwork\Http\Request;
+use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Controllers\ErrorsController;
 use Formwork\Panel\Users\User;
 use Formwork\Panel\Users\UserCollection;
+use Formwork\Panel\Users\UserFactory;
+use Formwork\Parsers\Yaml;
+use Formwork\Services\Container;
+use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Notification;
-use Formwork\Utils\Session;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use Throwable;
@@ -36,17 +40,28 @@ final class Panel
     /**
      * Create a new Panel instance
      */
-    public function __construct()
-    {
-        $this->load();
+    public function __construct(
+        protected Container $container,
+        protected App $app,
+        protected Config $config,
+        protected Request $request,
+        protected Translations $translations,
+        protected UserFactory $userFactory
+    ) {
     }
 
     public function load(): void
     {
+
+        // TODO: Move to service loader
         $this->loadSchemes();
-        $this->users = UserCollection::load();
+        $this->loadUsers();
+
         $this->loadTranslations();
-        $this->loadErrorHandler();
+
+        if ($this->isLoggedIn()) {
+            $this->loadErrorHandler();
+        }
     }
 
     /**
@@ -54,7 +69,10 @@ final class Panel
      */
     public function isLoggedIn(): bool
     {
-        $username = Session::get('FORMWORK_USERNAME');
+        if (!$this->request->hasPreviousSession()) {
+            return false;
+        }
+        $username = $this->request->session()->get('FORMWORK_USERNAME');
         return !empty($username) && $this->users->has($username);
     }
 
@@ -71,7 +89,7 @@ final class Panel
      */
     public function user(): User
     {
-        $username = Session::get('FORMWORK_USERNAME');
+        $username = $this->request->session()->get('FORMWORK_USERNAME');
         return $this->users->get($username);
     }
 
@@ -88,7 +106,7 @@ final class Panel
      */
     public function realUri(string $route): string
     {
-        return HTTPRequest::root() . 'panel/' . ltrim($route, '/');
+        return $this->request->root() . 'panel/' . ltrim($route, '/');
     }
 
     /**
@@ -96,7 +114,7 @@ final class Panel
      */
     public function panelRoot(): string
     {
-        return Uri::normalize(Formwork::instance()->config()->get('panel.root'));
+        return Uri::normalize($this->config->get('system.panel.root'));
     }
 
     /**
@@ -104,7 +122,7 @@ final class Panel
      */
     public function panelUri(): string
     {
-        return HTTPRequest::root() . ltrim($this->panelRoot(), '/');
+        return $this->request->root() . ltrim($this->panelRoot(), '/');
     }
 
     /**
@@ -112,15 +130,15 @@ final class Panel
      */
     public function route(): string
     {
-        return '/' . Str::removeStart(HTTPRequest::uri(), $this->panelRoot());
+        return '/' . Str::removeStart($this->request->uri(), $this->panelRoot());
     }
 
     /**
      * Send a notification
      */
-    public function notify(string $text, string $type = Notification::INFO): void
+    public function notify(string $text, string | MessageType $type = MessageType::Info): void
     {
-        Notification::send($text, $type);
+        $this->request->session()->messages()->set(is_string($type) ? MessageType::from($type) : $type, $text);
     }
 
     /**
@@ -128,7 +146,31 @@ final class Panel
      */
     public function notification(): ?array
     {
-        return Notification::exists() ? Notification::get() : null;
+        $messages = $this->request->session()->messages()->getAll() ?: null;
+
+        if ($messages === null) {
+            return null;
+        }
+
+        $icons = [
+            'info'    => 'info-circle',
+            'success' => 'check-circle',
+            'warning' => 'exclamation-triangle',
+            'error'   => 'exclamation-octagon',
+        ];
+
+        $interval = 5000;
+
+        $notifications = [];
+
+        foreach ($messages as $type => $msg) {
+            foreach ($msg as $text) {
+                $icon = $icons[$type];
+                $notifications[] = compact('text', 'type', 'interval', 'icon');
+            }
+        }
+
+        return $notifications;
     }
 
     /**
@@ -139,13 +181,13 @@ final class Panel
         if (isset($this->assets)) {
             return $this->assets;
         }
-        return $this->assets = new Assets(PANEL_PATH . 'assets' . DS, Formwork::instance()->panel()->realUri('/assets/'));
+        return $this->assets = new Assets($this->config->get('system.panel.paths.assets'), $this->realUri('/assets/'));
     }
 
     /**
      * Available translations helper
      */
-    public static function availableTranslations(): array
+    public function availableTranslations(): array
     {
         static $translations = [];
 
@@ -153,10 +195,10 @@ final class Panel
             return $translations;
         }
 
-        $path = Formwork::instance()->config()->get('translations.paths.panel');
+        $path = $this->config->get('system.translations.paths.panel');
 
         foreach (FileSystem::listFiles($path) as $file) {
-            if (FileSystem::extension($file) === 'yml') {
+            if (FileSystem::extension($file) === 'yaml') {
                 $code = FileSystem::name($file);
                 $translations[$code] = LanguageCodes::codeToNativeName($code) . ' (' . $code . ')';
             }
@@ -167,25 +209,43 @@ final class Panel
         return $translations;
     }
 
+    protected function loadUsers(): void
+    {
+        $roles = [];
+        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.roles')) as $file) {
+            $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
+            $role = FileSystem::name($file);
+            $roles[$role] = $parsedData;
+        }
+
+        $users = [];
+        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
+            $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
+            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $roles[$parsedData['role']]['permissions']);
+        }
+
+        $this->users = new UserCollection($users, $roles);
+    }
+
     /**
      * Load proper panel translation
      */
     protected function loadTranslations(): void
     {
-        $path = Formwork::instance()->config()->get('translations.paths.panel');
-        Formwork::instance()->translations()->loadFromPath($path);
+        $path = $this->config->get('system.translations.paths.panel');
+        $this->translations->loadFromPath($path);
 
         if ($this->isLoggedIn()) {
-            Formwork::instance()->translations()->setCurrent($this->user()->language());
+            $this->translations->setCurrent($this->user()->language());
         } else {
-            Formwork::instance()->translations()->setCurrent(Formwork::instance()->config()->get('panel.translation'));
+            $this->translations->setCurrent($this->config->get('system.panel.translation'));
         }
     }
 
     protected function loadSchemes(): void
     {
-        $path = Formwork::instance()->config()->get('schemes.paths.panel');
-        Formwork::instance()->schemes()->loadFromPath($path);
+        $path = $this->config->get('system.schemes.paths.panel');
+        $this->app->schemes()->loadFromPath($path);
     }
 
     /**
@@ -193,8 +253,8 @@ final class Panel
      */
     protected function loadErrorHandler(): void
     {
-        if (Formwork::instance()->config()->get('errors.setHandlers')) {
-            $this->errors = new Controllers\ErrorsController();
+        if ($this->config->get('system.errors.setHandlers')) {
+            $this->errors = $this->container->build(Controllers\ErrorsController::class);
             set_exception_handler(function (Throwable $exception): void {
                 $this->errors->internalServerError($exception)->send();
                 throw $exception;

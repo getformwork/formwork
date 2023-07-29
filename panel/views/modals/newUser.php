@@ -15,12 +15,12 @@
             <label class="label-required" for="language"><?= $this->translate('panel.user.language') ?>:</label>
             <select id="language" name="language">
 <?php
-            foreach (\Formwork\Panel\Panel::availableTranslations() as $key => $value):
-?>
-                <option value="<?= $key ?>"<?php if ($key === $panel->user()->language()): ?> selected<?php endif; ?>><?= $value ?></option>
+            foreach ($panel->availableTranslations() as $key => $value):
+                ?>
+                <option value="<?= $key ?>"<?php if ($key === $panel->user()->language()): ?> selected<?php endif ?>><?= $value ?></option>
 <?php
-            endforeach;
-?>
+            endforeach
+        ?>
             </select>
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             <div class="separator"></div>

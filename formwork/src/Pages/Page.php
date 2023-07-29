@@ -2,10 +2,12 @@
 
 namespace Formwork\Pages;
 
+use Formwork\App;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Fields\FieldCollection;
 use Formwork\Files\FileCollection;
-use Formwork\Formwork;
+use Formwork\Files\FileFactory;
+use Formwork\Http\ResponseStatus;
 use Formwork\Languages\Language;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
@@ -126,12 +128,14 @@ class Page implements Arrayable
     /**
      * Page HTTP response status
      */
-    protected int $responseStatus;
+    protected ResponseStatus $responseStatus;
 
     /**
      * Page loading state
      */
     protected bool $loaded = false;
+
+    protected Site $site;
 
     public function __construct(array $data = [])
     {
@@ -140,11 +144,11 @@ class Page implements Arrayable
         $this->loadFiles();
 
         if ($this->hasContentFile() && !$this->contentFile->isEmpty()) {
-            $this->data = array_merge(
-                $this->data,
-                $this->contentFile->frontmatter(),
-                ['content' => $this->contentFile->content()]
-            );
+            $this->data = [
+               ...$this->data,
+                ...$this->contentFile->frontmatter(),
+                'content' => $this->contentFile->content(),
+            ];
         }
 
         $this->fields->setValues($this->data);
@@ -157,12 +161,9 @@ class Page implements Arrayable
         return $this->title() ?? $this->slug();
     }
 
-    /**
-     * Create page from the given path
-     */
-    public static function fromPath(string $path, array $data = []): static
+    public function site(): Site
     {
-        return new static(['path' => $path] + $data);
+        return $this->site;
     }
 
     /**
@@ -185,7 +186,7 @@ class Page implements Arrayable
         ];
 
         // Merge with scheme default field values
-        $defaults = array_merge($defaults, Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null));
+        $defaults = [...$defaults, ...Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null)];
 
         // If the page doesn't have a route, by default it won't be routable nor cacheable
         if ($this->route() === null) {
@@ -322,7 +323,7 @@ class Page implements Arrayable
             return $this->metadata;
         }
 
-        $metadata = Formwork::instance()->site()->metadata()->clone();
+        $metadata = $this->site()->metadata()->clone();
         $metadata->setMultiple($this->data['metadata']);
         return $this->metadata = $metadata;
     }
@@ -338,19 +339,19 @@ class Page implements Arrayable
     /**
      * Get page HTTP response status
      */
-    public function responseStatus(): int
+    public function responseStatus(): ResponseStatus
     {
         if (isset($this->responseStatus)) {
             return $this->responseStatus;
         }
 
         // Normalize response status
-        $this->responseStatus = (int) $this->data['responseStatus'];
+        $this->responseStatus = ResponseStatus::fromCode((int) $this->data['responseStatus']);
 
         // Get a default 404 Not Found status for the error page
-        if ($this->isErrorPage() && $this->responseStatus() === 200
+        if ($this->isErrorPage() && $this->responseStatus() === ResponseStatus::OK
             && !isset($this->contentFile, $this->contentFile->frontmatter()['responseStatus'])) {
-            $this->responseStatus = 404;
+            $this->responseStatus = ResponseStatus::NotFound;
         }
 
         return $this->responseStatus;
@@ -359,8 +360,12 @@ class Page implements Arrayable
     /**
      * Set page language
      */
-    public function setLanguage(Language|string $language): void
+    public function setLanguage(Language|string|null $language): void
     {
+        if ($language === null) {
+            $this->language = null;
+        }
+
         if (is_string($language)) {
             $language = new Language($language);
         }
@@ -383,7 +388,7 @@ class Page implements Arrayable
      */
     public function images(): FileCollection
     {
-        return $this->files()->filterByType('image');
+        return $this->files()->filterBy('type', 'image');
     }
 
     /**
@@ -391,7 +396,7 @@ class Page implements Arrayable
      */
     public function render(): string
     {
-        return $this->template()->render(true);
+        return $this->template()->setPage($this)->render(true);
     }
 
     /**
@@ -423,7 +428,7 @@ class Page implements Arrayable
      */
     public function isCurrent(): bool
     {
-        return Formwork::instance()->site()->currentPage() === $this;
+        return $this->site()->currentPage() === $this;
     }
 
     /**
@@ -439,7 +444,7 @@ class Page implements Arrayable
      */
     public function isIndexPage(): bool
     {
-        return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.index');
+        return $this === $this->site()->indexPage();
     }
 
     /**
@@ -447,7 +452,7 @@ class Page implements Arrayable
      */
     public function isErrorPage(): bool
     {
-        return trim($this->route(), '/') === Formwork::instance()->config()->get('pages.error');
+        return $this === $this->site()->errorPage();
     }
 
     /**
@@ -476,23 +481,15 @@ class Page implements Arrayable
         if (!$this->hasLoaded()) {
             throw new RuntimeException('Unable to reload, the page has not been loaded yet');
         }
+
         $path = $this->path;
+        $site = $this->site;
+
+        $data = [...compact('site', 'path'), ...$data];
+
         $this->resetProperties();
-        $this->__construct($data + ['path' => $path]);
-    }
 
-    /**
-     * Set page path
-     */
-    protected function setPath(string $path): void
-    {
-        $this->path = FileSystem::normalizePath($path . DS);
-
-        $this->relativePath = Str::prepend(Path::makeRelative($this->path, Formwork::instance()->site()->path(), DS), DS);
-
-        $this->route ??= Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
-
-        $this->slug ??= basename($this->route);
+        $this->__construct($data);
     }
 
     /**
@@ -515,9 +512,7 @@ class Page implements Arrayable
          */
         $languages = [];
 
-        $config = Formwork::instance()->config();
-
-        $site = Formwork::instance()->site();
+        $site = $this->site;
 
         if (isset($this->path) && FileSystem::isDirectory($this->path, assertExists: false)) {
             foreach (FileSystem::listFiles($this->path) as $file) {
@@ -525,7 +520,7 @@ class Page implements Arrayable
 
                 $extension = '.' . FileSystem::extension($file);
 
-                if ($extension === $config->get('content.extension')) {
+                if ($extension === $site->get('content.extension')) {
                     $language = null;
 
                     if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
@@ -543,8 +538,8 @@ class Page implements Arrayable
                             $languages[] = $language;
                         }
                     }
-                } elseif (in_array($extension, $config->get('files.allowedExtensions'), true)) {
-                    $files[] = $file;
+                } elseif (in_array($extension, $site->get('files.allowedExtensions'), true)) {
+                    $files[] = App::instance()->getService(FileFactory::class)->make(FileSystem::joinPaths($this->path, $file));
                 }
             }
         }
@@ -568,13 +563,13 @@ class Page implements Arrayable
 
             $this->contentFile ??= new ContentFile($contentFiles[$key]['path']);
 
-            $this->template ??= new Template($contentFiles[$key]['template'], $this);
+            $this->template ??= $site->templates()->get($contentFiles[$key]['template']);
 
-            $this->scheme ??= Formwork::instance()->schemes()->get('pages.' . $this->template);
+            $this->scheme ??= $site->schemes()->get('pages.' . $this->template);
         } else {
-            $this->template ??= new Template('default', $this);
+            $this->template ??= $site->templates()->get('default');
 
-            $this->scheme ??= Formwork::instance()->schemes()->get('pages.default');
+            $this->scheme ??= $site->schemes()->get('pages.default');
         }
 
         $this->fields ??= $this->scheme()->fields();
@@ -591,9 +586,23 @@ class Page implements Arrayable
             'preferred' => $site->languages()->preferred(),
         ]);
 
-        $this->files ??= isset($this->path) ? FileCollection::fromPath($this->path, $files) : new FileCollection();
+        $this->files ??= new FileCollection($files);
 
-        $this->data = array_merge($this->defaults(), $this->data);
+        $this->data = [...$this->defaults(), ...$this->data];
+    }
+
+    /**
+     * Set page path
+     */
+    protected function setPath(string $path): void
+    {
+        $this->path = FileSystem::normalizePath($path . '/');
+
+        $this->relativePath = Str::prepend(Path::makeRelative($this->path, $this->site()->path(), DS), DS);
+
+        $this->route ??= Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
+
+        $this->slug ??= basename($this->route);
     }
 
     /**

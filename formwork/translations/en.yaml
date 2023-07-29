@@ -1,0 +1,28 @@
+date.distance.ago: '%s ago'
+date.distance.in: 'in %s'
+date.duration.days: ['day', 'days']
+date.duration.hours: ['hour', 'hours']
+date.duration.minutes: ['minute', 'minutes']
+date.duration.months: ['month', 'months']
+date.duration.seconds: ['second', 'seconds']
+date.duration.weeks: ['week', 'weeks']
+date.duration.years: ['year', 'years']
+date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+date.now: now
+date.today: Today
+date.weekdays.long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+date.weekdays.short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+fields.array.add: Add
+fields.array.remove: Remove
+fields.file.uploadLabel: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
+page.none: (None)
+zip.error.alreadyExists: The archive already exists
+zip.error.cannotOpen: Cannot open the archive
+zip.error.cannotRead: Cannot read the archive
+zip.error.inconsistentArchive: Inconsistent archive
+zip.error.invalidArgument: Invalid argument
+zip.error.memoryFailure: Memory failure
+zip.error.notFound: Archive not found
+zip.error.notZipArchive: Not a ZIP archive
+zip.error.unspecified: Unspecified error

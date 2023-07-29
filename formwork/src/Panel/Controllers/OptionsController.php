@@ -3,60 +3,59 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Fields\FieldCollection;
-use Formwork\Formwork;
-use Formwork\Parsers\JSON;
-use Formwork\Parsers\YAML;
-use Formwork\Response\RedirectResponse;
-use Formwork\Response\Response;
+use Formwork\Http\RedirectResponse;
+use Formwork\Http\RequestMethod;
+use Formwork\Http\Response;
+use Formwork\Parsers\Json;
+use Formwork\Parsers\Yaml;
+use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\HTTPResponse;
 
 class OptionsController extends AbstractController
 {
     /**
      * All options tabs
      */
-    protected array $tabs = ['system', 'site', 'updates', 'info'];
+    protected array $tabs = ['site', 'system', 'updates', 'info'];
 
     /**
      * Options@index action
      */
     public function index(): RedirectResponse
     {
-        $this->ensurePermission('options.system');
-        return $this->redirect('/options/system/');
+        $this->ensurePermission('options.site');
+        return $this->redirect($this->generateRoute('panel.options.site'));
     }
 
     /**
      * Options@systemOptions action
      */
-    public function systemOptions(): Response
+    public function systemOptions(Schemes $schemes): Response
     {
         $this->ensurePermission('options.system');
 
-        $scheme = Formwork::instance()->schemes()->get('config.system');
+        $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        if (HTTPRequest::method() === 'POST') {
-            $data = HTTPRequest::postData();
-            $options = Formwork::instance()->config();
-            $defaults = Formwork::instance()->defaults();
+        if ($this->request->method() === RequestMethod::POST) {
+            $data = $this->request->input();
+            $options = $this->config->get('system');
+            $defaults = $this->app->defaults();
             $fields->setValues($data, null)->validate();
 
-            $differ = $this->updateOptions('system', $fields, $options->toArray(), $defaults);
+            $differ = $this->updateOptions('system', $fields, $options, $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch(Formwork::instance()->site()->path());
+                FileSystem::touch($this->site()->path());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');
-            return $this->redirect('/options/system/');
+            return $this->redirect($this->generateRoute('panel.options.system'));
         }
 
-        $fields->setValues(Formwork::instance()->config());
+        $fields->setValues($this->config->get('system'));
 
         $this->modal('changes');
 
@@ -65,35 +64,35 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system',
-            ], true),
+            ], return: true),
             'fields' => $fields,
-        ], true));
+        ], return: true));
     }
 
     /**
      * Options@siteOptions action
      */
-    public function siteOptions(): Response
+    public function siteOptions(Schemes $schemes): Response
     {
         $this->ensurePermission('options.site');
 
-        $scheme = Formwork::instance()->schemes()->get('config.site');
+        $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
-        if (HTTPRequest::method() === 'POST') {
-            $data = HTTPRequest::postData();
+        if ($this->request->method() === RequestMethod::POST) {
+            $data = $this->request->input();
             $options = $this->site()->data();
-            $defaults = Formwork::instance()->site()->defaults();
+            $defaults = $this->site()->defaults();
             $fields->setValues($data, null)->validate();
             $differ = $this->updateOptions('site', $fields, $options, $defaults);
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                FileSystem::touch(Formwork::instance()->site()->path());
+                FileSystem::touch($this->site()->path());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');
-            return $this->redirect('/options/site/');
+            return $this->redirect($this->generateRoute('panel.options.site'));
         }
 
         $fields->setValues($this->site()->data());
@@ -105,9 +104,9 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site',
-            ], true),
+            ], return: true),
             'fields' => $fields,
-        ], true));
+        ], return: true));
     }
 
     /**
@@ -122,9 +121,9 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates',
-            ], true),
-            'currentVersion' => Formwork::VERSION,
-        ], true));
+            ], return: true),
+            'currentVersion' => $this->app::VERSION,
+        ], return: true));
     }
 
     /**
@@ -149,8 +148,8 @@ class OptionsController extends AbstractController
                 'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
                 'Zend Engine Version' => zend_version(),
             ],
-            'HTTP Request Headers'  => HTTPRequest::headers()->toArray(),
-            'HTTP Response Headers' => HTTPResponse::headers(),
+            'HTTP Request Headers'  => $this->request->headers()->toArray(),
+            'HTTP Response Headers' => $this->getHeaders(),
             'Server'                => [
                 'IP Address'     => $_SERVER['SERVER_ADDR'],
                 'Port'           => $_SERVER['SERVER_PORT'],
@@ -158,11 +157,11 @@ class OptionsController extends AbstractController
                 'Software'       => $_SERVER['SERVER_SOFTWARE'],
                 'Apache Modules' => implode(', ', function_exists('apache_get_modules') ? apache_get_modules() : []),
                 'Protocol'       => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS'          => HTTPRequest::isHTTPS() ? 'on' : 'off',
+                'HTTPS'          => $this->request->isSecure() ? 'on' : 'off',
                 'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME']),
             ],
             'Client' => [
-                'IP Address' => HTTPRequest::ip(),
+                'IP Address' => $this->request->ip(),
                 'Port'       => $_SERVER['REMOTE_PORT'],
             ],
             'Session' => [
@@ -212,15 +211,15 @@ class OptionsController extends AbstractController
                 'File Creation Mask'  => sprintf('0%03o', umask()),
             ],
             'Formwork' => [
-                'Formwork Version' => Formwork::VERSION,
+                'Formwork Version' => $this->app::VERSION,
                 'Root Path'        => ROOT_PATH,
-                'Formwork Path'    => FORMWORK_PATH,
-                'Config Path'      => CONFIG_PATH,
+                'Formwork Path'    => SYSTEM_PATH,
+                'Config Path'      => ROOT_PATH . '/site/config/',
                 'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH)),
             ],
             'Dependencies' => [
-                'CommonMark Version'       => $dependencies['league/commonmark']['version'],
-                'Symfony Yaml Version'    => $dependencies['symfony/yaml']['version'],
+                'CommonMark Version'   => $dependencies['league/commonmark']['version'],
+                'Symfony Yaml Version' => $dependencies['symfony/yaml']['version'],
             ],
         ];
 
@@ -232,9 +231,19 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info',
-            ], true),
+            ], return: true),
             'info' => $data,
-        ], true));
+        ], return: true));
+    }
+
+    protected function getHeaders(): array
+    {
+        $headers = [];
+        foreach (headers_list() as $header) {
+            [$key, $value] = explode(':', $header, 2);
+            $headers[$key] = trim($value);
+        }
+        return $headers;
     }
 
     /**
@@ -264,7 +273,7 @@ class OptionsController extends AbstractController
 
         // Update config file if options differ
         if ($options !== $old) {
-            YAML::encodeToFile($options, CONFIG_PATH . $type . '.yml');
+            Yaml::encodeToFile($options, ROOT_PATH . '/site/config/' . $type . '.yaml');
             return true;
         }
 
@@ -278,8 +287,8 @@ class OptionsController extends AbstractController
     protected function getDependencies(): array
     {
         $dependencies = [];
-        if (FileSystem::exists(ROOT_PATH . 'composer.lock')) {
-            $composerLock = JSON::parseFile(ROOT_PATH . 'composer.lock');
+        if (FileSystem::exists(ROOT_PATH . '/composer.lock')) {
+            $composerLock = Json::parseFile(ROOT_PATH . '/composer.lock');
             foreach ($composerLock['packages'] as $package) {
                 $dependencies[$package['name']] = $package;
             }

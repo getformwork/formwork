@@ -7,12 +7,10 @@
     </div>
 
     <div class="files-items">
-<?php
-foreach ($page->files()->sort() as $file):
-    ?>
+<?php foreach ($page->files()->sort() as $file): ?>
         <div class="files-item">
             <?php if ($file->type() === 'image'): ?>
-            <div class="file-thumbnail" style="background-image:url('<?= $page->uri($file->name(), includeLanguage: false) ?>');"></div>
+            <div class="file-thumbnail" style="background-image:url('<?= $file->square(300, 'contain')->uri() ?>');"></div>
             <?php endif ?>
             <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
             <div class="file-name" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
@@ -26,8 +24,6 @@ foreach ($page->files()->sort() as $file):
                 </div>
             </div>
         </div>
-<?php
-endforeach;
-?>
+<?php endforeach ?>
 </div>
 </div>

@@ -2,7 +2,7 @@
 
 namespace Formwork\Parsers;
 
-class JSON extends AbstractEncoder
+class Json extends AbstractEncoder
 {
     /**
      * Default flags used to parse JSON
@@ -36,7 +36,7 @@ class JSON extends AbstractEncoder
      */
     public static function encode($data, array $options = []): string
     {
-        $options = array_merge(self::DEFAULT_ENCODE_OPTIONS, $options);
+        $options = [...self::DEFAULT_ENCODE_OPTIONS, ...$options];
         $flags = self::DEFAULT_ENCODE_FLAGS;
         if ($options['prettyPrint']) {
             $flags |= JSON_PRETTY_PRINT;

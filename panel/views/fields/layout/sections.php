@@ -9,7 +9,7 @@
                     ?>
             <span class="section-toggle"><?= $this->icon('chevron-up') ?></span>
 <?php
-                endif;
+                endif
         ?>
             <?= $section->label() ?>
         </div>
@@ -19,14 +19,14 @@
                 ?>
     <?php if ($field->isVisible()): ?>
         <?php $this->insert('fields.' . $field->type(), ['field' => $field]) ?>
-    <?php endif; ?>
+    <?php endif ?>
 <?php
-            endforeach;
+            endforeach
         ?>
         </div>
     </div>
 <?php
-    endforeach;
+    endforeach
 ?>
 </div>
 

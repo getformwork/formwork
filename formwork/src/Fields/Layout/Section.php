@@ -2,8 +2,8 @@
 
 namespace Formwork\Fields\Layout;
 
+use Formwork\App;
 use Formwork\Data\Traits\DataGetter;
-use Formwork\Formwork;
 use Formwork\Utils\Str;
 
 class Section
@@ -28,7 +28,7 @@ class Section
      */
     public function label(): string
     {
-        $translation = Formwork::instance()->translations()->getCurrent();
+        $translation = App::instance()->translations()->getCurrent();
         return Str::interpolate($this->get('label', ''), fn ($key) => $translation->translate($key));
     }
 }

@@ -1,0 +1,24 @@
+metadata: []
+
+canonicalRoute: null
+
+routeAliases: []
+
+maintenance:
+    enabled: false
+    page: null
+
+content:
+    path: '${%ROOT_PATH%}/site/content'
+    extension: .md
+
+files:
+    allowedExtensions:
+            - .jpg
+            - .jpeg
+            - .png
+            - .gif
+            - .svg
+            - .webp
+            - .pdf
+

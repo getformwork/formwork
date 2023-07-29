@@ -2,7 +2,7 @@
 
 namespace Formwork\Parsers\Extensions\CommonMark;
 
-use Formwork\Formwork;
+use Formwork\App;
 use Formwork\Utils\Uri;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -32,7 +32,7 @@ class LinkBaseProcessor
             // Process only if scheme is either null, 'http' or 'https'
             if (in_array(Uri::scheme($uri), [null, 'http', 'https'], true) && (empty(Uri::host($uri)) && $uri[0] !== '#')) {
                 $relativeUri = Uri::resolveRelative($uri, $baseRoute);
-                $uri = Formwork::instance()->site()->uri($relativeUri, false);
+                $uri = App::instance()->site()->uri($relativeUri, includeLanguage: false);
             }
 
             $node->setUrl($uri);

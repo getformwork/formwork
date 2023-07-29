@@ -132,7 +132,7 @@ class Arr
             throw new UnexpectedValueException(sprintf('Cannot replace %s items from offset %d: some keys in the replacement array are the same of the resulting array', $length, $offset));
         }
 
-        $array = array_merge($before, $replacement, $after);
+        $array = [...$before, ...$replacement, ...$after];
 
         return $replaced;
     }
@@ -363,13 +363,13 @@ class Arr
      * @param $type          Type of sorting. Possible values are `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_NATURAL`.
      * @param $caseSensitive Whether to perform a case-sensitive sorting
      * @param $sortBy        A callback or second array of values used to sort the first
-     * @param $preserveKeys Whether to preserve array keys after sorting
+     * @param $preserveKeys  Whether to preserve array keys after sorting
      */
     public static function sort(
         array $array,
         int $direction = SORT_ASC,
         int $type = SORT_NATURAL,
-        array|callable $sortBy = null,
+        array|callable|null $sortBy = null,
         bool $caseSensitive = false,
         bool $preserveKeys = true
     ): array {

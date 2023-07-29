@@ -10,7 +10,7 @@ use LogicException;
 use UnexpectedValueException;
 use UnitEnum;
 
-class PHP extends AbstractEncoder
+class Php extends AbstractEncoder
 {
     /**
      * Number of spaces used to indent arrays
@@ -27,7 +27,7 @@ class PHP extends AbstractEncoder
      */
     public static function parse(string $data, array $options = []): array
     {
-        throw new LogicException('Parsing a string of PHP code is not allowed');
+        throw new LogicException('Parsing a string of Php code is not allowed');
     }
 
     /**

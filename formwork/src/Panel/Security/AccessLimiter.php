@@ -2,8 +2,8 @@
 
 namespace Formwork\Panel\Security;
 
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Registry;
+use Formwork\Http\Request;
+use Formwork\Log\Registry;
 use Formwork\Utils\Uri;
 
 class AccessLimiter
@@ -41,14 +41,14 @@ class AccessLimiter
     /**
      * Create a new AccessLimiter instance
      */
-    public function __construct(Registry $registry, int $limit, int $resetTime)
+    public function __construct(Registry $registry, int $limit, int $resetTime, protected Request $request)
     {
         $this->registry = $registry;
         $this->limit = $limit;
         $this->resetTime = $resetTime;
 
         // Hash visitor IP address followed by current host
-        $this->attemptHash = hash('sha256', HTTPRequest::ip() . '@' . Uri::host());
+        $this->attemptHash = hash('sha256', $request->ip() . '@' . Uri::host());
 
         if ($registry->has($this->attemptHash)) {
             [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);

@@ -1,18 +1,20 @@
 <?php
 
-use Formwork\Formwork;
-use Formwork\Panel\Security\CSRFToken;
-use Formwork\Response\JSONResponse;
-use Formwork\Response\RedirectResponse;
+use Formwork\Http\JsonResponse;
+use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
+use Formwork\Http\ResponseStatus;
+use Formwork\Pages\Site;
+use Formwork\Panel\Panel;
+use Formwork\Security\CsrfToken;
+use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Session;
 
 return [
     'routes' => [
         'panel.index' => [
             'path'   => '/',
-            'action' => fn () => new RedirectResponse(Formwork::instance()->panel()->uri('/dashboard/')),
+            'action' => fn (Panel $panel) => new RedirectResponse($panel->uri('/dashboard/')),
         ],
 
         'panel.login' => [
@@ -183,15 +185,14 @@ return [
 
     'filters' => [
         'request.validateSize' => [
-            'action' => static function () {
+            'action' => static function (Request $request, Translations $translations, Panel $panel) {
                 // Validate HTTP request Content-Length according to `post_max_size` directive
-                if (HTTPRequest::contentLength() !== null) {
+                if ($request->contentLength() !== null) {
                     $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
 
-                    if (HTTPRequest::contentLength() > $maxSize && $maxSize > 0) {
-                        $panel = Formwork::instance()->panel();
+                    if ($request->contentLength() > $maxSize && $maxSize > 0) {
                         $panel->notify(
-                            Formwork::instance()->translations()->getCurrent()->translate('panel.request.error.postMaxSize'),
+                            $translations->getCurrent()->translate('panel.request.error.postMaxSize'),
                             'error'
                         );
                         return new RedirectResponse($panel->uri());
@@ -202,22 +203,21 @@ return [
         ],
 
         'request.validateCsrf' => [
-            'action' => static function () {
+            'action' => static function (Request $request, Translations $translations, Panel $panel, CsrfToken $csrfToken) {
                 // Validate CSRF token
                 try {
-                    CSRFToken::validate();
+                    $csrfToken->validate();
                 } catch (RuntimeException $e) {
-                    CSRFToken::destroy();
-                    Session::remove('FORMWORK_USERNAME');
+                    $csrfToken->destroy();
+                    $request->session()->remove('FORMWORK_USERNAME');
 
-                    $panel = Formwork::instance()->panel();
                     $panel->notify(
-                        Formwork::instance()->translations()->getCurrent()->translate('panel.login.suspiciousRequestDetected'),
+                        $translations->getCurrent()->translate('panel.login.suspiciousRequestDetected'),
                         'warning'
                     );
 
-                    if (HTTPRequest::isXHR()) {
-                        return JSONResponse::error('Bad Request: the CSRF token is not valid', 400);
+                    if ($request->isXmlHttpRequest()) {
+                        return JsonResponse::error('Bad Request: the CSRF token is not valid', ResponseStatus::BadRequest);
                     }
 
                     return new RedirectResponse($panel->uri('/login/'));
@@ -228,13 +228,11 @@ return [
         ],
 
         'panel.register' => [
-            'action' => static function () {
-                $panel = Formwork::instance()->panel();
-
+            'action' => static function (Request $request, Site $site, Panel $panel) {
                 // Register panel if no user exists
                 if ($panel->users()->isEmpty()) {
-                    if (!HTTPRequest::isLocalhost()) {
-                        return new RedirectResponse(Formwork::instance()->site()->uri());
+                    if (!$request->isLocalhost()) {
+                        return new RedirectResponse($site->uri());
                     }
 
                     if ($panel->route() !== '/register/') {
@@ -246,12 +244,10 @@ return [
         ],
 
         'panel.redirectToLogin' => [
-            'action' => static function () {
-                $panel = Formwork::instance()->panel();
-
+            'action' => static function (Request $request, Panel $panel) {
                 // Redirect to login if no user is logged
                 if (!$panel->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
-                    Session::set('FORMWORK_REDIRECT_TO', $panel->route());
+                    $request->session()->set('FORMWORK_REDIRECT_TO', $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));
                 }
             },

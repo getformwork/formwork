@@ -3,7 +3,7 @@
 namespace Formwork\Exceptions;
 
 use Exception;
-use Formwork\Formwork;
+use Formwork\App;
 
 class TranslatedException extends Exception
 {
@@ -39,6 +39,6 @@ class TranslatedException extends Exception
      */
     public function getTranslatedMessage(): string
     {
-        return Formwork::instance()->translations()->getCurrent()->translate($this->languageString);
+        return App::instance()->translations()->getCurrent()->translate($this->languageString);
     }
 }

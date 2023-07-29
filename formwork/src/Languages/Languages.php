@@ -2,9 +2,6 @@
 
 namespace Formwork\Languages;
 
-use Formwork\Formwork;
-use Formwork\Utils\HTTPNegotiation;
-
 class Languages
 {
     /**
@@ -94,43 +91,6 @@ class Languages
     public function isDefault(): bool
     {
         return $this->current === $this->default;
-    }
-
-    /**
-     * Create a Languages instance from a given request
-     */
-    public static function fromRequest(string $request): self
-    {
-        $config = Formwork::instance()->config();
-
-        /**
-         * @var array<string>
-         */
-        $available = (array) $config->get('languages.available');
-
-        if (preg_match('~^/(' . implode('|', $available) . ')/~i', $request, $matches)) {
-            $requested = $current = $matches[1];
-        }
-
-        /**
-         * @var bool
-         */
-        if ($config->get('languages.httpPreferred')) {
-            foreach (array_keys(HTTPNegotiation::language()) as $code) {
-                if (in_array($code, $available, true)) {
-                    $preferred = $available[$code];
-                    break;
-                }
-            }
-        }
-
-        return new static([
-            'available' => $available,
-            'default'   => $config->get('languages.default', $available[0] ?? null),
-            'current'   => $current ?? null,
-            'requested' => $requested ?? null,
-            'preferred' => $preferred ?? null,
-        ]);
     }
 
     /**

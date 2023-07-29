@@ -2,7 +2,7 @@
 
 namespace Formwork\Cache;
 
-use Formwork\Parsers\PHP;
+use Formwork\Parsers\Php;
 use Formwork\Utils\FileSystem;
 
 class FilesCache extends AbstractCache
@@ -25,7 +25,7 @@ class FilesCache extends AbstractCache
         $this->path = $path;
         $this->defaultTtl = $defaultTtl;
         if (!FileSystem::exists($this->path)) {
-            FileSystem::createDirectory($this->path, true);
+            FileSystem::createDirectory($this->path, recursive: true);
         }
     }
 
@@ -35,7 +35,7 @@ class FilesCache extends AbstractCache
     public function fetch(string $key)
     {
         if ($this->has($key)) {
-            $cacheItem = PHP::parseFile($this->getFile($key));
+            $cacheItem = Php::parseFile($this->getFile($key));
             return $cacheItem->value();
         }
         if ($this->hasExpired($key)) {
@@ -50,7 +50,7 @@ class FilesCache extends AbstractCache
     public function save(string $key, $value, ?int $ttl = null): void
     {
         $cacheItem = new CacheItem($value, time() + ($ttl ?? $this->defaultTtl), time());
-        PHP::encodeToFile($cacheItem, $this->getFile($key));
+        Php::encodeToFile($cacheItem, $this->getFile($key));
     }
 
     /**
@@ -68,8 +68,8 @@ class FilesCache extends AbstractCache
      */
     public function clear(): void
     {
-        FileSystem::delete($this->path, true);
-        FileSystem::createDirectory($this->path, true);
+        FileSystem::delete($this->path, recursive: true);
+        FileSystem::createDirectory($this->path, recursive: true);
     }
 
     /**
@@ -93,7 +93,7 @@ class FilesCache extends AbstractCache
      */
     protected function getFile(string $key): string
     {
-        return $this->path . hash('sha256', $key);
+        return FileSystem::joinPaths($this->path, hash('sha256', $key));
     }
 
     /**
@@ -101,7 +101,7 @@ class FilesCache extends AbstractCache
      */
     protected function hasExpired(string $key): bool
     {
-        $cacheItem = PHP::parseFile($this->getFile($key));
+        $cacheItem = Php::parseFile($this->getFile($key));
         return time() >= $cacheItem->expirationTime();
     }
 }

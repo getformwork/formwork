@@ -2,11 +2,13 @@
 
 namespace Formwork\Router;
 
-use Formwork\Parsers\PHP;
-use Formwork\Response\Response;
+use Closure;
+use Formwork\Http\Request;
+use Formwork\Http\Response;
+use Formwork\Parsers\Php;
 use Formwork\Router\Exceptions\InvalidRouteException;
 use Formwork\Router\Exceptions\RouteNotFoundException;
-use Formwork\Utils\HTTPRequest;
+use Formwork\Services\Container;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -56,7 +58,7 @@ class Router
     /**
      * The request to match routes against
      */
-    protected string $request;
+    protected string $requestUri;
 
     /**
      * Currently matched route
@@ -68,13 +70,13 @@ class Router
      */
     protected RouteParams $params;
 
-    public function __construct(?string $request = null)
+    public function __construct(protected Container $container, protected Request $request)
     {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
 
         // Ensure requested route is wrapped in slashes
-        $this->request = Str::wrap($request ?? Uri::path(HTTPRequest::uri()), '/');
+        $this->requestUri = Str::wrap(Uri::path($this->request->uri()), '/');
 
         $this->params = new RouteParams([]);
     }
@@ -84,7 +86,12 @@ class Router
      */
     public function request(): string
     {
-        return $this->request;
+        return $this->requestUri;
+    }
+
+    public function setRequest(string $request): void
+    {
+        $this->requestUri = Str::wrap(Uri::path($request), '/');
     }
 
     /**
@@ -152,7 +159,7 @@ class Router
 
             $filterCallback = $this->parseAction($filter->getAction());
 
-            if (($result = $filterCallback()) !== null) {
+            if (($result = $this->container->call($filterCallback)) !== null) {
                 return $result;
             }
         }
@@ -167,7 +174,7 @@ class Router
 
             $compiledRoute = $this->compileRoute($route);
 
-            if (preg_match($compiledRoute->regex(), $this->request, $matches, PREG_UNMATCHED_AS_NULL)) {
+            if (preg_match($compiledRoute->regex(), $this->requestUri, $matches, PREG_UNMATCHED_AS_NULL)) {
                 // Remove entire matches from $matches array
                 array_shift($matches);
 
@@ -175,13 +182,15 @@ class Router
 
                 $this->params = $this->buildParams($compiledRoute->params(), $matches);
 
+                $this->container->define(RouteParams::class, $this->params);
+
                 $routeCallback = $this->parseAction($route->getAction());
 
-                return $routeCallback($this->params);
+                return $this->container->call($routeCallback);
             }
         }
 
-        throw new RouteNotFoundException(sprintf('No route matches with "%s"', $this->request));
+        throw new RouteNotFoundException(sprintf('No route matches with "%s"', $this->requestUri));
     }
 
     /**
@@ -213,7 +222,7 @@ class Router
      */
     public function loadFromFile(string $path, ?string $prefix = null): void
     {
-        $data = PHP::parseFile($path);
+        $data = Php::parseFile($path);
 
         /**
          * @param Route|RouteFilter $o
@@ -343,16 +352,17 @@ class Router
      *
      * @param callable|string $action
      */
-    protected function parseAction($action): callable
+    protected function parseAction($action): Closure
     {
         // Parse Class@method callback syntax
         if (is_string($action) && Str::contains($action, '@')) {
-            [$class, $method] = explode('@', $action, 2);
-            return [new $class(), $method];
+            [$controller, $method] = explode('@', $action, 2);
+            $class = $this->container->build($controller);
+            return $class->$method(...);
         }
 
         if (is_callable($action)) {
-            return $action;
+            return Closure::fromCallable($action);
         }
 
         throw new InvalidRouteException('Invalid callback');
@@ -389,7 +399,7 @@ class Router
      */
     protected function matchMethods(array $methods): bool
     {
-        return in_array(HTTPRequest::method(), $methods, true);
+        return in_array($this->request->method()->value, $methods, true);
     }
 
     /**
@@ -399,7 +409,7 @@ class Router
      */
     protected function matchTypes(array $types): bool
     {
-        return in_array(HTTPRequest::type(), $types, true);
+        return in_array($this->request->type()->value, $types, true);
     }
 
     /**
@@ -409,7 +419,7 @@ class Router
      */
     protected function matchPrefix(?string $prefix): bool
     {
-        return $prefix === null || Str::startsWith($this->request, Str::wrap($prefix, '/'));
+        return $prefix === null || Str::startsWith($this->requestUri, Str::wrap($prefix, '/'));
     }
 
     /**

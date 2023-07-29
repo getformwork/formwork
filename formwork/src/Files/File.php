@@ -2,11 +2,13 @@
 
 namespace Formwork\Files;
 
+use Exception;
+use Formwork\Data\Contracts\Arrayable;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 
-class File
+class File implements Arrayable
 {
     /**
      * File path
@@ -48,6 +50,8 @@ class File
      */
     protected string $hash;
 
+    protected FileUriGenerator $uriGenerator;
+
     /**
      * Create a new File instance
      */
@@ -56,8 +60,6 @@ class File
         $this->path = $path;
         $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
-        $this->mimeType = FileSystem::mimeType($path);
-        $this->size = FileSystem::formatSize(FileSystem::fileSize($path));
     }
 
     public function __toString(): string
@@ -94,7 +96,7 @@ class File
      */
     public function mimeType(): string
     {
-        return $this->mimeType;
+        return $this->mimeType ??= FileSystem::mimeType($this->path);
     }
 
     /**
@@ -105,19 +107,19 @@ class File
         if (isset($this->type)) {
             return $this->type;
         }
-        if (Str::startsWith($this->mimeType, 'image')) {
+        if (Str::startsWith($this->mimeType(), 'image')) {
             return $this->type = 'image';
         }
-        if (Str::startsWith($this->mimeType, 'text')) {
+        if (Str::startsWith($this->mimeType(), 'text')) {
             return $this->type = 'text';
         }
-        if (Str::startsWith($this->mimeType, 'audio')) {
+        if (Str::startsWith($this->mimeType(), 'audio')) {
             return $this->type = 'audio';
         }
-        if (Str::startsWith($this->mimeType, 'video')) {
+        if (Str::startsWith($this->mimeType(), 'video')) {
             return $this->type = 'video';
         }
-        if ($this->mimeType === MimeType::fromExtension('pdf')) {
+        if ($this->mimeType() === MimeType::fromExtension('pdf')) {
             return $this->type = 'pdf';
         }
         if ($this->matchExtensions(['doc', 'docx', 'odt', 'odm', 'ott'])) {
@@ -140,7 +142,7 @@ class File
      */
     public function size(): string
     {
-        return $this->size;
+        return $this->size ??= FileSystem::formatSize(FileSystem::fileSize($this->path));
     }
 
     /**
@@ -163,6 +165,31 @@ class File
             return $this->hash;
         }
         return $this->hash = hash_file('sha256', $this->path);
+    }
+
+    public function setUriGenerator($uriGenerator)
+    {
+        $this->uriGenerator = $uriGenerator;
+    }
+
+    public function uri(): string
+    {
+        if (!isset($this->uriGenerator)) {
+            throw new Exception('Cannot generate file uri: generator not set');
+        }
+        return $this->uriGenerator->generate($this);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'path'             => $this->path,
+            'name'             => $this->name,
+            'extension'        => $this->extension,
+            'type'             => $this->type(),
+            'size'             => $this->size(),
+            'lastModifiedTime' => $this->lastModifiedTime(),
+        ];
     }
 
     /**

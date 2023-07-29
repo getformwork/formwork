@@ -5,5 +5,5 @@
     <meta http-equiv="<?= $meta->name() ?>" content="<?= $meta->content() ?>">
 <?php else: ?>
     <meta <?= $meta->prefix() === 'og' ? 'property' : 'name' ?>="<?= $meta->name() ?>" content="<?= $meta->content() ?>">
-<?php endif; ?>
-<?php endforeach; ?>
+<?php endif ?>
+<?php endforeach ?>

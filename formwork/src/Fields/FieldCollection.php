@@ -12,20 +12,15 @@ class FieldCollection extends AbstractCollection
 
     protected ?string $dataType = Field::class;
 
+    protected bool $mutable = true;
+
     /**
      * Fields layout
      */
     protected Layout $layout;
 
-    /**
-     * Create a new FieldCollection instance
-     *
-     * @param array $fields Array of Field objects
-     */
-    public function __construct(array $fields, Layout $layout)
+    public function setLayout(Layout $layout): void
     {
-        parent::__construct(Arr::map($fields, fn ($data, $name) => new Field($name, $data, $this)));
-
         $this->layout = $layout;
     }
 

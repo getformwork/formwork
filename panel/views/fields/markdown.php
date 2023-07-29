@@ -24,6 +24,6 @@
         'rows'         => $field->get('rows', 15),
         'required'     => $field->isRequired(),
         'disabled'     => $field->isDisabled(),
-        'hidden'       => $field->isHidden()
+        'hidden'       => $field->isHidden(),
     ]) ?>><?= $this->escape($field->value() ?? '') ?></textarea>
 </div>

@@ -1,11 +1,12 @@
 <?php
 
-use Formwork\Formwork;
+use Formwork\App;
 
 const DS = DIRECTORY_SEPARATOR;
-const ROOT_PATH = __DIR__ . DS;
+const ROOT_PATH = __DIR__;
+const SYSTEM_PATH = ROOT_PATH . '/formwork';
 
-require ROOT_PATH . 'formwork' . DS . 'bootstrap.php';
+require SYSTEM_PATH . '/bootstrap.php';
 
-$formwork = new Formwork();
+$formwork = new App();
 $formwork->run();

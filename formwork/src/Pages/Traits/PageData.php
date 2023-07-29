@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
 use Formwork\Utils\Arr;
+use ReflectionProperty;
 
 trait PageData
 {
@@ -26,7 +27,9 @@ trait PageData
      */
     public function has(string $key): bool
     {
-        return property_exists($this, $key) || $this->fields->has($key) || Arr::has($this->data, $key);
+        return (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted())
+            || $this->fields->has($key)
+            || Arr::has($this->data, $key);
     }
 
     /**
@@ -35,7 +38,7 @@ trait PageData
     public function get(string $key, $default = null)
     {
         // Get values from property
-        if (property_exists($this, $key)) {
+        if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
             // Call getter method if exists. We check property existence before
             // to avoid using get to call methods arbitrarily
             if (method_exists($this, $key)) {
@@ -66,7 +69,7 @@ trait PageData
      */
     public function set(string $key, $value): void
     {
-        if (property_exists($this, $key)) {
+        if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
             // If defined use a setter
             if (method_exists($this, $setter = 'set' . ucfirst($key))) {
                 $this->{$setter}($value);
@@ -89,7 +92,7 @@ trait PageData
 
         Arr::pull($properties, 'data');
 
-        $data = array_merge($this->data, $this->getMultiple($properties));
+        $data = [...$this->data, ...$this->getMultiple($properties)];
 
         ksort($data);
 

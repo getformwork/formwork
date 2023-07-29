@@ -6,5 +6,5 @@
     'rows'        => $field->get('rows', 5),
     'required'    => $field->isRequired(),
     'disabled'    => $field->isDisabled(),
-    'hidden'      => $field->isHidden()
+    'hidden'      => $field->isHidden(),
 ]) ?>><?= $field->value() ?></textarea>

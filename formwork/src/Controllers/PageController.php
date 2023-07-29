@@ -2,46 +2,67 @@
 
 namespace Formwork\Controllers;
 
-use Formwork\Formwork;
+use Formwork\App;
+use Formwork\Cache\FilesCache;
+use Formwork\Config;
+use Formwork\Http\FileResponse;
+use Formwork\Http\RedirectResponse;
+use Formwork\Http\Response;
+use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
-use Formwork\Response\FileResponse;
-use Formwork\Response\RedirectResponse;
-use Formwork\Response\Response;
+use Formwork\Pages\Site;
 use Formwork\Router\RouteParams;
+use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
+use Formwork\View\ViewFactory;
 
 class PageController extends AbstractController
 {
-    public function load(RouteParams $params): Response
+    public function __construct(protected App $app, protected Config $config, protected Router $router, protected Site $site, protected FilesCache $cache)
     {
-        $formwork = Formwork::instance();
+        parent::__construct();
+    }
 
-        $route = $params->get('page', $formwork->config()->get('pages.index'));
-
-        if ($resolvedAlias = $formwork->site()->resolveRouteAlias($route)) {
-            $route = $resolvedAlias;
+    public function load(RouteParams $params, ViewFactory $viewFactory): Response
+    {
+        if ($this->site->get('maintenance.enabled') && !$this->app->panel()?->isLoggedIn()) {
+            if ($this->site->get('maintenance.page') !== null) {
+                $route = $this->site->get('maintenance.page')->route();
+            } else {
+                $status = ResponseStatus::ServiceUnavailable;
+                $view = $viewFactory->make('errors.maintenance', ['status' => $status->code(), 'message' => $status->message()]);
+                return new Response($view->render(true), $status);
+            }
         }
 
-        if ($page = $formwork->site()->findPage($route)) {
+        if (!isset($route)) {
+            $route = $params->get('page', $this->config->get('system.pages.index'));
+
+            if ($resolvedAlias = $this->site->resolveRouteAlias($route)) {
+                $route = $resolvedAlias;
+            }
+        }
+
+        if ($page = $this->site->findPage($route)) {
             if ($page->canonicalRoute() !== null) {
                 $canonical = $page->canonicalRoute();
 
                 if ($params->get('page', '/') !== $canonical) {
-                    $route = $formwork->router()->rewrite(['page' => $canonical]);
-                    return new RedirectResponse($formwork->site()->uri($route), 301);
+                    $route = $this->router->rewrite(['page' => $canonical]);
+                    return new RedirectResponse($this->site->uri($route), ResponseStatus::MovedPermanently);
                 }
             }
 
             if (($params->has('tagName') || $params->has('paginationPage')) && $page->scheme()->options()->get('type') !== 'listing') {
-                return $this->getPageResponse($formwork->site()->errorPage());
+                return $this->getPageResponse($this->site->errorPage());
             }
 
-            if ($formwork->config()->get('cache.enabled') && ($page->has('publishDate') || $page->has('unpublishDate'))) {
-                if (($page->isPublished() && !$formwork->site()->modifiedSince($page->publishDate()->toTimestamp()))
-                || (!$page->isPublished() && !$formwork->site()->modifiedSince($page->unpublishDate()->toTimestamp()))) {
+            if ($this->config->get('system.cache.enabled') && ($page->has('publishDate') || $page->has('unpublishDate'))) {
+                if (($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
+                || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))) {
                     // Clear cache if the site was not modified since the page has been published or unpublished
-                    $formwork->cache()->clear();
-                    FileSystem::touch($formwork->site()->path());
+                    $this->cache->clear();
+                    FileSystem::touch($this->site->path());
                 }
             }
 
@@ -53,22 +74,20 @@ class PageController extends AbstractController
             $upperLevel = dirname($route);
 
             if ($upperLevel === '.') {
-                $upperLevel = $formwork->config()->get('pages.index');
+                $upperLevel = $this->config->get('system.pages.index');
             }
 
-            if (($parent = $formwork->site()->findPage($upperLevel)) && $parent->files()->has($filename)) {
+            if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
                 return new FileResponse($parent->files()->get($filename)->path());
             }
         }
 
-        return $this->getPageResponse($formwork->site()->errorPage());
+        return $this->getPageResponse($this->site->errorPage());
     }
 
     protected function getPageResponse(Page $page): Response
     {
-        $formwork = Formwork::instance();
-
-        $site = $formwork->site();
+        $site = $this->site;
 
         if ($site->currentPage() === null) {
             $site->setCurrentPage($page);
@@ -76,25 +95,23 @@ class PageController extends AbstractController
 
         $page = $site->currentPage();
 
-        $config = $formwork->config();
-
-        $cache = $formwork->cache();
+        $config = $this->config;
 
         $cacheKey = $page->uri(includeLanguage: true);
 
-        if ($config->get('cache.enabled') && $cache->has($cacheKey)) {
+        if ($config->get('system.cache.enabled') && $this->cache->has($cacheKey)) {
             // Validate cached response
-            if (!$site->modifiedSince($cache->cachedTime($cacheKey))) {
-                return $cache->fetch($cacheKey);
+            if (!$site->modifiedSince($this->cache->cachedTime($cacheKey))) {
+                return $this->cache->fetch($cacheKey);
             }
 
-            $cache->delete($cacheKey);
+            $this->cache->delete($cacheKey);
         }
 
         $response = new Response($page->render(), $page->responseStatus(), $page->headers());
 
-        if ($config->get('cache.enabled') && $page->cacheable()) {
-            $cache->save($cacheKey, $response);
+        if ($config->get('system.cache.enabled') && $page->cacheable()) {
+            $this->cache->save($cacheKey, $response);
         }
 
         return $response;

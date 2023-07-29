@@ -4,11 +4,11 @@
     <a class="pagination-previous" href="<?= $pagination->previousPageUri() ?>" rel="prev">&larr; Previous</a>
     <?php else: ?>
     <a class="pagination-previous disabled">&larr; Previous</a>
-    <?php endif; ?>
+    <?php endif ?>
     <?php if ($pagination->hasNextPage()): ?>
     <a class="pagination-next" href="<?= $pagination->nextPageUri() ?>" rel="next">Next &rarr;</a>
     <?php else: ?>
     <a class="pagination-next disabled">Next &rarr;</a>
-    <?php endif; ?>
+    <?php endif ?>
 </nav>
-<?php endif; ?>
+<?php endif ?>

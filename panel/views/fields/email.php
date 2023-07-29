@@ -10,6 +10,6 @@
     'pattern'     => $field->get('pattern'),
     'required'    => $field->isRequired(),
     'disabled'    => $field->isDisabled(),
-    'hidden'      => $field->isHidden()
+    'hidden'      => $field->isHidden(),
 ]) ?>>
 

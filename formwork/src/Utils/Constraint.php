@@ -108,4 +108,14 @@ class Constraint
         }
         return get_debug_type($value) === $type;
     }
+
+    public static function hasKeys(array $value, array $keys)
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $value)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -1,0 +1,272 @@
+panel.backup.backup: Esegui backup
+panel.backup.error.cannotDownload: Impossibile scaricare il backup. %s.
+panel.backup.error.cannotDownload.invalidFilename: File di backup non valido.
+panel.backup.error.cannotMake: Impossibile eseguire il backup. %s.
+panel.backup.ready: Backup pronto. Inizio a scaricare...
+panel.cache.clear: Svuota cache
+panel.cache.cleared: Cache svuotata
+panel.dashboard.dashboard: Riepilogo
+panel.dashboard.lastModifiedPages: Ultime pagine modificate
+panel.dashboard.quickActions: Azioni rapide
+panel.dashboard.statistics: Statistiche
+panel.dashboard.statistics.uniqueVisitors: Visitatori unici
+panel.dashboard.statistics.visits: Visite
+panel.dashboard.welcome: Benvenuto/a
+panel.dragToReorder: Trascina per riordinare
+panel.errors.action.reportToGithub: Segnala un problema su GitHub
+panel.errors.action.returnToDashboard: Torna al Riepilogo
+panel.errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
+panel.errors.error.forbidden.heading: Oops, permessi mancanti!
+panel.errors.error.forbidden.status: Accesso negato
+panel.errors.error.internalServerError.description: Formwork ha riscontrato un errore nell’elaborare la richiesta. Controlla la configurazione di Formwork o il registro degli errori.
+panel.errors.error.internalServerError.heading: Oops, qualcosa è andato storto!
+panel.errors.error.internalServerError.status: Errore interno del server
+panel.errors.error.notFound.description: La pagina non esiste o la richiesta non è valida.
+panel.errors.error.notFound.heading: Oops, pagina non trovata!
+panel.errors.error.notFound.status: Non trovato
+panel.files.actions: Azioni
+panel.files.viewAsList: Visualizza come lista
+panel.files.viewAsThumbnails: Visualizza come miniature
+panel.login.attempt.failed: Tentativo di accesso fallito! Riprova.
+panel.login.attempt.tooMany: Sono stati sbagliati troppi tentativi di accesso. Riprova tra %d minuti.
+panel.login.loggedOut: Sei stato disconnesso
+panel.login.login: Accedi
+panel.login.logout: Esci
+panel.login.password: Password
+panel.login.suspiciousRequestDetected: È stata rilevata una richiesta sospetta e per ragioni di sicurezza si è usciti dalla sessione. Effettua nuovamente l’accesso.
+panel.login.username: Nome utente
+panel.manage: Gestione
+panel.modal.action.cancel: Annulla
+panel.modal.action.continue: Continua
+panel.modal.action.delete: Elimina
+panel.modal.action.save: Salva
+panel.modal.action.uploadFile: Carica file
+panel.modal.images.noImages: Qui non ci sono immagini
+panel.modal.images.noImages.upload: Carica qualche immagine
+panel.modal.images.title: Seleziona immagine
+panel.options.info: Informazioni
+panel.options.options: Impostazioni
+panel.options.site: Sito
+panel.options.site.advanced: Impostazioni avanzate
+panel.options.site.advanced.aliases: Alias
+panel.options.site.advanced.aliases.alias: Alias
+panel.options.site.advanced.aliases.route: Indirizzo
+panel.options.site.advanced.metadata: Metadati HTML
+panel.options.site.advanced.metadata.content: Contenuto
+panel.options.site.advanced.metadata.name: Nome
+panel.options.site.info: Informazioni
+panel.options.site.info.author: Autore
+panel.options.site.info.description: Descrizione
+panel.options.site.info.language: Lingua
+panel.options.site.info.title: Titolo
+panel.options.site.maintenance: Manutenzione
+panel.options.site.maintenance.enabled: Modalità manutenzione
+panel.options.site.maintenance.enabled.enabled: Attivata
+panel.options.site.maintenance.enabled.disabled: Disattivata
+panel.options.site.maintenance.page: Pagina manutenzione
+panel.options.system: Sistema
+panel.options.system.adminPanel: Pannello di amministrazione
+panel.options.system.adminPanel.defaultColorScheme: Combinazione di colori predefinita
+panel.options.system.adminPanel.defaultColorScheme.dark: Scura
+panel.options.system.adminPanel.defaultColorScheme.light: Chiara
+panel.options.system.adminPanel.defaultLanguage: Lingua predefinita
+panel.options.system.adminPanel.logoutRedirectsTo: Reindirizza dopo la disconnessione
+panel.options.system.adminPanel.logoutRedirectsTo.home: Pagina iniziale
+panel.options.system.adminPanel.logoutRedirectsTo.login: Accedi
+panel.options.system.adminPanel.sessionTimeout: Durata sessione (min)
+panel.options.system.backup: Backup
+panel.options.system.backup.backupFilesToKeep: Backup da tenere sul server
+panel.options.system.cache: Cache
+panel.options.system.cache.disabled: Disabilitata
+panel.options.system.cache.enabled: Abilitata
+panel.options.system.cache.time: Tempo cache (sec)
+panel.options.system.dateAndTime: Data e ora
+panel.options.system.dateAndTime.dateFormat: Formato data
+panel.options.system.dateAndTime.firstWeekday: Primo giorno della settimana
+panel.options.system.dateAndTime.firstWeekday.monday: Lunedì
+panel.options.system.dateAndTime.firstWeekday.sunday: Domenica
+panel.options.system.dateAndTime.hourFormat: Formato ora
+panel.options.system.dateAndTime.timezone: Fuso orario
+panel.options.system.files: File
+panel.options.system.files.allowedExtensions: Estensioni consentite
+panel.options.system.images: Immagini
+panel.options.system.images.jpegQuality: Qualità JPEG
+panel.options.system.images.jpegSaveProgressive: Salva le immagini JPEG come progressive
+panel.options.system.images.jpegSaveProgressive.disabled: Disabilitato
+panel.options.system.images.jpegSaveProgressive.enabled: Abilitato
+panel.options.system.images.pngCompressionLevel: Livello di compressione PNG
+panel.options.system.uploads.processImages: Elabora (ottimizza) le immagini caricate
+panel.options.system.uploads.processImages.disabled: Disabilitato
+panel.options.system.uploads.processImages.enabled: Abilitato
+panel.options.system.images.webpQuality: Qualità WebP
+panel.options.system.languages: Lingue
+panel.options.system.languages.availableLanguages: Lingue disponibili
+panel.options.system.languages.availableLanguages.noLanguages: Nessuna lingua
+panel.options.system.languages.preferredLanguage: Usa lingua preferita dal browser
+panel.options.system.languages.preferredLanguage.disabled: Disabilitato
+panel.options.system.languages.preferredLanguage.enabled: Abilitato
+panel.options.updated: Opzioni aggiornate
+panel.options.updates: Aggiornamenti
+panel.pages.attributes: Attributi
+panel.pages.changes.continue: Continua senza salvare
+panel.pages.changes.detected: Modifiche rilevate
+panel.pages.changes.detected.prompt: Alcune modifiche non sono state salvate. Si è sicuri di voler lasciare la pagina?
+panel.pages.changeSlug: Modifica indirizzo
+panel.pages.changeSlug.generate: Genera dal titolo
+panel.pages.content: Contenuto
+panel.pages.deleteFile: Elimina file
+panel.pages.deleteFile.prompt: Si è sicuri di eliminare il file? Questa azione non può essere annullata.
+panel.pages.deletePage: Elimina pagina
+panel.pages.deletePage.prompt: Si è sicuri di eliminare la pagina? Questa azione non può essere annullata.
+panel.pages.editor.bold: Grassetto
+panel.pages.editor.bulletList: Elenco puntato
+panel.pages.editor.image: Immagine
+panel.pages.editor.italic: Corsivo
+panel.pages.editor.link: Collegamento
+panel.pages.editor.numberedList: Elenco numerato
+panel.pages.editor.quote: Citazione
+panel.pages.editor.redo: Ripeti
+panel.pages.editor.summary: Sommario
+panel.pages.editor.undo: Annulla
+panel.pages.editPage: Modifica pagina %s
+panel.pages.files: File
+panel.pages.languages: Lingue
+panel.pages.languages.addLanguage: Aggiungi %s
+panel.pages.languages.editLanguage: Modifica %s
+panel.pages.newPage: Nuova pagina
+panel.pages.newPage.parent: Pagina superiore
+panel.pages.newPage.site: Sito
+panel.pages.newPage.slug: Indirizzo pagina
+panel.pages.newPage.slugSuggestion: solo lettere, numeri e trattini
+panel.pages.newPage.template: Template
+panel.pages.newPage.title: Titolo
+panel.pages.options: Opzioni
+panel.pages.page: Pagina
+panel.pages.page.actions: Azioni
+panel.pages.page.cacheable: Abilita cache
+panel.pages.page.cannotChangeNum: Impossibile cambiare il numero della pagina
+panel.pages.page.cannotCreate: Impossibile creare la pagina
+panel.pages.page.cannotCreate.alreadyExists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
+panel.pages.page.cannotCreate.invalidParent: Impossibile creare la pagina, la pagina superiore specificata non è valida
+panel.pages.page.cannotCreate.invalidSlug: Impossibile creare la pagina, l'indirizzo deve contenere solo lettere e numeri separati da trattini
+panel.pages.page.cannotCreate.invalidTemplate: Impossibile creare la pagina, il template specificato non è valido
+panel.pages.page.cannotCreate.varMissing: Impossibile creare la pagina, manca una variabile
+panel.pages.page.cannotDelete.invalidLanguage: Impossibile eliminare la pagina, lingua %s non valida
+panel.pages.page.cannotDelete.notDeletable: Impossibile eliminare la pagina, la pagina non è eliminabile
+panel.pages.page.cannotDelete.pageNotFound: Impossibile eliminare la pagina, pagina non trovata
+panel.pages.page.cannotDeleteFile.fileNotFound: Impossibile eliminare il file, file non trovato
+panel.pages.page.cannotDeleteFile.pageNotFound: Impossibile eliminare il file, pagina non trovata
+panel.pages.page.cannotEdit.alreadyExists: Impossibile modificare la pagina, una pagina con lo stesso indirizzo esiste già
+panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossibile cambiare l'indirizzo della pagina iniziale o di errore
+panel.pages.page.cannotEdit.invalidLanguage: Impossibile modificare la pagina, lingua %s non valida
+panel.pages.page.cannotEdit.invalidParent: Impossibile modificare la pagina, pagina superiore non valida
+panel.pages.page.cannotEdit.invalidSlug: Impossibile cambiare l'indirizzo, l'indirizzo deve contenere solo lettere e numeri separati da trattini
+panel.pages.page.cannotEdit.invalidTemplate: Impossibile modificare la pagina, template non valido
+panel.pages.page.cannotEdit.pageNotFound: Impossibile modificare la pagina, pagina non trovata
+panel.pages.page.cannotEdit.varMissing: Impossibile modificare la pagina, manca una variabile
+panel.pages.page.cannotMove: Impossibile spostare la pagina
+panel.pages.page.cannotUploadFile.pageNotFound: Impossibile caricare il file, pagina non trovata
+panel.pages.page.created: Pagina creata!
+panel.pages.page.deleted: Pagina eliminata
+panel.pages.page.edited: Pagina modificata!
+panel.pages.page.fileDeleted: File eliminato
+panel.pages.page.image: Immagine
+panel.pages.page.lastModified: Ultime modifiche
+panel.pages.page.listed: Visibile nel menu
+panel.pages.page.moved: Pagina spostata!
+panel.pages.page.noDate: Nessuna data
+panel.pages.page.noImage: Nessuna immagine
+panel.pages.page.noTags: Nessun tag
+panel.pages.page.notFound: Pagina non trovata
+panel.pages.page.postsPerPage: Post per pagina
+panel.pages.page.publishDate: Data di pubblicazione
+panel.pages.page.status: Stato
+panel.pages.page.tags: Tag
+panel.pages.page.title: Titolo
+panel.pages.page.unpublishDate: Data di rimozione
+panel.pages.pages: Pagine
+panel.pages.pages.collapseAll: Riduci tutte
+panel.pages.pages.expandAll: Espandi tutte
+panel.pages.pages.reorder: Riordina
+panel.pages.pages.search: Cerca pagine...
+panel.pages.parent: Pagina superiore
+panel.pages.preview: Anteprima
+panel.pages.previewFile: Anteprima
+panel.pages.save: Salva
+panel.pages.status.notPublished: Non pubblicato
+panel.pages.status.notRoutable: Non raggiungibile
+panel.pages.status.published: Pubblicato
+panel.pages.status.routable: Raggiungibile
+panel.pages.summary: Riassunto
+panel.pages.template: Template
+panel.pages.text: Testo
+panel.pages.toggleChildren: Mostra/nascondi sottopagine
+panel.panel: Pannello di Amministrazione
+panel.register.createUser: Formwork è installato ma non è stato trovato alcun utente. Registrane uno ora.
+panel.register.register: Registra nuovo utente
+panel.request.error.postMaxSize: La richiesta HTTP con metodo POST supera la dimensione massima consentita
+panel.updates.availableForInstall: è disponibile per l'installazione
+panel.updates.check: Cerca aggiornamenti
+panel.updates.install: Installa
+panel.updates.installed: Aggiornamento installato!
+panel.updates.installPrompt: Installare l'aggiornamento?
+panel.updates.latestVersionAvailable: è l'ultima versione disponibile
+panel.updates.status.cannotCheck: Impossibile cercare aggiornamenti. Riprova più tardi.
+panel.updates.status.cannotInstall: Impossibile installare l'aggiornamento
+panel.updates.status.cannotMakeBackup: Impossibile eseguire il backup prima di aggiornare
+panel.updates.status.checking: Cerco aggiornamenti...
+panel.updates.status.found: Aggiornamento disponibile
+panel.updates.status.installing: Installo aggiornamento...
+panel.updates.status.upToDate: Aggiornato!
+panel.uploader.error: Impossibile caricare il file. %s.
+panel.uploader.error.alreadyExists: Un file con lo stesso nome esiste già
+panel.uploader.error.cannotMoveToDestination: Impossibile spostare il file caricato alla destinazione
+panel.uploader.error.cannotWrite: Impossibile salvare il file sul disco
+panel.uploader.error.destinationTooLong: Il percorso di destinazione è troppo lungo
+panel.uploader.error.fileName: Nome del file non valido
+panel.uploader.error.fileNameTooLong: Il nome del file è troppo lungo
+panel.uploader.error.hiddenFiles: Impossibile caricare i file che iniziano con '.'
+panel.uploader.error.mimeType: Il tipo di file non è consentito
+panel.uploader.error.noFile: Nessun file caricato
+panel.uploader.error.noTemp: Cartella temporanea mancante
+panel.uploader.error.partial: Il file è stato caricato solo parzialmente
+panel.uploader.error.phpExtension: Il caricamento è stato interrotto da un’estensione
+panel.uploader.error.size: Il file caricato supera la dimensione massima consentita
+panel.uploader.uploaded: File caricato
+panel.user.actions: Azioni
+panel.user.image: Immagine
+panel.user.image.uploaded: Immagine caricata
+panel.user.colorScheme: Combinazione di colori
+panel.user.colorScheme.auto: Automatica
+panel.user.colorScheme.dark: Scura
+panel.user.colorScheme.light: Chiara
+panel.user.email: E-mail
+panel.user.fullname: Nome completo
+panel.user.language: Lingua
+panel.user.lastAccess: Ultimo accesso
+panel.user.password: Password
+panel.user.password.typeNewPassword: Inserisci una nuova password per cambiarla...
+panel.user.role: Ruolo
+panel.user.role.admin: Amministratore
+panel.user.role.user: Utente
+panel.user.username: Nome utente
+panel.users.deleteUser: Elimina utente
+panel.users.deleteUser.prompt: Si è sicuri di eliminare l’utente? Questa azione non può essere annullata.
+panel.users.newUser: Nuovo utente
+panel.users.newUser.passwordSuggestion: almeno 8 caratteri
+panel.users.newUser.usernameSuggestion: da 3 a 20 lettere, numeri, - e _
+panel.users.options: Opzioni
+panel.users.user: Utente
+panel.users.user.cannotChangePassword: Impossibile cambiare la password di un altro utente. L’azione non è consentita.
+panel.users.user.cannotChangeRole: Impossible cambare il ruolo di %s. L’azione non è consentita.
+panel.users.user.cannotCreate.alreadyExists: Impossibile creare l’utente, un utente con lo stesso nome esiste già
+panel.users.user.cannotCreate.varMissing: Impossibile creare l’utente, manca una variabile
+panel.users.user.cannotDelete: Impossibile eliminare l’utente. Devi essere un amministratore e l’utente non deve essere connesso.
+panel.users.user.cannotEdit: Impossibile modificare l’utente %s. L’azione non è consentita.
+panel.users.user.created: Utente creato
+panel.users.user.deleted: Utente eliminato
+panel.users.user.edited: Dati utente aggiornati
+panel.users.user.notFound: Utente non trovato
+panel.users.userProfile: Profilo utente %s
+panel.users.users: Utenti
+panel.viewSite: Visualizza sito

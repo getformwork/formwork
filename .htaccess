@@ -8,6 +8,11 @@ AddDefaultCharset utf-8
     ## Enable rewrite rules
     RewriteEngine on
 
+    ## Let all URI be processed by index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.* index.php [L]
+
     ## Prevent direct access to Formwork folders but allow access to assets
     RewriteRule ^site/templates/assets/.* - [L]
     RewriteRule ^panel/assets/.* - [L]
@@ -16,11 +21,6 @@ AddDefaultCharset utf-8
     ## Prevent access to specific files
     RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L,NC]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L,NC]
-
-    ## Let all URI be processed by index.php
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^.* index.php
 </IfModule>
 
 ## Disable access to directory indexes

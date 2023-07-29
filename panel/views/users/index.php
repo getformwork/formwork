@@ -3,7 +3,7 @@
 <div class="header">
     <div class="header-title"><?= $this->translate('panel.users.users') ?></div>
     <div>
-        <button type="button" class="button-accent" data-modal="newUserModal"<?php if (!$panel->user()->permissions()->has('users.create')): ?> disabled<?php endif; ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
+        <button type="button" class="button-accent" data-modal="newUserModal"<?php if (!$panel->user()->permissions()->has('users.create')): ?> disabled<?php endif ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
     </div>
 </div>
 
@@ -26,9 +26,9 @@
             <div class="users-item-cell user-email" data-overflow-tooltip="true"><?= $this->escape($user->email()) ?></div>
             <div class="users-item-cell user-last-access" data-overflow-tooltip="true"><?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?></div>
             <div class="users-item-cell user-actions">
-                <button type="button" class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif; ?>><?= $this->icon('trash') ?></button>
+                <button type="button" class="button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
             </div>
         </div>
-<?php endforeach; ?>
+<?php endforeach ?>
     </div>
 </div>

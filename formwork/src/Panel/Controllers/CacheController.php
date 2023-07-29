@@ -2,20 +2,20 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Formwork;
-use Formwork\Response\JSONResponse;
+use Formwork\Cache\AbstractCache;
+use Formwork\Http\JsonResponse;
 
 class CacheController extends AbstractController
 {
     /**
      * Cache@clear action
      */
-    public function clear(): JSONResponse
+    public function clear(AbstractCache $cache): JsonResponse
     {
         $this->ensurePermission('cache.clear');
-        if (Formwork::instance()->config()->get('cache.enabled')) {
-            Formwork::instance()->cache()->clear();
+        if ($this->config->get('system.cache.enabled')) {
+            $cache->clear();
         }
-        return JSONResponse::success($this->translate('panel.cache.cleared'));
+        return JsonResponse::success($this->translate('panel.cache.cleared'));
     }
 }

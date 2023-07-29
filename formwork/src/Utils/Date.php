@@ -4,7 +4,7 @@ namespace Formwork\Utils;
 
 use DateTime;
 use Exception;
-use Formwork\Formwork;
+use Formwork\App;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -114,11 +114,11 @@ class Date
      */
     public static function formatDateTime(DateTime $dateTime, ?string $format = null, ?string $language = null): string
     {
-        $format ??= Formwork::instance()->config()->get('date.format');
+        $format ??= App::instance()->config()->get('system.date.dateFormat');
 
-        $language ??= Formwork::instance()->translations()->getCurrent()->code();
+        $language ??= App::instance()->translations()->getCurrent()->code();
 
-        $translation = Formwork::instance()->translations()->get($language);
+        $translation = App::instance()->translations()->get($language, fallbackIfInvalid: true);
 
         return preg_replace_callback(
             self::DATE_FORMAT_REGEX,
@@ -147,9 +147,9 @@ class Date
      */
     public static function formatDateTimeAsDistance(DateTime $dateTime, ?string $language = null): string
     {
-        $language ??= Formwork::instance()->translations()->getCurrent()->code();
+        $language ??= App::instance()->translations()->getCurrent()->code();
 
-        $translation = Formwork::instance()->translations()->get($language);
+        $translation = App::instance()->translations()->get($language, fallbackIfInvalid: true);
 
         $time = $dateTime->getTimestamp();
         $now = time();
@@ -194,8 +194,8 @@ class Date
     protected static function getDefaultFormats(): array
     {
         return [
-            Formwork::instance()->config()->get('date.format'),
-            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat'),
+            App::instance()->config()->get('system.date.dateFormat'),
+            App::instance()->config()->get('system.date.datetimeFormat'),
         ];
     }
 

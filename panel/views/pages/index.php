@@ -1,14 +1,14 @@
 <?php $this->layout('panel') ?>
 
 <div class="header">
-    <div class="header-title"><?= $this->translate('panel.pages.pages') ?> <span class="badge"><?= $formwork->site()->descendants()->count() ?></span></div>
+    <div class="header-title"><?= $this->translate('panel.pages.pages') ?> <span class="badge"><?= $app->site()->descendants()->count() ?></span></div>
     <div>
 <?php
     if ($panel->user()->permissions()->has('pages.create')):
-?>
+        ?>
         <button type="button" class="button-accent" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
 <?php
-    endif;
+    endif
 ?>
     </div>
 </div>

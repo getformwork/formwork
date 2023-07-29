@@ -3,7 +3,7 @@
 namespace Formwork\Files;
 
 use Formwork\Data\AbstractCollection;
-use Formwork\Utils\FileSystem;
+use Formwork\Utils\Arr;
 
 class FileCollection extends AbstractCollection
 {
@@ -11,31 +11,12 @@ class FileCollection extends AbstractCollection
 
     protected ?string $dataType = File::class;
 
-    /**
-     * Filter files by a given type
-     */
-    public function filterByType(string $type): self
+    public function __construct(array $data = [])
     {
-        $files = clone $this;
-        $files->data = array_filter($files->data, static fn (File $item): bool => $item->type() === $type);
-        return $files;
-    }
-
-    /**
-     * Create a collection getting files from a given path
-     *
-     * @param array|null $filenames Array of file names to include (all files by default)
-     */
-    public static function fromPath(string $path, ?array $filenames = null): self
-    {
-        $filenames ??= FileSystem::listFiles($path);
-
-        $files = [];
-
-        foreach ($filenames as $filename) {
-            $files[$filename] = new File($path . $filename);
+        if (!Arr::isAssociative($data)) {
+            $data = Arr::mapKeys($data, fn ($key, File $file) => $file->name());
         }
 
-        return new static($files);
+        parent::__construct($data);
     }
 }

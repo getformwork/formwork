@@ -3,14 +3,14 @@
 namespace Formwork\Pages;
 
 use Formwork\Files\File;
-use Formwork\Parsers\YAML;
+use Formwork\Parsers\Yaml;
 use Formwork\Utils\FileSystem;
 use UnexpectedValueException;
 
 class ContentFile extends File
 {
     /**
-     * Data from the YAML frontmatter
+     * Data from the Yaml frontmatter
      */
     protected array $frontmatter;
 
@@ -35,7 +35,7 @@ class ContentFile extends File
     }
 
     /**
-     * Get the data from the YAML frontmatter
+     * Get the data from the Yaml frontmatter
      */
     public function frontmatter(): array
     {
@@ -63,7 +63,7 @@ class ContentFile extends File
 
         [, $frontmatter, $content] = $matches;
 
-        $this->frontmatter = YAML::parse($frontmatter);
+        $this->frontmatter = Yaml::parse($frontmatter);
 
         $this->content = str_replace("\r\n", "\n", $content);
     }

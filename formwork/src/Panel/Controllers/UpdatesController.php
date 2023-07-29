@@ -2,11 +2,12 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Backupper;
+use Formwork\Cache\AbstractCache;
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Formwork;
-use Formwork\Panel\Backupper;
-use Formwork\Panel\Updater;
-use Formwork\Response\JSONResponse;
+use Formwork\Http\JsonResponse;
+use Formwork\Http\ResponseStatus;
+use Formwork\Updater;
 use RuntimeException;
 
 class UpdatesController extends AbstractController
@@ -14,23 +15,22 @@ class UpdatesController extends AbstractController
     /**
      * Updates@check action
      */
-    public function check(): JSONResponse
+    public function check(Updater $updater): JsonResponse
     {
         $this->ensurePermission('updates.check');
-        $updater = new Updater(['preferDistAssets' => true]);
         try {
             $upToDate = $updater->checkUpdates();
         } catch (RuntimeException $e) {
-            return JSONResponse::error($this->translate('panel.updates.status.cannotCheck'), 500, [
+            return JsonResponse::error($this->translate('panel.updates.status.cannotCheck'), ResponseStatus::InternalServerError, [
                 'status' => $this->translate('panel.updates.status.cannotCheck'),
             ]);
         }
         if ($upToDate) {
-            return JSONResponse::success($this->translate('panel.updates.status.upToDate'), 200, [
+            return JsonResponse::success($this->translate('panel.updates.status.upToDate'), data: [
                 'uptodate' => true,
             ]);
         }
-        return JSONResponse::success($this->translate('panel.updates.status.found'), 200, [
+        return JsonResponse::success($this->translate('panel.updates.status.found'), data: [
             'uptodate' => false,
             'release'  => $updater->latestRelease(),
         ]);
@@ -39,16 +39,15 @@ class UpdatesController extends AbstractController
     /**
      * Updates@update action
      */
-    public function update(): JSONResponse
+    public function update(Updater $updater, AbstractCache $cache): JsonResponse
     {
         $this->ensurePermission('updates.update');
-        $updater = new Updater(['force' => true, 'preferDistAssets' => true, 'cleanupAfterInstall' => true]);
-        if (Formwork::instance()->config()->get('updates.backupBefore')) {
-            $backupper = new Backupper();
+        if ($this->config->get('system.updates.backupBefore')) {
+            $backupper = new Backupper($this->config);
             try {
                 $backupper->backup();
             } catch (TranslatedException $e) {
-                return JSONResponse::error($this->translate('panel.updates.status.cannotMakeBackup'), 500, [
+                return JsonResponse::error($this->translate('panel.updates.status.cannotMakeBackup'), ResponseStatus::InternalServerError, [
                     'status' => $this->translate('panel.updates.status.cannotMakeBackup'),
                 ]);
             }
@@ -56,14 +55,14 @@ class UpdatesController extends AbstractController
         try {
             $updater->update();
         } catch (RuntimeException $e) {
-            return JSONResponse::error($this->translate('panel.updates.status.cannotInstall'), 500, [
+            return JsonResponse::error($this->translate('panel.updates.status.cannotInstall'), ResponseStatus::InternalServerError, [
                 'status' => $this->translate('panel.updates.status.cannotInstall'),
             ]);
         }
-        if (Formwork::instance()->config()->get('cache.enabled')) {
-            Formwork::instance()->cache()->clear();
+        if ($this->config->get('system.cache.enabled')) {
+            $cache->clear();
         }
-        return JSONResponse::success($this->translate('panel.updates.installed'), 200, [
+        return JsonResponse::success($this->translate('panel.updates.installed'), data: [
             'status' => $this->translate('panel.updates.status.upToDate'),
         ]);
     }

@@ -1,0 +1,174 @@
+title: System
+
+layout:
+    type: sections
+    sections:
+        dateTime:
+            collapsible: true
+            label: '{{panel.options.system.dateAndTime}}'
+            fields: [date.dateFormat, date.timeFormat, date.timezone, date.weekStarts]
+
+        languages:
+            collapsible: true
+            label: '{{panel.options.system.languages}}'
+            fields: [languages.available, languages.httpPreferred]
+
+        files:
+            collapsible: true
+            label: '{{panel.options.system.files}}'
+            fields: [files.allowedExtensions]
+
+        cache:
+            collapsible: true
+            label: '{{panel.options.system.cache}}'
+            fields: [cache.enabled, cache.time]
+
+        panel:
+            collapsible: true
+            label: '{{panel.options.system.adminPanel}}'
+            fields: [panel.translation, panel.logoutRedirect, panel.sessionTimeout, panel.colorScheme]
+
+        images:
+            collapsible: true
+            label: '{{panel.options.system.images}}'
+            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.jpegProgressive, uploads.processImages]
+
+        backup:
+            collapsible: true
+            label: '{{panel.options.system.backup}}'
+            fields: [backup.maxFiles]
+
+fields:
+    date.dateFormat:
+        type: select
+        label: '{{panel.options.system.dateAndTime.dateFormat}}'
+        options@: dateFormats.date
+
+    date.timeFormat:
+        type: select
+        label: '{{panel.options.system.dateAndTime.hourFormat}}'
+        options@: dateFormats.hour
+
+    date.timezone:
+        type: select
+        label: '{{panel.options.system.dateAndTime.timezone}}'
+        options@: dateFormats.timezones
+
+    date.weekStarts:
+        type: select
+        label: '{{panel.options.system.dateAndTime.firstWeekday}}'
+        options:
+            0: '{{panel.options.system.dateAndTime.firstWeekday.sunday}}'
+            1: '{{panel.options.system.dateAndTime.firstWeekday.monday}}'
+
+    languages.available:
+        type: tags
+        label: '{{panel.options.system.languages.availableLanguages}}'
+        placeholder: '{{panel.options.system.languages.availableLanguages.noLanguages}}'
+        pattern: '^[a-z]{2,3}$'
+        translate: [label, placeholder]
+        options@: languages.names
+
+    languages.httpPreferred:
+        type: togglegroup
+        label: '{{panel.options.system.languages.preferredLanguage}}'
+        options:
+            1: '{{panel.options.system.languages.preferredLanguage.enabled}}'
+            0: '{{panel.options.system.languages.preferredLanguage.disabled}}'
+
+    files.allowedExtensions:
+        type: tags
+        label: '{{panel.options.system.files.allowedExtensions}}'
+        pattern: '^\.[a-zA-Z0-9]+$'
+        required: true
+
+    cache.enabled:
+        type: togglegroup
+        label: '{{panel.options.system.cache}}'
+        options:
+            1: '{{panel.options.system.cache.enabled}}'
+            0: '{{panel.options.system.cache.disabled}}'
+
+    cache.time:
+        type: duration
+        label: '{{panel.options.system.cache.time}}'
+        min: 900
+        step: 900
+        intervals: [weeks, days, hours, minutes]
+        translate: [label]
+        required: true
+
+    panel.translation:
+        type: select
+        label: '{{panel.options.system.adminPanel.defaultLanguage}}'
+        translate: [label]
+        options@: formwork.panel.availableTranslations
+
+    panel.logoutRedirect:
+        type: togglegroup
+        label: '{{panel.options.system.adminPanel.logoutRedirectsTo}}'
+        options:
+            login: '{{panel.options.system.adminPanel.logoutRedirectsTo.login}}'
+            home: '{{panel.options.system.adminPanel.logoutRedirectsTo.home}}'
+
+    panel.sessionTimeout:
+        type: duration
+        label: '{{panel.options.system.adminPanel.sessionTimeout}}'
+        min: 0
+        unit: minutes
+        intervals: [hours, minutes]
+        translate: [label]
+        required: true
+
+    panel.colorScheme:
+        type: togglegroup
+        label: '{{panel.options.system.adminPanel.defaultColorScheme}}'
+        options:
+            light: '{{panel.options.system.adminPanel.defaultColorScheme.light}}'
+            dark: '{{panel.options.system.adminPanel.defaultColorScheme.dark}}'
+
+    images.jpegQuality:
+        type: range
+        label: '{{panel.options.system.images.jpegQuality}}'
+        min: 0
+        max: 100
+        step: 5
+        ticks: true
+
+    images.pngCompression:
+        type: range
+        label: '{{panel.options.system.images.pngCompressionLevel}}'
+        min: 0
+        max: 9
+        ticks: true
+
+    images.webpQuality:
+        type: range
+        label: '{{panel.options.system.images.webpQuality}}'
+        min: 0
+        max: 100
+        step: 5
+        ticks: true
+
+    images.jpegProgressive:
+        type: togglegroup
+        label: '{{panel.options.system.images.jpegSaveProgressive}}'
+        options:
+            1: '{{panel.options.system.images.jpegSaveProgressive.enabled}}'
+            0: '{{panel.options.system.images.jpegSaveProgressive.disabled}}'
+
+    uploads.processImages:
+        type: togglegroup
+        label: '{{panel.options.system.uploads.processImages}}'
+        options:
+            1: '{{panel.options.system.uploads.processImages.enabled}}'
+            0: '{{panel.options.system.uploads.processImages.disabled}}'
+
+    backup.maxFiles:
+        type: select
+        label: '{{panel.options.system.backup.backupFilesToKeep}}'
+        options:
+            5: 5
+            10: 10
+            15: 15
+            20: 20

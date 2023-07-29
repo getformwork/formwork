@@ -2,7 +2,7 @@
 
 namespace Formwork\Pages\Traits;
 
-use Formwork\Formwork;
+use Formwork\App;
 use Formwork\Router\Route;
 use Formwork\Utils\Str;
 use RuntimeException;
@@ -39,7 +39,7 @@ trait PaginationUri
             throw new UnexpectedValueException(sprintf('Cannot get the route for page %d, the pagination has only %d pages', $pageNumber, $this->length));
         }
 
-        $router = Formwork::instance()->router();
+        $router = App::instance()->router();
 
         if ($pageNumber === 1) {
             return $router->generateWith($this->baseRoute()->getName(), []);
@@ -55,7 +55,7 @@ trait PaginationUri
      */
     public function uri(int $pageNumber): string
     {
-        return Formwork::instance()->site()->uri($this->route($pageNumber));
+        return App::instance()->site()->uri($this->route($pageNumber));
     }
 
     /**
@@ -131,7 +131,7 @@ trait PaginationUri
             return $this->baseRoute;
         }
 
-        $router = Formwork::instance()->router();
+        $router = App::instance()->router();
         $routeName = Str::removeEnd($router->current()->getName(), static::$routeSuffix);
 
         if (!$router->routes()->has($routeName)) {
@@ -150,7 +150,7 @@ trait PaginationUri
             return $this->paginationRoute;
         }
 
-        $router = Formwork::instance()->router();
+        $router = App::instance()->router();
         $routeName = $this->baseRoute()->getName() . static::$routeSuffix;
 
         if (!$router->routes()->has($routeName)) {

@@ -2,8 +2,8 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Formwork;
-use Formwork\Parsers\YAML;
+use Formwork\Config;
+use Formwork\Parsers\Yaml;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 
@@ -21,12 +21,16 @@ class Translations
      */
     protected Translation $current;
 
+    public function __construct(protected Config $config)
+    {
+    }
+
     /**
      * Load a translation file
      */
     public function load(string $path): void
     {
-        if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yml') {
+        if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yaml') {
             $code = FileSystem::name($path);
             $this->data[$code][] = $path;
             unset($this->storage[$code]);
@@ -70,10 +74,16 @@ class Translations
         $data = [];
 
         foreach ($this->data[$code] as $file) {
-            $data = array_merge($data, YAML::parseFile($file));
+            $data = [...$data, ...Yaml::parseFile($file)];
         }
 
-        return $this->storage[$code] = new Translation($code, $data);
+        $translation = new Translation($code, $data);
+
+        if (($this->config->get('system.translations.fallback')) !== $code) {
+            $translation->setFallback($this->getFallback());
+        }
+
+        return $this->storage[$code] = $translation;
     }
 
     /**
@@ -97,17 +107,7 @@ class Translations
      */
     public function getFallback(): Translation
     {
-        $fallbackCode = Formwork::instance()->config()->get('translations.fallback');
+        $fallbackCode = $this->config->get('system.translations.fallback');
         return $this->get($fallbackCode);
-    }
-
-    /**
-     * Create a collection from the given path
-     */
-    public static function fromPath(string $path): self
-    {
-        $instance = new static();
-        $instance->loadFromPath($path);
-        return $instance;
     }
 }

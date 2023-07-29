@@ -2,20 +2,18 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Panel\Statistics;
-use Formwork\Parsers\JSON;
-use Formwork\Response\Response;
+use Formwork\Http\Response;
+use Formwork\Parsers\Json;
+use Formwork\Statistics;
 
 class DashboardController extends AbstractController
 {
     /**
      * Dashboard@index action
      */
-    public function index(): Response
+    public function index(Statistics $statistics): Response
     {
         $this->ensurePermission('dashboard');
-
-        $statistics = new Statistics();
 
         $this->modal('newPage', [
             'templates' => $this->site()->templates()->keys(),
@@ -37,8 +35,8 @@ class DashboardController extends AbstractController
                 'parent'    => null,
                 'orderable' => false,
                 'headers'   => true,
-                ], true),
-            'statistics' => JSON::encode($statistics->getChartData()),
-        ], true));
+                ], return: true),
+            'statistics' => Json::encode($statistics->getChartData()),
+        ], return: true));
     }
 }

@@ -5,7 +5,7 @@ namespace Formwork\Utils;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
-class HTML
+class Html
 {
     use StaticClass;
 

@@ -10,7 +10,7 @@
         'readonly'    => true,
         'required'    => $field->isRequired(),
         'disabled'    => $field->isDisabled(),
-        'hidden'      => $field->isHidden()
+        'hidden'      => $field->isHidden(),
     ]) ?>>
     <span class="input-reset" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
 </div>

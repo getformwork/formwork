@@ -11,5 +11,5 @@
     'autocomplete' => $field->get('autocomplete'),
     'required'     => $field->isRequired(),
     'disabled'     => $field->isDisabled(),
-    'hidden'       => $field->isHidden()
+    'hidden'       => $field->isHidden(),
 ]) ?>>

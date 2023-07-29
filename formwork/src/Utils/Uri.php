@@ -2,6 +2,7 @@
 
 namespace Formwork\Utils;
 
+use Formwork\App;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -25,7 +26,7 @@ class Uri
     public static function current(): string
     {
         if (!isset(static::$current)) {
-            static::$current = static::base() . rtrim(HTTPRequest::root(), '/') . HTTPRequest::uri();
+            static::$current = static::base() . rtrim(App::instance()->request()->root(), '/') . App::instance()->request()->uri();
         }
         return static::$current;
     }
@@ -36,7 +37,7 @@ class Uri
     public static function scheme(?string $uri = null): ?string
     {
         if ($uri === null) {
-            return HTTPRequest::isHTTPS() ? 'https' : 'http';
+            return App::instance()->request()->isSecure() ? 'https' : 'http';
         }
         $scheme = static::parseComponent($uri, PHP_URL_SCHEME);
         return $scheme !== null ? strtolower($scheme) : null;
@@ -164,7 +165,7 @@ class Uri
     public static function make(array $parts, ?string $uri = null, bool $forcePort = false): string
     {
         $givenParts = array_keys($parts);
-        $parts = array_merge(static::parse($uri), $parts);
+        $parts = [...static::parse($uri), ...$parts];
         $result = '';
         if (!empty($parts['host'])) {
             $scheme = strtolower($parts['scheme'] ?? 'http');

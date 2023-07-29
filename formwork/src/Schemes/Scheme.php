@@ -6,8 +6,10 @@ use Exception;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Fields\FieldCollection;
+use Formwork\Fields\FieldFactory;
 use Formwork\Fields\Layout\Layout;
-use Formwork\Formwork;
+use Formwork\Translations\Translations;
+use Formwork\Utils\Arr;
 
 class Scheme implements Arrayable
 {
@@ -25,13 +27,13 @@ class Scheme implements Arrayable
 
     protected SchemeOptions $options;
 
-    public function __construct(string $id, array $data)
+    public function __construct(string $id, array $data, protected Translations $translations, protected Schemes $schemes, protected FieldFactory $fieldFactory)
     {
         $this->id = $id;
         $this->data = $data;
 
         if (isset($this->data['extend'])) {
-            $this->extend($this->data['extend']);
+            $this->extend($this->schemes->get($this->data['extend']));
         }
 
         $this->data['title'] ??= $this->id;
@@ -65,20 +67,23 @@ class Scheme implements Arrayable
      */
     public function fields(): FieldCollection
     {
-        return new FieldCollection(
-            $this->data['fields'] ?? [],
-            new Layout($this->data['layout'] ?? ['type' => 'default', 'sections' => []])
-        );
+        $collection = new FieldCollection();
+
+        $collection->setMultiple(Arr::map($this->data['fields'] ?? [], fn ($data, $name) => $this->fieldFactory->make($name, $data, $collection)));
+
+        $layout = new Layout($this->data['layout'] ?? ['type' => 'default', 'sections' => []]);
+
+        $collection->setLayout($layout);
+
+        return $collection;
     }
 
-    protected function extend(string $id): void
+    protected function extend(Scheme $scheme): void
     {
-        if ($id === $this->id) {
+        if ($scheme->id === $this->id) {
             throw new Exception(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
         }
 
-        $parent = Formwork::instance()->schemes()->get($id);
-
-        $this->data = array_replace_recursive($parent->data, $this->data);
+        $this->data = array_replace_recursive($scheme->data, $this->data);
     }
 }

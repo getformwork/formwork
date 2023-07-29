@@ -9,5 +9,5 @@
     'disabled'     => $field->isDisabled(),
     'hidden'       => $field->isHidden(),
     'data-field'   => 'tags',
-    'data-options' => $field->has('options') ? Formwork\Parsers\JSON::encode((array) $field->get('options')) : null
+    'data-options' => $field->has('options') ? Formwork\Parsers\Json::encode((array) $field->get('options')) : null,
 ]) ?>>

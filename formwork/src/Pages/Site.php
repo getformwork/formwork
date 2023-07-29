@@ -2,17 +2,21 @@
 
 namespace Formwork\Pages;
 
+use Formwork\App;
+use Formwork\Config;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Fields\FieldCollection;
-use Formwork\Formwork;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
 use Formwork\Pages\Templates\TemplateCollection;
+use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Pages\Traits\PageData;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
+use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Scheme;
+use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 
@@ -96,13 +100,13 @@ class Site implements Arrayable
     /**
      * Create a new Site instance
      */
-    public function __construct(array $data = [])
-    {
+    public function __construct(
+        array $data,
+        protected App $app,
+        protected Config $config,
+        protected TemplateFactory $templateFactory
+    ) {
         $this->setMultiple($data);
-
-        $this->load();
-
-        $this->fields->setValues($this->data);
     }
 
     public function __toString()
@@ -110,9 +114,9 @@ class Site implements Arrayable
         return $this->title();
     }
 
-    public static function fromPath(string $path, array $data = []): static
+    public function site(): Site
     {
-        return new static(['path' => $path] + $data);
+        return $this;
     }
 
     /**
@@ -120,18 +124,24 @@ class Site implements Arrayable
      */
     public function defaults(): array
     {
-        $defaults = [
-            'title'          => 'Formwork',
-            'author'         => '',
-            'description'    => '',
-            'metadata'       => [],
-            'canonicalRoute' => null,
-            'routeAliases'   => [],
-        ];
+        $defaults = Yaml::parseFile(SYSTEM_PATH . '/config/site.yaml');
 
-        $defaults = array_merge($defaults, Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null));
+        return [...$defaults, ...Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null)];
+    }
 
-        return $defaults;
+    public function parent(): Page|Site|null
+    {
+        return $this->parent ??= null;
+    }
+
+    public function siblings(): PageCollection
+    {
+        return $this->siblings ??= new PageCollection([]);
+    }
+
+    public function inclusiveSiblings(): PageCollection
+    {
+        return $this->inclusiveSiblings ??= new PageCollection([$this->route() => $this]);
     }
 
     /**
@@ -240,16 +250,15 @@ class Site implements Arrayable
         }
 
         $defaults = [
-            'charset'      => Formwork::instance()->config()->get('charset'),
-            'author'       => $this->get('author'),
-            'description'  => $this->get('description'),
-            'generator'    => 'Formwork',
-            'routeAliases' => [],
+            'charset'     => $this->config->get('system.charset'),
+            'author'      => $this->get('author'),
+            'description' => $this->get('description'),
+            'generator'   => 'Formwork',
         ];
 
-        $data = array_filter(array_merge($defaults, $this->data['metadata']));
+        $data = array_filter([...$defaults, ...$this->data['metadata']]);
 
-        if (!Formwork::instance()->config()->get('metadata.setGenerator')) {
+        if (!$this->config->get('system.metadata.setGenerator')) {
             unset($data['generator']);
         }
 
@@ -288,7 +297,35 @@ class Site implements Arrayable
         if (isset($this->storage[$path])) {
             return $this->storage[$path];
         }
-        return $this->storage[$path] = Page::fromPath($path);
+        return $this->storage[$path] = new Page(['site' => $this, 'path' => $path]);
+    }
+
+    public function retrievePages(string $path, bool $recursive = false): PageCollection
+    {
+        /**
+         * @var array<string, Page>
+         */
+        $pages = [];
+
+        foreach (FileSystem::listDirectories($path) as $dir) {
+            $pagePath = FileSystem::joinPaths($path, $dir, DS);
+
+            if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
+                $page = $this->retrievePage($pagePath);
+
+                if ($page->hasContentFile()) {
+                    $pages[$page->route()] = $page;
+                }
+
+                if ($recursive) {
+                    $pages = [...$pages, ...$this->retrievePages($pagePath, recursive: true)->toArray()];
+                }
+            }
+        }
+
+        $pageCollection = new PageCollection($pages);
+
+        return $pageCollection->sortBy('relativePath');
     }
 
     /**
@@ -307,7 +344,7 @@ class Site implements Arrayable
             $found = false;
             foreach (FileSystem::listDirectories($path) as $dir) {
                 if (preg_replace(Page::NUM_REGEX, '', $dir) === $component) {
-                    $path .= $dir . DS;
+                    $path .= $dir . '/';
                     $found = true;
                     break;
                 }
@@ -319,7 +356,7 @@ class Site implements Arrayable
 
         $page = $this->retrievePage($path);
 
-        return $page->hasContentFile() ? $page : null;
+        return $page;
     }
 
     /**
@@ -343,7 +380,7 @@ class Site implements Arrayable
      */
     public function indexPage(): ?Page
     {
-        return $this->findPage(Formwork::instance()->config()->get('pages.index'));
+        return $this->findPage($this->config->get('system.pages.index'));
     }
 
     /**
@@ -351,7 +388,7 @@ class Site implements Arrayable
      */
     public function errorPage(): ?Page
     {
-        return $this->findPage(Formwork::instance()->config()->get('pages.error'));
+        return $this->findPage($this->config->get('system.pages.error'));
     }
 
     /**
@@ -386,17 +423,40 @@ class Site implements Arrayable
         return false;
     }
 
-    protected function load()
+    public function schemes(): Schemes
     {
-        $this->scheme = Formwork::instance()->schemes()->get('config.site');
+        return $this->app->schemes();
+    }
+
+    public function load()
+    {
+        $this->scheme = $this->app->schemes()->get('config.site');
 
         $this->fields = $this->scheme->fields();
 
-        $this->templates = TemplateCollection::fromPath(Formwork::instance()->config()->get('templates.path'));
+        $this->loadTemplates();
 
-        $this->data = array_merge($this->defaults(), $this->data);
+        $this->data = [...$this->defaults(), ...$this->data];
 
         $this->loadRouteAliases();
+
+        $this->fields->setValues($this->data);
+    }
+
+    protected function loadTemplates()
+    {
+        $path = $this->config->get('system.templates.path');
+
+        $templates = [];
+
+        foreach (FileSystem::listFiles($path) as $file) {
+            if (FileSystem::extension($file) === 'php') {
+                $name = FileSystem::name($file);
+                $templates[$name] = $this->templateFactory->make($name);
+            }
+        }
+
+        $this->templates = new TemplateCollection($templates);
     }
 
     /**
@@ -409,7 +469,7 @@ class Site implements Arrayable
 
     protected function setPath(string $path): void
     {
-        $this->path = FileSystem::normalizePath($path . DS);
+        $this->path = FileSystem::normalizePath($path . '/');
 
         $this->relativePath = DS;
 

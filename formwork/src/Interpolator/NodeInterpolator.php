@@ -86,20 +86,20 @@ class NodeInterpolator
                 $value = $parent[$name];
             } elseif (is_object($parent)) {
                 switch (true) {
+                    case method_exists($parent, $name):
+                        $value = $parent->{$name}(...$arguments);
+                        break;
+
+                    case is_callable([$parent, '__call']):
+                        $value = $parent->__call($name, $arguments);
+                        break;
+
                     case property_exists($parent, $name) && $node->arguments() === null:
                         $value = $parent->{$name};
                         break;
 
                     case is_callable([$parent, '__get']) && $node->arguments() === null:
                         $value = $parent->__get($name);
-                        break;
-
-                    case method_exists($parent, $name) && $node->arguments() !== null:
-                        $value = $parent->{$name}(...$arguments);
-                        break;
-
-                    case is_callable([$parent, '__call']) && $node->arguments() !== null:
-                        $value = $parent->__call($name, $arguments);
                         break;
 
                     case defined($parent::class . '::' . $name) && $node->arguments() === null:

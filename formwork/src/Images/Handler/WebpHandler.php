@@ -1,0 +1,252 @@
+<?php
+
+namespace Formwork\Images\Handler;
+
+use Formwork\Images\ColorProfile\ColorProfile;
+use Formwork\Images\ColorProfile\ColorSpace;
+use Formwork\Images\Decoder\WebpDecoder;
+use Formwork\Images\Exif\ExifData;
+use Formwork\Images\ImageInfo;
+use GdImage;
+use InvalidArgumentException;
+use RuntimeException;
+
+class WebpHandler extends AbstractHandler
+{
+    protected const RIFF_HEADER = 'RIFF';
+
+    protected const ALPHA_FLAG = 0b00010000;
+
+    protected const ICC_FLAG = 0b00100000;
+
+    protected const EXIF_FLAG = 0b00001000;
+
+    public function getInfo(): ImageInfo
+    {
+        $info = [
+            'mimeType'             => 'image/webp',
+            'width'                => 0,
+            'height'               => 0,
+            'colorSpace'           => ColorSpace::RGB,
+            'colorDepth'           => 8,
+            'colorNumber'          => null,
+            'hasAlphaChannel'      => false,
+            'isAnimation'          => false,
+            'animationFrames'      => null,
+            'animationRepeatCount' => null,
+        ];
+
+        $isVP8ChunkParsed = false;
+
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8X') {
+                $info['hasAlphaChannel'] = ((ord($chunk['value'][0]) >> 4) & 0x01) === 1;
+                $info['width'] = unpack('V', substr($chunk['value'], 4, 3) . "\x00")[1] + 1;
+                $info['height'] = unpack('V', substr($chunk['value'], 7, 3) . "\x00")[1] + 1;
+                $isVP8ChunkParsed = true;
+            }
+
+            if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8 ') {
+                $info['width'] = unpack('v', $chunk['value'], 6)[1] & 0x3fff;
+                $info['height'] = unpack('v', $chunk['value'], 8)[1] & 0x3fff;
+                $isVP8ChunkParsed = true;
+            }
+
+            if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8L') {
+                $bits = unpack('V', $chunk['value'], 1)[1];
+                $info['width'] = ($bits & 0x3fff) + 1;
+                $info['height'] = (($bits >> 14) & 0x3fff) + 1;
+                $info['hasAlphaChannel'] = (($bits >> 28) & 0x01) === 1;
+                $isVP8ChunkParsed = true;
+            }
+
+            if ($info['hasAlphaChannel'] === false && $chunk['type'] === 'ALPH') {
+                $info['hasAlphaChannel'] = true;
+            }
+
+            if ($chunk['type'] === 'ANIM') {
+                $info['isAnimation'] = true;
+                $info['animationRepeatCount'] = unpack('v', $chunk['value'], 4)[1];
+            }
+
+            if ($info['isAnimation'] && $chunk['type'] === 'ANMF') {
+                $info['animationFrames']++;
+            }
+        }
+
+        return new ImageInfo($info);
+    }
+
+    public static function supportsColorProfile(): bool
+    {
+        return true;
+    }
+
+    public function hasColorProfile(): bool
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'ICCP') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getColorProfile(): ?ColorProfile
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'ICCP') {
+                return new ColorProfile($chunk['value']);
+            }
+        }
+
+        return null;
+    }
+
+    public function setColorProfile(ColorProfile $profile): void
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'VP8X') {
+                $VP8XFlags = ord($chunk['value'][0]) | self::ICC_FLAG;
+                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
+                $ICCPChunk = $this->encodeChunk('ICCP', $profile->getData());
+                $this->data = substr_replace($this->data, $ICCPChunk, $chunk['position'], 0);
+                $this->updateRIFFHeader();
+                break;
+            }
+        }
+    }
+
+    public function removeColorProfile(): void
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'ICCP') {
+                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
+                $chunk['position'] = $chunk['offset'];
+                $this->updateRIFFHeader();
+            }
+
+            if ($chunk['type'] === 'VP8X') {
+                $VP8XFlags = ord($chunk['value'][0]) & ~self::ICC_FLAG;
+                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
+            }
+        }
+    }
+
+    public static function supportsExifData(): bool
+    {
+        return true;
+    }
+
+    public function hasExifData(): bool
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'EXIF') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getExifData(): ?ExifData
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'EXIF') {
+                return new ExifData($chunk['value']);
+            }
+        }
+
+        return null;
+    }
+
+    public function setExifData(ExifData $data): void
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'VP8X') {
+                $VP8XFlags = ord($chunk['value'][0]) | self::EXIF_FLAG;
+                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
+            }
+
+            if (in_array($chunk['type'], ['VP8 ', 'VP8L'], true)) {
+                $ExifChunk = $this->encodeChunk('EXIF', $data->getData());
+                $this->data = substr_replace($this->data, $ExifChunk, $chunk['position'], 0);
+                $this->updateRIFFHeader();
+            }
+        }
+    }
+
+    public function removeExifData(): void
+    {
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'EXIF') {
+                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
+                $chunk['position'] = $chunk['offset'];
+                $this->updateRIFFHeader();
+            }
+
+            if ($chunk['type'] === 'VP8X') {
+                $VP8XFlags = ord($chunk['value'][0]) & ~self::EXIF_FLAG;
+                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
+            }
+        }
+    }
+
+    protected function updateRIFFHeader(): void
+    {
+        if (strpos($this->data, self::RIFF_HEADER) !== 0) {
+            throw new InvalidArgumentException('Invalid WEBP data');
+        }
+        $this->data = substr_replace($this->data, pack('V', strlen($this->data) - 8), 4, 4);
+    }
+
+    protected function encodeChunk(string $type, string $data): string
+    {
+        $length = strlen($data);
+        $data = $length % 2 !== 0 ? $data . "\x00" : $data;
+        return $type . pack('V', $length) . $data;
+    }
+
+    protected function getDecoder(): WebpDecoder
+    {
+        return new WebpDecoder();
+    }
+
+    protected function setDataFromGdImage(GdImage $image): void
+    {
+        ob_start();
+
+        if (imagewebp($image, null, $this->options['webpQuality']) === false) {
+            throw new RuntimeException('Cannot set data from GdImage');
+        }
+
+        $this->data = ob_get_clean();
+
+        $this->setVP8XChunk();
+    }
+
+    protected function setVP8XChunk(): void
+    {
+        if (strpos($this->data, 'VP8X', 12) === false) {
+            $info = $this->getInfo();
+            $data = chr(self::ALPHA_FLAG) . "\x0\x0\x0" . substr(pack('V', $info->width() - 1), 0, 3) . substr(pack('V', $info->height() - 1), 0, 3);
+            $chunk = $this->encodeChunk('VP8X', $data);
+            $this->data = substr_replace($this->data, $chunk, 12, 0);
+            $this->updateRIFFHeader();
+        }
+    }
+
+    protected function toGdImage(): GdImage
+    {
+        $image = imagecreatefromstring($this->data);
+
+        $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
+        imagecolortransparent($image, $transparent);
+        imagefill($image, 0, 0, $transparent);
+
+        return $image;
+    }
+}

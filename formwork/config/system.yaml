@@ -1,0 +1,138 @@
+backup:
+    path: '${%ROOT_PATH%}/backup'
+    name: formwork-backup
+    maxExecutionTime: 180
+    maxFiles: 10
+    ignore:
+        - '.git/*'
+        - '.github/*'
+        - '*.DS_Store'
+        - '*.gitignore'
+        - '*.gitkeep'
+        - 'backup/*'
+        - '*.yarn/*'
+
+cache:
+    enabled: false
+    path: '${%ROOT_PATH%}/cache'
+    time: 604800
+
+charset: utf-8
+
+content:
+    path: '${%ROOT_PATH%}/site/content'
+    extension: .md
+
+date:
+    dateFormat: Y-m-d
+    timeFormat: 'h:i A'
+    datetimeFormat: '${system.date.dateFormat} ${system.date.timeFormat}'
+    timezone: UTC
+    weekStarts: 0
+
+errors:
+    setHandlers: true
+
+fields:
+    path: '${%SYSTEM_PATH%}/fields'
+    dynamic:
+        vars:
+            file: '${%SYSTEM_PATH%}/fields/dynamic/vars.php'
+
+files:
+    allowedExtensions:
+        - .jpg
+        - .jpeg
+        - .png
+        - .gif
+        - .svg
+        - .webp
+        - .pdf
+
+images:
+    jpegQuality: 85
+    jpegProgressive: true
+    pngCompression: 6
+    webpQuality: 85
+    gifColors: 256
+    processPath: ${%ROOT_PATH%}/assets/images
+    preserveColorProfile: true
+    preserveExifData: true
+
+languages:
+    available: {  }
+    httpPreferred: false
+
+metadata:
+    setGenerator: true
+
+pages:
+    index: index
+    error: error
+
+panel:
+    enabled: true
+    root: panel
+    path: '${%ROOT_PATH%}/panel'
+    translation: en
+    loginAttempts: 10
+    loginResetTime: 300
+    logoutRedirect: login
+    sessionTimeout: 20
+    userImageSize: 512
+    colorScheme: light
+    paths:
+        accounts: '${system.panel.path}/accounts'
+        assets: '${system.panel.path}/assets'
+        logs: '${system.panel.path}/logs'
+        roles: '${system.panel.path}/roles'
+
+routes:
+    files:
+        panel: '${system.panel.path}/routes.php'
+        system: '${%SYSTEM_PATH%}/routes.php'
+
+schemes:
+    paths:
+        panel: '${system.panel.path}/schemes'
+        system: '${%SYSTEM_PATH%}/schemes'
+        site: '${%ROOT_PATH%}/site/schemes'
+
+statistics:
+    enabled: true
+    path: '${system.panel.paths.logs}/statistics'
+
+templates:
+    path: '${%ROOT_PATH%}/site/templates'
+    extension: .php
+
+translations:
+    fallback: en
+    paths:
+        panel: '${system.panel.path}/translations'
+        system: '${%SYSTEM_PATH%}/translations'
+
+updates:
+    time: 900
+    force: true
+    tempFile: '${%ROOT_PATH%}/.formwork-update.zip'
+    preferDistAssets: true
+    backupBefore: true
+    cleanupAfterInstall: true
+    registryFile: '${system.panel.paths.logs}/updates.json'
+    ignore:
+        - 'assets/*'
+        - 'backup/*'
+        - 'cache/*'
+        - 'panel/accounts/*'
+        - 'panel/assets/images/users/*'
+        - 'panel/logs/*'
+        - 'site/*'
+
+uploads:
+    processImages: true
+
+views:
+    paths:
+        panel: '${system.panel.path}/views'
+        system: '${%SYSTEM_PATH%}/views'

@@ -21,12 +21,10 @@ class Permissions
 
     /**
      * Create a new Permissions instance
-     *
-     * @param string $name Name of the role
      */
-    public function __construct(string $name)
+    public function __construct(array $permissions)
     {
-        $this->permissions = array_merge($this->permissions, UserCollection::getRolePermissions($name));
+        $this->permissions = [...$this->permissions, ...$permissions];
     }
 
     /**

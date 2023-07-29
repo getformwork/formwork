@@ -2,11 +2,14 @@
 
 namespace Formwork\Panel\Users;
 
+use Formwork\App;
+use Formwork\Config;
 use Formwork\Data\Contracts\Arrayable;
-use Formwork\Formwork;
+use Formwork\Http\Request;
+use Formwork\Log\Registry;
+use Formwork\Panel\Panel;
 use Formwork\Panel\Security\Password;
-use Formwork\Utils\Registry;
-use Formwork\Utils\Session;
+use Formwork\Utils\FileSystem;
 
 class User implements Arrayable
 {
@@ -77,14 +80,14 @@ class User implements Arrayable
     /**
      * Create a new User instance
      */
-    public function __construct(array $data)
+    public function __construct(array $data, array $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
-        $this->data = array_merge($this->defaults, $data);
+        $this->data = [...$this->defaults, ...$data];
         foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
             $this->{$var} = $this->data[$var];
         }
 
-        $this->permissions = new Permissions($this->role);
+        $this->permissions = new Permissions($permissions);
     }
 
     public function __debugInfo(): array
@@ -144,7 +147,18 @@ class User implements Arrayable
             return $this->image;
         }
 
-        return $this->image = new UserImage($this->data['image']);
+        $filename = $this->data['image'];
+
+        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
+
+        if ($filename !== null && FileSystem::exists($path)) {
+            $uri = $this->panel->realUri('/assets/images/users/' . basename($path));
+            $path = $path;
+        } else {
+            $uri = $this->panel->realUri('/assets/images/user-image.svg');
+        }
+
+        return $this->image = new UserImage($path, $uri);
     }
 
     /**
@@ -168,7 +182,7 @@ class User implements Arrayable
      */
     public function isLogged(): bool
     {
-        return Session::get('FORMWORK_USERNAME') === $this->username;
+        return $this->request->session()->get('FORMWORK_USERNAME') === $this->username;
     }
 
     /**
@@ -219,7 +233,7 @@ class User implements Arrayable
         if (isset($this->lastAccess)) {
             return $this->lastAccess;
         }
-        $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('panel.paths.logs') . 'lastAccess.json');
+        $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
         $lastAccess = (int) $lastAccessRegistry->get($this->username);
         return $this->lastAccess = $lastAccess ?: null;
     }

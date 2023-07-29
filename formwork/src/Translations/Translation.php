@@ -2,7 +2,6 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Formwork;
 use InvalidArgumentException;
 
 class Translation
@@ -17,10 +16,17 @@ class Translation
      */
     protected array $data = [];
 
+    protected ?Translation $fallback = null;
+
     public function __construct(string $code, array $data)
     {
         $this->code = $code;
         $this->data = $data;
+    }
+
+    public function setFallback(?Translation $fallback): void
+    {
+        $this->fallback = $fallback;
     }
 
     /**
@@ -51,10 +57,8 @@ class Translation
             return $this->data[$key];
         }
 
-        $fallback = Formwork::instance()->translations()->getFallback();
-
-        if ($fallback->code() !== $this->code) {
-            return $fallback->translate($key, ...$arguments);
+        if ($this->fallback?->code() !== $this->code) {
+            return $this->fallback->translate($key, ...$arguments);
         }
 
         throw new InvalidArgumentException(sprintf('Invalid language string "%s"', $key));

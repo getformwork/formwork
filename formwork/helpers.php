@@ -1,55 +1,54 @@
 <?php
 
-use Formwork\Formwork;
+use Formwork\App;
+use Formwork\Http\Utils\Header;
 use Formwork\Parsers\Markdown;
 use Formwork\Utils\Date;
-use Formwork\Utils\Header;
-use Formwork\Utils\HTML;
+use Formwork\Utils\Html;
 use Formwork\Utils\Str;
 use Formwork\Utils\Text;
 
-return [
-    'attr' => [HTML::class, 'attributes'],
+return function (App $app) {
+    return [
+        'attr' => Html::attributes(...),
 
-    'escape' => [Str::class, 'escape'],
+        'escape' => Str::escape(...),
 
-    'escapeAttr' => [Str::class, 'escapeAttr'],
+        'escapeAttr' => Str::escapeAttr(...),
 
-    'removeHTML' => [Str::class, 'removeHTML'],
+        'removeHTML' => Str::removeHTML(...),
 
-    'slug' => [Str::class, 'slug'],
+        'slug' => Str::slug(...),
 
-    'countWords' => [Text::class, 'countWords'],
+        'countWords' => Text::countWords(...),
 
-    'truncate' => [Text::class, 'truncate'],
+        'truncate' => Text::truncate(...),
 
-    'truncateWords' => [Text::class, 'truncateWords'],
+        'truncateWords' => Text::truncateWords(...),
 
-    'readingTime' => [Text::class, 'readingTime'],
+        'readingTime' => Text::readingTime(...),
 
-    'redirect' => [Header::class, 'redirect'],
+        'redirect' => Header::redirect(...),
 
-    'markdown' => static function (string $markdown): string {
-        $currentPage = Formwork::instance()->site()->currentPage();
-        return Markdown::parse(
-            $markdown,
-            ['baseRoute' => $currentPage ? $currentPage->route() : '/']
-        );
-    },
+        'markdown' => static function (string $markdown) use ($app): string {
+            $currentPage = $app->site()->currentPage();
+            return Markdown::parse(
+                $markdown,
+                ['baseRoute' => $currentPage ? $currentPage->route() : '/']
+            );
+        },
 
-    'date' => static function (int $timestamp, ?string $format = null): string {
-        return Date::formatTimestamp(
-            $timestamp,
-            $format ?? Formwork::instance()->config()->get('date.format')
-        );
-    },
+        'date' => static function (int $timestamp, ?string $format = null) use ($app): string {
+            return Date::formatTimestamp(
+                $timestamp,
+                $format ?? $app->config()->get('system.date.dateFormat')
+            );
+        },
 
-    'datetime' => static function (int $timestamp): string {
-        return Date::formatTimestamp(
-            $timestamp,
-            Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')
-        );
-    },
+        'datetime' => static function (int $timestamp) use ($app): string {
+            return Date::formatTimestamp($timestamp, $app->config()->get('system.date.datetimeFormat'));
+        },
 
-    'translate' => fn (string $key, ...$arguments) => Formwork::instance()->translations()->getCurrent()->translate($key, ...$arguments),
-];
+        'translate' => fn (string $key, ...$arguments) => $app->translations()->getCurrent()->translate($key, ...$arguments),
+    ];
+};

@@ -9,11 +9,10 @@ use Formwork\Data\Traits\DataMultipleSetter;
 use Formwork\Exceptions\RecursionException;
 use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Fields\Exceptions\ValidationException;
-use Formwork\Formwork;
 use Formwork\Traits\Methods;
+use Formwork\Translations\Translation;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use UnexpectedValueException;
 
@@ -51,6 +50,8 @@ class Field implements Arrayable
      */
     protected bool $validating = false;
 
+    protected Translation $translation;
+
     /**
      * Create a new Field instance
      */
@@ -65,8 +66,6 @@ class Field implements Arrayable
         if ($this->has('fields')) {
             throw new UnexpectedValueException('Fields may not have other fields inside');
         }
-
-        $this->loadMethods();
     }
 
     public function __toString(): string
@@ -296,13 +295,14 @@ class Field implements Arrayable
     /**
      * Load field methods
      */
-    protected function loadMethods(): void
+    public function setMethods(array $methods): void
     {
-        $config = Formwork::instance()->config()->get('fields.path') . $this->get('type') . '.php';
+        $this->methods = $methods;
+    }
 
-        if (FileSystem::exists($config)) {
-            $this->methods = include $config;
-        }
+    public function setTranslation(Translation $translation)
+    {
+        $this->translation = $translation;
     }
 
     /**
@@ -328,8 +328,11 @@ class Field implements Arrayable
      */
     protected function translate($value)
     {
-        $translation = Formwork::instance()->translations()->getCurrent();
-        $language = $translation->code();
+        if (!isset($this->translation)) {
+            return $value;
+        }
+
+        $language = $this->translation->code();
 
         if (is_array($value)) {
             if (isset($value[$language])) {
@@ -339,7 +342,7 @@ class Field implements Arrayable
             return $value;
         }
 
-        $interpolate = fn ($value) => is_string($value) ? Str::interpolate($value, fn ($key) => $translation->translate($key)) : $value;
+        $interpolate = fn ($value) => is_string($value) ? Str::interpolate($value, fn ($key) => $this->translation->translate($key)) : $value;
 
         if (is_array($value)) {
             return Arr::map($value, $interpolate);

@@ -2,19 +2,23 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\App;
+use Formwork\Config;
 use Formwork\Controllers\AbstractController as BaseAbstractController;
-use Formwork\Formwork;
+use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
+use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Site;
 use Formwork\Panel\Panel;
-use Formwork\Panel\Security\CSRFToken;
 use Formwork\Panel\Users\User;
-use Formwork\Parsers\JSON;
-use Formwork\Parsers\PHP;
-use Formwork\Response\RedirectResponse;
+use Formwork\Parsers\Json;
+use Formwork\Router\Router;
+use Formwork\Security\CsrfToken;
+use Formwork\Services\Container;
+use Formwork\Translations\Translations;
 use Formwork\Utils\Date;
-use Formwork\Utils\HTTPRequest;
 use Formwork\Utils\Uri;
-use Formwork\View\View;
+use Formwork\View\ViewFactory;
 
 abstract class AbstractController extends BaseAbstractController
 {
@@ -23,12 +27,27 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected array $modals = [];
 
+    public function __construct(
+        private Container $container,
+        protected App $app,
+        protected Config $config,
+        protected ViewFactory $viewFactory,
+        protected Request $request,
+        protected Router $router,
+        protected CsrfToken $csrfToken,
+        protected Translations $translations,
+        protected Site $site,
+        protected Panel $panel
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Return panel instance
      */
     protected function panel(): Panel
     {
-        return Formwork::instance()->panel();
+        return $this->panel;
     }
 
     /**
@@ -36,56 +55,35 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected function site(): Site
     {
-        return Formwork::instance()->site();
+        return $this->site;
     }
 
-    /**
-     * Redirect to a given route
-     *
-     * @param int $code HTTP redirect status code
-     */
-    protected function redirect(string $route, int $code = 302): RedirectResponse
+    protected function generateRoute(string $name, array $params = [])
     {
-        return new RedirectResponse($this->panel()->uri($route), $code);
+        return $this->router->generate($name, $params);
     }
 
-    /**
-     * Redirect to the site index page
-     *
-     * @param int $code HTTP redirect status code
-     */
-    protected function redirectToSite(int $code = 302): RedirectResponse
+    protected function redirect(string $route, ResponseStatus $status = ResponseStatus::Found): RedirectResponse
     {
-        return new RedirectResponse($this->site()->uri(), $code);
-    }
-
-    /**
-     * Redirect to the administration panel
-     *
-     * @param int $code HTTP redirect status code
-     */
-    protected function redirectToPanel(int $code = 302): RedirectResponse
-    {
-        return $this->redirect('/', $code);
+        return new RedirectResponse($this->site->uri($route, includeLanguage: false), $status);
     }
 
     /**
      * Redirect to the referer page
      *
-     * @param int    $code    HTTP redirect status code
      * @param string $default Default route if HTTP referer is not available
      */
-    protected function redirectToReferer(int $code = 302, string $default = '/'): RedirectResponse
+    protected function redirectToReferer(ResponseStatus $status = ResponseStatus::Found, string $default = '/'): RedirectResponse
     {
-        if (HTTPRequest::validateReferer($this->panel()->uri('/')) && HTTPRequest::referer() !== Uri::current()) {
-            return new RedirectResponse(HTTPRequest::referer(), $code);
+        if ($this->request->validateReferer($this->panel()->uri('/')) && $this->request->referer() !== Uri::current()) {
+            return new RedirectResponse($this->request->referer(), $status);
         }
-        return new RedirectResponse($this->panel()->uri($default), $code);
+        return new RedirectResponse($this->panel()->uri($default), $status);
     }
 
     protected function translate(...$arguments)
     {
-        return Formwork::instance()->translations()->getCurrent()->translate(...$arguments);
+        return $this->translations->getCurrent()->translate(...$arguments);
     }
 
     /*
@@ -98,14 +96,14 @@ abstract class AbstractController extends BaseAbstractController
             'location'    => $this->name,
             'site'        => $this->site(),
             'panel'       => $this->panel(),
-            'csrfToken'   => CSRFToken::get(),
+            'csrfToken'   => $this->csrfToken->get(),
             'modals'      => implode('', $this->modals),
             'colorScheme' => $this->getColorScheme(),
-            'appConfig'   => JSON::encode([
+            'appConfig'   => Json::encode([
                 'baseUri'   => $this->panel()->panelUri(),
                 'DateInput' => [
-                    'weekStarts' => Formwork::instance()->config()->get('date.weekStarts'),
-                    'format'     => Date::formatToPattern(Formwork::instance()->config()->get('date.format') . ' ' . Formwork::instance()->config()->get('date.timeFormat')),
+                    'weekStarts' => $this->config->get('system.date.weekStarts'),
+                    'format'     => Date::formatToPattern($this->config->get('system.date.datetimeFormat')),
                     'time'       => true,
                     'labels'     => [
                         'today'    => $this->translate('date.today'),
@@ -142,8 +140,9 @@ abstract class AbstractController extends BaseAbstractController
     protected function ensurePermission(string $permission): void
     {
         if (!$this->user()->permissions()->has($permission)) {
-            $errors = new ErrorsController();
-            $errors->forbidden()->send();
+            $this->container->build(ErrorsController::class)
+                ->forbidden()
+                ->send();
             exit;
         }
     }
@@ -156,7 +155,7 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected function modal(string $name, array $data = []): void
     {
-        $this->modals[] = $this->view('modals.' . $name, $data, true);
+        $this->modals[] = $this->view('modals.' . $name, $data, return: true);
     }
 
     /**
@@ -170,11 +169,10 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected function view(string $name, array $data = [], bool $return = false)
     {
-        $view = new View(
+        $view = $this->viewFactory->make(
             $name,
-            array_merge($this->defaults(), $data),
-            Formwork::instance()->config()->get('views.paths.panel'),
-            PHP::parseFile(PANEL_PATH . 'helpers.php')
+            [...$this->defaults(), ...$data],
+            $this->config->get('system.views.paths.panel'),
         );
         return $view->render($return);
     }
@@ -184,10 +182,10 @@ abstract class AbstractController extends BaseAbstractController
      */
     private function getColorScheme(): string
     {
-        $default = Formwork::instance()->config()->get('panel.colorScheme');
+        $default = $this->config->get('system.panel.colorScheme');
         if ($this->panel()->isLoggedIn()) {
             if ($this->user()->colorScheme() === 'auto') {
-                return HTTPRequest::cookies()->get('formwork_preferred_color_scheme', $default);
+                return $this->request->cookies()->get('formwork_preferred_color_scheme', $default);
             }
             return $this->user()->colorScheme();
         }

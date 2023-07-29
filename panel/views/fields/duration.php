@@ -12,5 +12,5 @@
     'hidden'         => $field->isHidden(),
     'data-field'     => 'duration',
     'data-unit'      => $field->get('unit', 'seconds'),
-    'data-intervals' => $field->has('intervals') ? implode(', ', $field->get('intervals')) : null
+    'data-intervals' => $field->has('intervals') ? implode(', ', $field->get('intervals')) : null,
 ]) ?>>

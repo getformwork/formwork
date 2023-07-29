@@ -3,9 +3,6 @@
 namespace Formwork\Panel\Users;
 
 use Formwork\Data\AbstractCollection;
-use Formwork\Formwork;
-use Formwork\Parsers\YAML;
-use Formwork\Utils\FileSystem;
 
 class UserCollection extends AbstractCollection
 {
@@ -13,27 +10,12 @@ class UserCollection extends AbstractCollection
 
     protected ?string $dataType = User::class;
 
-    /**
-     * All available roles
-     */
-    protected static array $roles = [];
+    protected array $roles;
 
-    /**
-     * Load all users and roles
-     */
-    public static function load(): self
+    public function __construct(array $data, array $roles)
     {
-        foreach (FileSystem::listFiles($path = Formwork::instance()->config()->get('panel.paths.roles')) as $file) {
-            $parsedData = YAML::parseFile($path . $file);
-            $role = FileSystem::name($file);
-            static::$roles[$role] = $parsedData;
-        }
-        $users = [];
-        foreach (FileSystem::listFiles($path = Formwork::instance()->config()->get('panel.paths.accounts')) as $file) {
-            $parsedData = YAML::parseFile($path . $file);
-            $users[$parsedData['username']] = new User($parsedData);
-        }
-        return new static($users);
+        parent::__construct($data);
+        $this->roles = $roles;
     }
 
     /**
@@ -42,17 +24,9 @@ class UserCollection extends AbstractCollection
     public function availableRoles(): array
     {
         $roles = [];
-        foreach (static::$roles as $role => $data) {
+        foreach ($this->roles as $role => $data) {
             $roles[$role] = $data['title'];
         }
         return $roles;
-    }
-
-    /**
-     * Get permissions for a given role
-     */
-    public static function getRolePermissions(string $role): array
-    {
-        return (array) static::$roles[$role]['permissions'];
     }
 }

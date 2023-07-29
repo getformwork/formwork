@@ -1,0 +1,59 @@
+title: Site
+
+layout:
+    type: sections
+    sections:
+        info:
+            label: '{{panel.options.site.info}}'
+            collapsible: true
+            fields: [title, description]
+
+        maintenance:
+            label: '{{panel.options.site.maintenance}}'
+            collapsible: true
+            fields: [maintenance.enabled, maintenance.page]
+
+        advanced:
+            label: '{{panel.options.site.advanced}}'
+            collapsible: true
+            collapsed: true
+            fields: [metadata, routeAliases]
+
+fields:
+    title:
+        type: text
+        label: '{{panel.options.site.info.title}}'
+        required: true
+
+    description:
+        type: textarea
+        label: '{{panel.options.site.info.description}}'
+        required: false
+
+    maintenance.enabled:
+        type: togglegroup
+        label: '{{panel.options.site.maintenance.enabled}}'
+        options:
+            1: '{{panel.options.site.maintenance.enabled.enabled}}'
+            0: '{{panel.options.site.maintenance.enabled.disabled}}'
+
+    maintenance.page:
+        type: page
+        label: '{{panel.options.site.maintenance.page}}'
+        allowSite: false
+        default: null
+        collection@: site.pages
+
+    metadata:
+        type: array
+        label: '{{panel.options.site.advanced.metadata}}'
+        associative: true
+        placeholderKey: '{{panel.options.site.advanced.metadata.name}}'
+        placeholderValue: '{{panel.options.site.advanced.metadata.content}}'
+
+    routeAliases:
+        type: array
+        label: '{{panel.options.site.advanced.aliases}}'
+        associative: true
+        placeholderKey: '{{panel.options.site.advanced.aliases.alias}}'
+        placeholderValue: '{{panel.options.site.advanced.aliases.route}}'

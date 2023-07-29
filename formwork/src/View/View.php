@@ -2,8 +2,6 @@
 
 namespace Formwork\View;
 
-use Formwork\Formwork;
-use Formwork\Parsers\PHP;
 use Formwork\Traits\Methods;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
@@ -71,10 +69,10 @@ class View
     public function __construct(string $name, array $vars = [], ?string $path = null, array $methods = [])
     {
         $this->name = $name;
-        $this->vars = array_merge($this->defaults(), $vars);
-        $this->path = $path ?? Formwork::instance()->config()->get('views.paths.system');
+        $this->vars = $vars;
+        $this->path = $path;
         $this->file = $this->getFile($this->name);
-        $this->methods = array_merge(PHP::parseFile(FORMWORK_PATH . 'helpers.php'), $methods);
+        $this->methods = $methods;
 
         if (!FileSystem::exists($this->file)) {
             throw new FileNotFoundException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $this->name));
@@ -117,7 +115,7 @@ class View
             throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
-        $view = new self($name, array_merge($this->vars, $vars), $this->path, $this->methods);
+        $view = new self($name, [...$this->vars, ...$vars], $this->path, $this->methods);
 
         $view->output();
     }
@@ -206,24 +204,14 @@ class View
     }
 
     /**
-     * Return an array containing the default data
-     */
-    protected function defaults(): array
-    {
-        return [
-            'formwork' => Formwork::instance(),
-        ];
-    }
-
-    /**
      * Get the view file
      */
     protected function getFile(string $name): string
     {
         if (Str::startsWith($name, '_')) {
-            $name = 'partials' . DS . Str::removeStart($name, '_');
+            $name = 'partials/' . Str::removeStart($name, '_');
         }
-        return $this->path . str_replace('.', DS, $name) . '.php';
+        return FileSystem::joinPaths($this->path, str_replace('.', '/', $name) . '.php');
     }
 
     /**
@@ -231,7 +219,7 @@ class View
      */
     protected function createLayoutView(string $name, array $vars = []): View
     {
-        return new self('layouts' . DS . $name, array_merge($this->vars, $vars), $this->path, $this->methods);
+        return new self('layouts/' . $name, [...$this->vars, ...$vars], $this->path, $this->methods);
     }
 
     /**

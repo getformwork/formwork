@@ -1,21 +1,24 @@
 <?php
 
-use Formwork\Formwork;
+use Formwork\App;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Utils\DateFormats;
 
-return [
-    'formwork' => Formwork::instance(),
+return function (App $app) {
+    return [
+        'formwork' => $app,
 
-    'site' => Formwork::instance()->site(),
+        'site' => $app->site(),
 
-    'dateFormats' => [
-        'date'      => DateFormats::date(),
-        'hour'      => DateFormats::hour(),
-        'timezones' => DateFormats::timezones()
-    ],
+        'dateFormats' => [
+            'date'      => DateFormats::date(),
+            'hour'      => DateFormats::hour(),
+            'timezones' => DateFormats::timezones(),
+        ],
 
-    'languages' => [
-        'names' => LanguageCodes::names()
-    ]
-];
+        'languages' => [
+            'names' => LanguageCodes::names(),
+        ],
+    ];
+
+};

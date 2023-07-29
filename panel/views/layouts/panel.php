@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="<?= $formwork->translations()->getCurrent()->code() ?>">
+<html lang="<?= $app->translations()->getCurrent()->code() ?>">
 <head>
-    <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif; ?>Formwork</title>
+    <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif ?>Formwork</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
 <?php
     if (isset($csrfToken)):
-?>
+        ?>
     <meta name="csrf-token" content="<?= $csrfToken ?>">
 <?php
-    endif;
+    endif
 ?>
 <?php
-    if ($notification = $panel->notification()):
-?>
-    <meta name="notification" content='<?= $this->escapeAttr(Formwork\Parsers\JSON::encode([$notification])) ?>'>
+if ($notification = $panel->notification()):
+    ?>
+    <meta name="notification" content='<?= $this->escapeAttr(Formwork\Parsers\Json::encode($notification)) ?>'>
 <?php
-    endif;
+endif
 ?>
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">

@@ -2,9 +2,9 @@
 
 namespace Formwork\Schemes;
 
-use Formwork\Parsers\YAML;
+use Formwork\Parsers\Yaml;
+use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use InvalidArgumentException;
 
@@ -17,12 +17,17 @@ class Schemes
 
     protected array $data = [];
 
+    public function __construct(protected Container $container)
+    {
+
+    }
+
     /**
      * Load a scheme
      */
     public function load(string $id, string $path): void
     {
-        if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yml') {
+        if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yaml') {
             $this->data[$id] = $path;
             unset($this->storage[$id]);
         }
@@ -60,16 +65,8 @@ class Schemes
             return $this->storage[$id];
         }
 
-        return $this->storage[$id] = new Scheme($id, YAML::parseFile($this->data[$id]));
-    }
+        $data = Yaml::parseFile($this->data[$id]);
 
-    /**
-     * Create a collection from the given path
-     */
-    public static function fromPath(string $path): self
-    {
-        $instance = new static();
-        $instance->loadFromPath($path);
-        return $instance;
+        return $this->storage[$id] = $this->container->build(Scheme::class, compact('id', 'data'));
     }
 }

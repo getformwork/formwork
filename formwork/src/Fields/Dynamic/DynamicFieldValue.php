@@ -4,12 +4,12 @@ namespace Formwork\Fields\Dynamic;
 
 use Formwork\Exceptions\RecursionException;
 use Formwork\Fields\Field;
-use Formwork\Formwork;
 use Formwork\Interpolator\Interpolator;
-use Formwork\Parsers\PHP;
 
 class DynamicFieldValue
 {
+    public static array $vars = [];
+
     /**
      * Dynamic value computation status
      */
@@ -76,7 +76,7 @@ class DynamicFieldValue
 
         $this->computing = true;
 
-        $this->value = Interpolator::interpolate($this->uncomputedValue, array_merge($this->defaults(), ['this' => $this->field]));
+        $this->value = Interpolator::interpolate($this->uncomputedValue, [...self::$vars, 'this' => $this->field]);
 
         $this->computed = true;
 
@@ -117,13 +117,5 @@ class DynamicFieldValue
     public function field(): Field
     {
         return $this->field;
-    }
-
-    /**
-     * Default vars used in the computation
-     */
-    protected function defaults(): array
-    {
-        return PHP::parseFile(Formwork::instance()->config()->get('fields.dynamic.vars.file'));
     }
 }

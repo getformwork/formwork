@@ -332,7 +332,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     public function sort(
         int $direction = SORT_ASC,
         int $type = SORT_NATURAL,
-        array|callable $sortBy = null,
+        array|callable|null $sortBy = null,
         bool $caseSensitive = false,
         ?bool $preserveKeys = null
     ): static {
@@ -574,6 +574,6 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             throw new LogicException('Collections with data of different types cannot be merged');
         }
 
-        $this->data = array_merge($this->data, $collection->data);
+        $this->data = [...$this->data, ...$collection->data];
     }
 }

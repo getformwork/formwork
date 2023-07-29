@@ -1,0 +1,272 @@
+panel.backup.backup: Backup
+panel.backup.error.cannotDownload: Cannot download backup. %s.
+panel.backup.error.cannotDownload.invalidFilename: Invalid backup file
+panel.backup.error.cannotMake: Cannot make backup. %s.
+panel.backup.ready: Backup ready. Starting download...
+panel.cache.clear: Clear Cache
+panel.cache.cleared: Cache cleared
+panel.dashboard.dashboard: Dashboard
+panel.dashboard.lastModifiedPages: Last Edited Pages
+panel.dashboard.quickActions: Quick Actions
+panel.dashboard.statistics: Statistics
+panel.dashboard.statistics.uniqueVisitors: Unique Visitors
+panel.dashboard.statistics.visits: Visits
+panel.dashboard.welcome: Welcome
+panel.dragToReorder: Drag to Reorder
+panel.errors.action.reportToGithub: Report an issue to GitHub
+panel.errors.action.returnToDashboard: Return to Dashboard
+panel.errors.error.forbidden.description: You don’t have permission to access this page.
+panel.errors.error.forbidden.heading: Oops, permission required!
+panel.errors.error.forbidden.status: Forbidden
+panel.errors.error.internalServerError.description: Formwork encountered an error while serving your request. Please check Formwork configuration or the server log for errors.
+panel.errors.error.internalServerError.heading: Oops, something went wrong!
+panel.errors.error.internalServerError.status: Internal Server Error
+panel.errors.error.notFound.description: The page does not exist or the request is not valid.
+panel.errors.error.notFound.heading: Oops, page not found!
+panel.errors.error.notFound.status: Not Found
+panel.files.actions: Actions
+panel.files.viewAsList: View as List
+panel.files.viewAsThumbnails: View as Thumbnails
+panel.login.attempt.failed: Login attempt failed! Try again.
+panel.login.attempt.tooMany: Too many login attempts. Please try again in %d minutes.
+panel.login.loggedOut: You have been logged out
+panel.login.login: Login
+panel.login.logout: Logout
+panel.login.password: Password
+panel.login.suspiciousRequestDetected: A suspicious request has been detected, and for security reasons you have been logged out. Please log in again.
+panel.login.username: Username
+panel.manage: Manage
+panel.modal.action.cancel: Cancel
+panel.modal.action.continue: Continue
+panel.modal.action.delete: Delete
+panel.modal.action.save: Save
+panel.modal.action.uploadFile: Upload a File
+panel.modal.images.noImages: There are no images here
+panel.modal.images.noImages.upload: Please upload some images
+panel.modal.images.title: Select an Image
+panel.options.info: Info
+panel.options.options: Options
+panel.options.site: Site
+panel.options.site.advanced: Advanced Options
+panel.options.site.advanced.aliases: Aliases
+panel.options.site.advanced.aliases.alias: Alias
+panel.options.site.advanced.aliases.route: Route
+panel.options.site.advanced.metadata: HTML Metadata
+panel.options.site.advanced.metadata.content: Content
+panel.options.site.advanced.metadata.name: Name
+panel.options.site.info: Info
+panel.options.site.info.author: Author
+panel.options.site.info.description: Description
+panel.options.site.info.language: Language
+panel.options.site.info.title: Title
+panel.options.site.maintenance: Maintenance
+panel.options.site.maintenance.enabled: Maintenance Mode
+panel.options.site.maintenance.enabled.enabled: Enabled
+panel.options.site.maintenance.enabled.disabled: Disabled
+panel.options.site.maintenance.page: Maintenance Page
+panel.options.system: System
+panel.options.system.adminPanel: Administration Panel
+panel.options.system.adminPanel.defaultColorScheme: Default Color Scheme
+panel.options.system.adminPanel.defaultColorScheme.dark: Dark
+panel.options.system.adminPanel.defaultColorScheme.light: Light
+panel.options.system.adminPanel.defaultLanguage: Default Language
+panel.options.system.adminPanel.logoutRedirectsTo: Logout Redirects to
+panel.options.system.adminPanel.logoutRedirectsTo.home: Home
+panel.options.system.adminPanel.logoutRedirectsTo.login: Login
+panel.options.system.adminPanel.sessionTimeout: Session Timeout (min)
+panel.options.system.backup: Backup
+panel.options.system.backup.backupFilesToKeep: Backups to keep on the server
+panel.options.system.cache: Cache
+panel.options.system.cache.disabled: Disabled
+panel.options.system.cache.enabled: Enabled
+panel.options.system.cache.time: Cache Time (sec)
+panel.options.system.dateAndTime: Date and Time
+panel.options.system.dateAndTime.dateFormat: Date Format
+panel.options.system.dateAndTime.firstWeekday: First Weekday
+panel.options.system.dateAndTime.firstWeekday.monday: Monday
+panel.options.system.dateAndTime.firstWeekday.sunday: Sunday
+panel.options.system.dateAndTime.hourFormat: Hour Format
+panel.options.system.dateAndTime.timezone: Timezone
+panel.options.system.files: Files
+panel.options.system.files.allowedExtensions: Allowed Extensions
+panel.options.system.images: Images
+panel.options.system.images.jpegQuality: JPEG Quality
+panel.options.system.images.jpegSaveProgressive: Save JPEG images as progressive
+panel.options.system.images.jpegSaveProgressive.disabled: Disabled
+panel.options.system.images.jpegSaveProgressive.enabled: Enabled
+panel.options.system.images.pngCompressionLevel: PNG Compression Level
+panel.options.system.uploads.processImages: Process (optimize) uploaded images
+panel.options.system.uploads.processImages.disabled: Disabled
+panel.options.system.uploads.processImages.enabled: Enabled
+panel.options.system.images.webpQuality: WebP Quality
+panel.options.system.languages: Languages
+panel.options.system.languages.availableLanguages: Available Languages
+panel.options.system.languages.availableLanguages.noLanguages: No Languages
+panel.options.system.languages.preferredLanguage: Use Browser Prefered Language
+panel.options.system.languages.preferredLanguage.disabled: Disabled
+panel.options.system.languages.preferredLanguage.enabled: Enabled
+panel.options.updated: Options updated
+panel.options.updates: Updates
+panel.pages.attributes: Attributes
+panel.pages.changes.continue: Continue without Saving
+panel.pages.changes.detected: Changes Detected
+panel.pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
+panel.pages.changeSlug: Edit Slug
+panel.pages.changeSlug.generate: Generate From Title
+panel.pages.content: Content
+panel.pages.deleteFile: Delete File
+panel.pages.deleteFile.prompt: Are you sure you want to delete this file? This action can’t be undone.
+panel.pages.deletePage: Delete Page
+panel.pages.deletePage.prompt: Are you sure you want to delete this page? This action can’t be undone.
+panel.pages.editor.bold: Bold
+panel.pages.editor.bulletList: Bullet list
+panel.pages.editor.image: Image
+panel.pages.editor.italic: Italic
+panel.pages.editor.link: Link
+panel.pages.editor.numberedList: Ordered list
+panel.pages.editor.quote: Quote
+panel.pages.editor.redo: Redo
+panel.pages.editor.summary: Summary
+panel.pages.editor.undo: Undo
+panel.pages.editPage: Edit Page %s
+panel.pages.files: Files
+panel.pages.languages: Languages
+panel.pages.languages.addLanguage: Add %s
+panel.pages.languages.editLanguage: Edit %s
+panel.pages.newPage: New Page
+panel.pages.newPage.parent: Parent Page
+panel.pages.newPage.site: Site
+panel.pages.newPage.slug: Page Slug
+panel.pages.newPage.slugSuggestion: letters, numbers and dashes only
+panel.pages.newPage.template: Template
+panel.pages.newPage.title: Title
+panel.pages.options: Options
+panel.pages.page: Page
+panel.pages.page.actions: Actions
+panel.pages.page.cacheable: Cacheable
+panel.pages.page.cannotChangeNum: Cannot change page number
+panel.pages.page.cannotCreate: Cannot create page
+panel.pages.page.cannotCreate.alreadyExists: Cannot create page, a page with the same uri already exists
+panel.pages.page.cannotCreate.invalidParent: Cannot create page, invalid parent page
+panel.pages.page.cannotCreate.invalidSlug: Cannot create page, page slug must contain only letters and numbers separated by dashes
+panel.pages.page.cannotCreate.invalidTemplate: Cannot create page, invalid template
+panel.pages.page.cannotCreate.varMissing: Cannot create page, missing a variable
+panel.pages.page.cannotDelete.invalidLanguage: 'Cannot delete page, invalid language: %s'
+panel.pages.page.cannotDelete.notDeletable: Cannot delete page, the page is not deletable
+panel.pages.page.cannotDelete.pageNotFound: Cannot delete page, page not found
+panel.pages.page.cannotDeleteFile.fileNotFound: Cannot delete file, file not found
+panel.pages.page.cannotDeleteFile.pageNotFound: Cannot delete file, file not found
+panel.pages.page.cannotEdit.alreadyExists: Cannot edit page, a page with the same uri already exists
+panel.pages.page.cannotEdit.indexOrErrorPageSlug: Cannot edit page slug of index and error pages
+panel.pages.page.cannotEdit.invalidLanguage: 'Cannot edit page, invalid language: %s'
+panel.pages.page.cannotEdit.invalidParent: Cannot edit page, invalid parent page
+panel.pages.page.cannotEdit.invalidSlug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
+panel.pages.page.cannotEdit.invalidTemplate: Cannot edit page, invalid template
+panel.pages.page.cannotEdit.pageNotFound: Cannot edit page, page not found
+panel.pages.page.cannotEdit.varMissing: Cannot edit page, missing a variable
+panel.pages.page.cannotMove: Cannot move page
+panel.pages.page.cannotUploadFile.pageNotFound: Cannot upload file, page not found
+panel.pages.page.created: Page created!
+panel.pages.page.deleted: Page deleted
+panel.pages.page.edited: Page edited
+panel.pages.page.fileDeleted: File deleted
+panel.pages.page.image: Image
+panel.pages.page.lastModified: Last Modified
+panel.pages.page.listed: Visible in the menu
+panel.pages.page.moved: Page moved!
+panel.pages.page.noDate: No Date
+panel.pages.page.noImage: No Image
+panel.pages.page.noTags: No Tags
+panel.pages.page.notFound: Page not found
+panel.pages.page.postsPerPage: Posts per page
+panel.pages.page.publishDate: Publish Date
+panel.pages.page.status: Status
+panel.pages.page.tags: Tags
+panel.pages.page.title: Title
+panel.pages.page.unpublishDate: Unpublish Date
+panel.pages.pages: Pages
+panel.pages.pages.collapseAll: Collapse All
+panel.pages.pages.expandAll: Expand All
+panel.pages.pages.reorder: Reorder
+panel.pages.pages.search: Search Pages...
+panel.pages.parent: Parent Page
+panel.pages.preview: Preview
+panel.pages.previewFile: Preview
+panel.pages.save: Save
+panel.pages.status.notPublished: Not Published
+panel.pages.status.notRoutable: Not Routable
+panel.pages.status.published: Published
+panel.pages.status.routable: Routable
+panel.pages.summary: Summary
+panel.pages.template: Template
+panel.pages.text: Text
+panel.pages.toggleChildren: Toggle Children Pages
+panel.panel: Administration Panel
+panel.register.createUser: Formwork is installed but no users were found. Please register a user now.
+panel.register.register: Register New User
+panel.request.error.postMaxSize: The HTTP POST request exceeds the maximum allowed size
+panel.updates.availableForInstall: is available for install
+panel.updates.check: Check Updates
+panel.updates.install: Install
+panel.updates.installed: Update installed!
+panel.updates.installPrompt: Would you like to install the update?
+panel.updates.latestVersionAvailable: is the latest version available
+panel.updates.status.cannotCheck: Cannot check for updates. Try again later.
+panel.updates.status.cannotInstall: Cannot install update
+panel.updates.status.cannotMakeBackup: Cannot make backup before updating
+panel.updates.status.checking: Checking for updates...
+panel.updates.status.found: Updates found
+panel.updates.status.installing: Installing updates...
+panel.updates.status.upToDate: UpToDate!
+panel.uploader.error: Cannot upload file. %s.
+panel.uploader.error.alreadyExists: A file with the same name already exists
+panel.uploader.error.cannotMoveToDestination: Failed to move uploaded file to destination
+panel.uploader.error.cannotWrite: Failed to write file to disk
+panel.uploader.error.destinationTooLong: Destination path too long
+panel.uploader.error.fileName: Invalid file name
+panel.uploader.error.fileNameTooLong: File name too long
+panel.uploader.error.hiddenFiles: Cannot upload hidden files beginning with a dot
+panel.uploader.error.mimeType: File type not allowed
+panel.uploader.error.noFile: No file was uploaded
+panel.uploader.error.noTemp: Missing a temporary folder
+panel.uploader.error.partial: The uploaded file was only partially uploaded
+panel.uploader.error.phpExtension: File upload stopped by extension
+panel.uploader.error.size: The uploaded file exceeds the maximum file size
+panel.uploader.uploaded: File uploaded
+panel.user.actions: Actions
+panel.user.image: Image
+panel.user.image.uploaded: User image uploaded
+panel.user.colorScheme: Color Scheme
+panel.user.colorScheme.auto: Auto
+panel.user.colorScheme.dark: Dark
+panel.user.colorScheme.light: Light
+panel.user.email: Email
+panel.user.fullname: Full Name
+panel.user.language: Language
+panel.user.lastAccess: Last access
+panel.user.password: Password
+panel.user.password.typeNewPassword: Type a new password to change...
+panel.user.role: Role
+panel.user.role.admin: Administrator
+panel.user.role.user: User
+panel.user.username: Username
+panel.users.deleteUser: Delete User
+panel.users.deleteUser.prompt: Are you sure you want to delete this user? This action can’t be undone.
+panel.users.newUser: New User
+panel.users.newUser.passwordSuggestion: at least 8 characters
+panel.users.newUser.usernameSuggestion: between 3-20 letters, digits and dashes
+panel.users.options: Options
+panel.users.user: User
+panel.users.user.cannotChangePassword: Cannot change the password of another user. The action is not allowed.
+panel.users.user.cannotChangeRole: Cannot change the role of %s. The action is not allowed.
+panel.users.user.cannotCreate.alreadyExists: Cannot create user, a user with the same name already exists
+panel.users.user.cannotCreate.varMissing: Cannot create user, missing a variable
+panel.users.user.cannotDelete: Cannot delete user. You must be an administrator and the user must not be logged in.
+panel.users.user.cannotEdit: Cannot edit user %s. The action is not allowed.
+panel.users.user.created: User created
+panel.users.user.deleted: User deleted
+panel.users.user.edited: User data updated
+panel.users.user.notFound: User not found
+panel.users.userProfile: '%s User Profile'
+panel.users.users: Users
+panel.viewSite: View Site

@@ -2,44 +2,43 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Formwork;
-use Formwork\Panel\Security\CSRFToken;
+use Formwork\Http\Request;
+use Formwork\Http\RequestMethod;
+use Formwork\Http\Response;
+use Formwork\Log\Log;
+use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
-use Formwork\Parsers\YAML;
-use Formwork\Response\Response;
-use Formwork\Utils\HTTPRequest;
-use Formwork\Utils\Log;
-use Formwork\Utils\Registry;
-use Formwork\Utils\Session;
+use Formwork\Parsers\Yaml;
+use Formwork\Security\CsrfToken;
 
 class RegisterController extends AbstractController
 {
     /**
      * Register@register action
      */
-    public function register(): Response
+    public function register(Request $request, CsrfToken $csrfToken): Response
     {
         if (!$this->panel()->users()->isEmpty()) {
             return $this->redirectToReferer();
         }
 
-        Session::regenerate(false);
-        CSRFToken::generate();
+        $request->session()->regenerate(false);
+        $csrfToken->generate();
 
-        switch (HTTPRequest::method()) {
-            case 'GET':
+        switch ($request->method()) {
+            case RequestMethod::GET:
                 return new Response($this->view('register.register', [
                     'title' => $this->translate('panel.register.register'),
-                ], true));
+                ], return: true));
 
                 break;
 
-            case 'POST':
-                $data = HTTPRequest::postData();
+            case RequestMethod::POST:
+                $data = $request->input();
 
                 if (!$data->hasMultiple(['username', 'fullname', 'password', 'language', 'email'])) {
                     $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
-                    return $this->redirectToPanel();
+                    return $this->redirect($this->generateRoute('panel.index'));
                 }
 
                 $userData = [
@@ -51,17 +50,17 @@ class RegisterController extends AbstractController
                     'role'     => 'admin',
                 ];
 
-                YAML::encodeToFile($userData, Formwork::instance()->config()->get('panel.paths.accounts') . $data->get('username') . '.yml');
+                Yaml::encodeToFile($userData, $this->config->get('system.panel.paths.accounts') . $data->get('username') . '.yaml');
 
-                Session::set('FORMWORK_USERNAME', $data->get('username'));
+                $request->session()->set('FORMWORK_USERNAME', $data->get('username'));
 
-                $accessLog = new Log(Formwork::instance()->config()->get('panel.paths.logs') . 'access.json');
-                $lastAccessRegistry = new Registry(Formwork::instance()->config()->get('panel.paths.logs') . 'lastAccess.json');
+                $accessLog = new Log($this->config->get('system.panel.paths.logs') . 'access.json');
+                $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
 
                 $time = $accessLog->log($data->get('username'));
                 $lastAccessRegistry->set($data->get('username'), $time);
 
-                return $this->redirectToPanel();
+                return $this->redirect($this->generateRoute('panel.index'));
 
                 break;
         }

@@ -4,8 +4,6 @@ namespace Formwork\Pages;
 
 use Formwork\Data\AbstractCollection;
 use Formwork\Data\Contracts\Paginable;
-use Formwork\Formwork;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
 class PageCollection extends AbstractCollection implements Paginable
@@ -66,12 +64,14 @@ class PageCollection extends AbstractCollection implements Paginable
     public function search(string $query, int $min = 4): static
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
+
         if (strlen($query) < $min) {
-            return new static();
+            $pageCollection = clone $this;
+            $pageCollection->data = [];
         }
 
         $keywords = explode(' ', $query);
-        $keywords = array_diff($keywords, (array) Formwork::instance()->config()->get('search.stopwords'));
+
         $keywords = array_filter($keywords, fn (string $item): bool => strlen($item) > $min);
 
         $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
@@ -104,38 +104,5 @@ class PageCollection extends AbstractCollection implements Paginable
         }
 
         return $pageCollection->filterBy('score')->sortBy('score', direction: SORT_DESC);
-    }
-
-    /**
-     * Create a collection getting pages from a given path
-     *
-     * @param bool $recursive Whether to recursively search for pages
-     */
-    public static function fromPath(string $path, bool $recursive = false): self
-    {
-        /**
-         * @var array<string, Page>
-         */
-        $pages = [];
-
-        foreach (FileSystem::listDirectories($path) as $dir) {
-            $pagePath = FileSystem::joinPaths($path, $dir, DS);
-
-            if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
-                $page = Formwork::instance()->site()->retrievePage($pagePath);
-
-                if ($page->hasContentFile()) {
-                    $pages[$page->route()] = $page;
-                }
-
-                if ($recursive) {
-                    $pages = array_merge($pages, static::fromPath($pagePath, true)->toArray());
-                }
-            }
-        }
-
-        $pageCollection = new static($pages);
-
-        return $pageCollection->sortBy('relativePath');
     }
 }
