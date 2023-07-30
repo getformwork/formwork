@@ -6,7 +6,6 @@ import Utils from './utils';
 
 export default {
     init: function () {
-
         const commandExpandAllPages = $('[data-command=expand-all-pages]');
         const commandCollapseAllPages = $('[data-command=collapse-all-pages]');
         const commandReorderPages = $('[data-command=reorder-pages]');
@@ -166,6 +165,15 @@ export default {
                 Modals.hide('slugModal');
             });
         }
+
+        $$(['[data-modal=renameFileModal]']).forEach((element) => {
+            element.addEventListener('click', () => {
+                const modal = document.getElementById('renameFileModal');
+                const input = $('#file-name', modal);
+                input.value = element.getAttribute('data-filename');
+                input.setSelectionRange(0, input.value.lastIndexOf('.'));
+            });
+        });
 
         function expandAllPages() {
             $$('.pages-item').forEach((element) => {

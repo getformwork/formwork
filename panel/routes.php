@@ -122,6 +122,12 @@ return [
             'methods' => ['POST'],
         ],
 
+        'panel.pages.renameFile' => [
+            'path'    => '/pages/{page}/file/{filename}/rename/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@renameFile',
+            'methods' => ['POST'],
+        ],
+
         'panel.pages.delete' => [
             'path'    => '/pages/{page}/delete/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@delete',

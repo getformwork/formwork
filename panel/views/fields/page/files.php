@@ -18,6 +18,9 @@
                 <button type="button" class="button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
                 <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">
                     <a class="dropdown-item" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>"><?= $this->icon('eye') ?> <?= $this->translate('panel.pages.previewFile') ?></a>
+                    <?php if ($panel->user()->permissions()->has('pages.renameFiles')): ?>
+                    <a class="dropdown-item" data-modal="renameFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/rename/') ?>" data-filename="<?= $file->name() ?>"><?= $this->icon('pencil') ?> <?= $this->translate('panel.pages.renameFile') ?></a>
+                    <?php endif ?>
                     <?php if ($panel->user()->permissions()->has('pages.deleteFiles')): ?>
                     <a class="dropdown-item" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>"><?= $this->icon('trash') ?> <?= $this->translate('panel.pages.deleteFile') ?></a>
                     <?php endif ?>

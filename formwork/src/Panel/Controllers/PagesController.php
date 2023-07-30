@@ -8,6 +8,7 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
 use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
@@ -187,6 +188,8 @@ class PagesController extends AbstractController
 
         $this->modal('deleteFile');
 
+        $this->modal('renameFile');
+
         return new Response($this->view('pages.editor', [
             'title'           => $this->translate('panel.pages.editPage', $page->title()),
             'page'            => $page,
@@ -296,7 +299,7 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotUploadFile.cannotUploadFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotUploadFile.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
@@ -324,12 +327,12 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.cannotDeleteFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
         if (!$page->files()->has($params->get('filename'))) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.cannotDeleteFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.fileNotFound'), 'error');
             return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
         }
 
@@ -338,6 +341,45 @@ class PagesController extends AbstractController
         $this->panel()->notify($this->translate('panel.pages.page.fileDeleted'), 'success');
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
 
+    }
+
+    /**
+     * Pages@renameFile action
+     */
+    public function renameFile(RouteParams $params, Request $request): RedirectResponse
+    {
+        $this->ensurePermission('pages.renameFiles');
+
+        $page = $this->site()->findPage($params->get('page'));
+
+        if ($page === null) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotRenameeFile.pageNotFound'), 'error');
+            return $this->redirectToReferer(default:  '/pages/');
+        }
+
+        if (!$page->files()->has($params->get('filename'))) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileNotFound'), 'error');
+            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+        }
+
+        $name = Str::slug(FileSystem::name($request->input()->get('filename')));
+        $extension = FileSystem::extension($params->get('filename'));
+
+        $newName = $name . '.' . $extension;
+
+        $previousName = $params->get('filename');
+
+        if ($newName !== $previousName) {
+            if ($page->files()->has($newName)) {
+                $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileAlreadyExists'), 'error');
+                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+            }
+
+            FileSystem::move($page->path() . $previousName, $page->path() . $newName);
+            $this->panel()->notify($this->translate('panel.pages.page.fileRenamed'), 'success');
+        }
+
+        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
     }
 
     /**

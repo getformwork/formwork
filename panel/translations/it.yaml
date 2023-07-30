@@ -39,6 +39,7 @@ panel.manage: Gestione
 panel.modal.action.cancel: Annulla
 panel.modal.action.continue: Continua
 panel.modal.action.delete: Elimina
+panel.modal.action.rename: Rinomina
 panel.modal.action.save: Salva
 panel.modal.action.uploadFile: Carica file
 panel.modal.images.noImages: Qui non ci sono immagini
@@ -61,8 +62,8 @@ panel.options.site.info.language: Lingua
 panel.options.site.info.title: Titolo
 panel.options.site.maintenance: Manutenzione
 panel.options.site.maintenance.enabled: Modalità manutenzione
-panel.options.site.maintenance.enabled.enabled: Attivata
 panel.options.site.maintenance.enabled.disabled: Disattivata
+panel.options.site.maintenance.enabled.enabled: Attivata
 panel.options.site.maintenance.page: Pagina manutenzione
 panel.options.system: Sistema
 panel.options.system.adminPanel: Pannello di amministrazione
@@ -95,9 +96,6 @@ panel.options.system.images.jpegSaveProgressive: Salva le immagini JPEG come pro
 panel.options.system.images.jpegSaveProgressive.disabled: Disabilitato
 panel.options.system.images.jpegSaveProgressive.enabled: Abilitato
 panel.options.system.images.pngCompressionLevel: Livello di compressione PNG
-panel.options.system.uploads.processImages: Elabora (ottimizza) le immagini caricate
-panel.options.system.uploads.processImages.disabled: Disabilitato
-panel.options.system.uploads.processImages.enabled: Abilitato
 panel.options.system.images.webpQuality: Qualità WebP
 panel.options.system.languages: Lingue
 panel.options.system.languages.availableLanguages: Lingue disponibili
@@ -105,6 +103,9 @@ panel.options.system.languages.availableLanguages.noLanguages: Nessuna lingua
 panel.options.system.languages.preferredLanguage: Usa lingua preferita dal browser
 panel.options.system.languages.preferredLanguage.disabled: Disabilitato
 panel.options.system.languages.preferredLanguage.enabled: Abilitato
+panel.options.system.uploads.processImages: Elabora (ottimizza) le immagini caricate
+panel.options.system.uploads.processImages.disabled: Disabilitato
+panel.options.system.uploads.processImages.enabled: Abilitato
 panel.options.updated: Opzioni aggiornate
 panel.options.updates: Aggiornamenti
 panel.pages.attributes: Attributi
@@ -165,11 +166,15 @@ panel.pages.page.cannotEdit.invalidTemplate: Impossibile modificare la pagina, t
 panel.pages.page.cannotEdit.pageNotFound: Impossibile modificare la pagina, pagina non trovata
 panel.pages.page.cannotEdit.varMissing: Impossibile modificare la pagina, manca una variabile
 panel.pages.page.cannotMove: Impossibile spostare la pagina
+panel.pages.page.cannotRenameFile.fileAlreadyExists: Impossibile rinominare il file, un file con lo stesso nome esiste già
+panel.pages.page.cannotRenameFile.fileNotFound: Impossibile rinominare il file, file non trovato
+panel.pages.page.cannotRenameFile.pageNotFound: Impossibile rinominare il file, pagina non trovata
 panel.pages.page.cannotUploadFile.pageNotFound: Impossibile caricare il file, pagina non trovata
 panel.pages.page.created: Pagina creata!
 panel.pages.page.deleted: Pagina eliminata
 panel.pages.page.edited: Pagina modificata!
 panel.pages.page.fileDeleted: File eliminato
+panel.pages.page.fileRenamed: File rinominato
 panel.pages.page.image: Immagine
 panel.pages.page.lastModified: Ultime modifiche
 panel.pages.page.listed: Visibile nel menu
@@ -192,6 +197,8 @@ panel.pages.pages.search: Cerca pagine...
 panel.pages.parent: Pagina superiore
 panel.pages.preview: Anteprima
 panel.pages.previewFile: Anteprima
+panel.pages.renameFile: Rinomina file
+panel.pages.renameFile.name: Nome
 panel.pages.save: Salva
 panel.pages.status.notPublished: Non pubblicato
 panel.pages.status.notRoutable: Non raggiungibile
@@ -234,14 +241,14 @@ panel.uploader.error.phpExtension: Il caricamento è stato interrotto da un’es
 panel.uploader.error.size: Il file caricato supera la dimensione massima consentita
 panel.uploader.uploaded: File caricato
 panel.user.actions: Azioni
-panel.user.image: Immagine
-panel.user.image.uploaded: Immagine caricata
 panel.user.colorScheme: Combinazione di colori
 panel.user.colorScheme.auto: Automatica
 panel.user.colorScheme.dark: Scura
 panel.user.colorScheme.light: Chiara
 panel.user.email: E-mail
 panel.user.fullname: Nome completo
+panel.user.image: Immagine
+panel.user.image.uploaded: Immagine caricata
 panel.user.language: Lingua
 panel.user.lastAccess: Ultimo accesso
 panel.user.password: Password

@@ -51,6 +51,10 @@
         background-color: $color-accent-500;
         color: $color-white;
     }
+    & .icon {
+        display: inline-block;
+        margin-right: 0.25rem;
+    }
 }
 
 .dropdown-separator {

@@ -39,6 +39,7 @@ panel.manage: Manage
 panel.modal.action.cancel: Cancel
 panel.modal.action.continue: Continue
 panel.modal.action.delete: Delete
+panel.modal.action.rename: Rename
 panel.modal.action.save: Save
 panel.modal.action.uploadFile: Upload a File
 panel.modal.images.noImages: There are no images here
@@ -61,8 +62,8 @@ panel.options.site.info.language: Language
 panel.options.site.info.title: Title
 panel.options.site.maintenance: Maintenance
 panel.options.site.maintenance.enabled: Maintenance Mode
-panel.options.site.maintenance.enabled.enabled: Enabled
 panel.options.site.maintenance.enabled.disabled: Disabled
+panel.options.site.maintenance.enabled.enabled: Enabled
 panel.options.site.maintenance.page: Maintenance Page
 panel.options.system: System
 panel.options.system.adminPanel: Administration Panel
@@ -95,9 +96,6 @@ panel.options.system.images.jpegSaveProgressive: Save JPEG images as progressive
 panel.options.system.images.jpegSaveProgressive.disabled: Disabled
 panel.options.system.images.jpegSaveProgressive.enabled: Enabled
 panel.options.system.images.pngCompressionLevel: PNG Compression Level
-panel.options.system.uploads.processImages: Process (optimize) uploaded images
-panel.options.system.uploads.processImages.disabled: Disabled
-panel.options.system.uploads.processImages.enabled: Enabled
 panel.options.system.images.webpQuality: WebP Quality
 panel.options.system.languages: Languages
 panel.options.system.languages.availableLanguages: Available Languages
@@ -105,6 +103,9 @@ panel.options.system.languages.availableLanguages.noLanguages: No Languages
 panel.options.system.languages.preferredLanguage: Use Browser Prefered Language
 panel.options.system.languages.preferredLanguage.disabled: Disabled
 panel.options.system.languages.preferredLanguage.enabled: Enabled
+panel.options.system.uploads.processImages: Process (optimize) uploaded images
+panel.options.system.uploads.processImages.disabled: Disabled
+panel.options.system.uploads.processImages.enabled: Enabled
 panel.options.updated: Options updated
 panel.options.updates: Updates
 panel.pages.attributes: Attributes
@@ -165,11 +166,15 @@ panel.pages.page.cannotEdit.invalidTemplate: Cannot edit page, invalid template
 panel.pages.page.cannotEdit.pageNotFound: Cannot edit page, page not found
 panel.pages.page.cannotEdit.varMissing: Cannot edit page, missing a variable
 panel.pages.page.cannotMove: Cannot move page
+panel.pages.page.cannotRenameFile.fileAlreadyExists: Cannot rename file, a file with the same name already exists
+panel.pages.page.cannotRenameFile.fileNotFound: Cannot rename file, file not found
+panel.pages.page.cannotRenameFile.pageNotFound: Cannot rename file, page not found
 panel.pages.page.cannotUploadFile.pageNotFound: Cannot upload file, page not found
 panel.pages.page.created: Page created!
 panel.pages.page.deleted: Page deleted
 panel.pages.page.edited: Page edited
 panel.pages.page.fileDeleted: File deleted
+panel.pages.page.fileRenamed: File renamed
 panel.pages.page.image: Image
 panel.pages.page.lastModified: Last Modified
 panel.pages.page.listed: Visible in the menu
@@ -192,6 +197,8 @@ panel.pages.pages.search: Search Pages...
 panel.pages.parent: Parent Page
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
+panel.pages.renameFile: Rename File
+panel.pages.renameFile.name: Name
 panel.pages.save: Save
 panel.pages.status.notPublished: Not Published
 panel.pages.status.notRoutable: Not Routable
@@ -234,14 +241,14 @@ panel.uploader.error.phpExtension: File upload stopped by extension
 panel.uploader.error.size: The uploaded file exceeds the maximum file size
 panel.uploader.uploaded: File uploaded
 panel.user.actions: Actions
-panel.user.image: Image
-panel.user.image.uploaded: User image uploaded
 panel.user.colorScheme: Color Scheme
 panel.user.colorScheme.auto: Auto
 panel.user.colorScheme.dark: Dark
 panel.user.colorScheme.light: Light
 panel.user.email: Email
 panel.user.fullname: Full Name
+panel.user.image: Image
+panel.user.image.uploaded: User image uploaded
 panel.user.language: Language
 panel.user.lastAccess: Last access
 panel.user.password: Password
