@@ -13,7 +13,7 @@
         </div>
     </a>
     <div class="sidebar-wrapper">
-        <h3 class="caption"><?= $this->translate('panel.manage') ?></h3>
+        <h3 class="caption mb-8"><?= $this->translate('panel.manage') ?></h3>
         <ul class="sidebar-navigation">
 <?php
             if ($panel->user()->permissions()->has('dashboard')):

@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div class="component">
+<section class="section">
     <div class="users-list-headers" aria-hidden="true">
         <div class="users-headers-cell user-username"><?= $this->translate('panel.user.username') ?></div>
         <div class="users-headers-cell user-fullname"><?= $this->translate('panel.user.fullname') ?></div>
@@ -31,4 +31,4 @@
         </div>
 <?php endforeach ?>
     </div>
-</div>
+</section>

@@ -6,23 +6,30 @@
 
 <?= $tabs ?>
 
-<div class="component">
+<div>
 <?php
     foreach ($info as $section => $data):
         ?>
-    <div class="section-header"><?= $section ?></div>
-    <table class="info-data">
-<?php
-                foreach ($data as $key => $value):
-                    ?>
-        <tr>
-            <td class="info-data-key"><?= $key ?></td>
-            <td class="info-data-value"><?= $value ?></td>
-        </tr>
-<?php
-                endforeach
-        ?>
-    </table>
+    <section class="section collapsible">
+        <div class="section-header">
+            <span class="section-toggle"><?= $this->icon('chevron-up') ?></span>
+            <span class="caption"><?= $section ?></span>
+        </div>
+        <div class="section-content">
+        <table class="info-data">
+    <?php
+                    foreach ($data as $key => $value):
+                        ?>
+            <tr>
+                <td class="info-data-key"><?= $key ?></td>
+                <td class="info-data-value"><?= $value ?></td>
+            </tr>
+    <?php
+                    endforeach
+            ?>
+        </table>
+        </div>
+    </section>
 <?php
     endforeach
 ?>

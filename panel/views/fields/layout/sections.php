@@ -2,18 +2,18 @@
 <?php
     foreach ($sections as $section):
         ?>
-    <div <?= $this->attr(['class' => ['section',  $section->is('collapsible') ? 'collapsible' : '', $section->is('collapsed') ? 'collapsed' : '']]) ?>>
+    <section <?= $this->attr(['class' => ['section',  $section->is('collapsible') ? 'collapsible' : '', $section->is('collapsed') ? 'collapsed' : '']]) ?>>
         <div class="section-header">
 <?php
                 if ($section->is('collapsible')):
                     ?>
-            <span class="section-toggle"><?= $this->icon('chevron-up') ?></span>
+            <button type="button" class="section-toggle mr-2" title="<?= $this->translate('panel.sections.toggle') ?>"><?= $this->icon('chevron-up') ?></button>
 <?php
                 endif
         ?>
-            <?= $section->label() ?>
+            <span class="caption"><?= $section->label() ?></span>
         </div>
-        <div class="section-content pr-4 pl-4">
+        <div class="section-content">
 <?php
             foreach ($fields->getMultiple($section->get('fields', [])) as $field):
                 ?>
@@ -24,7 +24,7 @@
             endforeach
         ?>
         </div>
-    </div>
+    </section>
 <?php
     endforeach
 ?>

@@ -334,13 +334,15 @@ $tabs-tab-notch-width: 3px;
 // Modals
 // ===
 
-$backdrop-background-color: rgba($color-black, 0.75);
+$backdrop-background-color: rgba($color-black, 0.5);
 
 $modal-margin-v: 3rem;
 $modal-margin-h: 0.5rem;
-$modal-padding: 2rem;
+$modal-padding-v: 1rem;
+$modal-padding-h: 1.5rem;
 $modal-width-s: 26rem;
 $modal-width-l: 40rem;
+$modal-box-shadow: $dropdown-box-shadow;
 
 $modal-error-margin: -2rem;
 $modal-error-margin-bottom: 1rem;
@@ -447,18 +449,18 @@ $main-margin-left: $main-margin + $sidebar-width;
 
 $component-margin-bottom: 1rem;
 $component-padding: 1.5rem;
-$component-box-shadow: 0.125rem 0.125rem 0.25rem -0.125rem rgba($color-black, 0.1);
+$component-box-shadow: 0.125rem 0.125rem 0.25rem -0.125rem rgba(80, 80, 80, 10%), 0 0 0.25rem 0 rgba(80, 80, 80, 10%);
 
 $caption-margin-bottom: 1rem;
 $caption-letter-spacing: 1px;
-$caption-font-size: 0.9375rem;
+$caption-font-size: 0.875rem;
 
-$separator-height: 0.5rem;
-$separator-height-l: 1rem;
+$separator-height: 1rem;
+$separator-height-l: 1.5rem;
 
 $section-margin-bottom: 1rem;
 
-$section-header-margin-bottom: 0.5rem;
+$section-header-margin-bottom: 1rem;
 $section-header-padding-v: 0.25rem;
 $section-header-padding-h: 0.5rem;
 

@@ -9,7 +9,7 @@
         </div>
 </div>
 
-<div class="component">
+<section class="section">
     <div class="user-summary">
         <div class="user-summary-avatar">
             <img src="<?= $user->image()->uri() ?>">
@@ -21,11 +21,9 @@
             <?= $this->translate('panel.user.lastAccess') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?>
         </div>
     </div>
-</div>
+</section>
 <?php if ($panel->user()->canChangeOptionsOf($user)): ?>
-<div class="component">
-        <?php $this->insert('fields', ['fields' => $fields]) ?>
-        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-</div>
+<?php $this->insert('fields', ['fields' => $fields]) ?>
+<input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 <?php endif ?>
 </form>

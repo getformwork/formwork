@@ -47,7 +47,7 @@ if (!$site->languages()->available()->isEmpty()):
     </div>
 </div>
 
-<div class="component">
+<div>
     <?php $this->insert('fields', ['fields' => $fields]) ?>
 </div>
 

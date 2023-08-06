@@ -32,7 +32,7 @@
 .dropdown-list {
     width: 100%;
     max-height: $dropdown-list-max-height;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .dropdown-item {
@@ -47,6 +47,14 @@
         background-color: $color-base-700;
         color: $color-base-100;
     }
+    &.disabled {
+        color: $color-base-300;
+        cursor: default !important;
+        &:hover {
+            background-color: transparent;
+            color: $color-base-300;
+        }
+    }
     &.selected {
         background-color: $color-accent-500;
         color: $color-white;
@@ -55,6 +63,16 @@
         display: inline-block;
         margin-right: 0.25rem;
     }
+}
+
+.dropdown-empty {
+    display: block;
+    width: 100%;
+    padding: $dropdown-item-padding-v $dropdown-item-padding-h;
+    color: $color-base-300;
+    cursor: default !important;
+    font-size: $dropdown-item-font-size;
+    white-space: nowrap;
 }
 
 .dropdown-separator {

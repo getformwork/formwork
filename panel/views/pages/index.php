@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<div class="component">
+<section class="section">
     <div class="flex flex-wrap">
         <div class="flex-grow-1 mr-4">
             <input class="page-search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>">
@@ -25,4 +25,4 @@
         </div>
     </div>
     <?= $pagesList ?>
-</div>
+</section>

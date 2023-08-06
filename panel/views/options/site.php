@@ -9,7 +9,7 @@
         </div>
     </div>
     <?= $tabs ?>
-    <div class="component">
+    <div>
         <?php $this->insert('fields', ['fields' => $fields]) ?>
     </div>
 </form>

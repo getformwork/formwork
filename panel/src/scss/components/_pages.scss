@@ -28,11 +28,13 @@
     margin: 0;
     background-color: transparent;
     box-shadow: none;
+    color: $color-base-300;
     cursor: pointer;
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
+        color: $color-accent-500;
     }
     &:focus {
         @include focusring;
@@ -110,7 +112,7 @@ button .page-language,
 
 .page-children-toggle .icon {
     margin-right: 0;
-    transition: transform $transition-time-s;
+    transition: transform $transition-time-s, color $transition-time-s;
 }
 
 .page-status-published .icon {

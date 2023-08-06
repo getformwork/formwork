@@ -6,11 +6,11 @@
 
 <div class="row">
     <div class="col-m-1-3">
-        <div class="component">
+        <section class="section">
             <span class="h4"><?= $this->translate('panel.dashboard.welcome') ?></span>
-        </div>
-        <div class="component">
-            <h3 class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></h3>
+        </section>
+        <section class="section">
+            <div class="section-header"><h3 class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></h3></div>
 <?php
             if ($panel->user()->permissions()->has('pages.create')):
                 ?>
@@ -39,12 +39,12 @@ if ($panel->user()->permissions()->has('options.updates')):
 <?php
 endif
 ?>
-        </div>
+        </section>
     </div>
     <div class="col-m-2-3">
-        <div class="component">
+        <section class="section">
             <div class="row">
-                <div class="col-xs-1-2"><h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3></div>
+                <div class="col-xs-1-2"><div class="section-header"><h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3></div></div>
                 <div class="col-xs-1-2">
                     <div class="ct-legend ct-legend-right">
                         <span class="ct-legend-label ct-series-a"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.visits') ?></span>
@@ -53,10 +53,10 @@ endif
                 </div>
             </div>
             <div class="ct-chart" data-chart-data="<?= $this->escapeAttr($statistics); ?>"></div>
-        </div>
+        </section>
     </div>
 </div>
-<div class="component">
-<h3 class="caption"><?= $this->translate('panel.dashboard.lastModifiedPages') ?></h3>
+<section class="section">
+<div class="section-header"><h3 class="caption"><?= $this->translate('panel.dashboard.lastModifiedPages') ?></h3></div>
     <?= $lastModifiedPages ?>
-</div>
+</section>
