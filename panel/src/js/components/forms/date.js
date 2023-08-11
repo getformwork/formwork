@@ -59,14 +59,17 @@ export default function DateInput(input, options) {
         });
 
         input.addEventListener('keydown', (event) => {
-            switch (event.which) {
-            case 8: // backspace
+            switch (event.key) {
+            case 'Backspace':
                 input.value = '';
                 input.blur();
                 break;
-            case 27: // escape
+            case 'Escape':
                 input.blur();
                 break;
+            case 'Tab':
+                input.blur();
+                return;
             }
             event.preventDefault();
         });
@@ -463,18 +466,17 @@ export default function DateInput(input, options) {
                 if (!isVisible()) {
                     return;
                 }
-                switch (event.which) {
-                case 13: // enter
+                switch (event.key) {
+                case 'Enter':
                     $('.calendar-day.selected', element).click();
                     hide();
                     break;
-                case 8: // backspace
+                case 'Backspace':
+                case 'Escape':
+                case 'Tab':
                     hide();
                     break;
-                case 27: // escape
-                    hide();
-                    break;
-                case 37: // left arrow
+                case 'ArrowLeft':
                     if (event.ctrlKey || event.metaKey) {
                         if (event.shiftKey) {
                             prevYear();
@@ -486,11 +488,11 @@ export default function DateInput(input, options) {
                     }
                     options.onChange(getDate());
                     break;
-                case 38: // up arrow
+                case 'ArrowUp':
                     prevWeek();
                     options.onChange(getDate());
                     break;
-                case 39: // right arrow
+                case 'ArrowRight':
                     if (event.ctrlKey || event.metaKey) {
                         if (event.shiftKey) {
                             nextYear();
@@ -502,11 +504,11 @@ export default function DateInput(input, options) {
                     }
                     options.onChange(getDate());
                     break;
-                case 40: // down arrow
+                case 'ArrowDown':
                     nextWeek();
                     options.onChange(getDate());
                     break;
-                case 48: // 0
+                case '0':
                     if (event.ctrlKey || event.metaKey) {
                         now();
                     }
