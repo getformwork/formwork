@@ -94,31 +94,40 @@ export default {
             $('#page-slug', newPageModal).addEventListener('keyup', handleSlugChange);
             $('#page-slug', newPageModal).addEventListener('blur', handleSlugChange);
 
-            $('#page-parent', newPageModal).addEventListener('change', function () {
-                const option = this.options[this.selectedIndex];
-                const pageTemplate = $('#page-template', newPageModal);
+            $('#page-parent', newPageModal).addEventListener('change', () => {
+                const option = $('.dropdown-list[data-for="page-parent"] .selected');
+
+                if (!option) {
+                    return;
+                }
+
                 let allowedTemplates = option.getAttribute('data-allowed-templates');
+
+                const pageTemplate = $('#page-template', newPageModal);
 
                 if (allowedTemplates !== null) {
                     allowedTemplates = allowedTemplates.split(', ');
+
                     pageTemplate.setAttribute('data-previous-value', pageTemplate.value);
                     pageTemplate.value = allowedTemplates[0];
+                    $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
 
-                    for (const option of pageTemplate.options) {
-                        if (!allowedTemplates.includes(option.value)) {
-                            option.setAttribute('disabled', '');
+                    $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
+                        if (!allowedTemplates.includes(option.getAttribute('data-value'))) {
+                            option.classList.add('disabled');
                         }
-                    }
+                    });
 
                 } else {
                     if (pageTemplate.hasAttribute('data-previous-value')) {
                         pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
                         pageTemplate.removeAttribute('data-previous-value');
+                        $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
                     }
 
-                    for (const option of pageTemplate.options) {
-                        option.disabled = false;
-                    }
+                    $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
+                        option.classList.remove('disabled');
+                    });
                 }
             });
         }

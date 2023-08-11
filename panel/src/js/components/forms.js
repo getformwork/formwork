@@ -9,6 +9,7 @@ import Modals from './modals';
 import RangeInput from './forms/range';
 import TagInput from './forms/tag';
 import Utils from './utils';
+import SelectInput from './forms/select';
 
 export default {
     init: function () {
@@ -83,6 +84,10 @@ export default {
 
         $$('.input-array').forEach((element) => {
             ArrayInput(element);
+        });
+
+        $$('select:not([hidden])').forEach((element) => {
+            SelectInput(element, Formwork.config.SelectInput);
         });
 
         $$('.files-list').forEach((filesList) => {

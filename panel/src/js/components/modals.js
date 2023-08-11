@@ -29,10 +29,13 @@ export default Modals = {
         });
 
         $$('.modal').forEach((element) => {
+            let mousedownTriggered = false;
+            element.addEventListener('mousedown', () => mousedownTriggered = true);
             element.addEventListener('click', function (event) {
-                if (event.target === this) {
+                if (mousedownTriggered && event.target === this) {
                     Modals.hide();
                 }
+                mousedownTriggered = false;
             });
         });
 

@@ -1,9 +1,9 @@
 export default function ImagePicker(element) {
     const options = $$('option', element);
-    const confirmCommand = $('.image-picker-confirm', element.parentNode);
-    const uploadCommand = $('[data-command=upload]', element.parentNode);
+    const confirmCommand = $('.image-picker-confirm', element.parentNode.parentNode);
+    const uploadCommand = $('[data-command=upload]', element.parentNode.parentNode);
 
-    element.style.display = 'none';
+    element.setAttribute('hidden', '');
 
     if (options.length > 0) {
         const container = document.createElement('div');
