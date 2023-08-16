@@ -96,7 +96,7 @@ class UsersController extends AbstractController
             return $this->redirectToReferer(default: '/users/');
         }
 
-        $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
+        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
 
         // Remove user last access from registry
         $lastAccessRegistry->remove($user->username());

@@ -233,7 +233,7 @@ class User implements Arrayable
         if (isset($this->lastAccess)) {
             return $this->lastAccess;
         }
-        $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
+        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
         $lastAccess = (int) $lastAccessRegistry->get($this->username);
         return $this->lastAccess = $lastAccess ?: null;
     }
