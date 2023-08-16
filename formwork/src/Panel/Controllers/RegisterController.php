@@ -10,6 +10,7 @@ use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
 use Formwork\Parsers\Yaml;
 use Formwork\Security\CsrfToken;
+use Formwork\Utils\FileSystem;
 
 class RegisterController extends AbstractController
 {
@@ -50,12 +51,12 @@ class RegisterController extends AbstractController
                     'role'     => 'admin',
                 ];
 
-                Yaml::encodeToFile($userData, $this->config->get('system.panel.paths.accounts') . $data->get('username') . '.yaml');
+                Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $data->get('username') . '.yaml'));
 
                 $request->session()->set('FORMWORK_USERNAME', $data->get('username'));
 
-                $accessLog = new Log($this->config->get('system.panel.paths.logs') . 'access.json');
-                $lastAccessRegistry = new Registry($this->config->get('system.panel.paths.logs') . 'lastAccess.json');
+                $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
+                $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
 
                 $time = $accessLog->log($data->get('username'));
                 $lastAccessRegistry->set($data->get('username'), $time);
