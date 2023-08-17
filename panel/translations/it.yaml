@@ -212,6 +212,7 @@ panel.panel: Pannello di Amministrazione
 panel.register.createUser: Formwork è installato ma non è stato trovato alcun utente. Registrane uno ora.
 panel.register.register: Registra nuovo utente
 panel.request.error.postMaxSize: La richiesta HTTP con metodo POST supera la dimensione massima consentita
+panel.sections.toggle: Mostra/nascondi sezione
 panel.updates.availableForInstall: è disponibile per l'installazione
 panel.updates.check: Cerca aggiornamenti
 panel.updates.install: Installa

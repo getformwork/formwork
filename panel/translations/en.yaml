@@ -212,6 +212,7 @@ panel.panel: Administration Panel
 panel.register.createUser: Formwork is installed but no users were found. Please register a user now.
 panel.register.register: Register New User
 panel.request.error.postMaxSize: The HTTP POST request exceeds the maximum allowed size
+panel.sections.toggle: Toggle Section
 panel.updates.availableForInstall: is available for install
 panel.updates.check: Check Updates
 panel.updates.install: Install
