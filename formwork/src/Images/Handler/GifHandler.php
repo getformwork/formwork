@@ -126,17 +126,4 @@ class GifHandler extends AbstractHandler
 
         $this->data = ob_get_clean();
     }
-
-    protected function toGdImage(): GdImage
-    {
-        $image = imagecreatefromstring($this->data);
-
-        $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        imagealphablending($image, true);
-        imagesavealpha($image, true);
-        imagecolortransparent($image, $transparent);
-        imagefill($image, 0, 0, $transparent);
-
-        return $image;
-    }
 }

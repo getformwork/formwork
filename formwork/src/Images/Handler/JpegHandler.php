@@ -201,9 +201,4 @@ class JpegHandler extends AbstractHandler
 
         $this->data = ob_get_clean();
     }
-
-    protected function toGdImage(): GdImage
-    {
-        return imagecreatefromstring($this->data);
-    }
 }

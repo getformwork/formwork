@@ -186,19 +186,6 @@ class PngHandler extends AbstractHandler
         return new PngDecoder();
     }
 
-    protected function toGdImage(): GdImage
-    {
-        $image = imagecreatefromstring($this->data);
-
-        $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        imagealphablending($image, true);
-        imagesavealpha($image, true);
-        imagecolortransparent($image, $transparent);
-        imagefill($image, 0, 0, $transparent);
-
-        return $image;
-    }
-
     protected function setDataFromGdImage(GdImage $image): void
     {
         ob_start();

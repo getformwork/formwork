@@ -189,5 +189,18 @@ abstract class AbstractHandler
 
     abstract protected function setDataFromGdImage(GdImage $image): void;
 
-    abstract protected function toGdImage(): GdImage;
+    protected function toGdImage(): GdImage
+    {
+        $image = imagecreatefromstring($this->data);
+
+        if ($this->getInfo()->hasAlphaChannel()) {
+            $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagealphablending($image, true);
+            imagesavealpha($image, true);
+            imagecolortransparent($image, $transparent);
+            imagefill($image, 0, 0, $transparent);
+        }
+
+        return $image;
+    }
 }
