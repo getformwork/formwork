@@ -47,7 +47,7 @@ input[type='range'] {
         @include appearance-none;
     }
     &:focus {
-        box-shadow: none;
+        outline: none;
     }
     &:hover::-webkit-slider-thumb, &:hover::-moz-range-thumb {
         background-color: $color-accent-400;

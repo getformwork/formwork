@@ -38,7 +38,7 @@
     font-family: $base-font-family;
     font-size: $font-size-m;
     &:focus {
-        box-shadow: none;
+        outline: none;
     }
 }
 

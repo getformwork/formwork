@@ -29,9 +29,8 @@
     font-family: inherit;
     font-size: $font-size-s;
     line-height: inherit;
-    outline: none;
     &:focus {
-        box-shadow: none;
+        outline: none;
     }
 }
 

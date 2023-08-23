@@ -71,12 +71,11 @@
     font-size: $font-size-m;
     &:hover {
         background-color: transparent;
-        box-shadow: none;
         color: $color-accent-500;
     }
     &:focus {
         background-color: transparent;
-        box-shadow: none;
+        outline: none;
     }
 }
 
