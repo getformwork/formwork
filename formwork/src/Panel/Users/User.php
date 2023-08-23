@@ -147,11 +147,11 @@ class User implements Arrayable
             return $this->image;
         }
 
-        $filename = $this->data['image'];
+        $filename = (string) $this->data['image'];
 
         $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
 
-        if ($filename !== null && FileSystem::exists($path)) {
+        if (FileSystem::isFile($path, assertExists: false)) {
             $uri = $this->panel->realUri('/assets/images/users/' . basename($path));
             $path = $path;
         } else {
