@@ -2,18 +2,18 @@
 
 namespace Formwork\Images\ColorProfile;
 
-enum ColorSpace
+enum ColorSpace: string
 {
-    case XYZ;
-    case LAB;
-    case LUV;
-    case YCbCr;
-    case XYY;
-    case RGB;
-    case Grayscale;
-    case HSV;
-    case HLS;
-    case CMYK;
-    case CMY;
-    case Palette;
+    case XYZ = 'XYZ';
+    case LAB = 'LAB';
+    case LUV = 'LUV';
+    case YCbCr = 'YCbCr';
+    case XYY = 'XYY';
+    case RGB = 'RGB';
+    case Grayscale = 'Grayscale';
+    case HSV = 'HSV';
+    case HLS = 'HLS';
+    case CMYK = 'CMYK';
+    case CMY = 'CMY';
+    case Palette = 'Palette';
 }

@@ -2,10 +2,11 @@
 
 namespace Formwork\Images;
 
+use Formwork\Data\Contracts\Arrayable;
 use Formwork\Images\ColorProfile\ColorSpace;
 use UnexpectedValueException;
 
-class ImageInfo
+class ImageInfo implements Arrayable
 {
     protected string $mimeType;
 
@@ -86,5 +87,10 @@ class ImageInfo
     public function animationRepeatCount(): ?int
     {
         return $this->animationRepeatCount;
+    }
+
+    public function toArray(): array
+    {
+        return get_object_vars($this);
     }
 }

@@ -349,6 +349,11 @@ class Image extends File
         return $this->handler()->getInfo();
     }
 
+    public function toArray(): array
+    {
+        return [...parent::toArray(), 'imageInfo' => $this->info()->toArray(), 'exif' => $this->getExifData()?->toArray(), 'colorProfile' => $this->getColorProfile()?->name(), 'uri' => $this->uri()];
+    }
+
     protected function getHash(?string $mimeType = null): string
     {
         $mimeType ??= $this->mimeType();

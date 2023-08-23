@@ -2,7 +2,9 @@
 
 namespace Formwork\Images\Exif;
 
-class ExifData
+use Formwork\Data\Contracts\Arrayable;
+
+class ExifData implements Arrayable
 {
     protected ExifReader $reader;
 
@@ -25,6 +27,11 @@ class ExifData
     public function getTags(): array
     {
         return $this->tags;
+    }
+
+    public function toArray(): array
+    {
+        return iterator_to_array($this->parsedTags());
     }
 
     public function parsedTags()
