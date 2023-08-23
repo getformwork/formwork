@@ -27,7 +27,7 @@ class Uploader
         $mimeType = MimeType::fromFile($file->tempPath());
 
         if (!in_array($mimeType, $this->allowedMimeTypes(), true)) {
-            throw new Exception('Invalid mime tpye');
+            throw new Exception('Invalid mime type');
         }
 
         $filename = Str::slug($name ?? pathinfo($file->clientName(), PATHINFO_FILENAME)) . '.' . MimeType::toExtension($mimeType);
