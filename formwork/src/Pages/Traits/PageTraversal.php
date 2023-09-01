@@ -5,6 +5,7 @@ namespace Formwork\Pages\Traits;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\Site;
+use Formwork\Utils\FileSystem;
 
 trait PageTraversal
 {
@@ -64,7 +65,7 @@ trait PageTraversal
             return $this->parent;
         }
 
-        $parentPath = dirname($this->path()) . '/';
+        $parentPath = FileSystem::joinPaths(dirname($this->path()), '/');
 
         if ($parentPath === $this->site()->path()) {
             return $this->parent = $this->site();
