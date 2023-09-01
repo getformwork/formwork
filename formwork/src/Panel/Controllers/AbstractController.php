@@ -122,6 +122,11 @@ abstract class AbstractController extends BaseAbstractController
                         'seconds' => $this->translate('date.duration.seconds'),
                     ],
                 ],
+                'SelectInput' => [
+                    'labels' => [
+                        'empty' => $this->translate(('fields.select.empty')),
+                    ],
+                ],
             ]),
         ];
     }
