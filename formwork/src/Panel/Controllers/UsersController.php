@@ -228,7 +228,7 @@ class UsersController extends AbstractController
     protected function deleteImage(User $user): void
     {
         $image = $user->image()->path();
-        if ($image !== null && FileSystem::exists($image)) {
+        if (FileSystem::isFile($image, assertExists: false)) {
             FileSystem::delete($image);
         }
     }
