@@ -26,7 +26,7 @@
     "sortablejs": "^1.15.0"
   },
   "devDependencies": {
-    "@eslint/js": "^8.41.0",
+    "@eslint/js": "^8.50.0",
     "esbuild": "^0.19.2",
     "eslint": "^8.40.0",
     "globals": "^13.20.0",
