@@ -29,7 +29,7 @@
     "@eslint/js": "^8.41.0",
     "esbuild": "^0.19.2",
     "eslint": "^8.40.0",
-    "globals": "^13.20.0",
+    "globals": "^13.22.0",
     "postcss": "^8.4.19",
     "sass": "^1.66.1",
     "stylelint": "^14.16.1",
