@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use "sass:map";
 
 html {
     font-size: $base-font-size;
@@ -45,7 +45,8 @@ mark {
     background-color: $mark-background-color;
 }
 
-code, pre {
+code,
+pre {
     border-radius: $border-radius;
     background-color: $color-base-600;
     font-family: $mono-font-family;

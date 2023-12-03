@@ -1,20 +1,14 @@
 .modal-backdrop {
     position: fixed;
     z-index: 16;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0 0 0 0;
     background-color: $backdrop-background-color;
 }
 
 .modal {
     position: fixed;
     z-index: 20;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0 0 0 0;
     display: none;
     align-items: center;
     outline: 0;
@@ -24,7 +18,9 @@
     display: flex;
 }
 
-.modal-header, .modal-content, .modal-footer {
+.modal-header,
+.modal-content,
+.modal-footer {
     padding: $modal-padding-v $modal-padding-h;
 }
 

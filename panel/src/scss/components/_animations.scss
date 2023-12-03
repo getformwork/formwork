@@ -21,15 +21,19 @@
 }
 
 @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
         transform: translate3d(0, 0, 0);
     }
 
-    10%, 50%, 90% {
+    10%,
+    50%,
+    90% {
         transform: translate3d(-10px, 0, 0);
     }
 
-    30%, 70% {
+    30%,
+    70% {
         transform: translate3d(10px, 0, 0);
     }
 }

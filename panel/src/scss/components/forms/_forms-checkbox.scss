@@ -13,8 +13,10 @@
     border: $input-checkbox-border-width solid $color-base-500;
     border-radius: $border-radius;
     margin-right: $input-checkbox-margin-right;
-    content: ' ';
-    transition: border-color $transition-time-s, background-color $transition-time-s;
+    content: " ";
+    transition:
+        border-color $transition-time-s,
+        background-color $transition-time-s;
 }
 
 .input-checkbox + .input-checkbox-text:hover::before,
@@ -44,8 +46,8 @@
     display: block;
     width: $input-checkbox-width;
     height: $input-checkbox-height;
-    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 11 11\'%3E%3Cpath fill=\'%23fff\' d=\'M4.727 7.036L8.263 3.5l.707.707L4.727 8.45 2 5.722l.707-.707z\'/%3E%3C/svg%3E');
-    content: ' ';
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath fill='%23fff' d='M4.727 7.036L8.263 3.5l.707.707L4.727 8.45 2 5.722l.707-.707z'/%3E%3C/svg%3E");
+    content: " ";
 }
 
 .input-checkbox:checked[disabled] + .input-checkbox-text::before {

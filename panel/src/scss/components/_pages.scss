@@ -1,6 +1,6 @@
-@use 'sass:color';
+@use "sass:color";
 
-@use 'sass:map';
+@use "sass:map";
 
 .pages-list {
     padding: 0;
@@ -112,7 +112,9 @@ button .page-language,
 
 .page-children-toggle .icon {
     margin-right: 0;
-    transition: transform $transition-time-s, color $transition-time-s;
+    transition:
+        transform $transition-time-s,
+        color $transition-time-s;
 }
 
 .page-status-published .icon {
@@ -137,7 +139,7 @@ button .page-language,
     font-size: $font-size-m;
 }
 
-@media (min-width: map.get($responsive-breakpoints, 'xs')) {
+@media (min-width: map.get($responsive-breakpoints, "xs")) {
     .pages-item-row,
     .pages-list-headers {
         display: flex;
@@ -222,7 +224,7 @@ button .page-language,
             &::before,
             &::after {
                 left: $indent;
-                content: '';
+                content: "";
             }
             .page-details {
                 padding-left: $pages-level-padding * ($i - 1);
@@ -266,7 +268,8 @@ button .page-language,
         opacity: 0;
         transition: opacity $transition-time-s;
     }
-    &:hover .icon, &:focus .icon {
+    &:hover .icon,
+    &:focus .icon {
         opacity: 1;
     }
 }

@@ -1,4 +1,4 @@
-input[type='range'] {
+input[type="range"] {
     --progress: 0;
 
     position: relative;
@@ -49,12 +49,14 @@ input[type='range'] {
     &:focus {
         outline: none;
     }
-    &:hover::-webkit-slider-thumb, &:hover::-moz-range-thumb {
+    &:hover::-webkit-slider-thumb,
+    &:hover::-moz-range-thumb {
         background-color: $color-accent-400;
     }
     &[disabled] {
         background-color: transparent;
-        &::-webkit-slider-thumb, &::-moz-range-thumb {
+        &::-webkit-slider-thumb,
+        &::-moz-range-thumb {
             background-color: $color-base-300;
         }
     }

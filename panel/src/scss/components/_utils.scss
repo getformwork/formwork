@@ -1,26 +1,67 @@
-@include make-util('mt', 'margin-top', $spacers);
-@include make-util('ml', 'margin-left', $spacers);
-@include make-util('mb', 'margin-bottom', $spacers);
-@include make-util('mr', 'margin-right', $spacers);
+@include make-util("mt", "margin-top", $spacers);
+@include make-util("ml", "margin-left", $spacers);
+@include make-util("mb", "margin-bottom", $spacers);
+@include make-util("mr", "margin-right", $spacers);
 
-@include make-util('pt', 'padding-top', $spacers);
-@include make-util('pl', 'padding-left', $spacers);
-@include make-util('pb', 'padding-bottom', $spacers);
-@include make-util('pr', 'padding-right', $spacers);
+@include make-util("pt", "padding-top", $spacers);
+@include make-util("pl", "padding-left", $spacers);
+@include make-util("pb", "padding-bottom", $spacers);
+@include make-util("pr", "padding-right", $spacers);
 
-@include make-util('min-w', 'min-width', (0: 0, 100: 100%));
-@include make-util('max-w', 'max-width', (0: 0, 100: 100%));
+@include make-util(
+    "min-w",
+    "min-width",
+    (
+        0: 0,
+        100: 100%,
+    )
+);
+@include make-util(
+    "max-w",
+    "max-width",
+    (
+        0: 0,
+        100: 100%,
+    )
+);
 
-@include make-util('flex', 'display', ('': 'flex'));
-@include make-util('flex', 'flex-wrap', ('wrap': 'wrap', 'nowrap': 'nowrap'));
-@include make-util('flex-grow', 'flex-grow', (0: 0, 1: 1));
+@include make-util(
+    "flex",
+    "display",
+    (
+        "": "flex",
+    )
+);
+@include make-util(
+    "flex",
+    "flex-wrap",
+    (
+        "wrap": "wrap",
+        "nowrap": "nowrap",
+    )
+);
+@include make-util(
+    "flex-grow",
+    "flex-grow",
+    (
+        0: 0,
+        1: 1,
+    )
+);
 
-@include make-util('text', 'font-size', $font-sizes);
+@include make-util("text", "font-size", $font-sizes);
 
-@include make-util('text', 'color', $font-colors);
+@include make-util("text", "color", $font-colors);
 
 .truncate {
     @include ellipsis;
 }
 
-@include make-util('whitespace', 'white-space', ('': 'nowrap', 'wrap': 'normal'));
+@include make-util(
+    "whitespace",
+    "white-space",
+    (
+        "": "nowrap",
+        "wrap": "normal",
+    )
+);

@@ -1,6 +1,6 @@
-@use 'sass:color';
+@use "sass:color";
 
-@use 'sass:string';
+@use "sass:string";
 
 @function gcd($a, $b) {
     @if $b == 0 {
@@ -19,5 +19,5 @@
 }
 
 @function urlencode-color($color) {
-    @return '%23' + string.slice('#{$color}', 2);
+    @return "%23" + string.slice("#{$color}", 2);
 }

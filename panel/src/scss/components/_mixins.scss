@@ -1,12 +1,12 @@
-@use 'sass:map';
+@use "sass:map";
 
-@use 'sass:math';
+@use "sass:math";
 
 @mixin clearfix {
     &::before,
     &::after {
         display: table;
-        content: '';
+        content: "";
     }
     &::after {
         clear: both;
@@ -36,7 +36,7 @@
         display: inline-block;
         height: 0;
         margin-left: $caret-width;
-        content: ' ';
+        content: " ";
         vertical-align: $caret-width * 0.5;
 
         @if $direction == bottom {
@@ -56,22 +56,22 @@
 }
 
 @mixin make-columns-globals($columns-count, $breakpoints) {
-    $selectors: '';
+    $selectors: "";
 
     @each $breakpoint-name in map.keys($breakpoints) {
-        @if $selectors != '' {
-            $selectors: '#{$selectors}, .col-#{$breakpoint-name}';
+        @if $selectors != "" {
+            $selectors: "#{$selectors}, .col-#{$breakpoint-name}";
         } @else {
-            $selectors: '.col-#{$breakpoint-name}';
+            $selectors: ".col-#{$breakpoint-name}";
         }
 
         @for $i from 1 through $columns-count {
-            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
+            $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
             $gcd: gcd($i, $columns-count);
             @if $gcd > 1 {
                 $f: math.div($i, $gcd);
                 $g: math.div($columns-count, $gcd);
-                $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
+                $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}";
             }
         }
     }
@@ -89,12 +89,12 @@
     }
 
     @for $i from 1 through $columns-count {
-        $selectors: '.col-#{$breakpoint-name}-#{$i}-#{$columns-count}';
+        $selectors: ".col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
         $gcd: gcd($i, $columns-count);
         @if $gcd > 1 {
             $f: math.div($i, $gcd);
             $g: math.div($columns-count, $gcd);
-            $selectors: '#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}';
+            $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$f}-#{$g}";
         }
         #{$selectors} {
             max-width: math.percentage(math.div($i, $columns-count));
@@ -105,10 +105,10 @@
 
 @mixin make-util($name, $property, $list) {
     @each $k, $v in $list {
-        $suffix: '';
+        $suffix: "";
 
-        @if $k != '' {
-            $suffix: '-#{$k}';
+        @if $k != "" {
+            $suffix: "-#{$k}";
         }
 
         .#{$name}#{$suffix} {

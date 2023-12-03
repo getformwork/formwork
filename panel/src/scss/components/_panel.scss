@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use "sass:map";
 
 .title-bar {
     position: fixed;
@@ -13,7 +13,7 @@
     color: $color-base-100;
     @include user-select-none;
     @include ellipsis;
-    @media (min-width: map.get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, "s")) {
         left: $sidebar-width;
         padding-left: $title-bar-padding-left;
     }
@@ -86,7 +86,7 @@
     font-weight: 600;
     line-height: $logo-line-height;
     text-align: center;
-    @media (min-width: map.get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, "s")) {
         text-align: left;
     }
 }
@@ -135,7 +135,7 @@
     left: 0;
     width: $sidebar-navigation-notch-width;
     background-color: $color-accent-500;
-    content: ' ';
+    content: " ";
 }
 
 .panel-user-card {
@@ -184,7 +184,7 @@
     background-color: $color-base-800;
     white-space: nowrap;
 
-    @media (min-width: map.get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, "s")) {
         padding: 1rem 1.5rem;
         margin-right: -1.5rem;
         margin-left: -1.5rem;
@@ -202,7 +202,7 @@
 
 .main {
     padding-top: $main-margin-top;
-    @media (min-width: map.get($responsive-breakpoints, 's')) {
+    @media (min-width: map.get($responsive-breakpoints, "s")) {
         padding: $main-margin;
         padding-top: $main-margin-top;
         padding-left: $main-margin-left;
@@ -284,7 +284,9 @@
 
 .section-toggle .icon {
     margin-right: 0;
-    transition: transform $transition-time-s, color $transition-time-s;
+    transition:
+        transform $transition-time-s,
+        color $transition-time-s;
 }
 
 .section.collapsed .section-toggle .icon {

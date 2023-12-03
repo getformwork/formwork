@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use "sass:map";
 
 .user-summary {
     display: flex;
@@ -64,8 +64,9 @@
     font-size: $font-size-m;
 }
 
-@media (min-width: map.get($responsive-breakpoints, 'xs')) {
-    .users-item, .users-list-headers {
+@media (min-width: map.get($responsive-breakpoints, "xs")) {
+    .users-item,
+    .users-list-headers {
         display: flex;
         align-items: center;
     }

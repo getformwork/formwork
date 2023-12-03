@@ -17,7 +17,9 @@
     box-shadow: $notification-box-shadow;
     cursor: default;
     text-overflow: ellipsis;
-    transition: top $transition-time-m ease-in, opacity $transition-time-s;
+    transition:
+        top $transition-time-m ease-in,
+        opacity $transition-time-s;
     &:hover {
         opacity: $notification-hover-opacity;
     }

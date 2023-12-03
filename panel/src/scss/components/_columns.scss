@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use "sass:map";
 
 .container,
 .container-full,
@@ -8,7 +8,7 @@
 }
 
 .container {
-    max-width: map.get($responsive-breakpoints, 'l');
+    max-width: map.get($responsive-breakpoints, "l");
 }
 
 .container-no-margin {
@@ -22,28 +22,28 @@
     margin: 0 $columns-gutter * -0.5;
 }
 
-@media (max-width: map.get($responsive-breakpoints, 's')) {
+@media (max-width: map.get($responsive-breakpoints, "s")) {
     .container-no-margin .row {
         margin: 0;
     }
 
-    .container-no-margin div[class^='col-'] {
+    .container-no-margin div[class^="col-"] {
         padding: 0;
     }
 }
 
 @include make-columns-globals($columns-count, $responsive-breakpoints);
 
-@include make-breakpoint-columns($columns-count, 'xs');
+@include make-breakpoint-columns($columns-count, "xs");
 
-@media (min-width: map.get($responsive-breakpoints, 's')) {
-    @include make-breakpoint-columns($columns-count, 's');
+@media (min-width: map.get($responsive-breakpoints, "s")) {
+    @include make-breakpoint-columns($columns-count, "s");
 }
 
-@media (min-width: map.get($responsive-breakpoints, 'm')) {
-    @include make-breakpoint-columns($columns-count, 'm');
+@media (min-width: map.get($responsive-breakpoints, "m")) {
+    @include make-breakpoint-columns($columns-count, "m");
 }
 
-@media (min-width: map.get($responsive-breakpoints, 'l')) {
-    @include make-breakpoint-columns($columns-count, 'l');
+@media (min-width: map.get($responsive-breakpoints, "l")) {
+    @include make-breakpoint-columns($columns-count, "l");
 }
