@@ -1,42 +1,44 @@
 {
-  "name": "formwork-panel",
-  "description": "Formwork CMS Administration Panel",
-  "author": "Giuseppe Criscione",
-  "license": "MIT",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/getformwork/formwork.git"
-  },
-  "bugs": {
-    "url": "https://github.com/getformwork/formwork/issues"
-  },
-  "scripts": {
-    "build": "yarn build:css && yarn build:js",
-    "build:css": "sass ./src/scss/panel.scss:./assets/css/panel.min.css ./src/scss/panel-dark.scss:./assets/css/panel-dark.min.css --style=compressed --no-source-map",
-    "build:js": "esbuild ./src/js/main.js --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
-    "watch:css": "yarn build:css --watch",
-    "watch:js": "yarn build:js --watch",
-    "lint:css": "stylelint './src/scss/**/*.scss' --fix",
-    "lint:js": "eslint './src/js/**' --fix"
-  },
-  "dependencies": {
-    "chartist": "^1.3.0",
-    "codemirror": "^5.65.11",
-    "sortablejs": "^1.15.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^8.41.0",
-    "esbuild": "^0.19.2",
-    "eslint": "^8.40.0",
-    "globals": "^13.20.0",
-    "postcss": "^8.4.19",
-    "sass": "^1.66.1",
-    "stylelint": "^14.16.1",
-    "stylelint-config-idiomatic-order": "^9.0.0",
-    "stylelint-config-standard-scss": "^6.1.0",
-    "stylelint-order": "^6.0.1",
-    "stylelint-scss": "^4.7.0"
-  },
-  "packageManager": "yarn@4.0.2"
+    "name": "formwork-panel",
+    "description": "Formwork CMS Administration Panel",
+    "author": "Giuseppe Criscione",
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/getformwork/formwork.git"
+    },
+    "bugs": {
+        "url": "https://github.com/getformwork/formwork/issues"
+    },
+    "scripts": {
+        "build": "yarn build:css && yarn build:js",
+        "build:css": "sass ./src/scss/panel.scss:./assets/css/panel.min.css ./src/scss/panel-dark.scss:./assets/css/panel-dark.min.css --style=compressed --no-source-map",
+        "build:js": "esbuild ./src/js/main.js --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
+        "watch:css": "yarn build:css --watch",
+        "watch:js": "yarn build:js --watch",
+        "lint": "yarn lint:css && yarn lint:js",
+        "lint:css": "prettier './src/scss/**/*.scss' --write && stylelint './src/scss/**/*.scss' --fix",
+        "lint:js": "prettier './src/js/**/*.js' --write && eslint './src/js/**/*.js' --fix"
+    },
+    "dependencies": {
+        "chartist": "^1.3.0",
+        "codemirror": "^5.65.16",
+        "sortablejs": "^1.15.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^8.55.0",
+        "esbuild": "^0.19.8",
+        "eslint": "^8.55.0",
+        "eslint-config-prettier": "^9.1.0",
+        "globals": "^13.23.0",
+        "postcss": "^8.4.32",
+        "prettier": "3.1.0",
+        "sass": "^1.69.5",
+        "stylelint": "^15.11.0",
+        "stylelint-config-standard-scss": "^11.1.0",
+        "stylelint-order": "^6.0.3",
+        "stylelint-scss": "^5.3.1"
+    },
+    "packageManager": "yarn@4.0.2"
 }
