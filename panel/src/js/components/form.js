@@ -48,7 +48,7 @@ export default function Form(form) {
         if (changesModal) {
             $("[data-command=continue]", changesModal).addEventListener("click", function () {
                 removeBeforeUnload();
-                window.location.href = this.getAttribute("data-href");
+                window.location.href = this.dataset.href;
             });
         }
 

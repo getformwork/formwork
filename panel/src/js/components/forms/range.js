@@ -4,8 +4,8 @@ export default function RangeInput(input) {
 
     updateValueLabel.call(input);
 
-    if (input.hasAttribute("data-ticks")) {
-        const count = input.getAttribute("data-ticks");
+    if ("ticks" in input.dataset) {
+        const count = input.dataset.ticks;
 
         switch (count) {
             case 0:

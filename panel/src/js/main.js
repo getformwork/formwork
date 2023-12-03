@@ -30,7 +30,7 @@ export default Formwork = {
         }
 
         $$("[data-chart-data]").forEach((element) => {
-            const data = JSON.parse(element.getAttribute("data-chart-data"));
+            const data = JSON.parse(element.dataset.chartData);
             Chart(element, data);
         });
 

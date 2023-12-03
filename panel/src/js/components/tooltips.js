@@ -9,7 +9,7 @@ export default {
 
         $$("[data-tooltip]").forEach((element) => {
             element.addEventListener("mouseover", function () {
-                const tooltip = new Tooltip(this.getAttribute("data-tooltip"), {
+                const tooltip = new Tooltip(this.dataset.tooltip, {
                     referenceElement: this,
                     position: "bottom",
                     offset: {
@@ -23,7 +23,7 @@ export default {
             // Immediately show tooltip on focused buttons
             if (element.tagName.toLowerCase() === "button" || element.classList.contains("button")) {
                 element.addEventListener("focus", function () {
-                    const tooltip = new Tooltip(this.getAttribute("data-tooltip"), {
+                    const tooltip = new Tooltip(this.dataset.tooltip, {
                         referenceElement: this,
                         position: "bottom",
                         offset: {

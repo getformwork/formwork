@@ -11,7 +11,7 @@ export default {
                 const button = event.target.closest(".dropdown-button");
 
                 if (button) {
-                    const dropdown = document.getElementById(button.getAttribute("data-dropdown"));
+                    const dropdown = document.getElementById(button.dataset.dropdown);
                     const isVisible = getComputedStyle(dropdown).display !== "none";
                     event.preventDefault();
 

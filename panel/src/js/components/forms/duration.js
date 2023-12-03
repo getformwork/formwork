@@ -187,11 +187,11 @@ export default function DurationInput(input, options) {
         if (input.disabled) {
             hiddenInput.disabled = true;
         }
-        if (input.hasAttribute("data-intervals")) {
-            options.intervals = input.getAttribute("data-intervals").split(", ");
+        if ("intervals" in input.dataset) {
+            options.intervals = input.dataset.intervals.split(", ");
         }
-        if (input.hasAttribute("data-unit")) {
-            options.unit = input.getAttribute("data-unit");
+        if ("unit" in input.dataset) {
+            options.unit = input.dataset.unit;
         }
         const valueSeconds = input.value * TIME_INTERVALS[options.unit];
         const stepSeconds = input.step * TIME_INTERVALS[options.unit];

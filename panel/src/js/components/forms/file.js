@@ -44,7 +44,7 @@ export default function FileInput(input) {
         if (this.files.length > 0) {
             span.innerHTML = this.files[0].name;
         } else {
-            span.innerHTML = this.getAttribute("data-label");
+            span.innerHTML = this.dataset.label;
         }
     }
 

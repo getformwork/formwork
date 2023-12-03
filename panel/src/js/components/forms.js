@@ -15,7 +15,7 @@ export default {
     init: function () {
         $$("input[data-enable]").forEach((element) => {
             element.addEventListener("change", function () {
-                const inputs = this.getAttribute("data-enable").split(",");
+                const inputs = this.dataset.enable.split(",");
                 for (const name of inputs) {
                     const input = $(`input[name="${name}"]`);
                     if (!this.checked) {
@@ -29,7 +29,7 @@ export default {
 
         $$(".input-reset").forEach((element) => {
             element.addEventListener("click", function () {
-                const target = document.getElementById(this.getAttribute("data-reset"));
+                const target = document.getElementById(this.dataset.reset);
                 target.value = "";
                 Utils.triggerEvent(target, "change");
             });

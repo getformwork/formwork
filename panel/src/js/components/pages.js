@@ -17,7 +17,7 @@ export default {
         const slugModal = document.getElementById("slugModal");
 
         $$(".pages-list").forEach((element) => {
-            if (element.getAttribute("data-orderable-children") === "true") {
+            if (element.dataset.orderableChildren === "true") {
                 initSortable(element);
             }
         });
@@ -101,7 +101,7 @@ export default {
                     return;
                 }
 
-                let allowedTemplates = option.getAttribute("data-allowed-templates");
+                let allowedTemplates = option.dataset.allowedTemplates;
 
                 const pageTemplate = $("#page-template", newPageModal);
 
@@ -113,14 +113,14 @@ export default {
                     $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
 
                     $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
-                        if (!allowedTemplates.includes(option.getAttribute("data-value"))) {
+                        if (!allowedTemplates.includes(option.dataset.value)) {
                             option.classList.add("disabled");
                         }
                     });
                 } else {
-                    if (pageTemplate.hasAttribute("data-previous-value")) {
-                        pageTemplate.value = pageTemplate.getAttribute("data-previous-value");
-                        pageTemplate.removeAttribute("data-previous-value");
+                    if ("previousValue" in pageTemplate.dataset) {
+                        pageTemplate.value = pageTemplate.dataset.previousValue;
+                        delete pageTemplate.dataset.previousValue;
                         $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
                     }
 
@@ -178,7 +178,7 @@ export default {
             element.addEventListener("click", () => {
                 const modal = document.getElementById("renameFileModal");
                 const input = $("#file-name", modal);
-                input.value = element.getAttribute("data-filename");
+                input.value = element.dataset.filename;
                 input.setSelectionRange(0, input.value.lastIndexOf("."));
             });
         });
@@ -244,9 +244,9 @@ export default {
 
                     const data = {
                         "csrf-token": $("meta[name=csrf-token]").getAttribute("content"),
-                        page: element.children[event.newIndex].getAttribute("data-route"),
-                        before: element.children[event.oldIndex].getAttribute("data-route"),
-                        parent: element.getAttribute("data-parent"),
+                        page: element.children[event.newIndex].dataset.route,
+                        before: element.children[event.oldIndex].dataset.route,
+                        parent: element.dataset.parent,
                     };
 
                     Request(
@@ -282,7 +282,7 @@ export default {
                     const title = $(".page-title a", element);
                     title.innerHTML = title.textContent;
                     $(".pages-item-row", element).style.display = "";
-                    element.classList.toggle("is-expanded", element.getAttribute("data-expanded") === true);
+                    element.classList.toggle("is-expanded", element.dataset.expanded === "true");
                 });
             } else {
                 $(".pages-list-root").classList.add("is-filtered");

@@ -26,20 +26,20 @@ export default function ImagePicker(element) {
 
     confirmCommand.addEventListener("click", function () {
         const selectedThumbnail = $(".image-picker-thumbnail.selected");
-        const target = document.getElementById(this.getAttribute("data-target"));
+        const target = document.getElementById(this.dataset.target);
         if (selectedThumbnail && target) {
-            target.value = selectedThumbnail.getAttribute("data-filename");
+            target.value = selectedThumbnail.dataset.filename;
         }
     });
 
     uploadCommand.addEventListener("click", function () {
-        document.getElementById(this.getAttribute("data-upload-target")).click();
+        document.getElementById(this.dataset.uploadTarget).click();
     });
 
     function handleThumbnailClick() {
-        const target = document.getElementById($(".image-picker-confirm").getAttribute("data-target"));
+        const target = document.getElementById($(".image-picker-confirm").dataset.target);
         if (target) {
-            target.value = this.getAttribute("data-filename");
+            target.value = this.dataset.filename;
         }
         $$(".image-picker-thumbnail").forEach((element) => {
             element.classList.remove("selected");

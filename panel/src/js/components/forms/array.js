@@ -2,7 +2,7 @@ import Sortable from "sortablejs";
 
 export default function ArrayInput(input) {
     const isAssociative = input.classList.contains("input-array-associative");
-    const inputName = input.getAttribute("data-name");
+    const inputName = input.dataset.name;
 
     $$(".input-array-row", input).forEach((element) => {
         bindRowEvents(element);

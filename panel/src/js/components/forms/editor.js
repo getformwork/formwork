@@ -76,7 +76,7 @@ export default function Editor(textarea) {
                 selected.classList.remove("selected");
             }
             function confirmImage() {
-                const filename = $(".image-picker-thumbnail.selected", $("#imagesModal")).getAttribute("data-filename");
+                const filename = $(".image-picker-thumbnail.selected", $("#imagesModal")).dataset.filename;
                 if (filename !== undefined) {
                     insertAtCursor(`${prependSequence()}![`, `](${filename})`);
                 } else {

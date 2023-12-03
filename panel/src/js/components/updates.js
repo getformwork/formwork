@@ -63,7 +63,7 @@ export default {
             $("[data-command=install-updates]").addEventListener("click", () => {
                 newVersion.style.display = "none";
                 spinner.classList.remove("spinner-info");
-                updateStatus.innerHTML = updateStatus.getAttribute("data-installing-text");
+                updateStatus.innerHTML = updateStatus.dataset.installingText;
 
                 Request(
                     {

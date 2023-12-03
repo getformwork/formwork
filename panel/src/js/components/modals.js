@@ -6,8 +6,8 @@ export default Modals = {
     init: function () {
         $$("[data-modal]").forEach((element) => {
             element.addEventListener("click", function () {
-                const modal = this.getAttribute("data-modal");
-                const action = this.getAttribute("data-modal-action");
+                const modal = this.dataset.modal;
+                const action = this.dataset.modalAction;
                 if (action) {
                     Modals.show(modal, action);
                 } else {
@@ -18,13 +18,13 @@ export default Modals = {
 
         $$(".modal [data-dismiss]").forEach((element) => {
             element.addEventListener("click", function () {
-                if (this.hasAttribute("data-validate")) {
-                    const valid = Modals.validate(this.getAttribute("data-dismiss"));
+                if ("validate" in this.dataset) {
+                    const valid = Modals.validate(this.dataset.dismiss);
                     if (!valid) {
                         return;
                     }
                 }
-                Modals.hide(this.getAttribute("data-dismiss"));
+                Modals.hide(this.dataset.dismiss);
             });
         });
 

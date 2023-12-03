@@ -70,8 +70,8 @@ export default function TagInput(input) {
     }
 
     function createDropdown() {
-        if (input.hasAttribute("data-options")) {
-            const list = JSON.parse(input.getAttribute("data-options"));
+        if ("options" in input.dataset) {
+            const list = JSON.parse(input.dataset.options);
 
             dropdown = document.createElement("div");
             dropdown.className = "dropdown-list";
@@ -82,7 +82,7 @@ export default function TagInput(input) {
                 item.innerHTML = list[key];
                 item.setAttribute("data-value", key);
                 item.addEventListener("click", function () {
-                    addTag(this.getAttribute("data-value"));
+                    addTag(this.dataset.value);
                 });
                 dropdown.appendChild(item);
             }
@@ -292,7 +292,7 @@ export default function TagInput(input) {
             if (getComputedStyle(element).display !== "none") {
                 visibleItems++;
             }
-            if (!tags.includes(element.getAttribute("data-value"))) {
+            if (!tags.includes(element.dataset.value)) {
                 element.style.display = "block";
             } else {
                 element.style.display = "none";
@@ -346,7 +346,7 @@ export default function TagInput(input) {
     function addTagFromSelectedDropdownItem() {
         const selectedItem = $(".dropdown-item.selected", dropdown);
         if (getComputedStyle(selectedItem).display !== "none") {
-            innerInput.value = selectedItem.getAttribute("data-value");
+            innerInput.value = selectedItem.dataset.value;
         }
     }
 

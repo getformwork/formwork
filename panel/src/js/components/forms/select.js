@@ -328,7 +328,7 @@ export default function SelectInput(select, options) {
     }
 
     function setCurrent(item) {
-        select.value = item.getAttribute("data-value");
+        select.value = item.dataset.value;
         labelInput.value = item.innerText;
         Utils.triggerEvent(select, "change");
     }
