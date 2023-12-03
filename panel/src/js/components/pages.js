@@ -1,81 +1,81 @@
-import Modals from './modals';
-import Notification from './notification';
-import Request from './request';
-import { Sortable } from 'sortablejs';
-import Utils from './utils';
+import Modals from "./modals";
+import Notification from "./notification";
+import Request from "./request";
+import { Sortable } from "sortablejs";
+import Utils from "./utils";
 
 export default {
     init: function () {
-        const commandExpandAllPages = $('[data-command=expand-all-pages]');
-        const commandCollapseAllPages = $('[data-command=collapse-all-pages]');
-        const commandReorderPages = $('[data-command=reorder-pages]');
-        const commandChangeSlug = $('[data-command=change-slug]');
+        const commandExpandAllPages = $("[data-command=expand-all-pages]");
+        const commandCollapseAllPages = $("[data-command=collapse-all-pages]");
+        const commandReorderPages = $("[data-command=reorder-pages]");
+        const commandChangeSlug = $("[data-command=change-slug]");
 
-        const searchInput = $('.page-search');
+        const searchInput = $(".page-search");
 
-        const newPageModal = document.getElementById('newPageModal');
-        const slugModal = document.getElementById('slugModal');
+        const newPageModal = document.getElementById("newPageModal");
+        const slugModal = document.getElementById("slugModal");
 
-        $$('.pages-list').forEach((element) => {
-            if (element.getAttribute('data-orderable-children') === 'true') {
+        $$(".pages-list").forEach((element) => {
+            if (element.getAttribute("data-orderable-children") === "true") {
                 initSortable(element);
             }
         });
 
-        $$('.page-details').forEach((element) => {
-            if ($('.page-children-toggle', element)) {
-                element.addEventListener('click', function (event) {
+        $$(".page-details").forEach((element) => {
+            if ($(".page-children-toggle", element)) {
+                element.addEventListener("click", function (event) {
                     togglePageItem(this);
                     event.stopPropagation();
                 });
             }
         });
 
-        $$('.page-details a').forEach((element) => {
-            element.addEventListener('click', (event) => {
+        $$(".page-details a").forEach((element) => {
+            element.addEventListener("click", (event) => {
                 event.stopPropagation();
             });
         });
 
-        $$('.pages-list .sort-handle').forEach((element) => {
-            element.addEventListener('click', (event) => {
+        $$(".pages-list .sort-handle").forEach((element) => {
+            element.addEventListener("click", (event) => {
                 event.stopPropagation();
             });
         });
 
         if (commandExpandAllPages) {
-            commandExpandAllPages.addEventListener('click', function () {
+            commandExpandAllPages.addEventListener("click", function () {
                 expandAllPages();
                 this.blur();
             });
         }
 
         if (commandCollapseAllPages) {
-            commandCollapseAllPages.addEventListener('click', function () {
+            commandCollapseAllPages.addEventListener("click", function () {
                 collapseAllPages();
                 this.blur();
             });
         }
 
         if (commandReorderPages) {
-            commandReorderPages.addEventListener('click', function () {
-                this.classList.toggle('active');
-                $('.pages-list').classList.toggle('is-reordering');
+            commandReorderPages.addEventListener("click", function () {
+                this.classList.toggle("active");
+                $(".pages-list").classList.toggle("is-reordering");
                 this.blur();
             });
         }
 
         if (searchInput) {
-            searchInput.addEventListener('focus', () => {
-                $$('.pages-item').forEach((element) => {
-                    element.setAttribute('data-expanded', element.classList.contains('expanded') ? 'true' : 'false');
+            searchInput.addEventListener("focus", () => {
+                $$(".pages-item").forEach((element) => {
+                    element.setAttribute("data-expanded", element.classList.contains("expanded") ? "true" : "false");
                 });
             });
 
-            searchInput.addEventListener('keyup', Utils.debounce(handleSearch, 100));
-            searchInput.addEventListener('search', handleSearch);
+            searchInput.addEventListener("keyup", Utils.debounce(handleSearch, 100));
+            searchInput.addEventListener("search", handleSearch);
 
-            document.addEventListener('keydown', (event) => {
+            document.addEventListener("keydown", (event) => {
                 if (event.ctrlKey || event.metaKey) {
                     // ctrl/cmd + F
                     if (event.which === 70 && document.activeElement !== searchInput) {
@@ -87,126 +87,125 @@ export default {
         }
 
         if (newPageModal) {
-            $('#page-title', newPageModal).addEventListener('keyup', function () {
-                $('#page-slug', newPageModal).value = Utils.slug(this.value);
+            $("#page-title", newPageModal).addEventListener("keyup", function () {
+                $("#page-slug", newPageModal).value = Utils.slug(this.value);
             });
 
-            $('#page-slug', newPageModal).addEventListener('keyup', handleSlugChange);
-            $('#page-slug', newPageModal).addEventListener('blur', handleSlugChange);
+            $("#page-slug", newPageModal).addEventListener("keyup", handleSlugChange);
+            $("#page-slug", newPageModal).addEventListener("blur", handleSlugChange);
 
-            $('#page-parent', newPageModal).addEventListener('change', () => {
+            $("#page-parent", newPageModal).addEventListener("change", () => {
                 const option = $('.dropdown-list[data-for="page-parent"] .selected');
 
                 if (!option) {
                     return;
                 }
 
-                let allowedTemplates = option.getAttribute('data-allowed-templates');
+                let allowedTemplates = option.getAttribute("data-allowed-templates");
 
-                const pageTemplate = $('#page-template', newPageModal);
+                const pageTemplate = $("#page-template", newPageModal);
 
                 if (allowedTemplates !== null) {
-                    allowedTemplates = allowedTemplates.split(', ');
+                    allowedTemplates = allowedTemplates.split(", ");
 
-                    pageTemplate.setAttribute('data-previous-value', pageTemplate.value);
+                    pageTemplate.setAttribute("data-previous-value", pageTemplate.value);
                     pageTemplate.value = allowedTemplates[0];
                     $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
 
                     $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
-                        if (!allowedTemplates.includes(option.getAttribute('data-value'))) {
-                            option.classList.add('disabled');
+                        if (!allowedTemplates.includes(option.getAttribute("data-value"))) {
+                            option.classList.add("disabled");
                         }
                     });
-
                 } else {
-                    if (pageTemplate.hasAttribute('data-previous-value')) {
-                        pageTemplate.value = pageTemplate.getAttribute('data-previous-value');
-                        pageTemplate.removeAttribute('data-previous-value');
+                    if (pageTemplate.hasAttribute("data-previous-value")) {
+                        pageTemplate.value = pageTemplate.getAttribute("data-previous-value");
+                        pageTemplate.removeAttribute("data-previous-value");
                         $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
                     }
 
                     $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
-                        option.classList.remove('disabled');
+                        option.classList.remove("disabled");
                     });
                 }
             });
         }
 
         if (slugModal && commandChangeSlug) {
-            commandChangeSlug.addEventListener('click', () => {
-                Modals.show('slugModal', null, (modal) => {
-                    const slug = document.getElementById('slug').value;
-                    const slugInput = $('#page-slug', modal);
+            commandChangeSlug.addEventListener("click", () => {
+                Modals.show("slugModal", null, (modal) => {
+                    const slug = document.getElementById("slug").value;
+                    const slugInput = $("#page-slug", modal);
                     slugInput.value = slug;
-                    slugInput.setAttribute('placeholder', slug);
+                    slugInput.setAttribute("placeholder", slug);
                 });
             });
 
-            $('#page-slug', slugModal).addEventListener('keydown', (event) => {
+            $("#page-slug", slugModal).addEventListener("keydown", (event) => {
                 // enter
                 if (event.which === 13) {
-                    $('[data-command=continue]', slugModal).click();
+                    $("[data-command=continue]", slugModal).click();
                 }
             });
 
-            $('#page-slug', slugModal).addEventListener('keyup', handleSlugChange);
-            $('#page-slug', slugModal).addEventListener('blur', handleSlugChange);
+            $("#page-slug", slugModal).addEventListener("keyup", handleSlugChange);
+            $("#page-slug", slugModal).addEventListener("blur", handleSlugChange);
 
-            $('[data-command=generate-slug]', slugModal).addEventListener('click', () => {
-                const slug = Utils.slug(document.getElementById('title').value);
-                $('#page-slug', slugModal).value = slug;
-                $('#page-slug', slugModal).focus();
+            $("[data-command=generate-slug]", slugModal).addEventListener("click", () => {
+                const slug = Utils.slug(document.getElementById("title").value);
+                $("#page-slug", slugModal).value = slug;
+                $("#page-slug", slugModal).focus();
             });
 
-            $('[data-command=continue]', slugModal).addEventListener('click', () => {
-                const slug = $('#page-slug', slugModal).value.replace(/^-+|-+$/, '');
+            $("[data-command=continue]", slugModal).addEventListener("click", () => {
+                const slug = $("#page-slug", slugModal).value.replace(/^-+|-+$/, "");
 
                 if (slug.length > 0) {
-                    const route = $('.page-slug-change').innerHTML;
-                    $$('#page-slug, #slug').forEach((element) => {
+                    const route = $(".page-slug-change").innerHTML;
+                    $$("#page-slug, #slug").forEach((element) => {
                         element.value = slug;
                     });
-                    $('#page-slug', slugModal).value = slug;
-                    document.getElementById('slug').value = slug;
-                    $('.page-slug-change').innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
+                    $("#page-slug", slugModal).value = slug;
+                    document.getElementById("slug").value = slug;
+                    $(".page-slug-change").innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 
-                Modals.hide('slugModal');
+                Modals.hide("slugModal");
             });
         }
 
-        $$(['[data-modal=renameFileModal]']).forEach((element) => {
-            element.addEventListener('click', () => {
-                const modal = document.getElementById('renameFileModal');
-                const input = $('#file-name', modal);
-                input.value = element.getAttribute('data-filename');
-                input.setSelectionRange(0, input.value.lastIndexOf('.'));
+        $$(["[data-modal=renameFileModal]"]).forEach((element) => {
+            element.addEventListener("click", () => {
+                const modal = document.getElementById("renameFileModal");
+                const input = $("#file-name", modal);
+                input.value = element.getAttribute("data-filename");
+                input.setSelectionRange(0, input.value.lastIndexOf("."));
             });
         });
 
         function expandAllPages() {
-            $$('.pages-item').forEach((element) => {
-                element.classList.add('is-expanded');
+            $$(".pages-item").forEach((element) => {
+                element.classList.add("is-expanded");
             });
         }
 
         function collapseAllPages() {
-            $$('.pages-item').forEach((element) => {
-                element.classList.remove('is-expanded');
+            $$(".pages-item").forEach((element) => {
+                element.classList.remove("is-expanded");
             });
         }
 
         function togglePageItem(list) {
-            const element = list.closest('.pages-item');
-            element.classList.toggle('is-expanded');
+            const element = list.closest(".pages-item");
+            element.classList.toggle("is-expanded");
         }
 
         function initSortable(element) {
             let originalOrder = [];
 
             const sortable = Sortable.create(element, {
-                handle: '.sort-handle',
-                filter: '.is-not-orderable',
+                handle: ".sort-handle",
+                filter: ".is-not-orderable",
                 forceFallback: true,
                 swapThreshold: 0.75,
                 invertSwap: true,
@@ -216,57 +215,58 @@ export default {
                     const height = document.body.offsetHeight;
                     document.body.style.height = `${height}px`;
 
-                    const e = window.addEventListener('scroll', function () {
-                        this.document.body.style.height = '';
-                        this.removeEventListener('scroll', e);
+                    const e = window.addEventListener("scroll", function () {
+                        this.document.body.style.height = "";
+                        this.removeEventListener("scroll", e);
                     });
-
                 },
 
                 onStart: function () {
-                    element.classList.add('is-dragging');
+                    element.classList.add("is-dragging");
                 },
 
                 onMove: function (event) {
-                    if (event.related.classList.contains('is-not-orderable')) {
+                    if (event.related.classList.contains("is-not-orderable")) {
                         return false;
                     }
                 },
 
                 onEnd: function (event) {
-                    element.classList.remove('is-dragging');
+                    element.classList.remove("is-dragging");
 
-                    document.body.style.height = '';
+                    document.body.style.height = "";
 
                     if (event.newIndex === event.oldIndex) {
                         return;
                     }
 
-                    sortable.option('disabled', true);
+                    sortable.option("disabled", true);
 
                     const data = {
-                        'csrf-token': $('meta[name=csrf-token]').getAttribute('content'),
-                        page: element.children[event.newIndex].getAttribute('data-route'),
-                        before: element.children[event.oldIndex].getAttribute('data-route'),
-                        parent: element.getAttribute('data-parent'),
+                        "csrf-token": $("meta[name=csrf-token]").getAttribute("content"),
+                        page: element.children[event.newIndex].getAttribute("data-route"),
+                        before: element.children[event.oldIndex].getAttribute("data-route"),
+                        parent: element.getAttribute("data-parent"),
                     };
 
-                    Request({
-                        method: 'POST',
-                        url: `${Formwork.config.baseUri}pages/reorder/`,
-                        data: data,
-                    }, (response) => {
-                        if (response.status) {
-                            const notification = new Notification(response.message, response.status, { icon: 'check-circle' });
-                            notification.show();
-                        }
-                        if (!response.status || response.status === 'error') {
-                            sortable.sort(originalOrder);
-                        }
-                        sortable.option('disabled', false);
-                        originalOrder = sortable.toArray();
-                    });
-
+                    Request(
+                        {
+                            method: "POST",
+                            url: `${Formwork.config.baseUri}pages/reorder/`,
+                            data: data,
+                        },
+                        (response) => {
+                            if (response.status) {
+                                const notification = new Notification(response.message, response.status, { icon: "check-circle" });
+                                notification.show();
+                            }
+                            if (!response.status || response.status === "error") {
+                                sortable.sort(originalOrder);
+                            }
+                            sortable.option("disabled", false);
+                            originalOrder = sortable.toArray();
+                        },
+                    );
                 },
             });
 
@@ -276,34 +276,33 @@ export default {
         function handleSearch() {
             const value = this.value;
             if (value.length === 0) {
-                $('.pages-list-root').classList.remove('is-filtered');
+                $(".pages-list-root").classList.remove("is-filtered");
 
-                $$('.pages-item').forEach((element) => {
-                    const title = $('.page-title a', element);
+                $$(".pages-item").forEach((element) => {
+                    const title = $(".page-title a", element);
                     title.innerHTML = title.textContent;
-                    $('.pages-item-row', element).style.display = '';
-                    element.classList.toggle('is-expanded', element.getAttribute('data-expanded') === true);
+                    $(".pages-item-row", element).style.display = "";
+                    element.classList.toggle("is-expanded", element.getAttribute("data-expanded") === true);
                 });
             } else {
-                $('.pages-list-root').classList.add('is-filtered');
+                $(".pages-list-root").classList.add("is-filtered");
 
-                const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'gi');
+                const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), "gi");
 
-                $$('.pages-item').forEach((element) => {
-                    const title = $('.page-title a', element);
+                $$(".pages-item").forEach((element) => {
+                    const title = $(".page-title a", element);
                     const text = title.textContent;
-                    const pagesItem = $('.pages-item-row', element);
+                    const pagesItem = $(".pages-item-row", element);
 
                     if (text.match(regexp) !== null) {
-                        title.innerHTML = text.replace(regexp, '<mark>$&</mark>');
-                        pagesItem.style.display = '';
+                        title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+                        pagesItem.style.display = "";
                     } else {
-                        pagesItem.style.display = 'none';
+                        pagesItem.style.display = "none";
                     }
 
-                    element.classList.add('is-expanded');
+                    element.classList.add("is-expanded");
                 });
-
             }
         }
 

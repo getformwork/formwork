@@ -1,49 +1,49 @@
-import Utils from '../utils';
+import Utils from "../utils";
 
 export default function SelectInput(select, options) {
-    const defaults = { labels: { empty: 'No matching options' } };
+    const defaults = { labels: { empty: "No matching options" } };
 
     options = Utils.extendObject({}, defaults, options);
 
     let dropdown;
 
-    const labelInput = document.createElement('input');
+    const labelInput = document.createElement("input");
 
-    const emptyState = document.createElement('div');
+    const emptyState = document.createElement("div");
 
     createField();
 
     function createField() {
-        const wrap = document.createElement('div');
-        wrap.className = 'input-wrap';
+        const wrap = document.createElement("div");
+        wrap.className = "input-wrap";
 
         select.hidden = true;
 
-        labelInput.type = 'text';
+        labelInput.type = "text";
 
-        labelInput.classList.add('select');
-        labelInput.setAttribute('data-for', select.id);
+        labelInput.classList.add("select");
+        labelInput.setAttribute("data-for", select.id);
 
-        if (select.hasAttribute('disabled')) {
+        if (select.hasAttribute("disabled")) {
             labelInput.disabled = true;
         }
 
         select.getAttributeNames().forEach((attr) => {
-            if (attr.indexOf('data-') === 0) {
+            if (attr.indexOf("data-") === 0) {
                 labelInput.setAttribute(attr, select.getAttribute(attr));
             }
-        })
+        });
 
         const list = [];
 
-        $$('option', select).forEach((option) => {
+        $$("option", select).forEach((option) => {
             const attributes = {};
 
             option.getAttributeNames().forEach((attr) => {
-                if (attr.indexOf('data-') === 0) {
+                if (attr.indexOf("data-") === 0) {
                     attributes[attr] = option.getAttribute(attr);
                 }
-            })
+            });
 
             list.push({
                 label: option.innerText,
@@ -65,42 +65,41 @@ export default function SelectInput(select, options) {
         wrap.appendChild(labelInput);
 
         createDropdown(list, wrap);
-
     }
 
     function createDropdown(list, wrap) {
-        dropdown = document.createElement('div');
-        dropdown.className = 'dropdown-list';
+        dropdown = document.createElement("div");
+        dropdown.className = "dropdown-list";
 
-        dropdown.setAttribute('data-for', select.id);
+        dropdown.setAttribute("data-for", select.id);
 
-        emptyState.className = 'dropdown-empty';
-        emptyState.style.display = 'none';
+        emptyState.className = "dropdown-empty";
+        emptyState.style.display = "none";
         emptyState.innerText = options.labels.empty;
 
         dropdown.appendChild(emptyState);
 
         for (const option of list) {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
+            const item = document.createElement("div");
+            item.className = "dropdown-item";
 
             item.innerText = option.label;
-            item.setAttribute('data-value', option.value);
+            item.setAttribute("data-value", option.value);
 
             if (option.selected) {
-                item.classList.add('selected');
+                item.classList.add("selected");
             }
 
             if (option.disabled) {
-                item.classList.add('disabled');
+                item.classList.add("disabled");
             }
 
             for (const attr in option.attributes) {
                 item.setAttribute(attr, option.attributes[attr]);
             }
 
-            item.addEventListener('mousedown', (event) => {
-                if (!item.classList.contains('disabled')) {
+            item.addEventListener("mousedown", (event) => {
+                if (!item.classList.contains("disabled")) {
                     selectDropdownItem(item);
                     setCurrent(item);
                 } else {
@@ -116,135 +115,135 @@ export default function SelectInput(select, options) {
 
         let hasKeyboardInput = false;
 
-        labelInput.addEventListener('focus', () => {
+        labelInput.addEventListener("focus", () => {
             selectCurrent();
             labelInput.setSelectionRange(0, 0);
             hasKeyboardInput = false;
         });
 
-        labelInput.addEventListener('mousedown', (event) => {
+        labelInput.addEventListener("mousedown", (event) => {
             labelInput.focus();
             event.preventDefault();
         });
 
-        labelInput.addEventListener('blur', () => {
+        labelInput.addEventListener("blur", () => {
             if (!validateDropdownItem(labelInput.value)) {
                 labelInput.value = getCurrentLabel();
             }
-            dropdown.style.display = 'none';
+            dropdown.style.display = "none";
         });
 
-        labelInput.addEventListener('keydown', (event) => {
-            const selectedItem = $('.dropdown-item.selected', dropdown);
+        labelInput.addEventListener("keydown", (event) => {
+            const selectedItem = $(".dropdown-item.selected", dropdown);
 
             switch (event.key) {
-            case 'Backspace': // backspace
-                updateDropdown();
-                break;
+                case "Backspace": // backspace
+                    updateDropdown();
+                    break;
 
-            case 'ArrowUp': // up arrow
-                if (getComputedStyle(dropdown).display !== 'none') {
-                    selectPrevDropdownItem();
-                } else {
-                    selectCurrent();
-                }
-                event.preventDefault();
-                break;
+                case "ArrowUp": // up arrow
+                    if (getComputedStyle(dropdown).display !== "none") {
+                        selectPrevDropdownItem();
+                    } else {
+                        selectCurrent();
+                    }
+                    event.preventDefault();
+                    break;
 
-            case 'ArrowDown': // down arrow
-                if (getComputedStyle(dropdown).display !== 'none') {
-                    selectNextDropdownItem();
-                } else {
-                    selectCurrent();
-                }
-                event.preventDefault();
-                break;
+                case "ArrowDown": // down arrow
+                    if (getComputedStyle(dropdown).display !== "none") {
+                        selectNextDropdownItem();
+                    } else {
+                        selectCurrent();
+                    }
+                    event.preventDefault();
+                    break;
 
-            case 'Enter':
-                if (selectedItem && getComputedStyle(selectedItem).display !== 'none') {
-                    setCurrent(selectedItem);
-                }
+                case "Enter":
+                    if (selectedItem && getComputedStyle(selectedItem).display !== "none") {
+                        setCurrent(selectedItem);
+                    }
 
-                // dropdown.style.display = 'none';
-                labelInput.blur();
-                event.preventDefault();
-                break;
+                    // dropdown.style.display = 'none';
+                    labelInput.blur();
+                    event.preventDefault();
+                    break;
 
-            case 'Escape':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-                break;
+                case "Escape":
+                case "ArrowLeft":
+                case "ArrowRight":
+                    break;
 
-            default:
-                if (!hasKeyboardInput) {
-                    labelInput.value = '';
-                    hasKeyboardInput = true;
-                }
-                break;
+                default:
+                    if (!hasKeyboardInput) {
+                        labelInput.value = "";
+                        hasKeyboardInput = true;
+                    }
+                    break;
             }
         });
 
-        labelInput.addEventListener('keyup', (event) => {
+        labelInput.addEventListener("keyup", (event) => {
             const value = labelInput.value.trim();
             switch (event.key) {
-            case 'Escape':
-                labelInput.blur();
-                event.stopPropagation();
-                break;
-            case 'ArrowUp':
-            case 'ArrowDown':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-            case 'Tab':
-            case 'Enter':
-                return true;
-            default:
-                dropdown.style.display = 'block';
-                filterDropdown(value);
-                if (value.length > 0) {
-                    selectFirstDropdownItem();
-                }
+                case "Escape":
+                    labelInput.blur();
+                    event.stopPropagation();
+                    break;
+                case "ArrowUp":
+                case "ArrowDown":
+                case "ArrowLeft":
+                case "ArrowRight":
+                case "Tab":
+                case "Enter":
+                    return true;
+                default:
+                    dropdown.style.display = "block";
+                    filterDropdown(value);
+                    if (value.length > 0) {
+                        selectFirstDropdownItem();
+                    }
             }
         });
     }
 
     function updateDropdown() {
         let visibleItems = 0;
-        $$('.dropdown-item', dropdown).forEach((element) => {
-            if (getComputedStyle(element).display !== 'none') {
+        $$(".dropdown-item", dropdown).forEach((element) => {
+            if (getComputedStyle(element).display !== "none") {
                 visibleItems++;
             }
-            element.classList.remove('selected');
+            element.classList.remove("selected");
         });
 
         if (visibleItems > 0) {
-            emptyState.style.display = 'none';
+            emptyState.style.display = "none";
         } else {
-            emptyState.style.display = 'block';
+            emptyState.style.display = "block";
         }
     }
 
     function filterDropdown(value) {
         const filter = (element) => {
             const text = element.textContent;
-            const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), 'i');
+            const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), "i");
             return regexp.test(text);
         };
 
         let visibleItems = 0;
-        $$('.dropdown-item', dropdown).forEach((element) => {
+        $$(".dropdown-item", dropdown).forEach((element) => {
             if (value === null || filter(element)) {
-                element.style.display = 'block';
+                element.style.display = "block";
                 visibleItems++;
             } else {
-                element.style.display = 'none';
+                element.style.display = "none";
             }
         });
 
         if (visibleItems > 0) {
-            emptyState.style.display = 'none';
+            emptyState.style.display = "none";
         } else {
-            emptyState.style.display = 'block';
+            emptyState.style.display = "block";
         }
     }
 
@@ -266,23 +265,23 @@ export default function SelectInput(select, options) {
     }
 
     function selectDropdownItem(item) {
-        const selectedItem = $('.dropdown-item.selected', dropdown);
+        const selectedItem = $(".dropdown-item.selected", dropdown);
         if (selectedItem) {
-            selectedItem.classList.remove('selected');
+            selectedItem.classList.remove("selected");
         }
         if (item) {
-            const isDisabled = item.classList.contains('disabled');
+            const isDisabled = item.classList.contains("disabled");
             if (!isDisabled) {
-                item.classList.add('selected');
+                item.classList.add("selected");
                 scrollToDropdownItem(item);
             }
         }
     }
 
     function selectFirstDropdownItem() {
-        const items = $$('.dropdown-item', dropdown);
+        const items = $$(".dropdown-item", dropdown);
         for (let i = 0; i < items.length; i++) {
-            if (getComputedStyle(items[i]).display !== 'none') {
+            if (getComputedStyle(items[i]).display !== "none") {
                 selectDropdownItem(items[i]);
                 return;
             }
@@ -290,9 +289,9 @@ export default function SelectInput(select, options) {
     }
 
     function selectLastDropdownItem() {
-        const items = $$('.dropdown-item', dropdown);
+        const items = $$(".dropdown-item", dropdown);
         for (let i = items.length - 1; i >= 0; i--) {
-            if (getComputedStyle(items[i]).display !== 'none') {
+            if (getComputedStyle(items[i]).display !== "none") {
                 selectDropdownItem(items[i]);
                 return;
             }
@@ -300,10 +299,10 @@ export default function SelectInput(select, options) {
     }
 
     function selectPrevDropdownItem() {
-        const selectedItem = $('.dropdown-item.selected', dropdown);
+        const selectedItem = $(".dropdown-item.selected", dropdown);
         if (selectedItem) {
             let previousItem = selectedItem.previousSibling;
-            while (previousItem && (previousItem.style.display === 'none' || previousItem.classList.contains('disabled'))) {
+            while (previousItem && (previousItem.style.display === "none" || previousItem.classList.contains("disabled"))) {
                 previousItem = previousItem.previousSibling;
             }
             if (previousItem) {
@@ -315,10 +314,10 @@ export default function SelectInput(select, options) {
     }
 
     function selectNextDropdownItem() {
-        const selectedItem = $('.dropdown-item.selected', dropdown);
+        const selectedItem = $(".dropdown-item.selected", dropdown);
         if (selectedItem) {
             let nextItem = selectedItem.nextSibling;
-            while (nextItem && (nextItem.style.display === 'none' || nextItem.classList.contains('disabled'))) {
+            while (nextItem && (nextItem.style.display === "none" || nextItem.classList.contains("disabled"))) {
                 nextItem = nextItem.nextSibling;
             }
             if (nextItem) {
@@ -329,9 +328,9 @@ export default function SelectInput(select, options) {
     }
 
     function setCurrent(item) {
-        select.value = item.getAttribute('data-value');
+        select.value = item.getAttribute("data-value");
         labelInput.value = item.innerText;
-        Utils.triggerEvent(select, 'change');
+        Utils.triggerEvent(select, "change");
     }
 
     function getCurrent() {
@@ -343,17 +342,17 @@ export default function SelectInput(select, options) {
     }
 
     function selectCurrent() {
-        if (getComputedStyle(dropdown).display === 'none') {
+        if (getComputedStyle(dropdown).display === "none") {
             filterDropdown(null);
             updateDropdown();
             selectDropdownItem(getCurrent());
-            dropdown.style.display = 'block';
+            dropdown.style.display = "block";
             scrollToDropdownItem(getCurrent());
         }
     }
 
     function validateDropdownItem(value) {
-        const items = $$('.dropdown-item', dropdown);
+        const items = $$(".dropdown-item", dropdown);
         for (let i = 0; i < items.length; i++) {
             if (items[i].innerText === value) {
                 return true;

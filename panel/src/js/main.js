@@ -1,13 +1,13 @@
-import Chart from './components/chart';
-import Dashboard from './components/dashboard';
-import Dropdowns from './components/dropdowns';
-import Forms from './components/forms';
-import Modals from './components/modals';
-import Notification from './components/notification';
-import Pages from './components/pages';
-import Tooltips from './components/tooltips';
-import Updates from './components/updates';
-import Utils from './components/utils';
+import Chart from "./components/chart";
+import Dashboard from "./components/dashboard";
+import Dropdowns from "./components/dropdowns";
+import Forms from "./components/forms";
+import Modals from "./components/modals";
+import Notification from "./components/notification";
+import Pages from "./components/pages";
+import Tooltips from "./components/tooltips";
+import Updates from "./components/updates";
+import Utils from "./components/utils";
 
 let Formwork;
 
@@ -23,19 +23,19 @@ export default Formwork = {
         Pages.init();
         Updates.init();
 
-        if ($('.toggle-navigation')) {
-            $('.toggle-navigation').addEventListener('click', () => {
-                $('.sidebar').classList.toggle('show');
+        if ($(".toggle-navigation")) {
+            $(".toggle-navigation").addEventListener("click", () => {
+                $(".sidebar").classList.toggle("show");
             });
         }
 
-        $$('[data-chart-data]').forEach((element) => {
-            const data = JSON.parse(element.getAttribute('data-chart-data'));
+        $$("[data-chart-data]").forEach((element) => {
+            const data = JSON.parse(element.getAttribute("data-chart-data"));
             Chart(element, data);
         });
 
-        $$('meta[name=notification]').forEach((element) => {
-            const data = JSON.parse(element.getAttribute('content'))[0];
+        $$("meta[name=notification]").forEach((element) => {
+            const data = JSON.parse(element.getAttribute("content"))[0];
             const notification = new Notification(data.text, data.type, {
                 interval: data.interval,
                 icon: data.icon,
@@ -44,44 +44,45 @@ export default Formwork = {
             element.parentNode.removeChild(element);
         });
 
-        $$('.collapsible .section-header').forEach((element) => {
-            element.addEventListener('click', () => {
+        $$(".collapsible .section-header").forEach((element) => {
+            element.addEventListener("click", () => {
                 const section = element.parentNode;
-                section.classList.toggle('collapsed');
+                section.classList.toggle("collapsed");
             });
         });
 
-        if ($('[data-command=save]')) {
-            document.addEventListener('keydown', (event) => {
+        if ($("[data-command=save]")) {
+            document.addEventListener("keydown", (event) => {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {
-                    if (event.which === 83) { // ctrl/cmd + S
-                        $('[data-command=save]').click();
+                    if (event.which === 83) {
+                        // ctrl/cmd + S
+                        $("[data-command=save]").click();
                         event.preventDefault();
                     }
                 }
             });
         }
 
-        window.addEventListener('beforeunload', setPreferredColorScheme);
-        window.addEventListener('pagehide', setPreferredColorScheme);
+        window.addEventListener("beforeunload", setPreferredColorScheme);
+        window.addEventListener("pagehide", setPreferredColorScheme);
 
         function setPreferredColorScheme() {
             const cookies = Utils.getCookies();
-            const cookieName = 'formwork_preferred_color_scheme';
+            const cookieName = "formwork_preferred_color_scheme";
             const oldValue = cookieName in cookies ? cookies[cookieName] : null;
             let value = null;
 
-            if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-                value = 'light';
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                value = 'dark';
+            if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                value = "light";
+            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                value = "dark";
             }
 
             if (value !== oldValue) {
                 Utils.setCookie(cookieName, value, {
-                    'max-age': 2592000, // 1 month
-                    'path': Formwork.config.baseUri,
-                    'samesite': 'strict',
+                    "max-age": 2592000, // 1 month
+                    path: Formwork.config.baseUri,
+                    samesite: "strict",
                 });
             }
         }
@@ -98,22 +99,22 @@ export default Formwork = {
 
         // HTMLFormElement.prototype.requestSubmit polyfill
         // see https://github.com/javan/form-request-submit-polyfill
-        if (!('requestSubmit' in global.HTMLFormElement.prototype)) {
+        if (!("requestSubmit" in global.HTMLFormElement.prototype)) {
             global.HTMLFormElement.prototype.requestSubmit = function (submitter) {
                 if (submitter) {
                     if (!(submitter instanceof HTMLElement)) {
-                        raise(TypeError, 'parameter 1 is not of type \'HTMLElement\'');
+                        raise(TypeError, "parameter 1 is not of type 'HTMLElement'");
                     }
-                    if (submitter.type !== 'submit') {
-                        raise(TypeError, 'The specified element is not a submit button');
+                    if (submitter.type !== "submit") {
+                        raise(TypeError, "The specified element is not a submit button");
                     }
                     if (submitter.form !== this) {
-                        raise(DOMException, 'The specified element is not owned by this form element', 'NotFoundError');
+                        raise(DOMException, "The specified element is not owned by this form element", "NotFoundError");
                     }
                     submitter.click();
                 } else {
-                    submitter = document.createElement('input');
-                    submitter.type = 'submit';
+                    submitter = document.createElement("input");
+                    submitter.type = "submit";
                     submitter.hidden = true;
                     this.appendChild(submitter);
                     submitter.click();
@@ -128,7 +129,7 @@ export default Formwork = {
     },
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     Formwork.init();
 });
 

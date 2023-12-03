@@ -1,5 +1,5 @@
-import { LineChart } from 'chartist';
-import Tooltip from './tooltip';
+import { LineChart } from "chartist";
+import Tooltip from "./tooltip";
 
 export default function Chart(element, data) {
     const options = {
@@ -29,18 +29,18 @@ export default function Chart(element, data) {
 
     const chart = new LineChart(element, data, options);
 
-    chart.container.addEventListener('mouseover', (event) => {
-        if (event.target.getAttribute('class') === 'ct-point') {
+    chart.container.addEventListener("mouseover", (event) => {
+        if (event.target.getAttribute("class") === "ct-point") {
             const tooltipOffset = {
                 x: 0,
                 y: -8,
             };
-            if (navigator.userAgent.includes('Firefox')) {
-                const strokeWidth = parseFloat(getComputedStyle(event.target)['stroke-width']);
+            if (navigator.userAgent.includes("Firefox")) {
+                const strokeWidth = parseFloat(getComputedStyle(event.target)["stroke-width"]);
                 tooltipOffset.x += strokeWidth / 2;
                 tooltipOffset.y += strokeWidth / 2;
             }
-            const tooltip = new Tooltip(event.target.getAttribute('ct:value'), {
+            const tooltip = new Tooltip(event.target.getAttribute("ct:value"), {
                 referenceElement: event.target,
                 offset: tooltipOffset,
             });

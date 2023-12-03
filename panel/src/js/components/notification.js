@@ -1,5 +1,5 @@
-import Icons from './icons';
-import Utils from './utils';
+import Icons from "./icons";
+import Utils from "./utils";
 
 export default function Notification(text, type, options) {
     const defaults = {
@@ -10,7 +10,7 @@ export default function Notification(text, type, options) {
         mouseleaveDelay: 1000,
     };
 
-    let container = $('.notification-container');
+    let container = $(".notification-container");
 
     let notification;
 
@@ -18,12 +18,12 @@ export default function Notification(text, type, options) {
 
     function create(text, type, interval) {
         if (!container) {
-            container = document.createElement('div');
-            container.className = 'notification-container';
+            container = document.createElement("div");
+            container.className = "notification-container";
             document.body.appendChild(container);
         }
 
-        notification = document.createElement('div');
+        notification = document.createElement("div");
         notification.className = `notification notification-${type}`;
         notification.innerHTML = text;
 
@@ -35,13 +35,13 @@ export default function Notification(text, type, options) {
 
         let timer = setTimeout(remove, interval);
 
-        notification.addEventListener('click', remove);
+        notification.addEventListener("click", remove);
 
-        notification.addEventListener('mouseenter', () => {
+        notification.addEventListener("mouseenter", () => {
             clearTimeout(timer);
         });
 
-        notification.addEventListener('mouseleave', () => {
+        notification.addEventListener("mouseleave", () => {
             timer = setTimeout(remove, options.mouseleaveDelay);
         });
     }
@@ -50,7 +50,7 @@ export default function Notification(text, type, options) {
         if (options.icon !== null) {
             Icons.pass(options.icon, (icon) => {
                 create(text, type, options.interval);
-                notification.insertAdjacentHTML('afterBegin', icon);
+                notification.insertAdjacentHTML("afterBegin", icon);
             });
         } else {
             create(text, type, options.interval);
@@ -58,7 +58,7 @@ export default function Notification(text, type, options) {
     }
 
     function remove() {
-        notification.classList.add('fadeout');
+        notification.classList.add("fadeout");
 
         setTimeout(() => {
             if (notification && notification.parentNode) {

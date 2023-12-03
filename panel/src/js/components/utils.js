@@ -1,34 +1,34 @@
 export default {
     escapeRegExp: function (string) {
-        return string.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+        return string.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
     },
 
     makeDiacriticsRegExp: function (string) {
         const diacritics = {
-            'a': '[aáàăâǎåäãȧąāảȁạ]',
-            'b': '[bḃḅ]',
-            'c': '[cćĉčċç]',
-            'd': '[dďḋḑḍ]',
-            'e': '[eéèĕêěëẽėȩęēẻȅẹ]',
-            'g': '[gǵğĝǧġģḡ]',
-            'h': '[hĥȟḧḣḩḥ]',
-            'i': '[iiíìĭîǐïĩįīỉȉịı]',
-            'j': '[jĵǰ]',
-            'k': '[kḱǩķḳ]',
-            'l': '[lĺľļḷ]',
-            'm': '[mḿṁṃ]',
-            'n': '[nńǹňñṅņṇ]',
-            'o': '[oóòŏôǒöőõȯǿǫōỏȍơọ]',
-            'p': '[pṕṗ]',
-            'r': '[rŕřṙŗȑṛ]',
-            's': '[sśŝšṡşṣș]',
-            't': '[tťẗṫţṭț]',
-            'u': '[uúùŭûǔůüűũųūủȕưụ]',
-            'v': '[vṽṿ]',
-            'w': '[wẃẁŵẘẅẇẉ]',
-            'x': '[xẍẋ]',
-            'y': '[yýỳŷẙÿỹẏȳỷỵ]',
-            'z': '[zźẑžżẓ]',
+            a: "[aáàăâǎåäãȧąāảȁạ]",
+            b: "[bḃḅ]",
+            c: "[cćĉčċç]",
+            d: "[dďḋḑḍ]",
+            e: "[eéèĕêěëẽėȩęēẻȅẹ]",
+            g: "[gǵğĝǧġģḡ]",
+            h: "[hĥȟḧḣḩḥ]",
+            i: "[iiíìĭîǐïĩįīỉȉịı]",
+            j: "[jĵǰ]",
+            k: "[kḱǩķḳ]",
+            l: "[lĺľļḷ]",
+            m: "[mḿṁṃ]",
+            n: "[nńǹňñṅņṇ]",
+            o: "[oóòŏôǒöőõȯǿǫōỏȍơọ]",
+            p: "[pṕṗ]",
+            r: "[rŕřṙŗȑṛ]",
+            s: "[sśŝšṡşṣș]",
+            t: "[tťẗṫţṭț]",
+            u: "[uúùŭûǔůüűũųūủȕưụ]",
+            v: "[vṽṿ]",
+            w: "[wẃẁŵẘẅẇẉ]",
+            x: "[xẍẋ]",
+            y: "[yýỳŷẙÿỹẏȳỷỵ]",
+            z: "[zźẑžżẓ]",
         };
         for (const char in diacritics) {
             string = string.split(char).join(diacritics[char]);
@@ -39,134 +39,140 @@ export default {
 
     slug: function (string) {
         const translate = {
-            '\t': '',
-            '\r': '',
-            '!': '',
-            '"': '',
-            '#': '',
-            '$': '',
-            '%': '',
-            '\'': '-',
-            '(': '',
-            ')': '',
-            '*': '',
-            '+': '',
-            ',': '',
-            '.': '',
-            ':': '',
-            ';': '',
-            '<': '',
-            '=': '',
-            '>': '',
-            '?': '',
-            '@': '',
-            '[': '',
-            ']': '',
-            '^': '',
-            '`': '',
-            '{': '',
-            '|': '',
-            '}': '',
-            '¡': '',
-            '£': '',
-            '¤': '',
-            '¥': '',
-            '¦': '',
-            '§': '',
-            '«': '',
-            '°': '',
-            '»': '',
-            '‘': '',
-            '’': '',
-            '“': '',
-            '”': '',
-            '\n': '-',
-            ' ': '-',
-            '-': '-',
-            '–': '-',
-            '—': '-',
-            '/': '-',
-            '\\': '-',
-            '_': '-',
-            '~': '-',
-            'À': 'A',
-            'Á': 'A',
-            'Â': 'A',
-            'Ã': 'A',
-            'Ä': 'A',
-            'Å': 'A',
-            'Æ': 'Ae',
-            'Ç': 'C',
-            'Ð': 'D',
-            'È': 'E',
-            'É': 'E',
-            'Ê': 'E',
-            'Ë': 'E',
-            'Ì': 'I',
-            'Í': 'I',
-            'Î': 'I',
-            'Ï': 'I',
-            'Ñ': 'N',
-            'Ò': 'O',
-            'Ó': 'O',
-            'Ô': 'O',
-            'Õ': 'O',
-            'Ö': 'O',
-            'Ø': 'O',
-            'Œ': 'Oe',
-            'Š': 'S',
-            'Þ': 'Th',
-            'Ù': 'U',
-            'Ú': 'U',
-            'Û': 'U',
-            'Ü': 'U',
-            'Ý': 'Y',
-            'à': 'a',
-            'á': 'a',
-            'â': 'a',
-            'ã': 'a',
-            'ä': 'ae',
-            'å': 'a',
-            'æ': 'ae',
-            '¢': 'c',
-            'ç': 'c',
-            'ð': 'd',
-            'è': 'e',
-            'é': 'e',
-            'ê': 'e',
-            'ë': 'e',
-            'ì': 'i',
-            'í': 'i',
-            'î': 'i',
-            'ï': 'i',
-            'ñ': 'n',
-            'ò': 'o',
-            'ó': 'o',
-            'ô': 'o',
-            'õ': 'o',
-            'ö': 'oe',
-            'ø': 'o',
-            'œ': 'oe',
-            'š': 's',
-            'ß': 'ss',
-            'þ': 'th',
-            'ù': 'u',
-            'ú': 'u',
-            'û': 'u',
-            'ü': 'ue',
-            'ý': 'y',
-            'ÿ': 'y',
-            'Ÿ': 'y',
+            "\t": "",
+            "\r": "",
+            "!": "",
+            '"': "",
+            "#": "",
+            $: "",
+            "%": "",
+            "'": "-",
+            "(": "",
+            ")": "",
+            "*": "",
+            "+": "",
+            ",": "",
+            ".": "",
+            ":": "",
+            ";": "",
+            "<": "",
+            "=": "",
+            ">": "",
+            "?": "",
+            "@": "",
+            "[": "",
+            "]": "",
+            "^": "",
+            "`": "",
+            "{": "",
+            "|": "",
+            "}": "",
+            "¡": "",
+            "£": "",
+            "¤": "",
+            "¥": "",
+            "¦": "",
+            "§": "",
+            "«": "",
+            "°": "",
+            "»": "",
+            "‘": "",
+            "’": "",
+            "“": "",
+            "”": "",
+            "\n": "-",
+            " ": "-",
+            "-": "-",
+            "–": "-",
+            "—": "-",
+            "/": "-",
+            "\\": "-",
+            _: "-",
+            "~": "-",
+            À: "A",
+            Á: "A",
+            Â: "A",
+            Ã: "A",
+            Ä: "A",
+            Å: "A",
+            Æ: "Ae",
+            Ç: "C",
+            Ð: "D",
+            È: "E",
+            É: "E",
+            Ê: "E",
+            Ë: "E",
+            Ì: "I",
+            Í: "I",
+            Î: "I",
+            Ï: "I",
+            Ñ: "N",
+            Ò: "O",
+            Ó: "O",
+            Ô: "O",
+            Õ: "O",
+            Ö: "O",
+            Ø: "O",
+            Œ: "Oe",
+            Š: "S",
+            Þ: "Th",
+            Ù: "U",
+            Ú: "U",
+            Û: "U",
+            Ü: "U",
+            Ý: "Y",
+            à: "a",
+            á: "a",
+            â: "a",
+            ã: "a",
+            ä: "ae",
+            å: "a",
+            æ: "ae",
+            "¢": "c",
+            ç: "c",
+            ð: "d",
+            è: "e",
+            é: "e",
+            ê: "e",
+            ë: "e",
+            ì: "i",
+            í: "i",
+            î: "i",
+            ï: "i",
+            ñ: "n",
+            ò: "o",
+            ó: "o",
+            ô: "o",
+            õ: "o",
+            ö: "oe",
+            ø: "o",
+            œ: "oe",
+            š: "s",
+            ß: "ss",
+            þ: "th",
+            ù: "u",
+            ú: "u",
+            û: "u",
+            ü: "ue",
+            ý: "y",
+            ÿ: "y",
+            Ÿ: "y",
         };
         string = string.toLowerCase();
         for (const char in translate) {
             string = string.split(char).join(translate[char]);
         }
-        return string.replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').replace(/-+/g, '-');
+        return string
+            .replace(/[^a-z0-9-]/g, "")
+            .replace(/^-+|-+$/g, "")
+            .replace(/-+/g, "-");
     },
 
     validateSlug: function (slug) {
-        return slug.toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/g, '');
+        return slug
+            .toLowerCase()
+            .replace(" ", "-")
+            .replace(/[^a-z0-9-]/g, "");
     },
 
     debounce: function (callback, delay, leading) {
@@ -204,7 +210,7 @@ export default {
             if (previous === 0) {
                 previous = now;
             }
-            const remaining = (previous + delay) - now;
+            const remaining = previous + delay - now;
             const context = this;
             const args = arguments;
             if (remaining <= 0 || remaining > delay) {
@@ -214,7 +220,7 @@ export default {
                 }
                 previous = now;
                 result = callback.apply(context, args);
-            } else if (!timer){
+            } else if (!timer) {
                 timer = setTimeout(() => {
                     previous = Date.now();
                     result = callback.apply(context, args);
@@ -237,12 +243,12 @@ export default {
         return element.offsetHeight + parseInt(style.marginTop) + parseInt(style.marginBottom);
     },
 
-    toggleElement: function (element, type = 'block') {
+    toggleElement: function (element, type = "block") {
         const display = element.style.display || getComputedStyle(element).display;
-        if (display === 'none') {
+        if (display === "none") {
             element.style.display = type;
         } else {
-            element.style.display = 'none';
+            element.style.display = "none";
         }
     },
 
@@ -274,25 +280,25 @@ export default {
         for (const property in object) {
             serialized.push(`${encodeURIComponent(property)}=${encodeURIComponent(object[property])}`);
         }
-        return serialized.join('&');
+        return serialized.join("&");
     },
 
     serializeForm: function (form) {
         const serialized = [];
         for (const field of form.elements) {
-            if (field.name && !field.disabled && field.getAttribute('data-form-ignore') !== 'true' && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
-                if (field.type === 'select-multiple') {
+            if (field.name && !field.disabled && field.getAttribute("data-form-ignore") !== "true" && field.type !== "file" && field.type !== "reset" && field.type !== "submit" && field.type !== "button") {
+                if (field.type === "select-multiple") {
                     for (const option of field.options) {
                         if (option.selected) {
                             serialized.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(option.value)}`);
                         }
                     }
-                } else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
+                } else if ((field.type !== "checkbox" && field.type !== "radio") || field.checked) {
                     serialized.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(field.value)}`);
                 }
             }
         }
-        return serialized.join('&');
+        return serialized.join("&");
     },
 
     triggerEvent: function (target, type) {
@@ -301,20 +307,20 @@ export default {
             event = new Event(type);
         } catch (error) {
             // The browser doesn't support Event constructor
-            event = document.createEvent('HTMLEvents');
+            event = document.createEvent("HTMLEvents");
             event.initEvent(type, true, true);
         }
         target.dispatchEvent(event);
     },
 
     triggerDownload: function (uri, csrfToken) {
-        const form = document.createElement('form');
+        const form = document.createElement("form");
         form.action = uri;
-        form.method = 'post';
+        form.method = "post";
 
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'csrf-token';
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "csrf-token";
         input.value = csrfToken;
 
         form.appendChild(input);
@@ -328,7 +334,7 @@ export default {
         function clear() {
             clearTimeout(timer);
         }
-        element.addEventListener('mousedown', function (event) {
+        element.addEventListener("mousedown", function (event) {
             const context = this;
             if (event.which !== 1) {
                 clear();
@@ -339,19 +345,19 @@ export default {
                 }, timeout);
             }
         });
-        element.addEventListener('mouseout', clear);
-        window.addEventListener('mouseup', clear);
+        element.addEventListener("mouseout", clear);
+        window.addEventListener("mouseup", clear);
     },
 
     firstFocusableElement: function (parent = document.body) {
-        return parent.querySelector('button, .button, input:not([type=hidden]), select, textarea') || parent;
+        return parent.querySelector("button, .button, input:not([type=hidden]), select, textarea") || parent;
     },
 
     getCookies: function () {
         const result = [];
-        const cookies = document.cookie.split(';');
+        const cookies = document.cookie.split(";");
         for (const cookie of cookies) {
-            const nameAndValue = cookie.split('=', 2);
+            const nameAndValue = cookie.split("=", 2);
             if (nameAndValue.length === 2) {
                 result[nameAndValue[0].trim()] = decodeURIComponent(nameAndValue[1].trim());
             }

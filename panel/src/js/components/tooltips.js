@@ -1,17 +1,17 @@
-import Tooltip from './tooltip';
+import Tooltip from "./tooltip";
 
 export default {
     init: function () {
-        $$('[title]', document.body).forEach((element) => {
-            element.setAttribute('data-tooltip', element.getAttribute('title'));
-            element.removeAttribute('title');
+        $$("[title]", document.body).forEach((element) => {
+            element.setAttribute("data-tooltip", element.getAttribute("title"));
+            element.removeAttribute("title");
         });
 
-        $$('[data-tooltip]').forEach((element) => {
-            element.addEventListener('mouseover', function () {
-                const tooltip = new Tooltip(this.getAttribute('data-tooltip'), {
+        $$("[data-tooltip]").forEach((element) => {
+            element.addEventListener("mouseover", function () {
+                const tooltip = new Tooltip(this.getAttribute("data-tooltip"), {
                     referenceElement: this,
-                    position: 'bottom',
+                    position: "bottom",
                     offset: {
                         x: 0,
                         y: 4,
@@ -21,11 +21,11 @@ export default {
             });
 
             // Immediately show tooltip on focused buttons
-            if (element.tagName.toLowerCase() === 'button' || element.classList.contains('button')) {
-                element.addEventListener('focus', function () {
-                    const tooltip = new Tooltip(this.getAttribute('data-tooltip'), {
+            if (element.tagName.toLowerCase() === "button" || element.classList.contains("button")) {
+                element.addEventListener("focus", function () {
+                    const tooltip = new Tooltip(this.getAttribute("data-tooltip"), {
                         referenceElement: this,
-                        position: 'bottom',
+                        position: "bottom",
                         offset: {
                             x: 0,
                             y: 4,
@@ -33,17 +33,16 @@ export default {
                         delay: 0,
                     });
                     tooltip.show();
-
                 });
             }
         });
 
         $$('[data-overflow-tooltip="true"]').forEach((element) => {
-            element.addEventListener('mouseover', function () {
+            element.addEventListener("mouseover", function () {
                 if (this.offsetWidth < this.scrollWidth) {
                     const tooltip = new Tooltip(this.textContent.trim(), {
                         referenceElement: this,
-                        position: 'bottom',
+                        position: "bottom",
                         offset: {
                             x: 0,
                             y: 4,

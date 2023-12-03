@@ -1,22 +1,22 @@
-import Icons from '../icons';
-import Utils from '../utils';
+import Icons from "../icons";
+import Utils from "../utils";
 
 const inputValues = {};
 
 export default function DateInput(input, options) {
     const defaults = {
         weekStarts: 0,
-        format: 'YYYY-MM-DD',
+        format: "YYYY-MM-DD",
         time: false,
         labels: {
-            today: 'Today',
+            today: "Today",
             weekdays: {
-                long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                long: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             },
             months: {
-                long: ['January', 'February', 'March', 'April', 'May', 'June', 'July' ,'August', 'September', 'October', 'November', 'December'],
-                short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                long: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
             },
         },
     };
@@ -25,7 +25,7 @@ export default function DateInput(input, options) {
 
     inputValues[input.id] = new Date();
 
-    const calendar = new Calendar($('.calendar'), inputValues[input.id]);
+    const calendar = new Calendar($(".calendar"), inputValues[input.id]);
 
     options.onChange = (date) => {
         const dateInput = getCurrentInput();
@@ -48,28 +48,28 @@ export default function DateInput(input, options) {
             input.value = formatDateTime(inputValues[input.id]);
         }
 
-        input.addEventListener('focus', () => {
+        input.addEventListener("focus", () => {
             console.log(inputValues);
             calendar.gotoDate(inputValues[input.id]);
             calendar.show();
         });
 
-        input.addEventListener('blur', () => {
+        input.addEventListener("blur", () => {
             calendar.hide();
         });
 
-        input.addEventListener('keydown', (event) => {
+        input.addEventListener("keydown", (event) => {
             switch (event.key) {
-            case 'Backspace':
-                input.value = '';
-                input.blur();
-                break;
-            case 'Escape':
-                input.blur();
-                break;
-            case 'Tab':
-                input.blur();
-                return;
+                case "Backspace":
+                    input.value = "";
+                    input.blur();
+                    break;
+                case "Escape":
+                    input.blur();
+                    break;
+                case "Tab":
+                    input.blur();
+                    return;
             }
             event.preventDefault();
         });
@@ -77,7 +77,7 @@ export default function DateInput(input, options) {
 
     function getCurrentInput() {
         const currentElement = document.activeElement;
-        return currentElement.matches('.input-date') ? currentElement : null;
+        return currentElement.matches(".input-date") ? currentElement : null;
     }
 
     function Calendar(element, date) {
@@ -300,20 +300,20 @@ export default function DateInput(input, options) {
         }
 
         function show() {
-            element.style.display = 'block';
+            element.style.display = "block";
             setCalendarPosition();
         }
 
         function hide() {
-            element.style.display = 'none';
+            element.style.display = "none";
         }
 
         function isVisible() {
-            return element.style.display !== 'none';
+            return element.style.display !== "none";
         }
 
         function update() {
-            $('.calendar-table', element).innerHTML = getInnerHTML();
+            $(".calendar-table", element).innerHTML = getInnerHTML();
 
             setEvents();
 
@@ -327,20 +327,20 @@ export default function DateInput(input, options) {
                 const monthLength = daysInMonth(month, year);
 
                 let num = 1;
-                let html = '';
+                let html = "";
 
                 html += '<tr><th class="calendar-header" colspan="7">';
                 html += `${options.labels.months.long[month]}&nbsp;${year}`;
-                html += '</th></tr>';
-                html += '<tr>';
+                html += "</th></tr>";
+                html += "<tr>";
 
-                for (let i = 0; i < 7; i++){
+                for (let i = 0; i < 7; i++) {
                     html += '<td class="calendar-header-day">';
                     html += options.labels.weekdays.short[mod(i + options.weekStarts, 7)];
-                    html += '</td>';
+                    html += "</td>";
                 }
 
-                html += '</tr><tr>';
+                html += "</tr><tr>";
 
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 7; j++) {
@@ -358,22 +358,22 @@ export default function DateInput(input, options) {
                             html += '<td class="calendar-next-month-day">';
                             html += num++ - monthLength;
                         }
-                        html += '</td>';
+                        html += "</td>";
                     }
-                    html += '</tr><tr>';
+                    html += "</tr><tr>";
                 }
-                html += '</tr>';
+                html += "</tr>";
 
                 return html;
             }
 
             function setEvents() {
-                $$('.calendar-day', element).forEach((element) => {
-                    element.addEventListener('mousedown', (event) => {
+                $$(".calendar-day", element).forEach((element) => {
+                    element.addEventListener("mousedown", (event) => {
                         event.stopPropagation();
                         event.preventDefault();
                     });
-                    element.addEventListener('click', () => {
+                    element.addEventListener("click", () => {
                         day = parseInt(element.textContent);
                         update();
                         options.onChange(getDate());
@@ -382,140 +382,170 @@ export default function DateInput(input, options) {
             }
 
             function updateTime() {
-                $('.calendar-hours', element).innerHTML = pad(has12HourFormat(options.format) ? (mod(hours, 12) || 12) : hours, 2);
-                $('.calendar-minutes', element).innerHTML = pad(minutes, 2);
-                $('.calendar-meridiem', element).innerHTML = has12HourFormat(options.format) ? (hours < 12 ? 'AM' : 'PM') : '';
+                $(".calendar-hours", element).innerHTML = pad(has12HourFormat(options.format) ? mod(hours, 12) || 12 : hours, 2);
+                $(".calendar-minutes", element).innerHTML = pad(minutes, 2);
+                $(".calendar-meridiem", element).innerHTML = has12HourFormat(options.format) ? (hours < 12 ? "AM" : "PM") : "";
             }
         }
 
         function createElement() {
-            const element = document.createElement('div');
-            element.className = 'calendar';
+            const element = document.createElement("div");
+            element.className = "calendar";
             element.innerHTML = `<div class="calendar-buttons"><button type="button" class="prevMonth"></button><button class="currentMonth">${options.labels.today}</button><button type="button" class="nextMonth"></button></div><div class="calendar-separator"></div><table class="calendar-table"></table>`;
 
             if (options.time) {
                 element.innerHTML += '<div class="calendar-separator"></div><table class="calendar-time"><tr><td><button type="button" class="nextHour"></button></td><td></td><td><button type="button" class="nextMinute"></button></td></tr><tr><td class="calendar-hours"></td><td>:</td><td class="calendar-minutes"></td><td class="calendar-meridiem"></td></tr><tr><td><button type="button" class="prevHour"></button></td><td></td><td><button type="button" class="prevMinute"></button></td></tr></table></div>';
 
-                Icons.inject('chevron-down', $('.prevHour', element));
-                Icons.inject('chevron-up', $('.nextHour', element));
+                Icons.inject("chevron-down", $(".prevHour", element));
+                Icons.inject("chevron-up", $(".nextHour", element));
 
-                Icons.inject('chevron-down', $('.prevMinute', element));
-                Icons.inject('chevron-up', $('.nextMinute', element));
+                Icons.inject("chevron-down", $(".prevMinute", element));
+                Icons.inject("chevron-up", $(".nextMinute", element));
             }
 
-            Icons.inject('calendar-clock', $('.currentMonth', element));
+            Icons.inject("calendar-clock", $(".currentMonth", element));
 
-            Icons.inject('chevron-left', $('.prevMonth', element));
-            Icons.inject('chevron-right', $('.nextMonth', element));
+            Icons.inject("chevron-left", $(".prevMonth", element));
+            Icons.inject("chevron-right", $(".nextMonth", element));
 
-            $('.currentMonth', element).addEventListener('mousedown', (event) => {
+            $(".currentMonth", element).addEventListener("mousedown", (event) => {
                 now();
                 options.onChange(getDate());
                 event.preventDefault();
             });
 
-            Utils.longClick($('.prevMonth', element), (event) => {
-                prevMonth();
-                options.onChange(getDate());
-                event.preventDefault();
-            }, 750, 500);
+            Utils.longClick(
+                $(".prevMonth", element),
+                (event) => {
+                    prevMonth();
+                    options.onChange(getDate());
+                    event.preventDefault();
+                },
+                750,
+                500,
+            );
 
-            Utils.longClick($('.nextMonth', element), (event) => {
-                nextMonth();
-                options.onChange(getDate());
-                event.preventDefault();
-            }, 750, 500);
+            Utils.longClick(
+                $(".nextMonth", element),
+                (event) => {
+                    nextMonth();
+                    options.onChange(getDate());
+                    event.preventDefault();
+                },
+                750,
+                500,
+            );
 
             if (options.time) {
-                Utils.longClick($('.nextHour', element), (event) => {
-                    nextHour();
-                    options.onChange(getDate());
-                    event.preventDefault();
-                }, 750, 250);
+                Utils.longClick(
+                    $(".nextHour", element),
+                    (event) => {
+                        nextHour();
+                        options.onChange(getDate());
+                        event.preventDefault();
+                    },
+                    750,
+                    250,
+                );
 
-                Utils.longClick($('.prevHour', element), (event) => {
-                    prevHour();
-                    options.onChange(getDate());
-                    event.preventDefault();
-                }, 750, 250);
+                Utils.longClick(
+                    $(".prevHour", element),
+                    (event) => {
+                        prevHour();
+                        options.onChange(getDate());
+                        event.preventDefault();
+                    },
+                    750,
+                    250,
+                );
 
-                Utils.longClick($('.nextMinute', element), (event) => {
-                    nextMinute();
-                    options.onChange(getDate());
-                    event.preventDefault();
-                }, 750, 250);
+                Utils.longClick(
+                    $(".nextMinute", element),
+                    (event) => {
+                        nextMinute();
+                        options.onChange(getDate());
+                        event.preventDefault();
+                    },
+                    750,
+                    250,
+                );
 
-                Utils.longClick($('.prevMinute', element), (event) => {
-                    prevMinute();
-                    options.onChange(getDate());
-                    event.preventDefault();
-                }, 750, 250);
+                Utils.longClick(
+                    $(".prevMinute", element),
+                    (event) => {
+                        prevMinute();
+                        options.onChange(getDate());
+                        event.preventDefault();
+                    },
+                    750,
+                    250,
+                );
             }
 
-            window.addEventListener('resize', Utils.throttle(setCalendarPosition, 100));
+            window.addEventListener("resize", Utils.throttle(setCalendarPosition, 100));
 
-            window.addEventListener('mousedown', (event) => {
-                if (element.style.display !== 'none') {
-                    if (event.target.closest('.calendar')) {
+            window.addEventListener("mousedown", (event) => {
+                if (element.style.display !== "none") {
+                    if (event.target.closest(".calendar")) {
                         event.preventDefault();
                     }
                 }
             });
 
-            window.addEventListener('keydown', (event) => {
+            window.addEventListener("keydown", (event) => {
                 if (!isVisible()) {
                     return;
                 }
                 switch (event.key) {
-                case 'Enter':
-                    $('.calendar-day.selected', element).click();
-                    hide();
-                    break;
-                case 'Backspace':
-                case 'Escape':
-                case 'Tab':
-                    hide();
-                    break;
-                case 'ArrowLeft':
-                    if (event.ctrlKey || event.metaKey) {
-                        if (event.shiftKey) {
-                            prevYear();
+                    case "Enter":
+                        $(".calendar-day.selected", element).click();
+                        hide();
+                        break;
+                    case "Backspace":
+                    case "Escape":
+                    case "Tab":
+                        hide();
+                        break;
+                    case "ArrowLeft":
+                        if (event.ctrlKey || event.metaKey) {
+                            if (event.shiftKey) {
+                                prevYear();
+                            } else {
+                                prevMonth();
+                            }
                         } else {
-                            prevMonth();
+                            prevDay();
                         }
-                    } else {
-                        prevDay();
-                    }
-                    options.onChange(getDate());
-                    break;
-                case 'ArrowUp':
-                    prevWeek();
-                    options.onChange(getDate());
-                    break;
-                case 'ArrowRight':
-                    if (event.ctrlKey || event.metaKey) {
-                        if (event.shiftKey) {
-                            nextYear();
+                        options.onChange(getDate());
+                        break;
+                    case "ArrowUp":
+                        prevWeek();
+                        options.onChange(getDate());
+                        break;
+                    case "ArrowRight":
+                        if (event.ctrlKey || event.metaKey) {
+                            if (event.shiftKey) {
+                                nextYear();
+                            } else {
+                                nextMonth();
+                            }
                         } else {
-                            nextMonth();
+                            nextDay();
                         }
-                    } else {
-                        nextDay();
-                    }
-                    options.onChange(getDate());
-                    break;
-                case 'ArrowDown':
-                    nextWeek();
-                    options.onChange(getDate());
-                    break;
-                case '0':
-                    if (event.ctrlKey || event.metaKey) {
-                        now();
-                    }
-                    options.onChange(getDate());
-                    break;
-                default:
-                    return;
+                        options.onChange(getDate());
+                        break;
+                    case "ArrowDown":
+                        nextWeek();
+                        options.onChange(getDate());
+                        break;
+                    case "0":
+                        if (event.ctrlKey || event.metaKey) {
+                            now();
+                        }
+                        options.onChange(getDate());
+                        break;
+                    default:
+                        return;
                 }
 
                 event.preventDefault();
@@ -639,7 +669,7 @@ export default function DateInput(input, options) {
 
     function has12HourFormat(format) {
         const match = format.match(/\[([^\]]*)\]|H{1,2}/);
-        return match !== null && match[0][0] === 'H';
+        return match !== null && match[0][0] === "H";
     }
 
     function formatDateTime(date, format = options.format) {
@@ -648,7 +678,7 @@ export default function DateInput(input, options) {
         function splitTimezoneOffset(offset) {
             // Note that the offset returned by Date.getTimezoneOffset()
             // is positive if behind UTC and negative if ahead UTC
-            const sign = offset > 0 ? '-' : '+';
+            const sign = offset > 0 ? "-" : "+";
             const hours = Math.floor(Math.abs(offset) / 60);
             const minutes = Math.abs(offset) % 60;
             return [sign + pad(hours, 2), pad(minutes, 2)];
@@ -656,62 +686,62 @@ export default function DateInput(input, options) {
 
         return format.replace(regex, (match, $1) => {
             switch (match) {
-            case 'YY':
-                return date.getFullYear().toString().substr(-2);
-            case 'YYYY':
-                return date.getFullYear();
-            case 'M':
-                return date.getMonth() + 1;
-            case 'MM':
-                return pad(date.getMonth() + 1, 2);
-            case 'MMM':
-                return options.labels.months.short[date.getMonth()];
-            case 'MMMM':
-                return options.labels.months.long[date.getMonth()];
-            case 'D':
-                return date.getDate();
-            case 'DD':
-                return pad(date.getDate(), 2);
-            case 'DDD':
-                return options.labels.weekdays.short[mod(date.getDay() + options.weekStarts, 7)];
-            case 'DDDD':
-                return options.labels.weekdays.long[mod(date.getDay() + options.weekStarts, 7)];
-            case 'W':
-                return weekOfYear(date);
-            case 'WW':
-                return pad(weekOfYear(date), 2);
-            case 'RR':
-                return weekNumberingYear(date).toString().substr(-2);
-            case 'RRRR':
-                return weekNumberingYear(date);
-            case 'H':
-                return mod(date.getHours(), 12) || 12;
-            case 'HH':
-                return pad(mod(date.getHours(), 12) || 12, 2);
-            case 'h':
-                return date.getHours();
-            case 'hh':
-                return pad(date.getHours(), 2);
-            case 'm':
-                return date.getMinutes();
-            case 'mm':
-                return pad(date.getMinutes(), 2);
-            case 's':
-                return date.getSeconds();
-            case 'ss':
-                return pad(date.getSeconds(), 2);
-            case 'uuu':
-                return pad(date.getMilliseconds(), 3);
-            case 'A':
-                return date.getHours() < 12 ? 'AM' : 'PM';
-            case 'a':
-                return date.getHours() < 12 ? 'am' : 'pm';
-            case 'Z':
-                return splitTimezoneOffset(date.getTimezoneOffset()).join(':');
-            case 'z':
-                return splitTimezoneOffset(date.getTimezoneOffset()).join('');
-            default:
-                return $1 || match;
+                case "YY":
+                    return date.getFullYear().toString().substr(-2);
+                case "YYYY":
+                    return date.getFullYear();
+                case "M":
+                    return date.getMonth() + 1;
+                case "MM":
+                    return pad(date.getMonth() + 1, 2);
+                case "MMM":
+                    return options.labels.months.short[date.getMonth()];
+                case "MMMM":
+                    return options.labels.months.long[date.getMonth()];
+                case "D":
+                    return date.getDate();
+                case "DD":
+                    return pad(date.getDate(), 2);
+                case "DDD":
+                    return options.labels.weekdays.short[mod(date.getDay() + options.weekStarts, 7)];
+                case "DDDD":
+                    return options.labels.weekdays.long[mod(date.getDay() + options.weekStarts, 7)];
+                case "W":
+                    return weekOfYear(date);
+                case "WW":
+                    return pad(weekOfYear(date), 2);
+                case "RR":
+                    return weekNumberingYear(date).toString().substr(-2);
+                case "RRRR":
+                    return weekNumberingYear(date);
+                case "H":
+                    return mod(date.getHours(), 12) || 12;
+                case "HH":
+                    return pad(mod(date.getHours(), 12) || 12, 2);
+                case "h":
+                    return date.getHours();
+                case "hh":
+                    return pad(date.getHours(), 2);
+                case "m":
+                    return date.getMinutes();
+                case "mm":
+                    return pad(date.getMinutes(), 2);
+                case "s":
+                    return date.getSeconds();
+                case "ss":
+                    return pad(date.getSeconds(), 2);
+                case "uuu":
+                    return pad(date.getMilliseconds(), 3);
+                case "A":
+                    return date.getHours() < 12 ? "AM" : "PM";
+                case "a":
+                    return date.getHours() < 12 ? "am" : "pm";
+                case "Z":
+                    return splitTimezoneOffset(date.getTimezoneOffset()).join(":");
+                case "z":
+                    return splitTimezoneOffset(date.getTimezoneOffset()).join("");
+                default:
+                    return $1 || match;
             }
         });
     }

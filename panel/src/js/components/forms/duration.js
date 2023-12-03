@@ -1,17 +1,17 @@
-import Utils from '../utils';
+import Utils from "../utils";
 
 export default function DurationInput(input, options) {
     const defaults = {
-        unit: 'seconds',
-        intervals: ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'],
+        unit: "seconds",
+        intervals: ["years", "months", "weeks", "days", "hours", "minutes", "seconds"],
         labels: {
-            years: ['year', 'years'],
-            months: ['month', 'months'],
-            weeks: ['week', 'weeks'],
-            days: ['day', 'days'],
-            hours: ['hour', 'hours'],
-            minutes: ['minute', 'minutes'],
-            seconds: ['second', 'seconds'],
+            years: ["year", "years"],
+            months: ["month", "months"],
+            weeks: ["week", "weeks"],
+            days: ["day", "days"],
+            hours: ["hour", "hours"],
+            minutes: ["minute", "minutes"],
+            seconds: ["second", "seconds"],
         },
     };
 
@@ -96,16 +96,16 @@ export default function DurationInput(input, options) {
     }
 
     function createInnerInputs(intervals, steps) {
-        field = document.createElement('div');
-        field.className = 'input-duration';
+        field = document.createElement("div");
+        field.className = "input-duration";
 
         let innerInput;
 
         for (const name of options.intervals) {
-            innerInput = document.createElement('input');
-            const wrap = document.createElement('span');
+            innerInput = document.createElement("input");
+            const wrap = document.createElement("span");
             wrap.className = `duration-${name}`;
-            innerInput.type = 'number';
+            innerInput.type = "number";
             innerInput.value = intervals[name] || 0;
             innerInput.style.width = `${Math.max(3, innerInput.value.length + 2)}ch`;
             if (steps[name] > 1) {
@@ -115,8 +115,8 @@ export default function DurationInput(input, options) {
                 innerInput.disabled = true;
             }
             innerInputs[name] = innerInput;
-            innerInput.addEventListener('input', function () {
-                while (this.value.charAt(0) === '0' && this.value.length > 1 && !this.value.charAt(1).match(/[.,]/)) {
+            innerInput.addEventListener("input", function () {
+                while (this.value.charAt(0) === "0" && this.value.length > 1 && !this.value.charAt(1).match(/[.,]/)) {
                     this.value = this.value.slice(1);
                 }
                 while (this.value > Utils.getMaxSafeInteger()) {
@@ -126,26 +126,26 @@ export default function DurationInput(input, options) {
                 updateHiddenInput();
                 updateLabels();
             });
-            innerInput.addEventListener('blur', () => {
+            innerInput.addEventListener("blur", () => {
                 updateHiddenInput();
                 updateInnerInputs();
                 updateInnerInputsLength();
                 updateLabels();
             });
-            innerInput.addEventListener('focus', () => {
-                field.classList.add('focused');
+            innerInput.addEventListener("focus", () => {
+                field.classList.add("focused");
             });
-            innerInput.addEventListener('blur', () => {
-                field.classList.remove('focused');
+            innerInput.addEventListener("blur", () => {
+                field.classList.remove("focused");
             });
-            wrap.addEventListener('mousedown', function (event) {
-                const input = $('input', this);
+            wrap.addEventListener("mousedown", function (event) {
+                const input = $("input", this);
                 if (input && event.target !== input) {
                     input.focus();
                     event.preventDefault();
                 }
             });
-            const label = document.createElement('label');
+            const label = document.createElement("label");
             label.innerHTML = options.labels[name][parseInt(innerInput.value) === 1 ? 0 : 1];
             labels[name] = label;
             wrap.appendChild(innerInput);
@@ -153,7 +153,7 @@ export default function DurationInput(input, options) {
             field.appendChild(wrap);
         }
 
-        field.addEventListener('mousedown', function (event) {
+        field.addEventListener("mousedown", function (event) {
             if (event.target === this) {
                 innerInput.focus();
                 event.preventDefault();
@@ -164,11 +164,11 @@ export default function DurationInput(input, options) {
     }
 
     function createField() {
-        hiddenInput = document.createElement('input');
-        hiddenInput.className = 'input-duration-hidden';
+        hiddenInput = document.createElement("input");
+        hiddenInput.className = "input-duration-hidden";
         hiddenInput.name = input.name;
         hiddenInput.id = input.id;
-        hiddenInput.type = 'text';
+        hiddenInput.type = "text";
         hiddenInput.value = input.value;
         hiddenInput.readOnly = true;
         hiddenInput.hidden = true;
@@ -187,11 +187,11 @@ export default function DurationInput(input, options) {
         if (input.disabled) {
             hiddenInput.disabled = true;
         }
-        if (input.hasAttribute('data-intervals')) {
-            options.intervals = input.getAttribute('data-intervals').split(', ');
+        if (input.hasAttribute("data-intervals")) {
+            options.intervals = input.getAttribute("data-intervals").split(", ");
         }
-        if (input.hasAttribute('data-unit')) {
-            options.unit = input.getAttribute('data-unit');
+        if (input.hasAttribute("data-unit")) {
+            options.unit = input.getAttribute("data-unit");
         }
         const valueSeconds = input.value * TIME_INTERVALS[options.unit];
         const stepSeconds = input.step * TIME_INTERVALS[options.unit];
