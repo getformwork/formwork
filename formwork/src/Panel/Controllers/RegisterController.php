@@ -23,7 +23,6 @@ class RegisterController extends AbstractController
             return $this->redirectToReferer();
         }
 
-        $request->session()->regenerate(false);
         $csrfToken->generate();
 
         switch ($request->method()) {
@@ -53,6 +52,7 @@ class RegisterController extends AbstractController
 
                 Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $data->get('username') . '.yaml'));
 
+                $request->session()->regenerate();
                 $request->session()->set('FORMWORK_USERNAME', $data->get('username'));
 
                 $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
