@@ -37,5 +37,6 @@
     "stylelint-config-standard-scss": "^6.1.0",
     "stylelint-order": "^6.0.1",
     "stylelint-scss": "^4.7.0"
-  }
+  },
+  "packageManager": "yarn@4.0.2"
 }
