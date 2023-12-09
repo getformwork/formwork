@@ -1,16 +1,14 @@
-import js from "@eslint/js";
-import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier";
+import globals from "globals";
+import js from "@eslint/js";
 
 export default [
     js.configs.recommended,
     {
         languageOptions: {
-            ecmaVersion: 11,
+            ecmaVersion: 13,
             globals: {
                 ...globals.browser,
-                $: "readonly",
-                $$: "readonly",
                 Formwork: "readonly",
             },
             sourceType: "module",
@@ -19,6 +17,7 @@ export default [
             "arrow-body-style": ["error", "as-needed"],
             curly: ["error", "all"],
             eqeqeq: ["error", "always"],
+            "no-console": ["warn"],
             "no-else-return": ["error"],
             "no-lonely-if": ["error"],
             "no-unneeded-ternary": ["error"],
@@ -34,6 +33,13 @@ export default [
             "prefer-arrow-callback": ["error"],
             "prefer-const": ["error"],
             "prefer-template": ["error"],
+            "sort-imports": [
+                "warn",
+                {
+                    ignoreCase: true,
+                    allowSeparatedGroups: true,
+                },
+            ],
         },
     },
     eslintConfigPrettier,
