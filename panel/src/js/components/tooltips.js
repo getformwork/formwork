@@ -1,16 +1,17 @@
-import Tooltip from "./tooltip";
+import { $$ } from "../utils/selectors";
+import { Tooltip } from "./tooltip";
 
-export default {
-    init: function () {
+export class Tooltips {
+    constructor() {
         $$("[title]", document.body).forEach((element) => {
-            element.setAttribute("data-tooltip", element.getAttribute("title"));
-            element.removeAttribute("title");
+            element.dataset.tooltip = element.title;
+            element.title = "";
         });
 
         $$("[data-tooltip]").forEach((element) => {
-            element.addEventListener("mouseover", function () {
-                const tooltip = new Tooltip(this.dataset.tooltip, {
-                    referenceElement: this,
+            element.addEventListener("mouseover", () => {
+                const tooltip = new Tooltip(element.dataset.tooltip, {
+                    referenceElement: element,
                     position: "bottom",
                     offset: {
                         x: 0,
@@ -22,9 +23,9 @@ export default {
 
             // Immediately show tooltip on focused buttons
             if (element.tagName.toLowerCase() === "button" || element.classList.contains("button")) {
-                element.addEventListener("focus", function () {
-                    const tooltip = new Tooltip(this.dataset.tooltip, {
-                        referenceElement: this,
+                element.addEventListener("focus", () => {
+                    const tooltip = new Tooltip(element.dataset.tooltip, {
+                        referenceElement: element,
                         position: "bottom",
                         offset: {
                             x: 0,
@@ -38,10 +39,10 @@ export default {
         });
 
         $$('[data-overflow-tooltip="true"]').forEach((element) => {
-            element.addEventListener("mouseover", function () {
-                if (this.offsetWidth < this.scrollWidth) {
-                    const tooltip = new Tooltip(this.textContent.trim(), {
-                        referenceElement: this,
+            element.addEventListener("mouseover", () => {
+                if (element.offsetWidth < element.scrollWidth) {
+                    const tooltip = new Tooltip(element.textContent.trim(), {
+                        referenceElement: element,
                         position: "bottom",
                         offset: {
                             x: 0,
@@ -52,5 +53,5 @@ export default {
                 }
             });
         });
-    },
-};
+    }
+}

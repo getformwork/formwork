@@ -1,11 +1,13 @@
-import Modals from "./modals";
-import Notification from "./notification";
-import Request from "./request";
+import { $, $$ } from "../../utils/selectors";
+import { escapeRegExp, makeDiacriticsRegExp, makeSlug, validateSlug } from "../../utils/validation";
+import { app } from "../../app";
+import { debounce } from "../../utils/events";
+import { Notification } from "../notification";
+import { Request } from "../../utils/request";
 import { Sortable } from "sortablejs";
-import Utils from "./utils";
 
-export default {
-    init: function () {
+export class Pages {
+    constructor() {
         const commandExpandAllPages = $("[data-command=expand-all-pages]");
         const commandCollapseAllPages = $("[data-command=collapse-all-pages]");
         const commandReorderPages = $("[data-command=reorder-pages]");
@@ -24,8 +26,8 @@ export default {
 
         $$(".page-details").forEach((element) => {
             if ($(".page-children-toggle", element)) {
-                element.addEventListener("click", function (event) {
-                    togglePageItem(this);
+                element.addEventListener("click", (event) => {
+                    togglePageItem(element);
                     event.stopPropagation();
                 });
             }
@@ -44,41 +46,73 @@ export default {
         });
 
         if (commandExpandAllPages) {
-            commandExpandAllPages.addEventListener("click", function () {
+            commandExpandAllPages.addEventListener("click", () => {
                 expandAllPages();
-                this.blur();
+                commandExpandAllPages.blur();
             });
         }
 
         if (commandCollapseAllPages) {
-            commandCollapseAllPages.addEventListener("click", function () {
+            commandCollapseAllPages.addEventListener("click", () => {
                 collapseAllPages();
-                this.blur();
+                commandCollapseAllPages.blur();
             });
         }
 
         if (commandReorderPages) {
-            commandReorderPages.addEventListener("click", function () {
-                this.classList.toggle("active");
+            commandReorderPages.addEventListener("click", () => {
+                commandReorderPages.classList.toggle("active");
                 $(".pages-list").classList.toggle("is-reordering");
-                this.blur();
+                commandReorderPages.blur();
             });
         }
 
         if (searchInput) {
             searchInput.addEventListener("focus", () => {
                 $$(".pages-item").forEach((element) => {
-                    element.setAttribute("data-expanded", element.classList.contains("expanded") ? "true" : "false");
+                    element.dataset.expanded = element.classList.contains("expanded") ? "true" : "false";
                 });
             });
 
-            searchInput.addEventListener("keyup", Utils.debounce(handleSearch, 100));
+            const handleSearch = (event) => {
+                const value = event.target.value;
+                if (value.length === 0) {
+                    $(".pages-list-root").classList.remove("is-filtered");
+
+                    $$(".pages-item").forEach((element) => {
+                        const title = $(".page-title a", element);
+                        title.innerHTML = title.textContent;
+                        $(".pages-item-row", element).style.display = "";
+                        element.classList.toggle("is-expanded", element.dataset.expanded === "true");
+                    });
+                } else {
+                    $(".pages-list-root").classList.add("is-filtered");
+
+                    const regexp = new RegExp(makeDiacriticsRegExp(escapeRegExp(value)), "gi");
+
+                    $$(".pages-item").forEach((element) => {
+                        const title = $(".page-title a", element);
+                        const text = title.textContent;
+                        const pagesItem = $(".pages-item-row", element);
+
+                        if (text.match(regexp) !== null) {
+                            title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+                            pagesItem.style.display = "";
+                        } else {
+                            pagesItem.style.display = "none";
+                        }
+
+                        element.classList.add("is-expanded");
+                    });
+                }
+            };
+
+            searchInput.addEventListener("keyup", debounce(handleSearch, 100));
             searchInput.addEventListener("search", handleSearch);
 
             document.addEventListener("keydown", (event) => {
                 if (event.ctrlKey || event.metaKey) {
-                    // ctrl/cmd + F
-                    if (event.which === 70 && document.activeElement !== searchInput) {
+                    if (event.key === "f" && document.activeElement !== searchInput) {
                         searchInput.focus();
                         event.preventDefault();
                     }
@@ -87,9 +121,13 @@ export default {
         }
 
         if (newPageModal) {
-            $("#page-title", newPageModal).addEventListener("keyup", function () {
-                $("#page-slug", newPageModal).value = Utils.slug(this.value);
+            $("#page-title", newPageModal).addEventListener("keyup", (element) => {
+                $("#page-slug", newPageModal).value = makeSlug(element.value);
             });
+
+            const handleSlugChange = (event) => {
+                event.target.value = validateSlug(event.target.value);
+            };
 
             $("#page-slug", newPageModal).addEventListener("keyup", handleSlugChange);
             $("#page-slug", newPageModal).addEventListener("blur", handleSlugChange);
@@ -105,10 +143,10 @@ export default {
 
                 const pageTemplate = $("#page-template", newPageModal);
 
-                if (allowedTemplates !== null) {
+                if (allowedTemplates) {
                     allowedTemplates = allowedTemplates.split(", ");
 
-                    pageTemplate.setAttribute("data-previous-value", pageTemplate.value);
+                    pageTemplate.dataset.previousValue = pageTemplate.value;
                     pageTemplate.value = allowedTemplates[0];
                     $('.select[data-for="page-template"').value = $(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`).innerText;
 
@@ -133,26 +171,29 @@ export default {
 
         if (slugModal && commandChangeSlug) {
             commandChangeSlug.addEventListener("click", () => {
-                Modals.show("slugModal", null, (modal) => {
+                app.modals["slugModal"].show(null, (modal) => {
                     const slug = document.getElementById("slug").value;
                     const slugInput = $("#page-slug", modal);
                     slugInput.value = slug;
-                    slugInput.setAttribute("placeholder", slug);
+                    slugInput.placeholder = slug;
                 });
             });
 
             $("#page-slug", slugModal).addEventListener("keydown", (event) => {
-                // enter
-                if (event.which === 13) {
+                if (event.key === "Enter") {
                     $("[data-command=continue]", slugModal).click();
                 }
             });
+
+            const handleSlugChange = (event) => {
+                event.target.value = validateSlug(event.target.value);
+            };
 
             $("#page-slug", slugModal).addEventListener("keyup", handleSlugChange);
             $("#page-slug", slugModal).addEventListener("blur", handleSlugChange);
 
             $("[data-command=generate-slug]", slugModal).addEventListener("click", () => {
-                const slug = Utils.slug(document.getElementById("title").value);
+                const slug = makeSlug(document.getElementById("title").value);
                 $("#page-slug", slugModal).value = slug;
                 $("#page-slug", slugModal).focus();
             });
@@ -170,7 +211,7 @@ export default {
                     $(".page-slug-change").innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 
-                Modals.hide("slugModal");
+                app.modals.hide("slugModal");
             });
         }
 
@@ -211,27 +252,27 @@ export default {
                 invertSwap: true,
                 animation: 150,
 
-                onChoose: function () {
+                onChoose() {
                     const height = document.body.offsetHeight;
                     document.body.style.height = `${height}px`;
 
-                    const e = window.addEventListener("scroll", function () {
-                        this.document.body.style.height = "";
-                        this.removeEventListener("scroll", e);
+                    const e = window.addEventListener("scroll", () => {
+                        window.document.body.style.height = "";
+                        window.removeEventListener("scroll", e);
                     });
                 },
 
-                onStart: function () {
+                onStart() {
                     element.classList.add("is-dragging");
                 },
 
-                onMove: function (event) {
+                onMove(event) {
                     if (event.related.classList.contains("is-not-orderable")) {
                         return false;
                     }
                 },
 
-                onEnd: function (event) {
+                onEnd(event) {
                     element.classList.remove("is-dragging");
 
                     document.body.style.height = "";
@@ -243,16 +284,16 @@ export default {
                     sortable.option("disabled", true);
 
                     const data = {
-                        "csrf-token": $("meta[name=csrf-token]").getAttribute("content"),
+                        "csrf-token": $("meta[name=csrf-token]").content,
                         page: element.children[event.newIndex].dataset.route,
                         before: element.children[event.oldIndex].dataset.route,
                         parent: element.dataset.parent,
                     };
 
-                    Request(
+                    new Request(
                         {
                             method: "POST",
-                            url: `${Formwork.config.baseUri}pages/reorder/`,
+                            url: `${app.config.baseUri}pages/reorder/`,
                             data: data,
                         },
                         (response) => {
@@ -272,42 +313,5 @@ export default {
 
             originalOrder = sortable.toArray();
         }
-
-        function handleSearch() {
-            const value = this.value;
-            if (value.length === 0) {
-                $(".pages-list-root").classList.remove("is-filtered");
-
-                $$(".pages-item").forEach((element) => {
-                    const title = $(".page-title a", element);
-                    title.innerHTML = title.textContent;
-                    $(".pages-item-row", element).style.display = "";
-                    element.classList.toggle("is-expanded", element.dataset.expanded === "true");
-                });
-            } else {
-                $(".pages-list-root").classList.add("is-filtered");
-
-                const regexp = new RegExp(Utils.makeDiacriticsRegExp(Utils.escapeRegExp(value)), "gi");
-
-                $$(".pages-item").forEach((element) => {
-                    const title = $(".page-title a", element);
-                    const text = title.textContent;
-                    const pagesItem = $(".pages-item-row", element);
-
-                    if (text.match(regexp) !== null) {
-                        title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
-                        pagesItem.style.display = "";
-                    } else {
-                        pagesItem.style.display = "none";
-                    }
-
-                    element.classList.add("is-expanded");
-                });
-            }
-        }
-
-        function handleSlugChange() {
-            this.value = Utils.validateSlug(this.value);
-        }
-    },
-};
+    }
+}

@@ -1,12 +1,12 @@
-import Utils from "./utils";
+import { $, $$ } from "../utils/selectors";
+import { getOuterHeight, getOuterWidth } from "../utils/dimensions";
+import { throttle } from "../utils/events";
 
-export default {
-    init: function () {
+export class Dropdowns {
+    constructor() {
         if ($(".dropdown")) {
             document.addEventListener("click", (event) => {
-                $$(".dropdown-menu").forEach((element) => {
-                    element.style.display = "";
-                });
+                $$(".dropdown-menu").forEach((element) => (element.style.display = ""));
 
                 const button = event.target.closest(".dropdown-button");
 
@@ -15,9 +15,7 @@ export default {
                     const isVisible = getComputedStyle(dropdown).display !== "none";
                     event.preventDefault();
 
-                    const resizeHandler = Utils.throttle(() => {
-                        setDropdownPosition(dropdown);
-                    }, 100);
+                    const resizeHandler = throttle(() => setDropdownPosition(dropdown), 100);
 
                     if (dropdown && !isVisible) {
                         dropdown.style.display = "block";
@@ -29,18 +27,18 @@ export default {
                 }
             });
         }
-    },
-};
+    }
+}
 
 function setDropdownPosition(dropdown) {
     dropdown.style.left = 0;
     dropdown.style.right = "";
 
     const dropdownRect = dropdown.getBoundingClientRect();
-    const dropdownTop = dropdownRect.top + window.pageYOffset;
-    const dropdownLeft = dropdownRect.left + window.pageXOffset;
-    const dropdownWidth = Utils.outerWidth(dropdown);
-    const dropdownHeight = Utils.outerHeight(dropdown);
+    const dropdownTop = dropdownRect.top + window.scrollY;
+    const dropdownLeft = dropdownRect.left + window.scrollX;
+    const dropdownWidth = getOuterWidth(dropdown);
+    const dropdownHeight = getOuterHeight(dropdown);
 
     const windowWidth = document.documentElement.clientWidth;
     const windowHeight = document.documentElement.clientHeight;
@@ -50,7 +48,7 @@ function setDropdownPosition(dropdown) {
         dropdown.style.right = 0;
     }
 
-    if (dropdownTop < window.pageYOffset || window.pageYOffset < dropdownTop + dropdownHeight - windowHeight) {
-        window.scrollTo(window.pageXOffset, dropdownTop + dropdownHeight - windowHeight);
+    if (dropdownTop < window.scrollY || window.scrollY < dropdownTop + dropdownHeight - windowHeight) {
+        window.scrollTo(window.scrollX, dropdownTop + dropdownHeight - windowHeight);
     }
 }

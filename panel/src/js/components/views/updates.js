@@ -1,9 +1,11 @@
-import Icons from "./icons";
-import Notification from "./notification";
-import Request from "./request";
+import { $ } from "../../utils/selectors";
+import { app } from "../../app";
+import { insertIcon } from "../icons";
+import { Notification } from "../notification";
+import { Request } from "../../utils/request";
 
-export default {
-    init: function () {
+export class Updates {
+    constructor() {
         const updaterComponent = document.getElementById("updater-component");
 
         if (updaterComponent) {
@@ -16,31 +18,31 @@ export default {
 
             const showNewVersion = (name) => {
                 spinner.classList.add("spinner-info");
-                Icons.inject("info", spinner);
+                insertIcon("info", spinner);
                 newVersionName.innerHTML = name;
                 newVersion.style.display = "block";
             };
 
             const showCurrentVersion = () => {
                 spinner.classList.add("spinner-success");
-                Icons.inject("check", spinner);
+                insertIcon("check", spinner);
                 currentVersion.style.display = "block";
             };
 
             const showInstalledVersion = () => {
                 spinner.classList.add("spinner-success");
-                Icons.inject("check", spinner);
+                insertIcon("check", spinner);
                 currentVersionName.innerHTML = newVersionName.innerHTML;
                 currentVersion.style.display = "block";
             };
 
             setTimeout(() => {
-                const data = { "csrf-token": $("meta[name=csrf-token]").getAttribute("content") };
+                const data = { "csrf-token": $("meta[name=csrf-token]").content };
 
-                Request(
+                new Request(
                     {
                         method: "POST",
-                        url: `${Formwork.config.baseUri}updates/check/`,
+                        url: `${app.config.baseUri}updates/check/`,
                         data: data,
                     },
                     (response) => {
@@ -54,7 +56,7 @@ export default {
                             }
                         } else {
                             spinner.classList.add("spinner-error");
-                            Icons.inject("exclamation", spinner);
+                            insertIcon("exclamation", spinner);
                         }
                     },
                 );
@@ -65,11 +67,11 @@ export default {
                 spinner.classList.remove("spinner-info");
                 updateStatus.innerHTML = updateStatus.dataset.installingText;
 
-                Request(
+                new Request(
                     {
                         method: "POST",
-                        url: `${Formwork.config.baseUri}updates/update/`,
-                        data: { "csrf-token": $("meta[name=csrf-token]").getAttribute("content") },
+                        url: `${app.config.baseUri}updates/update/`,
+                        data: { "csrf-token": $("meta[name=csrf-token]").content },
                     },
                     (response) => {
                         const notification = new Notification(response.message, response.status, { icon: "check-circle" });
@@ -81,11 +83,11 @@ export default {
                             showInstalledVersion();
                         } else {
                             spinner.classList.add("spinner-error");
-                            Icons.inject("exclamation", spinner);
+                            insertIcon("exclamation", spinner);
                         }
                     },
                 );
             });
         }
-    },
-};
+    }
+}

@@ -1,80 +1,76 @@
-import Icons from "./icons";
-import Utils from "./utils";
+import { $ } from "../utils/selectors";
+import { passIcon } from "./icons";
 
-export default function Notification(text, type, options) {
-    const defaults = {
-        interval: 5000,
-        icon: null,
-        newestOnTop: true,
-        fadeOutDelay: 300,
-        mouseleaveDelay: 1000,
-    };
+export class Notification {
+    constructor(text, type, options) {
+        const defaults = {
+            interval: 5000,
+            icon: null,
+            newestOnTop: true,
+            fadeOutDelay: 300,
+            mouseleaveDelay: 1000,
+        };
 
-    let container = $(".notification-container");
+        this.text = text;
+        this.type = type;
 
-    let notification;
+        this.options = Object.assign({}, defaults, options);
 
-    options = Utils.extendObject({}, defaults, options);
-
-    function create(text, type, interval) {
-        if (!container) {
-            container = document.createElement("div");
-            container.className = "notification-container";
-            document.body.appendChild(container);
-        }
-
-        notification = document.createElement("div");
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = text;
-
-        if (options.newestOnTop && container.childNodes.length > 0) {
-            container.insertBefore(notification, container.childNodes[0]);
-        } else {
-            container.appendChild(notification);
-        }
-
-        let timer = setTimeout(remove, interval);
-
-        notification.addEventListener("click", remove);
-
-        notification.addEventListener("mouseenter", () => {
-            clearTimeout(timer);
-        });
-
-        notification.addEventListener("mouseleave", () => {
-            timer = setTimeout(remove, options.mouseleaveDelay);
-        });
+        this.containerElement = $(".notification-container");
     }
 
-    function show() {
-        if (options.icon !== null) {
-            Icons.pass(options.icon, (icon) => {
-                create(text, type, options.interval);
-                notification.insertAdjacentHTML("afterBegin", icon);
+    show() {
+        const create = (text, type, interval) => {
+            if (!this.containerElement) {
+                this.containerElement = document.createElement("div");
+                this.containerElement.className = "notification-container";
+                document.body.appendChild(this.containerElement);
+            }
+
+            const notification = document.createElement("div");
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = text;
+
+            if (this.options.newestOnTop && this.containerElement.childNodes.length > 0) {
+                this.containerElement.insertBefore(notification, this.containerElement.childNodes[0]);
+            } else {
+                this.containerElement.appendChild(notification);
+            }
+
+            let timer = setTimeout(() => this.remove(), interval);
+
+            notification.addEventListener("click", () => this.remove());
+
+            notification.addEventListener("mouseenter", () => clearTimeout(timer));
+
+            notification.addEventListener("mouseleave", () => ((timer = setTimeout(() => this.remove())), this.options.mouseleaveDelay));
+
+            return notification;
+        };
+
+        if (this.options.icon !== null) {
+            passIcon(this.options.icon, (icon) => {
+                this.notificationElement = create(this.text, this.type, this.options.interval);
+                this.notificationElement.insertAdjacentHTML("afterBegin", icon);
             });
         } else {
-            create(text, type, options.interval);
+            this.notificationElement = create(this.text, this.type, this.options.interval);
         }
     }
 
-    function remove() {
-        notification.classList.add("fadeout");
+    remove() {
+        this.notificationElement.classList.add("fadeout");
 
         setTimeout(() => {
-            if (notification && notification.parentNode) {
-                container.removeChild(notification);
+            if (this.notificationElement && this.notificationElement.parentNode) {
+                this.containerElement.removeChild(this.notificationElement);
             }
-            if (container && container.childNodes.length < 1) {
-                if (container.parentNode) {
-                    document.body.removeChild(container);
+            if (this.containerElement && this.containerElement.childNodes.length < 1) {
+                if (this.containerElement.parentNode) {
+                    document.body.removeChild(this.containerElement);
                 }
-                container = null;
+                this.containerElement = null;
             }
-        }, options.fadeOutDelay);
+        }, this.options.fadeOutDelay);
     }
-
-    return {
-        show: show,
-        remove: remove,
-    };
 }
