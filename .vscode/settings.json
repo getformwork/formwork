@@ -1,0 +1,8 @@
+{
+    "eslint.workingDirectories": ["./panel"],
+    "eslint.experimental.useFlatConfig": true,
+    "prettier.tabWidth": 4,
+    "prettier.useEditorConfig": true,
+    "prettier.embeddedLanguageFormatting": "off",
+    "stylelint.configBasedir": "./panel",
+}
