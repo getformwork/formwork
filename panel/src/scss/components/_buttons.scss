@@ -23,15 +23,18 @@ button,
         color $transition-time-s;
     white-space: nowrap;
     @include user-select-none;
+
     &:hover,
     &:focus {
         border-color: $color-base-500;
         background-color: $color-base-500;
         color: $color-base-100;
     }
+
     &:focus {
         @include focusring($color-base-100);
     }
+
     &[disabled],
     &[disabled]:hover,
     &.disabled,
@@ -42,10 +45,12 @@ button,
         color: $color-base-500;
         pointer-events: none;
     }
+
     &.active {
         border-color: $color-base-500;
         background-color: $color-base-500;
     }
+
     & .icon {
         display: inline-block;
         margin-right: 0.25rem;
@@ -66,12 +71,14 @@ a.button {
     border: $button-border-width solid $color-accent-500;
     background-color: $color-accent-500;
     color: $color-white;
+
     &:hover,
     &:focus {
         border-color: $color-accent-400;
         background-color: $color-accent-400;
         color: $color-white;
     }
+
     &:focus {
         @include focusring;
     }
@@ -81,12 +88,14 @@ a.button {
     border: $button-border-width solid $color-success-500;
     background-color: $color-success-500;
     color: $color-white;
+
     &:hover,
     &:focus {
         border-color: $color-success-400;
         background-color: $color-success-400;
         color: $color-white;
     }
+
     &:focus {
         @include focusring($color-success-500);
     }
@@ -96,12 +105,14 @@ a.button {
     border: $button-border-width solid $color-warning-500;
     background-color: $color-warning-500;
     color: $color-white;
+
     &:hover,
     &:focus {
         border-color: $color-warning-400;
         background-color: $color-warning-400;
         color: $color-white;
     }
+
     &:focus {
         @include focusring($color-warning-500);
     }
@@ -111,12 +122,14 @@ a.button {
     border: $button-border-width solid $color-error-500;
     background-color: $color-error-500;
     color: $color-white;
+
     &:hover,
     &:focus {
         border-color: $color-error-400;
         background-color: $color-error-400;
         color: $color-white;
     }
+
     &:focus {
         @include focusring($color-error-500);
     }
@@ -129,14 +142,17 @@ a.button {
     box-shadow: none;
     cursor: pointer;
     font-size: inherit;
+
     &:hover,
     &:focus {
         background-color: transparent;
         color: $color-accent-500;
     }
+
     &:focus {
         @include focusring;
     }
+
     &[disabled],
     &[disabled]:hover,
     &.disabled,
@@ -144,6 +160,7 @@ a.button {
         background-color: transparent;
         cursor: default;
     }
+
     & .icon {
         margin-right: 0;
     }

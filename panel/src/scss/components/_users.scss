@@ -6,8 +6,8 @@
 }
 
 .user-summary-avatar {
-    max-width: 33.33333%;
-    flex: 0 0 33.33333%;
+    max-width: 33.3333%;
+    flex: 0 0 33.3333%;
     padding: $user-summary-cell-padding;
     text-align: center;
 }
@@ -34,6 +34,7 @@
 .users-item {
     padding: $users-item-padding-v $users-item-padding-h;
     border-bottom: 1px solid $color-base-600;
+
     &:hover {
         background-color: $color-base-800;
     }

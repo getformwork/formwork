@@ -12,7 +12,7 @@
     padding: $notification-padding-v $notification-padding-h;
     border-radius: $border-radius;
     margin-bottom: $notification-margin-bottom;
-    animation: fadeInRight $notification-animation-duration $notification-animation-easing;
+    animation: fade-in-right $notification-animation-duration $notification-animation-easing;
     background-color: $color-base-700;
     box-shadow: $notification-box-shadow;
     cursor: default;
@@ -20,13 +20,14 @@
     transition:
         top $transition-time-m ease-in,
         opacity $transition-time-s;
+
     &:hover {
         opacity: $notification-hover-opacity;
     }
 }
 
 .notification.fadeout {
-    animation: fadeOutRight $notification-animation-duration $notification-animation-easing;
+    animation: fade-out-right $notification-animation-duration $notification-animation-easing;
     opacity: 0;
 }
 

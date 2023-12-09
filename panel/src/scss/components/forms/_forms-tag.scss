@@ -29,6 +29,7 @@
     font-family: inherit;
     font-size: $font-size-s;
     line-height: inherit;
+
     &:focus {
         outline: none;
     }
@@ -66,6 +67,7 @@
     color: $color-base-100;
     font-style: normal;
     transition: color $transition-time-s;
+
     &:hover {
         color: $color-accent-500;
     }

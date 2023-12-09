@@ -1,19 +1,21 @@
-@keyframes fadeInRight {
+@keyframes fade-in-right {
     from {
         opacity: 0;
         transform: translate3d(150%, 0, 0);
     }
+
     to {
         opacity: 1;
         transform: none;
     }
 }
 
-@keyframes fadeOutRight {
+@keyframes fade-out-right {
     from {
         opacity: 1;
         transform: none;
     }
+
     to {
         opacity: 0;
         transform: translate3d(150%, 0, 0);
@@ -42,6 +44,7 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }

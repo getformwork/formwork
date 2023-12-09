@@ -37,14 +37,17 @@
     cursor: pointer;
     font-size: $font-size-s;
     outline: none;
+
     &:hover {
         color: $color-accent-500;
     }
+
     &:focus {
         outline: none;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .calendar-buttons .currentMonth {
     font-weight: 600;
 }
@@ -75,6 +78,7 @@
     transition:
         background-color $transition-time-s,
         color $transition-time-s;
+
     &:hover {
         background-color: $color-accent-400;
         color: $color-white;

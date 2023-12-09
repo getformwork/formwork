@@ -15,15 +15,15 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-base-100: hsl(208deg, 10%, 15%) !default;
-$color-base-200: hsl(208deg, 10%, 32%) !default;
-$color-base-300: hsl(208deg, 10%, 49%) !default;
-$color-base-400: hsl(208deg, 10%, 59%) !default;
-$color-base-500: hsl(208deg, 10%, 79%) !default;
-$color-base-600: hsl(208deg, 10%, 89%) !default;
-$color-base-700: hsl(208deg, 10%, 93%) !default;
-$color-base-800: hsl(208deg, 10%, 97%) !default;
-$color-base-900: hsl(208deg, 10%, 99%) !default;
+$color-base-100: hsl(208deg 10% 15%) !default;
+$color-base-200: hsl(208deg 10% 32%) !default;
+$color-base-300: hsl(208deg 10% 49%) !default;
+$color-base-400: hsl(208deg 10% 59%) !default;
+$color-base-500: hsl(208deg 10% 79%) !default;
+$color-base-600: hsl(208deg 10% 89%) !default;
+$color-base-700: hsl(208deg 10% 93%) !default;
+$color-base-800: hsl(208deg 10% 97%) !default;
+$color-base-900: hsl(208deg 10% 99%) !default;
 
 $color-accent-100: $color-blue-100;
 $color-accent-200: $color-blue-200;
@@ -127,8 +127,8 @@ $dropdown-box-shadow: 1px 1px 0.75rem 0 rgba($color-black, 0.25);
 // Typography
 // ===
 
-$base-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-$mono-font-family: "SFMono-Regular", "SF Mono", "Cascadia Mono", "Liberation Mono", Menlo, Consolas, monospace;
+$base-font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
+$mono-font-family: "SFMono-Regular", "SF Mono", "Cascadia Mono", "Liberation Mono", "Menlo", "Consolas", monospace;
 
 $base-font-size: 100%;
 $base-line-height: 1.5;
@@ -467,8 +467,9 @@ $main-margin-left: $main-margin + $sidebar-width;
 
 $component-margin-bottom: 1rem;
 $component-padding: 1.5rem;
-$component-box-shadow: 0.125rem 0.125rem 0.25rem -0.125rem rgba(80, 80, 80, 10%),
-    0 0 0.25rem 0 rgba(80, 80, 80, 10%);
+$component-box-shadow:
+    0.125rem 0.125rem 0.25rem -0.125rem rgb(80 80 80 / 10%),
+    0 0 0.25rem 0 rgb(80 80 80 / 10%);
 
 $caption-margin-bottom: 1rem;
 $caption-letter-spacing: 1px;

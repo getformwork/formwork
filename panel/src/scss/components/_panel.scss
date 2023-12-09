@@ -26,6 +26,7 @@
 .view-site {
     color: $color-base-100;
     float: right;
+
     &:hover {
         color: $color-accent-500;
     }
@@ -69,10 +70,12 @@
     box-shadow: none;
     cursor: pointer;
     font-size: $font-size-m;
+
     &:hover {
         background-color: transparent;
         color: $color-accent-500;
     }
+
     &:focus {
         background-color: transparent;
         outline: none;
@@ -107,6 +110,7 @@
     margin: 0;
     margin-bottom: $sidebar-navigation-margin-bottom;
     list-style-type: none;
+
     &:last-child {
         margin-bottom: 0;
     }
@@ -153,6 +157,7 @@
     width: $panel-user-avatar-width;
     border-radius: $border-radius-round;
     transition: box-shadow $transition-time-m ease-out;
+
     .panel-user-card:hover & {
         box-shadow: 0 0 0 0.5rem $color-base-600;
     }
@@ -271,12 +276,14 @@
     box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
+
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
         color: $color-accent-500;
     }
+
     &:focus {
         @include focusring;
     }

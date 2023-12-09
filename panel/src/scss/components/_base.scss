@@ -2,7 +2,7 @@
 
 html {
     font-size: $base-font-size;
-    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -28,9 +28,11 @@ a {
     outline-color: $link-outline-color;
     text-decoration: none;
     transition: color $transition-time-s;
+
     &:hover {
         color: $color-accent-400;
     }
+
     &:not([href]) {
         cursor: default;
     }

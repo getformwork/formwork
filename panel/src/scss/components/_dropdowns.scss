@@ -43,22 +43,27 @@
     cursor: pointer !important;
     font-size: $dropdown-item-font-size;
     white-space: nowrap;
+
     &:hover {
         background-color: $color-base-700;
         color: $color-base-100;
     }
+
     &.disabled {
         color: $color-base-300;
         cursor: default !important;
+
         &:hover {
             background-color: transparent;
             color: $color-base-300;
         }
     }
+
     &.selected {
         background-color: $color-accent-500;
         color: $color-white;
     }
+
     & .icon {
         display: inline-block;
         margin-right: 0.25rem;

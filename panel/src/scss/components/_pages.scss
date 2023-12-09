@@ -30,12 +30,14 @@
     box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
+
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
         color: $color-accent-500;
     }
+
     &:focus {
         @include focusring;
     }
@@ -44,6 +46,7 @@
 .pages-item-row {
     padding: $pages-item-padding-v $pages-item-padding-h;
     border-bottom: 1px solid $color-base-600;
+
     &:hover {
         background-color: $color-base-800;
     }
@@ -226,6 +229,7 @@ button .page-language,
                 left: $indent;
                 content: "";
             }
+
             .page-details {
                 padding-left: $pages-level-padding * ($i - 1);
             }
@@ -252,15 +256,18 @@ button .page-language,
     box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
+
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
         color: $color-base-300;
     }
+
     &:focus {
         @include focusring;
     }
+
     & .icon {
         display: inline-block;
         margin-right: 0;
@@ -268,6 +275,7 @@ button .page-language,
         opacity: 0;
         transition: opacity $transition-time-s;
     }
+
     &:hover .icon,
     &:focus .icon {
         opacity: 1;

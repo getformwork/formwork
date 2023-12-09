@@ -8,21 +8,18 @@
         display: table;
         content: "";
     }
+
     &::after {
         clear: both;
     }
 }
 
 @mixin user-select-none {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
 @mixin appearance-none {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
 }
 
 @mixin ellipsis {

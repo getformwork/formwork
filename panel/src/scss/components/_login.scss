@@ -22,12 +22,14 @@
     margin: $login-modal-notification-margin $login-modal-notification-margin $login-modal-notification-margin-bottom $login-modal-notification-margin;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
+
     a {
         display: block;
         color: $color-white;
         text-decoration: underline;
         @include ellipsis;
     }
+
     & .icon {
         position: absolute;
         top: 50%;

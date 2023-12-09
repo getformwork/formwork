@@ -1,16 +1,16 @@
 .modal-backdrop {
     position: fixed;
     z-index: 16;
-    inset: 0 0 0 0;
     background-color: $backdrop-background-color;
+    inset: 0;
 }
 
 .modal {
     position: fixed;
     z-index: 20;
-    inset: 0 0 0 0;
     display: none;
     align-items: center;
+    inset: 0;
     outline: 0;
 }
 

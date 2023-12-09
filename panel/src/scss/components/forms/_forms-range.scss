@@ -8,6 +8,7 @@ input[type="range"] {
     margin-bottom: 0;
     background-color: transparent;
     @include appearance-none;
+
     &::-webkit-slider-runnable-track {
         width: 100%;
         height: $input-range-track-height;
@@ -17,6 +18,7 @@ input[type="range"] {
         background-color: $color-base-500;
         cursor: default;
     }
+
     &::-webkit-slider-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
@@ -28,6 +30,7 @@ input[type="range"] {
         transition: background-color $transition-time-s;
         @include appearance-none;
     }
+
     &::-moz-range-track {
         width: 100%;
         height: $input-range-track-height;
@@ -36,6 +39,7 @@ input[type="range"] {
         background: linear-gradient(90deg, $color-accent-500 var(--progress), $color-base-500 var(--progress));
         background-color: $color-base-500;
     }
+
     &::-moz-range-thumb {
         width: $input-range-thumb-width;
         height: $input-range-thumb-height;
@@ -46,24 +50,30 @@ input[type="range"] {
         transition: background-color $transition-time-s;
         @include appearance-none;
     }
+
     &:focus {
         outline: none;
     }
+
     &:hover::-webkit-slider-thumb,
     &:hover::-moz-range-thumb {
         background-color: $color-accent-400;
     }
+
     &[disabled] {
         background-color: transparent;
+
         &::-webkit-slider-thumb,
         &::-moz-range-thumb {
             background-color: $color-base-300;
         }
     }
+
     &:focus::-webkit-slider-thumb {
         background-color: $color-accent-400;
         @include focusring;
     }
+
     &:focus::-moz-range-thumb {
         background-color: $color-accent-400;
         @include focusring;
