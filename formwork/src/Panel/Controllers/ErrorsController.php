@@ -79,7 +79,7 @@ class ErrorsController extends AbstractController
                 PHP_VERSION,
                 PHP_OS_FAMILY,
                 PHP_SAPI,
-                get_class($exception),
+                $exception::class,
                 $exception->getMessage(),
                 $exception->getFile(),
                 $exception->getLine(),

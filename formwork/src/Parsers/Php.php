@@ -90,7 +90,7 @@ class Php extends AbstractEncoder
                 return 'null';
 
             case 'object':
-                $class = get_class($data);
+                $class = $data::class;
 
                 // stdClass objects are encoded as object casts
                 if ($class === \stdClass::class) {

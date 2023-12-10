@@ -54,7 +54,7 @@ class ErrorHandlers
         static::displayErrorPage();
         error_log(sprintf(
             "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
-            get_class($exception),
+            $exception::class,
             $exception->getMessage(),
             $exception->getFile(),
             $exception->getLine(),
