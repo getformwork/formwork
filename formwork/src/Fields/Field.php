@@ -300,7 +300,7 @@ class Field implements Arrayable
         $this->methods = $methods;
     }
 
-    public function setTranslation(Translation $translation)
+    public function setTranslation(Translation $translation): void
     {
         $this->translation = $translation;
     }

@@ -35,14 +35,14 @@ class Config implements Arrayable
         return $this->baseGet($key, $default);
     }
 
-    public function loadFromPath(string $path)
+    public function loadFromPath(string $path): void
     {
         foreach (FileSystem::listFiles($path) as $file) {
             $this->loadFile(FileSystem::joinPaths($path, $file));
         }
     }
 
-    public function loadFile(string $path)
+    public function loadFile(string $path): void
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yaml') {
             $name = FileSystem::name($path);
@@ -58,9 +58,9 @@ class Config implements Arrayable
         }
     }
 
-    public function resolve(array $vars = [])
+    public function resolve(array $vars = []): void
     {
-        array_walk_recursive($this->data, function (&$value) use ($vars) {
+        array_walk_recursive($this->data, function (&$value) use ($vars): void {
             if (is_string($value)) {
                 $value = preg_replace_callback(self::INTERPOLATION_REGEX, function ($matches) use ($vars) {
                     $key = $matches[1];

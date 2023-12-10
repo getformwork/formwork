@@ -15,9 +15,8 @@ class RouteCollection extends AbstractCollection
     /**
      * Add route to the collection
      */
-    public function add($route): Route
+    public function add($route): void
     {
         $this->set($route->getName(), $route);
-        return $route;
     }
 }

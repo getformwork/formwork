@@ -199,7 +199,7 @@ class Session implements Arrayable
         return $this->baseGet($key, $default);
     }
 
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         if (!$this->started) {
             $this->start();
@@ -212,7 +212,7 @@ class Session implements Arrayable
         $this->baseRemove($key);
     }
 
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         if (!$this->started) {
             $this->start();

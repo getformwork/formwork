@@ -225,7 +225,7 @@ class View
     /**
      * Output the contents of the view
      */
-    protected function output()
+    protected function output(): void
     {
         ob_start();
 

@@ -428,7 +428,7 @@ class Site implements Arrayable
         return $this->app->schemes();
     }
 
-    public function load()
+    public function load(): void
     {
         $this->scheme = $this->app->schemes()->get('config.site');
 
@@ -443,7 +443,7 @@ class Site implements Arrayable
         $this->fields->setValues($this->data);
     }
 
-    protected function loadTemplates()
+    protected function loadTemplates(): void
     {
         $path = $this->config->get('system.templates.path');
 

@@ -449,7 +449,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Add the given value to the collection
      */
-    public function add($value)
+    public function add($value): void
     {
         if (!$this->isMutable() || $this->isAssociative()) {
             throw new LogicException('Values can be added only to mutable and non-associative collections');
@@ -465,7 +465,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Add multiple values to the collection
      */
-    public function addMultiple(array $values)
+    public function addMultiple(array $values): void
     {
         foreach ($values as $value) {
             $this->add($value);
@@ -475,7 +475,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Remove all occurrences of the given value from the collection
      */
-    public function pull($value)
+    public function pull($value): void
     {
         if (!$this->isMutable() || $this->isAssociative()) {
             throw new LogicException('Values can be pulled only from mutable and non-associative collections');
@@ -487,7 +487,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Remove all occurrences of the given values from the collection
      */
-    public function pullMultiple(array $values)
+    public function pullMultiple(array $values): void
     {
         foreach ($values as $value) {
             $this->pull($value);
@@ -528,7 +528,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Set a collection item
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         if (!$this->isAssociative() || !$this->isMutable()) {
             throw new LogicException('Values can be set only to associative and mutable collections');
@@ -549,7 +549,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Remove a collection item by key
      */
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         if (!$this->isAssociative() || !$this->isMutable()) {
             throw new LogicException('Values can be removed only from associative and mutable collections');

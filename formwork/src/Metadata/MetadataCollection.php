@@ -24,7 +24,7 @@ class MetadataCollection extends AbstractCollection
     /**
      * Set a metadata
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         $this->data[$key] = new Metadata($key, $value);
     }

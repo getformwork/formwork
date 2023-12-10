@@ -167,7 +167,7 @@ class File implements Arrayable
         return $this->hash = hash_file('sha256', $this->path);
     }
 
-    public function setUriGenerator($uriGenerator)
+    public function setUriGenerator($uriGenerator): void
     {
         $this->uriGenerator = $uriGenerator;
     }

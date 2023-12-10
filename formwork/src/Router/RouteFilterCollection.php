@@ -15,9 +15,8 @@ class RouteFilterCollection extends AbstractCollection
     /**
      * Add filter to collection
      */
-    public function add($filter): RouteFilter
+    public function add($filter): void
     {
         $this->set($filter->getName(), $filter);
-        return $filter;
     }
 }

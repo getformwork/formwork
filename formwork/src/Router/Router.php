@@ -99,7 +99,9 @@ class Router
      */
     public function addRoute(string $name, string $path): Route
     {
-        return $this->routes->add(new Route($name, $path));
+
+        $this->routes->add($route = new Route($name, $path));
+        return $route;
     }
 
     /**
@@ -117,7 +119,8 @@ class Router
      */
     public function addFilter(string $name, $action): RouteFilter
     {
-        return $this->filters->add(new RouteFilter($name, $action));
+        $this->filters->add($filter = new RouteFilter($name, $action));
+        return $filter;
     }
 
     /**

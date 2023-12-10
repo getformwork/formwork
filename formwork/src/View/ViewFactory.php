@@ -21,7 +21,7 @@ class ViewFactory
         return new View($name, $vars, $path, $methods);
     }
 
-    public function setMethods(Closure|array $methods)
+    public function setMethods(Closure|array $methods): void
     {
         $this->methods = [...$this->methods, ...(array) $methods];
     }

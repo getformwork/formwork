@@ -53,7 +53,7 @@ class ContentFile extends File
     /**
      * Load data from the content file
      */
-    protected function load()
+    protected function load(): void
     {
         $contents = FileSystem::read($this->path);
 
