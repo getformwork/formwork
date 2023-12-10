@@ -9,127 +9,127 @@ class Debug
     protected const INDENT_SPACES = 2;
 
     protected static string $css = <<<'CSS'
-.__formwork-dump {
-    position: relative;
-    z-index: 10000;
-    margin: 8px;
-    padding: 12px 8px;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    font-family: SFMono-Regular, "SF Mono", "Cascadia Mono", "Liberation Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    overflow-x: auto;
-}
+        .__formwork-dump {
+            position: relative;
+            z-index: 10000;
+            margin: 8px;
+            padding: 12px 8px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            font-family: SFMono-Regular, "SF Mono", "Cascadia Mono", "Liberation Mono", Menlo, Consolas, monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
 
-.__formwork-dump .__type-bool {
-    color: #75438a;
-}
+        .__formwork-dump .__type-bool {
+            color: #75438a;
+        }
 
-.__formwork-dump .__type-number {
-    color: #75438a;
-}
+        .__formwork-dump .__type-number {
+            color: #75438a;
+        }
 
-.__formwork-dump .__type-string {
-    color: #b35e14;
-}
+        .__formwork-dump .__type-string {
+            color: #b35e14;
+        }
 
-.__formwork-dump .__type-null {
-    color: #75438a;
-}
+        .__formwork-dump .__type-null {
+            color: #75438a;
+        }
 
-.__formwork-dump .__note,
-.__formwork-dump .__ref {
-    color: #777;
-    cursor: default;
-    font-size: 0.875em;
-}
+        .__formwork-dump .__note,
+        .__formwork-dump .__ref {
+            color: #777;
+            cursor: default;
+            font-size: 0.875em;
+        }
 
-.__formwork-dump .__visibility {
-    display: inline-block;
-    padding: 1px 4px;
-    border-radius: 4px;
-    margin-right: 4px;
-    color: #777;
-    cursor: default;
-    font-size: 0.75em;
-}
+        .__formwork-dump .__visibility {
+            display: inline-block;
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-right: 4px;
+            color: #777;
+            cursor: default;
+            font-size: 0.75em;
+        }
 
-.__formwork-dump .__visibility-public {
-    background-color: #cfe4f7;
-}
+        .__formwork-dump .__visibility-public {
+            background-color: #cfe4f7;
+        }
 
-.__formwork-dump .__visibility-protected {
-    background-color: #f7e7cf;
-}
+        .__formwork-dump .__visibility-protected {
+            background-color: #f7e7cf;
+        }
 
-.__formwork-dump .__visibility-private {
-    background-color: #f1cff7;
-}
+        .__formwork-dump .__visibility-private {
+            background-color: #f1cff7;
+        }
 
-.__formwork-dump .__type-name,
-.__formwork-dump .__type-array {
-    color: #047d65;
-}
+        .__formwork-dump .__type-name,
+        .__formwork-dump .__type-array {
+            color: #047d65;
+        }
 
-.__formwork-dump .__type-property {
-    color: #1d75b3;
-}
+        .__formwork-dump .__type-property {
+            color: #1d75b3;
+        }
 
-.__formwork-dump .__ref:target {
-    background-color: #ff0;
-}
+        .__formwork-dump .__ref:target {
+            background-color: #ff0;
+        }
 
-.__formwork-dump .__ref a,
-.__formwork-dump .__ref a:hover {
-    color: #1d75b3;
-}
+        .__formwork-dump .__ref a,
+        .__formwork-dump .__ref a:hover {
+            color: #1d75b3;
+        }
 
-.__formwork-dump-collapsed {
-    display: none;
-}
+        .__formwork-dump-collapsed {
+            display: none;
+        }
 
-.__formwork-dump-toggle {
-    color: #777;
-    cursor: default;
-    vertical-align: 1px;
-}
-CSS;
+        .__formwork-dump-toggle {
+            color: #777;
+            cursor: default;
+            vertical-align: 1px;
+        }
+        CSS;
 
     protected static string $js = <<<'JS'
-function __formwork_dump_toggle(self, recursive = true) {
-    const ref = document.getElementById(self.dataset.target);
-    self.innerHTML = ref.classList.toggle("__formwork-dump-collapsed") ? "▼" : "▲";
+        function __formwork_dump_toggle(self, recursive = true) {
+            const ref = document.getElementById(self.dataset.target);
+            self.innerHTML = ref.classList.toggle("__formwork-dump-collapsed") ? "▼" : "▲";
 
-    if (recursive && window.event.shiftKey) {
-        const refs = ref.querySelectorAll(".__formwork-dump-toggle");
-        for (const ref of refs) {
-            if (ref !== self) {
-                __formwork_dump_toggle(ref, false);
+            if (recursive && window.event.shiftKey) {
+                const refs = ref.querySelectorAll(".__formwork-dump-toggle");
+                for (const ref of refs) {
+                    if (ref !== self) {
+                        __formwork_dump_toggle(ref, false);
+                    }
+                }
             }
         }
-    }
-}
 
-function __formwork_dump_goto(target) {
-    if (!target) {
-        return;
-    }
+        function __formwork_dump_goto(target) {
+            if (!target) {
+                return;
+            }
 
-    const targetElement = document.getElementById(target);
+            const targetElement = document.getElementById(target);
 
-    let containerElement = targetElement;
-    while ((containerElement = containerElement.closest("div.__formwork-dump-collapsed"))) {
-        __formwork_dump_toggle(document.querySelector(`.__formwork-dump-toggle[data-target="${containerElement.id}"]`));
-    }
+            let containerElement = targetElement;
+            while ((containerElement = containerElement.closest("div.__formwork-dump-collapsed"))) {
+                __formwork_dump_toggle(document.querySelector(`.__formwork-dump-toggle[data-target="${containerElement.id}"]`));
+            }
 
-    targetElement.scrollIntoView();
-}
+            targetElement.scrollIntoView();
+        }
 
-window.addEventListener("hashchange", () => {
-    const target = window.location.hash.slice(1);
-    __formwork_dump_goto(target);
-});
-JS;
+        window.addEventListener("hashchange", () => {
+            const target = window.location.hash.slice(1);
+            __formwork_dump_goto(target);
+        });
+        JS;
 
     protected static $refs = [];
 
@@ -137,7 +137,7 @@ JS;
 
     protected static $stylesDumped = false;
 
-    public static function dump(...$data)
+    public static function dump(...$data): void
     {
         if (!static::$stylesDumped) {
             echo '<style>' . static::$css . '</style>', '<script>' . static::$js . '</script>';
@@ -149,7 +149,7 @@ JS;
         echo '<script>__formwork_dump_goto(window.location.hash.slice(1))</script>';
     }
 
-    public static function dd(...$data)
+    public static function dd(...$data): void
     {
         static::dump(...$data);
         exit;
