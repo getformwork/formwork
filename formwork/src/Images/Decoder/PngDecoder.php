@@ -11,7 +11,7 @@ class PngDecoder implements DecoderInterface
 
     public function decode(string &$data): Generator
     {
-        if (strpos($data, self::PNG_HEADER) !== 0) {
+        if (!str_starts_with($data, self::PNG_HEADER)) {
             throw new InvalidArgumentException('Invalid PNG data');
         }
 

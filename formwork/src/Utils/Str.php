@@ -41,7 +41,7 @@ class Str
      */
     public static function contains(string $haystack, string $needle): bool
     {
-        return $needle === '' || strpos($haystack, $needle) !== false;
+        return $needle === '' || str_contains($haystack, $needle);
     }
 
     /**

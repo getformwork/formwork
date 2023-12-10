@@ -90,7 +90,7 @@ class Tokenizer
                     $this->position += strlen(self::ARROW_SEQUENCE);
                     break;
 
-                case strpos(self::PUNCTUATION_CHARACTERS, $this->input[$this->position]) !== false:
+                case str_contains(self::PUNCTUATION_CHARACTERS, $this->input[$this->position]):
                     $tokens[] = new Token(Token::TYPE_PUNCTUATION, $this->input[$this->position], $this->position);
                     $this->position++;
                     break;

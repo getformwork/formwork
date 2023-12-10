@@ -13,7 +13,7 @@ class WebpDecoder implements DecoderInterface
 
     public function decode(string &$data): Generator
     {
-        if (strpos($data, self::RIFF_HEADER) !== 0) {
+        if (!str_starts_with($data, self::RIFF_HEADER)) {
             throw new InvalidArgumentException('Invalid WEBP data');
         }
 

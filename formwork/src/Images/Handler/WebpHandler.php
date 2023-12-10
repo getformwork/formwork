@@ -195,7 +195,7 @@ class WebpHandler extends AbstractHandler
 
     protected function updateRIFFHeader(): void
     {
-        if (strpos($this->data, self::RIFF_HEADER) !== 0) {
+        if (!str_starts_with($this->data, self::RIFF_HEADER)) {
             throw new InvalidArgumentException('Invalid WEBP data');
         }
         $this->data = substr_replace($this->data, pack('V', strlen($this->data) - 8), 4, 4);

@@ -44,7 +44,7 @@ class GifHandler extends AbstractHandler
                 }
             }
 
-            if ($block['type'] === 'EXT' && strpos($block['value'], self::NETSCAPE_EXT_HEADER) === 0) {
+            if ($block['type'] === 'EXT' && str_starts_with($block['value'], self::NETSCAPE_EXT_HEADER)) {
                 $info['animationRepeatCount'] = unpack('v', $block['value'], 16)[1];
                 if ($info['animationRepeatCount'] > 0) {
                     $info['animationRepeatCount']++;

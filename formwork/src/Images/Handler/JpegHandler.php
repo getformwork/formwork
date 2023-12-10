@@ -56,7 +56,7 @@ class JpegHandler extends AbstractHandler
     public function hasColorProfile(): bool
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe2 && strpos($segment['value'], self::ICC_PROFILE_HEADER) === 0) {
+            if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
                 return true;
             }
         }
@@ -71,7 +71,7 @@ class JpegHandler extends AbstractHandler
         $chunkCount = 0;
 
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe2 && strpos($segment['value'], self::ICC_PROFILE_HEADER) === 0) {
+            if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
                 [$chunkNum, $chunkCount] = array_values(unpack('Cnum/Ccount', $segment['value'], $headerLength));
                 $profileChunks[$chunkNum] = substr($segment['value'], $headerLength + 2);
             }
@@ -102,7 +102,7 @@ class JpegHandler extends AbstractHandler
     public function removeColorProfile(): void
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe2 && strpos($segment['value'], self::ICC_PROFILE_HEADER) === 0) {
+            if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
                 $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
                 $segment['position'] = $segment['offset'];
             }
@@ -117,7 +117,7 @@ class JpegHandler extends AbstractHandler
     public function hasExifData(): bool
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && strpos($segment['value'], self::EXIF_HEADER) === 0) {
+            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
                 return true;
             }
         }
@@ -127,7 +127,7 @@ class JpegHandler extends AbstractHandler
     public function getExifData(): ?ExifData
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && strpos($segment['value'], self::EXIF_HEADER) === 0) {
+            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
                 return new ExifData(substr($segment['value'], strlen(self::EXIF_HEADER)));
             }
         }
@@ -147,7 +147,7 @@ class JpegHandler extends AbstractHandler
     public function removeExifData(): void
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && strpos($segment['value'], self::EXIF_HEADER) === 0) {
+            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
                 $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
                 $segment['position'] = $segment['offset'];
             }
