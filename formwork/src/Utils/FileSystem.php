@@ -50,12 +50,12 @@ class FileSystem
     /**
      * Default mode for created files
      */
-    protected const DEFAULT_FILE_MODE = 0666;
+    protected const DEFAULT_FILE_MODE = 0o666;
 
     /**
      * Default mode for created directories
      */
-    protected const DEFAULT_DIRECTORY_MODE = 0777;
+    protected const DEFAULT_DIRECTORY_MODE = 0o777;
 
     /**
      * Array containing files to ignore
