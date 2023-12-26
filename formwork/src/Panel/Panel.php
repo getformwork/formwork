@@ -9,6 +9,7 @@ use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Controllers\ErrorsController;
+use Formwork\Panel\Users\Permissions;
 use Formwork\Panel\Users\User;
 use Formwork\Panel\Users\UserCollection;
 use Formwork\Panel\Users\UserFactory;
@@ -228,10 +229,12 @@ final class Panel
         $users = [];
         foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
             /**
-             * @var array{username: string, fullname: string, hash: string, email: string, language: string, role: string, image: string, colorScheme: string}
+             * @var array{username: string, fullname: string, hash: string, email: string, language: string, role?: string, image?: string, colorScheme?: string}
              */
             $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
-            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $roles[$parsedData['role']]['permissions']);
+            $role = $parsedData['role'] ?? 'user';
+            $permissions = new Permissions($roles[$role]['permissions']);
+            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $permissions);
         }
 
         $this->users = new UserCollection($users, $roles);

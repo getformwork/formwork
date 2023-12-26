@@ -85,16 +85,15 @@ class User implements Arrayable
      * Create a new User instance
      *
      * @param array<string, mixed> $data
-     * @param array<string, bool>  $permissions
      */
-    public function __construct(array $data, array $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
+    public function __construct(array $data, Permissions $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
         $this->data = [...$this->defaults, ...$data];
         foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
             $this->{$var} = $this->data[$var];
         }
 
-        $this->permissions = new Permissions($permissions);
+        $this->permissions = $permissions;
     }
 
     public function __debugInfo(): array

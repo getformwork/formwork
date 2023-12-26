@@ -13,9 +13,8 @@ class UserFactory
 
     /**
      * @param array<string, mixed> $data
-     * @param array<string, mixed> $permissions
      */
-    public function make(array $data, array $permissions): User
+    public function make(array $data, Permissions $permissions): User
     {
         return $this->container->build(User::class, compact('data', 'permissions'));
     }
