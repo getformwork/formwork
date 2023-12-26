@@ -35,6 +35,7 @@
     "scripts": {
         "fix": "php-cs-fixer fix --verbose",
         "phpstan": "phpstan analyse",
-        "phpstan:baseline": "phpstan analyse --generate-baseline"
+        "phpstan:baseline": "phpstan analyse --generate-baseline",
+        "serve": "php bin/serve"
     }
 }

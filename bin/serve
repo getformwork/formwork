@@ -1,0 +1,7 @@
+<?php
+
+use Formwork\Commands\ServeCommand;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+(new ServeCommand())->start();
