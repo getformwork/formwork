@@ -11,6 +11,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
+use UnexpectedValueException;
 
 class OptionsController extends AbstractController
 {
@@ -50,6 +51,9 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
+                if ($this->site()->path() === null) {
+                    throw new UnexpectedValueException('Unexpected missing site path');
+                }
                 FileSystem::touch($this->site()->path());
             }
 
@@ -90,6 +94,9 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
+                if ($this->site()->path() === null) {
+                    throw new UnexpectedValueException('Unexpected missing site path');
+                }
                 FileSystem::touch($this->site()->path());
             }
 

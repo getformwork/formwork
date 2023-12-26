@@ -8,6 +8,7 @@ use Formwork\Assets;
 use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Utils\FileSystem;
+use Formwork\View\Exceptions\RenderingException;
 use Formwork\View\Renderer;
 use Formwork\View\View;
 
@@ -66,6 +67,9 @@ class Template extends View
 
         // Render correct page if the controller has changed the current one
         if ($isCurrentPage && !$this->page->isCurrent()) {
+            if ($this->site->currentPage() === null) {
+                throw new RenderingException('Invalid current page');
+            }
             return $this->site->currentPage()->render();
         }
 

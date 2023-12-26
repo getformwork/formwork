@@ -15,7 +15,7 @@ class Crop extends AbstractTransform
 
     protected int $height;
 
-    final public function __construct(int $originX, int $originY, ?int $width = null, ?int $height = null)
+    final public function __construct(int $originX, int $originY, int $width, int $height)
     {
         $this->originX = $originX;
         $this->originY = $originY;

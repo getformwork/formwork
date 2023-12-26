@@ -35,16 +35,16 @@ trait PageStatus
 
         $now = time();
 
-        if ($publishDate = $this->data['publishDate'] ?? null) {
+        if ($publishDate = ($this->data['publishDate'] ?? null)) {
             /**
-             * @var ?string $publishDate
+             * @var string $publishDate
              */
             $published = $published && Date::toTimestamp($publishDate) < $now;
         }
 
-        if ($unpublishDate = $this->data['unpublishDate'] ?? null) {
+        if ($unpublishDate = ($this->data['unpublishDate'] ?? null)) {
             /**
-             * @var ?string $unpublishDate
+             * @var string $unpublishDate
              */
             $published = $published && Date::toTimestamp($unpublishDate) > $now;
         }

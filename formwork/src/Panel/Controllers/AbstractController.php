@@ -81,7 +81,7 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected function redirectToReferer(ResponseStatus $status = ResponseStatus::Found, string $default = '/'): RedirectResponse
     {
-        if ($this->request->validateReferer($this->panel()->uri('/')) && $this->request->referer() !== Uri::current()) {
+        if (!in_array($this->request->referer(), [null, Uri::current()], true) && $this->request->validateReferer($this->panel()->uri('/'))) {
             return new RedirectResponse($this->request->referer(), $status);
         }
         return new RedirectResponse($this->panel()->uri($default), $status);

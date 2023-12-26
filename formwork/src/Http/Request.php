@@ -17,19 +17,19 @@ class Request
 
     protected const FORWARDED_DIRECTIVES = ['for', 'host', 'proto', 'port'];
 
-    protected readonly RequestData $input;
+    protected RequestData $input;
 
-    protected readonly RequestData $query;
+    protected RequestData $query;
 
-    protected readonly RequestData $cookies;
+    protected RequestData $cookies;
 
-    protected readonly FilesData $files;
+    protected FilesData $files;
 
-    protected readonly ServerData $server;
+    protected ServerData $server;
 
-    protected readonly HeadersData $headers;
+    protected HeadersData $headers;
 
-    protected readonly Session $session;
+    protected Session $session;
 
     /**
      * @var list<string>
@@ -39,27 +39,27 @@ class Request
     /**
      * @var list<array<string, string>>
      */
-    protected readonly array $forwardedDirectives;
+    protected array $forwardedDirectives;
 
     /**
      * @var array<string, float>
      */
-    protected readonly array $mimeTypes;
+    protected array $mimeTypes;
 
     /**
      * @var array<string, float>
      */
-    protected readonly array $charsets;
+    protected array $charsets;
 
     /**
      * @var array<string, float>
      */
-    protected readonly array $encodings;
+    protected array $encodings;
 
     /**
      * @var array<string, float>
      */
-    protected readonly array $languages;
+    protected array $languages;
 
     /**
      * @param array<string, string>                             $input

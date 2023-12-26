@@ -37,11 +37,11 @@ trait PageUri
             $preferred = $this->site()->languages()->preferred();
 
             if (($language !== null && $language !== $default) || ($preferred !== null && $preferred !== $default)) {
-                return Path::join([$base, $language, $route, $path]);
+                return Path::join([$base, (string) $language, (string) $route, $path]);
             }
         }
 
-        return Uri::make([], Path::join([$base, $route, $path]));
+        return Uri::make([], Path::join([$base, (string) $route, $path]));
     }
 
     /**

@@ -26,6 +26,7 @@ use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use ReflectionClass;
 use RuntimeException;
+use UnexpectedValueException;
 
 class Page implements Arrayable
 {
@@ -146,7 +147,7 @@ class Page implements Arrayable
 
         $this->loadFiles();
 
-        if ($this->hasContentFile() && !$this->contentFile->isEmpty()) {
+        if ($this->contentFile && !$this->contentFile->isEmpty()) {
             $this->data = [
                ...$this->data,
                 ...$this->contentFile->frontmatter(),
@@ -275,7 +276,7 @@ class Page implements Arrayable
             return $this->num;
         }
 
-        preg_match(self::NUM_REGEX, basename($this->relativePath()), $matches);
+        preg_match(self::NUM_REGEX, basename($this->relativePath() ?? ''), $matches);
         return $this->num = isset($matches[1]) ? (int) $matches[1] : null;
     }
 
@@ -380,7 +381,7 @@ class Page implements Arrayable
             return;
         }
 
-        if ($this->languages()->current()->code() !== ($code = $language->code())) {
+        if ($this->languages()->current() !== null && $language !== null && $this->languages()->current()->code() !== ($code = $language->code())) {
             if (!$this->languages()->available()->has($code)) {
                 throw new InvalidArgumentException(sprintf('Invalid page language "%s"', $code));
             }
@@ -605,9 +606,16 @@ class Page implements Arrayable
     {
         $this->path = FileSystem::normalizePath($path . '/');
 
+        if ($this->site()->path() === null) {
+            throw new UnexpectedValueException('Unexpected missing site path');
+        }
+
         $this->relativePath = Str::prepend(Path::makeRelative($this->path, $this->site()->path(), DS), DS);
 
-        $this->route ??= Uri::normalize(preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath));
+        $routePath = preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath)
+            ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
+
+        $this->route ??= Uri::normalize($routePath);
 
         $this->slug ??= basename($this->route);
     }

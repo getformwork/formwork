@@ -6,6 +6,7 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\Site;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 trait PageTraversal
 {
@@ -63,6 +64,10 @@ trait PageTraversal
     {
         if (isset($this->parent)) {
             return $this->parent;
+        }
+
+        if ($this->path() === null) {
+            return null;
         }
 
         $parentPath = FileSystem::joinPaths(dirname($this->path()), '/');
@@ -212,7 +217,7 @@ trait PageTraversal
             return $this->inclusiveSiblings;
         }
 
-        if ($this->path() === null) {
+        if ($this->path() === null || $this->parent() === null) {
             return $this->inclusiveSiblings = new PageCollection([$this->route() => $this]);
         }
 
@@ -256,7 +261,8 @@ trait PageTraversal
      */
     public function index(): int
     {
-        return $this->inclusiveSiblings()->indexOf($this);
+        return $this->inclusiveSiblings()->indexOf($this)
+            ?? throw new RuntimeException('Unexpected missing of self');
     }
 
     /**

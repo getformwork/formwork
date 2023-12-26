@@ -176,10 +176,18 @@ class ExifReader
         $stream = fopen('php://temp', 'r+');
         fwrite($stream, $data);
         rewind($stream);
-        $exif = @exif_read_data($stream);
+        set_error_handler(function ($type, $message) use (&$error) {
+            $error = $message;
+            return true;
+        });
+        try {
+            $exif = exif_read_data($stream);
+        } finally {
+            restore_error_handler();
+        }
         fclose($stream);
         if ($exif === false) {
-            throw new UnexpectedValueException(error_get_last()['message']);
+            throw new UnexpectedValueException(sprintf('Cannot read EXIF data: %s', $error));
         }
         return $exif;
     }

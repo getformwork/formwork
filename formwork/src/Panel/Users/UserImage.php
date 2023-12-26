@@ -12,7 +12,7 @@ class UserImage
     /**
      * Image file path
      */
-    protected ?string $path;
+    protected string $path;
 
     public function __construct(string $path, string $uri)
     {
@@ -31,7 +31,7 @@ class UserImage
     /**
      * Return image path
      */
-    public function path(): ?string
+    public function path(): string
     {
         return $this->path;
     }

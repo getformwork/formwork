@@ -13,6 +13,8 @@ use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
+use RuntimeException;
+use UnexpectedValueException;
 
 class Router
 {
@@ -74,11 +76,8 @@ class Router
     {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
-
-        // Ensure requested route is wrapped in slashes
-        $this->requestUri = Str::wrap(Uri::path($this->request->uri()), '/');
-
         $this->params = new RouteParams([]);
+        $this->setRequest($this->request->uri());
     }
 
     /**
@@ -91,7 +90,8 @@ class Router
 
     public function setRequest(string $request): void
     {
-        $this->requestUri = Str::wrap(Uri::path($request), '/');
+        $requestPath = Uri::path($request) ?? throw new UnexpectedValueException('Cannot get request path');
+        $this->requestUri = Str::wrap($requestPath, '/');
     }
 
     /**
@@ -223,6 +223,9 @@ class Router
      */
     public function rewrite(array $params): string
     {
+        if ($this->current === null) {
+            throw new RuntimeException('Cannot rewrite current route: router has not dispatched the request yet');
+        }
         return $this->generateRoute($this->current, $params + $this->params->toArray());
     }
 
@@ -284,9 +287,8 @@ class Router
              * */
             [, $separator, $param, $pattern, $optional] = $matches;
 
-            $this->validateSeparator($separator, $param);
-
-            $this->validateParamName($param, $params);
+            $param = $this->validateParamName($param, $params);
+            $separator = $this->validateSeparator($separator, $param);
 
             $params[] = $param;
 
@@ -294,6 +296,10 @@ class Router
 
             return sprintf($optional !== null ? '(?:%s(%s))?' : '%s(%s)', preg_quote($separator), $pattern);
         }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
+
+        if ($regex === null) {
+            throw new InvalidRouteException(sprintf('Compilation of route "%s" failed with error: %s', $route->getName(), preg_last_error_msg()));
+        }
 
         // Wrap the regex in tilde delimiters, so we don't need to escape slashes
         $regex = '~^' . trim($regex, '^$') . '$~';
@@ -316,9 +322,8 @@ class Router
              */
             [, $separator, $param, $pattern, $optional] = $matches;
 
-            $this->validateSeparator($separator, $param);
-
-            // $this->validateParamName($param, $params);
+            $param = $this->validateParamName($param, []);
+            $separator = $this->validateSeparator($separator, $param);
 
             if (!isset($params[$param])) {
                 if ($optional === null) {
@@ -336,14 +341,18 @@ class Router
             return $separator . $params[$param];
         }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
 
+        if ($result === null) {
+            throw new InvalidRouteException(sprintf('Generation of route "%s" failed with error: %s', $route->getName(), preg_last_error_msg()));
+        }
+
         return Path::normalize($result);
     }
 
     /**
      * Build route params
      *
-     * @param list<string>       $names
-     * @param array<int, string> $matches
+     * @param list<string>            $names
+     * @param array<int, string|null> $matches
      *
      * @internal
      */
@@ -367,7 +376,8 @@ class Router
      */
     protected function resolvePatternShortcut(?string $pattern): string
     {
-        return self::PATTERN_SHORTCUTS[$pattern ?? 'all'] ?? $pattern;
+        $pattern ??= 'all';
+        return self::PATTERN_SHORTCUTS[$pattern] ?? $pattern;
     }
 
     /**
@@ -399,11 +409,13 @@ class Router
      *
      * @internal
      */
-    protected function validateSeparator(?string $separator, string $param): void
+    protected function validateSeparator(?string $separator, string $param): string
     {
         if ($separator === null) {
             throw new InvalidRouteException(sprintf('Parameter "%s" must be preceded by a separator', $param));
         }
+
+        return $separator;
     }
 
     /**
@@ -413,11 +425,17 @@ class Router
      *
      * @internal
      */
-    protected function validateParamName(string $param, array $params): void
+    protected function validateParamName(?string $param, array $params): string
     {
+        if ($param === null) {
+            throw new InvalidRouteException('Unexpected empty parameter name');
+        }
+
         if (in_array($param, $params, true)) {
             throw new InvalidRouteException(sprintf('Parameter "%s" cannot be used more than once', $param));
         }
+
+        return $param;
     }
 
     /**

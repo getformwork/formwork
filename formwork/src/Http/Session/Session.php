@@ -30,9 +30,9 @@ class Session implements Arrayable
 
     protected const SESSION_ID_REGEX = '/^[a-z0-9,-]{22,256}$/i';
 
-    protected readonly Request $request;
+    protected Request $request;
 
-    protected readonly Messages $messages;
+    protected Messages $messages;
 
     protected string $name = self::SESSION_NAME;
 

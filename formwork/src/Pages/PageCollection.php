@@ -5,6 +5,7 @@ namespace Formwork\Pages;
 use Formwork\Data\AbstractCollection;
 use Formwork\Data\Contracts\Paginable;
 use Formwork\Utils\Str;
+use RuntimeException;
 
 class PageCollection extends AbstractCollection implements Paginable
 {
@@ -66,7 +67,8 @@ class PageCollection extends AbstractCollection implements Paginable
      */
     public function search(string $query, int $min = 4): static
     {
-        $query = trim(preg_replace('/\s+/u', ' ', $query));
+        $query = preg_replace(['/\s+/u', '/^\s+|\s+$/u'], [' ', ''], $query)
+            ?? throw new RuntimeException(sprintf('Whitespace normalization failed with error: %s', preg_last_error_msg()));
 
         if (strlen($query) < $min) {
             $pageCollection = clone $this;

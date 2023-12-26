@@ -23,6 +23,7 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
+use UnexpectedValueException;
 
 class PagesController extends AbstractController
 {
@@ -88,7 +89,11 @@ class PagesController extends AbstractController
             $this->panel()->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        if ($page->route() === null) {
+            throw new UnexpectedValueException('Unexpected missing page route');
         }
 
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => trim($page->route(), '/')]));
@@ -110,6 +115,9 @@ class PagesController extends AbstractController
 
         if ($params->has('language')) {
             if (empty($this->config->get('system.languages.available'))) {
+                if ($page->route() === null) {
+                    throw new UnexpectedValueException('Unexpected missing page route');
+                }
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => trim($page->route(), '/')]));
             }
 
@@ -117,6 +125,9 @@ class PagesController extends AbstractController
 
             if (!in_array($language, $this->config->get('system.languages.available'), true)) {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.invalidLanguage', $language), 'error');
+                if ($page->route() === null) {
+                    throw new UnexpectedValueException('Unexpected missing page route');
+                }
                 return $this->redirect($this->generateRoute('panel.pages.edit.lang', ['page' => trim($page->route(), '/'), 'language' => $this->site()->languages()->default()]));
 
             }
@@ -125,6 +136,9 @@ class PagesController extends AbstractController
                 $page->setLanguage($language);
             }
         } elseif ($page->language() !== null) {
+            if ($page->route() === null) {
+                throw new UnexpectedValueException('Unexpected missing page route');
+            }
             // Redirect to proper language
             return $this->redirect($this->generateRoute('panel.pages.edit.lang', ['page' => trim($page->route(), '/'), 'language' => $page->language()]));
         }
@@ -165,6 +179,10 @@ class PagesController extends AbstractController
                     } catch (TranslatedException $e) {
                         $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
                     }
+                }
+
+                if ($page->route() === null) {
+                    throw new UnexpectedValueException('Unexpected missing page route');
                 }
 
                 // Redirect if page route has changed
@@ -231,7 +249,9 @@ class PagesController extends AbstractController
 
         foreach ($pages->values() as $i => $page) {
             $name = basename($page->relativePath());
-            $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name);
+            $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name)
+                ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
+
             if ($newName !== $name) {
                 $this->changePageName($page, $newName);
             }
@@ -269,18 +289,20 @@ class PagesController extends AbstractController
             return $this->redirectToReferer(default:  '/pages/');
         }
 
-        // Delete just the content file only if there are more than one language
-        if ($params->has('language') && count($page->languages()->available()) > 1) {
-            FileSystem::delete($page->contentFile()->path());
-        } else {
-            FileSystem::delete($page->path(), recursive: true);
+        if ($page->path() !== null) {
+            // Delete just the content file only if there are more than one language
+            if ($page->contentFile() && $params->has('language') && count($page->languages()->available()) > 1) {
+                FileSystem::delete($page->contentFile()->path());
+            } else {
+                FileSystem::delete($page->path(), recursive: true);
+            }
         }
 
         $this->panel()->notify($this->translate('panel.pages.page.deleted'), 'success');
 
-        // Don't redirect to referer if it's to Pages@edit
-        if (!Str::startsWith(Uri::normalize($this->request->referer()), Uri::make(['path' => $this->panel()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
-            return $this->redirectToReferer(default:  '/pages/');
+        // Try to redirect to referer unless it's to Pages@edit
+        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize($this->request->referer()), Uri::make(['path' => $this->panel()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
+            return $this->redirectToReferer(default: '/pages/');
         }
         return $this->redirect($this->generateRoute('panel.pages'));
     }
@@ -464,6 +486,10 @@ class PagesController extends AbstractController
             throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotEdit.varMissing');
         }
 
+        if (!$page->contentFile()) {
+            throw new RuntimeException('Unexpected missing content file');
+        }
+
         // Load current page frontmatter
         $frontmatter = $page->contentFile()->frontmatter();
 
@@ -507,6 +533,14 @@ class PagesController extends AbstractController
 
             $fileContent = Str::wrap(Yaml::encode($frontmatter), '---' . PHP_EOL) . $content;
 
+            if ($page->path() === null) {
+                throw new UnexpectedValueException('Unexpected missing page path');
+            }
+
+            if ($this->site()->path() === null) {
+                throw new UnexpectedValueException('Unexpected missing site path');
+            }
+
             FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->site()->path());
 
@@ -518,6 +552,10 @@ class PagesController extends AbstractController
                 $page->setLanguage($language);
             }
 
+            if (!$page->contentFile()) {
+                throw new RuntimeException('Unexpected missing content file');
+            }
+
             // Check if page number has to change
 
             $timestamp = isset($page->data()['publishDate'])
@@ -525,7 +563,13 @@ class PagesController extends AbstractController
                 : $page->contentFile()->lastModifiedTime();
 
             if ($page->scheme()->options()->get('num') === 'date' && $page->num() !== ($num = (int) date(self::DATE_NUM_FORMAT, $timestamp))) {
-                $name = preg_replace(Page::NUM_REGEX, $num . '-', basename($page->relativePath()));
+                if ($page->relativePath() === null) {
+                    throw new UnexpectedValueException('Unexpected missing page relative path');
+                }
+
+                $name = preg_replace(Page::NUM_REGEX, $num . '-', basename($page->relativePath()))
+                    ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
+
                 try {
                     $page = $this->changePageName($page, $name);
                 } catch (RuntimeException $e) {
@@ -560,7 +604,7 @@ class PagesController extends AbstractController
             if ($page->isIndexPage() || $page->isErrorPage()) {
                 throw new TranslatedException('Cannot change slug of index or error pages', 'panel.pages.page.cannotEdit.indexOrErrorPageSlug');
             }
-            if ($this->site()->findPage($page->parent()->route() . $slug . '/')) {
+            if ($this->site()->findPage($page->parent()?->route() . $slug . '/')) {
                 throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannotEdit.alreadyExists');
             }
             $page = $this->changePageName($page, ltrim($page->num() . '-', '-') . $slug);
@@ -581,6 +625,9 @@ class PagesController extends AbstractController
         foreach ($files as $file) {
             if (!$file->isUploaded()) {
                 throw new RuntimeException(sprintf('Cannot upload file "%s"', $file->fieldName()));
+            }
+            if ($page->path() === null) {
+                throw new UnexpectedValueException('Unexpected missing page path');
             }
             $uploadedFile = $uploader->upload($file, $page->path());
             // Process JPEG and PNG images according to system options (e.g. quality)
@@ -609,6 +656,9 @@ class PagesController extends AbstractController
      */
     protected function changePageName(Page $page, string $name): Page
     {
+        if ($page->path() === null) {
+            throw new UnexpectedValueException('Unexpected missing page path');
+        }
         $directory = dirname($page->path());
         $destination = FileSystem::joinPaths($directory, $name, DS);
         FileSystem::moveDirectory($page->path(), $destination);
@@ -620,7 +670,20 @@ class PagesController extends AbstractController
      */
     protected function changePageParent(Page $page, Page|Site $parent): Page
     {
+        if ($parent->path() === null) {
+            throw new UnexpectedValueException('Unexpected missing parent page path');
+        }
+
+        if ($page->path() === null) {
+            throw new UnexpectedValueException('Unexpected missing page path');
+        }
+
+        if ($page->relativePath() === null) {
+            throw new UnexpectedValueException('Unexpected missing page relative path');
+        }
+
         $destination = FileSystem::joinPaths($parent->path(), basename($page->relativePath()), DS);
+
         FileSystem::moveDirectory($page->path(), $destination);
         return $this->site()->retrievePage($destination);
     }
@@ -630,6 +693,14 @@ class PagesController extends AbstractController
      */
     protected function changePageTemplate(Page $page, string $template): Page
     {
+        if ($page->path() === null) {
+            throw new UnexpectedValueException('Unexpected missing page path');
+        }
+
+        if (!$page->contentFile()) {
+            throw new UnexpectedValueException('Unexpected missing content file');
+        }
+
         $destination = $page->path() . $template . $this->config->get('system.content.extension');
         FileSystem::move($page->contentFile()->path(), $destination);
         $page->reload();

@@ -1,101 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$charsets\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$encodings\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$forwardedDirectives\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$languages\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$mimeTypes\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$session\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$cookies is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$encodings is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$files is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$forwardedDirectives is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$headers is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$input is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$languages is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$mimeTypes is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$query is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$server is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$session is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Request.php
-
-		-
-			message: "#^Class Formwork\\\\Http\\\\Session\\\\Session has an uninitialized readonly property \\$messages\\. Assign it in the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Session/Session.php
-
-		-
-			message: "#^Readonly property Formwork\\\\Http\\\\Session\\\\Session\\:\\:\\$messages is assigned outside of the constructor\\.$#"
-			count: 1
-			path: formwork/src/Http/Session/Session.php
-
-		-
 			message: "#^Cannot access offset 1 on array\\|false\\.$#"
 			count: 6
 			path: formwork/src/Images/ColorProfile/ColorProfile.php
@@ -113,6 +18,11 @@ parameters:
 		-
 			message: "#^Cannot access offset 1 on array\\|false\\.$#"
 			count: 6
+			path: formwork/src/Images/Decoder/GifDecoder.php
+
+		-
+			message: "#^Offset 'gctflag' does not exist on array\\<string, int\\>\\|null\\.$#"
+			count: 1
 			path: formwork/src/Images/Decoder/GifDecoder.php
 
 		-
@@ -309,3 +219,8 @@ parameters:
 			message: "#^Parameter \\#3 \\$background_color of function imagerotate expects int, int\\|false given\\.$#"
 			count: 1
 			path: formwork/src/Images/Transform/Rotate.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strlen expects string, string\\|null given\\.$#"
+			count: 3
+			path: formwork/src/Interpolator/Tokenizer.php

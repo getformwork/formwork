@@ -164,7 +164,7 @@ class Site implements Arrayable
     /**
      * Get site relative path
      */
-    public function relativePath(): string
+    public function relativePath(): ?string
     {
         return $this->relativePath;
     }
@@ -180,7 +180,7 @@ class Site implements Arrayable
     /**
      * Get site route
      */
-    public function route(): string
+    public function route(): ?string
     {
         return $this->route;
     }
@@ -196,7 +196,7 @@ class Site implements Arrayable
     /**
      * Get site slug
      */
-    public function slug(): string
+    public function slug(): ?string
     {
         return $this->slug;
     }
@@ -281,6 +281,9 @@ class Site implements Arrayable
      */
     public function modifiedSince(int $time): bool
     {
+        if ($this->path === null) {
+            return false;
+        }
         return FileSystem::directoryModifiedSince($this->path, $time);
     }
 
@@ -350,6 +353,10 @@ class Site implements Arrayable
 
         $components = explode('/', trim($route, '/'));
         $path = $this->path;
+
+        if ($path === null) {
+            return null;
+        }
 
         foreach ($components as $component) {
             $found = false;

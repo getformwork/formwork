@@ -15,6 +15,7 @@ use Formwork\Panel\Users\User;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 class UsersController extends AbstractController
 {
@@ -232,6 +233,11 @@ class UsersController extends AbstractController
     protected function deleteImage(User $user): void
     {
         $image = $user->image()->path();
+
+        if ($image === $this->panel->realUri('/assets/images/user-image.svg')) {
+            throw new RuntimeException('Cannot delete default user image');
+        }
+
         if (FileSystem::isFile($image, assertExists: false)) {
             FileSystem::delete($image);
         }

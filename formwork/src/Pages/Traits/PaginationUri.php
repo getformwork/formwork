@@ -125,13 +125,18 @@ trait PaginationUri
     /**
      * Get the base route (without pagination)
      */
-    protected function baseRoute(): ?Route
+    protected function baseRoute(): Route
     {
         if (isset($this->baseRoute)) {
             return $this->baseRoute;
         }
 
         $router = App::instance()->router();
+
+        if ($router->current() === null) {
+            throw new RuntimeException(sprintf('Cannot generate pagination routes, current route is not defined'));
+        }
+
         $routeName = Str::removeEnd($router->current()->getName(), static::$routeSuffix);
 
         if (!$router->routes()->has($routeName)) {
@@ -144,7 +149,7 @@ trait PaginationUri
     /**
      * Get the pagination route (with the pagination page)
      */
-    protected function paginationRoute(): ?Route
+    protected function paginationRoute(): Route
     {
         if (isset($this->paginationRoute)) {
             return $this->paginationRoute;
