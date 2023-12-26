@@ -193,11 +193,11 @@ class User implements Arrayable
     }
 
     /**
-     * Return whether the user has 'panel' role
+     * Return whether the user has 'admin' role
      */
-    public function isPanel(): bool
+    public function isAdmin(): bool
     {
-        return $this->role === 'panel';
+        return $this->role === 'admin';
     }
 
     /**
@@ -205,7 +205,7 @@ class User implements Arrayable
      */
     public function canDeleteUser(User $user): bool
     {
-        return $this->isPanel() && !$user->isLogged();
+        return $this->isAdmin() && !$user->isLogged();
     }
 
     /**
@@ -213,7 +213,7 @@ class User implements Arrayable
      */
     public function canChangeOptionsOf(User $user): bool
     {
-        return $this->isPanel() || $user->isLogged();
+        return $this->isAdmin() || $user->isLogged();
     }
 
     /**
@@ -221,7 +221,7 @@ class User implements Arrayable
      */
     public function canChangePasswordOf(User $user): bool
     {
-        return $this->isPanel() || $user->isLogged();
+        return $this->isAdmin() || $user->isLogged();
     }
 
     /**
@@ -229,7 +229,7 @@ class User implements Arrayable
      */
     public function canChangeRoleOf(User $user): bool
     {
-        return $this->isPanel() && !$user->isLogged();
+        return $this->isAdmin() && !$user->isLogged();
     }
 
     /**
@@ -240,9 +240,8 @@ class User implements Arrayable
         if (isset($this->lastAccess)) {
             return $this->lastAccess;
         }
-        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-        $lastAccess = (int) $lastAccessRegistry->get($this->username);
-        return $this->lastAccess = $lastAccess ?: null;
+        $registry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
+        return $this->lastAccess = $registry->has($this->username) ? (int) $registry->get($this->username) : null;
     }
 
     /**
