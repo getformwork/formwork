@@ -16,10 +16,10 @@ AddDefaultCharset utf-8
     ## Prevent direct access to Formwork folders but allow access to assets
     RewriteRule ^site/templates/assets/.* - [L]
     RewriteRule ^panel/assets/.* - [L]
-    RewriteRule ^(panel|backup|cache|formwork|site|vendor)/.* index.php [L,NC]
+    RewriteRule ^(panel|backup|bin|cache|formwork|site|vendor)/.* index.php [L,NC]
 
     ## Prevent access to specific files
-    RewriteRule ^(.*)\.(md|yml|json)/?$ index.php [L,NC]
+    RewriteRule ^(.*)\.(md|yml|json|neon)/?$ index.php [L,NC]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L,NC]
 </IfModule>
 
