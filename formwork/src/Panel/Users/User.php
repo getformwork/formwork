@@ -3,7 +3,7 @@
 namespace Formwork\Panel\Users;
 
 use Formwork\App;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;

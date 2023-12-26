@@ -2,7 +2,6 @@
 
 namespace Formwork\Schemes;
 
-use Exception;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Fields\FieldCollection;
@@ -10,6 +9,7 @@ use Formwork\Fields\FieldFactory;
 use Formwork\Fields\Layout\Layout;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Arr;
+use InvalidArgumentException;
 
 class Scheme implements Arrayable
 {
@@ -84,7 +84,7 @@ class Scheme implements Arrayable
     protected function extend(Scheme $scheme): void
     {
         if ($scheme->id === $this->id) {
-            throw new Exception(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
+            throw new InvalidArgumentException(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
         }
 
         $this->data = array_replace_recursive($scheme->data, $this->data);

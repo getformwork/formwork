@@ -3,7 +3,7 @@
 namespace Formwork\Services;
 
 use Closure;
-use Exception;
+use Formwork\Services\Exceptions\ServiceResolutionException;
 use LogicException;
 use ReflectionClass;
 use ReflectionFunction;
@@ -128,13 +128,13 @@ class Container
          */
 
         if (in_array($name, $this->resolveStack, true)) {
-            throw new Exception(sprintf('Already resolving "%s". Resolution stack: "%s"', $name, implode('", "', $this->resolveStack)));
+            throw new ServiceResolutionException(sprintf('Already resolving "%s". Resolution stack: "%s"', $name, implode('", "', $this->resolveStack)));
         }
 
         $this->resolveStack[] = $name;
 
         if (!$this->has($name)) {
-            throw new Exception();
+            throw new ServiceResolutionException(sprintf('Trying to resolve undefined service "%s"', $name));
         }
 
         $definition = $this->defined[$name];
@@ -153,11 +153,11 @@ class Container
 
         if ($loader !== null) {
             if ($object !== null) {
-                throw new Exception('Instantiated object cannot have loaders');
+                throw new ServiceResolutionException('Instantiated object cannot have loaders');
             }
 
             if (!is_subclass_of($loader, ServiceLoaderInterface::class)) {
-                throw new Exception('Invalid loader');
+                throw new ServiceResolutionException('Invalid loader');
             }
 
             /**

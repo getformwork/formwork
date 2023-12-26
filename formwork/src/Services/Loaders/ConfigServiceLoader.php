@@ -2,7 +2,7 @@
 
 namespace Formwork\Services\Loaders;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\ServiceLoaderInterface;
 

@@ -1,8 +1,9 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Config;
 
-use Exception;
+use Formwork\Config\Exceptions\ConfigResolutionException;
+use Formwork\Config\Exceptions\UnresolvedConfigException;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataGetter;
@@ -33,7 +34,7 @@ class Config implements Arrayable
     public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->resolved) {
-            throw new Exception('Unresolved config');
+            throw new UnresolvedConfigException('Unresolved config');
         }
         return $this->baseGet($key, $default);
     }
@@ -72,13 +73,13 @@ class Config implements Arrayable
                     $key = $matches[1];
 
                     if (!Arr::has($this->data, $key) && !Arr::has($vars, $key)) {
-                        throw new Exception();
+                        throw new ConfigResolutionException(sprintf('Cannot resolve a config value with undefined key or variable "%s"', $key));
                     }
 
                     $value = Arr::get($this->data, $key, Arr::get($vars, $key));
 
                     if (!is_string($value)) {
-                        throw new Exception();
+                        throw new ConfigResolutionException(sprintf('Cannot resolve a config value with non-string "%s"', $key));
                     }
 
                     return $value;

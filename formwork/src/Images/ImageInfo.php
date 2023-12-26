@@ -35,7 +35,7 @@ class ImageInfo implements Arrayable
     {
         foreach ($info as $key => $value) {
             if (!property_exists($this, $key)) {
-                throw new UnexpectedValueException();
+                throw new UnexpectedValueException(sprintf('Invalid property "%s"', $key));
             }
 
             $this->{$key} = $value;

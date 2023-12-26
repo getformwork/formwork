@@ -2,13 +2,13 @@
 
 namespace Formwork\Pages;
 
-use Exception;
 use Formwork\App;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Fields\FieldCollection;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
+use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Templates\TemplateCollection;
 use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Pages\Traits\PageData;
@@ -391,7 +391,8 @@ class Site implements Arrayable
      */
     public function indexPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.index')) ?? throw new Exception();
+        return $this->findPage($this->config->get('system.pages.index'))
+            ?? throw new PageNotFoundException('Site index page not found');
     }
 
     /**
@@ -399,7 +400,8 @@ class Site implements Arrayable
      */
     public function errorPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.error')) ?? throw new Exception();
+        return $this->findPage($this->config->get('system.pages.error'))
+            ?? throw new PageNotFoundException('Site error page not found');
     }
 
     /**

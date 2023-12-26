@@ -2,7 +2,7 @@
 
 namespace Formwork\Controllers;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\FileResponse;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Exceptions\FileNotFoundException;
@@ -18,6 +18,6 @@ class AssetController
             return new FileResponse($path);
         }
 
-        throw new FileNotFoundException();
+        throw new FileNotFoundException('Cannot find asset');
     }
 }

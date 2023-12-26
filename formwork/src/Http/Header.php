@@ -2,8 +2,8 @@
 
 namespace Formwork\Http;
 
-use Exception;
 use Formwork\Traits\StaticClass;
+use RuntimeException;
 use UnexpectedValueException;
 
 class Header
@@ -20,7 +20,7 @@ class Header
         $pattern = '/"[^"]*"(*SKIP)(*F)|' . preg_quote($separators[0], '/') . '/';
 
         if (($tokens = preg_split($pattern, $header)) === false) {
-            throw new Exception();
+            throw new RuntimeException(sprintf('Header splitting failed with error: %s', preg_last_error_msg()));
         }
 
         return array_reduce($tokens, function ($result, $token) use ($separators) {

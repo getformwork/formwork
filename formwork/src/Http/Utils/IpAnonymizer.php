@@ -2,7 +2,6 @@
 
 namespace Formwork\Http\Utils;
 
-use Exception;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -53,11 +52,11 @@ class IpAnonymizer
 
     private static function packIPAddress(string $ip): string
     {
-        return inet_pton($ip) ?: throw new Exception('Cannot pack IP address');
+        return inet_pton($ip) ?: throw new InvalidArgumentException('Cannot pack IP address');
     }
 
     private static function unpackIPAddress(string $ip): string
     {
-        return inet_ntop($ip) ?: throw new Exception('Cannot unpack IP address');
+        return inet_ntop($ip) ?: throw new InvalidArgumentException('Cannot unpack IP address');
     }
 }

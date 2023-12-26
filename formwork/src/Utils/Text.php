@@ -34,7 +34,8 @@ class Text
      */
     public static function normalizeWhitespace(string $text): string
     {
-        return preg_replace(self::WHITESPACE_REGEX, self::WHITESPACE_SEQUENCE, $text);
+        return preg_replace(self::WHITESPACE_REGEX, self::WHITESPACE_SEQUENCE, $text)
+            ?? throw new RuntimeException(sprintf('Whitespace replacement failed with error: %s', preg_last_error_msg()));
     }
 
     /**

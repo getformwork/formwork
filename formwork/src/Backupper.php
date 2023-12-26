@@ -2,6 +2,7 @@
 
 namespace Formwork;
 
+use Formwork\Config\Config;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Uri;

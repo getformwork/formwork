@@ -4,7 +4,7 @@ namespace Formwork\Panel;
 
 use Formwork\App;
 use Formwork\Assets;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;

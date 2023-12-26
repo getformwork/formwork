@@ -2,8 +2,8 @@
 
 namespace Formwork\Files;
 
-use Exception;
-use Formwork\Config;
+use Formwork\Config\Config;
+use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Pages\Site;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
@@ -32,6 +32,6 @@ class FileUriGenerator
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
-        throw new Exception('Cannot generate URI');
+        throw new FileUriGenerationException(sprintf('Cannot generate uri for "%s": missing file generator', $file->name()));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Languages\Languages;

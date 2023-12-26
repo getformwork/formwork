@@ -138,7 +138,7 @@ class Uri
     public static function queryToArray(?string $uri = null): array
     {
         $uri ??= static::current();
-        parse_str(static::query($uri), $array);
+        parse_str(static::query($uri) ?? '', $array);
         return $array;
     }
 
@@ -183,7 +183,7 @@ class Uri
         }
         // Normalize path slashes (leading and trailing separators are trimmed after so that the path
         // is always considered relative and we can then add a trailing slash conditionally)
-        $normalizedPath = '/' . trim(Path::normalize($parts['path']), '/');
+        $normalizedPath = '/' . trim(Path::normalize($parts['path'] ?? ''), '/');
         // Add trailing slash only if the trailing component is not empty or a filename
         if ($normalizedPath !== '/' && !Str::contains(basename($normalizedPath), '.')) {
             $normalizedPath .= '/';

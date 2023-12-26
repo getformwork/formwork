@@ -3,9 +3,9 @@
 namespace Formwork\Files;
 
 use Closure;
-use Exception;
 use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 class FileFactory
 {
@@ -37,7 +37,7 @@ class FileFactory
             : $class;
 
         if (!$instance instanceof File) {
-            throw new Exception(sprintf('Invalid object of type %s, only instances of %s are allowed', get_debug_type($instance), File::class));
+            throw new RuntimeException(sprintf('Invalid object of type %s, only instances of %s are allowed', get_debug_type($instance), File::class));
         }
 
         $instance->setUriGenerator($this->container->get(FileUriGenerator::class));

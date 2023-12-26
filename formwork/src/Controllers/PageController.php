@@ -4,7 +4,7 @@ namespace Formwork\Controllers;
 
 use Formwork\App;
 use Formwork\Cache\FilesCache;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;

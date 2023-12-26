@@ -2,8 +2,8 @@
 
 namespace Formwork\Services;
 
-use Exception;
 use Formwork\Utils\Arr;
+use LogicException;
 
 class ServiceDefinition
 {
@@ -56,7 +56,7 @@ class ServiceDefinition
     public function loader(string $className): self
     {
         if (isset($this->object)) {
-            throw new Exception('Instantiated object cannot have loaders');
+            throw new LogicException('Instantiated object cannot have loaders');
         }
         $this->loader = $className;
         return $this;

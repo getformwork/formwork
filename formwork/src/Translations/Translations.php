@@ -2,7 +2,7 @@
 
 namespace Formwork\Translations;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Parsers\Yaml;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;

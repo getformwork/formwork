@@ -70,7 +70,7 @@ class Header
     public static function redirect(string $uri, ResponseStatus $status = ResponseStatus::Found): void
     {
         if ($status->type() !== ResponseStatusType::Redirection) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException(sprintf('Invalid response status "%s" for redirection, only 3XX statuses are allowed', $status->value));
         }
         static::status($status);
         static::send('Location', $uri);

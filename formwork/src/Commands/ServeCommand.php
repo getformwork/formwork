@@ -155,7 +155,7 @@ class ServeCommand
             return "<red>{$status}<red>";
         }
 
-        throw new UnexpectedValueException();
+        throw new UnexpectedValueException(sprintf('Unexpected status code %d', $status));
     }
 
     protected function formatTime(float $dt): string

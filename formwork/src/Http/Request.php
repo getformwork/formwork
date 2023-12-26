@@ -2,12 +2,12 @@
 
 namespace Formwork\Http;
 
-use Exception;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Session\Session;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
+use InvalidArgumentException;
 
 class Request
 {
@@ -370,7 +370,7 @@ class Request
         $name = strtolower($name);
 
         if (!in_array($name, self::FORWARDED_DIRECTIVES, true)) {
-            throw new Exception('Invalid forwarded directive');
+            throw new InvalidArgumentException('Invalid forwarded directive');
         }
 
         $result = [];

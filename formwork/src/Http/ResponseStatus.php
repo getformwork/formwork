@@ -2,7 +2,8 @@
 
 namespace Formwork\Http;
 
-use Exception;
+use InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  * @see https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
@@ -98,7 +99,7 @@ enum ResponseStatus: string
             }
         }
 
-        throw new Exception('HTTP status code not found');
+        throw new InvalidArgumentException('HTTP status code not found');
     }
 
     public function type(): ResponseStatusType
@@ -125,6 +126,6 @@ enum ResponseStatus: string
             return ResponseStatusType::ServerError;
         }
 
-        throw new Exception(sprintf('Invalid response status code: %d', $code));
+        throw new UnexpectedValueException(sprintf('Invalid response status code: %d', $code));
     }
 }

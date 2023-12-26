@@ -4,7 +4,7 @@ namespace Formwork\Updater;
 
 use DateTimeImmutable;
 use Formwork\App;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\Client;
 use Formwork\Log\Registry;
 use Formwork\Parsers\Json;

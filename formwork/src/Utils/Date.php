@@ -7,6 +7,7 @@ use Exception;
 use Formwork\App;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
+use RuntimeException;
 
 class Date
 {
@@ -88,7 +89,7 @@ class Date
                 default                    => $map[$matches[0]] ?? ''
             },
             $format
-        );
+        ) ?? throw new RuntimeException(sprintf('Format conversion failed with error: %s', preg_last_error_msg()));
     }
 
     /**
@@ -106,7 +107,7 @@ class Date
                 default                    => self::PATTERN_TO_DATE_FORMAT[$matches[0]] ?? ''
             },
             $pattern
-        );
+        ) ?? throw new RuntimeException(sprintf('Format conversion failed with error: %s', preg_last_error_msg()));
     }
 
     /**

@@ -76,7 +76,7 @@ class View
      * @param array<string, mixed>   $vars
      * @param array<string, Closure> $methods
      */
-    public function __construct(string $name, array $vars = [], ?string $path = null, array $methods = [])
+    public function __construct(string $name, array $vars, string $path, array $methods = [])
     {
         $this->name = $name;
         $this->vars = $vars;
@@ -162,7 +162,7 @@ class View
         $contents = ob_get_clean();
 
         if ($contents === false) {
-            throw new RenderingException();
+            throw new RenderingException('Cannot get output buffer contents');
         }
 
         return $contents;
@@ -200,7 +200,7 @@ class View
         $contents = ob_get_clean();
 
         if ($contents === false) {
-            throw new RenderingException();
+            throw new RenderingException('Cannot get output buffer contents');
         }
 
         $this->blocks[$block] = $contents;
@@ -265,7 +265,7 @@ class View
             $contents = ob_get_contents();
 
             if ($contents === false) {
-                throw new RenderingException();
+                throw new RenderingException('Cannot get output buffer contents');
             }
 
             $this->layout->blocks['content'] = $contents;

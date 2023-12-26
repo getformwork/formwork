@@ -3,6 +3,7 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
@@ -13,7 +14,6 @@ use Formwork\Panel\Security\Password;
 use Formwork\Panel\Users\User;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
-use Formwork\Uploader;
 use Formwork\Utils\FileSystem;
 
 class UsersController extends AbstractController
@@ -205,7 +205,7 @@ class UsersController extends AbstractController
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
 
-        $uploader = new Uploader($this->config);
+        $uploader = new FileUploader($this->config);
 
         $uploadedFile = $uploader->upload($file, $imagesPath, FileSystem::randomName());
 

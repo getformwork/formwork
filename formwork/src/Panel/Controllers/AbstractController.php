@@ -3,7 +3,7 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\App;
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Controllers\AbstractController as BaseAbstractController;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;

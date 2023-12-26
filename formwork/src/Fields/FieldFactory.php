@@ -2,7 +2,7 @@
 
 namespace Formwork\Fields;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;

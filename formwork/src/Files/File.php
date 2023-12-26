@@ -2,11 +2,12 @@
 
 namespace Formwork\Files;
 
-use Exception;
 use Formwork\Data\Contracts\Arrayable;
+use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
+use RuntimeException;
 
 class File implements Arrayable
 {
@@ -167,7 +168,7 @@ class File implements Arrayable
         if ($hash = hash_file('sha256', $this->path)) {
             return $this->hash = $hash;
         }
-        throw new Exception();
+        throw new RuntimeException('Cannot calculate file hash');
 
     }
 
@@ -179,7 +180,7 @@ class File implements Arrayable
     public function uri(): string
     {
         if (!isset($this->uriGenerator)) {
-            throw new Exception('Cannot generate file uri: generator not set');
+            throw new FileUriGenerationException('Cannot generate file uri: generator not set');
         }
         return $this->uriGenerator->generate($this);
     }

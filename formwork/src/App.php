@@ -5,6 +5,7 @@ namespace Formwork;
 use BadMethodCallException;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\FilesCache;
+use Formwork\Config\Config;
 use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;

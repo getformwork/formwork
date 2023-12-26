@@ -2,7 +2,7 @@
 
 namespace Formwork\Services\Loaders;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Languages\Languages;
 use Formwork\Services\Container;

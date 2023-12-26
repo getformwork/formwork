@@ -1,6 +1,6 @@
 <?php
 
-use Formwork\Config;
+use Formwork\Config\Config;
 use Formwork\Panel\Panel;
 use Formwork\Utils\FileSystem;
 

@@ -2,9 +2,9 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Exception;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\FieldCollection;
+use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
@@ -17,7 +17,6 @@ use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
-use Formwork\Uploader;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
@@ -379,6 +378,23 @@ class PagesController extends AbstractController
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
     }
 
+    public function getFileInfo(RouteParams $params): JsonResponse
+    {
+        $this->ensurePermission('pages.getFileInfo');
+
+        $page = $this->site()->findPage($params->get('page'));
+
+        if ($page === null) {
+            return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'));
+        }
+
+        if (!$page->files()->has($params->get('filename'))) {
+            return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.fileNotFound'));
+        }
+
+        return JsonResponse::success('Yes!', data: $page->files()->get($params->get('filename'))->toArray());
+    }
+
     /**
      * Create a new page
      */
@@ -560,11 +576,11 @@ class PagesController extends AbstractController
      */
     protected function processPageUploads(array $files, Page $page): void
     {
-        $uploader = new Uploader($this->config);
+        $uploader = new FileUploader($this->config);
 
         foreach ($files as $file) {
             if (!$file->isUploaded()) {
-                throw new Exception(sprintf('Cannot upload file "%s"', $file->fieldName()));
+                throw new RuntimeException(sprintf('Cannot upload file "%s"', $file->fieldName()));
             }
             $uploadedFile = $uploader->upload($file, $page->path());
             // Process JPEG and PNG images according to system options (e.g. quality)

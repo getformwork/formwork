@@ -1,16 +1,16 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Files;
 
-use Exception;
-use Formwork\Files\File;
+use Formwork\Config\Config;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
+use RuntimeException;
 
-class Uploader
+class FileUploader
 {
     public function __construct(protected Config $config)
     {
@@ -30,7 +30,7 @@ class Uploader
         $mimeType = MimeType::fromFile($file->tempPath());
 
         if (!in_array($mimeType, $this->allowedMimeTypes(), true)) {
-            throw new Exception('Invalid mime type');
+            throw new RuntimeException(sprintf('Invalid mime type %s for file uploads', $mimeType));
         }
 
         $filename = Str::slug($name ?? pathinfo($file->clientName(), PATHINFO_FILENAME)) . '.' . MimeType::toExtension($mimeType);

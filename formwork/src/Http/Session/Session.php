@@ -2,7 +2,6 @@
 
 namespace Formwork\Http\Session;
 
-use Exception;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
@@ -10,6 +9,8 @@ use Formwork\Data\Traits\DataMultipleSetter;
 use Formwork\Http\Request;
 use Formwork\Http\Utils\Cookie;
 use Formwork\Utils\Str;
+use InvalidArgumentException;
+use RuntimeException;
 
 class Session implements Arrayable
 {
@@ -42,11 +43,11 @@ class Session implements Arrayable
     public function __construct(Request $request)
     {
         if (!extension_loaded('session')) {
-            throw new Exception('Session not available');
+            throw new RuntimeException('Sessions extension not available');
         }
 
         if (session_status() === PHP_SESSION_DISABLED) {
-            throw new Exception('Session disabled');
+            throw new RuntimeException('Sessions disabled by PHP configuration');
         }
 
         $this->request = $request;
@@ -70,7 +71,7 @@ class Session implements Arrayable
     public function start(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
-            throw new Exception('Already started');
+            throw new RuntimeException('Session already started');
         }
 
         session_name($this->name);
@@ -90,7 +91,7 @@ class Session implements Arrayable
         ]);
 
         if (($id = session_id()) === false) {
-            throw new Exception('Cannot get session id');
+            throw new RuntimeException('Cannot get session id');
         }
 
         Cookie::send($this->name, $id, $this->getCookieOptions());
@@ -126,7 +127,7 @@ class Session implements Arrayable
         }
         $newId = session_create_id();
         if ($newId === false) {
-            throw new Exception('Cannot create new session id');
+            throw new RuntimeException('Cannot create new session id');
         }
         session_id($newId);
         $this->start();
@@ -149,7 +150,7 @@ class Session implements Arrayable
     public function setName(string $name): void
     {
         if ($this->started) {
-            throw new Exception('Session already started');
+            throw new RuntimeException('Cannot set session name: session already started');
         }
 
         $this->name = $name;
@@ -161,7 +162,7 @@ class Session implements Arrayable
 
         if ($this->started) {
             if (($id = session_id()) === false) {
-                throw new Exception('Cannot get session id');
+                throw new RuntimeException('Cannot get session id');
             }
             Cookie::send($this->name, $id, $this->getCookieOptions());
         }
@@ -189,7 +190,7 @@ class Session implements Arrayable
         }
 
         if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
-            throw new Exception(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
+            throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
         return $this->baseHas($key);
@@ -202,7 +203,7 @@ class Session implements Arrayable
         }
 
         if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
-            throw new Exception(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
+            throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
         return $this->baseGet($key, $default);
@@ -215,7 +216,7 @@ class Session implements Arrayable
         }
 
         if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
-            throw new Exception(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
+            throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
         $this->baseRemove($key);
@@ -228,7 +229,7 @@ class Session implements Arrayable
         }
 
         if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
-            throw new Exception(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
+            throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
         $this->baseSet($key, $value);

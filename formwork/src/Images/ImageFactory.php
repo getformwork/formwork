@@ -2,7 +2,7 @@
 
 namespace Formwork\Images;
 
-use Formwork\Config;
+use Formwork\Config\Config;
 
 class ImageFactory
 {
