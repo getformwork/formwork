@@ -65,7 +65,7 @@ class UsersController extends AbstractController
             'language' => $data->get('language'),
         ];
 
-        Yaml::encodeToFile($userData, $this->config->get('system.panel.paths.accounts') . $data->get('username') . '.yaml');
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $data->get('username') . '.yaml'));
 
         $this->panel()->notify($this->translate('panel.users.user.created'), 'success');
         return $this->redirect($this->generateRoute('panel.users'));
@@ -90,7 +90,7 @@ class UsersController extends AbstractController
                     'users.user.cannotDelete'
                 );
             }
-            FileSystem::delete($this->config->get('system.panel.paths.accounts') . $user->username() . '.yaml');
+            FileSystem::delete(FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
             $this->deleteImage($user);
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
