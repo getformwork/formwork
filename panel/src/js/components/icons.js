@@ -1,10 +1,10 @@
 import { app } from "../app";
 
-const cache = {};
+const cache = new Map();
 
 export function passIcon(icon, callback) {
-    if (icon in cache) {
-        callback(cache[icon]);
+    if (cache.has(icon)) {
+        callback(cache.get(icon));
         return;
     }
 
@@ -13,7 +13,7 @@ export function passIcon(icon, callback) {
     request.onload = function () {
         const data = this.status === 200 ? this.response : "";
         if (data !== "") {
-            cache[icon] = data;
+            cache.set(icon, data);
         }
         callback(data);
     };
