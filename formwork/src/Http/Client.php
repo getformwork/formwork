@@ -23,9 +23,14 @@ class Client
 
     /**
      * Client options
+     *
+     * @var array<string, mixed>
      */
     protected array $options = [];
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $options = [])
     {
         if (!extension_loaded('openssl')) {
@@ -41,6 +46,8 @@ class Client
 
     /**
      * Default client options
+     *
+     * @return array<string, mixed>
      */
     public function defaults(): array
     {
@@ -57,24 +64,36 @@ class Client
 
     /**
      * Fetch contents from a URI
+     *
+     * @param array<string, mixed> $options
      */
     public function fetch(string $uri, array $options = []): Response
     {
         $connection = $this->connect($uri, $options);
 
-        if (($content = @stream_get_contents($connection['handle'], $connection['length'] ?? -1)) === false) {
+        $content = @stream_get_contents($connection['handle'], $connection['length'] ?? -1);
+
+        if ($content === false) {
             throw new RuntimeException(sprintf('Cannot get stream contents from "%s"', $uri));
         }
 
         @fclose($connection['handle']);
 
-        if (($encoding = $connection['headers']['Content-Encoding'] ?? null) === 'gzip') {
+        if (($connection['headers']['Content-Encoding'] ?? null) === 'gzip') {
             $content = gzdecode($content);
+            if ($content === false) {
+                throw new RuntimeException(sprintf('Cannot decode gzipped contents from "%s"', $uri));
+            }
         }
 
         return new Response($content, ResponseStatus::fromCode($connection['status']), $connection['headers']);
     }
 
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, string>
+     */
     public function fetchHeaders(string $uri, array $options = []): array
     {
         $options += [
@@ -86,6 +105,8 @@ class Client
 
     /**
      * Download contents from an URI to a file
+     *
+     * @param array<string, mixed> $options
      */
     public function download(string $uri, string $file, array $options = []): void
     {
@@ -106,6 +127,10 @@ class Client
 
     /**
      * Connect to URI and retrieve status, headers, length and stream handle
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array{status: int, headers: array<string, mixed>, length: ?int, handle: resource}
      */
     protected function connect(string $uri, array $options = []): array
     {
@@ -145,13 +170,17 @@ class Client
 
         restore_error_handler();
 
-        if (!isset($http_response_header)) {
+        if (!@$http_response_header) {
             throw new RuntimeException(sprintf('Cannot get headers for "%s"', $uri));
         }
 
         $splitResponse = $this->splitHTTPResponseHeader($http_response_header);
 
         $currentResponse = end($splitResponse);
+
+        if ($currentResponse === false) {
+            throw new RuntimeException(sprintf('Cannot get current response for "%s"', $uri));
+        }
 
         $length = $currentResponse['headers']['Content-Length'] ?? null;
 
@@ -163,13 +192,15 @@ class Client
         return [
             'status'  => $currentResponse['statusCode'],
             'headers' => $currentResponse['headers'],
-            'length'  => $length,
+            'length'  => (int) $length,
             'handle'  => $handle,
         ];
     }
 
     /**
      * Create stream context
+     *
+     * @param array<string, mixed> $options
      *
      * @return resource
      */
@@ -206,6 +237,10 @@ class Client
 
     /**
      * Split HTTP response header lines
+     *
+     * @param list<string> $lines
+     *
+     * @return list<array{HTTPVersion: string, statusCode: int, reasonPhrase: string, headers: array<string, string>}>
      */
     protected function splitHTTPResponseHeader(array $lines): array
     {
@@ -217,6 +252,7 @@ class Client
                 $result[$i]['HTTPVersion'] = $matches[1];
                 $result[$i]['statusCode'] = (int) $matches[2];
                 $result[$i]['reasonPhrase'] = $matches[3];
+                $result[$i]['headers'] = [];
             } elseif ($i < 0) {
                 throw new UnexpectedValueException('Unexpected header field: headers must come after an HTTP status line');
             } else {
@@ -228,6 +264,8 @@ class Client
 
     /**
      * Split header contents into a target array
+     *
+     * @param array<string, list<string>|string> $target
      */
     protected function splitHeader(string $header, ?array &$target): void
     {
@@ -247,6 +285,10 @@ class Client
 
     /**
      * Normalize header keys case
+     *
+     * @param array<string, string> $headers
+     *
+     * @return array<string, string>
      */
     protected function normalizeHeaders(array $headers): array
     {
@@ -260,6 +302,10 @@ class Client
 
     /**
      * Compact an associative array of headers to an array of header lines
+     *
+     * @param array<string, list<string>|string> $headers
+     *
+     * @return list<string>
      */
     protected function compactHeaders(array $headers): array
     {

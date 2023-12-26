@@ -35,7 +35,7 @@ class FieldCollection extends AbstractCollection
     /**
      * @inheritdoc
      */
-    public function pluck(string $key, $default = null): array
+    public function pluck(string $key, mixed $default = null): array
     {
         return $this->everyItem()->get($key, $default)->toArray();
     }
@@ -70,7 +70,7 @@ class FieldCollection extends AbstractCollection
      *
      * If the `$default` argument is given, it will be used instead of missing data
      */
-    public function setValues($data, $default = null): static
+    public function setValues(mixed $data, mixed $default = null): static
     {
         $data = Arr::from($data);
 

@@ -4,7 +4,7 @@ namespace Formwork\Utils;
 
 use InvalidArgumentException;
 
-class SemVer
+final class SemVer
 {
     /**
      * Regex matching version components
@@ -121,7 +121,7 @@ class SemVer
      */
     public function onlyNumbers(): self
     {
-        return new static($this->major, $this->minor, $this->patch);
+        return new self($this->major, $this->minor, $this->patch);
     }
 
     /**
@@ -137,7 +137,7 @@ class SemVer
      */
     public function withoutPrerelease(): self
     {
-        return new static($this->major, $this->minor, $this->patch, null, $this->metadata);
+        return new self($this->major, $this->minor, $this->patch, null, $this->metadata);
     }
 
     /**
@@ -153,7 +153,7 @@ class SemVer
      */
     public function withoutMetadata(): self
     {
-        return new static($this->major, $this->minor, $this->patch, $this->prerelease);
+        return new self($this->major, $this->minor, $this->patch, $this->prerelease);
     }
 
     /**
@@ -161,7 +161,7 @@ class SemVer
      */
     public function nextMajor(): self
     {
-        return new static($this->major + 1, 0, 0);
+        return new self($this->major + 1, 0, 0);
     }
 
     /**
@@ -169,7 +169,7 @@ class SemVer
      */
     public function nextMinor(): self
     {
-        return new static($this->major, $this->minor + 1, 0);
+        return new self($this->major, $this->minor + 1, 0);
     }
 
     /**
@@ -177,7 +177,7 @@ class SemVer
      */
     public function nextPatch(): self
     {
-        return new static($this->major, $this->minor, $this->patch + 1);
+        return new self($this->major, $this->minor, $this->patch + 1);
     }
 
     /**
@@ -221,7 +221,7 @@ class SemVer
         if (!preg_match(self::SEMVER_REGEX, $version, $matches, PREG_UNMATCHED_AS_NULL)) {
             throw new InvalidArgumentException(sprintf('Invalid version string: "%s"', $version));
         }
-        return new static((int) ($matches['major']), (int) ($matches['minor']), (int) ($matches['patch']), $matches['prerelease'], $matches['metadata']);
+        return new self((int) ($matches['major']), (int) ($matches['minor']), (int) ($matches['patch']), $matches['prerelease'], $matches['metadata']);
     }
 
     /**

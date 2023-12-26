@@ -26,6 +26,8 @@ class Cookie
 
     /**
      * Send a cookie
+     *
+     * @param array{expires?: int, path?: string, domain?: string, secure?: bool, httpOnly?: bool, sameSite?: self::SAMESITE_LAX|self::SAMESITE_NONE|self::SAMESITE_STRICT} $options
      */
     public static function send(string $name, string $value, array $options = []): bool
     {
@@ -47,6 +49,8 @@ class Cookie
 
     /**
      * Remove a cookie
+     *
+     * @param array{expires?: int, path?: string, domain?: string, secure?: bool, httpOnly?: bool, sameSite?: self::SAMESITE_LAX|self::SAMESITE_NONE|self::SAMESITE_STRICT} $options
      */
     public static function remove(string $name, array $options = [], bool $forceSend = false): bool
     {
@@ -93,6 +97,8 @@ class Cookie
 
     /**
      * Return an array containing the default cookie attributes
+     *
+     * @return array{expires: int, path: string, domain: string, secure: bool, httpOnly: bool, sameSite: self::SAMESITE_LAX|self::SAMESITE_NONE|self::SAMESITE_STRICT}
      */
     protected static function defaults(): array
     {
@@ -102,7 +108,7 @@ class Cookie
             'path'     => '',
             'secure'   => false,
             'httpOnly' => false,
-            'sameSite' => null,
+            'sameSite' => self::SAMESITE_LAX,
         ];
     }
 }

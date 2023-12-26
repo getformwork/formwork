@@ -2,10 +2,9 @@
 
 namespace Formwork\Http;
 
-use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Http\Utils\Header;
 
-class Response implements ArraySerializable
+class Response implements ResponseInterface
 {
     /**
      * Response content
@@ -19,6 +18,8 @@ class Response implements ArraySerializable
 
     /**
      * Response HTTP headers
+     *
+     * @var array<string, string>
      */
     protected array $headers;
 
@@ -36,7 +37,7 @@ class Response implements ArraySerializable
         $this->headers = $headers;
     }
 
-    public static function __set_state(array $properties): self
+    public static function __set_state(array $properties): static
     {
         return new static($properties['content'], $properties['status'], $properties['headers']);
     }

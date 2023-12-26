@@ -16,7 +16,7 @@ class FileUriGenerator
 
     }
 
-    public function generate(File $file)
+    public function generate(File $file): string
     {
         $path = $file->path();
 

@@ -19,11 +19,14 @@ use Formwork\Translations\Translations;
 use Formwork\Utils\Date;
 use Formwork\Utils\Uri;
 use Formwork\View\ViewFactory;
+use Stringable;
 
 abstract class AbstractController extends BaseAbstractController
 {
     /**
      * All loaded modals
+     *
+     * @var array<string>
      */
     protected array $modals = [];
 
@@ -58,7 +61,10 @@ abstract class AbstractController extends BaseAbstractController
         return $this->site;
     }
 
-    protected function generateRoute(string $name, array $params = [])
+    /**
+     * @param array<string, mixed> $params
+     */
+    protected function generateRoute(string $name, array $params = []): string
     {
         return $this->router->generate($name, $params);
     }
@@ -81,14 +87,15 @@ abstract class AbstractController extends BaseAbstractController
         return new RedirectResponse($this->panel()->uri($default), $status);
     }
 
-    protected function translate(...$arguments)
+    protected function translate(string $key, int|float|string|Stringable ...$arguments): string
     {
-        return $this->translations->getCurrent()->translate(...$arguments);
+        return $this->translations->getCurrent()->translate($key, ...$arguments);
     }
 
-    /*
+    /**
      * Return default data passed to views
      *
+     * @return array<string, mixed>
      */
     protected function defaults(): array
     {
@@ -107,19 +114,19 @@ abstract class AbstractController extends BaseAbstractController
                     'time'       => true,
                     'labels'     => [
                         'today'    => $this->translate('date.today'),
-                        'weekdays' => ['long' => $this->translate('date.weekdays.long'), 'short' => $this->translate('date.weekdays.short')],
-                        'months'   => ['long' => $this->translate('date.months.long'), 'short' => $this->translate('date.months.short')],
+                        'weekdays' => ['long' => $this->translations->getCurrent()->getStrings('date.weekdays.long'), 'short' => $this->translations->getCurrent()->getStrings('date.weekdays.short')],
+                        'months'   => ['long' => $this->translations->getCurrent()->getStrings('date.months.long'), 'short' => $this->translations->getCurrent()->getStrings('date.months.short')],
                     ],
                 ],
                 'DurationInput' => [
                     'labels' => [
-                        'years'   => $this->translate('date.duration.years'),
-                        'months'  => $this->translate('date.duration.months'),
-                        'weeks'   => $this->translate('date.duration.weeks'),
-                        'days'    => $this->translate('date.duration.days'),
-                        'hours'   => $this->translate('date.duration.hours'),
-                        'minutes' => $this->translate('date.duration.minutes'),
-                        'seconds' => $this->translate('date.duration.seconds'),
+                        'years'   => $this->translations->getCurrent()->getStrings('date.duration.years'),
+                        'months'  => $this->translations->getCurrent()->getStrings('date.duration.months'),
+                        'weeks'   => $this->translations->getCurrent()->getStrings('date.duration.weeks'),
+                        'days'    => $this->translations->getCurrent()->getStrings('date.duration.days'),
+                        'hours'   => $this->translations->getCurrent()->getStrings('date.duration.hours'),
+                        'minutes' => $this->translations->getCurrent()->getStrings('date.duration.minutes'),
+                        'seconds' => $this->translations->getCurrent()->getStrings('date.duration.seconds'),
                     ],
                 ],
                 'SelectInput' => [
@@ -155,31 +162,26 @@ abstract class AbstractController extends BaseAbstractController
     /**
      * Load a modal to be rendered later
      *
-     * @param string $name Name of the modal
-     * @param array  $data Data to pass to the modal
+     * @param array<string, mixed> $data
      */
     protected function modal(string $name, array $data = []): void
     {
-        $this->modals[] = $this->view('modals.' . $name, $data, return: true);
+        $this->modals[] = $this->view('modals.' . $name, $data);
     }
 
     /**
      * Render a view
      *
-     * @param string $name   Name of the view
-     * @param array  $data   Data to pass to the view
-     * @param bool   $return Whether to return or render the view
-     *
-     * @return string|void
+     * @param array<string, mixed> $data
      */
-    protected function view(string $name, array $data = [], bool $return = false)
+    protected function view(string $name, array $data = []): string
     {
         $view = $this->viewFactory->make(
             $name,
             [...$this->defaults(), ...$data],
             $this->config->get('system.views.paths.panel'),
         );
-        return $view->render($return);
+        return $view->render();
     }
 
     /**

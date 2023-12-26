@@ -4,7 +4,7 @@ namespace Formwork\Interpolator;
 
 use Formwork\Interpolator\Errors\SyntaxError;
 
-class Tokenizer
+class Tokenizer implements TokenizerInterface
 {
     /**
      * Regex matching identifier tokens

@@ -48,17 +48,21 @@ class Path
 
     /**
      * Split a path into segments removing '.' and '..' ones
+     *
+     * @return array<string>
      */
     public static function split(string $path): array
     {
         $result = [];
-        foreach (preg_split(self::SEPARATORS_REGEX, $path) as $segment) {
-            if ($segment === '..' && end($result) !== '..' && !empty($result)) {
-                if (end($result) !== '') {
-                    array_pop($result);
+        if (($segments = preg_split(self::SEPARATORS_REGEX, $path))) {
+            foreach ($segments as $segment) {
+                if ($segment === '..' && end($result) !== '..' && !empty($result)) {
+                    if (end($result) !== '') {
+                        array_pop($result);
+                    }
+                } elseif ($segment !== '.') {
+                    $result[] = $segment;
                 }
-            } elseif ($segment !== '.') {
-                $result[] = $segment;
             }
         }
         return $result;
@@ -66,6 +70,8 @@ class Path
 
     /**
      * Join together an array of paths
+     *
+     * @param array<string> $paths
      */
     public static function join(array $paths, string $separator = self::DEFAULT_SEPARATOR): string
     {

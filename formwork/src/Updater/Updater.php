@@ -1,8 +1,10 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Updater;
 
 use DateTimeImmutable;
+use Formwork\App;
+use Formwork\Config;
 use Formwork\Http\Client;
 use Formwork\Log\Registry;
 use Formwork\Parsers\Json;
@@ -26,6 +28,8 @@ class Updater
 
     /**
      * Updater options
+     *
+     * @var array<string, mixed>
      */
     protected array $options = [];
 
@@ -36,6 +40,8 @@ class Updater
 
     /**
      * Updates registry default data
+     *
+     * @var array{lastCheck: ?int, lastUpdate: ?int, etag: ?string, release: ?array{name: string, tag: string, date: int, archive: string}, upToDate: bool}
      */
     protected array $registryDefaults = [
         'lastCheck'  => null,
@@ -52,11 +58,15 @@ class Updater
 
     /**
      * Array containing release information
+     *
+     * @var array{name: string, tag: string, date: int, archive: string}
      */
     protected array $release;
 
     /**
      * Headers to send in HTTP(S) requests
+     *
+     * @var array<string, string>
      */
     protected array $headers;
 
@@ -143,10 +153,21 @@ class Updater
         $zip = new ZipArchive();
         $zip->open($this->options['tempFile']);
         $baseFolder = $zip->getNameIndex(0);
+
+        if ($baseFolder === false) {
+            throw new RuntimeException('Cannot get base folder from zip archive');
+        }
+
         $installedFiles = [];
 
         for ($i = 1; $i < $zip->numFiles; $i++) {
-            $source = Str::removeStart($zip->getNameIndex($i), $baseFolder);
+            $filename = $zip->getNameIndex($i);
+
+            if ($filename === false) {
+                throw new RuntimeException('Cannot get filename from zip archive');
+            }
+
+            $source = Str::removeStart($filename, $baseFolder);
             $destination = ROOT_PATH . '/' . $source;
             $destinationDirectory = dirname($destination);
 
@@ -155,7 +176,11 @@ class Updater
                     FileSystem::createDirectory($destinationDirectory);
                 }
                 if (!Str::endsWith($destination, DS)) {
-                    FileSystem::write($destination, $zip->getFromIndex($i));
+                    $contents = $zip->getFromIndex($i);
+                    if ($contents === false) {
+                        throw new RuntimeException(sprintf('Cannot read "%s" from zip archive', $filename));
+                    }
+                    FileSystem::write($destination, $contents);
                 }
                 $installedFiles[] = $destination;
             }
@@ -185,6 +210,8 @@ class Updater
 
     /**
      * Get latest release data
+     *
+     * @return array{name: string, tag: string, date: int, archive: string}
      */
     public function latestRelease(): array
     {
@@ -206,10 +233,16 @@ class Updater
             throw new RuntimeException('Cannot fetch latest Formwork release data');
         }
 
+        $releaseDate = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sO', $data['published_at']);
+
+        if ($releaseDate === false) {
+            throw new RuntimeException('Cannot parse release date');
+        }
+
         $this->release = [
             'name'    => $data['name'],
             'tag'     => $data['tag_name'],
-            'date'    => DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sO', $data['published_at'])->getTimestamp(),
+            'date'    => $releaseDate->getTimestamp(),
             'archive' => $data['zipball_url'],
         ];
 
@@ -225,6 +258,8 @@ class Updater
 
     /**
      * Get release archive headers
+     *
+     * @return array<string, string>
      */
     protected function getHeaders(): array
     {
@@ -259,6 +294,10 @@ class Updater
 
     /**
      * Return deletable files based on installed ones
+     *
+     * @param list<string> $installedFiles
+     *
+     * @return list<string>
      */
     protected function findDeletableFiles(array $installedFiles): array
     {

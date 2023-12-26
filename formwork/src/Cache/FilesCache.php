@@ -32,7 +32,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function fetch(string $key)
+    public function fetch(string $key): mixed
     {
         if ($this->has($key)) {
             $cacheItem = Php::parseFile($this->getFile($key));
@@ -47,7 +47,7 @@ class FilesCache extends AbstractCache
     /**
      * @inheritdoc
      */
-    public function save(string $key, $value, ?int $ttl = null): void
+    public function save(string $key, mixed $value, ?int $ttl = null): void
     {
         $cacheItem = new CacheItem($value, time() + ($ttl ?? $this->defaultTtl), time());
         Php::encodeToFile($cacheItem, $this->getFile($key));

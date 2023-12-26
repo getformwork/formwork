@@ -11,6 +11,9 @@ class LanguageCollection extends AbstractCollection
 
     protected bool $associative = true;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data)
     {
         parent::__construct(Arr::fromEntries(Arr::map($data, fn ($code) => [$code, new Language($code)])));

@@ -2,6 +2,7 @@
 
 namespace Formwork\Http;
 
+use Exception;
 use Formwork\Traits\StaticClass;
 use UnexpectedValueException;
 
@@ -11,12 +12,18 @@ class Header
 
     // for=1;proto=2, for=1212;proto=343, for=12;proto
     // [[['for', 1], ['proto', 2], [['for', 1212], ['proto', 343]], [['for', 12], ['proto', true]]];
-
+    /**
+     * @return list<mixed>
+     */
     public static function split(string $header, string $separators): array
     {
         $pattern = '/"[^"]*"(*SKIP)(*F)|' . preg_quote($separators[0], '/') . '/';
 
-        return array_reduce(preg_split($pattern, $header), function ($result, $token) use ($separators) {
+        if (($tokens = preg_split($pattern, $header)) === false) {
+            throw new Exception();
+        }
+
+        return array_reduce($tokens, function ($result, $token) use ($separators) {
             $token = trim($token, ' "');
             $result[] = strlen($separators) === 1 ? $token : static::split($token, substr($separators, 1));
             return $result;
@@ -25,6 +32,11 @@ class Header
 
     // [['for', 1], ['proto', 122], ['moo']]
     // ['for' => 1, 'proto => 122, 'moo' => true]
+    /**
+     * @param list<mixed> $tokens
+     *
+     * @return array<string, mixed>
+     */
     public static function combine(array $tokens): array
     {
         return array_reduce($tokens, function ($result, $token) {
@@ -40,12 +52,18 @@ class Header
         }, []);
     }
 
+    /**
+     * @return array<float>
+     */
     public static function parseQualityValues(string $header): array
     {
         $result = [];
         foreach (explode(',', $header) as $token) {
-            [$value, $factor] = preg_split('/\s*;\s*q=/', trim($token)) + [null, 1];
-            $result[$value] = round($factor, 3);
+            if (($valueAndFactor = preg_split('/\s*;\s*q=/', trim($token))) === false) {
+                throw new UnexpectedValueException('Cannot parse quality value and factor');
+            }
+            [$value, $factor] = $valueAndFactor + ['', 1.0];
+            $result[$value] = round((float) $factor, 3);
         }
         arsort($result);
         return $result;

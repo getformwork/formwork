@@ -17,6 +17,8 @@ class Backupper
 
     /**
      * Backupper options
+     *
+     * @var array<string, mixed>
      */
     protected array $options = [];
 
@@ -44,7 +46,7 @@ class Backupper
             FileSystem::createDirectory($this->options['path'], recursive: true);
         }
 
-        $name = sprintf('%s-%s-%s.zip', str_replace([' ', '.'], '-', Uri::host()), $this->options['name'], date(self::DATE_FORMAT));
+        $name = sprintf('%s-%s-%s.zip', str_replace([' ', '.'], '-', Uri::host() ?? ''), $this->options['name'], date(self::DATE_FORMAT));
 
         $destination = FileSystem::joinPaths($path, $name);
 

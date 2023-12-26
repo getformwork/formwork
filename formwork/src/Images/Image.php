@@ -39,6 +39,9 @@ class Image extends File
 {
     protected string $path;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $options = [];
 
     protected AbstractHandler $handler;
@@ -51,6 +54,9 @@ class Image extends File
 
     protected ?string $type = 'image';
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(string $path, array $options)
     {
         parent::__construct($path);

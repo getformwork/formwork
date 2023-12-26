@@ -164,10 +164,14 @@ class File implements Arrayable
         if (isset($this->hash)) {
             return $this->hash;
         }
-        return $this->hash = hash_file('sha256', $this->path);
+        if ($hash = hash_file('sha256', $this->path)) {
+            return $this->hash = $hash;
+        }
+        throw new Exception();
+
     }
 
-    public function setUriGenerator($uriGenerator): void
+    public function setUriGenerator(FileUriGenerator $uriGenerator): void
     {
         $this->uriGenerator = $uriGenerator;
     }
@@ -194,6 +198,8 @@ class File implements Arrayable
 
     /**
      * Match MIME type with an array of extensions
+     *
+     * @param list<string> $extensions
      */
     private function matchExtensions(array $extensions): bool
     {

@@ -11,6 +11,7 @@ use Formwork\Panel\Security\Password;
 use Formwork\Parsers\Yaml;
 use Formwork\Security\CsrfToken;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 class RegisterController extends AbstractController
 {
@@ -29,9 +30,7 @@ class RegisterController extends AbstractController
             case RequestMethod::GET:
                 return new Response($this->view('register.register', [
                     'title' => $this->translate('panel.register.register'),
-                ], return: true));
-
-                break;
+                ]));
 
             case RequestMethod::POST:
                 $data = $request->input();
@@ -62,8 +61,8 @@ class RegisterController extends AbstractController
                 $lastAccessRegistry->set($data->get('username'), $time);
 
                 return $this->redirect($this->generateRoute('panel.index'));
-
-                break;
         }
+
+        throw new  RuntimeException('Invalid Method');
     }
 }

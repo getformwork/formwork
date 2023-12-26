@@ -18,6 +18,10 @@ class Yaml extends AbstractEncoder
 
     /**
      * Parse a YAML string
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
      */
     public static function parse(string $input, array $options = []): array
     {
@@ -26,8 +30,10 @@ class Yaml extends AbstractEncoder
 
     /**
      * Encode data to YAML format
+     *
+     * @param array<string, mixed> $options
      */
-    public static function encode($data, array $options = []): string
+    public static function encode(mixed $data, array $options = []): string
     {
         if (empty($data)) {
             return '';

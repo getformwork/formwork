@@ -35,8 +35,8 @@ class DashboardController extends AbstractController
                 'parent'    => null,
                 'orderable' => false,
                 'headers'   => true,
-                ], return: true),
+                ]),
             'statistics' => Json::encode($statistics->getChartData()),
-        ], return: true));
+        ]));
     }
 }

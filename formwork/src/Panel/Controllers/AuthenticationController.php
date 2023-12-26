@@ -11,6 +11,7 @@ use Formwork\Log\Registry;
 use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Security\CsrfToken;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 
 class AuthenticationController extends AbstractController
 {
@@ -36,13 +37,11 @@ class AuthenticationController extends AbstractController
 
                 return new Response($this->view('authentication.login', [
                     'title' => $this->translate('panel.login.login'),
-                ], return: true));
-
-                break;
+                ]));
 
             case RequestMethod::POST:
                 // Delay request processing for 0.5-1s
-                usleep(random_int(500, 1000) * 1e3);
+                usleep(random_int(500, 1000) * 1000);
 
                 $data = $request->input();
 
@@ -85,9 +84,9 @@ class AuthenticationController extends AbstractController
                     'username' => $data->get('username'),
                     'error'    => true,
                 ]);
-
-                break;
         }
+
+        throw new  RuntimeException('Invalid Method');
     }
 
     /**
@@ -109,13 +108,12 @@ class AuthenticationController extends AbstractController
     /**
      * Display login view with an error notification
      *
-     * @param string $message Error message
-     * @param array  $data    Data to pass to the view
+     * @param array<string, mixed> $data
      */
     protected function error(string $message, array $data = []): Response
     {
         $defaults = ['title' => $this->translate('panel.login.login')];
         $this->panel()->notify($message, 'error');
-        return new Response($this->view('authentication.login', [...$defaults, ...$data], return: true));
+        return new Response($this->view('authentication.login', [...$defaults, ...$data]));
     }
 }

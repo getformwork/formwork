@@ -9,6 +9,9 @@ use Formwork\Data\Traits\DataCountableIterator;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Iterator;
 
+/**
+ * @implements Iterator<array-key, mixed>
+ */
 class RequestData implements Arrayable, Countable, Iterator
 {
     use DataArrayable;
@@ -17,6 +20,8 @@ class RequestData implements Arrayable, Countable, Iterator
 
     /**
      * Create a new instance
+     *
+     * @param array<string, mixed> $data
      */
     public function __construct(array $data)
     {

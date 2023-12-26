@@ -14,6 +14,9 @@ class ColorProfile
 
     protected string $data;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $tags;
 
     public function __construct(string $data)
@@ -125,9 +128,12 @@ class ColorProfile
 
     public static function fromFile(string $path): ColorProfile
     {
-        return new static(FileSystem::read($path));
+        return new self(FileSystem::read($path));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getTags(): array
     {
         $tags = [];
@@ -143,7 +149,7 @@ class ColorProfile
         return $tags;
     }
 
-    protected function getTagValue(string $name, ?string $default = null)
+    protected function getTagValue(string $name, ?string $default = null): mixed
     {
         if (!isset($this->tags[$name])) {
             return $default;
@@ -152,13 +158,17 @@ class ColorProfile
         $value = substr($this->data, $offset, $length);
         $type = substr($value, 0, 4);
         return match ($type) {
-            'text'  => substr($value, 8),
-            'desc'  => unpack('Z*', $value, 12)[1],
+            'text' => substr($value, 8),
+            'desc' => unpack('Z*', $value, 12)[1],
+            // @phpstan-ignore-next-line
             'mluc'  => $this->parseMlucString($value)[0] ?? $default,
             default => $default,
         };
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function parseMlucString(string $data): array
     {
         $result = [];

@@ -29,8 +29,6 @@ class ErrorHandlers
 
     /**
      * Display error page
-     *
-     * @param int $status HTTP status code
      */
     public function displayErrorPage(ResponseStatus $status = ResponseStatus::InternalServerError): void
     {
@@ -40,7 +38,7 @@ class ErrorHandlers
             JsonResponse::error('Error', $status)->send();
         } else {
             $view = $this->viewFactory->make('errors.error', ['status' => $status->code(), 'message' => $status->message()]);
-            $response = new Response($view->render(true), $status);
+            $response = new Response($view->render(), $status);
             $response->send();
             // Don't exit, otherwise the error will not be logged
         }
@@ -65,7 +63,7 @@ class ErrorHandlers
     /**
      * Handle error throwing an ErrorException
      */
-    public function getErrorHandler(int $severity, string $message, string $file, int $line)
+    public function getErrorHandler(int $severity, string $message, string $file, int $line): bool
     {
         if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED) {
             return false;

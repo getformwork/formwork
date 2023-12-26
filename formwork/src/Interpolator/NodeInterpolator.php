@@ -17,8 +17,14 @@ class NodeInterpolator
 {
     protected AbstractNode $node;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $vars;
 
+    /**
+     * @param array<string, mixed> $vars
+     */
     public function __construct(AbstractNode $node, array $vars)
     {
         $this->node = $node;
@@ -28,38 +34,36 @@ class NodeInterpolator
     /**
      * Return the value interpolated from the node
      */
-    public function interpolate()
+    public function interpolate(): mixed
     {
-        switch ($this->node->type()) {
-            case IdentifierNode::TYPE:
-                return $this->interpolateIdentifierNode($this->node);
-
-            default:
-                throw new InterpolationException('Unexpected ' . $this->node);
+        if ($this->node instanceof IdentifierNode) {
+            return $this->interpolateIdentifierNode($this->node);
         }
+        throw new InterpolationException('Unexpected ' . $this->node);
     }
 
     /**
      * Interpolate a node
      */
-    protected function interpolateNode(AbstractNode $node)
+    protected function interpolateNode(AbstractNode $node): mixed
     {
-        switch ($node->type()) {
-            case IdentifierNode::TYPE:
-                return $this->interpolateIdentifierNode($node);
-
-            case ArrayNode::TYPE:
-                return $this->interpolateArrayNode($node);
-
-            default:
-                return $node->value();
+        if ($node instanceof IdentifierNode) {
+            return $this->interpolateIdentifierNode($node);
         }
+
+        if ($node instanceof ArrayNode) {
+            return $this->interpolateArrayNode($node);
+        }
+
+        return $node->value();
     }
 
     /**
      * Interpolate an identifier node
+     *
+     * @param array<mixed>|object|null $parent
      */
-    protected function interpolateIdentifierNode(IdentifierNode $node, array|object|null $parent = null)
+    protected function interpolateIdentifierNode(IdentifierNode $node, array|object|null $parent = null): mixed
     {
         $name = $node->value();
 
@@ -120,30 +124,24 @@ class NodeInterpolator
             }
 
             if (is_resource($value)) {
-                throw new InterpolationException(sprintf('%s cannot be traversed like arrays or objects', $value));
+                throw new InterpolationException('Resources cannot be traversed like arrays or objects');
             }
 
-            switch ($traverse->type()) {
-                case NumberNode::TYPE:
-                case StringNode::TYPE:
-                    $key = $this->validateArrayKey($traverse->value());
+            if ($traverse instanceof NumberNode || $traverse instanceof StringNode) {
+                $key = $this->validateArrayKey($traverse->value());
 
-                    if (!is_array($value) || !array_key_exists($key, $value)) {
-                        throw new InterpolationException(sprintf('Undefined array key "%s"', $key));
-                    }
+                if (!is_array($value) || !array_key_exists($key, $value)) {
+                    throw new InterpolationException(sprintf('Undefined array key "%s"', $key));
+                }
 
-                    $value = $value[$key];
-                    break;
-
-                case IdentifierNode::TYPE:
-                    $value = $this->interpolateIdentifierNode($traverse, $value);
-                    break;
-
-                default:
-                    throw new InterpolationException(sprintf(
-                        'Invalid %s of type "%s"',
-                        is_object($value) ? 'class method, property or constant name' : 'array key'
-                    ));
+                $value = $value[$key];
+            } elseif ($traverse instanceof IdentifierNode) {
+                $value = $this->interpolateIdentifierNode($traverse, $value);
+            } else {
+                throw new InterpolationException(sprintf(
+                    'Invalid %s',
+                    is_object($value) ? 'class method, property or constant name' : 'array key'
+                ));
             }
         }
 
@@ -157,6 +155,8 @@ class NodeInterpolator
 
     /**
      * Interpolate an array node
+     *
+     * @return array<mixed>
      */
     protected function interpolateArrayNode(ArrayNode $node): array
     {
@@ -173,6 +173,8 @@ class NodeInterpolator
 
     /**
      * Interpolate an array keys node
+     *
+     * @return list<array-key>
      */
     protected function interpolateArrayKeysNode(ArrayKeysNode $node): array
     {
@@ -217,12 +219,11 @@ class NodeInterpolator
      *
      * @see https://www.php.net/manual/en/language.types.array.php
      */
-    protected function validateArrayKey($key): int|string
+    protected function validateArrayKey(mixed $key): int|string
     {
         switch (true) {
             case is_int($key):
                 return $key;
-                break;
 
             case is_bool($key):
             case is_float($key):
@@ -231,11 +232,9 @@ class NodeInterpolator
 
             case is_string($key):
                 return $key;
-                break;
 
             case $key === null:
                 return '';
-                break;
 
             default:
                 throw new InterpolationException('Invalid non-scalar array key');

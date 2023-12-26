@@ -2,6 +2,7 @@
 
 namespace Formwork\Http\Utils;
 
+use Exception;
 use Formwork\Traits\StaticClass;
 use InvalidArgumentException;
 
@@ -24,14 +25,13 @@ class IpAnonymizer
      */
     public static function anonymize(string $ip): string
     {
-        switch (strlen(inet_pton($ip))) {
+        switch (strlen(self::packIPAddress($ip))) {
             case 4:
                 return static::anonymizeIPv4($ip);
             case 16:
                 return static::anonymizeIPv6($ip);
             default:
                 throw new InvalidArgumentException(sprintf('Invalid IP address %s', $ip));
-                break;
         }
     }
 
@@ -40,7 +40,7 @@ class IpAnonymizer
      */
     public static function anonymizeIPv4(string $ip): string
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV4_MASK));
+        return self::unpackIPAddress(self::packIPAddress($ip) & self::packIPAddress(self::IPV4_MASK));
     }
 
     /**
@@ -48,6 +48,16 @@ class IpAnonymizer
      */
     public static function anonymizeIPv6(string $ip): string
     {
-        return inet_ntop(inet_pton($ip) & inet_pton(self::IPV6_MASK));
+        return self::unpackIPAddress(self::packIPAddress($ip) & self::packIPAddress(self::IPV6_MASK));
+    }
+
+    private static function packIPAddress(string $ip): string
+    {
+        return inet_pton($ip) ?: throw new Exception('Cannot pack IP address');
+    }
+
+    private static function unpackIPAddress(string $ip): string
+    {
+        return inet_ntop($ip) ?: throw new Exception('Cannot unpack IP address');
     }
 }

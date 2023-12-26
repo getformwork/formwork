@@ -2,6 +2,7 @@
 
 namespace Formwork\Pages;
 
+use Exception;
 use Formwork\App;
 use Formwork\Config;
 use Formwork\Data\Contracts\Arrayable;
@@ -84,6 +85,8 @@ class Site implements Arrayable
 
     /**
      * Site storage (loaded pages)
+     *
+     * @var array<string, Page>
      */
     protected array $storage = [];
 
@@ -94,11 +97,15 @@ class Site implements Arrayable
 
     /**
      * Site aliases
+     *
+     * @var array<string, string>
      */
     protected array $routeAliases;
 
     /**
      * Create a new Site instance
+     *
+     * @param array<string, mixed> $data
      */
     public function __construct(
         array $data,
@@ -121,6 +128,8 @@ class Site implements Arrayable
 
     /**
      * Return site default data
+     *
+     * @return array<string, mixed>
      */
     public function defaults(): array
     {
@@ -234,6 +243,8 @@ class Site implements Arrayable
 
     /**
      * Get site route aliases
+     *
+     * @return array<string, string>
      */
     public function routeAliases(): array
     {
@@ -378,17 +389,17 @@ class Site implements Arrayable
     /**
      * Get site index page
      */
-    public function indexPage(): ?Page
+    public function indexPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.index'));
+        return $this->findPage($this->config->get('system.pages.index')) ?? throw new Exception();
     }
 
     /**
      * Return or render site error page
      */
-    public function errorPage(): ?Page
+    public function errorPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.error'));
+        return $this->findPage($this->config->get('system.pages.error')) ?? throw new Exception();
     }
 
     /**
@@ -461,6 +472,8 @@ class Site implements Arrayable
 
     /**
      * Site storage
+     *
+     * @return array<string, Page>
      */
     protected function storage(): array
     {

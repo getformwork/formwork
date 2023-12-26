@@ -10,6 +10,9 @@ class Section
 {
     use DataGetter;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data)
     {
         $this->data = $data;

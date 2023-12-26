@@ -2,36 +2,19 @@
 
 namespace Formwork\Cache;
 
-use Formwork\Data\Contracts\ArraySerializable;
-
-class CacheItem implements ArraySerializable
+class CacheItem implements CacheItemInterface
 {
-    /**
-     * Cached value
-     */
-    protected $value;
-
-    /**
-     * Expiration time
-     */
-    protected int $expirationTime;
-
-    /**
-     * Caching time
-     */
-    protected int $cachedTime;
-
-    public function __construct($value, int $expirationTime, int $cachedTime)
-    {
-        $this->value = $value;
-        $this->expirationTime = $expirationTime;
-        $this->cachedTime = $cachedTime;
+    public function __construct(
+        protected mixed $value,
+        protected int $expirationTime,
+        protected int $cachedTime
+    ) {
     }
 
     /**
      * Return the cached value
      */
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }
@@ -66,6 +49,8 @@ class CacheItem implements ArraySerializable
 
     /**
      * Create instance from array
+     *
+     * @param array{value: mixed, expirationTime: int, cachedTime: int} $data
      */
     public static function fromArray(array $data): static
     {

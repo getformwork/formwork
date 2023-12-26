@@ -14,6 +14,9 @@ class Layout
      */
     protected SectionCollection $sections;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data)
     {
         $this->type = $data['type'];
@@ -31,7 +34,7 @@ class Layout
     /**
      * Get layout sections
      */
-    public function sections()
+    public function sections(): SectionCollection
     {
         return $this->sections;
     }

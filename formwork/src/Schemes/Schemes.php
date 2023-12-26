@@ -12,9 +12,14 @@ class Schemes
 {
     /**
      * Scheme objects storage
+     *
+     * @var array<string, Scheme>
      */
     protected array $storage = [];
 
+    /**
+     * @var array<string, string>
+     */
     protected array $data = [];
 
     public function __construct(protected Container $container)

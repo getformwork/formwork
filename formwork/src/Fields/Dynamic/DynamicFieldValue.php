@@ -8,6 +8,9 @@ use Formwork\Interpolator\Interpolator;
 
 class DynamicFieldValue
 {
+    /**
+     * @var array<string, mixed>
+     */
     public static array $vars = [];
 
     /**
@@ -38,7 +41,7 @@ class DynamicFieldValue
     /**
      * Computed value
      */
-    protected $value;
+    protected mixed $value;
 
     public function __construct(string $key, string $uncomputedValue, Field $field)
     {
@@ -86,7 +89,7 @@ class DynamicFieldValue
     /**
      * Get the key associated to the dynamic value
      */
-    public function key()
+    public function key(): string
     {
         return $this->key;
     }
@@ -94,7 +97,7 @@ class DynamicFieldValue
     /**
      * Get the computed value
      */
-    public function value()
+    public function value(): mixed
     {
         if (!$this->computed) {
             $this->compute();

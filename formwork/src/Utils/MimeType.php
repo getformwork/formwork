@@ -138,23 +138,25 @@ class MimeType
             throw new RuntimeException(sprintf('%s() requires the extension "fileinfo" to be enabled', __METHOD__));
         }
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file);
-        finfo_close($finfo);
+        if ($finfo = finfo_open(FILEINFO_MIME_TYPE)) {
+            $mimeType = finfo_file($finfo, $file);
+            finfo_close($finfo);
 
-        // Fix type for SVG images without XML declaration
-        if ($mimeType === 'image/svg') {
-            $mimeType = static::fromExtension('svg');
-        }
-
-        // Fix wrong type for image/svg+xml
-        if ($mimeType === 'text/html') {
-            $dom = new DOMDocument();
-            $dom->load($file);
-            $node = $dom->documentElement;
-            if ($node !== null && $node->nodeName === 'svg') {
+            // Fix type for SVG images without XML declaration
+            if ($mimeType === 'image/svg') {
                 $mimeType = static::fromExtension('svg');
             }
+
+            // Fix wrong type for image/svg+xml
+            if ($mimeType === 'text/html') {
+                $dom = new DOMDocument();
+                $dom->load($file);
+                $node = $dom->documentElement;
+                if ($node !== null && $node->nodeName === 'svg') {
+                    $mimeType = static::fromExtension('svg');
+                }
+            }
+
         }
 
         return $mimeType ?: self::DEFAULT_MIME_TYPE;
@@ -162,6 +164,8 @@ class MimeType
 
     /**
      * Get an array of extensions associated to the given MIME type
+     *
+     * @return array<string>
      */
     public static function getAssociatedExtensions(string $mimeType): array
     {

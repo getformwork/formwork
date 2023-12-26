@@ -90,14 +90,14 @@ return [
     ],
     'ComponentsConfiguration' => [
         'type'        => 'binary',
-        'description' => fn (string $value) => array_map(fn (string $char) => match ($char) {
-            0 => '–',
-            1 => 'Y',
-            2 => 'Cb',
-            3 => 'Cr',
-            4 => 'R',
-            5 => 'G',
-            6 => 'B',
+        'description' => fn (string $value) => array_map(fn (string $char) => match ((int) $char) {
+            1       => 'Y',
+            2       => 'Cb',
+            3       => 'Cr',
+            4       => 'R',
+            5       => 'G',
+            6       => 'B',
+            default => '-',
         }, str_split($value)),
     ],
     'UserComment' => [
@@ -119,7 +119,7 @@ return [
     'ExposureTime' => [
         'description' => function (string $value) {
             [$num, $den] = explode('/', $value . '/1');
-            return $num > 1 ? round($num / $den, 1) : $num . '/' . $den;
+            return $num > 1 ? round((int) $num / (int) $den, 1) : $num . '/' . $den;
         },
     ],
     'FNumber' => [
@@ -388,9 +388,6 @@ return [
         'type' => 'rational',
     ],
     'LensSpecification' => [
-        'type' => 'rational',
-    ],
-    'Humidity' => [
         'type' => 'rational',
     ],
     'GPSVersion' => [

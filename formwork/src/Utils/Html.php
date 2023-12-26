@@ -20,6 +20,8 @@ class Html
 
     /**
      * Return an attribute ('name="value"') from $name and $value arguments
+     *
+     * @param array<scalar|null>|scalar|null $value
      */
     public static function attribute(string $name, $value = null): string
     {
@@ -33,11 +35,13 @@ class Html
         if (is_array($value)) {
             $value = implode(' ', array_filter($value));
         }
-        return $name . '="' . Str::escapeAttr($value) . '"';
+        return $name . '="' . Str::escapeAttr((string) $value) . '"';
     }
 
     /**
      * Return an attributes string from an array of name and value pairs
+     *
+     * @param array<string,scalar|null> $data
      */
     public static function attributes(array $data): string
     {
@@ -50,6 +54,8 @@ class Html
 
     /**
      * Return a string containing an HTML tag with specified name, attributes and content
+     *
+     * @param array<string,scalar|null> $attributes
      */
     public static function tag(string $name, array $attributes = [], ?string ...$content): string
     {

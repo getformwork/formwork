@@ -3,15 +3,21 @@
 namespace Formwork\Traits;
 
 use BadMethodCallException;
+use Closure;
 
 trait Methods
 {
     /**
      * Array of methods
+     *
+     * @var array<string, Closure>
      */
     protected array $methods = [];
 
-    public function __call(string $name, array $arguments)
+    /**
+     * @param array<mixed> $arguments
+     */
+    public function __call(string $name, array $arguments): mixed
     {
         if ($this->hasMethod($name)) {
             return $this->callMethod($name, $arguments);
@@ -29,6 +35,8 @@ trait Methods
 
     /**
      * Call a method defined in the `$method` property
+     *
+     * @param array<mixed> $arguments
      */
     protected function callMethod(string $method, array $arguments)
     {

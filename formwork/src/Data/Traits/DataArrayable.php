@@ -2,8 +2,11 @@
 
 namespace Formwork\Data\Traits;
 
-trait DataArrayable // implements Formwork\Data\Contracts\Arrayable
+trait DataArrayable
 {
+    /**
+     * @var array<mixed>
+     */
     protected array $data = [];
 
     public function toArray(): array

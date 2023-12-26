@@ -3,6 +3,7 @@
 namespace Formwork\Utils;
 
 use ReflectionReference;
+use UnexpectedValueException;
 
 class Debug
 {
@@ -131,13 +132,16 @@ class Debug
         });
         JS;
 
-    protected static $refs = [];
+    /**
+     * @var array<int>
+     */
+    protected static array $refs = [];
 
-    protected static $counter = 0;
+    protected static int $counter = 0;
 
-    protected static $stylesDumped = false;
+    protected static bool $stylesDumped = false;
 
-    public static function dump(...$data): void
+    public static function dump(mixed ...$data): void
     {
         if (!static::$stylesDumped) {
             echo '<style>' . static::$css . '</style>', '<script>' . static::$js . '</script>';
@@ -149,18 +153,18 @@ class Debug
         echo '<script>__formwork_dump_goto(window.location.hash.slice(1))</script>';
     }
 
-    public static function dd(...$data): void
+    public static function dd(mixed ...$data): void
     {
         static::dump(...$data);
         exit;
     }
 
-    public static function dumpToString($data): string
+    public static function dumpToString(mixed $data): string
     {
         return sprintf('<pre class="__formwork-dump">%s</pre>', static::outputData($data));
     }
 
-    protected static function outputData($data, int $indent = 0)
+    protected static function outputData(mixed $data, int $indent = 0): string
     {
         switch (gettype($data)) {
             case 'boolean':
@@ -176,8 +180,8 @@ class Debug
 
                 $data = htmlspecialchars($data);
 
-                if ($multiline) {
-                    return '<span class="__type-string">' . ($binary ? 'b' : '') . '"""' . implode("\n" . str_repeat(' ', $indent + self::INDENT_SPACES), preg_split('/^|[\r\n]+/', $data)) . "\n" . str_repeat(' ', $indent) . '"""</span>';
+                if ($multiline && ($lines = preg_split('/^|[\r\n]+/', $data))) {
+                    return '<span class="__type-string">' . ($binary ? 'b' : '') . '"""' . implode("\n" . str_repeat(' ', $indent + self::INDENT_SPACES), $lines) . "\n" . str_repeat(' ', $indent) . '"""</span>';
                 }
                 return '<span class="__type-string">' . ($binary ? 'b' : '') . '"' . $data . '"</span>';
 
@@ -243,5 +247,7 @@ class Debug
             case 'resource':
                 return sprintf('<span class="__type-name">resource</span>(<span class="__type-name">%s</span> <span class="__note">#%d</span>)', get_resource_type($data), get_resource_id($data));
         }
+
+        throw new UnexpectedValueException();
     }
 }

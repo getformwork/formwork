@@ -9,6 +9,9 @@ use Formwork\Utils\FileSystem;
 
 class FileFactory
 {
+    /**
+     * @param array<string, array{class-string, string}|class-string> $associations
+     */
     public function __construct(protected Container $container, protected array $associations = [])
     {
 

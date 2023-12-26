@@ -17,7 +17,7 @@ class Colorize extends AbstractTransform
 
     protected int $alpha;
 
-    public function __construct(int $red, int $green, int $blue, int $alpha)
+    final public function __construct(int $red, int $green, int $blue, int $alpha)
     {
         if (!Constraint::isInIntegerRange($red, 0, 255)) {
             throw new InvalidArgumentException(sprintf('$red value must be in range 0-255, %d given', $red));
@@ -43,7 +43,7 @@ class Colorize extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['red'], $data['green'], $data['blue'], $data['alpha']);
+        return new static($data['red'], $data['green'], $data['blue'], $data['alpha']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

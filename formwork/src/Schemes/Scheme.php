@@ -27,6 +27,9 @@ class Scheme implements Arrayable
 
     protected SchemeOptions $options;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(string $id, array $data, protected Translations $translations, protected Schemes $schemes, protected FieldFactory $fieldFactory)
     {
         $this->id = $id;

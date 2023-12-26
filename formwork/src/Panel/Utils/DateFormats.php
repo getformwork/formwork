@@ -11,6 +11,8 @@ class DateFormats
 
     /**
      * Return common date formats
+     *
+     * @return array<string, string>
      */
     public static function date(): array
     {
@@ -23,6 +25,8 @@ class DateFormats
 
     /**
      * Return common hour formats
+     *
+     * @return array<string, string>
      */
     public static function hour(): array
     {
@@ -35,6 +39,8 @@ class DateFormats
 
     /**
      * Return timezone identifiers
+     *
+     * @return array<string, string>
      */
     public static function timezones(): array
     {

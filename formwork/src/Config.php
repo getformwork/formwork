@@ -21,13 +21,16 @@ class Config implements Arrayable
 
     protected bool $resolved;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [])
     {
         $this->data = $data;
         $this->resolved = false;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->resolved) {
             throw new Exception('Unresolved config');
@@ -58,6 +61,9 @@ class Config implements Arrayable
         }
     }
 
+    /**
+     * @param array<string, string> $vars
+     */
     public function resolve(array $vars = []): void
     {
         array_walk_recursive($this->data, function (&$value) use ($vars): void {

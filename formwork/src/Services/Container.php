@@ -17,10 +17,19 @@ class Container
      */
     protected array $defined;
 
+    /**
+     * @var array<string, object>
+     */
     protected array $resolved;
 
+    /**
+     * @var array<string, string>
+     */
     protected array $aliases;
 
+    /**
+     * @var list<string>
+     */
     private array $resolveStack = [];
 
     public function define(string $name, ?object $object = null): ServiceDefinition
@@ -29,9 +38,10 @@ class Container
     }
 
     /**
-     * @template T
+     * @template T of object
      *
-     * @param class-string<T> $class
+     * @param class-string<T>      $class
+     * @param array<string, mixed> $parameters
      *
      * @return T
      */
@@ -48,7 +58,10 @@ class Container
         return new $class(...$arguments);
     }
 
-    public function call(Closure $closure, array $parameters = [])
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function call(Closure $closure, array $parameters = []): mixed
     {
         $arguments = $this->buildArguments(new ReflectionFunction($closure), $parameters);
 
@@ -64,11 +77,11 @@ class Container
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T>|string $name
      *
-     * @return object|T
+     * @return ($name is class-string<T> ? T : object)
      */
     public function get(string $name): object
     {
@@ -103,12 +116,16 @@ class Container
         return isset($this->resolved[$name]);
     }
 
-    public function resolve(string $name)
+    public function resolve(string $name): object
     {
         if (isset($this->aliases[$name])) {
             $alias = $this->aliases[$name];
             return $this->resolve($alias);
         }
+
+        /**
+         * @var class-string $name
+         */
 
         if (in_array($name, $this->resolveStack, true)) {
             throw new Exception(sprintf('Already resolving "%s". Resolution stack: "%s"', $name, implode('", "', $this->resolveStack)));
@@ -171,6 +188,11 @@ class Container
         return $service;
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     *
+     * @return list<mixed>
+     */
     private function buildArguments(ReflectionFunctionAbstract $method, array $parameters = []): array
     {
         $arguments = [];

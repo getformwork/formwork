@@ -31,7 +31,7 @@ class PageController extends AbstractController
             } else {
                 $status = ResponseStatus::ServiceUnavailable;
                 $view = $viewFactory->make('errors.maintenance', ['status' => $status->code(), 'message' => $status->message()]);
-                return new Response($view->render(true), $status);
+                return new Response($view->render(), $status);
             }
         }
 
@@ -62,7 +62,9 @@ class PageController extends AbstractController
                 || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))) {
                     // Clear cache if the site was not modified since the page has been published or unpublished
                     $this->cache->clear();
-                    FileSystem::touch($this->site->path());
+                    if ($this->site->path() !== null) {
+                        FileSystem::touch($this->site->path());
+                    }
                 }
             }
 
@@ -93,6 +95,9 @@ class PageController extends AbstractController
             $site->setCurrentPage($page);
         }
 
+        /**
+         * @var Page
+         */
         $page = $site->currentPage();
 
         $config = $this->config;
@@ -100,8 +105,12 @@ class PageController extends AbstractController
         $cacheKey = $page->uri(includeLanguage: true);
 
         if ($config->get('system.cache.enabled') && $this->cache->has($cacheKey)) {
+            /**
+             * @var int
+             */
+            $cachedTime = $this->cache->cachedTime($cacheKey);
             // Validate cached response
-            if (!$site->modifiedSince($this->cache->cachedTime($cacheKey))) {
+            if (!$site->modifiedSince($cachedTime)) {
                 return $this->cache->fetch($cacheKey);
             }
 

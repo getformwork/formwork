@@ -7,7 +7,7 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\ResponseStatus;
-use Formwork\Updater;
+use Formwork\Updater\Updater;
 use RuntimeException;
 
 class UpdatesController extends AbstractController

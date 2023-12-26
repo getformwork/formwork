@@ -18,7 +18,7 @@ class LanguagesServiceLoader implements ServiceLoaderInterface
     public function load(Container $container): Languages
     {
         /**
-         * @var array<string>
+         * @var array<string> $available
          */
         $available = (array) $this->config->get('system.languages.available');
 
@@ -26,9 +26,6 @@ class LanguagesServiceLoader implements ServiceLoaderInterface
             $requested = $current = $matches[1];
         }
 
-        /**
-         * @var bool
-         */
         if ($this->config->get('system.languages.httpPreferred')) {
             $languages = $this->request->languages();
             foreach (array_keys($languages) as $code) {

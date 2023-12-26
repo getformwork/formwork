@@ -11,7 +11,7 @@ class CollectionDataProxy
         $this->collection = $collection;
     }
 
-    public function __get(string $name)
+    public function __get(string $name): Collection
     {
         $result = [];
 
@@ -22,14 +22,17 @@ class CollectionDataProxy
         return Collection::from($result, mutable: $this->collection->isMutable());
     }
 
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         foreach ($this->collection as $item) {
             $item->{$name} = $value;
         }
     }
 
-    public function __call(string $name, array $arguments)
+    /**
+     * @param array<string, mixed> $arguments
+     */
+    public function __call(string $name, array $arguments): Collection
     {
         $result = [];
 

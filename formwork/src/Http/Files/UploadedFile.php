@@ -44,10 +44,13 @@ class UploadedFile
 
     protected string $tempPath;
 
-    protected string $size;
+    protected int $size;
 
     protected int $error;
 
+    /**
+     * @param array{name: string, full_path: string, type: string, tmp_name: string, error: string, size: string} $data
+     */
     public function __construct(string $fieldName, array $data)
     {
         $this->fieldName = $fieldName;
@@ -55,8 +58,8 @@ class UploadedFile
         $this->clientFullPath = $data['full_path'];
         $this->clientMimeType = $data['type'];
         $this->tempPath = $data['tmp_name'];
-        $this->error = $data['error'];
-        $this->size = $data['size'];
+        $this->error = (int) $data['error'];
+        $this->size = (int) $data['size'];
     }
 
     public function fieldName(): string

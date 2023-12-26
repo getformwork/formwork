@@ -11,6 +11,9 @@ class RouteParams implements Arrayable
     use DataArrayable;
     use DataGetter;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data)
     {
         $this->data = $data;

@@ -67,6 +67,9 @@ class ExifReader
         'GPSProcessingMode' => 'GPSProcessingMethod',
     ];
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     protected static array $ExifTable;
 
     public function __construct()
@@ -74,6 +77,9 @@ class ExifReader
         static::$ExifTable ??= require __DIR__ . '/tables/Exif.php';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function read(string &$data): array
     {
         $rawTags = $this->readTagsFromString($data);
@@ -162,6 +168,9 @@ class ExifReader
         return $tags;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function readTagsFromString(string $data): array
     {
         $stream = fopen('php://temp', 'r+');
@@ -187,6 +196,9 @@ class ExifReader
         return $value;
     }
 
+    /**
+     * @param array{string, string, string} $value
+     */
     protected function parseCoordinates(array $value, ?string $cardinalRef): float
     {
         [$degrees, $minutes, $seconds] = array_map(
@@ -209,12 +221,15 @@ class ExifReader
         if ($den === '0') {
             return $num === '0' ? NAN : INF;
         }
-        return $num / $den;
+        return (int) $num / (int) $den;
     }
 
     protected function parseText(string &$value, string $byteOrder): ?string
     {
         $encoding = $this->getTextEncoding($value, $byteOrder);
+        /**
+         * @var false|string $text
+         */
         $text = mb_convert_encoding(substr($value, 8), 'UTF-8', $encoding);
         return $text === false ? null : rtrim($text, "\x00");
     }

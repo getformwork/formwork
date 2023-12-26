@@ -3,6 +3,7 @@
 namespace Formwork\Translations;
 
 use InvalidArgumentException;
+use Stringable;
 
 class Translation
 {
@@ -13,11 +14,16 @@ class Translation
 
     /**
      * Translation data
+     *
+     * @var array<string, list<string>|string>
      */
     protected array $data = [];
 
     protected ?Translation $fallback = null;
 
+    /**
+     * @param array<string, list<string>|string> $data
+     */
     public function __construct(string $code, array $data)
     {
         $this->code = $code;
@@ -48,17 +54,38 @@ class Translation
     /**
      * Return a formatted language string
      */
-    public function translate(string $key, ...$arguments)
+    public function translate(string $key, int|float|string|Stringable ...$arguments): string
     {
         if ($this->has($key)) {
-            if (!empty($arguments)) {
-                return sprintf($this->data[$key], ...$arguments);
+            $value = $this->data[$key];
+            if (is_string($value)) {
+                if (!empty($arguments)) {
+                    return sprintf($value, ...$arguments);
+                }
+                return $value;
             }
-            return $this->data[$key];
         }
 
-        if ($this->fallback?->code() !== $this->code) {
+        if ($this->fallback !== null && $this->fallback->code() !== $this->code) {
             return $this->fallback->translate($key, ...$arguments);
+        }
+
+        throw new InvalidArgumentException(sprintf('Invalid language string "%s"', $key));
+    }
+
+    /**
+     * Return a formatted language string
+     *
+     * @return list<string>
+     */
+    public function getStrings(string $key): array
+    {
+        if ($this->has($key)) {
+            return (array) $this->data[$key];
+        }
+
+        if ($this->fallback !== null && $this->fallback->code() !== $this->code) {
+            return $this->fallback->getStrings($key);
         }
 
         throw new InvalidArgumentException(sprintf('Invalid language string "%s"', $key));

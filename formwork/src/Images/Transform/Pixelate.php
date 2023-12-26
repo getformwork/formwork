@@ -9,14 +9,14 @@ class Pixelate extends AbstractTransform
 {
     protected int $amount;
 
-    public function __construct(int $amount)
+    final public function __construct(int $amount)
     {
         $this->amount = $amount;
     }
 
     public static function fromArray(array $data): static
     {
-        return new self($data['amount']);
+        return new static($data['amount']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

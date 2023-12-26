@@ -8,6 +8,8 @@ trait DataMultipleSetter
 
     /**
      * Set multiple values
+     *
+     * @param array<string, mixed> $keysAndValues
      */
     public function setMultiple(array $keysAndValues): void
     {
@@ -18,6 +20,8 @@ trait DataMultipleSetter
 
     /**
      * Remove multiple values
+     *
+     * @param list<string> $keys
      */
     public function removeMultiple(array $keys): void
     {

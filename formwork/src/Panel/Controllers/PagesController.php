@@ -70,8 +70,8 @@ class PagesController extends AbstractController
                 'parent'    => '.',
                 'orderable' => $this->user()->permissions()->has('pages.reorder'),
                 'headers'   => true,
-            ], return: true),
-        ], return: true));
+            ]),
+        ]));
     }
 
     /**
@@ -197,7 +197,7 @@ class PagesController extends AbstractController
             'templates'       => $this->site()->templates()->keys(),
             'parents'         => $this->site()->descendants()->sortBy('relativePath'),
             'currentLanguage' => $params->get('language', $page->language()?->code()),
-        ], return: true));
+        ]));
     }
 
     /**
@@ -214,7 +214,7 @@ class PagesController extends AbstractController
         }
 
         $parent = $this->resolveParent($data->get('parent'));
-        if ($parent === null || !$parent->hasChildren()) {
+        if (!$parent->hasChildren()) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
@@ -232,9 +232,6 @@ class PagesController extends AbstractController
 
         foreach ($pages->values() as $i => $page) {
             $name = basename($page->relativePath());
-            if ($name === null) {
-                continue;
-            }
             $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name);
             if ($newName !== $name) {
                 $this->changePageName($page, $newName);
@@ -353,7 +350,7 @@ class PagesController extends AbstractController
         $page = $this->site()->findPage($params->get('page'));
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotRenameeFile.pageNotFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
@@ -392,9 +389,9 @@ class PagesController extends AbstractController
             throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotCreate.varMissing');
         }
 
-        $parent = $this->resolveParent($data->get('parent'));
-
-        if ($parent === null) {
+        try {
+            $parent = $this->resolveParent($data->get('parent'));
+        } catch (RuntimeException) {
             throw new TranslatedException('Parent page not found', 'panel.pages.page.cannotCreate.invalidParent');
         }
 
@@ -522,11 +519,12 @@ class PagesController extends AbstractController
         }
 
         // Check if parent page has to change
-        if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
-            if ($parent === null) {
-                throw new TranslatedException('Invalid parent page', 'panel.pages.page.cannotEdit.invalidParent');
+        try {
+            if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
+                $page = $this->changePageParent($page, $parent);
             }
-            $page = $this->changePageParent($page, $parent);
+        } catch (RuntimeException) {
+            throw new TranslatedException('Invalid parent page', 'panel.pages.page.cannotEdit.invalidParent');
         }
 
         // Check if page template has to change
@@ -584,7 +582,7 @@ class PagesController extends AbstractController
      */
     protected function makePageNum(Page|Site $parent, ?string $mode): string
     {
-        return match ($mode) {
+        return (string) match ($mode) {
             'date'  => date(self::DATE_NUM_FORMAT),
             default => 1 + max([0, ...$parent->children()->everyItem()->num()->values()])
         };
@@ -632,7 +630,7 @@ class PagesController extends AbstractController
         if ($parent === '.') {
             return $this->site();
         }
-        return $this->site()->findPage($parent);
+        return $this->site()->findPage($parent) ?? throw new RuntimeException('Invalid parent');
     }
 
     /**

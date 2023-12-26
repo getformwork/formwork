@@ -2,6 +2,7 @@
 
 namespace Formwork\Fields;
 
+use Closure;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
@@ -54,6 +55,8 @@ class Field implements Arrayable
 
     /**
      * Create a new Field instance
+     *
+     * @param array<string, mixed> $data
      */
     public function __construct(string $name, array $data = [], ?FieldCollection $parent = null)
     {
@@ -128,7 +131,7 @@ class Field implements Arrayable
     /**
      * Get field value
      */
-    public function value()
+    public function value(): mixed
     {
         return $this->get('value', $this->defaultValue());
     }
@@ -136,7 +139,7 @@ class Field implements Arrayable
     /**
      * Get field default value
      */
-    public function defaultValue()
+    public function defaultValue(): mixed
     {
         return $this->baseGet('default');
     }
@@ -250,7 +253,7 @@ class Field implements Arrayable
         return $this->baseGet($key, $default) === true;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $value = $this->baseGet($key, $default);
 
@@ -269,7 +272,7 @@ class Field implements Arrayable
         return $value;
     }
 
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         if (Str::endsWith($key, '@')) {
             $key = Str::beforeLast($key, '@');
@@ -294,6 +297,8 @@ class Field implements Arrayable
 
     /**
      * Load field methods
+     *
+     * @param array<string, Closure> $methods
      */
     public function setMethods(array $methods): void
     {
@@ -326,7 +331,7 @@ class Field implements Arrayable
     /**
      * Translate field value
      */
-    protected function translate($value)
+    protected function translate(mixed $value): mixed
     {
         if (!isset($this->translation)) {
             return $value;
@@ -353,8 +358,10 @@ class Field implements Arrayable
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $arguments
      */
-    protected function callMethod(string $method, array $arguments = [])
+    protected function callMethod(string $method, array $arguments = []): mixed
     {
         return $this->methods[$method](...[$this, ...$arguments]);
     }

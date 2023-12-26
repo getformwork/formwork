@@ -55,7 +55,10 @@ final class App
         $this->loadServices($this->container);
     }
 
-    public function __call(string $name, array $arguments)
+    /**
+     * @param array<string, mixed> $arguments
+     */
+    public function __call(string $name, array $arguments): mixed
     {
         if ($this->container->has($name)) {
             return $this->container->get($name);
@@ -100,20 +103,15 @@ final class App
 
     /**
      * Return default options
+     *
+     * @return array<string, mixed>
      */
     public function defaults(): array
     {
         return Yaml::parseFile(SYSTEM_PATH . '/config/system.yaml');
     }
 
-    /**
-     * @template T
-     *
-     * @param class-string<T>|string $name
-     *
-     * @return object|T
-     */
-    public function getService(string $name)
+    public function getService(string $name): mixed
     {
         return $this->container->get($name);
     }

@@ -10,8 +10,16 @@ class ImageFactory
     {
     }
 
-    public function make(string $path, array $options = [])
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function make(string $path, array $options = []): Image
     {
-        return new Image($path, [...$this->config->get('system.images', []), ...$options]);
+        /**
+         * @var array<string, mixed>
+         */
+        $defaults = $this->config->get('system.images', []);
+
+        return new Image($path, [...$defaults, ...$options]);
     }
 }

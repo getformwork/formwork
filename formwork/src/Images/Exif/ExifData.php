@@ -3,6 +3,7 @@
 namespace Formwork\Images\Exif;
 
 use Formwork\Data\Contracts\Arrayable;
+use Generator;
 
 class ExifData implements Arrayable
 {
@@ -10,6 +11,9 @@ class ExifData implements Arrayable
 
     protected string $data;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $tags;
 
     public function __construct(string $data)
@@ -24,6 +28,9 @@ class ExifData implements Arrayable
         return $this->data;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTags(): array
     {
         return $this->tags;
@@ -34,7 +41,10 @@ class ExifData implements Arrayable
         return iterator_to_array($this->parsedTags());
     }
 
-    public function parsedTags()
+    /**
+     * @return Generator<string, mixed>
+     */
+    public function parsedTags(): Generator
     {
         foreach ($this->tags as $key => $value) {
             yield $key => $value[1] ?? $value[0];
@@ -46,6 +56,9 @@ class ExifData implements Arrayable
         return array_key_exists($key, $this->tags);
     }
 
+    /**
+     * @param list<string> $keys
+     */
     public function hasMultiple(array $keys): bool
     {
         foreach ($keys as $key) {
@@ -56,12 +69,12 @@ class ExifData implements Arrayable
         return true;
     }
 
-    public function getRaw(string $key, $default = null)
+    public function getRaw(string $key, mixed $default = null): mixed
     {
         return $this->has($key) ? $this->tags[$key][0] : $default;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->has($key)
             ? $this->tags[$key][1] ?? $this->tags[$key][0]

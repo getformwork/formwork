@@ -13,6 +13,9 @@ class ServiceDefinition
 
     protected Container $container;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $parameters = [];
 
     protected ?string $loader = null;
@@ -36,12 +39,15 @@ class ServiceDefinition
         return $this->object;
     }
 
-    public function parameter(string $name, $value): self
+    public function parameter(string $name, mixed $value): self
     {
         Arr::set($this->parameters, $name, $value);
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getParameters(): array
     {
         return $this->parameters;

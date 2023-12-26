@@ -52,10 +52,10 @@ class Visitor
         if (!isset(static::$regex)) {
             static::$regex = '/' . implode('|', self::BOTS_REGEX_TOKENS) . '/i';
         }
-        return (bool) preg_match(static::$regex, $request->userAgent());
+        return (bool) preg_match(static::$regex, $request->userAgent() ?? '');
     }
 
-    /**
+    /**x
      * Return whether current user agent is a browser
      */
     public static function isBrowser(Request $request): bool

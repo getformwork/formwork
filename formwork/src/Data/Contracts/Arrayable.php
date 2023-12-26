@@ -6,6 +6,8 @@ interface Arrayable
 {
     /**
      * Return an array containing data
+     *
+     * @return array<mixed>
      */
     public function toArray(): array;
 }

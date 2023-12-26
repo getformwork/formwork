@@ -109,6 +109,8 @@ class Statistics
 
     /**
      * Return chart data
+     *
+     * @return array{labels: array<string>, series: list<list<int|string>>}
      */
     public function getChartData(int $limit = self::CHART_LIMIT): array
     {

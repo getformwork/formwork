@@ -13,7 +13,10 @@ trait PageData
     use DataMultipleGetter;
     use DataMultipleSetter;
 
-    public function __call(string $name, array $arguments)
+    /**
+     * @param list<mixed> $arguments
+     */
+    public function __call(string $name, array $arguments): mixed
     {
         if ($this->has($name)) {
             return $this->get($name);
@@ -35,7 +38,7 @@ trait PageData
     /**
      * Get data by key returning a default value if key is not present
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         // Get values from property
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
@@ -67,7 +70,7 @@ trait PageData
     /**
      * Set a data value by key
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
             // If defined use a setter
@@ -85,6 +88,8 @@ trait PageData
 
     /**
      * Return page data as array
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -101,6 +106,8 @@ trait PageData
 
     /**
      * Get page data
+     *
+     * @return array<string, mixed>
      */
     public function data(): array
     {

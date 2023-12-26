@@ -7,9 +7,14 @@ use GdImage;
 
 class Smoothen extends AbstractTransform
 {
+    final public function __construct()
+    {
+
+    }
+
     public static function fromArray(array $data): static
     {
-        return new self();
+        return new static();
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

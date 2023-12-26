@@ -11,7 +11,7 @@ class TemplateFactory
 
     }
 
-    public function make(string $name)
+    public function make(string $name): Template
     {
         return $this->container->build(Template::class, compact('name'));
     }

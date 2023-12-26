@@ -2,6 +2,7 @@
 
 namespace Formwork\Pages\Templates;
 
+use Closure;
 use Formwork\App;
 use Formwork\Assets;
 use Formwork\Pages\Page;
@@ -71,7 +72,7 @@ class Template extends View
         return parent::render();
     }
 
-    public function setPage(Page $page)
+    public function setPage(Page $page): self
     {
         $this->page = $page;
         $this->vars['page'] = $page;
@@ -79,7 +80,7 @@ class Template extends View
     }
 
     /**
-     * @inheritdoc
+     * @return array<string, mixed>
      */
     protected function defaults(): array
     {
@@ -91,6 +92,8 @@ class Template extends View
 
     /**
      * Default template methods
+     *
+     * @return array<string, Closure>
      */
     protected function defaultMethods(): array
     {

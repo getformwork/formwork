@@ -15,11 +15,15 @@ class User implements Arrayable
 {
     /**
      * Array containing user data
+     *
+     * @var array<string, mixed>
      */
     protected array $data = [];
 
     /**
      * Default data of the user
+     *
+     * @var array<string, mixed>
      */
     protected array $defaults = [
         'username'    => null,
@@ -79,6 +83,9 @@ class User implements Arrayable
 
     /**
      * Create a new User instance
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, bool>  $permissions
      */
     public function __construct(array $data, array $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
@@ -248,6 +255,8 @@ class User implements Arrayable
 
     /**
      * Return an array containing user data
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

@@ -11,7 +11,7 @@ class Contrast extends AbstractTransform
 {
     protected int $amount;
 
-    public function __construct(int $amount)
+    final public function __construct(int $amount)
     {
         if (!Constraint::isInIntegerRange($amount, -100, 100)) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range -100-+100, %d given', $amount));
@@ -22,7 +22,7 @@ class Contrast extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['amount']);
+        return new static($data['amount']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

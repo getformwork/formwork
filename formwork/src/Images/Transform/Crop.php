@@ -15,7 +15,7 @@ class Crop extends AbstractTransform
 
     protected int $height;
 
-    public function __construct(int $originX, int $originY, ?int $width = null, ?int $height = null)
+    final public function __construct(int $originX, int $originY, ?int $width = null, ?int $height = null)
     {
         $this->originX = $originX;
         $this->originY = $originY;
@@ -25,7 +25,7 @@ class Crop extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['originX'], $data['originY'], $data['width'], $data['height']);
+        return new static($data['originX'], $data['originY'], $data['width'], $data['height']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

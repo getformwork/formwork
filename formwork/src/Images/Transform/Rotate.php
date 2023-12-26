@@ -9,14 +9,14 @@ class Rotate extends AbstractTransform
 {
     protected float $angle;
 
-    public function __construct(float $angle)
+    final public function __construct(float $angle)
     {
         $this->angle = $angle;
     }
 
     public static function fromArray(array $data): static
     {
-        return new self($data['angle']);
+        return new static($data['angle']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

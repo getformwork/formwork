@@ -14,6 +14,9 @@ class FieldFactory
 
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function make(string $name, array $data = [], ?FieldCollection $parent = null): Field
     {
         $field = new Field($name, $data, $parent);

@@ -16,6 +16,8 @@ class OptionsController extends AbstractController
 {
     /**
      * All options tabs
+     *
+     * @var list<string>
      */
     protected array $tabs = ['site', 'system', 'updates', 'info'];
 
@@ -64,9 +66,9 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system',
-            ], return: true),
+            ]),
             'fields' => $fields,
-        ], return: true));
+        ]));
     }
 
     /**
@@ -104,9 +106,9 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site',
-            ], return: true),
+            ]),
             'fields' => $fields,
-        ], return: true));
+        ]));
     }
 
     /**
@@ -121,9 +123,9 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'updates',
-            ], return: true),
+            ]),
             'currentVersion' => $this->app::VERSION,
-        ], return: true));
+        ]));
     }
 
     /**
@@ -133,7 +135,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.info');
 
-        $opcacheStatus = ini_get('opcache.enable') ? opcache_get_status(false) : [];
+        $opcacheStatus = opcache_get_status(false) ?: [];
 
         $gdInfo = extension_loaded('gd') ? gd_info() : [];
 
@@ -231,11 +233,14 @@ class OptionsController extends AbstractController
             'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'info',
-            ], return: true),
+            ]),
             'info' => $data,
-        ], return: true));
+        ]));
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getHeaders(): array
     {
         $headers = [];
@@ -249,12 +254,9 @@ class OptionsController extends AbstractController
     /**
      * Update options of a given type with given data
      *
-     * @param string          $type     Options type ('system' or 'site')
-     * @param FieldCollection $fields   FieldCollection object
-     * @param array           $options  Current options
-     * @param array           $defaults Default values
-     *
-     * @return bool Whether new values were applied or not
+     * @param 'site'|'system'      $type
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $defaults
      */
     protected function updateOptions(string $type, FieldCollection $fields, array $options, array $defaults): bool
     {
@@ -283,6 +285,8 @@ class OptionsController extends AbstractController
 
     /**
      * Load dependencies data from composer.lock
+     *
+     * @return array<string, mixed>
      */
     protected function getDependencies(): array
     {
@@ -290,7 +294,11 @@ class OptionsController extends AbstractController
         if (FileSystem::exists(ROOT_PATH . '/composer.lock')) {
             $composerLock = Json::parseFile(ROOT_PATH . '/composer.lock');
             foreach ($composerLock['packages'] as $package) {
-                $dependencies[$package['name']] = $package;
+                /**
+                 * @var string
+                 */
+                $packageName = $package['name'];
+                $dependencies[$packageName] = $package;
             }
         }
         return $dependencies;

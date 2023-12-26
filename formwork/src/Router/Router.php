@@ -198,6 +198,8 @@ class Router
 
     /**
      * Generate a route with given params
+     *
+     * @param array<string, mixed> $params
      */
     public function generate(string $name, array $params): string
     {
@@ -206,6 +208,8 @@ class Router
 
     /**
      * Generate a route with given params overriding the current ones
+     *
+     * @param array<string, mixed> $params
      */
     public function generateWith(string $name, array $params): string
     {
@@ -214,6 +218,8 @@ class Router
 
     /**
      * Rewrite current route with given params
+     *
+     * @param array<string, mixed> $params
      */
     public function rewrite(array $params): string
     {
@@ -267,9 +273,15 @@ class Router
     {
         $path = Str::wrap(Path::join([$route->getPrefix(), $route->getPath()]), '/');
 
+        /**
+         * @var list<string> $params
+         */
         $params = [];
 
         $regex = preg_replace_callback(self::PARAMS_REGEX, function (array $matches) use (&$params): string {
+            /**
+             * @var array<string|null> $matches
+             * */
             [, $separator, $param, $pattern, $optional] = $matches;
 
             $this->validateSeparator($separator, $param);
@@ -291,17 +303,22 @@ class Router
 
     /**
      * Generate route path with given parameters
+     *
+     * @param array<string, mixed> $params
      */
     protected function generateRoute(Route $route, array $params): string
     {
         $path = Str::wrap(Path::join([$route->getPrefix(), $route->getPath()]), '/');
 
         $result = preg_replace_callback(self::PARAMS_REGEX, function (array $matches) use ($params): string {
+            /**
+             * @var array<string|null> $matches
+             */
             [, $separator, $param, $pattern, $optional] = $matches;
 
             $this->validateSeparator($separator, $param);
 
-            $this->validateParamName($param, $params);
+            // $this->validateParamName($param, $params);
 
             if (!isset($params[$param])) {
                 if ($optional === null) {
@@ -324,6 +341,9 @@ class Router
 
     /**
      * Build route params
+     *
+     * @param list<string>       $names
+     * @param array<int, string> $matches
      *
      * @internal
      */
@@ -359,6 +379,9 @@ class Router
     {
         // Parse Class@method callback syntax
         if (is_string($action) && Str::contains($action, '@')) {
+            /**
+             * @var class-string $controller
+             */
             [$controller, $method] = explode('@', $action, 2);
             $class = $this->container->build($controller);
             return $class->$method(...);
@@ -386,6 +409,8 @@ class Router
     /**
      * Validate param name
      *
+     * @param list<string> $params
+     *
      * @internal
      */
     protected function validateParamName(string $param, array $params): void
@@ -398,6 +423,8 @@ class Router
     /**
      * Match current HTTP method with the given ones
      *
+     * @param list<string> $methods
+     *
      * @internal
      */
     protected function matchMethods(array $methods): bool
@@ -407,6 +434,8 @@ class Router
 
     /**
      * Match current request type (HTTP, XHR) with the given ones
+     *
+     * @param list<string> $types
      *
      * @internal
      */

@@ -12,7 +12,7 @@ use Formwork\Interpolator\Nodes\ImplicitArrayKeyNode;
 use Formwork\Interpolator\Nodes\NumberNode;
 use Formwork\Interpolator\Nodes\StringNode;
 
-class Parser
+class Parser implements ParserInterface
 {
     protected TokenStream $stream;
 
@@ -63,6 +63,7 @@ class Parser
             $traverse = $this->parseBracketsNotation();
         }
 
+        // @phpstan-ignore-next-line
         return new IdentifierNode($token->value(), $arguments, $traverse);
     }
 
@@ -72,6 +73,7 @@ class Parser
     protected function parseNumberToken(): NumberNode
     {
         $token = $this->stream->expect(Token::TYPE_NUMBER);
+        // @phpstan-ignore-next-line
         return new NumberNode($token->value() + 0);
     }
 
@@ -81,6 +83,7 @@ class Parser
     protected function parseStringToken(): StringNode
     {
         $token = $this->stream->expect(Token::TYPE_STRING);
+        // @phpstan-ignore-next-line
         return new StringNode(stripcslashes(trim($token->value(), '\'"')));
     }
 
@@ -90,7 +93,7 @@ class Parser
     protected function parseDotNotation(): IdentifierNode
     {
         $this->stream->expect(Token::TYPE_PUNCTUATION, '.');
-        return $this->parseIdentifierToken(false);
+        return $this->parseIdentifierToken();
     }
 
     /**

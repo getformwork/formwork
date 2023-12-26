@@ -11,6 +11,9 @@ class SectionCollection extends AbstractCollection
 
     protected ?string $dataType = Section::class;
 
+    /**
+     * @param array<string, Section> $sections
+     */
     public function __construct(array $sections)
     {
         parent::__construct(Arr::map($sections, fn ($section) => new Section($section)));

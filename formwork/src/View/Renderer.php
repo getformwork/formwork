@@ -11,8 +11,10 @@ class Renderer
 
     /**
      * Load a script passing variables and binding to given instance and context
+     *
+     * @param array<string, mixed> $vars
      */
-    public static function load(string $filename, array $vars, object $instance, ?string $context = null)
+    public static function load(string $filename, array $vars, object $instance, ?string $context = null): mixed
     {
         $closure = static::getClosure($instance, $context);
         return $closure($filename, $vars);

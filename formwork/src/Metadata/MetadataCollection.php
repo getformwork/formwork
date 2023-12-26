@@ -14,6 +14,8 @@ class MetadataCollection extends AbstractCollection
 
     /**
      * Create a new Metadata instance
+     *
+     * @param array<Metadata> $data
      */
     public function __construct(array $data)
     {
@@ -23,6 +25,8 @@ class MetadataCollection extends AbstractCollection
 
     /**
      * Set a metadata
+     *
+     * @param string $value
      */
     public function set(string $key, $value): void
     {

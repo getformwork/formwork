@@ -31,18 +31,43 @@ class Request
 
     protected readonly Session $session;
 
+    /**
+     * @var list<string>
+     */
     protected array $trustedProxies = [];
 
+    /**
+     * @var list<array<string, string>>
+     */
     protected readonly array $forwardedDirectives;
 
+    /**
+     * @var array<string, float>
+     */
     protected readonly array $mimeTypes;
 
+    /**
+     * @var array<string, float>
+     */
     protected readonly array $charsets;
 
+    /**
+     * @var array<string, float>
+     */
     protected readonly array $encodings;
 
+    /**
+     * @var array<string, float>
+     */
     protected readonly array $languages;
 
+    /**
+     * @param array<string, string>                             $input
+     * @param array<string, string>                             $query
+     * @param array<string, string>                             $cookies
+     * @param array<string, array<string, list<string>|string>> $files
+     * @param array<string, string>                             $server
+     */
     public function __construct(array $input, array $query, array $cookies, array $files, array $server)
     {
         $this->initialize($input, $query, $cookies, $files, $server);
@@ -71,7 +96,7 @@ class Request
         return Path::join(
             [
                 $port !== $defaultPort
-                    ? sprintf('%s://%s:%d/%s', $scheme, $host, $port)
+                    ? sprintf('%s://%s:%d/', $scheme, $host, $port)
                     : sprintf('%s://%s', $scheme, $host),
                 $this->root(),
             ]
@@ -125,7 +150,7 @@ class Request
         $port = (int) $this->server->get('SERVER_PORT', 80);
 
         if ($this->isFromTrustedProxy()) {
-            return (int) $this->getForwardedDirective('port')[0] ?? $port;
+            return (int) ($this->getForwardedDirective('port')[0] ?? $port);
         }
 
         return $port;
@@ -162,16 +187,25 @@ class Request
         return $this->headers->get('User-Agent');
     }
 
+    /**
+     * @return array<float>
+     */
     public function mimeTypes(): array
     {
         return $this->mimeTypes ??= Header::parseQualityValues($this->headers->get('Accept', '*/*'));
     }
 
+    /**
+     * @return array<float>
+     */
     public function encodings(): array
     {
         return $this->encodings ??= Header::parseQualityValues($this->headers->get('Accept-Encoding', '*'));
     }
 
+    /**
+     * @return array<float>
+     */
     public function languages(): array
     {
         return $this->languages ??= Header::parseQualityValues($this->headers->get('Accept-Language', '*'));
@@ -185,7 +219,7 @@ class Request
         if ($this->method() === RequestMethod::GET) {
             return $this->server->get('QUERY_STRING');
         }
-        return file_get_contents('php://input');
+        return @file_get_contents('php://input') ?: null;
     }
 
     /**
@@ -220,6 +254,9 @@ class Request
         return $this->isXmlHttpRequest() ? RequestType::XmlHttpRequest : RequestType::Http;
     }
 
+    /**
+     * @param list<string> $proxies
+     */
     public function setTrustedProxies(array $proxies): void
     {
         $this->trustedProxies = $proxies;
@@ -282,6 +319,13 @@ class Request
         return $this->cookies->has($sessionName) && $this->session()->exists($this->cookies->get($sessionName));
     }
 
+    /**
+     * @param array<string, string> $input
+     * @param array<string, string> $query
+     * @param array<string, string> $cookies
+     * @param array<mixed>          $files
+     * @param array<string, string> $server
+     */
     protected function initialize(array $input, array $query, array $cookies, array $files, array $server): void
     {
         $this->input = new RequestData($input);
@@ -292,6 +336,9 @@ class Request
         $this->headers = new HeadersData($this->server->getHeaders());
     }
 
+    /**
+     * @return list<array<string, string>>
+     */
     protected function getForwardedDirectives(): array
     {
         if (isset($this->forwardedDirectives)) {
@@ -315,6 +362,9 @@ class Request
         return $this->forwardedDirectives = $directives;
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getForwardedDirective(string $name): array
     {
         $name = strtolower($name);
@@ -334,6 +384,9 @@ class Request
         return $result;
     }
 
+    /**
+     * @param array<mixed> $files
+     */
     protected function prepareFiles(array $files): FilesData
     {
         $result = [];
@@ -341,8 +394,11 @@ class Request
         foreach ($files as $fieldName => $data) {
             if (is_array($data['name'])) {
                 foreach ($data['name'] as $i => $name) {
+                    /**
+                     * @var array<string, list<UploadedFile>> $result
+                     */
                     $result[$fieldName][] = new UploadedFile($fieldName, [
-                        'name'      => $data['name'][$i] ?? '',
+                        'name'      => $data['name'][$i],
                         'full_path' => $data['full_path'][$i] ?? '',
                         'type'      => $data['type'][$i] ?? '',
                         'tmp_name'  => $data['tmp_name'][$i] ?? '',

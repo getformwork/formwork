@@ -9,7 +9,7 @@ use Formwork\Panel\Panel;
 use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
-use Formwork\Updater;
+use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 

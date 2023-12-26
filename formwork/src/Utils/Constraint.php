@@ -26,7 +26,7 @@ class Constraint
     /**
      * Return whether a value is considered true when parsed as boolean
      */
-    public static function isTruthy($value): bool
+    public static function isTruthy(mixed $value): bool
     {
         return in_array($value, self::TRUTHY_VALUES, true);
     }
@@ -34,7 +34,7 @@ class Constraint
     /**
      * Return whether a value is considered false when parsed as boolean
      */
-    public static function isFalsy($value): bool
+    public static function isFalsy(mixed $value): bool
     {
         return in_array($value, self::FALSY_VALUES, true);
     }
@@ -42,7 +42,7 @@ class Constraint
     /**
      * Return whether a value is considered empty
      */
-    public static function isEmpty($value): bool
+    public static function isEmpty(mixed $value): bool
     {
         return in_array($value, self::EMPTY_VALUES, true);
     }
@@ -50,7 +50,7 @@ class Constraint
     /**
      * Return whether a value is equal to another
      */
-    public static function isEqualTo($value, $comparison, bool $strict = true): bool
+    public static function isEqualTo(mixed $value, mixed $comparison, bool $strict = true): bool
     {
         return $strict ? $value === $comparison : $value == $comparison;
     }
@@ -58,7 +58,7 @@ class Constraint
     /**
      * Return whether a value matches the specified regex pattern
      */
-    public static function matchesRegex($value, string $regex): bool
+    public static function matchesRegex(string $value, string $regex): bool
     {
         return (bool) @preg_match(Str::wrap($regex, '/'), $value);
     }
@@ -67,7 +67,7 @@ class Constraint
      * Return whether a value is in the specified range
      */
     public static function isInRange(
-        $value,
+        int|float $value,
         int|float $start = PHP_FLOAT_MIN,
         int|float $end = PHP_FLOAT_MAX,
         bool $includeMin = true,
@@ -84,7 +84,7 @@ class Constraint
      * Return whether an integer value is in the specified range
      */
     public static function isInIntegerRange(
-        $value,
+        int $value,
         int $start = PHP_INT_MIN,
         int $end = PHP_INT_MAX,
         int $step = 1,
@@ -98,7 +98,7 @@ class Constraint
     /**
      * Return whether a value is of the specified type
      */
-    public static function isOfType($value, string $type, bool $unionTypes = false): bool
+    public static function isOfType(mixed $value, string $type, bool $unionTypes = false): bool
     {
         if ($unionTypes) {
             return Arr::some(explode('|', $type), fn ($type) => static::isOfType($value, $type, unionTypes: false));
@@ -109,7 +109,11 @@ class Constraint
         return get_debug_type($value) === $type;
     }
 
-    public static function hasKeys(array $value, array $keys)
+    /**
+     * @param array<string, mixed> $value
+     * @param array<string>        $keys
+     */
+    public static function hasKeys(array $value, array $keys): bool
     {
         foreach ($keys as $key) {
             if (!array_key_exists($key, $value)) {

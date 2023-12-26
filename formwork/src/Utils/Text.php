@@ -39,6 +39,8 @@ class Text
 
     /**
      * Split a text into words
+     *
+     * @return array<string>
      */
     public static function splitWords(string $text, ?int $limit = null): array
     {
@@ -69,7 +71,7 @@ class Text
         }
 
         $text = mb_substr($text, 0, $length + 1);
-        return mb_substr($text, 0, mb_strrpos($text, self::WHITESPACE_SEQUENCE)) . $ellipsis;
+        return mb_substr($text, 0, mb_strrpos($text, self::WHITESPACE_SEQUENCE) ?: null) . $ellipsis;
     }
 
     /**
@@ -87,6 +89,6 @@ class Text
      */
     public static function readingTime(string $text, int $wordsPerMinute = self::DEFAULT_WORDS_PER_MINUTE): int
     {
-        return max(1, round(static::countWords($text) / $wordsPerMinute));
+        return max(1, (int) round(static::countWords($text) / $wordsPerMinute));
     }
 }

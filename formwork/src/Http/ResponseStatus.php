@@ -82,7 +82,7 @@ enum ResponseStatus: string
 
     public function code(): int
     {
-        return explode(' ', $this->value, 2)[0];
+        return (int) explode(' ', $this->value, 2)[0];
     }
 
     public function message(): string

@@ -11,13 +11,17 @@ abstract class AbstractParser
 
     /**
      * Parse input from a string
+     *
+     * @param array<string, mixed> $options
      */
-    abstract public static function parse(string $input, array $options = []);
+    abstract public static function parse(string $input, array $options = []): mixed;
 
     /**
      * Parse file contents
+     *
+     * @param array<string, mixed> $options
      */
-    public static function parseFile(string $file, array $options = [])
+    public static function parseFile(string $file, array $options = []): mixed
     {
         return static::parse(FileSystem::read($file), $options);
     }

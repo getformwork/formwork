@@ -132,6 +132,8 @@ class Uri
 
     /**
      * Convert the query of current or a given URI to array
+     *
+     * @return array<array<string>|string>
      */
     public static function queryToArray(?string $uri = null): array
     {
@@ -143,6 +145,8 @@ class Uri
     /**
      * Parse current or a given URI and get an associative array
      * containing its scheme, host, port, path, query and fragment
+     *
+     * @return array{scheme: ?string, host: ?string, port: ?int, path: ?string, query: ?string, fragment: ?string}
      */
     public static function parse(?string $uri = null): array
     {
@@ -159,6 +163,8 @@ class Uri
 
     /**
      * Make a URI based on the current or a given one using an array with parts
+     *
+     * @param array{scheme?: string, host?: string, port?: int, path?: string, query?: array<string>|string, fragment?: string} $parts
      *
      * @see Uri::parse()
      */
@@ -239,7 +245,7 @@ class Uri
     /**
      * Parse URI component, throwing an exception when the URI is invalid
      */
-    protected static function parseComponent(string $uri, int $component)
+    protected static function parseComponent(string $uri, int $component): mixed
     {
         $result = parse_url($uri, $component);
         if ($result === false) {

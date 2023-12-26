@@ -143,6 +143,8 @@ final class Panel
 
     /**
      * Get notification from session data
+     *
+     * @return list<array{text: string, type: string, interval: int, icon: string}>
      */
     public function notification(): ?array
     {
@@ -186,9 +188,14 @@ final class Panel
 
     /**
      * Available translations helper
+     *
+     * @return array<string, string>
      */
     public function availableTranslations(): array
     {
+        /**
+         * @var array<string, string>
+         */
         static $translations = [];
 
         if (!empty($translations)) {
@@ -220,6 +227,9 @@ final class Panel
 
         $users = [];
         foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
+            /**
+             * @var array{username: string, fullname: string, hash: string, email: string, language: string, role: string, image: string, colorScheme: string}
+             */
             $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
             $users[$parsedData['username']] = $this->userFactory->make($parsedData, $roles[$parsedData['role']]['permissions']);
         }

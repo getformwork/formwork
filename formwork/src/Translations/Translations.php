@@ -11,9 +11,14 @@ class Translations
 {
     /**
      * Translation objects storage
+     *
+     * @var array<string, Translation>
      */
     protected array $storage = [];
 
+    /**
+     * @var array<string, list<string>>
+     */
     protected array $data = [];
 
     /**
@@ -74,6 +79,9 @@ class Translations
         $data = [];
 
         foreach ($this->data[$code] as $file) {
+            /**
+             * @var array<string, list<string>|string>
+             */
             $data = [...$data, ...Yaml::parseFile($file)];
         }
 

@@ -137,6 +137,9 @@ class Page implements Arrayable
 
     protected Site $site;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [])
     {
         $this->setMultiple($data);
@@ -168,6 +171,8 @@ class Page implements Arrayable
 
     /**
      * Return page default data
+     *
+     * @return array<string, mixed>
      */
     public function defaults(): array
     {
@@ -396,7 +401,7 @@ class Page implements Arrayable
      */
     public function render(): string
     {
-        return $this->template()->setPage($this)->render(true);
+        return $this->template()->setPage($this)->render();
     }
 
     /**
@@ -474,6 +479,8 @@ class Page implements Arrayable
     /**
      * Reload page
      *
+     * @param array<string, mixed> $data
+     *
      * @internal
      */
     public function reload(array $data = []): void
@@ -498,7 +505,7 @@ class Page implements Arrayable
     protected function loadFiles(): void
     {
         /**
-         * @var array<string, string>
+         * @var array<string, array{path: string, filename: string, template: string}>
          */
         $contentFiles = [];
 

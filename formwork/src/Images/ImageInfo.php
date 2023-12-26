@@ -28,6 +28,9 @@ class ImageInfo implements Arrayable
 
     protected ?int $animationRepeatCount;
 
+    /**
+     * @param array<string, mixed> $info
+     */
     public function __construct(array $info)
     {
         foreach ($info as $key => $value) {

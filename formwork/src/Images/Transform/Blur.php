@@ -13,19 +13,19 @@ class Blur extends AbstractTransform
      * Convolution kernels used for image effects
      */
     protected const CONVOLUTION_KERNELS = [
-        'SMOOTH' => [
+        'Smooth' => [
             [0.075, 0.125, 0.075],
             [0.125, 0.200, 0.125],
             [0.075, 0.125, 0.075],
         ],
 
-        'MEAN' => [
+        'Mean' => [
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9],
         ],
 
-        'GAUSSIAN' => [
+        'Gaussian' => [
             [0.075, 0.125, 0.075],
             [0.125, 0.200, 0.125],
             [0.075, 0.125, 0.075],
@@ -36,14 +36,14 @@ class Blur extends AbstractTransform
 
     protected BlurMode $mode;
 
-    public function __construct(int $amount, BlurMode $mode)
+    final public function __construct(int $amount, BlurMode $mode)
     {
         if (!Constraint::isInIntegerRange($amount, 0, 100)) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range 0-100, %d given', $amount));
         }
 
         if (!isset(self::CONVOLUTION_KERNELS[$mode->name])) {
-            throw new InvalidArgumentException(sprintf('Invalid blur mode, "%s" given', $mode));
+            throw new InvalidArgumentException(sprintf('Invalid blur mode, "%s" given', $mode->name));
         }
 
         $this->amount = $amount;
@@ -52,7 +52,7 @@ class Blur extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['amount'], $data['mode']);
+        return new static($data['amount'], $data['mode']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

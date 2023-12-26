@@ -2,6 +2,8 @@
 
 namespace Formwork\Router;
 
+use InvalidArgumentException;
+
 class RouteFilter
 {
     /**
@@ -28,11 +30,15 @@ class RouteFilter
 
     /**
      * Filter methods
+     *
+     * @var list<string>
      */
     protected array $methods = self::DEFAULT_METHODS;
 
     /**
      * Filter types
+     *
+     * @var list<string>
      */
     protected array $types = self::DEFAULT_TYPES;
 
@@ -73,12 +79,17 @@ class RouteFilter
      */
     public function methods(string ...$methods): self
     {
+        if (!array_is_list($methods)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only unnamed arguments', __METHOD__));
+        }
         $this->methods = $methods;
         return $this;
     }
 
     /**
      * Get filter methods
+     *
+     * @return list<string>
      */
     public function getMethods(): array
     {
@@ -90,12 +101,17 @@ class RouteFilter
      */
     public function types(string ...$types): self
     {
+        if (!array_is_list($types)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only unnamed arguments', __METHOD__));
+        }
         $this->types = $types;
         return $this;
     }
 
     /**
      * Get filter types
+     *
+     * @return list<string>
      */
     public function getTypes(): array
     {

@@ -33,7 +33,7 @@ class Pagination
 
         $this->length = $length;
 
-        $this->pages = $this->count > 0 ? ceil($this->count / $this->length) : 1;
+        $this->pages = $this->count > 0 ? (int) ceil($this->count / $this->length) : 1;
     }
 
     /**
@@ -122,8 +122,6 @@ class Pagination
 
     /**
      * Get previous pagination page number
-     *
-     * @return bool|int
      */
     public function previousPage(): int
     {

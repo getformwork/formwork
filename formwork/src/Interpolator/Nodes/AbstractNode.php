@@ -12,7 +12,7 @@ abstract class AbstractNode
     /**
      * Node value
      */
-    protected $value;
+    protected mixed $value;
 
     public function __toString()
     {
@@ -30,7 +30,7 @@ abstract class AbstractNode
     /**
      * Get node value
      */
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }

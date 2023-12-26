@@ -8,6 +8,8 @@ trait DataMultipleGetter
 
     /**
      * Return whether multiple keys are present
+     *
+     * @param list<string> $keys
      */
     public function hasMultiple(array $keys): bool
     {
@@ -22,8 +24,12 @@ trait DataMultipleGetter
 
     /**
      * Get an array containing multiple values
+     *
+     * @param list<string> $keys
+     *
+     * @return array<string, mixed>
      */
-    public function getMultiple(array $keys, $default = null): array
+    public function getMultiple(array $keys, mixed $default = null): array
     {
         $result = [];
 

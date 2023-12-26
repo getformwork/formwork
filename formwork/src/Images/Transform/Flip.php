@@ -9,17 +9,17 @@ use InvalidArgumentException;
 class Flip extends AbstractTransform
 {
     protected const DIRECTIONS = [
-        'HORIZONTAL' => IMG_FLIP_HORIZONTAL,
-        'VERTICAL'   => IMG_FLIP_VERTICAL,
-        'BOTH'       => IMG_FLIP_BOTH,
+        'Horizontal' => IMG_FLIP_HORIZONTAL,
+        'Vertical'   => IMG_FLIP_VERTICAL,
+        'Both'       => IMG_FLIP_BOTH,
     ];
 
     protected FlipDirection $direction;
 
-    public function __construct(FlipDirection $direction)
+    final public function __construct(FlipDirection $direction)
     {
         if (!isset(self::DIRECTIONS[$direction->name])) {
-            throw new InvalidArgumentException(sprintf('Invalid flip direction, "%s" given', $direction));
+            throw new InvalidArgumentException(sprintf('Invalid flip direction, "%s" given', $direction->name));
         }
 
         $this->direction = $direction;
@@ -27,7 +27,7 @@ class Flip extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['direction']);
+        return new static($data['direction']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

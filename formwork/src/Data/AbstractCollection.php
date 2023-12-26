@@ -13,6 +13,9 @@ use Formwork\Utils\Constraint;
 use Iterator;
 use LogicException;
 
+/**
+ * @implements Iterator<string|int,mixed>
+ */
 abstract class AbstractCollection implements Arrayable, Countable, Iterator
 {
     use DataArrayable;
@@ -25,6 +28,11 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         set as protected baseSet;
         remove as protected baseRemove;
     }
+
+    /**
+     * @var array<int|string, mixed>
+     */
+    protected array $data = [];
 
     /**
      * Whether the collection is associative
@@ -43,6 +51,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Create a new Collection instance
+     *
+     * @param array<int|string, mixed> $data
      */
     public function __construct(array $data = [])
     {
@@ -54,7 +64,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             ));
         }
 
-        if ($this->isTyped() && !Arr::every($data, fn ($value) => Constraint::isOfType($value, $this->dataType(), unionTypes: true))) {
+        if ($this->dataType !== null && !Arr::every($data, fn ($value) => Constraint::isOfType($value, $this->dataType, unionTypes: true))) {
             throw new LogicException('Typed collections cannot be created from data of different types');
         }
 
@@ -104,7 +114,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return the collection item at the specified index
      */
-    public function nth(int $index)
+    public function nth(int $index): mixed
     {
         return Arr::nth($this->data, $index);
     }
@@ -114,7 +124,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * A negative index starts from the last item
      */
-    public function at(int $index)
+    public function at(int $index): mixed
     {
         return Arr::at($this->data, $index);
     }
@@ -122,7 +132,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return first collection item
      */
-    public function first()
+    public function first(): mixed
     {
         return $this->at(0);
     }
@@ -130,7 +140,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return last collection item
      */
-    public function last()
+    public function last(): mixed
     {
         return $this->at(-1);
     }
@@ -138,7 +148,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a random item or a given default value if the collection is empty
      */
-    public function random($default = null)
+    public function random(mixed $default = null): mixed
     {
         return Arr::random($this->data, $default);
     }
@@ -148,7 +158,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * Return `null` if the item is not present
      */
-    public function indexOf($value): ?int
+    public function indexOf(mixed $value): ?int
     {
         return Arr::indexOf($this->data, $value);
     }
@@ -158,7 +168,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * Return `null` if the item is not present
      */
-    public function keyOf($value): int|string|null
+    public function keyOf(mixed $value): int|string|null
     {
         if (!$this->isAssociative()) {
             throw new LogicException('Only associative collections support keys');
@@ -169,6 +179,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Get the keys of all items
+     *
+     * @return list<int|string>
      */
     public function keys(): array
     {
@@ -181,6 +193,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Get the values of all items
+     *
+     * @return list<mixed>
      */
     public function values(): array
     {
@@ -190,7 +204,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return whether the collection contains the given value
      */
-    public function contains($value): bool
+    public function contains(mixed $value): bool
     {
         return $this->indexOf($value) !== null;
     }
@@ -328,6 +342,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * Return a copy of the collection with its items sorted with the given options
      *
      * Keys are preserved by default in associative collections
+     *
+     * @param callable|list<string>|null $sortBy
      */
     public function sort(
         int $direction = SORT_ASC,
@@ -350,6 +366,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Group collection items using a callback
+     *
+     * @return array<mixed>
      */
     public function group(callable $callback): array
     {
@@ -360,8 +378,10 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * Get the value corresponding to the specified key from each item in the collection
      *
      * Typed collection should implement their own version of this method, optimised for their data type
+     *
+     * @return array<mixed>
      */
-    public function pluck(string $key, $default = null): array
+    public function pluck(string $key, mixed $default = null): array
     {
         return Arr::pluck($this->data, $key, $default);
     }
@@ -369,7 +389,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Filter the collection using the key from each item
      */
-    public function filterBy(string $key, $value = true, $default = null, ?bool $strict = null): static
+    public function filterBy(string $key, mixed $value = true, mixed $default = null, ?bool $strict = null): static
     {
         $values = $this->pluck($key, $default);
 
@@ -397,8 +417,10 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Group the collection using the given key from each item
+     *
+     * @return array<string, mixed>
      */
-    public function groupBy(string $key, $default = null): array
+    public function groupBy(string $key, mixed $default = null): array
     {
         $values = $this->pluck($key, $default);
         return $this->group(fn ($v, $k) => $values[$k]);
@@ -406,10 +428,10 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection with the given values
-
+     *
      * If a value is already in the collection, it will not be added
      */
-    public function with(...$values): static
+    public function with(mixed ...$values): static
     {
         $collection = $this->clone();
 
@@ -425,7 +447,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a copy of the collection without the given values
      */
-    public function without(...$values): static
+    public function without(mixed ...$values): static
     {
         $collection = $this->clone();
 
@@ -449,14 +471,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Add the given value to the collection
      */
-    public function add($value): void
+    public function add(mixed $value): void
     {
         if (!$this->isMutable() || $this->isAssociative()) {
             throw new LogicException('Values can be added only to mutable and non-associative collections');
         }
 
-        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType(), unionTypes: true)) {
-            throw new LogicException(sprintf('Value must be of type %s to be added, %s given', $this->dataType(), get_debug_type($value)));
+        if ($this->dataType !== null && !Constraint::isOfType($value, $this->dataType, unionTypes: true)) {
+            throw new LogicException(sprintf('Value must be of type %s to be added, %s given', $this->dataType, get_debug_type($value)));
         }
 
         $this->data[] = $value;
@@ -464,6 +486,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Add multiple values to the collection
+     *
+     * @param list<mixed> $values
      */
     public function addMultiple(array $values): void
     {
@@ -475,7 +499,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Remove all occurrences of the given value from the collection
      */
-    public function pull($value): void
+    public function pull(mixed $value): void
     {
         if (!$this->isMutable() || $this->isAssociative()) {
             throw new LogicException('Values can be pulled only from mutable and non-associative collections');
@@ -486,6 +510,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Remove all occurrences of the given values from the collection
+     *
+     * @param list<mixed> $values
      */
     public function pullMultiple(array $values): void
     {
@@ -517,7 +543,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * A default value is returned if the item is not present
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->isAssociative()) {
             throw new LogicException('Values can be get only from associative collections');
@@ -528,14 +554,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Set a collection item
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         if (!$this->isAssociative() || !$this->isMutable()) {
             throw new LogicException('Values can be set only to associative and mutable collections');
         }
 
-        if ($this->isTyped() && !Constraint::isOfType($value, $this->dataType(), unionTypes: true)) {
-            throw new LogicException(sprintf('Value must be of type %s, %s given', $this->dataType(), get_debug_type($value)));
+        if ($this->dataType !== null && !Constraint::isOfType($value, $this->dataType, unionTypes: true)) {
+            throw new LogicException(sprintf('Value must be of type %s, %s given', $this->dataType, get_debug_type($value)));
         }
 
         if ($this->dataType() !== 'array') {

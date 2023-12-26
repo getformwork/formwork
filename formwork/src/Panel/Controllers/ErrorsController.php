@@ -44,6 +44,8 @@ class ErrorsController extends AbstractController
 
     /**
      * Make error response with error description
+     *
+     * @param array<mixed> $action
      */
     protected function makeErrorResponse(ResponseStatus $status, string $name, array $action): Response
     {
@@ -60,7 +62,7 @@ class ErrorsController extends AbstractController
             'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
             'description' => $this->translate('panel.errors.error.' . $name . '.description'),
             'action'      => $action,
-        ], return: true), $status);
+        ]), $status);
     }
 
     /**

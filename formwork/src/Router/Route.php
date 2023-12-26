@@ -2,6 +2,8 @@
 
 namespace Formwork\Router;
 
+use InvalidArgumentException;
+
 class Route
 {
     /**
@@ -33,11 +35,15 @@ class Route
 
     /**
      * Route methods
+     *
+     * @var list<string>
      */
     protected array $methods = self::DEFAULT_METHODS;
 
     /**
      * Route types
+     *
+     * @var list<string>
      */
     protected array $types = self::DEFAULT_TYPES;
 
@@ -94,12 +100,17 @@ class Route
      */
     public function methods(string ...$methods): self
     {
+        if (!array_is_list($methods)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only unnamed arguments', __METHOD__));
+        }
         $this->methods = $methods;
         return $this;
     }
 
     /**
      * Get route methods
+     *
+     * @return list<string>
      */
     public function getMethods(): array
     {
@@ -111,12 +122,17 @@ class Route
      */
     public function types(string ...$types): self
     {
+        if (!array_is_list($types)) {
+            throw new InvalidArgumentException(sprintf('%s() accepts only unnamed arguments', __METHOD__));
+        }
         $this->types = $types;
         return $this;
     }
 
     /**
      * Get route types
+     *
+     * @return list<string>
      */
     public function getTypes(): array
     {

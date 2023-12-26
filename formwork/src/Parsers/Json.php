@@ -25,6 +25,10 @@ class Json extends AbstractEncoder
 
     /**
      * Parse a JSON string
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<mixed>
      */
     public static function parse(string $input, array $options = []): array
     {
@@ -33,6 +37,9 @@ class Json extends AbstractEncoder
 
     /**
      * Encode data to JSON format
+     *
+     * @param array<mixed>         $data
+     * @param array<string, mixed> $options
      */
     public static function encode($data, array $options = []): string
     {

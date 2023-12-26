@@ -24,22 +24,29 @@ class Php extends AbstractEncoder
 
     /**
      * @inheritdoc
+     *
+     * @param array<string, mixed> $options
      */
-    public static function parse(string $data, array $options = []): array
+    public static function parse(string $data, array $options = []): never
     {
         throw new LogicException('Parsing a string of Php code is not allowed');
     }
 
     /**
      * @inheritdoc
+     *
+     * @param array<string, mixed> $options
      */
-    public static function parseFile(string $file, array $options = [])
+    public static function parseFile(string $file, array $options = []): mixed
     {
         return include $file;
     }
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed>         $data
+     * @param array<string, mixed> $options
      */
     public static function encode($data, array $options = []): string
     {
@@ -48,8 +55,10 @@ class Php extends AbstractEncoder
 
     /**
      * @inheritdoc
+     *
+     * @param array<string, mixed> $options
      */
-    public static function encodeToFile($data, string $file, array $options = []): bool
+    public static function encodeToFile(mixed $data, string $file, array $options = []): bool
     {
         if (function_exists('opcache_invalidate') && ($options['invalidateOPcache'] ?? true)) {
             // Invalidate OPcache when a file is encoded again
@@ -62,7 +71,7 @@ class Php extends AbstractEncoder
      * Encodes the given data like var_export() would do, but uses the short array syntax, avoids unneeded integer
      * array keys, outputs lowercase null and serializes objects which don't implement the __set_state() method
      */
-    protected static function encodeData($data, int $indent = 0): string
+    protected static function encodeData(mixed $data, int $indent = 0): string
     {
         switch (($type = gettype($data))) {
             case 'array':

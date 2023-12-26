@@ -89,7 +89,9 @@ class Session implements Arrayable
             'use_strict_mode' => true,
         ]);
 
-        $id = session_id();
+        if (($id = session_id()) === false) {
+            throw new Exception('Cannot get session id');
+        }
 
         Cookie::send($this->name, $id, $this->getCookieOptions());
 
@@ -122,7 +124,11 @@ class Session implements Arrayable
             }
             session_destroy();
         }
-        session_id(session_create_id());
+        $newId = session_create_id();
+        if ($newId === false) {
+            throw new Exception('Cannot create new session id');
+        }
+        session_id($newId);
         $this->start();
 
         if ($preserveData) {
@@ -154,7 +160,10 @@ class Session implements Arrayable
         $this->duration = $duration;
 
         if ($this->started) {
-            Cookie::send($this->name, session_id(), $this->getCookieOptions());
+            if (($id = session_id()) === false) {
+                throw new Exception('Cannot get session id');
+            }
+            Cookie::send($this->name, $id, $this->getCookieOptions());
         }
     }
 
@@ -186,7 +195,7 @@ class Session implements Arrayable
         return $this->baseHas($key);
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->started) {
             $this->start();
@@ -212,7 +221,7 @@ class Session implements Arrayable
         $this->baseRemove($key);
     }
 
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         if (!$this->started) {
             $this->start();
@@ -225,6 +234,9 @@ class Session implements Arrayable
         $this->baseSet($key, $value);
     }
 
+    /**
+     * @return array{expires: int, path: string, secure: bool, httpOnly: bool, sameSite: Cookie::SAMESITE_LAX|Cookie::SAMESITE_NONE|Cookie::SAMESITE_STRICT}
+     */
     protected function getCookieOptions(): array
     {
         $options = [

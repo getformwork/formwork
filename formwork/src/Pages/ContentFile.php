@@ -11,6 +11,8 @@ class ContentFile extends File
 {
     /**
      * Data from the Yaml frontmatter
+     *
+     * @var array<string, mixed>
      */
     protected array $frontmatter;
 
@@ -29,13 +31,15 @@ class ContentFile extends File
     /**
      * Return whether the content file is empty
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->frontmatter === [];
     }
 
     /**
      * Get the data from the Yaml frontmatter
+     *
+     * @return array<string, mixed>
      */
     public function frontmatter(): array
     {

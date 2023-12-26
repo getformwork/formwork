@@ -18,6 +18,7 @@ trait DataIterator // implements \Iterator
 
     public function key(): mixed
     {
+        // @phpstan-ignore-next-line
         return key($this->data);
     }
 

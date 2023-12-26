@@ -17,6 +17,9 @@ class Uploader
 
     }
 
+    /**
+     * @return array<string>
+     */
     public function allowedMimeTypes(): array
     {
         return Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));

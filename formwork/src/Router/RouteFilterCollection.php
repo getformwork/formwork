@@ -14,6 +14,8 @@ class RouteFilterCollection extends AbstractCollection
 
     /**
      * Add filter to collection
+     *
+     * @param RouteFilter $filter
      */
     public function add($filter): void
     {

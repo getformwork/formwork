@@ -1,0 +1,311 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$charsets\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$encodings\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$forwardedDirectives\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$languages\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$mimeTypes\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Request has an uninitialized readonly property \\$session\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$cookies is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$encodings is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$files is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$forwardedDirectives is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$headers is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$input is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$languages is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$mimeTypes is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$query is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$server is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Request\\:\\:\\$session is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Request.php
+
+		-
+			message: "#^Class Formwork\\\\Http\\\\Session\\\\Session has an uninitialized readonly property \\$messages\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Session/Session.php
+
+		-
+			message: "#^Readonly property Formwork\\\\Http\\\\Session\\\\Session\\:\\:\\$messages is assigned outside of the constructor\\.$#"
+			count: 1
+			path: formwork/src/Http/Session/Session.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 6
+			path: formwork/src/Images/ColorProfile/ColorProfile.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\ColorProfile\\\\ColorProfile\\:\\:getTags\\(\\) should return array\\<string, mixed\\> but returns array\\<int\\|string, mixed\\>\\.$#"
+			count: 1
+			path: formwork/src/Images/ColorProfile/ColorProfile.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of function array_shift expects array, array\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/ColorProfile/ColorProfile.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 6
+			path: formwork/src/Images/Decoder/GifDecoder.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Decoder/JpegDecoder.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 2
+			path: formwork/src/Images/Decoder/PngDecoder.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Decoder/WebpDecoder.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Exif\\\\ExifReader\\:\\:parseDateTime\\(\\) should return Formwork\\\\Images\\\\Exif\\\\ExifDateTime\\|null but returns Formwork\\\\Images\\\\Exif\\\\ExifDateTime\\|true\\|null\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(0\\|string\\)\\: mixed\\)\\|null, Closure\\(string\\)\\: float given\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of function exif_read_data expects resource\\|string, resource\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$stream of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$stream of function fwrite expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$stream of function rewind expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Exif/ExifReader.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Handler\\\\AbstractHandler\\:\\:toGdImage\\(\\) should return GdImage but returns GdImage\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagealphablending expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagecolorallocatealpha expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagecolortransparent expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagefill expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagesavealpha expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#2 \\$color of function imagecolortransparent expects int\\|null, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Parameter \\#4 \\$color of function imagefill expects int, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/AbstractHandler.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 2
+			path: formwork/src/Images/Handler/GifHandler.php
+
+		-
+			message: "#^Property Formwork\\\\Images\\\\Handler\\\\AbstractHandler\\:\\:\\$data \\(string\\) does not accept string\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/GifHandler.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 2
+			path: formwork/src/Images/Handler/JpegHandler.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of function array_values expects array, array\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/JpegHandler.php
+
+		-
+			message: "#^Property Formwork\\\\Images\\\\Handler\\\\AbstractHandler\\:\\:\\$data \\(string\\) does not accept string\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/JpegHandler.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 5
+			path: formwork/src/Images/Handler/PngHandler.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Handler\\\\PngHandler\\:\\:decodeProfile\\(\\) should return array\\{name\\: string, value\\: string\\} but returns array\\{name\\: mixed, value\\: string\\|false\\}\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/PngHandler.php
+
+		-
+			message: "#^Property Formwork\\\\Images\\\\Handler\\\\AbstractHandler\\:\\:\\$data \\(string\\) does not accept string\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/PngHandler.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\|false\\.$#"
+			count: 6
+			path: formwork/src/Images/Handler/WebpHandler.php
+
+		-
+			message: "#^Property Formwork\\\\Images\\\\Handler\\\\AbstractHandler\\:\\:\\$data \\(string\\) does not accept string\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Handler/WebpHandler.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Transform\\\\Crop\\:\\:apply\\(\\) should return GdImage but returns GdImage\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Crop.php
+
+		-
+			message: "#^Parameter \\#1 \\$dst_image of function imagecopy expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Crop.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method Formwork\\\\Images\\\\Transform\\\\Crop\\:\\:enableTransparency\\(\\) expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Crop.php
+
+		-
+			message: "#^Parameter \\#2 \\$color of function imagecolortransparent expects int\\|null, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Crop.php
+
+		-
+			message: "#^Parameter \\#4 \\$color of function imagefill expects int, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Crop.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Transform\\\\Resize\\:\\:apply\\(\\) should return GdImage but returns GdImage\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Resize.php
+
+		-
+			message: "#^Parameter \\#1 \\$dst_image of function imagecopyresampled expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Resize.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method Formwork\\\\Images\\\\Transform\\\\Resize\\:\\:enableTransparency\\(\\) expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Resize.php
+
+		-
+			message: "#^Parameter \\#2 \\$color of function imagecolortransparent expects int\\|null, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Resize.php
+
+		-
+			message: "#^Parameter \\#4 \\$color of function imagefill expects int, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Resize.php
+
+		-
+			message: "#^Method Formwork\\\\Images\\\\Transform\\\\Rotate\\:\\:apply\\(\\) should return GdImage but returns GdImage\\|false\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Rotate.php
+
+		-
+			message: "#^Parameter \\#3 \\$background_color of function imagerotate expects int, int\\|false given\\.$#"
+			count: 1
+			path: formwork/src/Images/Transform/Rotate.php

@@ -152,6 +152,9 @@ class PngHandler extends AbstractHandler
         }
     }
 
+    /**
+     * @return array{ColorSpace, bool}
+     */
     protected function getColorSpaceAndAlpha(int $colorType): array
     {
         return match ($colorType) {
@@ -169,6 +172,9 @@ class PngHandler extends AbstractHandler
         return pack('N', strlen($data)) . $name . $data . pack('N', crc32($name . $data));
     }
 
+    /**
+     * @return array{name: string, value: string}
+     */
     protected function decodeProfile(string $data): array
     {
         $name = unpack('Z*', $data)[1];

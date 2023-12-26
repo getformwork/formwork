@@ -2,6 +2,7 @@
 
 namespace Formwork\View;
 
+use Closure;
 use Formwork\Traits\Methods;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
@@ -25,6 +26,8 @@ class View
 
     /**
      * View variables
+     *
+     * @var array<mixed>
      */
     protected array $vars = [];
 
@@ -40,11 +43,15 @@ class View
 
     /**
      * View blocks
+     *
+     * @var array<string, string>
      */
     protected array $blocks = [];
 
     /**
      * View incomplete blocks
+     *
+     * @var array<string>
      */
     protected array $incompleteBlocks = [];
 
@@ -65,6 +72,9 @@ class View
 
     /**
      * Create a new View instance
+     *
+     * @param array<string, mixed>   $vars
+     * @param array<string, Closure> $methods
      */
     public function __construct(string $name, array $vars = [], ?string $path = null, array $methods = [])
     {
@@ -108,6 +118,8 @@ class View
 
     /**
      * Insert a view
+     *
+     * @param array<string, mixed> $vars
      */
     public function insert(string $name, array $vars = []): void
     {
@@ -147,7 +159,13 @@ class View
             throw $e;
         }
 
-        return ob_get_clean();
+        $contents = ob_get_clean();
+
+        if ($contents === false) {
+            throw new RenderingException();
+        }
+
+        return $contents;
     }
 
     /**
@@ -178,7 +196,14 @@ class View
             throw new RenderingException('There are no blocks to end');
         }
         $block = array_pop($this->incompleteBlocks);
-        $this->blocks[$block] = ob_get_clean();
+
+        $contents = ob_get_clean();
+
+        if ($contents === false) {
+            throw new RenderingException();
+        }
+
+        $this->blocks[$block] = $contents;
     }
 
     /**
@@ -216,6 +241,8 @@ class View
 
     /**
      * Return the layout view instance
+     *
+     * @param array<string, mixed> $vars
      */
     protected function createLayoutView(string $name, array $vars = []): View
     {
@@ -235,7 +262,14 @@ class View
 
         if (isset($this->layout)) {
             $this->layout->vars = $this->vars;
-            $this->layout->blocks['content'] = ob_get_contents();
+            $contents = ob_get_contents();
+
+            if ($contents === false) {
+                throw new RenderingException();
+            }
+
+            $this->layout->blocks['content'] = $contents;
+
             ob_clean(); // Clean but don't end output buffer
             $this->layout->output();
         }
@@ -249,7 +283,10 @@ class View
         ob_end_flush();
     }
 
-    protected function callMethod($method, $arguments)
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function callMethod(string $method, array $arguments): mixed
     {
         if (!$this->rendering && !$this->allowMethods) {
             throw new RenderingException(sprintf('%s::%s() is allowed only in rendering context', static::class, $method));

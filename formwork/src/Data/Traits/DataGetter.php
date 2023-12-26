@@ -6,6 +6,9 @@ use Formwork\Utils\Arr;
 
 trait DataGetter
 {
+    /**
+     * @var array<string, mixed>
+     */
     protected array $data = [];
 
     /**
@@ -19,7 +22,7 @@ trait DataGetter
     /**
      * Get data by key returning a default value if key is not present
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->data, $key, $default);
     }

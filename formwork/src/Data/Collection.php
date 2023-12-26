@@ -39,6 +39,8 @@ final class Collection extends AbstractCollection
 
     /**
      * Create a collection with the given options
+     *
+     * @param array<mixed> $data
      */
     public static function create(array $data = [], ?string $dataType = null, bool $associative = false, bool $mutable = false): static
     {
@@ -55,6 +57,8 @@ final class Collection extends AbstractCollection
 
     /**
      * Create a collection of the given type
+     *
+     * @param array<mixed> $data
      */
     public static function of(string $dataType, array $data = [], bool $associative = false, bool $mutable = false): static
     {
@@ -64,13 +68,12 @@ final class Collection extends AbstractCollection
     /**
      * Convert an arrayable object to a collection trying to guess its data type
      */
-    public static function from($object, ?bool $typed = null, bool $mutable = false): static
+    public static function from(mixed $object, ?bool $typed = null, bool $mutable = false): static
     {
         $data = Arr::from($object);
+        $dataType = null;
 
         if ($typed !== false) {
-            $dataType = null;
-
             foreach ($data as $value) {
                 $type = get_debug_type($value);
 

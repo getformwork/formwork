@@ -106,6 +106,8 @@ class LanguageCodes
      * Return language native names optionally filtered by continent
      * 'AF' = Africa, 'AS' = Asia, 'EU' = Europe,
      * 'NA' = North America, 'OC' = Oceania, 'SA' = South America
+     *
+     * @return array<string, string>
      */
     public static function names(?string $continent = null): array
     {

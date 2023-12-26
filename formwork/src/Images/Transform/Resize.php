@@ -13,7 +13,7 @@ class Resize extends AbstractTransform
 
     protected ResizeMode $mode;
 
-    public function __construct(int $width, int $height, ResizeMode $mode = ResizeMode::Cover)
+    final public function __construct(int $width, int $height, ResizeMode $mode = ResizeMode::Cover)
     {
         $this->width = $width;
         $this->height = $height;
@@ -22,7 +22,7 @@ class Resize extends AbstractTransform
 
     public static function fromArray(array $data): static
     {
-        return new self($data['width'], $data['height'], $data['mode']);
+        return new static($data['width'], $data['height'], $data['mode']);
     }
 
     public function apply(GdImage $image, ImageInfo $info): GdImage

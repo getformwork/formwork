@@ -13,6 +13,8 @@ final class DataGetter implements Arrayable
 
     /**
      * Create a new instance
+     *
+     * @param array<string, mixed> $data
      */
     public function __construct(array $data)
     {

@@ -103,10 +103,12 @@ class GifDecoder implements DecoderInterface
             $size = ord($data[$position]);
             $position += $size + 1;
         }
-        return $position;
         throw new UnexpectedValueException('Unexpected end of data');
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function parseLogicalScreenDescriptor(string $data): array
     {
         return [
@@ -122,6 +124,9 @@ class GifDecoder implements DecoderInterface
         ];
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function parseImageDescriptor(string $data): array
     {
         return [

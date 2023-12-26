@@ -32,7 +32,7 @@ class UsersController extends AbstractController
         return new Response($this->view('users.index', [
             'title' => $this->translate('panel.users.users'),
             'users' => $this->panel()->users(),
-        ], return: true));
+        ]));
     }
 
     /**
@@ -155,11 +155,13 @@ class UsersController extends AbstractController
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
             'fields' => $fields,
-        ], return: true));
+        ]));
     }
 
     /**
      * Update user data from POST request
+     *
+     * @param array<string, mixed> $data
      */
     protected function updateUser(User $user, array $data): void
     {
@@ -207,7 +209,7 @@ class UsersController extends AbstractController
 
         $uploadedFile = $uploader->upload($file, $imagesPath, FileSystem::randomName());
 
-        if ($uploadedFile && $uploadedFile->type() === 'image') {
+        if ($uploadedFile->type() === 'image') {
             $userImageSize = $this->config->get('system.panel.userImageSize');
 
             // Square off uploaded image
@@ -220,6 +222,8 @@ class UsersController extends AbstractController
             $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
             return $uploadedFile->name();
         }
+
+        return null;
     }
 
     /**

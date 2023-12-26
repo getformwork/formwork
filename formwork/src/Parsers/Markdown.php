@@ -12,6 +12,8 @@ class Markdown extends AbstractParser
 {
     /**
      * Parse a Markdown string
+     *
+     * @param array<string, mixed> $options
      */
     public static function parse(string $input, array $options = []): string
     {

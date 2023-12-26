@@ -14,6 +14,8 @@ class RouteCollection extends AbstractCollection
 
     /**
      * Add route to the collection
+     *
+     * @param Route $route
      */
     public function add($route): void
     {

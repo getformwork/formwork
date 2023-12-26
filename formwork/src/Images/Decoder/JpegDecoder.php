@@ -2,6 +2,7 @@
 
 namespace Formwork\Images\Decoder;
 
+use Exception;
 use Generator;
 use InvalidArgumentException;
 
@@ -54,5 +55,6 @@ class JpegDecoder implements DecoderInterface
             }
             $position += 2;
         }
+        throw new Exception('Segment end not found');
     }
 }

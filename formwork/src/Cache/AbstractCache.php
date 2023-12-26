@@ -7,12 +7,12 @@ abstract class AbstractCache
     /**
      * Return cached resource
      */
-    abstract public function fetch(string $key);
+    abstract public function fetch(string $key): mixed;
 
     /**
      * Save data to cache
      */
-    abstract public function save(string $key, $value): void;
+    abstract public function save(string $key, mixed $value): void;
 
     /**
      * Delete cached resource
@@ -36,18 +36,24 @@ abstract class AbstractCache
 
     /**
      * Fetch multiple data from cache
+     *
+     * @param list<string> $keys
+     *
+     * @return array<string, mixed>
      */
     public function fetchMultiple(array $keys): array
     {
         $result = [];
         foreach ($keys as $key) {
-            $result[] = $this->fetch($key);
+            $result[$key] = $this->fetch($key);
         }
         return $result;
     }
 
     /**
      * Save multiple data to cache
+     *
+     * @param array<string, mixed> $keysAndValues
      */
     public function saveMultiple(array $keysAndValues): void
     {
@@ -58,6 +64,8 @@ abstract class AbstractCache
 
     /**
      * Delete multiple cached resources
+     *
+     * @param list<string> $keys
      */
     public function deleteMultiple(array $keys): void
     {
@@ -68,6 +76,8 @@ abstract class AbstractCache
 
     /**
      * Return whether multiple resources are cached
+     *
+     * @param list<string> $keys
      */
     public function hasMultiple(array $keys): bool
     {

@@ -2,7 +2,9 @@
 
 namespace Formwork\Utils;
 
+use Closure;
 use Formwork\Traits\StaticClass;
+use UnexpectedValueException;
 
 class Str
 {
@@ -175,8 +177,10 @@ class Str
 
     /**
      * Interpolate values between `{{` and `}}` in a string using an array or a callback
+     *
+     * @param array<string, mixed>|Closure $data
      */
-    public static function interpolate(string $string, array|callable $data): string
+    public static function interpolate(string $string, array|Closure $data): string
     {
         return preg_replace_callback(
             self::INTERPOLATION_REGEX,
@@ -191,8 +195,11 @@ class Str
     /**
      * Split a string in chunks of given length with a delimiter
      */
-    public static function chunk(string $string, string $length, string $delimiter): string
+    public static function chunk(string $string, int $length, string $delimiter): string
     {
+        if ($length <= 0) {
+            throw new UnexpectedValueException('$length must be greater than 0');
+        }
         return implode($delimiter, str_split($string, $length));
     }
 }

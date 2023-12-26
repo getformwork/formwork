@@ -10,12 +10,12 @@ class FileResponse extends Response
     /**
      * @inheritdoc
      */
-    public function __construct(string $path, bool $download = false, ResponseStatus $status = ResponseStatus::OK, array $headers = [])
+    public function __construct(string $path, ResponseStatus $status = ResponseStatus::OK, array $headers = [], bool $download = false)
     {
         $headers += [
             'Content-Type'        => FileSystem::mimeType($path),
             'Content-Disposition' => !$download ? 'inline' : Header::make(['attachment', 'filename' => basename($path)]),
-            'Content-Length'      => FileSystem::fileSize($path),
+            'Content-Length'      => (string) FileSystem::fileSize($path),
         ];
         parent::__construct(FileSystem::read($path), $status, $headers);
     }

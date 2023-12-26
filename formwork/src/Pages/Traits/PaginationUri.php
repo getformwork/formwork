@@ -135,7 +135,7 @@ trait PaginationUri
         $routeName = Str::removeEnd($router->current()->getName(), static::$routeSuffix);
 
         if (!$router->routes()->has($routeName)) {
-            throw new RuntimeException(sprintf('Cannot generate pagination routes, base route "%s" is not defined', $this->routeName));
+            throw new RuntimeException(sprintf('Cannot generate pagination routes, base route "%s" is not defined', $routeName));
         }
 
         return $this->baseRoute = $router->routes()->get($routeName);

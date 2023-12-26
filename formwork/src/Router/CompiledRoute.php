@@ -16,9 +16,14 @@ class CompiledRoute
 
     /**
      * Route params
+     *
+     * @var list<string>
      */
     protected array $params;
 
+    /**
+     * @param list<string> $params
+     */
     public function __construct(string $path, string $regex, array $params)
     {
         $this->path = $path;
@@ -44,6 +49,8 @@ class CompiledRoute
 
     /**
      * Get route params
+     *
+     * @return list<string>
      */
     public function params(): array
     {

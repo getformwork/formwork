@@ -79,6 +79,8 @@ class Header
 
     /**
      * Make header content
+     *
+     * @param array<int|string, string> $data
      */
     public static function make(array $data): string
     {

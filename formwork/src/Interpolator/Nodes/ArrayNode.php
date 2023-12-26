@@ -11,6 +11,9 @@ class ArrayNode extends AbstractNode
 
     protected ArrayKeysNode $keys;
 
+    /**
+     * @param list<mixed> $value
+     */
     public function __construct(array $value, ArrayKeysNode $keys)
     {
         $this->value = $value;

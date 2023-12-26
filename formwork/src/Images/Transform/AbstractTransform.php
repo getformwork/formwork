@@ -2,16 +2,11 @@
 
 namespace Formwork\Images\Transform;
 
-use Formwork\Data\Contracts\ArraySerializable;
-use Formwork\Images\ImageInfo;
 use Formwork\Parsers\Php;
 use Formwork\Utils\Str;
-use GdImage;
 
-abstract class AbstractTransform implements ArraySerializable
+abstract class AbstractTransform implements TransformInterface
 {
-    abstract public function apply(GdImage $image, ImageInfo $info): GdImage;
-
     public function toArray(): array
     {
         return get_object_vars($this);

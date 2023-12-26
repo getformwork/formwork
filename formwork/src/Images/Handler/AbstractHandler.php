@@ -12,14 +12,20 @@ use GdImage;
 use RuntimeException;
 use UnexpectedValueException;
 
-abstract class AbstractHandler
+abstract class AbstractHandler implements HandlerInterface
 {
     protected string $data;
 
     protected DecoderInterface $decoder;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $options;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(string $data, array $options = [])
     {
         $this->data = $data;
@@ -27,12 +33,12 @@ abstract class AbstractHandler
         $this->options = [...$this->defaults(), ...$options];
     }
 
-    public static function fromPath(string $path): AbstractHandler
+    public static function fromPath(string $path): static
     {
         return new static(FileSystem::read($path));
     }
 
-    public static function fromGdImage(GdImage $image, array $options = []): AbstractHandler
+    public static function fromGdImage(GdImage $image, array $options = []): static
     {
         $handler = new static('', $options);
         $handler->setDataFromGdImage($image);

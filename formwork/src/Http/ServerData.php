@@ -9,6 +9,8 @@ class ServerData extends RequestData
 {
     /**
      * @internal
+     *
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {

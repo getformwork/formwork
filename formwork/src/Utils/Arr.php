@@ -4,6 +4,7 @@ namespace Formwork\Utils;
 
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Traits\StaticClass;
+use Stringable;
 use Traversable;
 use UnexpectedValueException;
 
@@ -14,8 +15,10 @@ class Arr
     /**
      * Get data by key returning a default value if key is not present in a given array,
      * using dot notation to traverse if literal key is not found
+     *
+     * @param array<string, mixed> $array
      */
-    public static function get(array $array, string $key, $default = null)
+    public static function get(array $array, string $key, mixed $default = null): mixed
     {
         if (array_key_exists($key, $array)) {
             return $array[$key];
@@ -32,6 +35,8 @@ class Arr
     /**
      * Return whether a key is present in a given array, using dot notation to traverse
      * if literal key is not found
+     *
+     * @param array<string, mixed> $array
      */
     public static function has(array $array, string $key): bool
     {
@@ -49,8 +54,10 @@ class Arr
 
     /**
      * Set data by key using dot notation to traverse if literal key is not found
+     *
+     * @param array<string, mixed> $array
      */
-    public static function set(array &$array, string $key, $value): void
+    public static function set(array &$array, string $key, mixed $value): void
     {
         if (array_key_exists($key, $array)) {
             $array[$key] = $value;
@@ -69,6 +76,8 @@ class Arr
 
     /**
      * Remove data by key using dot notation to traverse if literal key is not found
+     *
+     * @param array<string, mixed> $array
      */
     public static function remove(array &$array, string $key): void
     {
@@ -89,8 +98,10 @@ class Arr
 
     /**
      * Remove from an array all the occurrences of the given value
+     *
+     * @param array<mixed> $array
      */
-    public static function pull(array &$array, $value): void
+    public static function pull(array &$array, mixed $value): void
     {
         foreach ($array as $key => $v) {
             if ($v === $value) {
@@ -102,9 +113,14 @@ class Arr
     /**
      * Remove a portion of the array and replace it with something else like `array_splice` but also preserve string keys from the replacement array
      *
+     * @param array<mixed>|array<mixed> $array
+     * @param array<mixed>|array<mixed> $replacement
+     *
      * @throws UnexpectedValueException if some keys in the replacement array are the same of the resulting array
+     *
+     * @return array<mixed>
      */
-    public static function splice(array &$array, int $offset, ?int $length = null, $replacement = []): array
+    public static function splice(array &$array, int $offset, ?int $length = null, array $replacement = []): array
     {
         $replacement = (array) $replacement;
 
@@ -139,6 +155,8 @@ class Arr
 
     /**
      * Move an item from the given index to another
+     *
+     * @param array<mixed>|array<mixed> $array
      */
     public static function moveItem(array &$array, int $fromIndex, int $toIndex): void
     {
@@ -149,6 +167,10 @@ class Arr
 
     /**
      * Return an array of `[$key, $value]` pairs from the given array
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<array<int|string, mixed>>
      */
     public static function entries(array $array): array
     {
@@ -164,8 +186,10 @@ class Arr
     /**
      * Get the array value at the given index,
      * negative indices are not allowed, use `Arr:at()` instead
+     *
+     * @param array<mixed> $array
      */
-    public static function nth(array $array, int $index)
+    public static function nth(array $array, int $index): mixed
     {
         return array_values($array)[$index] ?? null;
     }
@@ -173,16 +197,20 @@ class Arr
     /**
      * Get the array value at the given index,
      * negative indices are allowed and start from the end
+     *
+     * @param array<mixed> $array
      */
-    public static function at(array $array, int $index)
+    public static function at(array $array, int $index): mixed
     {
         return array_values($array)[$index >= 0 ? $index : count($array) + $index] ?? null;
     }
 
     /**
      * Get the index of the given value or null if not found
+     *
+     * @param array<mixed> $array
      */
-    public static function indexOf(array $array, $value): ?int
+    public static function indexOf(array $array, mixed $value): ?int
     {
         $index = array_search($value, array_values($array), true);
         return $index !== false ? $index : null;
@@ -190,8 +218,10 @@ class Arr
 
     /**
      * Get the key of the given value or null if not found
+     *
+     * @param array<mixed> $array
      */
-    public static function keyOf(array $array, $value): int|string|null
+    public static function keyOf(array $array, mixed $value): int|string|null
     {
         $key = array_search($value, $array, true);
         return $key !== false ? $key : null;
@@ -199,6 +229,10 @@ class Arr
 
     /**
      * Return the duplicate items of the array
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function duplicates(array $array): array
     {
@@ -207,6 +241,11 @@ class Arr
 
     /**
      * Recursively append items from the second array that are missing in the first
+     *
+     * @param array<mixed> $array1
+     * @param array<mixed> $array2
+     *
+     * @return array<mixed>
      */
     public static function appendMissing(array $array1, array $array2): array
     {
@@ -220,14 +259,20 @@ class Arr
 
     /**
      * Return a random value from a given array
+     *
+     * @param array<mixed> $array
      */
-    public static function random(array $array, $default = null)
+    public static function random(array $array, mixed $default = null): mixed
     {
         return count($array) > 0 ? $array[array_rand($array)] : $default;
     }
 
     /**
      * Return a given array with its values shuffled optionally preserving the key/value pairs
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function shuffle(array $array, bool $preserveKeys = false): array
     {
@@ -249,6 +294,8 @@ class Arr
 
     /**
      * Return whether the given array is not empty and its keys are not sequential
+     *
+     * @param array<mixed> $array
      */
     public static function isAssociative(array $array): bool
     {
@@ -259,6 +306,10 @@ class Arr
      * Apply a callback to the given array and return the result
      *
      * The key of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function map(array $array, callable $callback): array
     {
@@ -270,6 +321,10 @@ class Arr
      * Apply a callback to the given array keys and return the result
      *
      * The value of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function mapKeys(array $array, callable $callback): array
     {
@@ -281,6 +336,10 @@ class Arr
      * Filter an array keeping only the values for which the callback returns `true`
      *
      * The key of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function filter(array $array, callable $callback): array
     {
@@ -291,6 +350,10 @@ class Arr
      * Reject values from an array keeping only the values for which the callback returns `false`
      *
      * The key of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function reject(array $array, callable $callback): array
     {
@@ -301,6 +364,8 @@ class Arr
      * Return whether every element of the array passes a test callback
      *
      * The key of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
      */
     public static function every(array $array, callable $callback): bool
     {
@@ -316,6 +381,8 @@ class Arr
      * Return whether some element of the array passes a test callback
      *
      * The key of each element is passed to the callback as second argument
+     *
+     * @param array<mixed> $array
      */
     public static function some(array $array, callable $callback): bool
     {
@@ -329,14 +396,22 @@ class Arr
 
     /**
      * Get the value corresponding to the specified key from each element of an array
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
-    public static function pluck(array $array, string $key, $default = null): array
+    public static function pluck(array $array, string $key, mixed $default = null): array
     {
         return static::map($array, fn ($value) => static::get(static::from($value), $key, $default));
     }
 
     /**
      * Group array items using the return value of the given callback
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
      */
     public static function group(array $array, callable $callback): array
     {
@@ -345,7 +420,7 @@ class Arr
         foreach (static::map($array, $callback) as $key => $value) {
             // Try to cast objects to string as `$value` will be used as key
             // in the resulting array
-            if (is_object($value)) {
+            if ($value instanceof Stringable) {
                 $value = (string) $value;
             }
 
@@ -359,11 +434,14 @@ class Arr
     /**
      * Sort an array with the given options
      *
-     * @param $direction     Direction of sorting. Possible values are `SORT_ASC` and `SORT_DESC`.
-     * @param $type          Type of sorting. Possible values are `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_NATURAL`.
-     * @param $caseSensitive Whether to perform a case-sensitive sorting
-     * @param $sortBy        A callback or second array of values used to sort the first
-     * @param $preserveKeys  Whether to preserve array keys after sorting
+     * @param array<mixed>               $array
+     * @param                            $direction     Direction of sorting. Possible values are `SORT_ASC` and `SORT_DESC`.
+     * @param                            $type          Type of sorting. Possible values are `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_NATURAL`.
+     * @param                            $caseSensitive Whether to perform a case-sensitive sorting
+     * @param callable|list<string>|null $sortBy        A callback or second array of values used to sort the first
+     * @param                            $preserveKeys  Whether to preserve array keys after sorting
+     *
+     * @return array<mixed>
      */
     public static function sort(
         array $array,
@@ -417,8 +495,10 @@ class Arr
 
     /**
      * Try to convert the given object to array
+     *
+     * @return array<mixed>
      */
-    public static function from($object): array
+    public static function from(mixed $object): array
     {
         switch (true) {
             case is_array($object):
@@ -436,6 +516,10 @@ class Arr
 
     /**
      * Create an array from `[$key, $value]` pairs
+     *
+     * @param array<array<int|string, mixed>> $entries
+     *
+     * @return array<mixed>
      */
     public static function fromEntries(array $entries): array
     {

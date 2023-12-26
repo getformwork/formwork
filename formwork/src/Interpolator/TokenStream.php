@@ -8,6 +8,8 @@ class TokenStream
 {
     /**
      * Array containing tokens
+     *
+     * @var list<Token>
      */
     protected array $tokens;
 
@@ -21,6 +23,9 @@ class TokenStream
      */
     protected int $count = 0;
 
+    /**
+     * @param list<Token> $tokens
+     */
     public function __construct(array $tokens)
     {
         $this->tokens = $tokens;

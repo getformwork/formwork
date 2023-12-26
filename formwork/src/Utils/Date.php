@@ -123,10 +123,10 @@ class Date
         return preg_replace_callback(
             self::DATE_FORMAT_REGEX,
             fn (array $matches): string => match ($matches[0]) {
-                'M'     => $translation->translate('date.months.short')[$dateTime->format('n') - 1],
-                'F'     => $translation->translate('date.months.long')[$dateTime->format('n') - 1],
-                'D'     => $translation->translate('date.weekdays.short')[$dateTime->format('w')],
-                'l'     => $translation->translate('date.weekdays.long')[$dateTime->format('w')],
+                'M'     => $translation->getStrings('date.months.short')[$dateTime->format('n') - 1],
+                'F'     => $translation->getStrings('date.months.long')[$dateTime->format('n') - 1],
+                'D'     => $translation->getStrings('date.weekdays.short')[(int) $dateTime->format('w')],
+                'l'     => $translation->getStrings('date.weekdays.long')[(int) $dateTime->format('w')],
                 'r'     => static::formatDateTime($dateTime, DateTime::RFC2822),
                 default => $dateTime->format($matches[1] ?? $matches[0])
             },
@@ -171,12 +171,15 @@ class Date
                 $distance = sprintf(
                     '%d %s',
                     $interval,
-                    $translation->translate('date.duration.' . $intervalName)[$number]
+                    $translation->getStrings('date.duration.' . $intervalName)[$number]
                 );
                 break;
             }
         }
 
+        /**
+         * @var string
+         */
         return $translation->translate($format, $distance ?? '');
     }
 
@@ -190,6 +193,8 @@ class Date
 
     /**
      * Get default date formats from config
+     *
+     * @return array<string>
      */
     protected static function getDefaultFormats(): array
     {
@@ -201,9 +206,14 @@ class Date
 
     /**
      * Create a DateTime object from a date string and a list of formats
+     *
+     * @param array<string> $formats
      */
     protected static function createDateTime(string $date, array $formats): DateTime
     {
+        if ($formats === []) {
+            throw new InvalidArgumentException(sprintf('At least 1 format must be given to %s()', __METHOD__));
+        }
         foreach ($formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $date);
             if ($dateTime !== false) {

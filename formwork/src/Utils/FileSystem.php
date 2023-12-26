@@ -129,7 +129,7 @@ class FileSystem
     /**
      * Get MIME type of a file
      */
-    public static function mimeType(string $file): ?string
+    public static function mimeType(string $file): string
     {
         return MimeType::fromFile($file);
     }
@@ -465,8 +465,10 @@ class FileSystem
             static::assertExists($destination, false);
         }
         if (@copy($source, $destination)) {
-            @chmod($destination, @fileperms($source));
-            return true;
+            if (($perms = @fileperms($source))) {
+                @chmod($destination, $perms);
+                return true;
+            }
         }
         throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastErrorMessage()));
     }
@@ -487,7 +489,9 @@ class FileSystem
         if (!static::exists($destination)) {
             static::createDirectory($destination, true);
         }
-        @chmod($destination, @fileperms($source));
+        if (($perms = @fileperms($source))) {
+            @chmod($destination, $perms);
+        }
         try {
             foreach (static::listContents($source, self::LIST_ALL) as $item) {
                 $sourceItemPath = static::joinPaths($source, $item);
@@ -752,8 +756,8 @@ class FileSystem
         if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
             throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, static::getLastErrorMessage()));
         }
-        if (static::exists($file)) {
-            @chmod($temporaryFile, @fileperms($file));
+        if (static::exists($file) && ($perms = @fileperms($file))) {
+            @chmod($temporaryFile, $perms);
         }
         return static::moveFile($temporaryFile, $file, true);
     }

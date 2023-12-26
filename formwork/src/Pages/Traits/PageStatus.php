@@ -9,6 +9,8 @@ trait PageStatus
 {
     /**
      * Page data
+     *
+     * @var array<string, mixed>
      */
     protected array $data = [];
 
@@ -33,13 +35,17 @@ trait PageStatus
 
         $now = time();
 
-        /** @var ?string */
         if ($publishDate = $this->data['publishDate'] ?? null) {
+            /**
+             * @var ?string $publishDate
+             */
             $published = $published && Date::toTimestamp($publishDate) < $now;
         }
 
-        /** @var ?string */
         if ($unpublishDate = $this->data['unpublishDate'] ?? null) {
+            /**
+             * @var ?string $unpublishDate
+             */
             $published = $published && Date::toTimestamp($unpublishDate) > $now;
         }
 
