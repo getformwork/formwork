@@ -30,12 +30,14 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "league/climate": "^3.8",
         "symfony/process": "^6.4",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "rector/rector": "^0.18.13"
     },
     "scripts": {
         "fix": "php-cs-fixer fix --config=formwork/.php-cs-fixer.php --cache-file=formwork/.php-cs-fixer.cache --verbose",
         "phpstan": "phpstan analyse --configuration=formwork/phpstan.neon",
         "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
+        "rector": "rector --config=formwork/.rector.php",
         "serve": "php bin/serve"
     }
 }
