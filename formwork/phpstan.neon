@@ -3,10 +3,17 @@ includes:
 parameters:
 	level: 8
 	paths:
-		- formwork/src
+		- ../
+	excludePaths:
+		- views
+		- ../panel/node_modules
+		- ../panel/views
+		- ../site/templates
+		- ../vendor
 	scanFiles:
-		- index.php
+		- ../index.php
 	ignoreErrors:
 		- '#^Call to an undefined method Formwork\\Data\\CollectionDataProxy\:\:#'
+		- '#^Call to an undefined method Formwork\\Fields\\Field\:\:#'
 		- '#^Call to an undefined method Formwork\\Pages\\Page\:\:#'
 		- '#^Call to an undefined method Formwork\\Pages\\Site\:\:#'

@@ -3,7 +3,7 @@
 namespace PhpCsFixer;
 
 $finder = Finder::create()
-    ->in(__DIR__)
+    ->in(dirname(__DIR__))
     ->exclude(['formwork/views', 'panel/node_modules', 'panel/views', 'site/templates']);
 
 $config = new Config();
@@ -18,7 +18,7 @@ return $config
         'cast_spaces' => true,
         'class_attributes_separation' => true,
         'escape_implicit_backslashes' => true,
-        'fully_qualified_strict_types' => true,
+        'fully_qualified_strict_types' => ['import_symbols' => true, 'leading_backslash_in_global_namespace' => false],
         'function_declaration' => true,
         'include' => true,
         'multiline_whitespace_before_semicolons' => true,
