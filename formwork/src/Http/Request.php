@@ -393,7 +393,7 @@ class Request
 
         foreach ($files as $fieldName => $data) {
             if (is_array($data['name'])) {
-                foreach ($data['name'] as $i => $name) {
+                foreach (array_keys($data['name']) as $i) {
                     /**
                      * @var array<string, list<UploadedFile>> $result
                      */

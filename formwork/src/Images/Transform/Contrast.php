@@ -25,10 +25,10 @@ class Contrast extends AbstractTransform
         return new static($data['amount']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
         // For GD -100 = max contrast, 100 = min contrast; we change $amount sign for a more predictable behavior
-        imagefilter($image, IMG_FILTER_CONTRAST, -$this->amount);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_CONTRAST, -$this->amount);
+        return $gdImage;
     }
 }

@@ -14,8 +14,6 @@ use UnexpectedValueException;
 
 abstract class AbstractHandler implements HandlerInterface
 {
-    protected string $data;
-
     protected DecoderInterface $decoder;
 
     /**
@@ -26,9 +24,8 @@ abstract class AbstractHandler implements HandlerInterface
     /**
      * @param array<string, mixed> $options
      */
-    public function __construct(string $data, array $options = [])
+    public function __construct(protected string $data, array $options = [])
     {
-        $this->data = $data;
         $this->decoder = $this->getDecoder();
         $this->options = [...$this->defaults(), ...$options];
     }
@@ -38,11 +35,11 @@ abstract class AbstractHandler implements HandlerInterface
         return new static(FileSystem::read($path));
     }
 
-    public static function fromGdImage(GdImage $image, array $options = []): static
+    public static function fromGdImage(GdImage $gdImage, array $options = []): static
     {
-        $handler = new static('', $options);
-        $handler->setDataFromGdImage($image);
-        return $handler;
+        $static = new static('', $options);
+        $static->setDataFromGdImage($gdImage);
+        return $static;
     }
 
     /**
@@ -69,7 +66,7 @@ abstract class AbstractHandler implements HandlerInterface
      *
      * @throws RuntimeException if the image has no color profile
      */
-    abstract public function setColorProfile(ColorProfile $profile): void;
+    abstract public function setColorProfile(ColorProfile $colorProfile): void;
 
     /**
      * Remove color profile
@@ -97,7 +94,7 @@ abstract class AbstractHandler implements HandlerInterface
      *
      * @throws RuntimeException if the image does not support EXIF data
      */
-    abstract public function setExifData(ExifData $data): void;
+    abstract public function setExifData(ExifData $exifData): void;
 
     /**
      * Remove EXIF data
@@ -137,19 +134,19 @@ abstract class AbstractHandler implements HandlerInterface
         ];
     }
 
-    public function process(?TransformCollection $transforms = null, ?string $handler = null): AbstractHandler
+    public function process(?TransformCollection $transformCollection = null, ?string $handler = null): AbstractHandler
     {
-        $handler ??= $this::class;
+        $handler ??= static::class;
 
         if (!is_subclass_of($handler, self::class)) {
             throw new UnexpectedValueException(sprintf('Invalid handler of type %s, only instances of %s are allowed', get_debug_type($handler), self::class));
         }
 
-        if ($handler === $this::class && $transforms === null) {
+        if ($handler === static::class && $transformCollection === null) {
             return $this;
         }
 
-        $info = $this->getInfo();
+        $imageInfo = $this->getInfo();
 
         if ($this->options['preserveColorProfile'] && $this->hasColorProfile() && $handler::supportsColorProfile()) {
             $colorProfile = $this->getColorProfile();
@@ -161,13 +158,13 @@ abstract class AbstractHandler implements HandlerInterface
 
         $image = $this->toGdImage();
 
-        if ($transforms !== null) {
-            foreach ($transforms as $transform) {
-                $image = $transform->apply($image, $info);
+        if ($transformCollection !== null) {
+            foreach ($transformCollection as $transform) {
+                $image = $transform->apply($image, $imageInfo);
             }
         }
 
-        if ($handler === $this::class) {
+        if ($handler === static::class) {
             $this->setDataFromGdImage($image);
             $instance = $this;
         } else {
@@ -193,7 +190,7 @@ abstract class AbstractHandler implements HandlerInterface
      */
     abstract protected function getDecoder(): DecoderInterface;
 
-    abstract protected function setDataFromGdImage(GdImage $image): void;
+    abstract protected function setDataFromGdImage(GdImage $gdImage): void;
 
     protected function toGdImage(): GdImage
     {

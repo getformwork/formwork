@@ -7,11 +7,8 @@ use GdImage;
 
 class Pixelate extends AbstractTransform
 {
-    protected int $amount;
-
-    final public function __construct(int $amount)
+    final public function __construct(protected int $amount)
     {
-        $this->amount = $amount;
     }
 
     public static function fromArray(array $data): static
@@ -19,9 +16,9 @@ class Pixelate extends AbstractTransform
         return new static($data['amount']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imagefilter($image, IMG_FILTER_PIXELATE, $this->amount);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_PIXELATE, $this->amount);
+        return $gdImage;
     }
 }

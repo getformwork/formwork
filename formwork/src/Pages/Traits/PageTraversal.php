@@ -201,11 +201,7 @@ trait PageTraversal
      */
     public function siblings(): PageCollection
     {
-        if (isset($this->siblings)) {
-            return $this->siblings;
-        }
-
-        return $this->siblings = $this->inclusiveSiblings()->without($this);
+        return $this->siblings ?? ($this->siblings = $this->inclusiveSiblings()->without($this));
     }
 
     /**

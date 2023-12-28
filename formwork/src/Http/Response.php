@@ -7,16 +7,6 @@ use Formwork\Http\Utils\Header;
 class Response implements ResponseInterface
 {
     /**
-     * Response content
-     */
-    protected string $content;
-
-    /**
-     * Response HTTP status
-     */
-    protected ResponseStatus $status;
-
-    /**
      * Response HTTP headers
      *
      * @var array<string, string>
@@ -25,15 +15,15 @@ class Response implements ResponseInterface
 
     /**
      * Create a new Response instance
+     *
+     * @param string         $content        Response content
+     * @param ResponseStatus $responseStatus Response HTTP status
      */
-    public function __construct(string $content, ResponseStatus $status = ResponseStatus::OK, array $headers = [])
+    public function __construct(protected string $content, protected ResponseStatus $responseStatus = ResponseStatus::OK, array $headers = [])
     {
         $headers += [
             'Content-Type' => Header::make(['text/html', 'charset' => 'utf-8']),
         ];
-
-        $this->content = $content;
-        $this->status = $status;
         $this->headers = $headers;
     }
 
@@ -55,7 +45,7 @@ class Response implements ResponseInterface
      */
     public function status(): ResponseStatus
     {
-        return $this->status;
+        return $this->responseStatus;
     }
 
     /**
@@ -71,7 +61,7 @@ class Response implements ResponseInterface
      */
     public function sendStatus(): void
     {
-        Header::status($this->status);
+        Header::status($this->responseStatus);
     }
 
     /**
@@ -99,7 +89,7 @@ class Response implements ResponseInterface
     {
         return [
             'content' => $this->content,
-            'status'  => $this->status,
+            'status'  => $this->responseStatus,
             'headers' => $this->headers,
         ];
     }

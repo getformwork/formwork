@@ -7,11 +7,8 @@ use GdImage;
 
 class Rotate extends AbstractTransform
 {
-    protected float $angle;
-
-    final public function __construct(float $angle)
+    final public function __construct(protected float $angle)
     {
-        $this->angle = $angle;
     }
 
     public static function fromArray(array $data): static
@@ -19,10 +16,9 @@ class Rotate extends AbstractTransform
         return new static($data['angle']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        $image = imagerotate($image, $this->angle, $backgroundColor);
-        return $image;
+        $backgroundColor = imagecolorallocatealpha($gdImage, 0, 0, 0, 127);
+        return imagerotate($gdImage, $this->angle, $backgroundColor);
     }
 }

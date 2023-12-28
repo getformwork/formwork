@@ -17,9 +17,9 @@ class FieldFactory
     /**
      * @param array<string, mixed> $data
      */
-    public function make(string $name, array $data = [], ?FieldCollection $parent = null): Field
+    public function make(string $name, array $data = [], ?FieldCollection $parentFieldCollection = null): Field
     {
-        $field = new Field($name, $data, $parent);
+        $field = new Field($name, $data, $parentFieldCollection);
 
         $field->setTranslation($this->translations->getCurrent());
 

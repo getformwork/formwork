@@ -20,8 +20,9 @@ use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
+use Stringable;
 
-class Site implements Arrayable
+class Site implements Arrayable, Stringable
 {
     use PageData;
     use PageTraversal;
@@ -116,9 +117,9 @@ class Site implements Arrayable
         $this->setMultiple($data);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title();
+        return (string) $this->title();
     }
 
     public function site(): Site
@@ -308,10 +309,7 @@ class Site implements Arrayable
      */
     public function retrievePage(string $path): Page
     {
-        if (isset($this->storage[$path])) {
-            return $this->storage[$path];
-        }
-        return $this->storage[$path] = new Page(['site' => $this, 'path' => $path]);
+        return $this->storage[$path] ?? ($this->storage[$path] = new Page(['site' => $this, 'path' => $path]));
     }
 
     public function retrievePages(string $path, bool $recursive = false): PageCollection
@@ -372,9 +370,7 @@ class Site implements Arrayable
             }
         }
 
-        $page = $this->retrievePage($path);
-
-        return $page;
+        return $this->retrievePage($path);
     }
 
     /**

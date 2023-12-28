@@ -2,13 +2,10 @@
 
 namespace Formwork\Languages;
 
-class Language
-{
-    /**
-     * Language code
-     */
-    protected string $code;
+use Stringable;
 
+class Language implements Stringable
+{
     /**
      * Language name (in English)
      */
@@ -19,10 +16,8 @@ class Language
      */
     protected ?string $nativeName = null;
 
-    public function __construct(string $code)
+    public function __construct(protected string $code)
     {
-        $this->code = $code;
-
         if (LanguageCodes::hasCode($code)) {
             $this->name = LanguageCodes::codeToName($code);
             $this->nativeName = LanguageCodes::codeToNativeName($code);

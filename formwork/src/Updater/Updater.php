@@ -84,7 +84,7 @@ class Updater
 
         $this->registry = new Registry($this->options['registryFile']);
 
-        if (empty($this->registry->toArray())) {
+        if ($this->registry->toArray() === []) {
             $this->initializeRegistry();
         }
 
@@ -150,9 +150,9 @@ class Updater
             throw new RuntimeException('Cannot update Formwork, archive not downloaded');
         }
 
-        $zip = new ZipArchive();
-        $zip->open($this->options['tempFile']);
-        $baseFolder = $zip->getNameIndex(0);
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($this->options['tempFile']);
+        $baseFolder = $zipArchive->getNameIndex(0);
 
         if ($baseFolder === false) {
             throw new RuntimeException('Cannot get base folder from zip archive');
@@ -160,8 +160,8 @@ class Updater
 
         $installedFiles = [];
 
-        for ($i = 1; $i < $zip->numFiles; $i++) {
-            $filename = $zip->getNameIndex($i);
+        for ($i = 1; $i < $zipArchive->numFiles; $i++) {
+            $filename = $zipArchive->getNameIndex($i);
 
             if ($filename === false) {
                 throw new RuntimeException('Cannot get filename from zip archive');
@@ -176,7 +176,7 @@ class Updater
                     FileSystem::createDirectory($destinationDirectory);
                 }
                 if (!Str::endsWith($destination, DS)) {
-                    $contents = $zip->getFromIndex($i);
+                    $contents = $zipArchive->getFromIndex($i);
                     if ($contents === false) {
                         throw new RuntimeException(sprintf('Cannot read "%s" from zip archive', $filename));
                     }
@@ -190,8 +190,8 @@ class Updater
 
         if ($this->options['cleanupAfterInstall']) {
             $deletableFiles = $this->findDeletableFiles($installedFiles);
-            foreach ($deletableFiles as $file) {
-                FileSystem::delete($file);
+            foreach ($deletableFiles as $deletableFile) {
+                FileSystem::delete($deletableFile);
             }
         }
 
@@ -229,7 +229,7 @@ class Updater
 
         $data = Json::parse($this->client->fetch(self::API_RELEASE_URI)->content());
 
-        if (!$data) {
+        if ($data === []) {
             throw new RuntimeException('Cannot fetch latest Formwork release data');
         }
 
@@ -263,10 +263,7 @@ class Updater
      */
     protected function getHeaders(): array
     {
-        if (isset($this->headers)) {
-            return $this->headers;
-        }
-        return $this->headers = $this->client->fetchHeaders($this->release['archive']);
+        return $this->headers ?? ($this->headers = $this->client->fetchHeaders($this->release['archive']));
     }
 
     /**
@@ -274,9 +271,9 @@ class Updater
      */
     protected function isVersionInstallable(string $version): bool
     {
-        $current = SemVer::fromString($this->app::VERSION);
+        $semVer = SemVer::fromString($this->app::VERSION);
         $new = SemVer::fromString($version);
-        return !$new->isPrerelease() && $current->compareWith($new, '!=') && $current->compareWith($new, '^');
+        return !$new->isPrerelease() && $semVer->compareWith($new, '!=') && $semVer->compareWith($new, '^');
     }
 
     /**
@@ -302,11 +299,11 @@ class Updater
     protected function findDeletableFiles(array $installedFiles): array
     {
         $list = [];
-        foreach ($installedFiles as $path) {
-            $list[] = $path;
-            if (FileSystem::isDirectory($path, assertExists: false)) {
-                foreach (FileSystem::listContents($path, FileSystem::LIST_ALL) as $item) {
-                    $item = FileSystem::joinPaths($path, $item);
+        foreach ($installedFiles as $installedFile) {
+            $list[] = $installedFile;
+            if (FileSystem::isDirectory($installedFile, assertExists: false)) {
+                foreach (FileSystem::listContents($installedFile, FileSystem::LIST_ALL) as $item) {
+                    $item = FileSystem::joinPaths($installedFile, $item);
                     if (FileSystem::isDirectory($item) && !FileSystem::isEmptyDirectory($item)) {
                         continue;
                     }

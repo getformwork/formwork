@@ -33,7 +33,7 @@ return function (App $app) {
                 throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not match the required pattern', $field->name(), $field->value()));
             }
 
-            return (string) $value;
+            return $value;
         },
     ];
 

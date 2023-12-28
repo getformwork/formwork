@@ -6,14 +6,18 @@ use Formwork\Languages\Languages;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
 use Formwork\Utils\Str;
+use InvalidArgumentException;
 
 return function (Languages $languages) {
     return [
         'format' => function (Field $field, ?string $format = null, string $type = 'pattern'): string {
-            $format = match (strtolower($type)) {
-                'pattern' => Date::patternToFormat($format),
-                'date'    => $format
-            };
+            if ($format !== null) {
+                $format = match (strtolower($type)) {
+                    'pattern' => Date::patternToFormat($format),
+                    'date'    => $format,
+                    default   => throw new InvalidArgumentException('Invalid date format type')
+                };
+            }
             return $field->isEmpty() ? '' : Date::formatTimestamp($field->toTimestamp(), $format);
         },
 

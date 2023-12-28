@@ -141,9 +141,9 @@ class Container
 
         $parameters = $definition->getParameters();
 
-        foreach ($parameters as &$param) {
-            if ($param instanceof Closure) {
-                $param = $this->call($param);
+        foreach ($parameters as &$parameter) {
+            if ($parameter instanceof Closure) {
+                $parameter = $this->call($parameter);
             }
         }
 
@@ -193,13 +193,13 @@ class Container
      *
      * @return list<mixed>
      */
-    private function buildArguments(ReflectionFunctionAbstract $method, array $parameters = []): array
+    private function buildArguments(ReflectionFunctionAbstract $reflectionFunctionAbstract, array $parameters = []): array
     {
         $arguments = [];
 
-        foreach ($method->getParameters() as $parameter) {
-            $type = $parameter->getType();
-            $name = $parameter->getName();
+        foreach ($reflectionFunctionAbstract->getParameters() as $reflectionParameter) {
+            $type = $reflectionParameter->getType();
+            $name = $reflectionParameter->getName();
 
             if (array_key_exists($name, $parameters)) {
                 $arguments[] = $parameters[$name];
@@ -207,11 +207,11 @@ class Container
             }
 
             if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                if ($parameter->isOptional()) {
+                if ($reflectionParameter->isOptional()) {
                     continue;
                 }
-                if ($parameter->isDefaultValueAvailable()) {
-                    $arguments[] = $parameter->getDefaultValue();
+                if ($reflectionParameter->isDefaultValueAvailable()) {
+                    $arguments[] = $reflectionParameter->getDefaultValue();
                     continue;
                 }
 

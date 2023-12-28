@@ -20,14 +20,14 @@ class Header
      *
      * @return string|void
      */
-    public static function status(ResponseStatus $status, bool $send = true, bool $exit = false)
+    public static function status(ResponseStatus $responseStatus, bool $send = true, bool $exit = false)
     {
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0';
-        $status = implode(' ', [$protocol, $status->value]);
+        $responseStatus = implode(' ', [$protocol, $responseStatus->value]);
         if (!$send) {
-            return $status;
+            return $responseStatus;
         }
-        header($status);
+        header($responseStatus);
         if ($exit) {
             exit;
         }
@@ -65,14 +65,14 @@ class Header
     /**
      * Redirect to a given URI and exit from the script
      *
-     * @param ResponseStatus $status Redirect HTTP response status code
+     * @param ResponseStatus $responseStatus Redirect HTTP response status code
      */
-    public static function redirect(string $uri, ResponseStatus $status = ResponseStatus::Found): void
+    public static function redirect(string $uri, ResponseStatus $responseStatus = ResponseStatus::Found): void
     {
-        if ($status->type() !== ResponseStatusType::Redirection) {
-            throw new InvalidArgumentException(sprintf('Invalid response status "%s" for redirection, only 3XX statuses are allowed', $status->value));
+        if ($responseStatus->type() !== ResponseStatusType::Redirection) {
+            throw new InvalidArgumentException(sprintf('Invalid response status "%s" for redirection, only 3XX statuses are allowed', $responseStatus->value));
         }
-        static::status($status);
+        static::status($responseStatus);
         static::send('Location', $uri);
         exit;
     }

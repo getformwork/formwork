@@ -26,9 +26,10 @@ use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use ReflectionClass;
 use RuntimeException;
+use Stringable;
 use UnexpectedValueException;
 
-class Page implements Arrayable
+class Page implements Arrayable, Stringable
 {
     use PageData;
     use PageStatus;
@@ -147,7 +148,7 @@ class Page implements Arrayable
 
         $this->loadFiles();
 
-        if ($this->contentFile && !$this->contentFile->isEmpty()) {
+        if ($this->contentFile instanceof ContentFile && !$this->contentFile->isEmpty()) {
             $this->data = [
                ...$this->data,
                 ...$this->contentFile->frontmatter(),
@@ -162,7 +163,7 @@ class Page implements Arrayable
 
     public function __toString(): string
     {
-        return $this->title() ?? $this->slug();
+        return (string) ($this->title() ?? $this->slug());
     }
 
     public function site(): Site
@@ -250,13 +251,9 @@ class Page implements Arrayable
      */
     public function canonicalRoute(): ?string
     {
-        if (isset($this->canonicalRoute)) {
-            return $this->canonicalRoute;
-        }
-
-        return $this->canonicalRoute = !empty($this->data['canonicalRoute'])
-            ? Path::normalize($this->data['canonicalRoute'])
-            : null;
+        return $this->canonicalRoute ?? ($this->canonicalRoute = empty($this->data['canonicalRoute'])
+            ? null
+            : Path::normalize($this->data['canonicalRoute']));
     }
 
     /**
@@ -272,7 +269,7 @@ class Page implements Arrayable
      */
     public function num(): ?int
     {
-        if (isset($this->num)) {
+        if ($this->num !== null) {
             return $this->num;
         }
 
@@ -356,7 +353,7 @@ class Page implements Arrayable
 
         // Get a default 404 Not Found status for the error page
         if ($this->isErrorPage() && $this->responseStatus() === ResponseStatus::OK
-            && !isset($this->contentFile, $this->contentFile->frontmatter()['responseStatus'])) {
+            && $this->contentFile === null) {
             $this->responseStatus = ResponseStatus::NotFound;
         }
 
@@ -522,7 +519,7 @@ class Page implements Arrayable
 
         $site = $this->site;
 
-        if (isset($this->path) && FileSystem::isDirectory($this->path, assertExists: false)) {
+        if ($this->path !== null && FileSystem::isDirectory($this->path, assertExists: false)) {
             foreach (FileSystem::listFiles($this->path) as $file) {
                 $name = FileSystem::name($file);
 
@@ -567,7 +564,7 @@ class Page implements Arrayable
                 : array_keys($contentFiles)[0];
 
             // Set actual language
-            $this->language ??= $key ? new Language($key) : null;
+            $this->language ??= $key !== '' ? new Language($key) : null;
 
             $this->contentFile ??= new ContentFile($contentFiles[$key]['path']);
 
@@ -627,11 +624,11 @@ class Page implements Arrayable
     {
         $reflectionClass = new ReflectionClass($this);
 
-        foreach ($reflectionClass->getProperties() as $property) {
-            unset($this->{$property->getName()});
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            unset($this->{$reflectionProperty->getName()});
 
-            if ($property->hasDefaultValue()) {
-                $this->{$property->getName()} = $property->getDefaultValue();
+            if ($reflectionProperty->hasDefaultValue()) {
+                $this->{$reflectionProperty->getName()} = $reflectionProperty->getDefaultValue();
             }
         }
     }

@@ -30,15 +30,15 @@ class ErrorHandlers
     /**
      * Display error page
      */
-    public function displayErrorPage(ResponseStatus $status = ResponseStatus::InternalServerError): void
+    public function displayErrorPage(ResponseStatus $responseStatus = ResponseStatus::InternalServerError): void
     {
         Response::cleanOutputBuffers();
 
         if ($this->request->isXmlHttpRequest()) {
-            JsonResponse::error('Error', $status)->send();
+            JsonResponse::error('Error', $responseStatus)->send();
         } else {
-            $view = $this->viewFactory->make('errors.error', ['status' => $status->code(), 'message' => $status->message()]);
-            $response = new Response($view->render(), $status);
+            $view = $this->viewFactory->make('errors.error', ['status' => $responseStatus->code(), 'message' => $responseStatus->message()]);
+            $response = new Response($view->render(), $responseStatus);
             $response->send();
             // Don't exit, otherwise the error will not be logged
         }
@@ -47,16 +47,16 @@ class ErrorHandlers
     /**
      * Display error page on exception
      */
-    public function getExceptionHandler(Throwable $exception): void
+    public function getExceptionHandler(Throwable $throwable): void
     {
         static::displayErrorPage();
         error_log(sprintf(
             "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
-            $exception::class,
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine(),
-            $exception->getTraceAsString()
+            $throwable::class,
+            $throwable->getMessage(),
+            $throwable->getFile(),
+            $throwable->getLine(),
+            $throwable->getTraceAsString()
         ));
     }
 

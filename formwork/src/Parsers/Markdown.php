@@ -23,8 +23,8 @@ class Markdown extends AbstractParser
         $environment->addExtension(new TableExtension());
         $environment->addExtension(new LinkBaseExtension());
 
-        $converter = new MarkdownConverter($environment);
+        $markdownConverter = new MarkdownConverter($environment);
 
-        return $converter->convert($input);
+        return $markdownConverter->convert($input);
     }
 }

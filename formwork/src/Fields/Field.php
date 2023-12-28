@@ -15,9 +15,10 @@ use Formwork\Translations\Translation;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Str;
+use Stringable;
 use UnexpectedValueException;
 
-class Field implements Arrayable
+class Field implements Arrayable, Stringable
 {
     use DataArrayable;
     use DataMultipleGetter {
@@ -30,16 +31,6 @@ class Field implements Arrayable
     use Methods;
 
     protected const UNTRANSLATABLE_KEYS = ['name', 'type', 'value', 'default', 'translate'];
-
-    /**
-     * Field name
-     */
-    protected string $name;
-
-    /**
-     * Parent field collection
-     */
-    protected ?FieldCollection $parent;
 
     /**
      * Field validation status
@@ -56,14 +47,12 @@ class Field implements Arrayable
     /**
      * Create a new Field instance
      *
+     * @param string               $name                  Field name
      * @param array<string, mixed> $data
+     * @param ?FieldCollection     $parentFieldCollection Parent field collection
      */
-    public function __construct(string $name, array $data = [], ?FieldCollection $parent = null)
+    public function __construct(protected string $name, array $data = [], protected ?FieldCollection $parentFieldCollection = null)
     {
-        $this->name = $name;
-
-        $this->parent = $parent;
-
         $this->setMultiple($data);
 
         if ($this->has('fields')) {
@@ -74,7 +63,7 @@ class Field implements Arrayable
     public function __toString(): string
     {
         if ($this->hasMethod('toString')) {
-            return $this->callMethod('toString');
+            return (string) $this->callMethod('toString');
         }
 
         return (string) $this->value();
@@ -93,7 +82,7 @@ class Field implements Arrayable
      */
     public function parent(): ?FieldCollection
     {
-        return $this->parent;
+        return $this->parentFieldCollection;
     }
 
     /**
@@ -266,7 +255,7 @@ class Field implements Arrayable
         }
 
         if ($this->isTranslatable($key)) {
-            $value = $this->translate($value);
+            return $this->translate($value);
         }
 
         return $value;

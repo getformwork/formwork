@@ -2,7 +2,9 @@
 
 namespace Formwork\Interpolator\Nodes;
 
-abstract class AbstractNode
+use Stringable;
+
+abstract class AbstractNode implements Stringable
 {
     /**
      * Node type
@@ -14,7 +16,7 @@ abstract class AbstractNode
      */
     protected mixed $value;
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'node of type ' . static::TYPE;
     }

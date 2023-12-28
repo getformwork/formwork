@@ -65,7 +65,7 @@ class Router
     /**
      * Currently matched route
      */
-    protected ?Route $current;
+    protected ?Route $current = null;
 
     /**
      * Route params
@@ -119,8 +119,8 @@ class Router
      */
     public function addFilter(string $name, $action): RouteFilter
     {
-        $this->filters->add($filter = new RouteFilter($name, $action));
-        return $filter;
+        $this->filters->add($routeFilter = new RouteFilter($name, $action));
+        return $routeFilter;
     }
 
     /**
@@ -152,9 +152,6 @@ class Router
      */
     public function dispatch(): Response
     {
-        /**
-         * @var RouteFilter
-         */
         foreach ($this->filters as $filter) {
             if (!$this->matchFilter($filter)) {
                 continue;
@@ -167,9 +164,6 @@ class Router
             }
         }
 
-        /**
-         * @var Route
-         */
         foreach ($this->routes as $route) {
             if (!$this->matchRoute($route)) {
                 continue;
@@ -477,11 +471,11 @@ class Router
      *
      * @internal
      */
-    protected function matchFilter(RouteFilter $filter): bool
+    protected function matchFilter(RouteFilter $routeFilter): bool
     {
-        return $this->matchMethods($filter->getMethods())
-            && $this->matchTypes($filter->getTypes())
-            && $this->matchPrefix($filter->getPrefix());
+        return $this->matchMethods($routeFilter->getMethods())
+            && $this->matchTypes($routeFilter->getTypes())
+            && $this->matchPrefix($routeFilter->getPrefix());
     }
 
     /**

@@ -17,11 +17,6 @@ class RouteFilter
     protected const DEFAULT_TYPES = ['HTTP'];
 
     /**
-     * Filter name
-     */
-    protected string $name;
-
-    /**
      * Filter action
      *
      * @var callable|string
@@ -50,9 +45,8 @@ class RouteFilter
     /**
      * @param callable|string $action
      */
-    public function __construct(string $name, $action)
+    public function __construct(protected string $name, $action)
     {
-        $this->name = $name;
         $this->action = $action;
     }
 

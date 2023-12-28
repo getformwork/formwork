@@ -7,13 +7,6 @@ use Formwork\Interpolator\Errors\SyntaxError;
 class TokenStream
 {
     /**
-     * Array containing tokens
-     *
-     * @var list<Token>
-     */
-    protected array $tokens;
-
-    /**
      * Pointer to the current token
      */
     protected int $pointer = 0;
@@ -26,9 +19,8 @@ class TokenStream
     /**
      * @param list<Token> $tokens
      */
-    public function __construct(array $tokens)
+    public function __construct(protected array $tokens)
     {
-        $this->tokens = $tokens;
         $this->count = count($tokens);
     }
 

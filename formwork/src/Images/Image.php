@@ -39,11 +39,6 @@ class Image extends File
 {
     protected string $path;
 
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $options = [];
-
     protected AbstractHandler $handler;
 
     protected ImageInfo $info;
@@ -57,10 +52,9 @@ class Image extends File
     /**
      * @param array<string, mixed> $options
      */
-    public function __construct(string $path, array $options)
+    public function __construct(string $path, protected array $options)
     {
         parent::__construct($path);
-        $this->options = $options;
         $this->transforms = new TransformCollection();
     }
 
@@ -140,9 +134,9 @@ class Image extends File
         return $this;
     }
 
-    public function blur(int $amount, BlurMode $mode = BlurMode::Mean): self
+    public function blur(int $amount, BlurMode $blurMode = BlurMode::Mean): self
     {
-        $this->transforms->add(new Blur($amount, $mode));
+        $this->transforms->add(new Blur($amount, $blurMode));
         return $this;
     }
 
@@ -229,9 +223,9 @@ class Image extends File
      *
      * @throws RuntimeException if the image has no color profile
      */
-    public function setColorProfile(ColorProfile $profile): void
+    public function setColorProfile(ColorProfile $colorProfile): void
     {
-        $this->handler()->setColorProfile($profile);
+        $this->handler()->setColorProfile($colorProfile);
     }
 
     /**
@@ -267,9 +261,9 @@ class Image extends File
      *
      * @throws RuntimeException if the image does not support EXIF data
      */
-    public function setExifData(ExifData $data): void
+    public function setExifData(ExifData $exifData): void
     {
-        $this->handler()->setExifData($data);
+        $this->handler()->setExifData($exifData);
     }
 
     /**
@@ -357,7 +351,13 @@ class Image extends File
 
     public function toArray(): array
     {
-        return [...parent::toArray(), 'imageInfo' => $this->info()->toArray(), 'exif' => $this->getExifData()?->toArray(), 'colorProfile' => $this->getColorProfile()?->name(), 'uri' => $this->uri()];
+        return [
+            ...parent::toArray(),
+            'imageInfo'    => $this->info()->toArray(),
+            'exif'         => $this->getExifData()?->toArray(),
+            'colorProfile' => $this->getColorProfile()?->name(),
+            'uri'          => $this->uri(),
+        ];
     }
 
     protected function getHash(?string $mimeType = null): string

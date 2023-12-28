@@ -46,9 +46,9 @@ class Colorize extends AbstractTransform
         return new static($data['red'], $data['green'], $data['blue'], $data['alpha']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imagefilter($image, IMG_FILTER_COLORIZE, $this->red, $this->green, $this->blue, $this->alpha);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_COLORIZE, $this->red, $this->green, $this->blue, $this->alpha);
+        return $gdImage;
     }
 }

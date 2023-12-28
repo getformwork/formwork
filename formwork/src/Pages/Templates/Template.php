@@ -11,8 +11,9 @@ use Formwork\Utils\FileSystem;
 use Formwork\View\Exceptions\RenderingException;
 use Formwork\View\Renderer;
 use Formwork\View\View;
+use Stringable;
 
-class Template extends View
+class Template extends View implements Stringable
 {
     /**
      * @inheritdoc
@@ -47,13 +48,10 @@ class Template extends View
      */
     public function assets(): Assets
     {
-        if (isset($this->assets)) {
-            return $this->assets;
-        }
-        return $this->assets = new Assets(
+        return $this->assets ?? ($this->assets = new Assets(
             $this->path() . 'assets/',
             $this->site->uri('/site/templates/assets/', includeLanguage: false)
-        );
+        ));
     }
 
     /**

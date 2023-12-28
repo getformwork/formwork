@@ -11,7 +11,7 @@ return function (Site $site) {
     return [
         'toHTML' => function (Field $field) use ($site): string {
             $currentPage = $site->currentPage();
-            return Markdown::parse((string) $field->value(), ['baseRoute' => $currentPage ? $currentPage->route() : '/']);
+            return Markdown::parse((string) $field->value(), ['baseRoute' => $currentPage !== null ? $currentPage->route() : '/']);
         },
 
         'toString' => function (Field $field): string {
@@ -35,17 +35,15 @@ return function (Site $site) {
                 throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
             }
 
-            if ($field->has('min') && strlen($value) < $field->get('min')) {
+            if ($field->has('min') && strlen((string) $value) < $field->get('min')) {
                 throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('min')));
             }
 
-            if ($field->has('max') && strlen($value) > $field->get('max')) {
+            if ($field->has('max') && strlen((string) $value) > $field->get('max')) {
                 throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('max')));
             }
 
-            $value = str_replace("\r\n", "\n", $value);
-
-            return $value;
+            return str_replace("\r\n", "\n", (string) $value);
         },
     ];
 

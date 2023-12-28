@@ -8,22 +8,11 @@ use Formwork\Utils\FileSystem;
 class FilesCache extends AbstractCache
 {
     /**
-     * Cache path
+     * @param string $path       Cache path
+     * @param int    $defaultTtl Cached data time-to-live
      */
-    protected string $path;
-
-    /**
-     * Cached data time-to-live
-     */
-    protected int $defaultTtl;
-
-    /**
-     * Create a new FilesCache instance
-     */
-    public function __construct(string $path, int $defaultTtl)
+    public function __construct(protected string $path, protected int $defaultTtl)
     {
-        $this->path = $path;
-        $this->defaultTtl = $defaultTtl;
         if (!FileSystem::exists($this->path)) {
             FileSystem::createDirectory($this->path, recursive: true);
         }

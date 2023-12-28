@@ -5,30 +5,10 @@ namespace Formwork\Router;
 class CompiledRoute
 {
     /**
-     * Route path
-     */
-    protected string $path;
-
-    /**
-     * Compiled route regex
-     */
-    protected string $regex;
-
-    /**
-     * Route params
-     *
-     * @var list<string>
-     */
-    protected array $params;
-
-    /**
      * @param list<string> $params
      */
-    public function __construct(string $path, string $regex, array $params)
+    public function __construct(protected string $path, protected string $regex, protected array $params)
     {
-        $this->path = $path;
-        $this->regex = $regex;
-        $this->params = $params;
     }
 
     /**

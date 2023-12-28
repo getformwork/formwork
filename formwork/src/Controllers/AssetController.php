@@ -10,9 +10,9 @@ use Formwork\Utils\FileSystem;
 
 class AssetController
 {
-    public function load(RouteParams $params, Config $config): FileResponse
+    public function load(RouteParams $routeParams, Config $config): FileResponse
     {
-        $path = FileSystem::joinPaths($config->get('system.images.processPath'), $params->get('id'), $params->get('name'));
+        $path = FileSystem::joinPaths($config->get('system.images.processPath'), $routeParams->get('id'), $routeParams->get('name'));
 
         if (FileSystem::isFile($path)) {
             return new FileResponse($path);

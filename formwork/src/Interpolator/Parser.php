@@ -14,11 +14,8 @@ use Formwork\Interpolator\Nodes\StringNode;
 
 class Parser implements ParserInterface
 {
-    protected TokenStream $stream;
-
-    public function __construct(TokenStream $stream)
+    public function __construct(protected TokenStream $tokenStream)
     {
-        $this->stream = $stream;
     }
 
     /**
@@ -26,18 +23,18 @@ class Parser implements ParserInterface
      */
     public function parse(): AbstractNode
     {
-        $node = $this->parseIdentifierToken();
-        $this->stream->expectEnd();
-        return $node;
+        $identifierNode = $this->parseIdentifierToken();
+        $this->tokenStream->expectEnd();
+        return $identifierNode;
     }
 
     /**
      * Parse a given TokenStream object
      */
-    public static function parseTokenStream(TokenStream $stream): AbstractNode
+    public static function parseTokenStream(TokenStream $tokenStream): AbstractNode
     {
-        $parser = new static($stream);
-        return $parser->parse();
+        $static = new static($tokenStream);
+        return $static->parse();
     }
 
     /**
@@ -45,21 +42,21 @@ class Parser implements ParserInterface
      */
     protected function parseIdentifierToken(): IdentifierNode
     {
-        $token = $this->stream->expect(Token::TYPE_IDENTIFIER);
+        $token = $this->tokenStream->expect(Token::TYPE_IDENTIFIER);
 
         $traverse = null;
 
         $arguments = null;
 
-        if ($this->stream->current()->test(Token::TYPE_PUNCTUATION, '(')) {
+        if ($this->tokenStream->current()->test(Token::TYPE_PUNCTUATION, '(')) {
             $arguments = $this->parseArguments();
         }
 
-        if ($this->stream->current()->test(Token::TYPE_PUNCTUATION, '.')) {
+        if ($this->tokenStream->current()->test(Token::TYPE_PUNCTUATION, '.')) {
             $traverse = $this->parseDotNotation();
         }
 
-        if ($this->stream->current()->test(Token::TYPE_PUNCTUATION, '[')) {
+        if ($this->tokenStream->current()->test(Token::TYPE_PUNCTUATION, '[')) {
             $traverse = $this->parseBracketsNotation();
         }
 
@@ -72,7 +69,7 @@ class Parser implements ParserInterface
      */
     protected function parseNumberToken(): NumberNode
     {
-        $token = $this->stream->expect(Token::TYPE_NUMBER);
+        $token = $this->tokenStream->expect(Token::TYPE_NUMBER);
         // @phpstan-ignore-next-line
         return new NumberNode($token->value() + 0);
     }
@@ -82,7 +79,7 @@ class Parser implements ParserInterface
      */
     protected function parseStringToken(): StringNode
     {
-        $token = $this->stream->expect(Token::TYPE_STRING);
+        $token = $this->tokenStream->expect(Token::TYPE_STRING);
         // @phpstan-ignore-next-line
         return new StringNode(stripcslashes(trim($token->value(), '\'"')));
     }
@@ -92,7 +89,7 @@ class Parser implements ParserInterface
      */
     protected function parseDotNotation(): IdentifierNode
     {
-        $this->stream->expect(Token::TYPE_PUNCTUATION, '.');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, '.');
         return $this->parseIdentifierToken();
     }
 
@@ -101,24 +98,17 @@ class Parser implements ParserInterface
      */
     protected function parseBracketsNotation(): AbstractNode
     {
-        $this->stream->expect(Token::TYPE_PUNCTUATION, '[');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, '[');
 
-        $token = $this->stream->current();
+        $token = $this->tokenStream->current();
 
-        switch ($token->type()) {
-            case Token::TYPE_NUMBER:
-                $key = $this->parseNumberToken();
-                break;
+        $key = match ($token->type()) {
+            Token::TYPE_NUMBER => $this->parseNumberToken(),
+            Token::TYPE_STRING => $this->parseStringToken(),
+            default            => throw new SyntaxError(sprintf('Unexpected %s at position %d', $token, $token->position())),
+        };
 
-            case Token::TYPE_STRING:
-                $key = $this->parseStringToken();
-                break;
-
-            default:
-                throw new SyntaxError(sprintf('Unexpected %s at position %d', $token, $token->position()));
-        }
-
-        $this->stream->expect(Token::TYPE_PUNCTUATION, ']');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ']');
 
         return $key;
     }
@@ -128,18 +118,18 @@ class Parser implements ParserInterface
      */
     protected function parseArguments(): ArgumentsNode
     {
-        $this->stream->expect(Token::TYPE_PUNCTUATION, '(');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, '(');
 
         $arguments = [];
 
-        while (!$this->stream->current()->test(Token::TYPE_PUNCTUATION, ')')) {
+        while (!$this->tokenStream->current()->test(Token::TYPE_PUNCTUATION, ')')) {
             if ($arguments !== []) {
-                $this->stream->expect(Token::TYPE_PUNCTUATION, ',');
+                $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ',');
             }
             $arguments[] = $this->parseExpression();
         }
 
-        $this->stream->expect(Token::TYPE_PUNCTUATION, ')');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ')');
 
         return new ArgumentsNode($arguments);
     }
@@ -149,7 +139,7 @@ class Parser implements ParserInterface
      */
     protected function parseExpression(): AbstractNode
     {
-        $token = $this->stream->current();
+        $token = $this->tokenStream->current();
 
         switch ($token->type()) {
             case Token::TYPE_IDENTIFIER:
@@ -177,21 +167,21 @@ class Parser implements ParserInterface
      */
     protected function parseArrayExpression(): ArrayNode
     {
-        $this->stream->expect(Token::TYPE_PUNCTUATION, '[');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, '[');
 
         $elements = [];
 
         $keys = [];
 
-        while (!$this->stream->current()->test(Token::TYPE_PUNCTUATION, ']')) {
+        while (!$this->tokenStream->current()->test(Token::TYPE_PUNCTUATION, ']')) {
             if ($elements !== []) {
-                $this->stream->expect(Token::TYPE_PUNCTUATION, ',');
+                $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ',');
             }
 
             $value = $this->parseExpression();
 
-            if ($this->stream->current()->test(Token::TYPE_ARROW)) {
-                $arrow = $this->stream->consume();
+            if ($this->tokenStream->current()->test(Token::TYPE_ARROW)) {
+                $arrow = $this->tokenStream->consume();
 
                 if ($value->type() === ArrayNode::TYPE) {
                     throw new SyntaxError(sprintf('Unexpected %s at position %d', $arrow, $arrow->position()));
@@ -207,7 +197,7 @@ class Parser implements ParserInterface
             $keys[] = $key;
         }
 
-        $this->stream->expect(Token::TYPE_PUNCTUATION, ']');
+        $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ']');
 
         return new ArrayNode($elements, new ArrayKeysNode($keys));
     }

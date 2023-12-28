@@ -34,8 +34,6 @@ class UploadedFile
         UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.phpExtension',
     ];
 
-    protected string $fieldName;
-
     protected string $clientName;
 
     protected string $clientFullPath;
@@ -51,9 +49,8 @@ class UploadedFile
     /**
      * @param array{name: string, full_path: string, type: string, tmp_name: string, error: string, size: string} $data
      */
-    public function __construct(string $fieldName, array $data)
+    public function __construct(protected string $fieldName, array $data)
     {
-        $this->fieldName = $fieldName;
         $this->clientName = $data['name'];
         $this->clientFullPath = $data['full_path'];
         $this->clientMimeType = $data['type'];
@@ -127,7 +124,7 @@ class UploadedFile
         //     throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'panel.uploader.error.alreadyExists');
         // }
 
-        if (move_uploaded_file($this->tempPath, $destinationPath) !== false) {
+        if (move_uploaded_file($this->tempPath, $destinationPath)) {
             return true;
         }
 

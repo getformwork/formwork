@@ -24,30 +24,17 @@ class DynamicFieldValue
     protected bool $computing = false;
 
     /**
-     * Dynamic value key
-     */
-    protected string $key;
-
-    /**
-     * Uncomputed value
-     */
-    protected string $uncomputedValue;
-
-    /**
-     * Field to which the value belongs
-     */
-    protected Field $field;
-
-    /**
      * Computed value
      */
     protected mixed $value;
 
-    public function __construct(string $key, string $uncomputedValue, Field $field)
+    /**
+     * @param string $key             Dynamic value key
+     * @param string $uncomputedValue Uncomputed value
+     * @param Field  $field           Field to which the value belongs
+     */
+    public function __construct(protected string $key, protected string $uncomputedValue, protected Field $field)
     {
-        $this->key = $key;
-        $this->uncomputedValue = $uncomputedValue;
-        $this->field = $field;
     }
 
     /**

@@ -43,29 +43,29 @@ class UsersController extends AbstractController
     {
         $this->ensurePermission('users.create');
 
-        $data = $this->request->input();
+        $requestData = $this->request->input();
 
         // Ensure no required data is missing
-        if (!$data->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
+        if (!$requestData->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
         // Ensure there isn't a user with the same username
-        if ($this->panel()->users()->has($data->get('username'))) {
+        if ($this->panel()->users()->has($requestData->get('username'))) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.alreadyExists'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
         $userData = [
-            'username' => $data->get('username'),
-            'fullname' => $data->get('fullname'),
-            'hash'     => Password::hash($data->get('password')),
-            'email'    => $data->get('email'),
-            'language' => $data->get('language'),
+            'username' => $requestData->get('username'),
+            'fullname' => $requestData->get('fullname'),
+            'hash'     => Password::hash($requestData->get('password')),
+            'email'    => $requestData->get('email'),
+            'language' => $requestData->get('language'),
         ];
 
-        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $data->get('username') . '.yaml'));
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $requestData->get('username') . '.yaml'));
 
         $this->panel()->notify($this->translate('panel.users.user.created'), 'success');
         return $this->redirect($this->generateRoute('panel.users'));
@@ -74,15 +74,15 @@ class UsersController extends AbstractController
     /**
      * Users@delete action
      */
-    public function delete(RouteParams $params): RedirectResponse
+    public function delete(RouteParams $routeParams): RedirectResponse
     {
         $this->ensurePermission('users.delete');
 
-        $user = $this->panel()->users()->get($params->get('user'));
+        $user = $this->panel()->users()->get($routeParams->get('user'));
 
         try {
             if (!$user) {
-                throw new TranslatedException(sprintf('User "%s" not found', $params->get('user')), 'panel.users.user.notFound');
+                throw new TranslatedException(sprintf('User "%s" not found', $routeParams->get('user')), 'panel.users.user.notFound');
             }
             if (!$this->user()->canDeleteUser($user)) {
                 throw new TranslatedException(
@@ -109,13 +109,13 @@ class UsersController extends AbstractController
     /**
      * Users@profile action
      */
-    public function profile(RouteParams $params): Response
+    public function profile(RouteParams $routeParams): Response
     {
         $scheme = $this->app->schemes()->get('users.user');
 
         $fields = $scheme->fields();
 
-        $user = $this->panel()->users()->get($params->get('user'));
+        $user = $this->panel()->users()->get($routeParams->get('user'));
 
         if ($user === null) {
             $this->panel()->notify($this->translate('panel.users.user.notFound'), 'error');
@@ -206,9 +206,9 @@ class UsersController extends AbstractController
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
 
-        $uploader = new FileUploader($this->config);
+        $fileUploader = new FileUploader($this->config);
 
-        $uploadedFile = $uploader->upload($file, $imagesPath, FileSystem::randomName());
+        $uploadedFile = $fileUploader->upload($file, $imagesPath, FileSystem::randomName());
 
         if ($uploadedFile->type() === 'image') {
             $userImageSize = $this->config->get('system.panel.userImageSize');

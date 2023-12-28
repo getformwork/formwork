@@ -37,7 +37,7 @@ class Permissions
     public function has(string $permission): bool
     {
         if (array_key_exists($permission, $this->permissions)) {
-            return (bool) $this->permissions[$permission];
+            return $this->permissions[$permission];
         }
 
         // If $permission is not found try with the upper level one (super permission),

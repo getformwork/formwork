@@ -9,15 +9,12 @@ class ArrayNode extends AbstractNode
      */
     public const TYPE = 'array';
 
-    protected ArrayKeysNode $keys;
-
     /**
      * @param list<mixed> $value
      */
-    public function __construct(array $value, ArrayKeysNode $keys)
+    public function __construct(array $value, protected ArrayKeysNode $arrayKeysNode)
     {
         $this->value = $value;
-        $this->keys = $keys;
     }
 
     /**
@@ -25,6 +22,6 @@ class ArrayNode extends AbstractNode
      */
     public function keys(): ArrayKeysNode
     {
-        return $this->keys;
+        return $this->arrayKeysNode;
     }
 }

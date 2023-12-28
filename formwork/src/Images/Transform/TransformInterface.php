@@ -8,7 +8,7 @@ use GdImage;
 
 interface TransformInterface extends ArraySerializable
 {
-    public function apply(GdImage $image, ImageInfo $info): GdImage;
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage;
 
     public function getSpecifier(): string;
 }

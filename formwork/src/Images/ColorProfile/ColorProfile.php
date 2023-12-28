@@ -12,17 +12,13 @@ class ColorProfile
 
     protected const ICC_PROFILE_SIGNATURE_OFFSET = 36;
 
-    protected string $data;
-
     /**
      * @var array<string, mixed>
      */
     protected array $tags;
 
-    public function __construct(string $data)
+    public function __construct(protected string $data)
     {
-        $this->data = $data;
-
         if (strpos($this->data, self::ICC_PROFILE_SIGNATURE) !== self::ICC_PROFILE_SIGNATURE_OFFSET) {
             throw new InvalidArgumentException('Invalid ICC profile data');
         }

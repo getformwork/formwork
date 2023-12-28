@@ -7,11 +7,8 @@ use GdImage;
 
 class Scale extends AbstractTransform
 {
-    protected float $factor;
-
-    final public function __construct(float $factor)
+    final public function __construct(protected float $factor)
     {
-        $this->factor = $factor;
     }
 
     public static function fromArray(array $data): static
@@ -19,9 +16,9 @@ class Scale extends AbstractTransform
         return new static($data['factor']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        $resize = new Resize((int) floor(imagesx($image) * $this->factor), (int) floor(imagesy($image) * $this->factor));
-        return $resize->apply($image, $info);
+        $resize = new Resize((int) floor(imagesx($gdImage) * $this->factor), (int) floor(imagesy($gdImage) * $this->factor));
+        return $resize->apply($gdImage, $imageInfo);
     }
 }

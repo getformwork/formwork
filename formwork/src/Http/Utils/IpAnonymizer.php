@@ -24,14 +24,11 @@ class IpAnonymizer
      */
     public static function anonymize(string $ip): string
     {
-        switch (strlen(self::packIPAddress($ip))) {
-            case 4:
-                return static::anonymizeIPv4($ip);
-            case 16:
-                return static::anonymizeIPv6($ip);
-            default:
-                throw new InvalidArgumentException(sprintf('Invalid IP address %s', $ip));
-        }
+        return match (strlen(self::packIPAddress($ip))) {
+            4       => static::anonymizeIPv4($ip),
+            16      => static::anonymizeIPv6($ip),
+            default => throw new InvalidArgumentException(sprintf('Invalid IP address %s', $ip)),
+        };
     }
 
     /**

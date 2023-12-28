@@ -17,16 +17,6 @@ class Route
     protected const DEFAULT_TYPES = ['HTTP'];
 
     /**
-     * Route name
-     */
-    protected string $name;
-
-    /**
-     * Route path
-     */
-    protected string $path;
-
-    /**
      * Route action
      *
      * @var callable|string
@@ -52,10 +42,8 @@ class Route
      */
     protected string $prefix = '';
 
-    public function __construct(string $name, string $path)
+    public function __construct(protected string $name, protected string $path)
     {
-        $this->name = $name;
-        $this->path = $path;
     }
 
     /**

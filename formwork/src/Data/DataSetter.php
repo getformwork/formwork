@@ -28,7 +28,7 @@ final class DataSetter implements Arrayable
      */
     public function isEmpty(): bool
     {
-        return empty($this->data);
+        return $this->data === [];
     }
 
     /**
@@ -36,6 +36,6 @@ final class DataSetter implements Arrayable
      */
     public static function fromGetter(DataGetter|DataSetter $getter): self
     {
-        return new static($getter->toArray());
+        return new self($getter->toArray());
     }
 }

@@ -56,9 +56,13 @@ class JpegHandler extends AbstractHandler
     public function hasColorProfile(): bool
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
-                return true;
+            if ($segment['type'] !== 0xe2) {
+                continue;
             }
+            if (!str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
+                continue;
+            }
+            return true;
         }
 
         return false;
@@ -89,11 +93,11 @@ class JpegHandler extends AbstractHandler
         return new ColorProfile(implode('', $profileChunks));
     }
 
-    public function setColorProfile(ColorProfile $profile): void
+    public function setColorProfile(ColorProfile $colorProfile): void
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xd8) {
-                $this->data = substr_replace($this->data, $this->encodeColorProfile($profile->getData()), $segment['position'], 0);
+                $this->data = substr_replace($this->data, $this->encodeColorProfile($colorProfile->getData()), $segment['position'], 0);
                 break;
             }
         }
@@ -117,9 +121,13 @@ class JpegHandler extends AbstractHandler
     public function hasExifData(): bool
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
-                return true;
+            if ($segment['type'] !== 0xe1) {
+                continue;
             }
+            if (!str_starts_with($segment['value'], self::EXIF_HEADER)) {
+                continue;
+            }
+            return true;
         }
         return false;
     }
@@ -127,18 +135,22 @@ class JpegHandler extends AbstractHandler
     public function getExifData(): ?ExifData
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
-                return new ExifData(substr($segment['value'], strlen(self::EXIF_HEADER)));
+            if ($segment['type'] !== 0xe1) {
+                continue;
             }
+            if (!str_starts_with($segment['value'], self::EXIF_HEADER)) {
+                continue;
+            }
+            return new ExifData(substr($segment['value'], strlen(self::EXIF_HEADER)));
         }
         return null;
     }
 
-    public function setExifData(ExifData $data): void
+    public function setExifData(ExifData $exifData): void
     {
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xd8) {
-                $this->data = substr_replace($this->data, $this->encodeExifData($data->getData()), $segment['position'], 0);
+                $this->data = substr_replace($this->data, $this->encodeExifData($exifData->getData()), $segment['position'], 0);
                 break;
             }
         }
@@ -189,13 +201,13 @@ class JpegHandler extends AbstractHandler
         return new JpegDecoder();
     }
 
-    protected function setDataFromGdImage(GdImage $image): void
+    protected function setDataFromGdImage(GdImage $gdImage): void
     {
-        imageinterlace($image, $this->options['jpegProgressive']);
+        imageinterlace($gdImage, $this->options['jpegProgressive']);
 
         ob_start();
 
-        if (imagejpeg($image, null, $this->options['jpegQuality']) === false) {
+        if (imagejpeg($gdImage, null, $this->options['jpegQuality']) === false) {
             throw new RuntimeException('Cannot set data from GdImage');
         }
 

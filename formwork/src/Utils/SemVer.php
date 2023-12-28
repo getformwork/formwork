@@ -3,8 +3,9 @@
 namespace Formwork\Utils;
 
 use InvalidArgumentException;
+use Stringable;
 
-final class SemVer
+final class SemVer implements Stringable
 {
     /**
      * Regex matching version components
@@ -22,46 +23,16 @@ final class SemVer
     protected const PRERELEASE_TAGS = ['dev', 'alpha', 'beta', 'RC', 'pl'];
 
     /**
-     * Major version number
-     */
-    protected int $major = 0;
-
-    /**
-     * Minor version number
-     */
-    protected int $minor = 0;
-
-    /**
-     * Patch version number
-     */
-    protected int $patch = 0;
-
-    /**
-     * Version prerelease stability
-     */
-    protected ?string $prerelease;
-
-    /**
-     * Version metadata string
-     */
-    protected ?string $metadata;
-
-    /**
      * Create a new SemVer instance
      */
-    public function __construct(int $major, int $minor, int $patch, ?string $prerelease = null, ?string $metadata = null)
+    public function __construct(protected int $major = 0, protected int $minor = 0, protected int $patch = 0, protected ?string $prerelease = null, protected ?string $metadata = null)
     {
-        if ($major < 0 || $minor < 0 || $patch < 0) {
+        if ($this->major < 0 || $this->minor < 0 || $this->patch < 0) {
             throw new InvalidArgumentException('$major, $minor and $patch arguments must be non-negative integers');
         }
-        if ($prerelease !== null) {
-            $prerelease = $this->normalizePrerelease($prerelease);
+        if ($this->prerelease !== null) {
+            $this->prerelease = $this->normalizePrerelease($this->prerelease);
         }
-        $this->major = $major;
-        $this->minor = $minor;
-        $this->patch = $patch;
-        $this->prerelease = $prerelease;
-        $this->metadata = $metadata;
     }
 
     public function __toString(): string

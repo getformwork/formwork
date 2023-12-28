@@ -100,15 +100,12 @@ class Languages
      */
     protected function resolveLanguage(Language|string|null $language): ?Language
     {
-        switch (true) {
-            case $language instanceof Language:
-                return $language;
-
-            case is_string($language):
-                return $this->available->get($language, null);
-
-            default:
-                return null;
+        if ($language instanceof Language) {
+            return $language;
         }
+        if (is_string($language)) {
+            return $this->available->get($language, null);
+        }
+        return null;
     }
 }

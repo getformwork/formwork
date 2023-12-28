@@ -122,8 +122,6 @@ class Arr
      */
     public static function splice(array &$array, int $offset, ?int $length = null, array $replacement = []): array
     {
-        $replacement = (array) $replacement;
-
         if (!static::isAssociative($replacement)) {
             return array_splice($array, $offset, $length, $replacement);
         }
@@ -250,9 +248,16 @@ class Arr
     public static function appendMissing(array $array1, array $array2): array
     {
         foreach ($array1 as $key => $value) {
-            if (is_array($value) && array_key_exists($key, $array2) && is_array($array2[$key])) {
-                $array1[$key] = static::appendMissing($array1[$key], $array2[$key]);
+            if (!is_array($value)) {
+                continue;
             }
+            if (!array_key_exists($key, $array2)) {
+                continue;
+            }
+            if (!is_array($array2[$key])) {
+                continue;
+            }
+            $array1[$key] = static::appendMissing($array1[$key], $array2[$key]);
         }
         return $array1 + $array2;
     }
@@ -264,7 +269,7 @@ class Arr
      */
     public static function random(array $array, mixed $default = null): mixed
     {
-        return count($array) > 0 ? $array[array_rand($array)] : $default;
+        return $array !== [] ? $array[array_rand($array)] : $default;
     }
 
     /**
@@ -500,17 +505,15 @@ class Arr
      */
     public static function from(mixed $object): array
     {
-        switch (true) {
-            case is_array($object):
-                return $object;
-
-            case $object instanceof Arrayable:
-                return $object->toArray();
-
-            case $object instanceof Traversable:
-                return iterator_to_array($object);
+        if (is_array($object)) {
+            return $object;
         }
-
+        if ($object instanceof Arrayable) {
+            return $object->toArray();
+        }
+        if ($object instanceof Traversable) {
+            return iterator_to_array($object);
+        }
         throw new UnexpectedValueException(sprintf('Cannot convert to array an object of type %s', get_debug_type($object)));
     }
 

@@ -14,19 +14,19 @@ class ImageInfo implements Arrayable
 
     protected int $height;
 
-    protected ?ColorSpace $colorSpace;
+    protected ?ColorSpace $colorSpace = null;
 
-    protected ?int $colorDepth;
+    protected ?int $colorDepth = null;
 
-    protected ?int $colorNumber;
+    protected ?int $colorNumber = null;
 
     protected bool $hasAlphaChannel;
 
     protected bool $isAnimation;
 
-    protected ?int $animationFrames;
+    protected ?int $animationFrames = null;
 
-    protected ?int $animationRepeatCount;
+    protected ?int $animationRepeatCount = null;
 
     /**
      * @param array<string, mixed> $info

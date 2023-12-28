@@ -20,7 +20,7 @@ class Config implements Arrayable
 
     protected const INTERPOLATION_REGEX = '/\$(?!\$)\{([%a-z._]+)\}/i';
 
-    protected bool $resolved;
+    protected bool $resolved = false;
 
     /**
      * @param array<string, mixed> $data
@@ -28,7 +28,6 @@ class Config implements Arrayable
     public function __construct(array $data = [])
     {
         $this->data = $data;
-        $this->resolved = false;
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -50,15 +49,8 @@ class Config implements Arrayable
     {
         if (FileSystem::isReadable($path) && FileSystem::extension($path) === 'yaml') {
             $name = FileSystem::name($path);
-
             $data = (array) Yaml::parseFile($path);
-
-            if (isset($this->data[$name])) {
-                $this->data[$name] = array_replace_recursive($this->data[$name], $data);
-            } else {
-                $this->data[$name] = $data;
-            }
-
+            $this->data[$name] = isset($this->data[$name]) ? array_replace_recursive($this->data[$name], $data) : $data;
         }
     }
 

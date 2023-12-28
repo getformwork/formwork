@@ -11,26 +11,23 @@ use League\Config\ConfigurationInterface;
 
 class LinkBaseProcessor
 {
-    protected ConfigurationInterface $config;
-
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(protected ConfigurationInterface $configuration)
     {
-        $this->config = $config;
     }
 
-    public function __invoke(DocumentParsedEvent $e): void
+    public function __invoke(DocumentParsedEvent $documentParsedEvent): void
     {
-        foreach ($e->getDocument()->iterator() as $node) {
-            if (!($node instanceof Link || $node instanceof Image)) {
+        foreach ($documentParsedEvent->getDocument()->iterator() as $node) {
+            if (!$node instanceof Link && !$node instanceof Image) {
                 continue;
             }
 
-            $baseRoute = $this->config->get('formwork/baseRoute');
+            $baseRoute = $this->configuration->get('formwork/baseRoute');
 
             $uri = $node->getUrl();
 
             // Process only if scheme is either null, 'http' or 'https'
-            if (in_array(Uri::scheme($uri), [null, 'http', 'https'], true) && (empty(Uri::host($uri)) && $uri[0] !== '#')) {
+            if (in_array(Uri::scheme($uri), [null, 'http', 'https'], true) && ((Uri::host($uri) === null || Uri::host($uri) === '') && $uri[0] !== '#')) {
                 $relativeUri = Uri::resolveRelative($uri, $baseRoute);
                 $uri = App::instance()->site()->uri($relativeUri, includeLanguage: false);
             }

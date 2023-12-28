@@ -72,28 +72,21 @@ class User implements Arrayable
     protected UserImage $image;
 
     /**
-     * User permissions
-     */
-    protected Permissions $permissions;
-
-    /**
      * User last access time
      */
-    protected ?int $lastAccess;
+    protected ?int $lastAccess = null;
 
     /**
      * Create a new User instance
      *
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data, Permissions $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
+    public function __construct(array $data, protected Permissions $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
         $this->data = [...$this->defaults, ...$data];
         foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
             $this->{$var} = $this->data[$var];
         }
-
-        $this->permissions = $permissions;
     }
 
     public function __debugInfo(): array
@@ -159,7 +152,6 @@ class User implements Arrayable
 
         if (FileSystem::isFile($path, assertExists: false)) {
             $uri = $this->panel->realUri('/assets/images/users/' . basename($path));
-            $path = $path;
         } else {
             $uri = $this->panel->realUri('/assets/images/user-image.svg');
         }
@@ -212,7 +204,10 @@ class User implements Arrayable
      */
     public function canChangeOptionsOf(User $user): bool
     {
-        return $this->isAdmin() || $user->isLogged();
+        if ($this->isAdmin()) {
+            return true;
+        }
+        return $user->isLogged();
     }
 
     /**
@@ -220,7 +215,10 @@ class User implements Arrayable
      */
     public function canChangePasswordOf(User $user): bool
     {
-        return $this->isAdmin() || $user->isLogged();
+        if ($this->isAdmin()) {
+            return true;
+        }
+        return $user->isLogged();
     }
 
     /**
@@ -236,7 +234,7 @@ class User implements Arrayable
      */
     public function lastAccess(): ?int
     {
-        if (isset($this->lastAccess)) {
+        if ($this->lastAccess !== null) {
             return $this->lastAccess;
         }
         $registry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));

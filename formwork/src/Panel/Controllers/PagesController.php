@@ -13,6 +13,7 @@ use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
+use Formwork\Languages\Language;
 use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Parsers\Yaml;
@@ -81,11 +82,11 @@ class PagesController extends AbstractController
     {
         $this->ensurePermission('pages.create');
 
-        $data = $this->request->input();
+        $requestData = $this->request->input();
 
         // Let's create the page
         try {
-            $page = $this->createPage($data);
+            $page = $this->createPage($requestData);
             $this->panel()->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
@@ -102,18 +103,18 @@ class PagesController extends AbstractController
     /**
      * Pages@edit action
      */
-    public function edit(RouteParams $params): Response
+    public function edit(RouteParams $routeParams): Response
     {
         $this->ensurePermission('pages.edit');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
-        if ($params->has('language')) {
+        if ($routeParams->has('language')) {
             if (empty($this->config->get('system.languages.available'))) {
                 if ($page->route() === null) {
                     throw new UnexpectedValueException('Unexpected missing page route');
@@ -121,7 +122,7 @@ class PagesController extends AbstractController
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => trim($page->route(), '/')]));
             }
 
-            $language = $params->get('language');
+            $language = $routeParams->get('language');
 
             if (!in_array($language, $this->config->get('system.languages.available'), true)) {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.invalidLanguage', $language), 'error');
@@ -186,7 +187,7 @@ class PagesController extends AbstractController
                 }
 
                 // Redirect if page route has changed
-                if ($params->get('page') !== ($route = trim($page->route(), '/'))) {
+                if ($routeParams->get('page') !== ($route = trim($page->route(), '/'))) {
                     return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $route]));
                 }
 
@@ -213,7 +214,7 @@ class PagesController extends AbstractController
             'fields'          => $fields,
             'templates'       => $this->site()->templates()->keys(),
             'parents'         => $this->site()->descendants()->sortBy('relativePath'),
-            'currentLanguage' => $params->get('language', $page->language()?->code()),
+            'currentLanguage' => $routeParams->get('language', $page->language()?->code()),
         ]));
     }
 
@@ -224,30 +225,30 @@ class PagesController extends AbstractController
     {
         $this->ensurePermission('pages.reorder');
 
-        $data = $this->request->input();
+        $requestData = $this->request->input();
 
-        if (!$data->hasMultiple(['page', 'before', 'parent'])) {
+        if (!$requestData->hasMultiple(['page', 'before', 'parent'])) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        $parent = $this->resolveParent($data->get('parent'));
+        $parent = $this->resolveParent($requestData->get('parent'));
         if (!$parent->hasChildren()) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        $pages = $parent->children();
-        $keys = $pages->keys();
+        $pageCollection = $parent->children();
+        $keys = $pageCollection->keys();
 
-        $from = Arr::indexOf($keys, $data->get('page'));
-        $to = Arr::indexOf($keys, $data->get('before'));
+        $from = Arr::indexOf($keys, $requestData->get('page'));
+        $to = Arr::indexOf($keys, $requestData->get('before'));
 
         if ($from === null || $to === null) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        $pages->moveItem($from, $to);
+        $pageCollection->moveItem($from, $to);
 
-        foreach ($pages->values() as $i => $page) {
+        foreach ($pageCollection->values() as $i => $page) {
             $name = basename($page->relativePath());
             $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name)
                 ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
@@ -263,19 +264,19 @@ class PagesController extends AbstractController
     /**
      * Pages@delete action
      */
-    public function delete(RouteParams $params): RedirectResponse
+    public function delete(RouteParams $routeParams): RedirectResponse
     {
         $this->ensurePermission('pages.delete');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
-        if ($params->has('language')) {
-            $language = $params->get('language');
+        if ($routeParams->has('language')) {
+            $language = $routeParams->get('language');
             if ($page->languages()->available()->has($language)) {
                 $page->setLanguage($language);
             } else {
@@ -291,7 +292,7 @@ class PagesController extends AbstractController
 
         if ($page->path() !== null) {
             // Delete just the content file only if there are more than one language
-            if ($page->contentFile() && $params->has('language') && count($page->languages()->available()) > 1) {
+            if ($page->contentFile() !== null && $routeParams->has('language') && count($page->languages()->available()) > 1) {
                 FileSystem::delete($page->contentFile()->path());
             } else {
                 FileSystem::delete($page->path(), recursive: true);
@@ -301,7 +302,7 @@ class PagesController extends AbstractController
         $this->panel()->notify($this->translate('panel.pages.page.deleted'), 'success');
 
         // Try to redirect to referer unless it's to Pages@edit
-        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize($this->request->referer()), Uri::make(['path' => $this->panel()->uri('/pages/' . $params->get('page') . '/edit/')]))) {
+        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize($this->request->referer()), Uri::make(['path' => $this->panel()->uri('/pages/' . $routeParams->get('page') . '/edit/')]))) {
             return $this->redirectToReferer(default: '/pages/');
         }
         return $this->redirect($this->generateRoute('panel.pages'));
@@ -310,11 +311,11 @@ class PagesController extends AbstractController
     /**
      * Pages@uploadFile action
      */
-    public function uploadFile(RouteParams $params): RedirectResponse
+    public function uploadFile(RouteParams $routeParams): RedirectResponse
     {
         $this->ensurePermission('pages.uploadFiles');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotUploadFile.pageNotFound'), 'error');
@@ -326,146 +327,146 @@ class PagesController extends AbstractController
                 $this->processPageUploads($this->request->files()->getAll(), $page);
             } catch (TranslatedException $e) {
                 $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
-                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
 
             }
         }
 
         $this->panel()->notify($this->translate('panel.uploader.uploaded'), 'success');
-        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
     }
 
     /**
      * Pages@deleteFile action
      */
-    public function deleteFile(RouteParams $params): RedirectResponse
+    public function deleteFile(RouteParams $routeParams): RedirectResponse
     {
         $this->ensurePermission('pages.deleteFiles');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
-        if (!$page->files()->has($params->get('filename'))) {
+        if (!$page->files()->has($routeParams->get('filename'))) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.fileNotFound'), 'error');
-            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
-        FileSystem::delete($page->path() . $params->get('filename'));
+        FileSystem::delete($page->path() . $routeParams->get('filename'));
 
         $this->panel()->notify($this->translate('panel.pages.page.fileDeleted'), 'success');
-        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
 
     }
 
     /**
      * Pages@renameFile action
      */
-    public function renameFile(RouteParams $params, Request $request): RedirectResponse
+    public function renameFile(RouteParams $routeParams, Request $request): RedirectResponse
     {
         $this->ensurePermission('pages.renameFiles');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'), 'error');
             return $this->redirectToReferer(default:  '/pages/');
         }
 
-        if (!$page->files()->has($params->get('filename'))) {
+        if (!$page->files()->has($routeParams->get('filename'))) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileNotFound'), 'error');
-            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
         $name = Str::slug(FileSystem::name($request->input()->get('filename')));
-        $extension = FileSystem::extension($params->get('filename'));
+        $extension = FileSystem::extension($routeParams->get('filename'));
 
         $newName = $name . '.' . $extension;
 
-        $previousName = $params->get('filename');
+        $previousName = $routeParams->get('filename');
 
         if ($newName !== $previousName) {
             if ($page->files()->has($newName)) {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileAlreadyExists'), 'error');
-                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
             }
 
             FileSystem::move($page->path() . $previousName, $page->path() . $newName);
             $this->panel()->notify($this->translate('panel.pages.page.fileRenamed'), 'success');
         }
 
-        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $params->get('page')]));
+        return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
     }
 
-    public function getFileInfo(RouteParams $params): JsonResponse
+    public function getFileInfo(RouteParams $routeParams): JsonResponse
     {
         $this->ensurePermission('pages.getFileInfo');
 
-        $page = $this->site()->findPage($params->get('page'));
+        $page = $this->site()->findPage($routeParams->get('page'));
 
         if ($page === null) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'));
         }
 
-        if (!$page->files()->has($params->get('filename'))) {
+        if (!$page->files()->has($routeParams->get('filename'))) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.fileNotFound'));
         }
 
-        return JsonResponse::success('Yes!', data: $page->files()->get($params->get('filename'))->toArray());
+        return JsonResponse::success('Yes!', data: $page->files()->get($routeParams->get('filename'))->toArray());
     }
 
     /**
      * Create a new page
      */
-    protected function createPage(RequestData $data): Page
+    protected function createPage(RequestData $requestData): Page
     {
         // Ensure no required data is missing
-        if (!$data->hasMultiple(['title', 'slug', 'template', 'parent'])) {
+        if (!$requestData->hasMultiple(['title', 'slug', 'template', 'parent'])) {
             throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotCreate.varMissing');
         }
 
         try {
-            $parent = $this->resolveParent($data->get('parent'));
+            $parent = $this->resolveParent($requestData->get('parent'));
         } catch (RuntimeException) {
             throw new TranslatedException('Parent page not found', 'panel.pages.page.cannotCreate.invalidParent');
         }
 
         // Validate page slug
-        if (!$this->validateSlug($data->get('slug'))) {
+        if (!$this->validateSlug($requestData->get('slug'))) {
             throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotCreate.invalidSlug');
         }
 
-        $route = $parent->route() . $data->get('slug') . '/';
+        $route = $parent->route() . $requestData->get('slug') . '/';
 
         // Ensure there isn't a page with the same route
-        if ($this->site()->findPage($route)) {
+        if ($this->site()->findPage($route) !== null) {
             throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannotCreate.alreadyExists');
         }
 
         // Validate page template
-        if (!$this->site()->templates()->has($data->get('template'))) {
+        if (!$this->site()->templates()->has($requestData->get('template'))) {
             throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotCreate.invalidTemplate');
         }
 
-        $scheme = $this->app->schemes()->get('pages.' . $data->get('template'));
+        $scheme = $this->app->schemes()->get('pages.' . $requestData->get('template'));
 
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $data->get('slug') . '/';
+        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $requestData->get('slug') . '/';
 
         FileSystem::createDirectory($path, recursive: true);
 
         $language = $this->site()->languages()->default();
 
-        $filename = $data->get('template');
-        $filename .= empty($language) ? '' : '.' . $language;
+        $filename = $requestData->get('template');
+        $filename .= $language !== null ? '.' . $language : '';
         $filename .= $this->config->get('system.content.extension');
 
         FileSystem::createFile($path . $filename);
 
         $contentData = [
-            'title'     => $data->get('title'),
+            'title'     => $requestData->get('title'),
             'published' => false,
         ];
 
@@ -479,14 +480,14 @@ class PagesController extends AbstractController
     /**
      * Update a page
      */
-    protected function updatePage(Page $page, RequestData $data, FieldCollection $fields): Page
+    protected function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection): Page
     {
         // Ensure no required data is missing
-        if (!$data->hasMultiple(['title', 'content'])) {
+        if (!$requestData->hasMultiple(['title', 'content'])) {
             throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotEdit.varMissing');
         }
 
-        if (!$page->contentFile()) {
+        if ($page->contentFile() === null) {
             throw new RuntimeException('Unexpected missing content file');
         }
 
@@ -494,15 +495,15 @@ class PagesController extends AbstractController
         $frontmatter = $page->contentFile()->frontmatter();
 
         // Preserve the title if not given
-        if (!empty($data->get('title'))) {
-            $frontmatter['title'] = $data->get('title');
+        if (!empty($requestData->get('title'))) {
+            $frontmatter['title'] = $requestData->get('title');
         }
 
         // Get page defaults
         $defaults = $page->defaults();
 
         // Handle data from fields
-        foreach ($fields as $field) {
+        foreach ($fieldCollection as $field) {
             $default = array_key_exists($field->name(), $defaults) && $field->value() === $defaults[$field->name()];
 
             // Remove empty and default values
@@ -515,9 +516,9 @@ class PagesController extends AbstractController
             $frontmatter[$field->name()] = $field->value();
         }
 
-        $content = str_replace("\r\n", "\n", $data->get('content'));
+        $content = str_replace("\r\n", "\n", $requestData->get('content'));
 
-        $language = $data->get('language');
+        $language = $requestData->get('language');
 
         // Validate language
         if (!empty($language) && !in_array($language, $this->config->get('system.languages.available'), true)) {
@@ -527,7 +528,7 @@ class PagesController extends AbstractController
         $differ = $frontmatter !== $page->contentFile()->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
 
         if ($differ) {
-            $filename = $data->get('template');
+            $filename = $requestData->get('template');
             $filename .= empty($language) ? '' : '.' . $language;
             $filename .= $this->config->get('system.content.extension');
 
@@ -552,7 +553,7 @@ class PagesController extends AbstractController
                 $page->setLanguage($language);
             }
 
-            if (!$page->contentFile()) {
+            if ($page->contentFile() === null) {
                 throw new RuntimeException('Unexpected missing content file');
             }
 
@@ -572,7 +573,7 @@ class PagesController extends AbstractController
 
                 try {
                     $page = $this->changePageName($page, $name);
-                } catch (RuntimeException $e) {
+                } catch (RuntimeException) {
                     throw new TranslatedException('Cannot change page num', 'panel.pages.page.cannotChangeNum');
                 }
             }
@@ -580,7 +581,7 @@ class PagesController extends AbstractController
 
         // Check if parent page has to change
         try {
-            if ($page->parent() !== ($parent = $this->resolveParent($data->get('parent')))) {
+            if ($page->parent() !== ($parent = $this->resolveParent($requestData->get('parent')))) {
                 $page = $this->changePageParent($page, $parent);
             }
         } catch (RuntimeException) {
@@ -588,7 +589,7 @@ class PagesController extends AbstractController
         }
 
         // Check if page template has to change
-        if ($page->template()->name() !== ($template = $data->get('template'))) {
+        if ($page->template()->name() !== ($template = $requestData->get('template'))) {
             if (!$this->site()->templates()->has($template)) {
                 throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotEdit.invalidTemplate');
             }
@@ -596,7 +597,7 @@ class PagesController extends AbstractController
         }
 
         // Check if page slug has to change
-        if ($page->slug() !== ($slug = $data->get('slug'))) {
+        if ($page->slug() !== ($slug = $requestData->get('slug'))) {
             if (!$this->validateSlug($slug)) {
                 throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotEdit.invalidSlug');
             }
@@ -604,7 +605,7 @@ class PagesController extends AbstractController
             if ($page->isIndexPage() || $page->isErrorPage()) {
                 throw new TranslatedException('Cannot change slug of index or error pages', 'panel.pages.page.cannotEdit.indexOrErrorPageSlug');
             }
-            if ($this->site()->findPage($page->parent()?->route() . $slug . '/')) {
+            if ($this->site()->findPage($page->parent()?->route() . $slug . '/') !== null) {
                 throw new TranslatedException('A page with the same route already exists', 'panel.pages.page.cannotEdit.alreadyExists');
             }
             $page = $this->changePageName($page, ltrim($page->num() . '-', '-') . $slug);
@@ -620,7 +621,7 @@ class PagesController extends AbstractController
      */
     protected function processPageUploads(array $files, Page $page): void
     {
-        $uploader = new FileUploader($this->config);
+        $fileUploader = new FileUploader($this->config);
 
         foreach ($files as $file) {
             if (!$file->isUploaded()) {
@@ -629,7 +630,7 @@ class PagesController extends AbstractController
             if ($page->path() === null) {
                 throw new UnexpectedValueException('Unexpected missing page path');
             }
-            $uploadedFile = $uploader->upload($file, $page->path());
+            $uploadedFile = $fileUploader->upload($file, $page->path());
             // Process JPEG and PNG images according to system options (e.g. quality)
             if ($this->config->get('system.uploads.processImages') && in_array($uploadedFile->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($uploadedFile->path(), $this->config->get('system.images'));
@@ -697,7 +698,7 @@ class PagesController extends AbstractController
             throw new UnexpectedValueException('Unexpected missing page path');
         }
 
-        if (!$page->contentFile()) {
+        if ($page->contentFile() === null) {
             throw new UnexpectedValueException('Unexpected missing content file');
         }
 

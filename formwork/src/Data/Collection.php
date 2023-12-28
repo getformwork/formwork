@@ -44,7 +44,7 @@ final class Collection extends AbstractCollection
      */
     public static function create(array $data = [], ?string $dataType = null, bool $associative = false, bool $mutable = false): static
     {
-        $collection = new static();
+        $collection = new self();
 
         $collection->associative = $associative;
         $collection->dataType = $dataType;

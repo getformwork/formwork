@@ -64,7 +64,7 @@ final class App
         if ($this->container->has($name)) {
             return $this->container->get($name);
         }
-        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', self::class, $name));
     }
 
     public function config(): Config
@@ -141,7 +141,7 @@ final class App
     {
         $container->define(Container::class, $container);
 
-        $container->define(static::class, $this);
+        $container->define(self::class, $this);
 
         $container->define(Config::class)
             ->loader(ConfigServiceLoader::class)

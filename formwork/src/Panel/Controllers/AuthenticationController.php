@@ -18,9 +18,9 @@ class AuthenticationController extends AbstractController
     /**
      * Authentication@login action
      */
-    public function login(Request $request, CsrfToken $csrfToken, AccessLimiter $limiter): Response
+    public function login(Request $request, CsrfToken $csrfToken, AccessLimiter $accessLimiter): Response
     {
-        if ($limiter->hasReachedLimit()) {
+        if ($accessLimiter->hasReachedLimit()) {
             $minutes = round($this->config->get('system.panel.loginResetTime') / 60);
             $csrfToken->generate();
             return $this->error($this->translate('panel.login.attempt.tooMany', $minutes));
@@ -51,7 +51,7 @@ class AuthenticationController extends AbstractController
                     $this->error($this->translate('panel.login.attempt.failed'));
                 }
 
-                $limiter->registerAttempt();
+                $accessLimiter->registerAttempt();
 
                 $user = $this->panel()->users()->get($data->get('username'));
 
@@ -69,7 +69,7 @@ class AuthenticationController extends AbstractController
                     $time = $accessLog->log($data->get('username'));
                     $lastAccessRegistry->set($data->get('username'), $time);
 
-                    $limiter->resetAttempts();
+                    $accessLimiter->resetAttempts();
 
                     if (($destination = $request->session()->get('FORMWORK_REDIRECT_TO')) !== null) {
                         $request->session()->remove('FORMWORK_REDIRECT_TO');

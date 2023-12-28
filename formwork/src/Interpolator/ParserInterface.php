@@ -6,7 +6,7 @@ use Formwork\Interpolator\Nodes\AbstractNode;
 
 interface ParserInterface
 {
-    public function __construct(TokenStream $stream);
+    public function __construct(TokenStream $tokenStream);
 
     /**
      * Parse the tokens
@@ -16,5 +16,5 @@ interface ParserInterface
     /**
      * Parse a given TokenStream object
      */
-    public static function parseTokenStream(TokenStream $stream): AbstractNode;
+    public static function parseTokenStream(TokenStream $tokenStream): AbstractNode;
 }

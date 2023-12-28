@@ -7,32 +7,18 @@ use Stringable;
 
 class Translation
 {
-    /**
-     * Translation language code
-     */
-    protected string $code;
-
-    /**
-     * Translation data
-     *
-     * @var array<string, list<string>|string>
-     */
-    protected array $data = [];
-
     protected ?Translation $fallback = null;
 
     /**
      * @param array<string, list<string>|string> $data
      */
-    public function __construct(string $code, array $data)
+    public function __construct(protected string $code, protected array $data)
     {
-        $this->code = $code;
-        $this->data = $data;
     }
 
-    public function setFallback(?Translation $fallback): void
+    public function setFallback(?Translation $fallbackTranslation): void
     {
-        $this->fallback = $fallback;
+        $this->fallback = $fallbackTranslation;
     }
 
     /**
@@ -59,7 +45,7 @@ class Translation
         if ($this->has($key)) {
             $value = $this->data[$key];
             if (is_string($value)) {
-                if (!empty($arguments)) {
+                if ($arguments !== []) {
                     return sprintf($value, ...$arguments);
                 }
                 return $value;

@@ -23,10 +23,7 @@ trait SingletonClass
      */
     public static function instance(): self
     {
-        if (isset(static::$instance)) {
-            return static::$instance;
-        }
-        return static::$instance = new static();
+        return static::$instance ?? (static::$instance = new static());
     }
 
     /**

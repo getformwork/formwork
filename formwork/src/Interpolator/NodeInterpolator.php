@@ -15,20 +15,11 @@ use InvalidArgumentException;
 
 class NodeInterpolator
 {
-    protected AbstractNode $node;
-
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $vars;
-
     /**
      * @param array<string, mixed> $vars
      */
-    public function __construct(AbstractNode $node, array $vars)
+    public function __construct(protected AbstractNode $node, protected array $vars)
     {
-        $this->node = $node;
-        $this->vars = $vars;
     }
 
     /**
@@ -63,16 +54,16 @@ class NodeInterpolator
      *
      * @param array<mixed>|object|null $parent
      */
-    protected function interpolateIdentifierNode(IdentifierNode $node, array|object|null $parent = null): mixed
+    protected function interpolateIdentifierNode(IdentifierNode $identifierNode, array|object|null $parent = null): mixed
     {
-        $name = $node->value();
+        $name = $identifierNode->value();
 
         $arguments = [];
 
-        $traverse = $node->traverse();
+        $traverse = $identifierNode->traverse();
 
-        if ($node->arguments() !== null) {
-            foreach ($node->arguments()->value() as $argument) {
+        if ($identifierNode->arguments() !== null) {
+            foreach ($identifierNode->arguments()->value() as $argument) {
                 $arguments[] = $this->interpolateNode($argument);
             }
         }
@@ -82,40 +73,38 @@ class NodeInterpolator
                 throw new InterpolationException(sprintf('Undefined variable "%s"', $name));
             }
             $value = $this->vars[$name];
-        } else {
-            if (is_array($parent)) {
-                if (!array_key_exists($name, $parent)) {
-                    throw new InterpolationException(sprintf('Undefined array key "%s"', $name));
-                }
-                $value = $parent[$name];
-            } elseif (is_object($parent)) {
-                switch (true) {
-                    case method_exists($parent, $name):
-                        $value = $parent->{$name}(...$arguments);
-                        break;
-
-                    case is_callable([$parent, '__call']):
-                        $value = $parent->__call($name, $arguments);
-                        break;
-
-                    case property_exists($parent, $name) && $node->arguments() === null:
-                        $value = $parent->{$name};
-                        break;
-
-                    case is_callable([$parent, '__get']) && $node->arguments() === null:
-                        $value = $parent->__get($name);
-                        break;
-
-                    case defined($parent::class . '::' . $name) && $node->arguments() === null:
-                        $value = constant($parent::class . '::' . $name);
-                        break;
-
-                    default:
-                        throw new InterpolationException(sprintf('Undefined class method, property or constant %s::%s', $parent::class, $name));
-                }
-            } else {
-                throw new InvalidArgumentException(sprintf('%s() accepts only arrays and objects as $parent argument', __METHOD__));
+        } elseif (is_array($parent)) {
+            if (!array_key_exists($name, $parent)) {
+                throw new InterpolationException(sprintf('Undefined array key "%s"', $name));
             }
+            $value = $parent[$name];
+        } elseif (is_object($parent)) {
+            switch (true) {
+                case method_exists($parent, $name):
+                    $value = $parent->{$name}(...$arguments);
+                    break;
+
+                case is_callable([$parent, '__call']):
+                    $value = $parent->__call($name, $arguments);
+                    break;
+
+                case property_exists($parent, $name) && $identifierNode->arguments() === null:
+                    $value = $parent->{$name};
+                    break;
+
+                case is_callable([$parent, '__get']) && $identifierNode->arguments() === null:
+                    $value = $parent->__get($name);
+                    break;
+
+                case defined($parent::class . '::' . $name) && $identifierNode->arguments() === null:
+                    $value = constant($parent::class . '::' . $name);
+                    break;
+
+                default:
+                    throw new InterpolationException(sprintf('Undefined class method, property or constant %s::%s', $parent::class, $name));
+            }
+        } else {
+            throw new InvalidArgumentException(sprintf('%s() accepts only arrays and objects as $parent argument', __METHOD__));
         }
 
         if ($traverse !== null) {
@@ -146,7 +135,7 @@ class NodeInterpolator
         }
 
         // Call closures if arguments (zero or more) are given
-        if ($value instanceof Closure && $node->arguments() !== null) {
+        if ($value instanceof Closure && $identifierNode->arguments() !== null) {
             return $value(...$arguments);
         }
 
@@ -158,12 +147,12 @@ class NodeInterpolator
      *
      * @return array<mixed>
      */
-    protected function interpolateArrayNode(ArrayNode $node): array
+    protected function interpolateArrayNode(ArrayNode $arrayNode): array
     {
         $result = [];
-        $keys = $this->interpolateArrayKeysNode($node->keys());
+        $keys = $this->interpolateArrayKeysNode($arrayNode->keys());
 
-        foreach ($node->value() as $i => $value) {
+        foreach ($arrayNode->value() as $i => $value) {
             $key = $keys[$i];
             $result[$key] = $this->interpolateNode($value);
         }
@@ -176,13 +165,13 @@ class NodeInterpolator
      *
      * @return list<array-key>
      */
-    protected function interpolateArrayKeysNode(ArrayKeysNode $node): array
+    protected function interpolateArrayKeysNode(ArrayKeysNode $arrayKeysNode): array
     {
         $offset = -1;
 
         $result = [];
 
-        foreach ($node->value() as $key) {
+        foreach ($arrayKeysNode->value() as $key) {
             switch ($key->type()) {
                 case ImplicitArrayKeyNode::TYPE:
                     $offset++;
@@ -222,14 +211,12 @@ class NodeInterpolator
     protected function validateArrayKey(mixed $key): int|string
     {
         switch (true) {
-            case is_int($key):
-                return $key;
-
             case is_bool($key):
             case is_float($key):
             case is_string($key) && ctype_digit($key) && $key[0] !== '0':
                 return (int) $key;
 
+            case is_int($key):
             case is_string($key):
                 return $key;
 

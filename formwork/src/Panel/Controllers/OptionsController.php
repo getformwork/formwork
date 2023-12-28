@@ -265,13 +265,13 @@ class OptionsController extends AbstractController
      * @param array<string, mixed> $options
      * @param array<string, mixed> $defaults
      */
-    protected function updateOptions(string $type, FieldCollection $fields, array $options, array $defaults): bool
+    protected function updateOptions(string $type, FieldCollection $fieldCollection, array $options, array $defaults): bool
     {
         $old = $options;
         $options = [];
 
         // Update options with new values
-        foreach ($fields as $field) {
+        foreach ($fieldCollection as $field) {
             if ($field->isRequired() && $field->isEmpty()) {
                 continue;
             }

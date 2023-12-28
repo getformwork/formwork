@@ -10,15 +10,15 @@ use Nette\Schema\Expect;
 
 class LinkBaseExtension implements ConfigurableExtensionInterface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configureSchema(ConfigurationBuilderInterface $configurationBuilder): void
     {
-        $builder->addSchema('formwork', Expect::structure([
+        $configurationBuilder->addSchema('formwork', Expect::structure([
             'baseRoute' => Expect::string('/'),
         ]));
     }
 
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(EnvironmentBuilderInterface $environmentBuilder): void
     {
-        $environment->addEventListener(DocumentParsedEvent::class, new LinkBaseProcessor($environment->getConfiguration()));
+        $environmentBuilder->addEventListener(DocumentParsedEvent::class, new LinkBaseProcessor($environmentBuilder->getConfiguration()));
     }
 }

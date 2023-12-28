@@ -9,8 +9,8 @@ class Pagination extends BasePagination
 {
     use PaginationUri;
 
-    public function __construct(PageCollection $collection, int $length)
+    public function __construct(PageCollection $pageCollection, int $length)
     {
-        parent::__construct($collection, $length);
+        parent::__construct($pageCollection, $length);
     }
 }

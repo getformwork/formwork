@@ -3,8 +3,9 @@
 namespace Formwork\Metadata;
 
 use Formwork\Utils\Str;
+use Stringable;
 
-class Metadata
+class Metadata implements Stringable
 {
     protected const HTTP_EQUIV_NAMES = ['content-type', 'default-style', 'refresh'];
 
@@ -14,11 +15,6 @@ class Metadata
     protected string $name;
 
     /**
-     * Metadata content
-     */
-    protected string $content;
-
-    /**
      * Metadata prefix
      */
     protected string $prefix;
@@ -26,14 +22,14 @@ class Metadata
     /**
      * Create a new Metadata instance
      */
-    public function __construct(string $name, string $content)
+    public function __construct(string $name, protected string $content)
     {
         $this->name = strtolower($name);
-        $this->content = $content;
-
-        if ($prefix = Str::before($name, ':')) {
-            $this->prefix = $prefix;
+        if (($prefix = Str::before($name, ':')) === '') {
+            return;
         }
+
+        $this->prefix = $prefix;
     }
 
     public function __toString(): string

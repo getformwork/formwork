@@ -56,7 +56,7 @@ class Path
         $result = [];
         if (($segments = preg_split(self::SEPARATORS_REGEX, $path))) {
             foreach ($segments as $segment) {
-                if ($segment === '..' && end($result) !== '..' && !empty($result)) {
+                if ($segment === '..' && end($result) !== '..' && $result !== []) {
                     if (end($result) !== '') {
                         array_pop($result);
                     }

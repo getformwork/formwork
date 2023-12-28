@@ -4,20 +4,8 @@ namespace Formwork\Panel\Users;
 
 class UserImage
 {
-    /**
-     * Image URI
-     */
-    protected string $uri;
-
-    /**
-     * Image file path
-     */
-    protected string $path;
-
-    public function __construct(string $path, string $uri)
+    public function __construct(protected string $path, protected string $uri)
     {
-        $this->path = $path;
-        $this->uri = $uri;
     }
 
     /**

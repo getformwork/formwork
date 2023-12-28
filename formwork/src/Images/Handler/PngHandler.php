@@ -81,11 +81,11 @@ class PngHandler extends AbstractHandler
         return null;
     }
 
-    public function setColorProfile(ColorProfile $profile): void
+    public function setColorProfile(ColorProfile $colorProfile): void
     {
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'IHDR') {
-                $iCCPChunk = $this->encodeChunk('iCCP', $this->encodeProfile($profile->name(), $profile->getData()));
+                $iCCPChunk = $this->encodeChunk('iCCP', $this->encodeProfile($colorProfile->name(), $colorProfile->getData()));
                 $this->data = substr_replace($this->data, $iCCPChunk, $chunk['position'], 0);
                 break;
             }
@@ -130,11 +130,11 @@ class PngHandler extends AbstractHandler
         return null;
     }
 
-    public function setExifData(ExifData $data): void
+    public function setExifData(ExifData $exifData): void
     {
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'IHDR') {
-                $iCCPChunk = $this->encodeChunk('eXIf', $data->getData());
+                $iCCPChunk = $this->encodeChunk('eXIf', $exifData->getData());
                 $this->data = substr_replace($this->data, $iCCPChunk, $chunk['position'], 0);
                 break;
             }
@@ -192,11 +192,11 @@ class PngHandler extends AbstractHandler
         return new PngDecoder();
     }
 
-    protected function setDataFromGdImage(GdImage $image): void
+    protected function setDataFromGdImage(GdImage $gdImage): void
     {
         ob_start();
 
-        if (imagepng($image, null, $this->options['pngCompression']) === false) {
+        if (imagepng($gdImage, null, $this->options['pngCompression']) === false) {
             throw new RuntimeException('Cannot set data from GdImage');
         }
 

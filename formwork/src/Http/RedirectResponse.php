@@ -7,11 +7,11 @@ class RedirectResponse extends Response
     /**
      * @inheritdoc
      */
-    public function __construct(string $uri, ResponseStatus $status = ResponseStatus::Found, array $headers = [])
+    public function __construct(string $uri, ResponseStatus $responseStatus = ResponseStatus::Found, array $headers = [])
     {
         $headers += [
             'Location' => $uri,
         ];
-        parent::__construct('', $status, $headers);
+        parent::__construct('', $responseStatus, $headers);
     }
 }

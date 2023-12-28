@@ -66,7 +66,7 @@ class Html
             $html .= ' ' . $attributes;
         }
         $html .= '>';
-        if (count($content) > 0) {
+        if ($content !== []) {
             if (static::isVoid($name)) {
                 throw new InvalidArgumentException(sprintf('Cannot set tag content, <%s> is a void element', $name));
             }

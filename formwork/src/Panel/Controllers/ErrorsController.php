@@ -23,10 +23,10 @@ class ErrorsController extends AbstractController
     /**
      * Errors@internalServerError action
      */
-    public function internalServerError(Throwable $exception): Response
+    public function internalServerError(Throwable $throwable): Response
     {
         return $this->makeErrorResponse(ResponseStatus::InternalServerError, 'internalServerError', [
-            'href'  => $this->makeGitHubIssueUri($exception),
+            'href'  => $this->makeGitHubIssueUri($throwable),
             'label' => $this->translate('panel.errors.action.reportToGithub'),
         ]);
     }
@@ -47,32 +47,32 @@ class ErrorsController extends AbstractController
      *
      * @param array<mixed> $action
      */
-    protected function makeErrorResponse(ResponseStatus $status, string $name, array $action): Response
+    protected function makeErrorResponse(ResponseStatus $responseStatus, string $name, array $action): Response
     {
         Response::cleanOutputBuffers();
 
         if ($this->request->isXmlHttpRequest()) {
-            return JsonResponse::error('Error', $status);
+            return JsonResponse::error('Error', $responseStatus);
         }
 
         return new Response($this->view('errors.error', [
             'title'       => $this->translate('panel.errors.error.' . $name . '.status'),
-            'code'        => $status->code(),
+            'code'        => $responseStatus->code(),
             'status'      => $this->translate('panel.errors.error.' . $name . '.status'),
             'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
             'description' => $this->translate('panel.errors.error.' . $name . '.description'),
             'action'      => $action,
-        ]), $status);
+        ]), $responseStatus);
     }
 
     /**
      * Make a URI to a new GitHub issue with pre-filled data from an (uncaught) exception
      */
-    protected function makeGitHubIssueUri(Throwable $exception): string
+    protected function makeGitHubIssueUri(Throwable $throwable): string
     {
         $query = http_build_query([
             'labels' => 'bug',
-            'title'  => $exception->getMessage(),
+            'title'  => $throwable->getMessage(),
             'body'   => sprintf(
                 "### Description\n\n[Please enter a description and the steps to reproduce the problem...]\n\n" .
                 "**Formwork**: %s\n**Php**: %s\n**OS**: %s\n**SAPI**: %s\n\n" .
@@ -81,11 +81,11 @@ class ErrorsController extends AbstractController
                 PHP_VERSION,
                 PHP_OS_FAMILY,
                 PHP_SAPI,
-                $exception::class,
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-                $exception->getTraceAsString()
+                $throwable::class,
+                $throwable->getMessage(),
+                $throwable->getFile(),
+                $throwable->getLine(),
+                $throwable->getTraceAsString()
             ),
         ]);
 

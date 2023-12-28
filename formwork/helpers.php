@@ -34,7 +34,7 @@ return function (App $app) {
             $currentPage = $app->site()->currentPage();
             return Markdown::parse(
                 $markdown,
-                ['baseRoute' => $currentPage ? $currentPage->route() : '/']
+                ['baseRoute' => $currentPage !== null ? $currentPage->route() : '/']
             );
         },
 

@@ -2,7 +2,9 @@
 
 namespace Formwork\Interpolator;
 
-class Token
+use Stringable;
+
+class Token implements Stringable
 {
     /**
      * Identifier token type
@@ -34,29 +36,11 @@ class Token
      */
     public const TYPE_END = 'end';
 
-    /**
-     * Token type
-     */
-    protected string $type;
-
-    /**
-     * Token value
-     */
-    protected ?string $value;
-
-    /**
-     * Token position
-     */
-    protected int $position;
-
-    public function __construct(string $type, ?string $value, int $position)
+    public function __construct(protected string $type, protected ?string $value, protected int $position)
     {
-        $this->type = $type;
-        $this->value = $value;
-        $this->position = $position;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf(
             'token%s of type %s',

@@ -9,21 +9,6 @@ use Formwork\Utils\Uri;
 class AccessLimiter
 {
     /**
-     * Registry which contains access attempts
-     */
-    protected Registry $registry;
-
-    /**
-     * Limit of valid attempts
-     */
-    protected int $limit;
-
-    /**
-     * Seconds after which registry is reset
-     */
-    protected int $resetTime;
-
-    /**
      * Hash which identifies the visitor which make attempts
      */
     protected string $attemptHash;
@@ -41,12 +26,12 @@ class AccessLimiter
     /**
      * Create a new AccessLimiter instance
      */
-    public function __construct(Registry $registry, int $limit, int $resetTime, protected Request $request)
-    {
-        $this->registry = $registry;
-        $this->limit = $limit;
-        $this->resetTime = $resetTime;
-
+    public function __construct(
+        protected Registry $registry,
+        protected int $limit,
+        protected int $resetTime,
+        protected Request $request
+    ) {
         // Hash visitor IP address followed by current host
         $this->attemptHash = hash('sha256', $request->ip() . '@' . Uri::host());
 

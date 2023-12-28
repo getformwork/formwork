@@ -18,12 +18,12 @@ use Formwork\View\ViewFactory;
 
 class PageController extends AbstractController
 {
-    public function __construct(protected App $app, protected Config $config, protected Router $router, protected Site $site, protected FilesCache $cache)
+    public function __construct(protected App $app, protected Config $config, protected Router $router, protected Site $site, protected FilesCache $filesCache)
     {
         parent::__construct();
     }
 
-    public function load(RouteParams $params, ViewFactory $viewFactory): Response
+    public function load(RouteParams $routeParams, ViewFactory $viewFactory): Response
     {
         if ($this->site->get('maintenance.enabled') && !$this->app->panel()?->isLoggedIn()) {
             if ($this->site->get('maintenance.page') !== null) {
@@ -36,35 +36,35 @@ class PageController extends AbstractController
         }
 
         if (!isset($route)) {
-            $route = $params->get('page', $this->config->get('system.pages.index'));
+            $route = $routeParams->get('page', $this->config->get('system.pages.index'));
 
             if ($resolvedAlias = $this->site->resolveRouteAlias($route)) {
                 $route = $resolvedAlias;
             }
         }
 
-        if ($page = $this->site->findPage($route)) {
+        if (($page = $this->site->findPage($route)) !== null) {
             if ($page->canonicalRoute() !== null) {
                 $canonical = $page->canonicalRoute();
 
-                if ($params->get('page', '/') !== $canonical) {
+                if ($routeParams->get('page', '/') !== $canonical) {
                     $route = $this->router->rewrite(['page' => $canonical]);
                     return new RedirectResponse($this->site->uri($route), ResponseStatus::MovedPermanently);
                 }
             }
 
-            if (($params->has('tagName') || $params->has('paginationPage')) && $page->scheme()->options()->get('type') !== 'listing') {
+            if (($routeParams->has('tagName') || $routeParams->has('paginationPage')) && $page->scheme()->options()->get('type') !== 'listing') {
                 return $this->getPageResponse($this->site->errorPage());
             }
 
-            if ($this->config->get('system.cache.enabled') && ($page->has('publishDate') || $page->has('unpublishDate'))) {
-                if (($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
-                || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))) {
-                    // Clear cache if the site was not modified since the page has been published or unpublished
-                    $this->cache->clear();
-                    if ($this->site->path() !== null) {
-                        FileSystem::touch($this->site->path());
-                    }
+            if ($this->config->get('system.cache.enabled') && ($page->has('publishDate') || $page->has('unpublishDate')) && (
+                ($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
+                || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))
+            )) {
+                // Clear cache if the site was not modified since the page has been published or unpublished
+                $this->filesCache->clear();
+                if ($this->site->path() !== null) {
+                    FileSystem::touch($this->site->path());
                 }
             }
 
@@ -79,7 +79,7 @@ class PageController extends AbstractController
                 $upperLevel = $this->config->get('system.pages.index');
             }
 
-            if (($parent = $this->site->findPage($upperLevel)) && $parent->files()->has($filename)) {
+            if ((($parent = $this->site->findPage($upperLevel)) !== null) && $parent->files()->has($filename)) {
                 return new FileResponse($parent->files()->get($filename)->path());
             }
         }
@@ -104,23 +104,23 @@ class PageController extends AbstractController
 
         $cacheKey = $page->uri(includeLanguage: true);
 
-        if ($config->get('system.cache.enabled') && $this->cache->has($cacheKey)) {
+        if ($config->get('system.cache.enabled') && $this->filesCache->has($cacheKey)) {
             /**
              * @var int
              */
-            $cachedTime = $this->cache->cachedTime($cacheKey);
+            $cachedTime = $this->filesCache->cachedTime($cacheKey);
             // Validate cached response
             if (!$site->modifiedSince($cachedTime)) {
-                return $this->cache->fetch($cacheKey);
+                return $this->filesCache->fetch($cacheKey);
             }
 
-            $this->cache->delete($cacheKey);
+            $this->filesCache->delete($cacheKey);
         }
 
         $response = new Response($page->render(), $page->responseStatus(), $page->headers());
 
         if ($config->get('system.cache.enabled') && $page->cacheable()) {
-            $this->cache->save($cacheKey, $response);
+            $this->filesCache->save($cacheKey, $response);
         }
 
         return $response;

@@ -50,10 +50,13 @@ class GifHandler extends AbstractHandler
                     $info['animationRepeatCount']++;
                 }
             }
-
-            if ($block['type'] === 'IMG' && $info['isAnimation']) {
-                $info['animationFrames']++;
+            if ($block['type'] !== 'IMG') {
+                continue;
             }
+            if (!$info['isAnimation']) {
+                continue;
+            }
+            $info['animationFrames']++;
         }
 
         return new ImageInfo($info);
@@ -74,7 +77,7 @@ class GifHandler extends AbstractHandler
         throw new UnsupportedFeatureException('GIF does not support color profiles');
     }
 
-    public function setColorProfile(ColorProfile $profile): void
+    public function setColorProfile(ColorProfile $colorProfile): void
     {
         throw new UnsupportedFeatureException('GIF does not support color profiles');
     }
@@ -99,7 +102,7 @@ class GifHandler extends AbstractHandler
         throw new UnsupportedFeatureException('GIF does not support EXIF data');
     }
 
-    public function setExifData(ExifData $data): void
+    public function setExifData(ExifData $exifData): void
     {
         throw new UnsupportedFeatureException('GIF does not support EXIF data');
     }
@@ -114,13 +117,13 @@ class GifHandler extends AbstractHandler
         return new GifDecoder();
     }
 
-    protected function setDataFromGdImage(GdImage $image): void
+    protected function setDataFromGdImage(GdImage $gdImage): void
     {
-        imagetruecolortopalette($image, true, $this->options['gifColors']);
+        imagetruecolortopalette($gdImage, true, $this->options['gifColors']);
 
         ob_start();
 
-        if (imagegif($image, null) === false) {
+        if (imagegif($gdImage, null) === false) {
             throw new RuntimeException('Cannot set data from GdImage');
         }
 

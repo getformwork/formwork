@@ -51,15 +51,15 @@ class Backupper
 
         $destination = FileSystem::joinPaths($path, $name);
 
-        $zip = new ZipArchive();
+        $zipArchive = new ZipArchive();
 
-        if (($status = $zip->open($destination, ZipArchive::CREATE)) === true) {
+        if (($status = $zipArchive->open($destination, ZipArchive::CREATE)) === true) {
             foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
                 if ($this->isCopiable($file)) {
-                    $zip->addFile($file, $file);
+                    $zipArchive->addFile($file, $file);
                 }
             }
-            $zip->close();
+            $zipArchive->close();
         }
 
         $this->deleteOldBackups();

@@ -69,9 +69,9 @@ abstract class AbstractController extends BaseAbstractController
         return $this->router->generate($name, $params);
     }
 
-    protected function redirect(string $route, ResponseStatus $status = ResponseStatus::Found): RedirectResponse
+    protected function redirect(string $route, ResponseStatus $responseStatus = ResponseStatus::Found): RedirectResponse
     {
-        return new RedirectResponse($this->site->uri($route, includeLanguage: false), $status);
+        return new RedirectResponse($this->site->uri($route, includeLanguage: false), $responseStatus);
     }
 
     /**
@@ -79,12 +79,12 @@ abstract class AbstractController extends BaseAbstractController
      *
      * @param string $default Default route if HTTP referer is not available
      */
-    protected function redirectToReferer(ResponseStatus $status = ResponseStatus::Found, string $default = '/'): RedirectResponse
+    protected function redirectToReferer(ResponseStatus $responseStatus = ResponseStatus::Found, string $default = '/'): RedirectResponse
     {
         if (!in_array($this->request->referer(), [null, Uri::current()], true) && $this->request->validateReferer($this->panel()->uri('/'))) {
-            return new RedirectResponse($this->request->referer(), $status);
+            return new RedirectResponse($this->request->referer(), $responseStatus);
         }
-        return new RedirectResponse($this->panel()->uri($default), $status);
+        return new RedirectResponse($this->panel()->uri($default), $responseStatus);
     }
 
     protected function translate(string $key, int|float|string|Stringable ...$arguments): string

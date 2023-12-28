@@ -133,8 +133,8 @@ trait PaginationUri
 
         $router = App::instance()->router();
 
-        if ($router->current() === null) {
-            throw new RuntimeException(sprintf('Cannot generate pagination routes, current route is not defined'));
+        if (!$router->current() instanceof Route) {
+            throw new RuntimeException('Cannot generate pagination routes, current route is not defined');
         }
 
         $routeName = Str::removeEnd($router->current()->getName(), static::$routeSuffix);

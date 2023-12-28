@@ -30,8 +30,6 @@ class Session implements Arrayable
 
     protected const SESSION_ID_REGEX = '/^[a-z0-9,-]{22,256}$/i';
 
-    protected Request $request;
-
     protected Messages $messages;
 
     protected string $name = self::SESSION_NAME;
@@ -40,7 +38,7 @@ class Session implements Arrayable
 
     protected int $duration = 0;
 
-    public function __construct(Request $request)
+    public function __construct(protected Request $request)
     {
         if (!extension_loaded('session')) {
             throw new RuntimeException('Sessions extension not available');
@@ -49,8 +47,6 @@ class Session implements Arrayable
         if (session_status() === PHP_SESSION_DISABLED) {
             throw new RuntimeException('Sessions disabled by PHP configuration');
         }
-
-        $this->request = $request;
     }
 
     public function exists(string $id): bool

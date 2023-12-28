@@ -27,9 +27,9 @@ class Brightness extends AbstractTransform
         return new static($data['amount']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imagefilter($image, IMG_FILTER_BRIGHTNESS, $this->amount);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_BRIGHTNESS, $this->amount);
+        return $gdImage;
     }
 }

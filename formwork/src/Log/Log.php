@@ -5,17 +5,11 @@ namespace Formwork\Log;
 class Log extends Registry
 {
     /**
-     * Limit of registry entries
-     */
-    protected int $limit;
-
-    /**
      * Create a new Log instance
      */
-    public function __construct(string $filename, int $limit = 128)
+    public function __construct(string $filename, protected int $limit = 128)
     {
         parent::__construct($filename);
-        $this->limit = $limit;
     }
 
     /**

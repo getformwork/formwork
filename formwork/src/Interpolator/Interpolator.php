@@ -11,7 +11,7 @@ class Interpolator
      */
     public static function interpolate(string $string, array $vars): mixed
     {
-        $interpolator = new NodeInterpolator(Parser::parseTokenStream(Tokenizer::tokenizeString($string)), $vars);
-        return $interpolator->interpolate();
+        $nodeInterpolator = new NodeInterpolator(Parser::parseTokenStream(Tokenizer::tokenizeString($string)), $vars);
+        return $nodeInterpolator->interpolate();
     }
 }

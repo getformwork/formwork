@@ -31,14 +31,14 @@ final class DataGetter implements Arrayable
      */
     public function isEmpty(): bool
     {
-        return empty($this->data);
+        return $this->data === [];
     }
 
     /**
      * Create an instance from another getter
      */
-    public static function fromGetter(DataGetter $getter): self
+    public static function fromGetter(DataGetter $dataGetter): self
     {
-        return new static($getter->data);
+        return new self($dataGetter->data);
     }
 }

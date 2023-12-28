@@ -8,14 +8,10 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use RuntimeException;
+use Stringable;
 
-class File implements Arrayable
+class File implements Arrayable, Stringable
 {
-    /**
-     * File path
-     */
-    protected string $path;
-
     /**
      * File name
      */
@@ -34,7 +30,7 @@ class File implements Arrayable
     /**
      * File type in a human-readable format
      */
-    protected ?string $type;
+    protected ?string $type = null;
 
     /**
      * File size in a human-readable format
@@ -55,10 +51,11 @@ class File implements Arrayable
 
     /**
      * Create a new File instance
+     *
+     * @param string $path File path
      */
-    public function __construct(string $path)
+    public function __construct(protected string $path)
     {
-        $this->path = $path;
         $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
     }
@@ -105,7 +102,7 @@ class File implements Arrayable
      */
     public function type(): ?string
     {
-        if (isset($this->type)) {
+        if ($this->type !== null) {
             return $this->type;
         }
         if (Str::startsWith($this->mimeType(), 'image')) {
@@ -151,10 +148,7 @@ class File implements Arrayable
      */
     public function lastModifiedTime(): int
     {
-        if (isset($this->lastModifiedTime)) {
-            return $this->lastModifiedTime;
-        }
-        return FileSystem::lastModifiedTime($this->path);
+        return $this->lastModifiedTime ?? FileSystem::lastModifiedTime($this->path);
     }
 
     /**

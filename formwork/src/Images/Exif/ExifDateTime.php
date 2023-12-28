@@ -3,8 +3,9 @@
 namespace Formwork\Images\Exif;
 
 use DateTimeImmutable;
+use Stringable;
 
-class ExifDateTime extends DateTimeImmutable
+class ExifDateTime extends DateTimeImmutable implements Stringable
 {
     public const EXIF = 'Y:m:d H:i:s';
 

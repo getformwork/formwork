@@ -181,10 +181,7 @@ final class Panel
      */
     public function assets(): Assets
     {
-        if (isset($this->assets)) {
-            return $this->assets;
-        }
-        return $this->assets = new Assets($this->config->get('system.panel.paths.assets'), $this->realUri('/assets/'));
+        return $this->assets ?? ($this->assets = new Assets($this->config->get('system.panel.paths.assets'), $this->realUri('/assets/')));
     }
 
     /**
@@ -195,7 +192,7 @@ final class Panel
     public function availableTranslations(): array
     {
         /**
-         * @var array<string, string>
+         * @var array<string, string> $translations
          */
         static $translations = [];
 
@@ -267,10 +264,10 @@ final class Panel
     protected function loadErrorHandler(): void
     {
         if ($this->config->get('system.errors.setHandlers')) {
-            $this->errors = $this->container->build(Controllers\ErrorsController::class);
-            set_exception_handler(function (Throwable $exception): void {
-                $this->errors->internalServerError($exception)->send();
-                throw $exception;
+            $this->errors = $this->container->build(ErrorsController::class);
+            set_exception_handler(function (Throwable $throwable): void {
+                $this->errors->internalServerError($throwable)->send();
+                throw $throwable;
             });
         }
     }

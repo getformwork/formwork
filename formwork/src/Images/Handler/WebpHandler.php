@@ -68,10 +68,13 @@ class WebpHandler extends AbstractHandler
                 $info['isAnimation'] = true;
                 $info['animationRepeatCount'] = unpack('v', $chunk['value'], 4)[1];
             }
-
-            if ($info['isAnimation'] && $chunk['type'] === 'ANMF') {
-                $info['animationFrames']++;
+            if (!$info['isAnimation']) {
+                continue;
             }
+            if ($chunk['type'] !== 'ANMF') {
+                continue;
+            }
+            $info['animationFrames']++;
         }
 
         return new ImageInfo($info);
@@ -104,13 +107,13 @@ class WebpHandler extends AbstractHandler
         return null;
     }
 
-    public function setColorProfile(ColorProfile $profile): void
+    public function setColorProfile(ColorProfile $colorProfile): void
     {
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'VP8X') {
                 $VP8XFlags = ord($chunk['value'][0]) | self::ICC_FLAG;
                 $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
-                $ICCPChunk = $this->encodeChunk('ICCP', $profile->getData());
+                $ICCPChunk = $this->encodeChunk('ICCP', $colorProfile->getData());
                 $this->data = substr_replace($this->data, $ICCPChunk, $chunk['position'], 0);
                 $this->updateRIFFHeader();
                 break;
@@ -161,7 +164,7 @@ class WebpHandler extends AbstractHandler
         return null;
     }
 
-    public function setExifData(ExifData $data): void
+    public function setExifData(ExifData $exifData): void
     {
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'VP8X') {
@@ -170,7 +173,7 @@ class WebpHandler extends AbstractHandler
             }
 
             if (in_array($chunk['type'], ['VP8 ', 'VP8L'], true)) {
-                $ExifChunk = $this->encodeChunk('EXIF', $data->getData());
+                $ExifChunk = $this->encodeChunk('EXIF', $exifData->getData());
                 $this->data = substr_replace($this->data, $ExifChunk, $chunk['position'], 0);
                 $this->updateRIFFHeader();
             }
@@ -213,11 +216,11 @@ class WebpHandler extends AbstractHandler
         return new WebpDecoder();
     }
 
-    protected function setDataFromGdImage(GdImage $image): void
+    protected function setDataFromGdImage(GdImage $gdImage): void
     {
         ob_start();
 
-        if (imagewebp($image, null, $this->options['webpQuality']) === false) {
+        if (imagewebp($gdImage, null, $this->options['webpQuality']) === false) {
             throw new RuntimeException('Cannot set data from GdImage');
         }
 
@@ -228,7 +231,7 @@ class WebpHandler extends AbstractHandler
 
     protected function setVP8XChunk(): void
     {
-        if (strpos($this->data, 'VP8X', 12) === false) {
+        if (!str_contains(substr($this->data, 12), 'VP8X')) {
             $info = $this->getInfo();
             $data = chr(self::ALPHA_FLAG) . "\x0\x0\x0" . substr(pack('V', $info->width() - 1), 0, 3) . substr(pack('V', $info->height() - 1), 0, 3);
             $chunk = $this->encodeChunk('VP8X', $data);

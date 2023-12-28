@@ -36,7 +36,7 @@ class Str
      */
     public static function endsWith(string $haystack, string $needle): bool
     {
-        return $needle === '' || substr_compare($haystack, $needle, -strlen($needle)) === 0;
+        return $needle === '' || str_ends_with($haystack, $needle);
     }
 
     /**

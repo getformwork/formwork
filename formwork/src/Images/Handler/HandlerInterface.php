@@ -21,7 +21,7 @@ interface HandlerInterface
     /**
      * @param array<string, mixed> $options
      */
-    public static function fromGdImage(GdImage $image, array $options = []): HandlerInterface;
+    public static function fromGdImage(GdImage $gdImage, array $options = []): HandlerInterface;
 
     /**
      * Get image info as an array
@@ -47,7 +47,7 @@ interface HandlerInterface
      *
      * @throws RuntimeException if the image has no color profile
      */
-    public function setColorProfile(ColorProfile $profile): void;
+    public function setColorProfile(ColorProfile $colorProfile): void;
 
     /**
      * Remove color profile
@@ -75,7 +75,7 @@ interface HandlerInterface
      *
      * @throws RuntimeException if the image does not support EXIF data
      */
-    public function setExifData(ExifData $data): void;
+    public function setExifData(ExifData $exifData): void;
 
     /**
      * Remove EXIF data
@@ -98,5 +98,5 @@ interface HandlerInterface
      */
     public function defaults(): array;
 
-    public function process(?TransformCollection $transforms = null, ?string $handler = null): self;
+    public function process(?TransformCollection $transformCollection = null, ?string $handler = null): self;
 }

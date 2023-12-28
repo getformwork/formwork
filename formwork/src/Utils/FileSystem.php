@@ -149,12 +149,16 @@ class FileSystem
      */
     public static function assertExists(string $path, bool $value = true): void
     {
-        if ($value === true && !static::exists($path)) {
+        if ($value && !static::exists($path)) {
             throw new FileNotFoundException(sprintf('File "%s" not found', $path));
         }
-        if ($value === false && static::exists($path)) {
-            throw new FileSystemException(sprintf('%s "%s" already exists', !static::isDirectory($path) ? 'File' : 'Directory', $path));
+        if ($value) {
+            return;
         }
+        if (!static::exists($path)) {
+            return;
+        }
+        throw new FileSystemException(sprintf('%s "%s" already exists', static::isDirectory($path) ? 'Directory' : 'File', $path));
     }
 
     /**
@@ -282,9 +286,13 @@ class FileSystem
             if (static::lastModifiedTime($path) > $time) {
                 return true;
             }
-            if (static::isDirectory($path) && static::directoryModifiedSince($path, $time)) {
-                return true;
+            if (!static::isDirectory($path)) {
+                continue;
             }
+            if (!static::directoryModifiedSince($path, $time)) {
+                continue;
+            }
+            return true;
         }
         return false;
     }
@@ -405,10 +413,8 @@ class FileSystem
                 $itemPath = static::joinPaths($directory, $item);
                 static::delete($itemPath, $recursive);
             }
-        } else {
-            if (!static::isEmptyDirectory($directory)) {
-                throw new FileSystemException(sprintf('Directory "%s" must be empty to be deleted', $directory));
-            }
+        } elseif (!static::isEmptyDirectory($directory)) {
+            throw new FileSystemException(sprintf('Directory "%s" must be empty to be deleted', $directory));
         }
         if (@rmdir($directory)) {
             return true;
@@ -464,11 +470,9 @@ class FileSystem
         if (!$overwrite) {
             static::assertExists($destination, false);
         }
-        if (@copy($source, $destination)) {
-            if (($perms = @fileperms($source))) {
-                @chmod($destination, $perms);
-                return true;
-            }
+        if (@copy($source, $destination) && ($perms = @fileperms($source))) {
+            @chmod($destination, $perms);
+            return true;
         }
         throw new FileSystemException(sprintf('Cannot copy file "%s": %s', $source, static::getLastErrorMessage()));
     }
@@ -733,7 +737,7 @@ class FileSystem
             $temporaryFile = static::joinPaths($directory, static::randomName($prefix));
             try {
                 static::createFile($temporaryFile);
-            } catch (FileSystemException $e) {
+            } catch (FileSystemException) {
                 continue;
             }
             return $temporaryFile;

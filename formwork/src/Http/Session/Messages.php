@@ -22,18 +22,18 @@ class Messages implements Arrayable
         $this->data = &$data;
     }
 
-    public function has(MessageType $type): bool
+    public function has(MessageType $messageType): bool
     {
-        return !empty($this->data[$type->value]);
+        return !empty($this->data[$messageType->value]);
     }
 
     /**
      * @return list<string>
      */
-    public function get(MessageType $type): array
+    public function get(MessageType $messageType): array
     {
-        $messages = $this->data[$type->value] ?? [];
-        $this->remove($type);
+        $messages = $this->data[$messageType->value] ?? [];
+        $this->remove($messageType);
         return $messages;
     }
 
@@ -50,22 +50,22 @@ class Messages implements Arrayable
     /**
      * @param list<string>|string $messages
      */
-    public function set(MessageType $type, string|array $messages): void
+    public function set(MessageType $messageType, string|array $messages): void
     {
-        $this->data[$type->value] = (array) $messages;
+        $this->data[$messageType->value] = (array) $messages;
     }
 
-    public function add(MessageType $type, string $message): void
+    public function add(MessageType $messageType, string $message): void
     {
-        if (empty($this->data[$type->value])) {
-            $this->set($type, []);
+        if (empty($this->data[$messageType->value])) {
+            $this->set($messageType, []);
         }
-        $this->data[$type->value][] = $message;
+        $this->data[$messageType->value][] = $message;
     }
 
-    public function remove(MessageType $type): void
+    public function remove(MessageType $messageType): void
     {
-        unset($this->data[$type->value]);
+        unset($this->data[$messageType->value]);
     }
 
     public function removeAll(): void

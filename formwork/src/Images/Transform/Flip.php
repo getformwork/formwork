@@ -16,13 +16,13 @@ class Flip extends AbstractTransform
 
     protected FlipDirection $direction;
 
-    final public function __construct(FlipDirection $direction)
+    final public function __construct(FlipDirection $flipDirection)
     {
-        if (!isset(self::DIRECTIONS[$direction->name])) {
-            throw new InvalidArgumentException(sprintf('Invalid flip direction, "%s" given', $direction->name));
+        if (!isset(self::DIRECTIONS[$flipDirection->name])) {
+            throw new InvalidArgumentException(sprintf('Invalid flip direction, "%s" given', $flipDirection->name));
         }
 
-        $this->direction = $direction;
+        $this->direction = $flipDirection;
     }
 
     public static function fromArray(array $data): static
@@ -30,9 +30,9 @@ class Flip extends AbstractTransform
         return new static($data['direction']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imageflip($image, self::DIRECTIONS[$this->direction->name]);
-        return $image;
+        imageflip($gdImage, self::DIRECTIONS[$this->direction->name]);
+        return $gdImage;
     }
 }

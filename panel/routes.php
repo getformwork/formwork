@@ -194,7 +194,7 @@ return [
             'action' => static function (Request $request, Translations $translations, Panel $panel) {
                 // Validate HTTP request Content-Length according to `post_max_size` directive
                 if ($request->contentLength() !== null) {
-                    $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size'));
+                    $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size') ?: '0');
 
                     if ($request->contentLength() > $maxSize && $maxSize > 0) {
                         $panel->notify(
@@ -213,7 +213,7 @@ return [
                 // Validate CSRF token
                 try {
                     $csrfToken->validate();
-                } catch (RuntimeException $e) {
+                } catch (RuntimeException) {
                     $csrfToken->destroy();
                     $request->session()->remove('FORMWORK_USERNAME');
 

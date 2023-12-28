@@ -7,12 +7,6 @@ use LogicException;
 
 class ServiceDefinition
 {
-    protected string $name;
-
-    protected ?object $object;
-
-    protected Container $container;
-
     /**
      * @var array<string, mixed>
      */
@@ -22,11 +16,8 @@ class ServiceDefinition
 
     protected bool $lazy = true;
 
-    public function __construct(string $name, ?object $object, Container $container)
+    public function __construct(protected string $name, protected ?object $object, protected Container $container)
     {
-        $this->name = $name;
-        $this->object = $object;
-        $this->container = $container;
     }
 
     public function getName(): string

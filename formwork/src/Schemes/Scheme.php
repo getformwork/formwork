@@ -20,19 +20,13 @@ class Scheme implements Arrayable
      */
     protected string $path;
 
-    /**
-     * Scheme name
-     */
-    protected string $id;
-
     protected SchemeOptions $options;
 
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(string $id, array $data, protected Translations $translations, protected Schemes $schemes, protected FieldFactory $fieldFactory)
+    public function __construct(protected string $id, array $data, protected Translations $translations, protected Schemes $schemes, protected FieldFactory $fieldFactory)
     {
-        $this->id = $id;
         $this->data = $data;
 
         if (isset($this->data['extend'])) {
@@ -70,15 +64,15 @@ class Scheme implements Arrayable
      */
     public function fields(): FieldCollection
     {
-        $collection = new FieldCollection();
+        $fieldCollection = new FieldCollection();
 
-        $collection->setMultiple(Arr::map($this->data['fields'] ?? [], fn ($data, $name) => $this->fieldFactory->make($name, $data, $collection)));
+        $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn ($data, $name) => $this->fieldFactory->make($name, $data, $fieldCollection)));
 
         $layout = new Layout($this->data['layout'] ?? ['type' => 'default', 'sections' => []]);
 
-        $collection->setLayout($layout);
+        $fieldCollection->setLayout($layout);
 
-        return $collection;
+        return $fieldCollection;
     }
 
     protected function extend(Scheme $scheme): void

@@ -4,11 +4,8 @@ namespace Formwork\Data;
 
 class CollectionDataProxy
 {
-    protected AbstractCollection $collection;
-
-    public function __construct(AbstractCollection $collection)
+    public function __construct(protected AbstractCollection $collection)
     {
-        $this->collection = $collection;
     }
 
     public function __get(string $name): Collection

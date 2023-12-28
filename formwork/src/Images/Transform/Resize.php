@@ -7,17 +7,8 @@ use GdImage;
 
 class Resize extends AbstractTransform
 {
-    protected int $width;
-
-    protected int $height;
-
-    protected ResizeMode $mode;
-
-    final public function __construct(int $width, int $height, ResizeMode $mode = ResizeMode::Cover)
+    final public function __construct(protected int $width, protected int $height, protected ResizeMode $resizeMode = ResizeMode::Cover)
     {
-        $this->width = $width;
-        $this->height = $height;
-        $this->mode = $mode;
     }
 
     public static function fromArray(array $data): static
@@ -25,10 +16,10 @@ class Resize extends AbstractTransform
         return new static($data['width'], $data['height'], $data['mode']);
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        $sourceWidth = imagesx($image);
-        $sourceHeight = imagesy($image);
+        $sourceWidth = imagesx($gdImage);
+        $sourceHeight = imagesy($gdImage);
 
         $cropAreaWidth = $sourceWidth;
         $cropAreaHeight = $sourceHeight;
@@ -48,7 +39,7 @@ class Resize extends AbstractTransform
         $width = $this->width;
         $height = $this->height;
 
-        switch ($this->mode) {
+        switch ($this->resizeMode) {
             case ResizeMode::Fill:
                 $cropAreaWidth = $sourceWidth;
                 $cropAreaHeight = $sourceHeight;
@@ -87,13 +78,13 @@ class Resize extends AbstractTransform
 
         $destinationImage = imagecreatetruecolor((int) $width, (int) $height);
 
-        if ($info->hasAlphaChannel()) {
+        if ($imageInfo->hasAlphaChannel()) {
             $this->enableTransparency($destinationImage);
         }
 
         imagecopyresampled(
             $destinationImage,
-            $image,
+            $gdImage,
             (int) $destinationX,
             (int) $destinationY,
             (int) $cropOriginX,
@@ -107,12 +98,12 @@ class Resize extends AbstractTransform
         return $destinationImage;
     }
 
-    protected function enableTransparency(GdImage $image): void
+    protected function enableTransparency(GdImage $gdImage): void
     {
-        $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        imagealphablending($image, true);
-        imagesavealpha($image, true);
-        imagecolortransparent($image, $transparent);
-        imagefill($image, 0, 0, $transparent);
+        $transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127);
+        imagealphablending($gdImage, true);
+        imagesavealpha($gdImage, true);
+        imagecolortransparent($gdImage, $transparent);
+        imagefill($gdImage, 0, 0, $transparent);
     }
 }

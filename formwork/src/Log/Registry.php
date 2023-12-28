@@ -16,11 +16,6 @@ class Registry
     protected array $storage = [];
 
     /**
-     * Registry filename
-     */
-    protected string $filename;
-
-    /**
      * Whether the registry is saved
      */
     protected bool $saved = false;
@@ -28,9 +23,8 @@ class Registry
     /**
      * Create a new Registry instance
      */
-    public function __construct(string $filename)
+    public function __construct(protected string $filename)
     {
-        $this->filename = $filename;
         if (FileSystem::exists($this->filename)) {
             $this->storage = Json::parseFile($filename);
             $this->saved = true;

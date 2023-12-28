@@ -12,10 +12,6 @@ use UnexpectedValueException;
 
 class ServeCommand
 {
-    protected string $host;
-
-    protected int $port;
-
     /**
      * @var array<mixed>
      */
@@ -25,10 +21,8 @@ class ServeCommand
 
     protected CLImate $climate;
 
-    public function __construct(string $host = '127.0.0.1', int $port = 8000)
+    public function __construct(protected string $host = '127.0.0.1', protected int $port = 8000)
     {
-        $this->host = $host;
-        $this->port = $port;
         $this->climate = new CLImate();
     }
 

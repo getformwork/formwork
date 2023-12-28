@@ -10,11 +10,6 @@ class Pagination
     protected int $count = 0;
 
     /**
-     * Number of items in each pagination page
-     */
-    protected int $length = 0;
-
-    /**
      * Number of pagination pages
      */
     protected int $pages = 0;
@@ -26,12 +21,12 @@ class Pagination
 
     /**
      * Create a new Pagination instance
+     *
+     * @param int $length Number of items in each pagination page
      */
-    public function __construct(AbstractCollection $collection, int $length)
+    public function __construct(AbstractCollection $collection, protected int $length)
     {
         $this->count = $collection->count();
-
-        $this->length = $length;
 
         $this->pages = $this->count > 0 ? (int) ceil($this->count / $this->length) : 1;
     }

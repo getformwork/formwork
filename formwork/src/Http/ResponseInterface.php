@@ -11,7 +11,7 @@ interface ResponseInterface extends ArraySerializable
      *
      * @param array<string, string> $headers
      */
-    public function __construct(string $content, ResponseStatus $status = ResponseStatus::OK, array $headers = []);
+    public function __construct(string $content, ResponseStatus $responseStatus = ResponseStatus::OK, array $headers = []);
 
     /**
      * @param array{content: string, status: ResponseStatus, headers: array<string, string>} $properties

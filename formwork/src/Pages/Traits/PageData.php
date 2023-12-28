@@ -30,9 +30,13 @@ trait PageData
      */
     public function has(string $key): bool
     {
-        return (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted())
-            || $this->fields->has($key)
-            || Arr::has($this->data, $key);
+        if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
+            return true;
+        }
+        if ($this->fields->has($key)) {
+            return true;
+        }
+        return Arr::has($this->data, $key);
     }
 
     /**

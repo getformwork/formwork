@@ -17,9 +17,9 @@ class Sharpen extends AbstractTransform
         return new static();
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imagefilter($image, IMG_FILTER_MEAN_REMOVAL);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_MEAN_REMOVAL);
+        return $gdImage;
     }
 }

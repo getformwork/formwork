@@ -37,11 +37,6 @@ class Tokenizer implements TokenizerInterface
     protected const ARROW_SEQUENCE = '=>';
 
     /**
-     * Tokenizer input string
-     */
-    protected string $input;
-
-    /**
      * Tokenizer input length
      */
     protected int $length = 0;
@@ -51,9 +46,8 @@ class Tokenizer implements TokenizerInterface
      */
     protected int $position = 0;
 
-    public function __construct(string $input)
+    public function __construct(protected string $input)
     {
-        $this->input = $input;
         $this->length = strlen($input);
     }
 
@@ -114,7 +108,7 @@ class Tokenizer implements TokenizerInterface
      */
     public static function tokenizeString(string $string): TokenStream
     {
-        $tokenizer = new static($string);
-        return $tokenizer->tokenize();
+        $static = new static($string);
+        return $static->tokenize();
     }
 }

@@ -20,7 +20,7 @@ class UpdatesController extends AbstractController
         $this->ensurePermission('updates.check');
         try {
             $upToDate = $updater->checkUpdates();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             return JsonResponse::error($this->translate('panel.updates.status.cannotCheck'), ResponseStatus::InternalServerError, [
                 'status' => $this->translate('panel.updates.status.cannotCheck'),
             ]);
@@ -46,7 +46,7 @@ class UpdatesController extends AbstractController
             $backupper = new Backupper($this->config);
             try {
                 $backupper->backup();
-            } catch (TranslatedException $e) {
+            } catch (TranslatedException) {
                 return JsonResponse::error($this->translate('panel.updates.status.cannotMakeBackup'), ResponseStatus::InternalServerError, [
                     'status' => $this->translate('panel.updates.status.cannotMakeBackup'),
                 ]);
@@ -54,7 +54,7 @@ class UpdatesController extends AbstractController
         }
         try {
             $updater->update();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             return JsonResponse::error($this->translate('panel.updates.status.cannotInstall'), ResponseStatus::InternalServerError, [
                 'status' => $this->translate('panel.updates.status.cannotInstall'),
             ]);

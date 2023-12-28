@@ -36,10 +36,10 @@ class BackupController extends AbstractController
     /**
      * Backup@download action
      */
-    public function download(RouteParams $params): Response
+    public function download(RouteParams $routeParams): Response
     {
         $this->ensurePermission('backup.download');
-        $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode($params->get('backup'))));
+        $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode($routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {
                 return new FileResponse($file, download: true);

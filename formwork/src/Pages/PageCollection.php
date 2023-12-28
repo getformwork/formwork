@@ -98,7 +98,7 @@ class PageCollection extends AbstractCollection implements Paginable
                 $value = Str::removeHTML((string) $page->get($key));
 
                 $queryMatches = preg_match_all($queryRegex, $value);
-                $keywordsMatches = empty($keywords) ? 0 : preg_match_all($keywordsRegex, $value);
+                $keywordsMatches = $keywords === [] ? 0 : preg_match_all($keywordsRegex, $value);
 
                 $score += ($queryMatches * 2 + min($keywordsMatches, 3)) * $scores[$key];
             }

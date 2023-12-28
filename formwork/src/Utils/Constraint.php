@@ -91,7 +91,7 @@ class Constraint
         bool $includeMin = true,
         bool $includeMax = true
     ): bool {
-        return static::isInRange((int) $value, $start, $end, $includeMin, $includeMax)
+        return static::isInRange($value, $start, $end, $includeMin, $includeMax)
             && (($value - min($start, $end)) % $step === 0);
     }
 

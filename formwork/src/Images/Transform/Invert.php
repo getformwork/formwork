@@ -17,9 +17,9 @@ class Invert extends AbstractTransform
         return new static();
     }
 
-    public function apply(GdImage $image, ImageInfo $info): GdImage
+    public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imagefilter($image, IMG_FILTER_NEGATE);
-        return $image;
+        imagefilter($gdImage, IMG_FILTER_NEGATE);
+        return $gdImage;
     }
 }

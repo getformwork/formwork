@@ -20,23 +20,6 @@ class View
     protected const TYPE = 'view';
 
     /**
-     * View name
-     */
-    protected string $name;
-
-    /**
-     * View variables
-     *
-     * @var array<mixed>
-     */
-    protected array $vars = [];
-
-    /**
-     * View path
-     */
-    protected string $path;
-
-    /**
      * View file
      */
     protected string $file;
@@ -76,17 +59,15 @@ class View
      * @param array<string, mixed>   $vars
      * @param array<string, Closure> $methods
      */
-    public function __construct(string $name, array $vars, string $path, array $methods = [])
+    public function __construct(protected string $name, protected array $vars, protected string $path, array $methods = [])
     {
-        $this->name = $name;
-        $this->vars = $vars;
-        $this->path = $path;
         $this->file = $this->getFile($this->name);
-        $this->methods = $methods;
 
         if (!FileSystem::exists($this->file)) {
             throw new FileNotFoundException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $this->name));
         }
+
+        $this->methods = $methods;
     }
 
     /**

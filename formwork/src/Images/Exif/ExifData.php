@@ -9,17 +9,14 @@ class ExifData implements Arrayable
 {
     protected ExifReader $reader;
 
-    protected string $data;
-
     /**
      * @var array<string, mixed>
      */
     protected array $tags;
 
-    public function __construct(string $data)
+    public function __construct(protected string $data)
     {
         $this->reader = new ExifReader();
-        $this->data = $data;
         $this->tags = $this->reader->read($this->data);
     }
 
