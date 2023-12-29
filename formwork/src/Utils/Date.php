@@ -140,7 +140,7 @@ class Date
      */
     public static function formatTimestamp(int $timestamp, ?string $format = null, ?string $language = null): string
     {
-        return static::formatDateTime(new DateTime('@' . $timestamp), $format, $language);
+        return static::formatDateTime((new DateTime())->setTimestamp($timestamp), $format, $language);
     }
 
     /**
@@ -189,7 +189,7 @@ class Date
      */
     public static function formatTimestampAsDistance(int $timestamp, ?string $language = null): string
     {
-        return static::formatDateTimeAsDistance(new DateTime('@' . $timestamp), $language);
+        return static::formatDateTimeAsDistance((new DateTime())->setTimestamp($timestamp), $language);
     }
 
     /**
