@@ -65,6 +65,14 @@
     font-size: $font-size-m;
 }
 
+.user-avatar {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
 @media (min-width: map.get($responsive-breakpoints, "xs")) {
     .users-item,
     .users-list-headers {
