@@ -167,7 +167,7 @@ class Date
         }
 
         foreach (self::TIME_INTERVALS as $intervalName => $seconds) {
-            if (($interval = (int) round($difference / $seconds)) > 0) {
+            if (($interval = (int) floor($difference / $seconds)) > 0) {
                 $number = $interval !== 1 ? 1 : 0;
                 $distance = sprintf(
                     '%d %s',
