@@ -32,7 +32,7 @@ class UsersController extends AbstractController
 
         return new Response($this->view('users.index', [
             'title' => $this->translate('panel.users.users'),
-            'users' => $this->panel()->users(),
+            'users' => $this->panel()->users()->sortBy('username'),
         ]));
     }
 
