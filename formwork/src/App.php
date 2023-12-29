@@ -28,6 +28,7 @@ use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
 use Formwork\Services\Loaders\SiteServiceLoader;
 use Formwork\Services\Loaders\TranslationsServiceLoader;
+use Formwork\Statistics\Statistics;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Str;

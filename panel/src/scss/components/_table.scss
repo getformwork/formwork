@@ -1,0 +1,30 @@
+table {
+    width: 100%;
+}
+
+th {
+    padding: 0.25rem 0;
+    font-weight: 600;
+    text-align: left;
+}
+
+td {
+    padding: 0.25rem 0.5rem;
+}
+
+.table-bordered {
+    border-collapse: collapse;
+}
+
+.table-bordered td {
+    border-top: 1px solid $color-base-600;
+    border-bottom: 1px solid $color-base-600;
+}
+
+.table-striped tbody > tr:nth-child(2n + 1) {
+    background-color: $color-base-800;
+}
+
+.table-hoverable tbody > tr:hover {
+    background-color: $color-base-700;
+}

@@ -1,8 +1,11 @@
 import { LineChart } from "chartist";
+import { passIcon } from "./icons";
 import { Tooltip } from "./tooltip";
 
-export class Chart {
+export class StatisticsChart {
     constructor(element, data) {
+        const spacing = 100;
+
         const options = {
             showArea: true,
             fullWidth: true,
@@ -17,6 +20,7 @@ export class Chart {
                     x: 0,
                     y: 10,
                 },
+                labelInterpolationFnc: (value, index, labels) => (index % Math.floor(labels.length / (element.clientWidth / spacing)) ? null : value),
             },
             axisY: {
                 onlyInteger: true,
@@ -30,6 +34,12 @@ export class Chart {
 
         const chart = new LineChart(element, data, options);
 
+        chart.on("draw", (event) => {
+            if (event.type === "point") {
+                event.element.attr({ "ct:index": event.index });
+            }
+        });
+
         chart.container.addEventListener("mouseover", (event) => {
             if (event.target.getAttribute("class") === "ct-point") {
                 const tooltipOffset = {
@@ -41,11 +51,17 @@ export class Chart {
                     tooltipOffset.x += strokeWidth / 2;
                     tooltipOffset.y += strokeWidth / 2;
                 }
-                const tooltip = new Tooltip(event.target.getAttribute("ct:value"), {
-                    referenceElement: event.target,
-                    offset: tooltipOffset,
+
+                const index = event.target.getAttribute("ct:index");
+
+                passIcon("circle-small-fill", (icon) => {
+                    const text = `${data.labels[index]}<br><span class="text-color-blue">${icon}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${icon}</span>${data.series[1][index]}`;
+                    const tooltip = new Tooltip(text, {
+                        referenceElement: event.target,
+                        offset: tooltipOffset,
+                    });
+                    tooltip.show();
                 });
-                tooltip.show();
             }
         });
     }

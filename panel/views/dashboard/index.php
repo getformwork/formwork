@@ -47,12 +47,12 @@ endif
                 <div class="col-xs-1-2"><div class="section-header"><h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3></div></div>
                 <div class="col-xs-1-2">
                     <div class="ct-legend ct-legend-right">
-                        <span class="ct-legend-label ct-series-a"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.visits') ?></span>
+                        <span class="ct-legend-label ct-series-a mr-8"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.visits') ?></span>
                         <span class="ct-legend-label ct-series-b"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.uniqueVisitors') ?></span>
                     </div>
                 </div>
             </div>
-            <div class="ct-chart" data-chart-data="<?= $this->escapeAttr($statistics); ?>"></div>
+            <div class="dashboard-chart ct-chart" data-chart-data="<?= $this->escapeAttr($statistics); ?>"></div>
         </section>
     </div>
 </div>

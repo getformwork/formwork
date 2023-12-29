@@ -1,13 +1,16 @@
 <?php
 
-namespace Formwork;
+namespace Formwork\Statistics;
 
+use Formwork\App;
 use Formwork\Http\Request;
 use Formwork\Http\Utils\IpAnonymizer;
 use Formwork\Http\Utils\Visitor;
 use Formwork\Log\Registry;
+use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
+use Generator;
 
 class Statistics
 {
@@ -110,43 +113,74 @@ class Statistics
     /**
      * Return chart data
      *
-     * @return array{labels: array<string>, series: list<list<int|string>>}
+     * @return array{labels: array<string>, series: list<list<int>>}
      */
     public function getChartData(int $limit = self::CHART_LIMIT): array
     {
-        $visits = $this->visitsRegistry->toArray();
-        $uniqueVisits = $this->uniqueVisitsRegistry->toArray();
 
-        $limit = min($limit, count($visits), count($uniqueVisits));
+        $visits = $this->getVisits($limit);
+        $uniqueVisits = $this->getUniqueVisits($limit);
 
-        $low = time() - ($limit - 1) * 86400;
-
-        $days = [];
-
-        for ($i = 0; $i < $limit; $i++) {
-            $value = date(self::DATE_FORMAT, $low + $i * 86400);
-            $days[] = $value;
-        }
-
-        $visits = array_slice($visits, -$limit, null, true);
-        $uniqueVisits = array_slice($uniqueVisits, -$limit, null, true);
-
-        $labels = array_map(fn (string $day): string => Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M"), $days);
-
-        $interpolate = static function (array $data) use ($days): array {
-            $output = [];
-            foreach ($days as $day) {
-                $output[$day] = $data[$day] ?? 0;
-            }
-            return $output;
-        };
+        $labels = Arr::map(
+            iterator_to_array($this->generateDays($limit)),
+            fn (string $day): string => Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M")
+        );
 
         return [
             'labels' => $labels,
             'series' => [
-                array_values($interpolate($visits)),
-                array_values($interpolate($uniqueVisits)),
+                array_values($visits),
+                array_values($uniqueVisits),
             ],
         ];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getPageViews(): array
+    {
+        return Arr::sort($this->pageViewsRegistry->toArray(), SORT_DESC);
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getVisits(int $limit = self::CHART_LIMIT): array
+    {
+        return $this->interpolateVisits($this->visitsRegistry->toArray(), $limit);
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getUniqueVisits(int $limit = self::CHART_LIMIT): array
+    {
+        return $this->interpolateVisits($this->uniqueVisitsRegistry->toArray(), $limit);
+    }
+
+    /**
+     * @param array<string, int> $visits
+     *
+     * @return array<string, int>
+     */
+    private function interpolateVisits(array $visits, int $limit): array
+    {
+        $result = [];
+        foreach ($this->generateDays($limit) as $day) {
+            $result[$day] = $visits[$day] ?? 0;
+        }
+        return $result;
+    }
+
+    /**
+     * @return Generator<int, string>
+     */
+    private function generateDays(int $limit): Generator
+    {
+        $low = time() - ($limit - 1) * 86400;
+        for ($i = 0; $i < $limit; $i++) {
+            yield date(self::DATE_FORMAT, $low + $i * 86400);
+        }
     }
 }

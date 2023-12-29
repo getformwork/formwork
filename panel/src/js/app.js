@@ -10,6 +10,7 @@ import { Tooltips } from "./components/tooltips";
 
 import { Dashboard } from "./components/views/dashboard";
 import { Pages } from "./components/views/pages";
+import { Statistics } from "./components/views/statistics";
 import { Updates } from "./components/views/updates";
 
 class App {
@@ -40,6 +41,7 @@ class App {
 
         this.loadComponent(Dashboard);
         this.loadComponent(Pages);
+        this.loadComponent(Statistics);
         this.loadComponent(Updates);
     }
 

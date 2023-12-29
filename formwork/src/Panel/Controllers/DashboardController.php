@@ -4,7 +4,7 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
-use Formwork\Statistics;
+use Formwork\Statistics\Statistics;
 
 class DashboardController extends AbstractController
 {

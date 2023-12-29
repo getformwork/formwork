@@ -1,19 +1,15 @@
-import { $, $$ } from "../../utils/selectors";
+import { $ } from "../../utils/selectors";
 import { app } from "../../app";
-import { Chart } from "../chart";
 import { Notification } from "../notification";
 import { Request } from "../../utils/request";
+import { StatisticsChart } from "../statistics-chart";
 import { triggerDownload } from "../../utils/forms";
 
 export class Dashboard {
     constructor() {
-        $$("[data-chart-data]").forEach((element) => {
-            const data = JSON.parse(element.dataset.chartData);
-            new Chart(element, data);
-        });
-
         const clearCacheCommand = $("[data-command=clear-cache]");
         const makeBackupCommand = $("[data-command=make-backup]");
+        const chart = $(".dashboard-chart");
 
         if (clearCacheCommand) {
             clearCacheCommand.addEventListener("click", () => {
@@ -53,6 +49,10 @@ export class Dashboard {
                     },
                 );
             });
+        }
+
+        if (chart) {
+            new StatisticsChart(chart, JSON.parse(chart.dataset.chartData));
         }
     }
 }

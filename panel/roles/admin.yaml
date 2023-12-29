@@ -8,3 +8,4 @@ permissions:
     options: true
     updates: true
     users: true
+    statistics: true

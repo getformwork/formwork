@@ -154,6 +154,11 @@ return [
             'types'   => ['XHR'],
         ],
 
+        'panel.statistics' => [
+            'path'   => '/statistics/',
+            'action' => 'Formwork\Panel\Controllers\StatisticsController@index',
+        ],
+
         'panel.users' => [
             'path'   => '/users/',
             'action' => 'Formwork\Panel\Controllers\UsersController@index',

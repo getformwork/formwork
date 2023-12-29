@@ -11,3 +11,8 @@
     pointer-events: none;
     text-align: center;
 }
+
+.tooltip .icon {
+    transform: scale(0.75);
+    vertical-align: -0.25rem;
+}
