@@ -77,7 +77,7 @@ $spacers: (
     4: 0.5rem,
     5: 0.625rem,
     6: 0.75rem,
-    7: 0.75rem,
+    7: 0.875rem,
     8: 1rem,
     9: 1.5rem,
     10: 2rem,
@@ -87,17 +87,25 @@ $font-sizes: (
     "xs": 0.75rem,
     "s": 0.875rem,
     "m": 1rem,
-    "l": 1.125rem,
-    "xl": 1.25rem,
+    "l": 1.5rem,
+    "xl": 2rem,
+    "xxl": 3rem,
 );
 
 $font-colors: (
+    "blue": $color-blue-500,
+    "green": $color-green-400,
+    "yellow": $color-yellow-500,
+    "amber": $color-amber-500,
+    "red": $color-red-500,
+    "purple": $color-purple-500,
     "accent": $color-accent-500,
-    "light": $color-base-300,
-    "medium": $color-base-200,
-    "success": $color-success-400,
-    "warning": $color-warning-400,
-    "error": $color-error-400,
+    "gray-dark": $color-base-200,
+    "gray-medium": $color-base-300,
+    "gray-light": $color-base-500,
+    "success": $color-success-500,
+    "warning": $color-warning-500,
+    "error": $color-error-500,
 );
 
 $border-radius: 4px;

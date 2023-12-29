@@ -20,20 +20,20 @@
 
 .ct-series-a .ct-line,
 .ct-series-a .ct-point {
-    stroke: $color-accent-500;
+    stroke: $color-blue-500;
 }
 
 .ct-series-a .ct-area {
-    fill: $color-accent-500;
+    fill: $color-blue-500;
 }
 
 .ct-series-b .ct-line,
 .ct-series-b .ct-point {
-    stroke: $color-warning-500;
+    stroke: $color-amber-500;
 }
 
 .ct-series-b .ct-area {
-    fill: $color-warning-500;
+    fill: $color-amber-500;
 }
 
 .ct-label.ct-horizontal,
@@ -65,9 +65,9 @@
 }
 
 .ct-legend-label.ct-series-a .icon {
-    color: $color-accent-500;
+    color: $color-blue-500;
 }
 
 .ct-legend-label.ct-series-b .icon {
-    color: $color-warning-500;
+    color: $color-amber-500;
 }

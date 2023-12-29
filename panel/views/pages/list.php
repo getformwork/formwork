@@ -33,7 +33,7 @@ endif
                                 <?php endif ?>
                                 <div class="mr-2" style="min-width: 1rem"><?= $this->icon($page->get('icon', 'page')) ?></div>
                                 <div class="min-w-0">
-                                    <div class="truncate text-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a></div>
+                                    <div class="truncate text-color-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a></div>
                                     <?php foreach ($page->languages()->available() as $language): ?>
                                     <span class="badge"><?= $language->code() ?></span>
                                     <?php endforeach ?>

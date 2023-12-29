@@ -49,9 +49,19 @@
     )
 );
 
-@include make-util("text", "font-size", $font-sizes);
+@include make-util("text-size", "font-size", $font-sizes);
 
-@include make-util("text", "color", $font-colors);
+@include make-util("text-color", "color", $font-colors);
+
+@include make-util(
+    "text-align",
+    "text-align",
+    (
+        "left": "left",
+        "center": "center",
+        "right": "right",
+    )
+);
 
 .truncate {
     @include ellipsis;
