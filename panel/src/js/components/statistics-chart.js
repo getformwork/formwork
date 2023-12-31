@@ -42,23 +42,14 @@ export class StatisticsChart {
 
         chart.container.addEventListener("mouseover", (event) => {
             if (event.target.getAttribute("class") === "ct-point") {
-                const tooltipOffset = {
-                    x: 0,
-                    y: 8,
-                };
-                if (navigator.userAgent.includes("Firefox")) {
-                    const strokeWidth = parseFloat(getComputedStyle(event.target)["stroke-width"]);
-                    tooltipOffset.x += strokeWidth / 2;
-                    tooltipOffset.y += strokeWidth / 2;
-                }
-
+                const strokeWidth = parseFloat(getComputedStyle(event.target)["stroke-width"]);
                 const index = event.target.getAttribute("ct:index");
 
                 passIcon("circle-small-fill", (icon) => {
                     const text = `${data.labels[index]}<br><span class="text-color-blue">${icon}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${icon}</span>${data.series[1][index]}`;
                     const tooltip = new Tooltip(text, {
                         referenceElement: event.target,
-                        offset: tooltipOffset,
+                        offset: { x: 0, y: -strokeWidth },
                     });
                     tooltip.show();
                 });
