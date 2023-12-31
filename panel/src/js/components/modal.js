@@ -30,15 +30,16 @@ export class Modal {
             mousedownTriggered = false;
         });
 
-        $$(`[data-modal="${element.id}"]`).forEach((element) => {
-            element.addEventListener("click", () => {
-                const modalAction = element.dataset.modalAction;
+        document.addEventListener("click", (event) => {
+            const target = event.target.closest("[data-modal]");
+            if (target && target.dataset.modal === element.id) {
+                const modalAction = target.dataset.modalAction;
                 if (modalAction) {
                     this.show(modalAction);
                 } else {
                     this.show();
                 }
-            });
+            }
         });
     }
 
