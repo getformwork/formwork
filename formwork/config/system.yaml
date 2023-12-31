@@ -10,7 +10,7 @@ backup:
         - '*.gitignore'
         - '*.gitkeep'
         - 'backup/*'
-        - '*.yarn/*'
+        - '*node_modules/*'
 
 cache:
     enabled: false
