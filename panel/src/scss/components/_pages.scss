@@ -14,7 +14,8 @@
 }
 
 .pages-list-headers {
-    display: none;
+    display: flex;
+    align-items: center;
     padding: $pages-list-headers-padding-v $pages-list-headers-padding-h;
     font-weight: 600;
     @include user-select-none;
@@ -44,12 +45,18 @@
 }
 
 .pages-item-row {
+    display: flex;
+    align-items: center;
     padding: $pages-item-padding-v $pages-item-padding-h;
     border-bottom: 1px solid $color-base-600;
 
     &:hover {
         background-color: $color-base-800;
     }
+}
+
+.page-details {
+    flex: 1;
 }
 
 .pages-item-row .sort-handle {
@@ -84,13 +91,29 @@
 .pages-headers-cell {
     padding: $pages-item-cell-padding-v $pages-item-cell-padding-h;
     font-size: $font-size-s;
-    @include ellipsis;
 }
 
 .page-title {
     padding: $focusring-width;
     margin: -$focusring-width;
     font-size: $font-size-m;
+}
+
+.page-date {
+    max-width: 20%;
+    flex: 0 0 20%;
+    text-align: center;
+}
+
+.page-status {
+    flex: 0 0 20%;
+    text-align: center;
+}
+
+.page-actions {
+    flex: 0 0 15%;
+    text-align: center;
+    white-space: nowrap;
 }
 
 button .page-language,
@@ -132,40 +155,8 @@ button .page-language,
     color: $color-warning-500;
 }
 
-.page-date,
-.page-status,
-.page-actions {
-    display: none;
-}
-
 .page-actions .button-link {
     font-size: $font-size-m;
-}
-
-@media (min-width: map.get($responsive-breakpoints, "xs")) {
-    .pages-item-row,
-    .pages-list-headers {
-        display: flex;
-        align-items: center;
-    }
-
-    .pages-item-cell,
-    .pages-headers-cell {
-        display: block;
-    }
-
-    .page-details {
-        max-width: 55%;
-        flex: 0 0 55%;
-    }
-
-    .page-date,
-    .page-status,
-    .page-actions {
-        max-width: 15%;
-        flex: 0 0 15%;
-        text-align: center;
-    }
 }
 
 .pages-item {
@@ -242,10 +233,6 @@ button .page-language,
 .page-info {
     padding: $page-info-padding-v $page-info-padding-h;
     margin-bottom: $page-info-margin-bottom;
-}
-
-.page-info > div {
-    @include ellipsis;
 }
 
 .page-slug-change {

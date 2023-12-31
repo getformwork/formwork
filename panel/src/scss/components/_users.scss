@@ -1,5 +1,3 @@
-@use "sass:map";
-
 .user-summary {
     display: flex;
     align-items: center;
@@ -27,11 +25,17 @@
 }
 
 .users-list-headers {
-    display: none;
+    display: flex;
+    align-items: center;
+    padding: $users-list-headers-padding-v $users-list-headers-padding-h;
+    font-size: $font-size-s;
+    font-weight: 600;
     @include user-select-none;
 }
 
 .users-item {
+    display: flex;
+    align-items: center;
     padding: $users-item-padding-v $users-item-padding-h;
     border-bottom: 1px solid $color-base-600;
 
@@ -42,27 +46,11 @@
 
 .users-item-cell,
 .users-headers-cell {
-    padding: $users-item-cell-padding-v-s $users-item-cell-padding-h-s;
-    font-size: $font-size-s;
-    @include ellipsis;
+    padding: $users-item-cell-padding-v-l $users-item-cell-padding-h-l;
 }
 
-.user-username,
-.user-fullname {
-    display: inline-block;
-}
-
-.users-item .user-username {
-    font-size: $font-size-m;
-}
-
-.user-last-access,
-.user-actions {
-    display: none;
-}
-
-.user-actions .button-link {
-    font-size: $font-size-m;
+.user-username {
+    flex: 1;
 }
 
 .user-avatar {
@@ -73,43 +61,21 @@
     vertical-align: middle;
 }
 
-@media (min-width: map.get($responsive-breakpoints, "xs")) {
-    .users-item,
-    .users-list-headers {
-        display: flex;
-        align-items: center;
-    }
+.user-fullname,
+.user-email {
+    max-width: 25%;
+    flex: 0 0 25%;
+    font-size: $font-size-s;
+}
 
-    .users-list-headers {
-        padding: $users-list-headers-padding-v $users-list-headers-padding-h;
-        font-weight: 600;
-    }
+.user-last-access {
+    max-width: 20%;
+    flex: 0 0 20%;
+    font-size: $font-size-s;
+    text-align: center;
+}
 
-    .users-item-cell,
-    .users-headers-cell {
-        display: block;
-        padding: $users-item-cell-padding-v-l $users-item-cell-padding-h-l;
-    }
-
-    .user-username,
-    .user-last-access {
-        max-width: 20%;
-        flex: 0 0 20%;
-    }
-
-    .user-fullname,
-    .user-email {
-        max-width: 25%;
-        flex: 0 0 25%;
-    }
-
-    .user-last-access,
-    .user-actions {
-        text-align: center;
-    }
-
-    .user-actions {
-        max-width: 10%;
-        flex: 0 0 10%;
-    }
+.user-actions {
+    flex: 0 0 10%;
+    text-align: center;
 }

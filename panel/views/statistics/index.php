@@ -42,15 +42,15 @@
     <table class="table-bordered table-striped table-hoverable text-size-s">
         <thead>
             <tr>
-                <th><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>
-                <th style="width: 15%"><?= $this->translate('panel.statistics.totalVisits.visits') ?></th>
-                <th style="width: 15%"><?= $this->translate('panel.statistics.totalVisits.percentTotal') ?></th>
+                <th style="width: 100%"><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>
+                <th class="truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.visits') ?></th>
+                <th class="truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.percentTotal') ?></th>
             </tr>
         </thead>
         <tbody>
 <?php foreach ($pageViews as $page => $views): ?>
         <tr>
-            <td><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
+            <td class="truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
             <td><?= $views ?></td>
             <td><?= round($views / $totalViews * 100, 2) ?></td>
         </tr>

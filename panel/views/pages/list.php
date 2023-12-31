@@ -2,9 +2,9 @@
 if ($headers):
     ?>
             <div class="pages-list-headers" aria-hidden="true">
-                <div class="pages-headers-cell page-details"><?= $this->translate('panel.pages.page.title') ?></div>
-                <div class="pages-headers-cell page-date"><?= $this->translate('panel.pages.page.lastModified') ?></div>
-                <div class="pages-headers-cell page-status"><?= $this->translate('panel.pages.page.status') ?></div>
+                <div class="pages-headers-cell page-details truncate"><?= $this->translate('panel.pages.page.title') ?></div>
+                <div class="pages-headers-cell page-date truncate show-from-m"><?= $this->translate('panel.pages.page.lastModified') ?></div>
+                <div class="pages-headers-cell page-status truncate show-from-xs"><?= $this->translate('panel.pages.page.status') ?></div>
                 <div class="pages-headers-cell page-actions"><?= $this->translate('panel.pages.page.actions') ?></div>
             </div>
 <?php
@@ -33,7 +33,7 @@ endif
                                 <?php endif ?>
                                 <div class="mr-2" style="min-width: 1rem"><?= $this->icon($page->get('icon', 'page')) ?></div>
                                 <div class="min-w-0">
-                                    <div class="truncate text-color-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>" title="<?= $this->escapeAttr($page->title()) ?>"><?= $this->escape($page->title()) ?></a></div>
+                                    <div class="truncate text-color-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a></div>
                                     <?php foreach ($page->languages()->available() as $language): ?>
                                     <span class="badge"><?= $language->code() ?></span>
                                     <?php endforeach ?>
@@ -43,10 +43,10 @@ endif
                                 </div>
                             </div>
                         </div>
-                        <div class="pages-item-cell page-date truncate">
+                        <div class="pages-item-cell page-date truncate show-from-m">
                             <?= $date ?>
                         </div>
-                        <div class="pages-item-cell page-status page-status-<?= $page->status() ?> truncate">
+                        <div class="pages-item-cell page-status page-status-<?= $page->status() ?> truncate show-from-xs">
                             <?= $this->icon('circle-small-fill'); ?>
                             <span class="page-status-label"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
                         </div>

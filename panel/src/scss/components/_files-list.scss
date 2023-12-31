@@ -33,7 +33,6 @@
 
 .file-name {
     flex-grow: 1;
-    @include ellipsis;
 }
 
 .file-icon {
@@ -84,7 +83,6 @@
     background-color: $image-picker-thumbnail-caption-background-color;
     font-size: $font-size-xs;
     text-align: center;
-    @include ellipsis;
     @include user-select-none;
 }
 
