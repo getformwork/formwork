@@ -69,6 +69,8 @@ export class Tooltip {
                 }
             };
 
+            container.appendChild(tooltip);
+
             const position = getTooltipPosition(tooltip);
             tooltip.style.top = `${position.top}px`;
             tooltip.style.left = `${position.left}px`;
@@ -76,8 +78,6 @@ export class Tooltip {
             if (options.timeout !== null) {
                 this.timeoutTimer = setTimeout(() => this.remove(), options.timeout);
             }
-
-            container.appendChild(tooltip);
 
             this.tooltipElement = tooltip;
         }, options.delay);
