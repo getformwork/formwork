@@ -49,6 +49,10 @@ return function (App $app) {
             return Date::formatTimestamp($timestamp, $app->config()->get('system.date.datetimeFormat'));
         },
 
+        'timedistance' => static function (int $timestamp): string {
+            return Date::formatTimestampAsDistance($timestamp);
+        },
+
         'translate' => fn (string $key, ...$arguments) => $app->translations()->getCurrent()->translate($key, ...$arguments),
     ];
 };
