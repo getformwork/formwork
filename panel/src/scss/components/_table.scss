@@ -1,15 +1,16 @@
 table {
     width: 100%;
+    table-layout: fixed;
 }
 
 th {
-    padding: 0.25rem 0;
+    padding: 0.5rem;
     font-weight: 600;
     text-align: left;
 }
 
 td {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
 }
 
 .table-bordered {
@@ -26,5 +27,9 @@ td {
 }
 
 .table-hoverable tbody > tr:hover {
+    background-color: $color-base-800;
+}
+
+.table-striped.table-hoverable tbody > tr:hover {
     background-color: $color-base-700;
 }
