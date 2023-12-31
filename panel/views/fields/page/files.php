@@ -13,7 +13,7 @@
             <div class="file-thumbnail" style="background-image:url('<?= $file->square(300, 'contain')->uri() ?>');"></div>
             <?php endif ?>
             <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
-            <div class="file-name" data-overflow-tooltip="true"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
+            <div class="file-name truncate"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
             <div class="dropdown">
                 <button type="button" class="button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
                 <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">

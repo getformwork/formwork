@@ -43,12 +43,12 @@ endif
                                 </div>
                             </div>
                         </div>
-                        <div class="pages-item-cell page-date">
-                            <div class="page-date-inner" data-overflow-tooltip="true"><?= $date ?></div>
+                        <div class="pages-item-cell page-date truncate">
+                            <?= $date ?>
                         </div>
-                        <div class="pages-item-cell page-status page-status-<?= $page->status() ?>">
+                        <div class="pages-item-cell page-status page-status-<?= $page->status() ?> truncate">
                             <?= $this->icon('circle-small-fill'); ?>
-                            <span class="page-status-label" data-overflow-tooltip="true"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
+                            <span class="page-status-label"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
                         </div>
                         <div class="pages-item-cell page-actions">
                             <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $page->uri(includeLanguage: false) ?>"<?php endif ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></a>

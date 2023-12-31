@@ -1,4 +1,5 @@
 import { $$ } from "../utils/selectors";
+import { debounce } from "../utils/events";
 import { Tooltip } from "./tooltip";
 
 export class Tooltips {
@@ -38,20 +39,22 @@ export class Tooltips {
             }
         });
 
-        $$('[data-overflow-tooltip="true"]').forEach((element) => {
-            element.addEventListener("mouseover", () => {
-                if (element.offsetWidth < element.scrollWidth) {
+        document.addEventListener(
+            "mouseover",
+            debounce((event) => {
+                const element = event.target.closest(".truncate");
+                if (element && element.offsetWidth < element.scrollWidth) {
                     const tooltip = new Tooltip(element.textContent.trim(), {
                         referenceElement: element,
                         position: "bottom",
                         offset: {
                             x: 0,
-                            y: 4,
+                            y: 4 - parseFloat(getComputedStyle(element).paddingBottom),
                         },
                     });
                     tooltip.show();
                 }
-            });
-        });
+            }, 500),
+        );
     }
 }
