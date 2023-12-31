@@ -1,4 +1,7 @@
 panel.backup.backup: Esegui backup
+panel.backup.deleted: Backup eliminato
+panel.backup.error.cannotDelete: Impossibile eliminare il backup. %s.
+panel.backup.error.cannotDelete.invalidFilename: File di backup non valido
 panel.backup.error.cannotDownload: Impossibile scaricare il backup. %s.
 panel.backup.error.cannotDownload.invalidFilename: File di backup non valido.
 panel.backup.error.cannotMake: Impossibile eseguire il backup. %s.

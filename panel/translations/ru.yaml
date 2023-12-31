@@ -1,4 +1,7 @@
 panel.backup.backup: Резерв
+panel.backup.deleted: Резервная копия удалена
+panel.backup.error.cannotDelete: Невозможно удалить резервную копию. %s.
+panel.backup.error.cannotDelete.invalidFilename: Недопустимый файл резервной копии
 panel.backup.error.cannotDownload: Невозможно загрузить резервную копию. %s.
 panel.backup.error.cannotDownload.invalidFilename: Недопустимый файл резервной копии
 panel.backup.error.cannotMake: Невозможно сделать резервную копию. %s.
@@ -12,6 +15,7 @@ panel.dashboard.statistics: Статистика
 panel.dashboard.statistics.uniqueVisitors: Уникальные посетители
 panel.dashboard.statistics.visits: Просмотров
 panel.dashboard.welcome: Добро пожаловать
+panel.dragToReorder: Перетащите для изменения порядка
 panel.errors.action.reportToGithub: Сообщить о проблеме на GitHub
 panel.errors.action.returnToDashboard: Вернуться к панели управления
 panel.errors.error.forbidden.description: У вас нет разрешения на доступ к этой странице.
@@ -23,6 +27,9 @@ panel.errors.error.internalServerError.status: Внутренняя Ошибка
 panel.errors.error.notFound.description: Страница не существует или запрос не является действительным.
 panel.errors.error.notFound.heading: К сожалению, страница не найдена!
 panel.errors.error.notFound.status: Не обнаружена
+panel.files.actions: Действия
+panel.files.viewAsList: Просмотр в виде списка
+panel.files.viewAsThumbnails: Просмотр в виде миниатюр
 panel.login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.
 panel.login.attempt.tooMany: Слишком много попыток входа в систему. Пожалуйста, попробуйте еще раз% D минут.
 panel.login.loggedOut: Вы вышли из системы
@@ -35,6 +42,7 @@ panel.manage: Меню
 panel.modal.action.cancel: Отмена
 panel.modal.action.continue: Продолжить
 panel.modal.action.delete: Удалить
+panel.modal.action.rename: Переименовать
 panel.modal.action.save: Сохранить
 panel.modal.action.uploadFile: Загрузить файл
 panel.modal.images.noImages: Там нет изображений здесь
@@ -55,8 +63,16 @@ panel.options.site.info.author: Автор
 panel.options.site.info.description: Описание
 panel.options.site.info.language: Язык
 panel.options.site.info.title: Заглавие
+panel.options.site.maintenance: Обслуживание
+panel.options.site.maintenance.enabled: Режим обслуживания
+panel.options.site.maintenance.enabled.disabled: Отключено
+panel.options.site.maintenance.enabled.enabled: Включено
+panel.options.site.maintenance.page: Страница обслуживания
 panel.options.system: Система
 panel.options.system.adminPanel: Панель администратора
+panel.options.system.adminPanel.defaultColorScheme: Цветовая схема по умолчанию
+panel.options.system.adminPanel.defaultColorScheme.dark: Тёмная
+panel.options.system.adminPanel.defaultColorScheme.light: Светлая
 panel.options.system.adminPanel.defaultLanguage: Язык по умолчанию
 panel.options.system.adminPanel.logoutRedirectsTo: Выход Перенаправление
 panel.options.system.adminPanel.logoutRedirectsTo.home: Главная
@@ -79,27 +95,32 @@ panel.options.system.files: Файлы
 panel.options.system.files.allowedExtensions: Допустимые расширения
 panel.options.system.images: Картинки
 panel.options.system.images.jpegQuality: JPEG Качество
+panel.options.system.images.jpegSaveProgressive: Сохранять изображения JPEG как прогрессивные
+panel.options.system.images.jpegSaveProgressive.disabled: Отключено
+panel.options.system.images.jpegSaveProgressive.enabled: Включено
 panel.options.system.images.pngCompressionLevel: PNG Уровень сжатия
+panel.options.system.images.webpQuality: Качество WebP
 panel.options.system.languages: Языки
 panel.options.system.languages.availableLanguages: Доступные Языки
 panel.options.system.languages.availableLanguages.noLanguages: Нет Языков
 panel.options.system.languages.preferredLanguage: Использовать предпочитаемый язык браузера
 panel.options.system.languages.preferredLanguage.disabled: Выключить
 panel.options.system.languages.preferredLanguage.enabled: Включить
+panel.options.system.uploads.processImages: Обрабатывать (оптимизировать) загруженные изображения
+panel.options.system.uploads.processImages.disabled: Отключено
+panel.options.system.uploads.processImages.enabled: Включено
 panel.options.updated: Опции обновляются
-panel.tools.updates: Обновления
 panel.pages.attributes: Атрибуты
-panel.pages.changeSlug: Редактировать Slug
-panel.pages.changeSlug.generate: Сформировать из названия
 panel.pages.changes.continue: Продолжить без сохранения
 panel.pages.changes.detected: Изменения Обнаружены
 panel.pages.changes.detected.prompt: У вас есть какие-то изменения, которые не были сохранены. Вы уверены, что хотите покинуть эту страницу?
+panel.pages.changeSlug: Редактировать Slug
+panel.pages.changeSlug.generate: Сформировать из названия
 panel.pages.content: Содержание
 panel.pages.deleteFile: Удалить файл
 panel.pages.deleteFile.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
 panel.pages.deletePage: Удалить страницу
 panel.pages.deletePage.prompt: Вы уверены, что хотите удалить эту страницу? Это действие не может быть отменено.
-panel.pages.editPage: Отредактировать страницу %s
 panel.pages.editor.bold: Жирный
 panel.pages.editor.bulletList: Маркированный список
 panel.pages.editor.image: Изображение
@@ -110,6 +131,7 @@ panel.pages.editor.quote: Кавычки
 panel.pages.editor.redo: Выбор
 panel.pages.editor.summary: Краткий
 panel.pages.editor.undo: Открыть
+panel.pages.editPage: Отредактировать страницу %s
 panel.pages.files: Файлы
 panel.pages.languages: Языки
 panel.pages.languages.addLanguage: Добавлять %s
@@ -117,11 +139,12 @@ panel.pages.languages.editLanguage: Редактировать %s
 panel.pages.newPage: Новая страница
 panel.pages.newPage.parent: Родитель страницы
 panel.pages.newPage.site: Сайт
-panel.pages.newPage.slugSuggestion: буквы, цифры и дефис только
 panel.pages.newPage.slug: Страница Slug
+panel.pages.newPage.slugSuggestion: буквы, цифры и дефис только
 panel.pages.newPage.template: Шаблон
 panel.pages.newPage.title: Заглавие
 panel.pages.options: Параметры
+panel.pages.page: Страница
 panel.pages.page.actions: Действия
 panel.pages.page.cacheable: Кешируемый
 panel.pages.page.cannotChangeNum: Невозможно изменить номер страницы
@@ -131,11 +154,11 @@ panel.pages.page.cannotCreate.invalidParent: Не удается создать 
 panel.pages.page.cannotCreate.invalidSlug: Невозможно создать страницу, страницу пробкового должны содержать только буквы и цифры, разделенные тире
 panel.pages.page.cannotCreate.invalidTemplate: Не удается создать страницу, недопустимый шаблон
 panel.pages.page.cannotCreate.varMissing: Не удается создать страницу, отсутствует переменная
-panel.pages.page.cannotDeleteFile.fileNotFound: Не удается удалить файл, файл не найден
-panel.pages.page.cannotDeleteFile.pageNotFound: Не удается удалить файл, файл не найден
 panel.pages.page.cannotDelete.invalidLanguage: 'Невозможно удалить страницу, недопустимый язык: %s'
 panel.pages.page.cannotDelete.notDeletable: Невозможно удалить страницу, страница не файл удаляемая
 panel.pages.page.cannotDelete.pageNotFound: Невозможно удалить страницу, страница не найдена
+panel.pages.page.cannotDeleteFile.fileNotFound: Не удается удалить файл, файл не найден
+panel.pages.page.cannotDeleteFile.pageNotFound: Не удается удалить файл, файл не найден
 panel.pages.page.cannotEdit.alreadyExists: Не могу редактировать страницу, страница с той же URI уже существует
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Не могу редактировать страницу слизняка индекса и ошибок страниц
 panel.pages.page.cannotEdit.invalidLanguage: 'Не могу редактировать страницы, недопустимый язык: %s'
@@ -145,13 +168,18 @@ panel.pages.page.cannotEdit.invalidTemplate: Не могу редактиров�
 panel.pages.page.cannotEdit.pageNotFound: Не могу редактировать страницу, страница не найдена
 panel.pages.page.cannotEdit.varMissing: Не могу редактировать страницу, отсутствует переменный
 panel.pages.page.cannotMove: Невозможно переместить страницу
+panel.pages.page.cannotRenameFile.fileAlreadyExists: Невозможно переименовать файл, файл с таким именем уже существует
+panel.pages.page.cannotRenameFile.fileNotFound: Невозможно переименовать файл, файл не найден
+panel.pages.page.cannotRenameFile.pageNotFound: Невозможно переименовать файл, страница не найдена
 panel.pages.page.cannotUploadFile.pageNotFound: Невозможно загрузить файл, страница не найдена
 panel.pages.page.created: Страница сгенерирована!
 panel.pages.page.deleted: Страница удалена
 panel.pages.page.edited: Страница отредактирован
 panel.pages.page.fileDeleted: Файл удален
+panel.pages.page.fileRenamed: Файл переименован
 panel.pages.page.image: Изображение
 panel.pages.page.lastModified: Последнее изменение
+panel.pages.page.listed: Видимо в меню
 panel.pages.page.moved: Страница переехала!
 panel.pages.page.noDate: Без даты
 panel.pages.page.noImage: Нет изображения
@@ -163,31 +191,56 @@ panel.pages.page.status: Статус
 panel.pages.page.tags: Теги
 panel.pages.page.title: Заглавие
 panel.pages.page.unpublishDate: Дата Отменить публикацию
-panel.pages.page.visible: Видимые в меню
 panel.pages.pages: Страницы
 panel.pages.pages.collapseAll: Свернуть все
 panel.pages.pages.expandAll: Расширить все
 panel.pages.pages.reorder: Изменение порядка
 panel.pages.pages.search: Поиск Страницы ...
 panel.pages.parent: Родитель страницы
-panel.pages.previewFile: Предварительный просмотр
 panel.pages.preview: Предварительный просмотр
+panel.pages.previewFile: Предварительный просмотр
+panel.pages.renameFile: Переименовать файл
+panel.pages.renameFile.name: Имя
 panel.pages.save: Сохранить
 panel.pages.status.notPublished: Не Опубликовано
 panel.pages.status.notRoutable: Не маршрутизируемый
 panel.pages.status.published: Опубликованный
 panel.pages.status.routable: Маршрутизируемый
+panel.pages.summary: Сводка
 panel.pages.template: Шаблон
+panel.pages.text: Текст
+panel.pages.toggleChildren: Переключить дочерние страницы
 panel.panel: Панель администрирования
 panel.register.createUser: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
 panel.register.register: Регистрация нового пользователя
 panel.request.error.postMaxSize: Запрос HTTP POST превышает максимально допустимый размер
+panel.sections.toggle: Переключить раздел
+panel.statistics.monthlyUniqueVisitors: Уникальные посетители в месяц
+panel.statistics.monthlyVisits: Посещения в месяц
+panel.statistics.statistics: Статистика
+panel.statistics.totalVisits: Всего посещений
+panel.statistics.totalVisits.percentTotal: "% от общего"
+panel.statistics.totalVisits.uri: URI
+panel.statistics.totalVisits.visits: Посещения
+panel.statistics.weeklyUniqueVisitors: Уникальные посетители в неделю
+panel.statistics.weeklyVisits: Посещения в неделю
+panel.tools.backup.actions: Действия
+panel.tools.backup.date: Дата
+panel.tools.backup.delete: Удалить резервную копию
+panel.tools.backup.file: Файл
+panel.tools.backup.size: Размер
+panel.tools.backups: Резервные копии
+panel.tools.latestBackup: "Последняя резервная копия:"
+panel.tools.latestBackups: Последние резервные копии
+panel.tools.tools: Инструменты
+panel.tools.updates: Обновления
 panel.updates.availableForInstall: доступен для установки
 panel.updates.check: Проверка обновлений
-panel.updates.installPrompt: Вы хотите установить обновление?
 panel.updates.install: Устанавливать
 panel.updates.installed: Обновление установлено!
+panel.updates.installPrompt: Вы хотите установить обновление?
 panel.updates.latestVersionAvailable: это последняя версия доступна
+panel.updates.status.cannotCheck: Невозможно проверить обновления. Попробуйте позже.
 panel.updates.status.cannotInstall: Не удается установить обновление
 panel.updates.status.cannotMakeBackup: Невозможно сделать резервную копию перед обновлением
 panel.updates.status.checking: Проверка обновлений...
@@ -195,8 +248,12 @@ panel.updates.status.found: Обновления найдены
 panel.updates.status.installing: Установка обновлений ...
 panel.updates.status.upToDate: До настоящего времени!
 panel.uploader.error: Невозможно загрузить файл. %s.
+panel.uploader.error.alreadyExists: Файл с таким именем уже существует
+panel.uploader.error.cannotMoveToDestination: Не удалось переместить загруженный файл в папку назначения
 panel.uploader.error.cannotWrite: Не удалось записать файл на диск
+panel.uploader.error.destinationTooLong: Слишком длинный путь назначения
 panel.uploader.error.fileName: Неверное имя файла
+panel.uploader.error.fileNameTooLong: Слишком длинное имя файла
 panel.uploader.error.hiddenFiles: Невозможно загрузить скрытые файлы, начинающиеся с точки
 panel.uploader.error.mimeType: Тип файла не допускается
 panel.uploader.error.noFile: Файл не был загружен
@@ -206,10 +263,14 @@ panel.uploader.error.phpExtension: Загрузка файла останавл�
 panel.uploader.error.size: Загруженный файл превышает максимальный размер файла
 panel.uploader.uploaded: Файл загружен
 panel.user.actions: Действия
-panel.user.image: Аватар
-panel.user.image.uploaded: Аватар закачанный
+panel.user.colorScheme: Цветовая схема
+panel.user.colorScheme.auto: Авто
+panel.user.colorScheme.dark: Тёмная
+panel.user.colorScheme.light: Светлая
 panel.user.email: Email
 panel.user.fullname: Полное имя
+panel.user.image: Аватар
+panel.user.image.uploaded: Аватар закачанный
 panel.user.language: Язык
 panel.user.lastAccess: Последний доступ
 panel.user.password: Пароль
@@ -224,7 +285,6 @@ panel.users.newUser: Новый пользователь
 panel.users.newUser.passwordSuggestion: не менее 8 символов
 panel.users.newUser.usernameSuggestion: между 3-20 букв, цифр и тире
 panel.users.options: Параметры
-panel.users.userProfile: '%s Профиль пользователя'
 panel.users.user: Пользователь
 panel.users.user.cannotChangePassword: Невозможно изменить пароль другого пользователя. Действие не допускается.
 panel.users.user.cannotChangeRole: Невозможно изменить роль %s. Действие не допускается.
@@ -236,5 +296,6 @@ panel.users.user.created: Пользователь создан
 panel.users.user.deleted: Пользователь удален
 panel.users.user.edited: Пользовательские данные обновляются
 panel.users.user.notFound: Пользователь не найден
+panel.users.userProfile: '%s Профиль пользователя'
 panel.users.users: Пользователей
 panel.viewSite: Просмотр сайта

@@ -16,6 +16,8 @@ date.weekdays.short: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 fields.array.add: Добавлять
 fields.array.remove: Удалить
 fields.file.uploadLabel: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
+fields.select.empty: Нет подходящих вариантов
+page.none: (Нет)
 zip.error.alreadyExists: Архив уже существует
 zip.error.cannotOpen: Не удается открыть архив
 zip.error.cannotRead: Не удается прочитать архив

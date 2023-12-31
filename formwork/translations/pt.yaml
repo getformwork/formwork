@@ -15,7 +15,9 @@ date.weekdays.long: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'
 date.weekdays.short: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 fields.array.add: Adicionar
 fields.array.remove: Remover
-fields.file.uploadLabel: <strong>Pressione</strong> para escolher ficheiro para upload ou <strong>puxe</strong> para aqui.
+fields.file.uploadLabel: <strong>Clique</strong> aqui para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
+fields.select.empty: Sem opções correspondentes
+page.none: (Nenhum)
 zip.error.alreadyExists: O ficheiro já existe
 zip.error.cannotOpen: Erro de abertura do ficheiro
 zip.error.cannotRead: Erro de leitura do ficheiro

@@ -15,7 +15,9 @@ date.weekdays.long: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendred
 date.weekdays.short: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
 fields.array.add: Ajouter
 fields.array.remove: Supprimer
-pages.file.uploadLabel: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
+fields.file.uploadLabel: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
+fields.select.empty: Aucune option correspondante
+page.none: (Aucun)
 zip.error.alreadyExists: L’archive existe déjà
 zip.error.cannotOpen: Impossible d’ouvrir l’archive
 zip.error.cannotRead: Impossible de lire l’archive

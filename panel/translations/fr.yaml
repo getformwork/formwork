@@ -1,4 +1,7 @@
 panel.backup.backup: Sauvegarde
+panel.backup.deleted: Sauvegarde supprimée
+panel.backup.error.cannotDelete: Impossible de supprimer la sauvegarde. %s.
+panel.backup.error.cannotDelete.invalidFilename: Nom de sauvegarde invalide
 panel.backup.error.cannotDownload: Impossible de télécharger la sauvegarde. %s.
 panel.backup.error.cannotDownload.invalidFilename: Fichier de sauvegarde invalide
 panel.backup.error.cannotMake: Impossible de faire une sauvegarde. %s.
@@ -12,6 +15,7 @@ panel.dashboard.statistics: Statistiques
 panel.dashboard.statistics.uniqueVisitors: Visiteurs uniques
 panel.dashboard.statistics.visits: Visites
 panel.dashboard.welcome: Bienvenue
+panel.dragToReorder: Glisser pour réorganiser
 panel.errors.action.reportToGithub: Signaler le problème sur GitHub
 panel.errors.action.returnToDashboard: Retour au tableau de bord
 panel.errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
@@ -23,6 +27,9 @@ panel.errors.error.internalServerError.status: Erreur Interne du Serveur
 panel.errors.error.notFound.description: La page n’existe pas ou la demande n’est pas valide.
 panel.errors.error.notFound.heading: Oups, page non trouvée!
 panel.errors.error.notFound.status: Pas trouvé
+panel.files.actions: Actions
+panel.files.viewAsList: Afficher en liste
+panel.files.viewAsThumbnails: Afficher en vignettes
 panel.login.attempt.failed: La tentative de connexion a échoué! Réessayer.
 panel.login.attempt.tooMany: Trop de tentatives de connexion. Veuillez réessayer dans %d minutes.
 panel.login.loggedOut: Vous avez été déconnecté
@@ -35,6 +42,7 @@ panel.manage: Gérer
 panel.modal.action.cancel: Annuler
 panel.modal.action.continue: Continuer
 panel.modal.action.delete: Supprimer
+panel.modal.action.rename: Renommer
 panel.modal.action.save: Enregistrer
 panel.modal.action.uploadFile: Parcourir…
 panel.modal.images.noImages: Aucun fichier média n’a été trouvé.
@@ -55,8 +63,16 @@ panel.options.site.info.author: Auteur
 panel.options.site.info.description: Description
 panel.options.site.info.language: Langue
 panel.options.site.info.title: Titre
+panel.options.site.maintenance: Maintenance
+panel.options.site.maintenance.enabled: Mode de maintenance
+panel.options.site.maintenance.enabled.disabled: Désactivé
+panel.options.site.maintenance.enabled.enabled: Activé
+panel.options.site.maintenance.page: Page de maintenance
 panel.options.system: Système
 panel.options.system.adminPanel: Panneau d’administration
+panel.options.system.adminPanel.defaultColorScheme: Schéma de couleur par défaut du panneau d'administration
+panel.options.system.adminPanel.defaultColorScheme.dark: Foncé
+panel.options.system.adminPanel.defaultColorScheme.light: Clair
 panel.options.system.adminPanel.defaultLanguage: Langue par défaut
 panel.options.system.adminPanel.logoutRedirectsTo: Après déconnexion, redirection vers
 panel.options.system.adminPanel.logoutRedirectsTo.home: Page d’accueil
@@ -83,9 +99,6 @@ panel.options.system.images.jpegSaveProgressive: Enregistrer les images JPEG en 
 panel.options.system.images.jpegSaveProgressive.disabled: Désactivé
 panel.options.system.images.jpegSaveProgressive.enabled: Activé
 panel.options.system.images.pngCompressionLevel: Niveau de compression PNG
-panel.options.system.uploads.processImages: Traitement (optimisé) des images envoyées
-panel.options.system.uploads.processImages.disabled: Désactivé
-panel.options.system.uploads.processImages.enabled: Activé
 panel.options.system.images.webpQuality: Qualité WebP
 panel.options.system.languages: Langues
 panel.options.system.languages.availableLanguages: Langues disponibles
@@ -93,20 +106,21 @@ panel.options.system.languages.availableLanguages.noLanguages: Aucune langue
 panel.options.system.languages.preferredLanguage: Utiliser la langue préférée du navigateur
 panel.options.system.languages.preferredLanguage.disabled: Désactivé
 panel.options.system.languages.preferredLanguage.enabled: Activé
+panel.options.system.uploads.processImages: Traitement (optimisé) des images envoyées
+panel.options.system.uploads.processImages.disabled: Désactivé
+panel.options.system.uploads.processImages.enabled: Activé
 panel.options.updated: Options mises à jour
-panel.tools.updates: Mises à jour
 panel.pages.attributes: Attributs
-panel.pages.changeSlug: Modifier le permalien
-panel.pages.changeSlug.generate: Générer automatiquement à partir du titre
 panel.pages.changes.continue: Continuer sans sauvegarder
 panel.pages.changes.detected: Changements détectés
 panel.pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas été enregistrées. Êtes-vous sûr de vouloir quitter cette page ?
+panel.pages.changeSlug: Modifier le permalien
+panel.pages.changeSlug.generate: Générer automatiquement à partir du titre
 panel.pages.content: Contenu
 panel.pages.deleteFile: Supprimer le fichier
 panel.pages.deleteFile.prompt: ÊtesVous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
 panel.pages.deletePage: Supprimer la page
 panel.pages.deletePage.prompt: ÊtesVous sûr de vouloir supprimer cette page ? Cette action est irréversible.
-panel.pages.editPage: Modifier la page %s
 panel.pages.editor.bold: Gras
 panel.pages.editor.bulletList: Liste à puce
 panel.pages.editor.image: Image
@@ -117,6 +131,7 @@ panel.pages.editor.quote: Citer
 panel.pages.editor.redo: Refaire
 panel.pages.editor.summary: Résumé
 panel.pages.editor.undo: Annuler
+panel.pages.editPage: Modifier la page %s
 panel.pages.files: Fichiers
 panel.pages.languages: Langues
 panel.pages.languages.addLanguage: Ajouter %s
@@ -124,11 +139,12 @@ panel.pages.languages.editLanguage: Éditer %s
 panel.pages.newPage: Nouvelle page
 panel.pages.newPage.parent: Parent
 panel.pages.newPage.site: Site
-panel.pages.newPage.slugSuggestion: lettres, chiffres et tirets seulement
 panel.pages.newPage.slug: Permalien
+panel.pages.newPage.slugSuggestion: lettres, chiffres et tirets seulement
 panel.pages.newPage.template: Modèle (Template)
 panel.pages.newPage.title: Titre
 panel.pages.options: Options
+panel.pages.page: Page
 panel.pages.page.actions: Actions
 panel.pages.page.cacheable: Activer le cache
 panel.pages.page.cannotChangeNum: Impossible de changer le numéro de page
@@ -138,11 +154,11 @@ panel.pages.page.cannotCreate.invalidParent: Impossible de créer une page, page
 panel.pages.page.cannotCreate.invalidSlug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
 panel.pages.page.cannotCreate.invalidTemplate: Impossible de créer une page, modèle non valide
 panel.pages.page.cannotCreate.varMissing: Impossible de créer une page, il manque une variable
-panel.pages.page.cannotDeleteFile.fileNotFound: Impossible de supprimer le fichier, fichier introuvable
-panel.pages.page.cannotDeleteFile.pageNotFound: Impossible de supprimer le fichier, page non trouvée
 panel.pages.page.cannotDelete.invalidLanguage: 'Impossible de supprimer la page, terme non défini : %s'
 panel.pages.page.cannotDelete.notDeletable: Impossible de supprimer la page, la page ne peut être supprimée
 panel.pages.page.cannotDelete.pageNotFound: Impossible de supprimer la page, page introuvable
+panel.pages.page.cannotDeleteFile.fileNotFound: Impossible de supprimer le fichier, fichier introuvable
+panel.pages.page.cannotDeleteFile.pageNotFound: Impossible de supprimer le fichier, page non trouvée
 panel.pages.page.cannotEdit.alreadyExists: Impossible de modifier la page, une page avec la même URL existe déjà
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
 panel.pages.page.cannotEdit.invalidLanguage: 'Impossible de modifier la page, terme non défini : %s'
@@ -152,13 +168,18 @@ panel.pages.page.cannotEdit.invalidTemplate: Impossible de modifier la page, mod
 panel.pages.page.cannotEdit.pageNotFound: Impossible de modifier la page, page non trouvée
 panel.pages.page.cannotEdit.varMissing: Impossible de modifier la page, il manque une variable
 panel.pages.page.cannotMove: Impossible de déplacer la page
+panel.pages.page.cannotRenameFile.fileAlreadyExists: Impossible de renommer le fichier, un fichier portant le même nom existe déjà
+panel.pages.page.cannotRenameFile.fileNotFound: Impossible de renommer le fichier, fichier introuvable
+panel.pages.page.cannotRenameFile.pageNotFound: Impossible de renommer le fichier, page introuvable
 panel.pages.page.cannotUploadFile.pageNotFound: Impossible de téléverser le fichier, page introuvable
 panel.pages.page.created: Page créée !
 panel.pages.page.deleted: Page supprimée
 panel.pages.page.edited: Page éditée
 panel.pages.page.fileDeleted: Fichier supprimé
+panel.pages.page.fileRenamed: Fichier renommé
 panel.pages.page.image: Image d’accroche
 panel.pages.page.lastModified: Dernière modification
+panel.pages.page.listed: Visible dans le menu
 panel.pages.page.moved: Page déplacée !
 panel.pages.page.noDate: Aucune date
 panel.pages.page.noImage: Aucune image
@@ -170,31 +191,56 @@ panel.pages.page.status: Statut
 panel.pages.page.tags: Tags
 panel.pages.page.title: Titre
 panel.pages.page.unpublishDate: Date de péremption
-panel.pages.page.visible: Visible dans le menu
 panel.pages.pages: Pages
 panel.pages.pages.collapseAll: Tout réduire
 panel.pages.pages.expandAll: Tout développer
 panel.pages.pages.reorder: Réorganiser
 panel.pages.pages.search: Rechercher dans les Pages…
 panel.pages.parent: Parent
-panel.pages.previewFile: Aperçu
 panel.pages.preview: Aperçu
+panel.pages.previewFile: Aperçu
+panel.pages.renameFile: Renommer le fichier
+panel.pages.renameFile.name: Nom
 panel.pages.save: Enregistrer
 panel.pages.status.notPublished: Brouillon
 panel.pages.status.notRoutable: Inaccessible
 panel.pages.status.published: Publié
 panel.pages.status.routable: Accessible
+panel.pages.summary: Résumé
 panel.pages.template: Modèle
+panel.pages.text: Texte
+panel.pages.toggleChildren: Afficher/Masquer les sous-pages
 panel.panel: Panneau d’administration
 panel.register.createUser: Le compte panel est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
 panel.register.register: Enregistrer un nouvel utilisateur
 panel.request.error.postMaxSize: La demande HTTP POST dépasse la taille maximale autorisée
+panel.sections.toggle: Afficher/Masquer la section
+panel.statistics.monthlyUniqueVisitors: Visiteurs uniques mensuels
+panel.statistics.monthlyVisits: Visites mensuelles
+panel.statistics.statistics: Statistiques
+panel.statistics.totalVisits: Total de visites
+panel.statistics.totalVisits.percentTotal: "% du total"
+panel.statistics.totalVisits.uri: URI
+panel.statistics.totalVisits.visits: Visites
+panel.statistics.weeklyUniqueVisitors: Visiteurs uniques hebdomadaires
+panel.statistics.weeklyVisits: Visites hebdomadaires
+panel.tools.backup.actions: Actions
+panel.tools.backup.date: Date
+panel.tools.backup.delete: Supprimer la sauvegarde
+panel.tools.backup.file: Fichier
+panel.tools.backup.size: Taille
+panel.tools.backups: Sauvegardes
+panel.tools.latestBackup: "Dernière sauvegarde:"
+panel.tools.latestBackups: Dernières sauvegardes
+panel.tools.tools: Outils
+panel.tools.updates: Mises à jour
 panel.updates.availableForInstall: est disponible pour l’installation
 panel.updates.check: Vérifier les mises à jour
-panel.updates.installPrompt: VoulezVous installer la mise à jour ?
 panel.updates.install: Installer
 panel.updates.installed: Mise à jour installée !
+panel.updates.installPrompt: VoulezVous installer la mise à jour ?
 panel.updates.latestVersionAvailable: est la dernière version disponible
+panel.updates.status.cannotCheck: Impossible de vérifier les mises à jour. Réessayez plus tard.
 panel.updates.status.cannotInstall: Impossible d’installer la mise à jour
 panel.updates.status.cannotMakeBackup: Impossible de faire une sauvegarde avant la mise à jour
 panel.updates.status.checking: Vérification des mises à jour…
@@ -203,8 +249,11 @@ panel.updates.status.installing: Installation de mises à jour…
 panel.updates.status.upToDate: À jour !
 panel.uploader.error: Impossible de télécharger le fichier. %s.
 panel.uploader.error.alreadyExists: Un fichier du même nom existe déjà
+panel.uploader.error.cannotMoveToDestination: Impossible de déplacer le fichier téléchargé vers la destination
 panel.uploader.error.cannotWrite: Échec de l’écriture du fichier sur le disque
+panel.uploader.error.destinationTooLong: Chemin de destination trop long
 panel.uploader.error.fileName: Nom de fichier non valide
+panel.uploader.error.fileNameTooLong: Nom de fichier trop long
 panel.uploader.error.hiddenFiles: Impossible de téléverser des fichiers cachés commençant par un point
 panel.uploader.error.mimeType: Type de fichier non autorisé
 panel.uploader.error.noFile: Aucun fichier n’a été téléchargé
@@ -214,10 +263,14 @@ panel.uploader.error.phpExtension: Téléversement du fichier arrêté par exten
 panel.uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
 panel.uploader.uploaded: Fichier envoyé !
 panel.user.actions: Actions
-panel.user.image: Photo de profil
-panel.user.image.uploaded: Photo de profil téléversée avec succès.
+panel.user.colorScheme: Schéma de couleur
+panel.user.colorScheme.auto: Auto
+panel.user.colorScheme.dark: Foncé
+panel.user.colorScheme.light: Clair
 panel.user.email: Adresse de messagerie
 panel.user.fullname: Nom complet
+panel.user.image: Photo de profil
+panel.user.image.uploaded: Photo de profil téléversée avec succès.
 panel.user.language: Langue
 panel.user.lastAccess: Dernier accès
 panel.user.password: Mot de passe
@@ -232,7 +285,6 @@ panel.users.newUser: Nouvel utilisateur
 panel.users.newUser.passwordSuggestion: au moins 8 caractères
 panel.users.newUser.usernameSuggestion: entre 3-20 lettres, chiffres et tirets
 panel.users.options: Options
-panel.users.userProfile: 'Profil utilisateur de %s'
 panel.users.user: Utilisateur
 panel.users.user.cannotChangePassword: Impossible de changer le mot de passe d’un autre utilisateur. L’action n’est pas autorisée.
 panel.users.user.cannotChangeRole: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
@@ -244,5 +296,6 @@ panel.users.user.created: Compte utilisateur créé
 panel.users.user.deleted: Utilisateur supprimé
 panel.users.user.edited: Profil utilisateur mises à jour
 panel.users.user.notFound: Utilisateur non trouvé
+panel.users.userProfile: 'Profil utilisateur de %s'
 panel.users.users: Utilisateurs
 panel.viewSite: Voir le site
