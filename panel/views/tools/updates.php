@@ -1,7 +1,7 @@
 <?php $this->layout('panel') ?>
 
 <div class="header">
-        <div class="header-title"><?= $this->translate('panel.options.options') ?></div>
+        <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
 </div>
 
 <?= $tabs ?>
@@ -15,7 +15,7 @@
     <div class="row new-version" style="display: none;">
         <div class="separator-l"></div>
         <div class="col-m-1-1">
-            <div class="h5"><strong class="new-version-name">Formwork x.x.x</strong> <?= $this->translate('panel.updates.availableForInstall') ?></div>
+            <p><strong class="new-version-name">Formwork x.x.x</strong> <?= $this->translate('panel.updates.availableForInstall') ?></p>
             <div><?= $this->translate('panel.updates.installPrompt') ?></div>
             <div class="separator"></div>
             <button type="button" data-command="install-updates"><?= $this->translate('panel.updates.install') ?></button>
@@ -24,7 +24,7 @@
     <div class="row current-version" style="display: none;">
         <div class="separator-l"></div>
         <div class="col-m-1-1">
-            <div class="h5"><strong class="current-version-name">Formwork <?= $currentVersion ?></strong> <?= $this->translate('panel.updates.latestVersionAvailable') ?></div>
+            <p><strong class="current-version-name">Formwork <?= $currentVersion ?></strong> <?= $this->translate('panel.updates.latestVersionAvailable') ?></p>
         </div>
     </div>
 </section>

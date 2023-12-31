@@ -20,7 +20,7 @@ class OptionsController extends AbstractController
      *
      * @var list<string>
      */
-    protected array $tabs = ['site', 'system', 'updates', 'info'];
+    protected array $tabs = ['site', 'system', 'info'];
 
     /**
      * Options@index action
@@ -115,23 +115,6 @@ class OptionsController extends AbstractController
                 'current' => 'site',
             ]),
             'fields' => $fields,
-        ]));
-    }
-
-    /**
-     * Options@updates action
-     */
-    public function updates(): Response
-    {
-        $this->ensurePermission('options.updates');
-
-        return new Response($this->view('options.updates', [
-            'title' => $this->translate('panel.options.updates'),
-            'tabs'  => $this->view('options.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'updates',
-            ]),
-            'currentVersion' => $this->app::VERSION,
         ]));
     }
 

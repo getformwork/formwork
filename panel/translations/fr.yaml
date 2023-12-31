@@ -94,7 +94,7 @@ panel.options.system.languages.preferredLanguage: Utiliser la langue préférée
 panel.options.system.languages.preferredLanguage.disabled: Désactivé
 panel.options.system.languages.preferredLanguage.enabled: Activé
 panel.options.updated: Options mises à jour
-panel.options.updates: Mises à jour
+panel.tools.updates: Mises à jour
 panel.pages.attributes: Attributs
 panel.pages.changeSlug: Modifier le permalien
 panel.pages.changeSlug.generate: Générer automatiquement à partir du titre

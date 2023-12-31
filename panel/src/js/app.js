@@ -8,6 +8,7 @@ import { Notifications } from "./components/notifications";
 import { Sections } from "./components/sections";
 import { Tooltips } from "./components/tooltips";
 
+import { Backups } from "./components/views/backups";
 import { Dashboard } from "./components/views/dashboard";
 import { Pages } from "./components/views/pages";
 import { Statistics } from "./components/views/statistics";
@@ -42,6 +43,7 @@ class App {
         this.loadComponent(Dashboard);
         this.loadComponent(Pages);
         this.loadComponent(Statistics);
+        this.loadComponent(Backups);
         this.loadComponent(Updates);
     }
 

@@ -38,6 +38,12 @@ return [
         'panel.backup.download' => [
             'path'    => '/backup/download/{backup}/',
             'action'  => 'Formwork\\Panel\\Controllers\\BackupController@download',
+            'methods' => ['GET', 'POST'],
+        ],
+
+        'panel.backup.delete' => [
+            'path'    => '/backup/delete/{backup}/',
+            'action'  => 'Formwork\\Panel\\Controllers\\BackupController@delete',
             'methods' => ['POST'],
         ],
 
@@ -70,11 +76,6 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
-        'panel.options.updates' => [
-            'path'   => '/options/updates/',
-            'action' => 'Formwork\Panel\Controllers\OptionsController@updates',
-        ],
-
         'panel.options.info' => [
             'path'   => '/options/info/',
             'action' => 'Formwork\Panel\Controllers\OptionsController@info',
@@ -83,6 +84,21 @@ return [
         'panel.pages' => [
             'path'   => '/pages/',
             'action' => 'Formwork\Panel\Controllers\PagesController@index',
+        ],
+
+        'panel.tools' => [
+            'path'   => '/tools/',
+            'action' => 'Formwork\Panel\Controllers\ToolsController@index',
+        ],
+
+        'panel.tools.backups' => [
+            'path'   => '/tools/backups/',
+            'action' => 'Formwork\Panel\Controllers\ToolsController@backups',
+        ],
+
+        'panel.tools.updates' => [
+            'path'   => '/tools/updates/',
+            'action' => 'Formwork\Panel\Controllers\ToolsController@updates',
         ],
 
         'panel.pages.new' => [

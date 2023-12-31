@@ -62,6 +62,15 @@ if ($panel->user()->permissions()->has('statistics')):
 <?php
 endif
 ?>
+<?php
+if ($panel->user()->permissions()->has('tools')):
+    ?>
+            <li class="<?= ($location === 'tools') ? 'active' : '' ?>">
+                <a href="<?= $panel->uri('/tools/') ?>"><?= $this->translate('panel.tools.tools') ?></a>
+            </li>
+<?php
+endif
+?>
             <li>
                 <a href="<?= $panel->uri('/logout/') ?>"><?= $this->translate('panel.login.logout') ?></a>
             </li>

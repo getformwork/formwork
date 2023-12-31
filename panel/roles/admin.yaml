@@ -9,3 +9,4 @@ permissions:
     updates: true
     users: true
     statistics: true
+    tools: true

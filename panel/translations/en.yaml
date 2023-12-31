@@ -1,4 +1,7 @@
 panel.backup.backup: Backup
+panel.backup.deleted: Backup deleted
+panel.backup.error.cannotDelete: Cannot delete backup. %s.
+panel.backup.error.cannotDelete.invalidFilename: Invalid backup file
 panel.backup.error.cannotDownload: Cannot download backup. %s.
 panel.backup.error.cannotDownload.invalidFilename: Invalid backup file
 panel.backup.error.cannotMake: Cannot make backup. %s.
@@ -107,7 +110,6 @@ panel.options.system.uploads.processImages: Process (optimize) uploaded images
 panel.options.system.uploads.processImages.disabled: Disabled
 panel.options.system.uploads.processImages.enabled: Enabled
 panel.options.updated: Options updated
-panel.options.updates: Updates
 panel.pages.attributes: Attributes
 panel.pages.changes.continue: Continue without Saving
 panel.pages.changes.detected: Changes Detected
@@ -222,6 +224,16 @@ panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visits
 panel.statistics.weeklyUniqueVisitors: Weekly Unique Visitors
 panel.statistics.weeklyVisits: Weekly Visits
+panel.tools.backup.actions: Actions
+panel.tools.backup.date: Date
+panel.tools.backup.delete: Delete Backup
+panel.tools.backup.file: File
+panel.tools.backup.size: Size
+panel.tools.backups: Backups
+panel.tools.latestBackup: "Latest backup:"
+panel.tools.latestBackups: Latest Backups
+panel.tools.tools: Tools
+panel.tools.updates: Updates
 panel.updates.availableForInstall: is available for install
 panel.updates.check: Check Updates
 panel.updates.install: Install

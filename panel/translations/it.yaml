@@ -107,7 +107,6 @@ panel.options.system.uploads.processImages: Elabora (ottimizza) le immagini cari
 panel.options.system.uploads.processImages.disabled: Disabilitato
 panel.options.system.uploads.processImages.enabled: Abilitato
 panel.options.updated: Opzioni aggiornate
-panel.options.updates: Aggiornamenti
 panel.pages.attributes: Attributi
 panel.pages.changes.continue: Continua senza salvare
 panel.pages.changes.detected: Modifiche rilevate
@@ -149,7 +148,7 @@ panel.pages.page.cannotChangeNum: Impossibile cambiare il numero della pagina
 panel.pages.page.cannotCreate: Impossibile creare la pagina
 panel.pages.page.cannotCreate.alreadyExists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
 panel.pages.page.cannotCreate.invalidParent: Impossibile creare la pagina, la pagina superiore specificata non è valida
-panel.pages.page.cannotCreate.invalidSlug: Impossibile creare la pagina, l'indirizzo deve contenere solo lettere e numeri separati da trattini
+panel.pages.page.cannotCreate.invalidSlug: Impossibile creare la pagina, l’indirizzo deve contenere solo lettere e numeri separati da trattini
 panel.pages.page.cannotCreate.invalidTemplate: Impossibile creare la pagina, il template specificato non è valido
 panel.pages.page.cannotCreate.varMissing: Impossibile creare la pagina, manca una variabile
 panel.pages.page.cannotDelete.invalidLanguage: Impossibile eliminare la pagina, lingua %s non valida
@@ -158,10 +157,10 @@ panel.pages.page.cannotDelete.pageNotFound: Impossibile eliminare la pagina, pag
 panel.pages.page.cannotDeleteFile.fileNotFound: Impossibile eliminare il file, file non trovato
 panel.pages.page.cannotDeleteFile.pageNotFound: Impossibile eliminare il file, pagina non trovata
 panel.pages.page.cannotEdit.alreadyExists: Impossibile modificare la pagina, una pagina con lo stesso indirizzo esiste già
-panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossibile cambiare l'indirizzo della pagina iniziale o di errore
+panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossibile cambiare l’indirizzo della pagina iniziale o di errore
 panel.pages.page.cannotEdit.invalidLanguage: Impossibile modificare la pagina, lingua %s non valida
 panel.pages.page.cannotEdit.invalidParent: Impossibile modificare la pagina, pagina superiore non valida
-panel.pages.page.cannotEdit.invalidSlug: Impossibile cambiare l'indirizzo, l'indirizzo deve contenere solo lettere e numeri separati da trattini
+panel.pages.page.cannotEdit.invalidSlug: Impossibile cambiare l’indirizzo, l’indirizzo deve contenere solo lettere e numeri separati da trattini
 panel.pages.page.cannotEdit.invalidTemplate: Impossibile modificare la pagina, template non valido
 panel.pages.page.cannotEdit.pageNotFound: Impossibile modificare la pagina, pagina non trovata
 panel.pages.page.cannotEdit.varMissing: Impossibile modificare la pagina, manca una variabile
@@ -222,14 +221,24 @@ panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visite
 panel.statistics.weeklyUniqueVisitors: Visitatori unici ultima settimana
 panel.statistics.weeklyVisits: Visite ultima settimana
-panel.updates.availableForInstall: è disponibile per l'installazione
+panel.tools.backup.actions: Azioni
+panel.tools.backup.date: Data
+panel.tools.backup.delete: Elimina backup
+panel.tools.backup.file: File
+panel.tools.backup.size: Dimensioni
+panel.tools.backups: Backup
+panel.tools.latestBackup: "Ultimo backup:"
+panel.tools.latestBackups: Ultimi backup effettuati
+panel.tools.tools: Strumenti
+panel.tools.updates: Aggiornamenti
+panel.updates.availableForInstall: è disponibile per l’installazione
 panel.updates.check: Cerca aggiornamenti
 panel.updates.install: Installa
 panel.updates.installed: Aggiornamento installato!
-panel.updates.installPrompt: Installare l'aggiornamento?
-panel.updates.latestVersionAvailable: è l'ultima versione disponibile
+panel.updates.installPrompt: Installare l’aggiornamento?
+panel.updates.latestVersionAvailable: è l’ultima versione disponibile
 panel.updates.status.cannotCheck: Impossibile cercare aggiornamenti. Riprova più tardi.
-panel.updates.status.cannotInstall: Impossibile installare l'aggiornamento
+panel.updates.status.cannotInstall: Impossibile installare l’aggiornamento
 panel.updates.status.cannotMakeBackup: Impossibile eseguire il backup prima di aggiornare
 panel.updates.status.checking: Cerco aggiornamenti...
 panel.updates.status.found: Aggiornamento disponibile
@@ -242,7 +251,7 @@ panel.uploader.error.cannotWrite: Impossibile salvare il file sul disco
 panel.uploader.error.destinationTooLong: Il percorso di destinazione è troppo lungo
 panel.uploader.error.fileName: Nome del file non valido
 panel.uploader.error.fileNameTooLong: Il nome del file è troppo lungo
-panel.uploader.error.hiddenFiles: Impossibile caricare i file che iniziano con '.'
+panel.uploader.error.hiddenFiles: Impossibile caricare i file che iniziano con ’.’
 panel.uploader.error.mimeType: Il tipo di file non è consentito
 panel.uploader.error.noFile: Nessun file caricato
 panel.uploader.error.noTemp: Cartella temporanea mancante

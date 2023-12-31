@@ -87,7 +87,7 @@ panel.options.system.languages.preferredLanguage: Использовать пр�
 panel.options.system.languages.preferredLanguage.disabled: Выключить
 panel.options.system.languages.preferredLanguage.enabled: Включить
 panel.options.updated: Опции обновляются
-panel.options.updates: Обновления
+panel.tools.updates: Обновления
 panel.pages.attributes: Атрибуты
 panel.pages.changeSlug: Редактировать Slug
 panel.pages.changeSlug.generate: Сформировать из названия

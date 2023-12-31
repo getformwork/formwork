@@ -97,7 +97,7 @@ panel.options.system.languages.preferredLanguage: Use o idioma preferido do brow
 panel.options.system.languages.preferredLanguage.disabled: Desactivado
 panel.options.system.languages.preferredLanguage.enabled: Activado
 panel.options.updated: Opções Actualizadas
-panel.options.updates: Actualizações
+panel.tools.updates: Actualizações
 panel.pages.attributes: Atributos
 panel.pages.changeSlug: Editar Slug
 panel.pages.changeSlug.generate: Criar a partir do Título

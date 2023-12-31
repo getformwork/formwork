@@ -76,6 +76,23 @@ class Backupper
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function getBackups(): array
+    {
+        $backups = [];
+
+        foreach (FileSystem::listFiles($this->options['path']) as $file) {
+            $date = FileSystem::lastModifiedTime(FileSystem::joinPaths($this->options['path'], $file));
+            $backups[$date] = FileSystem::joinPaths($this->options['path'], $file);
+        }
+
+        krsort($backups);
+
+        return $backups;
+    }
+
+    /**
      * Return whether a file is copiable in the backup archive
      */
     protected function isCopiable(string $file): bool

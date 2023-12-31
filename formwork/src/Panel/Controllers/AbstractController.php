@@ -134,6 +134,11 @@ abstract class AbstractController extends BaseAbstractController
                         'empty' => $this->translate(('fields.select.empty')),
                     ],
                 ],
+                'Backups' => [
+                    'labels' => [
+                        'now' => $this->translate('date.now'),
+                    ],
+                ],
             ]),
         ];
     }

@@ -7,8 +7,8 @@ import { triggerDownload } from "../../utils/forms";
 
 export class Dashboard {
     constructor() {
-        const clearCacheCommand = $("[data-command=clear-cache]");
-        const makeBackupCommand = $("[data-command=make-backup]");
+        const clearCacheCommand = $("[data-view=dashboard] [data-command=clear-cache]");
+        const makeBackupCommand = $("[data-view=dashboard] [data-command=make-backup]");
         const chart = $(".dashboard-chart");
 
         if (clearCacheCommand) {
@@ -31,6 +31,7 @@ export class Dashboard {
             makeBackupCommand.addEventListener("click", function () {
                 const button = this;
                 button.disabled = true;
+
                 new Request(
                     {
                         method: "POST",
@@ -40,12 +41,17 @@ export class Dashboard {
                     (response) => {
                         const notification = new Notification(response.message, response.status, { icon: "check-circle" });
                         notification.show();
-                        setTimeout(() => {
-                            if (response.status === "success") {
+
+                        if (response.status === "success") {
+                            setTimeout(() => {
+                                button.disabled = false;
                                 triggerDownload(response.data.uri, $("meta[name=csrf-token]").content);
-                            }
+                            }, 1000);
+                        }
+
+                        if (response.status === "error") {
                             button.disabled = false;
-                        }, 1000);
+                        }
                     },
                 );
             });
