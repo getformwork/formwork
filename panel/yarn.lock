@@ -1258,7 +1258,7 @@ __metadata:
     sortablejs: "npm:^1.15.1"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard-scss: "npm:^11.1.0"
-    stylelint-order: "npm:^6.0.3"
+    stylelint-order: "npm:^6.0.4"
     stylelint-scss: "npm:^5.3.1"
   languageName: unknown
   linkType: soft
@@ -2306,7 +2306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.21, postcss@npm:^8.4.28, postcss@npm:^8.4.32":
+"postcss@npm:^8.4.28, postcss@npm:^8.4.32":
   version: 8.4.32
   resolution: "postcss@npm:8.4.32"
   dependencies:
@@ -2741,15 +2741,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-order@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "stylelint-order@npm:6.0.3"
+"stylelint-order@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "stylelint-order@npm:6.0.4"
   dependencies:
-    postcss: "npm:^8.4.21"
+    postcss: "npm:^8.4.32"
     postcss-sorting: "npm:^8.0.2"
   peerDependencies:
-    stylelint: ^14.0.0 || ^15.0.0
-  checksum: 8e6ba85b39ff827038ec4dc46a37ea6aeac110c0a8d468c6962b068c623ceac26b7d6617f5e372be4a10571127e4a3ce424714b7a66d54147ce57116776d4d13
+    stylelint: ^14.0.0 || ^15.0.0 || ^16.0.1
+  checksum: 9a1f6ba7ab04855462bfae28fe36ad2a297fec56f42da2f588b57295b89b72e6f517d5e35ecbcefb11fcc373f3db40f0e6a8eefb41a4d267550ac6324f12a3ca
   languageName: node
   linkType: hard
 
