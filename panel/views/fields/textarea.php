@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <textarea <?= $this->attr([
     'id'          => $field->name(),
     'name'        => $field->formName(),

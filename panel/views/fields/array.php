@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div <?= $this->attr([
     'class'     => ['input-array', $field->get('associative') ? 'input-array-associative' : ''],
     'id'        => $field->name(),

@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <input <?= $this->attr([
     'type'         => 'password',
     'id'           => $field->name(),

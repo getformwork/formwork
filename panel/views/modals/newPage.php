@@ -13,28 +13,20 @@
                 <label class="label-required" for="page-parent"><?= $this->translate('panel.pages.newPage.parent') ?>:</label>
                 <select id="page-parent" name="parent">
                     <option value="." selected><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
-    <?php
-                    foreach ($pages as $page):
-                        $scheme = $app->schemes()->get('pages.' . $page->template()->name());
-                        if (!$scheme->options()->get('children', true)) {
-                            continue;
-                        }
-                        ?>
-                    <option value="<?= $page->route() ?>"<?php if ($scheme->options()->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->options()->get('children.templates'))?>"<?php endif ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
-    <?php
-                    endforeach
-            ?>
+                    <?php foreach ($pages as $page): ?>
+                        <?php $scheme = $app->schemes()->get('pages.' . $page->template()->name()) ?>
+                        <?php if (!$scheme->options()->get('children', true)): ?>
+                            <?php continue ?>
+                        <?php endif ?>
+                        <option value="<?= $page->route() ?>" <?php if ($scheme->options()->has('children.templates')): ?> data-allowed-templates="<?= implode(', ', $scheme->options()->get('children.templates')) ?>" <?php endif ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
+                    <?php endforeach ?>
                 </select>
                 <label class="label-required" for="page-template"><?= $this->translate('panel.pages.newPage.template') ?>:</label>
                 <select id="page-template" name="template">
-    <?php
-                        foreach ($templates as $template):
-                            $scheme = $app->schemes()->get('pages.' . $template);
-                            ?>
-                    <option value="<?= $template ?>"<?php if ($scheme->isDefault()): ?> selected<?php endif ?>><?= $scheme->title() ?></option>
-    <?php
-                        endforeach
-            ?>
+                    <?php foreach ($templates as $template): ?>
+                        <?php $scheme = $app->schemes()->get('pages.' . $template) ?>
+                        <option value="<?= $template ?>" <?php if ($scheme->isDefault()): ?> selected<?php endif ?>><?= $scheme->title() ?></option>
+                    <?php endforeach ?>
                 </select>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>

@@ -16,4 +16,4 @@
 <label for="<?= $field->name() ?>" class="input-file-label">
     <span><?= $this->icon('cloud-upload') ?> <?= $this->translate('fields.file.uploadLabel') ?></span>
 </label>
-<?= $this->insert('fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>

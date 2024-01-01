@@ -5,7 +5,7 @@
                 <h3 class="caption"><?= $this->translate('panel.pages.renameFile') ?></h3>
             </div>
             <div class="modal-content">
-                <label class="label-required" for="filename"><?= $this->translate('panel.pages.renameFile.name')?>:</label>
+                <label class="label-required" for="filename"><?= $this->translate('panel.pages.renameFile.name') ?>:</label>
                 <input id="file-name" type="text" required name="filename" autofocus>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>

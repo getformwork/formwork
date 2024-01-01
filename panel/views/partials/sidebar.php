@@ -15,16 +15,16 @@
     <div class="sidebar-wrapper">
         <h3 class="caption mb-8"><?= $this->translate('panel.manage') ?></h3>
         <ul class="sidebar-navigation">
-        <?php foreach ($navigation as $id => ['label' => $label, 'uri' => $uri, 'permissions' => $permissions, 'badge' => $badge]): ?>
-            <?php if ($panel->user()->permissions()->has($permissions)): ?>
-            <li class="<?= ($location === $id) ? 'active' : '' ?>">
-                <a href="<?= $panel->uri($uri) ?>"><?= $label ?></a>
-                <?php if ($badge): ?>
-                <span class="badge"><?= $badge ?></span>
+            <?php foreach ($navigation as $id => ['label' => $label, 'uri' => $uri, 'permissions' => $permissions, 'badge' => $badge]): ?>
+                <?php if ($panel->user()->permissions()->has($permissions)): ?>
+                    <li class="<?= ($location === $id) ? 'active' : '' ?>">
+                        <a href="<?= $panel->uri($uri) ?>"><?= $label ?></a>
+                        <?php if ($badge): ?>
+                            <span class="badge"><?= $badge ?></span>
+                        <?php endif ?>
+                    </li>
                 <?php endif ?>
-            </li>
-            <?php endif ?>
-        <?php endforeach ?>
+            <?php endforeach ?>
         </ul>
     </div>
 </div>

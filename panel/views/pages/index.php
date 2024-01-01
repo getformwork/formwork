@@ -3,13 +3,9 @@
 <div class="header">
     <div class="header-title"><?= $this->translate('panel.pages.pages') ?> <span class="badge"><?= $app->site()->descendants()->count() ?></span></div>
     <div>
-<?php
-    if ($panel->user()->permissions()->has('pages.create')):
-        ?>
-        <button type="button" class="button-accent" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
-<?php
-    endif
-?>
+        <?php if ($panel->user()->permissions()->has('pages.create')): ?>
+            <button type="button" class="button-accent" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
+        <?php endif ?>
     </div>
 </div>
 

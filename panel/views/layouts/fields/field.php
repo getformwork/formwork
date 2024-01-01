@@ -1,3 +1,3 @@
-<?= $this->insert('fields.partials.label') ?>
+<?php $this->insert('fields.partials.label') ?>
 <?= $this->content() ?>
-<?= $this->insert('fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>

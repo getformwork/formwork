@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div class="editor-wrap">
     <div class="editor-toolbar" data-for="<?= $field->name() ?>">
         <button type="button" class="toolbar-button" data-command="bold" title="<?= $this->translate('panel.pages.editor.bold') ?>"><?= $this->icon('bold') ?></button>

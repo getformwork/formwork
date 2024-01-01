@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div>
     <fieldset <?= $this->attr([
         'id'       => $field->name(),

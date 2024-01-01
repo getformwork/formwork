@@ -1,12 +1,16 @@
 <?php $this->layout('panel') ?>
 
 <div class="header">
-        <div class="header-title"><?= $this->translate('panel.statistics.statistics') ?></div>
+    <div class="header-title"><?= $this->translate('panel.statistics.statistics') ?></div>
 </div>
 
 <section class="section">
     <div class="row">
-        <div class="col-xs-1-2"><div class="section-header"><h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3></div></div>
+        <div class="col-xs-1-2">
+            <div class="section-header">
+                <h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3>
+            </div>
+        </div>
         <div class="col-xs-1-2">
             <div class="ct-legend ct-legend-right">
                 <span class="ct-legend-label ct-series-a mr-8"><?= $this->icon('circle-small-fill') ?> <?= $this->translate('panel.dashboard.statistics.visits') ?></span>
@@ -14,7 +18,7 @@
             </div>
         </div>
     </div>
-    <div class="statistics-chart ct-chart" data-chart-data="<?= $this->escapeAttr($statistics); ?>"></div>
+    <div class="statistics-chart ct-chart" data-chart-data="<?= $this->escapeAttr($statistics) ?>"></div>
 </section>
 <section class="section">
     <div class="row text-align-center">
@@ -38,7 +42,9 @@
 </section>
 
 <section class="section">
-    <div class="section-header"><h3 class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></h3></div>
+    <div class="section-header">
+        <h3 class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></h3>
+    </div>
     <table class="table-bordered table-striped table-hoverable text-size-s">
         <thead>
             <tr>
@@ -48,13 +54,13 @@
             </tr>
         </thead>
         <tbody>
-<?php foreach ($pageViews as $page => $views): ?>
-        <tr>
-            <td class="truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
-            <td><?= $views ?></td>
-            <td><?= round($views / $totalViews * 100, 2) ?></td>
-        </tr>
-<?php endforeach; ?>
+            <?php foreach ($pageViews as $page => $views): ?>
+                <tr>
+                    <td class="truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
+                    <td><?= $views ?></td>
+                    <td><?= round($views / $totalViews * 100, 2) ?></td>
+                </tr>
+            <?php endforeach ?>
         </tbody>
     </table>
 </section>

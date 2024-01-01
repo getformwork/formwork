@@ -1,4 +1,4 @@
-<?= $this->layout('fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div class="input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',

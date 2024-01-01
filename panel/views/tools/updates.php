@@ -1,7 +1,7 @@
 <?php $this->layout('panel') ?>
 
 <div class="header">
-        <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
+    <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
 </div>
 
 <?= $tabs ?>

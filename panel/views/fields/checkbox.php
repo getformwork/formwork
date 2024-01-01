@@ -13,4 +13,4 @@
         <span class="input-checkbox-text"><?= $field->label() ?></span>
     </label>
 </div>
-<?= $this->insert('fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>
