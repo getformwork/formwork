@@ -106,7 +106,51 @@ abstract class AbstractController extends BaseAbstractController
             'csrfToken'   => $this->csrfToken->get(),
             'modals'      => implode('', $this->modals),
             'colorScheme' => $this->getColorScheme(),
-            'appConfig'   => Json::encode([
+            'navigation'  => [
+                'dashboard' => [
+                    'label'       => $this->translate('panel.dashboard.dashboard'),
+                    'uri'         => '/dashboard/',
+                    'permissions' => 'dashboard',
+                    'badge'       => null,
+                ],
+                'pages' => [
+                    'label'       => $this->translate('panel.pages.pages'),
+                    'uri'         => '/pages/',
+                    'permissions' => 'pages',
+                    'badge'       => $this->site->descendants()->count(),
+                ],
+                'statistics' => [
+                    'label'       => $this->translate('panel.statistics.statistics'),
+                    'uri'         => '/statistics/',
+                    'permissions' => 'statistics',
+                    'badge'       => null,
+                ],
+                'users' => [
+                    'label'       => $this->translate('panel.users.users'),
+                    'uri'         => '/users/',
+                    'permissions' => 'users',
+                    'badge'       => $this->panel->users()->count(),
+                ],
+                'options' => [
+                    'label'       => $this->translate('panel.options.options'),
+                    'uri'         => '/options/',
+                    'permissions' => 'options',
+                    'badge'       => null,
+                ],
+                'tools' => [
+                    'label'       => $this->translate('panel.tools.tools'),
+                    'uri'         => '/tools/',
+                    'permissions' => 'tools',
+                    'badge'       => null,
+                ],
+                'logout' => [
+                    'label'       => $this->translate('panel.login.logout'),
+                    'uri'         => '/logout/',
+                    'permissions' => '*',
+                    'badge'       => null,
+                ],
+            ],
+            'appConfig' => Json::encode([
                 'baseUri'   => $this->panel()->panelUri(),
                 'DateInput' => [
                     'weekStarts' => $this->config->get('system.date.weekStarts'),

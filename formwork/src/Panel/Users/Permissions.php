@@ -36,6 +36,10 @@ class Permissions
      */
     public function has(string $permission): bool
     {
+        if ($permission === '*') {
+            return true;
+        }
+
         if (array_key_exists($permission, $this->permissions)) {
             return $this->permissions[$permission];
         }

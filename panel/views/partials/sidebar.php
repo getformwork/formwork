@@ -15,65 +15,16 @@
     <div class="sidebar-wrapper">
         <h3 class="caption mb-8"><?= $this->translate('panel.manage') ?></h3>
         <ul class="sidebar-navigation">
-<?php
-            if ($panel->user()->permissions()->has('dashboard')):
-                ?>
-            <li class="<?= ($location === 'dashboard') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/dashboard/') ?>"><?= $this->translate('panel.dashboard.dashboard') ?></a>
+        <?php foreach ($navigation as $id => ['label' => $label, 'uri' => $uri, 'permissions' => $permissions, 'badge' => $badge]): ?>
+            <?php if ($panel->user()->permissions()->has($permissions)): ?>
+            <li class="<?= ($location === $id) ? 'active' : '' ?>">
+                <a href="<?= $panel->uri($uri) ?>"><?= $label ?></a>
+                <?php if ($badge): ?>
+                <span class="badge"><?= $badge ?></span>
+                <?php endif ?>
             </li>
-<?php
-            endif
-?>
-<?php
-if ($panel->user()->permissions()->has('pages')):
-    ?>
-            <li class="<?= ($location === 'pages') ? 'active' : '' ?>">
-                    <a href="<?= $panel->uri('/pages/') ?>"><?= $this->translate('panel.pages.pages') ?></a>
-                    <span class="badge"><?= $app->site()->descendants()->count() ?></span>
-            </li>
-<?php
-endif
-?>
-<?php
-if ($panel->user()->permissions()->has('options')):
-    ?>
-            <li class="<?= ($location === 'options') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/options/') ?>"><?= $this->translate('panel.options.options') ?></a>
-            </li>
-<?php
-endif
-?>
-<?php
-if ($panel->user()->permissions()->has('users')):
-    ?>
-            <li class="<?= ($location === 'users') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/users/') ?>"><?= $this->translate('panel.users.users') ?></a>
-                <span class="badge"><?= $panel->users()->count() ?></span>
-            </li>
-<?php
-endif
-?>
-<?php
-if ($panel->user()->permissions()->has('statistics')):
-    ?>
-            <li class="<?= ($location === 'statistics') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/statistics/') ?>"><?= $this->translate('panel.statistics.statistics') ?></a>
-            </li>
-<?php
-endif
-?>
-<?php
-if ($panel->user()->permissions()->has('tools')):
-    ?>
-            <li class="<?= ($location === 'tools') ? 'active' : '' ?>">
-                <a href="<?= $panel->uri('/tools/') ?>"><?= $this->translate('panel.tools.tools') ?></a>
-            </li>
-<?php
-endif
-?>
-            <li>
-                <a href="<?= $panel->uri('/logout/') ?>"><?= $this->translate('panel.login.logout') ?></a>
-            </li>
+            <?php endif ?>
+        <?php endforeach ?>
         </ul>
     </div>
 </div>
