@@ -33,8 +33,8 @@ You can download a ready-to-use `.zip` archive from [GitHub releases page](https
 ### With Composer
 If you prefer to install the latest stable release of Formwork with [Composer](https://getcomposer.org/) you can use this command:
 
-```
-$ composer create-project getformwork/formwork
+```shell
+composer create-project getformwork/formwork
 ```
 
 Composer will create a `formwork` folder with a fresh ready-to-use Formwork installation.
@@ -44,13 +44,32 @@ If you want to get the currently worked master version, you can clone the GitHub
 
 1. Clone the repository in your webroot:
 
-```
-$ git clone https://github.com/getformwork/formwork.git
+```shell
+git clone https://github.com/getformwork/formwork.git
 ```
 
 2. Navigate to `formwork` folder and install the dependencies:
 
+```shell
+cd formwork
+composer install
 ```
-$ cd formwork
-$ composer install
+
+## Running Formwork server
+
+You can test Formwork right away with the `serve` command, a customized wrapper of the [PHP Built-in web server](https://www.php.net/manual/en/features.commandline.webserver.php).
+
+> [!IMPORTANT]
+> As with PHP CLI web server, Formwork server is intended for **testing purposes** and not for production environments.
+
+Navigate to the `formwork` folder and run the following command:
+
+```shell
+php bin/serve
+```
+
+If you prefer you can run the Formwork server through Composer:
+
+```shell
+composer serve
 ```
