@@ -38,6 +38,9 @@
         "phpstan": "phpstan analyse --configuration=formwork/phpstan.neon",
         "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
         "rector": "rector --config=formwork/.rector.php",
-        "serve": "php bin/serve"
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php bin/serve"
+        ]
     }
 }
