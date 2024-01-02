@@ -7,7 +7,7 @@
                 <div class="page-status-<?= $page->status() ?> mr-2"><?= $this->icon('circle-small-fill') ?></div>
                 <?php if (!$page->isIndexPage() && !$page->isErrorPage()): ?>
                     <div class="page-route page-route-changeable min-w-0">
-                        <button type="button" class="page-slug-change truncate max-w-100" data-command="change-slug" title="<?= $this->translate('panel.pages.changeSlug') ?>"><?= $page->route() ?> <?= $this->icon('pencil') ?></button>
+                        <button type="button" class="page-slug-change truncate max-w-100" data-command="change-slug" title="<?= $this->translate('panel.pages.changeSlug') ?>"><span class="page-route-inner"><?= $page->route() ?></span> <?= $this->icon('pencil') ?></button>
                     </div>
                 <?php else: ?>
                     <div class="page-route"><?= $page->route() ?></div>

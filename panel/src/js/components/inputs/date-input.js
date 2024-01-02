@@ -329,7 +329,7 @@ export class DateInput {
             }
 
             function isVisible() {
-                return element.style.display !== "none";
+                return getComputedStyle(element).display !== "none";
             }
 
             function update() {

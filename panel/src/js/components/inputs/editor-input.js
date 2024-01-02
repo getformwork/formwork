@@ -75,20 +75,19 @@ export class EditorInput {
 
         $("[data-command=image]", toolbar).addEventListener("click", () => {
             app.modals["imagesModal"].show(null, (modal) => {
-                const selected = $(".image-picker-thumbnail.selected", modal);
+                const selected = $(".image-picker-thumbnail.selected", modal.element);
                 if (selected) {
                     selected.classList.remove("selected");
                 }
                 function confirmImage() {
-                    const filename = $(".image-picker-thumbnail.selected", $("#imagesModal")).dataset.filename;
-                    if (filename !== undefined) {
+                    if (selected) {
+                        const filename = selected.dataset.filename;
                         insertAtCursor(`${prependSequence()}![`, `](${filename})`);
-                    } else {
-                        insertAtCursor(`${prependSequence()}![](`, ")");
                     }
+                    modal.hide();
                     this.removeEventListener("click", confirmImage);
                 }
-                $(".image-picker-confirm", modal).addEventListener("click", confirmImage);
+                $(".image-picker-confirm", modal.element).addEventListener("click", confirmImage);
             });
         });
 

@@ -56,7 +56,7 @@ export class Modal {
             getFirstFocusableElement(modal).focus();
         }
         if (typeof callback === "function") {
-            callback(modal);
+            callback(this);
         }
         $$(".tooltip").forEach((element) => element.parentNode.removeChild(element));
         this.createBackdrop();

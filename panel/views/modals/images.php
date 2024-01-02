@@ -20,7 +20,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" data-dismiss="imagesModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
-            <button type="button" class="button-accent button-right image-picker-confirm" data-dismiss="imagesModal"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
+            <button type="button" class="button-accent button-right image-picker-confirm"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
         </div>
     </div>
 </div>

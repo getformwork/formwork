@@ -6,9 +6,10 @@ import { serializeForm } from "../utils/forms";
 
 export class Form {
     constructor(form) {
-        this.originalData = serializeForm(form);
-
         this.inputs = new Inputs(form);
+
+        // Serialize after inputs are loaded
+        this.originalData = serializeForm(form);
 
         window.addEventListener("beforeunload", handleBeforeunload);
 
@@ -33,7 +34,7 @@ export class Form {
                 if (hasChanged()) {
                     event.preventDefault();
                     app.modals["changesModal"].show(null, (modal) => {
-                        $("[data-command=continue]", modal).dataset.href = element.href;
+                        $("[data-command=continue]", modal.element).dataset.href = element.href;
                     });
                 }
             });

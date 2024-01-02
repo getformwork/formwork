@@ -121,8 +121,8 @@ export class Pages {
         }
 
         if (newPageModal) {
-            $("#page-title", newPageModal).addEventListener("keyup", (element) => {
-                $("#page-slug", newPageModal).value = makeSlug(element.value);
+            $("#page-title", newPageModal).addEventListener("keyup", (event) => {
+                $("#page-slug", newPageModal).value = makeSlug(event.target.value);
             });
 
             const handleSlugChange = (event) => {
@@ -173,7 +173,7 @@ export class Pages {
             commandChangeSlug.addEventListener("click", () => {
                 app.modals["slugModal"].show(null, (modal) => {
                     const slug = document.getElementById("slug").value;
-                    const slugInput = $("#page-slug", modal);
+                    const slugInput = $("#page-slug", modal.element);
                     slugInput.value = slug;
                     slugInput.placeholder = slug;
                 });
@@ -202,16 +202,16 @@ export class Pages {
                 const slug = $("#page-slug", slugModal).value.replace(/^-+|-+$/, "");
 
                 if (slug.length > 0) {
-                    const route = $(".page-slug-change").innerHTML;
+                    const route = $(".page-route-inner").innerHTML;
                     $$("#page-slug, #slug").forEach((element) => {
                         element.value = slug;
                     });
                     $("#page-slug", slugModal).value = slug;
                     document.getElementById("slug").value = slug;
-                    $(".page-slug-change").innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
+                    $(".page-route-inner").innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 
-                app.modals.hide("slugModal");
+                app.modals["slugModal"].hide();
             });
         }
 

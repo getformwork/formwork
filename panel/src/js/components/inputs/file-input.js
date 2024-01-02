@@ -43,7 +43,11 @@ export class FileInput {
 
         function updateLabel() {
             if (this.files.length > 0) {
-                span.innerHTML = this.files[0].name;
+                const filenames = [];
+                for (const file of this.files) {
+                    filenames.push(file.name);
+                }
+                span.innerHTML = filenames.join(", ");
             } else {
                 span.innerHTML = this.dataset.label;
             }
