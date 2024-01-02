@@ -18,6 +18,20 @@ fields.array.remove: Rimuovi
 fields.file.uploadLabel: <strong>Fare click</strong> per selezionare un file da caricare o <strong>trascinarlo</strong> qui
 fields.select.empty: Nessuna opzione corrispondente
 page.none: (Nessuna)
+upload.error: Impossibile caricare il file. %s.
+upload.error.alreadyExists: Un file con lo stesso nome esiste già
+upload.error.cannotMoveToDestination: Impossibile spostare il file caricato alla destinazione
+upload.error.cannotWrite: Impossibile salvare il file sul disco
+upload.error.destinationTooLong: Il percorso di destinazione è troppo lungo
+upload.error.fileName: Nome del file non valido
+upload.error.fileNameTooLong: Il nome del file è troppo lungo
+upload.error.hiddenFiles: Impossibile caricare i file che iniziano con ’.’
+upload.error.mimeType: Il tipo di file non è consentito
+upload.error.noFile: Nessun file caricato
+upload.error.noTemp: Cartella temporanea mancante
+upload.error.partial: Il file è stato caricato solo parzialmente
+upload.error.phpExtension: Il caricamento è stato interrotto da un’estensione
+upload.error.size: Il file caricato supera la dimensione massima consentita
 zip.error.alreadyExists: L’archivio esiste già
 zip.error.cannotOpen: Impossibile aprire l’archivio
 zip.error.cannotRead: Impossibile leggere l’archivio

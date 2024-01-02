@@ -247,20 +247,6 @@ panel.updates.status.checking: Проверка обновлений...
 panel.updates.status.found: Обновления найдены
 panel.updates.status.installing: Установка обновлений ...
 panel.updates.status.upToDate: До настоящего времени!
-panel.uploader.error: Невозможно загрузить файл. %s.
-panel.uploader.error.alreadyExists: Файл с таким именем уже существует
-panel.uploader.error.cannotMoveToDestination: Не удалось переместить загруженный файл в папку назначения
-panel.uploader.error.cannotWrite: Не удалось записать файл на диск
-panel.uploader.error.destinationTooLong: Слишком длинный путь назначения
-panel.uploader.error.fileName: Неверное имя файла
-panel.uploader.error.fileNameTooLong: Слишком длинное имя файла
-panel.uploader.error.hiddenFiles: Невозможно загрузить скрытые файлы, начинающиеся с точки
-panel.uploader.error.mimeType: Тип файла не допускается
-panel.uploader.error.noFile: Файл не был загружен
-panel.uploader.error.noTemp: Отсутствующие временную папку
-panel.uploader.error.partial: Загруженный файл был загружен только частично
-panel.uploader.error.phpExtension: Загрузка файла останавливали расширения
-panel.uploader.error.size: Загруженный файл превышает максимальный размер файла
 panel.uploader.uploaded: Файл загружен
 panel.user.actions: Действия
 panel.user.colorScheme: Цветовая схема

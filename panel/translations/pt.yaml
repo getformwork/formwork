@@ -247,20 +247,6 @@ panel.updates.status.checking: Verificando actualizações...
 panel.updates.status.found: Actualizações encontradas
 panel.updates.status.installing: Instalando actualizações...
 panel.updates.status.upToDate: Actualizado!
-panel.uploader.error: Não é possível fazer upload do ficheiro. %s.
-panel.uploader.error.alreadyExists: Já existe um ficheiro com o mesmo nome
-panel.uploader.error.cannotMoveToDestination: Falha ao mover o ficheiro enviado para o destino
-panel.uploader.error.cannotWrite: Falha ao gravar ficheiro no disco
-panel.uploader.error.destinationTooLong: Caminho de destino demasiado longo
-panel.uploader.error.fileName: Nome do ficheiro inválido
-panel.uploader.error.fileNameTooLong: Nome do ficheiro demasiado longo
-panel.uploader.error.hiddenFiles: Não é possível efectuar envio de ficheros ocultos que começam com um ponto
-panel.uploader.error.mimeType: Tipo de ficheiro inválido
-panel.uploader.error.noFile: Nenhum ficheiro foi enviado
-panel.uploader.error.noTemp: Pasta temporária inexistente
-panel.uploader.error.partial: O ficheiro foi enviado apenas parcialmente
-panel.uploader.error.phpExtension: Envio de ficheiro interrompido por extensão
-panel.uploader.error.size: O ficheiro enviado excede o tamanho máximo permitido.
 panel.uploader.uploaded: Ficheiro enviado
 panel.user.actions: Acções
 panel.user.colorScheme: Esquema de cores

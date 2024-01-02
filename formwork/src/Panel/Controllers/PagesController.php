@@ -164,11 +164,13 @@ class PagesController extends AbstractController
                 // Validate fields against data
                 $fields->setValues($data, null)->validate();
 
+                $error = false;
+
                 // Update the page
                 try {
                     $page = $this->updatePage($page, $data, $fields);
-                    $this->panel()->notify($this->translate('panel.pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
+                    $error = true;
                     $this->panel()->notify($e->getTranslatedMessage(), 'error');
                 }
 
@@ -176,10 +178,14 @@ class PagesController extends AbstractController
                     try {
                         $this->processPageUploads($this->request->files()->get('uploadedFile', []), $page);
                         $page->reload();
-
                     } catch (TranslatedException $e) {
-                        $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
+                        $error = true;
+                        $this->panel()->notify($this->translate('upload.error', $e->getTranslatedMessage()), 'error');
                     }
+                }
+
+                if (!$error) {
+                    $this->panel()->notify($this->translate('panel.pages.page.edited'), 'success');
                 }
 
                 if ($page->route() === null) {
@@ -326,7 +332,7 @@ class PagesController extends AbstractController
             try {
                 $this->processPageUploads($this->request->files()->getAll(), $page);
             } catch (TranslatedException $e) {
-                $this->panel()->notify($this->translate('panel.uploader.error', $e->getTranslatedMessage()), 'error');
+                $this->panel()->notify($this->translate('upload.error', $e->getTranslatedMessage()), 'error');
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
 
             }
@@ -625,7 +631,7 @@ class PagesController extends AbstractController
 
         foreach ($files as $file) {
             if (!$file->isUploaded()) {
-                throw new RuntimeException(sprintf('Cannot upload file "%s"', $file->fieldName()));
+                throw new TranslatedException(sprintf('Cannot upload file "%s"', $file->fieldName()), $file->getErrorTranslationString());
             }
             if ($page->path() === null) {
                 throw new UnexpectedValueException('Unexpected missing page path');

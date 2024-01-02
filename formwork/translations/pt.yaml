@@ -18,6 +18,20 @@ fields.array.remove: Remover
 fields.file.uploadLabel: <strong>Clique</strong> aqui para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
 fields.select.empty: Sem opções correspondentes
 page.none: (Nenhum)
+upload.error: Não é possível fazer upload do ficheiro. %s.
+upload.error.alreadyExists: Já existe um ficheiro com o mesmo nome
+upload.error.cannotMoveToDestination: Falha ao mover o ficheiro enviado para o destino
+upload.error.cannotWrite: Falha ao gravar ficheiro no disco
+upload.error.destinationTooLong: Caminho de destino demasiado longo
+upload.error.fileName: Nome do ficheiro inválido
+upload.error.fileNameTooLong: Nome do ficheiro demasiado longo
+upload.error.hiddenFiles: Não é possível efectuar envio de ficheros ocultos que começam com um ponto
+upload.error.mimeType: Tipo de ficheiro inválido
+upload.error.noFile: Nenhum ficheiro foi enviado
+upload.error.noTemp: Pasta temporária inexistente
+upload.error.partial: O ficheiro foi enviado apenas parcialmente
+upload.error.phpExtension: Envio de ficheiro interrompido por extensão
+upload.error.size: O ficheiro enviado excede o tamanho máximo permitido.
 zip.error.alreadyExists: O ficheiro já existe
 zip.error.cannotOpen: Erro de abertura do ficheiro
 zip.error.cannotRead: Erro de leitura do ficheiro

@@ -247,20 +247,6 @@ panel.updates.status.checking: Cerco aggiornamenti...
 panel.updates.status.found: Aggiornamento disponibile
 panel.updates.status.installing: Installo aggiornamento...
 panel.updates.status.upToDate: Aggiornato!
-panel.uploader.error: Impossibile caricare il file. %s.
-panel.uploader.error.alreadyExists: Un file con lo stesso nome esiste già
-panel.uploader.error.cannotMoveToDestination: Impossibile spostare il file caricato alla destinazione
-panel.uploader.error.cannotWrite: Impossibile salvare il file sul disco
-panel.uploader.error.destinationTooLong: Il percorso di destinazione è troppo lungo
-panel.uploader.error.fileName: Nome del file non valido
-panel.uploader.error.fileNameTooLong: Il nome del file è troppo lungo
-panel.uploader.error.hiddenFiles: Impossibile caricare i file che iniziano con ’.’
-panel.uploader.error.mimeType: Il tipo di file non è consentito
-panel.uploader.error.noFile: Nessun file caricato
-panel.uploader.error.noTemp: Cartella temporanea mancante
-panel.uploader.error.partial: Il file è stato caricato solo parzialmente
-panel.uploader.error.phpExtension: Il caricamento è stato interrotto da un’estensione
-panel.uploader.error.size: Il file caricato supera la dimensione massima consentita
 panel.uploader.uploaded: File caricato
 panel.user.actions: Azioni
 panel.user.colorScheme: Combinazione di colori

@@ -24,14 +24,14 @@ class UploadedFile
     /**
      * Uploader errors language strings
      */
-    protected const ERROR_LANGUAGE_STRINGS = [
-        UPLOAD_ERR_INI_SIZE   => 'panel.uploader.error.size',
-        UPLOAD_ERR_FORM_SIZE  => 'panel.uploader.error.size',
-        UPLOAD_ERR_PARTIAL    => 'panel.uploader.error.partial',
-        UPLOAD_ERR_NO_FILE    => 'panel.uploader.error.noFile',
-        UPLOAD_ERR_NO_TMP_DIR => 'panel.uploader.error.noTemp',
-        UPLOAD_ERR_CANT_WRITE => 'panel.uploader.error.cannotWrite',
-        UPLOAD_ERR_EXTENSION  => 'panel.uploader.error.phpExtension',
+    protected const ERROR_TRANSLATION_STRINGS = [
+        UPLOAD_ERR_INI_SIZE   => 'upload.error.size',
+        UPLOAD_ERR_FORM_SIZE  => 'upload.error.size',
+        UPLOAD_ERR_PARTIAL    => 'upload.error.partial',
+        UPLOAD_ERR_NO_FILE    => 'upload.error.noFile',
+        UPLOAD_ERR_NO_TMP_DIR => 'upload.error.noTemp',
+        UPLOAD_ERR_CANT_WRITE => 'upload.error.cannotWrite',
+        UPLOAD_ERR_EXTENSION  => 'upload.error.phpExtension',
     ];
 
     protected string $clientName;
@@ -94,6 +94,11 @@ class UploadedFile
         return $this->size;
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->error === UPLOAD_ERR_NO_FILE;
+    }
+
     public function isUploaded(): bool
     {
         return $this->error === UPLOAD_ERR_OK;
@@ -104,30 +109,31 @@ class UploadedFile
         return self::ERROR_MESSAGES[$this->error];
     }
 
-    public function move(string $destination, string $filename): bool
+    public function getErrorTranslationString(): string
     {
-        // if (!$this->isAllowedMimeType($mimeType)) {
-        //     throw new TranslatedException(sprintf('MIME type %s is not allowed', $mimeType), 'panel.uploader.error.mimeType');
-        // }
+        return self::ERROR_TRANSLATION_STRINGS[$this->error];
+    }
 
+    public function move(string $destination, string $filename, bool $overwrite = false): bool
+    {
         if (strlen($filename) > FileSystem::MAX_NAME_LENGTH) {
-            throw new TranslatedException('File name too long', 'panel.uploader.error.fileNameTooLong');
+            throw new TranslatedException('File name too long', 'upload.error.fileNameTooLong');
         }
 
         $destinationPath = FileSystem::joinPaths($destination, $filename);
 
         if (strlen($destinationPath) > FileSystem::MAX_PATH_LENGTH) {
-            throw new TranslatedException('Destination path too long', 'panel.uploader.error.destinationTooLong');
+            throw new TranslatedException('Destination path too long', 'upload.error.destinationTooLong');
         }
 
-        // if (!$this->options['overwrite'] && FileSystem::exists($destinationPath)) {
-        //     throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'panel.uploader.error.alreadyExists');
-        // }
+        if (!$overwrite && FileSystem::exists($destinationPath)) {
+            throw new TranslatedException(sprintf('File "%s" already exists', $filename), 'upload.error.alreadyExists');
+        }
 
         if (move_uploaded_file($this->tempPath, $destinationPath)) {
             return true;
         }
 
-        throw new TranslatedException('Cannot move uploaded file to destination', 'panel.uploader.error.cannotMoveToDestination');
+        throw new TranslatedException('Cannot move uploaded file to destination', 'upload.error.cannotMoveToDestination');
     }
 }

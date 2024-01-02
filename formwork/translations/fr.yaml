@@ -18,6 +18,20 @@ fields.array.remove: Supprimer
 fields.file.uploadLabel: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
 fields.select.empty: Aucune option correspondante
 page.none: (Aucun)
+upload.error: Impossible de télécharger le fichier. %s.
+upload.error.alreadyExists: Un fichier du même nom existe déjà
+upload.error.cannotMoveToDestination: Impossible de déplacer le fichier téléchargé vers la destination
+upload.error.cannotWrite: Échec de l’écriture du fichier sur le disque
+upload.error.destinationTooLong: Chemin de destination trop long
+upload.error.fileName: Nom de fichier non valide
+upload.error.fileNameTooLong: Nom de fichier trop long
+upload.error.hiddenFiles: Impossible de téléverser des fichiers cachés commençant par un point
+upload.error.mimeType: Type de fichier non autorisé
+upload.error.noFile: Aucun fichier n’a été téléchargé
+upload.error.noTemp: Absence du dossier temporaire
+upload.error.partial: Le fichier envoyé n’a été que partiellement téléversé
+upload.error.phpExtension: Téléversement du fichier arrêté par extension
+upload.error.size: Le fichier téléversé dépasse la taille de fichier maximale
 zip.error.alreadyExists: L’archive existe déjà
 zip.error.cannotOpen: Impossible d’ouvrir l’archive
 zip.error.cannotRead: Impossible de lire l’archive

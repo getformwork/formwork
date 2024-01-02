@@ -247,20 +247,6 @@ panel.updates.status.checking: Checking for updates...
 panel.updates.status.found: Updates found
 panel.updates.status.installing: Installing updates...
 panel.updates.status.upToDate: UpToDate!
-panel.uploader.error: Cannot upload file. %s.
-panel.uploader.error.alreadyExists: A file with the same name already exists
-panel.uploader.error.cannotMoveToDestination: Failed to move uploaded file to destination
-panel.uploader.error.cannotWrite: Failed to write file to disk
-panel.uploader.error.destinationTooLong: Destination path too long
-panel.uploader.error.fileName: Invalid file name
-panel.uploader.error.fileNameTooLong: File name too long
-panel.uploader.error.hiddenFiles: Cannot upload hidden files beginning with a dot
-panel.uploader.error.mimeType: File type not allowed
-panel.uploader.error.noFile: No file was uploaded
-panel.uploader.error.noTemp: Missing a temporary folder
-panel.uploader.error.partial: The uploaded file was only partially uploaded
-panel.uploader.error.phpExtension: File upload stopped by extension
-panel.uploader.error.size: The uploaded file exceeds the maximum file size
 panel.uploader.uploaded: File uploaded
 panel.user.actions: Actions
 panel.user.colorScheme: Color Scheme

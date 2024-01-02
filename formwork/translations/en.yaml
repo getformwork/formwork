@@ -18,6 +18,20 @@ fields.array.remove: Remove
 fields.file.uploadLabel: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 fields.select.empty: No matching options
 page.none: (None)
+upload.error: Cannot upload file. %s.
+upload.error.alreadyExists: A file with the same name already exists
+upload.error.cannotMoveToDestination: Failed to move uploaded file to destination
+upload.error.cannotWrite: Failed to write file to disk
+upload.error.destinationTooLong: Destination path too long
+upload.error.fileName: Invalid file name
+upload.error.fileNameTooLong: File name too long
+upload.error.hiddenFiles: Cannot upload hidden files beginning with a dot
+upload.error.mimeType: File type not allowed
+upload.error.noFile: No file was uploaded
+upload.error.noTemp: Missing a temporary folder
+upload.error.partial: The uploaded file was only partially uploaded
+upload.error.phpExtension: File upload stopped by extension
+upload.error.size: The uploaded file exceeds the maximum file size
 zip.error.alreadyExists: The archive already exists
 zip.error.cannotOpen: Cannot open the archive
 zip.error.cannotRead: Cannot read the archive

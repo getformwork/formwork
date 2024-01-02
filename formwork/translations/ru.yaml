@@ -18,6 +18,20 @@ fields.array.remove: Удалить
 fields.file.uploadLabel: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
 fields.select.empty: Нет подходящих вариантов
 page.none: (Нет)
+upload.error: Невозможно загрузить файл. %s.
+upload.error.alreadyExists: Файл с таким именем уже существует
+upload.error.cannotMoveToDestination: Не удалось переместить загруженный файл в папку назначения
+upload.error.cannotWrite: Не удалось записать файл на диск
+upload.error.destinationTooLong: Слишком длинный путь назначения
+upload.error.fileName: Неверное имя файла
+upload.error.fileNameTooLong: Слишком длинное имя файла
+upload.error.hiddenFiles: Невозможно загрузить скрытые файлы, начинающиеся с точки
+upload.error.mimeType: Тип файла не допускается
+upload.error.noFile: Файл не был загружен
+upload.error.noTemp: Отсутствующие временную папку
+upload.error.partial: Загруженный файл был загружен только частично
+upload.error.phpExtension: Загрузка файла останавливали расширения
+upload.error.size: Загруженный файл превышает максимальный размер файла
 zip.error.alreadyExists: Архив уже существует
 zip.error.cannotOpen: Не удается открыть архив
 zip.error.cannotRead: Не удается прочитать архив

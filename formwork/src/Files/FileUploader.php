@@ -3,12 +3,12 @@
 namespace Formwork\Files;
 
 use Formwork\Config\Config;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
-use RuntimeException;
 
 class FileUploader
 {
@@ -30,7 +30,7 @@ class FileUploader
         $mimeType = MimeType::fromFile($uploadedFile->tempPath());
 
         if (!in_array($mimeType, $this->allowedMimeTypes(), true)) {
-            throw new RuntimeException(sprintf('Invalid mime type %s for file uploads', $mimeType));
+            throw new TranslatedException(sprintf('Invalid mime type %s for file uploads', $mimeType), 'upload.error.mimeType');
         }
 
         $filename = Str::slug($name ?? pathinfo($uploadedFile->clientName(), PATHINFO_FILENAME)) . '.' . MimeType::toExtension($mimeType);

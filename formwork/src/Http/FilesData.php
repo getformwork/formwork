@@ -12,7 +12,7 @@ class FilesData extends RequestData
         if (parent::isEmpty()) {
             return true;
         }
-        return !Arr::some($this->getAll(), fn ($file) => $file->isUploaded());
+        return Arr::every($this->getAll(), fn (UploadedFile $uploadedFile) => $uploadedFile->isEmpty());
     }
 
     /**

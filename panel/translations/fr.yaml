@@ -247,20 +247,6 @@ panel.updates.status.checking: Vérification des mises à jour…
 panel.updates.status.found: Mises à jour trouvées
 panel.updates.status.installing: Installation de mises à jour…
 panel.updates.status.upToDate: À jour !
-panel.uploader.error: Impossible de télécharger le fichier. %s.
-panel.uploader.error.alreadyExists: Un fichier du même nom existe déjà
-panel.uploader.error.cannotMoveToDestination: Impossible de déplacer le fichier téléchargé vers la destination
-panel.uploader.error.cannotWrite: Échec de l’écriture du fichier sur le disque
-panel.uploader.error.destinationTooLong: Chemin de destination trop long
-panel.uploader.error.fileName: Nom de fichier non valide
-panel.uploader.error.fileNameTooLong: Nom de fichier trop long
-panel.uploader.error.hiddenFiles: Impossible de téléverser des fichiers cachés commençant par un point
-panel.uploader.error.mimeType: Type de fichier non autorisé
-panel.uploader.error.noFile: Aucun fichier n’a été téléchargé
-panel.uploader.error.noTemp: Absence du dossier temporaire
-panel.uploader.error.partial: Le fichier envoyé n’a été que partiellement téléversé
-panel.uploader.error.phpExtension: Téléversement du fichier arrêté par extension
-panel.uploader.error.size: Le fichier téléversé dépasse la taille de fichier maximale
 panel.uploader.uploaded: Fichier envoyé !
 panel.user.actions: Actions
 panel.user.colorScheme: Schéma de couleur
