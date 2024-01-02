@@ -8,9 +8,9 @@
     <?php if (isset($csrfToken)): ?>
         <meta name="csrf-token" content="<?= $csrfToken ?>">
     <?php endif ?>
-    <?php if ($notification = $panel->notification()): ?>
+    <?php foreach ($panel->notifications() as $notification): ?>
         <meta name="notification" content='<?= $this->escapeAttr(Formwork\Parsers\Json::encode($notification)) ?>'>
-    <?php endif ?>
+    <?php endforeach ?>
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
     <link rel="stylesheet" href="<?= $this->assets()->uri($colorScheme === 'dark' ? 'css/panel-dark.min.css' : 'css/panel.min.css', true) ?>">

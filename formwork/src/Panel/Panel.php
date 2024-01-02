@@ -147,12 +147,12 @@ final class Panel
      *
      * @return list<array{text: string, type: string, interval: int, icon: string}>
      */
-    public function notification(): ?array
+    public function notifications(): array
     {
         $messages = $this->request->session()->messages()->getAll() ?: null;
 
         if ($messages === null) {
-            return null;
+            return [];
         }
 
         $icons = [
