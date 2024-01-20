@@ -15,15 +15,15 @@ $responsive-breakpoints: (
 // Colors
 // ===
 
-$color-base-100: hsl(208deg 10% 15%) !default;
-$color-base-200: hsl(208deg 10% 32%) !default;
-$color-base-300: hsl(208deg 10% 49%) !default;
-$color-base-400: hsl(208deg 10% 59%) !default;
-$color-base-500: hsl(208deg 10% 79%) !default;
-$color-base-600: hsl(208deg 10% 89%) !default;
-$color-base-700: hsl(208deg 10% 93%) !default;
-$color-base-800: hsl(208deg 10% 97%) !default;
-$color-base-900: hsl(208deg 10% 99%) !default;
+$color-base-100: $color-gray-100 !default;
+$color-base-200: $color-gray-200 !default;
+$color-base-300: $color-gray-300 !default;
+$color-base-400: $color-gray-400 !default;
+$color-base-500: $color-gray-500 !default;
+$color-base-600: $color-gray-600 !default;
+$color-base-700: $color-gray-700 !default;
+$color-base-800: $color-gray-800 !default;
+$color-base-900: $color-gray-900 !default;
 
 $color-accent-100: $color-blue-100;
 $color-accent-200: $color-blue-200;

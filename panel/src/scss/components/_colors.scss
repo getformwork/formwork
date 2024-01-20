@@ -7,6 +7,16 @@ $color-amber: #f39c11;
 $color-red: #e74c3b;
 $color-purple: #6f42c1;
 
+$color-gray-100: #22272a !default;
+$color-gray-200: #49525a !default;
+$color-gray-300: #707e89 !default;
+$color-gray-400: #8c97a1 !default;
+$color-gray-500: #c4cacf !default;
+$color-gray-600: #e0e3e6 !default;
+$color-gray-700: #ebedef !default;
+$color-gray-800: #f7f7f8 !default;
+$color-gray-900: #fcfcfd !default;
+
 $color-blue-100: shade($color-blue, 80%);
 $color-blue-200: shade($color-blue, 60%);
 $color-blue-300: shade($color-blue, 40%);
