@@ -17,3 +17,7 @@
 @function shade($color, $percentage) {
     @return color.mix(#000, $color, $percentage);
 }
+
+@function urlencode-color($color) {
+    @return "%23" + string.slice("#{$color}", 2);
+}
