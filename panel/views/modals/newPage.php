@@ -1,8 +1,8 @@
-<div id="newPageModal" class="modal">
+<div id="newPageModal" class="modal" aria-labelledby="newPageModalLabel">
     <div class="modal-container">
         <form action="<?= $panel->uri('/pages/new/') ?>" method="post">
             <div class="modal-header">
-                <h3 class="caption"><?= $this->translate('panel.pages.newPage') ?></h3>
+                <h3 class="caption" id="newPageModalLabel"><?= $this->translate('panel.pages.newPage') ?></h3>
             </div>
             <div class="modal-content">
                 <label class="label-required" for="page-title"><?= $this->translate('panel.pages.newPage.title') ?>:</label>

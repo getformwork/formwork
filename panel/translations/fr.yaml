@@ -48,6 +48,7 @@ panel.modal.action.uploadFile: Parcourir…
 panel.modal.images.noImages: Aucun fichier média n’a été trouvé.
 panel.modal.images.noImages.upload: Sélectionnez vos fichiers à téléverser.
 panel.modal.images.title: Bibliothèque de médias
+panel.navigation.toggle: Afficher/Masquer la navigation
 panel.options.info: Information
 panel.options.options: Paramètres
 panel.options.site: Site

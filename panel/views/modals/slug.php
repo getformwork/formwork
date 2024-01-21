@@ -1,6 +1,6 @@
-<div id="slugModal" class="modal">
+<div id="slugModal" class="modal" aria-labelledby="slugModalLabel">
     <div class="modal-container">
-        <div class="modal-header"><h3 class="caption"><?= $this->translate('panel.pages.changeSlug') ?></h3></div>
+        <div class="modal-header"><h3 class="caption" id="slugModalLabel"><?= $this->translate('panel.pages.changeSlug') ?></h3></div>
         <div class="modal-content">
             <label for="page-slug"><?= $this->translate('panel.pages.newPage.slug') ?>:</label>
             <span class="label-suggestion">(<?= $this->translate('panel.pages.newPage.slugSuggestion') ?>)</span>

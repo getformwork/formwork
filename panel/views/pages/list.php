@@ -23,7 +23,7 @@
                         <?php if ($subpages): ?>
                             <div style="min-width: 1rem" class="mr-2">
                                 <?php if ($page->hasChildren()): ?>
-                                    <button type="button" class="page-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
+                                    <button type="button" class="page-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>" aria-label="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
                                 <?php endif ?>
                             </div>
                         <?php endif ?>

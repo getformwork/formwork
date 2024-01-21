@@ -1,7 +1,7 @@
-<div id="imagesModal" class="modal">
+<div id="imagesModal" class="modal" aria-labelledby="imagesModalLabel">
     <div class="modal-container modal-size-large">
         <div class="modal-header">
-            <h3 class="caption"><?= $this->translate('panel.modal.images.title') ?></h3>
+            <h3 class="caption" id="imagesModalLabel"><?= $this->translate('panel.modal.images.title') ?></h3>
         </div>
         <div class="modal-content">
             <div class="image-picker-empty-state">

@@ -12,7 +12,7 @@
     <section class="section">
         <div class="user-summary">
             <div class="user-summary-avatar">
-                <img src="<?= $user->image()->uri() ?>">
+                <img src="<?= $user->image()->uri() ?>" alt="<? $panel->user()->username() ?>">
             </div>
             <div class="user-summary-data">
                 <h3><?= $this->escape($user->fullname()) ?></h3>

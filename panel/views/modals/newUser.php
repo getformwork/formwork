@@ -1,8 +1,8 @@
-<div id="newUserModal" class="modal">
+<div id="newUserModal" class="modal" aria-labelledby="newUserModalLabel">
     <div class="modal-container">
         <form action="<?= $panel->uri('/users/new/') ?>" method="post">
             <div class="modal-header">
-                <h3 class="caption"><?= $this->translate('panel.users.newUser') ?>
+                <h3 class="caption" id="newUserModalLabel"><?= $this->translate('panel.users.newUser') ?>
             </div>
             <div class="modal-content">
                 <label class="label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>

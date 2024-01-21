@@ -1,8 +1,8 @@
-<div id="renameFileModal" class="modal">
+<div id="renameFileModal" class="modal" aria-labelledby="renameFileModalLabel">
     <div class="modal-container">
         <form action="" method="post">
             <div class="modal-header">
-                <h3 class="caption"><?= $this->translate('panel.pages.renameFile') ?></h3>
+                <h3 class="caption" id="renameFileModalLabel"><?= $this->translate('panel.pages.renameFile') ?></h3>
             </div>
             <div class="modal-content">
                 <label class="label-required" for="filename"><?= $this->translate('panel.pages.renameFile.name') ?>:</label>

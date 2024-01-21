@@ -19,7 +19,7 @@
         <?php foreach ($users as $user): ?>
             <div class="users-item">
                 <div class="users-item-cell user-username truncate">
-                    <img class="user-avatar mr-4" src="<?= $user->image()->uri() ?>">
+                    <img class="user-avatar mr-4" src="<?= $user->image()->uri() ?>" alt="<? $panel->user()->username() ?>">
                     <a href="<?= $panel->uri('/users/' . $user->username() . '/profile/') ?>"><?= $this->escape($user->username()) ?></a>
                 </div>
                 <div class="users-item-cell user-fullname truncate show-from-s"><?= $this->escape($user->fullname()) ?></div>

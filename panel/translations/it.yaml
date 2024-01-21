@@ -48,6 +48,7 @@ panel.modal.action.uploadFile: Carica file
 panel.modal.images.noImages: Qui non ci sono immagini
 panel.modal.images.noImages.upload: Carica qualche immagine
 panel.modal.images.title: Seleziona immagine
+panel.navigation.toggle: Mostra/nascondi menu
 panel.options.info: Informazioni
 panel.options.options: Impostazioni
 panel.options.site: Sito

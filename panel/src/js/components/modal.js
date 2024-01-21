@@ -45,6 +45,8 @@ export class Modal {
 
     show(action, callback) {
         const modal = this.element;
+        modal.setAttribute("role", "dialog");
+        modal.setAttribute("aria-modal", "true");
         modal.classList.add("show");
         if (action) {
             $("form", modal).action = action;
@@ -63,7 +65,10 @@ export class Modal {
     }
 
     hide() {
-        this.element.classList.remove("show");
+        const modal = this.element;
+        modal.classList.remove("show");
+        modal.removeAttribute("role");
+        modal.removeAttribute("aria-modal");
         this.removeBackdrop();
     }
 

@@ -4,7 +4,7 @@
 <div class="separator"></div>
 <form action="<?= $panel->uri('/register/') ?>" method="post">
     <label class="label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>
-    <input id="fullname" type="text" required name="fullname" autofocus>
+    <input id="fullname" type="text" required name="fullname">
     <label class="label-required" for="username"><?= $this->translate('panel.user.username') ?>:</label>
     <span class="label-suggestion">(<?= $this->translate('panel.users.newUser') ?>)</span>
     <input id="username" type="text" required name="username" pattern="^[a-zA-Z0-9_-]{3,20}$" title="<?= ucfirst($this->translate('panel.users.newUser')) ?>" maxlength="20" autocomplete="false">

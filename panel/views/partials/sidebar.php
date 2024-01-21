@@ -1,10 +1,10 @@
-<button type="button" class="toggle-navigation hide-from-s"><?= $this->icon('list') ?></button>
+<button type="button" class="toggle-navigation hide-from-s" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
 <div class="sidebar show-from-s">
     <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a> <span class="show-from-s" style="color: #707e89; font-size: 0.75rem;"><?= $app::VERSION ?></span></div>
     <a href="<?= $panel->uri('/users/' . $panel->user()->username() . '/profile/') ?>">
         <div class="panel-user-card">
             <div class="panel-user-avatar">
-                <img src="<?= $panel->user()->image()->uri() ?>" alt="">
+                <img src="<?= $panel->user()->image()->uri() ?>" alt="<? $panel->user()->username() ?>">
             </div>
             <div class="panel-user-details">
                 <div class="panel-user-fullname"><?= $this->escape($panel->user()->fullname()) ?></div>

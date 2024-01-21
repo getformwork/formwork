@@ -10,7 +10,7 @@
     <?php foreach ($info as $section => $data): ?>
         <section class="section collapsible">
             <div class="section-header">
-                <span class="section-toggle"><?= $this->icon('chevron-up') ?></span>
+                <button type="button" class="section-toggle mr-2" title="<?= $this->translate('panel.sections.toggle') ?>" aria-label="<?= $this->translate('panel.sections.toggle') ?>"><?= $this->icon('chevron-up') ?></button>
                 <span class="caption"><?= $section ?></span>
             </div>
             <div class="section-content">

@@ -6,7 +6,7 @@ export class Tooltips {
     constructor() {
         $$("[title]", document.body).forEach((element) => {
             element.dataset.tooltip = element.title;
-            element.title = "";
+            element.removeAttribute("title");
         });
 
         $$("[data-tooltip]").forEach((element) => {

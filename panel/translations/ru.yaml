@@ -48,6 +48,7 @@ panel.modal.action.uploadFile: Загрузить файл
 panel.modal.images.noImages: Там нет изображений здесь
 panel.modal.images.noImages.upload: Пожалуйста, загрузите некоторые изображения
 panel.modal.images.title: Выберите изображение
+panel.navigation.toggle: Переключить навигацию
 panel.options.info: Информация
 panel.options.options: Параметры
 panel.options.site: Сайт

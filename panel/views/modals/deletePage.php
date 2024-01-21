@@ -1,8 +1,8 @@
-<div id="deletePageModal" class="modal">
+<div id="deletePageModal" class="modal" aria-labelledby="deletePageModalLabel">
     <div class="modal-container">
         <form action="" method="post">
             <div class="modal-header">
-                <h3 class="caption"><?= $this->translate('panel.pages.deletePage') ?></h3>
+                <h3 class="caption" id="deletePageModalLabel"><?= $this->translate('panel.pages.deletePage') ?></h3>
             </div>
             <div class="modal-content">
                 <p class="modal-text"><?= $this->translate('panel.pages.deletePage.prompt') ?></p>
