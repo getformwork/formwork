@@ -1,5 +1,3 @@
-@use "sass:map";
-
 html {
     font-size: $base-font-size;
     text-size-adjust: 100%;
@@ -79,17 +77,4 @@ pre {
 
 ::placeholder {
     color: $color-base-300;
-}
-
-@each $breakpoint-name in map.keys($responsive-breakpoints) {
-    @media (min-width: map.get($responsive-breakpoints, $breakpoint-name)) {
-        .hide-from-#{$breakpoint-name} {
-            display: none;
-        }
-    }
-    @media (max-width: (map.get($responsive-breakpoints, $breakpoint-name) - 1)) {
-        .show-from-#{$breakpoint-name} {
-            display: none;
-        }
-    }
 }

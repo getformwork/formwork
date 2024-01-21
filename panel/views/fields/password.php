@@ -1,5 +1,6 @@
 <?php $this->layout('fields.field') ?>
 <input <?= $this->attr([
+    'class'       => 'form-input',
     'type'         => 'password',
     'id'           => $field->name(),
     'name'         => $field->formName(),

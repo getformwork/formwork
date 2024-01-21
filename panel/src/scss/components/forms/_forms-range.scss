@@ -1,9 +1,9 @@
-input[type="range"] {
+.form-input[type="range"] {
     --progress: 0;
 
     position: relative;
     z-index: 1;
-    padding: $input-range-padding-v $input-range-padding-h;
+    padding: $form-input-range-padding-v $form-input-range-padding-h;
     border: 0;
     margin-bottom: 0;
     background-color: transparent;
@@ -11,20 +11,20 @@ input[type="range"] {
 
     &::-webkit-slider-runnable-track {
         width: 100%;
-        height: $input-range-track-height;
+        height: $form-input-range-track-height;
         border: 0;
-        border-radius: $input-range-track-height * 0.5;
+        border-radius: $form-input-range-track-height * 0.5;
         background: linear-gradient(90deg, $color-accent-500 var(--progress), $color-base-500 var(--progress));
         background-color: $color-base-500;
         cursor: default;
     }
 
     &::-webkit-slider-thumb {
-        width: $input-range-thumb-width;
-        height: $input-range-thumb-height;
+        width: $form-input-range-thumb-width;
+        height: $form-input-range-thumb-height;
         border: 0;
-        border-radius: $input-range-thumb-border-radius;
-        margin-top: -($input-range-thumb-height - $input-range-track-height) * 0.5;
+        border-radius: $form-input-range-thumb-border-radius;
+        margin-top: -($form-input-range-thumb-height - $form-input-range-track-height) * 0.5;
         background-color: $color-accent-500;
         cursor: default;
         transition: background-color $transition-time-s;
@@ -33,18 +33,18 @@ input[type="range"] {
 
     &::-moz-range-track {
         width: 100%;
-        height: $input-range-track-height;
+        height: $form-input-range-track-height;
         border: 0;
-        border-radius: $input-range-track-height * 0.5;
+        border-radius: $form-input-range-track-height * 0.5;
         background: linear-gradient(90deg, $color-accent-500 var(--progress), $color-base-500 var(--progress));
         background-color: $color-base-500;
     }
 
     &::-moz-range-thumb {
-        width: $input-range-thumb-width;
-        height: $input-range-thumb-height;
+        width: $form-input-range-thumb-width;
+        height: $form-input-range-thumb-height;
         border: 0;
-        border-radius: $input-range-thumb-border-radius;
+        border-radius: $form-input-range-thumb-border-radius;
         background-color: $color-accent-500;
         cursor: default;
         transition: background-color $transition-time-s;
@@ -80,31 +80,31 @@ input[type="range"] {
     }
 }
 
-.input-range-value {
+.form-input-range-value {
     min-width: 3rem;
-    padding: $input-range-value-padding-v $input-range-value-padding-h;
+    padding: $form-input-range-value-padding-v $form-input-range-value-padding-h;
     font-size: $font-size-s;
     @include user-select-none;
 }
 
-.input-range {
+.form-input-range {
     position: relative;
     width: 100%;
-    margin-bottom: $input-margin-bottom;
+    margin-bottom: $form-input-margin-bottom;
 }
 
-.input-range-ticks {
+.form-input-range-ticks {
     position: absolute;
     right: 0;
     bottom: 0.625rem;
     left: 0;
     display: flex;
     justify-content: space-between;
-    padding: 0 $input-range-thumb-width * 0.5;
+    padding: 0 $form-input-range-thumb-width * 0.5;
 }
 
-.input-range-ticks .tick {
+.form-input-range-ticks .tick {
     width: 1px;
-    height: $input-range-track-height;
+    height: $form-input-range-track-height;
     background-color: $color-base-500;
 }

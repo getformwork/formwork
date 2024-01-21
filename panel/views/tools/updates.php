@@ -18,7 +18,7 @@
             <p><strong class="new-version-name">Formwork x.x.x</strong> <?= $this->translate('panel.updates.availableForInstall') ?></p>
             <div><?= $this->translate('panel.updates.installPrompt') ?></div>
             <div class="separator"></div>
-            <button type="button" data-command="install-updates"><?= $this->translate('panel.updates.install') ?></button>
+            <button type="button" class="button" data-command="install-updates"><?= $this->translate('panel.updates.install') ?></button>
         </div>
     </div>
     <div class="row current-version" style="display: none;">

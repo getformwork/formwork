@@ -110,12 +110,13 @@ export class DurationInput {
 
         function createInnerInputs(intervals, steps) {
             field = document.createElement("div");
-            field.className = "input-duration";
+            field.className = "form-input-duration";
 
             let innerInput;
 
             for (const name of options.intervals) {
                 innerInput = document.createElement("input");
+                innerInput.className = "form-input";
                 const wrap = document.createElement("span");
                 wrap.className = `duration-${name}`;
                 innerInput.type = "number";
@@ -158,6 +159,7 @@ export class DurationInput {
                     }
                 });
                 const label = document.createElement("label");
+                label.className = "form-label";
                 label.innerHTML = options.labels[name][parseInt(innerInput.value) === 1 ? 0 : 1];
                 labels[name] = label;
                 wrap.appendChild(innerInput);
@@ -177,7 +179,7 @@ export class DurationInput {
 
         function createField() {
             hiddenInput = document.createElement("input");
-            hiddenInput.className = "input-duration-hidden";
+            hiddenInput.className = "form-input-duration-hidden";
             hiddenInput.name = input.name;
             hiddenInput.id = input.id;
             hiddenInput.type = "text";

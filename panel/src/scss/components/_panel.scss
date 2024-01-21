@@ -128,11 +128,11 @@
     color: $color-base-100;
 }
 
-.sidebar-navigation > li.active {
+.sidebar-navigation > .active {
     font-weight: 600;
 }
 
-.sidebar-navigation > li.active::before {
+.sidebar-navigation > .active::before {
     position: absolute;
     top: 0;
     bottom: 0;

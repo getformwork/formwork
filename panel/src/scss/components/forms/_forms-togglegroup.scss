@@ -1,29 +1,29 @@
-.input-togglegroup {
+.form-togglegroup {
     display: inline-block;
-    border: $input-border-width solid $color-base-500;
+    border: $form-input-border-width solid $color-base-500;
     border-radius: $border-radius;
     margin: 0;
-    margin-bottom: $input-margin-bottom;
+    margin-bottom: $form-input-margin-bottom;
     font-size: 0;
 }
 
-.input-togglegroup:focus-within {
+.form-togglegroup:focus-within {
     border-color: $color-accent-500;
     @include focusring;
 }
 
-.input-togglegroup label {
+.form-togglegroup .form-label {
     margin: 0;
 }
 
-.input-togglegroup input[type="radio"] {
+.form-togglegroup .form-input[type="radio"] {
     position: absolute;
     opacity: 0;
 }
 
-.input-togglegroup input[type="radio"] + span {
+.form-togglegroup .form-input[type="radio"] + span {
     display: inline-block;
-    padding: $input-togglegroup-inner-padding-v $input-togglegroup-inner-padding-h;
+    padding: $form-togglegroup-inner-padding-v $form-togglegroup-inner-padding-h;
     border-radius: $border-radius - 1px;
     font-size: $font-size-s;
     transition:
@@ -31,28 +31,28 @@
         color $transition-time-s;
 }
 
-.input-togglegroup input[type="radio"]:hover + span {
+.form-togglegroup .form-input[type="radio"]:hover + span {
     background-color: $color-base-800;
 }
 
-.input-togglegroup input[type="radio"]:checked + span {
+.form-togglegroup .form-input[type="radio"]:checked + span {
     background-color: $color-accent-500;
     color: $color-white;
 }
 
-.input-togglegroup input[type="radio"]:focus + span {
+.form-togglegroup .form-input[type="radio"]:focus + span {
     background-color: $color-accent-400;
 }
 
-.input-togglegroup[disabled] input[type="radio"] + span {
+.form-togglegroup[disabled] .form-input[type="radio"] + span {
     background-color: transparent;
     color: $color-base-100;
 }
 
-.input-togglegroup[disabled] input[type="radio"]:checked + span {
+.form-togglegroup[disabled] .form-input[type="radio"]:checked + span {
     background-color: $color-base-600;
 }
 
-.input-togglegroup input[type="radio"]:checked:hover + span {
+.form-togglegroup .form-input[type="radio"]:checked:hover + span {
     background-color: $color-accent-400;
 }

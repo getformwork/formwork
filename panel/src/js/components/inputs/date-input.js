@@ -97,7 +97,7 @@ export class DateInput {
 
         function getCurrentInput() {
             const currentElement = document.activeElement;
-            return currentElement.matches(".input-date") ? currentElement : null;
+            return currentElement.matches(".form-input-date") ? currentElement : null;
         }
 
         function Calendar(element, date) {

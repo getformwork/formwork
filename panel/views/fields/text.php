@@ -1,6 +1,6 @@
 <?php $this->layout('fields.field') ?>
 <input <?= $this->attr([
-    'class'       => $field->get('class'),
+    'class'       => ['form-input', $field->get('class')],
     'type'        => 'text',
     'id'          => $field->name(),
     'name'        => $field->formName(),

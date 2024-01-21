@@ -1,37 +1,37 @@
-.input-array {
-    margin-bottom: $input-array-margin-bottom;
+.form-input-array {
+    margin-bottom: $form-input-array-margin-bottom;
     @include user-select-none;
 }
 
-.input-array .sort-handle .icon {
+.form-input-array .sort-handle .icon {
     vertical-align: middle;
 }
 
-.input-array-row {
+.form-input-array-row {
     display: flex;
-    padding: $input-array-row-padding-v $input-array-row-padding-h;
-    margin: 0 (-$input-array-row-padding-h);
+    padding: $form-input-array-row-padding-v $form-input-array-row-padding-h;
+    margin: 0 (-$form-input-array-row-padding-h);
     white-space: nowrap;
 }
 
-.input-array-key,
-.input-array-value {
+.form-input-array-key,
+.form-input-array-value {
     display: inline-block;
     margin-bottom: 0;
 }
 
-.input-array-key {
-    width: $input-array-key-width;
-    margin-right: $input-array-key-margin-right;
+.form-input-array-key {
+    width: $form-input-array-key-width;
+    margin-right: $form-input-array-key-margin-right;
 }
 
-.input-array-value {
-    margin-right: $input-array-value-margin-right;
+.form-input-array-value {
+    margin-right: $form-input-array-value-margin-right;
 }
 
-.input-array-add,
-.input-array-remove {
+.form-input-array-add,
+.form-input-array-remove {
     min-width: 1rem;
     padding: 0;
-    margin-right: $input-array-actions-margin-right;
+    margin-right: $form-input-array-actions-margin-right;
 }

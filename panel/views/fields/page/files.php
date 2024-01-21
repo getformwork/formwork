@@ -1,8 +1,8 @@
 <div class="files-list">
     <div>
-        <fieldset class="input-togglegroup">
-            <label><input type="radio" checked name="files-list-view-as" value="list" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>
-            <label><input type="radio" name="files-list-view-as" value="thumbnails" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsThumbnails') ?>"><?= $this->icon('file-icons') ?></span></label>
+        <fieldset class="form-togglegroup">
+            <label class="form-label"><input class="form-input" type="radio" checked name="files-list-view-as" value="list" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>
+            <label class="form-label"><input class="form-input" type="radio" name="files-list-view-as" value="thumbnails" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsThumbnails') ?>"><?= $this->icon('file-icons') ?></span></label>
         </fieldset>
     </div>
 
@@ -15,7 +15,7 @@
                 <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
                 <div class="file-name truncate"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                 <div class="dropdown">
-                    <button type="button" class="button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
+                    <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
                     <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">
                         <a class="dropdown-item" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>"><?= $this->icon('eye') ?> <?= $this->translate('panel.pages.previewFile') ?></a>
                         <?php if ($panel->user()->permissions()->has('pages.renameFiles')): ?>

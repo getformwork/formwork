@@ -1,7 +1,8 @@
 <?php $this->layout('fields.field') ?>
 <div class="flex">
-    <div class="input-range">
+    <div class="form-input-range">
         <input <?= $this->attr([
+            'class'       => 'form-input',
             'type'       => 'range',
             'id'         => $field->name(),
             'name'       => $field->formName(),
@@ -15,5 +16,5 @@
             'data-ticks' => $field->get('ticks'),
         ]) ?>>
     </div>
-    <output class="input-range-value" for="<?= $field->name() ?>"><?= $field->value() ?></output>
+    <output class="form-input-range-value" for="<?= $field->name() ?>"><?= $field->value() ?></output>
 </div>

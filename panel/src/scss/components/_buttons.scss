@@ -1,4 +1,3 @@
-button,
 .button {
     display: inline-block;
     overflow: visible;
@@ -17,6 +16,7 @@ button,
     font-weight: 500;
     line-height: $button-line-height;
     outline: none;
+    text-align: center;
     transition:
         border-color $transition-time-s,
         background-color $transition-time-s,
@@ -55,10 +55,6 @@ button,
         display: inline-block;
         margin-right: 0.25rem;
     }
-}
-
-a.button {
-    text-align: center;
 }
 
 .button-right {

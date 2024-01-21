@@ -1,5 +1,5 @@
 <?php $this->layout('fields.field') ?>
-<select id="page-parent" name="parent">
+<select class="form-select" id="page-parent" name="parent">
     <option value="." <?php if ($page->parent()->isSite()): ?> selected<?php endif ?>><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
     <?php foreach ($parents as $parent): ?>
         <?php $scheme = $app->schemes()->get('pages.' . $parent->template()->name()) ?>

@@ -1,5 +1,6 @@
 <?php $this->layout('fields.field') ?>
 <textarea <?= $this->attr([
+    'class'       => 'form-textarea',
     'id'          => $field->name(),
     'name'        => $field->formName(),
     'placeholder' => $field->placeholder(),

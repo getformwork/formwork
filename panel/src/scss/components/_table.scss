@@ -1,15 +1,15 @@
-table {
+.table {
     width: 100%;
     table-layout: fixed;
 }
 
-th {
+.table th {
     padding: 0.5rem;
     font-weight: 600;
     text-align: left;
 }
 
-td {
+.table td {
     padding: 0.5rem;
 }
 

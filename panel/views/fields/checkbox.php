@@ -1,8 +1,8 @@
 <div>
-    <label class="input-checkbox-label">
+    <label class="form-label form-checkbox-label">
         <input <?= $this->attr([
             'type'     => 'checkbox',
-            'class'    => 'input-checkbox',
+            'class'    => ['form-input', 'form-checkbox'],
             'id'       => $field->name(),
             'name'     => $field->formName(),
             'checked'  => $field->value() == true,
@@ -10,7 +10,7 @@
             'disabled' => $field->isDisabled(),
             'hidden'   => $field->isHidden(),
         ]) ?>>
-        <span class="input-checkbox-text"><?= $field->label() ?></span>
+        <span class="form-checkbox-text"><?= $field->label() ?></span>
     </label>
 </div>
 <?php $this->insert('fields.partials.description') ?>

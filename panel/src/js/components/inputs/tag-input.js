@@ -21,13 +21,13 @@ export class TagInput {
             const isRequired = input.hasAttribute("required");
             const isDisabled = input.hasAttribute("disabled");
 
-            field.className = "input-tag";
+            field.className = "form-input-tag";
 
-            innerInput.className = "tag-inner-input";
+            innerInput.className = "form-input tag-inner-input";
             innerInput.type = "text";
             innerInput.placeholder = input.placeholder;
 
-            hiddenInput.className = "input-tag-hidden";
+            hiddenInput.className = "form-input-tag-hidden";
             hiddenInput.name = input.name;
             hiddenInput.id = input.id;
             hiddenInput.type = "text";

@@ -3,7 +3,7 @@ import { $, $$ } from "../utils/selectors";
 export class Files {
     constructor() {
         $$(".files-list").forEach((filesList) => {
-            const toggle = $(".input-togglegroup", filesList);
+            const toggle = $(".form-togglegroup", filesList);
 
             const viewAs = window.localStorage.getItem("formwork.filesListViewAs");
 

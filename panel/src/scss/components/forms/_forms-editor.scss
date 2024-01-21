@@ -2,7 +2,7 @@
 
 .editor-toolbar {
     padding: $editor-toolbar-padding-v $editor-toolbar-padding-h;
-    border: $input-border-width solid $color-base-500;
+    border: $form-input-border-width solid $color-base-500;
     background-color: $color-base-800;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
@@ -35,9 +35,9 @@
     min-height: 3 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     max-height: 30 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: $editor-textarea-padding-v $editor-textarea-padding-h;
-    border: $input-border-width solid $color-base-500;
-    border-radius: $input-border-radius;
-    margin-bottom: $input-margin-bottom;
+    border: $form-input-border-width solid $color-base-500;
+    border-radius: $form-input-border-radius;
+    margin-bottom: $form-input-margin-bottom;
     font-family: $base-font-family;
     font-size: $font-size-m;
 
@@ -51,9 +51,9 @@
     min-height: 3 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     max-height: 30 * $font-size-m * $base-line-height + $editor-textarea-padding-v * 2;
     padding: 0 $editor-textarea-padding-h;
-    border: $input-border-width solid $color-base-500;
-    border-radius: $input-border-radius;
-    margin-bottom: $input-margin-bottom;
+    border: $form-input-border-width solid $color-base-500;
+    border-radius: $form-input-border-radius;
+    margin-bottom: $form-input-margin-bottom;
     background: $color-base-900;
     color: $color-base-100;
     font-family: $base-font-family;
@@ -61,7 +61,7 @@
     resize: vertical;
 }
 
-.CodeMirror-wrap pre.CodeMirror-line-like.CodeMirror-placeholder {
+.CodeMirror-wrap .CodeMirror-line-like.CodeMirror-placeholder {
     color: $color-base-300;
 }
 

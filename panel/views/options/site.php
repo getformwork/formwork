@@ -4,7 +4,7 @@
     <div class="header">
         <div class="header-title"><?= $this->translate('panel.options.options') ?></div>
         <div>
-            <button type="submit" class="button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
+            <button type="submit" class="button button-accent button-right" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
         </div>
     </div>

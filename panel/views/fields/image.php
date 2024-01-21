@@ -1,8 +1,8 @@
 <?php $this->layout('fields.field') ?>
-<div class="input-wrap">
+<div class="form-input-wrap">
     <input <?= $this->attr([
         'type'        => 'text',
-        'class'       => 'input-image',
+        'class'       => ['form-input', 'form-input-image'],
         'id'          => $field->name(),
         'name'        => $field->formName(),
         'value'       => basename($field->value() ?? ''),
@@ -12,5 +12,5 @@
         'disabled'    => $field->isDisabled(),
         'hidden'      => $field->isHidden(),
     ]) ?>>
-    <span class="input-reset" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
+    <span class="form-input-reset" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
 </div>

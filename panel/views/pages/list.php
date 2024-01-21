@@ -23,7 +23,7 @@
                         <?php if ($subpages): ?>
                             <div style="min-width: 1rem" class="mr-2">
                                 <?php if ($page->hasChildren()): ?>
-                                    <button type="button" class="page-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>" aria-label="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
+                                    <button type="button" class="button page-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>" aria-label="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
                                 <?php endif ?>
                             </div>
                         <?php endif ?>
@@ -47,7 +47,7 @@
                 <div class="pages-item-cell page-actions">
                     <a class="button button-link<?php if (!$page->published() || !$page->routable()): ?> disabled<?php endif ?>" role="button" <?php if ($page->published() && $page->routable()): ?>href="<?= $page->uri(includeLanguage: false) ?>" <?php endif ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></a>
                     <?php if ($panel->user()->permissions()->has('pages.delete')): ?>
-                        <button type="button" class="button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif ?>><?= $this->icon('trash') ?></button>
+                        <button type="button" class="button button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/') ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>" <?php if (!$page->isDeletable()): ?> disabled<?php endif ?>><?= $this->icon('trash') ?></button>
                     <?php endif ?>
                 </div>
             </div>

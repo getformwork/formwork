@@ -27,7 +27,7 @@
         margin: 0;
     }
 
-    .container-no-margin div[class^="col-"] {
+    .container-no-margin [class^="col-"] {
         padding: 0;
     }
 }

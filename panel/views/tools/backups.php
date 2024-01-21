@@ -7,7 +7,7 @@
 <?= $tabs ?>
 <div data-view="backups">
     <section class="section">
-        <button type="button" class="mr-6" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
+        <button type="button" class="button mr-6" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
         <p class="mt-4 mb-0"><?= $this->translate('panel.tools.latestBackup') ?> <span class="text-bold backup-last-time"><?= $this->timedistance($backups[0]['timestamp']) ?></span></p>
     </section>
 
@@ -15,7 +15,7 @@
         <div class="section-header">
             <h3 class="caption"><?= $this->translate('panel.tools.latestBackups') ?></h3>
         </div>
-        <table id="backups-table" class="table-bordered table-hoverable text-size-s">
+        <table id="backups-table" class="table table-bordered table-hoverable text-size-s">
             <thead>
                 <tr>
                     <th class="truncate" style="width: 100%"><?= $this->translate('panel.tools.backup.file') ?></th>
@@ -31,7 +31,7 @@
                         <td class="truncate text-align-center show-from-m"><?= $this->datetime($backup['timestamp']) ?></td>
                         <td class="truncate text-align-center show-from-s"><?= $backup['size'] ?></td>
                         <td class="text-align-center">
-                            <button type="button" class="button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/backup/delete/' . $backup['encodedName']) . '/' ?>" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
+                            <button type="button" class="button button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/backup/delete/' . $backup['encodedName']) . '/' ?>" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
                         </td>
                     </tr>
                 <?php endforeach ?>
@@ -46,7 +46,7 @@
         <td class="truncate text-align-center backup-date show-from-m"></td>
         <td class="truncate text-align-center backup-size show-from-s"></td>
         <td class="text-align-center">
-            <button type="button" class="button-link backup-delete" data-modal="deleteFileModal" data-modal-action="" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
+            <button type="button" class="button button-link backup-delete" data-modal="deleteFileModal" data-modal-action="" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
         </td>
     </tr>
 </template>

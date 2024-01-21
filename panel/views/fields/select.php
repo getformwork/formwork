@@ -1,5 +1,6 @@
 <?php $this->layout('fields.field') ?>
 <select <?= $this->attr([
+    'class'    => 'form-select',
     'id'       => $field->name(),
     'name'     => $field->formName(),
     'required' => $field->isRequired(),

@@ -17,16 +17,16 @@ export class SelectInput {
 
         function createField() {
             const wrap = document.createElement("div");
-            wrap.className = "input-wrap";
+            wrap.className = "form-input-wrap";
 
             select.hidden = true;
 
             labelInput.type = "text";
 
-            labelInput.classList.add("select");
+            labelInput.classList.add("form-select");
             labelInput.dataset.for = select.id;
 
-            const selectLabel = $('label[for="' + select.id + '"]');
+            const selectLabel = $(`label[for="${  select.id  }"]`);
 
             if (selectLabel) {
                 labelInput.setAttribute("aria-label", selectLabel.innerText);

@@ -1,19 +1,19 @@
-.input-file {
+.form-input-file {
     display: none;
 }
 
-.input-file-label {
+.form-input-file-label {
     display: block;
-    padding: $input-file-label-padding;
-    margin-bottom: $input-file-label-margin-bottom;
+    padding: $form-input-file-label-padding;
+    margin-bottom: $form-input-file-label-margin-bottom;
     background-color: $color-base-800;
     clear: both;
 }
 
-.input-file-label > span {
+.form-input-file-label > span {
     display: block;
-    padding: $input-file-label-inner-padding-v $input-file-label-inner-padding-h;
-    border: $input-file-label-inner-border-width dashed $color-base-500;
+    padding: $form-input-file-label-inner-padding-v $form-input-file-label-inner-padding-h;
+    border: $form-input-file-label-inner-border-width dashed $color-base-500;
     border-radius: $border-radius;
     color: $color-base-100;
     text-align: center;
@@ -24,6 +24,6 @@
     }
 }
 
-.input-file-label.drag > span {
+.form-input-file-label.drag > span {
     background-color: $color-base-700;
 }

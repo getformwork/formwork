@@ -13,9 +13,9 @@ import { TagInput } from "./inputs/tag-input";
 
 export class Inputs {
     constructor(parent) {
-        $$(".input-date", parent).forEach((element) => (this[element.name] = new DateInput(element, app.config.DateInput)));
+        $$(".form-input-date", parent).forEach((element) => (this[element.name] = new DateInput(element, app.config.DateInput)));
 
-        $$(".input-image", parent).forEach((element) => (this[element.name] = new ImageInput(element)));
+        $$(".form-input-image", parent).forEach((element) => (this[element.name] = new ImageInput(element)));
 
         $$(".image-picker", parent).forEach((element) => (this[element.name] = new ImagePicker(element)));
 
@@ -29,11 +29,11 @@ export class Inputs {
 
         $$("input[type=range]", parent).forEach((element) => (this[element.name] = new RangeInput(element)));
 
-        $$(".input-array", parent).forEach((element) => (this[element.name] = new ArrayInput(element)));
+        $$(".form-input-array", parent).forEach((element) => (this[element.name] = new ArrayInput(element)));
 
         $$("select:not([hidden])", parent).forEach((element) => (this[element.name] = new SelectInput(element, app.config.SelectInput)));
 
-        $$(".input-reset", parent).forEach((element) => {
+        $$(".form-input-reset", parent).forEach((element) => {
             element.addEventListener("click", () => {
                 const target = document.getElementById(element.dataset.reset);
                 target.value = "";

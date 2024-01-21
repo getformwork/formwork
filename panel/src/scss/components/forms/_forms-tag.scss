@@ -1,19 +1,19 @@
-.input-tag {
+.form-input-tag {
     position: relative;
     display: block;
     box-sizing: border-box;
-    padding: $input-padding-v $input-padding-h * 0.5;
+    padding: $form-input-padding-v $form-input-padding-h * 0.5;
     padding-bottom: 0;
-    border: $input-border-width solid $color-base-500;
+    border: $form-input-border-width solid $color-base-500;
     border-radius: $border-radius;
     margin-top: 0;
-    margin-bottom: $input-margin-bottom;
-    font-size: $input-font-size;
-    line-height: $input-line-height;
+    margin-bottom: $form-input-margin-bottom;
+    font-size: $form-input-font-size;
+    line-height: $form-input-line-height;
     @include user-select-none;
 }
 
-.input-tag.focused {
+.form-input-tag.focused {
     border-color: $color-accent-500;
 }
 
@@ -22,10 +22,10 @@
     width: auto;
     max-width: 100%;
     box-sizing: border-box;
-    padding: 0 $input-padding-h * 0.5;
+    padding: 0 $form-input-padding-h * 0.5;
     border: 0;
     border-radius: 0;
-    margin-bottom: $input-padding-v;
+    margin-bottom: $form-input-padding-v;
     font-family: inherit;
     font-size: $font-size-s;
     line-height: inherit;
@@ -35,28 +35,28 @@
     }
 }
 
-.input-tag-hidden {
+.form-input-tag-hidden {
     display: none;
 }
 
-.input-tag .tag {
+.form-input-tag .tag {
     display: inline-block;
     box-sizing: border-box;
-    padding: $input-tag-tag-padding-v $input-tag-tag-padding-h;
+    padding: $form-input-tag-tag-padding-v $form-input-tag-tag-padding-h;
     border-radius: $border-radius;
-    margin-bottom: $input-padding-v;
+    margin-bottom: $form-input-padding-v;
     background-color: $color-base-700;
     cursor: default;
     font-size: $font-size-s;
     @include user-select-none;
 }
 
-.input-tag.disabled,
-.input-tag.disabled .tag-inner-input {
+.form-input-tag.disabled,
+.form-input-tag.disabled .tag-inner-input {
     background-color: $color-base-800;
 }
 
-.input-tag.disabled .tag {
+.form-input-tag.disabled .tag {
     background-color: $color-base-600;
 }
 

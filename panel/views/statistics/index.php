@@ -45,7 +45,7 @@
     <div class="section-header">
         <h3 class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></h3>
     </div>
-    <table class="table-bordered table-striped table-hoverable text-size-s">
+    <table class="table table-bordered table-striped table-hoverable text-size-s">
         <thead>
             <tr>
                 <th style="width: 100%"><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>

@@ -1,4 +1,4 @@
-.input-date {
+.form-input-date {
     cursor: default;
 }
 
@@ -9,7 +9,7 @@
     display: none;
     width: $calendar-width;
     padding: $calendar-padding;
-    border: $input-border-width solid $color-base-500;
+    border: $form-input-border-width solid $color-base-500;
     border-radius: $border-radius;
     margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
     background-color: $color-base-900;
@@ -97,6 +97,6 @@
 
 .calendar-separator {
     height: 0;
-    border-top: $input-border-width solid $color-base-500;
+    border-top: $form-input-border-width solid $color-base-500;
     margin: $calendar-padding (-$calendar-padding);
 }

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 @include make-util("mt", "margin-top", $spacers);
 @include make-util("ml", "margin-left", $spacers);
 @include make-util("mb", "margin-bottom", $spacers);
@@ -75,3 +77,16 @@
         "wrap": "normal",
     )
 );
+
+@each $breakpoint-name in map.keys($responsive-breakpoints) {
+    @media (min-width: map.get($responsive-breakpoints, $breakpoint-name)) {
+        .hide-from-#{$breakpoint-name} {
+            display: none;
+        }
+    }
+    @media (max-width: (map.get($responsive-breakpoints, $breakpoint-name) - 1)) {
+        .show-from-#{$breakpoint-name} {
+            display: none;
+        }
+    }
+}

@@ -31,7 +31,7 @@ layout:
 fields:
     title:
         type: text
-        class: input-large
+        class: form-input-large
         required: true
 
     content:

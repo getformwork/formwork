@@ -1,25 +1,25 @@
-.input-duration {
+.form-input-duration {
     box-sizing: border-box;
-    padding: $input-padding-v $input-padding-h * 0.5;
-    border: $input-border-width solid $color-base-500;
+    padding: $form-input-padding-v $form-input-padding-h * 0.5;
+    border: $form-input-border-width solid $color-base-500;
     border-radius: $border-radius;
     margin-top: 0;
-    margin-bottom: $input-margin-bottom;
-    font-size: $input-font-size;
-    line-height: $input-line-height;
+    margin-bottom: $form-input-margin-bottom;
+    font-size: $form-input-font-size;
+    line-height: $form-input-line-height;
     @include user-select-none;
 }
 
-.input-duration.focused {
+.form-input-duration.focused {
     border-color: $color-accent-500;
 }
 
-.input-duration > span {
+.form-input-duration > span {
     text-align: center;
 }
 
-.input-duration input {
-    width: $input-duration-inner-width;
+.form-input-duration .form-input {
+    width: $form-input-duration-inner-width;
     padding: 0;
     border: 0;
     margin: 0;
@@ -35,15 +35,15 @@
     }
 }
 
-.input-duration input:focus {
+.form-input-duration .form-input:focus {
     outline: none;
 }
 
-.input-duration label {
-    padding: 0 $input-duration-label-padding-h;
+.form-input-duration .form-label {
+    padding: 0 $form-input-duration-label-padding-h;
     margin: 0;
 }
 
-.input-duration-hidden {
+.form-input-duration-hidden {
     display: none;
 }

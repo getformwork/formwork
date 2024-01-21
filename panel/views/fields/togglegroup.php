@@ -2,13 +2,14 @@
 <div>
     <fieldset <?= $this->attr([
         'id'       => $field->name(),
-        'class'    => 'input-togglegroup',
+        'class'    => 'form-togglegroup',
         'disabled' => $field->isDisabled(),
         'hidden'   => $field->isHidden(),
     ]) ?>>
     <?php foreach ((array) $field->get('options') as $value => $label): ?>
-        <label>
+        <label class="form-label">
             <input <?= $this->attr([
+                'class'   => 'form-input',
                 'type'    => 'radio',
                 'name'    => $field->formName(),
                 'value'   => $value,

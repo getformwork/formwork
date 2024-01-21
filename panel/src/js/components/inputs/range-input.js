@@ -32,7 +32,7 @@ export class RangeInput {
 
         function addTicks(count) {
             const ticks = document.createElement("div");
-            ticks.className = "input-range-ticks";
+            ticks.className = "form-input-range-ticks";
             ticks.dataset.for = input.id;
             input.parentElement.insertBefore(ticks, input.nextSibling);
 
