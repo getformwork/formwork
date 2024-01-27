@@ -17,8 +17,8 @@
                 <table class="table info-data">
                     <?php foreach ($data as $key => $value): ?>
                         <tr>
-                            <td class="info-data-key"><?= $key ?></td>
-                            <td class="info-data-value"><?= $value ?></td>
+                            <td class="table-cell info-data-key"><?= $key ?></td>
+                            <td class="table-cell info-data-value"><?= $value ?></td>
                         </tr>
                     <?php endforeach ?>
                 </table>

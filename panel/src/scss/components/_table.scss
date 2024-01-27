@@ -1,23 +1,20 @@
 .table {
     width: 100%;
+    border-collapse: collapse;
     table-layout: fixed;
 }
 
-.table th {
+.table-header {
     padding: 0.5rem;
     font-weight: 600;
     text-align: left;
 }
 
-.table td {
+.table-cell {
     padding: 0.5rem;
 }
 
-.table-bordered {
-    border-collapse: collapse;
-}
-
-.table-bordered td {
+.table-bordered .table-cell {
     border-top: 1px solid $color-base-600;
     border-bottom: 1px solid $color-base-600;
 }

@@ -48,17 +48,17 @@
     <table class="table table-bordered table-striped table-hoverable text-size-s">
         <thead>
             <tr>
-                <th style="width: 100%"><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>
-                <th class="truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.visits') ?></th>
-                <th class="truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.percentTotal') ?></th>
+                <th class="table-header" style="width: 100%"><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>
+                <th class="table-header truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.visits') ?></th>
+                <th class="table-header truncate" style="width: 20%"><?= $this->translate('panel.statistics.totalVisits.percentTotal') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($pageViews as $page => $views): ?>
                 <tr>
-                    <td class="truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
-                    <td><?= $views ?></td>
-                    <td><?= round($views / $totalViews * 100, 2) ?></td>
+                    <td class="table-cell truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
+                    <td class="table-cell"><?= $views ?></td>
+                    <td class="table-cell"><?= round($views / $totalViews * 100, 2) ?></td>
                 </tr>
             <?php endforeach ?>
         </tbody>
