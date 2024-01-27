@@ -19,7 +19,7 @@
             </select>
         </div>
         <div class="modal-footer">
-            <button type="button" class="button" data-dismiss="imagesModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
+            <button type="button" class="button button-secondary" data-dismiss="imagesModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
             <button type="button" class="button button-accent button-right image-picker-confirm"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
         </div>
     </div>

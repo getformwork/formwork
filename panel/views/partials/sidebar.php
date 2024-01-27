@@ -1,4 +1,4 @@
-<button type="button" class="button toggle-navigation hide-from-s" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
+<button type="button" class="button button-link toggle-navigation hide-from-s" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
 <div class="sidebar show-from-s">
     <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a> <span class="show-from-s text-color-gray-medium text-size-xs"><?= $app::VERSION ?></span></div>
     <a href="<?= $panel->uri('/users/' . $panel->user()->username() . '/profile/') ?>">

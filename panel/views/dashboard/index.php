@@ -15,16 +15,16 @@
                     <h3 class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></h3>
                 </div>
                 <?php if ($panel->user()->permissions()->has('pages.create')): ?>
-                    <button type="button" class="button" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
+                    <button type="button" class="button button-secondary mb-4" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
                 <?php endif ?>
                 <?php if ($panel->user()->permissions()->has('cache.clear')): ?>
-                    <button type="button" class="button" data-command="clear-cache"><?= $this->icon('cache-clear') ?> <?= $this->translate('panel.cache.clear') ?></button>
+                    <button type="button" class="button button-secondary mb-4" data-command="clear-cache"><?= $this->icon('cache-clear') ?> <?= $this->translate('panel.cache.clear') ?></button>
                 <?php endif ?>
                 <?php if ($panel->user()->permissions()->has('backup')): ?>
-                    <button type="button" class="button" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
+                    <button type="button" class="button button-secondary mb-4" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
                 <?php endif ?>
                 <?php if ($panel->user()->permissions()->has('options.updates')): ?>
-                    <a class="button" role="button" href="<?= $panel->uri('/tools/updates/') ?>"><?= $this->icon('arrows-rotate-clockwise') ?> <?= $this->translate('panel.updates.check') ?></a>
+                    <a class="button button-secondary mb-4" role="button" href="<?= $panel->uri('/tools/updates/') ?>"><?= $this->icon('arrows-rotate-clockwise') ?> <?= $this->translate('panel.updates.check') ?></a>
                 <?php endif ?>
             </section>
         </div>

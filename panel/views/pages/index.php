@@ -15,9 +15,9 @@
             <input class="form-input page-search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>">
         </div>
         <div class="whitespace-nowrap">
-            <button type="button" class="button" data-command="expand-all-pages"><?= $this->icon('chevron-down') ?> <?= $this->translate('panel.pages.pages.expandAll') ?></button>
-            <button type="button" class="button" data-command="collapse-all-pages"><?= $this->icon('chevron-up') ?> <?= $this->translate('panel.pages.pages.collapseAll') ?></button>
-            <button type="button" class="button" data-command="reorder-pages"><?= $this->icon('reorder-v') ?> <?= $this->translate('panel.pages.pages.reorder') ?></button>
+            <button type="button" class="button button-secondary mb-4" data-command="expand-all-pages"><?= $this->icon('chevron-down') ?> <?= $this->translate('panel.pages.pages.expandAll') ?></button>
+            <button type="button" class="button button-secondary mb-4" data-command="collapse-all-pages"><?= $this->icon('chevron-up') ?> <?= $this->translate('panel.pages.pages.collapseAll') ?></button>
+            <button type="button" class="button button-secondary mb-4" data-command="reorder-pages"><?= $this->icon('reorder-v') ?> <?= $this->translate('panel.pages.pages.reorder') ?></button>
         </div>
     </div>
     <?= $pagesList ?>

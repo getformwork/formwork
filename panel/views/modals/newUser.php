@@ -24,7 +24,7 @@
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>
             <div class="modal-footer">
-                <button type="button" class="button" data-dismiss="newUserModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
+                <button type="button" class="button button-secondary" data-dismiss="newUserModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
                 <button type="submit" class="button button-accent button-right"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
             </div>
         </form>

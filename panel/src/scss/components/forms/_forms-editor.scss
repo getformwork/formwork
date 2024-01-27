@@ -6,15 +6,10 @@
     background-color: $color-base-800;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
-    font-size: 0;
 }
 
 .toolbar-button {
     padding: $editor-toolbar-button-padding;
-    border: 0;
-    margin-bottom: 0;
-    background-color: $color-base-800;
-    box-shadow: none;
 
     &:hover,
     &:focus {

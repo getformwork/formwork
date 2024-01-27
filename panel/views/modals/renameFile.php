@@ -10,7 +10,7 @@
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>
             <div class="modal-footer">
-                <button type="button" class="button" data-dismiss="renameFileModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
+                <button type="button" class="button button-secondary" data-dismiss="renameFileModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
                 <button type="submit" class="button button-accent button-right" data-command="delete"><?= $this->icon('pencil') ?> <?= $this->translate('panel.modal.action.rename') ?></button>
             </div>
         </form>

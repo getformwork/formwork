@@ -22,26 +22,9 @@
 }
 
 .page-children-toggle {
-    display: inline-block;
-    min-width: auto;
     padding: 0;
-    border-color: transparent;
-    margin: 0;
-    background-color: transparent;
-    box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
-
-    &:hover,
-    &:focus {
-        border-color: transparent;
-        background-color: transparent;
-        color: $color-accent-500;
-    }
-
-    &:focus {
-        @include focusring;
-    }
 }
 
 .pages-item-row {

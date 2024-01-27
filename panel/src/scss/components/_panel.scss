@@ -71,22 +71,7 @@
     z-index: 13;
     top: $toggle-navigation-top;
     left: $toggle-navigation-left;
-    border: none;
-    margin: 0;
-    background-color: transparent;
-    box-shadow: none;
     cursor: pointer;
-    font-size: $font-size-m;
-
-    &:hover {
-        background-color: transparent;
-        color: $color-accent-500;
-    }
-
-    &:focus {
-        background-color: transparent;
-        outline: none;
-    }
 }
 
 .logo {
@@ -274,26 +259,9 @@
 }
 
 .section-toggle {
-    display: inline-block;
-    min-width: auto;
     padding: 0;
-    border-color: transparent;
-    margin: 0;
-    background-color: transparent;
-    box-shadow: none;
     color: $color-base-300;
     cursor: pointer;
-
-    &:hover,
-    &:focus {
-        border-color: transparent;
-        background-color: transparent;
-        color: $color-accent-500;
-    }
-
-    &:focus {
-        @include focusring;
-    }
 }
 
 .section-toggle .icon {
