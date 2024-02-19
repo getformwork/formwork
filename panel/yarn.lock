@@ -1268,7 +1268,7 @@ __metadata:
     esbuild: "npm:^0.19.11"
     eslint: "npm:^8.56.0"
     eslint-config-prettier: "npm:^9.1.0"
-    globals: "npm:^13.23.0"
+    globals: "npm:^13.24.0"
     postcss: "npm:^8.4.32"
     prettier: "npm:3.1.1"
     sass: "npm:^1.70.0"
@@ -1398,12 +1398,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^13.19.0, globals@npm:^13.23.0":
+"globals@npm:^13.19.0":
   version: 13.23.0
   resolution: "globals@npm:13.23.0"
   dependencies:
     type-fest: "npm:^0.20.2"
   checksum: fc05e184b3be59bffa2580f28551a12a758c3a18df4be91444202982c76f13f52821ad54ffaf7d3f2a4d2498fdf54aeaca8d4540fd9e860a9edb09d34ef4c507
+  languageName: node
+  linkType: hard
+
+"globals@npm:^13.24.0":
+  version: 13.24.0
+  resolution: "globals@npm:13.24.0"
+  dependencies:
+    type-fest: "npm:^0.20.2"
+  checksum: d3c11aeea898eb83d5ec7a99508600fbe8f83d2cf00cbb77f873dbf2bcb39428eff1b538e4915c993d8a3b3473fa71eeebfe22c9bb3a3003d1e26b1f2c8a42cd
   languageName: node
   linkType: hard
 
