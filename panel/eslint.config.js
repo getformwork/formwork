@@ -13,7 +13,7 @@ export default [
             },
             sourceType: "module",
         },
-        ignorePaterns: ["*.min.js"],
+        ignores: ["*.min.js"],
         rules: {
             "arrow-body-style": ["error", "as-needed"],
             curly: ["error", "all"],
