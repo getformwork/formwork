@@ -9,6 +9,9 @@ plugins:
     - stylelint-order
 rules:
     at-rule-empty-line-before: null
+    selector-no-qualifying-type: true
+    selector-max-type: 2
+
     scss/dollar-variable-empty-line-before: null
     scss/dollar-variable-colon-space-after: null
 
