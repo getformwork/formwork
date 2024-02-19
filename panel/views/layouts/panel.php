@@ -18,11 +18,11 @@
 
 <body>
     <?php $this->insert('partials.sidebar') ?>
-    <div class="title-bar">
-        <span class="panel-title"><?= $this->translate('panel.panel') ?></span>
-        <a href="<?= $site->uri() ?>" class="view-site" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('panel.viewSite') ?></span> <?= $this->icon('arrow-right-up-box') ?></a>
-    </div>
-    <main class="main">
+    <header class="panel-header">
+        <span class="flex-grow-1"><?= $this->translate('panel.panel') ?></span>
+        <a href="<?= $site->uri() ?>" class="button button-link text-size-m" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('panel.viewSite') ?></span> <?= $this->icon('arrow-right-up-box') ?></a>
+    </header>
+    <main class="panel-main">
         <div class="container">
             <?= $this->content() ?>
         </div>

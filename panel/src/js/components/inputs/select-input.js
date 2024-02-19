@@ -26,7 +26,7 @@ export class SelectInput {
             labelInput.classList.add("form-select");
             labelInput.dataset.for = select.id;
 
-            const selectLabel = $(`label[for="${  select.id  }"]`);
+            const selectLabel = $(`label[for="${select.id}"]`);
 
             if (selectLabel) {
                 labelInput.setAttribute("aria-label", selectLabel.innerText);

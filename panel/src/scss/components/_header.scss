@@ -1,0 +1,30 @@
+@use "sass:map";
+
+.header {
+    position: sticky;
+    z-index: 9;
+    top: 3.5rem;
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid $color-base-600;
+    margin-bottom: 2rem;
+    background-color: $color-base-800;
+    white-space: nowrap;
+
+    @media (min-width: map.get($responsive-breakpoints, "s")) {
+        padding: 1rem 1.5rem;
+        margin-right: -1.5rem;
+        margin-left: -1.5rem;
+    }
+}
+
+.header-title {
+    overflow: hidden;
+    flex-grow: 1;
+    font-size: $h5-font-size;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

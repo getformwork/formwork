@@ -2,7 +2,7 @@
     <div class="modal-container">
         <form action="<?= $panel->uri('/users/new/') ?>" method="post">
             <div class="modal-header">
-                <h3 class="caption" id="newUserModalLabel"><?= $this->translate('panel.users.newUser') ?>
+                <div class="caption" id="newUserModalLabel"><?= $this->translate('panel.users.newUser') ?>
             </div>
             <div class="modal-content">
                 <label class="form-label form-label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>

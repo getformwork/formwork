@@ -1,60 +1,53 @@
 h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3,
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
-    margin-top: 0;
-    margin-bottom: $headings-margin-bottom;
-    font-weight: $headings-font-weight;
-    line-height: $headings-line-height;
-}
-
-@if $large-headings-letter-spacing != 0 {
-    h1,
-    .h1,
-    h2,
-    .h2,
-    h3,
-    .h3 {
-        letter-spacing: $large-headings-letter-spacing;
-    }
-}
-
-h1,
 .h1 {
     font-size: $h1-font-size;
+    @extend %heading;
+    @if $large-headings-letter-spacing != 0 {
+        letter-spacing: $large-headings-letter-spacing;
+    }
 }
 
 h2,
 .h2 {
     font-size: $h2-font-size;
+    @extend %heading;
+    @if $large-headings-letter-spacing != 0 {
+        letter-spacing: $large-headings-letter-spacing;
+    }
 }
 
 h3,
 .h3 {
     font-size: $h3-font-size;
+    @extend %heading;
+    @if $large-headings-letter-spacing != 0 {
+        letter-spacing: $large-headings-letter-spacing;
+    }
 }
 
 h4,
 .h4 {
     font-size: $h4-font-size;
+    @extend %heading;
 }
 
 h5,
 .h5 {
     font-size: $h5-font-size;
+    @extend %heading;
 }
 
 h6,
 .h6 {
     font-size: $h6-font-size;
+    @extend %heading;
+}
+
+%heading {
+    margin-top: 0;
+    margin-bottom: $headings-margin-bottom;
+    font-weight: $headings-font-weight;
+    line-height: $headings-line-height;
 }
 
 strong {

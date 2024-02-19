@@ -430,8 +430,8 @@ $login-modal-notification-padding-right: 2rem;
 // Panel
 // ===
 
-$title-bar-padding: 1rem;
-$title-bar-padding-left: 1.5rem;
+$panel-header-padding: 0.75rem;
+$panel-header-padding-left: 1.5rem;
 
 $sidebar-width: 16rem;
 
@@ -441,9 +441,9 @@ $sidebar-background-gradient-color-0: $color-base-900;
 $sidebar-background-gradient-color-100: $color-base-800;
 $sidebar-background-gradient: linear-gradient(to bottom, #{$sidebar-background-gradient-color-0} 0%, #{$sidebar-background-gradient-color-100} 100%);
 
-$toggle-navigation-top: 0.75rem;
-$toggle-navigation-left: 0.75rem;
-$toggle-navigation-width: 1rem;
+$sidebar-toggle-top: 0.75rem;
+$sidebar-toggle-left: 0.75rem;
+$sidebar-toggle-width: 1rem;
 
 $sidebar-navigation-li-margin-bottom: 0.5rem;
 $sidebar-navigation-li-padding-v: 0.25rem;
@@ -469,9 +469,9 @@ $panel-user-avatar-width: 48px;
 $panel-user-details-padding-v: 0;
 $panel-user-details-padding-h: 0.75rem;
 
-$main-margin: 1.875rem;
-$main-margin-top: 4.5rem;
-$main-margin-left: $main-margin + $sidebar-width;
+$panel-main-margin: 1.875rem;
+$panel-main-margin-top: 4.5rem;
+$panel-main-margin-left: $panel-main-margin + $sidebar-width;
 
 $component-margin-bottom: 1rem;
 $component-padding: 1.5rem;
@@ -504,14 +504,14 @@ $dashboard-chart-height: 14rem;
 // Pages
 // ===
 
-$pages-list-headers-padding-v: 0.25rem;
-$pages-list-headers-padding-h: 0;
+$pages-tree-headers-padding-v: 0.25rem;
+$pages-tree-headers-padding-h: 0;
 
-$pages-item-padding-v: 0.5rem;
-$pages-item-padding-h: 0;
+$pages-tree-item-padding-v: 0.5rem;
+$pages-tree-item-padding-h: 0;
 
-$pages-item-cell-padding-v: 0.25rem;
-$pages-item-cell-padding-h: 0.25rem;
+$pages-tree-item-cell-padding-v: 0.25rem;
+$pages-tree-item-cell-padding-h: 0.25rem;
 
 $page-language-padding-v: 0.125rem;
 $page-language-padding-h: 0.25rem;
@@ -519,8 +519,8 @@ $page-language-min-width: 1.125rem;
 
 $page-status-label-margin-right: 0.375rem;
 
-$pages-levels: 10;
-$pages-level-padding: 1.75rem;
+$pages-tree-levels: 10;
+$pages-tree-level-padding: 1.75rem;
 
 $page-info-margin-bottom: 0.75rem;
 $page-info-padding-v: 0;

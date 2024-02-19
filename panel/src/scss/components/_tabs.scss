@@ -26,3 +26,7 @@
 .caption + .tabs {
     margin-top: -$tabs-tab-padding-v;
 }
+
+.header + .tabs {
+    margin-top: -1.5rem;
+}

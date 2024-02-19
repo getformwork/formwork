@@ -64,13 +64,13 @@ class PagesController extends AbstractController
 
         return new Response($this->view('pages.index', [
             'title'     => $this->translate('panel.pages.pages'),
-            'pagesList' => $this->view('pages.list', [
-                'pages'     => $pages,
-                'subpages'  => true,
-                'class'     => 'pages-list-root',
-                'parent'    => '.',
-                'orderable' => $this->user()->permissions()->has('pages.reorder'),
-                'headers'   => true,
+            'pagesTree' => $this->view('pages.tree', [
+                'pages'           => $pages,
+                'includeChildren' => true,
+                'class'           => 'pages-tree-root',
+                'parent'          => '.',
+                'orderable'       => $this->user()->permissions()->has('pages.reorder'),
+                'headers'         => true,
             ]),
         ]));
     }

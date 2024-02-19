@@ -1,0 +1,39 @@
+.section {
+    padding: 1.5rem 1.75rem;
+    border-radius: $border-radius;
+    margin-bottom: $section-margin-bottom;
+    background-color: $color-base-900;
+    box-shadow: $component-box-shadow;
+}
+
+.section-header {
+    margin-bottom: $section-header-margin-bottom;
+    font-size: $font-size-m;
+    font-weight: 600;
+    @include user-select-none;
+}
+
+.section.collapsed .section-header {
+    margin-bottom: 0;
+}
+
+.section-toggle {
+    padding: 0;
+    color: $color-base-300;
+    cursor: pointer;
+}
+
+.section-toggle .icon {
+    margin-right: 0;
+    transition:
+        transform $transition-time-s,
+        color $transition-time-s;
+}
+
+.section.collapsed .section-toggle .icon {
+    transform: rotate(180deg);
+}
+
+.section.collapsed .section-content {
+    display: none;
+}

@@ -2,8 +2,8 @@ import { $ } from "../utils/selectors";
 
 export class Navigation {
     constructor() {
-        if ($(".toggle-navigation")) {
-            $(".toggle-navigation").addEventListener("click", () => {
+        if ($(".sidebar-toggle")) {
+            $(".sidebar-toggle").addEventListener("click", () => {
                 if ($(".sidebar").classList.toggle("show")) {
                     if (!$(".sidebar-backdrop")) {
                         const backdrop = document.createElement("div");

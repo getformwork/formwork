@@ -1,81 +1,25 @@
-@use "sass:color";
-
-@use "sass:map";
-
-.pages-list {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    @include user-select-none;
-}
-
-.pages-list .pages-list {
-    display: none;
-}
-
-.pages-list-headers {
-    display: flex;
-    align-items: center;
-    padding: $pages-list-headers-padding-v $pages-list-headers-padding-h;
-    font-weight: 600;
-    @include user-select-none;
-}
-
-.page-children-toggle {
-    padding: 0;
-    color: $color-base-300;
-    cursor: pointer;
-}
-
-.pages-item-row {
-    display: flex;
-    align-items: center;
-    padding: $pages-item-padding-v $pages-item-padding-h;
-    border-bottom: 1px solid $color-base-600;
-
-    &:hover {
-        background-color: $color-base-800;
-    }
-}
-
 .page-details {
     flex: 1;
-}
-
-.pages-item-row .sort-handle {
-    display: none;
-}
-
-.pages-list.is-filtered .sort-handle {
-    display: none;
-}
-
-.pages-list.is-filtered .page-children-toggle {
-    display: none;
-}
-
-.pages-list.is-filtered .pages-item .page-details {
-    padding-left: 0;
-}
-
-.pages-list.is-reordering .sort-handle {
-    display: block;
-}
-
-.pages-list-root {
-    border-top: 1px solid $color-base-600;
-}
-
-.pages-item-cell,
-.pages-headers-cell {
-    padding: $pages-item-cell-padding-v $pages-item-cell-padding-h;
-    font-size: $font-size-s;
 }
 
 .page-title {
     padding: $focusring-width;
     margin: -$focusring-width;
     font-size: $font-size-m;
+}
+
+.page-route {
+    color: $color-base-300;
+    font-size: $font-size-s;
+}
+
+.page-route-changeable {
+    padding: $focusring-width;
+    margin: -$focusring-width;
+}
+
+.button .page-language {
+    font-size: $font-size-xs;
 }
 
 .page-date {
@@ -89,37 +33,9 @@
     text-align: center;
 }
 
-.page-actions {
-    flex: 0 0 15%;
-    text-align: center;
-    white-space: nowrap;
-}
-
-button .page-language,
-.button .page-language {
-    font-size: $font-size-xs;
-}
-
-.page-route {
-    color: $color-base-300;
-    font-size: $font-size-s;
-}
-
-.page-route-changeable {
-    padding: $focusring-width;
-    margin: -$focusring-width;
-}
-
 .page-status .icon {
     display: inline-block;
     margin-right: $page-status-label-margin-right;
-}
-
-.page-children-toggle .icon {
-    margin-right: 0;
-    transition:
-        transform $transition-time-s,
-        color $transition-time-s;
 }
 
 .page-status-published .icon {
@@ -134,80 +50,15 @@ button .page-language,
     color: $color-warning-500;
 }
 
+.page-actions {
+    flex: 0 0 15%;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .page-actions .button-link {
     font-size: $font-size-m;
 }
-
-.pages-item {
-    position: relative;
-
-    &::before {
-        position: absolute;
-        z-index: 1;
-        top: -2.125rem;
-        width: 1.625rem;
-        height: 3.625rem;
-        border-bottom: 2px solid $color-base-600;
-        border-left: 2px solid $color-base-600;
-    }
-
-    &::after {
-        position: absolute;
-        z-index: 1;
-        top: -2.125rem;
-        width: 1.625rem;
-        height: 100%;
-        border-left: 2px solid $color-base-600;
-    }
-
-    .is-filtered &::before,
-    .is-filtered &::after {
-        display: none;
-    }
-
-    &:last-child::after,
-    .is-dragging > &:nth-last-child(2)::after {
-        display: none;
-    }
-
-    &.has-children::before,
-    &.has-children::after,
-    .is-reordering &.is-orderable::before,
-    .is-reordering &.is-orderable::after {
-        width: 0.875rem;
-    }
-
-    .is-reordering &:not(.is-orderable, .has-children)::before,
-    .is-reordering &:not(.is-orderable, .has-children)::after {
-        width: 2.375rem;
-    }
-}
-
-@mixin make-page-levels($levels) {
-    @for $i from 2 through $levels {
-        $indent: 0.5rem;
-
-        @if $i == 2 {
-            $indent: 0.625rem;
-        } @else {
-            $indent: $indent + $pages-level-padding * ($i - 2);
-        }
-
-        .pages-level-#{$i} {
-            &::before,
-            &::after {
-                left: $indent;
-                content: "";
-            }
-
-            .page-details {
-                padding-left: $pages-level-padding * ($i - 1);
-            }
-        }
-    }
-}
-
-@include make-page-levels(10);
 
 .page-info {
     padding: $page-info-padding-v $page-info-padding-h;
@@ -248,54 +99,10 @@ button .page-language,
     }
 }
 
-.pages-children {
-    display: none;
-}
-
-.sortable-fallback::before,
-.sortable-fallback::after {
-    display: none;
-}
-
-.sortable-chosen .pages-item-cell {
-    background-color: transparent;
-    opacity: 0.5;
-}
-
-.sortable-chosen .pages-children,
-.sortable-fallback .pages-children {
-    display: none !important;
-}
-
-.sortable-chosen .page-children-toggle .icon,
-.sortable-fallback .page-children-toggle .icon {
-    transform: none !important;
-}
-
-.sortable-fallback .pages-item-cell {
-    opacity: 1;
-}
-
-.pages-item.is-expanded > .pages-children {
-    display: block;
-}
-
-.pages-item.is-expanded > .pages-item-row .page-children-toggle .icon {
-    transform: rotate(-180deg);
-}
-
-.is-dragging {
-    cursor: grab !important;
-}
-
 .is-dragging .page-title {
     pointer-events: none;
 }
 
-.is-dragging > .is-not-orderable * {
-    cursor: no-drop !important;
-}
-
-.is-dragging > .is-not-orderable .pages-item-row:hover {
-    background-color: $color-error-900;
+.pages-tree.is-filtered .pages-tree-item .page-details {
+    padding-left: 0;
 }

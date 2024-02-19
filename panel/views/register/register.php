@@ -1,7 +1,6 @@
 <?php $this->layout('login') ?>
 <div class="caption"><?= $this->translate('panel.register.register') ?></div>
-<p><?= $this->translate('panel.register.createUser') ?></p>
-<div class="separator"></div>
+<p class="mb-8"><?= $this->translate('panel.register.createUser') ?></p>
 <form action="<?= $panel->uri('/register/') ?>" method="post">
     <label class="form-label form-label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>
     <input class="form-input" id="fullname" type="text" required name="fullname">
@@ -20,6 +19,5 @@
         <?php endforeach ?>
     </select>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-    <div class="separator"></div>
-    <button type="submit" class="button button-accent"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
+    <button type="submit" class="button button-accent mt-8"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
 </form>

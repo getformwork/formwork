@@ -2,7 +2,7 @@
     <div class="modal-container">
         <form action="<?= $panel->uri('/pages/new/') ?>" method="post">
             <div class="modal-header">
-                <h3 class="caption" id="newPageModalLabel"><?= $this->translate('panel.pages.newPage') ?></h3>
+                <div class="caption" id="newPageModalLabel"><?= $this->translate('panel.pages.newPage') ?></div>
             </div>
             <div class="modal-content">
                 <label class="form-label form-label-required" for="page-title"><?= $this->translate('panel.pages.newPage.title') ?>:</label>

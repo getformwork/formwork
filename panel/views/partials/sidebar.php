@@ -1,4 +1,4 @@
-<button type="button" class="button button-link toggle-navigation hide-from-s" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
+<button type="button" class="button button-link sidebar-toggle hide-from-s" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
 <div class="sidebar show-from-s">
     <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a> <span class="show-from-s text-color-gray-medium text-size-xs"><?= $app::VERSION ?></span></div>
     <a href="<?= $panel->uri('/users/' . $panel->user()->username() . '/profile/') ?>">
@@ -12,8 +12,8 @@
             </div>
         </div>
     </a>
-    <div class="sidebar-wrapper">
-        <h3 class="caption mb-8"><?= $this->translate('panel.manage') ?></h3>
+    <nav class="sidebar-wrapper">
+        <div class="caption mb-8"><?= $this->translate('panel.manage') ?></div>
         <ul class="sidebar-navigation">
             <?php foreach ($navigation as $id => ['label' => $label, 'uri' => $uri, 'permissions' => $permissions, 'badge' => $badge]): ?>
                 <?php if ($panel->user()->permissions()->has($permissions)): ?>
@@ -26,5 +26,5 @@
                 <?php endif ?>
             <?php endforeach ?>
         </ul>
-    </div>
+    </nav>
 </div>

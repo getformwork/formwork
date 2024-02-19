@@ -2,7 +2,7 @@
     <div class="modal-container">
         <form action="" method="post">
             <div class="modal-header">
-                <h3 class="caption" id="renameFileModalLabel"><?= $this->translate('panel.pages.renameFile') ?></h3>
+                <div class="caption" id="renameFileModalLabel"><?= $this->translate('panel.pages.renameFile') ?></div>
             </div>
             <div class="modal-content">
                 <label class="form-label form-label-required" for="filename"><?= $this->translate('panel.pages.renameFile.name') ?>:</label>

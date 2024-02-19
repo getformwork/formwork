@@ -6,26 +6,34 @@
 
 @import "components/base";
 @import "components/typography";
-@import "components/table";
-@import "components/columns";
-@import "components/buttons";
+@import "components/animations";
 @import "components/badges";
-@import "components/forms";
+@import "components/buttons";
+@import "components/caption";
+@import "components/charts";
+@import "components/columns";
 @import "components/dropdowns";
 @import "components/files-list";
-@import "components/tabs";
+@import "components/forms";
+@import "components/header";
+@import "components/icon";
+@import "components/logo";
 @import "components/modals";
 @import "components/notifications";
-@import "components/tooltip";
-@import "components/spinner";
-@import "components/charts";
-@import "components/animations";
-
-@import "components/login";
+@import "components/pages-tree";
 @import "components/panel";
-@import "components/pages";
-@import "components/options";
-@import "components/users";
+@import "components/section";
+@import "components/sidebar";
+@import "components/sortable";
+@import "components/spinner";
+@import "components/table";
+@import "components/tabs";
+@import "components/tooltip";
+
 @import "components/errors";
+@import "components/login";
+@import "components/options";
+@import "components/pages";
+@import "components/users";
 
 @import "components/utils";

@@ -1,10 +1,12 @@
 @use "sass:map";
 
+@include make-util("m", "margin", $spacers);
 @include make-util("mt", "margin-top", $spacers);
 @include make-util("ml", "margin-left", $spacers);
 @include make-util("mb", "margin-bottom", $spacers);
 @include make-util("mr", "margin-right", $spacers);
 
+@include make-util("p", "padding", $spacers);
 @include make-util("pt", "padding-top", $spacers);
 @include make-util("pl", "padding-left", $spacers);
 @include make-util("pb", "padding-bottom", $spacers);

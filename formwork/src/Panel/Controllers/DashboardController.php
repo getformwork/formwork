@@ -28,13 +28,13 @@ class DashboardController extends AbstractController
 
         return new Response($this->view('dashboard.index', [
             'title'             => $this->translate('panel.dashboard.dashboard'),
-            'lastModifiedPages' => $this->view('pages.list', [
-                'pages'     => $this->site()->descendants()->sort(direction: SORT_DESC, sortBy: $timestamps->toArray())->limit(5),
-                'subpages'  => false,
-                'class'     => 'pages-list-root',
-                'parent'    => null,
-                'orderable' => false,
-                'headers'   => true,
+            'lastModifiedPages' => $this->view('pages.tree', [
+                'pages'           => $this->site()->descendants()->sort(direction: SORT_DESC, sortBy: $timestamps->toArray())->limit(5),
+                'includeChildren' => false,
+                'class'           => 'pages-tree-root',
+                'parent'          => null,
+                'orderable'       => false,
+                'headers'         => true,
                 ]),
             'statistics' => Json::encode($statistics->getChartData()),
         ]));

@@ -18,14 +18,14 @@ export class Pages {
         const newPageModal = document.getElementById("newPageModal");
         const slugModal = document.getElementById("slugModal");
 
-        $$(".pages-list").forEach((element) => {
+        $$(".pages-tree").forEach((element) => {
             if (element.dataset.orderableChildren === "true") {
                 initSortable(element);
             }
         });
 
         $$(".page-details").forEach((element) => {
-            if ($(".page-children-toggle", element)) {
+            if ($(".pages-tree-children-toggle", element)) {
                 element.addEventListener("click", (event) => {
                     togglePageItem(element);
                     event.stopPropagation();
@@ -39,7 +39,7 @@ export class Pages {
             });
         });
 
-        $$(".pages-list .sort-handle").forEach((element) => {
+        $$(".pages-tree .sortable-handle").forEach((element) => {
             element.addEventListener("click", (event) => {
                 event.stopPropagation();
             });
@@ -62,14 +62,14 @@ export class Pages {
         if (commandReorderPages) {
             commandReorderPages.addEventListener("click", () => {
                 commandReorderPages.classList.toggle("active");
-                $(".pages-list").classList.toggle("is-reordering");
+                $(".pages-tree").classList.toggle("is-reordering");
                 commandReorderPages.blur();
             });
         }
 
         if (searchInput) {
             searchInput.addEventListener("focus", () => {
-                $$(".pages-item").forEach((element) => {
+                $$(".pages-tree-item").forEach((element) => {
                     element.dataset.expanded = element.classList.contains("expanded") ? "true" : "false";
                 });
             });
@@ -77,23 +77,23 @@ export class Pages {
             const handleSearch = (event) => {
                 const value = event.target.value;
                 if (value.length === 0) {
-                    $(".pages-list-root").classList.remove("is-filtered");
+                    $(".pages-tree-root").classList.remove("is-filtered");
 
-                    $$(".pages-item").forEach((element) => {
+                    $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element);
                         title.innerHTML = title.textContent;
-                        $(".pages-item-row", element).style.display = "";
+                        $(".pages-tree-row", element).style.display = "";
                         element.classList.toggle("is-expanded", element.dataset.expanded === "true");
                     });
                 } else {
-                    $(".pages-list-root").classList.add("is-filtered");
+                    $(".pages-tree-root").classList.add("is-filtered");
 
                     const regexp = new RegExp(makeDiacriticsRegExp(escapeRegExp(value)), "gi");
 
-                    $$(".pages-item").forEach((element) => {
+                    $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element);
                         const text = title.textContent;
-                        const pagesItem = $(".pages-item-row", element);
+                        const pagesItem = $(".pages-tree-row", element);
 
                         if (text.match(regexp) !== null) {
                             title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
@@ -225,19 +225,19 @@ export class Pages {
         });
 
         function expandAllPages() {
-            $$(".pages-item").forEach((element) => {
+            $$(".pages-tree-item").forEach((element) => {
                 element.classList.add("is-expanded");
             });
         }
 
         function collapseAllPages() {
-            $$(".pages-item").forEach((element) => {
+            $$(".pages-tree-item").forEach((element) => {
                 element.classList.remove("is-expanded");
             });
         }
 
         function togglePageItem(list) {
-            const element = list.closest(".pages-item");
+            const element = list.closest(".pages-tree-item");
             element.classList.toggle("is-expanded");
         }
 
@@ -245,7 +245,7 @@ export class Pages {
             let originalOrder = [];
 
             const sortable = Sortable.create(element, {
-                handle: ".sort-handle",
+                handle: ".sortable-handle",
                 filter: ".is-not-orderable",
                 forceFallback: true,
                 swapThreshold: 0.75,

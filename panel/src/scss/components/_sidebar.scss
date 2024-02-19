@@ -1,0 +1,74 @@
+.sidebar {
+    position: fixed;
+    z-index: 12;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $sidebar-width;
+    padding: $sidebar-padding-h $sidebar-padding-v;
+    background: $sidebar-background-gradient;
+    background-color: $sidebar-background-gradient-color-0;
+    box-shadow: $component-box-shadow;
+    @include user-select-none;
+}
+
+.sidebar.show {
+    display: block;
+}
+
+.sidebar-wrapper {
+    height: calc(100% - 9rem);
+    overflow-y: auto;
+}
+
+.sidebar-backdrop {
+    position: fixed;
+    z-index: 11;
+    background-color: $backdrop-background-color;
+    inset: 0;
+}
+
+.sidebar-toggle {
+    position: fixed;
+    z-index: 13;
+    top: $sidebar-toggle-top;
+    left: $sidebar-toggle-left;
+    cursor: pointer;
+}
+
+.sidebar-navigation {
+    padding: 0;
+    margin: 0;
+    margin-bottom: $sidebar-navigation-margin-bottom;
+    list-style-type: none;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.sidebar-navigation > li {
+    position: relative;
+    padding: $sidebar-navigation-li-padding-v $sidebar-navigation-li-padding-h;
+    padding-left: $sidebar-navigation-li-padding-left;
+    margin: 0;
+    margin-bottom: $sidebar-navigation-li-margin-bottom;
+}
+
+.sidebar-navigation > li a {
+    color: $color-base-100;
+}
+
+.sidebar-navigation > .active {
+    font-weight: 600;
+}
+
+.sidebar-navigation > .active::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $sidebar-navigation-notch-width;
+    background-color: $color-accent-500;
+    content: " ";
+}

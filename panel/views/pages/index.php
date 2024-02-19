@@ -20,5 +20,5 @@
             <button type="button" class="button button-secondary mb-4" data-command="reorder-pages"><?= $this->icon('reorder-v') ?> <?= $this->translate('panel.pages.pages.reorder') ?></button>
         </div>
     </div>
-    <?= $pagesList ?>
+    <?= $pagesTree ?>
 </section>

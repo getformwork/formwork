@@ -13,7 +13,7 @@
 
     <section class="section">
         <div class="section-header">
-            <h3 class="caption"><?= $this->translate('panel.tools.latestBackups') ?></h3>
+            <div class="caption"><?= $this->translate('panel.tools.latestBackups') ?></div>
         </div>
         <table id="backups-table" class="table table-bordered table-hoverable text-size-s">
             <thead>

@@ -12,7 +12,7 @@
             </section>
             <section class="section">
                 <div class="section-header">
-                    <h3 class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></h3>
+                    <div class="caption"><?= $this->translate('panel.dashboard.quickActions') ?></div>
                 </div>
                 <?php if ($panel->user()->permissions()->has('pages.create')): ?>
                     <button type="button" class="button button-secondary mb-4" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-xs-1-2">
                         <div class="section-header">
-                            <h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3>
+                            <div class="caption"><?= $this->translate('panel.dashboard.statistics') ?></div>
                         </div>
                     </div>
                     <div class="col-xs-1-2">
@@ -49,7 +49,7 @@
     </div>
     <section class="section">
         <div class="section-header">
-            <h3 class="caption"><?= $this->translate('panel.dashboard.lastModifiedPages') ?></h3>
+            <div class="caption"><?= $this->translate('panel.dashboard.lastModifiedPages') ?></div>
         </div>
         <?= $lastModifiedPages ?>
     </section>

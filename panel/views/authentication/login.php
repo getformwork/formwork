@@ -6,6 +6,5 @@
     <label class="form-label" for="password"><?= $this->translate('panel.login.password') ?>:</label>
     <input class="form-input" <?php if (!empty($error)): ?>class="form-input-invalid" autofocus <?php endif ?>id="password" type="password" required name="password">
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-    <div class="separator"></div>
-    <button type="submit" class="button button-accent"><?= $this->icon('arrow-right-circle') ?> <?= $this->translate('panel.login.login') ?></button>
+    <button type="submit" class="button button-accent mt-8"><?= $this->icon('arrow-right-circle') ?> <?= $this->translate('panel.login.login') ?></button>
 </form>

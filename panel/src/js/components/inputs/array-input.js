@@ -9,7 +9,7 @@ export class ArrayInput {
         $$(".form-input-array-row", input).forEach((element) => bindRowEvents(element));
 
         Sortable.create(input, {
-            handle: ".sort-handle",
+            handle: ".sortable-handle",
             forceFallback: true,
         });
 

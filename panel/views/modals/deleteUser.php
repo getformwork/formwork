@@ -2,7 +2,7 @@
     <div class="modal-container">
         <form action="" method="post">
             <div class="modal-header">
-                <h3 class="caption" id="deleteUserModalLabel"><?= $this->translate('panel.users.deleteUser') ?></h3>
+                <div class="caption" id="deleteUserModalLabel"><?= $this->translate('panel.users.deleteUser') ?></div>
             </div>
             <div class="modal-content">
                 <p class="modal-text"><?= $this->translate('panel.users.deleteUser.prompt') ?></p>

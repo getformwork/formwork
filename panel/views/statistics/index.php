@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-xs-1-2">
             <div class="section-header">
-                <h3 class="caption"><?= $this->translate('panel.dashboard.statistics') ?></h3>
+                <div class="caption"><?= $this->translate('panel.dashboard.statistics') ?></div>
             </div>
         </div>
         <div class="col-xs-1-2">
@@ -43,7 +43,7 @@
 
 <section class="section">
     <div class="section-header">
-        <h3 class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></h3>
+        <div class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></div>
     </div>
     <table class="table table-bordered table-striped table-hoverable text-size-s">
         <thead>

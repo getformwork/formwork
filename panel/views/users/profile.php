@@ -15,7 +15,7 @@
                 <img src="<?= $user->image()->uri() ?>" alt="<? $panel->user()->username() ?>">
             </div>
             <div class="user-summary-data">
-                <h3><?= $this->escape($user->fullname()) ?></h3>
+                <div class="h3"><?= $this->escape($user->fullname()) ?></div>
                 <?= $this->escape($user->username()) ?><br>
                 <a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a><br>
                 <?= $this->translate('panel.user.lastAccess') ?>: <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?>
