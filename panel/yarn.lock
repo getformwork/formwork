@@ -271,17 +271,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.56.0":
+"@eslint/js@npm:8.56.0, @eslint/js@npm:^8.56.0":
   version: 8.56.0
   resolution: "@eslint/js@npm:8.56.0"
   checksum: 60b3a1cf240e2479cec9742424224465dc50e46d781da1b7f5ef240501b2d1202c225bd456207faac4b34a64f4765833345bc4ddffd00395e1db40fa8c426f5a
-  languageName: node
-  linkType: hard
-
-"@eslint/js@npm:^8.55.0":
-  version: 8.55.0
-  resolution: "@eslint/js@npm:8.55.0"
-  checksum: 88ab9fc57a651becd2b32ec40a3958db27fae133b1ae77bebd733aa5bbd00a92f325bb02f20ad680d31c731fa49b22f060a4777dd52eb3e27da013d940bd978d
   languageName: node
   linkType: hard
 
@@ -1262,7 +1255,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "formwork-panel@workspace:."
   dependencies:
-    "@eslint/js": "npm:^8.55.0"
+    "@eslint/js": "npm:^8.56.0"
     chartist: "npm:^1.3.0"
     codemirror: "npm:^5.65.16"
     esbuild: "npm:^0.20.0"
