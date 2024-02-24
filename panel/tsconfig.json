@@ -1,0 +1,15 @@
+{
+    "include": [
+        "./src/ts/**/*.ts"
+    ],
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "lib": ["ES2017", "DOM"],
+        "noEmit": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "useDefineForClassFields": true,
+    }
+}

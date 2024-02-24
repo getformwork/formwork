@@ -14,12 +14,12 @@
     "scripts": {
         "build": "yarn build:css && yarn build:js",
         "build:css": "sass ./src/scss/panel.scss:./assets/css/panel.min.css ./src/scss/panel-dark.scss:./assets/css/panel-dark.min.css --style=compressed --no-source-map",
-        "build:js": "esbuild ./src/js/app.js --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
+        "build:js": "tsc && esbuild ./src/ts/app.ts --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
         "watch:css": "yarn build:css --watch",
         "watch:js": "yarn build:js --watch",
-        "lint": "yarn lint:css && yarn lint:js",
+        "lint": "yarn lint:css && yarn lint:ts",
         "lint:css": "prettier './src/scss/**/*.scss' --write && stylelint './src/scss/**/*.scss' --fix",
-        "lint:js": "prettier './src/js/**/*.js' --write && eslint './src/js/**/*.js' --fix"
+        "lint:ts": "prettier './src/ts/**/*.ts' --write && eslint './src/ts/**/*.ts' --fix"
     },
     "dependencies": {
         "chartist": "^1.3.0",
@@ -28,6 +28,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^8.56.0",
+        "@types/codemirror": "^5.60.15",
+        "@types/sortablejs": "^1.15.8",
         "esbuild": "^0.20.0",
         "eslint": "^8.56.0",
         "eslint-config-prettier": "^9.1.0",
@@ -38,7 +40,9 @@
         "stylelint": "^15.11.0",
         "stylelint-config-standard-scss": "^11.1.0",
         "stylelint-order": "^6.0.4",
-        "stylelint-scss": "^5.3.1"
+        "stylelint-scss": "^5.3.1",
+        "typescript": "^5.3.3",
+        "typescript-eslint": "^7.0.2"
     },
     "packageManager": "yarn@4.0.2"
 }

@@ -1,9 +1,11 @@
 import eslintConfigPrettier from "eslint-config-prettier";
 import globals from "globals";
 import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 
 export default [
     js.configs.recommended,
+    ...tseslint.configs.recommended,
     {
         languageOptions: {
             ecmaVersion: 13,
@@ -39,6 +41,13 @@ export default [
                 {
                     ignoreCase: true,
                     allowSeparatedGroups: true,
+                },
+            ],
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/typedef": [
+                "warn",
+                {
+                    parameter: true,
                 },
             ],
         },
