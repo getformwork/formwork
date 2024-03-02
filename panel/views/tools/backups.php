@@ -7,7 +7,7 @@
 <?= $tabs ?>
 <div data-view="backups">
     <section class="section">
-        <button type="button" class="button mr-6" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
+        <button type="button" class="button button-secondary mr-6" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
         <p class="mt-4 mb-0"><?= $this->translate('panel.tools.latestBackup') ?> <span class="text-bold backup-last-time"><?= $this->timedistance($backups[0]['timestamp']) ?></span></p>
     </section>
 
@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($backups as $backup): ?>
+                <?php foreach ($backups as $backup) : ?>
                     <tr>
                         <td class="table-cell truncate"><?= $this->icon('file-archive') ?> <a href="<?= $panel->uri('/backup/download/' . $backup['encodedName']) . '/' ?>"><?= $backup['name'] ?></a></td>
                         <td class="table-cell truncate text-align-center show-from-m"><?= $this->datetime($backup['timestamp']) ?></td>
