@@ -3,7 +3,7 @@ import { passIcon } from "./icons";
 import { Tooltip } from "./tooltip";
 
 export class StatisticsChart {
-    constructor(element: HTMLElement, data: LineChartData) {
+    constructor(container: HTMLElement, data: LineChartData) {
         const spacing = 100;
 
         const options = {
@@ -20,7 +20,7 @@ export class StatisticsChart {
                     x: 0,
                     y: 10,
                 },
-                labelInterpolationFnc: (value: string | number, index: number, labels?: any) => (index % Math.floor(labels.length / (element.clientWidth / spacing)) ? null : value),
+                labelInterpolationFnc: (value: string | number, index: number, labels?: any) => (index % Math.floor(labels.length / (container.clientWidth / spacing)) ? null : value),
             },
             axisY: {
                 onlyInteger: true,
@@ -32,7 +32,7 @@ export class StatisticsChart {
             },
         };
 
-        const chart = new LineChart(element, data, options);
+        const chart = new LineChart(container, data, options);
 
         chart.on("draw", (event) => {
             if (event.type === "point") {
@@ -40,8 +40,7 @@ export class StatisticsChart {
             }
         });
 
-        // @ts-expect-error We need to access this property even if it's protected
-        chart.container.addEventListener("mouseover", (event) => {
+        container.addEventListener("mouseover", (event) => {
             const target = event.target as SVGElement;
             if (target.getAttribute("class") === "ct-point") {
                 const strokeWidth = parseFloat(getComputedStyle(target).strokeWidth);
