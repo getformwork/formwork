@@ -42,7 +42,7 @@
         "stylelint-order": "^6.0.4",
         "stylelint-scss": "^5.3.1",
         "typescript": "^5.3.3",
-        "typescript-eslint": "^7.0.2"
+        "typescript-eslint": "^7.1.0"
     },
     "packageManager": "yarn@4.0.2"
 }
