@@ -1,0 +1,43 @@
+date.distance.ago: 'hace %s'
+date.distance.in: 'en %s'
+date.duration.days: ['día', 'días']
+date.duration.hours: ['hora', 'horas']
+date.duration.minutes: ['minuto', 'minutos']
+date.duration.months: ['mes', 'meses']
+date.duration.seconds: ['segundo', 'segundos']
+date.duration.weeks: ['semana', 'semanas']
+date.duration.years: ['año', 'años']
+date.months.long: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+date.months.short: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+date.now: ahora
+date.today: Hoy
+date.weekdays.long: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+date.weekdays.short: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+fields.array.add: Agregar
+fields.array.remove: Quitar
+fields.file.uploadLabel: <strong>Haz clic</strong> para elegir un archivo para cargar o <strong>arrástralo</strong> aquí
+fields.select.empty: No hay opciones coincidentes
+page.none: (Ninguno)
+upload.error: No se puede cargar el archivo. %s.
+upload.error.alreadyExists: Ya existe un archivo con el mismo nombre
+upload.error.cannotMoveToDestination: Error al mover el archivo cargado al destino
+upload.error.cannotWrite: Error al escribir el archivo en el disco
+upload.error.destinationTooLong: Ruta de destino demasiado larga
+upload.error.fileName: Nombre de archivo no válido
+upload.error.fileNameTooLong: Nombre de archivo demasiado largo
+upload.error.hiddenFiles: No se pueden cargar archivos ocultos que comiencen con un punto
+upload.error.mimeType: Tipo de archivo no permitido
+upload.error.noFile: No se ha cargado ningún archivo
+upload.error.noTemp: Falta una carpeta temporal
+upload.error.partial: El archivo cargado se ha subido parcialmente
+upload.error.phpExtension: La carga de archivos se detuvo por extensión
+upload.error.size: El archivo cargado supera el tamaño máximo permitido
+zip.error.alreadyExists: El archivo ya existe
+zip.error.cannotOpen: No se puede abrir el archivo
+zip.error.cannotRead: No se puede leer el archivo
+zip.error.inconsistentArchive: Archivo inconsistente
+zip.error.invalidArgument: Argumento no válido
+zip.error.memoryFailure: Fallo de memoria
+zip.error.notFound: Archivo no encontrado
+zip.error.notZipArchive: No es un archivo ZIP
+zip.error.unspecified: Error no especificado

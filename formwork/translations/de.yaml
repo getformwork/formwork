@@ -1,0 +1,43 @@
+date.distance.ago: 'vor %s'
+date.distance.in: 'in %s'
+date.duration.days: ['Tag', 'Tage']
+date.duration.hours: ['Stunde', 'Stunden']
+date.duration.minutes: ['Minute', 'Minuten']
+date.duration.months: ['Monat', 'Monate']
+date.duration.seconds: ['Sekunde', 'Sekunden']
+date.duration.weeks: ['Woche', 'Wochen']
+date.duration.years: ['Jahr', 'Jahre']
+date.months.long: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+date.months.short: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+date.now: jetzt
+date.today: Heute
+date.weekdays.long: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+date.weekdays.short: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+fields.array.add: Hinzufügen
+fields.array.remove: Entfernen
+fields.file.uploadLabel: <strong>Klicken</strong>, um eine Datei auszuwählen oder <strong>ziehen</strong>, um sie hier abzulegen
+fields.select.empty: Keine passenden Optionen
+page.none: (Keine)
+upload.error: Datei kann nicht hochgeladen werden. %s.
+upload.error.alreadyExists: Eine Datei mit demselben Namen existiert bereits
+upload.error.cannotMoveToDestination: Hochgeladene Datei kann nicht an das Ziel verschoben werden
+upload.error.cannotWrite: Datei kann nicht auf die Festplatte geschrieben werden
+upload.error.destinationTooLong: Ziel-Pfad ist zu lang
+upload.error.fileName: Ungültiger Dateiname
+upload.error.fileNameTooLong: Dateiname ist zu lang
+upload.error.hiddenFiles: Versteckte Dateien mit einem Punkt am Anfang können nicht hochgeladen werden
+upload.error.mimeType: Dateityp ist nicht erlaubt
+upload.error.noFile: Keine Datei hochgeladen
+upload.error.noTemp: Temporärer Ordner fehlt
+upload.error.partial: Die hochgeladene Datei wurde nur teilweise übertragen
+upload.error.phpExtension: Dateiupload wurde durch eine Erweiterung gestoppt
+upload.error.size: Die hochgeladene Datei überschreitet die maximale Dateigröße
+zip.error.alreadyExists: Das Archiv existiert bereits
+zip.error.cannotOpen: Das Archiv kann nicht geöffnet werden
+zip.error.cannotRead: Das Archiv kann nicht gelesen werden
+zip.error.inconsistentArchive: Inkonsistentes Archiv
+zip.error.invalidArgument: Ungültiges Argument
+zip.error.memoryFailure: Speicherfehler
+zip.error.notFound: Archiv nicht gefunden
+zip.error.notZipArchive: Kein ZIP-Archiv
+zip.error.unspecified: Nicht spezifizierter Fehler
