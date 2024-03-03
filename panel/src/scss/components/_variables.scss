@@ -1,17 +1,6 @@
 @use "sass:color";
 
 // ===
-// Breakpoints
-// ===
-
-$responsive-breakpoints: (
-    xs: 600px,
-    s: 768px,
-    m: 1024px,
-    l: 1280px,
-);
-
-// ===
 // Colors
 // ===
 
@@ -55,19 +44,42 @@ $color-warning-700: $color-amber-700;
 $color-warning-800: $color-amber-800;
 $color-warning-900: $color-amber-900;
 
-$color-error-100: $color-red-100;
-$color-error-200: $color-red-200;
-$color-error-300: $color-red-300;
-$color-error-400: $color-red-400;
-$color-error-500: $color-red-500;
-$color-error-600: $color-red-600;
-$color-error-700: $color-red-700;
-$color-error-800: $color-red-800;
-$color-error-900: $color-red-900;
+$color-danger-100: $color-red-100;
+$color-danger-200: $color-red-200;
+$color-danger-300: $color-red-300;
+$color-danger-400: $color-red-400;
+$color-danger-500: $color-red-500;
+$color-danger-600: $color-red-600;
+$color-danger-700: $color-red-700;
+$color-danger-800: $color-red-800;
+$color-danger-900: $color-red-900;
+
+$font-colors: (
+    "blue": $color-blue-500,
+    "green": $color-green-400,
+    "yellow": $color-yellow-500,
+    "amber": $color-amber-500,
+    "red": $color-red-500,
+    "purple": $color-purple-500,
+    "accent": $color-accent-500,
+    "gray-dark": $color-base-200,
+    "gray-medium": $color-base-300,
+    "gray-light": $color-base-500,
+    "success": $color-success-500,
+    "warning": $color-warning-500,
+    "danger": $color-danger-500,
+);
 
 // ===
 // Common values
 // ===
+
+$breakpoints: (
+    xs: 600px,
+    sm: 768px,
+    md: 1024px,
+    lg: 1280px,
+);
 
 $spacers: (
     0: 0,
@@ -83,35 +95,11 @@ $spacers: (
     10: 2rem,
 );
 
-$font-sizes: (
-    "xs": 0.75rem,
-    "s": 0.875rem,
-    "m": 1rem,
-    "l": 1.5rem,
-    "xl": 2rem,
-    "xxl": 3rem,
-);
-
-$font-colors: (
-    "blue": $color-blue-500,
-    "green": $color-green-400,
-    "yellow": $color-yellow-500,
-    "amber": $color-amber-500,
-    "red": $color-red-500,
-    "purple": $color-purple-500,
-    "accent": $color-accent-500,
-    "gray-dark": $color-base-200,
-    "gray-medium": $color-base-300,
-    "gray-light": $color-base-500,
-    "success": $color-success-500,
-    "warning": $color-warning-500,
-    "error": $color-error-500,
-);
+$columns-count: 12;
+$columns-gutter: 30px;
 
 $border-radius: 4px;
 $border-radius-round: 50%;
-
-$mark-background-color: $color-yellow-500;
 
 $selection-background-color: rgba($color-accent-500, 0.25);
 
@@ -119,17 +107,25 @@ $focusring-width: 2px;
 $focusring-opacity: 0.375;
 $focusring-default-color: color.adjust($color-accent-500, $saturation: 21%);
 
-$link-outline-color: rgba($focusring-default-color, $focusring-opacity);
-
-$columns-count: 12;
-$columns-gutter: 30px;
-
-$transition-time-s: 150ms;
-$transition-time-m: 300ms;
+$transition-time-sm: 150ms;
+$transition-time-md: 300ms;
 
 $caret-width: 0.25rem;
 
-$dropdown-box-shadow: 1px 1px 0.75rem 0 rgba($color-black, 0.25);
+$box-shadow-sm:
+    0 0.0625rem 0.125rem rgba($color-accent-100, 5%),
+    0 0.0625rem 0.25rem rgba($color-accent-100, 5%),
+    0 0.125rem 0.5rem rgba($color-accent-100, 5%);
+
+$box-shadow-md:
+    0 0.0625rem 0.25rem rgba($color-accent-100, 10%),
+    0.125rem 0.25rem 0.375rem rgba($color-accent-100, 10%),
+    0.125rem 0.5rem 0.75rem rgba($color-accent-100, 10%);
+
+$box-shadow-lg:
+    0.125rem 0.125rem 0.5rem rgba($color-accent-100, 15%),
+    0.125rem 0.25rem 0.5rem rgba($color-accent-100, 15%),
+    0.5rem 0.5rem 1rem rgba($color-accent-100, 15%);
 
 // ===
 // Typography
@@ -141,422 +137,28 @@ $mono-font-family: "SFMono-Regular", "SF Mono", "Cascadia Mono", "Liberation Mon
 $base-font-size: 100%;
 $base-line-height: 1.5;
 
+$font-sizes: (
+    "xs": 0.75rem,
+    "sm": 0.875rem,
+    "md": 1rem,
+    "lg": 1.5rem,
+    "xl": 2rem,
+    "xxl": 3rem,
+);
+
 $font-size-xs: 0.75rem;
-$font-size-s: 0.875rem;
-$font-size-m: 1rem;
-$font-size-l: 1.125rem;
+$font-size-sm: 0.875rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.125rem;
 $font-size-xl: 1.25rem;
 
+// Typographic scale – 1.2 Minor third
+$font-size-h1: 2.49rem;
+$font-size-h2: 2.07rem;
+$font-size-h3: 1.73rem;
+$font-size-h4: 1.44rem;
+$font-size-h5: 1.2rem;
+$font-size-h6: 1rem;
+
 $headings-line-height: 1.2;
-$headings-margin-bottom: 0.5rem;
 $headings-font-weight: 500;
-
-$large-headings-letter-spacing: -0.027rem;
-
-$h1-font-size: 2.369rem;
-$h2-font-size: 2.104rem;
-$h3-font-size: 1.777rem;
-$h4-font-size: 1.579rem;
-$h5-font-size: 1.184rem;
-$h6-font-size: 1rem;
-
-$paragraph-margin-bottom: 0.5rem;
-
-$list-margin-bottom: 0.5rem;
-$list-margin-left: 1.25rem;
-
-// ===
-// Buttons
-// ===
-
-$button-margin-h: 0.25rem;
-$button-margin-bottom: 0.5rem;
-$button-padding-v: 0.375rem;
-$button-padding-h: 0.5rem;
-
-$button-min-width: 2rem;
-$button-border-width: 1px;
-$button-border-radius: $border-radius;
-
-$button-box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
-
-$button-font-size: $font-size-s;
-$button-line-height: 1.15;
-
-// ===
-// Forms
-// ===
-
-$form-input-margin-bottom: 0.5rem;
-$form-input-padding-v: 0.25rem;
-$form-input-padding-h: 0.5rem;
-$form-input-font-size: $font-size-s;
-$form-input-line-height: $base-line-height;
-$form-input-border-width: 1px;
-$form-input-border-radius: $border-radius;
-
-$form-input-invalid-animation-duration: 500ms;
-
-$form-input-wrap-padding-right: 1.625rem;
-
-$label-margin-bottom: 0.25rem;
-$label-font-size: $font-size-s;
-
-$label-required-margin-left: 0.125rem;
-
-$select-padding-h: 0.25rem;
-$select-padding-left: 1.5rem;
-$select-padding-right: 0.5rem;
-
-$form-input-search-padding-left: 2rem;
-
-// ===
-// Inputs
-// ===
-
-$form-checkbox-top: 0.125rem;
-$form-checkbox-margin-right: 0.5rem;
-$form-checkbox-width: 1rem;
-$form-checkbox-height: 1rem;
-$form-checkbox-border-width: 1px;
-
-$form-input-tag-tag-padding-v: 0;
-$form-input-tag-tag-padding-h: 0.375rem;
-
-$tag-remove-margin-left: 0.25rem;
-$tag-remove-padding-v: 0;
-$tag-remove-padding-h: 0.125rem;
-
-$form-input-file-label-margin-bottom: 1rem;
-$form-input-file-label-padding: 0.5rem;
-
-$form-input-file-label-inner-padding-v: 1.5rem;
-$form-input-file-label-inner-padding-h: 1rem;
-$form-input-file-label-inner-border-width: 2px;
-
-$form-togglegroup-inner-padding-v: 0.25rem;
-$form-togglegroup-inner-padding-h: 0.75rem;
-
-$form-input-range-padding-v: 0.875rem;
-$form-input-range-padding-h: 0;
-$form-input-range-width: 15rem;
-
-$form-input-range-track-height: 0.375rem;
-$form-input-range-thumb-width: 1.125rem;
-$form-input-range-thumb-height: 1.125rem;
-$form-input-range-thumb-border-radius: $border-radius-round;
-
-$form-input-range-value-padding-v: 0.25rem;
-$form-input-range-value-padding-h: 0.5rem;
-
-$form-input-array-margin-bottom: 0.5rem;
-
-$form-input-array-row-padding-v: 0.25rem;
-$form-input-array-row-padding-h: 0.5rem;
-
-$form-input-array-key-margin-right: 0.25rem;
-$form-input-array-key-width: 30%;
-
-$form-input-array-value-margin-right: 0.25rem;
-
-$form-input-array-actions-margin-right: 0.25rem;
-
-$form-input-duration-inner-width: 2rem;
-$form-input-duration-label-padding-h: 0.5rem;
-
-// ===
-// Dropdowns
-// ===
-
-$dropdown-margin-bottom: $button-margin-bottom;
-
-$dropdown-menu-margin-top: 3px;
-$dropdown-menu-padding-v: 0.25rem;
-$dropdown-menu-padding-h: 0;
-$dropdown-menu-min-width: 8rem;
-$dropdown-menu-border-width: 1px;
-$dropdown-menu-border-radius: $border-radius;
-
-$dropdown-item-padding-v: 0.5rem;
-$dropdown-item-padding-h: 1rem;
-$dropdown-item-font-size: $button-font-size;
-
-$dropdown-separator-margin-v: 0.25rem;
-$dropdown-separator-margin-h: 0;
-$dropdown-separator-border-width: $dropdown-menu-border-width;
-
-$dropdown-list-max-height: 6.25 * (2 * $dropdown-item-padding-v * $base-line-height + $dropdown-item-font-size);
-
-// ===
-// Editor
-// ===
-
-$editor-toolbar-padding-v: 0.125rem;
-$editor-toolbar-padding-h: 0.25rem;
-$editor-toolbar-button-padding: 0.5rem;
-
-$editor-textarea-padding-v: 0.75rem;
-$editor-textarea-padding-h: 1rem;
-
-// ===
-// Calendar
-// ===
-
-$calendar-margin-h: 1rem;
-$calendar-margin-top: 3px;
-$calendar-margin-bottom: 1rem;
-$calendar-padding: 0.5rem;
-$calendar-width: 18rem;
-
-$calendar-button-padding-v: 0;
-$calendar-button-padding-h: 0.5rem;
-
-// ===
-// Image picker
-// ===
-
-$image-picker-thumbnails-margin-bottom: 1rem;
-$image-picker-thumbnails-padding: 0.5rem;
-$image-picker-thumbnails-height: 15rem;
-
-$image-picker-thumbnail-margin: 0.25rem;
-$image-picker-thumbnail-padding: 0.5rem;
-$image-picker-thumbnail-width: 8rem;
-$image-picker-thumbnail-height: 8rem;
-
-$image-picker-thumbnail-caption-right: 0.75rem;
-$image-picker-thumbnail-caption-bottom: 0.5rem;
-$image-picker-thumbnail-caption-left: 0.75rem;
-$image-picker-thumbnail-caption-padding-v: 0;
-$image-picker-thumbnail-caption-padding-h: 0.375rem;
-$image-picker-thumbnail-caption-background-color: rgba($color-base-600, 0.9);
-
-$image-picker-empty-state-margin-top: 3rem;
-$image-picker-empty-state-margin-bottom: 4rem;
-$image-picker-empty-state-margin-h: auto;
-$image-picker-empty-state-icon-font-size: 2rem;
-
-// ===
-// Files list
-// ===
-
-$files-list-margin-bottom: 1rem;
-
-$files-item-cell-padding: 0.25rem;
-
-$file-name-icon-margin-right: 0.5rem;
-$file-name-font-size: 0.9375rem;
-
-// ===
-// Tabs
-// ===
-
-$tabs-margin-bottom: 1rem;
-$tabs-tab-padding-v: 0.5rem;
-$tabs-tab-padding-h: 1.25rem;
-$tabs-tab-notch-width: 3px;
-
-// ===
-// Modals
-// ===
-
-$backdrop-background-color: rgba($color-black, 0.5);
-
-$modal-margin-v: 3rem;
-$modal-margin-h: 0.5rem;
-$modal-padding-v: 1rem;
-$modal-padding-h: 1.5rem;
-$modal-width-s: 26rem;
-$modal-width-l: 40rem;
-$modal-box-shadow: $dropdown-box-shadow;
-
-$modal-error-margin: -2rem;
-$modal-error-margin-bottom: 1rem;
-$modal-error-padding: 1rem;
-
-$modal-text-margin-bottom: 2.5rem;
-
-// ===
-// Notifications
-// ===
-
-$notification-container-top: 20px;
-$notification-container-right: 20px;
-$notification-margin-bottom: 0.5rem;
-$notification-padding-v: 1.5rem;
-$notification-padding-h: 2.5rem;
-$notification-width: 350px;
-$notification-box-shadow: $dropdown-box-shadow;
-$notification-hover-opacity: 0.95;
-$notification-icon-width: 0.75rem;
-$notification-animation-duration: 300ms;
-$notification-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
-
-// ===
-// Tooltip
-// ===
-
-$tooltip-padding: 0.25rem 0.5rem;
-$tooltip-min-width: 2rem;
-$tooltip-background-color: rgba($color-base-100, 0.8);
-
-// ===
-// Spinner
-// ===
-
-$spinner-margin-right: 0.75rem;
-$spinner-width: 1.5rem;
-$spinner-height: 1.5rem;
-$spinner-border-width: 0.2rem;
-$spinner-border-transition-duration: 500ms;
-$spinner-animation-duration: 750ms;
-
-// ===
-// Login
-// ===
-
-$login-modal-margin-v: 3rem;
-$login-modal-margin-h: 0.5rem;
-$login-modal-padding: 2rem;
-$login-modal-width: 24rem;
-
-$login-modal-notification-margin: -2rem;
-$login-modal-notification-margin-bottom: 1rem;
-$login-modal-notification-padding-v: 1rem;
-$login-modal-notification-padding-left: 3.5rem;
-$login-modal-notification-padding-right: 2rem;
-
-// ===
-// Panel
-// ===
-
-$panel-header-padding: 0.75rem;
-$panel-header-padding-left: 1.5rem;
-
-$sidebar-width: 16rem;
-
-$sidebar-padding-h: 1rem;
-$sidebar-padding-v: 1.5rem;
-$sidebar-background-gradient-color-0: $color-base-900;
-$sidebar-background-gradient-color-100: $color-base-800;
-$sidebar-background-gradient: linear-gradient(to bottom, #{$sidebar-background-gradient-color-0} 0%, #{$sidebar-background-gradient-color-100} 100%);
-
-$sidebar-toggle-top: 0.75rem;
-$sidebar-toggle-left: 0.75rem;
-$sidebar-toggle-width: 1rem;
-
-$sidebar-navigation-li-margin-bottom: 0.5rem;
-$sidebar-navigation-li-padding-v: 0.25rem;
-$sidebar-navigation-li-padding-h: 0;
-$sidebar-navigation-li-padding-left: 1rem;
-
-$sidebar-navigation-notch-width: 3px;
-
-$logo-margin-bottom: 2rem;
-$logo-font-size: $h5-font-size;
-$logo-line-height: 1.5rem;
-
-$logo-image-margin-right: 0.25rem;
-$logo-image-height: 1.5rem;
-$logo-image-vertical-align: -0.25rem;
-
-$sidebar-navigation-margin-bottom: 1rem;
-
-$panel-user-card-margin-bottom: 2rem;
-
-$panel-user-avatar-width: 48px;
-
-$panel-user-details-padding-v: 0;
-$panel-user-details-padding-h: 0.75rem;
-
-$panel-main-margin: 1.875rem;
-$panel-main-margin-top: 4.5rem;
-$panel-main-margin-left: $panel-main-margin + $sidebar-width;
-
-$component-margin-bottom: 1rem;
-$component-padding: 1.5rem;
-$component-box-shadow:
-    0.125rem 0.125rem 0.25rem -0.125rem rgb(80 80 80 / 10%),
-    0 0 0.25rem 0 rgb(80 80 80 / 10%);
-
-$caption-margin-bottom: 1rem;
-$caption-letter-spacing: 1px;
-$caption-font-size: 0.875rem;
-
-$separator-height: 1rem;
-$separator-height-l: 1.5rem;
-
-$section-margin-bottom: 1rem;
-
-$section-header-margin-bottom: 1rem;
-$section-header-padding-v: 0.25rem;
-$section-header-padding-h: 0.5rem;
-
-$sortable-fallback-box-shadow: 0 0 0.75rem 0.25rem rgba($color-black, 0.15);
-
-// ===
-// Dashboard
-// ===
-
-$dashboard-chart-height: 14rem;
-
-// ===
-// Pages
-// ===
-
-$pages-tree-headers-padding-v: 0.25rem;
-$pages-tree-headers-padding-h: 0;
-
-$pages-tree-item-padding-v: 0.5rem;
-$pages-tree-item-padding-h: 0;
-
-$pages-tree-item-cell-padding-v: 0.25rem;
-$pages-tree-item-cell-padding-h: 0.25rem;
-
-$page-language-padding-v: 0.125rem;
-$page-language-padding-h: 0.25rem;
-$page-language-min-width: 1.125rem;
-
-$page-status-label-margin-right: 0.375rem;
-
-$pages-tree-levels: 10;
-$pages-tree-level-padding: 1.75rem;
-
-$page-info-margin-bottom: 0.75rem;
-$page-info-padding-v: 0;
-$page-info-padding-h: 0.25rem;
-
-// ===
-// Options
-// ===
-
-$info-data-margin-bottom: 1rem;
-$info-data-inner-padding: 0.5rem;
-
-// ===
-// Users
-// ===
-
-$user-summary-cell-padding: 0.75rem;
-$user-summary-avatar-width: 180px;
-$user-summary-border-radius: $border-radius-round;
-
-$users-item-padding-v: 0.5rem;
-$users-item-padding-h: 0;
-
-$users-item-cell-padding-v-s: 0.125rem;
-$users-item-cell-padding-h-s: 0.25rem;
-$users-item-cell-padding-v-l: 0.25rem;
-$users-item-cell-padding-h-l: 0.5rem;
-
-$users-list-headers-padding-v: 0.25rem;
-$users-list-headers-padding-h: 0;
-
-// ===
-// Errors
-// ===
-
-$error-container-margin-v: 4rem;
-$error-container-margin-h: auto;
-$error-container-padding: 1rem;
-$error-container-max-width: 32rem;

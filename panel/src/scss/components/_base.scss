@@ -23,9 +23,9 @@ main {
 a {
     background-color: transparent;
     color: $color-accent-500;
-    outline-color: $link-outline-color;
+    outline-color: rgba($focusring-default-color, $focusring-opacity);
     text-decoration: none;
-    transition: color $transition-time-s;
+    transition: color $transition-time-sm;
 
     &:hover {
         color: $color-accent-400;
@@ -42,7 +42,7 @@ img {
 }
 
 mark {
-    background-color: $mark-background-color;
+    background-color: $color-yellow-500;
 }
 
 code,

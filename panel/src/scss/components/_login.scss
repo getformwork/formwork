@@ -1,25 +1,25 @@
 .login-modal-container {
-    max-width: $login-modal-width;
-    padding: $login-modal-padding;
+    max-width: 24rem;
+    padding: 2rem;
     border-radius: $border-radius;
-    margin: $login-modal-margin-v $login-modal-margin-h;
+    margin: 3rem 0.5rem;
     background-color: $color-base-900;
-    box-shadow: $component-box-shadow;
+    box-shadow: $box-shadow-sm;
 }
 
-@media (min-width: $login-modal-width) {
+@media (width >= 24rem) {
     .login-modal-container {
-        margin: $login-modal-margin-v auto;
+        margin: 3rem auto;
     }
 }
 
 .login-modal-info,
 .login-modal-success,
 .login-modal-warning,
-.login-modal-error {
+.login-modal-danger {
     position: relative;
-    padding: $login-modal-notification-padding-v $login-modal-notification-padding-right $login-modal-notification-padding-v $login-modal-notification-padding-left;
-    margin: $login-modal-notification-margin $login-modal-notification-margin $login-modal-notification-margin-bottom $login-modal-notification-margin;
+    padding: 1rem 2rem 1rem 3.5rem;
+    margin: -2rem -2rem 1rem;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
 
@@ -54,7 +54,7 @@
     color: $color-white;
 }
 
-.login-modal-error {
-    background-color: $color-error-500;
+.login-modal-danger {
+    background-color: $color-danger-500;
     color: $color-white;
 }

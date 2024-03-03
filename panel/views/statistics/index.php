@@ -22,21 +22,21 @@
 </section>
 <section class="section">
     <div class="row text-align-center">
-        <div class="col-xs-1-2 col-m-1-4">
+        <div class="col-xs-1-2 col-md-1-4">
             <div class="text-size-xxl text-bold text-color-blue"><?= $monthVisits ?></div>
-            <span class="text-size-s"><?= $this->translate('panel.statistics.monthlyVisits') ?></span>
+            <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyVisits') ?></span>
         </div>
-        <div class="col-xs-1-2 col-m-1-4">
+        <div class="col-xs-1-2 col-md-1-4">
             <div class="text-size-xxl text-bold text-color-amber"><?= $monthUniqueVisits ?></div>
-            <span class="text-size-s"><?= $this->translate('panel.statistics.monthlyUniqueVisitors') ?></span>
+            <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyUniqueVisitors') ?></span>
         </div>
-        <div class="col-xs-1-2 col-m-1-4">
+        <div class="col-xs-1-2 col-md-1-4">
             <div class="text-size-xxl text-bold text-color-blue"><?= $weekVisits ?></div>
-            <span class="text-size-s"><?= $this->translate('panel.statistics.weeklyVisits') ?></span>
+            <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyVisits') ?></span>
         </div>
-        <div class="col-xs-1-2 col-m-1-4">
+        <div class="col-xs-1-2 col-md-1-4">
             <div class="text-size-xxl text-bold text-color-amber"><?= $weekUniqueVisits ?></div>
-            <span class="text-size-s"><?= $this->translate('panel.statistics.weeklyUniqueVisitors') ?></span>
+            <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyUniqueVisitors') ?></span>
         </div>
     </div>
 </section>
@@ -45,7 +45,7 @@
     <div class="section-header">
         <div class="caption"><?= $this->translate('panel.statistics.totalVisits') ?></div>
     </div>
-    <table class="table table-bordered table-striped table-hoverable text-size-s">
+    <table class="table table-bordered table-striped table-hoverable text-size-sm">
         <thead>
             <tr>
                 <th class="table-header" style="width: 100%"><?= $this->translate('panel.statistics.totalVisits.uri') ?></th>
@@ -54,7 +54,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($pageViews as $page => $views): ?>
+            <?php foreach ($pageViews as $page => $views) : ?>
                 <tr>
                     <td class="table-cell truncate"><a href="<?= $site->uri($page, includeLanguage: false) ?>" target="_blank"><?= $page ?></a></td>
                     <td class="table-cell"><?= $views ?></td>

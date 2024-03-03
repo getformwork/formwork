@@ -1,53 +1,43 @@
 h1,
 .h1 {
-    font-size: $h1-font-size;
+    font-size: $font-size-h1;
     @extend %heading;
-    @if $large-headings-letter-spacing != 0 {
-        letter-spacing: $large-headings-letter-spacing;
-    }
 }
 
 h2,
 .h2 {
-    font-size: $h2-font-size;
+    font-size: $font-size-h2;
     @extend %heading;
-    @if $large-headings-letter-spacing != 0 {
-        letter-spacing: $large-headings-letter-spacing;
-    }
 }
 
 h3,
 .h3 {
-    font-size: $h3-font-size;
+    font-size: $font-size-h3;
     @extend %heading;
-    @if $large-headings-letter-spacing != 0 {
-        letter-spacing: $large-headings-letter-spacing;
-    }
 }
 
 h4,
 .h4 {
-    font-size: $h4-font-size;
+    font-size: $font-size-h4;
     @extend %heading;
 }
 
 h5,
 .h5 {
-    font-size: $h5-font-size;
+    font-size: $font-size-h5;
     @extend %heading;
 }
 
 h6,
 .h6 {
-    font-size: $h6-font-size;
+    font-size: $font-size-h6;
     @extend %heading;
 }
 
 %heading {
     margin-top: 0;
-    margin-bottom: $headings-margin-bottom;
+    margin-bottom: 0.25rem;
     font-weight: $headings-font-weight;
-    line-height: $headings-line-height;
 }
 
 strong {
@@ -56,15 +46,15 @@ strong {
 
 p {
     margin-top: 0;
-    margin-bottom: $paragraph-margin-bottom;
+    margin-bottom: 0.5rem;
     line-height: $base-line-height;
 }
 
 ul {
     padding: 0;
     margin-top: 0;
-    margin-bottom: $list-margin-bottom;
-    margin-left: $list-margin-left;
+    margin-bottom: 0.5rem;
+    margin-left: 1.25rem;
     list-style-position: outside;
 }
 

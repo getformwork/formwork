@@ -1,5 +1,5 @@
 .form-input-array {
-    margin-bottom: $form-input-array-margin-bottom;
+    margin-bottom: 0.5rem;
     @include user-select-none;
 }
 
@@ -9,8 +9,8 @@
 
 .form-input-array-row {
     display: flex;
-    padding: $form-input-array-row-padding-v $form-input-array-row-padding-h;
-    margin: 0 (-$form-input-array-row-padding-h);
+    padding: 0.25rem 0.5rem;
+    margin: 0 (-0.5rem);
     white-space: nowrap;
 }
 
@@ -21,17 +21,17 @@
 }
 
 .form-input-array-key {
-    width: $form-input-array-key-width;
-    margin-right: $form-input-array-key-margin-right;
+    width: 30%;
+    margin-right: 0.25rem;
 }
 
 .form-input-array-value {
-    margin-right: $form-input-array-value-margin-right;
+    margin-right: 0.25rem;
 }
 
 .form-input-array-add,
 .form-input-array-remove {
     min-width: 1rem;
     padding: 0;
-    margin-right: $form-input-array-actions-margin-right;
+    margin-right: 0.25rem;
 }

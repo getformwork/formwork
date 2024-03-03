@@ -4,11 +4,11 @@
     top: 0;
     bottom: 0;
     left: 0;
-    width: $sidebar-width;
-    padding: $sidebar-padding-h $sidebar-padding-v;
-    background: $sidebar-background-gradient;
-    background-color: $sidebar-background-gradient-color-0;
-    box-shadow: $component-box-shadow;
+    width: 16rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #{$color-base-900} 0%, #{$color-base-800} 100%);
+    background-color: $color-base-900;
+    box-shadow: $box-shadow-sm;
     @include user-select-none;
 }
 
@@ -24,22 +24,22 @@
 .sidebar-backdrop {
     position: fixed;
     z-index: 11;
-    background-color: $backdrop-background-color;
+    background-color: rgba($color-blue-100, 0.5);
     inset: 0;
 }
 
 .sidebar-toggle {
     position: fixed;
     z-index: 13;
-    top: $sidebar-toggle-top;
-    left: $sidebar-toggle-left;
+    top: 0.75rem;
+    left: 0.75rem;
     cursor: pointer;
 }
 
 .sidebar-navigation {
     padding: 0;
     margin: 0;
-    margin-bottom: $sidebar-navigation-margin-bottom;
+    margin-bottom: 1rem;
     list-style-type: none;
 
     &:last-child {
@@ -49,10 +49,10 @@
 
 .sidebar-navigation > li {
     position: relative;
-    padding: $sidebar-navigation-li-padding-v $sidebar-navigation-li-padding-h;
-    padding-left: $sidebar-navigation-li-padding-left;
+    padding: 0.25rem 0;
+    padding-left: 1rem;
     margin: 0;
-    margin-bottom: $sidebar-navigation-li-margin-bottom;
+    margin-bottom: 0.5rem;
 }
 
 .sidebar-navigation > li a {
@@ -68,7 +68,7 @@
     top: 0;
     bottom: 0;
     left: 0;
-    width: $sidebar-navigation-notch-width;
+    width: 3px;
     background-color: $color-accent-500;
     content: " ";
 }

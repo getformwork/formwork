@@ -4,20 +4,20 @@
 
 .form-input-file-label {
     display: block;
-    padding: $form-input-file-label-padding;
-    margin-bottom: $form-input-file-label-margin-bottom;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
     background-color: $color-base-800;
     clear: both;
 }
 
 .form-input-file-label > span {
     display: block;
-    padding: $form-input-file-label-inner-padding-v $form-input-file-label-inner-padding-h;
-    border: $form-input-file-label-inner-border-width dashed $color-base-500;
+    padding: 1.5rem 1rem;
+    border: 2px dashed $color-base-500;
     border-radius: $border-radius;
     color: $color-base-100;
     text-align: center;
-    transition: background-color $transition-time-m;
+    transition: background-color $transition-time-md;
 
     &:hover {
         background-color: $color-base-700;

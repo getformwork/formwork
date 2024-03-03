@@ -1,7 +1,7 @@
 .modal-backdrop {
     position: fixed;
     z-index: 16;
-    background-color: $backdrop-background-color;
+    background-color: rgba($color-blue-100, 0.5);
     inset: 0;
 }
 
@@ -21,7 +21,7 @@
 .modal-header,
 .modal-content,
 .modal-footer {
-    padding: $modal-padding-v $modal-padding-h;
+    padding: 1rem 1.5rem;
 }
 
 .modal-header {
@@ -33,29 +33,22 @@
 }
 
 .modal-container {
-    width: $modal-width-s;
-    max-width: $modal-width-s;
-    border: $form-input-border-width solid $color-base-500;
+    width: 26rem;
+    max-width: 26rem;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
-    margin: $modal-margin-v $modal-margin-h;
+    margin: 3rem 0.5rem;
     background-color: $color-base-900;
-    box-shadow: $modal-box-shadow;
-    @media (min-width: $modal-width-s) {
-        margin: $modal-margin-v auto;
+    box-shadow: $box-shadow-lg;
+    @media (width >= 26rem) {
+        margin: 3rem auto;
     }
 }
 
 .modal-size-large {
-    width: $modal-width-l;
-    max-width: $modal-width-l;
-    @media (max-width: $modal-width-l) {
-        margin: $modal-margin-v $modal-margin-h;
+    width: 40rem;
+    max-width: 40rem;
+    @media (width <= 40rem) {
+        margin: 3rem 0.5rem;
     }
-}
-
-.modal-error {
-    padding: $modal-error-padding;
-    margin: $modal-error-margin $modal-error-margin $modal-error-margin-bottom $modal-error-margin;
-    background-color: $color-error-500;
-    color: $color-base-900;
 }

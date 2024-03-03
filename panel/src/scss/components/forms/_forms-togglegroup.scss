@@ -1,9 +1,9 @@
 .form-togglegroup {
     display: inline-block;
-    border: $form-input-border-width solid $color-base-500;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
     margin: 0;
-    margin-bottom: $form-input-margin-bottom;
+    margin-bottom: 0.75rem;
     font-size: 0;
 }
 
@@ -23,12 +23,12 @@
 
 .form-togglegroup .form-input[type="radio"] + span {
     display: inline-block;
-    padding: $form-togglegroup-inner-padding-v $form-togglegroup-inner-padding-h;
+    padding: 0.25rem 0.75rem;
     border-radius: $border-radius - 1px;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
     transition:
-        background-color $transition-time-s,
-        color $transition-time-s;
+        background-color $transition-time-sm,
+        color $transition-time-sm;
 }
 
 .form-togglegroup .form-input[type="radio"]:hover + span {

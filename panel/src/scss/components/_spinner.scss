@@ -1,18 +1,18 @@
 .spinner {
     position: relative;
     display: inline-block;
-    width: $spinner-width;
-    height: $spinner-height;
-    border-width: $spinner-border-width;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2rem;
     border-style: solid;
     border-color: $color-accent-500;
     border-radius: $border-radius-round;
     border-bottom-color: transparent;
     border-left-color: transparent;
-    margin-right: $spinner-margin-right;
-    animation: $spinner-animation-duration spin infinite linear;
+    margin-right: 0.75rem;
+    animation: 750ms spin infinite linear;
     text-align: center;
-    transition: border $spinner-border-transition-duration;
+    transition: border 500ms;
     transition-timing-function: ease-out;
     vertical-align: -0.375rem;
 }
@@ -36,8 +36,8 @@
     color: $color-success-500;
 }
 
-.spinner-error {
-    border-color: $color-error-500;
+.spinner-danger {
+    border-color: $color-danger-500;
     animation: none;
-    color: $color-error-500;
+    color: $color-danger-500;
 }

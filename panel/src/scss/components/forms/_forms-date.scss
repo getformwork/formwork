@@ -7,35 +7,35 @@
     z-index: 8;
     top: 100%;
     display: none;
-    width: $calendar-width;
-    padding: $calendar-padding;
-    border: $form-input-border-width solid $color-base-500;
+    width: 18rem;
+    padding: 0.5rem;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
-    margin: $calendar-margin-top $calendar-margin-h $calendar-margin-bottom;
+    margin: 3px 1rem 1rem;
     background-color: $color-base-900;
-    box-shadow: $dropdown-box-shadow;
+    box-shadow: $box-shadow-md;
     color: $color-base-100;
 }
 
 .calendar-header {
-    margin-bottom: $calendar-padding;
+    margin-bottom: 0.5rem;
 }
 
 .calendar-buttons {
-    margin: 0 (-$calendar-padding);
+    margin: 0 (-0.5rem);
     font-size: 0;
 }
 
 .calendar button {
     width: 33.3%;
-    padding: $calendar-button-padding-v $calendar-button-padding-h;
+    padding: 0 0.5rem;
     border: 0;
     margin: 0;
     background-color: transparent;
     box-shadow: none;
     color: $color-base-100;
     cursor: pointer;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
     outline: none;
 
     &:hover {
@@ -70,14 +70,14 @@
 }
 
 .calendar-header-day {
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
 }
 
 .calendar-day {
     border-radius: $border-radius;
     transition:
-        background-color $transition-time-s,
-        color $transition-time-s;
+        background-color $transition-time-sm,
+        color $transition-time-sm;
 
     &:hover {
         background-color: $color-accent-400;
@@ -97,6 +97,6 @@
 
 .calendar-separator {
     height: 0;
-    border-top: $form-input-border-width solid $color-base-500;
-    margin: $calendar-padding (-$calendar-padding);
+    border-top: 1px solid $color-base-500;
+    margin: 0.5rem (-0.5rem);
 }

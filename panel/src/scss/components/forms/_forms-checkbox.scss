@@ -5,18 +5,18 @@
 
 .form-checkbox + .form-checkbox-text::before {
     position: relative;
-    top: $form-checkbox-top;
+    top: 0.125rem;
     display: inline-block;
-    width: $form-checkbox-width;
-    height: $form-checkbox-height;
+    width: 1rem;
+    height: 1rem;
     box-sizing: border-box;
-    border: $form-checkbox-border-width solid $color-base-500;
+    border: 1px solid $color-base-500;
     border-radius: $border-radius;
-    margin-right: $form-checkbox-margin-right;
+    margin-right: 0.5rem;
     content: " ";
     transition:
-        border-color $transition-time-s,
-        background-color $transition-time-s;
+        border-color $transition-time-sm,
+        background-color $transition-time-sm;
 }
 
 .form-checkbox + .form-checkbox-text:hover::before,
@@ -41,11 +41,11 @@
 
 .form-checkbox:checked + .form-checkbox-text::after {
     position: absolute;
-    top: $form-checkbox-top;
+    top: 0.125rem;
     left: 0;
     display: block;
-    width: $form-checkbox-width;
-    height: $form-checkbox-height;
+    width: 1rem;
+    height: 1rem;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath fill='%23fff' d='M4.727 7.036L8.263 3.5l.707.707L4.727 8.45 2 5.722l.707-.707z'/%3E%3C/svg%3E");
     content: " ";
 }
@@ -57,5 +57,6 @@
 
 .form-checkbox-label {
     position: relative;
-    line-height: $form-input-line-height;
+    margin-bottom: 0.75rem;
+    line-height: $base-line-height;
 }

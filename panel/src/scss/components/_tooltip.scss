@@ -2,10 +2,10 @@
     position: absolute;
     z-index: 20;
     display: none;
-    min-width: $tooltip-min-width;
-    padding: $tooltip-padding;
+    min-width: 2rem;
+    padding: 0.25rem 0.5rem;
     border-radius: $border-radius;
-    background-color: $tooltip-background-color;
+    background-color: rgba($color-base-100, 0.8);
     color: $color-base-900;
     font-size: $font-size-xs;
     pointer-events: none;

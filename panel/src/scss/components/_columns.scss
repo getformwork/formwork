@@ -8,7 +8,7 @@
 }
 
 .container {
-    max-width: map.get($responsive-breakpoints, "l");
+    max-width: map.get($breakpoints, "lg");
 }
 
 .container-no-margin {
@@ -22,7 +22,7 @@
     margin: 0 $columns-gutter * -0.5;
 }
 
-@media (max-width: map.get($responsive-breakpoints, "s")) {
+@media (max-width: map.get($breakpoints, "sm")) {
     .container-no-margin .row {
         margin: 0;
     }
@@ -32,18 +32,18 @@
     }
 }
 
-@include make-columns-globals($columns-count, $responsive-breakpoints);
+@include make-columns-globals($columns-count, $breakpoints);
 
 @include make-breakpoint-columns($columns-count, "xs");
 
-@media (min-width: map.get($responsive-breakpoints, "s")) {
-    @include make-breakpoint-columns($columns-count, "s");
+@media (min-width: map.get($breakpoints, "sm")) {
+    @include make-breakpoint-columns($columns-count, "sm");
 }
 
-@media (min-width: map.get($responsive-breakpoints, "m")) {
-    @include make-breakpoint-columns($columns-count, "m");
+@media (min-width: map.get($breakpoints, "md")) {
+    @include make-breakpoint-columns($columns-count, "md");
 }
 
-@media (min-width: map.get($responsive-breakpoints, "l")) {
-    @include make-breakpoint-columns($columns-count, "l");
+@media (min-width: map.get($breakpoints, "lg")) {
+    @include make-breakpoint-columns($columns-count, "lg");
 }

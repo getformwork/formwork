@@ -1,17 +1,17 @@
 .options-form .form-checkbox-label {
-    margin-bottom: $form-input-margin-bottom;
-    font-size: $font-size-m;
+    margin-bottom: 0.5rem;
+    font-size: $font-size-md;
 }
 
 .info-data {
     width: 100%;
-    margin-bottom: $info-data-margin-bottom;
+    margin-bottom: 1rem;
     table-layout: fixed;
 }
 
 .info-data td {
     overflow: hidden;
-    padding: $info-data-inner-padding;
+    padding: 0.5rem;
     vertical-align: top;
 }
 
@@ -22,6 +22,6 @@
 .info-data-value {
     width: 75%;
     font-family: $mono-font-family;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
     word-break: break-word;
 }

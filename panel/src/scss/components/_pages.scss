@@ -5,12 +5,12 @@
 .page-title {
     padding: $focusring-width;
     margin: -$focusring-width;
-    font-size: $font-size-m;
+    font-size: $font-size-md;
 }
 
 .page-route {
     color: $color-base-300;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
 }
 
 .page-route-changeable {
@@ -35,7 +35,7 @@
 
 .page-status .icon {
     display: inline-block;
-    margin-right: $page-status-label-margin-right;
+    margin-right: 0.375rem;
 }
 
 .page-status-published .icon {
@@ -43,7 +43,7 @@
 }
 
 .page-status-not-published .icon {
-    color: $color-error-500;
+    color: $color-danger-500;
 }
 
 .page-status-not-routable .icon {
@@ -57,12 +57,12 @@
 }
 
 .page-actions .button-link {
-    font-size: $font-size-m;
+    font-size: $font-size-md;
 }
 
 .page-info {
-    padding: $page-info-padding-v $page-info-padding-h;
-    margin-bottom: $page-info-margin-bottom;
+    padding: 0 0.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .page-slug-change {
@@ -90,7 +90,7 @@
         margin-right: 0;
         color: $color-base-100;
         opacity: 0;
-        transition: opacity $transition-time-s;
+        transition: opacity $transition-time-sm;
     }
 
     &:hover .icon,

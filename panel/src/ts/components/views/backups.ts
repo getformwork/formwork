@@ -72,7 +72,7 @@ export class Backups {
                         }
 
                         if (response.status === "error") {
-                            spinner.classList.add("spinner-error");
+                            spinner.classList.add("spinner-danger");
                             insertIcon("exclamation", spinner);
                             button.disabled = false;
                         }

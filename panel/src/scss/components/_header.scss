@@ -13,7 +13,7 @@
     background-color: $color-base-800;
     white-space: nowrap;
 
-    @media (min-width: map.get($responsive-breakpoints, "s")) {
+    @media (min-width: map.get($breakpoints, "sm")) {
         padding: 1rem 1.5rem;
         margin-right: -1.5rem;
         margin-left: -1.5rem;
@@ -23,7 +23,7 @@
 .header-title {
     overflow: hidden;
     flex-grow: 1;
-    font-size: $h5-font-size;
+    font-size: $font-size-h5;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;

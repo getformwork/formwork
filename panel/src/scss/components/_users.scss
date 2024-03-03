@@ -6,17 +6,17 @@
 .user-summary-avatar {
     max-width: 33.3333%;
     flex: 0 0 33.3333%;
-    padding: $user-summary-cell-padding;
+    padding: 0.75rem;
     text-align: center;
 }
 
 .user-summary-avatar img {
-    width: $user-summary-avatar-width;
-    border-radius: $user-summary-border-radius;
+    width: 180px;
+    border-radius: $border-radius-round;
 }
 
 .user-summary-data {
-    padding: $user-summary-cell-padding;
+    padding: 0.75rem;
 }
 
 .users-list {
@@ -27,8 +27,8 @@
 .users-list-headers {
     display: flex;
     align-items: center;
-    padding: $users-list-headers-padding-v $users-list-headers-padding-h;
-    font-size: $font-size-s;
+    padding: 0.25rem 0;
+    font-size: $font-size-sm;
     font-weight: 600;
     @include user-select-none;
 }
@@ -36,7 +36,7 @@
 .users-item {
     display: flex;
     align-items: center;
-    padding: $users-item-padding-v $users-item-padding-h;
+    padding: 0.5rem 0;
     border-bottom: 1px solid $color-base-600;
 
     &:hover {
@@ -46,7 +46,7 @@
 
 .users-item-cell,
 .users-headers-cell {
-    padding: $users-item-cell-padding-v-l $users-item-cell-padding-h-l;
+    padding: 0.25rem 0.5rem;
 }
 
 .user-username {
@@ -65,13 +65,13 @@
 .user-email {
     max-width: 25%;
     flex: 0 0 25%;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
 }
 
 .user-last-access {
     max-width: 20%;
     flex: 0 0 20%;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
     text-align: center;
 }
 

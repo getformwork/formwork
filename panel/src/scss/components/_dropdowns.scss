@@ -1,7 +1,7 @@
 .dropdown {
     position: relative;
     display: inline-block;
-    margin-bottom: $dropdown-margin-bottom;
+    margin-bottom: 0.5rem;
 }
 
 .dropdown-button {
@@ -19,29 +19,29 @@
     top: 100%;
     left: 0;
     display: none;
-    min-width: $dropdown-menu-min-width;
-    padding: $dropdown-menu-padding-v $dropdown-menu-padding-h;
-    border: $dropdown-menu-border-width solid $color-base-500;
-    border-radius: $dropdown-menu-border-radius;
-    margin-top: $dropdown-menu-margin-top;
+    min-width: 8rem;
+    padding: 0.25rem 0;
+    border: 1px solid $color-base-500;
+    border-radius: $border-radius;
+    margin-top: 3px;
     background-color: $color-base-900;
-    box-shadow: $dropdown-box-shadow;
+    box-shadow: $box-shadow-md;
     float: left;
 }
 
 .dropdown-list {
     width: 100%;
-    max-height: $dropdown-list-max-height;
+    max-height: 6.25 * (2 * 0.5rem * $base-line-height + $font-size-sm);
     overflow-y: auto;
 }
 
 .dropdown-item {
     display: block;
     width: 100%;
-    padding: $dropdown-item-padding-v $dropdown-item-padding-h;
+    padding: 0.5rem 1rem;
     color: $color-base-100;
     cursor: pointer !important;
-    font-size: $dropdown-item-font-size;
+    font-size: $font-size-sm;
     white-space: nowrap;
 
     &:hover {
@@ -73,15 +73,15 @@
 .dropdown-empty {
     display: block;
     width: 100%;
-    padding: $dropdown-item-padding-v $dropdown-item-padding-h;
+    padding: 0.5rem 1rem;
     color: $color-base-300;
     cursor: default !important;
-    font-size: $dropdown-item-font-size;
+    font-size: $font-size-sm;
     white-space: nowrap;
 }
 
 .dropdown-separator {
     height: 0;
-    border-top: $dropdown-separator-border-width solid $color-base-500;
-    margin: $dropdown-separator-margin-v $dropdown-separator-margin-h;
+    border-top: 1px solid $color-base-500;
+    margin: 0.25rem 0;
 }

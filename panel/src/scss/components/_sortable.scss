@@ -16,7 +16,7 @@
 }
 
 .sortable-fallback {
-    box-shadow: $sortable-fallback-box-shadow;
+    box-shadow: 0 0 0.75rem 0.25rem rgba($color-accent-100, 15%);
 }
 
 .sortable-fallback::before,

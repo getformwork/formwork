@@ -1,21 +1,21 @@
 @use "sass:map";
 
 .logo {
-    margin-bottom: $logo-margin-bottom;
+    margin-bottom: 2rem;
     color: $color-base-100;
-    font-size: $logo-font-size;
+    font-size: $font-size-h5;
     font-weight: 600;
-    line-height: $logo-line-height;
+    line-height: 1.5rem;
     text-align: center;
-    @media (min-width: map.get($responsive-breakpoints, "s")) {
+    @media (min-width: map.get($breakpoints, "sm")) {
         text-align: left;
     }
 }
 
 .logo img {
-    height: $logo-image-height;
-    margin-right: $logo-image-margin-right;
-    vertical-align: $logo-image-vertical-align;
+    height: 1.5rem;
+    margin-right: 0.25rem;
+    vertical-align: -0.25rem;
 }
 
 .logo a {

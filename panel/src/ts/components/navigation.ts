@@ -7,7 +7,7 @@ export class Navigation {
                 if (($(".sidebar") as HTMLElement).classList.toggle("show")) {
                     if (!$(".sidebar-backdrop")) {
                         const backdrop = document.createElement("div");
-                        backdrop.className = "sidebar-backdrop hide-from-s";
+                        backdrop.className = "sidebar-backdrop hide-from-sm";
                         document.body.appendChild(backdrop);
                     }
                 } else {

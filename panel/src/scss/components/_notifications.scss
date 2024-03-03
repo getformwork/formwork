@@ -1,33 +1,33 @@
 .notification-container {
     position: fixed;
     z-index: 12;
-    top: $notification-container-top;
-    right: $notification-container-right;
+    top: 20px;
+    right: 20px;
 }
 
 .notification {
     position: relative;
     overflow: hidden;
-    width: $notification-width;
-    padding: $notification-padding-v $notification-padding-h;
+    width: 350px;
+    padding: 1.5rem 2.5rem;
     border-radius: $border-radius;
-    margin-bottom: $notification-margin-bottom;
-    animation: fade-in-right $notification-animation-duration $notification-animation-easing;
+    margin-bottom: 0.5rem;
+    animation: fade-in-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
     background-color: $color-base-700;
-    box-shadow: $notification-box-shadow;
+    box-shadow: $box-shadow-md;
     cursor: default;
     text-overflow: ellipsis;
     transition:
-        top $transition-time-m ease-in,
-        opacity $transition-time-s;
+        top $transition-time-md ease-in,
+        opacity $transition-time-sm;
 
     &:hover {
-        opacity: $notification-hover-opacity;
+        opacity: 0.95;
     }
 }
 
 .notification.fadeout {
-    animation: fade-out-right $notification-animation-duration $notification-animation-easing;
+    animation: fade-out-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
 }
 
@@ -45,8 +45,8 @@
 .notification-info,
 .notification-success,
 .notification-warning,
-.notification-error {
-    padding-left: $notification-padding-h + $notification-icon-width;
+.notification-danger {
+    padding-left: 2.5rem + 0.75rem;
 }
 
 .notification-info {
@@ -64,7 +64,7 @@
     color: $color-white;
 }
 
-.notification-error {
-    background-color: $color-error-500;
+.notification-danger {
+    background-color: $color-danger-500;
     color: $color-white;
 }

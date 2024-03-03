@@ -8,34 +8,34 @@
     left: 0;
     display: flex;
     align-items: center;
-    padding: $panel-header-padding;
-    padding-left: $panel-header-padding-left + $sidebar-toggle-width + 2 * $sidebar-toggle-left;
+    padding: 0.75rem;
+    padding-left: 1.5rem + 1rem + 2 * 0.75rem;
     background-color: $color-base-600;
-    box-shadow: $component-box-shadow;
+    box-shadow: $box-shadow-sm;
     color: $color-base-100;
     font-weight: 500;
     @include user-select-none;
-    @media (min-width: map.get($responsive-breakpoints, "s")) {
-        left: $sidebar-width;
-        padding-left: $panel-header-padding-left;
+    @media (min-width: map.get($breakpoints, "sm")) {
+        left: 16rem;
+        padding-left: 1.5rem;
     }
 }
 
 .panel-user-card {
     display: flex;
     align-items: center;
-    margin-bottom: $panel-user-card-margin-bottom;
+    margin-bottom: 2rem;
     cursor: pointer;
 }
 
 .panel-user-avatar {
-    width: $panel-user-avatar-width;
+    width: 48px;
 }
 
 .panel-user-avatar img {
-    width: $panel-user-avatar-width;
+    width: 48px;
     border-radius: $border-radius-round;
-    transition: box-shadow $transition-time-m ease-out;
+    transition: box-shadow $transition-time-md ease-out;
 
     .panel-user-card:hover & {
         box-shadow: 0 0 0 0.5rem $color-base-600;
@@ -43,7 +43,7 @@
 }
 
 .panel-user-details {
-    padding: $panel-user-details-padding-v $panel-user-details-padding-h;
+    padding: 0 0.75rem;
 }
 
 .panel-user-fullname {
@@ -52,14 +52,14 @@
 
 .panel-user-username {
     color: $color-base-300;
-    font-size: $font-size-s;
+    font-size: $font-size-sm;
 }
 
 .panel-main {
-    padding-top: $panel-main-margin-top;
-    @media (min-width: map.get($responsive-breakpoints, "s")) {
-        padding: $panel-main-margin;
-        padding-top: $panel-main-margin-top;
-        padding-left: $panel-main-margin-left;
+    padding-top: 4.5rem;
+    @media (min-width: map.get($breakpoints, "sm")) {
+        padding: 1.875rem;
+        padding-top: 4.5rem;
+        padding-left: 1.875rem + 16rem;
     }
 }

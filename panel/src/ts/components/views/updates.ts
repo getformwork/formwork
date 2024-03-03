@@ -56,7 +56,7 @@ export class Updates {
                                 showCurrentVersion();
                             }
                         } else {
-                            spinner.classList.add("spinner-error");
+                            spinner.classList.add("spinner-danger");
                             insertIcon("exclamation", spinner);
                         }
                     },
@@ -83,7 +83,7 @@ export class Updates {
                         if (response.status === "success") {
                             showInstalledVersion();
                         } else {
-                            spinner.classList.add("spinner-error");
+                            spinner.classList.add("spinner-danger");
                             insertIcon("exclamation", spinner);
                         }
                     },

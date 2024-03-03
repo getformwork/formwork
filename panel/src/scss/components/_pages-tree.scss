@@ -9,7 +9,7 @@
         @if $i == 2 {
             $indent: 0.625rem;
         } @else {
-            $indent: $indent + $pages-tree-level-padding * ($i - 2);
+            $indent: $indent + 1.75rem * ($i - 2);
         }
 
         .pages-tree-level-#{$i} {
@@ -20,7 +20,7 @@
             }
 
             .page-details {
-                padding-left: $pages-tree-level-padding * ($i - 1);
+                padding-left: 1.75rem * ($i - 1);
             }
         }
     }
@@ -44,7 +44,7 @@
 .pages-tree-headers {
     display: flex;
     align-items: center;
-    padding: $pages-tree-headers-padding-v $pages-tree-headers-padding-h;
+    padding: 0.25rem 0;
     font-weight: 600;
     @include user-select-none;
 }
@@ -52,7 +52,7 @@
 .pages-tree-row {
     display: flex;
     align-items: center;
-    padding: $pages-tree-item-padding-v $pages-tree-item-padding-h;
+    padding: 0.5rem 0;
     border-bottom: 1px solid $color-base-600;
 
     &:hover {
@@ -109,8 +109,8 @@
 
 .pages-tree-item-cell,
 .pages-tree-headers-cell {
-    padding: $pages-tree-item-cell-padding-v $pages-tree-item-cell-padding-h;
-    font-size: $font-size-s;
+    padding: 0.25rem;
+    font-size: $font-size-sm;
 }
 
 .pages-tree-icon {
@@ -126,8 +126,8 @@
     & .icon {
         margin-right: 0;
         transition:
-            transform $transition-time-s,
-            color $transition-time-s;
+            transform $transition-time-sm,
+            color $transition-time-sm;
     }
 }
 
@@ -187,5 +187,5 @@
 }
 
 .is-dragging > .is-not-orderable .pages-tree-row:hover {
-    background-color: $color-error-900;
+    background-color: $color-danger-900;
 }

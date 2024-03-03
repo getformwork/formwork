@@ -7,13 +7,13 @@
             <div class="image-picker-empty-state">
                 <span class="image-picker-empty-state-icon"><?= $this->icon('image') ?></span>
                 <h4 class="h5"><?= $this->translate('panel.modal.images.noImages') ?></h4>
-                <?php if ($panel->user()->permissions()->has('pages.uploadFiles')): ?>
+                <?php if ($panel->user()->permissions()->has('pages.uploadFiles')) : ?>
                     <p><?= $this->translate('panel.modal.images.noImages.upload') ?></p>
-                    <button type="button" class="button" data-command="upload" data-upload-target="file-uploader"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.modal.action.uploadFile') ?></button>
+                    <button type="button" class="button button-secondary" data-command="upload" data-upload-target="file-uploader"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.modal.action.uploadFile') ?></button>
                 <?php endif ?>
             </div>
             <select class="form-input image-picker">
-                <?php foreach ($page->images() as $image): ?>
+                <?php foreach ($page->images() as $image) : ?>
                     <option value="<?= $page->uri($image, includeLanguage: false) ?>"><?= $image ?></option>
                 <?php endforeach ?>
             </select>

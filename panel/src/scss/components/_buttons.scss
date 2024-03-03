@@ -1,21 +1,21 @@
 .button {
     display: inline-block;
-    padding: $button-padding-v $button-padding-h;
-    border: $button-border-width solid transparent;
-    border-radius: $button-border-radius;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid transparent;
+    border-radius: $border-radius;
     background-color: transparent;
     color: inherit;
     cursor: default;
     font-family: $base-font-family;
-    font-size: $button-font-size;
+    font-size: $font-size-sm;
     font-weight: 500;
-    line-height: $button-line-height;
+    line-height: 1.15;
     outline: none;
     text-align: center;
     transition:
-        border-color $transition-time-s,
-        background-color $transition-time-s,
-        color $transition-time-s;
+        border-color $transition-time-sm,
+        background-color $transition-time-sm,
+        color $transition-time-sm;
     white-space: nowrap;
     @include user-select-none;
 
@@ -44,14 +44,14 @@
 
 .button-right {
     margin-right: 0;
-    margin-left: $button-margin-h;
+    margin-left: 0.25rem;
     float: right;
 }
 
 .button-accent {
-    border: $button-border-width solid $color-accent-500;
+    border: 1px solid $color-accent-500;
     background-color: $color-accent-500;
-    box-shadow: $button-box-shadow;
+    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
@@ -67,9 +67,9 @@
 }
 
 .button-secondary {
-    border: $button-border-width solid $color-base-600;
+    border: 1px solid $color-base-600;
     background-color: $color-base-600;
-    box-shadow: $button-box-shadow;
+    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-base-100;
 
     &:hover,
@@ -85,9 +85,9 @@
 }
 
 .button-success {
-    border: $button-border-width solid $color-success-500;
+    border: 1px solid $color-success-500;
     background-color: $color-success-500;
-    box-shadow: $button-box-shadow;
+    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
@@ -103,9 +103,9 @@
 }
 
 .button-warning {
-    border: $button-border-width solid $color-warning-500;
+    border: 1px solid $color-warning-500;
     background-color: $color-warning-500;
-    box-shadow: $button-box-shadow;
+    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
@@ -120,21 +120,21 @@
     }
 }
 
-.button-error {
-    border: $button-border-width solid $color-error-500;
-    background-color: $color-error-500;
-    box-shadow: $button-box-shadow;
+.button-danger {
+    border: 1px solid $color-danger-500;
+    background-color: $color-danger-500;
+    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
     &:focus {
-        border-color: $color-error-400;
-        background-color: $color-error-400;
+        border-color: $color-danger-400;
+        background-color: $color-danger-400;
         color: $color-white;
     }
 
     &:focus {
-        @include focusring($color-error-500);
+        @include focusring($color-danger-500);
     }
 }
 

@@ -10,7 +10,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="button button-secondary" data-dismiss="deleteUserModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
-                <button type="submit" class="button button-error button-right" data-command="delete"><?= $this->icon('trash') ?> <?= $this->translate('panel.modal.action.delete') ?></button>
+                <button type="submit" class="button button-danger button-right" data-command="delete"><?= $this->icon('trash') ?> <?= $this->translate('panel.modal.action.delete') ?></button>
             </div>
         </form>
     </div>
