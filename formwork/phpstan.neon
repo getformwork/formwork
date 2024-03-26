@@ -17,3 +17,4 @@ parameters:
 		- '#^Call to an undefined method Formwork\\Fields\\Field\:\:#'
 		- '#^Call to an undefined method Formwork\\Pages\\Page\:\:#'
 		- '#^Call to an undefined method Formwork\\Pages\\Site\:\:#'
+		- '#^Call to an undefined method Formwork\\Panel\\Users\\User\:\:#'

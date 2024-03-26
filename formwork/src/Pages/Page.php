@@ -3,21 +3,18 @@
 namespace Formwork\Pages;
 
 use Formwork\App;
-use Formwork\Data\Contracts\Arrayable;
-use Formwork\Fields\FieldCollection;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Http\ResponseStatus;
 use Formwork\Languages\Language;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
+use Formwork\Model\Model;
 use Formwork\Pages\Templates\Template;
-use Formwork\Pages\Traits\PageData;
 use Formwork\Pages\Traits\PageStatus;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
-use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -29,9 +26,8 @@ use RuntimeException;
 use Stringable;
 use UnexpectedValueException;
 
-class Page implements Arrayable, Stringable
+class Page extends Model implements Stringable
 {
-    use PageData;
     use PageStatus;
     use PageTraversal;
     use PageUid;
@@ -103,16 +99,6 @@ class Page implements Arrayable, Stringable
     protected ?Language $language = null;
 
     /**
-     * Page scheme
-     */
-    protected Scheme $scheme;
-
-    /**
-     * Page fields
-     */
-    protected FieldCollection $fields;
-
-    /**
      * Page template
      */
     protected Template $template;
@@ -150,7 +136,7 @@ class Page implements Arrayable, Stringable
 
         if ($this->contentFile instanceof ContentFile && !$this->contentFile->isEmpty()) {
             $this->data = [
-               ...$this->data,
+                ...$this->data,
                 ...$this->contentFile->frontmatter(),
                 'content' => $this->contentFile->content(),
             ];
@@ -294,22 +280,6 @@ class Page implements Arrayable, Stringable
     }
 
     /**
-     * Get page scheme
-     */
-    public function scheme(): Scheme
-    {
-        return $this->scheme;
-    }
-
-    /**
-     * Get page fields
-     */
-    public function fields(): FieldCollection
-    {
-        return $this->fields;
-    }
-
-    /**
      * Get page template
      */
     public function template(): Template
@@ -352,8 +322,10 @@ class Page implements Arrayable, Stringable
         $this->responseStatus = ResponseStatus::fromCode((int) $this->data['responseStatus']);
 
         // Get a default 404 Not Found status for the error page
-        if ($this->isErrorPage() && $this->responseStatus() === ResponseStatus::OK
-            && $this->contentFile === null) {
+        if (
+            $this->isErrorPage() && $this->responseStatus() === ResponseStatus::OK
+            && $this->contentFile === null
+        ) {
             $this->responseStatus = ResponseStatus::NotFound;
         }
 

@@ -4,27 +4,23 @@ namespace Formwork\Pages;
 
 use Formwork\App;
 use Formwork\Config\Config;
-use Formwork\Data\Contracts\Arrayable;
-use Formwork\Fields\FieldCollection;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
+use Formwork\Model\Model;
 use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Templates\TemplateCollection;
 use Formwork\Pages\Templates\TemplateFactory;
-use Formwork\Pages\Traits\PageData;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Parsers\Yaml;
-use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Stringable;
 
-class Site implements Arrayable, Stringable
+class Site extends Model implements Stringable
 {
-    use PageData;
     use PageTraversal;
     use PageUid;
     use PageUri;
@@ -63,16 +59,6 @@ class Site implements Arrayable, Stringable
      * Site languages
      */
     protected Languages $languages;
-
-    /**
-     * Site scheme
-     */
-    protected Scheme $scheme;
-
-    /**
-     * Site fields
-     */
-    protected FieldCollection $fields;
 
     /**
      * Site templates
@@ -208,22 +194,6 @@ class Site implements Arrayable, Stringable
     public function languages(): Languages
     {
         return $this->languages;
-    }
-
-    /**
-     * Get site scheme
-     */
-    public function scheme(): Scheme
-    {
-        return $this->scheme;
-    }
-
-    /**
-     * Get site fields
-     */
-    public function fields(): FieldCollection
-    {
-        return $this->fields;
     }
 
     /**

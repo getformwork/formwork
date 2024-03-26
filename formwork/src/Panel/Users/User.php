@@ -4,22 +4,15 @@ namespace Formwork\Panel\Users;
 
 use Formwork\App;
 use Formwork\Config\Config;
-use Formwork\Data\Contracts\Arrayable;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
+use Formwork\Model\Model;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Security\Password;
 use Formwork\Utils\FileSystem;
 
-class User implements Arrayable
+class User extends Model
 {
-    /**
-     * Array containing user data
-     *
-     * @var array<string, mixed>
-     */
-    protected array $data = [];
-
     /**
      * Default data of the user
      *
@@ -35,36 +28,6 @@ class User implements Arrayable
         'image'       => null,
         'colorScheme' => 'auto',
     ];
-
-    /**
-     * User username
-     */
-    protected string $username;
-
-    /**
-     * User full name
-     */
-    protected string $fullname;
-
-    /**
-     * User password hash
-     */
-    protected string $hash;
-
-    /**
-     * User email
-     */
-    protected string $email;
-
-    /**
-     * User language
-     */
-    protected string $language;
-
-    /**
-     * User role
-     */
-    protected string $role;
 
     /**
      * User image
@@ -83,10 +46,13 @@ class User implements Arrayable
      */
     public function __construct(array $data, protected Permissions $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
+        $this->scheme = $app->schemes()->get('users.user');
+
+        $this->fields = $this->scheme->fields();
+
         $this->data = [...$this->defaults, ...$data];
-        foreach (['username', 'fullname', 'hash', 'email', 'language', 'role'] as $var) {
-            $this->{$var} = $this->data[$var];
-        }
+
+        $this->fields->setValues($this->data);
     }
 
     public function __debugInfo(): array
@@ -98,56 +64,11 @@ class User implements Arrayable
     }
 
     /**
-     * Return the username
-     */
-    public function username(): string
-    {
-        return $this->username;
-    }
-
-    /**
-     * Return the full name
-     */
-    public function fullname(): string
-    {
-        return $this->fullname;
-    }
-
-    /**
-     * Return the email
-     */
-    public function email(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Return the language code
-     */
-    public function language(): string
-    {
-        return $this->language;
-    }
-
-    /**
-     * Return the role
-     */
-    public function role(): string
-    {
-        return $this->role;
-    }
-
-    /**
      * Return user image
      */
     public function image(): UserImage
     {
-        if (isset($this->image)) {
-            return $this->image;
-        }
-
-        $filename = (string) $this->data['image'];
-
+        $filename = $this->data['image'];
         $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
 
         if (FileSystem::isFile($path, assertExists: false)) {
@@ -156,7 +77,7 @@ class User implements Arrayable
             $uri = $this->panel->realUri('/assets/images/user-image.svg');
         }
 
-        return $this->image = new UserImage($path, $uri);
+        return new UserImage($path, $uri);
     }
 
     /**
@@ -172,7 +93,7 @@ class User implements Arrayable
      */
     public function authenticate(string $password): bool
     {
-        return Password::verify($password, $this->hash);
+        return Password::verify($password, $this->hash());
     }
 
     /**
@@ -180,7 +101,7 @@ class User implements Arrayable
      */
     public function isLogged(): bool
     {
-        return $this->request->session()->get('FORMWORK_USERNAME') === $this->username;
+        return $this->request->session()->get('FORMWORK_USERNAME') === $this->username();
     }
 
     /**
@@ -188,7 +109,7 @@ class User implements Arrayable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role() === 'admin';
     }
 
     /**
@@ -238,24 +159,6 @@ class User implements Arrayable
             return $this->lastAccess;
         }
         $registry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-        return $this->lastAccess = $registry->has($this->username) ? (int) $registry->get($this->username) : null;
-    }
-
-    /**
-     * Get the user color scheme preference
-     */
-    public function colorScheme(): string
-    {
-        return $this->data['colorScheme'];
-    }
-
-    /**
-     * Return an array containing user data
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
-    {
-        return $this->data;
+        return $this->lastAccess = $registry->has($this->username()) ? (int) $registry->get($this->username()) : null;
     }
 }
