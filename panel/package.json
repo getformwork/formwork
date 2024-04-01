@@ -34,7 +34,7 @@
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "globals": "^13.24.0",
-        "postcss": "^8.4.32",
+        "postcss": "^8.4.38",
         "prettier": "3.2.5",
         "sass": "^1.70.0",
         "stylelint": "^15.11.0",
