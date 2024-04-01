@@ -41,7 +41,7 @@
         "stylelint-config-standard-scss": "^11.1.0",
         "stylelint-order": "^6.0.4",
         "stylelint-scss": "^5.3.1",
-        "typescript": "^5.3.3",
+        "typescript": "^5.4.3",
         "typescript-eslint": "^7.1.0"
     },
     "packageManager": "yarn@4.0.2"
