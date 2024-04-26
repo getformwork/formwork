@@ -48,12 +48,14 @@ class JpegDecoder implements DecoderInterface
     {
         while ($position < strlen($data)) {
             $position = strpos($data, "\xff", $position);
+            if ($position === false) {
+                throw new InvalidArgumentException('Invalid JPEG data');
+            }
             $position += 1;
             $type = ord($data[$position]);
             if (($type > 0x00 && $type < 0xd0) || $type > 0xd7) {
                 return $position - 1;
             }
-            $position += 2;
         }
         throw new UnexpectedValueException('Segment end not found');
     }
