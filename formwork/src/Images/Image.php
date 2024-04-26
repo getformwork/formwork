@@ -302,10 +302,11 @@ class Image extends File
 
         if (!FileSystem::exists($path)) {
             $this->saveAs($path, $mimeType);
-
         }
 
-        return new Image($path, $this->options);
+        $img = new Image($path, $this->options);
+        $img->uriGenerator = $this->uriGenerator;
+        return $img;
     }
 
     public function toGif(): Image
@@ -330,7 +331,7 @@ class Image extends File
 
     public function saveAs(string $path, ?string $mimeType = null): void
     {
-        $handler = match($mimeType ?? $this->mimeType()) {
+        $handler = match ($mimeType ?? $this->mimeType()) {
             'image/jpeg' => JpegHandler::class,
             'image/png'  => PngHandler::class,
             'image/gif'  => GifHandler::class,
@@ -364,7 +365,7 @@ class Image extends File
     {
         $mimeType ??= $this->mimeType();
 
-        $format = match($mimeType) {
+        $format = match ($mimeType) {
             'image/jpeg' => $mimeType . $this->options['jpegQuality'] . $this->options['jpegProgressive'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/png'  => $mimeType . $this->options['pngCompression'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/webp' => $mimeType . $this->options['webpQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
@@ -388,7 +389,7 @@ class Image extends File
      */
     protected function getHandler(): AbstractHandler
     {
-        return match($this->mimeType()) {
+        return match ($this->mimeType()) {
             'image/jpeg' => JpegHandler::fromPath($this->path),
             'image/png'  => PngHandler::fromPath($this->path),
             'image/gif'  => GifHandler::fromPath($this->path),
