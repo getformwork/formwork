@@ -3,6 +3,7 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Backupper;
+use Formwork\Data\Collection;
 use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
@@ -50,7 +51,7 @@ class ToolsController extends AbstractController
                 'tabs'    => $this->tabs,
                 'current' => 'backups',
             ]),
-            'backups' => array_values($backups),
+            'backups' => Collection::from($backups),
         ]));
     }
 

@@ -9,6 +9,7 @@ date.duration.weeks: ['Woche', 'Wochen']
 date.duration.years: ['Jahr', 'Jahre']
 date.months.long: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 date.months.short: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+date.never: nie
 date.now: jetzt
 date.today: Heute
 date.weekdays.long: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
