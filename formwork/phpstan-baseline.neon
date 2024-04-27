@@ -6,11 +6,6 @@ parameters:
 			path: src/Images/ColorProfile/ColorProfile.php
 
 		-
-			message: "#^Method Formwork\\\\Images\\\\ColorProfile\\\\ColorProfile\\:\\:getTags\\(\\) should return array\\<string, mixed\\> but returns array\\<int\\|string, mixed\\>\\.$#"
-			count: 1
-			path: src/Images/ColorProfile/ColorProfile.php
-
-		-
 			message: "#^Parameter \\#1 \\$array of function array_shift expects array, array\\|false given\\.$#"
 			count: 1
 			path: src/Images/ColorProfile/ColorProfile.php
