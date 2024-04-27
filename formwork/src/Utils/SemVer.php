@@ -181,7 +181,7 @@ final class SemVer implements Stringable
      */
     public function compareWithString(string $version, string $operator): bool
     {
-        return $this->compareWith(static::fromString($version), $operator);
+        return $this->compareWith(self::fromString($version), $operator);
     }
 
     /**

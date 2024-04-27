@@ -62,7 +62,7 @@ final class Collection extends AbstractCollection
      */
     public static function of(string $dataType, array $data = [], bool $associative = false, bool $mutable = false): static
     {
-        return static::create($data, $dataType, $associative, $mutable);
+        return self::create($data, $dataType, $associative, $mutable);
     }
 
     /**
@@ -92,6 +92,6 @@ final class Collection extends AbstractCollection
             }
         }
 
-        return static::create($data, $dataType, Arr::isAssociative($data), $mutable);
+        return self::create($data, $dataType, Arr::isAssociative($data), $mutable);
     }
 }
