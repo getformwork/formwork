@@ -9,7 +9,6 @@ class Invert extends AbstractTransform
 {
     final public function __construct()
     {
-
     }
 
     public static function fromArray(array $data): static

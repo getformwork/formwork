@@ -157,7 +157,6 @@ class MimeType
                     $mimeType = static::fromExtension('svg');
                 }
             }
-
         }
 
         return $mimeType ?: self::DEFAULT_MIME_TYPE;

@@ -35,8 +35,10 @@ class JpegHandler extends AbstractHandler
         ];
 
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] > 0xbf && $segment['type'] < 0xc3
-            || $segment['type'] > 0xc8 && $segment['type'] < 0xcc) {
+            if (
+                $segment['type'] > 0xbf && $segment['type'] < 0xc3
+                || $segment['type'] > 0xc8 && $segment['type'] < 0xcc
+            ) {
                 $info['colorDepth'] = ord($segment['value'][0]);
                 $info['height'] = unpack('n', $segment['value'], 1)[1];
                 $info['width'] = unpack('n', $segment['value'], 3)[1];

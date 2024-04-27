@@ -12,7 +12,6 @@ class LanguagesServiceLoader implements ServiceLoaderInterface
 {
     public function __construct(protected Config $config, protected Request $request)
     {
-
     }
 
     public function load(Container $container): Languages

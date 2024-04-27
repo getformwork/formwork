@@ -11,7 +11,6 @@ class FieldFactory
 {
     public function __construct(protected Container $container, protected Config $config, protected Translations $translations)
     {
-
     }
 
     /**

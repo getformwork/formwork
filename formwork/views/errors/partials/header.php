@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title><?= $message ?? 'Internal Server Error' ?> | Formwork</title>
     <meta charset="utf-8">
@@ -19,7 +20,8 @@
             text-align: center;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             margin-top: 0;
             letter-spacing: -0.027rem;
             line-height: 1.2;
@@ -71,6 +73,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>

@@ -5,7 +5,8 @@ $posts = $page->children()->published();
 
 // If the route has the param `{tagName}`
 if ($router->params()->has('tagName')) {
-    $posts = $posts->filterBy('tags',             // Filter posts by tags...
+    $posts = $posts->filterBy(
+        'tags',             // Filter posts by tags...
         fn ($tags) => $tags
             ->map(fn ($tag) => $this->slug($tag)) // where the collection of their slugs...
             ->contains($router->params()->get('tagName'))   // contains the value of the `tagName` param.

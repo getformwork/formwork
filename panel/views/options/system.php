@@ -13,4 +13,3 @@
         <?php $this->insert('fields', ['fields' => $fields]) ?>
     </div>
 </form>
-

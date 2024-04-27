@@ -15,7 +15,6 @@ class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(protected Config $config, protected Languages $languages, protected Schemes $schemes)
     {
-
     }
 
     public function load(Container $container): Site
@@ -28,7 +27,6 @@ class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
             'path'      => $this->config->get('system.content.path'),
             'languages' => $this->languages,
         ] + $config]);
-
     }
 
     /**

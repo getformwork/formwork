@@ -27,5 +27,4 @@ return function (App $app) {
             return str_replace("\r\n", "\n", (string) $value);
         },
     ];
-
 };

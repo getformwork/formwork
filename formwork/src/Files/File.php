@@ -163,7 +163,6 @@ class File implements Arrayable, Stringable
             return $this->hash = $hash;
         }
         throw new RuntimeException('Cannot calculate file hash');
-
     }
 
     public function setUriGenerator(FileUriGenerator $uriGenerator): void

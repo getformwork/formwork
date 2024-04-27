@@ -7,7 +7,7 @@
 <?= $tabs ?>
 
 <div>
-    <?php foreach ($info as $section => $data): ?>
+    <?php foreach ($info as $section => $data) : ?>
         <section class="section collapsible">
             <div class="section-header">
                 <button type="button" class="button section-toggle mr-2" title="<?= $this->translate('panel.sections.toggle') ?>" aria-label="<?= $this->translate('panel.sections.toggle') ?>"><?= $this->icon('chevron-up') ?></button>
@@ -15,7 +15,7 @@
             </div>
             <div class="section-content">
                 <table class="table info-data">
-                    <?php foreach ($data as $key => $value): ?>
+                    <?php foreach ($data as $key => $value) : ?>
                         <tr>
                             <td class="table-cell info-data-key"><?= $key ?></td>
                             <td class="table-cell info-data-value"><?= $value ?></td>

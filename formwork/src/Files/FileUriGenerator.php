@@ -13,7 +13,6 @@ class FileUriGenerator
 {
     public function __construct(protected Config $config, protected Router $router, protected Site $site)
     {
-
     }
 
     public function generate(File $file): string

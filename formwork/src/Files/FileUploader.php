@@ -14,7 +14,6 @@ class FileUploader
 {
     public function __construct(protected Config $config)
     {
-
     }
 
     /**

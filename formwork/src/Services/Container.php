@@ -166,13 +166,10 @@ class Container
             $loaderInstance = $this->build($loader, $parameters);
 
             $service = $loaderInstance->load($this);
-
         } elseif ($object === null) {
             $service = $this->build($name, $parameters);
-
         } elseif ($object instanceof Closure) {
             $service = $this->call($object, $parameters);
-
         } else {
             $service = $object;
         }

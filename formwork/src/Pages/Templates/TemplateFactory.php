@@ -8,7 +8,6 @@ class TemplateFactory
 {
     public function __construct(protected Container $container)
     {
-
     }
 
     public function make(string $name): Template

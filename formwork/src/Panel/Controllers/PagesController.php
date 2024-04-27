@@ -111,7 +111,7 @@ class PagesController extends AbstractController
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotEdit.pageNotFound'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if ($routeParams->has('language')) {
@@ -130,7 +130,6 @@ class PagesController extends AbstractController
                     throw new UnexpectedValueException('Unexpected missing page route');
                 }
                 return $this->redirect($this->generateRoute('panel.pages.edit.lang', ['page' => trim($page->route(), '/'), 'language' => $this->site()->languages()->default()]));
-
             }
 
             if ($page->languages()->available()->has($language)) {
@@ -278,7 +277,7 @@ class PagesController extends AbstractController
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.pageNotFound'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if ($routeParams->has('language')) {
@@ -287,13 +286,13 @@ class PagesController extends AbstractController
                 $page->setLanguage($language);
             } else {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.invalidLanguage', $language), 'error');
-                return $this->redirectToReferer(default:  '/pages/');
+                return $this->redirectToReferer(default: '/pages/');
             }
         }
 
         if (!$page->isDeletable()) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDelete.notDeletable'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if ($page->path() !== null) {
@@ -325,7 +324,7 @@ class PagesController extends AbstractController
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotUploadFile.pageNotFound'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if (!$this->request->files()->isEmpty()) {
@@ -334,7 +333,6 @@ class PagesController extends AbstractController
             } catch (TranslatedException $e) {
                 $this->panel()->notify($this->translate('upload.error', $e->getTranslatedMessage()), 'error');
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
-
             }
         }
 
@@ -353,7 +351,7 @@ class PagesController extends AbstractController
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotDeleteFile.pageNotFound'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if (!$page->files()->has($routeParams->get('filename'))) {
@@ -365,7 +363,6 @@ class PagesController extends AbstractController
 
         $this->panel()->notify($this->translate('panel.pages.page.fileDeleted'), 'success');
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
-
     }
 
     /**
@@ -379,7 +376,7 @@ class PagesController extends AbstractController
 
         if ($page === null) {
             $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'), 'error');
-            return $this->redirectToReferer(default:  '/pages/');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
         if (!$page->files()->has($routeParams->get('filename'))) {

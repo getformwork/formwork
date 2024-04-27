@@ -13,7 +13,6 @@ class ViewFactory
      */
     public function __construct(protected array $methods, protected App $app, protected Config $config)
     {
-
     }
 
     /**

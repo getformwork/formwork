@@ -4,7 +4,7 @@
     <div class="header">
         <div class="header-title"><?= $this->translate('panel.users.user') ?></div>
         <div>
-            <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)): ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
+            <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
             <button type="submit" class="button button-accent" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
         </div>
     </div>
@@ -22,7 +22,7 @@
             </div>
         </div>
     </section>
-    <?php if ($panel->user()->canChangeOptionsOf($user)): ?>
+    <?php if ($panel->user()->canChangeOptionsOf($user)) : ?>
         <?php $this->insert('fields', ['fields' => $fields]) ?>
         <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
     <?php endif ?>

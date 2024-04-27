@@ -20,5 +20,4 @@ return function (App $app) {
             'names' => LanguageCodes::names(),
         ],
     ];
-
 };

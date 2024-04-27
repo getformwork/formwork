@@ -14,8 +14,8 @@
     <input class="form-input" id="email" type="email" required name="email">
     <label class="form-label form-label-required" for="email"><?= $this->translate('panel.user.language') ?>:</label>
     <select class="form-select" id="language" name="language">
-        <?php foreach ($panel->availableTranslations() as $key => $value): ?>
-            <option value="<?= $key ?>" <?php if ($key === $app->config()->get('system.panel.translation')): ?> selected<?php endif ?>><?= $value ?></option>
+        <?php foreach ($panel->availableTranslations() as $key => $value) : ?>
+            <option value="<?= $key ?>" <?php if ($key === $app->config()->get('system.panel.translation')) : ?> selected<?php endif ?>><?= $value ?></option>
         <?php endforeach ?>
     </select>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">

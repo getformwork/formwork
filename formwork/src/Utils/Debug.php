@@ -200,11 +200,10 @@ class Debug
                     $reference = ReflectionReference::fromArrayElement($data, $key) !== null;
 
                     $parts[] = str_repeat(' ', $indent + self::INDENT_SPACES)
-                    . ($associative ? static::outputData($key) . ' => ' : '')
-                    . ($reference ? '<span class="__note" title="Reference">&</span>' : '')
-                    . static::outputData($value, $indent + self::INDENT_SPACES)
-                    . ',';
-
+                        . ($associative ? static::outputData($key) . ' => ' : '')
+                        . ($reference ? '<span class="__note" title="Reference">&</span>' : '')
+                        . static::outputData($value, $indent + self::INDENT_SPACES)
+                        . ',';
                 }
 
                 return sprintf("<span class=\"__type-array\">array</span>(<span class=\"__note\">%d</span>) [<span class=\"__formwork-dump-toggle\" onclick=\"__formwork_dump_toggle(this)\" data-target=\"__formwork-dump-id-%2\$d\">▼</span>\n<div class=\"__formwork-dump-collapsed\" id=\"__formwork-dump-id-%d\">%s</div>%s]", count($data), ++static::$counter, implode("\n", $parts), str_repeat(' ', $indent));

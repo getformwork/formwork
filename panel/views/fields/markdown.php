@@ -14,16 +14,16 @@
         <button type="button" class="button toolbar-button" data-command="redo" title="<?= $this->translate('panel.pages.editor.redo') ?>" disabled><?= $this->icon('rotate-right') ?></button>
     </div>
     <textarea <?= $this->attr([
-        'class'        => ['form-textarea', 'editor-textarea'],
-        'id'           => $field->name(),
-        'name'         => $field->formName(),
-        'placeholder'  => $field->placeholder(),
-        'minlength'    => $field->get('min'),
-        'maxlength'    => $field->get('max'),
-        'autocomplete' => $field->get('autocomplete', 'off'),
-        'rows'         => $field->get('rows', 15),
-        'required'     => $field->isRequired(),
-        'disabled'     => $field->isDisabled(),
-        'hidden'       => $field->isHidden(),
-    ]) ?>><?= $this->escape($field->value() ?? '') ?></textarea>
+                    'class'        => ['form-textarea', 'editor-textarea'],
+                    'id'           => $field->name(),
+                    'name'         => $field->formName(),
+                    'placeholder'  => $field->placeholder(),
+                    'minlength'    => $field->get('min'),
+                    'maxlength'    => $field->get('max'),
+                    'autocomplete' => $field->get('autocomplete', 'off'),
+                    'rows'         => $field->get('rows', 15),
+                    'required'     => $field->isRequired(),
+                    'disabled'     => $field->isDisabled(),
+                    'hidden'       => $field->isHidden(),
+                ]) ?>><?= $this->escape($field->value() ?? '') ?></textarea>
 </div>

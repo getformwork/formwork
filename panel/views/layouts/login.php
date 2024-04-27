@@ -2,7 +2,7 @@
 <html lang="<?= $app->translations()->getCurrent()->code() ?>">
 
 <head>
-    <title><?php if (!empty($title)): ?><?= $title ?> | <?php endif ?>Formwork</title>
+    <title><?php if (!empty($title)) : ?><?= $title ?> | <?php endif ?>Formwork</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
@@ -14,7 +14,7 @@
     <main>
         <div class="container-full">
             <div class="login-modal-container">
-                <?php if ($notification = $panel->notifications()): ?>
+                <?php if ($notification = $panel->notifications()) : ?>
                     <div class="login-modal-<?= $notification[0]['type'] ?>"><?= $this->icon($notification[0]['icon']) ?> <?= $notification[0]['text'] ?></div>
                 <?php endif ?>
                 <?= $this->content() ?>

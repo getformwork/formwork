@@ -30,5 +30,4 @@ return function (App $app) {
             return $value;
         },
     ];
-
 };

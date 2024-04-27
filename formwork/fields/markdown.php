@@ -46,5 +46,4 @@ return function (Site $site) {
             return str_replace("\r\n", "\n", (string) $value);
         },
     ];
-
 };

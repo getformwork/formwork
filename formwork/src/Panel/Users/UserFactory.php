@@ -8,7 +8,6 @@ class UserFactory
 {
     public function __construct(protected Container $container)
     {
-
     }
 
     /**

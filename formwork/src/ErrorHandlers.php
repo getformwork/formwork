@@ -14,7 +14,6 @@ class ErrorHandlers
 {
     public function __construct(protected ViewFactory $viewFactory, protected Request $request)
     {
-
     }
 
     /**

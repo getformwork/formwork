@@ -32,5 +32,4 @@ return function (App $app) {
             return (string) $value;
         },
     ];
-
 };

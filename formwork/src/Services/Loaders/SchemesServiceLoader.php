@@ -13,7 +13,6 @@ class SchemesServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(protected Config $config, protected Languages $languages)
     {
-
     }
 
     public function load(Container $container): object

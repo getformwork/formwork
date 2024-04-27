@@ -72,7 +72,6 @@ class BackupController extends AbstractController
                 return $this->redirectToReferer(default: '/dashboard/');
             }
             throw new RuntimeException($this->translate('panel.backup.error.cannotDelete.invalidFilename'));
-
         } catch (TranslatedException $e) {
             $this->panel()->notify($this->translate('panel.backup.error.cannotDelete', $e->getTranslatedMessage()), 'error');
             return $this->redirectToReferer(default: '/dashboard/');

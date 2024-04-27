@@ -37,5 +37,4 @@ return function (App $app) {
             return array_values(array_filter($value));
         },
     ];
-
 };

@@ -1,15 +1,15 @@
 <?php $this->layout('fields.field') ?>
 <input <?= $this->attr([
-    'class'       => 'form-input',
-    'type'        => 'number',
-    'id'          => $field->name(),
-    'name'        => $field->formName(),
-    'min'         => $field->get('min'),
-    'max'         => $field->get('max'),
-    'step'        => $field->get('step'),
-    'value'       => $field->value(),
-    'placeholder' => $field->placeholder(),
-    'required'    => $field->isRequired(),
-    'disabled'    => $field->isDisabled(),
-    'hidden'      => $field->isHidden(),
-]) ?>>
+            'class'       => 'form-input',
+            'type'        => 'number',
+            'id'          => $field->name(),
+            'name'        => $field->formName(),
+            'min'         => $field->get('min'),
+            'max'         => $field->get('max'),
+            'step'        => $field->get('step'),
+            'value'       => $field->value(),
+            'placeholder' => $field->placeholder(),
+            'required'    => $field->isRequired(),
+            'disabled'    => $field->isDisabled(),
+            'hidden'      => $field->isHidden(),
+        ]) ?>>

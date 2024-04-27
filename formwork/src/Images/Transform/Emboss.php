@@ -9,7 +9,6 @@ class Emboss extends AbstractTransform
 {
     final public function __construct()
     {
-
     }
 
     public static function fromArray(array $data): static

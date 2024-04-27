@@ -196,7 +196,6 @@ class UsersController extends AbstractController
         $userData = [...$user->toArray(), ...$data];
 
         Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
-
     }
 
     /**

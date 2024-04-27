@@ -14,7 +14,6 @@ class FileFactory
      */
     public function __construct(protected Container $container, protected array $associations = [])
     {
-
     }
 
     public function make(string $path): File

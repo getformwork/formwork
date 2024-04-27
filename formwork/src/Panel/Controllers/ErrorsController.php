@@ -75,8 +75,8 @@ class ErrorsController extends AbstractController
             'title'  => $throwable->getMessage(),
             'body'   => sprintf(
                 "### Description\n\n[Please enter a description and the steps to reproduce the problem...]\n\n" .
-                "**Formwork**: %s\n**Php**: %s\n**OS**: %s\n**SAPI**: %s\n\n" .
-                "### Stack Trace\n```\nUncaught %s: %s in %s:%s\n\n%s\n",
+                    "**Formwork**: %s\n**Php**: %s\n**OS**: %s\n**SAPI**: %s\n\n" .
+                    "### Stack Trace\n```\nUncaught %s: %s in %s:%s\n\n%s\n",
                 $this->app::VERSION,
                 PHP_VERSION,
                 PHP_OS_FAMILY,

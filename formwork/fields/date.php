@@ -48,5 +48,4 @@ return function (Languages $languages) {
             }
         },
     ];
-
 };

@@ -10,5 +10,4 @@ return function (Config $config, Panel $panel) {
 
         'icon' => fn (string $icon) => FileSystem::read(FileSystem::joinPaths($config->get('system.panel.paths.assets'), '/icons/svg/', $icon . '.svg')),
     ];
-
 };
