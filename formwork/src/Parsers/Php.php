@@ -113,11 +113,11 @@ class Php extends AbstractEncoder
                 }
 
                 if ($data instanceof UnitEnum) {
-                    return sprintf('\\%s::%s', $class, $data->name);
+                    return sprintf('\%s::%s', $class, $data->name);
                 }
 
                 if ($data instanceof ArraySerializable) {
-                    return sprintf('\\%s::fromArray(%s)', $class, static::encodeData($data->toArray(), $indent));
+                    return sprintf('\%s::fromArray(%s)', $class, static::encodeData($data->toArray(), $indent));
                 }
 
                 // Check if the class has a callable __set_state() magic method
@@ -128,7 +128,7 @@ class Php extends AbstractEncoder
                         // between two NUL bytes, so we need to skip that sequence
                         $properties[Str::afterLast($property, "\0")] = $value;
                     }
-                    return sprintf('\\%s::__set_state(%s)', $class, static::encodeData($properties, $indent));
+                    return sprintf('\%s::__set_state(%s)', $class, static::encodeData($properties, $indent));
                 }
 
                 // In the end we try to serialize the object

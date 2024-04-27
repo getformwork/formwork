@@ -19,37 +19,37 @@ return [
 
         'panel.login' => [
             'path'    => '/login/',
-            'action'  => 'Formwork\\Panel\\Controllers\\AuthenticationController@login',
+            'action'  => 'Formwork\Panel\Controllers\AuthenticationController@login',
             'methods' => ['GET', 'POST'],
         ],
 
         'panel.logout' => [
             'path'   => '/logout/',
-            'action' => 'Formwork\\Panel\\Controllers\\AuthenticationController@logout',
+            'action' => 'Formwork\Panel\Controllers\AuthenticationController@logout',
         ],
 
         'panel.backup.make' => [
             'path'    => '/backup/make/',
-            'action'  => 'Formwork\\Panel\\Controllers\\BackupController@make',
+            'action'  => 'Formwork\Panel\Controllers\BackupController@make',
             'methods' => ['POST'],
             'types'   => ['XHR'],
         ],
 
         'panel.backup.download' => [
             'path'    => '/backup/download/{backup}/',
-            'action'  => 'Formwork\\Panel\\Controllers\\BackupController@download',
+            'action'  => 'Formwork\Panel\Controllers\BackupController@download',
             'methods' => ['GET', 'POST'],
         ],
 
         'panel.backup.delete' => [
             'path'    => '/backup/delete/{backup}/',
-            'action'  => 'Formwork\\Panel\\Controllers\\BackupController@delete',
+            'action'  => 'Formwork\Panel\Controllers\BackupController@delete',
             'methods' => ['POST'],
         ],
 
         'panel.cache.clear' => [
             'path'    => '/cache/clear/',
-            'action'  => 'Formwork\\Panel\\Controllers\\CacheController@clear',
+            'action'  => 'Formwork\Panel\Controllers\CacheController@clear',
             'methods' => ['POST'],
             'types'   => ['XHR'],
         ],

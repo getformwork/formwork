@@ -17,7 +17,6 @@ return $config
         'binary_operator_spaces' => ['default' => 'single_space', 'operators' => ['=>' => 'align_single_space_minimal']],
         'cast_spaces' => true,
         'class_attributes_separation' => true,
-        'escape_implicit_backslashes' => true,
         'fully_qualified_strict_types' => ['import_symbols' => true, 'leading_backslash_in_global_namespace' => false],
         'function_declaration' => true,
         'include' => true,
@@ -55,6 +54,7 @@ return $config
         'phpdoc_var_without_name' => true,
         'single_line_empty_body' => false,
         'single_quote' => true,
+        'string_implicit_backslashes' => true,
         'trailing_comma_in_multiline' => true,
     ])
     ->setFinder($finder);

@@ -17,7 +17,7 @@ class Path
     /**
      * Regex matching multiple separators (forward and backward slash) to split paths into segments
      */
-    protected const SEPARATORS_REGEX = '~[/\\\\]+~';
+    protected const SEPARATORS_REGEX = '~[/\\\]+~';
 
     /**
      * Return whether a path is absolute

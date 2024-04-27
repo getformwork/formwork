@@ -21,7 +21,7 @@ class Date
     /**
      * Regex used to parse formats accepted by date()
      */
-    protected const DATE_FORMAT_REGEX = '/(?P<escaped>(?:\\\\[A-Za-z])+)|[' . self::DATE_FORMAT_CHARACTERS . ']|(?P<invalid>[A-Za-z])/';
+    protected const DATE_FORMAT_REGEX = '/(?P<escaped>(?:\\\[A-Za-z])+)|[' . self::DATE_FORMAT_CHARACTERS . ']|(?P<invalid>[A-Za-z])/';
 
     /**
      * Regex used to parse date patterns like 'DD/MM/YYYY hh:mm:ss'

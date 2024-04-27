@@ -581,7 +581,7 @@ class Page extends Model implements Stringable
 
         $this->relativePath = Str::prepend(Path::makeRelative($this->path, $this->site()->path(), DS), DS);
 
-        $routePath = preg_replace('~[/\\\\](\d+-)~', '/', $this->relativePath)
+        $routePath = preg_replace('~[/\\\](\d+-)~', '/', $this->relativePath)
             ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
 
         $this->route ??= Uri::normalize($routePath);

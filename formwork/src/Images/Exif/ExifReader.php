@@ -197,7 +197,7 @@ class ExifReader
         for ($i = 0; $i < strlen($value); $i++) {
             $code = ord($value[$i]);
             if ($code > 9) {
-                throw new UnexpectedValueException(sprintf('Character \\x%x cannot be represented by a single decimal digit', $code));
+                throw new UnexpectedValueException(sprintf('Character \x%x cannot be represented by a single decimal digit', $code));
             }
             $value[$i] = $code;
         }

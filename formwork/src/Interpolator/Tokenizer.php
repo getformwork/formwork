@@ -19,12 +19,12 @@ class Tokenizer implements TokenizerInterface
     /**
      * Regex matching single quote string tokens
      */
-    protected const SINGLE_QUOTE_STRING_REGEX = '/\'(?:[^\'\\\\]|\\\\.)*\'/A';
+    protected const SINGLE_QUOTE_STRING_REGEX = '/\'(?:[^\'\\\]|\\\.)*\'/A';
 
     /**
      * Regex matching double quote string tokens
      */
-    protected const DOUBLE_QUOTE_STRING_REGEX = '/"(?:[^"\\\\]|\\\\.)*"/A';
+    protected const DOUBLE_QUOTE_STRING_REGEX = '/"(?:[^"\\\]|\\\.)*"/A';
 
     /**
      * Punctuation characters
