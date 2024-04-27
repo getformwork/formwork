@@ -44,19 +44,19 @@ class Scheme implements Arrayable
     }
 
     /**
+     * Get scheme id
+     */
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    /**
      * Get scheme title
      */
     public function title(): string
     {
         return $this->data['title'];
-    }
-
-    /**
-     * Return whether scheme is default
-     */
-    public function isDefault(): bool
-    {
-        return $this->data['default'] ?? false;
     }
 
     /**

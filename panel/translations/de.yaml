@@ -69,6 +69,8 @@ panel.options.site.maintenance.enabled: Wartungsmodus
 panel.options.site.maintenance.enabled.disabled: Deaktiviert
 panel.options.site.maintenance.enabled.enabled: Aktiviert
 panel.options.site.maintenance.page: Wartungsseite
+panel.options.site.pages: Seiten
+panel.options.site.pages.defaultTemplate: Standardvorlage
 panel.options.system: System
 panel.options.system.adminPanel: Administrationspanel
 panel.options.system.adminPanel.defaultColorScheme: Standard-Farbschema

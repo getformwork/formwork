@@ -8,6 +8,11 @@ layout:
             collapsible: true
             fields: [title, description]
 
+        pages:
+            label: '{{panel.options.site.pages}}'
+            collapsible: true
+            fields: [defaultTemplate]
+
         maintenance:
             label: '{{panel.options.site.maintenance}}'
             collapsible: true
@@ -29,6 +34,10 @@ fields:
         type: textarea
         label: '{{panel.options.site.info.description}}'
         required: false
+
+    defaultTemplate:
+        type: template
+        label: '{{panel.options.site.pages.defaultTemplate}}'
 
     maintenance.enabled:
         type: togglegroup

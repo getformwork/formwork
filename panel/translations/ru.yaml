@@ -69,6 +69,8 @@ panel.options.site.maintenance.enabled: Режим обслуживания
 panel.options.site.maintenance.enabled.disabled: Отключено
 panel.options.site.maintenance.enabled.enabled: Включено
 panel.options.site.maintenance.page: Страница обслуживания
+panel.options.site.pages: Страницы
+panel.options.site.pages.defaultTemplate: Шаблон по умолчанию
 panel.options.system: Система
 panel.options.system.adminPanel: Панель администратора
 panel.options.system.adminPanel.defaultColorScheme: Цветовая схема по умолчанию

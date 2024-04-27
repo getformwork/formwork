@@ -489,6 +489,8 @@ class Page extends Model implements Stringable
          */
         $languages = [];
 
+        $config = App::instance()->config();
+
         $site = $this->site;
 
         if ($this->path !== null && FileSystem::isDirectory($this->path, assertExists: false)) {
@@ -497,7 +499,7 @@ class Page extends Model implements Stringable
 
                 $extension = '.' . FileSystem::extension($file);
 
-                if ($extension === $site->get('content.extension')) {
+                if ($extension === $config->get('system.content.extension')) {
                     $language = null;
 
                     if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
@@ -515,7 +517,7 @@ class Page extends Model implements Stringable
                             $languages[] = $language;
                         }
                     }
-                } elseif (in_array($extension, $site->get('files.allowedExtensions'), true)) {
+                } elseif (in_array($extension, $config->get('system.files.allowedExtensions'), true)) {
                     $files[] = App::instance()->getService(FileFactory::class)->make(FileSystem::joinPaths($this->path, $file));
                 }
             }

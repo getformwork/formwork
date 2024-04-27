@@ -69,6 +69,8 @@ panel.options.site.maintenance.enabled: Maintenance Mode
 panel.options.site.maintenance.enabled.disabled: Disabled
 panel.options.site.maintenance.enabled.enabled: Enabled
 panel.options.site.maintenance.page: Maintenance Page
+panel.options.site.pages: Pages
+panel.options.site.pages.defaultTemplate: Default Template
 panel.options.system: System
 panel.options.system.adminPanel: Administration Panel
 panel.options.system.adminPanel.defaultColorScheme: Default Color Scheme
