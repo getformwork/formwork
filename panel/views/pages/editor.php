@@ -4,7 +4,7 @@
         <div class="min-w-0 flex-grow-1">
             <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $page->title() ?></div>
             <div class="flex">
-                <div class="page-status-<?= $page->status() ?> mr-2"><?= $this->icon('circle-small-fill') ?></div>
+                <div><?= $this->insert('_pages/status', ['page' => $page]) ?></div>
                 <?php if (!$page->isIndexPage() && !$page->isErrorPage()) : ?>
                     <div class="page-route page-route-changeable min-w-0">
                         <button type="button" class="button page-slug-change truncate max-w-100" data-command="change-slug" title="<?= $this->translate('panel.pages.changeSlug') ?>"><span class="page-route-inner"><?= $page->route() ?></span> <?= $this->icon('pencil') ?></button>

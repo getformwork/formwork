@@ -40,8 +40,8 @@
                     </div>
                 </div>
                 <div class="pages-tree-item-cell page-date truncate show-from-md"><?= $date ?></div>
-                <div class="pages-tree-item-cell page-status page-status-<?= $page->status() ?> truncate show-from-xs">
-                    <?= $this->icon('circle-small-fill') ?>
+                <div class="pages-tree-item-cell page-status truncate show-from-xs">
+                    <?= $this->insert('_pages/status', ['page' => $page]) ?>
                     <span class="page-status-label"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
                 </div>
                 <div class="pages-tree-item-cell page-actions">
