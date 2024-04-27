@@ -98,7 +98,7 @@ class Updater
      */
     public function checkUpdates(): bool
     {
-        if (time() - $this->registry->get('lastCheck') < $this->options['time']) {
+        if ($this->registry->has('lastCheck') && time() - $this->registry->get('lastCheck') < $this->options['time']) {
             return $this->registry->get('upToDate');
         }
 
