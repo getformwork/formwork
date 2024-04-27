@@ -286,8 +286,8 @@ export class Pages {
 
                     const data = {
                         "csrf-token": ($("meta[name=csrf-token]") as HTMLMetaElement).content,
-                        page: (element.children[event.newIndex as number] as HTMLElement).dataset.route,
-                        before: (element.children[event.oldIndex as number] as HTMLElement).dataset.route,
+                        page: event.item.dataset.route,
+                        before: (event.item.nextElementSibling! as HTMLElement).dataset.route,
                         parent: element.dataset.parent,
                     };
 
