@@ -304,9 +304,9 @@ class Image extends File
             $this->saveAs($path, $mimeType);
         }
 
-        $img = new Image($path, $this->options);
-        $img->uriGenerator = $this->uriGenerator;
-        return $img;
+        $image = new Image($path, $this->options);
+        $image->uriGenerator = $this->uriGenerator;
+        return $image;
     }
 
     public function toGif(): Image
