@@ -68,7 +68,7 @@ class User extends Model
      */
     public function image(): UserImage
     {
-        $filename = $this->data['image'];
+        $filename = (string) $this->data['image'];
         $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
 
         if (FileSystem::isFile($path, assertExists: false)) {

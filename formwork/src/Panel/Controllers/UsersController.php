@@ -193,7 +193,7 @@ class UsersController extends AbstractController
         }
 
         // Filter empty items from $data and merge them with $user ones
-        $userData = [...$user->toArray(), ...$data];
+        $userData = [...$user->data(), ...$data];
 
         Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
     }
