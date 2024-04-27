@@ -1,40 +1,49 @@
 import { $ } from "../utils/selectors";
 import { passIcon } from "./icons";
 
+type NotificationType = "info" | "success" | "warning" | "error";
+
 type NotificationOptions = {
     interval: number;
     icon?: string;
     newestOnTop: boolean;
     fadeOutDelay: number;
     mouseleaveDelay: number;
+    typeClass: Record<NotificationType, string>;
 };
 
 export class Notification {
     text: string;
-    type: string;
+    type: NotificationType;
     options: NotificationOptions;
     containerElement: HTMLElement | null;
     notificationElement: HTMLElement;
 
-    constructor(text: string, type: string, options: Partial<NotificationOptions>) {
-        const defaults = {
+    constructor(text: string, type: NotificationType, options: Partial<NotificationOptions>) {
+        const defaults: NotificationOptions = {
             interval: 5000,
-            icon: null,
+            icon: undefined,
             newestOnTop: true,
             fadeOutDelay: 300,
             mouseleaveDelay: 1000,
+            typeClass: {
+                info: "info",
+                success: "success",
+                warning: "warning",
+                error: "danger",
+            },
         };
 
         this.text = text;
         this.type = type;
 
-        this.options = Object.assign({}, defaults, options) as NotificationOptions;
+        this.options = Object.assign({}, defaults, options);
 
         this.containerElement = $(".notification-container") as HTMLElement;
     }
 
     show() {
-        const create = (text: string, type: string, interval: number) => {
+        const create = (text: string, type: NotificationType, interval: number) => {
             if (!this.containerElement) {
                 this.containerElement = document.createElement("div");
                 this.containerElement.className = "notification-container";
@@ -42,7 +51,7 @@ export class Notification {
             }
 
             const notification = document.createElement("div");
-            notification.className = `notification notification-${type}`;
+            notification.className = `notification notification-${this.options.typeClass[type]}`;
             notification.innerHTML = text;
 
             if (this.options.newestOnTop && this.containerElement.childNodes.length > 0) {

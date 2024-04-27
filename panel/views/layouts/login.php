@@ -14,9 +14,7 @@
     <main>
         <div class="container-full">
             <div class="login-modal-container">
-                <?php if ($notification = $panel->notifications()) : ?>
-                    <div class="login-modal-<?= $notification[0]['type'] ?>"><?= $this->icon($notification[0]['icon']) ?> <?= $notification[0]['text'] ?></div>
-                <?php endif ?>
+                <?= $this->insert('_login/notification') ?>
                 <?= $this->content() ?>
             </div>
         </div>
