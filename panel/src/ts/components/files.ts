@@ -21,6 +21,14 @@ export class Files {
                     });
                 });
             }
+
+            $$("video.file-thumbnail", filesList).forEach((video: HTMLVideoElement) => {
+                video.addEventListener("click", () => {
+                    if (!video.controls) {
+                        video.controls = true;
+                    }
+                });
+            });
         });
     }
 }

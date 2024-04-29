@@ -12,6 +12,11 @@
                 <?php if ($file->type() === 'image') : ?>
                     <div class="file-thumbnail" style="background-image:url('<?= $file->square(300, 'contain')->uri() ?>');"></div>
                 <?php endif ?>
+                <?php if ($file->type() === 'video') : ?>
+                    <video class="file-thumbnail">
+                        <source src="<?= $page->uri($file->name(), includeLanguage: false) ?>" type="<?= $file->mimeType() ?>" />
+                    </video>
+                <?php endif ?>
                 <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
                 <div class="file-name truncate"><?= $file->name() ?> <span class="file-size">(<?= $file->size() ?>)</span></div>
                 <div class="dropdown">
