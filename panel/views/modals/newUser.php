@@ -7,7 +7,7 @@
             <div class="modal-content">
                 <label class="form-label form-label-required" for="fullname"><?= $this->translate('panel.user.fullname') ?>:</label>
                 <input class="form-input" id="fullname" type="text" required name="fullname" autofocus>
-                <label class="lform-label abel-required" for="username"><?= $this->translate('panel.user.username') ?>:</label>
+                <label class="form-label form-label-required" for="username"><?= $this->translate('panel.user.username') ?>:</label>
                 <span class="form-label-suggestion">(<?= $this->translate('panel.users.newUser.usernameSuggestion') ?>)</span>
                 <input class="form-input" id="username" type="text" required name="username" pattern="^[a-zA-Z0-9_-]{3,20}$" title="<?= ucfirst($this->translate('panel.users.newUser.usernameSuggestion')) ?>" maxlength="20" autocomplete="false">
                 <label class="form-label form-label-required" for="password"><?= $this->translate('panel.user.password') ?>:</label>
