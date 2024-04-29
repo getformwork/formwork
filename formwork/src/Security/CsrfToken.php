@@ -47,12 +47,12 @@ class CsrfToken
     {
         if ($token === null) {
             $postData = $this->request->input();
-            $valid = $postData->has(self::INPUT_NAME) && $postData->get(self::INPUT_NAME) === static::get();
+            $valid = $postData->has(self::INPUT_NAME) && $this->get() === $postData->get(self::INPUT_NAME);
         } else {
-            $valid = $token === static::get();
+            $valid = $this->get() === $token;
         }
         if (!$valid) {
-            static::destroy();
+            $this->destroy();
             throw new RuntimeException('CSRF token not valid');
         }
         return $valid;

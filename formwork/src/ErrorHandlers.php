@@ -48,7 +48,7 @@ class ErrorHandlers
      */
     public function getExceptionHandler(Throwable $throwable): void
     {
-        static::displayErrorPage();
+        $this->displayErrorPage();
         error_log(sprintf(
             "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
             $throwable::class,
