@@ -49,7 +49,7 @@ class Template extends View implements Stringable
     public function assets(): Assets
     {
         return $this->assets ?? ($this->assets = new Assets(
-            $this->path() . 'assets/',
+            FileSystem::joinPaths($this->path(), 'assets'),
             $this->site->uri('/site/templates/assets/', includeLanguage: false)
         ));
     }
