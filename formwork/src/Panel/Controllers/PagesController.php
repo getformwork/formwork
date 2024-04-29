@@ -485,11 +485,6 @@ class PagesController extends AbstractController
      */
     protected function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection): Page
     {
-        // Ensure no required data is missing
-        if (!$requestData->hasMultiple(['title', 'content'])) {
-            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotEdit.varMissing');
-        }
-
         if ($page->contentFile() === null) {
             throw new RuntimeException('Unexpected missing content file');
         }
@@ -519,7 +514,7 @@ class PagesController extends AbstractController
             $frontmatter[$field->name()] = $field->value();
         }
 
-        $content = str_replace("\r\n", "\n", $requestData->get('content'));
+        $content = $requestData->has('content') ? str_replace("\r\n", "\n", $requestData->get('content')) : $page->data()['content'];
 
         $language = $requestData->get('language');
 
