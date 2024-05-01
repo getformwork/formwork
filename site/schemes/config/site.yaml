@@ -33,7 +33,6 @@ fields:
     description:
         type: textarea
         label: '{{panel.options.site.info.description}}'
-        required: false
 
     defaultTemplate:
         type: template
