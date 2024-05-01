@@ -19,6 +19,25 @@ class Html
     ];
 
     /**
+     * Return a class list separated by spaces, list items are used as class names, associative items
+     * keys are used instead as class names for values that compare to true
+     *
+     * @param array<string, mixed>|list<string> $list
+     */
+    public static function classes(array $list = []): string
+    {
+        $items = [];
+        foreach ($list as $key => $value) {
+            if (!is_string($key)) {
+                $items[] = $value;
+            } elseif ($value) {
+                $items[] = $key;
+            }
+        }
+        return implode(' ', $items);
+    }
+
+    /**
      * Return an attribute ('name="value"') from $name and $value arguments
      *
      * @param array<scalar|null>|scalar|null $value
