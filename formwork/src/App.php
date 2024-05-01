@@ -176,8 +176,7 @@ final class App
             ->loader(SchemesServiceLoader::class)
             ->alias('schemes');
 
-        $container->define(TemplateFactory::class)
-            ->parameter('methods', fn (Container $container) => $container->call(require SYSTEM_PATH . '/helpers.php'));
+        $container->define(TemplateFactory::class);
 
         $container->define(Site::class)
             ->loader(SiteServiceLoader::class)

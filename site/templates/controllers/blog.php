@@ -1,5 +1,9 @@
 <?php
 
+use Formwork\Http\ResponseStatus;
+use Formwork\Http\Utils\Header;
+use Formwork\Utils\Str;
+
 // Posts are the published children of the blog page
 $posts = $page->children()->published();
 
@@ -8,7 +12,7 @@ if ($router->params()->has('tagName')) {
     $posts = $posts->filterBy(
         'tags',             // Filter posts by tags...
         fn ($tags) => $tags
-            ->map(fn ($tag) => $this->slug($tag)) // where the collection of their slugs...
+            ->map(fn ($tag) => Str::slug($tag)) // where the collection of their slugs...
             ->contains($router->params()->get('tagName'))   // contains the value of the `tagName` param.
     );
 }
@@ -22,7 +26,7 @@ $posts = $posts->reverse()->paginate($page->postsPerPage(), $paginationPage);
 // Permanently redirect to the URI of the first page (without the `/page/{paginationPage}/`)
 // if the `paginationPage` param is given and equals `1`
 if ($router->params()->has('paginationPage') && $paginationPage === 1) {
-    $this->redirect($posts->pagination()->firstPageUri(), 301);
+    Header::redirect($posts->pagination()->firstPageUri(), ResponseStatus::MovedPermanently);
 }
 
 // If we have no posts or the `paginationPage` params refer to an nonexistent page

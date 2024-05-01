@@ -371,7 +371,7 @@ class Page extends Model implements Stringable
      */
     public function render(): string
     {
-        return $this->template()->setPage($this)->render();
+        return $this->template()->render(['page' => $this]);
     }
 
     /**
