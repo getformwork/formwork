@@ -1385,7 +1385,7 @@ __metadata:
     esbuild: "npm:^0.20.2"
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^9.1.0"
-    globals: "npm:^15.0.0"
+    globals: "npm:^15.1.0"
     postcss: "npm:^8.4.38"
     prettier: "npm:3.2.5"
     sass: "npm:^1.75.0"
@@ -1519,10 +1519,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "globals@npm:15.0.0"
-  checksum: b93e356a7bd4562d73a9defa95a0ff5e8a0b7726a4e2af16bd8ad019e14cd21d85e0a27b46e7e270d34e25df0bc0f9473ca21b47266c406c0e40973956085777
+"globals@npm:^15.1.0":
+  version: 15.1.0
+  resolution: "globals@npm:15.1.0"
+  checksum: ae9cd15057dc6a21d6dbafe9f47b66bd063c6d3c9215fa1e8294bd130d89f188c48370a11a9525a5a33bd8689fc4fdfd3f474d930692d7abb7459cd982503336
   languageName: node
   linkType: hard
 
