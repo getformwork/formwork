@@ -12,6 +12,8 @@ return function (App $app) {
     return [
         'attr' => Html::attributes(...),
 
+        'classes' => Html::classes(...),
+
         'escape' => Str::escape(...),
 
         'escapeAttr' => Str::escapeAttr(...),
@@ -19,6 +21,10 @@ return function (App $app) {
         'removeHTML' => Str::removeHTML(...),
 
         'slug' => Str::slug(...),
+
+        'append' => Str::append(...),
+
+        'prepend' => Str::prepend(...),
 
         'countWords' => Text::countWords(...),
 
