@@ -1,4 +1,3 @@
-<?php var_dump($this::class) ?>
 <nav class="menu">
     <div class="container">
         <a class="menu-header" href="<?= $site->uri() ?>"><?= $site->title() ?></a>
