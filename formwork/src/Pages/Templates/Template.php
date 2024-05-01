@@ -32,10 +32,12 @@ class Template extends View implements Stringable
 
     /**
      * Create a new Template instance
+     *
+     * @param array<string, Closure> $methods
      */
-    public function __construct(string $name, protected App $app, protected Site $site)
+    public function __construct(string $name, protected App $app, protected Site $site, array $methods = [])
     {
-        parent::__construct($name, $this->defaults(), $this->app->config()->get('system.templates.path'), $this->defaultMethods());
+        parent::__construct($name, $this->defaults(), $this->app->config()->get('system.templates.path'), [...$this->defaultMethods(), ...$methods]);
     }
 
     public function __toString(): string

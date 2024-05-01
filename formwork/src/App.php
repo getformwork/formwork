@@ -14,6 +14,7 @@ use Formwork\Http\Response;
 use Formwork\Images\ImageFactory;
 use Formwork\Languages\Languages;
 use Formwork\Pages\Site;
+use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Users\UserFactory;
 use Formwork\Parsers\Yaml;
@@ -174,6 +175,9 @@ final class App
         $container->define(Schemes::class)
             ->loader(SchemesServiceLoader::class)
             ->alias('schemes');
+
+        $container->define(TemplateFactory::class)
+            ->parameter('methods', fn (Container $container) => $container->call(require SYSTEM_PATH . '/helpers.php'));
 
         $container->define(Site::class)
             ->loader(SiteServiceLoader::class)
