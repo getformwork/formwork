@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\Response;
-use Formwork\Pages\Page;
 use Formwork\Parsers\Json;
 use Formwork\Statistics\Statistics;
 
@@ -26,7 +25,7 @@ class DashboardController extends AbstractController
         return new Response($this->view('dashboard.index', [
             'title'             => $this->translate('panel.dashboard.dashboard'),
             'lastModifiedPages' => $this->view('pages.tree', [
-                'pages'           => $this->site()->descendants()->sort(direction: SORT_DESC, sortBy: fn (Page $page) => $page->contentFile()?->lastModifiedTime())->limit(5),
+                'pages'           => $this->site()->descendants()->sortBy('lastModifiedTime', direction: SORT_DESC)->limit(5),
                 'includeChildren' => false,
                 'class'           => 'pages-tree-root',
                 'parent'          => null,
