@@ -25,7 +25,7 @@
                 <select class="form-select" id="page-template" name="template">
                     <?php foreach ($templates as $template) : ?>
                         <?php $scheme = $app->schemes()->get('pages.' . $template) ?>
-                        <option value="<?= $template ?>" <?php if ($site->defaultTemplate()->name() === $template) : ?> selected<?php endif ?>><?= $scheme->title() ?></option>
+                        <option value="<?= $template ?>" <?php if ((string) $site->get('defaultTemplate', 'default') === $template) : ?> selected<?php endif ?>><?= $scheme->title() ?></option>
                     <?php endforeach ?>
                 </select>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
