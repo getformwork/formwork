@@ -148,7 +148,7 @@ class File implements Arrayable, Stringable
      */
     public function lastModifiedTime(): int
     {
-        return $this->lastModifiedTime ?? FileSystem::lastModifiedTime($this->path);
+        return $this->lastModifiedTime ??= FileSystem::lastModifiedTime($this->path);
     }
 
     /**
