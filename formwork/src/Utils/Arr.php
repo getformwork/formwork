@@ -481,7 +481,7 @@ class Arr
             if ($sortBy === null) {
                 $arguments = [&$array, $direction, $flags];
             } elseif (is_array($sortBy)) {
-                $arguments = [&$sortBy, $direction, $flags, &$array];
+                $arguments = [&$sortBy, $direction, $flags, &$array, $direction, $flags];
             }
 
             if ($preserveKeys) {
