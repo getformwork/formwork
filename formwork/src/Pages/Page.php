@@ -69,6 +69,11 @@ class Page extends Model implements Stringable
     protected ?ContentFile $contentFile = null;
 
     /**
+     * Page last modified time
+     * */
+    protected int $lastModifiedTime;
+
+    /**
      * Page route
      */
     protected ?string $route = null;
@@ -222,6 +227,22 @@ class Page extends Model implements Stringable
     public function contentFile(): ?ContentFile
     {
         return $this->contentFile;
+    }
+
+    /**
+     * Get page last modified time
+     */
+    public function lastModifiedTime(): ?int
+    {
+        if ($this->path === null) {
+            return null;
+        }
+
+        $lastModifiedTime = $this->contentFile() !== null
+            ? $this->contentFile()->lastModifiedTime()
+            : FileSystem::lastModifiedTime($this->path);
+
+        return $this->lastModifiedTime ??= $lastModifiedTime;
     }
 
     /**
