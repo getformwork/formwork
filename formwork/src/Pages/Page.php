@@ -587,6 +587,7 @@ class Page extends Model implements Stringable
         ]);
 
         $this->files ??= new FileCollection($files);
+        $this->files->sortBy('path');
 
         $this->data = [...$this->defaults(), ...$this->data];
     }
