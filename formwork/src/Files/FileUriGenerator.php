@@ -8,6 +8,7 @@ use Formwork\Pages\Site;
 use Formwork\Router\Router;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use RuntimeException;
 
 class FileUriGenerator
 {
@@ -27,7 +28,8 @@ class FileUriGenerator
         }
 
         if (Str::startsWith($path, $contentPath = FileSystem::normalizePath($this->config->get('system.content.path')))) {
-            $uriPath = Str::after($path, $contentPath);
+            $uriPath = preg_replace('~[/\\\](\d+-)~', '/', Str::after($path, $contentPath))
+                ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
