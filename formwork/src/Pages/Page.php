@@ -3,6 +3,7 @@
 namespace Formwork\Pages;
 
 use Formwork\App;
+use Formwork\Files\File;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Http\ResponseStatus;
@@ -501,12 +502,12 @@ class Page extends Model implements Stringable
         $contentFiles = [];
 
         /**
-         * @var array<string>
+         * @var list<File>
          */
         $files = [];
 
         /**
-         * @var array<string>
+         * @var list<string>
          */
         $languages = [];
 

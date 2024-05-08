@@ -12,7 +12,7 @@ class FileCollection extends AbstractCollection
     protected ?string $dataType = File::class;
 
     /**
-     * @param array<string, File> $data
+     * @param array<string, File>|list<File> $data
      */
     public function __construct(array $data = [])
     {
