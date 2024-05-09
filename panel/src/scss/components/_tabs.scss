@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .tabs {
     padding: $focusring-width $focusring-width 0;
     border-bottom: 1px solid $color-base-600;
@@ -27,6 +29,8 @@
     margin-top: -0.5rem;
 }
 
-.header + .tabs {
-    margin-top: -1.5rem;
+@media (min-width: map.get($breakpoints, "sm")) {
+    .header + .tabs {
+        margin-top: -1.5rem;
+    }
 }

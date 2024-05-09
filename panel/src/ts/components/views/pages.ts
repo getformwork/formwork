@@ -251,6 +251,7 @@ export class Pages {
                 swapThreshold: 0.75,
                 invertSwap: true,
                 animation: 150,
+                preventOnFilter: false, // Workaround to allow touch events on iOS
 
                 onChoose() {
                     const height = document.body.offsetHeight;

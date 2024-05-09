@@ -56,10 +56,10 @@
 }
 
 .panel-main {
-    padding-top: 4.5rem;
+    padding-top: 4rem;
     @media (min-width: map.get($breakpoints, "sm")) {
         padding: 1.875rem;
-        padding-top: 4.5rem;
+        padding-top: 4rem;
         padding-left: 1.875rem + 16rem;
     }
 }

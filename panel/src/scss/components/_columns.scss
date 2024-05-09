@@ -1,19 +1,9 @@
 @use "sass:map";
 
-.container,
-.container-full,
-.container-no-margin {
-    padding: 0 $columns-gutter * 0.5;
-    margin: 0 auto;
-}
-
 .container {
     max-width: map.get($breakpoints, "lg");
-}
-
-.container-no-margin {
-    padding-right: 0;
-    padding-left: 0;
+    padding: 0 $columns-gutter * 0.5;
+    margin: 0 auto;
 }
 
 .row {
@@ -23,11 +13,15 @@
 }
 
 @media (max-width: map.get($breakpoints, "sm")) {
-    .container-no-margin .row {
+    .container {
+        padding: 0;
+    }
+
+    .container .row {
         margin: 0;
     }
 
-    .container-no-margin [class^="col-"] {
+    .container [class^="col-"] {
         padding: 0;
     }
 }

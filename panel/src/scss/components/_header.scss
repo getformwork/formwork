@@ -9,13 +9,13 @@
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid $color-base-600;
-    margin-bottom: 2rem;
     background-color: $color-base-800;
     white-space: nowrap;
 
     @media (min-width: map.get($breakpoints, "sm")) {
         padding: 1rem 1.5rem;
         margin-right: -1.5rem;
+        margin-bottom: 1.75rem;
         margin-left: -1.5rem;
     }
 }

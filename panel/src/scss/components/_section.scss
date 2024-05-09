@@ -1,9 +1,15 @@
+@use "sass:map";
+
 .section {
-    padding: 1.5rem 1.75rem;
-    border-radius: $border-radius;
+    padding: 1.5rem 1.25rem;
     margin-bottom: 1rem;
     background-color: $color-base-900;
     box-shadow: $box-shadow-sm;
+
+    @media (min-width: map.get($breakpoints, "sm")) {
+        padding: 1.5rem 1.75rem;
+        border-radius: $border-radius;
+    }
 }
 
 .section-header {
