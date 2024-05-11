@@ -1,6 +1,6 @@
-<button type="button" class="button button-link sidebar-toggle hide-from-sm" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
-<div class="sidebar show-from-sm">
-    <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a> <span class="show-from-sm text-color-gray-medium text-size-xs"><?= $app::VERSION ?></span></div>
+<button type="button" class="button button-link sidebar-toggle hide-from-md" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
+<div class="sidebar show-from-md">
+    <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->uri('images/icon.svg') ?>" alt=""> Formwork</a> <span class="show-from-md text-color-gray-medium text-size-xs"><?= $app::VERSION ?></span></div>
     <a href="<?= $panel->uri('/users/' . $panel->user()->username() . '/profile/') ?>">
         <div class="panel-user-card">
             <div class="panel-user-avatar">

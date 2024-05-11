@@ -29,7 +29,11 @@
     margin-top: -0.5rem;
 }
 
-@media (min-width: map.get($breakpoints, "sm")) {
+.header + .tabs {
+    margin-top: -0.5rem;
+}
+
+@media (min-width: map.get($breakpoints, "md")) {
     .header + .tabs {
         margin-top: -1.5rem;
     }

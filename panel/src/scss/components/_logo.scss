@@ -7,7 +7,7 @@
     font-weight: 600;
     line-height: 1.5rem;
     text-align: center;
-    @media (min-width: map.get($breakpoints, "sm")) {
+    @media (min-width: map.get($breakpoints, "md")) {
         text-align: left;
     }
 }

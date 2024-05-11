@@ -55,7 +55,8 @@
     color: $color-white;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         border-color: $color-accent-400;
         background-color: $color-accent-400;
         color: $color-white;
@@ -73,7 +74,8 @@
     color: $color-base-100;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         border-color: $color-base-500;
         background-color: $color-base-500;
         color: $color-base-100;
@@ -91,7 +93,8 @@
     color: $color-white;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         border-color: $color-success-400;
         background-color: $color-success-400;
         color: $color-white;
@@ -109,7 +112,8 @@
     color: $color-white;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         border-color: $color-warning-400;
         background-color: $color-warning-400;
         color: $color-white;
@@ -127,7 +131,8 @@
     color: $color-white;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         border-color: $color-danger-400;
         background-color: $color-danger-400;
         color: $color-white;

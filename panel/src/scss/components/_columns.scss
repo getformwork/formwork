@@ -2,27 +2,24 @@
 
 .container {
     max-width: map.get($breakpoints, "lg");
-    padding: 0 $columns-gutter * 0.5;
+    padding: 0;
     margin: 0 auto;
 }
 
 .row {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 $columns-gutter * -0.5;
+    margin: 0;
 }
 
-@media (max-width: map.get($breakpoints, "sm")) {
+@media (min-width: map.get($breakpoints, "sm")) {
     .container {
-        padding: 0;
+        padding: 0 $columns-gutter;
     }
 
     .container .row {
-        margin: 0;
-    }
-
-    .container [class^="col-"] {
-        padding: 0;
+        margin-right: $columns-gutter * -0.5;
+        margin-left: $columns-gutter * -0.5;
     }
 }
 

@@ -5,15 +5,22 @@
     z-index: 9;
     top: 3.5rem;
     display: flex;
-    min-height: 5.5rem;
+    min-height: 4.5rem;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid $color-base-600;
+    margin-bottom: 1rem;
     background-color: $color-base-800;
     white-space: nowrap;
 
     @media (min-width: map.get($breakpoints, "sm")) {
-        padding: 1rem 1.5rem;
+        padding: 0.5rem 1.5rem;
+        margin-right: -1rem;
+        margin-left: -1rem;
+    }
+
+    @media (min-width: map.get($breakpoints, "md")) {
+        min-height: 5.5rem;
         margin-right: -1.5rem;
         margin-bottom: 1.75rem;
         margin-left: -1.5rem;

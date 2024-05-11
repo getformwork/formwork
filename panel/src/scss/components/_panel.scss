@@ -15,7 +15,7 @@
     color: $color-base-100;
     font-weight: 500;
     @include user-select-none;
-    @media (min-width: map.get($breakpoints, "sm")) {
+    @media (min-width: map.get($breakpoints, "md")) {
         left: 16rem;
         padding-left: 1.5rem;
     }
@@ -57,7 +57,7 @@
 
 .panel-main {
     padding-top: 4rem;
-    @media (min-width: map.get($breakpoints, "sm")) {
+    @media (min-width: map.get($breakpoints, "md")) {
         padding: 1.875rem;
         padding-top: 4rem;
         padding-left: 1.875rem + 16rem;

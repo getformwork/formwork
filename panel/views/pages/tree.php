@@ -1,7 +1,7 @@
 <?php if ($headers) : ?>
     <div class="pages-tree-headers" aria-hidden="true">
         <div class="pages-tree-headers-cell page-details truncate"><?= $this->translate('panel.pages.page.title') ?></div>
-        <div class="pages-tree-headers-cell page-date truncate show-from-md"><?= $this->translate('panel.pages.page.lastModified') ?></div>
+        <div class="pages-tree-headers-cell page-date truncate show-from-lg"><?= $this->translate('panel.pages.page.lastModified') ?></div>
         <div class="pages-tree-headers-cell page-status truncate show-from-xs"><?= $this->translate('panel.pages.page.status') ?></div>
         <div class="pages-tree-headers-cell page-actions"><?= $this->translate('panel.pages.page.actions') ?></div>
     </div>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="pages-tree-item-cell page-date truncate show-from-md"><?= $date ?></div>
+                <div class="pages-tree-item-cell page-date truncate show-from-lg"><?= $date ?></div>
                 <div class="pages-tree-item-cell page-status truncate show-from-xs">
                     <?= $this->insert('_pages/status', ['page' => $page]) ?>
                     <span class="page-status-label"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
