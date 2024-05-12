@@ -28,6 +28,8 @@ interface HandlerInterface
      */
     public function getInfo(): ImageInfo;
 
+    public function supportsTransforms(): bool;
+
     public static function supportsColorProfile(): bool;
 
     /**

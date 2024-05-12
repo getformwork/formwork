@@ -9,6 +9,7 @@ use Formwork\Images\Handler\AbstractHandler;
 use Formwork\Images\Handler\GifHandler;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Images\Handler\PngHandler;
+use Formwork\Images\Handler\SvgHandler;
 use Formwork\Images\Handler\WebpHandler;
 use Formwork\Images\Transform\Blur;
 use Formwork\Images\Transform\BlurMode;
@@ -73,11 +74,17 @@ class Image extends File
         if (!isset($this->mimeType)) {
             $info = getimagesize($this->path);
 
-            if ($info === false) {
-                throw new RuntimeException('Failed to get image info');
+            if ($info !== false) {
+                return $this->mimeType = $info['mime'];
             }
 
-            $this->mimeType = $info['mime'];
+            $mimeTypeFromFile = MimeType::fromFile($this->path);
+
+            if ($mimeTypeFromFile === 'image/svg+xml') {
+                return $this->mimeType = $mimeTypeFromFile;
+            }
+
+            throw new RuntimeException('Failed to get image info');
         }
 
         return $this->mimeType;
@@ -288,7 +295,7 @@ class Image extends File
     {
         $mimeType ??= $this->mimeType();
 
-        if (!$forceCache && $mimeType === $this->mimeType() && $this->transforms->isEmpty()) {
+        if (!$forceCache && $mimeType === $this->mimeType() && (!$this->handler()->supportsTransforms() || $this->transforms->isEmpty())) {
             return $this;
         }
 
@@ -332,12 +339,21 @@ class Image extends File
     public function saveAs(string $path, ?string $mimeType = null): void
     {
         $handler = match ($mimeType ?? $this->mimeType()) {
-            'image/jpeg' => JpegHandler::class,
-            'image/png'  => PngHandler::class,
-            'image/gif'  => GifHandler::class,
-            'image/webp' => WebpHandler::class,
-            default      => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType))
+            'image/jpeg'    => JpegHandler::class,
+            'image/png'     => PngHandler::class,
+            'image/gif'     => GifHandler::class,
+            'image/webp'    => WebpHandler::class,
+            'image/svg+xml' => SvgHandler::class,
+            default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType))
         };
+
+        if (!$this->handler()->supportsTransforms()) {
+            if ($mimeType === $this->mimeType()) {
+                $this->handler()->saveAs($path);
+                return;
+            }
+            throw new RuntimeException(sprintf('Unsupported image conversion from %s to %s', $this->mimeType(), $mimeType));
+        }
 
         $this->handler()->process($this->transforms, $handler)->saveAs($path);
     }
@@ -364,11 +380,12 @@ class Image extends File
         $mimeType ??= $this->mimeType();
 
         $format = match ($mimeType) {
-            'image/jpeg' => $mimeType . $this->options['jpegQuality'] . $this->options['jpegProgressive'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
-            'image/png'  => $mimeType . $this->options['pngCompression'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
-            'image/webp' => $mimeType . $this->options['webpQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
-            'image/gif'  => $mimeType . $this->options['gifColors'],
-            default      => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType))
+            'image/jpeg'    => $mimeType . $this->options['jpegQuality'] . $this->options['jpegProgressive'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
+            'image/png'     => $mimeType . $this->options['pngCompression'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
+            'image/webp'    => $mimeType . $this->options['webpQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
+            'image/gif'     => $mimeType . $this->options['gifColors'],
+            'image/svg+xml' => $mimeType,
+            default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType))
         };
 
         return substr(hash('sha256', $this->path . $this->transforms->getSpecifier() . $format . FileSystem::lastModifiedTime($this->path)), 0, 32);
@@ -388,11 +405,12 @@ class Image extends File
     protected function getHandler(): AbstractHandler
     {
         return match ($this->mimeType()) {
-            'image/jpeg' => JpegHandler::fromPath($this->path),
-            'image/png'  => PngHandler::fromPath($this->path),
-            'image/gif'  => GifHandler::fromPath($this->path),
-            'image/webp' => WebpHandler::fromPath($this->path),
-            default      => throw new RuntimeException('Unsupported image type'),
+            'image/jpeg'    => JpegHandler::fromPath($this->path),
+            'image/png'     => PngHandler::fromPath($this->path),
+            'image/gif'     => GifHandler::fromPath($this->path),
+            'image/webp'    => WebpHandler::fromPath($this->path),
+            'image/svg+xml' => SvgHandler::fromPath($this->path),
+            default         => throw new RuntimeException('Unsupported image type'),
         };
     }
 

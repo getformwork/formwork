@@ -47,6 +47,8 @@ abstract class AbstractHandler implements HandlerInterface
      */
     abstract public function getInfo(): ImageInfo;
 
+    abstract public function supportsTransforms(): bool;
+
     abstract public static function supportsColorProfile(): bool;
 
     /**
@@ -136,6 +138,10 @@ abstract class AbstractHandler implements HandlerInterface
 
     public function process(?TransformCollection $transformCollection = null, ?string $handler = null): AbstractHandler
     {
+        if (!$this->supportsTransforms()) {
+            throw new RuntimeException(sprintf('Image handler of type %s does not support transforms for the current image', static::class));
+        }
+
         $handler ??= static::class;
 
         if (!is_subclass_of($handler, self::class)) {

@@ -80,6 +80,11 @@ class WebpHandler extends AbstractHandler
         return new ImageInfo($info);
     }
 
+    public function supportsTransforms(): bool
+    {
+        return !$this->getInfo()->isAnimation();
+    }
+
     public static function supportsColorProfile(): bool
     {
         return true;

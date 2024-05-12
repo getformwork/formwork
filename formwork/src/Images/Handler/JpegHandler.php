@@ -50,6 +50,11 @@ class JpegHandler extends AbstractHandler
         return new ImageInfo($info);
     }
 
+    public function supportsTransforms(): bool
+    {
+        return true;
+    }
+
     public static function supportsColorProfile(): bool
     {
         return true;
