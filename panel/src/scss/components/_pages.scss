@@ -106,3 +106,28 @@
 .pages-tree.is-filtered .pages-tree-item .page-details {
     padding-left: 0;
 }
+
+.page-file-preview-container {
+    display: flex;
+    justify-content: center;
+    background-color: $color-base-600;
+}
+
+.page-file-preview-link {
+    cursor: zoom-in;
+    line-height: 0;
+}
+
+.page-file-preview-image {
+    max-height: 40.5rem;
+    object-fit: contain;
+    @include checkbox-background(1.5rem, rgba($color-black, 0.125));
+}
+
+.page-file-info-entry-title {
+    font-weight: 600;
+}
+
+.page-file-info-entry-uri {
+    word-break: break-word;
+}

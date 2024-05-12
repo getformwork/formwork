@@ -11,7 +11,7 @@
         <div class="modal-footer">
             <button type="button" class="button button-secondary" data-dismiss="slugModal"><?= $this->icon('times-circle') ?> <?= $this->translate('panel.modal.action.cancel') ?></button>
             <button type="button" class="button button-accent button-right" data-command="continue"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.continue') ?></button>
-            <button type="button" class="button button-link button-right" data-command="generate-slug" title="<?= $this->translate('panel.pages.changeSlug.generate') ?>"><?= $this->icon('bolt') ?></button>
+            <button type="button" class="button button-link button-right" data-command="generate-slug" title="<?= $this->translate('panel.pages.changeSlug.generate') ?>"><?= $this->icon('sparks') ?></button>
         </div>
     </div>
 </div>

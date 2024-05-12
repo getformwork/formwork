@@ -21,6 +21,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
@@ -191,12 +192,8 @@ class PagesController extends AbstractController
                     throw new UnexpectedValueException('Unexpected missing page route');
                 }
 
-                // Redirect if page route has changed
-                if ($routeParams->get('page') !== ($route = trim($page->route(), '/'))) {
-                    return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $route]));
-                }
-
-                break;
+                // Redirect to avoid ERR_CACHE_MISS
+                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $page->route()]));
         }
 
         $this->modal('changes');
@@ -394,31 +391,97 @@ class PagesController extends AbstractController
         if ($newName !== $previousName) {
             if ($page->files()->has($newName)) {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileAlreadyExists'), 'error');
-                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
+            } else {
+                FileSystem::move($page->path() . $previousName, $page->path() . $newName);
+                $this->panel()->notify($this->translate('panel.pages.page.fileRenamed'), 'success');
             }
+        }
 
-            FileSystem::move($page->path() . $previousName, $page->path() . $newName);
-            $this->panel()->notify($this->translate('panel.pages.page.fileRenamed'), 'success');
+        $previousFileRoute = $this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $previousName]);
+
+        if (Str::removeEnd((string) Uri::path($request->referer()), '/') === $this->site()->uri($previousFileRoute)) {
+            return $this->redirect($this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $newName]));
         }
 
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
     }
 
-    public function getFileInfo(RouteParams $routeParams): JsonResponse
+    /**
+     * Pages@replaceFile action
+     */
+    public function replaceFile(RouteParams $routeParams): RedirectResponse
     {
-        $this->ensurePermission('pages.getFileInfo');
+        $this->ensurePermission('pages.replaceFiles');
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
+        $filename = $routeParams->get('filename');
+
         if ($page === null) {
-            return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.pageNotFound'));
+            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.pageNotFound'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
-        if (!$page->files()->has($routeParams->get('filename'))) {
-            return JsonResponse::error($this->translate('panel.pages.page.cannotRenameFile.fileNotFound'));
+        if (!$page->files()->has($filename)) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.fileNotFound'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
         }
 
-        return JsonResponse::success('Yes!', data: $page->files()->get($routeParams->get('filename'))->toArray());
+        if (!$this->request->files()->isEmpty()) {
+            $files = $this->request->files()->getAll();
+
+            if (count($files) > 1) {
+                $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.multipleFiles'), 'error');
+                return $this->redirectToReferer(default: '/pages/');
+            }
+
+            try {
+                $this->processPageUploads($this->request->files()->getAll(), $page, [$page->files()->get($filename)->mimeType()], FileSystem::name($filename), true);
+            } catch (TranslatedException $e) {
+                $this->panel()->notify($this->translate('upload.error', $e->getTranslatedMessage()), 'error');
+                return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
+            }
+        }
+
+        $this->panel()->notify($this->translate('panel.uploader.uploaded'), 'success');
+        return $this->redirectToReferer(default: '/pages/');
+    }
+
+    /**
+     * Pages@file action
+     */
+    public function file(RouteParams $routeParams): Response
+    {
+        $this->ensurePermission('pages.file');
+
+        $page = $this->site()->findPage($routeParams->get('page'));
+
+        $filename = $routeParams->get('filename');
+
+        if ($page === null) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.pageNotFound'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        if (!$page->files()->has($filename)) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.fileNotFound'), 'error');
+            return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
+        }
+
+        $files = $page->files();
+        $file = $files->get($filename);
+        $fileIndex = $files->indexOf($file);
+
+        $this->modal('renameFile');
+        $this->modal('deleteFile');
+
+        return new Response($this->view('pages.file', [
+            'title'        => $this->translate('panel.pages.editPage', $page->title()),
+            'page'         => $page,
+            'file'         => $file,
+            'previousFile' => $files->nth($fileIndex - 1),
+            'nextFile'     => $files->nth($fileIndex + 1),
+        ]));
     }
 
     /**
@@ -616,10 +679,13 @@ class PagesController extends AbstractController
      * Process page uploads
      *
      * @param array<UploadedFile> $files
+     * @param list<string>        $mimeTypes
      */
-    protected function processPageUploads(array $files, Page $page): void
+    protected function processPageUploads(array $files, Page $page, ?array $mimeTypes = null, ?string $name = null, bool $overwrite = false): void
     {
-        $fileUploader = new FileUploader($this->config);
+        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
+
+        $fileUploader = new FileUploader($mimeTypes);
 
         foreach ($files as $file) {
             if (!$file->isUploaded()) {
@@ -628,7 +694,7 @@ class PagesController extends AbstractController
             if ($page->path() === null) {
                 throw new UnexpectedValueException('Unexpected missing page path');
             }
-            $uploadedFile = $fileUploader->upload($file, $page->path());
+            $uploadedFile = $fileUploader->upload($file, $page->path(), $name, $overwrite);
             // Process JPEG and PNG images according to system options (e.g. quality)
             if ($this->config->get('system.uploads.processImages') && in_array($uploadedFile->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($uploadedFile->path(), $this->config->get('system.images'));

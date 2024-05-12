@@ -3,6 +3,7 @@
 use Formwork\App;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Utils\DateFormats;
+use Formwork\Utils\MimeType;
 
 return function (App $app) {
     return [
@@ -18,6 +19,10 @@ return function (App $app) {
 
         'languages' => [
             'names' => LanguageCodes::names(),
+        ],
+
+        'mimeTypes' => [
+            'extensionTypes' => MimeType::extensionTypes(),
         ],
     ];
 };

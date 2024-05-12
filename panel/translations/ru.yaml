@@ -135,6 +135,38 @@ panel.pages.editor.redo: Выбор
 panel.pages.editor.summary: Краткий
 panel.pages.editor.undo: Открыть
 panel.pages.editPage: Отредактировать страницу %s
+panel.pages.file.backToPage: Назад к странице
+panel.pages.file.exif: EXIF
+panel.pages.file.info: Информация
+panel.pages.file.info.image.colorDepth: Глубина цвета
+panel.pages.file.info.image.colorNumber: Количество цветов
+panel.pages.file.info.image.colorProfile: Профиль цвета
+panel.pages.file.info.image.colorSpace: Цветовое пространство
+panel.pages.file.info.image.dimensions: Размеры
+panel.pages.file.info.image.dimensions.widthByHeightPixels: '%d × %d пикселей'
+panel.pages.file.info.image.exif.aperture: Диафрагма
+panel.pages.file.info.image.exif.camera: Камера
+panel.pages.file.info.image.exif.creationDateAndTime: Дата и время создания
+panel.pages.file.info.image.exif.exposureCompensation: Компенсация экспозиции
+panel.pages.file.info.image.exif.exposureProgram: Программа экспозиции
+panel.pages.file.info.image.exif.exposureTime: Время экспозиции
+panel.pages.file.info.image.exif.flash: Вспышка
+panel.pages.file.info.image.exif.focalLength: Фокусное расстояние
+panel.pages.file.info.image.exif.lensModel: Модель объектива
+panel.pages.file.info.image.exif.meteringMode: Режим измерения
+panel.pages.file.info.image.exif.sensitivity: Чувствительность
+panel.pages.file.info.image.exif.whiteBalance: Баланс белого
+panel.pages.file.info.image.frames: '%d кадров'
+panel.pages.file.info.image.framesCount: Количество кадров
+panel.pages.file.info.image.repeats: '%d повторов'
+panel.pages.file.info.image.repeatsCount: Количество повторений
+panel.pages.file.info.image.resolution: Разрешение
+panel.pages.file.info.lastModifiedTime: Последнее изменение
+panel.pages.file.info.mimeType: Тип MIME
+panel.pages.file.info.size: Размер
+panel.pages.file.info.uri: URI
+panel.pages.file.position: Позиция
+panel.pages.file.preview: Просмотр
 panel.pages.files: Файлы
 panel.pages.languages: Языки
 panel.pages.languages.addLanguage: Добавлять %s
@@ -146,6 +178,8 @@ panel.pages.newPage.slug: Страница Slug
 panel.pages.newPage.slugSuggestion: буквы, цифры и дефис только
 panel.pages.newPage.template: Шаблон
 panel.pages.newPage.title: Заглавие
+panel.pages.next: Следующая страница
+panel.pages.nextFile: Следующий файл
 panel.pages.options: Параметры
 panel.pages.page: Страница
 panel.pages.page.actions: Действия
@@ -174,6 +208,9 @@ panel.pages.page.cannotMove: Невозможно переместить стр�
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Невозможно переименовать файл, файл с таким именем уже существует
 panel.pages.page.cannotRenameFile.fileNotFound: Невозможно переименовать файл, файл не найден
 panel.pages.page.cannotRenameFile.pageNotFound: Невозможно переименовать файл, страница не найдена
+panel.pages.page.cannotReplaceFile.fileNotFound: Невозможно заменить файл, файл не найден
+panel.pages.page.cannotReplaceFile.multipleFiles: Невозможно заменить файл, указаны несколько файлов
+panel.pages.page.cannotReplaceFile.pageNotFound: Невозможно заменить файл, страница не найдена
 panel.pages.page.cannotUploadFile.pageNotFound: Невозможно загрузить файл, страница не найдена
 panel.pages.page.created: Страница сгенерирована!
 panel.pages.page.deleted: Страница удалена
@@ -202,8 +239,11 @@ panel.pages.pages.search: Поиск Страницы ...
 panel.pages.parent: Родитель страницы
 panel.pages.preview: Предварительный просмотр
 panel.pages.previewFile: Предварительный просмотр
+panel.pages.previous: Предыдущая страница
+panel.pages.previousFile: Предыдущий файл
 panel.pages.renameFile: Переименовать файл
 panel.pages.renameFile.name: Имя
+panel.pages.replaceFile: Заменить файл
 panel.pages.save: Сохранить
 panel.pages.status.notPublished: Не Опубликовано
 panel.pages.status.notRoutable: Не маршрутизируемый

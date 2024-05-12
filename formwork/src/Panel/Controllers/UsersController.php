@@ -14,7 +14,9 @@ use Formwork\Panel\Security\Password;
 use Formwork\Panel\Users\User;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\MimeType;
 use RuntimeException;
 
 class UsersController extends AbstractController
@@ -205,7 +207,9 @@ class UsersController extends AbstractController
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
 
-        $fileUploader = new FileUploader($this->config);
+        $mimeTypes = Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
+
+        $fileUploader = new FileUploader($mimeTypes);
 
         $uploadedFile = $fileUploader->upload($file, $imagesPath, FileSystem::randomName());
 

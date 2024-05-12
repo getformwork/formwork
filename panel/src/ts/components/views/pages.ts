@@ -224,6 +224,34 @@ export class Pages {
             });
         });
 
+        $$("[data-command=replaceFile]").forEach((element) => {
+            element.addEventListener("click", () => {
+                const form = document.createElement("form");
+                form.hidden = true;
+                form.action = element.dataset.action as string;
+                form.method = "post";
+                form.enctype = "multipart/form-data";
+
+                const fileInput = document.createElement("input");
+                fileInput.name = "file";
+                fileInput.type = "file";
+                fileInput.accept = element.dataset.extension as string;
+                form.appendChild(fileInput);
+
+                const csrfInput = document.createElement("input");
+                csrfInput.name = "csrf-token";
+                csrfInput.value = ($("meta[name=csrf-token]") as HTMLMetaElement).content;
+                form.appendChild(csrfInput);
+
+                fileInput.click();
+
+                fileInput.addEventListener("change", () => {
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            });
+        });
+
         function expandAllPages() {
             $$(".pages-tree-item").forEach((element) => {
                 element.classList.add("is-expanded");

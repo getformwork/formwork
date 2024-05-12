@@ -179,4 +179,12 @@ class MimeType
     {
         return static::getAssociatedExtensions($mimeType)[0] ?? null;
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function extensionTypes(): array
+    {
+        return Arr::mapKeys(Arr::map(self::MIME_TYPES, fn ($value, $key) => sprintf('.%s (%s)', $key, $value)), fn ($key) => '.' . $key);
+    }
 }

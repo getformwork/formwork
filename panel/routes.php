@@ -144,6 +144,18 @@ return [
             'methods' => ['POST'],
         ],
 
+        'panel.pages.replaceFile' => [
+            'path'    => '/pages/{page}/file/{filename}/replace/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@replaceFile',
+            'methods' => ['POST'],
+        ],
+
+        'panel.pages.file' => [
+            'path'    => '/pages/{page}/file/{filename}/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@file',
+            'methods' => ['GET'],
+        ],
+
         'panel.pages.delete' => [
             'path'    => '/pages/{page}/delete/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@delete',

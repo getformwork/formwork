@@ -7,8 +7,8 @@
     </div>
 
     <div class="files-items">
-        <?php foreach ($page->files()->sort() as $file) : ?>
-            <div class="files-item">
+        <?php foreach ($page->files() as $file) : ?>
+            <div class="files-item" data-href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/') ?>">
                 <?php if ($file->type() === 'image') : ?>
                     <div class="file-thumbnail" style="background-image:url('<?= $file->square(300, 'contain')->uri() ?>');"></div>
                 <?php endif ?>
@@ -22,9 +22,13 @@
                 <div class="dropdown">
                     <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
                     <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">
+                        <a class="dropdown-item" href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/') ?>"><?= $this->icon('info-circle') ?> <?= $this->translate('panel.pages.file.info') ?></a>
                         <a class="dropdown-item" href="<?= $page->uri($file->name(), includeLanguage: false) ?>" target="formwork-preview-file-<?= $file->hash() ?>"><?= $this->icon('eye') ?> <?= $this->translate('panel.pages.previewFile') ?></a>
                         <?php if ($panel->user()->permissions()->has('pages.renameFiles')) : ?>
                             <a class="dropdown-item" data-modal="renameFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/rename/') ?>" data-filename="<?= $file->name() ?>"><?= $this->icon('pencil') ?> <?= $this->translate('panel.pages.renameFile') ?></a>
+                        <?php endif ?>
+                        <?php if ($panel->user()->permissions()->has('pages.replaceFiles')) : ?>
+                            <a class="dropdown-item" data-command="replaceFile" data-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/replace/') ?>" data-extension=".<?= $file->extension() ?>"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.pages.replaceFile') ?></a>
                         <?php endif ?>
                         <?php if ($panel->user()->permissions()->has('pages.deleteFiles')) : ?>
                             <a class="dropdown-item" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>"><?= $this->icon('trash') ?> <?= $this->translate('panel.pages.deleteFile') ?></a>

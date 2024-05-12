@@ -135,6 +135,38 @@ panel.pages.editor.redo: Wiederholen
 panel.pages.editor.summary: Zusammenfassung
 panel.pages.editor.undo: Rückgängig
 panel.pages.editPage: Seite bearbeiten %s
+panel.pages.file.backToPage: Zurück zur Seite
+panel.pages.file.exif: EXIF
+panel.pages.file.info: Info
+panel.pages.file.info.image.colorDepth: Farbtiefe
+panel.pages.file.info.image.colorNumber: Anzahl der Farben
+panel.pages.file.info.image.colorProfile: Farbprofil
+panel.pages.file.info.image.colorSpace: Farbraum
+panel.pages.file.info.image.dimensions: Abmessungen
+panel.pages.file.info.image.dimensions.widthByHeightPixels: '%d × %d Pixel'
+panel.pages.file.info.image.exif.aperture: Blende
+panel.pages.file.info.image.exif.camera: Kamera
+panel.pages.file.info.image.exif.creationDateAndTime: Erstellungsdatum und -zeit
+panel.pages.file.info.image.exif.exposureCompensation: Belichtungskorrektur
+panel.pages.file.info.image.exif.exposureProgram: Belichtungsprogramm
+panel.pages.file.info.image.exif.exposureTime: Belichtungszeit
+panel.pages.file.info.image.exif.flash: Blitz
+panel.pages.file.info.image.exif.focalLength: Brennweite
+panel.pages.file.info.image.exif.lensModel: Objektivmodell
+panel.pages.file.info.image.exif.meteringMode: Belichtungsmessmethode
+panel.pages.file.info.image.exif.sensitivity: Empfindlichkeit
+panel.pages.file.info.image.exif.whiteBalance: Weißabgleich
+panel.pages.file.info.image.frames: '%d Frames'
+panel.pages.file.info.image.framesCount: Anzahl der Frames
+panel.pages.file.info.image.repeats: '%d Wiederholungen'
+panel.pages.file.info.image.repeatsCount: Anzahl der Wiederholungen
+panel.pages.file.info.image.resolution: Auflösung
+panel.pages.file.info.lastModifiedTime: Letzte Änderungszeit
+panel.pages.file.info.mimeType: MIME-Typ
+panel.pages.file.info.size: Größe
+panel.pages.file.info.uri: URI
+panel.pages.file.position: Position
+panel.pages.file.preview: Vorschau
 panel.pages.files: Dateien
 panel.pages.languages: Sprachen
 panel.pages.languages.addLanguage: "%s hinzufügen"
@@ -146,6 +178,8 @@ panel.pages.newPage.slug: Seiten-Slug
 panel.pages.newPage.slugSuggestion: Nur Buchstaben, Zahlen und Bindestriche
 panel.pages.newPage.template: Vorlage
 panel.pages.newPage.title: Titel
+panel.pages.next: Nächste Seite
+panel.pages.nextFile: Nächste Datei
 panel.pages.options: Optionen
 panel.pages.page: Seite
 panel.pages.page.actions: Aktionen
@@ -174,6 +208,9 @@ panel.pages.page.cannotMove: Seite kann nicht verschoben werden
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Datei kann nicht umbenannt werden, eine Datei mit demselben Namen existiert bereits
 panel.pages.page.cannotRenameFile.fileNotFound: Datei kann nicht umbenannt werden, Datei nicht gefunden
 panel.pages.page.cannotRenameFile.pageNotFound: Datei kann nicht umbenannt werden, Seite nicht gefunden
+panel.pages.page.cannotReplaceFile.fileNotFound: Datei kann nicht ersetzt werden, Datei nicht gefunden
+panel.pages.page.cannotReplaceFile.multipleFiles: Datei kann nicht ersetzt werden, mehrere Dateien angegeben
+panel.pages.page.cannotReplaceFile.pageNotFound: Datei kann nicht ersetzt werden, Seite nicht gefunden
 panel.pages.page.cannotUploadFile.pageNotFound: Datei kann nicht hochgeladen werden, Seite nicht gefunden
 panel.pages.page.created: Seite erstellt!
 panel.pages.page.deleted: Seite gelöscht
@@ -202,8 +239,11 @@ panel.pages.pages.search: Seiten durchsuchen...
 panel.pages.parent: Übergeordnete Seite
 panel.pages.preview: Vorschau
 panel.pages.previewFile: Vorschau
+panel.pages.previous: Vorherige Seite
+panel.pages.previousFile: Vorherige Datei
 panel.pages.renameFile: Datei umbenennen
 panel.pages.renameFile.name: Name
+panel.pages.replaceFile: Datei ersetzen
 panel.pages.save: Speichern
 panel.pages.status.notPublished: Nicht veröffentlicht
 panel.pages.status.notRoutable: Nicht routbar

@@ -22,10 +22,10 @@ export class Files {
                 });
             }
 
-            $$("video.file-thumbnail", filesList).forEach((video: HTMLVideoElement) => {
-                video.addEventListener("click", () => {
-                    if (!video.controls) {
-                        video.controls = true;
+            $$(".files-item", filesList).forEach((item: HTMLElement) => {
+                item.addEventListener("click", (event) => {
+                    if (!(event.target as HTMLElement).closest(".dropdown") && typeof item.dataset.href === "string") {
+                        location.href = item.dataset.href;
                     }
                 });
             });

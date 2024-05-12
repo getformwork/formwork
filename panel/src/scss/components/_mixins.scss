@@ -116,3 +116,15 @@
         }
     }
 }
+
+@mixin checkbox-background($size, $color) {
+    $half: $size * 0.5;
+
+    background-image: linear-gradient(45deg, $color 25%, transparent 25%), linear-gradient(-45deg, $color 25%, transparent 25%), linear-gradient(45deg, transparent 75%, $color 75%), linear-gradient(-45deg, transparent 75%, $color 75%);
+    background-position:
+        0 0,
+        0 $half,
+        $half (-$half),
+        (-$half) 0;
+    background-size: $size $size;
+}

@@ -40,14 +40,7 @@ fields:
             file: '${%SYSTEM_PATH%}/fields/dynamic/vars.php'
 
 files:
-    allowedExtensions:
-        - .jpg
-        - .jpeg
-        - .png
-        - .gif
-        - .svg
-        - .webp
-        - .pdf
+    allowedExtensions: []
 
 images:
     jpegQuality: 85

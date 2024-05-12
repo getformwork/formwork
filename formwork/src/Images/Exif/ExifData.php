@@ -3,6 +3,7 @@
 namespace Formwork\Images\Exif;
 
 use Formwork\Data\Contracts\Arrayable;
+use Formwork\Utils\Str;
 use Generator;
 
 class ExifData implements Arrayable
@@ -76,5 +77,115 @@ class ExifData implements Arrayable
         return $this->has($key)
             ? $this->tags[$key][1] ?? $this->tags[$key][0]
             : $default;
+    }
+
+    public function hasPositionData(): bool
+    {
+        return $this->hasMultiple(['GPSLatitude', 'GPSLongitude']);
+    }
+
+    public function dateTimeOriginal(): ?ExifDateTime
+    {
+        /** @var ExifDateTime|null */
+        return $this->get('DateTimeOriginal');
+    }
+
+    public function makeAndModel(): ?string
+    {
+        $make = (string) $this->get('Make');
+        $model = (string) $this->get('Model');
+
+        if ($model === '') {
+            return $make ?: null;
+        }
+
+        return $make . ' ' . Str::after($model, $make . ' ');
+    }
+
+    public function lensModel(): ?string
+    {
+        return $this->get('LensModel') ? str_replace('f/', 'ƒ/', (string) $this->get('LensModel')) : null;
+    }
+
+    public function focalLength(): ?string
+    {
+        return $this->get('FocalLength') ? $this->get('FocalLength') . ' mm' : null;
+    }
+
+    public function exposureTime(): ?string
+    {
+        return $this->get('ExposureTime') ? $this->get('ExposureTime') . ' s' : null;
+    }
+
+    public function aperture(): ?string
+    {
+        return $this->get('FNumber') ? 'ƒ/' . $this->get('FNumber') : null;
+    }
+
+    public function photographicSensitivity(): ?string
+    {
+        return $this->get('PhotographicSensitivity') ? 'ISO ' . $this->get('PhotographicSensitivity') : null;
+    }
+
+    public function exposureCompensation(): ?string
+    {
+        /** @var float|null */
+        $compensation = $this->get('ExposureBiasValue');
+        return $compensation ? round($compensation, 2) . ' EV' : null;
+    }
+
+    public function exposureProgram(): ?string
+    {
+        /** @var int */
+        $exposureProgram = $this->getRaw('ExposureProgram', 0);
+
+        if ($exposureProgram < 0) {
+            return null;
+        }
+
+        return match ($exposureProgram) {
+            2       => 'P',
+            3       => 'A',
+            4       => 'S',
+            1       => 'M',
+            default => 'AUTO',
+        };
+    }
+
+    public function hasAutoWhiteBalance(): ?bool
+    {
+        return $this->has('WhiteBalance') ? $this->getRaw('WhiteBalance') === 0 : null;
+    }
+
+    public function hasFlashFired(): ?bool
+    {
+        return $this->has('Flash') ? (bool) ($this->getRaw('Flash') % 2) : null;
+    }
+
+    /**
+     * @return 'average'|'evaluative'|'partial'|'spot'|null
+     */
+    public function meteringMode(): ?string
+    {
+        /** @var int|null */
+        $meteringMode = $this->getRaw('MeteringMode');
+        if ($meteringMode === null) {
+            return null;
+        }
+        if ($meteringMode <= 2 || $meteringMode > 6) {
+            return 'average';
+        }
+        if ($meteringMode === 3) {
+            return 'spot';
+        }
+        if ($meteringMode === 4 || $meteringMode == 5) {
+            return 'evaluative';
+        }
+        return 'partial';
+    }
+
+    public function colorSpace(): ?string
+    {
+        return $this->get('ColorSpace');
     }
 }

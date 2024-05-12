@@ -135,6 +135,38 @@ panel.pages.editor.redo: Ripeti
 panel.pages.editor.summary: Sommario
 panel.pages.editor.undo: Annulla
 panel.pages.editPage: Modifica pagina %s
+panel.pages.file.backToPage: Torna alla pagina
+panel.pages.file.exif: EXIF
+panel.pages.file.info: Informazioni
+panel.pages.file.info.image.colorDepth: Profondità colore
+panel.pages.file.info.image.colorNumber: Numero di colori
+panel.pages.file.info.image.colorProfile: Profilo colore
+panel.pages.file.info.image.colorSpace: Spazio colore
+panel.pages.file.info.image.dimensions: Misure
+panel.pages.file.info.image.dimensions.widthByHeightPixels: '%d × %d pixel'
+panel.pages.file.info.image.exif.aperture: Apertura
+panel.pages.file.info.image.exif.camera: Fotocamera
+panel.pages.file.info.image.exif.creationDateAndTime: Data e ora di creazione
+panel.pages.file.info.image.exif.exposureCompensation: Compensazione esposizione
+panel.pages.file.info.image.exif.exposureProgram: Programma di esposizione
+panel.pages.file.info.image.exif.exposureTime: Tempo di esposizione
+panel.pages.file.info.image.exif.flash: Flash
+panel.pages.file.info.image.exif.focalLength: Lunghezza focale
+panel.pages.file.info.image.exif.lensModel: Obiettivo
+panel.pages.file.info.image.exif.meteringMode: Modalità di misurazione
+panel.pages.file.info.image.exif.sensitivity: Sensibilità
+panel.pages.file.info.image.exif.whiteBalance: Bilanciamento del bianco
+panel.pages.file.info.image.frames: '%d fotogrammi'
+panel.pages.file.info.image.framesCount: Numero di fotogrammi
+panel.pages.file.info.image.repeats: '%d ripetizioni'
+panel.pages.file.info.image.repeatsCount: Numero di ripetizioni
+panel.pages.file.info.image.resolution: Risoluzione
+panel.pages.file.info.lastModifiedTime: Ultime modifiche
+panel.pages.file.info.mimeType: Tipo MIME
+panel.pages.file.info.size: Dimensioni file
+panel.pages.file.info.uri: URI
+panel.pages.file.position: Posizione
+panel.pages.file.preview: Anteprima
 panel.pages.files: File
 panel.pages.languages: Lingue
 panel.pages.languages.addLanguage: Aggiungi %s
@@ -146,6 +178,8 @@ panel.pages.newPage.slug: Indirizzo pagina
 panel.pages.newPage.slugSuggestion: solo lettere, numeri e trattini
 panel.pages.newPage.template: Template
 panel.pages.newPage.title: Titolo
+panel.pages.next: Pagina successiva
+panel.pages.nextFile: File successivo
 panel.pages.options: Opzioni
 panel.pages.page: Pagina
 panel.pages.page.actions: Azioni
@@ -174,6 +208,9 @@ panel.pages.page.cannotMove: Impossibile spostare la pagina
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Impossibile rinominare il file, un file con lo stesso nome esiste già
 panel.pages.page.cannotRenameFile.fileNotFound: Impossibile rinominare il file, file non trovato
 panel.pages.page.cannotRenameFile.pageNotFound: Impossibile rinominare il file, pagina non trovata
+panel.pages.page.cannotReplaceFile.fileNotFound: Impossibile sostituire il file, file non trovato
+panel.pages.page.cannotReplaceFile.multipleFiles: Impossibile sostituire il file, forniti più file
+panel.pages.page.cannotReplaceFile.pageNotFound: Impossibile sostituire il file, pagina non trovata
 panel.pages.page.cannotUploadFile.pageNotFound: Impossibile caricare il file, pagina non trovata
 panel.pages.page.created: Pagina creata!
 panel.pages.page.deleted: Pagina eliminata
@@ -202,8 +239,11 @@ panel.pages.pages.search: Cerca pagine...
 panel.pages.parent: Pagina superiore
 panel.pages.preview: Anteprima
 panel.pages.previewFile: Anteprima
+panel.pages.previous: Pagina precedente
+panel.pages.previousFile: File precedente
 panel.pages.renameFile: Rinomina file
 panel.pages.renameFile.name: Nome
+panel.pages.replaceFile: Sostituisci file
 panel.pages.save: Salva
 panel.pages.status.notPublished: Non pubblicato
 panel.pages.status.notRoutable: Non raggiungibile

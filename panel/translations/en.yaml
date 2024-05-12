@@ -135,6 +135,38 @@ panel.pages.editor.redo: Redo
 panel.pages.editor.summary: Summary
 panel.pages.editor.undo: Undo
 panel.pages.editPage: Edit Page %s
+panel.pages.file.backToPage: Back to Page
+panel.pages.file.exif: EXIF
+panel.pages.file.info: Info
+panel.pages.file.info.image.colorDepth: Color Depth
+panel.pages.file.info.image.colorNumber: Color Number
+panel.pages.file.info.image.colorProfile: Color Profile
+panel.pages.file.info.image.colorSpace: Color Space
+panel.pages.file.info.image.dimensions: Dimensions
+panel.pages.file.info.image.dimensions.widthByHeightPixels: '%d × %d pixels'
+panel.pages.file.info.image.exif.aperture: Aperture
+panel.pages.file.info.image.exif.camera: Camera
+panel.pages.file.info.image.exif.creationDateAndTime: Creation Date and Time
+panel.pages.file.info.image.exif.exposureCompensation: Exposure Compensation
+panel.pages.file.info.image.exif.exposureProgram: Exposure Program
+panel.pages.file.info.image.exif.exposureTime: Exposure Time
+panel.pages.file.info.image.exif.flash: Flash
+panel.pages.file.info.image.exif.focalLength: Focal Length
+panel.pages.file.info.image.exif.lensModel: Lens Model
+panel.pages.file.info.image.exif.meteringMode: Metering Mode
+panel.pages.file.info.image.exif.sensitivity: Sensitivity
+panel.pages.file.info.image.exif.whiteBalance: White Balance
+panel.pages.file.info.image.frames: '%d frames'
+panel.pages.file.info.image.framesCount: Frames Count
+panel.pages.file.info.image.repeats: '%d repeats'
+panel.pages.file.info.image.repeatsCount: Repeats Count
+panel.pages.file.info.image.resolution: Resolution
+panel.pages.file.info.lastModifiedTime: Last Modified Time
+panel.pages.file.info.mimeType: MIME Type
+panel.pages.file.info.size: Size
+panel.pages.file.info.uri: URI
+panel.pages.file.position: Position
+panel.pages.file.preview: Preview
 panel.pages.files: Files
 panel.pages.languages: Languages
 panel.pages.languages.addLanguage: Add %s
@@ -146,6 +178,8 @@ panel.pages.newPage.slug: Page Slug
 panel.pages.newPage.slugSuggestion: letters, numbers and dashes only
 panel.pages.newPage.template: Template
 panel.pages.newPage.title: Title
+panel.pages.next: Next Page
+panel.pages.nextFile: Next File
 panel.pages.options: Options
 panel.pages.page: Page
 panel.pages.page.actions: Actions
@@ -174,6 +208,9 @@ panel.pages.page.cannotMove: Cannot move page
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Cannot rename file, a file with the same name already exists
 panel.pages.page.cannotRenameFile.fileNotFound: Cannot rename file, file not found
 panel.pages.page.cannotRenameFile.pageNotFound: Cannot rename file, page not found
+panel.pages.page.cannotReplaceFile.fileNotFound: Cannot replace file, file not found
+panel.pages.page.cannotReplaceFile.multipleFiles: Cannot replace file, multiple file given
+panel.pages.page.cannotReplaceFile.pageNotFound: Cannot replace file, page not found
 panel.pages.page.cannotUploadFile.pageNotFound: Cannot upload file, page not found
 panel.pages.page.created: Page created!
 panel.pages.page.deleted: Page deleted
@@ -202,8 +239,11 @@ panel.pages.pages.search: Search Pages...
 panel.pages.parent: Parent Page
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
+panel.pages.previous: Previous Page
+panel.pages.previousFile: Previous File
 panel.pages.renameFile: Rename File
 panel.pages.renameFile.name: Name
+panel.pages.replaceFile: Replace File
 panel.pages.save: Save
 panel.pages.status.notPublished: Not Published
 panel.pages.status.notRoutable: Not Routable

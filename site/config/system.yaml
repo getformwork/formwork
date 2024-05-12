@@ -1,0 +1,10 @@
+files:
+    allowedExtensions:
+        - .jpg
+        - .jpeg
+        - .png
+        - .gif
+        - .svg
+        - .webp
+        - .mp4
+        - .webm

@@ -587,8 +587,7 @@ class Page extends Model implements Stringable
             'preferred' => $site->languages()->preferred(),
         ]);
 
-        $this->files ??= new FileCollection($files);
-        $this->files->sortBy('path');
+        $this->files ??= (new FileCollection($files))->sort();
 
         $this->data = [...$this->defaults(), ...$this->data];
     }

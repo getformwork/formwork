@@ -80,6 +80,7 @@ fields:
         type: tags
         label: '{{panel.options.system.files.allowedExtensions}}'
         pattern: '^\.[a-zA-Z0-9]+$'
+        options@: mimeTypes.extensionTypes
 
     cache.enabled:
         type: togglegroup

@@ -354,10 +354,8 @@ class Image extends File
     {
         return [
             ...parent::toArray(),
-            'imageInfo'    => $this->info()->toArray(),
-            'exif'         => $this->getExifData()?->toArray(),
-            'colorProfile' => $this->getColorProfile()?->name(),
-            'uri'          => $this->uri(),
+            'imageInfo' => $this->info()->toArray(),
+            'uri'       => $this->uri(),
         ];
     }
 
