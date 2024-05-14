@@ -212,6 +212,8 @@ panel.pages.page.cannotEdit.invalidSlug: Cannot edit page slug, it must contain 
 panel.pages.page.cannotEdit.invalidTemplate: Cannot edit page, invalid template
 panel.pages.page.cannotEdit.pageNotFound: Cannot edit page, page not found
 panel.pages.page.cannotEdit.varMissing: Cannot edit page, missing a variable
+panel.pages.page.cannotGetFileInfo.fileNotFound: Cannot get file info, file not found
+panel.pages.page.cannotGetFileInfo.pageNotFound: Cannot get file info, page not found
 panel.pages.page.cannotMove: Cannot move page
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Cannot rename file, a file with the same name already exists
 panel.pages.page.cannotRenameFile.fileNotFound: Cannot rename file, file not found

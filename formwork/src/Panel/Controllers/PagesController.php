@@ -459,12 +459,12 @@ class PagesController extends AbstractController
         $filename = $routeParams->get('filename');
 
         if ($page === null) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.pageNotFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotGetFileInfo.pageNotFound'), 'error');
             return $this->redirectToReferer(default: '/pages/');
         }
 
         if (!$page->files()->has($filename)) {
-            $this->panel()->notify($this->translate('panel.pages.page.cannotReplaceFile.fileNotFound'), 'error');
+            $this->panel()->notify($this->translate('panel.pages.page.cannotGetFileInfo.fileNotFound'), 'error');
             return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
@@ -476,7 +476,7 @@ class PagesController extends AbstractController
         $this->modal('deleteFile');
 
         return new Response($this->view('pages.file', [
-            'title'        => $this->translate('panel.pages.editPage', $page->title()),
+            'title'        => $file->name(),
             'page'         => $page,
             'file'         => $file,
             'previousFile' => $files->nth($fileIndex - 1),

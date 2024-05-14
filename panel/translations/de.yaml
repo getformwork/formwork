@@ -212,6 +212,8 @@ panel.pages.page.cannotEdit.invalidSlug: Seiten-Slug kann nicht bearbeitet werde
 panel.pages.page.cannotEdit.invalidTemplate: Seite kann nicht bearbeitet werden, ungültige Vorlage
 panel.pages.page.cannotEdit.pageNotFound: Seite kann nicht bearbeitet werden, Seite nicht gefunden
 panel.pages.page.cannotEdit.varMissing: Seite kann nicht bearbeitet werden, es fehlt eine Variable
+panel.pages.page.cannotGetFileInfo.fileNotFound: Dateiinfo kann nicht abgerufen werden, Datei nicht gefunden
+panel.pages.page.cannotGetFileInfo.pageNotFound: Dateiinfo kann nicht abgerufen werden, Seite nicht gefunden
 panel.pages.page.cannotMove: Seite kann nicht verschoben werden
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Datei kann nicht umbenannt werden, eine Datei mit demselben Namen existiert bereits
 panel.pages.page.cannotRenameFile.fileNotFound: Datei kann nicht umbenannt werden, Datei nicht gefunden
