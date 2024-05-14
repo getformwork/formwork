@@ -7,7 +7,12 @@ panel.backup.error.cannotDownload.invalidFilename: Ungültige Sicherungsdatei
 panel.backup.error.cannotMake: Sicherung kann nicht erstellt werden. %s.
 panel.backup.ready: Sicherung bereit. Download wird gestartet...
 panel.cache.clear: Cache leeren
+panel.cache.clear.images: Bilder-Cache löschen
+panel.cache.clear.pages: Seiten-Cache löschen
 panel.cache.cleared: Cache geleert
+panel.cache.cleared.images: Bilder-Cache geleert
+panel.cache.cleared.pages: Seiten-Cache geleert
+panel.cache.error: Cache kann nicht gelöscht werden
 panel.dashboard.dashboard: Dashboard
 panel.dashboard.lastModifiedPages: Zuletzt bearbeitete Seiten
 panel.dashboard.quickActions: Schnellaktionen
@@ -97,6 +102,9 @@ panel.options.system.dateAndTime.timezone: Zeitzone
 panel.options.system.files: Dateien
 panel.options.system.files.allowedExtensions: Erlaubte Dateierweiterungen
 panel.options.system.images: Bilder
+panel.options.system.images.clearCacheByDefault: Bilder-Cache standardmäßig löschen
+panel.options.system.images.clearCacheByDefault.disabled: Deaktiviert
+panel.options.system.images.clearCacheByDefault.enabled: Aktiviert
 panel.options.system.images.jpegQuality: JPEG-Qualität
 panel.options.system.images.jpegSaveProgressive: JPEG-Bilder als progressiv speichern
 panel.options.system.images.jpegSaveProgressive.disabled: Deaktiviert

@@ -10,11 +10,12 @@ backup:
         - '*.gitignore'
         - '*.gitkeep'
         - 'backup/*'
+        - 'cache/*'
         - '*node_modules/*'
 
 cache:
     enabled: false
-    path: '${%ROOT_PATH%}/cache'
+    path: '${%ROOT_PATH%}/cache/pages'
     time: 604800
 
 charset: utf-8
@@ -48,9 +49,10 @@ images:
     pngCompression: 6
     webpQuality: 85
     gifColors: 256
-    processPath: ${%ROOT_PATH%}/assets/images
+    processPath: ${%ROOT_PATH%}/cache/images
     preserveColorProfile: true
     preserveExifData: true
+    clearCacheByDefault: false
 
 languages:
     available: {  }

@@ -7,7 +7,12 @@ panel.backup.error.cannotDownload.invalidFilename: File di backup non valido.
 panel.backup.error.cannotMake: Impossibile eseguire il backup. %s.
 panel.backup.ready: Backup pronto. Inizio a scaricare...
 panel.cache.clear: Svuota cache
+panel.cache.clear.images: Svuota cache immagini
+panel.cache.clear.pages: Svuota cache pagine
 panel.cache.cleared: Cache svuotata
+panel.cache.cleared.images: Cache immagini svuotata
+panel.cache.cleared.pages: Cache pagine svuotata
+panel.cache.error: Impossibile svuotare la cache
 panel.dashboard.dashboard: Riepilogo
 panel.dashboard.lastModifiedPages: Ultime pagine modificate
 panel.dashboard.quickActions: Azioni rapide
@@ -97,6 +102,9 @@ panel.options.system.dateAndTime.timezone: Fuso orario
 panel.options.system.files: File
 panel.options.system.files.allowedExtensions: Estensioni consentite
 panel.options.system.images: Immagini
+panel.options.system.images.clearCacheByDefault: Cancella la cache delle immagini per impostazione predefinita
+panel.options.system.images.clearCacheByDefault.disabled: Disabilitato
+panel.options.system.images.clearCacheByDefault.enabled: Abilitato
 panel.options.system.images.jpegQuality: Qualità JPEG
 panel.options.system.images.jpegSaveProgressive: Salva le immagini JPEG come progressive
 panel.options.system.images.jpegSaveProgressive.disabled: Disabilitato

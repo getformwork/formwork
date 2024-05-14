@@ -7,7 +7,12 @@ panel.backup.error.cannotDownload.invalidFilename: Archivo de respaldo inválido
 panel.backup.error.cannotMake: No se puede crear el respaldo. %s.
 panel.backup.ready: Respaldo listo. Iniciando descarga...
 panel.cache.clear: Limpiar caché
+panel.cache.clear.images: Limpiar caché de imágenes
+panel.cache.clear.pages: Limpiar caché de páginas
 panel.cache.cleared: Caché limpiada
+panel.cache.cleared.images: Caché de imágenes limpiada
+panel.cache.cleared.pages: Caché de páginas limpiada
+panel.cache.error: No se puede limpiar la caché
 panel.dashboard.dashboard: Tablero
 panel.dashboard.lastModifiedPages: Páginas editadas recientemente
 panel.dashboard.quickActions: Acciones rápidas
@@ -97,6 +102,9 @@ panel.options.system.dateAndTime.timezone: Zona horaria
 panel.options.system.files: Archivos
 panel.options.system.files.allowedExtensions: Extensiones permitidas
 panel.options.system.images: Imágenes
+panel.options.system.images.clearCacheByDefault: Borrar caché de imágenes por defecto
+panel.options.system.images.clearCacheByDefault.disabled: Deshabilitado
+panel.options.system.images.clearCacheByDefault.enabled: Habilitado
 panel.options.system.images.jpegQuality: Calidad JPEG
 panel.options.system.images.jpegSaveProgressive: Guardar imágenes JPEG como progresivas
 panel.options.system.images.jpegSaveProgressive.disabled: Desactivado

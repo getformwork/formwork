@@ -48,7 +48,7 @@ return [
         ],
 
         'panel.cache.clear' => [
-            'path'    => '/cache/clear/',
+            'path'    => '/cache/clear/{type}?/',
             'action'  => 'Formwork\Panel\Controllers\CacheController@clear',
             'methods' => ['POST'],
             'types'   => ['XHR'],

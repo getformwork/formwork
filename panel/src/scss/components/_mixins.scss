@@ -32,7 +32,7 @@
     &::after {
         display: inline-block;
         height: 0;
-        margin-left: $caret-width;
+        margin-left: 0.5rem;
         content: " ";
         vertical-align: $caret-width * 0.5;
 

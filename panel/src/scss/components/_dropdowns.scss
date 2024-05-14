@@ -12,6 +12,10 @@
     @include caret;
 }
 
+.dropdown-button.caret:empty::after {
+    margin-left: 0;
+}
+
 .dropdown-menu,
 .dropdown-list {
     position: absolute;
@@ -39,9 +43,13 @@
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
+    border: 0;
+    background-color: transparent;
     color: $color-base-100;
     cursor: pointer !important;
+    font-family: inherit;
     font-size: $font-size-sm;
+    text-align: inherit;
     white-space: nowrap;
 
     &:hover {

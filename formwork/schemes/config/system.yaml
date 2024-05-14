@@ -31,7 +31,7 @@ layout:
         images:
             collapsible: true
             label: '{{panel.options.system.images}}'
-            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.jpegProgressive, uploads.processImages]
+            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault]
 
         backup:
             collapsible: true
@@ -154,6 +154,13 @@ fields:
         options:
             1: '{{panel.options.system.images.jpegSaveProgressive.enabled}}'
             0: '{{panel.options.system.images.jpegSaveProgressive.disabled}}'
+
+    images.clearCacheByDefault:
+        type: togglegroup
+        label: '{{panel.options.system.images.clearCacheByDefault}}'
+        options:
+            1: '{{panel.options.system.images.clearCacheByDefault.enabled}}'
+            0: '{{panel.options.system.images.clearCacheByDefault.disabled}}'
 
     uploads.processImages:
         type: togglegroup

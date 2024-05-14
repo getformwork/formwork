@@ -7,7 +7,12 @@ panel.backup.error.cannotDownload.invalidFilename: Недопустимый фа
 panel.backup.error.cannotMake: Невозможно сделать резервную копию. %s.
 panel.backup.ready: Резервное копирование готовы. Начинается загрузка ...
 panel.cache.clear: Очистить кэш
+panel.cache.clear.images: Очистить кэш изображений
+panel.cache.clear.pages: Очистить кэш страниц
 panel.cache.cleared: Кэш очищается
+panel.cache.cleared.images: Кэш изображений очищен
+panel.cache.cleared.pages: Кэш страниц очищен
+panel.cache.error: Невозможно очистить кэш
 panel.dashboard.dashboard: Приборная панель
 panel.dashboard.lastModifiedPages: В последний раз редактировали Страницы
 panel.dashboard.quickActions: Быстрые действия
@@ -97,6 +102,9 @@ panel.options.system.dateAndTime.timezone: Часовой пояс
 panel.options.system.files: Файлы
 panel.options.system.files.allowedExtensions: Допустимые расширения
 panel.options.system.images: Картинки
+panel.options.system.images.clearCacheByDefault: Очищать кэш изображений по умолчанию
+panel.options.system.images.clearCacheByDefault.disabled: Отключено
+panel.options.system.images.clearCacheByDefault.enabled: Включено
 panel.options.system.images.jpegQuality: JPEG Качество
 panel.options.system.images.jpegSaveProgressive: Сохранять изображения JPEG как прогрессивные
 panel.options.system.images.jpegSaveProgressive.disabled: Отключено
