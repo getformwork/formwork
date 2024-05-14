@@ -68,6 +68,8 @@ export class Backups {
                                         row.remove();
                                     }
                                 });
+
+                                ($("#backups-section") as HTMLDivElement).hidden = false;
                             }
                         }
 

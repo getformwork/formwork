@@ -82,6 +82,10 @@ class Backupper
     {
         $backups = [];
 
+        if (!FileSystem::exists($this->options['path'])) {
+            FileSystem::createDirectory($this->options['path']);
+        }
+
         foreach (FileSystem::listFiles($this->options['path']) as $file) {
             $date = FileSystem::lastModifiedTime(FileSystem::joinPaths($this->options['path'], $file));
             $backups[$date] = FileSystem::joinPaths($this->options['path'], $file);
