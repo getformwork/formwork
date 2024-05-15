@@ -102,7 +102,7 @@ class ColorProfile
 
     public function renderingIntent(): RenderingIntent
     {
-        $renderingIntent = unpack('N', $this->data, 64)[1];
+        $renderingIntent = $this->unpack('N', $this->data, 64)[1];
         return match ($renderingIntent) {
             0       => RenderingIntent::Perceptual,
             1       => RenderingIntent::MediaRelative,
@@ -134,10 +134,11 @@ class ColorProfile
     {
         $tags = [];
         $position = 128;
-        $count = unpack('N', $this->data, $position)[1];
+        $count = $this->unpack('N', $this->data, $position)[1];
         $position += 4;
         for ($i = 0; $i < $count; $i++) {
-            $info = unpack('Z4tag/Noffset/Nlength', $this->data, $position);
+            $info = $this->unpack('Z4tag/Noffset/Nlength', $this->data, $position);
+            /** @var string */
             $tag = array_shift($info);
             $tags[$tag] = $info;
             $position += 12;
@@ -155,7 +156,7 @@ class ColorProfile
         $type = substr($value, 0, 4);
         return match ($type) {
             'text' => substr($value, 8),
-            'desc' => unpack('Z*', $value, 12)[1],
+            'desc' => $this->unpack('Z*', $value, 12)[1],
             // @phpstan-ignore-next-line
             'mluc'  => $this->parseMlucString($value)[0] ?? $default,
             default => $default,
@@ -174,16 +175,24 @@ class ColorProfile
             throw new InvalidArgumentException('Invalid mluc tag');
         }
         $position += 8;
-        $records = unpack('N', $data, $position)[1];
+        $records = $this->unpack('N', $data, $position)[1];
         $position += 8;
         for ($i = 0; $i < $records; $i++) {
             $langCode = substr($data, $position, 4);
             $position += 4;
-            $stringLength = unpack('N', $data, $position)[1];
+            $stringLength = $this->unpack('N', $data, $position)[1];
             $position += 4;
-            $stringOffset = unpack('N', $data, $position)[1];
+            $stringOffset = $this->unpack('N', $data, $position)[1];
             $result[$langCode] = mb_convert_encoding(substr($data, $stringOffset, $stringLength), 'UTF-8', 'UTF-16BE');
         }
         return $result;
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

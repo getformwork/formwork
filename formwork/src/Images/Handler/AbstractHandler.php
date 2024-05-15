@@ -200,10 +200,14 @@ abstract class AbstractHandler implements HandlerInterface
 
     protected function toGdImage(): GdImage
     {
-        $image = imagecreatefromstring($this->data);
+        if (($image = imagecreatefromstring($this->data)) === false) {
+            throw new UnexpectedValueException('Invalid image data');
+        }
 
         if ($this->getInfo()->hasAlphaChannel()) {
-            $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            if (($transparent = imagecolorallocatealpha($image, 0, 0, 0, 127)) === false) {
+                throw new UnexpectedValueException('Cannot allocate transparent color');
+            }
             imagealphablending($image, true);
             imagesavealpha($image, true);
             imagecolortransparent($image, $transparent);

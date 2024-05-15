@@ -4,7 +4,6 @@ namespace Formwork\Images\Transform;
 
 use Formwork\Images\ImageInfo;
 use GdImage;
-use InvalidArgumentException;
 
 class Flip extends AbstractTransform
 {
@@ -14,15 +13,8 @@ class Flip extends AbstractTransform
         'Both'       => IMG_FLIP_BOTH,
     ];
 
-    protected FlipDirection $direction;
-
-    final public function __construct(FlipDirection $flipDirection)
+    final public function __construct(protected FlipDirection $flipDirection)
     {
-        if (!isset(self::DIRECTIONS[$flipDirection->name])) {
-            throw new InvalidArgumentException(sprintf('Invalid flip direction, "%s" given', $flipDirection->name));
-        }
-
-        $this->direction = $flipDirection;
     }
 
     public static function fromArray(array $data): static
@@ -32,7 +24,7 @@ class Flip extends AbstractTransform
 
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        imageflip($gdImage, self::DIRECTIONS[$this->direction->name]);
+        imageflip($gdImage, self::DIRECTIONS[$this->flipDirection->name]);
         return $gdImage;
     }
 }

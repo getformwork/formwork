@@ -4,6 +4,7 @@ namespace Formwork\Images\Decoder;
 
 use Generator;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class PngDecoder implements DecoderInterface
 {
@@ -19,11 +20,11 @@ class PngDecoder implements DecoderInterface
 
         while ($position < strlen($data)) {
             $offset = $position;
-            $size = unpack('N', $data, $position)[1];
+            $size = $this->unpack('N', $data, $position)[1];
             $position += 4;
             $type = substr($data, $position, 4);
             $position += $size + 4;
-            $checksum = unpack('N', $data, $position)[1];
+            $checksum = $this->unpack('N', $data, $position)[1];
             $position += 4;
 
             yield [
@@ -35,5 +36,13 @@ class PngDecoder implements DecoderInterface
                 'position' => &$position,
             ];
         }
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

@@ -25,7 +25,7 @@ class JpegDecoder implements DecoderInterface
             $position += 1;
 
             if (($type > 0x00 && $type < 0xd0) || ($type > 0xda && $type < 0xff)) {
-                $size = unpack('n', $data, $position)[1];
+                $size = $this->unpack('n', $data, $position)[1];
             } elseif ($type === 0xda) {
                 $size = $this->seekSegmentEnd($data, $position) - $position;
             } else {
@@ -58,5 +58,13 @@ class JpegDecoder implements DecoderInterface
             }
         }
         throw new UnexpectedValueException('Segment end not found');
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

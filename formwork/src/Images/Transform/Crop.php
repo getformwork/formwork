@@ -4,6 +4,7 @@ namespace Formwork\Images\Transform;
 
 use Formwork\Images\ImageInfo;
 use GdImage;
+use RuntimeException;
 
 class Crop extends AbstractTransform
 {
@@ -18,7 +19,9 @@ class Crop extends AbstractTransform
 
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
-        $destinationImage = imagecreatetruecolor($this->width, $this->height);
+        if (($destinationImage = imagecreatetruecolor($this->width, $this->height)) === false) {
+            throw new RuntimeException('Cannot create destination image');
+        }
 
         $this->enableTransparency($destinationImage);
 
@@ -31,14 +34,16 @@ class Crop extends AbstractTransform
             $this->originY,
             $this->width,
             $this->height
-        );
+        ) ?: throw new RuntimeException('Cannot crop image');
 
         return $destinationImage;
     }
 
     protected function enableTransparency(GdImage $gdImage): void
     {
-        $transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127);
+        if (($transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127)) === false) {
+            throw new RuntimeException('Cannot allocate transparent color');
+        }
         imagealphablending($gdImage, true);
         imagesavealpha($gdImage, true);
         imagecolortransparent($gdImage, $transparent);

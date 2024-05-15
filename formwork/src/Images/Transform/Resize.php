@@ -4,6 +4,7 @@ namespace Formwork\Images\Transform;
 
 use Formwork\Images\ImageInfo;
 use GdImage;
+use RuntimeException;
 
 class Resize extends AbstractTransform
 {
@@ -78,6 +79,10 @@ class Resize extends AbstractTransform
 
         $destinationImage = imagecreatetruecolor((int) $width, (int) $height);
 
+        if ($destinationImage === false) {
+            throw new RuntimeException('Cannot create destination image');
+        }
+
         if ($imageInfo->hasAlphaChannel()) {
             $this->enableTransparency($destinationImage);
         }
@@ -93,14 +98,16 @@ class Resize extends AbstractTransform
             (int) $destinationHeight,
             (int) $cropAreaWidth,
             (int) $cropAreaHeight
-        );
+        ) ?: throw new RuntimeException('Cannot resize image');
 
         return $destinationImage;
     }
 
     protected function enableTransparency(GdImage $gdImage): void
     {
-        $transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127);
+        if (($transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127)) === false) {
+            throw new RuntimeException('Cannot allocate transparent color');
+        }
         imagealphablending($gdImage, true);
         imagesavealpha($gdImage, true);
         imagecolortransparent($gdImage, $transparent);

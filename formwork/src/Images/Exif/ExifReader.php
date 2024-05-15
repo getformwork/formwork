@@ -3,6 +3,7 @@
 namespace Formwork\Images\Exif;
 
 use Closure;
+use RuntimeException;
 use UnexpectedValueException;
 
 class ExifReader
@@ -173,7 +174,9 @@ class ExifReader
      */
     protected function readTagsFromString(string $data): array
     {
-        $stream = fopen('php://temp', 'r+');
+        if (($stream = fopen('php://temp', 'r+')) === false) {
+            throw new RuntimeException('Cannot open temporary stream');
+        }
         fwrite($stream, $data);
         rewind($stream);
         set_error_handler(function ($type, $message) use (&$error) {
@@ -211,7 +214,7 @@ class ExifReader
     {
         [$degrees, $minutes, $seconds] = array_map(
             fn (string $value): float => $this->parseRational($value),
-            array_replace([0, 0, 0], $value)
+            array_replace(['0', '0', '0'], $value)
         );
         $direction = ($cardinalRef === 'S' || $cardinalRef === 'W') ? -1 : 1;
         return $direction * ($degrees + $minutes / 60 + $seconds / 3600);
@@ -219,8 +222,7 @@ class ExifReader
 
     protected function parseDateTime(string $value, ?string $subseconds, ?string $timeoffset): ?ExifDateTime
     {
-        $dateTime = ExifDateTime::createFromExifData($value, $subseconds, $timeoffset);
-        return $dateTime === false ? null : $dateTime;
+        return ExifDateTime::createFromExifData($value, $subseconds, $timeoffset) ?: null;
     }
 
     protected function parseRational(string $value): float

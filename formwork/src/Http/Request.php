@@ -91,7 +91,7 @@ class Request
 
         $port = (int) $this->server->get('SERVER_PORT', 80);
 
-        $defaultPort = self::DEFAULT_PORTS[$scheme] ?? null;
+        $defaultPort = self::DEFAULT_PORTS[$scheme];
 
         return Path::join(
             [

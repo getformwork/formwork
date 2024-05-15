@@ -34,20 +34,13 @@ class Blur extends AbstractTransform
 
     protected int $amount;
 
-    protected BlurMode $mode;
-
-    final public function __construct(int $amount, BlurMode $blurMode)
+    final public function __construct(int $amount, protected BlurMode $blurMode)
     {
         if (!Constraint::isInIntegerRange($amount, 0, 100)) {
             throw new InvalidArgumentException(sprintf('$amount value must be in range 0-100, %d given', $amount));
         }
 
-        if (!isset(self::CONVOLUTION_KERNELS[$blurMode->name])) {
-            throw new InvalidArgumentException(sprintf('Invalid blur mode, "%s" given', $blurMode->name));
-        }
-
         $this->amount = $amount;
-        $this->mode = $blurMode;
     }
 
     public static function fromArray(array $data): static
@@ -58,7 +51,7 @@ class Blur extends AbstractTransform
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
         for ($i = 0; $i < $this->amount; $i++) {
-            imageconvolution($gdImage, self::CONVOLUTION_KERNELS[$this->mode->name], 1, 0.55);
+            imageconvolution($gdImage, self::CONVOLUTION_KERNELS[$this->blurMode->name], 1, 0.55);
         }
 
         return $gdImage;

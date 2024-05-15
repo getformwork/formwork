@@ -10,6 +10,7 @@ use Formwork\Images\ImageInfo;
 use GdImage;
 use InvalidArgumentException;
 use RuntimeException;
+use UnexpectedValueException;
 
 class WebpHandler extends AbstractHandler
 {
@@ -41,19 +42,19 @@ class WebpHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8X') {
                 $info['hasAlphaChannel'] = ((ord($chunk['value'][0]) >> 4) & 0x01) === 1;
-                $info['width'] = unpack('V', substr($chunk['value'], 4, 3) . "\x00")[1] + 1;
-                $info['height'] = unpack('V', substr($chunk['value'], 7, 3) . "\x00")[1] + 1;
+                $info['width'] = $this->unpack('V', substr($chunk['value'], 4, 3) . "\x00")[1] + 1;
+                $info['height'] = $this->unpack('V', substr($chunk['value'], 7, 3) . "\x00")[1] + 1;
                 $isVP8ChunkParsed = true;
             }
 
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8 ') {
-                $info['width'] = unpack('v', $chunk['value'], 6)[1] & 0x3fff;
-                $info['height'] = unpack('v', $chunk['value'], 8)[1] & 0x3fff;
+                $info['width'] = $this->unpack('v', $chunk['value'], 6)[1] & 0x3fff;
+                $info['height'] = $this->unpack('v', $chunk['value'], 8)[1] & 0x3fff;
                 $isVP8ChunkParsed = true;
             }
 
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8L') {
-                $bits = unpack('V', $chunk['value'], 1)[1];
+                $bits = $this->unpack('V', $chunk['value'], 1)[1];
                 $info['width'] = ($bits & 0x3fff) + 1;
                 $info['height'] = (($bits >> 14) & 0x3fff) + 1;
                 $info['hasAlphaChannel'] = (($bits >> 28) & 0x01) === 1;
@@ -66,7 +67,7 @@ class WebpHandler extends AbstractHandler
 
             if ($chunk['type'] === 'ANIM') {
                 $info['isAnimation'] = true;
-                $info['animationRepeatCount'] = unpack('v', $chunk['value'], 4)[1];
+                $info['animationRepeatCount'] = $this->unpack('v', $chunk['value'], 4)[1];
             }
             if (!$info['isAnimation']) {
                 continue;
@@ -229,7 +230,7 @@ class WebpHandler extends AbstractHandler
             throw new RuntimeException('Cannot set data from GdImage');
         }
 
-        $this->data = ob_get_clean();
+        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
 
         $this->setVP8XChunk();
     }
@@ -243,5 +244,13 @@ class WebpHandler extends AbstractHandler
             $this->data = substr_replace($this->data, $chunk, 12, 0);
             $this->updateRIFFHeader();
         }
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

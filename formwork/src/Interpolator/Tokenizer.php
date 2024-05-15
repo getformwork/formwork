@@ -61,12 +61,14 @@ class Tokenizer implements TokenizerInterface
         while ($this->position < $this->length) {
             switch (true) {
                 case preg_match(self::IDENTIFIER_REGEX, $this->input, $matches, 0, $this->position):
+                    /** @var string */
                     $value = array_shift($matches);
                     $tokens[] = new Token(Token::TYPE_IDENTIFIER, $value, $this->position);
                     $this->position += strlen($value);
                     break;
 
                 case preg_match(self::NUMBER_REGEX, $this->input, $matches, 0, $this->position):
+                    /** @var string */
                     $value = array_shift($matches);
                     $tokens[] = new Token(Token::TYPE_NUMBER, $value, $this->position);
                     $this->position += strlen($value);
@@ -74,6 +76,7 @@ class Tokenizer implements TokenizerInterface
 
                 case preg_match(self::SINGLE_QUOTE_STRING_REGEX, $this->input, $matches, 0, $this->position):
                 case preg_match(self::DOUBLE_QUOTE_STRING_REGEX, $this->input, $matches, 0, $this->position):
+                    /** @var string */
                     $value = array_shift($matches);
                     $tokens[] = new Token(Token::TYPE_STRING, $value, $this->position);
                     $this->position += strlen($value);

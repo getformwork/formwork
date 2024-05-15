@@ -30,8 +30,8 @@ class PngHandler extends AbstractHandler
 
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'IHDR') {
-                $info['width'] = unpack('N', $chunk['value'], 0)[1];
-                $info['height'] = unpack('N', $chunk['value'], 4)[1];
+                $info['width'] = $this->unpack('N', $chunk['value'], 0)[1];
+                $info['height'] = $this->unpack('N', $chunk['value'], 4)[1];
                 $info['colorDepth'] = ord($chunk['value'][8]);
                 [$info['colorSpace'], $info['hasAlphaChannel']] = $this->getColorSpaceAndAlpha(ord($chunk['value'][9]));
             }
@@ -45,8 +45,8 @@ class PngHandler extends AbstractHandler
 
             if ($chunk['type'] === 'acTL') {
                 $info['isAnimation'] = true;
-                $info['animationFrames'] = unpack('N', $chunk['value'], 0)[1];
-                $info['animationRepeatCount'] = unpack('N', $chunk['value'], 4)[1];
+                $info['animationFrames'] = $this->unpack('N', $chunk['value'], 0)[1];
+                $info['animationRepeatCount'] = $this->unpack('N', $chunk['value'], 4)[1];
             }
         }
 
@@ -182,8 +182,9 @@ class PngHandler extends AbstractHandler
      */
     protected function decodeProfile(string $data): array
     {
-        $name = unpack('Z*', $data)[1];
-        $value = gzuncompress(substr($data, strlen($name) + 2));
+        $name = $this->unpack('Z*', $data)[1];
+        $value = gzuncompress(substr($data, strlen($name) + 2))
+            ?: throw new UnexpectedValueException('Invalid profile string');
         return ['name' => $name, 'value' => $value];
     }
 
@@ -205,6 +206,14 @@ class PngHandler extends AbstractHandler
             throw new RuntimeException('Cannot set data from GdImage');
         }
 
-        $this->data = ob_get_clean();
+        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

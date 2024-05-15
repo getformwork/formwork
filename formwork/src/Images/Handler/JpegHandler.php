@@ -40,8 +40,8 @@ class JpegHandler extends AbstractHandler
                 || $segment['type'] > 0xc8 && $segment['type'] < 0xcc
             ) {
                 $info['colorDepth'] = ord($segment['value'][0]);
-                $info['height'] = unpack('n', $segment['value'], 1)[1];
-                $info['width'] = unpack('n', $segment['value'], 3)[1];
+                $info['height'] = $this->unpack('n', $segment['value'], 1)[1];
+                $info['width'] = $this->unpack('n', $segment['value'], 3)[1];
                 $info['colorSpace'] = $this->getColorSpace(ord($segment['value'][5]));
                 break;
             }
@@ -83,7 +83,7 @@ class JpegHandler extends AbstractHandler
 
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
-                [$chunkNum, $chunkCount] = array_values(unpack('Cnum/Ccount', $segment['value'], $headerLength));
+                [$chunkNum, $chunkCount] = array_values($this->unpack('Cnum/Ccount', $segment['value'], $headerLength));
                 $profileChunks[$chunkNum] = substr($segment['value'], $headerLength + 2);
             }
         }
@@ -218,6 +218,14 @@ class JpegHandler extends AbstractHandler
             throw new RuntimeException('Cannot set data from GdImage');
         }
 
-        $this->data = ob_get_clean();
+        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

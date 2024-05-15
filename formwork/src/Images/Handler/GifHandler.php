@@ -10,6 +10,7 @@ use Formwork\Images\Handler\Exceptions\UnsupportedFeatureException;
 use Formwork\Images\ImageInfo;
 use GdImage;
 use RuntimeException;
+use UnexpectedValueException;
 
 class GifHandler extends AbstractHandler
 {
@@ -40,12 +41,12 @@ class GifHandler extends AbstractHandler
             if ($block['type'] === 'EXT' && $block['label'] === 0xf9) {
                 $info['hasAlphaChannel'] = ord($block['value'][3]) & 0x01 === 1;
                 if (!$info['isAnimation']) {
-                    $info['isAnimation'] = unpack('v', $block['value'], 4)[1] > 0;
+                    $info['isAnimation'] = $this->unpack('v', $block['value'], 4)[1] > 0;
                 }
             }
 
             if ($block['type'] === 'EXT' && str_starts_with($block['value'], self::NETSCAPE_EXT_HEADER)) {
-                $info['animationRepeatCount'] = unpack('v', $block['value'], 16)[1];
+                $info['animationRepeatCount'] = $this->unpack('v', $block['value'], 16)[1];
                 if ($info['animationRepeatCount'] > 0) {
                     $info['animationRepeatCount']++;
                 }
@@ -132,6 +133,14 @@ class GifHandler extends AbstractHandler
             throw new RuntimeException('Cannot set data from GdImage');
         }
 
-        $this->data = ob_get_clean();
+        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

@@ -19,7 +19,7 @@ class ExifDateTime extends DateTimeImmutable implements Stringable
     /**
      * Create a new ExifDateTime object from EXIF tags, e.g. DateTime, SubSecTime, TimeOffset
      *
-     * @return bool|ExifDateTime
+     * @return ExifDateTime|false
      */
     public static function createFromExifData(string $datetime, ?string $subseconds = null, ?string $timeoffset = null)
     {

@@ -33,7 +33,7 @@ class GifDecoder implements DecoderInterface
                     $position += $size;
                     break;
 
-                case $offset === 13 && $desc['gctflag'] === 1:
+                case $offset === 13 && ($desc['gctflag'] ?? 0) === 1:
                     $type = 'GCT';
                     $size = $this->getColorTableSize($desc['gctsize']);
                     $value = substr($data, $offset, $size);
@@ -112,8 +112,8 @@ class GifDecoder implements DecoderInterface
     protected function parseLogicalScreenDescriptor(string $data): array
     {
         return [
-            'width'    => unpack('v', $data, 0)[1],
-            'height'   => unpack('v', $data, 2)[1],
+            'width'    => $this->unpack('v', $data, 0)[1],
+            'height'   => $this->unpack('v', $data, 2)[1],
             'packed'   => ord($data[4]),
             'gctflag'  => (ord($data[4]) & 0x80) >> 7,
             'colorres' => (ord($data[4]) & 0x70) >> 4,
@@ -130,10 +130,10 @@ class GifDecoder implements DecoderInterface
     protected function parseImageDescriptor(string $data): array
     {
         return [
-            'left'    => unpack('v', $data, 0)[1],
-            'top'     => unpack('v', $data, 2)[1],
-            'width'   => unpack('v', $data, 4)[1],
-            'height'  => unpack('v', $data, 6)[1],
+            'left'    => $this->unpack('v', $data, 0)[1],
+            'top'     => $this->unpack('v', $data, 2)[1],
+            'width'   => $this->unpack('v', $data, 4)[1],
+            'height'  => $this->unpack('v', $data, 6)[1],
             'packed'  => ord($data[8]),
             'lctflag' => (ord($data[8]) & 0x80) >> 7,
             'iflag'   => (ord($data[8]) & 0x40) >> 6,
@@ -145,5 +145,13 @@ class GifDecoder implements DecoderInterface
     protected function getColorTableSize(int $ctsize): int
     {
         return 3 * 2 ** ($ctsize + 1);
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function unpack(string $format, string $string, int $offset = 0): array
+    {
+        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }
