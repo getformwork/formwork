@@ -3,8 +3,6 @@
 namespace Formwork\Security;
 
 use Formwork\Http\Request;
-use Formwork\Utils\Session;
-use RuntimeException;
 
 class CsrfToken
 {
@@ -12,11 +10,6 @@ class CsrfToken
      * Session key to store the CSRF token
      */
     protected const SESSION_KEY = 'CSRF_TOKEN';
-
-    /**
-     * Input name to retrieve the CSRF token
-     */
-    protected const INPUT_NAME = 'csrf-token';
 
     public function __construct(protected Request $request)
     {
@@ -43,19 +36,9 @@ class CsrfToken
     /**
      * Check if given CSRF token is valid
      */
-    public function validate(?string $token = null): bool
+    public function validate(string $token): bool
     {
-        if ($token === null) {
-            $postData = $this->request->input();
-            $valid = $postData->has(self::INPUT_NAME) && $this->get() === $postData->get(self::INPUT_NAME);
-        } else {
-            $valid = $this->get() === $token;
-        }
-        if (!$valid) {
-            $this->destroy();
-            throw new RuntimeException('CSRF token not valid');
-        }
-        return $valid;
+        return ($storedToken = $this->get()) && hash_equals($token, $storedToken);
     }
 
     /**

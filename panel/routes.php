@@ -243,10 +243,9 @@ return [
 
         'request.validateCsrf' => [
             'action' => static function (Request $request, Translations $translations, Panel $panel, CsrfToken $csrfToken) {
-                // Validate CSRF token
-                try {
-                    $csrfToken->validate();
-                } catch (RuntimeException) {
+                $token = $request->input()->get('csrf-token');
+
+                if (!($token !== null && $csrfToken->validate($token))) {
                     $csrfToken->destroy();
                     $request->session()->remove('FORMWORK_USERNAME');
 
