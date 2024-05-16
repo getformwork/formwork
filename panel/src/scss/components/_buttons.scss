@@ -51,7 +51,7 @@
 .button-accent {
     border: 1px solid $color-accent-500;
     background-color: $color-accent-500;
-    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
+    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
@@ -70,7 +70,7 @@
 .button-secondary {
     border: 1px solid $color-base-600;
     background-color: $color-base-600;
-    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
+    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
     color: $color-base-100;
 
     &:hover,
@@ -87,7 +87,7 @@
 }
 
 .button-success {
-    border: 1px solid $color-success-500;
+    border: 2px solid $color-success-500;
     background-color: $color-success-500;
     box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
     color: $color-white;
@@ -108,7 +108,7 @@
 .button-warning {
     border: 1px solid $color-warning-500;
     background-color: $color-warning-500;
-    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
+    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
@@ -127,7 +127,7 @@
 .button-danger {
     border: 1px solid $color-danger-500;
     background-color: $color-danger-500;
-    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
+    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
     color: $color-white;
 
     &:hover,
