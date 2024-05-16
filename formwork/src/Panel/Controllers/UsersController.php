@@ -3,6 +3,7 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
@@ -14,6 +15,7 @@ use Formwork\Panel\Security\Password;
 use Formwork\Panel\Users\User;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
+use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
@@ -24,11 +26,13 @@ class UsersController extends AbstractController
     /**
      * Users@index action
      */
-    public function index(): Response
+    public function index(Schemes $schemes): Response
     {
         $this->ensurePermission('users.index');
 
-        $this->modal('newUser');
+        $this->modal('newUser', [
+            'fields' => $schemes->get('modals.newUser')->fields(),
+        ]);
 
         $this->modal('deleteUser');
 
@@ -41,14 +45,18 @@ class UsersController extends AbstractController
     /**
      * Users@create action
      */
-    public function create(): RedirectResponse
+    public function create(Schemes $schemes): RedirectResponse
     {
         $this->ensurePermission('users.create');
 
         $requestData = $this->request->input();
 
+        $fields = $schemes->get('modals.newUser')->fields();
+
         // Ensure no required data is missing
-        if (!$requestData->hasMultiple(['username', 'fullname', 'password', 'email', 'language'])) {
+        try {
+            $fields->setValues($requestData)->validate();
+        } catch (ValidationException) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }

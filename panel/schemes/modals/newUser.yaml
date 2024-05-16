@@ -1,0 +1,35 @@
+title: New User
+
+fields:
+    fullname:
+        type: text
+        label: '{{panel.user.fullname}}'
+        required: true
+
+    username:
+        type: text
+        label: '{{panel.user.username}}'
+        suggestion: '{{panel.users.newUser.usernameSuggestion}}'
+        required: true
+        pattern: '^[a-z0-9_\-]{3,20}$'
+
+    password:
+        type: password
+        label: '{{panel.user.password}}'
+        suggestion: '{{panel.users.newUser.passwordSuggestion}}'
+        required: true
+        pattern: '^.{8,}$'
+        autocomplete: new-password
+
+    email:
+        type: email
+        label: '{{panel.user.email}}'
+        required: true
+
+    language:
+        type: select
+        label: '{{panel.user.language}}'
+        required: true
+        translate: [label]
+        options@: formwork.panel.availableTranslations
+        default@: formwork.panel.user.language

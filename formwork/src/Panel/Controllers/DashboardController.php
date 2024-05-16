@@ -4,6 +4,7 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
+use Formwork\Schemes\Schemes;
 use Formwork\Statistics\Statistics;
 
 class DashboardController extends AbstractController
@@ -11,13 +12,12 @@ class DashboardController extends AbstractController
     /**
      * Dashboard@index action
      */
-    public function index(Statistics $statistics): Response
+    public function index(Schemes $schemes, Statistics $statistics): Response
     {
         $this->ensurePermission('dashboard');
 
         $this->modal('newPage', [
-            'templates' => $this->site()->templates()->keys(),
-            'pages'     => $this->site()->descendants()->sortBy('relativePath'),
+            'fields' => $schemes->get('modals.newPage')->fields(),
         ]);
 
         $this->modal('deletePage');

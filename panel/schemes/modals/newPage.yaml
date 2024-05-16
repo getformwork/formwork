@@ -1,0 +1,26 @@
+title: New Page
+
+fields:
+    title:
+        type: text
+        label: '{{panel.pages.newPage.title}}'
+        required: true
+
+    slug:
+        type: text
+        label: '{{panel.pages.newPage.slug}}'
+        suggestion: '{{panel.pages.newPage.slugSuggestion}}'
+        required: true
+        pattern: '^[a-z0-9\-]+$'
+
+    parent:
+        type: page
+        label: '{{panel.pages.newPage.parent}}'
+        required: true
+        allowSite: true
+
+    template:
+        type: template
+        label: '{{panel.pages.newPage.template}}'
+        required: true
+        default@: site.get('defaultTemplate', 'default')

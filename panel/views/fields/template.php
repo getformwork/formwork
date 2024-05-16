@@ -9,6 +9,6 @@
         ]) ?>>
     <?php foreach ($site->templates() as $template) : ?>
         <?php $scheme = $app->schemes()->get('pages.' . $template->name()) ?>
-        <option value="<?= $template->name() ?>" <?php if ($template->name() === $field->value()) : ?> selected<?php endif ?>><?= $scheme->title() ?></option>
+        <option value="<?= $template->name() ?>" <?php if ($template->name() === (string) $field->value()) : ?> selected<?php endif ?>><?= $scheme->title() ?></option>
     <?php endforeach ?>
 </select>

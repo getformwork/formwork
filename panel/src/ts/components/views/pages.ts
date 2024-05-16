@@ -121,8 +121,8 @@ export class Pages {
         }
 
         if (newPageModal) {
-            ($("#page-title", newPageModal) as HTMLElement).addEventListener("keyup", (event) => {
-                ($("#page-slug", newPageModal) as HTMLInputElement).value = makeSlug((event.target as HTMLInputElement).value);
+            ($("#title", newPageModal) as HTMLElement).addEventListener("keyup", (event) => {
+                ($("#slug", newPageModal) as HTMLInputElement).value = makeSlug((event.target as HTMLInputElement).value);
             });
 
             const handleSlugChange = (event: Event) => {
@@ -130,26 +130,26 @@ export class Pages {
                 target.value = validateSlug(target.value);
             };
 
-            ($("#page-slug", newPageModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
-            ($("#page-slug", newPageModal) as HTMLElement).addEventListener("blur", handleSlugChange);
+            ($("#slug", newPageModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
+            ($("#slug", newPageModal) as HTMLElement).addEventListener("blur", handleSlugChange);
 
-            ($("#page-parent", newPageModal) as HTMLElement).addEventListener("change", () => {
-                const option = $('.dropdown-list[data-for="page-parent"] .selected');
+            ($("#parent", newPageModal) as HTMLElement).addEventListener("change", () => {
+                const option = $('.dropdown-list[data-for="parent"] .selected', newPageModal);
 
                 if (!option) {
                     return;
                 }
 
-                const allowedTemplates = (option.dataset.allowedTemplates as string).split(", ");
+                const allowedTemplates = (option.dataset.allowedTemplates ?? "").split(", ");
 
-                const pageTemplate = $("#page-template", newPageModal) as HTMLInputElement;
+                const pageTemplate = $("#template", newPageModal) as HTMLInputElement;
 
                 if (allowedTemplates.length > 0) {
                     pageTemplate.dataset.previousValue = pageTemplate.value;
                     pageTemplate.value = allowedTemplates[0];
-                    ($('.select[data-for="page-template"') as HTMLInputElement).value = ($(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`) as HTMLElement).innerText;
+                    ($('.form-select[data-for="template"', newPageModal) as HTMLInputElement).value = ($(`.dropdown-list[data-for="template"] .dropdown-item[data-value="${pageTemplate.value}"]`, newPageModal) as HTMLElement).innerText;
 
-                    $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
+                    $$('.dropdown-list[data-for="template"] .dropdown-item').forEach((option) => {
                         if (!allowedTemplates.includes(option.dataset.value as string)) {
                             option.classList.add("disabled");
                         }
@@ -158,10 +158,10 @@ export class Pages {
                     if ("previousValue" in pageTemplate.dataset) {
                         pageTemplate.value = pageTemplate.dataset.previousValue as string;
                         delete pageTemplate.dataset.previousValue;
-                        ($('.select[data-for="page-template"') as HTMLInputElement).value = ($(`.dropdown-list[data-for="page-template"] .dropdown-item[data-value="${pageTemplate.value}"]`) as HTMLElement).innerText;
+                        ($('.form-select[data-for="template"', newPageModal) as HTMLInputElement).value = ($(`.dropdown-list[data-for="template"] .dropdown-item[data-value="${pageTemplate.value}"]`, newPageModal) as HTMLElement).innerText;
                     }
 
-                    $$('.dropdown-list[data-for="page-template"] .dropdown-item').forEach((option) => {
+                    $$('.dropdown-list[data-for="template"] .dropdown-item', newPageModal).forEach((option) => {
                         option.classList.remove("disabled");
                     });
                 }

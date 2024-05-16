@@ -3,6 +3,7 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
 use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
@@ -18,6 +19,7 @@ use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
+use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
@@ -44,13 +46,12 @@ class PagesController extends AbstractController
     /**
      * Pages@index action
      */
-    public function index(): Response
+    public function index(Schemes $schemes): Response
     {
         $this->ensurePermission('pages.index');
 
         $this->modal('newPage', [
-            'templates' => $this->site()->templates()->keys(),
-            'pages'     => $this->site()->descendants()->sortBy('relativePath'),
+            'fields' => $schemes->get('modals.newPage')->fields(),
         ]);
 
         $this->modal('deletePage');
@@ -79,15 +80,24 @@ class PagesController extends AbstractController
     /**
      * Pages@create action
      */
-    public function create(): RedirectResponse
+    public function create(Schemes $schemes): RedirectResponse
     {
         $this->ensurePermission('pages.create');
 
         $requestData = $this->request->input();
 
+        $fields = $schemes->get('modals.newPage')->fields();
+
+        try {
+            $fields->setValues($requestData)->validate();
+        } catch (ValidationException) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotCreate.varMissing'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
         // Let's create the page
         try {
-            $page = $this->createPage($requestData);
+            $page = $this->createPage($fields);
             $this->panel()->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
@@ -487,25 +497,20 @@ class PagesController extends AbstractController
     /**
      * Create a new page
      */
-    protected function createPage(RequestData $requestData): Page
+    protected function createPage(FieldCollection $fieldCollection): Page
     {
-        // Ensure no required data is missing
-        if (!$requestData->hasMultiple(['title', 'slug', 'template', 'parent'])) {
-            throw new TranslatedException('Missing required POST data', 'panel.pages.page.cannotCreate.varMissing');
-        }
-
         try {
-            $parent = $this->resolveParent($requestData->get('parent'));
+            $parent = $this->resolveParent($fieldCollection->get('parent')->value());
         } catch (RuntimeException) {
             throw new TranslatedException('Parent page not found', 'panel.pages.page.cannotCreate.invalidParent');
         }
 
         // Validate page slug
-        if (!$this->validateSlug($requestData->get('slug'))) {
+        if (!$this->validateSlug($fieldCollection->get('slug')->value())) {
             throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotCreate.invalidSlug');
         }
 
-        $route = $parent->route() . $requestData->get('slug') . '/';
+        $route = $parent->route() . $fieldCollection->get('slug')->value() . '/';
 
         // Ensure there isn't a page with the same route
         if ($this->site()->findPage($route) !== null) {
@@ -513,26 +518,26 @@ class PagesController extends AbstractController
         }
 
         // Validate page template
-        if (!$this->site()->templates()->has($requestData->get('template'))) {
+        if (!$this->site()->templates()->has($fieldCollection->get('template'))) {
             throw new TranslatedException('Invalid page template', 'panel.pages.page.cannotCreate.invalidTemplate');
         }
 
-        $scheme = $this->app->schemes()->get('pages.' . $requestData->get('template'));
+        $scheme = $this->app->schemes()->get('pages.' . $fieldCollection->get('template')->value());
 
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $requestData->get('slug') . '/';
+        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $fieldCollection->get('slug')->value() . '/';
 
         FileSystem::createDirectory($path, recursive: true);
 
         $language = $this->site()->languages()->default();
 
-        $filename = $requestData->get('template');
+        $filename = $fieldCollection->get('template')->value();
         $filename .= $language !== null ? '.' . $language : '';
         $filename .= $this->config->get('system.content.extension');
 
         FileSystem::createFile($path . $filename);
 
         $contentData = [
-            'title'     => $requestData->get('title'),
+            'title'     => $fieldCollection->get('title')->value(),
             'published' => false,
         ];
 
