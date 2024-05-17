@@ -30,9 +30,7 @@ class UsersController extends AbstractController
     {
         $this->ensurePermission('users.index');
 
-        $this->modal('newUser', [
-            'fields' => $schemes->get('modals.newUser')->fields(),
-        ]);
+        $this->modal('newUser');
 
         $this->modal('deleteUser');
 
@@ -51,7 +49,7 @@ class UsersController extends AbstractController
 
         $requestData = $this->request->input();
 
-        $fields = $schemes->get('modals.newUser')->fields();
+        $fields = $this->modal('newUser')->fields();
 
         // Ensure no required data is missing
         try {

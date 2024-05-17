@@ -1,0 +1,21 @@
+title: '{{panel.modal.images.title}}'
+
+size: large
+
+fields:
+    imagepicker:
+        type: page.imagepicker
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    pick:
+        action: command
+        icon: check-circle
+        label: '{{panel.modal.action.continue}}'
+        align: right
+        command: pick-image

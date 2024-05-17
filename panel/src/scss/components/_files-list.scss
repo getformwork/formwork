@@ -7,6 +7,8 @@
 }
 
 .is-thumbnails .files-items {
+    display: flex;
+    flex-wrap: wrap;
     margin: 0 (-0.25rem);
 }
 
@@ -45,7 +47,6 @@
 
 .is-thumbnails .files-item {
     position: relative;
-    display: inline-block;
     width: 10rem;
     height: 10rem;
     box-sizing: border-box;
@@ -53,6 +54,12 @@
     border: 1px solid $color-base-500;
     border-radius: $border-radius;
     margin: 0.25rem;
+
+    &:active,
+    &:focus-within {
+        border-color: $color-accent-500;
+        @include focusring;
+    }
 }
 
 .file-thumbnail {

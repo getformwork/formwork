@@ -50,9 +50,7 @@ class PagesController extends AbstractController
     {
         $this->ensurePermission('pages.index');
 
-        $this->modal('newPage', [
-            'fields' => $schemes->get('modals.newPage')->fields(),
-        ]);
+        $this->modal('newPage');
 
         $this->modal('deletePage');
 
@@ -86,7 +84,7 @@ class PagesController extends AbstractController
 
         $requestData = $this->request->input();
 
-        $fields = $schemes->get('modals.newPage')->fields();
+        $fields = $this->modal('newPage')->fields();
 
         try {
             $fields->setValues($requestData)->validate();
@@ -206,13 +204,11 @@ class PagesController extends AbstractController
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $page->route()]));
         }
 
+        $this->modal('images');
+
         $this->modal('changes');
 
         $this->modal('slug');
-
-        $this->modal('images', [
-            'page' => $page,
-        ]);
 
         $this->modal('deletePage');
 

@@ -16,9 +16,7 @@ class DashboardController extends AbstractController
     {
         $this->ensurePermission('dashboard');
 
-        $this->modal('newPage', [
-            'fields' => $schemes->get('modals.newPage')->fields(),
-        ]);
+        $this->modal('newPage');
 
         $this->modal('deletePage');
 

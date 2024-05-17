@@ -1,0 +1,30 @@
+title: '{{panel.pages.changeSlug}}'
+
+fields:
+    newSlug:
+        type: text
+        label: '{{panel.pages.newPage.slug}}'
+        suggestion: '{{panel.pages.newPage.slugSuggestion}}'
+        required: true
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    continue:
+        action: command
+        icon: check-circle
+        label: '{{panel.modal.action.continue}}'
+        align: right
+        command: continue
+
+    generate:
+        action: command
+        icon: sparks
+        label: '{{panel.pages.changeSlug.generate}}'
+        variant: link
+        align: right
+        command: generate-slug

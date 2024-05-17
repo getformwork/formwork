@@ -24,6 +24,10 @@
     padding: 1rem 1.5rem;
 }
 
+.modal-text {
+    text-wrap: balance;
+}
+
 .modal-header {
     border-bottom: 1px solid $color-base-600;
 }
@@ -46,8 +50,8 @@
 }
 
 .modal-size-large {
-    width: 40rem;
-    max-width: 40rem;
+    width: 48rem;
+    max-width: 48em;
     @media (width <= 40rem) {
         margin: 3rem 0.5rem;
     }

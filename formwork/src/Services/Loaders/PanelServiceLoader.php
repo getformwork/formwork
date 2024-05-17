@@ -5,6 +5,7 @@ namespace Formwork\Services\Loaders;
 use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
+use Formwork\Panel\Modals\ModalFactory;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Services\Container;
@@ -29,6 +30,8 @@ class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         $container->define(Updater::class);
 
         $this->request->session()->setDuration($this->config->get('system.panel.sessionTimeout') * 60);
+
+        $container->define(ModalFactory::class);
 
         return $container->build(Panel::class);
     }

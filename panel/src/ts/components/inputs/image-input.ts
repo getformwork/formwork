@@ -15,7 +15,7 @@ export class ImageInput {
                         thumbnail.classList.add("selected");
                     }
                 }
-                const confirm = $(".image-picker-confirm", modal.element) as HTMLElement;
+                const confirm = $("[data-command=pick-image]", modal.element) as HTMLElement;
                 confirm.dataset.target = element.id;
                 confirm.addEventListener("click", () => modal.hide());
             });

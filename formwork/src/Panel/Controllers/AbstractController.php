@@ -9,6 +9,9 @@ use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Site;
+use Formwork\Panel\Modals\Modal;
+use Formwork\Panel\Modals\ModalCollection;
+use Formwork\Panel\Modals\ModalFactory;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Users\User;
 use Formwork\Parsers\Json;
@@ -23,17 +26,13 @@ use Stringable;
 
 abstract class AbstractController extends BaseAbstractController
 {
-    /**
-     * All loaded modals
-     *
-     * @var array<string>
-     */
-    protected array $modals = [];
+    protected ModalCollection $modals;
 
     public function __construct(
         private Container $container,
         protected App $app,
         protected Config $config,
+        protected ModalFactory $modalFactory,
         protected ViewFactory $viewFactory,
         protected Request $request,
         protected Router $router,
@@ -104,7 +103,7 @@ abstract class AbstractController extends BaseAbstractController
             'site'        => $this->site(),
             'panel'       => $this->panel(),
             'csrfToken'   => $this->csrfToken->get(),
-            'modals'      => implode('', $this->modals),
+            'modals'      => $this->modals(),
             'colorScheme' => $this->getColorScheme(),
             'navigation'  => [
                 'dashboard' => [
@@ -208,14 +207,18 @@ abstract class AbstractController extends BaseAbstractController
         }
     }
 
+    protected function modals(): ModalCollection
+    {
+        return $this->modals ??= new ModalCollection();
+    }
+
     /**
      * Load a modal to be rendered later
-     *
-     * @param array<string, mixed> $data
      */
-    protected function modal(string $name, array $data = []): void
+    protected function modal(string $name): Modal
     {
-        $this->modals[] = $this->view('modals.' . $name, $data);
+        $this->modals()->add($modal = $this->modalFactory->make($name));
+        return $modal;
     }
 
     /**

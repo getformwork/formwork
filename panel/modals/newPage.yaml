@@ -1,4 +1,6 @@
-title: New Page
+title: '{{panel.pages.newPage}}'
+
+action: /pages/new/
 
 fields:
     title:
@@ -24,3 +26,16 @@ fields:
         label: '{{panel.pages.newPage.template}}'
         required: true
         default@: site.get('defaultTemplate', 'default')
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    submit:
+        action: submit
+        icon: check-circle
+        label: '{{panel.modal.action.continue}}'
+        align: right

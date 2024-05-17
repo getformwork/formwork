@@ -27,7 +27,9 @@
             <?= $this->content() ?>
         </div>
     </main>
-    <?= $modals ?>
+    <?php foreach ($modals as $modal) : ?>
+        <?php $this->insert('modals.modal', ['modal' => $modal]) ?>
+    <?php endforeach ?>
     <?php $this->insert('partials.scripts') ?>
 </body>
 

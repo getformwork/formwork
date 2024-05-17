@@ -80,6 +80,7 @@ export class EditorInput {
                     selected.classList.remove("selected");
                 }
                 function confirmImage(this: HTMLElement) {
+                    const selected = $(".image-picker-thumbnail.selected", modal.element);
                     if (selected) {
                         const filename = selected.dataset.filename;
                         insertAtCursor(`${prependSequence()}![`, `](${filename})`);
@@ -87,7 +88,7 @@ export class EditorInput {
                     modal.hide();
                     this.removeEventListener("click", confirmImage);
                 }
-                ($(".image-picker-confirm", modal.element) as HTMLElement).addEventListener("click", confirmImage);
+                ($("[data-command=pick-image]", modal.element) as HTMLElement).addEventListener("click", confirmImage);
             });
         });
 

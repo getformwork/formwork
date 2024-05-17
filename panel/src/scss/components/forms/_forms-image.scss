@@ -3,17 +3,19 @@
 }
 
 .image-picker-thumbnails {
+    display: flex;
     overflow: auto;
-    height: 15rem;
+    height: 24rem;
+    max-height: 50vh;
+    flex-wrap: wrap;
     padding: 0.5rem;
     margin-bottom: 1rem;
 }
 
 .image-picker-thumbnail {
     position: relative;
-    display: inline-block;
-    width: 8rem;
-    height: 8rem;
+    width: 10em;
+    height: 10rem;
     box-sizing: border-box;
     padding: 0.5rem;
     border: 1px solid $color-base-500;
@@ -23,6 +25,10 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+
+    &:hover {
+        background-color: $color-base-800;
+    }
 }
 
 .image-picker-thumbnail::after {

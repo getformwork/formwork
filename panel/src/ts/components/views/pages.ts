@@ -172,13 +172,13 @@ export class Pages {
             commandChangeSlug.addEventListener("click", () => {
                 app.modals["slugModal"].show(undefined, (modal) => {
                     const slug = (document.getElementById("slug") as HTMLInputElement).value;
-                    const slugInput = $("#page-slug", modal.element) as HTMLInputElement;
+                    const slugInput = $("#newSlug", modal.element) as HTMLInputElement;
                     slugInput.value = slug;
                     slugInput.placeholder = slug;
                 });
             });
 
-            ($("#page-slug", slugModal) as HTMLElement).addEventListener("keydown", (event) => {
+            ($("#newSlug", slugModal) as HTMLElement).addEventListener("keydown", (event) => {
                 if (event.key === "Enter") {
                     ($("[data-command=continue]", slugModal) as HTMLElement).click();
                 }
@@ -189,25 +189,22 @@ export class Pages {
                 target.value = validateSlug(target.value);
             };
 
-            ($("#page-slug", slugModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
-            ($("#page-slug", slugModal) as HTMLElement).addEventListener("blur", handleSlugChange);
+            ($("#newSlug", slugModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
+            ($("#newSlug", slugModal) as HTMLElement).addEventListener("blur", handleSlugChange);
 
             ($("[data-command=generate-slug]", slugModal) as HTMLElement).addEventListener("click", () => {
                 const slug = makeSlug((document.getElementById("title") as HTMLInputElement).value);
-                ($("#page-slug", slugModal) as HTMLInputElement).value = slug;
-                ($("#page-slug", slugModal) as HTMLElement).focus();
+                ($("#newSlug", slugModal) as HTMLInputElement).value = slug;
+                ($("#newSlug", slugModal) as HTMLElement).focus();
             });
 
             ($("[data-command=continue]", slugModal) as HTMLElement).addEventListener("click", () => {
-                const slug = ($("#page-slug", slugModal) as HTMLInputElement).value.replace(/^-+|-+$/, "");
+                const slug = ($("#newSlug", slugModal) as HTMLInputElement).value.replace(/^-+|-+$/, "");
 
                 if (slug.length > 0) {
                     const route = ($(".page-route-inner") as HTMLElement).innerHTML;
-                    $$("#page-slug, #slug").forEach((element: HTMLInputElement) => {
-                        element.value = slug;
-                    });
-                    ($("#page-slug", slugModal) as HTMLInputElement).value = slug;
-                    (document.getElementById("slug") as HTMLInputElement).value = slug;
+                    ($("#newSlug", slugModal) as HTMLInputElement).value = slug;
+                    ($("#slug", slugModal) as HTMLInputElement).value = slug;
                     ($(".page-route-inner") as HTMLElement).innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 
@@ -218,7 +215,7 @@ export class Pages {
         $$("[data-modal=renameFileModal]").forEach((element) => {
             element.addEventListener("click", () => {
                 const modal = document.getElementById("renameFileModal") as HTMLElement;
-                const input = $("#file-name", modal) as HTMLInputElement;
+                const input = $("#filename", modal) as HTMLInputElement;
                 input.value = element.dataset.filename as string;
                 input.setSelectionRange(0, input.value.lastIndexOf("."));
             });
