@@ -75,7 +75,7 @@ panel.options.site.maintenance.enabled.disabled: Desactivado
 panel.options.site.maintenance.enabled.enabled: Activado
 panel.options.site.maintenance.page: Página de mantenimiento
 panel.options.site.pages: Páginas
-panel.options.site.pages.defaultTemplate: Plantilla Predeterminada
+panel.options.site.pages.defaultTemplate: Plantilla predeterminada
 panel.options.system: Sistema
 panel.options.system.adminPanel: Panel de administración
 panel.options.system.adminPanel.defaultColorScheme: Esquema de color predeterminado
@@ -85,13 +85,13 @@ panel.options.system.adminPanel.defaultLanguage: Idioma predeterminado
 panel.options.system.adminPanel.logoutRedirectsTo: Redireccionamiento al cerrar sesión
 panel.options.system.adminPanel.logoutRedirectsTo.home: Inicio
 panel.options.system.adminPanel.logoutRedirectsTo.login: Iniciar sesión
-panel.options.system.adminPanel.sessionTimeout: Tiempo de sesión (min)
+panel.options.system.adminPanel.sessionTimeout: Tiempo de sesión
 panel.options.system.backup: Respaldo
 panel.options.system.backup.backupFilesToKeep: Respaldo a mantener en el servidor
 panel.options.system.cache: Caché
 panel.options.system.cache.disabled: Desactivado
 panel.options.system.cache.enabled: Activado
-panel.options.system.cache.time: Tiempo de caché (seg)
+panel.options.system.cache.time: Tiempo de caché
 panel.options.system.dateAndTime: Fecha y hora
 panel.options.system.dateAndTime.dateFormat: Formato de fecha
 panel.options.system.dateAndTime.firstWeekday: Primer día de la semana
@@ -272,7 +272,7 @@ panel.statistics.monthlyUniqueVisitors: Visitantes únicos mensuales
 panel.statistics.monthlyVisits: Visitas mensuales
 panel.statistics.statistics: Estadísticas
 panel.statistics.totalVisits: Total de visitas
-panel.statistics.totalVisits.percentTotal: "% del total"
+panel.statistics.totalVisits.percentTotal: '% del total'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visitas
 panel.statistics.weeklyUniqueVisitors: Visitantes únicos semanales
@@ -283,7 +283,7 @@ panel.tools.backup.delete: Borrar copia de seguridad
 panel.tools.backup.file: Archivo
 panel.tools.backup.size: Tamaño
 panel.tools.backups: Copias de seguridad
-panel.tools.latestBackup: "Última copia de seguridad:"
+panel.tools.latestBackup: 'Última copia de seguridad:'
 panel.tools.latestBackups: Últimas copias de seguridad
 panel.tools.tools: Herramientas
 panel.tools.updates: Actualizaciones
@@ -335,6 +335,6 @@ panel.users.user.created: Usuario creado
 panel.users.user.deleted: Usuario borrado
 panel.users.user.edited: Datos de usuario actualizados
 panel.users.user.notFound: Usuario no encontrado
-panel.users.userProfile: 'Perfil de usuario %s'
+panel.users.userProfile: Perfil de usuario %s
 panel.users.users: Usuarios
 panel.viewSite: Ver sitio

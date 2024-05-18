@@ -85,13 +85,13 @@ panel.options.system.adminPanel.defaultLanguage: Язык по умолчани�
 panel.options.system.adminPanel.logoutRedirectsTo: Выход Перенаправление
 panel.options.system.adminPanel.logoutRedirectsTo.home: Главная
 panel.options.system.adminPanel.logoutRedirectsTo.login: Логин
-panel.options.system.adminPanel.sessionTimeout: Тайм-аут сеанса (мин)
+panel.options.system.adminPanel.sessionTimeout: Тайм-аут сеанса
 panel.options.system.backup: Резервный
 panel.options.system.backup.backupFilesToKeep: Резервные копии, чтобы сохранить на сервере
 panel.options.system.cache: Кэш
 panel.options.system.cache.disabled: Выключить
 panel.options.system.cache.enabled: Включить
-panel.options.system.cache.time: Кэш Время (сек)
+panel.options.system.cache.time: Кэш Время
 panel.options.system.dateAndTime: Дата и время
 panel.options.system.dateAndTime.dateFormat: Формат даты
 panel.options.system.dateAndTime.firstWeekday: Первый день недели

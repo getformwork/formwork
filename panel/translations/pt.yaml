@@ -1,4 +1,4 @@
-panel.backup.backup: Cópia de Segurança
+panel.backup.backup: Cópia de segurança
 panel.backup.deleted: Backup apagado
 panel.backup.error.cannotDelete: Não é possível apagar o backup. %s.
 panel.backup.error.cannotDelete.invalidFilename: Nome de backup inválido
@@ -7,34 +7,34 @@ panel.backup.error.cannotDownload.invalidFilename: Ficheiro de backup inválido
 panel.backup.error.cannotMake: Não é possível fazer cópia de segurança. %s.
 panel.backup.ready: Cópia de segurança pronta. A iniciar o download...
 panel.cache.clear: Limpar cache
-panel.cache.clear.images: Limpar Cache de Imagens
-panel.cache.clear.pages: Limpar Cache de Páginas
+panel.cache.clear.images: Limpar cache de imagens
+panel.cache.clear.pages: Limpar cache de páginas
 panel.cache.cleared: Cache limpa
-panel.cache.cleared.images: Cache de Imagens limpo
-panel.cache.cleared.pages: Cache de Páginas limpo
+panel.cache.cleared.images: Cache de imagens limpo
+panel.cache.cleared.pages: Cache de páginas limpo
 panel.cache.error: Não é possível limpar o cache
 panel.dashboard.dashboard: Painel
 panel.dashboard.lastModifiedPages: Últimas páginas editadas
-panel.dashboard.quickActions: Acções Rápidas
+panel.dashboard.quickActions: Acções rápidas
 panel.dashboard.statistics: Estatisticas
-panel.dashboard.statistics.uniqueVisitors: Visitantes Únicos
+panel.dashboard.statistics.uniqueVisitors: Visitantes únicos
 panel.dashboard.statistics.visits: Visitas
 panel.dashboard.welcome: BemVindo
 panel.dragToReorder: Arraste para reordenar
 panel.errors.action.reportToGithub: Denúncie um problema no GitHub
-panel.errors.action.returnToDashboard: Voltar ao Painel
+panel.errors.action.returnToDashboard: Voltar ao painel
 panel.errors.error.forbidden.description: Não tem permissões para aceder a esta página.
 panel.errors.error.forbidden.heading: Oops, permissão necessária!
 panel.errors.error.forbidden.status: Proibido
 panel.errors.error.internalServerError.description: Formwork encontrou um erro ao atender sua solicitação. Verifique a configuração do Formwork ou o log do servidor para erros.
 panel.errors.error.internalServerError.heading: Ops, algo errado aconteceu!
-panel.errors.error.internalServerError.status: Erro Interno do Servidor
+panel.errors.error.internalServerError.status: Erro interno do servidor
 panel.errors.error.notFound.description: A página não existe ou a solicitação não é válida.
 panel.errors.error.notFound.heading: Ops, página não encontrada!
-panel.errors.error.notFound.status: Não Encontrado
+panel.errors.error.notFound.status: Não encontrado
 panel.files.actions: Ações
-panel.files.viewAsList: Ver como Lista
-panel.files.viewAsThumbnails: Ver como Miniaturas
+panel.files.viewAsList: Ver como lista
+panel.files.viewAsThumbnails: Ver como miniaturas
 panel.login.attempt.failed: Falha ao tentar efetuar login! Tente novamente.
 panel.login.attempt.tooMany: Demasiadas tentativas de login. Tente novamente em %d minutos.
 panel.login.loggedOut: Você foi desconectado
@@ -42,7 +42,7 @@ panel.login.login: Login
 panel.login.logout: Logout
 panel.login.password: Password
 panel.login.suspiciousRequestDetected: Uma solicitação suspeita foi detectada e, por motivos de segurança, você foi desconectado. Por favor faça login novamente.
-panel.login.username: Nome do Utilizador
+panel.login.username: Nome do utilizador
 panel.manage: Administrar
 panel.modal.action.cancel: Cancelar
 panel.modal.action.continue: Continuar
@@ -52,12 +52,12 @@ panel.modal.action.save: Guardar
 panel.modal.action.uploadFile: Enviar um ficheiro
 panel.modal.images.noImages: Não há imagens aqui
 panel.modal.images.noImages.upload: Por favor carregue algumas imagens
-panel.modal.images.title: Escolha uma Imagem
-panel.navigation.toggle: Alternar Navegação
+panel.modal.images.title: Escolha uma imagem
+panel.navigation.toggle: Alternar navegação
 panel.options.info: Informações
 panel.options.options: Opções
 panel.options.site: Site
-panel.options.site.advanced: Opções Avançadas
+panel.options.site.advanced: Opções avançadas
 panel.options.site.advanced.aliases: Aliases
 panel.options.site.advanced.aliases.alias: Alias
 panel.options.site.advanced.aliases.route: Rota
@@ -70,39 +70,39 @@ panel.options.site.info.description: Descrição
 panel.options.site.info.language: Idiomas
 panel.options.site.info.title: Título
 panel.options.site.maintenance: Manutenção
-panel.options.site.maintenance.enabled: Modo de Manutenção
+panel.options.site.maintenance.enabled: Modo de manutenção
 panel.options.site.maintenance.enabled.disabled: Desativado
 panel.options.site.maintenance.enabled.enabled: Ativado
-panel.options.site.maintenance.page: Página de Manutenção
+panel.options.site.maintenance.page: Página de manutenção
 panel.options.site.pages: Páginas
 panel.options.site.pages.defaultTemplate: Template padrão
 panel.options.system: Sistema
-panel.options.system.adminPanel: Painel de Administração
+panel.options.system.adminPanel: Painel de administração
 panel.options.system.adminPanel.defaultColorScheme: Esquema de cores padrão
 panel.options.system.adminPanel.defaultColorScheme.dark: Escuro
 panel.options.system.adminPanel.defaultColorScheme.light: Claro
-panel.options.system.adminPanel.defaultLanguage: Idioma Padrão
+panel.options.system.adminPanel.defaultLanguage: Idioma padrão
 panel.options.system.adminPanel.logoutRedirectsTo: Logout redireciona para
 panel.options.system.adminPanel.logoutRedirectsTo.home: Principal
 panel.options.system.adminPanel.logoutRedirectsTo.login: Login
-panel.options.system.adminPanel.sessionTimeout: Tempo limite da sessão (min)
-panel.options.system.backup: Cópia de Segurança
+panel.options.system.adminPanel.sessionTimeout: Tempo limite da sessão
+panel.options.system.backup: Cópia de segurança
 panel.options.system.backup.backupFilesToKeep: Backups para manter no servidor
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Desactivado
 panel.options.system.cache.enabled: Activado
-panel.options.system.cache.time: Tempo de Cache (s)
-panel.options.system.dateAndTime: Data e Hora
-panel.options.system.dateAndTime.dateFormat: Formato de Data
-panel.options.system.dateAndTime.firstWeekday: Primeiro Dia da Semana
+panel.options.system.cache.time: Tempo de cache
+panel.options.system.dateAndTime: Data e hora
+panel.options.system.dateAndTime.dateFormat: Formato de data
+panel.options.system.dateAndTime.firstWeekday: Primeiro dia da semana
 panel.options.system.dateAndTime.firstWeekday.monday: Segunda
 panel.options.system.dateAndTime.firstWeekday.sunday: Domingo
-panel.options.system.dateAndTime.hourFormat: Formato de Hora
-panel.options.system.dateAndTime.timezone: Fuso Horário
+panel.options.system.dateAndTime.hourFormat: Formato de hora
+panel.options.system.dateAndTime.timezone: Fuso horário
 panel.options.system.files: Ficheiros
-panel.options.system.files.allowedExtensions: Extensões Permitidas
+panel.options.system.files.allowedExtensions: Extensões permitidas
 panel.options.system.images: Imagens
-panel.options.system.images.clearCacheByDefault: Limpar Cache de Imagens por padrão
+panel.options.system.images.clearCacheByDefault: Limpar cache de imagens por padrão
 panel.options.system.images.clearCacheByDefault.disabled: Desativado
 panel.options.system.images.clearCacheByDefault.enabled: Ativado
 panel.options.system.images.jpegQuality: Qualidade JPEG
@@ -112,25 +112,25 @@ panel.options.system.images.jpegSaveProgressive.enabled: Activado
 panel.options.system.images.pngCompressionLevel: Nível de compressão PNG
 panel.options.system.images.webpQuality: Qualidade WebP
 panel.options.system.languages: Idiomas
-panel.options.system.languages.availableLanguages: Idiomas Disponiveis
-panel.options.system.languages.availableLanguages.noLanguages: Sem Idiomas
+panel.options.system.languages.availableLanguages: Idiomas disponiveis
+panel.options.system.languages.availableLanguages.noLanguages: Sem idiomas
 panel.options.system.languages.preferredLanguage: Use o idioma preferido do browser
 panel.options.system.languages.preferredLanguage.disabled: Desactivado
 panel.options.system.languages.preferredLanguage.enabled: Activado
 panel.options.system.uploads.processImages: Processar (optimizar) imagens enviadas
 panel.options.system.uploads.processImages.disabled: Desactivado
 panel.options.system.uploads.processImages.enabled: Activado
-panel.options.updated: Opções Actualizadas
+panel.options.updated: Opções actualizadas
 panel.pages.attributes: Atributos
-panel.pages.changes.continue: Continuar sem Guardar
-panel.pages.changes.detected: Alterações Encontradas
+panel.pages.changes.continue: Continuar sem guardar
+panel.pages.changes.detected: Alterações encontradas
 panel.pages.changes.detected.prompt: Tem algumas alterações que não foram guardadas. Tem a certeza que deseja sair desta página?
-panel.pages.changeSlug: Editar Slug
-panel.pages.changeSlug.generate: Criar a partir do Título
+panel.pages.changeSlug: Editar slug
+panel.pages.changeSlug.generate: Criar a partir do título
 panel.pages.content: Conteúdo
-panel.pages.deleteFile: Remover Ficheiro
+panel.pages.deleteFile: Remover ficheiro
 panel.pages.deleteFile.prompt: Tem certeza de que deseja remover este ficheiro? Esta acção não pode ser desfeita.
-panel.pages.deletePage: Remover Página
+panel.pages.deletePage: Remover página
 panel.pages.deletePage.prompt: Tem certeza que deseja remover esta página? Esta ação não pode ser desfeita.
 panel.pages.editor.bold: Negrito
 panel.pages.editor.bulletList: Lista de marcadores
@@ -142,34 +142,34 @@ panel.pages.editor.quote: Citar
 panel.pages.editor.redo: Refazer
 panel.pages.editor.summary: Sumário
 panel.pages.editor.undo: Desfazer
-panel.pages.editPage: Editar Página %s
-panel.pages.file.backToPage: Voltar à Página
+panel.pages.editPage: Editar página %s
+panel.pages.file.backToPage: Voltar à página
 panel.pages.file.exif: EXIF
 panel.pages.file.info: Informações
-panel.pages.file.info.image.colorDepth: Profundidade de Cor
-panel.pages.file.info.image.colorNumber: Número de Cores
-panel.pages.file.info.image.colorProfile: Perfil de Cor
-panel.pages.file.info.image.colorSpace: Espaço de Cor
+panel.pages.file.info.image.colorDepth: Profundidade de cor
+panel.pages.file.info.image.colorNumber: Número de cores
+panel.pages.file.info.image.colorProfile: Perfil de cor
+panel.pages.file.info.image.colorSpace: Espaço de cor
 panel.pages.file.info.image.dimensions: Dimensões
 panel.pages.file.info.image.dimensions.widthByHeightPixels: '%d × %d píxeis'
 panel.pages.file.info.image.exif.aperture: Abertura
 panel.pages.file.info.image.exif.camera: Câmara
-panel.pages.file.info.image.exif.creationDateAndTime: Data e Hora de Criação
-panel.pages.file.info.image.exif.exposureCompensation: Compensação de Exposição
-panel.pages.file.info.image.exif.exposureProgram: Programa de Exposição
-panel.pages.file.info.image.exif.exposureTime: Tempo de Exposição
+panel.pages.file.info.image.exif.creationDateAndTime: Data e hora de criação
+panel.pages.file.info.image.exif.exposureCompensation: Compensação de exposição
+panel.pages.file.info.image.exif.exposureProgram: Programa de exposição
+panel.pages.file.info.image.exif.exposureTime: Tempo de exposição
 panel.pages.file.info.image.exif.flash: Flash
-panel.pages.file.info.image.exif.focalLength: Distância Focal
-panel.pages.file.info.image.exif.lensModel: Modelo da Lente
-panel.pages.file.info.image.exif.meteringMode: Modo de Medição
+panel.pages.file.info.image.exif.focalLength: Distância focal
+panel.pages.file.info.image.exif.lensModel: Modelo da lente
+panel.pages.file.info.image.exif.meteringMode: Modo de medição
 panel.pages.file.info.image.exif.sensitivity: Sensibilidade
-panel.pages.file.info.image.exif.whiteBalance: Balanço de Branco
+panel.pages.file.info.image.exif.whiteBalance: Balanço de branco
 panel.pages.file.info.image.frames: '%d frames'
-panel.pages.file.info.image.framesCount: Contagem de Frames
+panel.pages.file.info.image.framesCount: Contagem de frames
 panel.pages.file.info.image.repeats: '%d repetições'
-panel.pages.file.info.image.repeatsCount: Contagem de Repetições
+panel.pages.file.info.image.repeatsCount: Contagem de repetições
 panel.pages.file.info.image.resolution: Resolução
-panel.pages.file.info.lastModifiedTime: Última Modificação
+panel.pages.file.info.lastModifiedTime: Última modificação
 panel.pages.file.info.mimeType: Tipo MIME
 panel.pages.file.info.size: Tamanho
 panel.pages.file.info.uri: URI
@@ -179,15 +179,15 @@ panel.pages.files: Ficheiros
 panel.pages.languages: Idiomas
 panel.pages.languages.addLanguage: Criar %s
 panel.pages.languages.editLanguage: Editar %s
-panel.pages.newPage: Criar Página
-panel.pages.newPage.parent: Página Parente
+panel.pages.newPage: Criar página
+panel.pages.newPage.parent: Página parente
 panel.pages.newPage.site: Site
-panel.pages.newPage.slug: Slug da Página
+panel.pages.newPage.slug: Slug da página
 panel.pages.newPage.slugSuggestion: letras, números e hifens apenas
 panel.pages.newPage.template: Template
 panel.pages.newPage.title: Título
-panel.pages.next: Próxima Página
-panel.pages.nextFile: Próximo Ficheiro
+panel.pages.next: Próxima página
+panel.pages.nextFile: Próximo ficheiro
 panel.pages.options: Opções
 panel.pages.page: Página
 panel.pages.page.actions: Acções
@@ -228,63 +228,63 @@ panel.pages.page.edited: Página editada
 panel.pages.page.fileDeleted: Ficheiro removido
 panel.pages.page.fileRenamed: Arquivo renomeado
 panel.pages.page.image: Imagem
-panel.pages.page.lastModified: Última Modificação
+panel.pages.page.lastModified: Última modificação
 panel.pages.page.listed: Visível no menu
-panel.pages.page.moved: Página Movida!
-panel.pages.page.noDate: Sem Data
-panel.pages.page.noImage: Sem Imagem
-panel.pages.page.noTags: Sem Tags
+panel.pages.page.moved: Página movida!
+panel.pages.page.noDate: Sem data
+panel.pages.page.noImage: Sem imagem
+panel.pages.page.noTags: Sem tags
 panel.pages.page.notFound: Página não encontrada
 panel.pages.page.postsPerPage: Items por página
-panel.pages.page.publishDate: Data de Publicação
+panel.pages.page.publishDate: Data de publicação
 panel.pages.page.status: Estado
 panel.pages.page.tags: Tags
 panel.pages.page.title: Titulo
-panel.pages.page.unpublishDate: Data de Cancelamento da Publicação
+panel.pages.page.unpublishDate: Data de cancelamento da publicação
 panel.pages.pages: Páginas
-panel.pages.pages.collapseAll: Recolher Todas
-panel.pages.pages.expandAll: Expandir Todas
+panel.pages.pages.collapseAll: Recolher todas
+panel.pages.pages.expandAll: Expandir todas
 panel.pages.pages.reorder: Reordenar
-panel.pages.pages.search: Procurar Páginas...
-panel.pages.parent: Página Parente
+panel.pages.pages.search: Procurar páginas...
+panel.pages.parent: Página parente
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
-panel.pages.previous: Página Anterior
-panel.pages.previousFile: Ficheiro Anterior
-panel.pages.renameFile: Renomear Arquivo
+panel.pages.previous: Página anterior
+panel.pages.previousFile: Ficheiro anterior
+panel.pages.renameFile: Renomear arquivo
 panel.pages.renameFile.name: Nome
-panel.pages.replaceFile: Substituir Ficheiro
+panel.pages.replaceFile: Substituir ficheiro
 panel.pages.save: Guardar
-panel.pages.status.notPublished: Não Publicado
-panel.pages.status.notRoutable: Não Roteável
+panel.pages.status.notPublished: Não publicado
+panel.pages.status.notRoutable: Não roteável
 panel.pages.status.published: Publicado
 panel.pages.status.routable: Roteável
 panel.pages.summary: Resumo
 panel.pages.template: Template
 panel.pages.text: Texto
-panel.pages.toggleChildren: Expandir Páginas
-panel.panel: Painel de Administração
+panel.pages.toggleChildren: Expandir páginas
+panel.panel: Painel de administração
 panel.register.createUser: O Formwork está instalado, mas nenhum utilizador foi encontrado. Por favor, registre um agora.
-panel.register.register: Registrar Novo Utilizador
+panel.register.register: Registrar novo utilizador
 panel.request.error.postMaxSize: O pedido HTTP POST excede o tamanho máximo permitido
-panel.sections.toggle: Alternar Seção
-panel.statistics.monthlyUniqueVisitors: Visitantes Únicos Mensais
-panel.statistics.monthlyVisits: Visitas Mensais
+panel.sections.toggle: Alternar seção
+panel.statistics.monthlyUniqueVisitors: Visitantes únicos mensais
+panel.statistics.monthlyVisits: Visitas mensais
 panel.statistics.statistics: Estatísticas
-panel.statistics.totalVisits: Visitas Totais
-panel.statistics.totalVisits.percentTotal: "% Total"
+panel.statistics.totalVisits: Visitas totais
+panel.statistics.totalVisits.percentTotal: '% total'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visitas
-panel.statistics.weeklyUniqueVisitors: Visitantes Únicos Semanais
-panel.statistics.weeklyVisits: Visitas Semanais
+panel.statistics.weeklyUniqueVisitors: Visitantes únicos semanais
+panel.statistics.weeklyVisits: Visitas semanais
 panel.tools.backup.actions: Ações
 panel.tools.backup.date: Data
-panel.tools.backup.delete: Apagar Backup
+panel.tools.backup.delete: Apagar backup
 panel.tools.backup.file: Arquivo
 panel.tools.backup.size: Tamanho
 panel.tools.backups: Backups
-panel.tools.latestBackup: "Último backup:"
-panel.tools.latestBackups: Últimos Backups
+panel.tools.latestBackup: 'Último backup:'
+panel.tools.latestBackups: Últimos backups
 panel.tools.tools: Ferramentas
 panel.tools.updates: Actualizações
 panel.updates.availableForInstall: está disponível para instalação
@@ -307,7 +307,7 @@ panel.user.colorScheme.auto: Auto
 panel.user.colorScheme.dark: Escuro
 panel.user.colorScheme.light: Claro
 panel.user.email: E'mail
-panel.user.fullname: Nome Completo
+panel.user.fullname: Nome completo
 panel.user.image: Imagem
 panel.user.image.uploaded: Imagem do utilizador enviada
 panel.user.language: Idioma
@@ -318,9 +318,9 @@ panel.user.role: Cargo
 panel.user.role.admin: Administrador
 panel.user.role.user: Utilizador
 panel.user.username: Nome do utilizador
-panel.users.deleteUser: Apagar Utilizador
+panel.users.deleteUser: Apagar utilizador
 panel.users.deleteUser.prompt: Tem a certeza de que deseja excluir este utilizador? Esta acção não pode ser revertida.
-panel.users.newUser: Novo Utilizador
+panel.users.newUser: Novo utilizador
 panel.users.newUser.passwordSuggestion: pelo menos 8 caracteres
 panel.users.newUser.usernameSuggestion: entre 3 a 20 letras, números e hifens.
 panel.users.options: Opções
@@ -335,6 +335,6 @@ panel.users.user.created: Utilizador criado.
 panel.users.user.deleted: Utilizador removido.
 panel.users.user.edited: Informação do utilizador actualizada
 panel.users.user.notFound: Utilizador não encontrado
-panel.users.userProfile: 'Perfil de Utilizador %s'
+panel.users.userProfile: Perfil de utilizador %s
 panel.users.users: Utilizadores
-panel.viewSite: Ver Site
+panel.viewSite: Ver site

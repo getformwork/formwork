@@ -26,9 +26,9 @@ panel.errors.action.returnToDashboard: Retour au tableau de bord
 panel.errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
 panel.errors.error.forbidden.heading: Oups, permission requise!
 panel.errors.error.forbidden.status: Interdit
-panel.errors.error.internalServerError.description: Une erreur s’est produite lors du traitement de votre demande. Veuillez vérifier la configuration du CMS ou le journal du serveur pour rechercher des erreurs.
+panel.errors.error.internalServerError.description: Une erreur s’est produite lors du traitement de votre demande. Veuillez vérifier la configuration du cms ou le journal du serveur pour rechercher des erreurs.
 panel.errors.error.internalServerError.heading: Oups, quelque chose s’est mal passé!
-panel.errors.error.internalServerError.status: Erreur Interne du Serveur
+panel.errors.error.internalServerError.status: Erreur interne du serveur
 panel.errors.error.notFound.description: La page n’existe pas ou la demande n’est pas valide.
 panel.errors.error.notFound.heading: Oups, page non trouvée!
 panel.errors.error.notFound.status: Pas trouvé
@@ -75,7 +75,7 @@ panel.options.site.maintenance.enabled.disabled: Désactivé
 panel.options.site.maintenance.enabled.enabled: Activé
 panel.options.site.maintenance.page: Page de maintenance
 panel.options.site.pages: Pages
-panel.options.site.pages.defaultTemplate: Modèle (Template) par défaut
+panel.options.site.pages.defaultTemplate: Modèle (template) par défaut
 panel.options.system: Système
 panel.options.system.adminPanel: Panneau d’administration
 panel.options.system.adminPanel.defaultColorScheme: Schéma de couleur par défaut du panneau d'administration
@@ -85,13 +85,13 @@ panel.options.system.adminPanel.defaultLanguage: Langue par défaut
 panel.options.system.adminPanel.logoutRedirectsTo: Après déconnexion, redirection vers
 panel.options.system.adminPanel.logoutRedirectsTo.home: Page d’accueil
 panel.options.system.adminPanel.logoutRedirectsTo.login: Page d’identification
-panel.options.system.adminPanel.sessionTimeout: Expiration de la session (min)
+panel.options.system.adminPanel.sessionTimeout: Expiration de la session
 panel.options.system.backup: Sauvegarde
 panel.options.system.backup.backupFilesToKeep: Sauvegardes à conserver sur le serveur
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Désactivé
 panel.options.system.cache.enabled: Activé
-panel.options.system.cache.time: Temps de mise cache (sec)
+panel.options.system.cache.time: Temps de mise cache
 panel.options.system.dateAndTime: Date et heure
 panel.options.system.dateAndTime.dateFormat: Format de date
 panel.options.system.dateAndTime.firstWeekday: La semaine débute le
@@ -184,7 +184,7 @@ panel.pages.newPage.parent: Parent
 panel.pages.newPage.site: Site
 panel.pages.newPage.slug: Permalien
 panel.pages.newPage.slugSuggestion: lettres, chiffres et tirets seulement
-panel.pages.newPage.template: Modèle (Template)
+panel.pages.newPage.template: Modèle (template)
 panel.pages.newPage.title: Titre
 panel.pages.next: Page suivante
 panel.pages.nextFile: Fichier suivant
@@ -204,7 +204,7 @@ panel.pages.page.cannotDelete.notDeletable: Impossible de supprimer la page, la 
 panel.pages.page.cannotDelete.pageNotFound: Impossible de supprimer la page, page introuvable
 panel.pages.page.cannotDeleteFile.fileNotFound: Impossible de supprimer le fichier, fichier introuvable
 panel.pages.page.cannotDeleteFile.pageNotFound: Impossible de supprimer le fichier, page non trouvée
-panel.pages.page.cannotEdit.alreadyExists: Impossible de modifier la page, une page avec la même URL existe déjà
+panel.pages.page.cannotEdit.alreadyExists: Impossible de modifier la page, une page avec la même url existe déjà
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
 panel.pages.page.cannotEdit.invalidLanguage: 'Impossible de modifier la page, terme non défini : %s'
 panel.pages.page.cannotEdit.invalidParent: Impossible de modifier la page, page parente non valide
@@ -245,7 +245,7 @@ panel.pages.pages: Pages
 panel.pages.pages.collapseAll: Tout réduire
 panel.pages.pages.expandAll: Tout développer
 panel.pages.pages.reorder: Réorganiser
-panel.pages.pages.search: Rechercher dans les Pages…
+panel.pages.pages.search: Rechercher dans les pages…
 panel.pages.parent: Parent
 panel.pages.preview: Aperçu
 panel.pages.previewFile: Aperçu
@@ -272,7 +272,7 @@ panel.statistics.monthlyUniqueVisitors: Visiteurs uniques mensuels
 panel.statistics.monthlyVisits: Visites mensuelles
 panel.statistics.statistics: Statistiques
 panel.statistics.totalVisits: Total de visites
-panel.statistics.totalVisits.percentTotal: "% du total"
+panel.statistics.totalVisits.percentTotal: '% du total'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visites
 panel.statistics.weeklyUniqueVisitors: Visiteurs uniques hebdomadaires
@@ -283,7 +283,7 @@ panel.tools.backup.delete: Supprimer la sauvegarde
 panel.tools.backup.file: Fichier
 panel.tools.backup.size: Taille
 panel.tools.backups: Sauvegardes
-panel.tools.latestBackup: "Dernière sauvegarde:"
+panel.tools.latestBackup: 'Dernière sauvegarde:'
 panel.tools.latestBackups: Dernières sauvegardes
 panel.tools.tools: Outils
 panel.tools.updates: Mises à jour
@@ -335,6 +335,6 @@ panel.users.user.created: Compte utilisateur créé
 panel.users.user.deleted: Utilisateur supprimé
 panel.users.user.edited: Profil utilisateur mises à jour
 panel.users.user.notFound: Utilisateur non trouvé
-panel.users.userProfile: 'Profil utilisateur de %s'
+panel.users.userProfile: Profil utilisateur de %s
 panel.users.users: Utilisateurs
 panel.viewSite: Voir le site

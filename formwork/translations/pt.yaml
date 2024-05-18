@@ -32,13 +32,13 @@ upload.error.noFile: Nenhum ficheiro foi enviado
 upload.error.noTemp: Pasta temporária inexistente
 upload.error.partial: O ficheiro foi enviado apenas parcialmente
 upload.error.phpExtension: Envio de ficheiro interrompido por extensão
-upload.error.size: O ficheiro enviado excede o tamanho máximo permitido.
+upload.error.size: O ficheiro enviado excede o tamanho máximo permitido
 zip.error.alreadyExists: O ficheiro já existe
 zip.error.cannotOpen: Erro de abertura do ficheiro
 zip.error.cannotRead: Erro de leitura do ficheiro
-zip.error.inconsistentArchive: Ficheiro Inconsistente
-zip.error.invalidArgument: Argumento Inválido
-zip.error.memoryFailure: Falha de Memória
+zip.error.inconsistentArchive: Ficheiro inconsistente
+zip.error.invalidArgument: Argumento inválido
+zip.error.memoryFailure: Falha de memória
 zip.error.notFound: Ficheiro não encontrado
 zip.error.notZipArchive: Não é um ficheiro ZIP
 zip.error.unspecified: Erro não especificado

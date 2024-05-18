@@ -85,13 +85,13 @@ panel.options.system.adminPanel.defaultLanguage: Standardsprache
 panel.options.system.adminPanel.logoutRedirectsTo: Abmelden leitet weiter zu
 panel.options.system.adminPanel.logoutRedirectsTo.home: Startseite
 panel.options.system.adminPanel.logoutRedirectsTo.login: Anmeldung
-panel.options.system.adminPanel.sessionTimeout: Sitzungszeitüberschreitung (Minuten)
+panel.options.system.adminPanel.sessionTimeout: Sitzungszeitüberschreitung
 panel.options.system.backup: Sicherung
 panel.options.system.backup.backupFilesToKeep: Auf dem Server zu behaltende Sicherungen
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Deaktiviert
 panel.options.system.cache.enabled: Aktiviert
-panel.options.system.cache.time: Cache-Zeit (Sekunden)
+panel.options.system.cache.time: Cache-Zeit
 panel.options.system.dateAndTime: Datum und Uhrzeit
 panel.options.system.dateAndTime.dateFormat: Datumsformat
 panel.options.system.dateAndTime.firstWeekday: Erster Wochentag

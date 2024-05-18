@@ -22,7 +22,7 @@ panel.dashboard.statistics.visits: Visite
 panel.dashboard.welcome: Benvenuto/a
 panel.dragToReorder: Trascina per riordinare
 panel.errors.action.reportToGithub: Segnala un problema su GitHub
-panel.errors.action.returnToDashboard: Torna al Riepilogo
+panel.errors.action.returnToDashboard: Torna al riepilogo
 panel.errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
 panel.errors.error.forbidden.heading: Oops, permessi mancanti!
 panel.errors.error.forbidden.status: Accesso negato
@@ -85,13 +85,13 @@ panel.options.system.adminPanel.defaultLanguage: Lingua predefinita
 panel.options.system.adminPanel.logoutRedirectsTo: Reindirizza dopo la disconnessione
 panel.options.system.adminPanel.logoutRedirectsTo.home: Pagina iniziale
 panel.options.system.adminPanel.logoutRedirectsTo.login: Accedi
-panel.options.system.adminPanel.sessionTimeout: Durata sessione (min)
+panel.options.system.adminPanel.sessionTimeout: Durata sessione
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backup da tenere sul server
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Disabilitata
 panel.options.system.cache.enabled: Abilitata
-panel.options.system.cache.time: Tempo cache (sec)
+panel.options.system.cache.time: Tempo cache
 panel.options.system.dateAndTime: Data e ora
 panel.options.system.dateAndTime.dateFormat: Formato data
 panel.options.system.dateAndTime.firstWeekday: Primo giorno della settimana
@@ -263,7 +263,7 @@ panel.pages.summary: Riassunto
 panel.pages.template: Template
 panel.pages.text: Testo
 panel.pages.toggleChildren: Mostra/nascondi sottopagine
-panel.panel: Pannello di Amministrazione
+panel.panel: Pannello di amministrazione
 panel.register.createUser: Formwork è installato ma non è stato trovato alcun utente. Registrane uno ora.
 panel.register.register: Registra nuovo utente
 panel.request.error.postMaxSize: La richiesta HTTP con metodo POST supera la dimensione massima consentita
@@ -272,7 +272,7 @@ panel.statistics.monthlyUniqueVisitors: Visitatori unici ultimo mese
 panel.statistics.monthlyVisits: Visite ultimo mese
 panel.statistics.statistics: Statistiche
 panel.statistics.totalVisits: Visite totali
-panel.statistics.totalVisits.percentTotal: "% Totale"
+panel.statistics.totalVisits.percentTotal: '% totale'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.totalVisits.visits: Visite
 panel.statistics.weeklyUniqueVisitors: Visitatori unici ultima settimana
@@ -283,7 +283,7 @@ panel.tools.backup.delete: Elimina backup
 panel.tools.backup.file: File
 panel.tools.backup.size: Dimensioni
 panel.tools.backups: Backup
-panel.tools.latestBackup: "Ultimo backup:"
+panel.tools.latestBackup: 'Ultimo backup:'
 panel.tools.latestBackups: Ultimi backup effettuati
 panel.tools.tools: Strumenti
 panel.tools.updates: Aggiornamenti
