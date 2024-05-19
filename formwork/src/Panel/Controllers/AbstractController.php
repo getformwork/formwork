@@ -29,7 +29,7 @@ abstract class AbstractController extends BaseAbstractController
     protected ModalCollection $modals;
 
     public function __construct(
-        private Container $container,
+        private readonly Container $container,
         protected App $app,
         protected Config $config,
         protected ModalFactory $modalFactory,

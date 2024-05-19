@@ -265,7 +265,7 @@ final class Panel
     {
         if ($this->config->get('system.errors.setHandlers')) {
             $this->errors = $this->container->build(ErrorsController::class);
-            set_exception_handler(function (Throwable $throwable): void {
+            set_exception_handler(function (Throwable $throwable): never {
                 $this->errors->internalServerError($throwable)->send();
                 throw $throwable;
             });

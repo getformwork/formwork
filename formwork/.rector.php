@@ -7,24 +7,16 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withPhpSets(php82: true)
+    ->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true, naming: true, instanceOf: true)
+    ->withImportNames(importShortClasses: false)
+    ->withPaths([
         dirname(__DIR__),
-    ]);
-
-    $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_80,
-        SetList::CODE_QUALITY,
-        SetList::DEAD_CODE,
-        SetList::EARLY_RETURN,
-        SetList::NAMING,
-        SetList::INSTANCEOF,
-    ]);
-
-    $rectorConfig->skip([
+    ])
+    ->withSkip([
         __DIR__ . '/views',
         dirname(__DIR__) . '/panel/node_modules',
         dirname(__DIR__) . '/panel/views',
@@ -34,8 +26,5 @@ return static function (RectorConfig $rectorConfig): void {
         ClosureToArrowFunctionRector::class,
         CompactToVariablesRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        NullToStrictStringFuncCallArgRector::class,
     ]);
-
-    $rectorConfig->importNames();
-    $rectorConfig->importShortClasses(false);
-};
