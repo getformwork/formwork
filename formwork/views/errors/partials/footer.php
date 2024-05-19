@@ -1,5 +1,4 @@
-    </div>
-    <?php $this->insert('errors.partials.debug') ?>
-    </body>
+</div>
+</body>
 
-    </html>
+</html>
