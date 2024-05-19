@@ -7,6 +7,10 @@
     font-size: 0;
 }
 
+.form-input-wrap .form-togglegroup {
+    margin-bottom: 0;
+}
+
 .form-togglegroup:focus-within {
     border-color: $color-accent-500;
     @include focusring;
