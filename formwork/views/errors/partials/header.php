@@ -21,7 +21,8 @@
         }
 
         h1,
-        h2 {
+        h2,
+        h3 {
             margin-top: 0;
             letter-spacing: -0.027rem;
             line-height: 1.2;
@@ -36,6 +37,12 @@
         h2 {
             margin-bottom: 1rem;
             font-size: 2rem;
+            font-weight: 500;
+        }
+
+        h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
             font-weight: 500;
         }
 
@@ -54,10 +61,14 @@
             line-height: 1.5;
         }
 
+        strong {
+            font-weight: 600;
+        }
+
         code {
             color: #7d7d7d;
             font-family: SFMono-Regular, 'SF Mono', 'Cascadia Mono', 'Liberation Mono', Menlo, Consolas, monospace;
-            font-size: 0.875rem;
+            font-size: 0.875em;
         }
 
         .error-code {
@@ -70,6 +81,40 @@
         .error-status {
             display: block;
             color: #969696;
+        }
+
+        .error-debug-details .__formwork-code {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .error-debug-details {
+            margin: 0 auto 4rem;
+            max-width: 87.5rem;
+            text-align: left;
+            border-radius: 4px;
+            background-color: #fff;
+            padding: 1.5rem 2rem;
+        }
+
+        .error-debug-editor-uri {
+            color: inherit;
+            text-decoration: underline;
+            text-decoration-color: #cacaca;
+            text-decoration-style: dashed;
+        }
+
+        .error-debug-filename,
+        .error-debug-line {
+            font-size: 0.875em;
+        }
+
+        .error-debug-filename {
+            word-break: break-all;
+        }
+
+        .error-debug-line {
+            color: #7d7d7d;
         }
     </style>
 </head>

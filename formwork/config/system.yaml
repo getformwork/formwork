@@ -31,6 +31,11 @@ date:
     timezone: UTC
     weekStarts: 0
 
+debug:
+    enabled: false
+    editorUri: 'editor://file/{{filename}}:{{line}}'
+    contextLines: 5
+
 errors:
     setHandlers: true
 

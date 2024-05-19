@@ -38,3 +38,42 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+/* stylelint-disable-next-line selector-class-pattern */
+.error-debug-details .__formwork-code {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.error-debug-details {
+    max-width: 87.5rem;
+    padding: 1.5rem 2rem;
+    border-radius: $border-radius;
+    margin: 0 auto 4rem;
+    background-color: $color-white;
+    text-align: left;
+}
+
+.error-debug-details h3 {
+    font-size: 1.25rem;
+}
+
+.error-debug-editor-uri {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: $color-base-500;
+    text-decoration-style: dashed;
+}
+
+.error-debug-filename,
+.error-debug-line {
+    font-size: 0.875em;
+}
+
+.error-debug-filename {
+    word-break: break-all;
+}
+
+.error-debug-line {
+    color: $color-base-300;
+}

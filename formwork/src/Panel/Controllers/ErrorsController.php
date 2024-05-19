@@ -28,7 +28,7 @@ class ErrorsController extends AbstractController
         return $this->makeErrorResponse(ResponseStatus::InternalServerError, 'internalServerError', [
             'href'  => $this->makeGitHubIssueUri($throwable),
             'label' => $this->translate('panel.errors.action.reportToGithub'),
-        ]);
+        ], ['throwable' => $throwable]);
     }
 
     /**
@@ -45,9 +45,10 @@ class ErrorsController extends AbstractController
     /**
      * Make error response with error description
      *
-     * @param array<mixed> $action
+     * @param array<mixed>         $action
+     * @param array<string, mixed> $data
      */
-    protected function makeErrorResponse(ResponseStatus $responseStatus, string $name, array $action): Response
+    protected function makeErrorResponse(ResponseStatus $responseStatus, string $name, array $action, array $data = []): Response
     {
         Response::cleanOutputBuffers();
 
@@ -62,6 +63,7 @@ class ErrorsController extends AbstractController
             'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
             'description' => $this->translate('panel.errors.error.' . $name . '.description'),
             'action'      => $action,
+            ...$data,
         ]), $responseStatus);
     }
 

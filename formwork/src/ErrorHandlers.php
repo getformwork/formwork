@@ -29,14 +29,14 @@ class ErrorHandlers
     /**
      * Display error page
      */
-    public function displayErrorPage(ResponseStatus $responseStatus = ResponseStatus::InternalServerError): void
+    public function displayErrorPage(ResponseStatus $responseStatus = ResponseStatus::InternalServerError, ?Throwable $throwable = null): void
     {
         Response::cleanOutputBuffers();
 
         if ($this->request->isXmlHttpRequest()) {
             JsonResponse::error('Error', $responseStatus)->send();
         } else {
-            $view = $this->viewFactory->make('errors.error', ['status' => $responseStatus->code(), 'message' => $responseStatus->message()]);
+            $view = $this->viewFactory->make('errors.error', ['status' => $responseStatus->code(), 'message' => $responseStatus->message(), 'throwable' => $throwable]);
             $response = new Response($view->render(), $responseStatus);
             $response->send();
             // Don't exit, otherwise the error will not be logged
@@ -48,7 +48,7 @@ class ErrorHandlers
      */
     public function getExceptionHandler(Throwable $throwable): void
     {
-        $this->displayErrorPage();
+        $this->displayErrorPage(throwable: $throwable);
         error_log(sprintf(
             "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
             $throwable::class,
