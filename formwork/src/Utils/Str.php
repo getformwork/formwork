@@ -21,7 +21,7 @@ class Str
     /**
      * Regex to match interpolated sequences in strings
      */
-    protected const INTERPOLATION_REGEX = '/^{{([\-._a-z]+)}}$/i';
+    protected const INTERPOLATION_REGEX = '/(\\\)?{{([\-._a-z]+)\\\?}}/i';
 
     /**
      * Return whether $haystack string starts with $needle
@@ -187,10 +187,17 @@ class Str
         return preg_replace_callback(
             self::INTERPOLATION_REGEX,
             static function (array $matches) use ($data): string {
-                $key = $matches[1];
+                [, $escape, $key] = $matches;
+
+                /** @var ?string $escape */
+                if ($escape !== null) {
+                    return '{{' . $key . '}}';
+                }
+
                 return is_array($data) ? $data[$key] : $data($key);
             },
-            $string
+            $string,
+            flags: PREG_UNMATCHED_AS_NULL
         ) ?? throw new RuntimeException(sprintf('Interpolation sequences matching failed with error: %s', preg_last_error_msg()));
     }
 
