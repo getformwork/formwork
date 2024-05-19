@@ -99,6 +99,13 @@ panel.options.system.dateAndTime.firstWeekday.monday: Lundi
 panel.options.system.dateAndTime.firstWeekday.sunday: Dimanche
 panel.options.system.dateAndTime.hourFormat: Format d’heure
 panel.options.system.dateAndTime.timezone: Fuseau horaire
+panel.options.system.debug: Débogage
+panel.options.system.debug.editorUri: URI de l'éditeur
+panel.options.system.debug.editorUri.description: Utilisez `{{filename}}` et `{{line}}` pour construire l'URI pour ouvrir l'éditeur de code
+panel.options.system.debug.mode: Mode débogage
+panel.options.system.debug.mode.description: Le mode débogage expose des informations sur les erreurs et devrait être désactivé en production car il pourrait divulguer des données sensibles
+panel.options.system.debug.mode.disabled: Désactivé
+panel.options.system.debug.mode.enabled: Activé
 panel.options.system.files: Fichiers
 panel.options.system.files.allowedExtensions: Extensions autorisées
 panel.options.system.images: Images

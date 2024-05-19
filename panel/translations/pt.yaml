@@ -99,6 +99,13 @@ panel.options.system.dateAndTime.firstWeekday.monday: Segunda
 panel.options.system.dateAndTime.firstWeekday.sunday: Domingo
 panel.options.system.dateAndTime.hourFormat: Formato de hora
 panel.options.system.dateAndTime.timezone: Fuso horário
+panel.options.system.debug: Depuração
+panel.options.system.debug.editorUri: URI do editor
+panel.options.system.debug.editorUri.description: Use `{{filename}}` e `{{line}}` para construir o URI para abrir o editor de código
+panel.options.system.debug.mode: Modo de depuração
+panel.options.system.debug.mode.description: O modo de depuração expõe informações de erro e deve ser desativado em produção, pois pode divulgar dados sensíveis
+panel.options.system.debug.mode.disabled: Desativado
+panel.options.system.debug.mode.enabled: Ativado
 panel.options.system.files: Ficheiros
 panel.options.system.files.allowedExtensions: Extensões permitidas
 panel.options.system.images: Imagens

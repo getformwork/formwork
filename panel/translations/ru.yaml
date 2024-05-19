@@ -99,6 +99,13 @@ panel.options.system.dateAndTime.firstWeekday.monday: Понедельник
 panel.options.system.dateAndTime.firstWeekday.sunday: Воскресенье
 panel.options.system.dateAndTime.hourFormat: Часовой формат
 panel.options.system.dateAndTime.timezone: Часовой пояс
+panel.options.system.debug: Отладка
+panel.options.system.debug.editorUri: URI редактора
+panel.options.system.debug.editorUri.description: Используйте `{{filename}}` и `{{line}}` для создания URI для открытия редактора кода
+panel.options.system.debug.mode: Режим отладки
+panel.options.system.debug.mode.description: Режим отладки показывает информацию об ошибках и должен быть отключен в продакшене, так как может раскрыть конфиденциальные данные
+panel.options.system.debug.mode.disabled: Отключено
+panel.options.system.debug.mode.enabled: Включено
 panel.options.system.files: Файлы
 panel.options.system.files.allowedExtensions: Допустимые расширения
 panel.options.system.images: Картинки

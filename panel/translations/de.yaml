@@ -99,6 +99,13 @@ panel.options.system.dateAndTime.firstWeekday.monday: Montag
 panel.options.system.dateAndTime.firstWeekday.sunday: Sonntag
 panel.options.system.dateAndTime.hourFormat: Stundenformat
 panel.options.system.dateAndTime.timezone: Zeitzone
+panel.options.system.debug: Debug
+panel.options.system.debug.editorUri: Editor-URI
+panel.options.system.debug.editorUri.description: Verwenden Sie `{{filename}}` und `{{line}}`, um die URI zum Öffnen des Code-Editors zu erstellen
+panel.options.system.debug.mode: Debug-Modus
+panel.options.system.debug.mode.description: Der Debug-Modus zeigt Fehlermeldungen an und sollte in der Produktion deaktiviert werden, da er sensible Daten preisgeben könnte
+panel.options.system.debug.mode.disabled: Deaktiviert
+panel.options.system.debug.mode.enabled: Aktiviert
 panel.options.system.files: Dateien
 panel.options.system.files.allowedExtensions: Erlaubte Dateierweiterungen
 panel.options.system.images: Bilder

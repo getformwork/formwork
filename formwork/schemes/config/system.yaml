@@ -38,6 +38,11 @@ layout:
             label: '{{panel.options.system.backup}}'
             fields: [backup.maxFiles]
 
+        debug:
+            collapsible: true
+            label: '{{panel.options.system.debug}}'
+            fields: [debug.enabled, debug.editorUri]
+
 fields:
     date.dateFormat:
         type: select
@@ -177,3 +182,16 @@ fields:
             10: 10
             15: 15
             20: 20
+
+    debug.enabled:
+        type: togglegroup
+        label: '{{panel.options.system.debug.mode}}'
+        description: '{{panel.options.system.debug.mode.description}}'
+        options:
+            1: '{{panel.options.system.debug.mode.enabled}}'
+            0: '{{panel.options.system.debug.mode.disabled}}'
+
+    debug.editorUri:
+        type: text
+        label: '{{panel.options.system.debug.editorUri}}'
+        description: '{{panel.options.system.debug.editorUri.description}}'
