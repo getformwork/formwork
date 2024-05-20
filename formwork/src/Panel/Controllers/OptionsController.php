@@ -255,12 +255,14 @@ class OptionsController extends AbstractController
 
         // Update options with new values
         foreach ($fieldCollection as $field) {
-            if ($field->isRequired() && $field->isEmpty()) {
+            // Ignore empty and default values
+            if ($field->isEmpty()) {
                 continue;
             }
-            if (!Arr::has($defaults, $field->name()) || Arr::get($defaults, $field->name()) !== $field->value()) {
-                Arr::set($options, $field->name(), $field->value());
+            if (Arr::has($defaults, $field->name()) && Arr::get($defaults, $field->name()) === $field->value()) {
+                continue;
             }
+            Arr::set($options, $field->name(), $field->value());
         }
 
         // Update config file if options differ

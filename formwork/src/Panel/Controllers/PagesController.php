@@ -566,10 +566,12 @@ class PagesController extends AbstractController
 
         // Handle data from fields
         foreach ($fieldCollection as $field) {
-            $default = array_key_exists($field->name(), $defaults) && $field->value() === $defaults[$field->name()];
-
             // Remove empty and default values
-            if ($field->isEmpty() || $default || in_array($field->name(), self::IGNORED_FIELD_NAMES, true)) {
+            if (
+                $field->isEmpty()
+                || (Arr::has($defaults, $field->name()) && Arr::get($defaults, $field->name()) === $field->value())
+                || in_array($field->name(), self::IGNORED_FIELD_NAMES, true)
+            ) {
                 unset($frontmatter[$field->name()]);
                 continue;
             }

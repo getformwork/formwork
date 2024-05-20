@@ -4,6 +4,7 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Exceptions\ValidationException;
+use Formwork\Fields\FieldCollection;
 use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
@@ -137,12 +138,12 @@ class UsersController extends AbstractController
         if ($this->request->method() === RequestMethod::POST) {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $data = $this->request->input()->toArray();
+                $data = $this->request->input();
 
                 $fields->setValues($data, null)->validate();
 
                 try {
-                    $this->updateUser($user, $data);
+                    $this->updateUser($user, $fields);
                     $this->panel()->notify($this->translate('panel.users.user.edited'), 'success');
                 } catch (TranslatedException $e) {
                     $this->panel()->notify($this->translate($e->getLanguageString(), $user->username()), 'error');
@@ -169,39 +170,42 @@ class UsersController extends AbstractController
 
     /**
      * Update user data from POST request
-     *
-     * @param array<string, mixed> $data
      */
-    protected function updateUser(User $user, array $data): void
+    protected function updateUser(User $user, FieldCollection $fieldCollection): void
     {
-        // Remove CSRF token from $data
-        unset($data['csrf-token']);
+        $userData = $user->data();
 
-        if (!empty($data['password'])) {
-            // Ensure that password can be changed
-            if (!$this->user()->canChangePasswordOf($user)) {
-                throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannotChangePassword');
+        foreach ($fieldCollection as $field) {
+            if ($field->isEmpty()) {
+                continue;
             }
 
-            // Hash the new password
-            $data['hash'] = Password::hash($data['password']);
-        }
+            if ($field->name() === 'password') {
+                // Ensure that password can be changed
+                if (!$this->user()->canChangePasswordOf($user)) {
+                    throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannotChangePassword');
+                }
+                // Hash the new password
+                Arr::set($userData, 'hash', Password::hash($field->value()));
+                continue;
+            }
 
-        // Remove password from $data
-        unset($data['password']);
+            if ($field->name() === 'role') {
+                // Ensure that user role can be changed
+                if ($field->value() !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
+                    throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannotChangeRole');
+                }
+                Arr::set($userData, 'role', $field->value());
+                continue;
+            }
 
-        // Ensure that user role can be changed
-        if (($data['role'] ?? $user->role()) !== $user->role() && !$this->user()->canChangeRoleOf($user)) {
-            throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannotChangeRole');
+            Arr::set($userData, $field->name(), $field->value());
         }
 
         // Handle incoming files
         if ($this->request->files()->get('image')?->isUploaded() && ($image = $this->uploadImage($user, $this->request->files()->get('image'))) !== null) {
-            $data['image'] = $image;
+            $userData['image'] = $image;
         }
-
-        // Filter empty items from $data and merge them with $user ones
-        $userData = [...$user->data(), ...$data];
 
         Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
     }
