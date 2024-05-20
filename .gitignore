@@ -1,17 +1,15 @@
 .DS_Store
 .php-cs-fixer.cache
 
-php_error.log
-
-/assets/*
 /backup/*
 /cache/*
 /logs/*
-
 /vendor/*
 
+/panel/.yarn/*
 /panel/accounts/*
 /panel/assets/images/users/*
 /panel/logs/*
+/panel/node_modules/*
 
 !.gitkeep
