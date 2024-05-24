@@ -9,8 +9,10 @@ final class SemVer implements Stringable
 {
     /**
      * Regex matching version components
+     *
+     * @see https://semver.org/
      */
-    protected const SEMVER_REGEX = '/^(?<major>0|(?:[1-9]\d*))(?:\.(?<minor>0|(?:[1-9]\d*))?(?:\.(?<patch>0|(?:[1-9]\d*)))?(?:\-(?<prerelease>[0-9A-Z\.-]+))?(?:\+(?<metadata>[0-9A-Z\.-]+))?)?$/i';
+    protected const SEMVER_REGEX = '/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/';
 
     /**
      * Valid operators to compare versions
@@ -22,10 +24,7 @@ final class SemVer implements Stringable
      */
     protected const PRERELEASE_TAGS = ['dev', 'alpha', 'beta', 'RC', 'pl'];
 
-    /**
-     * Create a new SemVer instance
-     */
-    public function __construct(protected int $major = 0, protected int $minor = 0, protected int $patch = 0, protected ?string $prerelease = null, protected ?string $metadata = null)
+    public function __construct(protected int $major = 0, protected int $minor = 0, protected int $patch = 0, protected ?string $prerelease = null, protected ?string $buildMetadata = null)
     {
         if ($this->major < 0 || $this->minor < 0 || $this->patch < 0) {
             throw new InvalidArgumentException('$major, $minor and $patch arguments must be non-negative integers');
@@ -43,7 +42,7 @@ final class SemVer implements Stringable
             $this->minor,
             $this->patch,
             $this->prerelease !== null ? '-' . $this->prerelease : '',
-            $this->metadata !== null ? '+' . $this->metadata : ''
+            $this->buildMetadata !== null ? '+' . $this->buildMetadata : ''
         );
     }
 
@@ -76,21 +75,21 @@ final class SemVer implements Stringable
      */
     public function prerelease(): ?string
     {
-        return $this->prerelease();
+        return $this->prerelease;
     }
 
     /**
-     * Get version version metadata string
+     * Get version version build metadata string
      */
-    public function metadata(): ?string
+    public function buildMetadata(): ?string
     {
-        return $this->metadata();
+        return $this->buildMetadata;
     }
 
     /**
-     * Return an instance with only major, minor and patch numbers
+     * Return an instance with only the version core, i.e. `major.minor.patch`
      */
-    public function onlyNumbers(): self
+    public function versionCore(): self
     {
         return new self($this->major, $this->minor, $this->patch);
     }
@@ -108,21 +107,21 @@ final class SemVer implements Stringable
      */
     public function withoutPrerelease(): self
     {
-        return new self($this->major, $this->minor, $this->patch, null, $this->metadata);
+        return new self($this->major, $this->minor, $this->patch, null, $this->buildMetadata);
     }
 
     /**
-     * Return whether the version has metadata
+     * Return whether the version has build metadata
      */
-    public function hasMetadata(): bool
+    public function hasBuildMetadata(): bool
     {
-        return $this->metadata !== null;
+        return $this->buildMetadata !== null;
     }
 
     /**
-     * Return an instance without version metadata
+     * Return an instance without version build metadata
      */
-    public function withoutMetadata(): self
+    public function withoutBuildMetadata(): self
     {
         return new self($this->major, $this->minor, $this->patch, $this->prerelease);
     }
@@ -156,7 +155,7 @@ final class SemVer implements Stringable
      */
     public function toComparableString(): string
     {
-        return (string) $this->withoutMetadata();
+        return (string) $this->withoutBuildMetadata();
     }
 
     /**
@@ -168,10 +167,10 @@ final class SemVer implements Stringable
             throw new InvalidArgumentException(sprintf('Invalid operator for version comparison: "%s". Use one of the following: "%s"', $operator, implode('", "', self::COMPARISON_OPERATORS)));
         }
         if ($operator === '~') {
-            return $this->compareWith($version, '<=') && $this->nextMinor()->compareWith($version->onlyNumbers(), '>');
+            return $this->compareWith($version, '<=') && $this->nextMinor()->compareWith($version->versionCore(), '>');
         }
         if ($operator === '^') {
-            return $this->compareWith($version, '<=') && $this->nextMajor()->compareWith($version->onlyNumbers(), '>');
+            return $this->compareWith($version, '<=') && $this->nextMajor()->compareWith($version->versionCore(), '>');
         }
         return version_compare($this->toComparableString(), $version->toComparableString(), $operator);
     }
@@ -192,7 +191,7 @@ final class SemVer implements Stringable
         if (!preg_match(self::SEMVER_REGEX, $version, $matches, PREG_UNMATCHED_AS_NULL)) {
             throw new InvalidArgumentException(sprintf('Invalid version string: "%s"', $version));
         }
-        return new self((int) ($matches['major']), (int) ($matches['minor']), (int) ($matches['patch']), $matches['prerelease'], $matches['metadata']);
+        return new self((int) ($matches['major']), (int) ($matches['minor']), (int) ($matches['patch']), $matches['prerelease'], $matches['buildmetadata']);
     }
 
     /**
