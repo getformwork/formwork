@@ -23,6 +23,7 @@ charset: utf-8
 content:
     path: '${%ROOT_PATH%}/site/content'
     extension: .md
+    safeMode: true
 
 date:
     dateFormat: Y-m-d
