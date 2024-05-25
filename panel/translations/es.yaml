@@ -92,6 +92,11 @@ panel.options.system.cache: Caché
 panel.options.system.cache.disabled: Desactivado
 panel.options.system.cache.enabled: Activado
 panel.options.system.cache.time: Tiempo de caché
+panel.options.system.content: Contenido
+panel.options.system.content.safeMode: Modo seguro
+panel.options.system.content.safeMode.description: El modo seguro deshabilita las etiquetas HTML en los campos Markdown para evitar vulnerabilidades de seguridad. Incluso si está deshabilitado, las etiquetas potencialmente peligrosas como `<script>` y `<style>` se convierten en texto
+panel.options.system.content.safeMode.disabled: Deshabilitado
+panel.options.system.content.safeMode.enabled: Habilitado
 panel.options.system.dateAndTime: Fecha y hora
 panel.options.system.dateAndTime.dateFormat: Formato de fecha
 panel.options.system.dateAndTime.firstWeekday: Primer día de la semana

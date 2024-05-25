@@ -92,6 +92,11 @@ panel.options.system.cache: Кэш
 panel.options.system.cache.disabled: Выключить
 panel.options.system.cache.enabled: Включить
 panel.options.system.cache.time: Кэш Время
+panel.options.system.content: Контент
+panel.options.system.content.safeMode: Безопасный режим
+panel.options.system.content.safeMode.description: Безопасный режим запрещает HTML-теги в полях Markdown, чтобы избежать уязвимостей безопасности. Даже если он отключен, потенциально опасные теги, такие как `<script>` и `<style>`, преобразуются в текст
+panel.options.system.content.safeMode.disabled: Отключено
+panel.options.system.content.safeMode.enabled: Включено
 panel.options.system.dateAndTime: Дата и время
 panel.options.system.dateAndTime.dateFormat: Формат даты
 panel.options.system.dateAndTime.firstWeekday: Первый день недели

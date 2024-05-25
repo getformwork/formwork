@@ -8,6 +8,11 @@ layout:
             label: '{{panel.options.system.dateAndTime}}'
             fields: [date.dateFormat, date.timeFormat, date.timezone, date.weekStarts]
 
+        content:
+            collapsible: true
+            label: '{{panel.options.system.content}}'
+            fields: [content.safeMode]
+
         languages:
             collapsible: true
             label: '{{panel.options.system.languages}}'
@@ -65,6 +70,14 @@ fields:
         options:
             0: '{{panel.options.system.dateAndTime.firstWeekday.sunday}}'
             1: '{{panel.options.system.dateAndTime.firstWeekday.monday}}'
+
+    content.safeMode:
+        type: togglegroup
+        label: '{{panel.options.system.content.safeMode}}'
+        description: '{{panel.options.system.content.safeMode.description}}'
+        options:
+            1: '{{panel.options.system.content.safeMode.enabled}}'
+            0: '{{panel.options.system.content.safeMode.disabled}}'
 
     languages.available:
         type: tags
