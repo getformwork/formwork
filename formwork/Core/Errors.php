@@ -54,7 +54,7 @@ class Errors
      */
     public static function errorHandler(int $severity, string $message, string $file, int $line)
     {
-        if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED) {
+        if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED || $severity === E_DEPRECATED) {
             return false;
         }
         throw new ErrorException($message, 0, $severity, $file, $line);
