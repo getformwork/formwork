@@ -42,7 +42,7 @@ final class App
     /**
      * Current Formwork version
      */
-    public const VERSION = '2.0.0-dev';
+    public const VERSION = '2.0.0-beta.1';
 
     protected Container $container;
 
