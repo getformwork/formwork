@@ -91,11 +91,15 @@ export class SelectInput {
 
             dropdown.dataset.for = select.id;
 
+            const container = document.createElement("div");
+            container.className = "dropdown-list-items";
+            dropdown.appendChild(container);
+
             emptyState.className = "dropdown-empty";
             emptyState.style.display = "none";
             emptyState.innerText = options.labels.empty;
 
-            dropdown.appendChild(emptyState);
+            container.appendChild(emptyState);
 
             for (const option of list) {
                 const item = document.createElement("div");
@@ -126,7 +130,7 @@ export class SelectInput {
                     event.stopPropagation();
                 });
 
-                dropdown.appendChild(item);
+                container.appendChild(item);
             }
 
             wrap.appendChild(dropdown);

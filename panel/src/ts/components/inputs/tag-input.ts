@@ -78,6 +78,10 @@ export class TagInput {
                 dropdown = document.createElement("div");
                 dropdown.className = "dropdown-list";
 
+                const container = document.createElement("div");
+                container.className = "dropdown-list-items";
+                dropdown.appendChild(container);
+
                 for (const key in list) {
                     const item = document.createElement("div");
                     item.className = "dropdown-item";
@@ -86,7 +90,7 @@ export class TagInput {
                     item.addEventListener("click", function () {
                         this.dataset.value && addTag(this.dataset.value);
                     });
-                    dropdown.appendChild(item);
+                    container.appendChild(item);
                 }
 
                 field.appendChild(dropdown);

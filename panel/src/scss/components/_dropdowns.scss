@@ -33,8 +33,20 @@
     float: left;
 }
 
+.dropdown-menu::after,
+.dropdown-list::after {
+    position: absolute;
+    bottom: -40px;
+    width: 1px;
+    height: 40px;
+    content: "";
+}
+
 .dropdown-list {
     width: 100%;
+}
+
+.dropdown-list-items {
     max-height: 6.25 * (2 * 0.5rem * $base-line-height + $font-size-sm);
     overflow-y: auto;
 }

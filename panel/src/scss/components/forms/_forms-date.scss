@@ -17,6 +17,12 @@
     color: $color-base-100;
 }
 
+.calendar::after {
+    position: absolute;
+    content: "";
+    inset: 100% 0 -2.5rem;
+}
+
 .calendar-header {
     margin-bottom: 0.5rem;
 }

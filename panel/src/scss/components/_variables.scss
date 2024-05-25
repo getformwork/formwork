@@ -101,7 +101,7 @@ $columns-gutter: 1rem;
 $border-radius: 4px;
 $border-radius-round: 50%;
 
-$selection-background-color: rgba($color-accent-500, 0.25);
+$selection-background-color: rgba($color-accent-500, 2.5%);
 
 $focusring-width: 2px;
 $focusring-opacity: 0.375;
@@ -113,14 +113,14 @@ $transition-time-md: 300ms;
 $caret-width: 0.25rem;
 
 $box-shadow-sm:
-    0 0.0625rem 0.125rem rgba($color-accent-100, 5%),
-    0 0.0625rem 0.25rem rgba($color-accent-100, 5%),
-    0 0.125rem 0.5rem rgba($color-accent-100, 5%);
+    0 0.0625rem 0.125rem rgba($color-accent-100, 3.75%),
+    0 0.0625rem 0.25rem rgba($color-accent-100, 3.75%),
+    0 0.125rem 0.5rem rgba($color-accent-100, 3.75%);
 
 $box-shadow-md:
-    0 0.0625rem 0.25rem rgba($color-accent-100, 10%),
-    0.125rem 0.25rem 0.375rem rgba($color-accent-100, 10%),
-    0.125rem 0.5rem 0.75rem rgba($color-accent-100, 10%);
+    0 0.0625rem 0.25rem rgba($color-accent-100, 7.5%),
+    0.125rem 0.25rem 0.375rem rgba($color-accent-100, 7.5%),
+    0.125rem 0.5rem 0.75rem rgba($color-accent-100, 7.5%);
 
 $box-shadow-lg:
     0.125rem 0.125rem 0.5rem rgba($color-accent-100, 15%),

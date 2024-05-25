@@ -83,6 +83,7 @@
     overflow: auto;
     min-height: 3 * $font-size-sm * $base-line-height + 0.25rem * 2;
     max-height: 30 * $font-size-sm * $base-line-height + 0.25rem * 2;
+    font-size: 1rem;
     resize: vertical;
     /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
     @extend .form-input;
