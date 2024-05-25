@@ -17,6 +17,15 @@ class ParsedownExtra extends \ParsedownExtra
     /**
      * @inheritdoc
      */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setSafeMode(Formwork::instance()->option('content.safe_mode'));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function text($text, array $options = [])
     {
         $this->baseRoute = $options['baseRoute'] ?? '/';

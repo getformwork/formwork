@@ -144,6 +144,7 @@ final class Formwork
             'languages.http_preferred' => false,
             'content.path'             => ROOT_PATH . 'content' . DS,
             'content.extension'        => '.md',
+            'content.safe_mode'        => true,
             'files.allowed_extensions' => ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.pdf'],
             'parsers.use_php_yaml'     => 'parse',
             'templates.path'           => ROOT_PATH . 'templates' . DS,
@@ -338,7 +339,8 @@ final class Formwork
                 }
                 if ($this->option('cache.enabled') && ($page->has('publish-date') || $page->has('unpublish-date'))) {
                     if (($page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('publish-date'))))
-                    || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))) {
+                        || (!$page->published() && !$this->site->modifiedSince(Date::toTimestamp($page->get('unpublish-date'))))
+                    ) {
                         // Clear cache if the site was not modified since the page has been published or unpublished
                         $this->cache->clear();
                         FileSystem::touch($this->option('content.path'));
