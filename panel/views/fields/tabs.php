@@ -3,7 +3,7 @@
         <a <?= $this->attr([
                 'class'    => ['tabs-tab', $tab->get('active') ? 'active' : ''],
                 'data-tab' => $tab->name(),
-            ]) ?>><?= $tab->label() ?></a>
+            ]) ?>><?= $this->escape($tab->label()) ?></a>
     <?php endforeach ?>
 </div>
 <?php $this->insert('fields', ['fields' => $field->get('fields')]) ?>

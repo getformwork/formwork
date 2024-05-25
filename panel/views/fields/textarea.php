@@ -8,4 +8,4 @@
                 'required'    => $field->isRequired(),
                 'disabled'    => $field->isDisabled(),
                 'hidden'      => $field->isHidden(),
-            ]) ?>><?= $field->value() ?></textarea>
+            ]) ?>><?= $this->escape((string) $field->value()) ?></textarea>

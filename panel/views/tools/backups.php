@@ -26,7 +26,7 @@
             <tbody>
                 <?php foreach ($backups as $backup) : ?>
                     <tr>
-                        <td class="table-cell truncate"><?= $this->icon('file-archive') ?> <a href="<?= $panel->uri('/backup/download/' . $backup['encodedName']) . '/' ?>"><?= $backup['name'] ?></a></td>
+                        <td class="table-cell truncate"><?= $this->icon('file-archive') ?> <a href="<?= $panel->uri('/backup/download/' . $backup['encodedName']) . '/' ?>"><?= $this->escape($backup['name']) ?></a></td>
                         <td class="table-cell truncate text-align-center show-from-md"><?= $this->datetime($backup['timestamp']) ?></td>
                         <td class="table-cell truncate text-align-center show-from-sm"><?= $backup['size'] ?></td>
                         <td class="table-cell text-align-center">

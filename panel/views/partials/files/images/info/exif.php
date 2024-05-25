@@ -1,38 +1,38 @@
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.creationDateAndTime') ?>:</div>
-    <?= $exif->dateTimeOriginal() ?? '-' ?>
+    <?= $this->escape($exif->dateTimeOriginal() ?? '-') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.camera') ?>:</div>
-    <?= $exif->makeAndModel() ?? '–' ?>
+    <?= $this->escape($exif->makeAndModel() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.lensModel') ?>:</div>
-    <?= $exif->lensModel() ?? '–'  ?>
+    <?= $this->escape($exif->lensModel() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.focalLength') ?>:</div>
-    <?= $exif->focalLength() ?? '–'  ?>
+    <?= $this->escape($exif->focalLength() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.exposureTime') ?>:</div>
-    <?= $exif->exposureTime() ?? '–'  ?>
+    <?= $this->escape($exif->exposureTime() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.aperture') ?>:</div>
-    <?= $exif->aperture() ?? '–'  ?>
+    <?= $this->escape($exif->aperture() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.sensitivity') ?>:</div>
-    <?= $exif->photographicSensitivity() ?? '–'  ?>
+    <?= $this->escape($exif->photographicSensitivity() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.exposureCompensation') ?>:</div>
-    <?= $exif->exposureCompensation() ?? '–'  ?>
+    <?= $this->escape($exif->exposureCompensation() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.exposureProgram') ?>:</div>
-    <?= $exif->exposureProgram() ?? '–'  ?>
+    <?= $this->escape($exif->exposureProgram() ?? '–') ?>
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.exif.whiteBalance') ?>:</div>

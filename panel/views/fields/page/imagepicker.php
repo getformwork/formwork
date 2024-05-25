@@ -5,6 +5,9 @@
 </div>
 <select class="form-input image-picker">
     <?php foreach ($page->images() as $image) : ?>
-        <option value="<?= $page->uri($image, includeLanguage: false) ?>" data-thumbnail="<?= $image->square(300, 'contain')->uri() ?>"><?= $image ?></option>
+        <option <?= $this->attr([
+                    'value'          => $page->uri($image, includeLanguage: false),
+                    'data-thumbnail' => $image->square(300, 'contain')->uri(),
+                ]) ?>><?= $image ?></option>
     <?php endforeach ?>
 </select>

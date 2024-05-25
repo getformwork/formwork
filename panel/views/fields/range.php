@@ -16,5 +16,5 @@
                     'data-ticks' => $field->get('ticks'),
                 ]) ?>>
     </div>
-    <output class="form-input-range-value" for="<?= $field->name() ?>"><?= $field->value() ?></output>
+    <output class="form-input-range-value" for="<?= $field->name() ?>"><?= $this->escape($field->value()) ?></output>
 </div>

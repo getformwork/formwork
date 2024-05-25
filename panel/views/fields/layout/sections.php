@@ -5,7 +5,7 @@
                 <?php if ($section->is('collapsible')) : ?>
                     <button type="button" class="button section-toggle mr-2" title="<?= $this->translate('panel.sections.toggle') ?>" aria-label="<?= $this->translate('panel.sections.toggle') ?>"><?= $this->icon('chevron-up') ?></button>
                 <?php endif ?>
-                <span class="caption"><?= $section->label() ?></span>
+                <span class="caption"><?= $this->escape($section->label()) ?></span>
             </div>
             <div class="section-content">
                 <?php foreach ($fields->getMultiple($section->get('fields', [])) as $field) : ?>

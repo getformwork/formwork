@@ -23,9 +23,9 @@
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="page-file-info-entry-title"><?= $this->translate('panel.pages.file.info.image.colorProfile') ?>:</div>
     <?php if ($file->hasColorProfile() && $file->getColorProfile()->name()) : ?>
-        <?= $file->getColorProfile()->name() ?>
+        <?= $this->escape($file->getColorProfile()->name()) ?>
     <?php elseif ($file->hasExifData() && $file->getExifData()->colorSpace()) : ?>
-        <?= $file->getExifData()->colorSpace() ?> (EXIF)
+        <?= $this->escape($file->getExifData()->colorSpace()) ?> (EXIF)
     <?php else : ?>
         –
     <?php endif ?>

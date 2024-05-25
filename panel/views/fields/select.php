@@ -8,6 +8,6 @@
             'hidden'   => $field->isHidden(),
         ]) ?>>
     <?php foreach ($field->options() as $value => $label) : ?>
-        <option <?= $this->attr(['value' => $value, 'selected' => $value == $field->value()]) ?>><?= $label ?></option>
+        <option <?= $this->attr(['value' => $value, 'selected' => $value == $field->value()]) ?>><?= $this->escape($label) ?></option>
     <?php endforeach ?>
 </select>

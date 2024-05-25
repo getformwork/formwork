@@ -2,7 +2,7 @@
 <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
     <div class="header">
         <div class="min-w-0 flex-grow-1">
-            <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $page->title() ?></div>
+            <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $this->escape($page->title()) ?></div>
             <div class="flex">
                 <div><?= $this->insert('_pages/status', ['page' => $page]) ?></div>
                 <?php if (!$page->isIndexPage() && !$page->isErrorPage()) : ?>

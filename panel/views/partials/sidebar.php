@@ -18,7 +18,7 @@
             <?php foreach ($navigation as $id => ['label' => $label, 'uri' => $uri, 'permissions' => $permissions, 'badge' => $badge]) : ?>
                 <?php if ($panel->user()->permissions()->has($permissions)) : ?>
                     <li class="<?= ($location === $id) ? 'active' : '' ?>">
-                        <a href="<?= $panel->uri($uri) ?>"><?= $label ?></a>
+                        <a href="<?= $panel->uri($uri) ?>"><?= $this->escape($label) ?></a>
                         <?php if ($badge) : ?>
                             <span class="badge"><?= $badge ?></span>
                         <?php endif ?>

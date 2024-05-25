@@ -10,7 +10,7 @@
                     'disabled' => $field->isDisabled(),
                     'hidden'   => $field->isHidden(),
                 ]) ?>>
-        <span class="form-checkbox-text"><?= $field->label() ?></span>
+        <span class="form-checkbox-text"><?= $this->escape($field->label()) ?></span>
     </label>
 </div>
 <?php $this->insert('fields.partials.description') ?>

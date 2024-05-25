@@ -15,7 +15,7 @@
                             'value'   => $value,
                             'checked' => $value == $field->value(),
                         ]) ?>>
-                <span><?= $label ?></span>
+                <span><?= $this->escape($label) ?></span>
             </label>
         <?php endforeach ?>
     </fieldset>
