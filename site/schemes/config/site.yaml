@@ -28,6 +28,7 @@ fields:
     title:
         type: text
         label: '{{panel.options.site.info.title}}'
+        class: form-input-large
         required: true
 
     description:
