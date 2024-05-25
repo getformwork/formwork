@@ -8,12 +8,22 @@
             'hidden'   => $field->isHidden(),
         ]) ?>>
     <?php if (!$field->isRequired()) : ?>
-        <option value="" <?php if ($field->value() === '') : ?> selected<?php endif ?>><?= $this->translate('page.none') ?></option>
+        <option <?= $this->attr([
+                    'value' => '',
+                    'selected' => $field->value() === '',
+                ]) ?>><?= $this->translate('page.none') ?></option>
     <?php endif ?>
     <?php if ($field->get('allowSite')) : ?>
-        <option value="." <?php if ($field->value() === '.') : ?> selected<?php endif ?>><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
+        <option <?= $this->attr([
+                    'value' => '.',
+                    'selected' => $field->value() === '.',
+                ]) ?>><?= $this->translate('panel.pages.newPage.site') ?> (/)</option>
     <?php endif ?>
     <?php foreach ($field->collection() as $page) : ?>
-        <option value="<?= $page->route() ?>" <?php if ($page->route() === $field->value()) : ?> selected<?php endif ?><?php if ($page->scheme()->options()->has('children.templates')) : ?> data-allowed-templates="<?= implode(', ', $page->scheme()->options()->get('children.templates')) ?>" <?php endif ?>><?= str_repeat('— ', $page->level() - 1) . $page->title() ?></option>
+        <option <?= $this->attr([
+                    'value' => $page->route(),
+                    'selected' => $page->route() === $field->value(),
+                    'data-allowed-templates' => $page->scheme()->options()->get('children.templates'),
+                ]) ?>><?= str_repeat('— ', $page->level() - 1) . $this->escape($page->title()) ?></option>
     <?php endforeach ?>
 </select>
