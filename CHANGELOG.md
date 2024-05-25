@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.13.0](https://github.com/getformwork/formwork/releases/tag/1.13.0) (2024-05-25)
+
+**Security**
+
+- **Add `content.safe_mode` option** (enabled by default) to escape HTML in Markdown content
+- Escape page titles and tags in default templates
+
+**Enhancements**
+
+- Avoid reporting `E_DEPRECATED` errors to allow Formwork 1.x to run on PHP >= 8.2
+
 ## [1.12.1](https://github.com/getformwork/formwork/releases/tag/1.12.1) (2022-10-30)
 
 **Bug fixes**
