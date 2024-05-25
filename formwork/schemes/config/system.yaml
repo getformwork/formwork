@@ -208,3 +208,4 @@ fields:
         type: text
         label: '{{panel.options.system.debug.editorUri}}'
         description: '{{panel.options.system.debug.editorUri.description}}'
+        class: form-input-monospace

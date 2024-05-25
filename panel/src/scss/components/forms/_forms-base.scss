@@ -93,6 +93,11 @@
     font-size: $font-size-lg;
 }
 
+.form-input-monospace {
+    font-family: $mono-font-family;
+    font-size: $font-size-sm * 0.875;
+}
+
 .form-input-accent {
     border-color: $color-accent-500;
 }
