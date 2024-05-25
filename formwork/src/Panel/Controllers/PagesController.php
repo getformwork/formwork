@@ -14,7 +14,6 @@ use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
-use Formwork\Languages\Language;
 use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Parsers\Yaml;
