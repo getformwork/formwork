@@ -13,19 +13,19 @@ class Blur extends AbstractTransform
      * Convolution kernels used for image effects
      */
     protected const CONVOLUTION_KERNELS = [
-        'Smooth' => [
+        BlurMode::Smooth->value => [
             [0.075, 0.125, 0.075],
             [0.125, 0.200, 0.125],
             [0.075, 0.125, 0.075],
         ],
 
-        'Mean' => [
+        BlurMode::Mean->value => [
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9],
         ],
 
-        'Gaussian' => [
+        BlurMode::Gaussian->value => [
             [0.075, 0.125, 0.075],
             [0.125, 0.200, 0.125],
             [0.075, 0.125, 0.075],
@@ -51,7 +51,7 @@ class Blur extends AbstractTransform
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
     {
         for ($i = 0; $i < $this->amount; $i++) {
-            imageconvolution($gdImage, self::CONVOLUTION_KERNELS[$this->blurMode->name], 1, 0.55);
+            imageconvolution($gdImage, self::CONVOLUTION_KERNELS[$this->blurMode->value], 1, 0.55);
         }
 
         return $gdImage;
