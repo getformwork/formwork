@@ -290,7 +290,7 @@ class Site extends Model implements Stringable
         $pages = [];
 
         foreach (FileSystem::listDirectories($path) as $dir) {
-            $pagePath = FileSystem::joinPaths($path, $dir, DS);
+            $pagePath = FileSystem::joinPaths($path, $dir, '/');
 
             if ($dir[0] !== '_' && FileSystem::isDirectory($pagePath)) {
                 $page = $this->retrievePage($pagePath);
@@ -330,7 +330,7 @@ class Site extends Model implements Stringable
             $found = false;
             foreach (FileSystem::listDirectories($path) as $dir) {
                 if (preg_replace(Page::NUM_REGEX, '', $dir) === $component) {
-                    $path .= $dir . '/';
+                    $path .= FileSystem::joinPaths($dir, '/');
                     $found = true;
                     break;
                 }

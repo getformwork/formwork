@@ -519,7 +519,11 @@ class PagesController extends AbstractController
 
         $scheme = $this->app->schemes()->get('pages.' . $fieldCollection->get('template')->value());
 
-        $path = $parent->path() . $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $fieldCollection->get('slug')->value() . '/';
+        $path = FileSystem::joinPaths(
+            (string) $parent->path(),
+            $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $fieldCollection->get('slug')->value(),
+            '/'
+        );
 
         FileSystem::createDirectory($path, recursive: true);
 
