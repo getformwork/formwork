@@ -125,7 +125,7 @@ class OptionsController extends AbstractController
     {
         $this->ensurePermission('options.info');
 
-        $opcacheStatus = opcache_get_status(false) ?: [];
+        $opcacheStatus = extension_loaded('zend opcache') ? (opcache_get_status(false) ?: []) : [];
 
         $gdInfo = extension_loaded('gd') ? gd_info() : [];
 
