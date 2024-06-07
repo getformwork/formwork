@@ -1,22 +1,17 @@
 .user-summary {
-    display: flex;
-    align-items: center;
-}
-
-.user-summary-avatar {
-    max-width: 33.3333%;
-    flex: 0 0 33.3333%;
-    padding: 0.75rem;
+    margin-top: 7.5rem;
     text-align: center;
 }
 
-.user-summary-avatar img {
-    width: 180px;
-    border-radius: $border-radius-round;
+.user-summary-image {
+    margin-top: -7.5rem;
 }
 
-.user-summary-data {
-    padding: 0.75rem;
+.user-summary-image img {
+    width: 12rem;
+    border-radius: $border-radius-round;
+    background-color: $color-base-900;
+    box-shadow: $box-shadow-sm;
 }
 
 .users-list {
@@ -53,11 +48,12 @@
     flex: 1;
 }
 
-.user-avatar {
+.user-image {
     display: inline-block;
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
+    box-shadow: $box-shadow-sm;
     vertical-align: middle;
 }
 

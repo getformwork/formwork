@@ -28,13 +28,14 @@
     cursor: pointer;
 }
 
-.panel-user-avatar {
+.panel-user-image {
     width: 48px;
 }
 
-.panel-user-avatar img {
+.panel-user-image img {
     width: 48px;
     border-radius: $border-radius-round;
+    box-shadow: $box-shadow-sm;
     transition: box-shadow $transition-time-md ease-out;
 
     .panel-user-card:hover & {
@@ -48,6 +49,7 @@
 
 .panel-user-fullname {
     color: $color-base-100;
+    font-weight: $headings-font-weight;
 }
 
 .panel-user-username {
