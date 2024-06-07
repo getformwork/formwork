@@ -2,39 +2,19 @@
 
 namespace Formwork\Panel;
 
-use Formwork\App;
 use Formwork\Assets;
 use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Panel\Controllers\ErrorsController;
-use Formwork\Panel\Users\Permissions;
-use Formwork\Panel\Users\Role;
-use Formwork\Panel\Users\RoleCollection;
 use Formwork\Panel\Users\User;
 use Formwork\Panel\Users\UserCollection;
-use Formwork\Panel\Users\UserFactory;
-use Formwork\Parsers\Yaml;
-use Formwork\Services\Container;
-use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
-use Throwable;
 
 final class Panel
 {
-    /**
-     * All the registered users
-     */
-    protected UserCollection $users;
-
-    /**
-     * Errors controller
-     */
-    protected ErrorsController $errors;
-
     /**
      * Assets instance
      */
@@ -44,27 +24,10 @@ final class Panel
      * Create a new Panel instance
      */
     public function __construct(
-        protected Container $container,
-        protected App $app,
         protected Config $config,
         protected Request $request,
-        protected Translations $translations,
-        protected UserFactory $userFactory
+        protected UserCollection $userCollection
     ) {
-    }
-
-    public function load(): void
-    {
-
-        // TODO: Move to service loader
-        $this->loadSchemes();
-        $this->loadUsers();
-
-        $this->loadTranslations();
-
-        if ($this->isLoggedIn()) {
-            $this->loadErrorHandler();
-        }
     }
 
     /**
@@ -76,7 +39,7 @@ final class Panel
             return false;
         }
         $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return !empty($username) && $this->users->has($username);
+        return !empty($username) && $this->userCollection->has($username);
     }
 
     /**
@@ -84,7 +47,7 @@ final class Panel
      */
     public function users(): UserCollection
     {
-        return $this->users;
+        return $this->userCollection;
     }
 
     /**
@@ -93,7 +56,7 @@ final class Panel
     public function user(): User
     {
         $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return $this->users->get($username);
+        return $this->userCollection->get($username);
     }
 
     /**
@@ -214,72 +177,5 @@ final class Panel
         ksort($translations);
 
         return $translations;
-    }
-
-    protected function getRoles(): RoleCollection
-    {
-        $roles = [];
-
-        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.roles')) as $file) {
-            $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
-            $id = FileSystem::name($file);
-            $permissions = new Permissions($parsedData['permissions']);
-            $roles[$id] = new Role($id, $parsedData['title'], $permissions, $this->translations);
-        }
-
-        return new RoleCollection($roles);
-    }
-
-    protected function loadUsers(): void
-    {
-        $roleCollection = $this->getRoles();
-
-        $users = [];
-        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
-            /**
-             * @var array{username: string, fullname: string, hash: string, email: string, language: string, role?: string, image?: string, colorScheme?: string}
-             */
-            $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
-            $role = $roleCollection->get($parsedData['role'] ?? 'user', 'user');
-
-            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $role);
-        }
-
-        $this->users = new UserCollection($users, $roleCollection);
-    }
-
-    /**
-     * Load proper panel translation
-     */
-    protected function loadTranslations(): void
-    {
-        $path = $this->config->get('system.translations.paths.panel');
-        $this->translations->loadFromPath($path);
-
-        if ($this->isLoggedIn()) {
-            $this->translations->setCurrent($this->user()->language());
-        } else {
-            $this->translations->setCurrent($this->config->get('system.panel.translation'));
-        }
-    }
-
-    protected function loadSchemes(): void
-    {
-        $path = $this->config->get('system.schemes.paths.panel');
-        $this->app->schemes()->loadFromPath($path);
-    }
-
-    /**
-     * Load the panel-styled error handler
-     */
-    protected function loadErrorHandler(): void
-    {
-        if ($this->config->get('system.errors.setHandlers')) {
-            $this->errors = $this->container->build(ErrorsController::class);
-            set_exception_handler(function (Throwable $throwable): never {
-                $this->errors->internalServerError($throwable)->send();
-                throw $throwable;
-            });
-        }
     }
 }

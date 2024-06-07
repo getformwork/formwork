@@ -44,7 +44,7 @@ class User extends Model
      *
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data, protected Role $role, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
+    public function __construct(array $data, protected Role $role, protected App $app, protected Config $config, protected Request $request)
     {
         $this->scheme = $app->schemes()->get('users.user');
 
@@ -71,10 +71,13 @@ class User extends Model
         $filename = (string) $this->data['image'];
         $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
 
+        /** @var Panel */
+        $panel = $this->app->panel();
+
         if (FileSystem::isFile($path, assertExists: false)) {
-            $uri = $this->panel->realUri('/assets/images/users/' . basename($path));
+            $uri = $panel->realUri('/assets/images/users/' . basename($path));
         } else {
-            $uri = $this->panel->realUri('/assets/images/user-image.svg');
+            $uri = $panel->realUri('/assets/images/user-image.svg');
         }
 
         return new UserImage($path, $uri);
