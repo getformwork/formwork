@@ -10,6 +10,8 @@ class UserCollection extends AbstractCollection
 
     protected ?string $dataType = User::class;
 
+    protected bool $mutable = true;
+
     /**
      * @param array<string, User> $data
      */
