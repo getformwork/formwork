@@ -10,6 +10,8 @@ use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Controllers\ErrorsController;
 use Formwork\Panel\Users\Permissions;
+use Formwork\Panel\Users\Role;
+use Formwork\Panel\Users\RoleCollection;
 use Formwork\Panel\Users\User;
 use Formwork\Panel\Users\UserCollection;
 use Formwork\Panel\Users\UserFactory;
@@ -214,14 +216,23 @@ final class Panel
         return $translations;
     }
 
-    protected function loadUsers(): void
+    protected function getRoles(): RoleCollection
     {
         $roles = [];
+
         foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.roles')) as $file) {
             $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
-            $role = FileSystem::name($file);
-            $roles[$role] = $parsedData;
+            $id = FileSystem::name($file);
+            $permissions = new Permissions($parsedData['permissions']);
+            $roles[$id] = new Role($id, $parsedData['title'], $permissions, $this->translations);
         }
+
+        return new RoleCollection($roles);
+    }
+
+    protected function loadUsers(): void
+    {
+        $roleCollection = $this->getRoles();
 
         $users = [];
         foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
@@ -229,12 +240,12 @@ final class Panel
              * @var array{username: string, fullname: string, hash: string, email: string, language: string, role?: string, image?: string, colorScheme?: string}
              */
             $parsedData = Yaml::parseFile(FileSystem::joinPaths($path, $file));
-            $role = $parsedData['role'] ?? 'user';
-            $permissions = new Permissions($roles[$role]['permissions']);
-            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $permissions);
+            $role = $roleCollection->get($parsedData['role'] ?? 'user', 'user');
+
+            $users[$parsedData['username']] = $this->userFactory->make($parsedData, $role);
         }
 
-        $this->users = new UserCollection($users, $roles);
+        $this->users = new UserCollection($users, $roleCollection);
     }
 
     /**

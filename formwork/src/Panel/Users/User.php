@@ -44,7 +44,7 @@ class User extends Model
      *
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data, protected Permissions $permissions, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
+    public function __construct(array $data, protected Role $role, protected App $app, protected Config $config, protected Request $request, protected Panel $panel)
     {
         $this->scheme = $app->schemes()->get('users.user');
 
@@ -80,12 +80,17 @@ class User extends Model
         return new UserImage($path, $uri);
     }
 
+    public function role(): Role
+    {
+        return $this->role;
+    }
+
     /**
      * Return user permissions
      */
     public function permissions(): Permissions
     {
-        return $this->permissions;
+        return $this->role->permissions();
     }
 
     /**
@@ -109,7 +114,7 @@ class User extends Model
      */
     public function isAdmin(): bool
     {
-        return $this->role() === 'admin';
+        return $this->role()->id() === 'admin';
     }
 
     /**

@@ -11,10 +11,9 @@ class UserCollection extends AbstractCollection
     protected ?string $dataType = User::class;
 
     /**
-     * @param array<string, User>  $data
-     * @param array<string, mixed> $roles
+     * @param array<string, User> $data
      */
-    public function __construct(array $data, protected array $roles)
+    public function __construct(array $data, protected RoleCollection $roleCollection)
     {
         parent::__construct($data);
     }
@@ -22,14 +21,10 @@ class UserCollection extends AbstractCollection
     /**
      * Get all available roles
      *
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
     public function availableRoles(): array
     {
-        $roles = [];
-        foreach ($this->roles as $role => $data) {
-            $roles[$role] = $data['title'];
-        }
-        return $roles;
+        return $this->roleCollection->everyItem()->title()->toArray();
     }
 }
