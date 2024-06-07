@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.13.1](https://github.com/getformwork/formwork/releases/tag/1.13.1) (2024-06-07)
+
+**Security**
+
+- Escape metadata attributes to avoid XSS attacks
+
 ## [1.13.0](https://github.com/getformwork/formwork/releases/tag/1.13.0) (2024-05-25)
 
 **Security**
