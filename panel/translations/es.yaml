@@ -112,6 +112,7 @@ panel.options.system.debug.mode.disabled: Deshabilitado
 panel.options.system.debug.mode.enabled: Habilitado
 panel.options.system.files: Archivos
 panel.options.system.files.allowedExtensions: Extensiones permitidas
+panel.options.system.files.allowedExtensions.noExtensions: Sin extensiones (ningún archivo permitido)
 panel.options.system.images: Imágenes
 panel.options.system.images.clearCacheByDefault: Borrar caché de imágenes por defecto
 panel.options.system.images.clearCacheByDefault.disabled: Deshabilitado
