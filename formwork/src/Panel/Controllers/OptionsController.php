@@ -6,7 +6,6 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Parsers\Json;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
@@ -20,7 +19,7 @@ class OptionsController extends AbstractController
      *
      * @var list<string>
      */
-    protected array $tabs = ['site', 'system', 'info'];
+    protected array $tabs = ['site', 'system'];
 
     /**
      * Options@index action
@@ -119,129 +118,6 @@ class OptionsController extends AbstractController
     }
 
     /**
-     * Options@info action
-     */
-    public function info(): Response
-    {
-        $this->ensurePermission('options.info');
-
-        $opcacheStatus = extension_loaded('zend opcache') ? (opcache_get_status(false) ?: []) : [];
-
-        $gdInfo = extension_loaded('gd') ? gd_info() : [];
-
-        $dependencies = $this->getDependencies();
-
-        $data = @[
-            'PHP' => [
-                'Version'             => PHP_VERSION,
-                'Operating System'    => php_uname(),
-                'Server API'          => PHP_SAPI,
-                'Loaded php.ini'      => php_ini_loaded_file(),
-                'Loaded Extensions'   => implode(', ', get_loaded_extensions()),
-                'Zend Engine Version' => zend_version(),
-            ],
-            'HTTP Request Headers'  => $this->request->headers()->toArray(),
-            'HTTP Response Headers' => $this->getHeaders(),
-            'Server'                => [
-                'IP Address'     => $_SERVER['SERVER_ADDR'],
-                'Port'           => $_SERVER['SERVER_PORT'],
-                'Name'           => $_SERVER['SERVER_NAME'],
-                'Software'       => $_SERVER['SERVER_SOFTWARE'],
-                'Apache Modules' => implode(', ', function_exists('apache_get_modules') ? apache_get_modules() : []),
-                'Protocol'       => $_SERVER['SERVER_PROTOCOL'],
-                'HTTPS'          => $this->request->isSecure() ? 'on' : 'off',
-                'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME']),
-            ],
-            'Client' => [
-                'IP Address' => $this->request->ip(),
-                'Port'       => $_SERVER['REMOTE_PORT'],
-            ],
-            'Session' => [
-                'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
-                'Session Strict Mode'     => ini_get('session.use_strict_mode') ? 'true' : 'false',
-            ],
-            'Uploads' => [
-                'File Uploads'         => ini_get('file_uploads') ? 'true' : 'false',
-                'POST Max Size'        => ini_get('post_max_size'),
-                'Maximum File Size'    => ini_get('upload_max_filesize'),
-                'Maximum File Uploads' => ini_get('max_file_uploads'),
-            ],
-            'Script' => [
-                'Max Execution Time' => ini_get('max_execution_time'),
-                'Max Input Time'     => ini_get('max_input_time'),
-                'Memory Limit'       => ini_get('memory_limit'),
-                'Default MIME-Type'  => ini_get('default_mimetype'),
-                'Default Charset'    => ini_get('default_charset'),
-            ],
-            'Streams' => [
-                'Stream Wrappers' => implode(', ', stream_get_wrappers()),
-                'Allow URL Fopen' => ini_get('allow_url_fopen') ? 'true' : 'false',
-            ],
-            'OPcache' => [
-                'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
-                'Cached Scripts'            => $opcacheStatus['opcache_statistics']['num_cached_scripts'] ?? 0,
-                'Cache Hits'                => $opcacheStatus['opcache_statistics']['hits'] ?? 0,
-                'Cache Misses'              => $opcacheStatus['opcache_statistics']['misses'] ?? 0,
-                'Used Memory'               => $opcacheStatus['memory_usage']['used_memory'] ?? 0,
-                'Free Memory'               => $opcacheStatus['memory_usage']['free_memory'] ?? 0,
-                'Wasted Memory'             => $opcacheStatus['memory_usage']['wasted_memory'] ?? 0,
-                'Current Wasted Percentage' => $opcacheStatus['memory_usage']['current_wasted_percentage'] ?? 0,
-                'Max Wasted Percentage'     => ini_get('opcache.max_wasted_percentage'),
-            ],
-            'GD' => [
-                'Version'            => $gdInfo['GD Version'] ?? '',
-                'JPEG Support'       => $gdInfo['JPEG Support'] ?? '' ? 'true' : 'false',
-                'PNG Support'        => $gdInfo['PNG Support'] ?? '' ? 'true' : 'false',
-                'GIF Read Support'   => $gdInfo['GIF Read Support'] ?? '' ? 'true' : 'false',
-                'GIF Create Support' => $gdInfo['GIF Create Support'] ?? '' ? 'true' : 'false',
-                'WebP Support'       => $gdInfo['WebP Support'] ?? '' ? 'true' : 'false',
-            ],
-            'System' => [
-                'Directory Separator' => DS,
-                'EOL Symbol'          => addcslashes(PHP_EOL, "\r\n"),
-                'Max Path Length'     => FileSystem::MAX_PATH_LENGTH,
-                'File Creation Mask'  => sprintf('0%03o', umask()),
-            ],
-            'Formwork' => [
-                'Formwork Version' => $this->app::VERSION,
-                'Root Path'        => ROOT_PATH,
-                'Formwork Path'    => SYSTEM_PATH,
-                'Config Path'      => ROOT_PATH . '/site/config/',
-                'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH)),
-            ],
-            'Dependencies' => [
-                'CommonMark Version'   => $dependencies['league/commonmark']['version'],
-                'Symfony Yaml Version' => $dependencies['symfony/yaml']['version'],
-            ],
-        ];
-
-        ksort($data['HTTP Request Headers']);
-        ksort($data['HTTP Response Headers']);
-
-        return new Response($this->view('options.info', [
-            'title' => $this->translate('panel.options.options'),
-            'tabs'  => $this->view('options.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'info',
-            ]),
-            'info' => $data,
-        ]));
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function getHeaders(): array
-    {
-        $headers = [];
-        foreach (headers_list() as $header) {
-            [$key, $value] = explode(':', $header, 2);
-            $headers[$key] = trim($value);
-        }
-        return $headers;
-    }
-
-    /**
      * Update options of a given type with given data
      *
      * @param 'site'|'system'      $type
@@ -273,26 +149,5 @@ class OptionsController extends AbstractController
 
         // Return false if options do not differ
         return false;
-    }
-
-    /**
-     * Load dependencies data from composer.lock
-     *
-     * @return array<string, mixed>
-     */
-    protected function getDependencies(): array
-    {
-        $dependencies = [];
-        if (FileSystem::exists(ROOT_PATH . '/composer.lock')) {
-            $composerLock = Json::parseFile(ROOT_PATH . '/composer.lock');
-            foreach ($composerLock['packages'] as $package) {
-                /**
-                 * @var string
-                 */
-                $packageName = $package['name'];
-                $dependencies[$packageName] = $package;
-            }
-        }
-        return $dependencies;
     }
 }

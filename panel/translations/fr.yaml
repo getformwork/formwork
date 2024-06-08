@@ -54,7 +54,6 @@ panel.modal.images.noImages: Aucun fichier média n’a été trouvé.
 panel.modal.images.noImages.upload: Sélectionnez vos fichiers à téléverser.
 panel.modal.images.title: Bibliothèque de médias
 panel.navigation.toggle: Afficher/Masquer la navigation
-panel.options.info: Information
 panel.options.options: Paramètres
 panel.options.site: Site
 panel.options.site.advanced: Options avancées
@@ -295,6 +294,7 @@ panel.tools.backup.delete: Supprimer la sauvegarde
 panel.tools.backup.file: Fichier
 panel.tools.backup.size: Taille
 panel.tools.backups: Sauvegardes
+panel.tools.info: Information
 panel.tools.latestBackup: 'Dernière sauvegarde:'
 panel.tools.latestBackups: Dernières sauvegardes
 panel.tools.tools: Outils

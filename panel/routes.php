@@ -76,11 +76,6 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
-        'panel.options.info' => [
-            'path'   => '/options/info/',
-            'action' => 'Formwork\Panel\Controllers\OptionsController@info',
-        ],
-
         'panel.pages' => [
             'path'   => '/pages/',
             'action' => 'Formwork\Panel\Controllers\PagesController@index',
@@ -99,6 +94,11 @@ return [
         'panel.tools.updates' => [
             'path'   => '/tools/updates/',
             'action' => 'Formwork\Panel\Controllers\ToolsController@updates',
+        ],
+
+        'panel.tools.info' => [
+            'path'   => '/tools/info/',
+            'action' => 'Formwork\Panel\Controllers\ToolsController@info',
         ],
 
         'panel.pages.new' => [

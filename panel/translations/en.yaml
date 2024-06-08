@@ -54,7 +54,6 @@ panel.modal.images.noImages: There are no images here
 panel.modal.images.noImages.upload: Please upload some images
 panel.modal.images.title: Select an image
 panel.navigation.toggle: Toggle navigation
-panel.options.info: Info
 panel.options.options: Options
 panel.options.site: Site
 panel.options.site.advanced: Advanced options
@@ -295,6 +294,7 @@ panel.tools.backup.delete: Delete backup
 panel.tools.backup.file: File
 panel.tools.backup.size: Size
 panel.tools.backups: Backups
+panel.tools.info: Info
 panel.tools.latestBackup: 'Latest backup:'
 panel.tools.latestBackups: Latest backups
 panel.tools.tools: Tools

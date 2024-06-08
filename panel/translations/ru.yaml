@@ -54,7 +54,6 @@ panel.modal.images.noImages: Там нет изображений здесь
 panel.modal.images.noImages.upload: Пожалуйста, загрузите некоторые изображения
 panel.modal.images.title: Выберите изображение
 panel.navigation.toggle: Переключить навигацию
-panel.options.info: Информация
 panel.options.options: Параметры
 panel.options.site: Сайт
 panel.options.site.advanced: Расширенные настройки
@@ -295,6 +294,7 @@ panel.tools.backup.delete: Удалить резервную копию
 panel.tools.backup.file: Файл
 panel.tools.backup.size: Размер
 panel.tools.backups: Резервные копии
+panel.tools.info: Информация
 panel.tools.latestBackup: "Последняя резервная копия:"
 panel.tools.latestBackups: Последние резервные копии
 panel.tools.tools: Инструменты

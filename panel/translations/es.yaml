@@ -54,7 +54,6 @@ panel.modal.images.noImages: No hay imágenes aquí
 panel.modal.images.noImages.upload: Por favor, sube algunas imágenes
 panel.modal.images.title: Seleccionar una imagen
 panel.navigation.toggle: Alternar navegación
-panel.options.info: Información
 panel.options.options: Opciones
 panel.options.site: Sitio
 panel.options.site.advanced: Opciones avanzadas
@@ -295,6 +294,7 @@ panel.tools.backup.delete: Borrar copia de seguridad
 panel.tools.backup.file: Archivo
 panel.tools.backup.size: Tamaño
 panel.tools.backups: Copias de seguridad
+panel.tools.info: Información
 panel.tools.latestBackup: 'Última copia de seguridad:'
 panel.tools.latestBackups: Últimas copias de seguridad
 panel.tools.tools: Herramientas
