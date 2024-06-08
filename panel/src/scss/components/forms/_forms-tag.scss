@@ -13,6 +13,14 @@
     @include user-select-none;
 }
 
+.form-input-wrap > .form-input-tag {
+    margin-bottom: 0;
+}
+
+.form-input-wrap .form-input-icon + .form-input-tag {
+    padding-left: 1.5rem;
+}
+
 .form-input-tag.focused {
     border-color: $color-accent-500;
 }
@@ -49,6 +57,10 @@
     cursor: default;
     font-size: $font-size-sm;
     @include user-select-none;
+}
+
+.form-input-tag .tag:first-child {
+    margin-left: 0.25rem;
 }
 
 .form-input-tag.disabled,

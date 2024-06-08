@@ -1,5 +1,6 @@
 <?php $this->layout('fields.field') ?>
 <div class="form-input-wrap">
+    <span class="form-input-icon"><?= $this->icon('image') ?></span>
     <input <?= $this->attr([
                 'type'        => 'text',
                 'class'       => ['form-input', 'form-input-image'],

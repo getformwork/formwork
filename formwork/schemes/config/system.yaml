@@ -81,6 +81,7 @@ fields:
 
     languages.available:
         type: tags
+        icon: translate
         label: '{{panel.options.system.languages.availableLanguages}}'
         placeholder: '{{panel.options.system.languages.availableLanguages.noLanguages}}'
         pattern: '^[a-z]{2,3}$'
@@ -96,6 +97,7 @@ fields:
 
     files.allowedExtensions:
         type: tags
+        icon: file-exclamation
         label: '{{panel.options.system.files.allowedExtensions}}'
         pattern: '^\.[a-zA-Z0-9]+$'
         options@: mimeTypes.extensionTypes

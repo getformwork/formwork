@@ -12,7 +12,10 @@
 <section class="section">
     <div class="flex flex-wrap">
         <div class="flex-grow-1 mr-4">
-            <input class="form-input page-search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>">
+            <div class="form-input-wrap">
+                <span class="form-input-icon"><?= $this->icon('search') ?></span>
+                <input class="form-input page-search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>">
+            </div>
         </div>
         <div class="whitespace-nowrap">
             <button type="button" class="button button-secondary mb-4" data-command="expand-all-pages"><?= $this->icon('chevron-down') ?> <?= $this->translate('panel.pages.pages.expandAll') ?></button>
