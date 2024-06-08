@@ -50,6 +50,10 @@ p {
     line-height: $base-line-height;
 }
 
+p:last-child {
+    margin-bottom: 0;
+}
+
 ul {
     padding: 0;
     margin-top: 0;
