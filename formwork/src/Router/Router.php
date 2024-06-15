@@ -328,7 +328,7 @@ class Router
 
             $pattern = $this->resolvePatternShortcut($pattern);
 
-            if (!(bool) preg_match('~^' . trim($pattern, '^$') . '$~', $params[$param])) {
+            if (!(bool) preg_match('~^' . trim($pattern, '^$') . '$~', (string) $params[$param])) {
                 throw new InvalidArgumentException(sprintf('Invalid value for param "%s"', $param));
             }
 

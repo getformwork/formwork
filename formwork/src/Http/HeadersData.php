@@ -19,7 +19,7 @@ class HeadersData extends RequestData
      */
     protected function initialize(array $headers): void
     {
-        $this->data = Arr::mapKeys($headers, fn ($key) => str_replace('_', '-', ucwords(strtolower($key), '_')));
+        $this->data = Arr::mapKeys($headers, fn (string $key) => str_replace('_', '-', ucwords(strtolower($key), '_')));
         ksort($this->data);
     }
 }

@@ -40,7 +40,7 @@ class Uri
             return App::instance()->request()->isSecure() ? 'https' : 'http';
         }
         $scheme = static::parseComponent($uri, PHP_URL_SCHEME);
-        return $scheme !== null ? strtolower($scheme) : null;
+        return $scheme !== null ? strtolower((string) $scheme) : null;
     }
 
     /**
@@ -49,10 +49,10 @@ class Uri
     public static function host(?string $uri = null): ?string
     {
         if ($uri === null) {
-            return strtolower($_SERVER['SERVER_NAME']);
+            return strtolower((string) $_SERVER['SERVER_NAME']);
         }
         $host = static::parseComponent($uri, PHP_URL_HOST);
-        return $host !== null ? strtolower($host) : null;
+        return $host !== null ? strtolower((string) $host) : null;
     }
 
     /**

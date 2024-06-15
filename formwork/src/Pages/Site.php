@@ -473,7 +473,7 @@ class Site extends Model implements Stringable
     {
         $this->routeAliases = [];
         foreach ($this->data['routeAliases'] as $from => $to) {
-            $this->routeAliases[trim($from, '/')] = trim($to, '/');
+            $this->routeAliases[trim((string) $from, '/')] = trim((string) $to, '/');
         }
     }
 }

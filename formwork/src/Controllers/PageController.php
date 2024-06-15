@@ -72,8 +72,8 @@ class PageController extends AbstractController
                 return $this->getPageResponse($page);
             }
         } else {
-            $filename = basename($route);
-            $upperLevel = dirname($route);
+            $filename = basename((string) $route);
+            $upperLevel = dirname((string) $route);
 
             if ($upperLevel === '.') {
                 $upperLevel = $this->config->get('system.pages.index');

@@ -87,7 +87,7 @@ class Request
     {
         $scheme = $this->isSecure() ? 'https' : 'http';
 
-        $host = strtolower($this->server->get('SERVER_NAME'));
+        $host = strtolower((string) $this->server->get('SERVER_NAME'));
 
         $port = (int) $this->server->get('SERVER_PORT', 80);
 
@@ -105,7 +105,7 @@ class Request
 
     public function uri(): string
     {
-        $uri = urldecode($this->server->get('REQUEST_URI'));
+        $uri = urldecode((string) $this->server->get('REQUEST_URI'));
         $root = $this->root();
         if (Str::startsWith($uri, $root)) {
             return Path::join(['/', Str::removeStart($uri, $root)]);
@@ -227,7 +227,7 @@ class Request
      */
     public function isSecure(): bool
     {
-        $https = $this->server->has('HTTPS') && strtolower($this->server->get('HTTPS')) !== 'off';
+        $https = $this->server->has('HTTPS') && strtolower((string) $this->server->get('HTTPS')) !== 'off';
 
         if ($this->isFromTrustedProxy() && ($proto = $this->getForwardedDirective('proto')) !== []) {
             return in_array(strtolower($proto[0]), ['https', 'on', 'ssl', '1'], true);
@@ -246,7 +246,7 @@ class Request
 
     public function isXmlHttpRequest(): bool
     {
-        return strtolower($this->headers->get('X-Requested-With', '')) === 'xmlhttprequest';
+        return strtolower((string) $this->headers->get('X-Requested-With')) === 'xmlhttprequest';
     }
 
     public function type(): RequestType
@@ -348,7 +348,7 @@ class Request
         $directives = [];
 
         if (($forwardedHeader = $this->headers->get('Forwarded')) !== null) {
-            $directives = array_map(Header::combine(...), Header::split(strtolower($forwardedHeader), ',;='));
+            $directives = array_map(Header::combine(...), Header::split(strtolower((string) $forwardedHeader), ',;='));
         } else {
             foreach (self::FORWARDED_DIRECTIVES as $name) {
                 if (($xForwarededHeader = $this->headers->get('X-Forwarded-' . ucfirst($name))) !== null) {

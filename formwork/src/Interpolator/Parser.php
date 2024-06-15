@@ -80,8 +80,7 @@ class Parser implements ParserInterface
     protected function parseStringToken(): StringNode
     {
         $token = $this->tokenStream->expect(Token::TYPE_STRING);
-        // @phpstan-ignore-next-line
-        return new StringNode(stripcslashes(trim($token->value(), '\'"')));
+        return new StringNode(stripcslashes(trim((string) $token->value(), '\'"')));
     }
 
     /**

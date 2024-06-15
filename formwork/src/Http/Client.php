@@ -184,7 +184,7 @@ class Client
 
         $length = $currentResponse['headers']['Content-Length'] ?? null;
 
-        if (strtoupper($options['method']) === 'HEAD') {
+        if (strtoupper((string) $options['method']) === 'HEAD') {
             $length = 0;
         }
 

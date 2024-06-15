@@ -256,7 +256,7 @@ class PagesController extends AbstractController
         $pageCollection->moveItem($from, $to);
 
         foreach ($pageCollection->values() as $i => $page) {
-            $name = basename($page->relativePath());
+            $name = basename((string) $page->relativePath());
             $newName = preg_replace(Page::NUM_REGEX, $i + 1 . '-', $name)
                 ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
 
