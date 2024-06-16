@@ -9,7 +9,7 @@
         <?php if ($parent === $page || !$scheme->options()->get('pages', true)) : ?>
             <?php continue ?>
         <?php endif ?>
-        <option <?php $this->attr([
+        <option <?= $this->attr([
                     'value'    => $parent->route(),
                     'selected' => $page->parent() === $parent,
                 ]) ?>><?= str_repeat('— ', $parent->level() - 1) . $this->escape($parent->title()) ?></option>
