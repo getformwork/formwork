@@ -200,6 +200,9 @@ class PagesController extends AbstractController
                 }
 
                 // Redirect to avoid ERR_CACHE_MISS
+                if ($routeParams->has('language')) {
+                    return $this->redirect($this->generateRoute('panel.pages.edit.lang', ['page' => $page->route(), 'language' => $routeParams->get('language')]));
+                }
                 return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $page->route()]));
         }
 

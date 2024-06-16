@@ -372,8 +372,8 @@ class Page extends Model implements Stringable
             return;
         }
 
-        if ($this->languages()->current() !== null && $language !== null && $this->languages()->current()->code() !== ($code = $language->code())) {
-            if (!$this->languages()->available()->has($code)) {
+        if ($this->languages()->current()?->code() !== ($code = $language?->code())) {
+            if ($code !== null && !$this->languages()->available()->has($code)) {
                 throw new InvalidArgumentException(sprintf('Invalid page language "%s"', $code));
             }
             $this->reload(['language' => $language]);
