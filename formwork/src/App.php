@@ -159,7 +159,8 @@ final class App
             ->loader(ErrorHandlersServiceLoader::class)
             ->lazy(!$this->config()->get('system.errors.setHandlers', true));
 
-        $container->define(CsrfToken::class);
+        $container->define(CsrfToken::class)
+            ->alias('csrfToken');
 
         $container->define(Router::class)
             ->alias('router');
