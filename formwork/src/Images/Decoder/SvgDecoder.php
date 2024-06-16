@@ -13,7 +13,7 @@ class SvgDecoder implements DecoderInterface
     {
         $domDocument = new DOMDocument();
 
-        $domDocument->loadXML($data);
+        $domDocument->loadXML($data, LIBXML_NOERROR);
 
         $root = $domDocument->documentElement;
 
