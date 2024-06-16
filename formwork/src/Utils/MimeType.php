@@ -151,11 +151,19 @@ class MimeType
             // Fix wrong type for image/svg+xml
             if ($mimeType === 'text/html') {
                 $domDocument = new DOMDocument();
-                $domDocument->load($file);
+                $domDocument->load($file, LIBXML_NOERROR);
                 $node = $domDocument->documentElement;
                 if ($node instanceof DOMElement && $node->nodeName === 'svg') {
                     $mimeType = static::fromExtension('svg');
                 }
+            }
+
+            // Reject invalid SVG images
+            if ($mimeType === 'image/svg+xml') {
+                $domDocument = new DOMDocument();
+                $domDocument->load($file, LIBXML_NOERROR);
+                $node = $domDocument->documentElement;
+                $mimeType = $node instanceof DOMElement ? static::fromExtension('svg') : null;
             }
         }
 
