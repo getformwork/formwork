@@ -5,7 +5,6 @@ namespace Formwork\Pages\Templates;
 use Closure;
 use Formwork\App;
 use Formwork\Assets;
-use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
@@ -98,8 +97,9 @@ class Template implements Stringable
     protected function defaultVars(): array
     {
         return [
-            'router' => $this->app->router(),
-            'site'   => $this->site,
+            'router'    => $this->app->router(),
+            'site'      => $this->site,
+            'csrfToken' => $this->app->getService('csrfToken'),
         ];
     }
 
