@@ -223,7 +223,7 @@ return [
     ],
 
     'filters' => [
-        'request.validateSize' => [
+        'panel.request.validateSize' => [
             'action' => static function (Request $request, Translations $translations, Panel $panel) {
                 // Validate HTTP request Content-Length according to `post_max_size` directive
                 if ($request->contentLength() !== null) {
@@ -239,14 +239,16 @@ return [
                 }
             },
             'methods' => ['POST'],
+            'types'   => ['HTTP', 'XHR'],
         ],
 
-        'request.validateCsrf' => [
+        'panel.request.validateCsrf' => [
             'action' => static function (Request $request, Translations $translations, Panel $panel, CsrfToken $csrfToken) {
-                $token = $request->input()->get('csrf-token');
+                $tokenName = $panel->getCsrfTokenName();
+                $token = (string) $request->input()->get('csrf-token');
 
-                if (!($token !== null && $csrfToken->validate($token))) {
-                    $csrfToken->destroy();
+                if (!$csrfToken->validate($tokenName, $token)) {
+                    $csrfToken->destroy($tokenName);
                     $request->session()->remove('FORMWORK_USERNAME');
 
                     $panel->notify(

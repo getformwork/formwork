@@ -15,6 +15,8 @@ use Formwork\Utils\Uri;
 
 final class Panel
 {
+    protected const CSRF_TOKEN_NAME = 'panel';
+
     /**
      * Assets instance
      */
@@ -177,5 +179,13 @@ final class Panel
         ksort($translations);
 
         return $translations;
+    }
+
+    /**
+     * Get panel CSRF token name
+     */
+    public function getCsrfTokenName(): string
+    {
+        return self::CSRF_TOKEN_NAME;
     }
 }

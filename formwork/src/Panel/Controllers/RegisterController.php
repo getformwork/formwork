@@ -26,7 +26,7 @@ class RegisterController extends AbstractController
             return $this->redirectToReferer();
         }
 
-        $csrfToken->generate();
+        $csrfToken->generate($this->panel()->getCsrfTokenName());
 
         $fields = $schemes->get('forms.register')->fields();
 

@@ -20,9 +20,11 @@ class AuthenticationController extends AbstractController
      */
     public function login(Request $request, CsrfToken $csrfToken, AccessLimiter $accessLimiter): Response
     {
+        $csrfTokenName = $this->panel()->getCsrfTokenName();
+
         if ($accessLimiter->hasReachedLimit()) {
             $minutes = round($this->config->get('system.panel.loginResetTime') / 60);
-            $csrfToken->generate();
+            $csrfToken->generate($csrfTokenName);
             return $this->error($this->translate('panel.login.attempt.tooMany', $minutes));
         }
 
@@ -33,7 +35,7 @@ class AuthenticationController extends AbstractController
                 }
 
                 // Always generate a new CSRF token
-                $csrfToken->generate();
+                $csrfToken->generate($csrfTokenName);
 
                 return new Response($this->view('authentication.login', [
                     'title' => $this->translate('panel.login.login'),
@@ -47,7 +49,7 @@ class AuthenticationController extends AbstractController
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {
-                    $csrfToken->generate();
+                    $csrfToken->generate($csrfTokenName);
                     $this->error($this->translate('panel.login.attempt.failed'));
                 }
 
@@ -61,7 +63,7 @@ class AuthenticationController extends AbstractController
                     $request->session()->set('FORMWORK_USERNAME', $data->get('username'));
 
                     // Regenerate CSRF token
-                    $csrfToken->generate();
+                    $csrfToken->generate($csrfTokenName);
 
                     $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
                     $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
@@ -79,7 +81,7 @@ class AuthenticationController extends AbstractController
                     return $this->redirect($this->generateRoute('panel.index'));
                 }
 
-                $csrfToken->generate();
+                $csrfToken->generate($csrfTokenName);
                 return $this->error($this->translate('panel.login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true,
@@ -94,7 +96,7 @@ class AuthenticationController extends AbstractController
      */
     public function logout(Request $request, CsrfToken $csrfToken): RedirectResponse
     {
-        $csrfToken->destroy();
+        $csrfToken->destroy($this->panel()->getCsrfTokenName());
         $request->session()->remove('FORMWORK_USERNAME');
         $request->session()->destroy();
 
