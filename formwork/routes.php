@@ -89,9 +89,10 @@ return [
                     $router->setRequest(Str::removeStart($router->request(), '/' . $requested));
                 } elseif (($preferred = $languages->preferred()) !== null) {
                     // Don't redirect if we are in Panel
-                    if (!Str::startsWith($router->request(), '/' . $config->get('system.panel.root'))) {
-                        return new RedirectResponse($request->root() . $preferred . $router->request());
+                    if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
+                        return;
                     }
+                    return new RedirectResponse($request->root() . $preferred . $router->request());
                 }
             },
         ],
