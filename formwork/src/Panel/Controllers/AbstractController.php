@@ -102,7 +102,7 @@ abstract class AbstractController extends BaseAbstractController
             'location'    => $this->name,
             'site'        => $this->site(),
             'panel'       => $this->panel(),
-            'csrfToken'   => $this->csrfToken->get(),
+            'csrfToken'   => $this->csrfToken->get($this->panel()->getCsrfTokenName()),
             'modals'      => $this->modals(),
             'colorScheme' => $this->getColorScheme(),
             'navigation'  => [

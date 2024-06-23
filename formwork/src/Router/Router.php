@@ -88,6 +88,14 @@ class Router
         return $this->requestUri;
     }
 
+    /**
+     * Check if the request has the given prefix
+     */
+    public function requestHasPrefix(string $prefix): bool
+    {
+        return $this->matchPrefix($prefix);
+    }
+
     public function setRequest(string $request): void
     {
         $requestPath = Uri::path($request) ?? throw new UnexpectedValueException('Cannot get request path');
