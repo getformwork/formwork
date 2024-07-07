@@ -23,7 +23,7 @@ return function (App $app) {
             }
 
             if (is_string($value)) {
-                $value = array_map('trim', explode(',', $value));
+                $value = array_map(trim(...), explode(',', $value));
             }
 
             if (!is_array($value)) {
