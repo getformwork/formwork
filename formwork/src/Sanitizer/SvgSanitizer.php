@@ -60,19 +60,19 @@ class SvgSanitizer extends DomSanitizer
             throw new UnexpectedValueException('Unexpected missing SVG DOM document');
         }
 
-        $root = $document->createElementNS(SvgReference::NAMESPACE_URI, 'svg');
+        $domElement = $document->createElementNS(SvgReference::NAMESPACE_URI, 'svg');
 
         $attributes = $svg->attributes;
 
         for ($i = $attributes->length; $i >= 0; $i--) {
             $attribute = $attributes->item($i);
             if ($attribute instanceof DOMAttr) {
-                $root->setAttributeNode($attribute);
+                $domElement->setAttributeNode($attribute);
             }
         }
 
-        $root->append(...$svg->childNodes);
+        $domElement->append(...$svg->childNodes);
 
-        $svg->replaceWith($root);
+        $svg->replaceWith($domElement);
     }
 }

@@ -33,10 +33,10 @@ class Markdown extends AbstractParser
 
         $markdownConverter = new MarkdownConverter($environment);
 
-        $html = $markdownConverter->convert($input);
+        $renderedContent = $markdownConverter->convert($input);
 
         $htmlSanitizer = new HtmlSanitizer();
 
-        return $htmlSanitizer->sanitize($html);
+        return $htmlSanitizer->sanitize($renderedContent);
     }
 }
