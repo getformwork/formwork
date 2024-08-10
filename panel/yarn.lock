@@ -1374,7 +1374,7 @@ __metadata:
     stylelint: "npm:^16.6.1"
     stylelint-config-standard-scss: "npm:^13.1.0"
     stylelint-order: "npm:^6.0.4"
-    stylelint-scss: "npm:^6.3.0"
+    stylelint-scss: "npm:^6.4.1"
     typescript: "npm:^5.4.5"
     typescript-eslint: "npm:^7.11.0"
   languageName: unknown
@@ -1848,17 +1848,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"known-css-properties@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "known-css-properties@npm:0.30.0"
-  checksum: 10c0/8b487a6b33487affcec41eb392ceb77acf4d093558dde5c88b5ea06b9a3c81781876d7cb09872e0518b9602f27c8f4112c9ac333e02c90a91c8fbd12e202ed48
-  languageName: node
-  linkType: hard
-
 "known-css-properties@npm:^0.31.0":
   version: 0.31.0
   resolution: "known-css-properties@npm:0.31.0"
   checksum: 10c0/8e643cbed32d7733278ba215c43dfc38fc7e77d391f66b81f07228af97d69ce2cebba03a9bc1ac859479e162aea812e258b30f4c93cb7b7adfd0622a141d36da
+  languageName: node
+  linkType: hard
+
+"known-css-properties@npm:^0.34.0":
+  version: 0.34.0
+  resolution: "known-css-properties@npm:0.34.0"
+  checksum: 10c0/8549969f02b1858554e89faf4548ece37625d0d21b42e8d54fa53184e68e1512ef2531bb15941575ad816361ab7447b598c1b18c1b96ce0a868333d1a68f2e2c
   languageName: node
   linkType: hard
 
@@ -2779,18 +2779,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-scss@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "stylelint-scss@npm:6.3.0"
+"stylelint-scss@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "stylelint-scss@npm:6.4.1"
   dependencies:
-    known-css-properties: "npm:^0.30.0"
+    known-css-properties: "npm:^0.34.0"
     postcss-media-query-parser: "npm:^0.2.3"
     postcss-resolve-nested-selector: "npm:^0.1.1"
-    postcss-selector-parser: "npm:^6.0.15"
+    postcss-selector-parser: "npm:^6.1.0"
     postcss-value-parser: "npm:^4.2.0"
   peerDependencies:
     stylelint: ^16.0.2
-  checksum: 10c0/bd26fd0a1145930d0c27cbe436ff0cad473eb64ca6b69c8b1953d1164633ba4c3fdfd597764c9ceb3e6c9a153a26d7a635183aa4ed6cc8faf7652033ff7019e2
+  checksum: 10c0/0ff90a3403cf3a2fc8e2f911389d0ab0d4d611fbb9b2cd902ae0cb68fa0627767816ce715d4db6b2017fbec11764d3097b0215a8f61c0b5fc2e0443cdce32d07
   languageName: node
   linkType: hard
 
