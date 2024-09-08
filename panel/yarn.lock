@@ -907,7 +907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-tree@npm:^2.3.1":
+"css-tree@npm:2.3.1, css-tree@npm:^2.3.1":
   version: 2.3.1
   resolution: "css-tree@npm:2.3.1"
   dependencies:
@@ -1384,7 +1384,7 @@ __metadata:
     stylelint: "npm:^16.6.1"
     stylelint-config-standard-scss: "npm:^13.1.0"
     stylelint-order: "npm:^6.0.4"
-    stylelint-scss: "npm:^6.4.1"
+    stylelint-scss: "npm:^6.5.1"
     typescript: "npm:^5.5.4"
     typescript-eslint: "npm:^7.11.0"
   languageName: unknown
@@ -1741,7 +1741,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-plain-object@npm:^5.0.0":
+"is-plain-object@npm:5.0.0, is-plain-object@npm:^5.0.0":
   version: 5.0.0
   resolution: "is-plain-object@npm:5.0.0"
   checksum: 10c0/893e42bad832aae3511c71fd61c0bf61aa3a6d853061c62a307261842727d0d25f761ce9379f7ba7226d6179db2a3157efa918e7fe26360f3bf0842d9f28942c
@@ -2327,6 +2327,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-resolve-nested-selector@npm:^0.1.4":
+  version: 0.1.6
+  resolution: "postcss-resolve-nested-selector@npm:0.1.6"
+  checksum: 10c0/84213a2bccce481b1569c595a3c547b25c6ef1cca839fbd6c82c12ab407559966e968613c7454b573aa54f38cfd7e900c1fd603f0efc9f51939ab9f93f115455
+  languageName: node
+  linkType: hard
+
 "postcss-safe-parser@npm:^7.0.0":
   version: 7.0.0
   resolution: "postcss-safe-parser@npm:7.0.0"
@@ -2362,6 +2369,16 @@ __metadata:
     cssesc: "npm:^3.0.0"
     util-deprecate: "npm:^1.0.2"
   checksum: 10c0/91e9c6434772506bc7f318699dd9d19d32178b52dfa05bed24cb0babbdab54f8fb765d9920f01ac548be0a642aab56bce493811406ceb00ae182bbb53754c473
+  languageName: node
+  linkType: hard
+
+"postcss-selector-parser@npm:^6.1.1":
+  version: 6.1.2
+  resolution: "postcss-selector-parser@npm:6.1.2"
+  dependencies:
+    cssesc: "npm:^3.0.0"
+    util-deprecate: "npm:^1.0.2"
+  checksum: 10c0/523196a6bd8cf660bdf537ad95abd79e546d54180f9afb165a4ab3e651ac705d0f8b8ce6b3164fb9e3279ce482c5f751a69eb2d3a1e8eb0fd5e82294fb3ef13e
   languageName: node
   linkType: hard
 
@@ -2789,18 +2806,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-scss@npm:^6.4.1":
-  version: 6.4.1
-  resolution: "stylelint-scss@npm:6.4.1"
+"stylelint-scss@npm:^6.5.1":
+  version: 6.5.1
+  resolution: "stylelint-scss@npm:6.5.1"
   dependencies:
+    css-tree: "npm:2.3.1"
+    is-plain-object: "npm:5.0.0"
     known-css-properties: "npm:^0.34.0"
     postcss-media-query-parser: "npm:^0.2.3"
-    postcss-resolve-nested-selector: "npm:^0.1.1"
-    postcss-selector-parser: "npm:^6.1.0"
+    postcss-resolve-nested-selector: "npm:^0.1.4"
+    postcss-selector-parser: "npm:^6.1.1"
     postcss-value-parser: "npm:^4.2.0"
   peerDependencies:
     stylelint: ^16.0.2
-  checksum: 10c0/0ff90a3403cf3a2fc8e2f911389d0ab0d4d611fbb9b2cd902ae0cb68fa0627767816ce715d4db6b2017fbec11764d3097b0215a8f61c0b5fc2e0443cdce32d07
+  checksum: 10c0/72712633eb5cd358667b814d5cc9fdd8f90729e34b4260cce69c3daa0bd91d6732fcd7abad424f3e2adfa60b7784bf8e98b1396ecce6e628b13540e110978357
   languageName: node
   linkType: hard
 
