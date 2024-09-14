@@ -2,6 +2,11 @@
 
 namespace Formwork\Data\Traits;
 
+use Formwork\Data\Contracts\Arrayable;
+
+/**
+ * @phpstan-require-implements Arrayable
+ */
 trait DataArrayable
 {
     /**

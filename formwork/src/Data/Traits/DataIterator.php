@@ -2,7 +2,12 @@
 
 namespace Formwork\Data\Traits;
 
-trait DataIterator // implements \Iterator
+use Iterator;
+
+/**
+ * @phpstan-require-implements Iterator
+ */
+trait DataIterator
 {
     protected array $data = [];
 

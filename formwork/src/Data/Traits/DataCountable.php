@@ -2,7 +2,12 @@
 
 namespace Formwork\Data\Traits;
 
-trait DataCountable // implements \Countable
+use Countable;
+
+/**
+ * @phpstan-require-implements Countable
+ */
+trait DataCountable
 {
     protected array $data = [];
 
