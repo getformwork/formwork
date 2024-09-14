@@ -70,6 +70,6 @@ class RegisterController extends AbstractController
                 return $this->redirect($this->generateRoute('panel.index'));
         }
 
-        throw new  RuntimeException('Invalid Method');
+        throw new RuntimeException('Invalid Method');
     }
 }

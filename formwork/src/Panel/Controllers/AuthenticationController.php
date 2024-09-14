@@ -88,7 +88,7 @@ class AuthenticationController extends AbstractController
                 ]);
         }
 
-        throw new  RuntimeException('Invalid Method');
+        throw new RuntimeException('Invalid Method');
     }
 
     /**
