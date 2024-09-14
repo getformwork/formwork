@@ -5,11 +5,11 @@ html {
 
 body {
     margin: 0;
-    background-color: $color-base-800;
-    color: $color-base-100;
+    background-color: var(--color-base-800);
+    color: var(--color-base-100);
     font-family: $base-font-family;
     line-height: $base-line-height;
-    -webkit-tap-highlight-color: rgba($color-base-100, 0);
+    -webkit-tap-highlight-color: transparent;
 }
 
 * {
@@ -22,13 +22,13 @@ main {
 
 a {
     background-color: transparent;
-    color: $color-accent-500;
-    outline-color: rgba($focusring-default-color, $focusring-opacity);
+    color: var(--color-accent-500);
+    outline-color: var(--color-focusring);
     text-decoration: none;
     transition: color $transition-time-sm;
 
     &:hover {
-        color: $color-accent-400;
+        color: var(--color-accent-400);
     }
 
     &:not([href]) {
@@ -42,20 +42,20 @@ img {
 }
 
 mark {
-    background-color: $color-yellow-500;
+    background-color: var(--color-yellow-500);
 }
 
 code,
 pre {
     border-radius: $border-radius;
-    background-color: $color-base-700;
+    background-color: var(--color-base-700);
     font-family: $mono-font-family;
     font-size: 0.875em;
 }
 
 code {
     padding: 0.125rem 0.25rem;
-    color: $color-accent-500;
+    color: var(--color-accent-500);
 }
 
 pre {
@@ -72,17 +72,17 @@ pre {
 }
 
 ::selection {
-    background-color: $selection-background-color;
+    background-color: var(--color-selection);
 }
 
 ::placeholder {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .link-secondary {
-    color: $color-base-300;
+    color: var(--color-base-300);
 
     &:hover {
-        color: $color-base-200;
+        color: var(--color-base-200);
     }
 }

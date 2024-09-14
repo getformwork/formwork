@@ -3,7 +3,7 @@
     padding: 2rem;
     border-radius: $border-radius;
     margin: 3rem 0.5rem;
-    background-color: $color-base-900;
+    background-color: var(--color-base-900);
     box-shadow: $box-shadow-sm;
 }
 
@@ -25,7 +25,7 @@
 
     a {
         display: block;
-        color: $color-white;
+        color: var(--color-white);
         text-decoration: underline;
         @include ellipsis;
     }
@@ -40,21 +40,21 @@
 }
 
 .login-modal-info {
-    background-color: $color-accent-500;
-    color: $color-white;
+    background-color: var(--color-accent-500);
+    color: var(--color-white);
 }
 
 .login-modal-success {
-    background-color: $color-success-400;
-    color: $color-white;
+    background-color: var(--color-success-400);
+    color: var(--color-white);
 }
 
 .login-modal-warning {
-    background-color: $color-warning-500;
-    color: $color-white;
+    background-color: var(--color-warning-500);
+    color: var(--color-white);
 }
 
 .login-modal-danger {
-    background-color: $color-danger-500;
-    color: $color-white;
+    background-color: var(--color-danger-500);
+    color: var(--color-white);
 }

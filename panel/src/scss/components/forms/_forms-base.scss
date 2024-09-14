@@ -1,25 +1,25 @@
 .form-input {
     width: 100%;
     padding: 0.25rem 0.5rem;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin: 0;
     margin-bottom: 0.75rem;
-    background-color: $color-base-900;
-    color: $color-base-100;
+    background-color: var(--color-base-900);
+    color: var(--color-base-100);
     font-family: $base-font-family;
     font-size: $font-size-sm;
     line-height: $base-line-height;
     @include appearance-none;
 
     &:focus {
-        border-color: $color-accent-500;
+        border-color: var(--color-accent-500);
         @include focusring;
     }
 
     &[disabled] {
-        background-color: $color-base-700;
-        color: $color-base-300;
+        background-color: var(--color-base-700);
+        color: var(--color-base-300);
     }
 
     &[readonly] {
@@ -63,15 +63,15 @@
 
 .form-select {
     padding: 0.25rem 1.5rem 0.25rem 0.5rem;
-    background: $color-base-900 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-base-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
-    background-color: $color-base-900;
+    background: var(--color-base-900) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-base-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
+    background-color: var(--color-base-900);
     background-size: 8px 6px;
     /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
     @extend .form-input;
 
     &:-moz-focusring {
         color: transparent;
-        text-shadow: 0 0 0 $color-base-100;
+        text-shadow: 0 0 0 var(--color-base-100);
     }
 }
 
@@ -95,19 +95,19 @@
 }
 
 .form-input-accent {
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
 }
 
 .form-input-success {
-    border-color: $color-success-500;
+    border-color: var(--color-success-500);
 }
 
 .form-input-warning {
-    border-color: $color-warning-500;
+    border-color: var(--color-warning-500);
 }
 
 .form-input-danger {
-    border-color: $color-danger-500;
+    border-color: var(--color-danger-500);
 }
 
 .form-input-invalid {
@@ -128,17 +128,17 @@
     position: absolute;
     top: 50%;
     right: 0.5rem;
-    color: $color-base-100;
+    color: var(--color-base-100);
     transform: translateY(-50%);
     transition: color $transition-time-sm;
 
     &:hover {
-        color: $color-accent-500;
+        color: var(--color-accent-500);
     }
 
     .form-input:placeholder-shown + &,
     .form-input:placeholder-shown + &:hover {
-        color: $color-base-400;
+        color: var(--color-base-400);
     }
 }
 
@@ -146,7 +146,7 @@
     position: absolute;
     top: 50%;
     left: 0.5rem;
-    color: $color-base-300;
+    color: var(--color-base-300);
     transform: translateY(-50%);
 }
 
@@ -161,7 +161,7 @@
 .form-input-description {
     margin-top: -0.5rem;
     margin-bottom: 0.75rem;
-    color: $color-base-300;
+    color: var(--color-base-300);
     font-size: $font-size-sm;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .form-label-suggestion {
-    color: $color-base-300;
+    color: var(--color-base-300);
     font-size: $font-size-xs;
     line-height: 1;
 }
@@ -182,6 +182,6 @@
 .form-label-required::after {
     display: inline-block;
     margin-left: 0.125rem;
-    color: $color-danger-500;
+    color: var(--color-danger-500);
     content: "*";
 }

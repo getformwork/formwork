@@ -5,7 +5,7 @@
     height: 1.5rem;
     border-width: 0.2rem;
     border-style: solid;
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
     border-radius: $border-radius-round;
     border-bottom-color: transparent;
     border-left-color: transparent;
@@ -25,19 +25,19 @@
 }
 
 .spinner-info {
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
     animation: none;
-    color: $color-accent-500;
+    color: var(--color-accent-500);
 }
 
 .spinner-success {
-    border-color: $color-success-500;
+    border-color: var(--color-success-500);
     animation: none;
-    color: $color-success-500;
+    color: var(--color-success-500);
 }
 
 .spinner-danger {
-    border-color: $color-danger-500;
+    border-color: var(--color-danger-500);
     animation: none;
-    color: $color-danger-500;
+    color: var(--color-danger-500);
 }

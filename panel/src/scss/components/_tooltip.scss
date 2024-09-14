@@ -5,8 +5,8 @@
     min-width: 2rem;
     padding: 0.25rem 0.5rem;
     border-radius: $border-radius;
-    background-color: rgba($color-base-100, 0.8);
-    color: $color-base-900;
+    background-color: var(--color-tooltip-dark);
+    color: var(--color-base-900);
     font-size: $font-size-xs;
     pointer-events: none;
     text-align: center;

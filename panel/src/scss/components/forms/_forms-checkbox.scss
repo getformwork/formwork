@@ -10,7 +10,7 @@
     width: 1rem;
     height: 1rem;
     box-sizing: border-box;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin-right: 0.5rem;
     content: " ";
@@ -21,22 +21,22 @@
 
 .form-checkbox + .form-checkbox-text:hover::before,
 .form-checkbox[disabled] + .form-checkbox-text::before {
-    background-color: $color-base-800;
+    background-color: var(--color-base-800);
 }
 
 .form-checkbox:checked + .form-checkbox-text::before {
-    border-color: $color-accent-500;
-    background-color: $color-accent-500;
+    border-color: var(--color-accent-500);
+    background-color: var(--color-accent-500);
 }
 
 .form-checkbox:focus + .form-checkbox-text::before {
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
     @include focusring;
 }
 
 .form-checkbox:checked + .form-checkbox-text:hover::before {
-    border-color: $color-accent-400;
-    background-color: $color-accent-400;
+    border-color: var(--color-accent-400);
+    background-color: var(--color-accent-400);
 }
 
 .form-checkbox:checked + .form-checkbox-text::after {
@@ -51,8 +51,8 @@
 }
 
 .form-checkbox:checked[disabled] + .form-checkbox-text::before {
-    border-color: $color-base-500;
-    background-color: $color-base-500;
+    border-color: var(--color-base-500);
+    background-color: var(--color-base-500);
 }
 
 .form-checkbox-label {

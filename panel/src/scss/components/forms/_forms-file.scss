@@ -6,7 +6,7 @@
     display: block;
     padding: 0.5rem;
     margin-bottom: 1rem;
-    background-color: $color-base-800;
+    background-color: var(--color-base-800);
     clear: both;
     font-size: 0.875rem;
 }
@@ -14,17 +14,17 @@
 .form-input-file-label > span {
     display: block;
     padding: 1.5rem 1rem;
-    border: 2px dashed $color-base-500;
+    border: 2px dashed var(--color-base-500);
     border-radius: $border-radius;
-    color: $color-base-100;
+    color: var(--color-base-100);
     text-align: center;
     transition: background-color $transition-time-md;
 
     &:hover {
-        background-color: $color-base-700;
+        background-color: var(--color-base-700);
     }
 }
 
 .form-input-file-label.drag > span {
-    background-color: $color-base-700;
+    background-color: var(--color-base-700);
 }

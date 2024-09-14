@@ -2,8 +2,8 @@
 
 .editor-toolbar {
     padding: 0.125rem 0.25rem;
-    border: 1px solid $color-base-500;
-    background-color: $color-base-800;
+    border: 1px solid var(--color-base-500);
+    background-color: var(--color-base-800);
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
 }
@@ -13,8 +13,8 @@
 
     &:hover,
     &:focus {
-        background-color: $color-base-600;
-        color: $color-accent-500;
+        background-color: var(--color-base-600);
+        color: var(--color-accent-500);
     }
 
     &:focus {
@@ -30,7 +30,7 @@
     min-height: 3 * $font-size-md * $base-line-height + 0.75rem * 2;
     max-height: 30 * $font-size-md * $base-line-height + 0.75rem * 2;
     padding: 0.75rem 1rem;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin-bottom: 0.5rem;
     font-family: $base-font-family;
@@ -46,18 +46,18 @@
     min-height: 3 * $font-size-md * $base-line-height + 0.75rem * 2;
     max-height: 30 * $font-size-md * $base-line-height + 0.75rem * 2;
     padding: 0 1rem;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin-bottom: 0.5rem;
-    background: $color-base-900;
-    color: $color-base-100;
+    background: var(--color-base-900);
+    color: var(--color-base-100);
     font-family: $base-font-family;
     font-size: $font-size-md;
     resize: vertical;
 }
 
 .CodeMirror-wrap .CodeMirror-line-like.CodeMirror-placeholder {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .CodeMirror-lines {
@@ -82,11 +82,11 @@
 
 .editor-wrap.focused .editor-toolbar,
 .editor-wrap.focused .CodeMirror {
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
 }
 
 .CodeMirror-cursor {
-    border-left-color: $color-base-100;
+    border-left-color: var(--color-base-100);
 }
 
 .CodeMirror-vscrollbar,
@@ -100,13 +100,13 @@
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-    background: $selection-background-color;
+    background: var(--color-selection);
 }
 
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-    background: $selection-background-color;
+    background: var(--color-selection);
 }
 
 .cm-formatting-code-block,
@@ -125,7 +125,7 @@
 }
 
 .cm-s-formwork .cm-formatting {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .cm-s-formwork .cm-header-1 {
@@ -158,12 +158,12 @@
 }
 
 .cm-s-formwork .cm-quote {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .cm-s-formwork .cm-formatting-quote + .cm-quote {
     padding-left: 1.25rem;
-    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path d="M4.195 12.864a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H2.25a.25.25 0 01-.25-.25V4.25A.25.25 0 012.25 4h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728zm7.184 0a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H9.434a.25.25 0 01-.25-.25V4.25a.25.25 0 01.25-.25h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728z"/></svg>') no-repeat left center;
+    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path d="M4.195 12.864a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H2.25a.25.25 0 01-.25-.25V4.25A.25.25 0 012.25 4h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728zm7.184 0a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H9.434a.25.25 0 01-.25-.25V4.25a.25.25 0 01.25-.25h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728z"/></svg>') no-repeat left center;
     background-size: 1rem 1rem;
 }
 
@@ -173,19 +173,19 @@
 }
 
 .cm-s-formwork .cm-link {
-    color: $color-accent-500;
+    color: var(--color-accent-500);
     text-decoration: underline;
 }
 
 .cm-s-formwork .cm-url.cm-formatting,
 .cm-s-formwork .cm-image-alt-text.cm-formatting,
 .cm-s-formwork .cm-image-marker {
-    color: $color-accent-500;
+    color: var(--color-accent-500);
 }
 
 .cm-s-formwork .cm-url,
 .cm-s-formwork .cm-image-alt-text {
-    color: $color-base-300;
+    color: var(--color-base-300);
     text-decoration: none;
 }
 
@@ -193,32 +193,32 @@
     display: inline;
     padding: 0 0.25rem 0 1.5rem;
     border-radius: $border-radius;
-    background: $color-base-900 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14.5 3.5h-13v9h13v-9zM1.5 2A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h13a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 2h-13z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M5.584 8.09a.25.25 0 00-.409.018l-3.444 5.427-1.266-.804 3.444-5.426a1.75 1.75 0 012.864-.13l1.47 1.91a.25.25 0 00.23.096l2.679-.356a1.75 1.75 0 011.524.557l2.883 3.168-1.109 1.01-2.883-3.168a.25.25 0 00-.218-.08l-2.678.356A1.75 1.75 0 017.054 10l-1.47-1.91z" clip-rule="evenodd"/><path d="M11.5 6.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>') no-repeat left 0.25rem center;
-    background-color: $color-base-700;
+    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14.5 3.5h-13v9h13v-9zM1.5 2A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h13a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 2h-13z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M5.584 8.09a.25.25 0 00-.409.018l-3.444 5.427-1.266-.804 3.444-5.426a1.75 1.75 0 012.864-.13l1.47 1.91a.25.25 0 00.23.096l2.679-.356a1.75 1.75 0 011.524.557l2.883 3.168-1.109 1.01-2.883-3.168a.25.25 0 00-.218-.08l-2.678.356A1.75 1.75 0 017.054 10l-1.47-1.91z" clip-rule="evenodd"/><path d="M11.5 6.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>') no-repeat left 0.25rem center;
+    background-color: var(--color-base-700);
     background-size: 1rem 1rem;
-    color: $color-base-100;
+    color: var(--color-base-100);
 }
 
 .cm-s-formwork .CodeMirror-activeline .cm-image ~ .cm-url:not(.cm-formatting) {
     padding: 0;
     background: transparent;
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .cm-s-formwork .cm-hr {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }
 
 .cm-s-formwork .cm-tag {
-    color: $color-green-400;
+    color: var(--color-green-400);
 }
 
 .cm-s-formwork .cm-bracket {
-    color: $color-base-100;
+    color: var(--color-base-100);
 }
 
 .cm-s-formwork .cm-attribute {
-    color: $color-purple-600;
+    color: var(--color-purple-600);
 }
 
 .cm-s-formwork .cm-bracket,

@@ -9,7 +9,7 @@
 }
 
 .page-route {
-    color: $color-base-300;
+    color: var(--color-base-300);
     font-size: $font-size-sm;
 }
 
@@ -39,15 +39,15 @@
 }
 
 .page-status-published .icon {
-    color: $color-success-500;
+    color: var(--color-success-500);
 }
 
 .page-status-not-published .icon {
-    color: $color-danger-500;
+    color: var(--color-danger-500);
 }
 
 .page-status-not-routable .icon {
-    color: $color-warning-500;
+    color: var(--color-warning-500);
 }
 
 .page-actions {
@@ -71,14 +71,14 @@
     margin: 0;
     background-color: transparent;
     box-shadow: none;
-    color: $color-base-300;
+    color: var(--color-base-300);
     cursor: pointer;
 
     &:hover,
     &:focus {
         border-color: transparent;
         background-color: transparent;
-        color: $color-base-300;
+        color: var(--color-base-300);
     }
 
     &:focus {
@@ -88,7 +88,7 @@
     & .icon {
         display: inline-block;
         margin-right: 0;
-        color: $color-base-100;
+        color: var(--color-base-100);
         opacity: 0;
         transition: opacity $transition-time-sm;
     }
@@ -110,7 +110,7 @@
 .page-file-preview-container {
     display: flex;
     justify-content: center;
-    background-color: $color-base-600;
+    background-color: var(--color-base-600);
 }
 
 .page-file-preview-link {
@@ -121,7 +121,7 @@
 .page-file-preview-image {
     max-height: 40.5rem;
     object-fit: contain;
-    @include checkbox-background(1.5rem, rgba($color-black, 0.125));
+    @include checkered-background(1.5rem, 0.125);
 }
 
 .page-file-info-entry-title {

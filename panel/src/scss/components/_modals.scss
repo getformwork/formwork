@@ -1,7 +1,7 @@
 .modal-backdrop {
     position: fixed;
     z-index: 16;
-    background-color: rgba($color-blue-100, 0.5);
+    background-color: var(--color-backdrop);
     inset: 0;
 }
 
@@ -29,20 +29,20 @@
 }
 
 .modal-header {
-    border-bottom: 1px solid $color-base-600;
+    border-bottom: 1px solid var(--color-base-600);
 }
 
 .modal-footer {
-    border-top: 1px solid $color-base-600;
+    border-top: 1px solid var(--color-base-600);
 }
 
 .modal-container {
     width: 26rem;
     max-width: 26rem;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin: 3rem 0.5rem;
-    background-color: $color-base-900;
+    background-color: var(--color-base-900);
     box-shadow: $box-shadow-lg;
     @media (width >= 26rem) {
         margin: 3rem auto;

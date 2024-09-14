@@ -15,12 +15,13 @@
     transition:
         border-color $transition-time-sm,
         background-color $transition-time-sm,
+        box-shadow $transition-time-sm,
         color $transition-time-sm;
     white-space: nowrap;
     @include user-select-none;
 
     &:hover {
-        color: $color-accent-500;
+        color: var(--color-accent-500);
     }
 
     &:focus {
@@ -32,7 +33,7 @@
     &.disabled,
     &.disabled:hover {
         box-shadow: none;
-        color: $color-base-500;
+        color: var(--color-base-500);
         pointer-events: none;
     }
 
@@ -49,97 +50,82 @@
 }
 
 .button-accent {
-    border: 1px solid $color-accent-500;
-    background-color: $color-accent-500;
-    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
-    color: $color-white;
+    border: 1px solid var(--color-accent-500);
+    background-color: var(--color-accent-500);
+    box-shadow: 0 2px 0 var(--color-base-500);
+    color: var(--color-white);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: $color-accent-400;
-        background-color: $color-accent-400;
-        color: $color-white;
-    }
-
-    &:focus {
-        @include focusring;
+        border-color: var(--color-accent-400);
+        background-color: var(--color-accent-400);
+        box-shadow: 0 2px 0 var(--color-base-400);
+        color: var(--color-white);
     }
 }
 
 .button-secondary {
-    border: 1px solid $color-base-600;
-    background-color: $color-base-600;
-    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
-    color: $color-base-100;
+    border: 1px solid var(--color-base-600);
+    background-color: var(--color-base-600);
+    box-shadow: 0 2px 0 var(--color-base-500);
+    color: var(--color-base-100);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: $color-base-500;
-        background-color: $color-base-500;
-        color: $color-base-100;
-    }
-
-    &:focus {
-        @include focusring($color-base-100);
+        border-color: var(--color-base-500);
+        background-color: var(--color-base-500);
+        box-shadow: 0 2px 0 var(--color-base-400);
+        color: var(--color-base-100);
     }
 }
 
 .button-success {
-    border: 2px solid $color-success-500;
-    background-color: $color-success-500;
-    box-shadow: 0 1px 0 rgba($color-base-100, 0.25);
-    color: $color-white;
+    border: 2px solid var(--color-success-500);
+    background-color: var(--color-success-500);
+    box-shadow: 0 1px 0 var(--color-shadow-lg);
+    color: var(--color-white);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: $color-success-400;
-        background-color: $color-success-400;
-        color: $color-white;
-    }
-
-    &:focus {
-        @include focusring($color-success-500);
+        border-color: var(--color-success-400);
+        background-color: var(--color-success-400);
+        box-shadow: 0 2px 0 var(--color-base-400);
+        color: var(--color-white);
     }
 }
 
 .button-warning {
-    border: 1px solid $color-warning-500;
-    background-color: $color-warning-500;
-    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
-    color: $color-white;
+    border: 1px solid var(--color-warning-500);
+    background-color: var(--color-warning-500);
+    box-shadow: 0 2px 0 var(--color-base-500);
+    color: var(--color-white);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: $color-warning-400;
-        background-color: $color-warning-400;
-        color: $color-white;
-    }
-
-    &:focus {
-        @include focusring($color-warning-500);
+        border-color: var(--color-warning-400);
+        background-color: var(--color-warning-400);
+        box-shadow: 0 2px 0 var(--color-base-400);
+        color: var(--color-white);
     }
 }
 
 .button-danger {
-    border: 1px solid $color-danger-500;
-    background-color: $color-danger-500;
-    box-shadow: 0 2px 0 rgba($color-base-100, 0.25);
-    color: $color-white;
+    border: 1px solid var(--color-danger-500);
+    background-color: var(--color-danger-500);
+    box-shadow: 0 2px 0 var(--color-base-500);
+    color: var(--color-white);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: $color-danger-400;
-        background-color: $color-danger-400;
-        color: $color-white;
-    }
-
-    &:focus {
-        @include focusring($color-danger-500);
+        border-color: var(--color-danger-400);
+        background-color: var(--color-danger-400);
+        box-shadow: 0 2px 0 var(--color-base-400);
+        color: var(--color-white);
     }
 }
 

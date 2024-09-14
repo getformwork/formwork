@@ -2,7 +2,7 @@
 
 .tabs {
     padding: $focusring-width $focusring-width 0;
-    border-bottom: 1px solid $color-base-600;
+    border-bottom: 1px solid var(--color-base-600);
     margin-bottom: 1rem;
     overflow-x: auto;
     white-space: nowrap;
@@ -12,16 +12,16 @@
 .tabs-tab {
     display: inline-block;
     padding: 0.5rem 1.25rem;
-    color: $color-base-100;
+    color: var(--color-base-100);
     cursor: pointer;
 
     &:hover {
-        color: $color-base-100;
+        color: var(--color-base-100);
     }
 }
 
 .tabs-tab.active {
-    border-bottom: 3px solid $color-accent-500;
+    border-bottom: 3px solid var(--color-accent-500);
     font-weight: 600;
 }
 

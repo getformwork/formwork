@@ -13,7 +13,7 @@
     border-radius: $border-radius;
     margin-bottom: 0.5rem;
     animation: fade-in-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: $color-base-700;
+    background-color: var(--color-base-700);
     box-shadow: $box-shadow-md;
     cursor: default;
     text-overflow: ellipsis;
@@ -50,21 +50,21 @@
 }
 
 .notification-info {
-    background-color: $color-accent-500;
-    color: $color-white;
+    background-color: var(--color-accent-500);
+    color: var(--color-white);
 }
 
 .notification-success {
-    background-color: $color-success-400;
-    color: $color-white;
+    background-color: var(--color-success-400);
+    color: var(--color-white);
 }
 
 .notification-warning {
-    background-color: $color-warning-500;
-    color: $color-white;
+    background-color: var(--color-warning-500);
+    color: var(--color-white);
 }
 
 .notification-danger {
-    background-color: $color-danger-500;
-    color: $color-white;
+    background-color: var(--color-danger-500);
+    color: var(--color-white);
 }

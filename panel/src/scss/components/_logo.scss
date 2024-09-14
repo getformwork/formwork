@@ -2,7 +2,7 @@
 
 .logo {
     margin-bottom: 2rem;
-    color: $color-base-100;
+    color: var(--color-base-100);
     font-size: $font-size-h5;
     font-weight: 600;
     line-height: 1.5rem;
@@ -20,5 +20,5 @@
 
 .logo a {
     padding-top: $focusring-width;
-    color: $color-base-100;
+    color: var(--color-base-100);
 }

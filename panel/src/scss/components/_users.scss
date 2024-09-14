@@ -10,12 +10,12 @@
 .user-summary-image img {
     width: 12rem;
     border-radius: $border-radius-round;
-    background-color: $color-base-900;
+    background-color: var(--color-base-900);
     box-shadow: $box-shadow-sm;
 }
 
 .users-list {
-    border-top: 1px solid $color-base-600;
+    border-top: 1px solid var(--color-base-600);
     @include user-select-none;
 }
 
@@ -32,10 +32,10 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px solid $color-base-600;
+    border-bottom: 1px solid var(--color-base-600);
 
     &:hover {
-        background-color: $color-base-800;
+        background-color: var(--color-base-800);
     }
 }
 

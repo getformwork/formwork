@@ -6,7 +6,7 @@
 }
 
 .error-container h1 {
-    color: $color-base-400;
+    color: var(--color-base-400);
     @include user-select-none;
 }
 
@@ -50,7 +50,7 @@
     padding: 1.5rem 2rem;
     border-radius: $border-radius;
     margin: 0 auto 4rem;
-    background-color: $color-white;
+    background-color: var(--color-white);
     text-align: left;
 }
 
@@ -61,7 +61,7 @@
 .error-debug-editor-uri {
     color: inherit;
     text-decoration: underline;
-    text-decoration-color: $color-base-500;
+    text-decoration-color: var(--color-base-500);
     text-decoration-style: dashed;
 }
 
@@ -75,5 +75,5 @@
 }
 
 .error-debug-line {
-    color: $color-base-300;
+    color: var(--color-base-300);
 }

@@ -1,7 +1,7 @@
 .form-input-duration {
     box-sizing: border-box;
     padding: 0.25rem 0.5rem * 0.5;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin-top: 0;
     margin-bottom: 0.5rem;
@@ -11,7 +11,7 @@
 }
 
 .form-input-duration.focused {
-    border-color: $color-accent-500;
+    border-color: var(--color-accent-500);
 }
 
 .form-input-duration > span {
@@ -24,7 +24,7 @@
     border: 0;
     margin: 0;
     appearance: textfield;
-    background-color: $color-base-700;
+    background-color: var(--color-base-700);
     text-align: center;
     vertical-align: baseline;
 

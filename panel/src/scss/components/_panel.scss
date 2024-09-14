@@ -10,9 +10,9 @@
     align-items: center;
     padding: 0.75rem;
     padding-left: 1.5rem + 1rem + 2 * 0.75rem;
-    background-color: $color-base-600;
+    background-color: var(--color-base-600);
     box-shadow: $box-shadow-sm;
-    color: $color-base-100;
+    color: var(--color-base-100);
     font-weight: 500;
     @include user-select-none;
     @media (min-width: map.get($breakpoints, "md")) {
@@ -39,7 +39,7 @@
     transition: box-shadow $transition-time-md ease-out;
 
     .panel-user-card:hover & {
-        box-shadow: 0 0 0 0.5rem $color-base-600;
+        box-shadow: 0 0 0 0.5rem var(--color-base-600);
     }
 }
 
@@ -48,12 +48,12 @@
 }
 
 .panel-user-fullname {
-    color: $color-base-100;
+    color: var(--color-base-100);
     font-weight: $headings-font-weight;
 }
 
 .panel-user-username {
-    color: $color-base-300;
+    color: var(--color-base-300);
     font-size: $font-size-sm;
 }
 

@@ -4,7 +4,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 2em;
     margin-left: 0.25rem;
-    background-color: $color-base-600;
+    background-color: var(--color-base-600);
     font-size: 0.75em;
     font-weight: 600;
     line-height: 1.125;
@@ -18,21 +18,21 @@
 }
 
 .button-accent .badge {
-    background-color: $color-accent-900;
-    color: $color-accent-500;
+    background-color: var(--color-accent-900);
+    color: var(--color-accent-500);
 }
 
 .button-success .badge {
-    background-color: $color-success-900;
-    color: $color-success-500;
+    background-color: var(--color-success-900);
+    color: var(--color-success-500);
 }
 
 .button-warning .badge {
-    background-color: $color-warning-900;
-    color: $color-warning-500;
+    background-color: var(--color-warning-900);
+    color: var(--color-warning-500);
 }
 
 .button-danger .badge {
-    background-color: $color-danger-900;
-    color: $color-danger-500;
+    background-color: var(--color-danger-900);
+    color: var(--color-danger-500);
 }

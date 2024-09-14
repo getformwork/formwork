@@ -25,10 +25,10 @@
     display: none;
     min-width: 8rem;
     padding: 0.25rem 0;
-    border: 1px solid $color-base-500;
+    border: 1px solid var(--color-base-500);
     border-radius: $border-radius;
     margin-top: 3px;
-    background-color: $color-base-900;
+    background-color: var(--color-base-900);
     box-shadow: $box-shadow-md;
     float: left;
 }
@@ -57,7 +57,7 @@
     padding: 0.5rem 1rem;
     border: 0;
     background-color: transparent;
-    color: $color-base-100;
+    color: var(--color-base-100);
     cursor: pointer !important;
     font-family: inherit;
     font-size: $font-size-sm;
@@ -65,23 +65,23 @@
     white-space: nowrap;
 
     &:hover {
-        background-color: $color-base-700;
-        color: $color-base-100;
+        background-color: var(--color-base-700);
+        color: var(--color-base-100);
     }
 
     &.disabled {
-        color: $color-base-300;
+        color: var(--color-base-300);
         cursor: default !important;
 
         &:hover {
             background-color: transparent;
-            color: $color-base-300;
+            color: var(--color-base-300);
         }
     }
 
     &.selected {
-        background-color: $color-accent-500;
-        color: $color-white;
+        background-color: var(--color-accent-500);
+        color: var(--color-white);
     }
 
     & .icon {
@@ -94,7 +94,7 @@
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
-    color: $color-base-300;
+    color: var(--color-base-300);
     cursor: default !important;
     font-size: $font-size-sm;
     white-space: nowrap;
@@ -102,6 +102,6 @@
 
 .dropdown-separator {
     height: 0;
-    border-top: 1px solid $color-base-500;
+    border-top: 1px solid var(--color-base-500);
     margin: 0.25rem 0;
 }

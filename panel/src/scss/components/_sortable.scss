@@ -1,13 +1,13 @@
 .sortable-handle .icon {
     display: inline-block;
     margin-bottom: 0;
-    color: $color-base-300;
+    color: var(--color-base-300);
     cursor: grab;
 }
 
 .sortable-chosen,
 .sortable-ghost {
-    background-color: $color-base-900;
+    background-color: var(--color-base-900);
     cursor: grabbing;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .sortable-fallback {
-    box-shadow: 0 0 0.75rem 0.25rem rgba($color-accent-100, 15%);
+    box-shadow: 0 0 0.75rem 0.25rem var(--color-shadow-lg);
 }
 
 .sortable-fallback::before,
