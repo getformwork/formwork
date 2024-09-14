@@ -819,14 +819,13 @@ class FileSystem
         if (!preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches)) {
             throw new InvalidArgumentException(sprintf('Invalid shorthand bytes notation "%s"', $shorthand));
         }
-        if ($unit === 'K') {
-            $value *= 1024;
-        } elseif ($unit === 'M') {
-            $value *= 1024 ** 2;
-        } elseif ($unit === 'G') {
-            $value *= 1024 ** 3;
-        }
-        return $value;
+        [, $value, $unit] = $matches;
+        return match (strtoupper($unit)) {
+            'K'     => (int) $value * 1024,
+            'M'     => (int) $value * 1024 ** 2,
+            'G'     => (int) $value * 1024 ** 3,
+            default => (int) $value,
+        };
     }
 
     /**
