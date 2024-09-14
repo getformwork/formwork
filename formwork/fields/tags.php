@@ -4,7 +4,7 @@ use Formwork\App;
 use Formwork\Data\Collection;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
-
+use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 
 return function (App $app) {
@@ -35,6 +35,12 @@ return function (App $app) {
             }
 
             return array_values(array_filter($value));
+        },
+
+        'options' => function ($field): ?array {
+            $options = $field->get('options', null);
+
+            return $options !== null ? Arr::from($options) : null;
         },
     ];
 };
