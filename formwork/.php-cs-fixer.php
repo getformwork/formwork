@@ -11,13 +11,11 @@ $config = new Config();
 return $config
     ->setRules([
         '@PER-CS2.0' => true,
-        '@PHP83Migration' => true,
+        '@PHP84Migration' => true,
         'align_multiline_comment' => true,
-        'array_syntax' => true,
         'binary_operator_spaces' => ['default' => 'single_space', 'operators' => ['=>' => 'align_single_space_minimal']],
-        'cast_spaces' => true,
         'class_attributes_separation' => true,
-        'fully_qualified_strict_types' => ['import_symbols' => true, 'leading_backslash_in_global_namespace' => false],
+        'fully_qualified_strict_types' => ['import_symbols' => true],
         'function_declaration' => true,
         'include' => true,
         'multiline_whitespace_before_semicolons' => true,
@@ -35,7 +33,6 @@ return $config
         'no_unneeded_control_parentheses' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
-        'nullable_type_declaration_for_default_null_value' => true,
         'ordered_class_elements' => true,
         'ordered_imports' => true,
         'phpdoc_align' => true,
