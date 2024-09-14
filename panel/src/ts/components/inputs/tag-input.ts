@@ -2,9 +2,19 @@ import { $, $$ } from "../../utils/selectors";
 import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
 import { debounce } from "../../utils/events";
 
+interface TagInputOptions {
+    labels: {
+        addKeyCodes: string[];
+        accept: "options" | "any";
+    };
+}
+
 export class TagInput {
-    constructor(input: HTMLInputElement) {
-        const options = { addKeyCodes: ["Space"] };
+    constructor(input: HTMLInputElement, userOptions: Partial<TagInputOptions>) {
+        const defaults = { addKeyCodes: ["Comma"], accept: "options" };
+
+        const options = Object.assign({}, defaults, userOptions);
+
         let tags: string[] = [];
         let placeholder: string, dropdown: HTMLElement;
 
@@ -73,7 +83,12 @@ export class TagInput {
 
         function createDropdown() {
             if ("options" in input.dataset) {
-                const list = JSON.parse(input.dataset.options ?? "{}");
+                const list: { [key: string | number]: string } = JSON.parse(input.dataset.options ?? "{}");
+                const isAssociative = !Array.isArray(list);
+
+                if ("accept" in input.dataset) {
+                    options.accept = input.dataset.accept ?? "options";
+                }
 
                 dropdown = document.createElement("div");
                 dropdown.className = "dropdown-list";
@@ -86,7 +101,7 @@ export class TagInput {
                     const item = document.createElement("div");
                     item.className = "dropdown-item";
                     item.innerHTML = list[key];
-                    item.dataset.value = key;
+                    item.dataset.value = isAssociative ? key : list[key];
                     item.addEventListener("click", function () {
                         this.dataset.value && addTag(this.dataset.value);
                     });
@@ -99,7 +114,6 @@ export class TagInput {
                     if (getComputedStyle(dropdown).display === "none") {
                         updateDropdown();
                         dropdown.scrollTop = 0;
-                        dropdown.style.display = "block";
                     }
                 });
 
@@ -134,9 +148,11 @@ export class TagInput {
                             }
                             break;
                         default:
-                            if (options.addKeyCodes.includes(event.key)) {
-                                addTagFromSelectedDropdownItem();
-                                event.preventDefault();
+                            if (options.addKeyCodes.includes(event.code)) {
+                                if (getComputedStyle(dropdown).display !== "none") {
+                                    addTagFromSelectedDropdownItem();
+                                    event.preventDefault();
+                                }
                             }
                     }
                 });
@@ -202,7 +218,7 @@ export class TagInput {
                         event.preventDefault();
                         break;
                     default:
-                        if (value !== "" && options.addKeyCodes.includes(event.key)) {
+                        if (value !== "" && options.addKeyCodes.includes(event.code)) {
                             addTag(value);
                             event.preventDefault();
                             break;
@@ -234,7 +250,7 @@ export class TagInput {
 
         function validateTag(value: string) {
             if (!tags.includes(value)) {
-                if (dropdown) {
+                if (dropdown && options.accept === "options") {
                     return $(`[data-value="${value}"]`, dropdown) !== null;
                 }
                 return true;
@@ -293,11 +309,9 @@ export class TagInput {
         function updateDropdown() {
             let visibleItems = 0;
             $$(".dropdown-item", dropdown).forEach((element) => {
-                if (getComputedStyle(element).display !== "none") {
-                    visibleItems++;
-                }
                 if (!tags.includes(element.dataset.value as string)) {
                     element.style.display = "block";
+                    visibleItems++;
                 } else {
                     element.style.display = "none";
                 }

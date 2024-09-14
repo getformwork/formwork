@@ -19,6 +19,7 @@ interface AppConfig {
     DateInput?: any;
     DurationInput?: any;
     SelectInput?: any;
+    TagInput?: any;
     Backups?: any;
 }
 

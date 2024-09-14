@@ -25,7 +25,7 @@ export class Inputs {
 
         $$("input[type=file]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new FileInput(element)));
 
-        $$("input[data-field=tags]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new TagInput(element)));
+        $$("input[data-field=tags]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new TagInput(element, app.config.TagInput)));
 
         $$("input[data-field=duration]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new DurationInput(element, app.config.DurationInput)));
 

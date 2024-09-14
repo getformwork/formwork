@@ -12,6 +12,7 @@
                 'disabled'     => $field->isDisabled(),
                 'hidden'       => $field->isHidden(),
                 'data-field'   => 'tags',
-                'data-options' => $field->has('options') ? Formwork\Parsers\Json::encode((array) $field->get('options')) : null,
+                'data-options' => $field->has('options') ? Formwork\Parsers\Json::encode($field->options()) : null,
+                'data-accept'  => $field->get('accept', 'options'),
             ]) ?>>
 </div>
