@@ -387,6 +387,16 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Flatten the collection items up to the specified depth
+     */
+    public function flatten(int $depth = PHP_INT_MAX): static
+    {
+        $collection = $this->clone();
+        $collection->data = Arr::flatten($collection->data, $depth);
+        return $collection;
+    }
+
+    /**
      * Filter the collection using the key from each item
      */
     public function filterBy(string $key, mixed $value = true, mixed $default = null, ?bool $strict = null): static

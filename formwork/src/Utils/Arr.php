@@ -437,6 +437,49 @@ class Arr
     }
 
     /**
+     * Flatten array items up to the specified depth
+     *
+     * @param array<mixed> $array
+     *
+     * @return array<mixed>
+     */
+    public static function flatten(array $array, int $depth = PHP_INT_MAX): array
+    {
+        if ($depth === 0) {
+            return $array;
+        }
+
+        if ($depth < 0) {
+            throw new UnexpectedValueException(sprintf('%s() expects a non-negative depth', __METHOD__));
+        }
+
+        $result = [];
+
+        foreach ($array as $value) {
+            if ($value instanceof Arrayable) {
+                $value = $value->toArray();
+            }
+            if ($value instanceof Traversable) {
+                $value = iterator_to_array($value);
+            }
+
+            if (!is_array($value)) {
+                $result[] = $value;
+                continue;
+            }
+
+            if ($depth > 1) {
+                $value = static::flatten($value, $depth - 1);
+            }
+            foreach ($value as $val) {
+                $result[] = $val;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Sort an array with the given options
      *
      * @param array<mixed>               $array
