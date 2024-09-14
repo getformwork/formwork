@@ -816,9 +816,9 @@ class FileSystem
     public static function shorthandToBytes(string $shorthand): int
     {
         $shorthand = trim($shorthand);
-        preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches);
-        $value = (int) $matches[1];
-        $unit = strtoupper($matches[2]);
+        if (!preg_match('/^(\d+)([K|M|G]?)$/i', $shorthand, $matches)) {
+            throw new InvalidArgumentException(sprintf('Invalid shorthand bytes notation "%s"', $shorthand));
+        }
         if ($unit === 'K') {
             $value *= 1024;
         } elseif ($unit === 'M') {

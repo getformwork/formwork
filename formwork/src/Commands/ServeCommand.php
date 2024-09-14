@@ -54,10 +54,6 @@ class ServeCommand
 
             [, $date, $message] = $matches;
 
-            if (!isset($date, $message)) {
-                continue;
-            }
-
             $date = (new DateTimeImmutable($date));
 
             switch (true) {
@@ -81,12 +77,14 @@ class ServeCommand
 
                     [, $requestPort, $requestInfo] = $this->splitMessage($message);
 
-                    preg_match(
+                    if (!preg_match(
                         '/^(?:\[(?<status>\d{3})\]: (?<method>[A-Z]+) (?<uri>[^ ]+)(?: -(?<description> .+))?|(?<message>.+))/',
                         $this->requestData[$requestPort]['info'],
                         $info,
                         PREG_UNMATCHED_AS_NULL
-                    );
+                    )) {
+                        throw new UnexpectedValueException('Unexpected PHP Development Server message format');
+                    }
 
                     $this->climate->out(sprintf(
                         '<light_gray>%s</light_gray> %s <dark_gray>~%s</dark_gray>',
