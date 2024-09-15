@@ -286,7 +286,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a copy of the collection with its items from a given index
      */
-    public function slice(int $index, int $length): static
+    public function slice(int $index, ?int $length = null): static
     {
         $collection = $this->clone();
         $collection->data = array_slice($collection->data, $index, $length);
