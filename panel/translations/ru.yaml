@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Позиция
 panel.pages.file.preview: Просмотр
 panel.pages.files: Файлы
+panel.pages.history.event.created: Страница создана %s %s.
+panel.pages.history.event.edited: Страница изменена %s %s.
 panel.pages.languages: Языки
 panel.pages.languages.addLanguage: Добавлять %s
 panel.pages.languages.editLanguage: Редактировать %s
@@ -263,10 +265,12 @@ panel.pages.preview: Предварительный просмотр
 panel.pages.previewFile: Предварительный просмотр
 panel.pages.previous: Предыдущая страница
 panel.pages.previousFile: Предыдущий файл
+panel.pages.publish: Опубликовать
 panel.pages.renameFile: Переименовать файл
 panel.pages.renameFile.name: Имя
 panel.pages.replaceFile: Заменить файл
 panel.pages.save: Сохранить
+panel.pages.saveOnly: Сохранить без публикации
 panel.pages.status.notPublished: Не Опубликовано
 panel.pages.status.notRoutable: Не маршрутизируемый
 panel.pages.status.published: Опубликованный

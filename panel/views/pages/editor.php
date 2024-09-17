@@ -1,5 +1,6 @@
 <?php $this->layout('panel') ?>
 <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
+    <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
     <div class="header">
         <div class="min-w-0 flex-grow-1">
             <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $this->escape($page->title()) ?></div>
@@ -35,11 +36,32 @@
                     </div>
                 </div>
             <?php endif ?>
-            <button type="submit" class="button button-accent mb-0" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.save') ?></button>
+            <?php if ($history?->isJustCreated()): ?>
+                <div class="dropdown mb-0">
+                    <div class="button-group">
+                        <button type="submit" class="button button-accent" formaction="?publish=true"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.publish') ?></button>
+                        <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-save-options"></button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-save-options">
+                        <button type="submit" class="dropdown-item" formaction="?publish=false"><?= $this->translate('panel.pages.saveOnly') ?></button>
+                    </div>
+                </div>
+            <?php else: ?>
+                <button type="submit" class="button button-accent mb-0"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.save') ?></button>
+            <?php endif ?>
         </div>
     </div>
     <div>
         <?php $this->insert('fields', ['fields' => $fields]) ?>
     </div>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+    <?php if ($history !== null && !$history->items()->isEmpty()): ?>
+        <div class="text-size-sm text-color-gray-medium"><?= $this->icon('clock-rotate-left') ?>
+            <?= $this->translate(
+                'panel.pages.history.event.' . $history->lastItem()->event()->value,
+                '<a href="' . $panel->uri('/users/' . $history->lastItem()->user() . '/profile/') . '">' . $history->lastItem()->user() . '</a>',
+                '<span title="' . $this->datetime($history->lastItem()->time()) . '">' . $this->timedistance($history->lastItem()->time()) . '</span>'
+            ) ?>
+        </div>
+    <?php endif ?>
 </form>

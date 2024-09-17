@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Posição
 panel.pages.file.preview: Pré-visualização
 panel.pages.files: Ficheiros
+panel.pages.history.event.created: Página criada por %s %s.
+panel.pages.history.event.edited: Página editada por %s %s.
 panel.pages.languages: Idiomas
 panel.pages.languages.addLanguage: Criar %s
 panel.pages.languages.editLanguage: Editar %s
@@ -263,10 +265,12 @@ panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Página anterior
 panel.pages.previousFile: Ficheiro anterior
+panel.pages.publish: Publicar
 panel.pages.renameFile: Renomear arquivo
 panel.pages.renameFile.name: Nome
 panel.pages.replaceFile: Substituir ficheiro
 panel.pages.save: Guardar
+panel.pages.saveOnly: Guardar sem publicar
 panel.pages.status.notPublished: Não publicado
 panel.pages.status.notRoutable: Não roteável
 panel.pages.status.published: Publicado
