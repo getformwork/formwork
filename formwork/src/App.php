@@ -132,10 +132,6 @@ final class App
 
         $response->send();
 
-        if ($this->config()->get('system.statistics.enabled') && $this->site()->currentPage() !== null && !$this->site()->currentPage()->isErrorPage()) {
-            $this->container->get(Statistics::class)->trackVisit();
-        }
-
         return $response;
     }
 
