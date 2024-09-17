@@ -106,6 +106,8 @@ export class EditorInput {
             "changes",
             debounce(() => {
                 textarea.value = editor.getValue();
+                textarea.dispatchEvent(new Event("input", { bubbles: true }));
+                textarea.dispatchEvent(new Event("change", { bubbles: true }));
                 if (editor.historySize().undo < 1) {
                     ($("[data-command=undo]") as HTMLButtonElement).disabled = true;
                 } else {

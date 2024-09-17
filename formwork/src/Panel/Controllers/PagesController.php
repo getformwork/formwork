@@ -246,6 +246,38 @@ class PagesController extends AbstractController
     }
 
     /**
+     * Pages@preview action
+     */
+    public function preview(RouteParams $routeParams): Response
+    {
+        $page = $this->site()->findPage($routeParams->get('page'));
+
+        if ($page === null) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotPreview.pageNotFound'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        $this->site()->setCurrentPage($page);
+
+        // Load data from POST variables
+        $requestData = $this->request->input();
+
+        // Validate fields against data
+        $page->fields()->setValues($requestData)->validate();
+
+        if ($page->template()->name() !== ($template = $requestData->get('template'))) {
+            $page->reload(['template' => $this->site()->templates()->get($template)]);
+        }
+
+        if ($page->parent() !== ($parent = $this->resolveParent($requestData->get('parent')))) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotPreview.parentChanged'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        return new Response($page->render(), $page->responseStatus(), $page->headers());
+    }
+
+    /**
      * Pages@reorder action
      */
     public function reorder(): JsonResponse

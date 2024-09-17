@@ -352,7 +352,8 @@ export class SelectInput {
         function setCurrent(item: HTMLElement) {
             select.value = item.dataset.value as string;
             labelInput.value = item.innerText;
-            select.dispatchEvent(new Event("change"));
+            select.dispatchEvent(new Event("input", { bubbles: true }));
+            select.dispatchEvent(new Event("change", { bubbles: true }));
         }
 
         function getCurrent() {

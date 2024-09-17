@@ -229,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Не могу редактировать
 panel.pages.page.cannotGetFileInfo.fileNotFound: Невозможно получить информацию о файле, файл не найден
 panel.pages.page.cannotGetFileInfo.pageNotFound: Невозможно получить информацию о файле, страница не найдена
 panel.pages.page.cannotMove: Невозможно переместить страницу
+panel.pages.page.cannotPreview.pageNotFound: Невозможно показать предварительный просмотр, страница не найдена
+panel.pages.page.cannotPreview.parentChanged: Невозможно показать предварительный просмотр, родительская страница изменена
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Невозможно переименовать файл, файл с таким именем уже существует
 panel.pages.page.cannotRenameFile.fileNotFound: Невозможно переименовать файл, файл не найден
 panel.pages.page.cannotRenameFile.pageNotFound: Невозможно переименовать файл, страница не найдена
@@ -279,6 +281,7 @@ panel.pages.summary: Сводка
 panel.pages.template: Шаблон
 panel.pages.text: Текст
 panel.pages.toggleChildren: Переключить дочерние страницы
+panel.pages.viewPage: Просмотреть страницу
 panel.panel: Панель администрирования
 panel.register.createUser: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
 panel.register.register: Регистрация нового пользователя

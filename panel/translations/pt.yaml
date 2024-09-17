@@ -229,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Não é possível editar a página, falt
 panel.pages.page.cannotGetFileInfo.fileNotFound: Não é possível obter informações do arquivo, arquivo não encontrado
 panel.pages.page.cannotGetFileInfo.pageNotFound: Não é possível obter informações do arquivo, página não encontrada
 panel.pages.page.cannotMove: Não é possível mover a página
+panel.pages.page.cannotPreview.pageNotFound: Não é possível pré-visualizar a página, página não encontrada
+panel.pages.page.cannotPreview.parentChanged: Não é possível pré-visualizar a página, a página mãe foi alterada
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Não é possível renomear o arquivo, um arquivo com o mesmo nome já existe
 panel.pages.page.cannotRenameFile.fileNotFound: Não é possível renomear o arquivo, arquivo não encontrado
 panel.pages.page.cannotRenameFile.pageNotFound: Não é possível renomear o arquivo, página não encontrada
@@ -279,6 +281,7 @@ panel.pages.summary: Resumo
 panel.pages.template: Template
 panel.pages.text: Texto
 panel.pages.toggleChildren: Expandir páginas
+panel.pages.viewPage: Ver página
 panel.panel: Painel de administração
 panel.register.createUser: O Formwork está instalado, mas nenhum utilizador foi encontrado. Por favor, registre um agora.
 panel.register.register: Registrar novo utilizador
