@@ -110,4 +110,54 @@ class PageCollection extends AbstractCollection implements Paginable
 
         return $pageCollection->filterBy('score')->sortBy('score', direction: SORT_DESC);
     }
+
+    public function withoutChildren(Page $page): static
+    {
+        return $this->difference($page->children());
+    }
+
+    public function withoutPageAndChildren(Page $page): static
+    {
+        return $this->without($page)->difference($page->children());
+    }
+
+    public function withoutDescendants(Page $page): static
+    {
+        return $this->difference($page->descendants());
+    }
+
+    public function withoutPageAndDescendants(Page $page): static
+    {
+        return $this->without($page)->difference($page->descendants());
+    }
+
+    public function withoutParent(Page $page): static
+    {
+        return $this->without($page->parent());
+    }
+
+    public function withoutPageAndParent(Page $page): static
+    {
+        return $this->without($page)->without($page->parent());
+    }
+
+    public function withoutAncestors(Page $page): static
+    {
+        return $this->difference($page->ancestors());
+    }
+
+    public function withoutPageAndAncestors(Page $page): static
+    {
+        return $this->without($page)->difference($page->ancestors());
+    }
+
+    public function withoutSiblings(Page $page): static
+    {
+        return $this->difference($page->siblings());
+    }
+
+    public function withoutPageAndSiblings(Page $page): static
+    {
+        return $this->without($page)->difference($page->siblings());
+    }
 }
