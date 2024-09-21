@@ -4,6 +4,7 @@ namespace Formwork\Fields;
 
 use Formwork\Data\AbstractCollection;
 use Formwork\Fields\Layout\Layout;
+use Formwork\Http\Request;
 use Formwork\Model\Model;
 use Formwork\Utils\Arr;
 
@@ -99,5 +100,14 @@ class FieldCollection extends AbstractCollection
         }
 
         return $this;
+    }
+
+    public function setValuesFromRequest(Request $request, mixed $default = null): static
+    {
+        return $this->setValues([
+            ...$request->query()->toArray(),
+            ...$request->input()->toArray(),
+            ...$request->files()->toArray(),
+        ], $default);
     }
 }
