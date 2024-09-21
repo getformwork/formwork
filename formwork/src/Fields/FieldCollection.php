@@ -4,6 +4,7 @@ namespace Formwork\Fields;
 
 use Formwork\Data\AbstractCollection;
 use Formwork\Fields\Layout\Layout;
+use Formwork\Model\Model;
 use Formwork\Utils\Arr;
 
 class FieldCollection extends AbstractCollection
@@ -19,6 +20,8 @@ class FieldCollection extends AbstractCollection
      */
     protected Layout $layout;
 
+    protected ?Model $model = null;
+
     public function setLayout(Layout $layout): void
     {
         $this->layout = $layout;
@@ -30,6 +33,19 @@ class FieldCollection extends AbstractCollection
     public function layout(): Layout
     {
         return $this->layout;
+    }
+
+    public function setModel(?Model $model): void
+    {
+        $this->model = $model;
+    }
+
+    /**
+     * Return fields model
+     */
+    public function model(): ?Model
+    {
+        return $this->model;
     }
 
     /**

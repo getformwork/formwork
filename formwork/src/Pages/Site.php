@@ -25,6 +25,8 @@ class Site extends Model implements Stringable
     use PageUid;
     use PageUri;
 
+    protected const MODEL_IDENTIFIER = 'site';
+
     /**
      * Site path
      */
@@ -419,6 +421,7 @@ class Site extends Model implements Stringable
         $this->scheme = $this->app->schemes()->get('config.site');
 
         $this->fields = $this->scheme->fields();
+        $this->fields->setModel($this);
 
         $this->loadTemplates();
 

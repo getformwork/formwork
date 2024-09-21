@@ -54,6 +54,8 @@ class Page extends Model implements Stringable
      */
     public const PAGE_STATUS_NOT_ROUTABLE = 'notRoutable';
 
+    protected const MODEL_IDENTIFIER = 'page';
+
     /**
      * Page path
      */
@@ -574,6 +576,7 @@ class Page extends Model implements Stringable
         }
 
         $this->fields ??= $this->scheme()->fields();
+        $this->fields->setModel($this);
 
         $defaultLanguage = in_array((string) $site->languages()->default(), $languages, true)
             ? $site->languages()->default()

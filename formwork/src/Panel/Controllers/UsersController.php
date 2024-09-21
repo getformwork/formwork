@@ -131,6 +131,8 @@ class UsersController extends AbstractController
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
+        $fields->setModel($user);
+
         // Disable password and/or role fields if they cannot be changed
         $fields->get('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
         $fields->get('role')->set('disabled', !$this->user()->canChangeRoleOf($user));

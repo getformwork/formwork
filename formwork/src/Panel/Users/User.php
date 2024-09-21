@@ -13,6 +13,8 @@ use Formwork\Utils\FileSystem;
 
 class User extends Model
 {
+    protected const MODEL_IDENTIFIER = 'user';
+
     /**
      * Default data of the user
      *
@@ -49,6 +51,7 @@ class User extends Model
         $this->scheme = $app->schemes()->get('users.user');
 
         $this->fields = $this->scheme->fields();
+        $this->fields->setModel($this);
 
         $this->data = [...$this->defaults, ...$data];
 
