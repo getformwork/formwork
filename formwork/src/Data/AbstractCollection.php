@@ -479,6 +479,48 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Return a copy of the collection with the union of the values of the given collections
+     */
+    public function union(self ...$collections): static
+    {
+        $collection = $this->clone();
+
+        foreach ($collections as $otherCollection) {
+            $collection->data += $otherCollection->data;
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Return a copy of the collection with the intersection of the values of the given collections
+     */
+    public function intersection(self ...$collections): static
+    {
+        $collection = $this->clone();
+
+        foreach ($collections as $otherCollection) {
+            $collection->data = array_intersect($collection->data, $otherCollection->data);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Return a copy of the collection with the values of the given collections removed
+     */
+    public function difference(self ...$collections): static
+    {
+        $collection = $this->clone();
+
+        foreach ($collections as $otherCollection) {
+            $collection->data = array_diff($collection->data, $otherCollection->data);
+        }
+
+        return $collection;
+    }
+
+    /**
      * Add the given value to the collection
      */
     public function add(mixed $value): void
