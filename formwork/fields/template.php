@@ -1,6 +1,5 @@
 <?php
 
-use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
 use Formwork\Pages\Site;
 
@@ -12,9 +11,6 @@ return function (Site $site) {
 
         'validate' => function (Field $field, $value) {
             if ($value === '') {
-                if ($field->isRequired()) {
-                    throw new ValidationException('Invalid empty field');
-                }
                 return null;
             }
 

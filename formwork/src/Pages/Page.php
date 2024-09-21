@@ -150,7 +150,7 @@ class Page extends Model implements Stringable
             ];
         }
 
-        $this->fields->setValues($this->data);
+        $this->fields->setValues([...$this->data, 'parent' => $this->parent()?->route(), 'template' => $this->template]);
 
         $this->loaded = true;
     }

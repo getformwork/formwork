@@ -69,14 +69,17 @@ fields:
         default: true
 
     parent:
-        type: page.parents
-        access: panel
+        type: page
         label: '{{panel.pages.parent}}'
+        required: true
+        collection@: site.descendants.withoutPageAndDescendants(page)
+        allowSite: true
 
     template:
-        type: page.template
-        access: panel
+        type: template
+        required: true
         label: '{{panel.pages.template}}'
+        default@: site.get('defaultTemplate', 'default')
 
     uploadedFile:
         type: file
