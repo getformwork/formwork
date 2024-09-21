@@ -4,10 +4,10 @@ export class FileInput {
     constructor(input: HTMLInputElement) {
         const label = $(`label[for="${input.id}"]`) as HTMLElement;
         const span = $("span", label) as HTMLElement;
+        const defaultLabel = span.innerHTML ?? "";
 
         let isSubmitted = false;
 
-        input.dataset.label = $(`label[for="${input.id}"] span`)?.innerHTML;
         input.addEventListener("change", updateLabel);
         input.addEventListener("input", updateLabel);
 
@@ -43,15 +43,21 @@ export class FileInput {
             }
         });
 
-        function updateLabel(this: HTMLInputElement) {
-            if (this.files && this.files.length > 0) {
+        function formatFileSize(size: number) {
+            const units = ["B", "KB", "MB", "GB", "TB"];
+            const exp = Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1);
+            return `${(size / 1024 ** exp).toFixed(2)} ${units[exp]}`;
+        }
+
+        function updateLabel() {
+            if (input.files && input.files.length > 0) {
                 const filenames: string[] = [];
-                for (const file of Array.from(this.files)) {
-                    filenames.push(file.name);
+                for (const file of Array.from(input.files)) {
+                    filenames.push(`${file.name} <span class="file-size">(${formatFileSize(file.size)})</span>`);
                 }
                 span.innerHTML = filenames.join(", ");
             } else {
-                span.innerHTML = this.dataset.label as string;
+                span.innerHTML = defaultLabel;
             }
         }
 

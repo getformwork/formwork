@@ -3,10 +3,11 @@ import { $, $$ } from "../utils/selectors";
 export class Files {
     constructor() {
         $$(".files-list").forEach((filesList) => {
-            const toggle = $(".form-togglegroup", filesList);
+            const toggle = $(".form-togglegroup.files-list-view-as", filesList);
 
             if (toggle) {
-                const viewAs = window.localStorage.getItem("formwork.filesListViewAs");
+                const fieldName = toggle.dataset.fieldName;
+                const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${fieldName}]`);
 
                 if (viewAs) {
                     $$("input", toggle).forEach((input: HTMLInputElement) => (input.checked = false));
@@ -17,7 +18,7 @@ export class Files {
                 $$("input", toggle).forEach((input: HTMLInputElement) => {
                     input.addEventListener("input", () => {
                         filesList.classList.toggle("is-thumbnails", input.value === "thumbnails");
-                        window.localStorage.setItem("formwork.filesListViewAs", input.value);
+                        window.localStorage.setItem(`formwork.filesListViewAs[${fieldName}]`, input.value);
                     });
                 });
             }

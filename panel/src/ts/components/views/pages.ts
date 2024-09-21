@@ -140,7 +140,7 @@ export class Pages {
                     return;
                 }
 
-                const allowedTemplates = (option.dataset.allowedTemplates ?? "").split(" ");
+                const allowedTemplates = option.dataset.allowedTemplates ? option.dataset.allowedTemplates.split(" ") : [];
 
                 const pageTemplate = $("#template", newPageModal) as HTMLInputElement;
 

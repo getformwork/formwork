@@ -24,7 +24,7 @@ layout:
             collapsible: true
             collapsed: false
             label: '{{panel.pages.files}}'
-            fields: [files, uploadedFile]
+            fields: [files]
 
 fields:
     title:
@@ -81,12 +81,9 @@ fields:
         label: '{{panel.pages.template}}'
         default@: site.get('defaultTemplate', 'default')
 
-    uploadedFile:
-        type: file
-        access: panel
+    files:
+        type: upload
         autoUpload: true
         multiple: true
-
-    files:
-        type: page.files
-        access: panel
+        listFiles: true
+        collection@: page.files

@@ -168,31 +168,16 @@ class PagesController extends AbstractController
                 // Load data from POST variables
                 $data = $this->request->input();
 
-                // Validate fields against data
-                $fields->setValues($data, null)->validate();
-
-                $error = false;
-
-                // Update the page
                 try {
+                    // Validate fields against data
+                    $fields->setValuesFromRequest($this->request, null)->validate();
+
+                    // Update the page
                     $page = $this->updatePage($page, $data, $fields);
-                } catch (TranslatedException $e) {
-                    $error = true;
-                    $this->panel()->notify($e->getTranslatedMessage(), 'error');
-                }
 
-                if (!$this->request->files()->isEmpty()) {
-                    try {
-                        $this->processPageUploads($this->request->files()->get('uploadedFile', []), $page);
-                        $page->reload();
-                    } catch (TranslatedException $e) {
-                        $error = true;
-                        $this->panel()->notify($this->translate('upload.error', $e->getTranslatedMessage()), 'error');
-                    }
-                }
-
-                if (!$error) {
                     $this->panel()->notify($this->translate('panel.pages.page.edited'), 'success');
+                } catch (TranslatedException $e) {
+                    $this->panel()->notify($e->getTranslatedMessage(), 'error');
                 }
 
                 if ($page->route() === null) {
@@ -582,6 +567,12 @@ class PagesController extends AbstractController
                 continue;
             }
 
+            if ($field->type() === 'upload') {
+                $uploadedFiles = $field->is('multiple') ? $field->value() : [$field->value()];
+                $this->processPageUploads($uploadedFiles, $page, $field->acceptMimeTypes());
+                continue;
+            }
+
             // Set frontmatter value
             $frontmatter[$field->name()] = $field->value();
         }
@@ -593,6 +584,10 @@ class PagesController extends AbstractController
         // Validate language
         if (!empty($language) && !in_array($language, $this->config->get('system.languages.available'), true)) {
             throw new TranslatedException('Invalid page language', 'panel.pages.page.cannotEdit.invalidLanguage');
+        }
+
+        if ($page->contentFile() === null) {
+            throw new RuntimeException('Unexpected missing content file');
         }
 
         $differ = $frontmatter !== $page->contentFile()->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
@@ -710,6 +705,8 @@ class PagesController extends AbstractController
                 $image->save();
             }
         }
+
+        $page->reload();
     }
 
     /**
