@@ -120,6 +120,7 @@ class WebpHandler extends AbstractHandler
                 $VP8XFlags = ord($chunk['value'][0]) | self::ICC_FLAG;
                 $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
                 $ICCPChunk = $this->encodeChunk('ICCP', $colorProfile->getData());
+                // @phpstan-ignore assign.propertyType
                 $this->data = substr_replace($this->data, $ICCPChunk, $chunk['position'], 0);
                 $this->updateRIFFHeader();
                 break;
