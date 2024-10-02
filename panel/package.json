@@ -31,7 +31,7 @@
         "@types/codemirror": "^5.60.15",
         "@types/sortablejs": "^1.15.8",
         "esbuild": "^0.23.1",
-        "eslint": "^8.57.0",
+        "eslint": "^8.57.1",
         "eslint-config-prettier": "^9.1.0",
         "globals": "^15.9.0",
         "postcss": "^8.4.45",
