@@ -37,7 +37,7 @@
         "postcss": "^8.4.45",
         "prettier": "3.3.3",
         "sass": "^1.77.8",
-        "stylelint": "^16.6.1",
+        "stylelint": "^16.9.0",
         "stylelint-config-standard-scss": "^13.1.0",
         "stylelint-order": "^6.0.4",
         "stylelint-scss": "^6.5.1",
