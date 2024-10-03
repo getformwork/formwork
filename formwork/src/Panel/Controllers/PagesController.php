@@ -182,8 +182,6 @@ class PagesController extends AbstractController
                         $forceUpdate = true;
                     }
 
-                    $error = false;
-
                     // Update the page
                     $page = $this->updatePage($page, $data, $fields, force: $forceUpdate);
 
