@@ -4,6 +4,8 @@ namespace Formwork\Fields;
 
 use Formwork\Data\AbstractCollection;
 use Formwork\Fields\Layout\Layout;
+use Formwork\Http\Request;
+use Formwork\Model\Model;
 use Formwork\Utils\Arr;
 
 class FieldCollection extends AbstractCollection
@@ -19,6 +21,8 @@ class FieldCollection extends AbstractCollection
      */
     protected Layout $layout;
 
+    protected ?Model $model = null;
+
     public function setLayout(Layout $layout): void
     {
         $this->layout = $layout;
@@ -30,6 +34,19 @@ class FieldCollection extends AbstractCollection
     public function layout(): Layout
     {
         return $this->layout;
+    }
+
+    public function setModel(?Model $model): void
+    {
+        $this->model = $model;
+    }
+
+    /**
+     * Return fields model
+     */
+    public function model(): ?Model
+    {
+        return $this->model;
     }
 
     /**
@@ -83,5 +100,14 @@ class FieldCollection extends AbstractCollection
         }
 
         return $this;
+    }
+
+    public function setValuesFromRequest(Request $request, mixed $default = null): static
+    {
+        return $this->setValues([
+            ...$request->query()->toArray(),
+            ...$request->input()->toArray(),
+            ...$request->files()->toArray(),
+        ], $default);
     }
 }

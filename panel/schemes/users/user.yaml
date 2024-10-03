@@ -48,6 +48,6 @@ fields:
             auto: '{{panel.user.colorScheme.auto}}'
 
     image:
-        type: file
+        type: upload
         label: '{{panel.user.image}}'
         accept: .jpg, .jpeg, .png, .gif

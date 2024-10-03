@@ -24,7 +24,7 @@ layout:
             collapsible: true
             collapsed: false
             label: '{{panel.pages.files}}'
-            fields: [files, uploadedFile]
+            fields: [files]
 
 fields:
     title:
@@ -69,21 +69,21 @@ fields:
         default: true
 
     parent:
-        type: page.parents
-        access: panel
+        type: page
         label: '{{panel.pages.parent}}'
+        required: true
+        collection@: site.descendants.withoutPageAndDescendants(page)
+        allowSite: true
 
     template:
-        type: page.template
-        access: panel
+        type: template
+        required: true
         label: '{{panel.pages.template}}'
-
-    uploadedFile:
-        type: file
-        access: panel
-        autoUpload: true
-        multiple: true
+        default@: site.get('defaultTemplate', 'default')
 
     files:
-        type: page.files
-        access: panel
+        type: upload
+        autoUpload: true
+        multiple: true
+        listFiles: true
+        collection@: page.files

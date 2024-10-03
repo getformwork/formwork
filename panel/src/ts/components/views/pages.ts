@@ -141,7 +141,7 @@ export class Pages {
                     return;
                 }
 
-                const allowedTemplates = (option.dataset.allowedTemplates ?? "").split(" ");
+                const allowedTemplates = option.dataset.allowedTemplates ? option.dataset.allowedTemplates.split(" ") : [];
 
                 const pageTemplate = $("#template", newPageModal) as HTMLInputElement;
 
@@ -172,7 +172,7 @@ export class Pages {
         if (commandPreview) {
             const editorForm = app.forms["page-editor-form"];
 
-            const pageParent = $("#page-parent", editorForm.element) as HTMLInputElement;
+            const pageParent = $("#parent", editorForm.element) as HTMLInputElement;
             const previousParent = pageParent.value;
 
             if (editorForm) {

@@ -19,7 +19,6 @@ use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\MimeType;
 use RuntimeException;
 
 class UsersController extends AbstractController
@@ -131,6 +130,8 @@ class UsersController extends AbstractController
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
+        $fields->setModel($user);
+
         // Disable password and/or role fields if they cannot be changed
         $fields->get('password')->set('disabled', !$this->user()->canChangePasswordOf($user));
         $fields->get('role')->set('disabled', !$this->user()->canChangeRoleOf($user));
@@ -138,9 +139,7 @@ class UsersController extends AbstractController
         if ($this->request->method() === RequestMethod::POST) {
             // Ensure that options can be changed
             if ($this->user()->canChangeOptionsOf($user)) {
-                $data = $this->request->input();
-
-                $fields->setValues($data, null)->validate();
+                $fields->setValuesFromRequest($this->request, null)->validate();
 
                 try {
                     $this->updateUser($user, $fields);
@@ -199,12 +198,16 @@ class UsersController extends AbstractController
                 continue;
             }
 
-            Arr::set($userData, $field->name(), $field->value());
-        }
+            if ($field->name() === 'image') {
+                $file = $field->value();
+                // Handle incoming files
+                if ($file && ($image = $this->uploadImage($user, $file, $field->acceptMimeTypes())) !== null) {
+                    Arr::set($userData, 'image', $image);
+                }
+                continue;
+            }
 
-        // Handle incoming files
-        if ($this->request->files()->get('image')?->isUploaded() && ($image = $this->uploadImage($user, $this->request->files()->get('image'))) !== null) {
-            $userData['image'] = $image;
+            Arr::set($userData, $field->name(), $field->value());
         }
 
         Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
@@ -212,12 +215,12 @@ class UsersController extends AbstractController
 
     /**
      * Upload a new image for a user
+     *
+     * @param array<string> $mimeTypes
      */
-    protected function uploadImage(User $user, UploadedFile $file): ?string
+    protected function uploadImage(User $user, UploadedFile $file, array $mimeTypes): ?string
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
-
-        $mimeTypes = Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
 
         $fileUploader = new FileUploader($mimeTypes);
 

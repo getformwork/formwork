@@ -16,6 +16,11 @@ class Model implements Arrayable
     use DataMultipleGetter;
     use DataMultipleSetter;
 
+    /**
+     * @var string
+     */
+    protected const MODEL_IDENTIFIER = 'model';
+
     protected Scheme $scheme;
 
     protected FieldCollection $fields;
@@ -30,6 +35,11 @@ class Model implements Arrayable
         }
 
         throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+    }
+
+    public function getModelIdentifier(): string
+    {
+        return static::MODEL_IDENTIFIER;
     }
 
     public function scheme(): Scheme

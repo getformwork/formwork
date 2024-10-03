@@ -46,7 +46,7 @@ export class Form {
             });
         });
 
-        $$("input[type=file][data-auto-upload]", form).forEach((element) => {
+        $$("input[type=file][data-auto-upload=true]", form).forEach((element) => {
             element.addEventListener("change", () => {
                 if (!this.hasChanged(false)) {
                     form.requestSubmit($("[type=submit]", form));

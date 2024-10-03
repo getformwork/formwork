@@ -269,6 +269,9 @@ class Field implements Arrayable, Stringable
         }
 
         if ($key === 'value') {
+            if ($this->hasMethod('setValue')) {
+                $value = $this->callMethod('setValue', [$value]);
+            }
             $this->validated = false;
         }
 
