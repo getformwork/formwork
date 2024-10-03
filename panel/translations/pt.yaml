@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Posição
 panel.pages.file.preview: Pré-visualização
 panel.pages.files: Ficheiros
+panel.pages.history.event.created: Página criada por %s %s.
+panel.pages.history.event.edited: Página editada por %s %s.
 panel.pages.languages: Idiomas
 panel.pages.languages.addLanguage: Criar %s
 panel.pages.languages.editLanguage: Editar %s
@@ -227,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Não é possível editar a página, falt
 panel.pages.page.cannotGetFileInfo.fileNotFound: Não é possível obter informações do arquivo, arquivo não encontrado
 panel.pages.page.cannotGetFileInfo.pageNotFound: Não é possível obter informações do arquivo, página não encontrada
 panel.pages.page.cannotMove: Não é possível mover a página
+panel.pages.page.cannotPreview.pageNotFound: Não é possível pré-visualizar a página, página não encontrada
+panel.pages.page.cannotPreview.parentChanged: Não é possível pré-visualizar a página, a página mãe foi alterada
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Não é possível renomear o arquivo, um arquivo com o mesmo nome já existe
 panel.pages.page.cannotRenameFile.fileNotFound: Não é possível renomear o arquivo, arquivo não encontrado
 panel.pages.page.cannotRenameFile.pageNotFound: Não é possível renomear o arquivo, página não encontrada
@@ -263,10 +267,12 @@ panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Página anterior
 panel.pages.previousFile: Ficheiro anterior
+panel.pages.publish: Publicar
 panel.pages.renameFile: Renomear arquivo
 panel.pages.renameFile.name: Nome
 panel.pages.replaceFile: Substituir ficheiro
 panel.pages.save: Guardar
+panel.pages.saveOnly: Guardar sem publicar
 panel.pages.status.notPublished: Não publicado
 panel.pages.status.notRoutable: Não roteável
 panel.pages.status.published: Publicado
@@ -275,6 +281,7 @@ panel.pages.summary: Resumo
 panel.pages.template: Template
 panel.pages.text: Texto
 panel.pages.toggleChildren: Expandir páginas
+panel.pages.viewPage: Ver página
 panel.panel: Painel de administração
 panel.register.createUser: O Formwork está instalado, mas nenhum utilizador foi encontrado. Por favor, registre um agora.
 panel.register.register: Registrar novo utilizador

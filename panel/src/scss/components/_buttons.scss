@@ -154,3 +154,18 @@
         margin-right: $focusring-width;
     }
 }
+
+.button-indicator {
+    position: relative;
+
+    &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background-color: var(--color-accent-500);
+        content: " ";
+    }
+}

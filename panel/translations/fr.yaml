@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Position
 panel.pages.file.preview: Aperçu
 panel.pages.files: Fichiers
+panel.pages.history.event.created: Page créée par %s %s.
+panel.pages.history.event.edited: Page modifiée par %s %s.
 panel.pages.languages: Langues
 panel.pages.languages.addLanguage: Ajouter %s
 panel.pages.languages.editLanguage: Éditer %s
@@ -227,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Impossible de modifier la page, il manqu
 panel.pages.page.cannotGetFileInfo.fileNotFound: Impossible de récupérer les informations sur le fichier, fichier non trouvé
 panel.pages.page.cannotGetFileInfo.pageNotFound: Impossible de récupérer les informations sur le fichier, page non trouvée
 panel.pages.page.cannotMove: Impossible de déplacer la page
+panel.pages.page.cannotPreview.pageNotFound: Impossible de prévisualiser la page, page non trouvée
+panel.pages.page.cannotPreview.parentChanged: Impossible de prévisualiser la page, la page parente a été modifiée
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Impossible de renommer le fichier, un fichier portant le même nom existe déjà
 panel.pages.page.cannotRenameFile.fileNotFound: Impossible de renommer le fichier, fichier introuvable
 panel.pages.page.cannotRenameFile.pageNotFound: Impossible de renommer le fichier, page introuvable
@@ -263,10 +267,12 @@ panel.pages.preview: Aperçu
 panel.pages.previewFile: Aperçu
 panel.pages.previous: Page précédente
 panel.pages.previousFile: Fichier précédent
+panel.pages.publish: Publier
 panel.pages.renameFile: Renommer le fichier
 panel.pages.renameFile.name: Nom
 panel.pages.replaceFile: Remplacer le fichier
 panel.pages.save: Enregistrer
+panel.pages.saveOnly: Enregistrer sans publier
 panel.pages.status.notPublished: Brouillon
 panel.pages.status.notRoutable: Inaccessible
 panel.pages.status.published: Publié
@@ -275,6 +281,7 @@ panel.pages.summary: Résumé
 panel.pages.template: Modèle
 panel.pages.text: Texte
 panel.pages.toggleChildren: Afficher/Masquer les sous-pages
+panel.pages.viewPage: Voir la page
 panel.panel: Panneau d’administration
 panel.register.createUser: Le compte panel est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
 panel.register.register: Enregistrer un nouvel utilisateur

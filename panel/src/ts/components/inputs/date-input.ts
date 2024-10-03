@@ -66,6 +66,8 @@ export class DateInput {
                 if (dateInput !== null) {
                     inputValues[dateInput.id] = date;
                     dateInput.value = formatDateTime(date);
+                    dateInput.dispatchEvent(new Event("input", { bubbles: true }));
+                    dateInput.dispatchEvent(new Event("change", { bubbles: true }));
                 }
             },
         } satisfies DateInputOptions;
@@ -103,6 +105,8 @@ export class DateInput {
                     case "Backspace":
                         input.value = "";
                         input.blur();
+                        input.dispatchEvent(new Event("input", { bubbles: true }));
+                        input.dispatchEvent(new Event("change", { bubbles: true }));
                         break;
                     case "Escape":
                         input.blur();

@@ -96,6 +96,8 @@ export class DurationInput {
                 seconds = Math.min(seconds, parseInt(hiddenInput.max));
             }
             hiddenInput.value = `${Math.round(seconds / TIME_INTERVALS[options.unit])}`;
+            hiddenInput.dispatchEvent(new Event("input", { bubbles: true }));
+            hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
         }
 
         function updateInnerInputs() {

@@ -34,6 +34,8 @@ export class ImagePicker {
                 const selectedThumbnailFilename = selectedThumbnail.dataset.filename;
                 if (target && selectedThumbnailFilename) {
                     target.value = selectedThumbnailFilename;
+                    target.dispatchEvent(new Event("input", { bubbles: true }));
+                    target.dispatchEvent(new Event("change", { bubbles: true }));
                 }
             }
         });
