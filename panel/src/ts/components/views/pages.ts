@@ -172,7 +172,7 @@ export class Pages {
         if (commandPreview) {
             const editorForm = app.forms["page-editor-form"];
 
-            const pageParent = $("#page-parent", editorForm.element) as HTMLInputElement;
+            const pageParent = $("#parent", editorForm.element) as HTMLInputElement;
             const previousParent = pageParent.value;
 
             if (editorForm) {

@@ -174,16 +174,16 @@ class PagesController extends AbstractController
                 try {
                     // Validate fields against data
                     $fields->setValuesFromRequest($this->request, null)->validate();
-                  
+
                     $forceUpdate = false;
-                  
+
                     if ($this->request->query()->has('publish')) {
                         $fields->setValues(['published' => Constraint::isTruthy($this->request->query()->get('publish'))]);
                         $forceUpdate = true;
                     }
 
                     $error = false;
-          
+
                     // Update the page
                     $page = $this->updatePage($page, $data, $fields, force: $forceUpdate);
 
