@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Позиция
 panel.pages.file.preview: Просмотр
 panel.pages.files: Файлы
+panel.pages.history.event.created: Страница создана %s %s.
+panel.pages.history.event.edited: Страница изменена %s %s.
 panel.pages.languages: Языки
 panel.pages.languages.addLanguage: Добавлять %s
 panel.pages.languages.editLanguage: Редактировать %s
@@ -227,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Не могу редактировать
 panel.pages.page.cannotGetFileInfo.fileNotFound: Невозможно получить информацию о файле, файл не найден
 panel.pages.page.cannotGetFileInfo.pageNotFound: Невозможно получить информацию о файле, страница не найдена
 panel.pages.page.cannotMove: Невозможно переместить страницу
+panel.pages.page.cannotPreview.pageNotFound: Невозможно показать предварительный просмотр, страница не найдена
+panel.pages.page.cannotPreview.parentChanged: Невозможно показать предварительный просмотр, родительская страница изменена
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Невозможно переименовать файл, файл с таким именем уже существует
 panel.pages.page.cannotRenameFile.fileNotFound: Невозможно переименовать файл, файл не найден
 panel.pages.page.cannotRenameFile.pageNotFound: Невозможно переименовать файл, страница не найдена
@@ -263,10 +267,12 @@ panel.pages.preview: Предварительный просмотр
 panel.pages.previewFile: Предварительный просмотр
 panel.pages.previous: Предыдущая страница
 panel.pages.previousFile: Предыдущий файл
+panel.pages.publish: Опубликовать
 panel.pages.renameFile: Переименовать файл
 panel.pages.renameFile.name: Имя
 panel.pages.replaceFile: Заменить файл
 panel.pages.save: Сохранить
+panel.pages.saveOnly: Сохранить без публикации
 panel.pages.status.notPublished: Не Опубликовано
 panel.pages.status.notRoutable: Не маршрутизируемый
 panel.pages.status.published: Опубликованный
@@ -275,6 +281,7 @@ panel.pages.summary: Сводка
 panel.pages.template: Шаблон
 panel.pages.text: Текст
 panel.pages.toggleChildren: Переключить дочерние страницы
+panel.pages.viewPage: Просмотреть страницу
 panel.panel: Панель администрирования
 panel.register.createUser: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
 panel.register.register: Регистрация нового пользователя

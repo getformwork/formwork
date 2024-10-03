@@ -7,34 +7,34 @@ import { serializeForm } from "../utils/forms";
 export class Form {
     inputs: Inputs;
     originalData: string;
+    element: HTMLFormElement;
 
     constructor(form: HTMLFormElement) {
+        this.element = form;
+
         this.inputs = new Inputs(form);
 
         // Serialize after inputs are loaded
         this.originalData = serializeForm(form);
 
+        const handleBeforeunload = (event: Event) => {
+            if (this.hasChanged()) {
+                event.preventDefault();
+                event.returnValue = false;
+            }
+        };
+
+        const removeBeforeUnload = () => {
+            window.removeEventListener("beforeunload", handleBeforeunload);
+        };
+
         window.addEventListener("beforeunload", handleBeforeunload);
 
         form.addEventListener("submit", removeBeforeUnload);
 
-        const hasChanged = (checkFileInputs = true) => {
-            const fileInputs = $$("input[type=file]", form) as NodeListOf<HTMLInputElement>;
-
-            if (checkFileInputs === true && fileInputs.length > 0) {
-                for (const fileInput of Array.from(fileInputs)) {
-                    if (fileInput.files && fileInput.files.length > 0) {
-                        return true;
-                    }
-                }
-            }
-
-            return serializeForm(form) !== this.originalData;
-        };
-
         $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
             element.addEventListener("click", (event) => {
-                if (hasChanged()) {
+                if (this.hasChanged()) {
                     event.preventDefault();
                     app.modals["changesModal"].show(undefined, (modal) => {
                         const continueCommand = $("[data-command=continue]", modal.element);
@@ -48,24 +48,13 @@ export class Form {
 
         $$("input[type=file][data-auto-upload=true]", form).forEach((element) => {
             element.addEventListener("change", () => {
-                if (!hasChanged(false)) {
+                if (!this.hasChanged(false)) {
                     form.requestSubmit($("[type=submit]", form));
                 }
             });
         });
 
         registerModalExceptions();
-
-        function handleBeforeunload(event: Event) {
-            if (hasChanged()) {
-                event.preventDefault();
-                event.returnValue = false;
-            }
-        }
-
-        function removeBeforeUnload() {
-            window.removeEventListener("beforeunload", handleBeforeunload);
-        }
 
         function registerModalExceptions() {
             const changesModal = document.getElementById("changesModal");
@@ -98,5 +87,19 @@ export class Form {
                 }
             }
         }
+    }
+
+    hasChanged(checkFileInputs: boolean = true) {
+        const fileInputs = $$("input[type=file]", this.element) as NodeListOf<HTMLInputElement>;
+
+        if (checkFileInputs === true && fileInputs.length > 0) {
+            for (const fileInput of Array.from(fileInputs)) {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return serializeForm(this.element) !== this.originalData;
     }
 }

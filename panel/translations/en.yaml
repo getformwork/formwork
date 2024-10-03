@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Position
 panel.pages.file.preview: Preview
 panel.pages.files: Files
+panel.pages.history.event.created: Page created by %s %s.
+panel.pages.history.event.edited: Page edited by %s %s.
 panel.pages.languages: Languages
 panel.pages.languages.addLanguage: Add %s
 panel.pages.languages.editLanguage: Edit %s
@@ -227,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Cannot edit page, missing a variable
 panel.pages.page.cannotGetFileInfo.fileNotFound: Cannot get file info, file not found
 panel.pages.page.cannotGetFileInfo.pageNotFound: Cannot get file info, page not found
 panel.pages.page.cannotMove: Cannot move page
+panel.pages.page.cannotPreview.pageNotFound: Cannot preview page, page not found
+panel.pages.page.cannotPreview.parentChanged: Cannot preview page, parent page has been changed
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Cannot rename file, a file with the same name already exists
 panel.pages.page.cannotRenameFile.fileNotFound: Cannot rename file, file not found
 panel.pages.page.cannotRenameFile.pageNotFound: Cannot rename file, page not found
@@ -263,10 +267,12 @@ panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Previous page
 panel.pages.previousFile: Previous file
+panel.pages.publish: Publish
 panel.pages.renameFile: Rename file
 panel.pages.renameFile.name: Name
 panel.pages.replaceFile: Replace file
 panel.pages.save: Save
+panel.pages.saveOnly: Save without publishing
 panel.pages.status.notPublished: Not published
 panel.pages.status.notRoutable: Not routable
 panel.pages.status.published: Published
@@ -275,6 +281,7 @@ panel.pages.summary: Summary
 panel.pages.template: Template
 panel.pages.text: Text
 panel.pages.toggleChildren: Toggle children pages
+panel.pages.viewPage: View page
 panel.panel: Administration panel
 panel.register.createUser: Formwork is installed but no users were found. Please register a user now.
 panel.register.register: Register new user

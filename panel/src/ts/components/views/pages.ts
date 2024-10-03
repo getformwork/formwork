@@ -8,10 +8,11 @@ import Sortable from "sortablejs";
 
 export class Pages {
     constructor() {
-        const commandExpandAllPages = $("[data-command=expand-all-pages]");
-        const commandCollapseAllPages = $("[data-command=collapse-all-pages]");
-        const commandReorderPages = $("[data-command=reorder-pages]");
-        const commandChangeSlug = $("[data-command=change-slug]");
+        const commandExpandAllPages = $("[data-command=expand-all-pages]") as HTMLButtonElement;
+        const commandCollapseAllPages = $("[data-command=collapse-all-pages]") as HTMLButtonElement;
+        const commandReorderPages = $("[data-command=reorder-pages]") as HTMLButtonElement;
+        const commandPreview = $("[data-command=preview]") as HTMLButtonElement;
+        const commandChangeSlug = $("[data-command=change-slug]") as HTMLButtonElement;
 
         const searchInput = $(".page-search");
 
@@ -168,6 +169,29 @@ export class Pages {
             });
         }
 
+        if (commandPreview) {
+            const editorForm = app.forms["page-editor-form"];
+
+            const pageParent = $("#page-parent", editorForm.element) as HTMLInputElement;
+            const previousParent = pageParent.value;
+
+            if (editorForm) {
+                editorForm.element.addEventListener(
+                    "input",
+                    debounce(() => {
+                        if (pageParent.value !== previousParent) {
+                            // Prevent preview if the parent page has changed
+                            commandPreview.disabled = true;
+                            commandPreview.classList.remove("button-indicator");
+                            return;
+                        }
+                        commandPreview.disabled = false;
+                        commandPreview.classList.toggle("button-indicator", editorForm.hasChanged());
+                    }, 500),
+                );
+            }
+        }
+
         if (slugModal && commandChangeSlug) {
             commandChangeSlug.addEventListener("click", () => {
                 app.modals["slugModal"].show(undefined, (modal) => {
@@ -204,7 +228,7 @@ export class Pages {
                 if (slug.length > 0) {
                     const route = ($(".page-route-inner") as HTMLElement).innerHTML;
                     ($("#newSlug", slugModal) as HTMLInputElement).value = slug;
-                    ($("#slug", slugModal) as HTMLInputElement).value = slug;
+                    ($("#slug") as HTMLInputElement).value = slug;
                     ($(".page-route-inner") as HTMLElement).innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 

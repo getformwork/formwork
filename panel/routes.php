@@ -113,6 +113,12 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
+        'panel.pages.preview' => [
+            'path'    => '/pages/{page}/preview/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@preview',
+            'methods' => ['POST'],
+        ],
+
         'panel.pages.edit.lang' => [
             'path'    => '/pages/{page}/edit/language/{language}/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@edit',

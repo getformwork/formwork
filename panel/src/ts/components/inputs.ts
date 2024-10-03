@@ -41,7 +41,8 @@ export class Inputs {
                 element.addEventListener("click", () => {
                     const target = document.getElementById(targetId) as HTMLInputElement;
                     target.value = "";
-                    target.dispatchEvent(new Event("change"));
+                    target.dispatchEvent(new Event("input", { bubbles: true }));
+                    target.dispatchEvent(new Event("change", { bubbles: true }));
                 });
             }
         });

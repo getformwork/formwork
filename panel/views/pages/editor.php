@@ -1,5 +1,6 @@
 <?php $this->layout('panel') ?>
 <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
+    <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
     <div class="header">
         <div class="min-w-0 flex-grow-1">
             <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $this->escape($page->title()) ?></div>
@@ -21,7 +22,8 @@
         <div>
             <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$page->previousSibling()]) ?>" role="button" <?php if ($page->previousSibling()) : ?>href="<?= $panel->uri('/pages/' . trim($page->previousSibling()->route(), '/') . '/edit/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.previous') ?>" aria-label="<?= $this->translate('panel.pages.previous') ?>"><?= $this->icon('chevron-left') ?></a>
             <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$page->nextSibling()]) ?>" role="button" <?php if ($page->nextSibling()) : ?>href="<?= $panel->uri('/pages/' . trim($page->nextSibling()->route(), '/') . '/edit/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.next') ?>" aria-label="<?= $this->translate('panel.pages.next') ?>"><?= $this->icon('chevron-right') ?></a>
-            <a class="<?= $this->classes(['button', 'button-link', 'disabled' => !$page->published() || !$page->routable()]) ?>" role="button" <?php if ($page->published() && $page->routable()) : ?>href="<?= $page->uri(includeLanguage: $currentLanguage ?: true) ?>" <?php endif ?> target="formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></a>
+            <a class="<?= $this->classes(['button', 'button-link', 'disabled' => !$page->published() || !$page->routable()]) ?>" role="button" <?php if ($page->published() && $page->routable()) : ?>href="<?= $page->uri(includeLanguage: $currentLanguage ?: true) ?>" <?php endif ?> target="formwork-view-page-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.viewPage') ?>" aria-label="<?= $this->translate('panel.pages.viewPage') ?>"><?= $this->icon('arrow-right-up-box') ?></a>
+            <button type="submit" class="<?= $this->classes(['button', 'button-link']) ?>" data-command="preview" formaction="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/preview/') ?>" formtarget=" formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></button>
             <?php if ($panel->user()->permissions()->has('pages.delete')) : ?>
                 <button type="button" class="button button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>" <?php if (!$page->isDeletable()) : ?> disabled<?php endif ?>><?= $this->icon('trash') ?></button>
             <?php endif ?>
@@ -35,11 +37,32 @@
                     </div>
                 </div>
             <?php endif ?>
-            <button type="submit" class="button button-accent mb-0" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.save') ?></button>
+            <?php if ($history?->isJustCreated()): ?>
+                <div class="dropdown mb-0">
+                    <div class="button-group">
+                        <button type="submit" class="button button-accent" formaction="?publish=true"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.publish') ?></button>
+                        <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-save-options"></button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-save-options">
+                        <button type="submit" class="dropdown-item" formaction="?publish=false"><?= $this->translate('panel.pages.saveOnly') ?></button>
+                    </div>
+                </div>
+            <?php else: ?>
+                <button type="submit" class="button button-accent mb-0"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.save') ?></button>
+            <?php endif ?>
         </div>
     </div>
     <div>
         <?php $this->insert('fields', ['fields' => $fields]) ?>
     </div>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+    <?php if ($history !== null && !$history->items()->isEmpty()): ?>
+        <div class="text-size-sm text-color-gray-medium"><?= $this->icon('clock-rotate-left') ?>
+            <?= $this->translate(
+                'panel.pages.history.event.' . $history->lastItem()->event()->value,
+                '<a href="' . $panel->uri('/users/' . $history->lastItem()->user() . '/profile/') . '">' . $history->lastItem()->user() . '</a>',
+                '<span title="' . $this->datetime($history->lastItem()->time()) . '">' . $this->timedistance($history->lastItem()->time()) . '</span>'
+            ) ?>
+        </div>
+    <?php endif ?>
 </form>

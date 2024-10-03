@@ -233,6 +233,8 @@ export class TagInput {
 
         function updateTags() {
             hiddenInput.value = tags.join(", ");
+            hiddenInput.dispatchEvent(new Event("input", { bubbles: true }));
+            hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
             updatePlaceholder();
         }
 

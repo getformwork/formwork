@@ -13,6 +13,7 @@ use Formwork\Pages\Page;
 use Formwork\Pages\Site;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
+use Formwork\Statistics\Statistics;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 
@@ -23,7 +24,7 @@ class PageController extends AbstractController
         parent::__construct();
     }
 
-    public function load(RouteParams $routeParams, ViewFactory $viewFactory): Response
+    public function load(RouteParams $routeParams, ViewFactory $viewFactory, Statistics $statistics): Response
     {
         if ($this->site->get('maintenance.enabled') && !$this->app->panel()?->isLoggedIn()) {
             if ($this->site->get('maintenance.page') !== null) {
@@ -66,6 +67,10 @@ class PageController extends AbstractController
                 if ($this->site->path() !== null) {
                     FileSystem::touch($this->site->path());
                 }
+            }
+
+            if ($this->config->get('system.statistics.enabled')) {
+                $statistics->trackVisit();
             }
 
             if ($page->isPublished() && $page->routable()) {

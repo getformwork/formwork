@@ -188,6 +188,8 @@ panel.pages.file.info.uri: URI
 panel.pages.file.position: Position
 panel.pages.file.preview: Vorschau
 panel.pages.files: Dateien
+panel.pages.history.event.created: Seite erstellt von %s %s.
+panel.pages.history.event.edited: Seite bearbeitet von %s %s.
 panel.pages.languages: Sprachen
 panel.pages.languages.addLanguage: "%s hinzufügen"
 panel.pages.languages.editLanguage: "%s bearbeiten"
@@ -227,6 +229,8 @@ panel.pages.page.cannotEdit.varMissing: Seite kann nicht bearbeitet werden, es f
 panel.pages.page.cannotGetFileInfo.fileNotFound: Dateiinfo kann nicht abgerufen werden, Datei nicht gefunden
 panel.pages.page.cannotGetFileInfo.pageNotFound: Dateiinfo kann nicht abgerufen werden, Seite nicht gefunden
 panel.pages.page.cannotMove: Seite kann nicht verschoben werden
+panel.pages.page.cannotPreview.pageNotFound: Vorschau der Seite nicht möglich, Seite nicht gefunden
+panel.pages.page.cannotPreview.parentChanged: Vorschau der Seite nicht möglich, übergeordnete Seite wurde geändert
 panel.pages.page.cannotRenameFile.fileAlreadyExists: Datei kann nicht umbenannt werden, eine Datei mit demselben Namen existiert bereits
 panel.pages.page.cannotRenameFile.fileNotFound: Datei kann nicht umbenannt werden, Datei nicht gefunden
 panel.pages.page.cannotRenameFile.pageNotFound: Datei kann nicht umbenannt werden, Seite nicht gefunden
@@ -263,10 +267,12 @@ panel.pages.preview: Vorschau
 panel.pages.previewFile: Vorschau
 panel.pages.previous: Vorherige Seite
 panel.pages.previousFile: Vorherige Datei
+panel.pages.publish: Veröffentlichen
 panel.pages.renameFile: Datei umbenennen
 panel.pages.renameFile.name: Name
 panel.pages.replaceFile: Datei ersetzen
 panel.pages.save: Speichern
+panel.pages.saveOnly: Speichern ohne zu veröffentlichen
 panel.pages.status.notPublished: Nicht veröffentlicht
 panel.pages.status.notRoutable: Nicht routbar
 panel.pages.status.published: Veröffentlicht
@@ -275,6 +281,7 @@ panel.pages.summary: Zusammenfassung
 panel.pages.template: Vorlage
 panel.pages.text: Text
 panel.pages.toggleChildren: Untergeordnete Seiten umschalten
+panel.pages.viewPage: Seite anzeigen
 panel.panel: Administrationspanel
 panel.register.createUser: Formwork ist installiert, aber es wurden keine Benutzer gefunden. Bitte registrieren Sie jetzt einen Benutzer.
 panel.register.register: Neuen Benutzer registrieren

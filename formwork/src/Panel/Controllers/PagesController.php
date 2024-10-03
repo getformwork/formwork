@@ -16,10 +16,13 @@ use Formwork\Http\Response;
 use Formwork\Images\Image;
 use Formwork\Pages\Page;
 use Formwork\Pages\Site;
+use Formwork\Panel\ContentHistory\ContentHistory;
+use Formwork\Panel\ContentHistory\ContentHistoryEvent;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
@@ -171,9 +174,18 @@ class PagesController extends AbstractController
                 try {
                     // Validate fields against data
                     $fields->setValuesFromRequest($this->request, null)->validate();
+                  
+                    $forceUpdate = false;
+                  
+                    if ($this->request->query()->has('publish')) {
+                        $fields->setValues(['published' => Constraint::isTruthy($this->request->query()->get('publish'))]);
+                        $forceUpdate = true;
+                    }
 
+                    $error = false;
+          
                     // Update the page
-                    $page = $this->updatePage($page, $data, $fields);
+                    $page = $this->updatePage($page, $data, $fields, force: $forceUpdate);
 
                     $this->panel()->notify($this->translate('panel.pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
@@ -203,6 +215,10 @@ class PagesController extends AbstractController
 
         $this->modal('renameFile');
 
+        $contentHistory = $page->path()
+            ? new ContentHistory($page->path())
+            : null;
+
         return new Response($this->view('pages.editor', [
             'title'           => $this->translate('panel.pages.editPage', $page->title()),
             'page'            => $page,
@@ -210,7 +226,40 @@ class PagesController extends AbstractController
             'templates'       => $this->site()->templates()->keys(),
             'parents'         => $this->site()->descendants()->sortBy('relativePath'),
             'currentLanguage' => $routeParams->get('language', $page->language()?->code()),
+            'history'         => $contentHistory,
         ]));
+    }
+
+    /**
+     * Pages@preview action
+     */
+    public function preview(RouteParams $routeParams): Response
+    {
+        $page = $this->site()->findPage($routeParams->get('page'));
+
+        if ($page === null) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotPreview.pageNotFound'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        $this->site()->setCurrentPage($page);
+
+        // Load data from POST variables
+        $requestData = $this->request->input();
+
+        // Validate fields against data
+        $page->fields()->setValues($requestData)->validate();
+
+        if ($page->template()->name() !== ($template = $requestData->get('template'))) {
+            $page->reload(['template' => $this->site()->templates()->get($template)]);
+        }
+
+        if ($page->parent() !== ($parent = $this->resolveParent($requestData->get('parent')))) {
+            $this->panel()->notify($this->translate('panel.pages.page.cannotPreview.parentChanged'), 'error');
+            return $this->redirectToReferer(default: '/pages/');
+        }
+
+        return new Response($page->render(), $page->responseStatus(), $page->headers());
     }
 
     /**
@@ -532,13 +581,18 @@ class PagesController extends AbstractController
 
         FileSystem::write($path . $filename, $fileContent);
 
+        $contentHistory = new ContentHistory($path);
+
+        $contentHistory->update(ContentHistoryEvent::Created, $this->user()->username(), time());
+        $contentHistory->save();
+
         return $this->site()->retrievePage($path);
     }
 
     /**
      * Update a page
      */
-    protected function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection): Page
+    protected function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection, bool $force = false): Page
     {
         if ($page->contentFile() === null) {
             throw new RuntimeException('Unexpected missing content file');
@@ -592,7 +646,7 @@ class PagesController extends AbstractController
 
         $differ = $frontmatter !== $page->contentFile()->frontmatter() || $content !== $page->data()['content'] || $language !== $page->language();
 
-        if ($differ) {
+        if ($force || $differ) {
             $filename = $requestData->get('template');
             $filename .= empty($language) ? '' : '.' . $language;
             $filename .= $this->config->get('system.content.extension');
@@ -609,6 +663,11 @@ class PagesController extends AbstractController
 
             FileSystem::write($page->path() . $filename, $fileContent);
             FileSystem::touch($this->site()->path());
+
+            $contentHistory = new ContentHistory($page->path());
+
+            $contentHistory->update(ContentHistoryEvent::Edited, $this->user()->username(), time());
+            $contentHistory->save();
 
             // Update page with the new data
             $page->reload();
