@@ -101,14 +101,14 @@ schemes:
     paths:
         panel: '${system.panel.path}/schemes'
         system: '${%SYSTEM_PATH%}/schemes'
-        site: '${%ROOT_PATH%}/site/schemes'
+        site: '${site.path}/schemes'
 
 statistics:
     enabled: true
     path: '${site.path}/statistics'
 
 templates:
-    path: '${%ROOT_PATH%}/site/templates'
+    path: '${site.path}/templates'
     extension: .php
 
 translations:
