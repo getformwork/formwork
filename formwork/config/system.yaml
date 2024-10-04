@@ -101,7 +101,7 @@ schemes:
 
 statistics:
     enabled: true
-    path: '${system.panel.paths.logs}/statistics'
+    path: '${site.path}/statistics'
 
 templates:
     path: '${%ROOT_PATH%}/site/templates'

@@ -12,4 +12,6 @@
 /panel/logs/*
 /panel/node_modules/*
 
+/site/statistics/*
+
 !.gitkeep
