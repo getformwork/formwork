@@ -82,11 +82,15 @@ panel:
     userImageSize: 512
     colorScheme: light
     paths:
-        accounts: '${system.panel.path}/accounts'
         assets: '${system.panel.path}/assets'
         logs: '${system.panel.path}/logs'
         modals: '${system.panel.path}/modals'
-        roles: '${system.panel.path}/roles'
+
+users:
+    paths:
+        accounts: '${site.path}/users/accounts'
+        images: '${site.path}/users/images'
+        roles: '${site.path}/users/roles'
 
 routes:
     files:

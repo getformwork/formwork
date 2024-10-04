@@ -216,6 +216,12 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
+        'panel.users.images' => [
+            'path'    => '/users/images/{image}/',
+            'action'  => 'Formwork\Panel\Controllers\UsersController@images',
+            'methods' => ['GET'],
+        ],
+
         'panel.register' => [
             'path'    => '/register/',
             'action'  => 'Formwork\Panel\Controllers\RegisterController@register',

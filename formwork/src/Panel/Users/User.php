@@ -72,13 +72,13 @@ class User extends Model
     public function image(): UserImage
     {
         $filename = (string) $this->data['image'];
-        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
+        $path = FileSystem::joinPaths($this->config->get('system.users.paths.images'), $filename);
 
         /** @var Panel */
         $panel = $this->app->panel();
 
         if (FileSystem::isFile($path, assertExists: false)) {
-            $uri = $panel->realUri('/assets/images/users/' . basename($path));
+            $uri = $panel->uri('/users/images/' . $filename);
         } else {
             $uri = $panel->realUri('/assets/images/user-image.svg');
         }

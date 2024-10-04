@@ -93,7 +93,7 @@ class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     protected function loadRoles(): void
     {
-        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.roles')) as $file) {
+        foreach (FileSystem::listFiles($path = $this->config->get('system.users.paths.roles')) as $file) {
             /**
              * @var array{title: string, permissions: array<string, bool>}
              */
@@ -106,7 +106,7 @@ class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     protected function loadUsers(): void
     {
-        foreach (FileSystem::listFiles($path = $this->config->get('system.panel.paths.accounts')) as $file) {
+        foreach (FileSystem::listFiles($path = $this->config->get('system.users.paths.accounts')) as $file) {
             /**
              * @var array{username: string, fullname: string, hash: string, email: string, language: string, role?: string, image?: string, colorScheme?: string}
              */

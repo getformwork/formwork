@@ -6,6 +6,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
 use Formwork\Files\FileUploader;
+use Formwork\Http\FileResponse;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
@@ -18,6 +19,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -73,7 +75,7 @@ class UsersController extends AbstractController
             'language' => $requestData->get('language'),
         ];
 
-        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $requestData->get('username') . '.yaml'));
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $requestData->get('username') . '.yaml'));
 
         $this->panel()->notify($this->translate('panel.users.user.created'), 'success');
         return $this->redirect($this->generateRoute('panel.users'));
@@ -98,7 +100,7 @@ class UsersController extends AbstractController
                     'users.user.cannotDelete'
                 );
             }
-            FileSystem::delete(FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
+            FileSystem::delete(FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $user->username() . '.yaml'));
             $this->deleteImage($user);
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
@@ -167,6 +169,17 @@ class UsersController extends AbstractController
         ]));
     }
 
+    public function images(RouteParams $routeParams): Response
+    {
+        $path = FileSystem::joinPaths($this->config->get('system.users.paths.images'), $routeParams->get('image'));
+
+        if (FileSystem::isFile($path)) {
+            return new FileResponse($path);
+        }
+
+        throw new FileNotFoundException('Cannot find asset');
+    }
+
     /**
      * Update user data from POST request
      */
@@ -210,7 +223,7 @@ class UsersController extends AbstractController
             Arr::set($userData, $field->name(), $field->value());
         }
 
-        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $user->username() . '.yaml'));
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $user->username() . '.yaml'));
     }
 
     /**
