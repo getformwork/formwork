@@ -22,7 +22,7 @@ class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
         $config = Yaml::parseFile(ROOT_PATH . '/site/config/site.yaml');
 
         return $container->build(Site::class, ['data' => [
-            'path'      => $this->config->get('system.content.path'),
+            'path'      => $this->config->get('system.pages.path'),
             'languages' => $this->languages,
         ] + $config]);
     }

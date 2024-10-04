@@ -11,7 +11,7 @@ layout:
         content:
             collapsible: true
             label: '{{panel.options.system.content}}'
-            fields: [content.safeMode]
+            fields: [pages.content.safeMode]
 
         languages:
             collapsible: true
@@ -71,7 +71,7 @@ fields:
             0: '{{panel.options.system.dateAndTime.firstWeekday.sunday}}'
             1: '{{panel.options.system.dateAndTime.firstWeekday.monday}}'
 
-    content.safeMode:
+    pages.content.safeMode:
         type: togglegroup
         label: '{{panel.options.system.content.safeMode}}'
         description: '{{panel.options.system.content.safeMode.description}}'

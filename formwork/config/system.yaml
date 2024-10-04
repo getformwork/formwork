@@ -20,11 +20,6 @@ cache:
 
 charset: utf-8
 
-content:
-    path: '${%ROOT_PATH%}/site/content'
-    extension: .md
-    safeMode: true
-
 date:
     dateFormat: Y-m-d
     timeFormat: 'h:i A'
@@ -68,8 +63,12 @@ metadata:
     setGenerator: true
 
 pages:
+    path: '${site.path}/pages'
     index: index
     error: error
+    content:
+        extension: .md
+        safeMode: true
 
 panel:
     enabled: true

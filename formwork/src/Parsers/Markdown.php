@@ -19,7 +19,7 @@ class Markdown extends AbstractParser
      */
     public static function parse(string $input, array $options = []): string
     {
-        $safeMode = App::instance()->config()->get('system.content.safeMode', true);
+        $safeMode = App::instance()->config()->get('system.pages.content.safeMode', true);
 
         $environment = new Environment([
             'html_input'        => $safeMode ? 'escape' : 'allow',

@@ -27,7 +27,7 @@ class FileUriGenerator
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
-        if (Str::startsWith($path, $contentPath = FileSystem::normalizePath($this->config->get('system.content.path')))) {
+        if (Str::startsWith($path, $contentPath = FileSystem::normalizePath($this->config->get('system.pages.path')))) {
             $uriPath = preg_replace('~[/\\\](\d+-)~', '/', Str::after($path, $contentPath))
                 ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
             return $this->site->uri($uriPath, includeLanguage: false);

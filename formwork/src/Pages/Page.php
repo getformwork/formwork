@@ -523,7 +523,7 @@ class Page extends Model implements Stringable
 
                 $extension = '.' . FileSystem::extension($file);
 
-                if ($extension === $config->get('system.content.extension')) {
+                if ($extension === $config->get('system.pages.content.extension')) {
                     $language = null;
 
                     if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
