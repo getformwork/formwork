@@ -4,6 +4,7 @@ namespace Formwork\Utils;
 
 use ReflectionReference;
 use UnexpectedValueException;
+use UnitEnum;
 
 class Debug
 {
@@ -209,6 +210,10 @@ class Debug
                 return sprintf("<span class=\"__type-array\">array</span>(<span class=\"__note\">%d</span>) [<span class=\"__formwork-dump-toggle\" onclick=\"__formwork_dump_toggle(this)\" data-target=\"__formwork-dump-id-%2\$d\">▼</span>\n<div class=\"__formwork-dump-collapsed\" id=\"__formwork-dump-id-%d\">%s</div>%s]", count($data), ++static::$counter, implode("\n", $parts), str_repeat(' ', $indent));
 
             case 'object':
+                if ($data instanceof UnitEnum) {
+                    return sprintf('<span class="__type-name">%s</span>::<span class="__type-name">%s</span>', $data::class, $data->name);
+                }
+
                 $id = spl_object_id($data);
 
                 $class = $data::class;
