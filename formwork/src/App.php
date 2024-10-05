@@ -119,7 +119,14 @@ final class App
         return $this->config()->getDefaults('system');
     }
 
-    public function getService(string $name): mixed
+    /**
+     * @template T of object
+     *
+     * @param class-string<T>|string $name
+     *
+     * @return ($name is class-string<T> ? T : object)
+     */
+    public function getService(string $name): object
     {
         return $this->container->get($name);
     }
