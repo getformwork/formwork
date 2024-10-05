@@ -23,7 +23,6 @@ class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
         return $container->build(Site::class, ['data' => [
             ...$config,
             'contentPath' => $this->config->get('system.pages.path'),
-            'languages'   => $this->languages,
         ]]);
     }
 

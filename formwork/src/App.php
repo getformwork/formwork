@@ -13,7 +13,6 @@ use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Images\ImageFactory;
 use Formwork\Languages\Languages;
-use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Panel\Panel;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
@@ -25,9 +24,12 @@ use Formwork\Services\Loaders\LanguagesServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
 use Formwork\Services\Loaders\SiteServiceLoader;
+use Formwork\Services\Loaders\TemplatesServiceLoader;
 use Formwork\Services\Loaders\TranslationsServiceLoader;
 use Formwork\Services\Loaders\UsersServiceLoader;
 use Formwork\Statistics\Statistics;
+use Formwork\Templates\TemplateFactory;
+use Formwork\Templates\Templates;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Users\UserFactory;
@@ -185,11 +187,15 @@ final class App
             ->loader(SchemesServiceLoader::class)
             ->alias('schemes');
 
-        $container->define(TemplateFactory::class);
-
         $container->define(Site::class)
             ->loader(SiteServiceLoader::class)
             ->alias('site');
+
+        $container->define(TemplateFactory::class);
+
+        $container->define(Templates::class)
+            ->loader(TemplatesServiceLoader::class)
+            ->alias('templates');
 
         $container->define(Statistics::class)
             ->parameter('path', fn (Config $config) => $config->get('system.statistics.path'))

@@ -10,12 +10,11 @@ use Formwork\Pages\ContentFile;
 use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
-use Formwork\Pages\Templates\TemplateCollection;
-use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Schemes\Schemes;
+use Formwork\Templates\Templates;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Stringable;
@@ -63,7 +62,7 @@ class Site extends Model implements Stringable
     /**
      * Site templates
      */
-    protected TemplateCollection $templates;
+    protected Templates $templates;
 
     /**
      * Site metadata
@@ -98,7 +97,6 @@ class Site extends Model implements Stringable
         array $data,
         protected App $app,
         protected Config $config,
-        protected TemplateFactory $templateFactory
     ) {
         $this->setMultiple($data);
     }
@@ -201,7 +199,7 @@ class Site extends Model implements Stringable
     /**
      * Get site templates
      */
-    public function templates(): TemplateCollection
+    public function templates(): Templates
     {
         return $this->templates;
     }
@@ -419,17 +417,16 @@ class Site extends Model implements Stringable
     public function load(): void
     {
         $this->scheme = $this->app->schemes()->get('config.site');
+        $this->languages = $this->app->getService(Languages::class);
+        $this->templates = $this->app->getService(Templates::class);
 
         $this->fields = $this->scheme->fields();
         $this->fields->setModel($this);
-
-        $this->loadTemplates();
-
         $this->data = [...$this->defaults(), ...$this->data];
 
-        $this->loadRouteAliases();
-
         $this->fields->setValues($this->data);
+
+        $this->loadRouteAliases();
     }
 
     /**
@@ -438,22 +435,6 @@ class Site extends Model implements Stringable
     protected function setMetadata(array $metadata): void
     {
         $this->data['metadata'] = $metadata;
-    }
-
-    protected function loadTemplates(): void
-    {
-        $path = $this->config->get('system.templates.path');
-
-        $templates = [];
-
-        foreach (FileSystem::listFiles($path) as $file) {
-            if (FileSystem::extension($file) === 'php') {
-                $name = FileSystem::name($file);
-                $templates[$name] = $this->templateFactory->make($name);
-            }
-        }
-
-        $this->templates = new TemplateCollection($templates);
     }
 
     /**

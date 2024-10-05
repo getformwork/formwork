@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Pages\Templates;
+namespace Formwork\Templates;
 
 use Closure;
 use Formwork\App;
