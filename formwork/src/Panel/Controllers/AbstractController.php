@@ -128,7 +128,7 @@ abstract class AbstractController extends BaseAbstractController
                     'label'       => $this->translate('panel.users.users'),
                     'uri'         => '/users/',
                     'permissions' => 'users',
-                    'badge'       => $this->app->users()->count(),
+                    'badge'       => $this->site->users()->count(),
                 ],
                 'options' => [
                     'label'       => $this->translate('panel.options.options'),

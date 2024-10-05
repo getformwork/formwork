@@ -283,7 +283,7 @@ return [
         'panel.register' => [
             'action' => static function (Request $request, App $app, Site $site, Panel $panel) {
                 // Register panel if no user exists
-                if ($app->users()->isEmpty()) {
+                if ($site->users()->isEmpty()) {
                     if (!$request->isLocalhost()) {
                         return new RedirectResponse($site->uri());
                     }
@@ -297,9 +297,9 @@ return [
         ],
 
         'panel.redirectToLogin' => [
-            'action' => static function (Request $request, App $app, Panel $panel) {
+            'action' => static function (Request $request, Site $site, Panel $panel) {
                 // Redirect to login if no user is logged
-                if (!$app->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
+                if (!$site->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
                     $request->session()->set('FORMWORK_REDIRECT_TO', $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));
                 }

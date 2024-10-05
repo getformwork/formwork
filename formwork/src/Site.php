@@ -15,6 +15,7 @@ use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Schemes\Schemes;
 use Formwork\Templates\Templates;
+use Formwork\Users\Users;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Stringable;
@@ -63,6 +64,11 @@ class Site extends Model implements Stringable
      * Site templates
      */
     protected Templates $templates;
+
+    /**
+     * Site users
+     */
+    protected Users $users;
 
     /**
      * Site metadata
@@ -202,6 +208,11 @@ class Site extends Model implements Stringable
     public function templates(): Templates
     {
         return $this->templates;
+    }
+
+    public function users(): Users
+    {
+        return $this->users;
     }
 
     /**
@@ -419,6 +430,7 @@ class Site extends Model implements Stringable
         $this->scheme = $this->app->schemes()->get('config.site');
         $this->languages = $this->app->getService(Languages::class);
         $this->templates = $this->app->getService(Templates::class);
+        $this->users = $this->app->getService(Users::class);
 
         $this->fields = $this->scheme->fields();
         $this->fields->setModel($this);
