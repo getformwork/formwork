@@ -17,7 +17,6 @@ use Formwork\Pages\Site;
 use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Users\UserFactory;
-use Formwork\Parsers\Yaml;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Security\CsrfToken;
@@ -111,7 +110,7 @@ final class App
      */
     public function defaults(): array
     {
-        return Yaml::parseFile(SYSTEM_PATH . '/config/system.yaml');
+        return $this->config()->getDefaults('system');
     }
 
     public function getService(string $name): mixed
