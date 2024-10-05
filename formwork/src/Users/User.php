@@ -1,15 +1,17 @@
 <?php
 
-namespace Formwork\Panel\Users;
+namespace Formwork\Users;
 
 use Formwork\App;
 use Formwork\Config\Config;
+use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
+use Formwork\Images\Image;
 use Formwork\Log\Registry;
 use Formwork\Model\Model;
-use Formwork\Panel\Panel;
 use Formwork\Panel\Security\Password;
 use Formwork\Utils\FileSystem;
+use UnexpectedValueException;
 
 class User extends Model
 {
@@ -34,7 +36,7 @@ class User extends Model
     /**
      * User image
      */
-    protected UserImage $image;
+    protected Image $image;
 
     /**
      * User last access time
@@ -46,7 +48,7 @@ class User extends Model
      *
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data, protected Role $role, protected App $app, protected Config $config, protected Request $request)
+    public function __construct(array $data, protected Role $role, protected App $app, protected Config $config, protected Request $request, protected FileFactory $fileFactory)
     {
         $this->scheme = $app->schemes()->get('users.user');
 
@@ -69,21 +71,25 @@ class User extends Model
     /**
      * Return user image
      */
-    public function image(): UserImage
+    public function image(): Image
     {
-        $filename = (string) $this->data['image'];
-        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/users/', $filename);
-
-        /** @var Panel */
-        $panel = $this->app->panel();
-
-        if (FileSystem::isFile($path, assertExists: false)) {
-            $uri = $panel->realUri('/assets/images/users/' . basename($path));
-        } else {
-            $uri = $panel->realUri('/assets/images/user-image.svg');
+        if (isset($this->image)) {
+            return $this->image;
         }
 
-        return new UserImage($path, $uri);
+        $path = FileSystem::joinPaths($this->config->get('system.users.paths.images'), (string) $this->data['image']);
+
+        if (!FileSystem::isFile($path, assertExists: false)) {
+            $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/user-image.svg');
+        }
+
+        $file = $this->fileFactory->make($path);
+
+        if (!($file instanceof Image)) {
+            throw new UnexpectedValueException('Invalid user image');
+        }
+
+        return $this->image = $file;
     }
 
     public function role(): Role

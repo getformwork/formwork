@@ -4,11 +4,10 @@ namespace Formwork\Services\Loaders;
 
 use Formwork\Config\Config;
 use Formwork\Languages\Languages;
-use Formwork\Pages\Site;
-use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
+use Formwork\Site;
 
 class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
@@ -19,12 +18,12 @@ class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
     public function load(Container $container): Site
     {
         $this->schemes->loadFromPath($this->config->get('system.schemes.paths.site'));
-        $config = Yaml::parseFile(ROOT_PATH . '/site/config/site.yaml');
+        $config = $this->config->get('site');
 
         return $container->build(Site::class, ['data' => [
-            'path'      => $this->config->get('system.content.path'),
-            'languages' => $this->languages,
-        ] + $config]);
+            ...$config,
+            'contentPath' => $this->config->get('system.pages.path'),
+        ]]);
     }
 
     /**

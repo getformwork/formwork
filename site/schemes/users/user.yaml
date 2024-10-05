@@ -37,7 +37,7 @@ fields:
         type: select
         label: '{{panel.user.role}}'
         disabled: true
-        options@: formwork.panel.users.availableRoles
+        options@: site.users.availableRoles
 
     colorScheme:
         type: togglegroup

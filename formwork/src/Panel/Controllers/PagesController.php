@@ -15,12 +15,12 @@ use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
 use Formwork\Pages\Page;
-use Formwork\Pages\Site;
 use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
+use Formwork\Site;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
@@ -566,7 +566,7 @@ class PagesController extends AbstractController
 
         $filename = $fieldCollection->get('template')->value();
         $filename .= $language !== null ? '.' . $language : '';
-        $filename .= $this->config->get('system.content.extension');
+        $filename .= $this->config->get('system.pages.content.extension');
 
         FileSystem::createFile($path . $filename);
 
@@ -647,7 +647,7 @@ class PagesController extends AbstractController
         if ($force || $differ) {
             $filename = $requestData->get('template');
             $filename .= empty($language) ? '' : '.' . $language;
-            $filename .= $this->config->get('system.content.extension');
+            $filename .= $this->config->get('system.pages.content.extension');
 
             $fileContent = Str::wrap(Yaml::encode($frontmatter), '---' . PHP_EOL) . $content;
 
@@ -655,12 +655,12 @@ class PagesController extends AbstractController
                 throw new UnexpectedValueException('Unexpected missing page path');
             }
 
-            if ($this->site()->path() === null) {
+            if ($this->site()->contentPath() === null) {
                 throw new UnexpectedValueException('Unexpected missing site path');
             }
 
             FileSystem::write($page->path() . $filename, $fileContent);
-            FileSystem::touch($this->site()->path());
+            FileSystem::touch($this->site()->contentPath());
 
             $contentHistory = new ContentHistory($page->path());
 
@@ -829,7 +829,7 @@ class PagesController extends AbstractController
             throw new UnexpectedValueException('Unexpected missing content file');
         }
 
-        $destination = $page->path() . $template . $this->config->get('system.content.extension');
+        $destination = $page->path() . $template . $this->config->get('system.pages.content.extension');
         FileSystem::move($page->contentFile()->path(), $destination);
         $page->reload();
         return $page;

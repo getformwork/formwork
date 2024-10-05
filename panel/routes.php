@@ -1,12 +1,13 @@
 <?php
 
+use Formwork\App;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
-use Formwork\Pages\Site;
 use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
+use Formwork\Site;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 
@@ -216,6 +217,12 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
+        'panel.users.images' => [
+            'path'    => '/users/images/{image}/',
+            'action'  => 'Formwork\Panel\Controllers\UsersController@images',
+            'methods' => ['GET'],
+        ],
+
         'panel.register' => [
             'path'    => '/register/',
             'action'  => 'Formwork\Panel\Controllers\RegisterController@register',
@@ -274,9 +281,9 @@ return [
         ],
 
         'panel.register' => [
-            'action' => static function (Request $request, Site $site, Panel $panel) {
+            'action' => static function (Request $request, App $app, Site $site, Panel $panel) {
                 // Register panel if no user exists
-                if ($panel->users()->isEmpty()) {
+                if ($site->users()->isEmpty()) {
                     if (!$request->isLocalhost()) {
                         return new RedirectResponse($site->uri());
                     }
@@ -290,9 +297,9 @@ return [
         ],
 
         'panel.redirectToLogin' => [
-            'action' => static function (Request $request, Panel $panel) {
+            'action' => static function (Request $request, Site $site, Panel $panel) {
                 // Redirect to login if no user is logged
-                if (!$panel->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
+                if (!$site->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
                     $request->session()->set('FORMWORK_REDIRECT_TO', $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));
                 }

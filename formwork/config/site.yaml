@@ -1,11 +1,15 @@
-metadata: []
+author: ''
 
-canonicalRoute: null
+defaultTemplate: page
 
-routeAliases: []
+description: ''
 
 maintenance:
     enabled: false
     page: null
 
-defaultTemplate: page
+metadata: []
+
+path: '${%ROOT_PATH%}/site'
+
+routeAliases: []

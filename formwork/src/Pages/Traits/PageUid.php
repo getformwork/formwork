@@ -14,7 +14,7 @@ trait PageUid
     /**
      * Get page or site relative path
      */
-    abstract public function relativePath(): ?string;
+    abstract public function contentRelativePath(): ?string;
 
     /**
      * Get the page unique identifier
@@ -25,7 +25,7 @@ trait PageUid
             return $this->uid;
         }
 
-        $id = $this->relativePath() ?: spl_object_hash($this);
+        $id = $this->contentRelativePath() ?: spl_object_hash($this);
 
         return $this->uid = Str::chunk(substr(hash('sha256', (string) $id), 0, 32), 8, '-');
     }

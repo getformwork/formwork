@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Pages\Templates;
+namespace Formwork\Templates;
 
 use Formwork\Data\AbstractCollection;
 

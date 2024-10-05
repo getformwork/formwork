@@ -50,10 +50,10 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                if ($this->site()->path() === null) {
+                if ($this->site()->contentPath() === null) {
                     throw new UnexpectedValueException('Unexpected missing site path');
                 }
-                FileSystem::touch($this->site()->path());
+                FileSystem::touch($this->site()->contentPath());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');
@@ -93,10 +93,10 @@ class OptionsController extends AbstractController
 
             // Touch content folder to invalidate cache
             if ($differ) {
-                if ($this->site()->path() === null) {
+                if ($this->site()->contentPath() === null) {
                     throw new UnexpectedValueException('Unexpected missing site path');
                 }
-                FileSystem::touch($this->site()->path());
+                FileSystem::touch($this->site()->contentPath());
             }
 
             $this->panel()->notify($this->translate('panel.options.updated'), 'success');

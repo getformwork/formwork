@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Panel\Users;
+namespace Formwork\Users;
 
 use Formwork\Data\AbstractCollection;
 

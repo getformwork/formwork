@@ -7,9 +7,11 @@
 /vendor/*
 
 /panel/.yarn/*
-/panel/accounts/*
-/panel/assets/images/users/*
 /panel/logs/*
 /panel/node_modules/*
+
+/site/statistics/*
+/site/users/accounts/*
+/site/users/images/*
 
 !.gitkeep

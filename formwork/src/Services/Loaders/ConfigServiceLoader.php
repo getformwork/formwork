@@ -12,7 +12,7 @@ class ConfigServiceLoader implements ServiceLoaderInterface
     {
         $config = new Config();
 
-        $config->loadFromPath(SYSTEM_PATH . '/config/');
+        $config->loadFromPath(SYSTEM_PATH . '/config/', defaultConfig: true);
         $config->loadFromPath(ROOT_PATH . '/site/config/');
 
         $config->resolve([

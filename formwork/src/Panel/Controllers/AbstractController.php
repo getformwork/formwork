@@ -8,17 +8,17 @@ use Formwork\Controllers\AbstractController as BaseAbstractController;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
-use Formwork\Pages\Site;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Modals\ModalCollection;
 use Formwork\Panel\Modals\ModalFactory;
 use Formwork\Panel\Panel;
-use Formwork\Panel\Users\User;
 use Formwork\Parsers\Json;
 use Formwork\Router\Router;
 use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
+use Formwork\Site;
 use Formwork\Translations\Translations;
+use Formwork\Users\User;
 use Formwork\Utils\Date;
 use Formwork\Utils\Uri;
 use Formwork\View\ViewFactory;
@@ -128,7 +128,7 @@ abstract class AbstractController extends BaseAbstractController
                     'label'       => $this->translate('panel.users.users'),
                     'uri'         => '/users/',
                     'permissions' => 'users',
-                    'badge'       => $this->panel->users()->count(),
+                    'badge'       => $this->site->users()->count(),
                 ],
                 'options' => [
                     'label'       => $this->translate('panel.options.options'),

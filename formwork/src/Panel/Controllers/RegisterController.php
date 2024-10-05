@@ -22,7 +22,7 @@ class RegisterController extends AbstractController
      */
     public function register(Request $request, Schemes $schemes, CsrfToken $csrfToken): Response
     {
-        if (!$this->panel()->users()->isEmpty()) {
+        if (!$this->site->users()->isEmpty()) {
             return $this->redirectToReferer();
         }
 
@@ -56,7 +56,7 @@ class RegisterController extends AbstractController
                     'role'     => 'admin',
                 ];
 
-                Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.panel.paths.accounts'), $username . '.yaml'));
+                Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
 
                 $request->session()->regenerate();
                 $request->session()->set('FORMWORK_USERNAME', $username);

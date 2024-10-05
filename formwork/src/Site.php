@@ -1,20 +1,21 @@
 <?php
 
-namespace Formwork\Pages;
+namespace Formwork;
 
-use Formwork\App;
 use Formwork\Config\Config;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
 use Formwork\Model\Model;
+use Formwork\Pages\ContentFile;
 use Formwork\Pages\Exceptions\PageNotFoundException;
-use Formwork\Pages\Templates\TemplateCollection;
-use Formwork\Pages\Templates\TemplateFactory;
+use Formwork\Pages\Page;
+use Formwork\Pages\PageCollection;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
-use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
+use Formwork\Templates\Templates;
+use Formwork\Users\Users;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Stringable;
@@ -32,10 +33,7 @@ class Site extends Model implements Stringable
      */
     protected ?string $path = null;
 
-    /**
-     * Site relative path
-     */
-    protected ?string $relativePath = null;
+    protected ?string $contentPath = null;
 
     /**
      * Site content file
@@ -65,7 +63,12 @@ class Site extends Model implements Stringable
     /**
      * Site templates
      */
-    protected TemplateCollection $templates;
+    protected Templates $templates;
+
+    /**
+     * Site users
+     */
+    protected Users $users;
 
     /**
      * Site metadata
@@ -100,7 +103,6 @@ class Site extends Model implements Stringable
         array $data,
         protected App $app,
         protected Config $config,
-        protected TemplateFactory $templateFactory
     ) {
         $this->setMultiple($data);
     }
@@ -122,7 +124,7 @@ class Site extends Model implements Stringable
      */
     public function defaults(): array
     {
-        $defaults = Yaml::parseFile(SYSTEM_PATH . '/config/site.yaml');
+        $defaults = $this->config->getDefaults('site');
 
         return [...$defaults, ...Arr::reject($this->fields()->pluck('default'), fn ($value) => $value === null)];
     }
@@ -151,19 +153,21 @@ class Site extends Model implements Stringable
     }
 
     /**
-     * Get site relative path
-     */
-    public function relativePath(): ?string
-    {
-        return $this->relativePath;
-    }
-
-    /**
      * Get site filename
      */
     public function contentFile(): ?ContentFile
     {
         return $this->contentFile;
+    }
+
+    public function contentPath(): ?string
+    {
+        return $this->contentPath;
+    }
+
+    public function contentRelativePath(): ?string
+    {
+        return '/';
     }
 
     /**
@@ -201,9 +205,14 @@ class Site extends Model implements Stringable
     /**
      * Get site templates
      */
-    public function templates(): TemplateCollection
+    public function templates(): Templates
     {
         return $this->templates;
+    }
+
+    public function users(): Users
+    {
+        return $this->users;
     }
 
     /**
@@ -254,10 +263,10 @@ class Site extends Model implements Stringable
      */
     public function modifiedSince(int $time): bool
     {
-        if ($this->path === null) {
+        if ($this->contentPath === null) {
             return false;
         }
-        return FileSystem::directoryModifiedSince($this->path, $time);
+        return FileSystem::directoryModifiedSince($this->contentPath, $time);
     }
 
     /**
@@ -322,7 +331,7 @@ class Site extends Model implements Stringable
         }
 
         $components = explode('/', trim($route, '/'));
-        $path = $this->path;
+        $path = $this->contentPath;
 
         if ($path === null) {
             return null;
@@ -419,33 +428,25 @@ class Site extends Model implements Stringable
     public function load(): void
     {
         $this->scheme = $this->app->schemes()->get('config.site');
+        $this->languages = $this->app->getService(Languages::class);
+        $this->templates = $this->app->getService(Templates::class);
+        $this->users = $this->app->getService(Users::class);
 
         $this->fields = $this->scheme->fields();
         $this->fields->setModel($this);
-
-        $this->loadTemplates();
-
         $this->data = [...$this->defaults(), ...$this->data];
 
-        $this->loadRouteAliases();
-
         $this->fields->setValues($this->data);
+
+        $this->loadRouteAliases();
     }
 
-    protected function loadTemplates(): void
+    /**
+     * @param array<string, mixed> $metadata
+     */
+    protected function setMetadata(array $metadata): void
     {
-        $path = $this->config->get('system.templates.path');
-
-        $templates = [];
-
-        foreach (FileSystem::listFiles($path) as $file) {
-            if (FileSystem::extension($file) === 'php') {
-                $name = FileSystem::name($file);
-                $templates[$name] = $this->templateFactory->make($name);
-            }
-        }
-
-        $this->templates = new TemplateCollection($templates);
+        $this->data['metadata'] = $metadata;
     }
 
     /**
@@ -460,9 +461,12 @@ class Site extends Model implements Stringable
 
     protected function setPath(string $path): void
     {
-        $this->path = FileSystem::normalizePath($path . '/');
+        $this->path = $this->data['path'] = FileSystem::normalizePath($path . '/');
+    }
 
-        $this->relativePath = DS;
+    protected function setContentPath(string $path): void
+    {
+        $this->contentPath = FileSystem::normalizePath($path . '/');
 
         $this->route = '/';
 
