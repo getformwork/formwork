@@ -29,18 +29,22 @@
 }
 
 .panel-user-image {
+    overflow: hidden;
     width: 48px;
-}
-
-.panel-user-image img {
-    width: 48px;
+    height: 48px;
     border-radius: $border-radius-round;
+    background-color: var(--color-base-400);
     box-shadow: $box-shadow-sm;
     transition: box-shadow $transition-time-md ease-out;
 
     .panel-user-card:hover & {
         box-shadow: 0 0 0 0.5rem var(--color-base-600);
     }
+}
+
+.panel-user-image img {
+    width: 100%;
+    height: 100%;
 }
 
 .panel-user-details {
