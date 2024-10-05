@@ -144,6 +144,9 @@ class Debug
 
     public static function dump(mixed ...$data): void
     {
+        if (!headers_sent()) {
+            ob_start();
+        }
         if (!static::$stylesDumped) {
             echo '<style>' . static::$css . '</style>', '<script>' . static::$js . '</script>';
             static::$stylesDumped = true;
