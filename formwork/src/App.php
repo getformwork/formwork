@@ -13,7 +13,6 @@ use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Images\ImageFactory;
 use Formwork\Languages\Languages;
-use Formwork\Pages\Site;
 use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Panel\Panel;
 use Formwork\Panel\Users\UserFactory;

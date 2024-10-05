@@ -4,9 +4,9 @@ use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
-use Formwork\Pages\Site;
 use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
+use Formwork\Site;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 

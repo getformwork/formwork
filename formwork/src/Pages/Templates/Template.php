@@ -5,7 +5,7 @@ namespace Formwork\Pages\Templates;
 use Closure;
 use Formwork\App;
 use Formwork\Assets;
-use Formwork\Pages\Site;
+use Formwork\Site;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
 use Formwork\View\Exceptions\RenderingException;

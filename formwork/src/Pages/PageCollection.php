@@ -4,6 +4,7 @@ namespace Formwork\Pages;
 
 use Formwork\Data\AbstractCollection;
 use Formwork\Data\Contracts\Paginable;
+use Formwork\Site;
 use Formwork\Utils\Str;
 use RuntimeException;
 

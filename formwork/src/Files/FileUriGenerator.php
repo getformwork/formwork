@@ -4,8 +4,8 @@ namespace Formwork\Files;
 
 use Formwork\Config\Config;
 use Formwork\Files\Exceptions\FileUriGenerationException;
-use Formwork\Pages\Site;
 use Formwork\Router\Router;
+use Formwork\Site;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;

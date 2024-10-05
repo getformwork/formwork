@@ -4,7 +4,7 @@ namespace Formwork\Pages\Traits;
 
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
-use Formwork\Pages\Site;
+use Formwork\Site;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -43,7 +43,7 @@ trait PageTraversal
     /**
      * Get page or site path
      */
-    abstract public function path(): ?string;
+    abstract public function contentPath(): ?string;
 
     /**
      * Get page or site route
@@ -66,13 +66,13 @@ trait PageTraversal
             return $this->parent;
         }
 
-        if ($this->path() === null) {
+        if ($this->contentPath() === null) {
             return null;
         }
 
-        $parentPath = FileSystem::joinPaths(dirname($this->path()), '/');
+        $parentPath = FileSystem::joinPaths(dirname($this->contentPath()), '/');
 
-        if ($parentPath === $this->site()->path()) {
+        if ($parentPath === $this->site()->contentPath()) {
             return $this->parent = $this->site();
         }
 
@@ -104,11 +104,11 @@ trait PageTraversal
             return $this->children;
         }
 
-        if ($this->path() === null) {
+        if ($this->contentPath() === null) {
             return $this->children = new PageCollection();
         }
 
-        return $this->children = $this->site()->retrievePages($this->path());
+        return $this->children = $this->site()->retrievePages($this->contentPath());
     }
 
     /**
@@ -136,11 +136,11 @@ trait PageTraversal
             return $this->descendants;
         }
 
-        if ($this->path() === null) {
+        if ($this->contentPath() === null) {
             return $this->descendants = new PageCollection();
         }
 
-        return $this->descendants = $this->site()->retrievePages($this->path(), recursive: true);
+        return $this->descendants = $this->site()->retrievePages($this->contentPath(), recursive: true);
     }
 
     /**
@@ -213,7 +213,7 @@ trait PageTraversal
             return $this->inclusiveSiblings;
         }
 
-        if ($this->path() === null || $this->parent() === null) {
+        if ($this->contentPath() === null || $this->parent() === null) {
             return $this->inclusiveSiblings = new PageCollection([$this->route() => $this]);
         }
 

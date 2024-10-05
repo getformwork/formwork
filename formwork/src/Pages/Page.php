@@ -16,6 +16,7 @@ use Formwork\Pages\Traits\PageStatus;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
+use Formwork\Site;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -493,6 +494,16 @@ class Page extends Model implements Stringable
         $this->__construct($data);
     }
 
+    public function contentPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function contentRelativePath(): ?string
+    {
+        return $this->relativePath;
+    }
+
     /**
      * Load files related to page
      */
@@ -602,11 +613,11 @@ class Page extends Model implements Stringable
     {
         $this->path = FileSystem::normalizePath($path . '/');
 
-        if ($this->site()->path() === null) {
+        if ($this->site()->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing site path');
         }
 
-        $this->relativePath = Str::prepend(Path::makeRelative($this->path, $this->site()->path(), DS), DS);
+        $this->relativePath = Str::prepend(Path::makeRelative($this->path, $this->site()->contentPath(), DS), DS);
 
         $routePath = preg_replace('~[/\\\](\d+-)~', '/', $this->relativePath)
             ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));

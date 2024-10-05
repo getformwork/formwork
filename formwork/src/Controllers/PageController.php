@@ -10,9 +10,9 @@ use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
-use Formwork\Pages\Site;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
+use Formwork\Site;
 use Formwork\Statistics\Statistics;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
@@ -64,8 +64,8 @@ class PageController extends AbstractController
             )) {
                 // Clear cache if the site was not modified since the page has been published or unpublished
                 $this->filesCache->clear();
-                if ($this->site->path() !== null) {
-                    FileSystem::touch($this->site->path());
+                if ($this->site->contentPath() !== null) {
+                    FileSystem::touch($this->site->contentPath());
                 }
             }
 
