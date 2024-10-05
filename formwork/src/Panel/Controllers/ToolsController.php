@@ -173,6 +173,11 @@ class ToolsController extends AbstractController
                 'Stream Wrappers' => implode(', ', stream_get_wrappers()),
                 'Allow URL Fopen' => ini_get('allow_url_fopen') ? 'true' : 'false',
             ],
+            'Output Buffering' => [
+                'Output Buffering' => ini_get('output_buffering') ? 'true' : 'false',
+                'Implicit Flush'   => ini_get('implicit_flush') ? 'true' : 'false',
+                'Chunk Size'       => ini_get('output_buffering') !== '1' ? ini_get('output_buffering') : 'unlimited',
+            ],
             'OPcache' => [
                 'Enabled'                   => $opcacheStatus['opcache_enabled'] ? 'true' : 'false',
                 'Cached Scripts'            => $opcacheStatus['opcache_statistics']['num_cached_scripts'] ?? 0,
