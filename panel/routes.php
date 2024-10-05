@@ -1,15 +1,18 @@
 <?php
 
 use Formwork\App;
+use Formwork\Config\Config;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
+use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
 use Formwork\Site;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
+use Formwork\View\ViewFactory;
 
 return [
     'routes' => [
@@ -278,6 +281,21 @@ return [
             },
             'methods' => ['POST'],
             'types'   => ['HTTP', 'XHR'],
+        ],
+
+        'panel.checkAssets' => [
+            'action' => static function (Config $config, ViewFactory $viewFactory) {
+                $path = $config->get('system.panel.paths.assets');
+                $assets = ['css/panel.min.css', 'css/panel-dark.min.css', 'js/app.min.js'];
+
+                foreach ($assets as $asset) {
+                    $assetPath = FileSystem::joinPaths($path, $asset);
+                    if (!FileSystem::isFile($assetPath, assertExists: false)) {
+                        $view = $viewFactory->make('errors.panel.assets');
+                        return new Response($view->render(), ResponseStatus::InternalServerError);
+                    }
+                }
+            },
         ],
 
         'panel.register' => [

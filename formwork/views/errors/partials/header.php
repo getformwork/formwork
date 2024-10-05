@@ -69,6 +69,7 @@
             color: #7d7d7d;
             font-family: SFMono-Regular, 'SF Mono', 'Cascadia Mono', 'Liberation Mono', Menlo, Consolas, monospace;
             font-size: 0.875em;
+            text-wrap: nowrap;
         }
 
         .error-code {
