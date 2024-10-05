@@ -7,8 +7,8 @@ use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Panel\Users\User;
-use Formwork\Panel\Users\UserCollection;
+use Formwork\Users\User;
+use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -28,7 +28,7 @@ final class Panel
     public function __construct(
         protected Config $config,
         protected Request $request,
-        protected UserCollection $userCollection
+        protected Users $users
     ) {
     }
 
@@ -41,15 +41,7 @@ final class Panel
             return false;
         }
         $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return !empty($username) && $this->userCollection->has($username);
-    }
-
-    /**
-     * Return all registered users
-     */
-    public function users(): UserCollection
-    {
-        return $this->userCollection;
+        return !empty($username) && $this->users->has($username);
     }
 
     /**
@@ -58,7 +50,7 @@ final class Panel
     public function user(): User
     {
         $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return $this->userCollection->get($username);
+        return $this->users->get($username);
     }
 
     /**

@@ -33,6 +33,17 @@ class FileUriGenerator
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
+        if (Str::startsWith($path, FileSystem::normalizePath($this->config->get('system.users.paths.images')))) {
+            $image = basename($path);
+            $uriPath = $this->router->generate('panel.users.images', compact('image'));
+            return $this->site->uri($uriPath, includeLanguage: false);
+        }
+
+        if (Str::startsWith($path, $panelAssetsPath = FileSystem::normalizePath($this->config->get('system.panel.paths.assets')))) {
+            $uriPath = Str::after($path, $panelAssetsPath);
+            return $this->site->uri('panel/assets/' . $uriPath, includeLanguage: false);
+        }
+
         throw new FileUriGenerationException(sprintf('Cannot generate uri for "%s": missing file generator', $file->name()));
     }
 }

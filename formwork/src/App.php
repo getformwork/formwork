@@ -15,7 +15,6 @@ use Formwork\Images\ImageFactory;
 use Formwork\Languages\Languages;
 use Formwork\Pages\Templates\TemplateFactory;
 use Formwork\Panel\Panel;
-use Formwork\Panel\Users\UserFactory;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Security\CsrfToken;
@@ -27,9 +26,12 @@ use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
 use Formwork\Services\Loaders\SiteServiceLoader;
 use Formwork\Services\Loaders\TranslationsServiceLoader;
+use Formwork\Services\Loaders\UsersServiceLoader;
 use Formwork\Statistics\Statistics;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
+use Formwork\Users\UserFactory;
+use Formwork\Users\Users;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 
@@ -95,6 +97,11 @@ final class App
     public function translations(): Translations
     {
         return $this->container->get(Translations::class);
+    }
+
+    public function users(): Users
+    {
+        return $this->container->get(Users::class);
     }
 
     public function panel(): ?Panel
@@ -188,6 +195,10 @@ final class App
             ->alias('cache');
 
         $container->define(UserFactory::class);
+
+        $container->define(Users::class)
+            ->loader(UsersServiceLoader::class)
+            ->alias('users');
 
         $container->define(Panel::class)
             ->loader(PanelServiceLoader::class)

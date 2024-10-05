@@ -14,10 +14,10 @@ use Formwork\Http\Response;
 use Formwork\Images\Image;
 use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
-use Formwork\Panel\Users\User;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
+use Formwork\Users\User;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
@@ -38,7 +38,7 @@ class UsersController extends AbstractController
 
         return new Response($this->view('users.index', [
             'title' => $this->translate('panel.users.users'),
-            'users' => $this->panel()->users()->sortBy('username'),
+            'users' => $this->app->users()->sortBy('username'),
         ]));
     }
 
@@ -62,7 +62,7 @@ class UsersController extends AbstractController
         }
 
         // Ensure there isn't a user with the same username
-        if ($this->panel()->users()->has($requestData->get('username'))) {
+        if ($this->app->users()->has($requestData->get('username'))) {
             $this->panel()->notify($this->translate('panel.users.user.cannotCreate.alreadyExists'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
@@ -88,7 +88,7 @@ class UsersController extends AbstractController
     {
         $this->ensurePermission('users.delete');
 
-        $user = $this->panel()->users()->get($routeParams->get('user'));
+        $user = $this->app->users()->get($routeParams->get('user'));
 
         try {
             if (!$user) {
@@ -125,7 +125,7 @@ class UsersController extends AbstractController
 
         $fields = $scheme->fields();
 
-        $user = $this->panel()->users()->get($routeParams->get('user'));
+        $user = $this->app->users()->get($routeParams->get('user'));
 
         if ($user === null) {
             $this->panel()->notify($this->translate('panel.users.user.notFound'), 'error');

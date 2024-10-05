@@ -22,7 +22,7 @@ class RegisterController extends AbstractController
      */
     public function register(Request $request, Schemes $schemes, CsrfToken $csrfToken): Response
     {
-        if (!$this->panel()->users()->isEmpty()) {
+        if (!$this->app->users()->isEmpty()) {
             return $this->redirectToReferer();
         }
 

@@ -55,7 +55,7 @@ class AuthenticationController extends AbstractController
 
                 $accessLimiter->registerAttempt();
 
-                $user = $this->panel()->users()->get($data->get('username'));
+                $user = $this->app->users()->get($data->get('username'));
 
                 // Authenticate user
                 if ($user !== null && $user->authenticate($data->get('password'))) {
