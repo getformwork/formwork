@@ -39,6 +39,8 @@ composer create-project getformwork/formwork
 
 Composer will create a `formwork` folder with a fresh ready-to-use Formwork installation.
 
+To use the administration panel you need to build the [assets](#building-administration-panel-assets-with-yarn).
+
 ### Cloning from GitHub
 If you want to get the currently worked master version, you can clone the GitHub repository and then install the dependencies with Composer.
 
@@ -53,6 +55,17 @@ git clone https://github.com/getformwork/formwork.git
 ```shell
 cd formwork
 composer install
+```
+
+3. Build the administration panel [assets](#building-administration-panel-assets-with-yarn).
+
+### Building administration panel assets with Yarn
+After installing with Composer or cloning from GitHub, you need to build the panel assets with [Yarn](https://yarnpkg.com/) by running the following commands:
+
+```shell
+cd panel
+yarn install
+yarn build
 ```
 
 ## Running Formwork server
