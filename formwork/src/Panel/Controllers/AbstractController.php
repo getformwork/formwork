@@ -99,13 +99,12 @@ abstract class AbstractController extends BaseAbstractController
     protected function defaults(): array
     {
         return [
-            'location'    => $this->name,
-            'site'        => $this->site(),
-            'panel'       => $this->panel(),
-            'csrfToken'   => $this->csrfToken->get($this->panel()->getCsrfTokenName()),
-            'modals'      => $this->modals(),
-            'colorScheme' => $this->getColorScheme(),
-            'navigation'  => [
+            'location'   => $this->name,
+            'site'       => $this->site(),
+            'panel'      => $this->panel(),
+            'csrfToken'  => $this->csrfToken->get($this->panel()->getCsrfTokenName()),
+            'modals'     => $this->modals(),
+            'navigation' => [
                 'dashboard' => [
                     'label'       => $this->translate('panel.dashboard.dashboard'),
                     'uri'         => '/dashboard/',
@@ -234,20 +233,5 @@ abstract class AbstractController extends BaseAbstractController
             $this->config->get('system.views.paths.panel'),
         );
         return $view->render();
-    }
-
-    /**
-     * Get color scheme
-     */
-    private function getColorScheme(): string
-    {
-        $default = $this->config->get('system.panel.colorScheme');
-        if ($this->panel()->isLoggedIn()) {
-            if ($this->user()->colorScheme() === 'auto') {
-                return $this->request->cookies()->get('formwork_preferred_color_scheme', $default);
-            }
-            return $this->user()->colorScheme();
-        }
-        return $default;
     }
 }
