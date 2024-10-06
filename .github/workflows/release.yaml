@@ -1,0 +1,49 @@
+on:
+  release:
+    types: [created]
+
+name: Create release assets
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+            php-version: '8.2'
+            tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Build panel assets
+        run: |
+          corepack enable
+          cd panel
+          yarn install
+          yarn build
+
+      - name: Create archive
+        run: |
+            zip -r formwork-${{ github.event.release.tag_name }}.zip . -x \
+            \*.git/\* \
+            \*.github/\* \
+            \*node_modules/\*
+
+      - name: Upload release assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: formwork-${{ github.event.release.tag_name }}.zip
