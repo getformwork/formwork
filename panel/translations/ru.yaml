@@ -329,6 +329,11 @@ panel.user.colorScheme.light: Светлая
 panel.user.email: Email
 panel.user.fullname: Полное имя
 panel.user.image: Аватар
+panel.user.image.actions: Действия
+panel.user.image.cannotDelete.defaultImage: Невозможно удалить изображение пользователя по умолчанию
+panel.user.image.delete: Удалить изображение пользователя
+panel.user.image.delete.prompt: Вы уверены, что хотите удалить изображение пользователя? Это действие нельзя отменить.
+panel.user.image.deleted: Изображение пользователя удалено
 panel.user.image.uploaded: Аватар закачанный
 panel.user.language: Язык
 panel.user.lastAccess: Последний доступ

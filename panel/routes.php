@@ -209,13 +209,19 @@ return [
         ],
 
         'panel.users.delete' => [
-            'path'    => '/users/{user}/delete/',
+            'path'    => '/users/{user:[a-z0-9_-]+}/delete/',
             'action'  => 'Formwork\Panel\Controllers\UsersController@delete',
             'methods' => ['POST'],
         ],
 
+        'panel.users.deleteImage' => [
+            'path'    => '/users/{user:[a-z0-9_-]+}/image/delete/',
+            'action'  => 'Formwork\Panel\Controllers\UsersController@deleteImage',
+            'methods' => ['POST'],
+        ],
+
         'panel.users.profile' => [
-            'path'    => '/users/{user}/profile/',
+            'path'    => '/users/{user:[a-z0-9_-]+}/profile/',
             'action'  => 'Formwork\Panel\Controllers\UsersController@profile',
             'methods' => ['GET', 'POST'],
         ],

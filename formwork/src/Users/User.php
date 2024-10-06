@@ -92,6 +92,11 @@ class User extends Model
         return $this->image = $file;
     }
 
+    public function hasDefaultImage(): bool
+    {
+        return $this->image()->path() === FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), 'images/user-image.svg');
+    }
+
     public function role(): Role
     {
         return $this->role;

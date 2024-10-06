@@ -1,6 +1,5 @@
 <?php $this->layout('panel') ?>
 <form method="post" enctype="multipart/form-data" data-form="user-profile-form">
-
     <div class="header">
         <div class="header-title"><?= $this->translate('panel.users.user') ?></div>
         <?php if ($panel->user()->canChangeOptionsOf($user)) : ?>
@@ -10,10 +9,17 @@
             </div>
         <?php endif ?>
     </div>
-
     <section class="section user-summary">
         <div class="user-summary-image">
             <img src="<?= $user->image()->uri() ?>" alt="<?= $panel->user()->username() ?>">
+            <?php if ($panel->user()->canChangeOptionsOf($user) && !$user->hasDefaultImage()) : ?>
+                <div class="dropdown">
+                    <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.user.image.actions') ?>" data-dropdown="dropdown-user-image"><?= $this->icon('ellipsis-v') ?></button>
+                    <div class="dropdown-menu" id="dropdown-user-image">
+                        <a class="dropdown-item" data-modal="deleteUserImageModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/image/delete/') ?>"><?= $this->icon('user-image-slash') ?> <?= $this->translate('panel.user.image.delete') ?></a>
+                    </div>
+                </div>
+            <?php endif ?>
         </div>
         <div class="user-summary-data">
             <div class="h3 mb-0"><?= $this->escape($user->fullname()) ?></div>

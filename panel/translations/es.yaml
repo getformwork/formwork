@@ -329,6 +329,11 @@ panel.user.colorScheme.light: Claro
 panel.user.email: Correo electrónico
 panel.user.fullname: Nombre completo
 panel.user.image: Imagen
+panel.user.image.actions: Acciones
+panel.user.image.cannotDelete.defaultImage: No se puede eliminar la imagen predeterminada del usuario
+panel.user.image.delete: Eliminar imagen del usuario
+panel.user.image.delete.prompt: ¿Está seguro de que desea eliminar la imagen del usuario? Esta acción no se puede deshacer.
+panel.user.image.deleted: Imagen del usuario eliminada
 panel.user.image.uploaded: Imagen de usuario cargada
 panel.user.language: Idioma
 panel.user.lastAccess: Último acceso
