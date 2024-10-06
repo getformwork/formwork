@@ -7,8 +7,10 @@ use Formwork\Data\Traits\DataArrayable;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Fields\Layout\Layout;
+use Formwork\Translations\Translation;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Str;
 use InvalidArgumentException;
 
 class Scheme implements Arrayable
@@ -19,6 +21,8 @@ class Scheme implements Arrayable
      * Scheme path
      */
     protected string $path;
+
+    protected string $title;
 
     protected SchemeOptions $options;
 
@@ -32,8 +36,6 @@ class Scheme implements Arrayable
         if (isset($this->data['extend'])) {
             $this->extend($this->schemes->get($this->data['extend']));
         }
-
-        $this->data['title'] ??= $this->id;
 
         $this->options = new SchemeOptions($this->data['options'] ?? []);
     }
@@ -56,7 +58,20 @@ class Scheme implements Arrayable
      */
     public function title(): string
     {
-        return $this->data['title'];
+        if (isset($this->title)) {
+            return $this->title;
+        }
+
+        $title = $this->data['title'] ?? $this->id;
+
+        if (isset($this->data['title'])) {
+            try {
+                $title = $this->translate($title, $this->translations->getCurrent());
+            } catch (InvalidArgumentException) {
+            }
+        }
+
+        return $this->title = $title;
     }
 
     /**
@@ -82,5 +97,26 @@ class Scheme implements Arrayable
         }
 
         $this->data = array_replace_recursive($scheme->data, $this->data);
+    }
+
+    protected function translate(mixed $value, Translation $translation): mixed
+    {
+        $language = $translation->code();
+
+        if (is_array($value)) {
+            if (isset($value[$language])) {
+                $value = $value[$language];
+            }
+        } elseif (!is_string($value)) {
+            return $value;
+        }
+
+        $interpolate = fn ($value) => is_string($value) ? Str::interpolate($value, fn ($key) => $translation->translate($key)) : $value;
+
+        if (is_array($value)) {
+            return Arr::map($value, $interpolate);
+        }
+
+        return $interpolate($value);
     }
 }
