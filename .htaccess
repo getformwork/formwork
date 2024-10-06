@@ -19,7 +19,7 @@ AddDefaultCharset utf-8
     RewriteRule ^(panel|backup|bin|cache|formwork|site|vendor)/.* index.php [L,NC]
 
     ## Prevent access to specific files
-    RewriteRule ^(.*)\.(md|yml|json|neon)/?$ index.php [L,NC]
+    RewriteRule ^(.*)\.(md|yml|yaml|json|neon)/?$ index.php [L,NC]
     RewriteRule ^(\.(.*)|LICENSE|composer\.lock)/?$ index.php [L,NC]
 </IfModule>
 

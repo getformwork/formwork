@@ -11,7 +11,7 @@ if ($path !== '/index.php' && is_file($root . $path)) {
             return false;
 
         case preg_match('~^/(panel|backup|bin|cache|formwork|site|vendor)/.*~i', $path):
-        case preg_match('~^/(.*)\.(md|yaml|json|neon)/?$~i', $path):
+        case preg_match('~^/(.*)\.(md|yml|yaml|json|neon)/?$~i', $path):
         case preg_match('~^/(\.(.*)|LICENSE|composer\.lock)/?$~i', $path):
             break;
 
