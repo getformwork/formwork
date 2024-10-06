@@ -21,7 +21,6 @@ use Formwork\Users\User;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
-use RuntimeException;
 
 class UsersController extends AbstractController
 {
@@ -101,7 +100,10 @@ class UsersController extends AbstractController
                 );
             }
             FileSystem::delete(FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $user->username() . '.yaml'));
-            $this->deleteImage($user);
+
+            if (!$user->hasDefaultImage()) {
+                $this->deleteUserImage($user);
+            }
         } catch (TranslatedException $e) {
             $this->panel()->notify($e->getTranslatedMessage(), 'error');
             return $this->redirectToReferer(default: '/users/');
@@ -114,6 +116,37 @@ class UsersController extends AbstractController
 
         $this->panel()->notify($this->translate('panel.users.user.deleted'), 'success');
         return $this->redirect($this->generateRoute('panel.users'));
+    }
+
+    /**
+     * Users@deleteImage action
+     */
+    public function deleteImage(RouteParams $routeParams): RedirectResponse
+    {
+        $user = $this->site->users()->get($routeParams->get('user'));
+
+        if ($user === null) {
+            $this->panel()->notify($this->translate('panel.users.user.notFound'), 'error');
+            return $this->redirectToReferer(default: '/users/');
+        }
+
+        if ($this->user()->canChangeOptionsOf($user)) {
+            try {
+                $this->deleteUserImage($user);
+
+                $userData = $user->data();
+                Arr::remove($userData, 'image');
+                Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $user->username() . '.yaml'));
+
+                $this->panel()->notify($this->translate('panel.user.image.deleted'), 'success');
+            } catch (TranslatedException $e) {
+                $this->panel()->notify($e->getTranslatedMessage(), 'error');
+            }
+        } else {
+            $this->panel()->notify($this->translate('panel.users.user.cannotEdit', $user->username()), 'error');
+        }
+
+        return $this->redirect($this->generateRoute('panel.users.profile', ['user' => $user->username()]));
     }
 
     /**
@@ -161,6 +194,8 @@ class UsersController extends AbstractController
         $this->modal('changes');
 
         $this->modal('deleteUser');
+
+        $this->modal('deleteUserImage');
 
         return new Response($this->view('users.profile', [
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
@@ -214,7 +249,7 @@ class UsersController extends AbstractController
             if ($field->name() === 'image') {
                 $file = $field->value();
                 // Handle incoming files
-                if ($file && ($image = $this->uploadImage($user, $file, $field->acceptMimeTypes())) !== null) {
+                if ($file && ($image = $this->uploadUserImage($user, $file, $field->acceptMimeTypes())) !== null) {
                     Arr::set($userData, 'image', $image);
                 }
                 continue;
@@ -231,7 +266,7 @@ class UsersController extends AbstractController
      *
      * @param array<string> $mimeTypes
      */
-    protected function uploadImage(User $user, UploadedFile $file, array $mimeTypes): ?string
+    protected function uploadUserImage(User $user, UploadedFile $file, array $mimeTypes): ?string
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
 
@@ -247,7 +282,9 @@ class UsersController extends AbstractController
             $image->square($userImageSize)->save();
 
             // Delete old image
-            $this->deleteImage($user);
+            if (!$user->hasDefaultImage()) {
+                $this->deleteUserImage($user);
+            }
 
             $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
             return $uploadedFile->name();
@@ -259,16 +296,16 @@ class UsersController extends AbstractController
     /**
      * Delete the image of a given user
      */
-    protected function deleteImage(User $user): void
+    protected function deleteUserImage(User $user): void
     {
-        $image = $user->image()->path();
-
-        if ($image === $this->panel->realUri('/assets/images/user-image.svg')) {
-            throw new RuntimeException('Cannot delete default user image');
+        if ($user->hasDefaultImage()) {
+            throw new TranslatedException('Cannot delete default user image', 'panel.user.image.cannotDelete.defaultImage');
         }
 
-        if (FileSystem::isFile($image, assertExists: false)) {
-            FileSystem::delete($image);
+        $path = $user->image()->path();
+
+        if (FileSystem::isFile($path, assertExists: false)) {
+            FileSystem::delete($path);
         }
     }
 }

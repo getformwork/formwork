@@ -329,8 +329,10 @@ panel.user.colorScheme.light: Light
 panel.user.email: Email
 panel.user.fullname: Full name
 panel.user.image: Image
+panel.user.image.cannotDelete.defaultImage: Cannot delete the default user image
 panel.user.image.delete: Delete user image
 panel.user.image.delete.prompt: Are you sure you want to delete the user image? This action can’t be undone.
+panel.user.image.deleted: User image deleted
 panel.user.image.uploaded: User image uploaded
 panel.user.language: Language
 panel.user.lastAccess: Last access
