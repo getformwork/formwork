@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="color-scheme-<?= $panel->colorScheme()->value ?>">
 
 <head>
     <title><?php if (!empty($title)) : ?><?= $title ?> | <?php endif ?>Formwork</title>
@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
-    <link rel="stylesheet" href="<?= $this->assets()->uri($colorScheme === 'dark' ? 'css/panel-dark.min.css' : 'css/panel.min.css', true) ?>">
+    <link rel="stylesheet" href="<?= $this->assets()->uri('css/panel.min.css', true) ?>">
 </head>
 
 <body>

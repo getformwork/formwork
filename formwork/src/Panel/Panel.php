@@ -7,6 +7,7 @@ use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
+use Formwork\Users\ColorScheme;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
@@ -141,6 +142,18 @@ final class Panel
     public function assets(): Assets
     {
         return $this->assets ?? ($this->assets = new Assets($this->config->get('system.panel.paths.assets'), $this->realUri('/assets/')));
+    }
+
+    public function colorScheme(): ColorScheme
+    {
+        $colorScheme = ColorScheme::from($this->config->get('system.panel.colorScheme'));
+        if ($this->isLoggedIn()) {
+            if ($this->user()->colorScheme() === ColorScheme::Auto) {
+                return ColorScheme::from($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value));
+            }
+            return $this->user()->colorScheme();
+        }
+        return $colorScheme;
     }
 
     /**

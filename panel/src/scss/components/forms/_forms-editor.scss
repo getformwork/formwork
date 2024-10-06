@@ -163,7 +163,7 @@
 
 .cm-s-formwork .cm-formatting-quote + .cm-quote {
     padding-left: 1.25rem;
-    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path d="M4.195 12.864a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H2.25a.25.25 0 01-.25-.25V4.25A.25.25 0 012.25 4h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728zm7.184 0a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H9.434a.25.25 0 01-.25-.25V4.25a.25.25 0 01.25-.25h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728z"/></svg>') no-repeat left center;
+    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-gray-300)}" viewBox="0 0 16 16"><path d="M4.195 12.864a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H2.25a.25.25 0 01-.25-.25V4.25A.25.25 0 012.25 4h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728zm7.184 0a.247.247 0 01-.312.019l-1.363-.976a.254.254 0 01-.034-.382c.512-.539.899-1.04 1.16-1.5.24-.426.418-.86.534-1.303a.239.239 0 00-.236-.296H9.434a.25.25 0 01-.25-.25V4.25a.25.25 0 01.25-.25h4.316a.25.25 0 01.25.25v2.762c0 1.116-.2 2.157-.602 3.124-.382.92-1.055 1.83-2.019 2.728z"/></svg>') no-repeat left center;
     background-size: 1rem 1rem;
 }
 
@@ -193,7 +193,7 @@
     display: inline;
     padding: 0 0.25rem 0 1.5rem;
     border-radius: $border-radius;
-    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-base-300)}" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14.5 3.5h-13v9h13v-9zM1.5 2A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h13a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 2h-13z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M5.584 8.09a.25.25 0 00-.409.018l-3.444 5.427-1.266-.804 3.444-5.426a1.75 1.75 0 012.864-.13l1.47 1.91a.25.25 0 00.23.096l2.679-.356a1.75 1.75 0 011.524.557l2.883 3.168-1.109 1.01-2.883-3.168a.25.25 0 00-.218-.08l-2.678.356A1.75 1.75 0 017.054 10l-1.47-1.91z" clip-rule="evenodd"/><path d="M11.5 6.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>') no-repeat left 0.25rem center;
+    background: var(--color-base-900) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#{urlencode-color($color-gray-300)}" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14.5 3.5h-13v9h13v-9zM1.5 2A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h13a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 2h-13z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M5.584 8.09a.25.25 0 00-.409.018l-3.444 5.427-1.266-.804 3.444-5.426a1.75 1.75 0 012.864-.13l1.47 1.91a.25.25 0 00.23.096l2.679-.356a1.75 1.75 0 011.524.557l2.883 3.168-1.109 1.01-2.883-3.168a.25.25 0 00-.218-.08l-2.678.356A1.75 1.75 0 017.054 10l-1.47-1.91z" clip-rule="evenodd"/><path d="M11.5 6.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>') no-repeat left 0.25rem center;
     background-color: var(--color-base-700);
     background-size: 1rem 1rem;
     color: var(--color-base-100);

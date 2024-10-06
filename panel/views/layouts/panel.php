@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $app->translations()->getCurrent()->code() ?>">
+<html lang="<?= $app->translations()->getCurrent()->code() ?>" class="color-scheme-<?= $panel->colorScheme()->value ?>">
 
 <head>
     <title><?php if (!empty($title)) : ?><?= $title ?> | <?php endif ?>Formwork</title>
@@ -11,9 +11,10 @@
     <?php foreach ($panel->notifications() as $notification) : ?>
         <meta name="notification" content='<?= $this->escapeAttr(Formwork\Parsers\Json::encode($notification)) ?>'>
     <?php endforeach ?>
+    <meta name="color-scheme" content="<?= $panel->user()->colorScheme()->getCompatibleSchemes() ?>">
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->uri('images/icon.svg') ?>">
     <link rel="alternate icon" href="<?= $this->assets()->uri('images/icon.png') ?>">
-    <link rel="stylesheet" href="<?= $this->assets()->uri($colorScheme === 'dark' ? 'css/panel-dark.min.css' : 'css/panel.min.css', true) ?>">
+    <link rel="stylesheet" href="<?= $this->assets()->uri('css/panel.min.css', true) ?>">
 </head>
 
 <body>

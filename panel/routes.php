@@ -292,7 +292,7 @@ return [
         'panel.checkAssets' => [
             'action' => static function (Config $config, ViewFactory $viewFactory) {
                 $path = $config->get('system.panel.paths.assets');
-                $assets = ['css/panel.min.css', 'css/panel-dark.min.css', 'js/app.min.js'];
+                $assets = ['css/panel.min.css', 'js/app.min.js'];
 
                 foreach ($assets as $asset) {
                     $assetPath = FileSystem::joinPaths($path, $asset);

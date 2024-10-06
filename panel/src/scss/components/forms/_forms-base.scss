@@ -63,7 +63,7 @@
 
 .form-select {
     padding: 0.25rem 1.5rem 0.25rem 0.5rem;
-    background: var(--color-base-900) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-base-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
+    background: var(--color-base-900) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-gray-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
     background-color: var(--color-base-900);
     background-size: 8px 6px;
     /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */

@@ -39,7 +39,7 @@
     display: block;
     padding: 0 0.375rem;
     border-radius: $border-radius;
-    background-color: var(--color-tooltip-light);
+    background-color: var(--color-tooltip);
     content: attr(data-filename);
     font-size: $font-size-xs;
     text-align: center;
