@@ -4,7 +4,7 @@
 }
 
 .user-summary-image {
-    overflow: hidden;
+    position: relative;
     width: 12rem;
     height: 12rem;
     border-radius: $border-radius-round;
@@ -13,9 +13,20 @@
     box-shadow: $box-shadow-sm;
 }
 
+.user-summary-image .dropdown {
+    position: absolute;
+    top: 0;
+    right: -1.5rem;
+}
+
+.user-summary-image .dropdown-button {
+    background-color: var(--color-tooltip-light);
+}
+
 .user-summary-image img {
-    width: 100%;
-    height: 100%;
+    width: 12rem;
+    height: 12rem;
+    border-radius: $border-radius-round;
 }
 
 .users-list {
