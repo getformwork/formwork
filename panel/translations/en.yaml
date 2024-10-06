@@ -133,13 +133,11 @@ panel.options.system.uploads.processImages: Process (optimize) uploaded images
 panel.options.system.uploads.processImages.disabled: Disabled
 panel.options.system.uploads.processImages.enabled: Enabled
 panel.options.updated: Options updated
-panel.pages.attributes: Attributes
 panel.pages.changes.continue: Continue without saving
 panel.pages.changes.detected: Changes detected
 panel.pages.changes.detected.prompt: You have some changes that have not been saved. Are you sure you want to leave this page?
 panel.pages.changeSlug: Edit slug
 panel.pages.changeSlug.generate: Generate from title
-panel.pages.content: Content
 panel.pages.deleteFile: Delete file
 panel.pages.deleteFile.prompt: Are you sure you want to delete this file? This action can’t be undone.
 panel.pages.deletePage: Delete page
@@ -187,7 +185,6 @@ panel.pages.file.info.size: Size
 panel.pages.file.info.uri: URI
 panel.pages.file.position: Position
 panel.pages.file.preview: Preview
-panel.pages.files: Files
 panel.pages.history.event.created: Page created by %s %s.
 panel.pages.history.event.edited: Page edited by %s %s.
 panel.pages.languages: Languages
@@ -202,10 +199,8 @@ panel.pages.newPage.template: Template
 panel.pages.newPage.title: Title
 panel.pages.next: Next page
 panel.pages.nextFile: Next file
-panel.pages.options: Options
 panel.pages.page: Page
 panel.pages.page.actions: Actions
-panel.pages.page.cacheable: Cacheable
 panel.pages.page.cannotChangeNum: Cannot change page number
 panel.pages.page.cannotCreate: Cannot create page
 panel.pages.page.cannotCreate.alreadyExists: Cannot create page, a page with the same uri already exists
@@ -243,26 +238,16 @@ panel.pages.page.deleted: Page deleted
 panel.pages.page.edited: Page edited
 panel.pages.page.fileDeleted: File deleted
 panel.pages.page.fileRenamed: File renamed
-panel.pages.page.image: Image
 panel.pages.page.lastModified: Last modified
-panel.pages.page.listed: Visible in the menu
 panel.pages.page.moved: Page moved!
 panel.pages.page.noDate: No date
-panel.pages.page.noImage: No image
-panel.pages.page.noTags: No tags
 panel.pages.page.notFound: Page not found
-panel.pages.page.postsPerPage: Posts per page
-panel.pages.page.publishDate: Publish date
 panel.pages.page.status: Status
-panel.pages.page.tags: Tags
-panel.pages.page.title: Title
-panel.pages.page.unpublishDate: Unpublish date
 panel.pages.pages: Pages
 panel.pages.pages.collapseAll: Collapse all
 panel.pages.pages.expandAll: Expand all
 panel.pages.pages.reorder: Reorder
 panel.pages.pages.search: Search pages...
-panel.pages.parent: Parent page
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Previous page
@@ -273,13 +258,6 @@ panel.pages.renameFile.name: Name
 panel.pages.replaceFile: Replace file
 panel.pages.save: Save
 panel.pages.saveOnly: Save without publishing
-panel.pages.status.notPublished: Not published
-panel.pages.status.notRoutable: Not routable
-panel.pages.status.published: Published
-panel.pages.status.routable: Routable
-panel.pages.summary: Summary
-panel.pages.template: Template
-panel.pages.text: Text
 panel.pages.toggleChildren: Toggle children pages
 panel.pages.viewPage: View page
 panel.panel: Administration panel

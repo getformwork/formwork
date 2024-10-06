@@ -8,7 +8,6 @@
             'hidden'   => $field->isHidden(),
         ]) ?>>
     <?php foreach ($site->templates() as $template) : ?>
-        <?php $scheme = $app->schemes()->get('pages.' . $template->name()) ?>
-        <option value="<?= $template->name() ?>" <?php if ($template->name() === (string) $field->value()) : ?> selected<?php endif ?>><?= $this->escape($scheme->title()) ?></option>
+        <option value="<?= $template->name() ?>" <?php if ($template->name() === (string) $field->value()) : ?> selected<?php endif ?>><?= $this->escape($template->title()) ?></option>
     <?php endforeach ?>
 </select>

@@ -1,76 +1,77 @@
-title: Page
+title: '{{page.page}}'
 
 layout:
     type: sections
 
     sections:
         content:
-            label: '{{panel.pages.content}}'
+            label: '{{page.content}}'
             active: true
             fields: [title, content]
 
         options:
             collapsible: true
-            label: '{{panel.pages.options}}'
+            label: '{{page.options}}'
             fields: [published, publishDate, unpublishDate, routable, listed, cacheable]
 
         attributes:
             collapsible: true
             collapsed: true
-            label: '{{panel.pages.attributes}}'
+            label: '{{page.attributes}}'
             fields: [parent, template]
 
         files:
             collapsible: true
             collapsed: false
-            label: '{{panel.pages.files}}'
+            label: '{{page.files}}'
             fields: [files]
 
 fields:
     title:
         type: text
         class: form-input-large
+        label: '{{page.title}}'
         required: true
 
     content:
         type: markdown
-        label: '{{panel.pages.text}}'
+        label: '{{page.text}}'
 
     published:
         type: checkbox
-        label: '{{panel.pages.status.published}}'
+        label: '{{page.status.published}}'
         default: true
 
     publishDate:
         type: date
-        label: '{{panel.pages.page.publishDate}}'
+        label: '{{page.publishDate}}'
         placeholder: '{{panel.pages.page.noDate}}'
         default: null
 
     unpublishDate:
         type: date
-        label: '{{panel.pages.page.unpublishDate}}'
+        label: '{{page.unpublishDate}}'
         placeholder: '{{panel.pages.page.noDate}}'
         default: null
 
     routable:
         type: checkbox
-        label: '{{panel.pages.status.routable}}'
+        label: '{{page.routable}}'
         default: true
 
     listed:
         type: checkbox
-        label: '{{panel.pages.page.listed}}'
+        label: '{{page.listed}}'
         default: true
 
     cacheable:
         type: checkbox
-        label: '{{panel.pages.page.cacheable}}'
+        label: '{{page.cacheable}}'
         default: true
 
     parent:
         type: page
-        label: '{{panel.pages.parent}}'
+        label: '{{page.parent}}'
         required: true
         collection@: site.descendants.withoutPageAndDescendants(page)
         allowSite: true
@@ -78,11 +79,12 @@ fields:
     template:
         type: template
         required: true
-        label: '{{panel.pages.template}}'
+        label: '{{page.template}}'
         default@: site.get('defaultTemplate', 'default')
 
     files:
         type: upload
+        label: '{{page.files}}'
         autoUpload: true
         multiple: true
         listFiles: true

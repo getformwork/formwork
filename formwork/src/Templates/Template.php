@@ -5,6 +5,7 @@ namespace Formwork\Templates;
 use Closure;
 use Formwork\App;
 use Formwork\Assets;
+use Formwork\Schemes\Scheme;
 use Formwork\Site;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
@@ -25,7 +26,7 @@ class Template implements Stringable
     /**
      * Create a new Template instance
      */
-    public function __construct(protected string $name, protected App $app, protected Site $site, protected ViewFactory $viewFactory)
+    public function __construct(protected string $name, protected Scheme $scheme, protected App $app, protected Site $site, protected ViewFactory $viewFactory)
     {
         $this->path = $this->app->config()->get('system.templates.path');
     }
@@ -38,6 +39,16 @@ class Template implements Stringable
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function scheme(): Scheme
+    {
+        return $this->scheme;
+    }
+
+    public function title(): string
+    {
+        return $this->scheme->title();
     }
 
     public function path(): string

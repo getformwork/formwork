@@ -1,6 +1,6 @@
 <?php if ($headers) : ?>
     <div class="pages-tree-headers" aria-hidden="true">
-        <div class="pages-tree-headers-cell page-details truncate"><?= $this->translate('panel.pages.page.title') ?></div>
+        <div class="pages-tree-headers-cell page-details truncate"><?= $this->translate('page.title') ?></div>
         <div class="pages-tree-headers-cell page-date truncate show-from-lg"><?= $this->translate('panel.pages.page.lastModified') ?></div>
         <div class="pages-tree-headers-cell page-status truncate show-from-xs"><?= $this->translate('panel.pages.page.status') ?></div>
         <div class="pages-tree-headers-cell page-actions"><?= $this->translate('panel.pages.page.actions') ?></div>
@@ -49,7 +49,7 @@
                 <div class="pages-tree-item-cell page-date truncate show-from-lg"><?= $date ?></div>
                 <div class="pages-tree-item-cell page-status truncate show-from-xs">
                     <?= $this->insert('_pages/status', ['page' => $page]) ?>
-                    <span class="page-status-label"><?= $this->translate('panel.pages.status.' . $page->status()) ?></span>
+                    <span class="page-status-label"><?= $this->translate('page.status.' . $page->status()) ?></span>
                 </div>
                 <div class="pages-tree-item-cell page-actions">
                     <a class="<?= $this->classes(['button', 'button-link', 'disabled' => !$page->published() || !$page->routable()]) ?>" role="button" <?php if ($page->published() && $page->routable()) : ?>href="<?= $page->uri(includeLanguage: false) ?>" <?php endif ?> target="formwork-view-page-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.viewPage') ?>" aria-label="<?= $this->translate('panel.pages.viewPage') ?>"><?= $this->icon('arrow-right-up-box') ?></a>

@@ -18,7 +18,30 @@ fields.array.add: Добавлять
 fields.array.remove: Удалить
 fields.file.uploadLabel: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
 fields.select.empty: Нет подходящих вариантов
+page.attributes: Атрибуты
+page.cacheable: Кешируемый
+page.content: Содержание
+page.files: Файлы
+page.image: Изображение
+page.listed: Видимо в меню
+page.noImage: Нет изображения
 page.none: (Нет)
+page.noTags: Нет тегов
+page.options: Параметры
+page.page: Страница
+page.parent: Родитель страницы
+page.postsPerPage: Сообщения на странице
+page.publishDate: Дата публикации
+page.routable: Маршрутизируемый
+page.status.notPublished: Не Опубликовано
+page.status.notRoutable: Не маршрутизируемый
+page.status.published: Опубликованный
+page.summary: Сводка
+page.tags: Теги
+page.template: Шаблон
+page.text: Текст
+page.title: Заглавие
+page.unpublishDate: Дата Отменить публикацию
 upload.error: Невозможно загрузить файл. %s.
 upload.error.alreadyExists: Файл с таким именем уже существует
 upload.error.cannotMoveToDestination: Не удалось переместить загруженный файл в папку назначения

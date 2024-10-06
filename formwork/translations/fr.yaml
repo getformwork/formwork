@@ -18,7 +18,30 @@ fields.array.add: Ajouter
 fields.array.remove: Supprimer
 fields.file.uploadLabel: <strong>Glisser-déposer</strong> dans la zone ou <strong>cliquer-ici</strong> pour sélectionner un fichier à envoyer.
 fields.select.empty: Aucune option correspondante
+page.attributes: Attributs
+page.cacheable: Activer le cache
+page.content: Contenu
+page.files: Fichiers
+page.image: Image d’accroche
+page.listed: Visible dans le menu
+page.noImage: Aucune image
 page.none: (Aucun)
+page.noTags: Aucun tag
+page.options: Options
+page.page: Page
+page.parent: Parent
+page.postsPerPage: Articles par page
+page.publishDate: Date de publication
+page.routable: Accessible
+page.status.notPublished: Brouillon
+page.status.notRoutable: Inaccessible
+page.status.published: Publié
+page.summary: Résumé
+page.tags: Tags
+page.template: Modèle
+page.text: Texte
+page.title: Titre
+page.unpublishDate: Date de péremption
 upload.error: Impossible de télécharger le fichier. %s.
 upload.error.alreadyExists: Un fichier du même nom existe déjà
 upload.error.cannotMoveToDestination: Impossible de déplacer le fichier téléchargé vers la destination
