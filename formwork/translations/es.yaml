@@ -18,7 +18,30 @@ fields.array.add: Agregar
 fields.array.remove: Quitar
 fields.file.uploadLabel: <strong>Haz clic</strong> para elegir un archivo para cargar o <strong>arrástralo</strong> aquí
 fields.select.empty: No hay opciones coincidentes
+page.attributes: Atributos
+page.cacheable: En caché
+page.content: Contenido
+page.files: Archivos
+page.image: Imagen
+page.listed: Visible en el menú
+page.noImage: Sin imagen
 page.none: (Ninguno)
+page.noTags: Sin etiquetas
+page.options: Opciones
+page.page: Página
+page.parent: Página principal
+page.postsPerPage: Publicaciones por página
+page.publishDate: Fecha de publicación
+page.routable: Enrutable
+page.status.notPublished: No publicado
+page.status.notRoutable: No enrutable
+page.status.published: Publicado
+page.summary: Resumen
+page.tags: Etiquetas
+page.template: Plantilla
+page.text: Texto
+page.title: Título
+page.unpublishDate: Fecha de despublicación
 upload.error: No se puede cargar el archivo. %s.
 upload.error.alreadyExists: Ya existe un archivo con el mismo nombre
 upload.error.cannotMoveToDestination: Error al mover el archivo cargado al destino

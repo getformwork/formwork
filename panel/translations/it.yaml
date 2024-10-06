@@ -133,13 +133,11 @@ panel.options.system.uploads.processImages: Elabora (ottimizza) le immagini cari
 panel.options.system.uploads.processImages.disabled: Disabilitato
 panel.options.system.uploads.processImages.enabled: Abilitato
 panel.options.updated: Opzioni aggiornate
-panel.pages.attributes: Attributi
 panel.pages.changes.continue: Continua senza salvare
 panel.pages.changes.detected: Modifiche rilevate
 panel.pages.changes.detected.prompt: Alcune modifiche non sono state salvate. Si è sicuri di voler lasciare la pagina?
 panel.pages.changeSlug: Modifica indirizzo
 panel.pages.changeSlug.generate: Genera dal titolo
-panel.pages.content: Contenuto
 panel.pages.deleteFile: Elimina file
 panel.pages.deleteFile.prompt: Si è sicuri di eliminare il file? Questa azione non può essere annullata.
 panel.pages.deletePage: Elimina pagina
@@ -187,7 +185,6 @@ panel.pages.file.info.size: Dimensioni file
 panel.pages.file.info.uri: URI
 panel.pages.file.position: Posizione
 panel.pages.file.preview: Anteprima
-panel.pages.files: File
 panel.pages.history.event.created: Pagina creata da %s %s.
 panel.pages.history.event.edited: Pagina modificata da %s %s.
 panel.pages.languages: Lingue
@@ -202,10 +199,8 @@ panel.pages.newPage.template: Template
 panel.pages.newPage.title: Titolo
 panel.pages.next: Pagina successiva
 panel.pages.nextFile: File successivo
-panel.pages.options: Opzioni
 panel.pages.page: Pagina
 panel.pages.page.actions: Azioni
-panel.pages.page.cacheable: Abilita cache
 panel.pages.page.cannotChangeNum: Impossibile cambiare il numero della pagina
 panel.pages.page.cannotCreate: Impossibile creare la pagina
 panel.pages.page.cannotCreate.alreadyExists: Impossibile creare la pagina, una pagina con lo stesso indirizzo esiste già
@@ -243,26 +238,16 @@ panel.pages.page.deleted: Pagina eliminata
 panel.pages.page.edited: Pagina modificata!
 panel.pages.page.fileDeleted: File eliminato
 panel.pages.page.fileRenamed: File rinominato
-panel.pages.page.image: Immagine
 panel.pages.page.lastModified: Ultime modifiche
-panel.pages.page.listed: Visibile nel menu
 panel.pages.page.moved: Pagina spostata!
 panel.pages.page.noDate: Nessuna data
-panel.pages.page.noImage: Nessuna immagine
-panel.pages.page.noTags: Nessun tag
 panel.pages.page.notFound: Pagina non trovata
-panel.pages.page.postsPerPage: Post per pagina
-panel.pages.page.publishDate: Data di pubblicazione
 panel.pages.page.status: Stato
-panel.pages.page.tags: Tag
-panel.pages.page.title: Titolo
-panel.pages.page.unpublishDate: Data di rimozione
 panel.pages.pages: Pagine
 panel.pages.pages.collapseAll: Riduci tutte
 panel.pages.pages.expandAll: Espandi tutte
 panel.pages.pages.reorder: Riordina
 panel.pages.pages.search: Cerca pagine...
-panel.pages.parent: Pagina superiore
 panel.pages.preview: Anteprima
 panel.pages.previewFile: Anteprima
 panel.pages.previous: Pagina precedente
@@ -273,13 +258,6 @@ panel.pages.renameFile.name: Nome
 panel.pages.replaceFile: Sostituisci file
 panel.pages.save: Salva
 panel.pages.saveOnly: Salva senza pubblicare
-panel.pages.status.notPublished: Non pubblicato
-panel.pages.status.notRoutable: Non raggiungibile
-panel.pages.status.published: Pubblicato
-panel.pages.status.routable: Raggiungibile
-panel.pages.summary: Riassunto
-panel.pages.template: Template
-panel.pages.text: Testo
 panel.pages.toggleChildren: Mostra/nascondi sottopagine
 panel.pages.viewPage: Visualizza pagina
 panel.panel: Pannello di amministrazione

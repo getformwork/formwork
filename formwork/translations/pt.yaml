@@ -18,7 +18,30 @@ fields.array.add: Adicionar
 fields.array.remove: Remover
 fields.file.uploadLabel: <strong>Clique</strong> aqui para escolher um ficheiro para enviar ou <strong>arrastar</strong> para aqui.
 fields.select.empty: Sem opções correspondentes
+page.attributes: Atributos
+page.cacheable: Cache
+page.content: Conteúdo
+page.files: Ficheiros
+page.image: Imagem
+page.listed: Visível no menu
+page.noImage: Sem imagem
 page.none: (Nenhum)
+page.noTags: Sem tags
+page.options: Opções
+page.page: Página
+page.parent: Página parente
+page.postsPerPage: Items por página
+page.publishDate: Data de publicação
+page.routable: Roteável
+page.status.notPublished: Não publicado
+page.status.notRoutable: Não roteável
+page.status.published: Publicado
+page.summary: Resumo
+page.tags: Tags
+page.template: Template
+page.text: Texto
+page.title: Titulo
+page.unpublishDate: Data de cancelamento da publicação
 upload.error: Não é possível fazer upload do ficheiro. %s.
 upload.error.alreadyExists: Já existe um ficheiro com o mesmo nome
 upload.error.cannotMoveToDestination: Falha ao mover o ficheiro enviado para o destino

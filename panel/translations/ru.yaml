@@ -133,13 +133,11 @@ panel.options.system.uploads.processImages: Обрабатывать (оптим
 panel.options.system.uploads.processImages.disabled: Отключено
 panel.options.system.uploads.processImages.enabled: Включено
 panel.options.updated: Опции обновляются
-panel.pages.attributes: Атрибуты
 panel.pages.changes.continue: Продолжить без сохранения
 panel.pages.changes.detected: Изменения Обнаружены
 panel.pages.changes.detected.prompt: У вас есть какие-то изменения, которые не были сохранены. Вы уверены, что хотите покинуть эту страницу?
 panel.pages.changeSlug: Редактировать Slug
 panel.pages.changeSlug.generate: Сформировать из названия
-panel.pages.content: Содержание
 panel.pages.deleteFile: Удалить файл
 panel.pages.deleteFile.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
 panel.pages.deletePage: Удалить страницу
@@ -187,7 +185,6 @@ panel.pages.file.info.size: Размер
 panel.pages.file.info.uri: URI
 panel.pages.file.position: Позиция
 panel.pages.file.preview: Просмотр
-panel.pages.files: Файлы
 panel.pages.history.event.created: Страница создана %s %s.
 panel.pages.history.event.edited: Страница изменена %s %s.
 panel.pages.languages: Языки
@@ -202,10 +199,8 @@ panel.pages.newPage.template: Шаблон
 panel.pages.newPage.title: Заглавие
 panel.pages.next: Следующая страница
 panel.pages.nextFile: Следующий файл
-panel.pages.options: Параметры
 panel.pages.page: Страница
 panel.pages.page.actions: Действия
-panel.pages.page.cacheable: Кешируемый
 panel.pages.page.cannotChangeNum: Невозможно изменить номер страницы
 panel.pages.page.cannotCreate: Не удается создать страницу
 panel.pages.page.cannotCreate.alreadyExists: Невозможно создать страницу, страницу с тем же URI уже существует
@@ -243,26 +238,16 @@ panel.pages.page.deleted: Страница удалена
 panel.pages.page.edited: Страница отредактирован
 panel.pages.page.fileDeleted: Файл удален
 panel.pages.page.fileRenamed: Файл переименован
-panel.pages.page.image: Изображение
 panel.pages.page.lastModified: Последнее изменение
-panel.pages.page.listed: Видимо в меню
 panel.pages.page.moved: Страница переехала!
 panel.pages.page.noDate: Без даты
-panel.pages.page.noImage: Нет изображения
-panel.pages.page.noTags: Нет тегов
 panel.pages.page.notFound: Страница не найдена
-panel.pages.page.postsPerPage: Сообщения на странице
-panel.pages.page.publishDate: Дата публикации
 panel.pages.page.status: Статус
-panel.pages.page.tags: Теги
-panel.pages.page.title: Заглавие
-panel.pages.page.unpublishDate: Дата Отменить публикацию
 panel.pages.pages: Страницы
 panel.pages.pages.collapseAll: Свернуть все
 panel.pages.pages.expandAll: Расширить все
 panel.pages.pages.reorder: Изменение порядка
 panel.pages.pages.search: Поиск Страницы ...
-panel.pages.parent: Родитель страницы
 panel.pages.preview: Предварительный просмотр
 panel.pages.previewFile: Предварительный просмотр
 panel.pages.previous: Предыдущая страница
@@ -273,13 +258,6 @@ panel.pages.renameFile.name: Имя
 panel.pages.replaceFile: Заменить файл
 panel.pages.save: Сохранить
 panel.pages.saveOnly: Сохранить без публикации
-panel.pages.status.notPublished: Не Опубликовано
-panel.pages.status.notRoutable: Не маршрутизируемый
-panel.pages.status.published: Опубликованный
-panel.pages.status.routable: Маршрутизируемый
-panel.pages.summary: Сводка
-panel.pages.template: Шаблон
-panel.pages.text: Текст
 panel.pages.toggleChildren: Переключить дочерние страницы
 panel.pages.viewPage: Просмотреть страницу
 panel.panel: Панель администрирования

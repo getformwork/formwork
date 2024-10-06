@@ -4,6 +4,7 @@ fields:
     title:
         type: text
         class: form-input-large
+        label: '{{page.title}}'
         required: true
 
     content:
@@ -11,15 +12,15 @@ fields:
 
     published:
         type: checkbox
-        label: '{{panel.pages.status.published}}'
+        label: '{{page.status.published}}'
         default: true
 
     parent:
-        type: page.parents
+        type: page
         access: panel
-        label: '{{panel.pages.parent}}'
+        label: '{{page.parent}}'
 
     template:
-        type: page.template
+        type: template
         access: panel
-        label: '{{panel.pages.template}}'
+        label: '{{page.template}}'

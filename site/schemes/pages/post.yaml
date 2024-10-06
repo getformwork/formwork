@@ -15,16 +15,16 @@ layout:
 fields:
     summary:
         type: markdown
-        label: '{{panel.pages.summary}}'
+        label: '{{page.summary}}'
         rows: 5
 
     image:
         type: image
         default: null
-        label: '{{panel.pages.page.image}}'
-        placeholder: '{{panel.pages.page.noImage}}'
+        label: '{{page.image}}'
+        placeholder: '{{page.noImage}}'
 
     tags:
         type: tags
-        label: '{{panel.pages.page.tags}}'
-        placeholder: '{{panel.pages.page.noTags}}'
+        label: '{{page.tags}}'
+        placeholder: '{{page.noTags}}'
