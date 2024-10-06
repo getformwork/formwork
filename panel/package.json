@@ -13,7 +13,7 @@
     },
     "scripts": {
         "build": "yarn build:css && yarn build:js",
-        "build:css": "sass ./src/scss/panel.scss:./assets/css/panel.min.css ./src/scss/panel-dark.scss:./assets/css/panel-dark.min.css --style=compressed --no-source-map",
+        "build:css": "sass ./src/scss/panel.scss:./assets/css/panel.min.css --style=compressed --no-source-map",
         "build:js": "tsc && esbuild ./src/ts/app.ts --outfile=./assets/js/app.min.js --bundle --format=iife --global-name=Formwork --target=es6 --minify",
         "watch:css": "yarn build:css --watch",
         "watch:js": "yarn build:js --watch",
