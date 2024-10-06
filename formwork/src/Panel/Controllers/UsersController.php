@@ -233,7 +233,7 @@ class UsersController extends AbstractController
      */
     protected function uploadImage(User $user, UploadedFile $file, array $mimeTypes): ?string
     {
-        $imagesPath = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), '/images/users/');
+        $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
 
         $fileUploader = new FileUploader($mimeTypes);
 
