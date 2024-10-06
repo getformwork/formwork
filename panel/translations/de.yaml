@@ -329,6 +329,11 @@ panel.user.colorScheme.light: Hell
 panel.user.email: E-Mail
 panel.user.fullname: Vollständiger Name
 panel.user.image: Bild
+panel.user.image.actions: Aktionen
+panel.user.image.cannotDelete.defaultImage: Das Standard-Benutzerbild kann nicht gelöscht werden
+panel.user.image.delete: Benutzerbild löschen
+panel.user.image.delete.prompt: Sind Sie sicher, dass Sie das Benutzerbild löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+panel.user.image.deleted: Benutzerbild gelöscht
 panel.user.image.uploaded: Benutzerbild hochgeladen
 panel.user.language: Sprache
 panel.user.lastAccess: Letzter Zugriff

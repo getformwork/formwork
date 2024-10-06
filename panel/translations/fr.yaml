@@ -329,6 +329,11 @@ panel.user.colorScheme.light: Clair
 panel.user.email: Adresse de messagerie
 panel.user.fullname: Nom complet
 panel.user.image: Photo de profil
+panel.user.image.actions: Actions
+panel.user.image.cannotDelete.defaultImage: Impossible de supprimer l’image par défaut de l’utilisateur
+panel.user.image.delete: Supprimer l'image de l’utilisateur
+panel.user.image.delete.prompt: Êtes-vous sûr de vouloir supprimer l’image de l’utilisateur ? Cette action ne peut pas être annulée.
+panel.user.image.deleted: Image de l’utilisateur supprimée
 panel.user.image.uploaded: Photo de profil téléversée avec succès.
 panel.user.language: Langue
 panel.user.lastAccess: Dernier accès
