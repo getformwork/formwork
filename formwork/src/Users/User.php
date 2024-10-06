@@ -102,6 +102,11 @@ class User extends Model
         return $this->role;
     }
 
+    public function colorScheme(): ColorScheme
+    {
+        return ColorScheme::from($this->data['colorScheme']);
+    }
+
     /**
      * Return user permissions
      */
