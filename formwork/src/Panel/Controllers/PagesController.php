@@ -19,7 +19,6 @@ use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
-use Formwork\Schemes\Schemes;
 use Formwork\Site;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
@@ -48,7 +47,7 @@ class PagesController extends AbstractController
     /**
      * Pages@index action
      */
-    public function index(Schemes $schemes): Response
+    public function index(): Response
     {
         $this->ensurePermission('pages.index');
 
@@ -80,7 +79,7 @@ class PagesController extends AbstractController
     /**
      * Pages@create action
      */
-    public function create(Schemes $schemes): RedirectResponse
+    public function create(): RedirectResponse
     {
         $this->ensurePermission('pages.create');
 
@@ -213,8 +212,8 @@ class PagesController extends AbstractController
 
         $this->modal('renameFile');
 
-        $contentHistory = $page->path()
-            ? new ContentHistory($page->path())
+        $contentHistory = $page->contentPath()
+            ? new ContentHistory($page->contentPath())
             : null;
 
         return new Response($this->view('pages.editor', [
@@ -332,12 +331,12 @@ class PagesController extends AbstractController
             return $this->redirectToReferer(default: '/pages/');
         }
 
-        if ($page->path() !== null) {
+        if ($page->contentPath() !== null) {
             // Delete just the content file only if there are more than one language
             if ($page->contentFile() !== null && $routeParams->has('language') && count($page->languages()->available()) > 1) {
                 FileSystem::delete($page->contentFile()->path());
             } else {
-                FileSystem::delete($page->path(), recursive: true);
+                FileSystem::delete($page->contentPath(), recursive: true);
             }
         }
 
@@ -396,7 +395,7 @@ class PagesController extends AbstractController
             return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
-        FileSystem::delete($page->path() . $routeParams->get('filename'));
+        FileSystem::delete($page->contentPath() . $routeParams->get('filename'));
 
         $this->panel()->notify($this->translate('panel.pages.page.fileDeleted'), 'success');
         return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
@@ -432,7 +431,7 @@ class PagesController extends AbstractController
             if ($page->files()->has($newName)) {
                 $this->panel()->notify($this->translate('panel.pages.page.cannotRenameFile.fileAlreadyExists'), 'error');
             } else {
-                FileSystem::move($page->path() . $previousName, $page->path() . $newName);
+                FileSystem::move($page->contentPath() . $previousName, $page->contentPath() . $newName);
                 $this->panel()->notify($this->translate('panel.pages.page.fileRenamed'), 'success');
             }
         }
@@ -555,7 +554,7 @@ class PagesController extends AbstractController
         $scheme = $this->app->schemes()->get('pages.' . $fieldCollection->get('template')->value());
 
         $path = FileSystem::joinPaths(
-            (string) $parent->path(),
+            (string) $parent->contentPath(),
             $this->makePageNum($parent, $scheme->options()->get('num')) . '-' . $fieldCollection->get('slug')->value(),
             '/'
         );
@@ -651,7 +650,7 @@ class PagesController extends AbstractController
 
             $fileContent = Str::wrap(Yaml::encode($frontmatter), '---' . PHP_EOL) . $content;
 
-            if ($page->path() === null) {
+            if ($page->contentPath() === null) {
                 throw new UnexpectedValueException('Unexpected missing page path');
             }
 
@@ -659,10 +658,10 @@ class PagesController extends AbstractController
                 throw new UnexpectedValueException('Unexpected missing site path');
             }
 
-            FileSystem::write($page->path() . $filename, $fileContent);
+            FileSystem::write($page->contentPath() . $filename, $fileContent);
             FileSystem::touch($this->site()->contentPath());
 
-            $contentHistory = new ContentHistory($page->path());
+            $contentHistory = new ContentHistory($page->contentPath());
 
             $contentHistory->update(ContentHistoryEvent::Edited, $this->user()->username(), time());
             $contentHistory->save();
@@ -744,7 +743,7 @@ class PagesController extends AbstractController
      */
     protected function processPageUploads(array $files, Page $page, ?array $mimeTypes = null, ?string $name = null, bool $overwrite = false): void
     {
-        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
+        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn(string $ext) => MimeType::fromExtension($ext));
 
         $fileUploader = new FileUploader($mimeTypes);
 
@@ -752,10 +751,10 @@ class PagesController extends AbstractController
             if (!$file->isUploaded()) {
                 throw new TranslatedException(sprintf('Cannot upload file "%s"', $file->fieldName()), $file->getErrorTranslationString());
             }
-            if ($page->path() === null) {
+            if ($page->contentPath() === null) {
                 throw new UnexpectedValueException('Unexpected missing page path');
             }
-            $uploadedFile = $fileUploader->upload($file, $page->path(), $name, $overwrite);
+            $uploadedFile = $fileUploader->upload($file, $page->contentPath(), $name, $overwrite);
             // Process JPEG and PNG images according to system options (e.g. quality)
             if ($this->config->get('system.uploads.processImages') && in_array($uploadedFile->mimeType(), ['image/jpeg', 'image/png'], true)) {
                 $image = new Image($uploadedFile->path(), $this->config->get('system.images'));
@@ -784,12 +783,12 @@ class PagesController extends AbstractController
      */
     protected function changePageName(Page $page, string $name): Page
     {
-        if ($page->path() === null) {
+        if ($page->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing page path');
         }
-        $directory = dirname($page->path());
+        $directory = dirname($page->contentPath());
         $destination = FileSystem::joinPaths($directory, $name, DS);
-        FileSystem::moveDirectory($page->path(), $destination);
+        FileSystem::moveDirectory($page->contentPath(), $destination);
         return $this->site()->retrievePage($destination);
     }
 
@@ -798,21 +797,21 @@ class PagesController extends AbstractController
      */
     protected function changePageParent(Page $page, Page|Site $parent): Page
     {
-        if ($parent->path() === null) {
+        if ($parent->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing parent page path');
         }
 
-        if ($page->path() === null) {
+        if ($page->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing page path');
         }
 
-        if ($page->relativePath() === null) {
+        if ($page->contentRelativePath() === null) {
             throw new UnexpectedValueException('Unexpected missing page relative path');
         }
 
-        $destination = FileSystem::joinPaths($parent->path(), basename($page->relativePath()), DS);
+        $destination = FileSystem::joinPaths($parent->contentPath(), basename($page->contentRelativePath()), DS);
 
-        FileSystem::moveDirectory($page->path(), $destination);
+        FileSystem::moveDirectory($page->contentPath(), $destination);
         return $this->site()->retrievePage($destination);
     }
 
@@ -821,7 +820,7 @@ class PagesController extends AbstractController
      */
     protected function changePageTemplate(Page $page, string $template): Page
     {
-        if ($page->path() === null) {
+        if ($page->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing page path');
         }
 
@@ -829,7 +828,7 @@ class PagesController extends AbstractController
             throw new UnexpectedValueException('Unexpected missing content file');
         }
 
-        $destination = $page->path() . $template . $this->config->get('system.pages.content.extension');
+        $destination = $page->contentPath() . $template . $this->config->get('system.pages.content.extension');
         FileSystem::move($page->contentFile()->path(), $destination);
         $page->reload();
         return $page;
