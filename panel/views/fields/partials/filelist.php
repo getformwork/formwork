@@ -1,6 +1,6 @@
 <div class="files-list">
     <div>
-        <fieldset class="form-togglegroup files-list-view-as" data-field-name=" <?= $field->name() ?>">
+        <fieldset class="form-togglegroup files-list-view-as" data-field-name="<?= $field->name() ?>">
             <label class="form-label"><input class="form-input" type="radio" name="<?= $field->name() ?>-list-view-as" value="list" checked data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>
             <label class="form-label"><input class="form-input" type="radio" name="<?= $field->name() ?>-list-view-as" value="thumbnails" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsThumbnails') ?>"><?= $this->icon('file-icons') ?></span></label>
         </fieldset>
