@@ -743,7 +743,7 @@ class PagesController extends AbstractController
      */
     protected function processPageUploads(array $files, Page $page, ?array $mimeTypes = null, ?string $name = null, bool $overwrite = false): void
     {
-        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn(string $ext) => MimeType::fromExtension($ext));
+        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
 
         $fileUploader = new FileUploader($mimeTypes);
 
