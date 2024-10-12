@@ -384,11 +384,27 @@ class Page extends Model implements Stringable
     }
 
     /**
-     * Return a Files collection containing only images
+     * Return all page images
      */
     public function images(): FileCollection
     {
         return $this->files()->filterBy('type', 'image');
+    }
+
+    /**
+     * Return all page videos
+     */
+    public function videos(): FileCollection
+    {
+        return $this->files()->filterBy('type', 'video');
+    }
+
+    /**
+     * Return all page media files (images and videos)
+     */
+    public function media(): FileCollection
+    {
+        return $this->files()->filterBy('type', fn (string $type) => in_array($type, ['image', 'video'], true));
     }
 
     /**
