@@ -24,7 +24,7 @@
                 <?php if (isset($action)) : ?><a class="action" href="<?= $action['href'] ?>"><?= $action['label'] ?></a><?php endif ?>
             </div>
         </div>
-        <?php if ($app->config()->get('system.debug.enabled') && isset($throwable)) : ?>
+        <?php if (isset($throwable) && ($app->config()->get('system.debug.enabled') || $app->request()->isLocalhost())) : ?>
             <div class="container-full">
                 <div class="error-debug-details">
                     <h3>Uncaught <code><?= $throwable::class ?></code>: <?= $throwable->getMessage() ?></h3>
