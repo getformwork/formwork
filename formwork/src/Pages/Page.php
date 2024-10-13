@@ -568,8 +568,13 @@ class Page extends Model implements Stringable
                             $languages[] = $language;
                         }
                     }
-                } elseif (in_array($extension, $config->get('system.files.allowedExtensions'), true)) {
-                    $files[] = App::instance()->getService(FileFactory::class)->make(FileSystem::joinPaths($this->path, $file));
+                } else {
+                    if (Str::endsWith($file, $config->get('system.files.metadataExtension'))) {
+                        continue;
+                    }
+                    if (in_array($extension, $config->get('system.files.allowedExtensions'), true)) {
+                        $files[] = App::instance()->getService(FileFactory::class)->make(FileSystem::joinPaths($this->path, $file));
+                    }
                 }
             }
         }

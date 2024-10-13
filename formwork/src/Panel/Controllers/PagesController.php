@@ -5,6 +5,7 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
+use Formwork\Files\File;
 use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
@@ -509,10 +510,32 @@ class PagesController extends AbstractController
 
         $files = $page->files();
         $file = $files->get($filename);
+
+        switch ($this->request->method()) {
+            case RequestMethod::GET:
+                $data = $file->data();
+
+                $file->fields()->setValues($data);
+
+                break;
+
+            case RequestMethod::POST:
+                $data = $this->request->input();
+
+                $file->fields()->setValues($data)->validate();
+
+                $this->updateFileMetadata($file, $file->fields());
+
+                $this->panel()->notify($this->translate('panel.files.metadata.updated'), 'success');
+
+                return $this->redirect($this->generateRoute('panel.pages.file', ['page' => $page->route(), 'filename' => $filename]));
+        }
+
         $fileIndex = $files->indexOf($file);
 
         $this->modal('renameFile');
         $this->modal('deleteFile');
+        $this->modal('changes');
 
         return new Response($this->view('pages.file', [
             'title'        => $file->name(),
@@ -584,6 +607,33 @@ class PagesController extends AbstractController
         $contentHistory->save();
 
         return $this->site()->retrievePage($path);
+    }
+
+    protected function updateFileMetadata(File $file, FieldCollection $fieldCollection): void
+    {
+        $data = $file->data();
+
+        $scheme = $file->scheme();
+
+        $defaults = $scheme->fields()->pluck('default');
+
+        foreach ($fieldCollection as $field) {
+            if ($field->isEmpty() || (Arr::has($defaults, $field->name()) && Arr::get($defaults, $field->name()) === $field->value())) {
+                unset($data[$field->name()]);
+                continue;
+            }
+
+            $data[$field->name()] = $field->value();
+        }
+
+        $metaFile = $file->path() . $this->config->get('system.files.metadataExtension');
+
+        if ($data === [] && FileSystem::exists($metaFile)) {
+            FileSystem::delete($metaFile);
+            return;
+        }
+
+        FileSystem::write($metaFile, Yaml::encode($data));
     }
 
     /**

@@ -163,7 +163,7 @@ return [
         'panel.pages.file' => [
             'path'    => '/pages/{page}/file/{filename}/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@file',
-            'methods' => ['GET'],
+            'methods' => ['GET', 'POST'],
         ],
 
         'panel.pages.delete' => [

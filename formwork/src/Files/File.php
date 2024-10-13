@@ -2,49 +2,64 @@
 
 namespace Formwork\Files;
 
+use Formwork\App;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Files\Exceptions\FileUriGenerationException;
+use Formwork\Model\Attributes\ReadonlyModelProperty;
+use Formwork\Model\Model;
+use Formwork\Parsers\Yaml;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use RuntimeException;
 use Stringable;
 
-class File implements Arrayable, Stringable
+class File extends Model implements Arrayable, Stringable
 {
+    protected const MODEL_IDENTIFIER = 'file';
+
+    protected const SCHEME_IDENTIFIER = 'files.file';
+
     /**
      * File name
      */
+    #[ReadonlyModelProperty]
     protected string $name;
 
     /**
      * File extension
      */
+    #[ReadonlyModelProperty]
     protected string $extension;
 
     /**
      * File MIME type
      */
+    #[ReadonlyModelProperty]
     protected string $mimeType;
 
     /**
      * File type in a human-readable format
      */
+    #[ReadonlyModelProperty]
     protected ?string $type = null;
 
     /**
      * File size in a human-readable format
      */
+    #[ReadonlyModelProperty]
     protected string $size;
 
     /**
      * File last modified time
      */
+    #[ReadonlyModelProperty]
     protected int $lastModifiedTime;
 
     /**
      * File hash
      */
+    #[ReadonlyModelProperty]
     protected string $hash;
 
     protected FileUriGenerator $uriGenerator;
@@ -58,6 +73,7 @@ class File implements Arrayable, Stringable
     {
         $this->name = basename($path);
         $this->extension = FileSystem::extension($path);
+        $this->loadData();
     }
 
     public function __toString(): string
@@ -188,6 +204,20 @@ class File implements Arrayable, Stringable
             'size'             => $this->size(),
             'lastModifiedTime' => $this->lastModifiedTime(),
         ];
+    }
+
+    private function loadData(): void
+    {
+        $app = App::instance();
+
+        $this->scheme = $app->schemes()->get(static::SCHEME_IDENTIFIER);
+        $this->fields = $this->scheme->fields();
+
+        $metadataFile = $this->path . $app->config()->get('system.files.metadataExtension');
+
+        $this->data = FileSystem::exists($metadataFile) ? Yaml::parseFile($metadataFile) : [];
+
+        $this->fields->setValues($this->data);
     }
 
     /**

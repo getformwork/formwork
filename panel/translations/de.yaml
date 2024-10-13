@@ -33,6 +33,9 @@ panel.errors.error.notFound.description: Die Seite existiert nicht oder die Anfr
 panel.errors.error.notFound.heading: Oops, Seite nicht gefunden!
 panel.errors.error.notFound.status: Nicht gefunden
 panel.files.actions: Aktionen
+panel.files.metadata: Metadaten
+panel.files.metadata.alternativeText: Alternativtext
+panel.files.metadata.updated: Dateimetadaten aktualisiert
 panel.files.viewAsList: Als Liste anzeigen
 panel.files.viewAsThumbnails: Als Miniaturansichten anzeigen
 panel.login.attempt.failed: Anmeldeversuch fehlgeschlagen! Versuchen Sie es erneut.

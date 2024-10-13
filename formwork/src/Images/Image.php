@@ -31,6 +31,7 @@ use Formwork\Images\Transform\Scale;
 use Formwork\Images\Transform\Sharpen;
 use Formwork\Images\Transform\Smoothen;
 use Formwork\Images\Transform\TransformCollection;
+use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Uri;
@@ -38,16 +39,20 @@ use RuntimeException;
 
 class Image extends File
 {
-    protected string $path;
+    protected const MODEL_IDENTIFIER = 'image';
 
+    protected const SCHEME_IDENTIFIER = 'files.image';
+
+    #[ReadonlyModelProperty]
     protected AbstractHandler $handler;
 
+    #[ReadonlyModelProperty]
     protected ImageInfo $info;
 
+    #[ReadonlyModelProperty]
     protected TransformCollection $transforms;
 
-    protected string $mimeType;
-
+    #[ReadonlyModelProperty]
     protected ?string $type = 'image';
 
     /**
@@ -312,6 +317,7 @@ class Image extends File
         }
 
         $image = new Image($path, $this->options);
+        $image->data = $this->data;
         $image->uriGenerator = $this->uriGenerator;
         $image->transforms = $this->transforms;
         $image->handler = $this->handler;
