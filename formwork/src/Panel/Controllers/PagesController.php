@@ -509,6 +509,7 @@ class PagesController extends AbstractController
         }
 
         $files = $page->files();
+
         $file = $files->get($filename);
 
         switch ($this->request->method()) {
@@ -531,18 +532,15 @@ class PagesController extends AbstractController
                 return $this->redirect($this->generateRoute('panel.pages.file', ['page' => $page->route(), 'filename' => $filename]));
         }
 
-        $fileIndex = $files->indexOf($file);
-
         $this->modal('renameFile');
         $this->modal('deleteFile');
         $this->modal('changes');
 
         return new Response($this->view('pages.file', [
-            'title'        => $file->name(),
-            'page'         => $page,
-            'file'         => $file,
-            'previousFile' => $files->nth($fileIndex - 1),
-            'nextFile'     => $files->nth($fileIndex + 1),
+            'title' => $file->name(),
+            'page'  => $page,
+            'file'  => $file,
+            ...$this->getPreviousAndNextFile($files, $file),
         ]));
     }
 
@@ -911,5 +909,18 @@ class PagesController extends AbstractController
     protected function validateSlug(string $slug): bool
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
+    }
+
+    /**
+     * @return array{previousFile: ?File, nextFile: ?File}
+     */
+    protected function getPreviousAndNextFile(FileCollection $fileCollection, File $file): array
+    {
+        $fileIndex = $fileCollection->indexOf($file);
+
+        return [
+            'previousFile' => $fileCollection->nth($fileIndex - 1),
+            'nextFile'     => $fileCollection->nth($fileIndex + 1),
+        ];
     }
 }
