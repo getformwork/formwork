@@ -329,7 +329,9 @@ panel.users.deleteUser.prompt: Möchten Sie diesen Benutzer wirklich löschen? D
 panel.users.newUser: Neuer Benutzer
 panel.users.newUser.passwordSuggestion: mindestens 8 Zeichen
 panel.users.newUser.usernameSuggestion: zwischen 3-20 Buchstaben, Ziffern und Bindestriche
+panel.users.nextUser: Nächster Benutzer
 panel.users.options: Optionen
+panel.users.previousUser: Vorheriger Benutzer
 panel.users.user: Benutzer
 panel.users.user.cannotChangePassword: Das Passwort eines anderen Benutzers kann nicht geändert werden. Die Aktion ist nicht erlaubt.
 panel.users.user.cannotChangeRole: Die Rolle von %s kann nicht geändert werden. Die Aktion ist nicht erlaubt.

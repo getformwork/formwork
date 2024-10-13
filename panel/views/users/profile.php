@@ -4,6 +4,8 @@
         <div class="header-title"><?= $this->translate('panel.users.user') ?></div>
         <?php if ($panel->user()->canChangeOptionsOf($user)) : ?>
             <div>
+                <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$previousUser]) ?>" role="button" <?php if ($previousUser) : ?>href="<?= $panel->uri('/users/' . $previousUser->username() . '/profile/') ?>" <?php endif ?> title="<?= $this->translate('panel.users.previousUser') ?>" aria-label="<?= $this->translate('panel.users.previousUser') ?>"><?= $this->icon('chevron-left') ?></a>
+                <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$nextUser]) ?>" role="button" <?php if ($nextUser) : ?>href="<?= $panel->uri('/users/' . $nextUser->username() . '/profile/') ?>" <?php endif ?> title="<?= $this->translate('panel.users.nextUser') ?>" aria-label="<?= $this->translate('panel.users.nextUser') ?>"><?= $this->icon('chevron-right') ?></a>
                 <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
                 <button type="submit" class="button button-accent" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
             </div>

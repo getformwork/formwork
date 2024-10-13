@@ -329,7 +329,9 @@ panel.users.deleteUser.prompt: Tem a certeza de que deseja excluir este utilizad
 panel.users.newUser: Novo utilizador
 panel.users.newUser.passwordSuggestion: pelo menos 8 caracteres
 panel.users.newUser.usernameSuggestion: entre 3 a 20 letras, números e hifens.
+panel.users.nextUser: Utilizador seguinte
 panel.users.options: Opções
+panel.users.previousUser: Utilizador anterior
 panel.users.user: Utilizador
 panel.users.user.cannotChangePassword: Não é possível alterar a senha de outro utilizador. A acção não é permitida.
 panel.users.user.cannotChangeRole: Não é possível alterar o cargo de %s. A acção não é permitida.

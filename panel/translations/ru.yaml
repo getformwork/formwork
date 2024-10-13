@@ -329,7 +329,9 @@ panel.users.deleteUser.prompt: Вы уверены, что хотите удал
 panel.users.newUser: Новый пользователь
 panel.users.newUser.passwordSuggestion: не менее 8 символов
 panel.users.newUser.usernameSuggestion: между 3-20 букв, цифр и тире
+panel.users.nextUser: Следующий пользователь
 panel.users.options: Параметры
+panel.users.previousUser: Предыдущий пользователь
 panel.users.user: Пользователь
 panel.users.user.cannotChangePassword: Невозможно изменить пароль другого пользователя. Действие не допускается.
 panel.users.user.cannotChangeRole: Невозможно изменить роль %s. Действие не допускается.

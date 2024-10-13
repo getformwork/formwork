@@ -201,6 +201,7 @@ class UsersController extends AbstractController
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
             'fields' => $fields,
+            ...$this->getPreviousAndNextUser($user),
         ]));
     }
 
@@ -307,5 +308,20 @@ class UsersController extends AbstractController
         if (FileSystem::isFile($path, assertExists: false)) {
             FileSystem::delete($path);
         }
+    }
+
+    /**
+     * @return array{previousUser: ?User, nextUser: ?User}
+     */
+    protected function getPreviousAndNextUser(User $user): array
+    {
+        $users = $this->site->users()->sortBy('username');
+
+        $userIndex = $users->indexOf($user);
+
+        return [
+            'previousUser' => $users->nth($userIndex - 1),
+            'nextUser'     => $users->nth($userIndex + 1),
+        ];
     }
 }
