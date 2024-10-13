@@ -20,10 +20,13 @@ fields:
 
     parent:
         type: page
-        access: panel
         label: '{{page.parent}}'
+        required: true
+        collection@: site.descendants.withoutPageAndDescendants(page)
+        allowSite: true
 
     template:
         type: template
-        access: panel
+        required: true
         label: '{{page.template}}'
+        default@: site.get('defaultTemplate', 'default')
