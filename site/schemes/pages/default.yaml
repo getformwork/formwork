@@ -1,5 +1,8 @@
 title: Default
 
+options:
+    icon: page-blank
+
 fields:
     title:
         type: text

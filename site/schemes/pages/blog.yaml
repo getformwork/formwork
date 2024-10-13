@@ -15,6 +15,8 @@ options:
         reverse: true
         orderable: false
 
+    icon: page-listing
+
 layout:
     type: sections
     sections:

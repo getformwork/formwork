@@ -134,6 +134,8 @@ class Page extends Model implements Stringable
 
     protected Site $site;
 
+    protected string $icon;
+
     /**
      * @param array<string, mixed> $data
      */
@@ -518,6 +520,11 @@ class Page extends Model implements Stringable
     public function contentRelativePath(): ?string
     {
         return $this->relativePath;
+    }
+
+    public function icon(): string
+    {
+        return $this->icon ??= $this->data['icon'] ?? $this->scheme()->options()->get('icon', 'page');
     }
 
     /**

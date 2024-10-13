@@ -3,7 +3,7 @@
     <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
     <div class="header">
         <div class="min-w-0 flex-grow-1">
-            <div class="header-title"><?= $this->icon($page->get('icon', 'page')) ?> <?= $this->escape($page->title()) ?></div>
+            <div class="header-title"><?= $this->icon($page->icon()) ?> <?= $this->escape($page->title()) ?></div>
             <div class="flex">
                 <div><?= $this->insert('_pages/status', ['page' => $page]) ?></div>
                 <?php if (!$page->isIndexPage() && !$page->isErrorPage()) : ?>

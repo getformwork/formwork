@@ -34,7 +34,7 @@
                                 <?php endif ?>
                             </div>
                         <?php endif ?>
-                        <div class="mr-2" class="pages-tree-icon"><?= $this->icon($page->get('icon', 'page')) ?></div>
+                        <div class="mr-2" class="pages-tree-icon"><?= $this->icon($page->icon()) ?></div>
                         <div class="min-w-0">
                             <div class="truncate text-color-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a></div>
                             <?php foreach ($page->languages()->available() as $language) : ?>

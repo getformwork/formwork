@@ -1,5 +1,9 @@
 title: '{{page.page}}'
 
+options:
+    # Default page icon
+    icon: page
+
 layout:
     type: sections
 
