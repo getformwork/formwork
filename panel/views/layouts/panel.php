@@ -22,7 +22,7 @@
     <header class="panel-header">
         <span class="show-from-sm text-color-gray-dark"><?= $this->translate('panel.panel') ?></span>
         <span class="show-from-sm ml-5 mr-2 text-color-gray-medium">/</span>
-        <span class="flex-grow-1"><a class="button button-link text-size-md" href="<?= $panel->uri('/options/site/') ?>"><?= $site->title() ?></a></span>
+        <span class="flex-grow-1"><a class="button button-link text-size-md" href="<?= $panel->uri('/options/site/') ?>"><?= $this->icon('globe') ?> <span class="ml-2"><?= $site->title() ?></span></a></span>
         <a href="<?= $site->uri() ?>" class="button button-link text-size-md" target="formwork-view-site"><span class="show-from-xs"><?= $this->translate('panel.viewSite') ?></span> <?= $this->icon('arrow-right-up-box') ?></a>
     </header>
     <main class="panel-main">
