@@ -6,6 +6,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
 use Formwork\Files\File;
+use Formwork\Files\FileCollection;
 use Formwork\Files\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
@@ -221,10 +222,9 @@ class PagesController extends AbstractController
             'title'           => $this->translate('panel.pages.editPage', $page->title()),
             'page'            => $page,
             'fields'          => $page->fields(),
-            'templates'       => $this->site()->templates()->keys(),
-            'parents'         => $this->site()->descendants()->sortBy('relativePath'),
             'currentLanguage' => $routeParams->get('language', $page->language()?->code()),
             'history'         => $contentHistory,
+            ...$this->getPreviousAndNextPage($page),
         ]));
     }
 
@@ -909,6 +909,31 @@ class PagesController extends AbstractController
     protected function validateSlug(string $slug): bool
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
+    }
+
+    /**
+     * @return array{previousPage: ?Page, nextPage: ?Page}
+     */
+    protected function getPreviousAndNextPage(Page $page): array
+    {
+        $inclusiveSiblings = $page->inclusiveSiblings();
+
+        $indexOffset = $inclusiveSiblings->indexOf($this->site()->indexPage());
+
+        if ($page->parent()?->scheme()->options()->get('children.reverse')) {
+            $inclusiveSiblings = $inclusiveSiblings->reverse();
+        }
+
+        if ($indexOffset !== null) {
+            $inclusiveSiblings->moveItem($indexOffset, 0);
+        }
+
+        $pageIndex = $inclusiveSiblings->indexOf($page);
+
+        return [
+            'previousPage' => $inclusiveSiblings->nth($pageIndex - 1),
+            'nextPage'     => $inclusiveSiblings->nth($pageIndex + 1),
+        ];
     }
 
     /**
