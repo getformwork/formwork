@@ -33,6 +33,8 @@ panel.errors.error.notFound.description: La página no existe o la solicitud no 
 panel.errors.error.notFound.heading: ¡Ups, página no encontrada!
 panel.errors.error.notFound.status: No encontrado
 panel.files.actions: Acciones
+panel.files.metadata: Metadatos
+panel.files.metadata.alternativeText: Texto alternativo
 panel.files.viewAsList: Ver como lista
 panel.files.viewAsThumbnails: Ver como miniaturas
 panel.login.attempt.failed: ¡Intento de inicio de sesión fallido! Intenta de nuevo.

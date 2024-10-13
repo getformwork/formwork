@@ -43,6 +43,7 @@ fields:
 
 files:
     allowedExtensions: []
+    metadataExtension: .meta.yaml
 
 images:
     jpegQuality: 85

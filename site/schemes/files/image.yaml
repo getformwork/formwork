@@ -1,0 +1,15 @@
+title: Image
+
+extend: files.file
+
+layout:
+    type: sections
+    sections:
+        metadata:
+            label: '{{panel.files.metadata}}'
+            fields: [alt]
+
+fields:
+    alt:
+        type: text
+        label: '{{panel.files.metadata.alternativeText}}'

@@ -33,6 +33,8 @@ panel.errors.error.notFound.description: The page does not exist or the request 
 panel.errors.error.notFound.heading: Oops, page not found!
 panel.errors.error.notFound.status: Not found
 panel.files.actions: Actions
+panel.files.metadata: Metadata
+panel.files.metadata.alternativeText: Alternative text
 panel.files.viewAsList: View as list
 panel.files.viewAsThumbnails: View as thumbnails
 panel.login.attempt.failed: Login attempt failed! Try again.

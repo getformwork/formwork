@@ -33,6 +33,8 @@ panel.errors.error.notFound.description: Страница не существу�
 panel.errors.error.notFound.heading: К сожалению, страница не найдена!
 panel.errors.error.notFound.status: Не обнаружена
 panel.files.actions: Действия
+panel.files.metadata: Метаданные
+panel.files.metadata.alternativeText: Альтернативный текст
 panel.files.viewAsList: Просмотр в виде списка
 panel.files.viewAsThumbnails: Просмотр в виде миниатюр
 panel.login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.
