@@ -7,8 +7,10 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
 use Formwork\Fields\FieldCollection;
+use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
+use ReflectionAttribute;
 use ReflectionProperty;
 
 class Model implements Arrayable
@@ -104,6 +106,10 @@ class Model implements Arrayable
     public function set(string $key, mixed $value): void
     {
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
+            if ($this->isReadonly($key)) {
+                throw new BadMethodCallException(sprintf('Cannot set readonly model property %s::$%s', static::class, $key));
+            }
+
             // If defined use a setter
             if (method_exists($this, $setter = 'set' . ucfirst($key))) {
                 $this->{$setter}($value);
@@ -139,5 +145,11 @@ class Model implements Arrayable
     public function data(): array
     {
         return $this->data;
+    }
+
+    private function isReadonly(string $property): bool
+    {
+        $attributes = (new ReflectionProperty($this, $property))->getAttributes(ReadonlyModelProperty::class, ReflectionAttribute::IS_INSTANCEOF);
+        return $attributes !== [];
     }
 }
