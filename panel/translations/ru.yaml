@@ -35,6 +35,7 @@ panel.errors.error.notFound.status: Не обнаружена
 panel.files.actions: Действия
 panel.files.metadata: Метаданные
 panel.files.metadata.alternativeText: Альтернативный текст
+panel.files.metadata.updated: Метаданные файла обновлены
 panel.files.viewAsList: Просмотр в виде списка
 panel.files.viewAsThumbnails: Просмотр в виде миниатюр
 panel.login.attempt.failed: Войти попытка не удалась! Попробуйте еще раз.

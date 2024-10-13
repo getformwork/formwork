@@ -35,6 +35,7 @@ panel.errors.error.notFound.status: Pas trouvé
 panel.files.actions: Actions
 panel.files.metadata: Métadonnées
 panel.files.metadata.alternativeText: Texte alternatif
+panel.files.metadata.updated: Métadonnées du fichier mises à jour
 panel.files.viewAsList: Afficher en liste
 panel.files.viewAsThumbnails: Afficher en vignettes
 panel.login.attempt.failed: La tentative de connexion a échoué! Réessayer.

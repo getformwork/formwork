@@ -35,6 +35,7 @@ panel.errors.error.notFound.status: Not found
 panel.files.actions: Actions
 panel.files.metadata: Metadata
 panel.files.metadata.alternativeText: Alternative text
+panel.files.metadata.updated: File metadata updated
 panel.files.viewAsList: View as list
 panel.files.viewAsThumbnails: View as thumbnails
 panel.login.attempt.failed: Login attempt failed! Try again.
