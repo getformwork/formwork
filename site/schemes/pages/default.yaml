@@ -22,7 +22,7 @@ fields:
         type: page
         label: '{{page.parent}}'
         required: true
-        collection@: site.descendants.withoutPageAndDescendants(page)
+        collection@: site.descendants.allowingChildren.withoutPageAndDescendants(page)
         allowSite: true
 
     template:

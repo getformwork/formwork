@@ -60,6 +60,11 @@ class PageCollection extends AbstractCollection implements Paginable
         return $this->filterBy('status', 'published');
     }
 
+    public function allowingChildren(): static
+    {
+        return $this->filterBy('allowChildren');
+    }
+
     /**
      * Search pages in the collection
      *

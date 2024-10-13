@@ -182,6 +182,7 @@ class Page extends Model implements Stringable
             'searchable'     => true,
             'cacheable'      => true,
             'orderable'      => true,
+            'allowChildren'  => true,
             'canonicalRoute' => null,
             'headers'        => [],
             'responseStatus' => 200,
@@ -206,6 +207,11 @@ class Page extends Model implements Stringable
         // If the page doesn't have a num or numbering is `date`, by default it won't be orderable
         if ($this->num() === null || $this->scheme->options()->get('num') === 'date') {
             $defaults['orderable'] = false;
+        }
+
+        // If the page scheme disables children, by default it won't allow children
+        if ($this->scheme()->options()->get('children') === false) {
+            $defaults['allowChildren'] = false;
         }
 
         return $defaults;

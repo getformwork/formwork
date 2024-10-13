@@ -557,6 +557,10 @@ class PagesController extends AbstractController
             throw new TranslatedException('Parent page not found', 'panel.pages.page.cannotCreate.invalidParent');
         }
 
+        if ($parent instanceof Page && !$parent->allowChildren()) {
+            throw new TranslatedException('Parent page does not allow children', 'panel.pages.page.cannotCreate.invalidParent');
+        }
+
         // Validate page slug
         if (!$this->validateSlug($fieldCollection->get('slug')->value())) {
             throw new TranslatedException('Invalid page slug', 'panel.pages.page.cannotCreate.invalidSlug');
@@ -847,6 +851,10 @@ class PagesController extends AbstractController
      */
     protected function changePageParent(Page $page, Page|Site $parent): Page
     {
+        if ($parent instanceof Page && !$parent->allowChildren()) {
+            throw new UnexpectedValueException('Parent page does not allow children');
+        }
+
         if ($parent->contentPath() === null) {
             throw new UnexpectedValueException('Unexpected missing parent page path');
         }

@@ -18,6 +18,7 @@ fields:
     parent:
         type: page
         label: '{{panel.pages.newPage.parent}}'
+        collection@: site.descendants.allowingChildren
         required: true
         allowSite: true
 
