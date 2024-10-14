@@ -1,0 +1,23 @@
+title: '{{panel.modal.link.title}}'
+
+form: false
+
+fields:
+    uri:
+        type: text
+        label: '{{panel.modal.link.uri}}'
+        required: true
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    insert:
+        action: command
+        icon: check-circle
+        label: '{{panel.modal.action.continue}}'
+        align: right
+        command: insert-link

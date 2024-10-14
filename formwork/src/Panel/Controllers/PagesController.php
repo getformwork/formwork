@@ -202,6 +202,8 @@ class PagesController extends AbstractController
 
         $this->modal('images');
 
+        $this->modal('link');
+
         $this->modal('changes');
 
         $this->modal('slug');

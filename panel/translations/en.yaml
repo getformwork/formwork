@@ -53,6 +53,8 @@ panel.modal.action.uploadFile: Upload a file
 panel.modal.images.noImages: There are no images here
 panel.modal.images.noImages.upload: Please upload some images
 panel.modal.images.title: Select an image
+panel.modal.link.title: Insert link
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Toggle navigation
 panel.options.options: Options
 panel.options.site: Site
@@ -144,10 +146,20 @@ panel.pages.deletePage: Delete page
 panel.pages.deletePage.prompt: Are you sure you want to delete this page? This action can’t be undone.
 panel.pages.editor.bold: Bold
 panel.pages.editor.bulletList: Bullet list
+panel.pages.editor.code: Code
+panel.pages.editor.decreaseIndent: Decrease indent
+panel.pages.editor.heading1: Heading 1
+panel.pages.editor.heading2: Heading 2
+panel.pages.editor.heading3: Heading 3
+panel.pages.editor.heading4: Heading 4
+panel.pages.editor.heading5: Heading 5
+panel.pages.editor.heading6: Heading 6
 panel.pages.editor.image: Image
+panel.pages.editor.increaseIndent: Increase indent
 panel.pages.editor.italic: Italic
 panel.pages.editor.link: Link
 panel.pages.editor.numberedList: Ordered list
+panel.pages.editor.paragraph: Paragraph
 panel.pages.editor.quote: Quote
 panel.pages.editor.redo: Redo
 panel.pages.editor.summary: Summary
