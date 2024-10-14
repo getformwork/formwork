@@ -74,6 +74,11 @@ class Modal implements Arrayable
         return $this->buttons;
     }
 
+    public function hasForm(): bool
+    {
+        return $this->data['form'] ?? false;
+    }
+
     /**
      * @return array<string, mixed>
      */
