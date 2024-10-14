@@ -918,11 +918,11 @@ class PagesController extends AbstractController
     {
         $inclusiveSiblings = $page->inclusiveSiblings();
 
-        $indexOffset = $inclusiveSiblings->indexOf($this->site()->indexPage());
-
         if ($page->parent()?->scheme()->options()->get('children.reverse')) {
             $inclusiveSiblings = $inclusiveSiblings->reverse();
         }
+
+        $indexOffset = $inclusiveSiblings->indexOf($this->site()->indexPage());
 
         if ($indexOffset !== null) {
             $inclusiveSiblings->moveItem($indexOffset, 0);
