@@ -30,9 +30,12 @@ abstract class AbstractHandler implements HandlerInterface
         $this->options = [...$this->defaults(), ...$options];
     }
 
-    public static function fromPath(string $path): static
+    /**
+     * @param array<string, mixed> $options
+     */
+    public static function fromPath(string $path, array $options = []): static
     {
-        return new static(FileSystem::read($path));
+        return new static(FileSystem::read($path), $options);
     }
 
     public static function fromGdImage(GdImage $gdImage, array $options = []): static
