@@ -7,7 +7,7 @@ use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
 use Formwork\Files\File;
 use Formwork\Files\FileCollection;
-use Formwork\Files\FileUploader;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
@@ -15,7 +15,6 @@ use Formwork\Http\Request;
 use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Images\Image;
 use Formwork\Pages\Page;
 use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
@@ -26,7 +25,6 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\MimeType;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
@@ -790,28 +788,19 @@ class PagesController extends AbstractController
     /**
      * Process page uploads
      *
-     * @param array<UploadedFile> $files
-     * @param list<string>        $mimeTypes
+     * @param list<UploadedFile> $files
+     * @param list<string>       $mimeTypes
      */
     protected function processPageUploads(array $files, Page $page, ?array $mimeTypes = null, ?string $name = null, bool $overwrite = false): void
     {
-        $mimeTypes ??= Arr::map($this->config->get('system.files.allowedExtensions'), fn (string $ext) => MimeType::fromExtension($ext));
+        $fileUploader = $this->app->getService(FileUploader::class);
 
-        $fileUploader = new FileUploader($mimeTypes);
+        if ($page->contentPath() === null) {
+            throw new UnexpectedValueException('Unexpected missing page path');
+        }
 
         foreach ($files as $file) {
-            if (!$file->isUploaded()) {
-                throw new TranslatedException(sprintf('Cannot upload file "%s"', $file->fieldName()), $file->getErrorTranslationString());
-            }
-            if ($page->contentPath() === null) {
-                throw new UnexpectedValueException('Unexpected missing page path');
-            }
-            $uploadedFile = $fileUploader->upload($file, $page->contentPath(), $name, $overwrite);
-            // Process JPEG and PNG images according to system options (e.g. quality)
-            if ($this->config->get('system.uploads.processImages') && in_array($uploadedFile->mimeType(), ['image/jpeg', 'image/png'], true)) {
-                $image = new Image($uploadedFile->path(), $this->config->get('system.images'));
-                $image->save();
-            }
+            $fileUploader->upload($file, $page->contentPath(), $name, overwrite: $overwrite, allowedMimeTypes: $mimeTypes);
         }
 
         $page->reload();

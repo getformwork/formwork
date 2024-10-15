@@ -116,6 +116,10 @@ class UploadedFile
 
     public function move(string $destination, string $filename, bool $overwrite = false): bool
     {
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new TranslatedException(sprintf('Cannot upload file "%s": %s', $this->fieldName(), $this->getErrorMessage()), $this->getErrorTranslationString());
+        }
+
         if (strlen($filename) > FileSystem::MAX_NAME_LENGTH) {
             throw new TranslatedException('File name too long', 'upload.error.fileNameTooLong');
         }

@@ -5,7 +5,7 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\FieldCollection;
-use Formwork\Files\FileUploader;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Http\FileResponse;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
@@ -267,31 +267,31 @@ class UsersController extends AbstractController
      *
      * @param array<string> $mimeTypes
      */
-    protected function uploadUserImage(User $user, UploadedFile $file, array $mimeTypes): ?string
+    protected function uploadUserImage(User $user, UploadedFile $uploadedFile, array $mimeTypes): ?string
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
 
-        $fileUploader = new FileUploader($mimeTypes);
+        $fileUploader = $this->app->getService(FileUploader::class);
 
-        $uploadedFile = $fileUploader->upload($file, $imagesPath, FileSystem::randomName());
+        $file = $fileUploader->upload($uploadedFile, $imagesPath, FileSystem::randomName(), allowedMimeTypes: $mimeTypes);
 
-        if ($uploadedFile->type() === 'image') {
-            $userImageSize = $this->config->get('system.panel.userImageSize');
-
-            // Square off uploaded image
-            $image = new Image($uploadedFile->path(), $this->config->get('system.images'));
-            $image->square($userImageSize)->save();
-
-            // Delete old image
-            if (!$user->hasDefaultImage()) {
-                $this->deleteUserImage($user);
-            }
-
-            $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
-            return $uploadedFile->name();
+        if (!($file instanceof Image)) {
+            return null;
         }
 
-        return null;
+        $userImageSize = $this->config->get('system.panel.userImageSize');
+
+        // Square off uploaded image
+        $file->square($userImageSize)->save();
+
+        // Delete old image
+        if (!$user->hasDefaultImage()) {
+            $this->deleteUserImage($user);
+        }
+
+        $this->panel()->notify($this->translate('panel.user.image.uploaded'), 'success');
+
+        return $file->name();
     }
 
     /**

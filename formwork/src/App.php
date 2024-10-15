@@ -9,6 +9,7 @@ use Formwork\Config\Config;
 use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Images\ImageFactory;
@@ -222,6 +223,8 @@ final class App
         $container->define(ImageFactory::class);
 
         $container->define(FileUriGenerator::class);
+
+        $container->define(FileUploader::class);
     }
 
     /**
