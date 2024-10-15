@@ -417,11 +417,11 @@ class Image extends File
     protected function getHandler(): AbstractHandler
     {
         return match ($this->mimeType()) {
-            'image/jpeg'    => JpegHandler::fromPath($this->path),
-            'image/png'     => PngHandler::fromPath($this->path),
-            'image/gif'     => GifHandler::fromPath($this->path),
-            'image/webp'    => WebpHandler::fromPath($this->path),
-            'image/svg+xml' => SvgHandler::fromPath($this->path),
+            'image/jpeg'    => JpegHandler::fromPath($this->path, $this->options),
+            'image/png'     => PngHandler::fromPath($this->path, $this->options),
+            'image/gif'     => GifHandler::fromPath($this->path, $this->options),
+            'image/webp'    => WebpHandler::fromPath($this->path, $this->options),
+            'image/svg+xml' => SvgHandler::fromPath($this->path, $this->options),
             default         => throw new RuntimeException('Unsupported image type'),
         };
     }
