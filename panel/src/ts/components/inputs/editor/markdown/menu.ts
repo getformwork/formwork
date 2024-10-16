@@ -269,11 +269,7 @@ export function menuPlugin() {
                     return true;
                 }
                 app.modals["linkModal"].show(undefined, (modal) => {
-                    const uri = $("[name=uri]", modal.element) as HTMLInputElement;
-                    uri.value = "";
-                    ($("[data-command=insert-link]", modal.element) as HTMLElement).addEventListener("click", insertLink);
-                    function insertLink(this: HTMLElement) {
-                        const uri = $("[name=uri]", modal.element) as HTMLInputElement;
+                    const uri = $('[id="linkModal.uri"]') as HTMLInputElement;
                         if (view && uri.value) {
                             toggleMark(schema.marks.link, { href: uri.value })(view.state, view.dispatch);
                         }
