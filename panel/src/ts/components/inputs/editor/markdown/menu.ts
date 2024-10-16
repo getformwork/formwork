@@ -228,11 +228,14 @@ export function menuPlugin() {
                 }
                 if (view) {
                     app.modals["imagesModal"].show(undefined, (modal) => {
+                        const commandPickImage = $("[data-command=pick-image]", modal.element) as HTMLElement;
+
                         const selected = $(".image-picker-thumbnail.selected", modal.element);
                         if (selected) {
                             selected.classList.remove("selected");
                         }
-                        function insertImage(this: HTMLElement) {
+
+                        const insertImage = () => {
                             const selected = $(".image-picker-thumbnail.selected", modal.element);
                             if (selected && view) {
                                 const baseUri = $("textarea", view.dom.parentNode!)!.dataset.baseUri;
@@ -248,9 +251,9 @@ export function menuPlugin() {
                                 view.focus();
                             }
                             modal.hide();
-                            this.removeEventListener("click", insertImage);
-                        }
-                        ($("[data-command=pick-image]", modal.element) as HTMLElement).addEventListener("click", insertImage);
+                            commandPickImage.removeEventListener("click", insertImage);
+                        };
+                        commandPickImage.addEventListener("click", insertImage);
                     });
                 }
                 return true;
@@ -269,13 +272,29 @@ export function menuPlugin() {
                     return true;
                 }
                 app.modals["linkModal"].show(undefined, (modal) => {
+                    const insertLinkCommand = $("[data-command=insert-link]", modal.element) as HTMLElement;
                     const uri = $('[id="linkModal.uri"]') as HTMLInputElement;
+
+                    uri.value = "https://";
+                    uri.setSelectionRange(8, 8);
+
+                    const insertLink = () => {
                         if (view && uri.value) {
                             toggleMark(schema.marks.link, { href: uri.value })(view.state, view.dispatch);
+                            view.focus();
                         }
                         modal.hide();
-                        this.removeEventListener("click", insertLink);
-                    }
+                        insertLinkCommand.removeEventListener("click", insertLink);
+                    };
+
+                    uri.addEventListener("keydown", (event) => {
+                        if (event.key === "Enter") {
+                            insertLink();
+                            event.preventDefault();
+                        }
+                    });
+
+                    insertLinkCommand.addEventListener("click", insertLink);
                 });
                 return true;
             },
