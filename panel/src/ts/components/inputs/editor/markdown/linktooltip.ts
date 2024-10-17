@@ -16,18 +16,9 @@ class LinkTooltipView {
 
         this.editorView.dom.addEventListener(
             "scroll",
-            debounce(
-                () => {
-                    if (this.tooltip) {
-                        this.tooltip.remove();
-                    }
-                    this.tooltip = undefined;
-                    this.currentLink = undefined;
-                },
-                100,
-                true,
-            ),
+            debounce(() => this.destroy(), 100, true),
         );
+        this.editorView.dom.addEventListener("blur", () => this.destroy());
     }
 
     update(view: EditorView) {
@@ -61,12 +52,16 @@ class LinkTooltipView {
                 });
             }
         } else {
-            if (this.tooltip) {
-                this.tooltip.remove();
-            }
-            this.tooltip = undefined;
-            this.currentLink = undefined;
+            this.destroy();
         }
+    }
+
+    destroy() {
+        if (this.tooltip) {
+            this.tooltip.remove();
+        }
+        this.tooltip = undefined;
+        this.currentLink = undefined;
     }
 }
 
