@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Einzigartige Besucher
 panel.dashboard.statistics.visits: Besuche
 panel.dashboard.welcome: Willkommen
 panel.dragToReorder: Ziehen zum Umsortieren
+panel.editor.bold: Fett
+panel.editor.bulletList: Aufzählungsliste
+panel.editor.code: Code
+panel.editor.decreaseIndent: Einzug verkleinern
+panel.editor.heading1: Überschrift 1
+panel.editor.heading2: Überschrift 2
+panel.editor.heading3: Überschrift 3
+panel.editor.heading4: Überschrift 4
+panel.editor.heading5: Überschrift 5
+panel.editor.heading6: Überschrift 6
+panel.editor.image: Bild
+panel.editor.increaseIndent: Einzug vergrößern
+panel.editor.italic: Kursiv
+panel.editor.link: Link
+panel.editor.numberedList: Nummerierte Liste
+panel.editor.paragraph: Absatz
+panel.editor.quote: Zitat
+panel.editor.redo: Wiederholen
+panel.editor.summary: Zusammenfassung
+panel.editor.toggleMarkdown: Markdown anzeigen/ausblenden
+panel.editor.undo: Rückgängig
 panel.errors.action.reportToGithub: Fehler an GitHub melden
 panel.errors.action.returnToDashboard: Zurück zum Dashboard
 panel.errors.error.forbidden.description: Sie haben keine Berechtigung, auf diese Seite zuzugreifen.
@@ -53,6 +74,8 @@ panel.modal.action.uploadFile: Datei hochladen
 panel.modal.images.noImages: Hier sind keine Bilder vorhanden
 panel.modal.images.noImages.upload: Bitte laden Sie einige Bilder hoch
 panel.modal.images.title: Bild auswählen
+panel.modal.link.title: Link einfügen
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Navigation umschalten
 panel.options.options: Optionen
 panel.options.site: Webseite
@@ -142,16 +165,6 @@ panel.pages.deleteFile: Datei löschen
 panel.pages.deleteFile.prompt: Möchten Sie diese Datei wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 panel.pages.deletePage: Seite löschen
 panel.pages.deletePage.prompt: Möchten Sie diese Seite wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-panel.pages.editor.bold: Fett
-panel.pages.editor.bulletList: Aufzählungsliste
-panel.pages.editor.image: Bild
-panel.pages.editor.italic: Kursiv
-panel.pages.editor.link: Link
-panel.pages.editor.numberedList: Nummerierte Liste
-panel.pages.editor.quote: Zitat
-panel.pages.editor.redo: Wiederholen
-panel.pages.editor.summary: Zusammenfassung
-panel.pages.editor.undo: Rückgängig
 panel.pages.editPage: Seite bearbeiten %s
 panel.pages.file.backToPage: Zurück zur Seite
 panel.pages.file.exif: EXIF
