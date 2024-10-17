@@ -6,6 +6,7 @@ import { buildKeymap } from "./keymap";
 import { EditorView } from "prosemirror-view";
 import { history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
+import { linkTooltip } from "./linktooltip";
 import { menuPlugin } from "./menu";
 
 export class MarkdownView {
@@ -21,6 +22,7 @@ export class MarkdownView {
                     keymap(baseKeymap),
                     history(),
                     menuPlugin(),
+                    linkTooltip(),
                     new Plugin({
                         props: {
                             handleDOMEvents: {
