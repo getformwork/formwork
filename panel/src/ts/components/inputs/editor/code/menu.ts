@@ -7,7 +7,7 @@ function createButton(icon: string, title: string) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `button toolbar-button`;
-    btn.title = title;
+    btn.dataset.tooltip = title;
     passIcon(icon, (data) => (btn.innerHTML = data));
     return btn;
 }
