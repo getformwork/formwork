@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Unique visitors
 panel.dashboard.statistics.visits: Visits
 panel.dashboard.welcome: Welcome
 panel.dragToReorder: Drag to reorder
+panel.editor.bold: Bold
+panel.editor.bulletList: Bullet list
+panel.editor.code: Code
+panel.editor.decreaseIndent: Decrease indent
+panel.editor.heading1: Heading 1
+panel.editor.heading2: Heading 2
+panel.editor.heading3: Heading 3
+panel.editor.heading4: Heading 4
+panel.editor.heading5: Heading 5
+panel.editor.heading6: Heading 6
+panel.editor.image: Image
+panel.editor.increaseIndent: Increase indent
+panel.editor.italic: Italic
+panel.editor.link: Link
+panel.editor.numberedList: Ordered list
+panel.editor.paragraph: Paragraph
+panel.editor.quote: Quote
+panel.editor.redo: Redo
+panel.editor.summary: Summary
+panel.editor.toggleMarkdown: Toggle Markdown
+panel.editor.undo: Undo
 panel.errors.action.reportToGithub: Report an issue to GitHub
 panel.errors.action.returnToDashboard: Return to dashboard
 panel.errors.error.forbidden.description: You don’t have permission to access this page.
@@ -56,6 +77,8 @@ panel.modal.action.uploadFile: Upload a file
 panel.modal.images.noImages: There are no images here
 panel.modal.images.noImages.upload: Please upload some images
 panel.modal.images.title: Select an image
+panel.modal.link.title: Insert link
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Toggle navigation
 panel.options.options: Options
 panel.options.site: Site
@@ -145,16 +168,6 @@ panel.pages.deleteFile: Delete file
 panel.pages.deleteFile.prompt: Are you sure you want to delete this file? This action can’t be undone.
 panel.pages.deletePage: Delete page
 panel.pages.deletePage.prompt: Are you sure you want to delete this page? This action can’t be undone.
-panel.pages.editor.bold: Bold
-panel.pages.editor.bulletList: Bullet list
-panel.pages.editor.image: Image
-panel.pages.editor.italic: Italic
-panel.pages.editor.link: Link
-panel.pages.editor.numberedList: Ordered list
-panel.pages.editor.quote: Quote
-panel.pages.editor.redo: Redo
-panel.pages.editor.summary: Summary
-panel.pages.editor.undo: Undo
 panel.pages.editPage: Edit page %s
 panel.pages.file.backToPage: Back to page
 panel.pages.file.exif: EXIF

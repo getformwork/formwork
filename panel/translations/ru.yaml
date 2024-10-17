@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Уникальные посетите
 panel.dashboard.statistics.visits: Просмотров
 panel.dashboard.welcome: Добро пожаловать
 panel.dragToReorder: Перетащите для изменения порядка
+panel.editor.bold: Жирный
+panel.editor.bulletList: Маркированный список
+panel.editor.code: Код
+panel.editor.decreaseIndent: Уменьшить отступ
+panel.editor.heading1: Заголовок 1
+panel.editor.heading2: Заголовок 2
+panel.editor.heading3: Заголовок 3
+panel.editor.heading4: Заголовок 4
+panel.editor.heading5: Заголовок 5
+panel.editor.heading6: Заголовок 6
+panel.editor.image: Изображение
+panel.editor.increaseIndent: Увеличить отступ
+panel.editor.italic: Курсивный
+panel.editor.link: Ссылка
+panel.editor.numberedList: Нумерованный список
+panel.editor.paragraph: Абзац
+panel.editor.quote: Кавычки
+panel.editor.redo: Выбор
+panel.editor.summary: Краткий
+panel.editor.toggleMarkdown: Показать/скрыть Markdown
+panel.editor.undo: Открыть
 panel.errors.action.reportToGithub: Сообщить о проблеме на GitHub
 panel.errors.action.returnToDashboard: Вернуться к панели управления
 panel.errors.error.forbidden.description: У вас нет разрешения на доступ к этой странице.
@@ -56,6 +77,8 @@ panel.modal.action.uploadFile: Загрузить файл
 panel.modal.images.noImages: Там нет изображений здесь
 panel.modal.images.noImages.upload: Пожалуйста, загрузите некоторые изображения
 panel.modal.images.title: Выберите изображение
+panel.modal.link.title: Вставить ссылку
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Переключить навигацию
 panel.options.options: Параметры
 panel.options.site: Сайт
@@ -145,16 +168,6 @@ panel.pages.deleteFile: Удалить файл
 panel.pages.deleteFile.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
 panel.pages.deletePage: Удалить страницу
 panel.pages.deletePage.prompt: Вы уверены, что хотите удалить эту страницу? Это действие не может быть отменено.
-panel.pages.editor.bold: Жирный
-panel.pages.editor.bulletList: Маркированный список
-panel.pages.editor.image: Изображение
-panel.pages.editor.italic: Курсивный
-panel.pages.editor.link: Ссылка
-panel.pages.editor.numberedList: Нумерованный список
-panel.pages.editor.quote: Кавычки
-panel.pages.editor.redo: Выбор
-panel.pages.editor.summary: Краткий
-panel.pages.editor.undo: Открыть
 panel.pages.editPage: Отредактировать страницу %s
 panel.pages.file.backToPage: Назад к странице
 panel.pages.file.exif: EXIF
