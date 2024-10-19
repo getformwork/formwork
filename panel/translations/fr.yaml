@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Visiteurs uniques
 panel.dashboard.statistics.visits: Visites
 panel.dashboard.welcome: Bienvenue
 panel.dragToReorder: Glisser pour réorganiser
+panel.editor.bold: Gras
+panel.editor.bulletList: Liste à puce
+panel.editor.code: Code
+panel.editor.decreaseIndent: Diminuer le retrait
+panel.editor.heading1: Titre 1
+panel.editor.heading2: Titre 2
+panel.editor.heading3: Titre 3
+panel.editor.heading4: Titre 4
+panel.editor.heading5: Titre 5
+panel.editor.heading6: Titre 6
+panel.editor.image: Image
+panel.editor.increaseIndent: Augmenter le retrait
+panel.editor.italic: Italique
+panel.editor.link: Lien
+panel.editor.numberedList: Liste ordonnée
+panel.editor.paragraph: Paragraphe
+panel.editor.quote: Citer
+panel.editor.redo: Refaire
+panel.editor.summary: Résumé
+panel.editor.toggleMarkdown: Afficher/masquer Markdown
+panel.editor.undo: Annuler
 panel.errors.action.reportToGithub: Signaler le problème sur GitHub
 panel.errors.action.returnToDashboard: Retour au tableau de bord
 panel.errors.error.forbidden.description: Vous n’êtes pas autorisé à accéder à cette page.
@@ -56,6 +77,8 @@ panel.modal.action.uploadFile: Parcourir…
 panel.modal.images.noImages: Aucun fichier média n’a été trouvé.
 panel.modal.images.noImages.upload: Sélectionnez vos fichiers à téléverser.
 panel.modal.images.title: Bibliothèque de médias
+panel.modal.link.title: Insérer un lien
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Afficher/Masquer la navigation
 panel.options.options: Paramètres
 panel.options.site: Site
@@ -145,16 +168,6 @@ panel.pages.deleteFile: Supprimer le fichier
 panel.pages.deleteFile.prompt: ÊtesVous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
 panel.pages.deletePage: Supprimer la page
 panel.pages.deletePage.prompt: ÊtesVous sûr de vouloir supprimer cette page ? Cette action est irréversible.
-panel.pages.editor.bold: Gras
-panel.pages.editor.bulletList: Liste à puce
-panel.pages.editor.image: Image
-panel.pages.editor.italic: Italique
-panel.pages.editor.link: Lien
-panel.pages.editor.numberedList: Liste ordonnée
-panel.pages.editor.quote: Citer
-panel.pages.editor.redo: Refaire
-panel.pages.editor.summary: Résumé
-panel.pages.editor.undo: Annuler
 panel.pages.editPage: Modifier la page %s
 panel.pages.file.backToPage: Retour à la page
 panel.pages.file.exif: EXIF

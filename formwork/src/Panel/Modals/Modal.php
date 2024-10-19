@@ -15,13 +15,17 @@ class Modal implements Arrayable
 {
     use DataArrayable;
 
+    protected string $id;
+
     protected ModalButtonCollection $buttons;
 
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(protected string $id, array $data, protected Translation $translation, protected FieldFactory $fieldFactory)
+    public function __construct(string $id, array $data, protected Translation $translation, protected FieldFactory $fieldFactory)
     {
+        $this->id = Str::append($id, 'Modal');
+
         $this->data = [...$this->defaults(), ...$data];
 
         if ($this->data['title'] === null) {
@@ -61,7 +65,7 @@ class Modal implements Arrayable
     {
         $fieldCollection = new FieldCollection();
 
-        $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn ($data, $name) => $this->fieldFactory->make($name, $data, $fieldCollection)));
+        $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn ($data, $name) => $this->fieldFactory->make($this->id . '.' . $name, $data, $fieldCollection)));
 
         return $fieldCollection;
     }
@@ -72,6 +76,11 @@ class Modal implements Arrayable
             $this->buttons = new ModalButtonCollection(Arr::map($this->data['buttons'] ?? [], fn (array $data) => new ModalButton($data, $this->translation)));
         }
         return $this->buttons;
+    }
+
+    public function hasForm(): bool
+    {
+        return $this->data['form'] ?? false;
     }
 
     /**

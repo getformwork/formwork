@@ -16,8 +16,8 @@ export class Pages {
 
         const searchInput = $(".page-search");
 
-        const newPageModal = document.getElementById("newPageModal");
-        const slugModal = document.getElementById("slugModal");
+        const newPageModal = app.modals["newPageModal"];
+        const slugModal = app.modals["slugModal"];
 
         $$(".pages-tree").forEach((element) => {
             if (element.dataset.orderableChildren === "true") {
@@ -122,8 +122,12 @@ export class Pages {
         }
 
         if (newPageModal) {
-            ($("#title", newPageModal) as HTMLElement).addEventListener("keyup", (event) => {
-                ($("#slug", newPageModal) as HTMLInputElement).value = makeSlug((event.target as HTMLInputElement).value);
+            const titleInput = $('[id="newPageModal.title"]') as HTMLInputElement;
+            const slugInput = $('[id="newPageModal.slug"]') as HTMLInputElement;
+            const parentSelect = $('[id="newPageModal.parent"]') as HTMLInputElement;
+
+            titleInput.addEventListener("keyup", (event) => {
+                ($('[id="newPageModal.slug"]') as HTMLInputElement).value = makeSlug((event.target as HTMLInputElement).value);
             });
 
             const handleSlugChange = (event: Event) => {
@@ -131,11 +135,11 @@ export class Pages {
                 target.value = validateSlug(target.value);
             };
 
-            ($("#slug", newPageModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
-            ($("#slug", newPageModal) as HTMLElement).addEventListener("blur", handleSlugChange);
+            slugInput.addEventListener("keyup", handleSlugChange);
+            slugInput.addEventListener("blur", handleSlugChange);
 
-            ($("#parent", newPageModal) as HTMLElement).addEventListener("change", () => {
-                const option = $('.dropdown-list[data-for="parent"] .selected', newPageModal);
+            parentSelect.addEventListener("change", () => {
+                const option = $('.dropdown-list[data-for="newPageModal.parent"] .selected');
 
                 if (!option) {
                     return;
@@ -143,14 +147,14 @@ export class Pages {
 
                 const allowedTemplates = option.dataset.allowedTemplates ? option.dataset.allowedTemplates.split(" ") : [];
 
-                const pageTemplate = $("#template", newPageModal) as HTMLInputElement;
+                const pageTemplate = $('[id="newPageModal.template"]') as HTMLInputElement;
 
                 if (allowedTemplates.length > 0) {
                     pageTemplate.dataset.previousValue = pageTemplate.value;
                     pageTemplate.value = allowedTemplates[0];
-                    ($('.form-select[data-for="template"', newPageModal) as HTMLInputElement).value = ($(`.dropdown-list[data-for="template"] .dropdown-item[data-value="${pageTemplate.value}"]`, newPageModal) as HTMLElement).innerText;
+                    ($('.form-select[data-for="newPageModal.template"]') as HTMLInputElement).value = ($(`.dropdown-list[data-for="newPageModal.template"] .dropdown-item[data-value="${pageTemplate.value}"]`) as HTMLElement).innerText;
 
-                    $$('.dropdown-list[data-for="template"] .dropdown-item').forEach((option) => {
+                    $$('.dropdown-list[data-for="newPageModal.template"] .dropdown-item').forEach((option) => {
                         if (!allowedTemplates.includes(option.dataset.value as string)) {
                             option.classList.add("disabled");
                         }
@@ -159,10 +163,10 @@ export class Pages {
                     if ("previousValue" in pageTemplate.dataset) {
                         pageTemplate.value = pageTemplate.dataset.previousValue as string;
                         delete pageTemplate.dataset.previousValue;
-                        ($('.form-select[data-for="template"', newPageModal) as HTMLInputElement).value = ($(`.dropdown-list[data-for="template"] .dropdown-item[data-value="${pageTemplate.value}"]`, newPageModal) as HTMLElement).innerText;
+                        ($('.form-select[data-for="newPageModal.template"]') as HTMLInputElement).value = ($(`.dropdown-list[data-for="newPageModal.template"] .dropdown-item[data-value="${pageTemplate.value}"]`) as HTMLElement).innerText;
                     }
 
-                    $$('.dropdown-list[data-for="template"] .dropdown-item', newPageModal).forEach((option) => {
+                    $$('.dropdown-list[data-for="newPageModal.template"] .dropdown-item').forEach((option) => {
                         option.classList.remove("disabled");
                     });
                 }
@@ -193,19 +197,17 @@ export class Pages {
         }
 
         if (slugModal && commandChangeSlug) {
+            const newSlugInput = $('[id="slugModal.newSlug"]') as HTMLInputElement;
+            const commandGenerateSlug = $("[data-command=generate-slug]", slugModal.element) as HTMLElement;
+            const commandContinue = $("[data-command=continue]", slugModal.element) as HTMLElement;
+
             commandChangeSlug.addEventListener("click", () => {
                 app.modals["slugModal"].show(undefined, (modal) => {
                     const slug = (document.getElementById("slug") as HTMLInputElement).value;
-                    const slugInput = $("#newSlug", modal.element) as HTMLInputElement;
+                    const slugInput = $('[id="slugModal.newSlug"]', modal.element) as HTMLInputElement;
                     slugInput.value = slug;
                     slugInput.placeholder = slug;
                 });
-            });
-
-            ($("#newSlug", slugModal) as HTMLElement).addEventListener("keydown", (event) => {
-                if (event.key === "Enter") {
-                    ($("[data-command=continue]", slugModal) as HTMLElement).click();
-                }
             });
 
             const handleSlugChange = (event: Event) => {
@@ -213,33 +215,40 @@ export class Pages {
                 target.value = validateSlug(target.value);
             };
 
-            ($("#newSlug", slugModal) as HTMLElement).addEventListener("keyup", handleSlugChange);
-            ($("#newSlug", slugModal) as HTMLElement).addEventListener("blur", handleSlugChange);
+            newSlugInput.addEventListener("keyup", handleSlugChange);
+            newSlugInput.addEventListener("blur", handleSlugChange);
 
-            ($("[data-command=generate-slug]", slugModal) as HTMLElement).addEventListener("click", () => {
+            commandGenerateSlug.addEventListener("click", () => {
                 const slug = makeSlug((document.getElementById("title") as HTMLInputElement).value);
-                ($("#newSlug", slugModal) as HTMLInputElement).value = slug;
-                ($("#newSlug", slugModal) as HTMLElement).focus();
+                newSlugInput.value = slug;
+                newSlugInput.focus();
             });
 
-            ($("[data-command=continue]", slugModal) as HTMLElement).addEventListener("click", () => {
-                const slug = ($("#newSlug", slugModal) as HTMLInputElement).value.replace(/^-+|-+$/, "");
+            const changeSlug = () => {
+                const slug = newSlugInput.value.replace(/^-+|-+$/, "");
 
                 if (slug.length > 0) {
                     const route = ($(".page-route-inner") as HTMLElement).innerHTML;
-                    ($("#newSlug", slugModal) as HTMLInputElement).value = slug;
+                    newSlugInput.value = slug;
                     ($("#slug") as HTMLInputElement).value = slug;
                     ($(".page-route-inner") as HTMLElement).innerHTML = route.replace(/\/[a-z0-9-]+\/$/, `/${slug}/`);
                 }
 
                 app.modals["slugModal"].hide();
+            };
+
+            commandContinue.addEventListener("click", changeSlug);
+
+            newSlugInput.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    changeSlug();
+                }
             });
         }
 
         $$("[data-modal=renameFileModal]").forEach((element) => {
             element.addEventListener("click", () => {
-                const modal = document.getElementById("renameFileModal") as HTMLElement;
-                const input = $("#filename", modal) as HTMLInputElement;
+                const input = $('[id="renameFileModal.filename"]') as HTMLInputElement;
                 input.value = element.dataset.filename as string;
                 input.setSelectionRange(0, input.value.lastIndexOf("."));
             });

@@ -1,8 +1,10 @@
-<div id="<?= $modal->id() ?>Modal" class="modal" aria-labelledby="<?= $modal->id() ?>ModalLabel">
+<div id="<?= $modal->id() ?>" class="modal" aria-labelledby="<?= $modal->id() ?>Label">
     <div class="<?= $this->classes(['modal-container', 'modal-size-large' => $modal->size() === 'large']) ?>">
-        <form <?php if ($modal->action()) : ?>action="<?= $panel->uri($modal->action()) ?>" <?php endif ?> method="post">
+        <?php if ($modal->hasForm()): ?>
+            <form <?php if ($modal->action()) : ?>action="<?= $panel->uri($modal->action()) ?>" <?php endif ?> method="post">
+            <?php endif ?>
             <div class="modal-header">
-                <div class="caption" id="<?= $modal->id() ?>ModalLabel"><?= $this->escape($modal->title()) ?></div>
+                <div class="caption" id="<?= $modal->id() ?>Label"><?= $this->escape($modal->title()) ?></div>
             </div>
             <div class="modal-content">
                 <?php if ($modal->message()) : ?>
@@ -30,6 +32,8 @@
                     </button>
                 <?php endforeach ?>
             </div>
-        </form>
+            <?php if ($modal->hasForm()): ?>
+            </form>
+        <?php endif ?>
     </div>
 </div>

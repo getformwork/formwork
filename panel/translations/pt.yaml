@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Visitantes únicos
 panel.dashboard.statistics.visits: Visitas
 panel.dashboard.welcome: BemVindo
 panel.dragToReorder: Arraste para reordenar
+panel.editor.bold: Negrito
+panel.editor.bulletList: Lista de marcadores
+panel.editor.code: Código
+panel.editor.decreaseIndent: Diminuir recuo
+panel.editor.heading1: Cabeçalho 1
+panel.editor.heading2: Cabeçalho 2
+panel.editor.heading3: Cabeçalho 3
+panel.editor.heading4: Cabeçalho 4
+panel.editor.heading5: Cabeçalho 5
+panel.editor.heading6: Cabeçalho 6
+panel.editor.image: Imagem
+panel.editor.increaseIndent: Aumentar recuo
+panel.editor.italic: Itálico
+panel.editor.link: Ligação
+panel.editor.numberedList: Lista ordenada
+panel.editor.paragraph: Parágrafo
+panel.editor.quote: Citar
+panel.editor.redo: Refazer
+panel.editor.summary: Sumário
+panel.editor.toggleMarkdown: Ativar/desativar Markdown
+panel.editor.undo: Desfazer
 panel.errors.action.reportToGithub: Denúncie um problema no GitHub
 panel.errors.action.returnToDashboard: Voltar ao painel
 panel.errors.error.forbidden.description: Não tem permissões para aceder a esta página.
@@ -56,6 +77,8 @@ panel.modal.action.uploadFile: Enviar um ficheiro
 panel.modal.images.noImages: Não há imagens aqui
 panel.modal.images.noImages.upload: Por favor carregue algumas imagens
 panel.modal.images.title: Escolha uma imagem
+panel.modal.link.title: Inserir link
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Alternar navegação
 panel.options.options: Opções
 panel.options.site: Site
@@ -145,16 +168,6 @@ panel.pages.deleteFile: Remover ficheiro
 panel.pages.deleteFile.prompt: Tem certeza de que deseja remover este ficheiro? Esta acção não pode ser desfeita.
 panel.pages.deletePage: Remover página
 panel.pages.deletePage.prompt: Tem certeza que deseja remover esta página? Esta ação não pode ser desfeita.
-panel.pages.editor.bold: Negrito
-panel.pages.editor.bulletList: Lista de marcadores
-panel.pages.editor.image: Imagem
-panel.pages.editor.italic: Itálico
-panel.pages.editor.link: Ligação
-panel.pages.editor.numberedList: Lista ordenada
-panel.pages.editor.quote: Citar
-panel.pages.editor.redo: Refazer
-panel.pages.editor.summary: Sumário
-panel.pages.editor.undo: Desfazer
 panel.pages.editPage: Editar página %s
 panel.pages.file.backToPage: Voltar à página
 panel.pages.file.exif: EXIF

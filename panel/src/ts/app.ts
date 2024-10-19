@@ -18,6 +18,7 @@ interface AppConfig {
     baseUri: string;
     DateInput?: any;
     DurationInput?: any;
+    EditorInput?: any;
     SelectInput?: any;
     TagInput?: any;
     Backups?: any;

@@ -63,6 +63,18 @@ pre {
     white-space: pre-wrap;
 }
 
+pre code {
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+blockquote {
+    padding: 0.5rem 1rem;
+    border-left: 0.25rem solid var(--color-base-500);
+    margin: 1rem 0;
+}
+
 [hidden] {
     display: none;
 }

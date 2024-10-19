@@ -21,6 +21,27 @@ panel.dashboard.statistics.uniqueVisitors: Visitatori unici
 panel.dashboard.statistics.visits: Visite
 panel.dashboard.welcome: Benvenuto/a
 panel.dragToReorder: Trascina per riordinare
+panel.editor.bold: Grassetto
+panel.editor.bulletList: Elenco puntato
+panel.editor.code: Codice
+panel.editor.decreaseIndent: Riduci rientro
+panel.editor.heading1: Intestazione 1
+panel.editor.heading2: Intestazione 2
+panel.editor.heading3: Intestazione 3
+panel.editor.heading4: Intestazione 4
+panel.editor.heading5: Intestazione 5
+panel.editor.heading6: Intestazione 6
+panel.editor.image: Immagine
+panel.editor.increaseIndent: Aumenta rientro
+panel.editor.italic: Corsivo
+panel.editor.link: Collegamento
+panel.editor.numberedList: Elenco numerato
+panel.editor.paragraph: Paragrafo
+panel.editor.quote: Citazione
+panel.editor.redo: Ripeti
+panel.editor.summary: Sommario
+panel.editor.toggleMarkdown: Mostra/nascondi Markdown
+panel.editor.undo: Annulla
 panel.errors.action.reportToGithub: Segnala un problema su GitHub
 panel.errors.action.returnToDashboard: Torna al riepilogo
 panel.errors.error.forbidden.description: Non si hanno i permessi per accedere a questa pagina.
@@ -56,6 +77,8 @@ panel.modal.action.uploadFile: Carica file
 panel.modal.images.noImages: Qui non ci sono immagini
 panel.modal.images.noImages.upload: Carica qualche immagine
 panel.modal.images.title: Seleziona immagine
+panel.modal.link.title: Inserisci link
+panel.modal.link.uri: Uri
 panel.navigation.toggle: Mostra/nascondi menu
 panel.options.options: Impostazioni
 panel.options.site: Sito
@@ -145,16 +168,6 @@ panel.pages.deleteFile: Elimina file
 panel.pages.deleteFile.prompt: Si è sicuri di eliminare il file? Questa azione non può essere annullata.
 panel.pages.deletePage: Elimina pagina
 panel.pages.deletePage.prompt: Si è sicuri di eliminare la pagina? Questa azione non può essere annullata.
-panel.pages.editor.bold: Grassetto
-panel.pages.editor.bulletList: Elenco puntato
-panel.pages.editor.image: Immagine
-panel.pages.editor.italic: Corsivo
-panel.pages.editor.link: Collegamento
-panel.pages.editor.numberedList: Elenco numerato
-panel.pages.editor.quote: Citazione
-panel.pages.editor.redo: Ripeti
-panel.pages.editor.summary: Sommario
-panel.pages.editor.undo: Annulla
 panel.pages.editPage: Modifica pagina %s
 panel.pages.file.backToPage: Torna alla pagina
 panel.pages.file.exif: EXIF
