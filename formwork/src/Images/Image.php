@@ -320,7 +320,10 @@ class Image extends File
         $image->data = $this->data;
         $image->uriGenerator = $this->uriGenerator;
         $image->transforms = $this->transforms;
-        $image->handler = $this->handler;
+
+        if (isset($image->handler)) {
+            $image->handler = $this->handler;
+        }
 
         $this->transforms = new TransformCollection();
         unset($this->handler);
