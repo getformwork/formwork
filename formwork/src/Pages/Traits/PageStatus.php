@@ -50,9 +50,8 @@ trait PageStatus
         }
 
         $this->status = match (true) {
-            $published         => Page::PAGE_STATUS_PUBLISHED,
-            !$this->routable() => Page::PAGE_STATUS_NOT_ROUTABLE,
-            !$published        => Page::PAGE_STATUS_NOT_PUBLISHED
+            $published  => Page::PAGE_STATUS_PUBLISHED,
+            !$published => Page::PAGE_STATUS_NOT_PUBLISHED
         };
 
         return $this->status;

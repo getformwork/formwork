@@ -50,11 +50,6 @@ class Page extends Model implements Stringable
      */
     public const PAGE_STATUS_NOT_PUBLISHED = 'notPublished';
 
-    /**
-     * Page `not routable` status
-     */
-    public const PAGE_STATUS_NOT_ROUTABLE = 'notRoutable';
-
     protected const MODEL_IDENTIFIER = 'page';
 
     /**
