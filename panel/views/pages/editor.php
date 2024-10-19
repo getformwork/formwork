@@ -3,7 +3,14 @@
     <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
     <div class="header">
         <div class="min-w-0 flex-grow-1">
-            <div class="header-title"><?= $this->icon($page->icon()) ?> <?= $this->escape($page->title()) ?></div>
+            <div class="flex">
+                <div class="page-icon mr-3">
+                    <?= $this->icon($page->icon()) ?>
+                </div>
+                <div class="header-title truncate">
+                    <?= $this->escape($page->title()) ?>
+                </div>
+            </div>
             <div class="flex">
                 <div><?= $this->insert('_pages/status', ['page' => $page]) ?></div>
                 <?php if (!$page->isIndexPage() && !$page->isErrorPage()) : ?>
@@ -23,16 +30,16 @@
             <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$previousPage]) ?>" role="button" <?php if ($previousPage) : ?>href="<?= $panel->uri('/pages/' . trim($previousPage->route(), '/') . '/edit/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.previous') ?>" aria-label="<?= $this->translate('panel.pages.previous') ?>"><?= $this->icon('chevron-left') ?></a>
             <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$nextPage]) ?>" role="button" <?php if ($nextPage) : ?>href="<?= $panel->uri('/pages/' . trim($nextPage->route(), '/') . '/edit/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.next') ?>" aria-label="<?= $this->translate('panel.pages.next') ?>"><?= $this->icon('chevron-right') ?></a>
             <a class="<?= $this->classes(['button', 'button-link', 'disabled' => !$page->published() || !$page->routable()]) ?>" role="button" <?php if ($page->published() && $page->routable()) : ?>href="<?= $page->uri(includeLanguage: $currentLanguage ?: true) ?>" <?php endif ?> target="formwork-view-page-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.viewPage') ?>" aria-label="<?= $this->translate('panel.pages.viewPage') ?>"><?= $this->icon('arrow-right-up-box') ?></a>
-            <button type="submit" class="<?= $this->classes(['button', 'button-link']) ?>" data-command="preview" formaction="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/preview/') ?>" formtarget=" formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></button>
+            <button type="submit" class="<?= $this->classes(['button', 'button-link', 'disabled' => !$page->routable()]) ?>" data-command="preview" formaction="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/preview/') ?>" formtarget=" formwork-preview-<?= $page->uid() ?>" title="<?= $this->translate('panel.pages.preview') ?>" aria-label="<?= $this->translate('panel.pages.preview') ?>"><?= $this->icon('eye') ?></button>
             <?php if ($panel->user()->permissions()->has('pages.delete')) : ?>
                 <button type="button" class="button button-link" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" title="<?= $this->translate('panel.pages.deletePage') ?>" aria-label="<?= $this->translate('panel.pages.deletePage') ?>" <?php if (!$page->isDeletable()) : ?> disabled<?php endif ?>><?= $this->icon('trash') ?></button>
             <?php endif ?>
             <?php if (!$site->languages()->available()->isEmpty()) : ?>
                 <div class="dropdown">
-                    <button type="button" class="button dropdown-button caret button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage) : ?> <span class="badge"><?= $currentLanguage ?></span><?php endif ?></button>
+                    <button type="button" class="button dropdown-button caret button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage) : ?> <span class="badge badge-blue"><?= $currentLanguage ?></span><?php endif ?></button>
                     <div class="dropdown-menu" id="languages-dropdown">
                         <?php foreach ($site->languages()->available() as $language) : ?>
-                            <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') ?></a>
+                            <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.addLanguage', $language->nativeName() . ' (' . $language->code() . ')') ?></a>
                         <?php endforeach ?>
                     </div>
                 </div>

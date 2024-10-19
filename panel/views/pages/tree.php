@@ -20,29 +20,36 @@
                     ])
                     ?>" data-route="<?= $page->route() ?>">
             <div class="pages-tree-row">
-                <div class="pages-tree-item-cell page-details">
-                    <div class="page-title flex">
-                        <div class="pages-tree-icon sortable-handle mr-2">
-                            <?php if ($orderable && $page->orderable()) : ?>
-                                <span title="<?= $this->translate('panel.dragToReorder') ?>"><?= $this->icon('grabber') ?></span>
+                <div class="pages-tree-item-cell page-details flex">
+                    <div class="pages-tree-icon sortable-handle mr-2">
+                        <?php if ($orderable && $page->orderable()) : ?>
+                            <span title="<?= $this->translate('panel.dragToReorder') ?>"><?= $this->icon('grabber') ?></span>
+                        <?php endif ?>
+                    </div>
+                    <?php if ($includeChildren) : ?>
+                        <div class="pages-tree-icon mr-2">
+                            <?php if ($page->hasChildren()) : ?>
+                                <button type="button" class="button pages-tree-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>" aria-label="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
                             <?php endif ?>
                         </div>
-                        <?php if ($includeChildren) : ?>
-                            <div class="pages-tree-icon mr-2">
-                                <?php if ($page->hasChildren()) : ?>
-                                    <button type="button" class="button pages-tree-children-toggle" title="<?= $this->translate('panel.pages.toggleChildren') ?>" aria-label="<?= $this->translate('panel.pages.toggleChildren') ?>"><?= $this->icon('chevron-down') ?></button>
-                                <?php endif ?>
+                    <?php endif ?>
+                    <div class="page-icon mr-3">
+                        <?= $this->icon($page->icon()) ?>
+                        <?= $this->insert('_pages/info', ['page' => $page]) ?>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex">
+                            <div class="page-title truncate mr-2">
+                                <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a>
                             </div>
-                        <?php endif ?>
-                        <div class="mr-2" class="pages-tree-icon"><?= $this->icon($page->icon()) ?></div>
-                        <div class="min-w-0">
-                            <div class="truncate text-color-accent"><a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a></div>
-                            <?php foreach ($page->languages()->available() as $language) : ?>
-                                <span class="badge"><?= $language->code() ?></span>
-                            <?php endforeach ?>
-                            <div class="page-route truncate" aria-hidden="true">
-                                <span><?= $page->canonicalRoute() ?? $page->route() ?></span>
+                            <div class="page-languages show-from-xs">
+                                <?php foreach ($page->languages()->available() as $language) : ?>
+                                    <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language->code() . '/') ?>" title="<?= $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') ?>"><span class="badge badge-blue"><span><?= $this->icon('translate') ?></span> <?= $language->code() ?></a></span>
+                                <?php endforeach ?>
                             </div>
+                        </div>
+                        <div class="page-route truncate mr-2" aria-hidden="true">
+                            <span><?= $page->canonicalRoute() ?? $page->route() ?></span>
                         </div>
                     </div>
                 </div>

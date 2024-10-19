@@ -3,36 +3,48 @@
     min-width: 1.375em;
     padding: 0.25rem 0.5rem;
     border-radius: 2em;
-    margin-left: 0.25rem;
     background-color: var(--color-base-600);
+    color: var(--color-base-100);
     font-size: 0.75em;
     font-weight: 600;
     line-height: 1.125;
     text-align: center;
+    vertical-align: 0.125em;
+    white-space: nowrap;
+}
+
+.badge .icon {
+    min-width: auto;
+    min-height: auto;
+}
+
+.badge-blue {
+    background-color: var(--color-accent-800);
+    color: var(--color-accent-300);
+}
+
+.badge-green {
+    background-color: var(--color-success-800);
+    color: var(--color-success-300);
+}
+
+.badge-amber {
+    background-color: var(--color-warning-700);
+    color: var(--color-warning-300);
+}
+
+.badge-red {
+    background-color: var(--color-danger-700);
+    color: var(--color-danger-300);
+}
+
+.badge-purple {
+    background-color: var(--color-purple-800);
+    color: var(--color-purple-300);
 }
 
 .button .badge {
-    padding: 0.125rem 0.375rem;
+    margin: -0.375rem 0;
     font-size: 0.75rem;
-    line-height: 1;
-}
-
-.button-accent .badge {
-    background-color: var(--color-accent-900);
-    color: var(--color-accent-500);
-}
-
-.button-success .badge {
-    background-color: var(--color-success-900);
-    color: var(--color-success-500);
-}
-
-.button-warning .badge {
-    background-color: var(--color-warning-900);
-    color: var(--color-warning-500);
-}
-
-.button-danger .badge {
-    background-color: var(--color-danger-900);
-    color: var(--color-danger-500);
+    vertical-align: 0.0625rem;
 }

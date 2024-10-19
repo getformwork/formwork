@@ -10,6 +10,7 @@ date.duration.years: ['año', 'años']
 date.months.long: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 date.months.short: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 date.never: nunca
+date.noDate: Sin fecha
 date.now: ahora
 date.today: Hoy
 date.weekdays.long: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
@@ -23,19 +24,24 @@ page.cacheable: En caché
 page.content: Contenido
 page.files: Archivos
 page.image: Imagen
-page.listed: Visible en el menú
+page.listed: Listada
+page.listed.description: Las páginas listadas son visibles en el menú
 page.noImage: Sin imagen
 page.none: (Ninguno)
 page.noTags: Sin etiquetas
+page.notListed: No listada
+page.notRoutable: No enrutable
 page.options: Opciones
 page.page: Página
 page.parent: Página principal
 page.postsPerPage: Publicaciones por página
 page.publishDate: Fecha de publicación
 page.routable: Enrutable
+page.routable.description: Las páginas enrutables son accesibles desde su dirección
+page.slug: Slug
 page.status.notPublished: No publicado
-page.status.notRoutable: No enrutable
 page.status.published: Publicado
+page.status.published.description: Las páginas publicadas son visibles en el sitio y accesibles desde su dirección
 page.summary: Resumen
 page.tags: Etiquetas
 page.template: Plantilla
