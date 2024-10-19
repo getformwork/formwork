@@ -23,16 +23,19 @@ page.cacheable: Cache
 page.content: Conteúdo
 page.files: Ficheiros
 page.image: Imagem
-page.listed: Visível no menu
+page.listed: Listada
 page.noImage: Sem imagem
 page.none: (Nenhum)
 page.noTags: Sem tags
+page.notListed: Não listada
+page.notRoutable: Não roteável
 page.options: Opções
 page.page: Página
 page.parent: Página parente
 page.postsPerPage: Items por página
 page.publishDate: Data de publicação
 page.routable: Roteável
+page.slug: Slug
 page.status.notPublished: Não publicado
 page.status.notRoutable: Não roteável
 page.status.published: Publicado

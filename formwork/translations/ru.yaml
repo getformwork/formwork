@@ -23,16 +23,19 @@ page.cacheable: Кешируемый
 page.content: Содержание
 page.files: Файлы
 page.image: Изображение
-page.listed: Видимо в меню
+page.listed: Указана
 page.noImage: Нет изображения
 page.none: (Нет)
 page.noTags: Нет тегов
+page.notListed: Не указана
+page.notRoutable: Не маршрутизируемый
 page.options: Параметры
 page.page: Страница
 page.parent: Родитель страницы
 page.postsPerPage: Сообщения на странице
 page.publishDate: Дата публикации
 page.routable: Маршрутизируемый
+page.slug: Slug
 page.status.notPublished: Не Опубликовано
 page.status.notRoutable: Не маршрутизируемый
 page.status.published: Опубликованный

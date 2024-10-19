@@ -23,18 +23,20 @@ page.cacheable: Activer le cache
 page.content: Contenu
 page.files: Fichiers
 page.image: Image d’accroche
-page.listed: Visible dans le menu
+page.listed: Répertoriée
 page.noImage: Aucune image
 page.none: (Aucun)
 page.noTags: Aucun tag
+page.notListed: Non répertoriée
+page.notRoutable: Inaccessible
 page.options: Options
 page.page: Page
 page.parent: Parent
 page.postsPerPage: Articles par page
 page.publishDate: Date de publication
 page.routable: Accessible
+page.slug: Slug
 page.status.notPublished: Brouillon
-page.status.notRoutable: Inaccessible
 page.status.published: Publié
 page.summary: Résumé
 page.tags: Tags
