@@ -1,5 +1,7 @@
 title: '{{panel.pages.changeSlug}}'
 
+form: false
+
 fields:
     newSlug:
         type: text

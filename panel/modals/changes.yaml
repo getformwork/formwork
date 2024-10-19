@@ -2,6 +2,8 @@ title: '{{panel.pages.changes.detected}}'
 
 message: '{{panel.pages.changes.detected.prompt}}'
 
+form: false
+
 buttons:
     dismiss:
         action: dismiss

@@ -80,7 +80,7 @@ class Modal implements Arrayable
 
     public function hasForm(): bool
     {
-        return $this->data['form'] ?? false;
+        return $this->data['form'] ?? true;
     }
 
     /**
