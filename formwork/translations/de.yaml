@@ -10,6 +10,7 @@ date.duration.years: ['Jahr', 'Jahre']
 date.months.long: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 date.months.short: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
 date.never: nie
+date.noDate: Kein Datum
 date.now: jetzt
 date.today: Heute
 date.weekdays.long: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
@@ -24,6 +25,7 @@ page.content: Inhalt
 page.files: Dateien
 page.image: Bild
 page.listed: Aufgelistet
+page.listed.description: Aufgelistete Seiten sind im Menü sichtbar
 page.noImage: Kein Bild
 page.none: (Keine)
 page.noTags: Keine Tags
@@ -35,10 +37,11 @@ page.parent: Übergeordnete Seite
 page.postsPerPage: Beiträge pro Seite
 page.publishDate: Veröffentlichungsdatum
 page.routable: Routbar
+page.routable.description: Routbare Seiten sind über ihre Adresse zugänglich
 page.slug: Slug
 page.status.notPublished: Nicht veröffentlicht
-page.status.notRoutable: Nicht routbar
 page.status.published: Veröffentlicht
+page.status.published.description: Veröffentliche Seiten sind auf der Website sichtbar und über ihre Adresse zugänglich
 page.summary: Zusammenfassung
 page.tags: Tags
 page.template: Vorlage

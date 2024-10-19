@@ -10,6 +10,7 @@ date.duration.years: ['an', 'ans']
 date.months.long: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 date.months.short: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc']
 date.never: jamais
+date.noDate: Aucune date
 date.now: maintenant
 date.today: Aujourd’hui
 date.weekdays.long: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
@@ -24,6 +25,7 @@ page.content: Contenu
 page.files: Fichiers
 page.image: Image d’accroche
 page.listed: Répertoriée
+page.listed.description: Les pages répertoriées sont visibles dans le menu
 page.noImage: Aucune image
 page.none: (Aucun)
 page.noTags: Aucun tag
@@ -35,9 +37,11 @@ page.parent: Parent
 page.postsPerPage: Articles par page
 page.publishDate: Date de publication
 page.routable: Accessible
+page.routable.description: Les pages routables sont accessibles depuis leur adresse
 page.slug: Slug
 page.status.notPublished: Brouillon
 page.status.published: Publié
+page.status.published.description: Les pages publiées sont visibles sur le site et accessibles depuis leur adresse
 page.summary: Résumé
 page.tags: Tags
 page.template: Modèle

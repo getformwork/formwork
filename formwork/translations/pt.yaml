@@ -10,6 +10,7 @@ date.duration.years: ['ano', 'anos']
 date.months.long: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 date.months.short: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 date.never: nunca
+date.noDate: Sem data
 date.now: agora
 date.today: Hoje
 date.weekdays.long: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
@@ -24,6 +25,7 @@ page.content: Conteúdo
 page.files: Ficheiros
 page.image: Imagem
 page.listed: Listada
+page.listed.description: As páginas listadas são visíveis no menu
 page.noImage: Sem imagem
 page.none: (Nenhum)
 page.noTags: Sem tags
@@ -35,10 +37,11 @@ page.parent: Página parente
 page.postsPerPage: Items por página
 page.publishDate: Data de publicação
 page.routable: Roteável
+page.routable.description: As páginas roteáveis são acessíveis a partir do seu endereço
 page.slug: Slug
 page.status.notPublished: Não publicado
-page.status.notRoutable: Não roteável
 page.status.published: Publicado
+page.status.published.description: As páginas publicadas são visíveis no site e acessíveis a partir do seu endereço
 page.summary: Resumo
 page.tags: Tags
 page.template: Template

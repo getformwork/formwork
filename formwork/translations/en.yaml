@@ -10,6 +10,7 @@ date.duration.years: ['year', 'years']
 date.months.long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 date.never: never
+date.noDate: No date
 date.now: now
 date.today: Today
 date.weekdays.long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -24,6 +25,7 @@ page.content: Content
 page.files: Files
 page.image: Image
 page.listed: Listed
+page.listed.description: Listed pages are visible in the menu
 page.noImage: No image
 page.none: (None)
 page.noTags: No tags
@@ -35,9 +37,11 @@ page.parent: Parent page
 page.postsPerPage: Posts per page
 page.publishDate: Publish date
 page.routable: Routable
+page.routable.description: Routable pages are accessible from their address
 page.slug: Slug
 page.status.notPublished: Not published
 page.status.published: Published
+page.status.published.description: Published pages are visible in the site and accessible from their address
 page.summary: Summary
 page.tags: Tags
 page.template: Template

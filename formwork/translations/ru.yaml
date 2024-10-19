@@ -10,6 +10,7 @@ date.duration.years: ['год', 'г']
 date.months.long: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октября', 'Ноябрь', 'Декабрь']
 date.months.short: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
 date.never: никогда
+date.noDate: Без даты
 date.now: теперь
 date.today: Сегодня
 date.weekdays.long: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
@@ -24,6 +25,7 @@ page.content: Содержание
 page.files: Файлы
 page.image: Изображение
 page.listed: Указана
+page.listed.description: Перечисленные страницы видны в меню
 page.noImage: Нет изображения
 page.none: (Нет)
 page.noTags: Нет тегов
@@ -35,10 +37,11 @@ page.parent: Родитель страницы
 page.postsPerPage: Сообщения на странице
 page.publishDate: Дата публикации
 page.routable: Маршрутизируемый
+page.routable.description: Маршрутизируемые страницы доступны по их адресу
 page.slug: Slug
 page.status.notPublished: Не Опубликовано
-page.status.notRoutable: Не маршрутизируемый
 page.status.published: Опубликованный
+page.status.published.description: Опубликованные страницы видны на сайте и доступны по их адресу
 page.summary: Сводка
 page.tags: Теги
 page.template: Шаблон
