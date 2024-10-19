@@ -2,7 +2,8 @@ name: Check
 
 on:
   push:
-    branches: [ "2.x" ]
+    branches-ignore:
+      - 1.x
 
 permissions:
   contents: read
