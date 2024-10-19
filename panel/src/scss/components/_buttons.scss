@@ -40,6 +40,7 @@
     & .icon {
         display: inline-block;
         margin-right: 0.25rem;
+        vertical-align: text-top;
     }
 }
 
@@ -132,6 +133,7 @@
 .button-link {
     & .icon {
         margin-right: 0;
+        vertical-align: -0.125rem;
     }
 }
 
