@@ -66,7 +66,7 @@ class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         if ($service->isLoggedIn() && $this->config->get('system.errors.setHandlers')) {
             $errorsController = $this->container->build(ErrorsController::class);
             set_exception_handler(function (Throwable $throwable) use ($errorsController): never {
-                $errorsController->internalServerError($throwable)->send();
+                $errorsController->internalServerError($throwable)->prepare($this->request)->send();
                 throw $throwable;
             });
         }

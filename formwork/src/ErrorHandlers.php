@@ -34,11 +34,11 @@ class ErrorHandlers
         Response::cleanOutputBuffers();
 
         if ($this->request->isXmlHttpRequest()) {
-            JsonResponse::error('Error', $responseStatus)->send();
+            JsonResponse::error('Error', $responseStatus)->prepare($this->request)->send();
         } else {
             $view = $this->viewFactory->make('errors.error', ['status' => $responseStatus->code(), 'message' => $responseStatus->message(), 'throwable' => $throwable]);
             $response = new Response($view->render(), $responseStatus);
-            $response->send();
+            $response->prepare($this->request)->send();
             // Don't exit, otherwise the error will not be logged
         }
     }

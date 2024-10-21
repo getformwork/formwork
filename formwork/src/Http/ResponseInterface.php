@@ -36,6 +36,11 @@ interface ResponseInterface extends ArraySerializable
     public function headers(): array;
 
     /**
+     * Prepare response according to the given HTTP request
+     */
+    public function prepare(Request $request): static;
+
+    /**
      * Send HTTP status
      */
     public function sendStatus(): void;

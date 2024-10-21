@@ -138,9 +138,11 @@ final class App
 
         DynamicFieldValue::$vars = $this->container->call(require $this->config()->get('system.fields.dynamic.vars.file'));
 
+        $request = $this->request();
+
         $response = $this->router()->dispatch();
 
-        $response->send();
+        $response->prepare($request)->send();
 
         return $response;
     }
