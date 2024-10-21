@@ -14,7 +14,7 @@
                 <?php endif ?>
                 <?php if ($file->type() === 'video') : ?>
                     <video class="file-thumbnail">
-                        <source src="<?= $file->uri() ?>" type="<?= $file->mimeType() ?>" />
+                        <source src="<?= $file->uri() ?>" type="<?= $file->mimeType() ?>" preload="metadata" />
                     </video>
                 <?php endif ?>
                 <div class="file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
