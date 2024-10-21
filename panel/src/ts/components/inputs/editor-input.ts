@@ -32,7 +32,7 @@ export class EditorInput {
                 textarea.dispatchEvent(new Event("change", { bubbles: true }));
             }, 500);
 
-            let editor: MarkdownView | CodeView = new MarkdownView(editorWrap, addBaseUri(textarea.value, baseUri), inputEventHandler, attributes);
+            let editor: MarkdownView | CodeView = new MarkdownView(editorWrap, addBaseUri(textarea.value, baseUri), inputEventHandler, attributes, baseUri);
             editor.view.dom.style.height = `${textareaHeight}px`;
 
             const codeSwitch = $("[data-command=toggle-markdown]", editorWrap) as HTMLButtonElement;
@@ -44,7 +44,7 @@ export class EditorInput {
                     editor.view.dom.style.height = `${textareaHeight}px`;
                 } else {
                     editor.destroy();
-                    editor = new MarkdownView(editorWrap, addBaseUri(editor.content, baseUri), inputEventHandler, attributes);
+                    editor = new MarkdownView(editorWrap, addBaseUri(editor.content, baseUri), inputEventHandler, attributes, baseUri);
                     editor.view.dom.style.height = `${textareaHeight}px`;
                 }
                 codeSwitch.blur();

@@ -33,6 +33,9 @@ export class Form {
         form.addEventListener("submit", removeBeforeUnload);
 
         $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
+            if (element.closest(".editor-wrap")) {
+                return;
+            }
             element.addEventListener("click", (event) => {
                 if (this.hasChanged()) {
                     event.preventDefault();

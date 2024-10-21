@@ -1,18 +1,25 @@
-import { EditorState, Plugin } from "prosemirror-state";
-import { Mark, MarkType } from "prosemirror-model";
 import { debounce } from "../../../../utils/events";
 import { EditorView } from "prosemirror-view";
+import { Mark } from "prosemirror-model";
 import { passIcon } from "../../../icons";
+import { Plugin } from "prosemirror-state";
 import { schema } from "prosemirror-markdown";
 import { Tooltip } from "../../../tooltip";
+
+function addBaseUri(text: string, baseUri: string) {
+    return text.replace(/^\/?(?!https?:\/\/)(.+)/, `${baseUri}$1`);
+}
 
 class LinkTooltipView {
     editorView: EditorView;
     tooltip?: Tooltip;
     currentLink?: Mark;
+    baseUri: string;
 
-    constructor(view: EditorView) {
+    constructor(view: EditorView, baseUri: string) {
         this.editorView = view;
+
+        this.baseUri = baseUri;
 
         this.editorView.dom.addEventListener(
             "scroll",
@@ -24,33 +31,31 @@ class LinkTooltipView {
     update(view: EditorView) {
         const state = view.state;
 
-        if (isMarkActive(state, schema.marks.link)) {
-            const link = state.selection.$head.marks().find((mark) => mark.type === schema.marks.link);
+        const link = state.selection.$head.marks().find((mark) => mark.type === schema.marks.link);
 
-            if (link) {
-                if (this.currentLink && link.eq(this.currentLink)) {
-                    return;
-                }
-
-                this.currentLink = link;
-
-                if (this.tooltip) {
-                    this.tooltip.remove();
-                }
-
-                const domAtPos = view?.domAtPos(state.selection.$head.pos);
-
-                passIcon("link", (icon) => {
-                    this.tooltip = new Tooltip(`${icon}${link.attrs.href}`, {
-                        referenceElement: domAtPos?.node.parentElement as HTMLElement,
-                        container: view.dom.parentElement as HTMLElement,
-                        removeOnMouseout: false,
-                        delay: 0,
-                    });
-
-                    this.tooltip.show();
-                });
+        if (link) {
+            if (this.tooltip) {
+                this.tooltip.remove();
             }
+
+            const domAtPos = view?.domAtPos(state.selection.$head.pos);
+            const coordsAtPos = view?.coordsAtPos(state.selection.$head.pos);
+
+            passIcon("link", (icon) => {
+                this.tooltip = new Tooltip(`${icon} <a href="${addBaseUri(link.attrs.href, this.baseUri)}" target="_blank">${link.attrs.href}</a>`, {
+                    referenceElement: domAtPos?.node.parentElement as HTMLElement,
+                    position: {
+                        x: coordsAtPos.left + window.scrollX,
+                        y: coordsAtPos.top + window.scrollY,
+                    },
+                    offset: { x: 0, y: -24 },
+                    removeOnMouseout: false,
+                    delay: 0,
+                    zIndex: 7,
+                });
+
+                this.tooltip.show();
+            });
         } else {
             this.destroy();
         }
@@ -58,25 +63,17 @@ class LinkTooltipView {
 
     destroy() {
         if (this.tooltip) {
-            this.tooltip.remove();
+            const tooltip = this.tooltip;
+            setTimeout(() => tooltip.remove(), 100);
         }
         this.tooltip = undefined;
-        this.currentLink = undefined;
     }
 }
 
-export function linkTooltip(): Plugin {
+export function linkTooltip(baseUri: string): Plugin {
     return new Plugin({
         view(editorView: EditorView) {
-            return new LinkTooltipView(editorView);
+            return new LinkTooltipView(editorView, baseUri);
         },
     });
-}
-
-function isMarkActive(state: EditorState, type: MarkType) {
-    const { from, $from, to, empty } = state.selection;
-    if (empty) {
-        return !!type.isInSet(state.storedMarks || $from.marks());
-    }
-    return state.doc.rangeHasMark(from, to, type);
 }
