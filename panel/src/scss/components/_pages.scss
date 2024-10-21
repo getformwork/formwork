@@ -56,13 +56,45 @@
     white-space: nowrap;
 }
 
-.page-actions .button-link {
-    font-size: $font-size-md;
+.page-info {
+    position: absolute;
+    z-index: 8;
+    display: none;
+    padding: 0.5rem;
+    border: 1px solid var(--color-base-500);
+    border-radius: $border-radius;
+    margin: 0.25rem 0 1rem;
+    background-color: var(--color-base-900);
+    box-shadow: $box-shadow-md;
 }
 
-.page-info {
-    padding: 0 0.25rem;
-    margin-bottom: 0.75rem;
+.page-icon > .icon {
+    vertical-align: -0.25rem;
+}
+
+.page-icon:hover .page-info {
+    display: block;
+}
+
+.is-dragging .page-icon:hover .page-info {
+    display: none;
+}
+
+.page-info-row {
+    padding: 0.5rem 0.25rem;
+    border-bottom: 1px solid var(--color-base-600);
+    font-size: $font-size-sm;
+}
+
+.page-info-badges {
+    padding: 0.5rem 0.25rem;
+    font-size: $font-size-md;
+    white-space: nowrap;
+}
+
+.page-languages {
+    font-size: $font-size-md;
+    white-space: nowrap;
 }
 
 .page-slug-change {

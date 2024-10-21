@@ -44,28 +44,31 @@ fields:
     published:
         type: checkbox
         label: '{{page.status.published}}'
+        description: '{{page.status.published.description}}'
         default: true
 
     publishDate:
         type: date
         label: '{{page.publishDate}}'
-        placeholder: '{{panel.pages.page.noDate}}'
+        placeholder: '{{date.noDate}}'
         default: null
 
     unpublishDate:
         type: date
         label: '{{page.unpublishDate}}'
-        placeholder: '{{panel.pages.page.noDate}}'
+        placeholder: '{{date.noDate}}'
         default: null
 
     routable:
         type: checkbox
         label: '{{page.routable}}'
+        description: '{{page.routable.description}}'
         default: true
 
     listed:
         type: checkbox
         label: '{{page.listed}}'
+        description: '{{page.listed.description}}'
         default: true
 
     cacheable:

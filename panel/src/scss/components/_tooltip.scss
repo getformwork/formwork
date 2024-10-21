@@ -13,6 +13,6 @@
 }
 
 .tooltip .icon {
-    transform: scale(0.75);
-    vertical-align: -0.25rem;
+    min-width: auto;
+    min-height: auto;
 }
