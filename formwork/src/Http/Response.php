@@ -57,6 +57,14 @@ class Response implements ResponseInterface
     }
 
     /**
+     * Prepare response according to the given HTTP request
+     */
+    public function prepare(Request $request): static
+    {
+        return $this;
+    }
+
+    /**
      * Send HTTP status
      */
     public function sendStatus(): void

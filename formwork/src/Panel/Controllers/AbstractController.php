@@ -224,6 +224,7 @@ abstract class AbstractController extends BaseAbstractController
         if (!$this->user()->permissions()->has($permission)) {
             $this->container->build(ErrorsController::class)
                 ->forbidden()
+                ->prepare($this->request)
                 ->send();
             exit;
         }
