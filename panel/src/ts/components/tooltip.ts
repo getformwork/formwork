@@ -1,7 +1,9 @@
+import { clamp } from "../utils/math";
+
 interface TooltipOptions {
     container: HTMLElement;
     referenceElement: HTMLElement;
-    position: "top" | "right" | "bottom" | "left" | "center";
+    position: "top" | "right" | "bottom" | "left" | "center" | { x: number; y: number };
     offset: {
         x: number;
         y: number;
@@ -10,6 +12,7 @@ interface TooltipOptions {
     timeout: number | null;
     removeOnMouseout: boolean;
     removeOnClick: boolean;
+    zIndex: number | null;
 }
 
 export class Tooltip {
@@ -18,6 +21,10 @@ export class Tooltip {
     delayTimer: number;
     timeoutTimer: number;
     tooltipElement: HTMLElement;
+
+    get removed() {
+        return this.tooltipElement === undefined || !this.options.container.contains(this.tooltipElement);
+    }
 
     constructor(text: string, options: Partial<TooltipOptions> = {}) {
         const defaults = {
@@ -32,6 +39,7 @@ export class Tooltip {
             timeout: null,
             removeOnMouseout: true,
             removeOnClick: false,
+            zIndex: null,
         };
 
         this.text = text;
@@ -49,9 +57,11 @@ export class Tooltip {
             tooltip.style.display = "block";
             tooltip.innerHTML = this.text;
 
-            const getTooltipPosition = (tooltip: HTMLElement) => {
-                const referenceElement = options.referenceElement;
+            const getRelativePosition = (tooltip: HTMLElement) => {
                 const offset = options.offset;
+
+                const referenceElement = options.referenceElement;
+
                 const rect = referenceElement.getBoundingClientRect();
 
                 const top = rect.top + window.scrollY;
@@ -62,6 +72,7 @@ export class Tooltip {
 
                 switch (options.position) {
                     case "top":
+                    default:
                         return {
                             top: Math.round(top - tooltip.offsetHeight + offset.y),
                             left: Math.round(left + hw + offset.x),
@@ -89,14 +100,47 @@ export class Tooltip {
                 }
             };
 
+            const getTooltipPosition = (tooltip: HTMLElement) => {
+                const position =
+                    typeof options.position === "string"
+                        ? getRelativePosition(tooltip)
+                        : {
+                              top: options.position.y + options.offset.y,
+                              left: options.position.x + options.offset.x,
+                          };
+
+                const min = {
+                    top: window.scrollY + 4,
+                    left: window.scrollX + 4,
+                };
+
+                const max = {
+                    top: window.innerHeight + window.scrollY - tooltip.offsetHeight - 20,
+                    left: window.innerWidth + window.scrollX - tooltip.offsetWidth - 4,
+                };
+
+                return {
+                    top: clamp(position.top, min.top, max.top),
+                    left: clamp(position.left, min.left, max.left),
+                };
+            };
+
             container.appendChild(tooltip);
 
             const position = getTooltipPosition(tooltip);
             tooltip.style.top = `${position.top}px`;
             tooltip.style.left = `${position.left}px`;
 
+            if (options.zIndex !== null) {
+                tooltip.style.zIndex = `${options.zIndex}`;
+            }
+
             if (options.timeout !== null) {
                 this.timeoutTimer = setTimeout(() => this.remove(), options.timeout);
+            }
+
+            if (options.removeOnMouseout) {
+                tooltip.addEventListener("mouseout", () => this.remove());
             }
 
             this.tooltipElement = tooltip;
@@ -105,12 +149,18 @@ export class Tooltip {
         const referenceElement = options.referenceElement;
 
         if (referenceElement.tagName.toLowerCase() === "button" || referenceElement.classList.contains("button")) {
-            referenceElement.addEventListener("click", () => this.remove());
+            referenceElement.addEventListener("click", () => {
+                this.remove();
+            });
             referenceElement.addEventListener("blur", () => this.remove());
         }
 
         if (options.removeOnMouseout) {
-            referenceElement.addEventListener("mouseout", () => this.remove());
+            referenceElement.addEventListener("mouseout", (event: MouseEvent) => {
+                if (event.relatedTarget !== this.tooltipElement) {
+                    this.remove();
+                }
+            });
         }
         if (options.removeOnClick) {
             referenceElement.addEventListener("click", () => this.remove());
