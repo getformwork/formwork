@@ -29,7 +29,7 @@
                     <span class="caption"><?= $this->translate('panel.pages.file.preview') ?></span>
                 </div>
                 <div class="section-content page-file-preview-container">
-                    <a class="page-file-preview-link" href="<?= $file->uri() ?>"><img class="page-file-preview-image" src="<?= $file->uri() ?>"></a>
+                    <a class="page-file-preview-link" href="<?= $file->uri() ?>"><img class="<?= $this->classes(['page-file-preview-image', 'has-no-width' => $file->mimeType() === 'image/svg+xml' && $file->info()->width() === 0]) ?>" src="<?= $file->uri() ?>"></a>
                 </div>
             </section>
         </div>

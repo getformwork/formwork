@@ -156,6 +156,10 @@
     @include checkered-background(1.5rem, 0.125);
 }
 
+.page-file-preview-image.has-no-width {
+    width: 20rem;
+}
+
 .page-file-info-entry-title {
     font-weight: 600;
 }
