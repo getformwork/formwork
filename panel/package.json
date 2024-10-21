@@ -38,12 +38,12 @@
         "sortablejs": "^1.15.3"
     },
     "devDependencies": {
-        "@eslint/js": "^8.57.0",
+        "@eslint/js": "^9.13.0",
         "@types/sortablejs": "^1.15.8",
-        "esbuild": "^0.23.1",
-        "eslint": "^8.57.1",
+        "esbuild": "^0.24.0",
+        "eslint": "^9.13.0",
         "eslint-config-prettier": "^9.1.0",
-        "globals": "^15.9.0",
+        "globals": "^15.11.0",
         "postcss": "^8.4.45",
         "prettier": "3.3.3",
         "sass": "^1.77.8",
@@ -51,8 +51,8 @@
         "stylelint-config-standard-scss": "^13.1.0",
         "stylelint-order": "^6.0.4",
         "stylelint-scss": "^6.5.1",
-        "typescript": "^5.6.2",
-        "typescript-eslint": "^7.18.0"
+        "typescript": "^5.6.3",
+        "typescript-eslint": "^8.11.0"
     },
     "packageManager": "yarn@4.3.1"
 }
