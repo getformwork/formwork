@@ -103,7 +103,9 @@ export class TagInput {
                     item.innerHTML = list[key];
                     item.dataset.value = isAssociative ? key : list[key];
                     item.addEventListener("click", function () {
-                        this.dataset.value && addTag(this.dataset.value);
+                        if (this.dataset.value) {
+                            addTag(this.dataset.value);
+                        }
                     });
                     container.appendChild(item);
                 }
