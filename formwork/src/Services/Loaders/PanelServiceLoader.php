@@ -3,6 +3,7 @@
 namespace Formwork\Services\Loaders;
 
 use Formwork\Config\Config;
+use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 use Formwork\Panel\Controllers\ErrorsController;
@@ -16,7 +17,6 @@ use Formwork\Translations\Translations;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
-use Throwable;
 
 class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
@@ -63,12 +63,10 @@ class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             $this->translations->setCurrent($this->config->get('system.panel.translation'));
         }
 
-        if ($service->isLoggedIn() && $this->config->get('system.errors.setHandlers')) {
-            $errorsController = $this->container->build(ErrorsController::class);
-            set_exception_handler(function (Throwable $throwable) use ($errorsController): never {
-                $errorsController->internalServerError($throwable)->prepare($this->request)->send();
-                throw $throwable;
-            });
+        if ($service->isLoggedIn()) {
+            $container->define(ErrorsController::class)
+                ->alias(ErrorsControllerInterface::class)
+                ->lazy(false);
         }
     }
 }

@@ -2,13 +2,22 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Throwable;
 
-class ErrorsController extends AbstractController
+class ErrorsController extends AbstractController implements ErrorsControllerInterface
 {
+    public function error(ResponseStatus $responseStatus = ResponseStatus::InternalServerError, ?Throwable $throwable = null): Response
+    {
+        return $this->makeErrorResponse($responseStatus, 'internalServerError', [
+            'href'  => $this->makeGitHubIssueUri($throwable),
+            'label' => $this->translate('panel.errors.action.reportToGithub'),
+        ], ['throwable' => $throwable]);
+    }
+
     /**
      * Errors@notFound action
      */
@@ -70,8 +79,12 @@ class ErrorsController extends AbstractController
     /**
      * Make a URI to a new GitHub issue with pre-filled data from an (uncaught) exception
      */
-    protected function makeGitHubIssueUri(Throwable $throwable): string
+    protected function makeGitHubIssueUri(?Throwable $throwable): string
     {
+        if ($throwable === null) {
+            return 'https://github.com/getformwork/formwork/issues/';
+        }
+
         $query = http_build_query([
             'labels' => 'bug',
             'title'  => $throwable->getMessage(),

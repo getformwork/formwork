@@ -1,7 +1,7 @@
 <?php
 
 use Formwork\Config\Config;
-use Formwork\ErrorHandlers;
+use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
@@ -47,7 +47,7 @@ return [
 
     'filters' => [
         'request.validateSize' => [
-            'action' => static function (Config $config, Request $request, Router $router, ErrorHandlers $errorHandlers) {
+            'action' => static function (Config $config, Request $request, Router $router, ErrorsControllerInterface $errorsController) {
                 if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
                     return;
                 }
@@ -57,7 +57,7 @@ return [
                     $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size') ?: '0');
 
                     if ($request->contentLength() > $maxSize && $maxSize > 0) {
-                        $errorHandlers->displayErrorPage(ResponseStatus::PayloadTooLarge);
+                        return $errorsController->error(ResponseStatus::PayloadTooLarge);
                     }
                 }
             },
@@ -66,7 +66,7 @@ return [
         ],
 
         'request.validateCsrf' => [
-            'action' => static function (Config $config, Request $request, Router $router, CsrfToken $csrfToken, ErrorHandlers $errorHandlers) {
+            'action' => static function (Config $config, Request $request, Router $router, CsrfToken $csrfToken, ErrorsControllerInterface $errorsController) {
                 if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
                     return;
                 }
@@ -76,7 +76,7 @@ return [
 
                 if (!($csrfToken->validate($tokenName, $token))) {
                     $csrfToken->destroy($tokenName);
-                    $errorHandlers->displayErrorPage(ResponseStatus::Forbidden);
+                    return $errorsController->error(ResponseStatus::Forbidden);
                 }
             },
             'methods' => ['POST'],
