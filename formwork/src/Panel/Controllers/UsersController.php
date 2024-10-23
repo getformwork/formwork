@@ -15,7 +15,6 @@ use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
 use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
-use Formwork\Schemes\Schemes;
 use Formwork\Users\User;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Exceptions\FileNotFoundException;
@@ -26,7 +25,7 @@ class UsersController extends AbstractController
     /**
      * Users@index action
      */
-    public function index(Schemes $schemes): Response
+    public function index(): Response
     {
         if (!$this->hasPermission('users.index')) {
             return $this->forward(ErrorsController::class, 'forbidden');
@@ -45,7 +44,7 @@ class UsersController extends AbstractController
     /**
      * Users@create action
      */
-    public function create(Schemes $schemes): Response
+    public function create(): Response
     {
         if (!$this->hasPermission('users.create')) {
             return $this->forward(ErrorsController::class, 'forbidden');

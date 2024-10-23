@@ -10,7 +10,6 @@ use Formwork\Files\FileCollection;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
-use Formwork\Http\Request;
 use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
@@ -418,7 +417,7 @@ class PagesController extends AbstractController
     /**
      * Pages@renameFile action
      */
-    public function renameFile(RouteParams $routeParams, Request $request): Response
+    public function renameFile(RouteParams $routeParams): Response
     {
         if (!$this->hasPermission('pages.renameFiles')) {
             return $this->forward(ErrorsController::class, 'forbidden');
@@ -436,7 +435,7 @@ class PagesController extends AbstractController
             return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
-        $name = Str::slug(FileSystem::name($request->input()->get('filename')));
+        $name = Str::slug(FileSystem::name($this->request->input()->get('filename')));
         $extension = FileSystem::extension($routeParams->get('filename'));
 
         $newName = $name . '.' . $extension;
@@ -454,7 +453,7 @@ class PagesController extends AbstractController
 
         $previousFileRoute = $this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $previousName]);
 
-        if (Str::removeEnd((string) Uri::path($request->referer()), '/') === $this->site()->uri($previousFileRoute)) {
+        if (Str::removeEnd((string) Uri::path($this->request->referer()), '/') === $this->site()->uri($previousFileRoute)) {
             return $this->redirect($this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $newName]));
         }
 

@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Fields\Exceptions\ValidationException;
-use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Log\Log;
@@ -11,7 +10,6 @@ use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
-use Formwork\Security\CsrfToken;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -20,17 +18,17 @@ class RegisterController extends AbstractController
     /**
      * Register@register action
      */
-    public function register(Request $request, Schemes $schemes, CsrfToken $csrfToken): Response
+    public function register(Schemes $schemes): Response
     {
         if (!$this->site->users()->isEmpty()) {
             return $this->redirectToReferer();
         }
 
-        $csrfToken->generate($this->panel()->getCsrfTokenName());
+        $this->csrfToken->generate($this->panel()->getCsrfTokenName());
 
         $fields = $schemes->get('forms.register')->fields();
 
-        switch ($request->method()) {
+        switch ($this->request->method()) {
             case RequestMethod::GET:
                 return new Response($this->view('register.register', [
                     'title'  => $this->translate('panel.register.register'),
@@ -39,7 +37,7 @@ class RegisterController extends AbstractController
 
             case RequestMethod::POST:
                 try {
-                    $fields->setValues($request->input())->validate();
+                    $fields->setValues($this->request->input())->validate();
                 } catch (ValidationException) {
                     $this->panel()->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
                     return $this->redirect($this->generateRoute('panel.index'));
@@ -58,8 +56,8 @@ class RegisterController extends AbstractController
 
                 Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
 
-                $request->session()->regenerate();
-                $request->session()->set('FORMWORK_USERNAME', $username);
+                $this->request->session()->regenerate();
+                $this->request->session()->set('FORMWORK_USERNAME', $username);
 
                 $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
                 $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));

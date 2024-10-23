@@ -6,7 +6,6 @@ use Formwork\Backupper;
 use Formwork\Data\Collection;
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
-use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -35,7 +34,7 @@ class ToolsController extends AbstractController
     /**
      * Tools@backups action
      */
-    public function backups(RouteParams $routeParams): Response
+    public function backups(): Response
     {
         if (!$this->hasPermission('tools.backups')) {
             return $this->forward(ErrorsController::class, 'forbidden');

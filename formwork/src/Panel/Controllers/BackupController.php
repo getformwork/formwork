@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Backupper;
-use Formwork\Config\Config;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\FileResponse;
 use Formwork\Http\JsonResponse;
@@ -19,7 +18,7 @@ class BackupController extends AbstractController
     /**
      * Backup@make action
      */
-    public function make(Config $config): JsonResponse|Response
+    public function make(): JsonResponse|Response
     {
         if (!$this->hasPermission('backup.make')) {
             return $this->forward(ErrorsController::class, 'forbidden');
@@ -36,10 +35,10 @@ class BackupController extends AbstractController
         return JsonResponse::success($this->translate('panel.backup.ready'), data: [
             'filename'  => $filename,
             'uri'       => $this->panel()->uri('/backup/download/' . $uriName . '/'),
-            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $config->get('system.date.datetimeFormat')),
+            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $this->config->get('system.date.datetimeFormat')),
             'size'      => FileSystem::formatSize(FileSystem::size($file)),
             'deleteUri' => $this->panel()->uri('/backup/delete/' . $uriName . '/'),
-            'maxFiles'  => $config->get('system.backup.maxFiles'),
+            'maxFiles'  => $this->config->get('system.backup.maxFiles'),
         ]);
     }
 
