@@ -13,7 +13,9 @@ class StatisticsController extends AbstractController
      */
     public function index(Statistics $statistics): Response
     {
-        $this->ensurePermission('statistics');
+        if (!$this->hasPermission('statistics')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $pageViews = $statistics->getPageViews();
 

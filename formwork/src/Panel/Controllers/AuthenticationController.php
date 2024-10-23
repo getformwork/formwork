@@ -3,13 +3,11 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\RedirectResponse;
-use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
 use Formwork\Panel\Security\AccessLimiter;
-use Formwork\Security\CsrfToken;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -18,24 +16,24 @@ class AuthenticationController extends AbstractController
     /**
      * Authentication@login action
      */
-    public function login(Request $request, CsrfToken $csrfToken, AccessLimiter $accessLimiter): Response
+    public function login(AccessLimiter $accessLimiter): Response
     {
         $csrfTokenName = $this->panel()->getCsrfTokenName();
 
         if ($accessLimiter->hasReachedLimit()) {
             $minutes = round($this->config->get('system.panel.loginResetTime') / 60);
-            $csrfToken->generate($csrfTokenName);
+            $this->csrfToken->generate($csrfTokenName);
             return $this->error($this->translate('panel.login.attempt.tooMany', $minutes));
         }
 
-        switch ($request->method()) {
+        switch ($this->request->method()) {
             case RequestMethod::GET:
-                if ($request->session()->has('FORMWORK_USERNAME')) {
+                if ($this->request->session()->has('FORMWORK_USERNAME')) {
                     return $this->redirect($this->generateRoute('panel.index'));
                 }
 
                 // Always generate a new CSRF token
-                $csrfToken->generate($csrfTokenName);
+                $this->csrfToken->generate($csrfTokenName);
 
                 return new Response($this->view('authentication.login', [
                     'title' => $this->translate('panel.login.login'),
@@ -45,11 +43,11 @@ class AuthenticationController extends AbstractController
                 // Delay request processing for 0.5-1s
                 usleep(random_int(500, 1000) * 1000);
 
-                $data = $request->input();
+                $data = $this->request->input();
 
                 // Ensure no required data is missing
                 if (!$data->hasMultiple(['username', 'password'])) {
-                    $csrfToken->generate($csrfTokenName);
+                    $this->csrfToken->generate($csrfTokenName);
                     $this->error($this->translate('panel.login.attempt.failed'));
                 }
 
@@ -59,11 +57,11 @@ class AuthenticationController extends AbstractController
 
                 // Authenticate user
                 if ($user !== null && $user->authenticate($data->get('password'))) {
-                    $request->session()->regenerate();
-                    $request->session()->set('FORMWORK_USERNAME', $data->get('username'));
+                    $this->request->session()->regenerate();
+                    $this->request->session()->set('FORMWORK_USERNAME', $data->get('username'));
 
                     // Regenerate CSRF token
-                    $csrfToken->generate($csrfTokenName);
+                    $this->csrfToken->generate($csrfTokenName);
 
                     $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
                     $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
@@ -73,15 +71,15 @@ class AuthenticationController extends AbstractController
 
                     $accessLimiter->resetAttempts();
 
-                    if (($destination = $request->session()->get('FORMWORK_REDIRECT_TO')) !== null) {
-                        $request->session()->remove('FORMWORK_REDIRECT_TO');
+                    if (($destination = $this->request->session()->get('FORMWORK_REDIRECT_TO')) !== null) {
+                        $this->request->session()->remove('FORMWORK_REDIRECT_TO');
                         return new RedirectResponse($this->panel->uri($destination));
                     }
 
                     return $this->redirect($this->generateRoute('panel.index'));
                 }
 
-                $csrfToken->generate($csrfTokenName);
+                $this->csrfToken->generate($csrfTokenName);
                 return $this->error($this->translate('panel.login.attempt.failed'), [
                     'username' => $data->get('username'),
                     'error'    => true,
@@ -94,11 +92,11 @@ class AuthenticationController extends AbstractController
     /**
      * Authentication@logout action
      */
-    public function logout(Request $request, CsrfToken $csrfToken): RedirectResponse
+    public function logout(): RedirectResponse
     {
-        $csrfToken->destroy($this->panel()->getCsrfTokenName());
-        $request->session()->remove('FORMWORK_USERNAME');
-        $request->session()->destroy();
+        $this->csrfToken->destroy($this->panel()->getCsrfTokenName());
+        $this->request->session()->remove('FORMWORK_USERNAME');
+        $this->request->session()->destroy();
 
         if ($this->config->get('system.panel.logoutRedirect') === 'home') {
             return $this->redirect('/');

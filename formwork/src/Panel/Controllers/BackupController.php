@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Backupper;
-use Formwork\Config\Config;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\FileResponse;
 use Formwork\Http\JsonResponse;
@@ -19,9 +18,12 @@ class BackupController extends AbstractController
     /**
      * Backup@make action
      */
-    public function make(Config $config): JsonResponse
+    public function make(): JsonResponse|Response
     {
-        $this->ensurePermission('backup.make');
+        if (!$this->hasPermission('backup.make')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $backupper = new Backupper($this->config);
         try {
             $file = $backupper->backup();
@@ -33,10 +35,10 @@ class BackupController extends AbstractController
         return JsonResponse::success($this->translate('panel.backup.ready'), data: [
             'filename'  => $filename,
             'uri'       => $this->panel()->uri('/backup/download/' . $uriName . '/'),
-            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $config->get('system.date.datetimeFormat')),
+            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $this->config->get('system.date.datetimeFormat')),
             'size'      => FileSystem::formatSize(FileSystem::size($file)),
             'deleteUri' => $this->panel()->uri('/backup/delete/' . $uriName . '/'),
-            'maxFiles'  => $config->get('system.backup.maxFiles'),
+            'maxFiles'  => $this->config->get('system.backup.maxFiles'),
         ]);
     }
 
@@ -45,7 +47,10 @@ class BackupController extends AbstractController
      */
     public function download(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('backup.download');
+        if (!$this->hasPermission('backup.download')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {
@@ -63,7 +68,10 @@ class BackupController extends AbstractController
      */
     public function delete(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('backup.download');
+        if (!$this->hasPermission('backup.download')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {

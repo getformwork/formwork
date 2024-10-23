@@ -6,7 +6,6 @@ use Formwork\Backupper;
 use Formwork\Data\Collection;
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
-use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -25,16 +24,21 @@ class ToolsController extends AbstractController
      */
     public function index(): Response
     {
-        $this->ensurePermission('tools.backups');
+        if (!$this->hasPermission('tools.backups')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         return $this->redirect($this->generateRoute('panel.tools.backups'));
     }
 
     /**
      * Tools@backups action
      */
-    public function backups(RouteParams $routeParams): Response
+    public function backups(): Response
     {
-        $this->ensurePermission('tools.backups');
+        if (!$this->hasPermission('tools.backups')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $backupper = new Backupper($this->config);
 
@@ -62,7 +66,9 @@ class ToolsController extends AbstractController
      */
     public function updates(): Response
     {
-        $this->ensurePermission('tools.updates');
+        if (!$this->hasPermission('tools.updates')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         return new Response($this->view('tools.updates', [
             'title' => $this->translate('panel.tools.updates'),
@@ -79,7 +85,9 @@ class ToolsController extends AbstractController
      */
     public function info(): Response
     {
-        $this->ensurePermission('tools.info');
+        if (!$this->hasPermission('tools.info')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $opcacheStatus = extension_loaded('zend opcache') ? (opcache_get_status(false) ?: []) : [];
 

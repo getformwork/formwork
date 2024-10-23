@@ -4,6 +4,7 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Cache\AbstractCache;
 use Formwork\Http\JsonResponse;
+use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 
@@ -12,9 +13,11 @@ class CacheController extends AbstractController
     /**
      * Cache@clear action
      */
-    public function clear(RouteParams $routeParams, AbstractCache $cache): JsonResponse
+    public function clear(RouteParams $routeParams, AbstractCache $cache): JsonResponse|Response
     {
-        $this->ensurePermission('cache.clear');
+        if (!$this->hasPermission('cache.clear')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         switch ($type = $routeParams->get('type', 'default')) {
             case 'default':

@@ -6,6 +6,7 @@ use Formwork\Backupper;
 use Formwork\Cache\AbstractCache;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\JsonResponse;
+use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Updater\Updater;
 use RuntimeException;
@@ -15,9 +16,12 @@ class UpdatesController extends AbstractController
     /**
      * Updates@check action
      */
-    public function check(Updater $updater): JsonResponse
+    public function check(Updater $updater): JsonResponse|Response
     {
-        $this->ensurePermission('updates.check');
+        if (!$this->hasPermission('updates.check')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         try {
             $upToDate = $updater->checkUpdates();
         } catch (RuntimeException) {
@@ -39,9 +43,12 @@ class UpdatesController extends AbstractController
     /**
      * Updates@update action
      */
-    public function update(Updater $updater, AbstractCache $cache): JsonResponse
+    public function update(Updater $updater, AbstractCache $cache): JsonResponse|Response
     {
-        $this->ensurePermission('updates.update');
+        if (!$this->hasPermission('updates.update')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         if ($this->config->get('system.updates.backupBefore')) {
             $backupper = new Backupper($this->config);
             try {

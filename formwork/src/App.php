@@ -3,9 +3,12 @@
 namespace Formwork;
 
 use BadMethodCallException;
+use ErrorException;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\FilesCache;
 use Formwork\Config\Config;
+use Formwork\Controllers\ErrorsController;
+use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;
@@ -20,7 +23,6 @@ use Formwork\Schemes\Schemes;
 use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\ConfigServiceLoader;
-use Formwork\Services\Loaders\ErrorHandlersServiceLoader;
 use Formwork\Services\Loaders\LanguagesServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
@@ -37,6 +39,7 @@ use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
+use Throwable;
 
 final class App
 {
@@ -57,8 +60,6 @@ final class App
         $this->initializeSingleton();
 
         $this->container = new Container();
-
-        $this->loadServices($this->container);
     }
 
     /**
@@ -134,15 +135,22 @@ final class App
      */
     public function run(): Response
     {
-        $this->loadRoutes();
+        $this->loadErrorHandler();
 
-        DynamicFieldValue::$vars = $this->container->call(require $this->config()->get('system.fields.dynamic.vars.file'));
+        try {
+            $this->loadServices($this->container);
 
-        $request = $this->request();
+            $this->loadRoutes();
 
-        $response = $this->router()->dispatch();
+            DynamicFieldValue::$vars = $this->container->call(require $this->config()->get('system.fields.dynamic.vars.file'));
 
-        $response->prepare($request)->send();
+            $response = $this->router()->dispatch();
+        } catch (Throwable $throwable) {
+            $controller = $this->container->get(ErrorsControllerInterface::class);
+            $response = $controller->error(throwable: $throwable);
+        }
+
+        $response->prepare($this->request())->send();
 
         return $response;
     }
@@ -163,9 +171,9 @@ final class App
         $container->define(Request::class, fn () => Request::fromGlobals())
             ->alias('request');
 
-        $container->define(ErrorHandlers::class)
-            ->loader(ErrorHandlersServiceLoader::class)
-            ->lazy(!$this->config()->get('system.errors.setHandlers', true));
+        $container->define(ErrorsController::class)
+            ->alias(ErrorsControllerInterface::class)
+            ->lazy(false);
 
         $container->define(CsrfToken::class)
             ->alias('csrfToken');
@@ -242,5 +250,17 @@ final class App
         }
 
         $this->router()->loadFromFile($this->config()->get('system.routes.files.system'));
+    }
+
+    protected function loadErrorHandler(): void
+    {
+        ini_set('display_errors', 0);
+
+        set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
+            if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED) {
+                return false;
+            }
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        });
     }
 }

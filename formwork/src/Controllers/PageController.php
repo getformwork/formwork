@@ -2,9 +2,7 @@
 
 namespace Formwork\Controllers;
 
-use Formwork\App;
 use Formwork\Cache\FilesCache;
-use Formwork\Config\Config;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
@@ -12,27 +10,30 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
+use Formwork\Services\Container;
 use Formwork\Site;
 use Formwork\Statistics\Statistics;
 use Formwork\Utils\FileSystem;
-use Formwork\View\ViewFactory;
 
 class PageController extends AbstractController
 {
-    public function __construct(protected App $app, protected Config $config, protected Router $router, protected Site $site, protected FilesCache $filesCache)
-    {
-        parent::__construct();
+    public function __construct(
+        private readonly Container $container,
+        protected Router $router,
+        protected Site $site,
+        protected FilesCache $filesCache
+    ) {
+        $this->container->call(parent::__construct(...));
     }
 
-    public function load(RouteParams $routeParams, ViewFactory $viewFactory, Statistics $statistics): Response
+    public function load(RouteParams $routeParams, Statistics $statistics): Response
     {
         if ($this->site->get('maintenance.enabled') && !$this->app->panel()?->isLoggedIn()) {
             if ($this->site->get('maintenance.page') !== null) {
                 $route = $this->site->get('maintenance.page')->route();
             } else {
                 $status = ResponseStatus::ServiceUnavailable;
-                $view = $viewFactory->make('errors.maintenance', ['status' => $status->code(), 'message' => $status->message()]);
-                return new Response($view->render(), $status);
+                return new Response($this->view('errors.maintenance', ['status' => $status->code(), 'message' => $status->message()]), $status);
             }
         }
 

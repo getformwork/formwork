@@ -10,8 +10,6 @@ use Formwork\Files\FileCollection;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
-use Formwork\Http\RedirectResponse;
-use Formwork\Http\Request;
 use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
@@ -49,7 +47,9 @@ class PagesController extends AbstractController
      */
     public function index(): Response
     {
-        $this->ensurePermission('pages.index');
+        if (!$this->hasPermission('pages.index')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $this->modal('newPage');
 
@@ -79,9 +79,11 @@ class PagesController extends AbstractController
     /**
      * Pages@create action
      */
-    public function create(): RedirectResponse
+    public function create(): Response
     {
-        $this->ensurePermission('pages.create');
+        if (!$this->hasPermission('pages.create')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $requestData = $this->request->input();
 
@@ -115,7 +117,9 @@ class PagesController extends AbstractController
      */
     public function edit(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.edit');
+        if (!$this->hasPermission('pages.edit')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -263,9 +267,11 @@ class PagesController extends AbstractController
     /**
      * Pages@reorder action
      */
-    public function reorder(): JsonResponse
+    public function reorder(): JsonResponse|Response
     {
-        $this->ensurePermission('pages.reorder');
+        if (!$this->hasPermission('pages.reorder')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $requestData = $this->request->input();
 
@@ -306,9 +312,11 @@ class PagesController extends AbstractController
     /**
      * Pages@delete action
      */
-    public function delete(RouteParams $routeParams): RedirectResponse
+    public function delete(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.delete');
+        if (!$this->hasPermission('pages.delete')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -353,9 +361,11 @@ class PagesController extends AbstractController
     /**
      * Pages@uploadFile action
      */
-    public function uploadFile(RouteParams $routeParams): RedirectResponse
+    public function uploadFile(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.uploadFiles');
+        if (!$this->hasPermission('pages.uploadFiles')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -380,9 +390,11 @@ class PagesController extends AbstractController
     /**
      * Pages@deleteFile action
      */
-    public function deleteFile(RouteParams $routeParams): RedirectResponse
+    public function deleteFile(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.deleteFiles');
+        if (!$this->hasPermission('pages.deleteFiles')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -405,9 +417,11 @@ class PagesController extends AbstractController
     /**
      * Pages@renameFile action
      */
-    public function renameFile(RouteParams $routeParams, Request $request): RedirectResponse
+    public function renameFile(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.renameFiles');
+        if (!$this->hasPermission('pages.renameFiles')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -421,7 +435,7 @@ class PagesController extends AbstractController
             return $this->redirect($this->generateRoute('panel.pages.edit', ['page' => $routeParams->get('page')]));
         }
 
-        $name = Str::slug(FileSystem::name($request->input()->get('filename')));
+        $name = Str::slug(FileSystem::name($this->request->input()->get('filename')));
         $extension = FileSystem::extension($routeParams->get('filename'));
 
         $newName = $name . '.' . $extension;
@@ -439,7 +453,7 @@ class PagesController extends AbstractController
 
         $previousFileRoute = $this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $previousName]);
 
-        if (Str::removeEnd((string) Uri::path($request->referer()), '/') === $this->site()->uri($previousFileRoute)) {
+        if (Str::removeEnd((string) Uri::path($this->request->referer()), '/') === $this->site()->uri($previousFileRoute)) {
             return $this->redirect($this->generateRoute('panel.pages.file', ['page' => $routeParams->get('page'), 'filename' => $newName]));
         }
 
@@ -449,9 +463,11 @@ class PagesController extends AbstractController
     /**
      * Pages@replaceFile action
      */
-    public function replaceFile(RouteParams $routeParams): RedirectResponse
+    public function replaceFile(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.replaceFiles');
+        if (!$this->hasPermission('pages.replaceFiles')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 
@@ -492,7 +508,9 @@ class PagesController extends AbstractController
      */
     public function file(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('pages.file');
+        if (!$this->hasPermission('pages.file')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $page = $this->site()->findPage($routeParams->get('page'));
 

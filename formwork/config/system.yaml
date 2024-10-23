@@ -32,9 +32,6 @@ debug:
     editorUri: 'editor://file/{{filename}}:{{line}}'
     contextLines: 5
 
-errors:
-    setHandlers: true
-
 fields:
     path: '${%SYSTEM_PATH%}/fields'
     dynamic:

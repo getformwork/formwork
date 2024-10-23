@@ -4,7 +4,6 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
-use Formwork\Schemes\Schemes;
 use Formwork\Statistics\Statistics;
 
 class DashboardController extends AbstractController
@@ -12,9 +11,11 @@ class DashboardController extends AbstractController
     /**
      * Dashboard@index action
      */
-    public function index(Schemes $schemes, Statistics $statistics): Response
+    public function index(Statistics $statistics): Response
     {
-        $this->ensurePermission('dashboard');
+        if (!$this->hasPermission('dashboard')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $this->modal('newPage');
 
