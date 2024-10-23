@@ -8,7 +8,6 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\FileResponse;
 use Formwork\Http\Files\UploadedFile;
-use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
@@ -29,7 +28,9 @@ class UsersController extends AbstractController
      */
     public function index(Schemes $schemes): Response
     {
-        $this->ensurePermission('users.index');
+        if (!$this->hasPermission('users.index')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $this->modal('newUser');
 
@@ -44,9 +45,11 @@ class UsersController extends AbstractController
     /**
      * Users@create action
      */
-    public function create(Schemes $schemes): RedirectResponse
+    public function create(Schemes $schemes): Response
     {
-        $this->ensurePermission('users.create');
+        if (!$this->hasPermission('users.create')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $requestData = $this->request->input();
 
@@ -83,9 +86,11 @@ class UsersController extends AbstractController
     /**
      * Users@delete action
      */
-    public function delete(RouteParams $routeParams): RedirectResponse
+    public function delete(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('users.delete');
+        if (!$this->hasPermission('users.delete')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $user = $this->site->users()->get($routeParams->get('user'));
 
@@ -121,8 +126,12 @@ class UsersController extends AbstractController
     /**
      * Users@deleteImage action
      */
-    public function deleteImage(RouteParams $routeParams): RedirectResponse
+    public function deleteImage(RouteParams $routeParams): Response
     {
+        if (!$this->hasPermission('users.deleteImage')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $user = $this->site->users()->get($routeParams->get('user'));
 
         if ($user === null) {

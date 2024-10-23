@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Fields\FieldCollection;
-use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Parsers\Yaml;
@@ -24,9 +23,12 @@ class OptionsController extends AbstractController
     /**
      * Options@index action
      */
-    public function index(): RedirectResponse
+    public function index(): Response
     {
-        $this->ensurePermission('options.site');
+        if (!$this->hasPermission('options.site')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         return $this->redirect($this->generateRoute('panel.options.site'));
     }
 
@@ -35,7 +37,9 @@ class OptionsController extends AbstractController
      */
     public function systemOptions(Schemes $schemes): Response
     {
-        $this->ensurePermission('options.system');
+        if (!$this->hasPermission('options.system')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
@@ -79,7 +83,9 @@ class OptionsController extends AbstractController
      */
     public function siteOptions(Schemes $schemes): Response
     {
-        $this->ensurePermission('options.site');
+        if (!$this->hasPermission('options.site')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();

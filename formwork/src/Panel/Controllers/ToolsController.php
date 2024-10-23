@@ -25,7 +25,10 @@ class ToolsController extends AbstractController
      */
     public function index(): Response
     {
-        $this->ensurePermission('tools.backups');
+        if (!$this->hasPermission('tools.backups')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         return $this->redirect($this->generateRoute('panel.tools.backups'));
     }
 
@@ -34,7 +37,9 @@ class ToolsController extends AbstractController
      */
     public function backups(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('tools.backups');
+        if (!$this->hasPermission('tools.backups')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $backupper = new Backupper($this->config);
 
@@ -62,7 +67,9 @@ class ToolsController extends AbstractController
      */
     public function updates(): Response
     {
-        $this->ensurePermission('tools.updates');
+        if (!$this->hasPermission('tools.updates')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         return new Response($this->view('tools.updates', [
             'title' => $this->translate('panel.tools.updates'),
@@ -79,7 +86,9 @@ class ToolsController extends AbstractController
      */
     public function info(): Response
     {
-        $this->ensurePermission('tools.info');
+        if (!$this->hasPermission('tools.info')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $opcacheStatus = extension_loaded('zend opcache') ? (opcache_get_status(false) ?: []) : [];
 

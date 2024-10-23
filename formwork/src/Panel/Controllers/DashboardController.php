@@ -14,7 +14,9 @@ class DashboardController extends AbstractController
      */
     public function index(Schemes $schemes, Statistics $statistics): Response
     {
-        $this->ensurePermission('dashboard');
+        if (!$this->hasPermission('dashboard')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
 
         $this->modal('newPage');
 

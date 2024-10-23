@@ -19,9 +19,12 @@ class BackupController extends AbstractController
     /**
      * Backup@make action
      */
-    public function make(Config $config): JsonResponse
+    public function make(Config $config): JsonResponse|Response
     {
-        $this->ensurePermission('backup.make');
+        if (!$this->hasPermission('backup.make')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $backupper = new Backupper($this->config);
         try {
             $file = $backupper->backup();
@@ -45,7 +48,10 @@ class BackupController extends AbstractController
      */
     public function download(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('backup.download');
+        if (!$this->hasPermission('backup.download')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {
@@ -63,7 +69,10 @@ class BackupController extends AbstractController
      */
     public function delete(RouteParams $routeParams): Response
     {
-        $this->ensurePermission('backup.download');
+        if (!$this->hasPermission('backup.download')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {

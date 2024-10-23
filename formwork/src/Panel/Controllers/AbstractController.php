@@ -209,17 +209,11 @@ abstract class AbstractController extends BaseAbstractController
     }
 
     /**
-     * Ensure current user has a permission
+     * Get if current user has a permission
      */
-    protected function ensurePermission(string $permission): void
+    protected function hasPermission(string $permission): bool
     {
-        if (!$this->user()->permissions()->has($permission)) {
-            $this->container->build(ErrorsController::class)
-                ->forbidden()
-                ->prepare($this->request)
-                ->send();
-            exit;
-        }
+        return $this->user()->permissions()->has($permission);
     }
 
     protected function modals(): ModalCollection
