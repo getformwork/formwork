@@ -37,4 +37,19 @@ class ErrorsController extends AbstractController implements ErrorsControllerInt
 
         return $response;
     }
+
+    public function notFound(): Response
+    {
+        return $this->error(ResponseStatus::NotFound);
+    }
+
+    public function internalServerError(Throwable $throwable): Response
+    {
+        return $this->error(ResponseStatus::InternalServerError, $throwable);
+    }
+
+    public function forbidden(): Response
+    {
+        return $this->error(ResponseStatus::Forbidden);
+    }
 }
