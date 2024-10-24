@@ -7,6 +7,7 @@ use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
 use Formwork\Site;
@@ -271,7 +272,7 @@ return [
 
                 if (!$csrfToken->validate($tokenName, $token)) {
                     $csrfToken->destroy($tokenName);
-                    $request->session()->remove('FORMWORK_USERNAME');
+                    $panel->user()->logout();
 
                     $panel->notify(
                         $translations->getCurrent()->translate('panel.login.suspiciousRequestDetected'),
@@ -323,8 +324,8 @@ return [
         'panel.redirectToLogin' => [
             'action' => static function (Request $request, Site $site, Panel $panel) {
                 // Redirect to login if no user is logged
-                if (!$site->users()->isEmpty() && !$panel->isLoggedIn() && $panel->route() !== '/login/') {
-                    $request->session()->set('FORMWORK_REDIRECT_TO', $panel->route());
+                if (!$site->users()->isEmpty() && !$panel->isLoggedIn() && !in_array($panel->route(), ['/login/', '/logout/'], true)) {
+                    $request->session()->set(AuthenticationController::SESSION_REDIRECT_KEY, $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));
                 }
             },

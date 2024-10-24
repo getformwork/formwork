@@ -8,6 +8,7 @@ use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Users\ColorScheme;
+use Formwork\Users\Exceptions\UserNotLoggedException;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
@@ -41,8 +42,7 @@ final class Panel
         if (!$this->request->hasPreviousSession()) {
             return false;
         }
-        $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return !empty($username) && $this->users->has($username);
+        return $this->users->loggedIn() !== null;
     }
 
     /**
@@ -50,8 +50,8 @@ final class Panel
      */
     public function user(): User
     {
-        $username = $this->request->session()->get('FORMWORK_USERNAME');
-        return $this->users->get($username);
+        return $this->users->loggedIn()
+            ?? throw new UserNotLoggedException('No user is logged in');
     }
 
     /**

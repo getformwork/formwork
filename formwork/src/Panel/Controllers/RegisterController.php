@@ -10,6 +10,7 @@ use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
+use Formwork\Users\User;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
 
@@ -57,7 +58,7 @@ class RegisterController extends AbstractController
                 Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
 
                 $this->request->session()->regenerate();
-                $this->request->session()->set('FORMWORK_USERNAME', $username);
+                $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $username);
 
                 $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
                 $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));

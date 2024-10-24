@@ -29,4 +29,12 @@ class UserCollection extends AbstractCollection
     {
         return $this->roleCollection->everyItem()->title()->toArray();
     }
+
+    /**
+     * Get logged in user or null if no user is authenticated
+     */
+    public function loggedIn(): ?User
+    {
+        return $this->find(fn (User $user): bool => $user->isLoggedIn());
+    }
 }

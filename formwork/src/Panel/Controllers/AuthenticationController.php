@@ -8,16 +8,24 @@ use Formwork\Http\Response;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
 use Formwork\Panel\Security\AccessLimiter;
+use Formwork\Users\Exceptions\AuthenticationFailedException;
+use Formwork\Users\Exceptions\UserNotLoggedException;
+use Formwork\Users\User;
 use Formwork\Utils\FileSystem;
-use RuntimeException;
 
 class AuthenticationController extends AbstractController
 {
+    public const SESSION_REDIRECT_KEY = '_formwork_redirect_to';
+
     /**
      * Authentication@login action
      */
     public function login(AccessLimiter $accessLimiter): Response
     {
+        if ($this->panel()->isLoggedIn()) {
+            return $this->redirect($this->generateRoute('panel.index'));
+        }
+
         $csrfTokenName = $this->panel()->getCsrfTokenName();
 
         if ($accessLimiter->hasReachedLimit()) {
@@ -26,39 +34,29 @@ class AuthenticationController extends AbstractController
             return $this->error($this->translate('panel.login.attempt.tooMany', $minutes));
         }
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                if ($this->request->session()->has('FORMWORK_USERNAME')) {
-                    return $this->redirect($this->generateRoute('panel.index'));
-                }
+        if ($this->request->method() === RequestMethod::POST) {
+            // Delay request processing for 0.5-1s
+            usleep(random_int(500, 1000) * 1000);
 
-                // Always generate a new CSRF token
+            $data = $this->request->input();
+
+            // Ensure no required data is missing
+            if (!$data->hasMultiple(['username', 'password'])) {
                 $this->csrfToken->generate($csrfTokenName);
+                $this->error($this->translate('panel.login.attempt.failed'));
+            }
 
-                return new Response($this->view('authentication.login', [
-                    'title' => $this->translate('panel.login.login'),
-                ]));
+            $accessLimiter->registerAttempt();
 
-            case RequestMethod::POST:
-                // Delay request processing for 0.5-1s
-                usleep(random_int(500, 1000) * 1000);
+            $username = $data->get('username');
 
-                $data = $this->request->input();
+            /** @var User */
+            $user = $this->site->users()->get($username);
 
-                // Ensure no required data is missing
-                if (!$data->hasMultiple(['username', 'password'])) {
-                    $this->csrfToken->generate($csrfTokenName);
-                    $this->error($this->translate('panel.login.attempt.failed'));
-                }
-
-                $accessLimiter->registerAttempt();
-
-                $user = $this->site->users()->get($data->get('username'));
-
-                // Authenticate user
-                if ($user !== null && $user->authenticate($data->get('password'))) {
-                    $this->request->session()->regenerate();
-                    $this->request->session()->set('FORMWORK_USERNAME', $data->get('username'));
+            // Authenticate user
+            if ($user !== null) {
+                try {
+                    $user->authenticate($data->get('password'));
 
                     // Regenerate CSRF token
                     $this->csrfToken->generate($csrfTokenName);
@@ -66,27 +64,36 @@ class AuthenticationController extends AbstractController
                     $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
                     $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
 
-                    $time = $accessLog->log($data->get('username'));
-                    $lastAccessRegistry->set($data->get('username'), $time);
+                    $time = $accessLog->log($username);
+                    $lastAccessRegistry->set($username, $time);
 
                     $accessLimiter->resetAttempts();
 
-                    if (($destination = $this->request->session()->get('FORMWORK_REDIRECT_TO')) !== null) {
-                        $this->request->session()->remove('FORMWORK_REDIRECT_TO');
+                    if (($destination = $this->request->session()->get(self::SESSION_REDIRECT_KEY)) !== null) {
+                        $this->request->session()->remove(self::SESSION_REDIRECT_KEY);
                         return new RedirectResponse($this->panel->uri($destination));
                     }
 
                     return $this->redirect($this->generateRoute('panel.index'));
+                } catch (AuthenticationFailedException) {
+                    // Do nothing, the error response will be sent below
                 }
+            }
 
-                $this->csrfToken->generate($csrfTokenName);
-                return $this->error($this->translate('panel.login.attempt.failed'), [
-                    'username' => $data->get('username'),
-                    'error'    => true,
-                ]);
+            $this->csrfToken->generate($csrfTokenName);
+
+            return $this->error($this->translate('panel.login.attempt.failed'), [
+                'username' => $username,
+                'error'    => true,
+            ]);
         }
 
-        throw new RuntimeException('Invalid Method');
+        // Always generate a new CSRF token
+        $this->csrfToken->generate($csrfTokenName);
+
+        return new Response($this->view('authentication.login', [
+            'title' => $this->translate('panel.login.login'),
+        ]));
     }
 
     /**
@@ -94,14 +101,19 @@ class AuthenticationController extends AbstractController
      */
     public function logout(): RedirectResponse
     {
-        $this->csrfToken->destroy($this->panel()->getCsrfTokenName());
-        $this->request->session()->remove('FORMWORK_USERNAME');
-        $this->request->session()->destroy();
+        try {
+            $this->panel->user()->logout();
+            $this->csrfToken->destroy($this->panel()->getCsrfTokenName());
 
-        if ($this->config->get('system.panel.logoutRedirect') === 'home') {
-            return $this->redirect('/');
+            if ($this->config->get('system.panel.logoutRedirect') === 'home') {
+                return $this->redirect('/');
+            }
+
+            $this->panel()->notify($this->translate('panel.login.loggedOut'), 'info');
+        } catch (UserNotLoggedException) {
+            // Do nothing if user is not logged, the user will be redirected to the login page
         }
-        $this->panel()->notify($this->translate('panel.login.loggedOut'), 'info');
+
         return $this->redirect($this->generateRoute('panel.index'));
     }
 

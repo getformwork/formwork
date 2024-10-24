@@ -10,11 +10,16 @@ use Formwork\Images\Image;
 use Formwork\Log\Registry;
 use Formwork\Model\Model;
 use Formwork\Panel\Security\Password;
+use Formwork\Users\Exceptions\AuthenticationFailedException;
+use Formwork\Users\Exceptions\UserImageNotFoundException;
+use Formwork\Users\Exceptions\UserNotLoggedException;
 use Formwork\Utils\FileSystem;
-use UnexpectedValueException;
+use SensitiveParameter;
 
 class User extends Model
 {
+    public const SESSION_LOGGED_USER_KEY = '_formwork_logged_user';
+
     protected const MODEL_IDENTIFIER = 'user';
 
     /**
@@ -86,7 +91,7 @@ class User extends Model
         $file = $this->fileFactory->make($path);
 
         if (!($file instanceof Image)) {
-            throw new UnexpectedValueException('Invalid user image');
+            throw new UserImageNotFoundException('Invalid user image');
         }
 
         return $this->image = $file;
@@ -116,19 +121,47 @@ class User extends Model
     }
 
     /**
+     * Authenticate the user
+     */
+    public function authenticate(
+        #[SensitiveParameter]
+        string $password
+    ): void {
+        if (!$this->verifyPassword($password)) {
+            throw new AuthenticationFailedException(sprintf('Authentication failed for user "%s"', $this->username()));
+        }
+        $this->request->session()->regenerate();
+        $this->request->session()->set(self::SESSION_LOGGED_USER_KEY, $this->username());
+    }
+
+    /**
      * Return whether a given password authenticates the user
      */
-    public function authenticate(string $password): bool
-    {
+    public function verifyPassword(
+        #[SensitiveParameter]
+        string $password
+    ): bool {
         return Password::verify($password, $this->hash());
+    }
+
+    /**
+     * Log out the user
+     */
+    public function logout(): void
+    {
+        if (!$this->isLoggedIn()) {
+            throw new UserNotLoggedException(sprintf('Cannot logout user "%s": user not logged', $this->username()));
+        }
+        $this->request->session()->remove(self::SESSION_LOGGED_USER_KEY);
+        $this->request->session()->destroy();
     }
 
     /**
      * Return whether the user is logged or not
      */
-    public function isLogged(): bool
+    public function isLoggedIn(): bool
     {
-        return $this->request->session()->get('FORMWORK_USERNAME') === $this->username();
+        return $this->request->session()->get(self::SESSION_LOGGED_USER_KEY) === $this->username();
     }
 
     /**
@@ -144,7 +177,7 @@ class User extends Model
      */
     public function canDeleteUser(User $user): bool
     {
-        return $this->isAdmin() && !$user->isLogged();
+        return $this->isAdmin() && !$user->isLoggedIn();
     }
 
     /**
@@ -155,7 +188,7 @@ class User extends Model
         if ($this->isAdmin()) {
             return true;
         }
-        return $user->isLogged();
+        return $user->isLoggedIn();
     }
 
     /**
@@ -166,7 +199,7 @@ class User extends Model
         if ($this->isAdmin()) {
             return true;
         }
-        return $user->isLogged();
+        return $user->isLoggedIn();
     }
 
     /**
@@ -174,7 +207,7 @@ class User extends Model
      */
     public function canChangeRoleOf(User $user): bool
     {
-        return $this->isAdmin() && !$user->isLogged();
+        return $this->isAdmin() && !$user->isLoggedIn();
     }
 
     /**
