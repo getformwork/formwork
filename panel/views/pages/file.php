@@ -40,7 +40,7 @@
                 <span class="caption"><?= $this->translate('panel.pages.file.preview') ?></span>
             </div>
             <div class="section-content page-file-preview-container">
-                <video style="width: 100%" controls playsinline>
+                <video class="page-file-preview-video" controls playsinline>
                     <source src="<?= $file->uri() ?>" type="<?= $file->mimeType() ?>" />
                 </video>
             </div>
