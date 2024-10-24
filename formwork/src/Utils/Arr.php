@@ -400,6 +400,27 @@ class Arr
     }
 
     /**
+     * Find the first element of an array passing a test callback
+     *
+     * The key of each element is passed to the callback as second argument
+     *
+     * @template T of mixed
+     *
+     * @param array<T> $array
+     *
+     * @return ?T
+     */
+    public static function find(array $array, callable $callback): mixed
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get the value corresponding to the specified key from each element of an array
      *
      * @param array<mixed> $array
