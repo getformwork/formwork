@@ -62,6 +62,12 @@ class File extends Model implements Arrayable, Stringable
     #[ReadonlyModelProperty]
     protected string $hash;
 
+    /**
+     * File content hash
+     */
+    #[ReadonlyModelProperty]
+    protected string $contentHash;
+
     protected FileUriGenerator $uriGenerator;
 
     /**
@@ -172,11 +178,19 @@ class File extends Model implements Arrayable, Stringable
      */
     public function hash(): string
     {
-        if (isset($this->hash)) {
-            return $this->hash;
+        return $this->hash ??= hash('sha256', $this->path . ':' . $this->lastModifiedTime());
+    }
+
+    /**
+     * Get file content hash
+     */
+    public function contentHash(): string
+    {
+        if (isset($this->contentHash)) {
+            return $this->contentHash;
         }
         if ($hash = hash_file('sha256', $this->path)) {
-            return $this->hash = $hash;
+            return $this->contentHash = $hash;
         }
         throw new RuntimeException('Cannot calculate file hash');
     }
