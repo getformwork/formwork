@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 .modal-backdrop {
     position: fixed;
     z-index: 16;

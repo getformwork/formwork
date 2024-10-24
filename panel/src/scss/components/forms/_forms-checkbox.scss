@@ -1,3 +1,6 @@
+@use "../mixins" as *;
+@use "../variables" as *;
+
 .form-checkbox {
     position: absolute;
     opacity: 0;

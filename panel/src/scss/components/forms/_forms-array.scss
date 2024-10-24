@@ -1,3 +1,5 @@
+@use "../mixins" as *;
+
 .form-input-array {
     margin-bottom: 0.5rem;
     @include user-select-none;

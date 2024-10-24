@@ -1,10 +1,13 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 .page-details {
     flex: 1;
 }
 
 .page-title {
     padding: $focusring-width;
-    margin: -$focusring-width;
+    margin: -($focusring-width);
     font-size: $font-size-md;
 }
 
@@ -15,7 +18,7 @@
 
 .page-route-changeable {
     padding: $focusring-width;
-    margin: -$focusring-width;
+    margin: -($focusring-width);
 }
 
 .button .page-language {

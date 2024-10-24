@@ -1,4 +1,7 @@
-@import "../vendor/chartist";
+@use "mixins" as *;
+@use "variables" as *;
+
+@use "../vendor/chartist";
 
 .ct-chart {
     position: relative;

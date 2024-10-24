@@ -1,3 +1,6 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 .tooltip {
     position: absolute;
     z-index: 20;

@@ -1,3 +1,6 @@
+@use "../mixins" as *;
+@use "../variables" as *;
+
 .form-input-tag {
     position: relative;
     display: block;

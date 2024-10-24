@@ -1,3 +1,6 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 html {
     font-size: $base-font-size;
     text-size-adjust: 100%;

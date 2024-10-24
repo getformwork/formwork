@@ -1,12 +1,12 @@
-@import "forms/forms-base";
+@use "forms/forms-base";
 
-@import "forms/forms-array";
-@import "forms/forms-checkbox";
-@import "forms/forms-date";
-@import "forms/forms-duration";
-@import "forms/forms-editor";
-@import "forms/forms-file";
-@import "forms/forms-image";
-@import "forms/forms-range";
-@import "forms/forms-tag";
-@import "forms/forms-togglegroup";
+@use "forms/forms-array";
+@use "forms/forms-checkbox";
+@use "forms/forms-date";
+@use "forms/forms-duration";
+@use "forms/forms-editor";
+@use "forms/forms-file";
+@use "forms/forms-image";
+@use "forms/forms-range";
+@use "forms/forms-tag";
+@use "forms/forms-togglegroup";

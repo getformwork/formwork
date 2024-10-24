@@ -1,3 +1,6 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 .button {
     display: inline-block;
     padding: 0.375rem 0.5rem;

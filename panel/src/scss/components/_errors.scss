@@ -1,3 +1,6 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 .error-container {
     max-width: 32rem;
     padding: 1rem;

@@ -1,3 +1,6 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 .user-summary {
     margin-top: 7.5rem;
     text-align: center;
