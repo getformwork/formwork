@@ -4,6 +4,7 @@ namespace Formwork\Router;
 
 use Closure;
 use Formwork\Http\Request;
+use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Parsers\Php;
 use Formwork\Router\Exceptions\InvalidRouteException;
@@ -26,7 +27,7 @@ class Router
     /**
      * Valid request methods
      */
-    protected const REQUEST_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    protected const REQUEST_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Valid param separators
@@ -449,7 +450,14 @@ class Router
      */
     protected function matchMethods(array $methods): bool
     {
-        return in_array($this->request->method()->value, $methods, true);
+        $method = $this->request->method();
+
+        // HEAD method is equivalent to GET method
+        if ($method === RequestMethod::HEAD) {
+            $method = RequestMethod::GET;
+        }
+
+        return in_array($method->value, $methods, true);
     }
 
     /**
