@@ -226,6 +226,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     }
 
     /**
+     * Find the first item in the collection for which the given callback returns `true`
+     */
+    public function find(callable $callback): mixed
+    {
+        return Arr::find($this->data, $callback);
+    }
+
+    /**
      * Clone the collection instance
      */
     public function clone(): static
