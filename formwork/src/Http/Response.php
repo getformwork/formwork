@@ -22,7 +22,8 @@ class Response implements ResponseInterface
     public function __construct(protected string $content, protected ResponseStatus $responseStatus = ResponseStatus::OK, array $headers = [])
     {
         $headers += [
-            'Content-Type' => Header::make(['text/html', 'charset' => 'utf-8']),
+            'Content-Length' => (string) strlen($content),
+            'Content-Type'   => Header::make(['text/html', 'charset' => 'utf-8']),
         ];
         $this->headers = $headers;
     }
@@ -61,6 +62,10 @@ class Response implements ResponseInterface
      */
     public function prepare(Request $request): static
     {
+        if ($request->method() === RequestMethod::HEAD || $this->requiresEmptyContent()) {
+            $this->content = '';
+        }
+
         return $this;
     }
 
@@ -115,5 +120,10 @@ class Response implements ResponseInterface
         while (ob_get_level()) {
             ob_end_clean();
         }
+    }
+
+    protected function requiresEmptyContent(): bool
+    {
+        return in_array($this->responseStatus, [ResponseStatus::NoContent, ResponseStatus::NotModified], true);
     }
 }

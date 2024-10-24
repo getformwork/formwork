@@ -41,6 +41,12 @@ class FileResponse extends Response
 
         $this->sendHeaders();
 
+        $length = $this->length ?? $this->fileSize;
+
+        if ($length === 0) {
+            return;
+        }
+
         $file = fopen($this->path, 'r');
         $output = fopen('php://output', 'w');
 
@@ -57,8 +63,6 @@ class FileResponse extends Response
         if ($this->offset > 0) {
             fseek($file, $this->offset);
         }
-
-        $length = $this->length ?? $this->fileSize;
 
         while ($length > 0 && !feof($file)) {
             $read = fread($file, self::CHUNK_SIZE);
@@ -84,8 +88,13 @@ class FileResponse extends Response
     {
         parent::prepare($request);
 
-        if (!isset($this->headers['Accept-Ranges']) && $request->method() === RequestMethod::GET) {
+        if (!isset($this->headers['Accept-Ranges']) && in_array($request->method(), [RequestMethod::HEAD, RequestMethod::GET], true)) {
             $this->headers['Accept-Ranges'] = 'bytes';
+        }
+
+        if ($request->method() === RequestMethod::HEAD || $this->requiresEmptyContent()) {
+            $this->length = 0;
+            return $this;
         }
 
         if ($request->method() === RequestMethod::GET && preg_match('/^bytes=(\d+)?-(\d+)?$/', $request->headers()->get('Range', ''), $matches, PREG_UNMATCHED_AS_NULL)) {
