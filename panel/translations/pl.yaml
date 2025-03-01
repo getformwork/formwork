@@ -54,7 +54,20 @@ panel.errors.error.notFound.description: Strona nie istnieje lub żądanie jest 
 panel.errors.error.notFound.heading: Ups, nie znaleziono strony!
 panel.errors.error.notFound.status: Nie znaleziono
 panel.files.actions: Akcje
+panel.files.cannotDelete.fileNotFound: Nie można usunąć pliku, plik nie został znaleziony
+panel.files.cannotDelete.pageNotFound: Nie można usunąć pliku, strona nie została znaleziona
+panel.files.cannotRename.fileAlreadyExists: Nie można zmienić nazwy pliku, plik o tej samej nazwie już istnieje
+panel.files.cannotRename.fileNotFound: Nie można zmienić nazwy pliku, plik nie został znaleziony
+panel.files.cannotRename.pageNotFound: Nie można zmienić nazwy pliku, strona nie została znaleziona
+panel.files.cannotReplace.fileNotFound: Nie można zamienić pliku, plik nie został znaleziony
+panel.files.cannotReplace.multipleFiles: Nie można zamienić pliku, podano wiele plików
+panel.files.cannotReplace.pageNotFound: Nie można zamienić pliku, strona nie została znaleziona
+panel.files.cannotUpload.pageNotFound: Nie można przesłać pliku, strona nie została znaleziona
+panel.files.deleted: Plik usunięty
+panel.files.fileNotFound: Nie można pobrać informacji o pliku, plik nie został znaleziony
 panel.files.metadata.updated: Metadane pliku zaktualizowane
+panel.files.pageNotFound: Nie można pobrać informacji o pliku, strona nie została znaleziona
+panel.files.renamed: Plik zmieniony
 panel.files.viewAsList: Wyświetl jako lista
 panel.files.viewAsThumbnails: Wyświetl jako miniatury
 panel.login.attempt.failed: Próba logowania nieudana! Spróbuj ponownie.
@@ -201,8 +214,6 @@ panel.pages.page.cannotCreate.varMissing: Nie można utworzyć strony, brak zmie
 panel.pages.page.cannotDelete.invalidLanguage: 'Nie można usunąć strony, nieprawidłowy język: %s'
 panel.pages.page.cannotDelete.notDeletable: Nie można usunąć strony, strona nie jest do usunięcia
 panel.pages.page.cannotDelete.pageNotFound: Nie można usunąć strony, strona nie została znaleziona
-panel.pages.page.cannotDeleteFile.fileNotFound: Nie można usunąć pliku, plik nie został znaleziony
-panel.pages.page.cannotDeleteFile.pageNotFound: Nie można usunąć pliku, strona nie została znaleziona
 panel.pages.page.cannotEdit.alreadyExists: Nie można edytować strony, strona o tym samym URI już istnieje
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Nie można edytować slug strony dla strony indeksu lub strony błędu
 panel.pages.page.cannotEdit.invalidLanguage: 'Nie można edytować strony, nieprawidłowy język: %s'
@@ -211,23 +222,12 @@ panel.pages.page.cannotEdit.invalidSlug: Nie można edytować slug strony, musi 
 panel.pages.page.cannotEdit.invalidTemplate: Nie można edytować strony, nieprawidłowy szablon
 panel.pages.page.cannotEdit.pageNotFound: Nie można edytować strony, strona nie została znaleziona
 panel.pages.page.cannotEdit.varMissing: Nie można edytować strony, brak zmiennej
-panel.pages.page.cannotGetFileInfo.fileNotFound: Nie można pobrać informacji o pliku, plik nie został znaleziony
-panel.pages.page.cannotGetFileInfo.pageNotFound: Nie można pobrać informacji o pliku, strona nie została znaleziona
 panel.pages.page.cannotMove: Nie można przenieść strony
 panel.pages.page.cannotPreview.pageNotFound: Nie można wyświetlić podglądu strony, strona nie została znaleziona
 panel.pages.page.cannotPreview.parentChanged: Nie można wyświetlić podglądu strony, strona nadrzędna została zmieniona
-panel.pages.page.cannotRenameFile.fileAlreadyExists: Nie można zmienić nazwy pliku, plik o tej samej nazwie już istnieje
-panel.pages.page.cannotRenameFile.fileNotFound: Nie można zmienić nazwy pliku, plik nie został znaleziony
-panel.pages.page.cannotRenameFile.pageNotFound: Nie można zmienić nazwy pliku, strona nie została znaleziona
-panel.pages.page.cannotReplaceFile.fileNotFound: Nie można zamienić pliku, plik nie został znaleziony
-panel.pages.page.cannotReplaceFile.multipleFiles: Nie można zamienić pliku, podano wiele plików
-panel.pages.page.cannotReplaceFile.pageNotFound: Nie można zamienić pliku, strona nie została znaleziona
-panel.pages.page.cannotUploadFile.pageNotFound: Nie można przesłać pliku, strona nie została znaleziona
 panel.pages.page.created: Strona utworzona!
 panel.pages.page.deleted: Strona usunięta
 panel.pages.page.edited: Strona edytowana
-panel.pages.page.fileDeleted: Plik usunięty
-panel.pages.page.fileRenamed: Plik zmieniony
 panel.pages.page.lastModified: Ostatnia modyfikacja
 panel.pages.page.moved: Strona przeniesiona!
 panel.pages.page.notFound: Strona nie została znaleziona

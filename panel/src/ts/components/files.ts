@@ -1,35 +1,59 @@
-import { $, $$ } from "../utils/selectors";
+import { $ } from "../utils/selectors";
+import { app } from "../app";
 
 export class Files {
     constructor() {
-        $$(".files-list").forEach((filesList) => {
-            const toggle = $(".form-togglegroup.files-list-view-as", filesList);
+        const fileForm = $("[data-form=file-form]");
 
-            if (toggle) {
-                const fieldName = toggle.dataset.fieldName;
-                const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${fieldName}]`);
+        if (fileForm) {
+            const renameFileModal = app.modals["renameFileModal"];
 
-                if (viewAs) {
-                    $$("input", toggle).forEach((input: HTMLInputElement) => (input.checked = false));
-                    ($(`input[value=${viewAs}]`, filesList) as HTMLInputElement).checked = true;
-                    filesList.classList.toggle("is-thumbnails", viewAs === "thumbnails");
-                }
+            if (renameFileModal) {
+                renameFileModal.form?.element.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter") {
+                        renameFileModal.form?.element.submit();
+                        event.preventDefault();
+                    }
+                });
 
-                $$("input", toggle).forEach((input: HTMLInputElement) => {
-                    input.addEventListener("input", () => {
-                        filesList.classList.toggle("is-thumbnails", input.value === "thumbnails");
-                        window.localStorage.setItem(`formwork.filesListViewAs[${fieldName}]`, input.value);
-                    });
+                renameFileModal.onOpen((modal, trigger) => {
+                    if (trigger) {
+                        const input = $('[id="renameFileModal.filename"]', modal.element) as HTMLInputElement;
+                        input.value = trigger.dataset.filename as string;
+                        input.setSelectionRange(0, input.value.lastIndexOf("."));
+                    }
                 });
             }
 
-            $$(".files-item", filesList).forEach((item: HTMLElement) => {
-                item.addEventListener("click", (event) => {
-                    if (!(event.target as HTMLElement).closest(".dropdown") && typeof item.dataset.href === "string") {
-                        location.href = item.dataset.href;
-                    }
+            const replaceFileCommand = $("[data-command=replaceFile]");
+
+            if (replaceFileCommand) {
+                replaceFileCommand.addEventListener("click", () => {
+                    const form = document.createElement("form");
+                    form.hidden = true;
+                    form.action = replaceFileCommand.dataset.action as string;
+                    form.method = "post";
+                    form.enctype = "multipart/form-data";
+
+                    const fileInput = document.createElement("input");
+                    fileInput.name = "file";
+                    fileInput.type = "file";
+                    fileInput.accept = replaceFileCommand.dataset.extension as string;
+                    form.appendChild(fileInput);
+
+                    const csrfInput = document.createElement("input");
+                    csrfInput.name = "csrf-token";
+                    csrfInput.value = ($("meta[name=csrf-token]") as HTMLMetaElement).content;
+                    form.appendChild(csrfInput);
+
+                    fileInput.click();
+
+                    fileInput.addEventListener("change", () => {
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
                 });
-            });
-        });
+            }
+        }
     }
 }

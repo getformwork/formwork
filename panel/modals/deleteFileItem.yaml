@@ -1,0 +1,18 @@
+title: '{{panel.pages.deleteFile}}'
+
+message: '{{panel.pages.deleteFile.prompt}}'
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    delete:
+        action: command
+        icon: trash
+        label: '{{panel.modal.action.delete}}'
+        align: right
+        variant: danger
+        command: delete-file

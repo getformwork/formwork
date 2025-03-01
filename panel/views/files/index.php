@@ -2,23 +2,26 @@
 
 <?php $modals->addMultiple(['changes', 'renameFile', 'deleteFile']) ?>
 
-<form method="post" enctype="multipart/form-data" data-form="page-file-form">
+<form method="post" enctype="multipart/form-data" data-form="file-form">
     <div class="header">
         <div class="min-w-0 flex-grow-1">
-            <div class="header-title"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?> <?= $file->name() ?></div>
+            <div class="flex">
+                <div class="header-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
+                <div class="header-title truncate"><?= $file->name() ?></div>
+            </div>
             <div><a class="link-secondary text-size-sm" href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><span class="mr-2"><?= $this->icon('arrow-left-circle') ?></span><?= $this->translate('panel.pages.file.backToPage') ?></a></div>
         </div>
         <div>
-            <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$previousFile]) ?>" role="button" <?php if ($previousFile) : ?>href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . ($previousFile->name()) . '/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.previousFile') ?>" aria-label="<?= $this->translate('panel.pages.previousFile') ?>"><?= $this->icon('chevron-left') ?></a>
-            <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$nextFile]) ?>" role="button" <?php if ($nextFile) : ?>href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . ($nextFile->name()) . '/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.nextFile') ?>" aria-label="<?= $this->translate('panel.pages.nextFile') ?>"><?= $this->icon('chevron-right') ?></a>
+            <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$previousFile]) ?>" role="button" <?php if ($previousFile) : ?>href="<?= $panel->uri('/files/pages/' . trim($page->route(), '/') . '/' . ($previousFile->name()) . '/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.previousFile') ?>" aria-label="<?= $this->translate('panel.pages.previousFile') ?>"><?= $this->icon('chevron-left') ?></a>
+            <a class="<?= $this->classes(['button', 'button-link', 'show-from-md', 'disabled' => !$nextFile]) ?>" role="button" <?php if ($nextFile) : ?>href="<?= $panel->uri('/files/pages/' . trim($page->route(), '/') . '/' . ($nextFile->name()) . '/') ?>" <?php endif ?> title="<?= $this->translate('panel.pages.nextFile') ?>" aria-label="<?= $this->translate('panel.pages.nextFile') ?>"><?= $this->icon('chevron-right') ?></a>
             <?php if ($panel->user()->permissions()->has('pages.renameFiles')) : ?>
-                <button type="button" class="button button-link" data-modal="renameFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/rename/') ?>" data-filename="<?= $file->name() ?>" title="<?= $this->translate('panel.pages.renameFile')  ?>" aria-label="<?= $this->translate('panel.pages.renameFile')  ?>"><?= $this->icon('pencil') ?></button>
+                <button type="button" class="button button-link" data-modal="renameFileModal" data-modal-action="<?= $panel->uri('/files/pages/' . trim($page->route(), '/') . '/' . $file->name() . '/rename/') ?>" data-filename="<?= $file->name() ?>" title="<?= $this->translate('panel.pages.renameFile')  ?>" aria-label="<?= $this->translate('panel.pages.renameFile')  ?>"><?= $this->icon('pencil') ?></button>
             <?php endif ?>
             <?php if ($panel->user()->permissions()->has('pages.replaceFiles')) : ?>
-                <button type="button" class="button button-link" data-command="replaceFile" data-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/replace/') ?>" data-extension=".<?= $file->extension() ?>" title="<?= $this->translate('panel.pages.replaceFile')  ?>" aria-label="<?= $this->translate('panel.pages.replaceFile')  ?>"><?= $this->icon('cloud-upload') ?></button>
+                <button type="button" class="button button-link" data-command="replaceFile" data-action="<?= $panel->uri('/files/pages/' . trim($page->route(), '/') . '/' . $file->name() . '/replace/') ?>" data-extension=".<?= $file->extension() ?>" title="<?= $this->translate('panel.pages.replaceFile')  ?>" aria-label="<?= $this->translate('panel.pages.replaceFile')  ?>"><?= $this->icon('cloud-upload') ?></button>
             <?php endif ?>
             <?php if ($panel->user()->permissions()->has('pages.deleteFiles')) : ?>
-                <button type="button" class="button button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/file/' . $file->name() . '/delete/') ?>" title="<?= $this->translate('panel.pages.deleteFile')  ?>" aria-label="<?= $this->translate('panel.pages.deleteFile')  ?>"><?= $this->icon('trash') ?></button>
+                <button type="button" class="button button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri('/files/pages/' . trim($page->route(), '/') . '/' . $file->name() . '/delete/') ?>" title="<?= $this->translate('panel.pages.deleteFile')  ?>" aria-label="<?= $this->translate('panel.pages.deleteFile')  ?>"><?= $this->icon('trash') ?></button>
             <?php endif ?>
             <?php if (!$file->fields()->isEmpty()): ?>
                 <button type="submit" class="button button-accent" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>

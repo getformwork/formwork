@@ -54,7 +54,20 @@ panel.errors.error.notFound.description: The page does not exist or the request 
 panel.errors.error.notFound.heading: Oops, page not found!
 panel.errors.error.notFound.status: Not found
 panel.files.actions: Actions
+panel.files.cannotDelete.fileNotFound: Cannot delete file, file not found
+panel.files.cannotDelete.pageNotFound: Cannot delete file, file not found
+panel.files.cannotRename.fileAlreadyExists: Cannot rename file, a file with the same name already exists
+panel.files.cannotRename.fileNotFound: Cannot rename file, file not found
+panel.files.cannotRename.pageNotFound: Cannot rename file, page not found
+panel.files.cannotReplace.fileNotFound: Cannot replace file, file not found
+panel.files.cannotReplace.multipleFiles: Cannot replace file, multiple file given
+panel.files.cannotReplace.pageNotFound: Cannot replace file, page not found
+panel.files.cannotUpload.pageNotFound: Cannot upload file, page not found
+panel.files.deleted: File deleted
+panel.files.fileNotFound: Cannot get file info, file not found
 panel.files.metadata.updated: File metadata updated
+panel.files.pageNotFound: Cannot get file info, page not found
+panel.files.renamed: File renamed
 panel.files.viewAsList: View as list
 panel.files.viewAsThumbnails: View as thumbnails
 panel.login.attempt.failed: Login attempt failed! Try again.
@@ -201,8 +214,6 @@ panel.pages.page.cannotCreate.varMissing: Cannot create page, missing a variable
 panel.pages.page.cannotDelete.invalidLanguage: 'Cannot delete page, invalid language: %s'
 panel.pages.page.cannotDelete.notDeletable: Cannot delete page, the page is not deletable
 panel.pages.page.cannotDelete.pageNotFound: Cannot delete page, page not found
-panel.pages.page.cannotDeleteFile.fileNotFound: Cannot delete file, file not found
-panel.pages.page.cannotDeleteFile.pageNotFound: Cannot delete file, file not found
 panel.pages.page.cannotEdit.alreadyExists: Cannot edit page, a page with the same uri already exists
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Cannot edit page slug of index and error pages
 panel.pages.page.cannotEdit.invalidLanguage: 'Cannot edit page, invalid language: %s'
@@ -211,23 +222,12 @@ panel.pages.page.cannotEdit.invalidSlug: Cannot edit page slug, it must contain 
 panel.pages.page.cannotEdit.invalidTemplate: Cannot edit page, invalid template
 panel.pages.page.cannotEdit.pageNotFound: Cannot edit page, page not found
 panel.pages.page.cannotEdit.varMissing: Cannot edit page, missing a variable
-panel.pages.page.cannotGetFileInfo.fileNotFound: Cannot get file info, file not found
-panel.pages.page.cannotGetFileInfo.pageNotFound: Cannot get file info, page not found
 panel.pages.page.cannotMove: Cannot move page
 panel.pages.page.cannotPreview.pageNotFound: Cannot preview page, page not found
 panel.pages.page.cannotPreview.parentChanged: Cannot preview page, parent page has been changed
-panel.pages.page.cannotRenameFile.fileAlreadyExists: Cannot rename file, a file with the same name already exists
-panel.pages.page.cannotRenameFile.fileNotFound: Cannot rename file, file not found
-panel.pages.page.cannotRenameFile.pageNotFound: Cannot rename file, page not found
-panel.pages.page.cannotReplaceFile.fileNotFound: Cannot replace file, file not found
-panel.pages.page.cannotReplaceFile.multipleFiles: Cannot replace file, multiple file given
-panel.pages.page.cannotReplaceFile.pageNotFound: Cannot replace file, page not found
-panel.pages.page.cannotUploadFile.pageNotFound: Cannot upload file, page not found
 panel.pages.page.created: Page created!
 panel.pages.page.deleted: Page deleted
 panel.pages.page.edited: Page edited
-panel.pages.page.fileDeleted: File deleted
-panel.pages.page.fileRenamed: File renamed
 panel.pages.page.lastModified: Last modified
 panel.pages.page.moved: Page moved!
 panel.pages.page.notFound: Page not found

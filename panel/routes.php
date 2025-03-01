@@ -43,6 +43,30 @@ return [
             'action' => 'Formwork\Panel\Controllers\DashboardController@index',
         ],
 
+        'panel.files.delete' => [
+            'path'    => '/files/pages/{page:all}/{filename}/delete/',
+            'action'  => 'Formwork\Panel\Controllers\FilesController@delete',
+            'methods' => ['POST'],
+        ],
+
+        'panel.files.rename' => [
+            'path'    => '/files/pages/{page:all}/{filename}/rename/',
+            'action'  => 'Formwork\Panel\Controllers\FilesController@rename',
+            'methods' => ['POST'],
+        ],
+
+        'panel.files.replace' => [
+            'path'    => '/files/pages/{page:all}/{filename}/replace/',
+            'action'  => 'Formwork\Panel\Controllers\FilesController@replace',
+            'methods' => ['POST'],
+        ],
+
+        'panel.files.index' => [
+            'path'    => '/files/pages/{page:all}/{filename}/',
+            'action'  => 'Formwork\Panel\Controllers\FilesController@index',
+            'methods' => ['GET', 'POST'],
+        ],
+
         'panel.pages' => [
             'path'   => '/pages/',
             'action' => 'Formwork\Panel\Controllers\PagesController@index',
@@ -79,34 +103,32 @@ return [
             'types'   => ['XHR'],
         ],
 
-        'panel.pages.file' => [
-            'path'    => '/pages/{page:all}/file/{filename}/',
-            'action'  => 'Formwork\Panel\Controllers\PagesController@file',
-            'methods' => ['GET', 'POST'],
-        ],
-
-        'panel.pages.uploadFile' => [
-            'path'    => '/pages/{page:all}/file/upload/',
-            'action'  => 'Formwork\Panel\Controllers\PagesController@uploadFile',
+        'panel.pages.upload' => [
+            'path'    => '/pages/{page:all}/upload/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@upload',
             'methods' => ['POST'],
+            'types'   => ['XHR'],
         ],
 
         'panel.pages.deleteFile' => [
-            'path'    => '/pages/{page:all}/file/{filename}/delete/',
+            'path'    => '/pages/{page:all}/file/delete/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@deleteFile',
             'methods' => ['POST'],
+            'types'   => ['XHR'],
         ],
 
         'panel.pages.renameFile' => [
-            'path'    => '/pages/{page:all}/file/{filename}/rename/',
+            'path'    => '/pages/{page:all}/file/rename/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@renameFile',
             'methods' => ['POST'],
+            'types'   => ['XHR'],
         ],
 
         'panel.pages.replaceFile' => [
-            'path'    => '/pages/{page:all}/file/{filename}/replace/',
+            'path'    => '/pages/{page:all}/file/replace/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@replaceFile',
             'methods' => ['POST'],
+            'types'   => ['XHR'],
         ],
 
         'panel.pages.delete' => [

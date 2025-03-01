@@ -4,89 +4,29 @@ import { app } from "../app";
 import { Inputs } from "./inputs";
 import { serializeForm } from "../utils/forms";
 
+interface FormOptions {
+    preventUnloadOnChanges?: boolean;
+}
 export class Form {
     inputs: Inputs;
     originalData: string;
     element: HTMLFormElement;
+    options: FormOptions = {
+        preventUnloadOnChanges: true,
+    };
 
-    constructor(form: HTMLFormElement) {
+    constructor(form: HTMLFormElement, options: Partial<FormOptions> = {}) {
         this.element = form;
 
-        this.inputs = new Inputs(form);
+        this.inputs = new Inputs(this);
 
         // Serialize after inputs are loaded
         this.originalData = serializeForm(form);
 
-        const handleBeforeunload = (event: Event) => {
-            if (this.hasChanged()) {
-                event.preventDefault();
-                event.returnValue = false;
-            }
-        };
+        this.options = { ...this.options, ...options };
 
-        const removeBeforeUnload = () => {
-            window.removeEventListener("beforeunload", handleBeforeunload);
-        };
-
-        window.addEventListener("beforeunload", handleBeforeunload);
-
-        form.addEventListener("submit", removeBeforeUnload);
-
-        $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
-            if (element.closest(".editor-wrap")) {
-                return;
-            }
-            element.addEventListener("click", (event) => {
-                if (this.hasChanged()) {
-                    event.preventDefault();
-
-                    app.modals["changesModal"].onOpen((modal) => {
-                        const continueCommand = $("[data-command=continue]", modal.element);
-                        if (continueCommand) {
-                            continueCommand.dataset.href = element.href;
-                        }
-                    });
-
-                    app.modals["changesModal"].open();
-                }
-            });
-        });
-
-        $$("input[type=file][data-auto-upload=true]", form).forEach((element) => {
-            element.addEventListener("change", () => {
-                if (!this.hasChanged(false)) {
-                    form.requestSubmit($("[type=submit]", form));
-                }
-            });
-        });
-
-        registerModalExceptions();
-
-        function registerModalExceptions() {
-            const changesModal = app.modals["changesModal"];
-            const deletePageModal = app.modals["deletePageModal"];
-            const deleteUserModal = app.modals["deleteUserModal"];
-
-            if (changesModal) {
-                changesModal.onCommand("continue", (_, button) => {
-                    removeBeforeUnload();
-                    if (button?.dataset.href) {
-                        window.location.href = button.dataset.href;
-                    }
-                });
-            }
-
-            if (deletePageModal) {
-                deletePageModal.onCommand("delete", () => {
-                    removeBeforeUnload();
-                });
-            }
-
-            if (deleteUserModal) {
-                deleteUserModal.onCommand("delete", () => {
-                    removeBeforeUnload();
-                });
-            }
+        if (this.options.preventUnloadOnChanges) {
+            this.preventUnloadOnChanges();
         }
     }
 
@@ -102,5 +42,54 @@ export class Form {
         }
 
         return serializeForm(this.element) !== this.originalData;
+    }
+
+    private preventUnloadOnChanges() {
+        window.addEventListener("beforeunload", this.handleBeforeunload);
+
+        this.element.addEventListener("submit", this.removeBeforeUnload);
+
+        const changesModal = app.modals["changesModal"];
+
+        if (changesModal) {
+            changesModal.onCommand("continue", (_, button) => {
+                this.removeBeforeUnload();
+                if (button?.dataset.href) {
+                    window.location.href = button.dataset.href;
+                }
+            });
+
+            $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
+                if (element.closest(".editor-wrap")) {
+                    return;
+                }
+
+                element.addEventListener("click", (event) => {
+                    if (this.hasChanged()) {
+                        event.preventDefault();
+
+                        app.modals["changesModal"].onOpen((modal) => {
+                            const continueCommand = $("[data-command=continue]", modal.element);
+                            if (continueCommand) {
+                                continueCommand.dataset.href = element.href;
+                            }
+                        });
+
+                        app.modals["changesModal"].open();
+                    }
+                });
+            });
+        }
+    }
+
+    private handleBeforeunload(event: Event) {
+        if (this.hasChanged()) {
+            event.preventDefault();
+            event.returnValue = false;
+        }
+    }
+
+    private removeBeforeUnload() {
+        window.removeEventListener("beforeunload", this.handleBeforeunload);
     }
 }

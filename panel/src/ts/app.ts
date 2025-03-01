@@ -60,10 +60,10 @@ class App {
         this.loadComponent(ColorScheme);
         this.loadComponent(Notifications);
         this.loadComponent(Sections);
-        this.loadComponent(Files);
 
         this.loadComponent(Dashboard);
         this.loadComponent(Pages);
+        this.loadComponent(Files);
         this.loadComponent(Statistics);
         this.loadComponent(Backups);
         this.loadComponent(Updates);

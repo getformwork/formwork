@@ -54,7 +54,20 @@ panel.errors.error.notFound.description: Сторінка не існує або
 panel.errors.error.notFound.heading: Ой, сторінка не знайдена!
 panel.errors.error.notFound.status: Не знайдено
 panel.files.actions: Дії
+panel.files.cannotDelete.fileNotFound: Неможливо видалити файл, файл не знайдено
+panel.files.cannotDelete.pageNotFound: Неможливо видалити файл, сторінка не знайдена
+panel.files.cannotRename.fileAlreadyExists: Неможливо перейменувати файл, файл з таким іменем вже існує
+panel.files.cannotRename.fileNotFound: Неможливо перейменувати файл, файл не знайдено
+panel.files.cannotRename.pageNotFound: Неможливо перейменувати файл, сторінка не знайдена
+panel.files.cannotReplace.fileNotFound: Неможливо замінити файл, файл не знайдено
+panel.files.cannotReplace.multipleFiles: Неможливо замінити файл, надано кілька файлів
+panel.files.cannotReplace.pageNotFound: Неможливо замінити файл, сторінка не знайдена
+panel.files.cannotUpload.pageNotFound: Неможливо завантажити файл, сторінка не знайдена
+panel.files.deleted: Файл видалено
+panel.files.fileNotFound: Неможливо отримати інформацію про файл, файл не знайдено
 panel.files.metadata.updated: Метадані файлу оновлено
+panel.files.pageNotFound: Неможливо отримати інформацію про файл, сторінка не знайдена
+panel.files.renamed: Файл перейменовано
 panel.files.viewAsList: Переглядати як список
 panel.files.viewAsThumbnails: Переглядати як ескізи
 panel.login.attempt.failed: Не вдалося увійти! Спробуйте ще раз.
@@ -201,8 +214,6 @@ panel.pages.page.cannotCreate.varMissing: Неможливо створити с
 panel.pages.page.cannotDelete.invalidLanguage: 'Неможливо видалити сторінку, недійсна мова: %s'
 panel.pages.page.cannotDelete.notDeletable: Неможливо видалити сторінку, сторінка не може бути видалена
 panel.pages.page.cannotDelete.pageNotFound: Неможливо видалити сторінку, сторінка не знайдена
-panel.pages.page.cannotDeleteFile.fileNotFound: Неможливо видалити файл, файл не знайдено
-panel.pages.page.cannotDeleteFile.pageNotFound: Неможливо видалити файл, сторінка не знайдена
 panel.pages.page.cannotEdit.alreadyExists: Неможливо редагувати сторінку, сторінка з таким URI вже існує
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Неможливо редагувати slug сторінки індексу та помилок
 panel.pages.page.cannotEdit.invalidLanguage: 'Неможливо редагувати сторінку, недійсна мова: %s'
@@ -211,23 +222,12 @@ panel.pages.page.cannotEdit.invalidSlug: Неможливо редагувати
 panel.pages.page.cannotEdit.invalidTemplate: Неможливо редагувати сторінку, недійсна шаблон
 panel.pages.page.cannotEdit.pageNotFound: Неможливо редагувати сторінку, сторінка не знайдена
 panel.pages.page.cannotEdit.varMissing: Неможливо редагувати сторінку, відсутня змінна
-panel.pages.page.cannotGetFileInfo.fileNotFound: Неможливо отримати інформацію про файл, файл не знайдено
-panel.pages.page.cannotGetFileInfo.pageNotFound: Неможливо отримати інформацію про файл, сторінка не знайдена
 panel.pages.page.cannotMove: Неможливо перемістити сторінку
 panel.pages.page.cannotPreview.pageNotFound: Неможливо попередньо переглянути сторінку, сторінка не знайдена
 panel.pages.page.cannotPreview.parentChanged: Неможливо попередньо переглянути сторінку, батьківська сторінка змінилася
-panel.pages.page.cannotRenameFile.fileAlreadyExists: Неможливо перейменувати файл, файл з таким іменем вже існує
-panel.pages.page.cannotRenameFile.fileNotFound: Неможливо перейменувати файл, файл не знайдено
-panel.pages.page.cannotRenameFile.pageNotFound: Неможливо перейменувати файл, сторінка не знайдена
-panel.pages.page.cannotReplaceFile.fileNotFound: Неможливо замінити файл, файл не знайдено
-panel.pages.page.cannotReplaceFile.multipleFiles: Неможливо замінити файл, надано кілька файлів
-panel.pages.page.cannotReplaceFile.pageNotFound: Неможливо замінити файл, сторінка не знайдена
-panel.pages.page.cannotUploadFile.pageNotFound: Неможливо завантажити файл, сторінка не знайдена
 panel.pages.page.created: Сторінка створена!
 panel.pages.page.deleted: Сторінка видалена
 panel.pages.page.edited: Сторінка відредагована
-panel.pages.page.fileDeleted: Файл видалено
-panel.pages.page.fileRenamed: Файл перейменовано
 panel.pages.page.lastModified: Останнє редагування
 panel.pages.page.moved: Сторінка переміщена!
 panel.pages.page.notFound: Сторінка не знайдена

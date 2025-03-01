@@ -1,4 +1,5 @@
 import { $, $$ } from "../utils/selectors";
+import { Form } from "./form";
 import { Inputs } from "./inputs";
 
 interface ModalShowOptions {
@@ -17,6 +18,8 @@ type ModalState = "open" | "closed";
 export class Modal {
     readonly element: HTMLElement;
 
+    readonly form: Form | null;
+
     readonly inputs: Inputs;
 
     readonly data: { [key: string]: unknown } = {};
@@ -28,7 +31,13 @@ export class Modal {
     constructor(element: HTMLElement) {
         this.element = element;
 
-        new Inputs(this.element);
+        const formElement = $("form", this.element) as HTMLFormElement | null;
+
+        this.form = formElement
+            ? new Form(formElement, {
+                  preventUnloadOnChanges: false,
+              })
+            : null;
 
         this.registerEvents();
     }
@@ -47,9 +56,8 @@ export class Modal {
         this.element.classList.add("open");
 
         if (options.action) {
-            const form = $("form", this.element) as HTMLFormElement | null;
-            if (form) {
-                form.action = options.action;
+            if (this.form) {
+                this.form.element.action = options.action;
             }
         }
 

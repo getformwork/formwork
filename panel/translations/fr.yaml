@@ -54,7 +54,20 @@ panel.errors.error.notFound.description: La page n’existe pas ou la demande n�
 panel.errors.error.notFound.heading: Oups, page non trouvée!
 panel.errors.error.notFound.status: Pas trouvé
 panel.files.actions: Actions
+panel.files.cannotDelete.fileNotFound: Impossible de supprimer le fichier, fichier introuvable
+panel.files.cannotDelete.pageNotFound: Impossible de supprimer le fichier, page non trouvée
+panel.files.cannotRename.fileAlreadyExists: Impossible de renommer le fichier, un fichier portant le même nom existe déjà
+panel.files.cannotRename.fileNotFound: Impossible de renommer le fichier, fichier introuvable
+panel.files.cannotRename.pageNotFound: Impossible de renommer le fichier, page introuvable
+panel.files.cannotReplace.fileNotFound: Impossible de remplacer le fichier, fichier non trouvé
+panel.files.cannotReplace.multipleFiles: Impossible de remplacer le fichier, plusieurs fichiers spécifiés
+panel.files.cannotReplace.pageNotFound: Impossible de remplacer le fichier, page non trouvée
+panel.files.cannotUpload.pageNotFound: Impossible de téléverser le fichier, page introuvable
+panel.files.deleted: Fichier supprimé
+panel.files.fileNotFound: Impossible de récupérer les informations sur le fichier, fichier non trouvé
 panel.files.metadata.updated: Métadonnées du fichier mises à jour
+panel.files.pageNotFound: Impossible de récupérer les informations sur le fichier, page non trouvée
+panel.files.renamed: Fichier renommé
 panel.files.viewAsList: Afficher en liste
 panel.files.viewAsThumbnails: Afficher en vignettes
 panel.login.attempt.failed: La tentative de connexion a échoué! Réessayer.
@@ -201,8 +214,6 @@ panel.pages.page.cannotCreate.varMissing: Impossible de créer une page, il manq
 panel.pages.page.cannotDelete.invalidLanguage: 'Impossible de supprimer la page, terme non défini : %s'
 panel.pages.page.cannotDelete.notDeletable: Impossible de supprimer la page, la page ne peut être supprimée
 panel.pages.page.cannotDelete.pageNotFound: Impossible de supprimer la page, page introuvable
-panel.pages.page.cannotDeleteFile.fileNotFound: Impossible de supprimer le fichier, fichier introuvable
-panel.pages.page.cannotDeleteFile.pageNotFound: Impossible de supprimer le fichier, page non trouvée
 panel.pages.page.cannotEdit.alreadyExists: Impossible de modifier la page, une page avec la même url existe déjà
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossible de modifier l’identifiant de la page d’acceuil et celle de la page d’erreur
 panel.pages.page.cannotEdit.invalidLanguage: 'Impossible de modifier la page, terme non défini : %s'
@@ -211,23 +222,12 @@ panel.pages.page.cannotEdit.invalidSlug: Impossible de modifier l’identifiant 
 panel.pages.page.cannotEdit.invalidTemplate: Impossible de modifier la page, modèle non valide
 panel.pages.page.cannotEdit.pageNotFound: Impossible de modifier la page, page non trouvée
 panel.pages.page.cannotEdit.varMissing: Impossible de modifier la page, il manque une variable
-panel.pages.page.cannotGetFileInfo.fileNotFound: Impossible de récupérer les informations sur le fichier, fichier non trouvé
-panel.pages.page.cannotGetFileInfo.pageNotFound: Impossible de récupérer les informations sur le fichier, page non trouvée
 panel.pages.page.cannotMove: Impossible de déplacer la page
 panel.pages.page.cannotPreview.pageNotFound: Impossible de prévisualiser la page, page non trouvée
 panel.pages.page.cannotPreview.parentChanged: Impossible de prévisualiser la page, la page parente a été modifiée
-panel.pages.page.cannotRenameFile.fileAlreadyExists: Impossible de renommer le fichier, un fichier portant le même nom existe déjà
-panel.pages.page.cannotRenameFile.fileNotFound: Impossible de renommer le fichier, fichier introuvable
-panel.pages.page.cannotRenameFile.pageNotFound: Impossible de renommer le fichier, page introuvable
-panel.pages.page.cannotReplaceFile.fileNotFound: Impossible de remplacer le fichier, fichier non trouvé
-panel.pages.page.cannotReplaceFile.multipleFiles: Impossible de remplacer le fichier, plusieurs fichiers spécifiés
-panel.pages.page.cannotReplaceFile.pageNotFound: Impossible de remplacer le fichier, page non trouvée
-panel.pages.page.cannotUploadFile.pageNotFound: Impossible de téléverser le fichier, page introuvable
 panel.pages.page.created: Page créée !
 panel.pages.page.deleted: Page supprimée
 panel.pages.page.edited: Page éditée
-panel.pages.page.fileDeleted: Fichier supprimé
-panel.pages.page.fileRenamed: Fichier renommé
 panel.pages.page.lastModified: Dernière modification
 panel.pages.page.moved: Page déplacée !
 panel.pages.page.notFound: Page non trouvée

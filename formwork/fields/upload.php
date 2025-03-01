@@ -5,6 +5,7 @@ use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
 use Formwork\Files\FileCollection;
 use Formwork\Http\Files\UploadedFile;
+use Formwork\Pages\Page;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\MimeType;
@@ -23,6 +24,17 @@ return function (App $app) {
 
         'collection' => function (Field $field): FileCollection {
             return $field->get('collection', new FileCollection());
+        },
+
+        'action' => function (Field $field): ?string {
+            if ($field->parent()?->model() instanceof Page) {
+                return '../upload/';
+            }
+            return null;
+        },
+
+        'autoUpload' => function (Field $field): bool {
+            return $field->is('autoUpload');
         },
 
         'validate' => function (Field $field, $value) use ($app) {

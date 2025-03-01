@@ -5,7 +5,7 @@
     display: none;
 }
 
-.form-input-file-label {
+.form-file-drop-target {
     display: block;
     padding: 0.5rem;
     border-radius: $border-radius;
@@ -15,11 +15,11 @@
     font-size: 0.875rem;
 }
 
-.form-input-file-label:focus {
+.form-file-drop-target:focus {
     @include focusring;
 }
 
-.form-input-file-label > span {
+.form-file-drop-target > span {
     display: block;
     padding: 1.5rem 1rem;
     border: 2px dashed var(--color-base-500);
@@ -33,6 +33,6 @@
     }
 }
 
-.form-input-file-label.drag > span {
+.form-file-drop-target.drag > span {
     background-color: var(--color-base-700);
 }

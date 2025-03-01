@@ -5,6 +5,7 @@ import { DateInput } from "./inputs/date-input";
 import { DurationInput } from "./inputs/duration-input";
 import { EditorInput } from "./inputs/editor-input";
 import { FileInput } from "./inputs/file-input";
+import { Form } from "./form";
 import { ImagePicker } from "./inputs/image-picker";
 import { RangeInput } from "./inputs/range-input";
 import { SelectInput } from "./inputs/select-input";
@@ -15,7 +16,9 @@ import { TogglegroupInput } from "./inputs/togglegroup-input";
 export class Inputs {
     [name: string]: object;
 
-    constructor(parent: HTMLElement) {
+    constructor(form: Form) {
+        const parent = form.element;
+
         $$(".editor-textarea", parent).forEach((element: HTMLTextAreaElement) => (this[element.name] = new EditorInput(element)));
 
         $$(".form-input-array", parent).forEach((element: HTMLInputElement) => (this[element.name] = new ArrayInput(element)));
@@ -32,7 +35,7 @@ export class Inputs {
 
         $$(".image-picker", parent).forEach((element: HTMLSelectElement) => (this[element.name] = new ImagePicker(element)));
 
-        $$("input[type=file]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new FileInput(element)));
+        $$("input[type=file]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new FileInput(element, form)));
 
         $$("input[type=range]", parent).forEach((element: HTMLInputElement) => (this[element.name] = new RangeInput(element)));
 

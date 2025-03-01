@@ -35,7 +35,7 @@
     margin-bottom: 0;
 }
 
-.file-name {
+.file-item-label {
     flex-grow: 1;
 }
 
@@ -81,7 +81,7 @@
     display: block;
 }
 
-.is-thumbnails .file-name {
+.is-thumbnails .file-item-label {
     position: absolute;
     right: 0.75rem;
     bottom: 0.5rem;

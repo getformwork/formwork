@@ -1,0 +1,21 @@
+title: '{{panel.pages.renameFile}}'
+
+fields:
+    filename:
+        type: text
+        label: '{{panel.pages.renameFile.name}}'
+        required: true
+
+buttons:
+    dismiss:
+        action: dismiss
+        icon: times-circle
+        label: '{{panel.modal.action.cancel}}'
+        variant: secondary
+
+    submit:
+        action: command
+        icon: pencil
+        label: '{{panel.modal.action.rename}}'
+        align: right
+        command: rename-file

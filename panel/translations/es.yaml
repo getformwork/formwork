@@ -54,7 +54,20 @@ panel.errors.error.notFound.description: La página no existe o la solicitud no 
 panel.errors.error.notFound.heading: ¡Ups, página no encontrada!
 panel.errors.error.notFound.status: No encontrado
 panel.files.actions: Acciones
+panel.files.cannotDelete.fileNotFound: No se puede borrar el archivo, archivo no encontrado
+panel.files.cannotDelete.pageNotFound: No se puede borrar el archivo, página no encontrada
+panel.files.cannotRename.fileAlreadyExists: No se puede renombrar el archivo, ya existe un archivo con el mismo nombre
+panel.files.cannotRename.fileNotFound: No se puede renombrar el archivo, archivo no encontrado
+panel.files.cannotRename.pageNotFound: No se puede renombrar el archivo, página no encontrada
+panel.files.cannotReplace.fileNotFound: No se puede reemplazar el archivo, archivo no encontrado
+panel.files.cannotReplace.multipleFiles: No se puede reemplazar el archivo, se proporcionaron varios archivos
+panel.files.cannotReplace.pageNotFound: No se puede reemplazar el archivo, página no encontrada
+panel.files.cannotUpload.pageNotFound: No se puede subir el archivo, página no encontrada
+panel.files.deleted: Archivo eliminado
+panel.files.fileNotFound: No se pueden obtener las información del archivo, archivo no encontrado
 panel.files.metadata.updated: Metadatos del archivo actualizados
+panel.files.pageNotFound: No se pueden obtener las información del archivo, página no encontrada
+panel.files.renamed: Archivo renombrado
 panel.files.viewAsList: Ver como lista
 panel.files.viewAsThumbnails: Ver como miniaturas
 panel.login.attempt.failed: ¡Intento de inicio de sesión fallido! Intenta de nuevo.
@@ -201,8 +214,6 @@ panel.pages.page.cannotCreate.varMissing: No se puede crear la página, falta un
 panel.pages.page.cannotDelete.invalidLanguage: 'No se puede borrar la página, idioma no válido: %s'
 panel.pages.page.cannotDelete.notDeletable: No se puede borrar la página, la página no es eliminable
 panel.pages.page.cannotDelete.pageNotFound: No se puede borrar la página, página no encontrada
-panel.pages.page.cannotDeleteFile.fileNotFound: No se puede borrar el archivo, archivo no encontrado
-panel.pages.page.cannotDeleteFile.pageNotFound: No se puede borrar el archivo, página no encontrada
 panel.pages.page.cannotEdit.alreadyExists: No se puede editar la página, ya existe una página con la misma URI
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: No se puede editar el slug de la página de índice y error
 panel.pages.page.cannotEdit.invalidLanguage: 'No se puede editar la página, idioma no válido: %s'
@@ -211,23 +222,12 @@ panel.pages.page.cannotEdit.invalidSlug: No se puede editar el slug de la págin
 panel.pages.page.cannotEdit.invalidTemplate: No se puede editar la página, plantilla no válida
 panel.pages.page.cannotEdit.pageNotFound: No se puede editar la página, página no encontrada
 panel.pages.page.cannotEdit.varMissing: No se puede editar la página, falta una variable
-panel.pages.page.cannotGetFileInfo.fileNotFound: No se pueden obtener las información del archivo, archivo no encontrado
-panel.pages.page.cannotGetFileInfo.pageNotFound: No se pueden obtener las información del archivo, página no encontrada
 panel.pages.page.cannotMove: No se puede mover la página
 panel.pages.page.cannotPreview.pageNotFound: No se puede previsualizar la página, página no encontrada
 panel.pages.page.cannotPreview.parentChanged: No se puede previsualizar la página, la página principal ha sido cambiada
-panel.pages.page.cannotRenameFile.fileAlreadyExists: No se puede renombrar el archivo, ya existe un archivo con el mismo nombre
-panel.pages.page.cannotRenameFile.fileNotFound: No se puede renombrar el archivo, archivo no encontrado
-panel.pages.page.cannotRenameFile.pageNotFound: No se puede renombrar el archivo, página no encontrada
-panel.pages.page.cannotReplaceFile.fileNotFound: No se puede reemplazar el archivo, archivo no encontrado
-panel.pages.page.cannotReplaceFile.multipleFiles: No se puede reemplazar el archivo, se proporcionaron varios archivos
-panel.pages.page.cannotReplaceFile.pageNotFound: No se puede reemplazar el archivo, página no encontrada
-panel.pages.page.cannotUploadFile.pageNotFound: No se puede subir el archivo, página no encontrada
 panel.pages.page.created: ¡Página creada!
 panel.pages.page.deleted: Página eliminada
 panel.pages.page.edited: Página editada
-panel.pages.page.fileDeleted: Archivo eliminado
-panel.pages.page.fileRenamed: Archivo renombrado
 panel.pages.page.lastModified: Última modificación
 panel.pages.page.moved: ¡Página movida!
 panel.pages.page.notFound: Página no encontrada

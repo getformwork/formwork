@@ -7,7 +7,7 @@
     <div class="header">
         <div class="min-w-0 flex-grow-1">
             <div class="flex">
-                <div class="page-icon mr-3">
+                <div class="header-icon">
                     <?= $this->icon($page->icon()) ?>
                 </div>
                 <div class="header-title truncate">
