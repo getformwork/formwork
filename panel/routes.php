@@ -84,6 +84,13 @@ return [
             'methods' => ['GET', 'POST'],
         ],
 
+        'panel.pages.upload' => [
+            'path'    => '/pages/{page:all}/edit/',
+            'action'  => 'Formwork\Panel\Controllers\PagesController@upload',
+            'methods' => ['POST'],
+            'types'   => ['XHR'],
+        ],
+
         'panel.pages.preview' => [
             'path'    => '/pages/{page:all}/preview/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@preview',
@@ -99,13 +106,6 @@ return [
         'panel.pages.reorder' => [
             'path'    => '/pages/reorder/',
             'action'  => 'Formwork\Panel\Controllers\PagesController@reorder',
-            'methods' => ['POST'],
-            'types'   => ['XHR'],
-        ],
-
-        'panel.pages.upload' => [
-            'path'    => '/pages/{page:all}/upload/',
-            'action'  => 'Formwork\Panel\Controllers\PagesController@upload',
             'methods' => ['POST'],
             'types'   => ['XHR'],
         ],

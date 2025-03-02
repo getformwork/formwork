@@ -58,15 +58,15 @@ export class FileInput {
             }
         });
 
-        if (input.dataset.autoUpload === "true" && !input.dataset.action) {
+        const filesList = $(`.files-list[data-for="${input.id}"]`) as HTMLElement;
+
+        if (!filesList && input.dataset.autoUpload === "true") {
             input.addEventListener("change", () => {
                 if (!form.hasChanged(false)) {
                     form.element.requestSubmit($("[type=submit]", form.element));
                 }
             });
         }
-
-        const filesList = $(`.files-list[data-for="${input.id}"]`) as HTMLElement;
 
         if (filesList) {
             const toggle = $(".form-togglegroup.files-list-view-as", filesList);
@@ -99,7 +99,7 @@ export class FileInput {
                 }
             });
 
-            if (input.dataset.autoUpload === "true" && input.dataset.action) {
+            if (input.dataset.autoUpload === "true") {
                 input.addEventListener("change", () => {
                     if (input.files?.length) {
                         for (const file of Array.from(input.files)) {
@@ -112,7 +112,6 @@ export class FileInput {
                             new Request(
                                 {
                                     method: "POST",
-                                    url: input.dataset.action,
                                     data: formData,
                                 },
                                 (response) => {

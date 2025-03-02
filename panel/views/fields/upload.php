@@ -17,7 +17,6 @@
                 'disabled'         => $field->isDisabled(),
                 'hidden'           => $field->isHidden(),
                 'data-auto-upload' => $field->autoUpload() ? 'true' : 'false',
-                'data-action'      => $field->action(),
             ]) ?>>
     <span><?= $this->icon('cloud-upload') ?> <?= $this->translate('fields.file.uploadLabel') ?></span>
 </label>
