@@ -46,7 +46,7 @@
         "esbuild": "^0.25.0",
         "eslint": "^9.21.0",
         "eslint-config-prettier": "^9.1.0",
-        "globals": "^15.13.0",
+        "globals": "^15.15.0",
         "postcss": "^8.4.49",
         "prettier": "^3.5.2",
         "sass": "^1.81.0",
