@@ -466,17 +466,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.24.0":
+"@eslint/js@npm:9.24.0, @eslint/js@npm:^9.24.0":
   version: 9.24.0
   resolution: "@eslint/js@npm:9.24.0"
   checksum: 10c0/efe22e29469e4140ac3e2916be8143b1bcfd1084a6edf692b7a58a3e54949d53c67f7f979bc0a811db134d9cc1e7bff8aa71ef1376b47eecd7e226b71206bb36
-  languageName: node
-  linkType: hard
-
-"@eslint/js@npm:^9.21.0":
-  version: 9.21.0
-  resolution: "@eslint/js@npm:9.21.0"
-  checksum: 10c0/86c24a2668808995037e3f40c758335df2ae277c553ac0cf84381a1a8698f3099d8a22dd9c388947e6b7f93fcc1142f62406072faaa2b83c43ca79993fc01bb3
   languageName: node
   linkType: hard
 
@@ -1884,7 +1877,7 @@ __metadata:
     "@codemirror/lang-markdown": "npm:^6.3.2"
     "@codemirror/language": "npm:^6.10.8"
     "@codemirror/view": "npm:^6.34.1"
-    "@eslint/js": "npm:^9.21.0"
+    "@eslint/js": "npm:^9.24.0"
     "@types/sortablejs": "npm:^1.15.8"
     chartist: "npm:^1.3.1"
     esbuild: "npm:^0.25.2"
