@@ -1897,7 +1897,7 @@ __metadata:
     prosemirror-history: "npm:^1.4.1"
     prosemirror-inputrules: "npm:^1.4.0"
     prosemirror-keymap: "npm:^1.2.2"
-    prosemirror-markdown: "npm:^1.13.1"
+    prosemirror-markdown: "npm:^1.13.2"
     prosemirror-schema-list: "npm:^1.4.1"
     prosemirror-state: "npm:^1.4.3"
     prosemirror-view: "npm:~1.34.3"
@@ -2976,14 +2976,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prosemirror-markdown@npm:^1.13.1":
-  version: 1.13.1
-  resolution: "prosemirror-markdown@npm:1.13.1"
+"prosemirror-markdown@npm:^1.13.2":
+  version: 1.13.2
+  resolution: "prosemirror-markdown@npm:1.13.2"
   dependencies:
     "@types/markdown-it": "npm:^14.0.0"
     markdown-it: "npm:^14.0.0"
-    prosemirror-model: "npm:^1.20.0"
-  checksum: 10c0/518cad5d4e7b1c1b2abf43995c837392b76b9f7757e814de42885a20d427dfaa2308be6fea39828ae65225a768976cb914825f78138850a282b06ba571aaea3d
+    prosemirror-model: "npm:^1.25.0"
+  checksum: 10c0/53c48ef0d0d18ca0a7c39bdb18485508bfe10582f9b1d04d7114e6f6e9678a4481b318f310b19d4e95f65d947fbe6348affddcb909ad9b8c9f865cc07ceff22b
   languageName: node
   linkType: hard
 
@@ -2993,6 +2993,15 @@ __metadata:
   dependencies:
     orderedmap: "npm:^2.0.0"
   checksum: 10c0/394f8921e723fb5860381cd0b2ff6988025005a6472a886a748cc1ad72055fd194801c1f12f8fbbd54f47f075c95fd23b68ad0811628e649f06f6005fb5790d6
+  languageName: node
+  linkType: hard
+
+"prosemirror-model@npm:^1.25.0":
+  version: 1.25.1
+  resolution: "prosemirror-model@npm:1.25.1"
+  dependencies:
+    orderedmap: "npm:^2.0.0"
+  checksum: 10c0/0974fec71f1d0fcfaa5c0350864dcdbfd95092a026460bbc96208c7b8d84f86444504cb746fd558009102a7debbde32c35d9d98da97382ad729ccaeaef729131
   languageName: node
   linkType: hard
 
