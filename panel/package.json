@@ -40,7 +40,7 @@
         "prosemirror-markdown": "^1.13.2",
         "prosemirror-schema-list": "^1.5.1",
         "prosemirror-state": "^1.4.3",
-        "prosemirror-view": "^1.40.0",
+        "prosemirror-view": "^1.40.1",
         "sortablejs": "^1.15.6"
     },
     "devDependencies": {

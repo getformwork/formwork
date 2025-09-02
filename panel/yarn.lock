@@ -1859,7 +1859,7 @@ __metadata:
     prosemirror-markdown: "npm:^1.13.2"
     prosemirror-schema-list: "npm:^1.5.1"
     prosemirror-state: "npm:^1.4.3"
-    prosemirror-view: "npm:^1.40.0"
+    prosemirror-view: "npm:^1.40.1"
     sass: "npm:^1.89.2"
     sortablejs: "npm:^1.15.6"
     stylelint: "npm:^16.21.0"
@@ -2951,7 +2951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prosemirror-view@npm:^1.27.0, prosemirror-view@npm:^1.31.0, prosemirror-view@npm:^1.40.0":
+"prosemirror-view@npm:^1.27.0, prosemirror-view@npm:^1.31.0":
   version: 1.40.0
   resolution: "prosemirror-view@npm:1.40.0"
   dependencies:
@@ -2959,6 +2959,17 @@ __metadata:
     prosemirror-state: "npm:^1.0.0"
     prosemirror-transform: "npm:^1.1.0"
   checksum: 10c0/9fde9b415b9beeeda823acc170871f420f8e8646be83d9af5b9b5c124419d9a4b5c1293d9536dd06910b6154a001401d79cdc57a902fb7a0ea19501966f8dfdd
+  languageName: node
+  linkType: hard
+
+"prosemirror-view@npm:^1.40.1":
+  version: 1.40.1
+  resolution: "prosemirror-view@npm:1.40.1"
+  dependencies:
+    prosemirror-model: "npm:^1.20.0"
+    prosemirror-state: "npm:^1.0.0"
+    prosemirror-transform: "npm:^1.1.0"
+  checksum: 10c0/b63335343edc68a9dec8c9fddf145e493f0b541b0ce4847dd20c42f2068c5ac6c00762978389e3448bc575230914ab0882679f66077fd1d950e40c83b5e2831f
   languageName: node
   linkType: hard
 
