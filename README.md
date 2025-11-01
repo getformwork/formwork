@@ -1,5 +1,9 @@
 # <img src="admin/assets/images/icon.svg" height="28"> Formwork
 
+> [!CAUTION]
+> Formwork 1.x is no longer supported. Do not use this version in production environments to avoid security risks. 
+> Please upgrade to the [latest major version](https://github.com/getformwork/formwork) to receive security updates.
+
 [![Discord](https://img.shields.io/discord/637658168754831380?color=%237289da&label=chat&logo=discord&logoColor=%23fff)](https://discord.gg/5Q3BmNY)
 [![GitHub Release Date](https://img.shields.io/github/release-date/getformwork/formwork.svg)](https://github.com/getformwork/formwork/releases/latest)
 [![GitHub All Releases](https://img.shields.io/github/downloads/getformwork/formwork/total.svg)](https://github.com/getformwork/formwork/releases)

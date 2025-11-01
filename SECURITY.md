@@ -1,11 +1,15 @@
+> [!CAUTION]
+> Formwork 1.x is no longer supported. Do not use this version in production environments to avoid security risks. 
+> Please upgrade to the [latest major version](https://github.com/getformwork/formwork) to receive security updates.
+
 # Security Policy
 
 ## Supported Versions
 
-| Version   | Supported          |
-| --------- | ------------------ |
-| >= 1.13.x | :white_check_mark: |
-| < 1.13.0  | :x:                |
+| Version  | Supported          |
+| -------- | ------------------ |
+| >= 2.0.x | :white_check_mark: |
+| < 2.0.0  | :x:                |
 
 ## Reporting a Vulnerability
 
