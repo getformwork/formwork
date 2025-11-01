@@ -43,7 +43,7 @@
         "prosemirror-model": "^1.25.3",
         "prosemirror-schema-list": "^1.5.1",
         "prosemirror-state": "^1.4.3",
-        "prosemirror-view": "^1.41.2",
+        "prosemirror-view": "^1.41.3",
         "sortablejs": "^1.15.6"
     },
     "devDependencies": {
