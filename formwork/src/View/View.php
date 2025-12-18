@@ -8,7 +8,6 @@ use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\Exceptions\RenderingException;
-use Formwork\View\Exceptions\ViewResolutionException;
 use Throwable;
 
 class View
@@ -19,11 +18,6 @@ class View
      * View type
      */
     protected const string TYPE = 'view';
-
-    /**
-     * View path
-     */
-    protected string $path;
 
     /**
      * View file
@@ -63,18 +57,23 @@ class View
      * Create a new View instance
      *
      * @param array<string, mixed>   $vars
-     * @param array<string>|string   $resolutionPaths Paths to resolve the view file, optionally prefixed
-     * @param array<string, Closure> $methods         Available methods for the view
+     * @param string                 $path    Path to view files
+     * @param array<string, Closure> $methods Available methods for the view
      *
-     * @throws ViewResolutionException If the view file is not found
+     * @throws FileNotFoundException If the view file is not found
      */
     public function __construct(
         protected string $name,
         protected array $vars,
-        protected string|array $resolutionPaths,
+        protected string $path,
         array $methods = [],
     ) {
-        [$this->path, $this->file] = $this->resolvePathAndFile($name, $resolutionPaths);
+        $this->file = $this->getFile($this->name);
+
+        if (!FileSystem::exists($this->file)) {
+            throw new FileNotFoundException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $this->name));
+        }
+
         $this->methods = $methods;
     }
 
@@ -121,7 +120,7 @@ class View
             throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
         }
 
-        $view = new self($name, [...$this->vars, ...$vars], $this->resolutionPaths, $this->methods);
+        $view = new self($name, [...$this->vars, ...$vars], $this->path, $this->methods);
 
         $view->output();
     }
@@ -241,29 +240,13 @@ class View
 
     /**
      * Get the view file
-     *
-     * @param array<string, string>|string $resolutionPaths
-     *
-     * @throws ViewResolutionException If the view file is not found
-     *
-     * @return array{string, string}
      */
-    protected function resolvePathAndFile(string $viewName, array|string $resolutionPaths): array
+    protected function getFile(string $name): string
     {
-        [$namespace, $name] = $this->parseViewName($viewName);
-
         if (Str::startsWith($name, '_')) {
             $name = 'partials/' . Str::removeStart($name, '_');
         }
-
-        $path = is_string($resolutionPaths)
-            ? $resolutionPaths
-            : $resolutionPaths[$namespace] ?? null;
-
-        if ($path !== null && FileSystem::exists($file = "{$path}/{$name}.php")) {
-            return [$path, $file];
-        }
-        throw new ViewResolutionException(sprintf('%s "%s" not found', ucfirst(static::TYPE), $viewName));
+        return FileSystem::joinPaths($this->path, str_replace('.', '/', $name) . '.php');
     }
 
     /**
@@ -275,9 +258,7 @@ class View
      */
     protected function createLayoutView(string $name, array $vars = []): View
     {
-        [$namespace, $name] = $this->parseViewName($name);
-        $layout = $namespace ? "@{$namespace}.layouts.{$name}" : "layouts.{$name}";
-        return new self($layout, [...$this->vars, ...$vars], $this->resolutionPaths, $this->methods);
+        return new self('layouts/' . $name, [...$this->vars, ...$vars], $this->path, $this->methods);
     }
 
     /**
@@ -328,21 +309,5 @@ class View
             throw new RenderingException(sprintf('%s::%s() is allowed only in rendering context', static::class, $method));
         }
         return $this->methods[$method](...$arguments);
-    }
-
-    /**
-     * @throws ViewResolutionException If the view name cannot be parsed
-     *
-     * @return array{string, string}
-     */
-    private function parseViewName(string $name): array
-    {
-        $name = str_replace('.', '/', $name);
-
-        if (Str::startsWith($name, '@')) {
-            $parts = explode('/', $name, 2);
-            return [substr($parts[0], 1), $parts[1] ?? ''];
-        }
-        return ['', $name];
     }
 }

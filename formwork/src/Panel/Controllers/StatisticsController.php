@@ -21,7 +21,7 @@ final class StatisticsController extends AbstractController
         $sources = $statistics->getSources();
         $devices = $statistics->getDevices();
 
-        return new Response($this->view('@panel.statistics.index', [
+        return new Response($this->view('statistics.index', [
             'title'             => $this->translate('panel.statistics.statistics'),
             'statistics'        => Json::encode($statistics->getChartData(31)),
             'pageViews'         => array_slice($pageViews, 0, 15, preserve_keys: true),

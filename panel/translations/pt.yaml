@@ -97,7 +97,6 @@ panel.files.info.mimeType: Tipo MIME
 panel.files.info.name: Nome
 panel.files.info.size: Tamanho
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Não é possível atualizar os metadados do ficheiro, alguns campos são inválidos
 panel.files.metadata.updated: Metadados do ficheiro atualizados
 panel.files.next: Próximo ficheiro
 panel.files.pageNotFound: Não é possível obter informações do arquivo, página não encontrada
@@ -135,7 +134,6 @@ panel.modal.link.text: Texto
 panel.modal.link.title: Inserir link
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Alternar navegação
-panel.options.cannotUpdate.invalidFields: Não é possível atualizar as opções, alguns campos são inválidos
 panel.options.options: Opções
 panel.options.site: Site
 panel.options.system: Sistema
@@ -177,7 +175,6 @@ panel.options.system.files: Ficheiros
 panel.options.system.files.allowedExtensions: Extensões permitidas
 panel.options.system.files.allowedExtensions.noExtensions: Sem extensões (nenhum arquivo permitido)
 panel.options.system.images: Imagens
-panel.options.system.images.avifQuality: Qualidade AVIF
 panel.options.system.images.clearCacheByDefault: Limpar cache de imagens por padrão
 panel.options.system.images.clearCacheByDefault.disabled: Desativado
 panel.options.system.images.clearCacheByDefault.enabled: Ativado
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Não é possível duplicar a pá
 panel.pages.page.cannotDuplicate.pageNotFound: Não é possível duplicar a página, não encontrada
 panel.pages.page.cannotEdit.alreadyExists: Não é possível editar a página, já existe uma página com o mesmo uri
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Não é possível editar slug de página de índice e páginas de erro
-panel.pages.page.cannotEdit.invalidFields: Não é possível editar a página, alguns campos são inválidos
 panel.pages.page.cannotEdit.invalidLanguage: 'Não é possível editar a página, idioma inválido: %s'
 panel.pages.page.cannotEdit.invalidParent: Não é possível editar a página, página parente inválida
 panel.pages.page.cannotEdit.invalidSlug: Não é possível editar o slug da página, deve conter apenas letras e números separados por hifens.
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Não é possível criar o utiliz
 panel.users.user.cannotCreate.varMissing: Não é possível criar o utilizador, falta uma variável
 panel.users.user.cannotDelete: Não é possível remover o utilizador. Você deve ser um administrador e o utilizador não deve estar logado.
 panel.users.user.cannotEdit: Não é possível editar o utilizador %s. A acção não é permitida.
-panel.users.user.cannotEdit.invalidFields: Não é possível editar o utilizador, alguns campos são inválidos
 panel.users.user.created: Utilizador criado.
 panel.users.user.deleted: Utilizador removido.
 panel.users.user.edited: Informação do utilizador actualizada

@@ -30,7 +30,7 @@
 
     <div class="files-items">
         <?php foreach ($files as [$file, $model]) : ?>
-            <?php $this->insert('@panel._files.file.item', ['file' => $file, 'model' => $model, 'columns' => $columns]) ?>
+            <?php $this->insert('partials.files.file.item', ['file' => $file, 'model' => $model, 'columns' => $columns]) ?>
         <?php endforeach ?>
     </div>
 </div>

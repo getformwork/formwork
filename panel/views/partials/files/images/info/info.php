@@ -41,5 +41,5 @@
     </div>
 <?php endif ?>
 <?php if ($file->hasExifData()) : ?>
-    <?php $this->insert('@panel._files.images.info.exif', ['exif' => $file->getExifData()]) ?>
+    <?php $this->insert('_files/images/info/exif', ['exif' => $file->getExifData()]) ?>
 <?php endif ?>

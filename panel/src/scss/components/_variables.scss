@@ -14,22 +14,20 @@ $color-base-light-700: $color-gray-700;
 $color-base-light-800: $color-gray-800;
 $color-base-light-900: $color-gray-900;
 
-$color-base-dark-100: #f2f2f3;
-$color-base-dark-200: #c4c7ca;
-$color-base-dark-300: #979ca1;
-$color-base-dark-400: #7c8288;
-$color-base-dark-500: #4b4f53;
-$color-base-dark-600: #333638;
-$color-base-dark-700: #292b2e;
-$color-base-dark-800: #1f2123;
-$color-base-dark-900: #181a1b;
+// Kirby-inspired dark theme colors
+$color-base-dark-100: #f5f5f5;
+$color-base-dark-200: #b8bcc0;
+$color-base-dark-300: #8a9199;
+$color-base-dark-400: #6b7280;
+$color-base-dark-500: #3d4148;
+$color-base-dark-600: #2a2d31;
+$color-base-dark-700: #222528;
+$color-base-dark-800: #1a1c1e;
+$color-base-dark-900: #111214;
 
 $color-backdrop: rgba($color-blue-100, 0.5);
 $color-selection: rgba($color-blue-500, 0.25);
 $color-focusring: rgba($color-blue-500, 0.375);
-$color-focusring-success: rgba($color-green-500, 0.375);
-$color-focusring-warning: rgba($color-amber-500, 0.375);
-$color-focusring-danger: rgba($color-red-500, 0.375);
 
 $color-shadow-sm: rgba($color-blue-100, 3.75%);
 $color-shadow-md: rgba($color-blue-100, 7.5%);

@@ -1,1 +1,1 @@
-<?php $this->insert('@panel.fields.layout.' . $fields->layout()->type(), ['layout' => $fields->layout()]) ?>
+<?php $this->insert('fields.layout.' . ($fields->layout()->sections()->isEmpty() ? 'default' : 'sections'), ['layout' => $fields->layout()]) ?>

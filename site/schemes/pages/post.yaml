@@ -6,6 +6,7 @@ options:
     default: false
     children: false
     num: date
+    imagePreviewField: coverImage
 
 layout:
     sections:

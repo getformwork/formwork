@@ -9,7 +9,6 @@ use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Parsers\Yaml;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 
 class Config implements ArraySerializable
 {
@@ -35,21 +34,6 @@ class Config implements ArraySerializable
     }
 
     /**
-     * Check if multiple keys exist in the config
-     *
-     * @param list<string> $keys
-     */
-    public function hasMultiple(array $keys): bool
-    {
-        foreach ($keys as $key) {
-            if (!$this->has($key)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Get a value from the config
      *
      * @throws UnresolvedConfigException If the config has not been resolved
@@ -63,50 +47,12 @@ class Config implements ArraySerializable
     }
 
     /**
-     * Get multiple values from the config
-     *
-     * @param list<string> $keys
-     *
-     * @throws UnresolvedConfigException If the config has not been resolved
-     *
-     * @return array<string, mixed>
-     */
-    public function getMultiple(array $keys, mixed $default = null): array
-    {
-        $values = [];
-        foreach ($keys as $key) {
-            $values[$key] = $this->get($key, $default);
-        }
-        return $values;
-    }
-
-    /**
-     * Set a value in the config
-     */
-    public function set(string $key, mixed $value): void
-    {
-        Arr::set($this->config, $key, $value);
-    }
-
-    /**
-     * Set multiple values in the config
-     *
-     * @param array<string, mixed> $values
-     */
-    public function setMultiple(array $values): void
-    {
-        foreach ($values as $key => $value) {
-            $this->set($key, $value);
-        }
-    }
-
-    /**
      * Load config from a path
      */
-    public function loadFromPath(string $path, ?string $prefix = null): void
+    public function loadFromPath(string $path): void
     {
         foreach (FileSystem::listFiles($path) as $file) {
-            $this->loadFile(FileSystem::joinPaths($path, $file), $prefix);
+            $this->loadFile(FileSystem::joinPaths($path, $file));
         }
     }
 
@@ -115,13 +61,13 @@ class Config implements ArraySerializable
      *
      * @throws ConfigLoadingException If the config file does not exist or has an unsupported type
      */
-    public function loadFile(string $path, ?string $prefix = null): void
+    public function loadFile(string $path): void
     {
         if (!FileSystem::isFile($path)) {
             throw new ConfigLoadingException(sprintf('Config file "%s" does not exist', $path));
         }
 
-        $name = Str::toCamelCase(FileSystem::name($path));
+        $name = FileSystem::name($path);
         $extension = FileSystem::extension($path);
 
         switch ($extension) {
@@ -137,8 +83,7 @@ class Config implements ArraySerializable
                 throw new ConfigLoadingException(sprintf('Unsupported config file type "%s"', $extension));
         }
 
-        $key = $prefix !== null ? $prefix . '.' . $name : $name;
-        $this->config = Arr::extend($this->config, Arr::undot([$key => $data]));
+        $this->config[$name] = isset($this->config[$name]) ? array_replace_recursive($this->config[$name], $data) : $data;
     }
 
     /**

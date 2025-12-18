@@ -7,8 +7,6 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'default' => false,
-
         'methods' => [
             /**
              * Validate the field value

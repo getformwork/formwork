@@ -1,8 +1,8 @@
-<?php $this->layout('@panel.fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div class="form-input-wrap">
-    <?= $this->insert('@panel.fields.partials.icon', ['icon' => $field->get('icon', 'envelope')]) ?>
+    <?= $this->insert('fields.partials.icon', ['icon' => $field->get('icon', 'envelope')]) ?>
     <input <?= $this->attr([
-                'class'        => $this->classes(['form-input', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                'class'        => 'form-input',
                 'type'         => 'email',
                 'id'           => $field->name(),
                 'name'         => $field->formName(),

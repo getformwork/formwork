@@ -1,12 +1,13 @@
 <?php
 
-use Formwork\Cms\App;
 use Formwork\Panel\Panel;
 
-return function (App $app, Panel $panel) {
+return function (Panel $panel) {
     return [
+        'assets' => $panel->assets(...),
+
         'modals' => $panel->modals(...),
 
-        'icon' => fn(string $icon) => $app->assets()->get('@panel/icons/svg/' . $icon . '.svg')->content(),
+        'icon' => fn(string $icon) => $panel->assets()->get('/icons/svg/' . $icon . '.svg')->content(),
     ];
 };

@@ -2,7 +2,6 @@
 
 namespace Formwork\Services\Loaders;
 
-use Formwork\Assets\Assets;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
 use Formwork\Controllers\ErrorsControllerInterface;
@@ -29,7 +28,6 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         private Request $request,
         private Schemes $schemes,
         private Translations $translations,
-        private Assets $assets,
     ) {}
 
     public function load(Container $container): Panel
@@ -55,13 +53,7 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
      */
     public function onResolved(object $service, Container $container): void
     {
-        $this->viewFactory->setResolutionPaths(['panel' => $this->config->get('system.views.paths.panel')]);
         $this->viewFactory->setMethods($container->call(require $this->config->get('system.views.methods.panel')));
-
-        $this->assets->setResolutionPaths(['panel' => [
-            'path' => $this->config->get('system.panel.paths.assets'),
-            'uri'  => $service->uri('/assets/'),
-        ]]);
 
         $this->schemes->loadFromPath($this->config->get('system.schemes.paths.panel'));
 

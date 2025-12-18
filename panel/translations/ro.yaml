@@ -97,7 +97,6 @@ panel.files.info.mimeType: Tip MIME
 panel.files.info.name: Nume
 panel.files.info.size: Dimensiune
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Nu se pot actualiza metadatele fișierului, unele câmpuri sunt nevalide
 panel.files.metadata.updated: Metadatele fișierului au fost actualizate
 panel.files.next: Fișierul următor
 panel.files.pageNotFound: Nu se pot obține informații despre fișier, pagina nu a fost găsită
@@ -135,7 +134,6 @@ panel.modal.link.text: Text
 panel.modal.link.title: Inserează link
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Comută navigarea
-panel.options.cannotUpdate.invalidFields: Nu se pot actualiza opțiunile, unele câmpuri sunt nevalide
 panel.options.options: Opțiuni
 panel.options.site: Site
 panel.options.system: Sistem
@@ -177,7 +175,6 @@ panel.options.system.files: Fișiere
 panel.options.system.files.allowedExtensions: Extensii permise
 panel.options.system.files.allowedExtensions.noExtensions: Nici o extensie (nu sunt permise fișiere)
 panel.options.system.images: Imagini
-panel.options.system.images.avifQuality: Calitate AVIF
 panel.options.system.images.clearCacheByDefault: Golește cache-ul de imagini implicit
 panel.options.system.images.clearCacheByDefault.disabled: Dezactivat
 panel.options.system.images.clearCacheByDefault.enabled: Activat
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Nu se poate duplica pagina, nu e
 panel.pages.page.cannotDuplicate.pageNotFound: Nu se poate duplica pagina, nu a fost găsită
 panel.pages.page.cannotEdit.alreadyExists: Nu se poate edita pagina, o pagină cu aceeași URI există deja
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Nu se poate edita slug-ul paginii index sau paginilor de eroare
-panel.pages.page.cannotEdit.invalidFields: Nu se poate edita pagina, unele câmpuri sunt nevalide
 panel.pages.page.cannotEdit.invalidLanguage: 'Nu se poate edita pagina, limbă invalidă: %s'
 panel.pages.page.cannotEdit.invalidParent: Nu se poate edita pagina, pagină părinte invalidă
 panel.pages.page.cannotEdit.invalidSlug: Nu se poate edita slug-ul paginii, acesta trebuie să conțină doar litere și cifre separate prin cratime
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Nu se poate crea utilizatorul, a
 panel.users.user.cannotCreate.varMissing: Nu se poate crea utilizatorul, lipsește o variabilă
 panel.users.user.cannotDelete: Nu se poate șterge utilizatorul. Trebuie să fii administrator și utilizatorul nu trebuie să fie autentificat.
 panel.users.user.cannotEdit: Nu se poate edita utilizatorul %s. Această acțiune nu este permisă.
-panel.users.user.cannotEdit.invalidFields: Nu se poate edita utilizatorul, unele câmpuri sunt nevalide
 panel.users.user.created: Utilizator creat
 panel.users.user.deleted: Utilizator șters
 panel.users.user.edited: Datele utilizatorului au fost actualizate

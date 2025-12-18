@@ -97,7 +97,6 @@ panel.files.info.mimeType: Tipo MIME
 panel.files.info.name: Nome
 panel.files.info.size: Dimensioni file
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Impossibile aggiornare i metadati del file, alcuni campi non sono validi
 panel.files.metadata.updated: Metadati del file aggiornati
 panel.files.next: File successivo
 panel.files.pageNotFound: Impossibile ottenere le informazioni sul file, pagina non trovata
@@ -135,7 +134,6 @@ panel.modal.link.text: Testo
 panel.modal.link.title: Inserisci link
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Mostra/nascondi menu
-panel.options.cannotUpdate.invalidFields: Impossibile aggiornare le opzioni, alcuni campi non sono validi
 panel.options.options: Impostazioni
 panel.options.site: Sito
 panel.options.system: Sistema
@@ -177,7 +175,6 @@ panel.options.system.files: File
 panel.options.system.files.allowedExtensions: Estensioni consentite
 panel.options.system.files.allowedExtensions.noExtensions: Nessuna estensione (nessun file consentito)
 panel.options.system.images: Immagini
-panel.options.system.images.avifQuality: Qualità AVIF
 panel.options.system.images.clearCacheByDefault: Cancella la cache delle immagini per impostazione predefinita
 panel.options.system.images.clearCacheByDefault.disabled: Disabilitato
 panel.options.system.images.clearCacheByDefault.enabled: Abilitato
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Impossibile duplicare la pagina,
 panel.pages.page.cannotDuplicate.pageNotFound: Impossibile duplicare la pagina, pagina non trovata
 panel.pages.page.cannotEdit.alreadyExists: Impossibile modificare la pagina, una pagina con lo stesso indirizzo esiste già
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Impossibile cambiare l’indirizzo della pagina iniziale o di errore
-panel.pages.page.cannotEdit.invalidFields: Impossibile modificare la pagina, alcuni campi non sono validi
 panel.pages.page.cannotEdit.invalidLanguage: Impossibile modificare la pagina, lingua %s non valida
 panel.pages.page.cannotEdit.invalidParent: Impossibile modificare la pagina, pagina superiore non valida
 panel.pages.page.cannotEdit.invalidSlug: Impossibile cambiare l’indirizzo, l’indirizzo deve contenere solo lettere e numeri separati da trattini
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Impossibile creare l’utente, l
 panel.users.user.cannotCreate.varMissing: Impossibile creare l’utente, manca una variabile
 panel.users.user.cannotDelete: Impossibile eliminare l’utente. Devi essere un amministratore e l’utente non deve essere connesso.
 panel.users.user.cannotEdit: Impossibile modificare l’utente %s. L’azione non è consentita.
-panel.users.user.cannotEdit.invalidFields: Impossibile modificare l’utente, alcuni campi non sono validi
 panel.users.user.created: Utente creato
 panel.users.user.deleted: Utente eliminato
 panel.users.user.edited: Dati utente aggiornati

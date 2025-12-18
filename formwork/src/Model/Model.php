@@ -3,7 +3,6 @@
 namespace Formwork\Model;
 
 use BadMethodCallException;
-use Formwork\Cms\App;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
@@ -26,29 +25,13 @@ class Model implements Arrayable
     protected const string MODEL_IDENTIFIER = 'model';
 
     /**
-     * Model data
-     *
-     * @var array<string, mixed>
-     */
-    #[ReadonlyModelProperty]
-    protected array $data = [];
-
-    /**
-     * Application instance
-     */
-    #[ReadonlyModelProperty]
-    protected App $app;
-
-    /**
      * Model scheme
      */
-    #[ReadonlyModelProperty]
     protected Scheme $scheme;
 
     /**
      * Model fields
      */
-    #[ReadonlyModelProperty]
     protected FieldCollection $fields;
 
     /**
@@ -135,10 +118,6 @@ class Model implements Arrayable
 
     /**
      * Set a data value by key
-     *
-     * This method updates both the data array and the corresponding field
-     * (if it exists). The field's validation may transform the value before
-     * it's stored in the data array.
      */
     public function set(string $key, mixed $value): void
     {
@@ -157,20 +136,15 @@ class Model implements Arrayable
             return;
         }
 
+        Arr::set($this->data, $key, $value);
+
         // Set value in the corresponding field if exists
-        // Note: This updates the field in $this->fields, which may not be
-        // the same instance as a cloned field collection used elsewhere
         if (isset($this->fields) && $this->fields->has($key)) {
             /** @var Field */
             $field = $this->fields->get($key);
             $field->set('value', $value);
             $field->validate();
-
-            // Update value according to field validation
-            $value = $field->value();
         }
-
-        Arr::set($this->data, $key, $value);
     }
 
     /**
@@ -198,14 +172,6 @@ class Model implements Arrayable
     public function data(): array
     {
         return $this->data;
-    }
-
-    /**
-     * Get the application instance
-     */
-    protected function app(): App
-    {
-        return $this->app ?? App::instance();
     }
 
     /**

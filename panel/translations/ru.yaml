@@ -97,7 +97,6 @@ panel.files.info.mimeType: Тип MIME
 panel.files.info.name: Имя
 panel.files.info.size: Размер
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Невозможно обновить метаданные файла, некоторые поля недействительны
 panel.files.metadata.updated: Метаданные файла обновлены
 panel.files.next: Следующий файл
 panel.files.pageNotFound: Невозможно получить информацию о файле, страница не найдена
@@ -135,7 +134,6 @@ panel.modal.link.text: Текст
 panel.modal.link.title: Вставить ссылку
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Переключить навигацию
-panel.options.cannotUpdate.invalidFields: Невозможно обновить параметры, некоторые поля недействительны
 panel.options.options: Параметры
 panel.options.site: Сайт
 panel.options.system: Система
@@ -177,7 +175,6 @@ panel.options.system.files: Файлы
 panel.options.system.files.allowedExtensions: Допустимые расширения
 panel.options.system.files.allowedExtensions.noExtensions: Нет расширений (файлы не разрешены)
 panel.options.system.images: Картинки
-panel.options.system.images.avifQuality: Качество AVIF
 panel.options.system.images.clearCacheByDefault: Очищать кэш изображений по умолчанию
 panel.options.system.images.clearCacheByDefault.disabled: Отключено
 panel.options.system.images.clearCacheByDefault.enabled: Включено
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Невозможно дубли�
 panel.pages.page.cannotDuplicate.pageNotFound: Невозможно дублировать страницу, не найдена
 panel.pages.page.cannotEdit.alreadyExists: Не могу редактировать страницу, страница с той же URI уже существует
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Не могу редактировать страницу слизняка индекса и ошибок страниц
-panel.pages.page.cannotEdit.invalidFields: Невозможно редактировать страницу, некоторые поля недействительны
 panel.pages.page.cannotEdit.invalidLanguage: 'Не могу редактировать страницы, недопустимый язык: %s'
 panel.pages.page.cannotEdit.invalidParent: Не могу редактировать страницы, недопустимую родительскую страницу
 panel.pages.page.cannotEdit.invalidSlug: Не можете редактировать страницу слизняка, он должен содержать только буквы и цифры, разделенные тире
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Невозможно созда�
 panel.users.user.cannotCreate.varMissing: Невозможно создать пользователя, пропуская переменную
 panel.users.user.cannotDelete: Невозможно удалить пользователь. Вы должны быть администратором, и пользователь не должен быть авторизован.
 panel.users.user.cannotEdit: Невозможно изменить пользователя %s. Действие не допускается.
-panel.users.user.cannotEdit.invalidFields: Невозможно редактировать пользователя, некоторые поля недействительны
 panel.users.user.created: Пользователь создан
 panel.users.user.deleted: Пользователь удален
 panel.users.user.edited: Пользовательские данные обновляются

@@ -6,7 +6,6 @@ use Formwork\Config\Config;
 use Formwork\Fields\FieldCollection;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
@@ -46,53 +45,35 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        $valid = false;
+        if ($this->request->method() === RequestMethod::POST) {
+            $options = $this->getConfigOverrides()->get('system', []);
+            $defaults = $this->getConfigDefaults()->get('system');
+            $fields->setValuesFromRequest($this->request, null)->validate();
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                $fields->setValues($this->config->get('system'));
+            $differ = $this->updateOptions('system', $fields, $options, $defaults);
 
-                $valid = $fields->isValid();
-
-                break;
-
-            case RequestMethod::POST:
-                $fields->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fields->isValid())) {
-                    $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
-                    break;
+            // Touch content folder to invalidate cache
+            if ($differ) {
+                if ($this->site->contentPath() === null) {
+                    throw new UnexpectedValueException('Unexpected missing site path');
                 }
+                FileSystem::touch($this->site->contentPath());
+            }
 
-                $this->handleUploads($fields);
-
-                $options = $this->getConfigOverrides()->get('system', []);
-                $defaults = $this->getConfigDefaults()->get('system');
-
-                $differ = $this->updateOptions('system', $fields, $options, $defaults);
-
-                // Touch content folder to invalidate cache
-                if ($differ) {
-                    if ($this->site->contentPath() === null) {
-                        throw new UnexpectedValueException('Unexpected missing site path');
-                    }
-                    FileSystem::touch($this->site->contentPath());
-                }
-
-                $this->panel->notify($this->translate('panel.options.updated'), 'success');
-                return $this->redirect($this->generateRoute('panel.options.system'));
+            $this->panel->notify($this->translate('panel.options.updated'), 'success');
+            return $this->redirect($this->generateRoute('panel.options.system'));
         }
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
+        $fields->setValues($this->config->get('system'));
 
-        return new Response($this->view('@panel.options.system', [
+        return new Response($this->view('options.system', [
             'title' => $this->translate('panel.options.options'),
-            'tabs'  => $this->view('@panel.options.tabs', [
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'system',
             ]),
             'fields' => $fields,
-        ]), $responseStatus);
+        ]));
     }
 
     /**
@@ -107,51 +88,34 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
-        $valid = false;
+        if ($this->request->method() === RequestMethod::POST) {
+            $options = $this->getConfigOverrides()->get('site', []);
+            $defaults = $this->getConfigDefaults()->get('site');
+            $fields->setValuesFromRequest($this->request, null)->validate();
+            $differ = $this->updateOptions('site', $fields, $options, $defaults);
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                $fields->setValues($this->site->data());
-
-                $valid = $fields->isValid();
-                break;
-
-            case RequestMethod::POST:
-                $fields->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fields->isValid())) {
-                    $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
-                    break;
+            // Touch content folder to invalidate cache
+            if ($differ) {
+                if ($this->site->contentPath() === null) {
+                    throw new UnexpectedValueException('Unexpected missing site path');
                 }
+                FileSystem::touch($this->site->contentPath());
+            }
 
-                $this->handleUploads($fields);
-
-                $options = $this->getConfigOverrides()->get('site', []);
-                $defaults = $this->getConfigDefaults()->get('site');
-                $differ = $this->updateOptions('site', $fields, $options, $defaults);
-
-                // Touch content folder to invalidate cache
-                if ($differ) {
-                    if ($this->site->contentPath() === null) {
-                        throw new UnexpectedValueException('Unexpected missing site path');
-                    }
-                    FileSystem::touch($this->site->contentPath());
-                }
-
-                $this->panel->notify($this->translate('panel.options.updated'), 'success');
-                return $this->redirect($this->generateRoute('panel.options.site'));
+            $this->panel->notify($this->translate('panel.options.updated'), 'success');
+            return $this->redirect($this->generateRoute('panel.options.site'));
         }
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
+        $fields->setValues($this->site->data());
 
-        return new Response($this->view('@panel.options.site', [
+        return new Response($this->view('options.site', [
             'title' => $this->translate('panel.options.options'),
-            'tabs'  => $this->view('@panel.options.tabs', [
+            'tabs'  => $this->view('options.tabs', [
                 'tabs'    => $this->tabs,
                 'current' => 'site',
             ]),
             'fields' => $fields,
-        ]), $responseStatus);
+        ]));
     }
 
     /**
@@ -179,25 +143,6 @@ final class OptionsController extends AbstractController
     }
 
     /**
-     * Handle upload fields
-     */
-    private function handleUploads(FieldCollection $fieldCollection): void
-    {
-        foreach ($fieldCollection->filterBy('type', 'upload') as $field) {
-            $files = $field->isMultiple() ? $field->value() : [$field->value()];
-            foreach ($files as $file) {
-                $this->fileUploader->upload(
-                    $file,
-                    $field->destination(),
-                    $field->filename(),
-                    $field->acceptMimeTypes(),
-                    $field->overwrite(),
-                );
-            }
-        }
-    }
-
-    /**
      * Update options of a given type with given data
      *
      * @param 'site'|'system'      $type
@@ -209,14 +154,35 @@ final class OptionsController extends AbstractController
         $old = $options;
 
         // Update options with new values
-        $data = $fieldCollection
-            ->filter(fn($field) => $field->type() !== 'upload')
-            ->extract('value');
+        foreach ($fieldCollection as $field) {
+            if ($field->type() === 'upload') {
+                $files = $field->isMultiple() ? $field->value() : [$field->value()];
+                foreach ($files as $file) {
+                    $this->fileUploader->upload(
+                        $file,
+                        $field->destination(),
+                        $field->filename(),
+                        $field->acceptMimeTypes(),
+                        $field->overwrite(),
+                    );
+                }
+                continue;
+            }
 
-        $options = Arr::exclude(
-            Arr::override($options, Arr::undot($data)),
-            $defaults
-        );
+            if (Arr::has($defaults, $field->name()) && Arr::get($defaults, $field->name()) === $field->value()) {
+                Arr::remove($options, $field->name());
+                continue;
+            }
+
+            Arr::set($options, $field->name(), $field->value());
+        }
+
+        // Remove empty arrays from options unless they are present in the old options
+        foreach (Arr::dot($options) as $key => $value) {
+            if ($value === [] && Arr::has($old, $key) && Arr::get($old, $key) !== []) {
+                Arr::remove($options, $key);
+            }
+        }
 
         // Update config file if options differ
         if ($options !== $old) {

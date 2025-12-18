@@ -1,5 +1,5 @@
 <?php if ($field->get('listFiles', false) && ($model = $field->parent()?->model())) : ?>
-    <?php $this->insert('@panel._files.file.list', ['name' => $field->name(), 'files' => $field->collection()->map(fn($file) => [$file, $model]), 'columns' => ['date', 'size']]); ?>
+    <?php $this->insert('partials.files.file.list', ['name' => $field->name(), 'files' => $field->collection()->map(fn($file) => [$file, $model]), 'columns' => ['date', 'size']]); ?>
 <?php endif ?>
 <?php if ($field->has('label')) : ?>
     <label class="<?= $this->classes(['form-label', 'form-label-required' => $field->isRequired()]) ?>" for="<?= $field->name() ?>"><?= $this->escape($this->append($field->label(), ':')) ?></label>
@@ -8,7 +8,7 @@
 <label class="form-upload-drop-target" tabindex="0">
     <input <?= $this->attr([
                 'type'             => 'file',
-                'class'            => $this->classes(['form-input', 'form-input-upload', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                'class'            => ['form-input', 'form-input-upload'],
                 'id'               => $field->name(),
                 'name'             => $field->formName() . ($field->get('multiple') ? '[]' : ''),
                 'accept'           => $field->get('accept', implode(', ', $app->config()->get('system.files.allowedExtensions'))),
@@ -20,5 +20,4 @@
             ]) ?>>
     <span><?= $this->icon('cloud-upload') ?> <?= $this->translate('fields.file.uploadLabel') ?></span>
 </label>
-<?php $this->insert('@panel.fields.partials.errors') ?>
-<?php $this->insert('@panel.fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>

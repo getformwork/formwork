@@ -97,34 +97,6 @@ class Translations
     }
 
     /**
-     * Get multiple translations from an array of codes
-     *
-     * @param list<string> $codes
-     *
-     * @throws InvalidArgumentException If any of the translation codes is invalid and fallback is not requested
-     *
-     * @return array<string, Translation>
-     */
-    public function getMultiple(array $codes, bool $fallbackIfInvalid = false): array
-    {
-        $translations = [];
-        foreach ($codes as $code) {
-            $translations[$code] = $this->get($code, $fallbackIfInvalid);
-        }
-        return $translations;
-    }
-
-    /**
-     * Get all loaded translations
-     *
-     * @return array<string, Translation>
-     */
-    public function getAll(): array
-    {
-        return $this->getMultiple(array_keys($this->data));
-    }
-
-    /**
      * Set current translation from language code
      */
     public function setCurrent(string $code): void

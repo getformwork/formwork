@@ -4,7 +4,6 @@ namespace Formwork\Http;
 
 use Formwork\Cms\App;
 use Formwork\Http\Exceptions\ConnectionException;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use RuntimeException;
@@ -42,7 +41,7 @@ class Client
             throw new RuntimeException(sprintf('Class %s requires "allow_url_fopen" to be enabled in PHP configuration', static::class));
         }
 
-        $this->options = Arr::extend($this->defaults(), $options);
+        $this->options = array_replace_recursive($this->defaults(), $options);
     }
 
     /**
@@ -139,7 +138,7 @@ class Client
             throw new InvalidArgumentException(sprintf('Cannot connect to "%s": invalid URI', $uri));
         }
 
-        $options = Arr::extend($this->options, $options);
+        $options = array_replace_recursive($this->options, $options);
 
         $options['headers'] = $this->normalizeHeaders($options['headers']);
 

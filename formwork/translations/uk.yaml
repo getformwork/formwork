@@ -23,17 +23,6 @@ fields.date.nextMonth: Наступний місяць
 fields.date.previousHour: Попередня година
 fields.date.previousMinute: Попередня хвилина
 fields.date.previousMonth: Попередній місяць
-fields.error.invalidEmail: Неправильна електронна адреса
-fields.error.invalidValue: Неприпустиме значення
-fields.error.patternMismatch: Значення не відповідає потрібному шаблону
-fields.error.requiredValue: Поле є обов’язковим
-fields.error.stepMismatch: Значення не відповідає кроку %d
-fields.error.tooManyItems: Максимальна кількість дозволених елементів — %d
-fields.error.valueAlreadyExists: Значення вже існує
-fields.error.valueTooLarge: Значення більше ніж %d
-fields.error.valueTooLong: Значення перевищує %d необхідних символів
-fields.error.valueTooShort: Значення менше %d необхідних символів
-fields.error.valueTooSmall: Значення менше ніж %d
 fields.file.none: (Немає)
 fields.file.uploadLabel: <strong>Натисніть</strong> щоб вибрати файл для завантаження або <strong>перетягніть</strong> його сюди
 fields.image.none: (Немає)

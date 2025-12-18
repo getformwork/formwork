@@ -80,7 +80,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
             }
             $response = JsonResponse::error($message, $responseStatus);
         } else {
-            $response = new Response($this->view('@panel.errors.error', [
+            $response = new Response($this->view('errors.error', [
                 'title'       => $this->translate('panel.errors.error.' . $name . '.status'),
                 'code'        => $responseStatus->code(),
                 'status'      => $this->translate('panel.errors.error.' . $name . '.status'),

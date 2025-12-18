@@ -23,7 +23,7 @@ fields:
         label: '{{page.slug}}'
         suggestion: '{{page.slug.suggestion}}'
         required: true
-        readonly@: page.isIndexOrErrorPage
+        readonly@: page.isSlugReadonly
         source: title
         autoUpdate: false
 

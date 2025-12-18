@@ -97,7 +97,6 @@ panel.files.info.mimeType: MIME-Typ
 panel.files.info.name: Name
 panel.files.info.size: Größe
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Datei-Metadaten können nicht aktualisiert werden, einige Felder sind ungültig
 panel.files.metadata.updated: Dateimetadaten aktualisiert
 panel.files.next: Nächste Datei
 panel.files.pageNotFound: Dateiinfo kann nicht abgerufen werden, Seite nicht gefunden
@@ -135,7 +134,6 @@ panel.modal.link.text: Text
 panel.modal.link.title: Link einfügen
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Navigation umschalten
-panel.options.cannotUpdate.invalidFields: Optionen können nicht aktualisiert werden, einige Felder sind ungültig
 panel.options.options: Optionen
 panel.options.site: Webseite
 panel.options.system: System
@@ -177,7 +175,6 @@ panel.options.system.files: Dateien
 panel.options.system.files.allowedExtensions: Erlaubte Dateierweiterungen
 panel.options.system.files.allowedExtensions.noExtensions: Keine Erweiterungen (keine Dateien erlaubt)
 panel.options.system.images: Bilder
-panel.options.system.images.avifQuality: AVIF-Qualität
 panel.options.system.images.clearCacheByDefault: Bilder-Cache standardmäßig löschen
 panel.options.system.images.clearCacheByDefault.disabled: Deaktiviert
 panel.options.system.images.clearCacheByDefault.enabled: Aktiviert
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Seite kann nicht dupliziert werd
 panel.pages.page.cannotDuplicate.pageNotFound: Seite kann nicht dupliziert werden, nicht gefunden
 panel.pages.page.cannotEdit.alreadyExists: Seite kann nicht bearbeitet werden, eine Seite mit demselben URI existiert bereits
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Slug von Index- und Fehlerseiten kann nicht bearbeitet werden
-panel.pages.page.cannotEdit.invalidFields: Seite kann nicht bearbeitet werden, einige Felder sind ungültig
 panel.pages.page.cannotEdit.invalidLanguage: "Seite kann nicht bearbeitet werden, ungültige Sprache: %s"
 panel.pages.page.cannotEdit.invalidParent: Seite kann nicht bearbeitet werden, ungültige übergeordnete Seite
 panel.pages.page.cannotEdit.invalidSlug: Seiten-Slug kann nicht bearbeitet werden, er darf nur Buchstaben und Zahlen enthalten, getrennt durch Bindestriche
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Benutzer kann nicht erstellt wer
 panel.users.user.cannotCreate.varMissing: Benutzer kann nicht erstellt werden, eine Variable fehlt
 panel.users.user.cannotDelete: Benutzer kann nicht gelöscht werden. Sie müssen ein Administrator sein und der Benutzer darf nicht angemeldet sein.
 panel.users.user.cannotEdit: "%s Benutzer kann nicht bearbeitet werden. Die Aktion ist nicht erlaubt."
-panel.users.user.cannotEdit.invalidFields: Benutzer kann nicht bearbeitet werden, einige Felder sind ungültig
 panel.users.user.created: Benutzer erstellt
 panel.users.user.deleted: Benutzer gelöscht
 panel.users.user.edited: Benutzerdaten aktualisiert

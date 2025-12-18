@@ -4,17 +4,11 @@ namespace Formwork\Cms;
 
 use BadMethodCallException;
 use ErrorException;
-use Formwork\Assets\Assets;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\FilesCache;
-use Formwork\Cms\Events\ExceptionThrownEvent;
-use Formwork\Cms\Events\ResponseBeforeSendEvent;
-use Formwork\Cms\Events\RoutesAfterLoadEvent;
-use Formwork\Cms\Events\RoutesBeforeLoadEvent;
 use Formwork\Config\Config;
 use Formwork\Controllers\ErrorsController;
 use Formwork\Controllers\ErrorsControllerInterface;
-use Formwork\Events\EventDispatcher;
 use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;
 use Formwork\Files\Services\FileUploader;
@@ -26,15 +20,12 @@ use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Pages\PaginationFactory;
 use Formwork\Panel\Panel;
-use Formwork\Plugins\Plugins;
 use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
-use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
-use Formwork\Services\Loaders\PluginsServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
 use Formwork\Services\Loaders\SiteServiceLoader;
 use Formwork\Services\Loaders\TemplatesServiceLoader;
@@ -139,35 +130,11 @@ final class App
     }
 
     /**
-     * Get Assets instance
-     */
-    public function assets(): Assets
-    {
-        return $this->container->get(Assets::class);
-    }
-
-    /**
      * Get Panel instance
      */
     public function panel(): Panel
     {
         return $this->container->get(Panel::class);
-    }
-
-    /**
-     * Get EventDispatcher instance
-     */
-    public function events(): EventDispatcher
-    {
-        return $this->container->get(EventDispatcher::class);
-    }
-
-    /**
-     * Get Plugins instance
-     */
-    public function plugins(): Plugins
-    {
-        return $this->container->get(Plugins::class);
     }
 
     /**
@@ -188,8 +155,6 @@ final class App
      * Load Formwork app
      *
      * @since 2.1.0
-     *
-     * @internal
      */
     public function load(): void
     {
@@ -199,7 +164,6 @@ final class App
 
         $this->loadErrorHandler();
         $this->loadServices($this->container);
-        $this->plugins()->initializeEnabled();
         $this->loadRoutes();
         $this->loaded = true;
     }
@@ -213,8 +177,6 @@ final class App
             $this->load();
             $response = $this->router()->dispatch();
         } catch (Throwable $throwable) {
-            $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
-
             try {
                 $controller = $this->container->get(ErrorsControllerInterface::class);
                 $response = $controller->error(throwable: $throwable);
@@ -226,11 +188,7 @@ final class App
 
         $this->request()->session()->save();
 
-        $response->prepare($this->request());
-
-        $this->events()->dispatch(new ResponseBeforeSendEvent($response, $this->request()));
-
-        $response->send();
+        $response->prepare($this->request())->send();
 
         return $response;
     }
@@ -244,9 +202,6 @@ final class App
 
         $container->define(self::class, $this);
 
-        $container->define(EventDispatcher::class)
-            ->alias('events');
-
         $container->define(Request::class, fn() => Request::fromGlobals())
             ->alias('request');
 
@@ -255,7 +210,6 @@ final class App
             ->alias('config');
 
         $container->define(ViewFactory::class)
-            ->parameter('resolutionPaths', fn(Config $config) => ['system' => $config->get('system.views.paths.system')])
             ->parameter('methods', fn(Container $container, Config $config) => $container->call(require $config->get('system.views.methods.system')));
 
         $container->define(ErrorsController::class)
@@ -310,10 +264,6 @@ final class App
             ->loader(UsersServiceLoader::class)
             ->alias('users');
 
-        $container->define(Assets::class)
-            ->loader(AssetsServiceLoader::class)
-            ->alias('assets');
-
         $container->define(Panel::class)
             ->loader(PanelServiceLoader::class)
             ->alias('panel');
@@ -321,9 +271,8 @@ final class App
         $container->define(FileFactory::class)
             ->parameter('associations.image/jpeg', [ImageFactory::class, 'make'])
             ->parameter('associations.image/png', [ImageFactory::class, 'make'])
-            ->parameter('associations.image/gif', [ImageFactory::class, 'make'])
             ->parameter('associations.image/webp', [ImageFactory::class, 'make'])
-            ->parameter('associations.image/avif', [ImageFactory::class, 'make'])
+            ->parameter('associations.image/gif', [ImageFactory::class, 'make'])
             ->parameter('associations.image/svg+xml', [ImageFactory::class, 'make']);
 
         $container->define(ImageFactory::class);
@@ -331,10 +280,6 @@ final class App
         $container->define(FileUriGenerator::class);
 
         $container->define(FileUploader::class);
-
-        $container->define(Plugins::class)
-            ->loader(PluginsServiceLoader::class)
-            ->alias('plugins');
     }
 
     /**
@@ -342,8 +287,6 @@ final class App
      */
     private function loadRoutes(): void
     {
-        $this->events()->dispatch(new RoutesBeforeLoadEvent($this->router()));
-
         if ($this->config()->get('system.panel.enabled')) {
             $this->router()->loadFromFile(
                 $this->config()->get('system.routes.files.panel'),
@@ -352,8 +295,6 @@ final class App
         }
 
         $this->router()->loadFromFile($this->config()->get('system.routes.files.system'));
-
-        $this->events()->dispatch(new RoutesAfterLoadEvent($this->router()));
     }
 
     /**

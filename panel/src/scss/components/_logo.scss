@@ -2,25 +2,35 @@
 @use "variables" as *;
 
 .logo {
-    margin-bottom: 2rem;
+    padding: 0.75rem 0.625rem;
+    margin-bottom: 1rem;
     color: var(--color-base-100);
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-md);
     font-weight: 600;
     line-height: 1.5rem;
     text-align: center;
+    
     @media (min-width: map.get($breakpoints, "md")) {
         text-align: left;
     }
 }
 
 .logo img {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.25rem;
-    vertical-align: -0.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.375rem;
+    vertical-align: -0.125rem;
 }
 
 .logo a {
-    padding-top: var(--focusring-width);
+    display: flex;
+    align-items: center;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--border-radius);
     color: var(--color-base-100);
+    transition: background-color var(--transition-time-sm);
+    
+    &:hover {
+        background-color: var(--color-base-800);
+    }
 }

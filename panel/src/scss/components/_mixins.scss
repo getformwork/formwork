@@ -39,8 +39,8 @@
     }
 }
 
-@mixin focusring($color: var(--color-focusring)) {
-    outline: var(--focusring-width) solid $color;
+@mixin focusring {
+    outline: var(--focusring-width) solid var(--color-focusring);
     outline-offset: 0; // Fix for Safari
 }
 

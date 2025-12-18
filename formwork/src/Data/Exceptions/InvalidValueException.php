@@ -7,13 +7,9 @@ use Throwable;
 
 class InvalidValueException extends RuntimeException
 {
-    /**
-     * @param ?array<string, mixed> $context
-     */
     public function __construct(
         string $message,
         protected ?string $identifier = null,
-        protected ?array $context = [],
         int $code = 0,
         ?Throwable $throwable = null,
     ) {
@@ -26,15 +22,5 @@ class InvalidValueException extends RuntimeException
     public function getIdentifier(): ?string
     {
         return $this->identifier;
-    }
-
-    /**
-     * Get the context of the invalid value
-     *
-     * @return ?array<string, mixed>
-     */
-    public function getContext(): ?array
-    {
-        return $this->context;
     }
 }

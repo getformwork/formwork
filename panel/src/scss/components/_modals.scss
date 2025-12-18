@@ -1,7 +1,8 @@
 .modal-backdrop {
     position: fixed;
     z-index: 16;
-    background-color: var(--color-backdrop);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
     inset: 0;
 }
 
@@ -21,29 +22,35 @@
 .modal-header,
 .modal-content,
 .modal-footer {
-    padding: 1rem 1.5rem;
-}
-
-.modal-text {
-    text-wrap: balance;
+    padding: 1rem 1.25rem;
 }
 
 .modal-header {
-    border-bottom: 1px solid var(--color-base-600);
+    border-bottom: 1px solid var(--color-base-700);
+    font-weight: 600;
+}
+
+.modal-text {
+    color: var(--color-base-200);
+    text-wrap: balance;
 }
 
 .modal-footer {
-    border-top: 1px solid var(--color-base-600);
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    border-top: 1px solid var(--color-base-700);
 }
 
 .modal-container {
     width: 26rem;
     max-width: 26rem;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
+    border: 1px solid var(--color-base-600);
+    border-radius: 8px;
     margin: 3rem 0.5rem;
-    background-color: var(--color-base-900);
-    box-shadow: var(--box-shadow-lg);
+    background-color: var(--color-base-800);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    
     @media (width >= 26rem) {
         margin: 3rem auto;
     }
@@ -52,6 +59,7 @@
 .modal-size-large {
     width: 48rem;
     max-width: 48em;
+    
     @media (width <= 40rem) {
         margin: 3rem 0.5rem;
     }

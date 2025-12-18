@@ -8,8 +8,6 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'default' => '',
-
         'methods' => [
             /**
              * Get the field dropdown options

@@ -23,17 +23,6 @@ fields.date.nextMonth: Επόμενος μήνας
 fields.date.previousHour: Προηγούμενη ώρα
 fields.date.previousMinute: Προηγούμενο λεπτό
 fields.date.previousMonth: Προηγούμενος μήνας
-fields.error.invalidEmail: Μη έγκυρη διεύθυνση email
-fields.error.invalidValue: Μη έγκυρη τιμή
-fields.error.patternMismatch: Η τιμή δεν ταιριάζει με το απαιτούμενο πρότυπο
-fields.error.requiredValue: Το πεδίο είναι υποχρεωτικό
-fields.error.stepMismatch: Η τιμή δεν συμμορφώνεται με το βήμα %d
-fields.error.tooManyItems: Ο μέγιστος αριθμός επιτρεπόμενων στοιχείων είναι %d
-fields.error.valueAlreadyExists: Η τιμή υπάρχει ήδη
-fields.error.valueTooLarge: Η τιμή είναι μεγαλύτερη από %d
-fields.error.valueTooLong: Η τιμή είναι μεγαλύτερη από τους απαιτούμενους %d χαρακτήρες
-fields.error.valueTooShort: Η τιμή είναι μικρότερη από τους απαιτούμενους %d χαρακτήρες
-fields.error.valueTooSmall: Η τιμή είναι μικρότερη από %d
 fields.file.none: (Κανένα)
 fields.file.uploadLabel: <strong>Κάντε κλικ</strong> για να επιλέξετε ένα αρχείο ή <strong>σύρετέ</strong> το εδώ
 fields.image.none: (Καμία)
@@ -63,7 +52,6 @@ page.routable: Προσβάσιμη
 page.routable.description: Οι προσβάσιμες σελίδες ανοίγουν από τη διεύθυνσή τους
 page.slug: Slug
 page.slug.suggestion: μόνο γράμματα, αριθμοί και παύλες
-page.status: Κατάσταση
 page.status.notPublished: Μη δημοσιευμένη
 page.status.published: Δημοσιευμένη
 page.status.published.description: Οι δημοσιευμένες σελίδες φαίνονται στον ιστότοπο και είναι προσβάσιμες από τη διεύθυνσή τους
@@ -73,6 +61,7 @@ page.template: Πρότυπο
 page.text: Κείμενο
 page.title: Τίτλος
 page.unpublishDate: Ημερομηνία απόσυρσης
+page.status: Κατάσταση
 site.advanced: Προηγμένες επιλογές
 site.advanced.aliases: Ψευδώνυμα
 site.advanced.aliases.alias: Ψευδώνυμο

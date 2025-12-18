@@ -72,6 +72,8 @@
     )
 );
 
+@include make-util("gap", "gap", $spacers);
+
 @include make-util("text-size", "font-size", $font-sizes);
 
 @include make-util("text-color", "color", $font-colors);

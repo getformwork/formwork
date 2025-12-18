@@ -3,13 +3,10 @@
 use Formwork\Cms\App;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
-use Formwork\Pages\Page;
 use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'default' => '',
-
         'methods' => [
             /**
              * Validate the field value
@@ -24,19 +21,19 @@ return function (App $app) {
                 }
 
                 if ($field->has('min') && strlen((string) $value) < $field->get('min')) {
-                    throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->get('min')), 'valueTooShort', ['min' => $field->get('min')]);
+                    throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('min')));
                 }
 
                 if ($field->has('max') && strlen((string) $value) > $field->get('max')) {
-                    throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->get('max')), 'valueTooLong', ['max' => $field->get('max')]);
+                    throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->value(), $field->get('max')));
                 }
 
                 if ($field->has('pattern') && !Constraint::matchesRegex((string) $value, $field->get('pattern'))) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not match the required pattern', $field->name(), $field->type()), 'patternMismatch', ['pattern' => $field->get('pattern')]);
+                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not match the required pattern', $field->name(), $field->value()));
                 }
 
                 if (!$field->hasUniqueValue()) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be unique', $field->name(), $field->type()), 'valueAlreadyExists');
+                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be unique', $field->name(), $field->value()), 'alreadyExists');
                 }
 
                 return (string) $value;
@@ -66,12 +63,6 @@ return function (App $app) {
                 $root = $field->get('root');
 
                 if ($root === null) {
-                    $model = $field->parent()?->model();
-
-                    if ($model instanceof Page) {
-                        return !$model->siblings()->everyItem()->slug()->contains($field->value());
-                    }
-
                     return true;
                 }
 

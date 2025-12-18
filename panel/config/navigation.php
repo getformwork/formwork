@@ -53,10 +53,4 @@ return fn(Site $site, Translation $translation) => [
         'badge'       => null,
         'icon'        => 'toolbox',
     ],
-    'logout' => [
-        'label'       => $translation->translate('panel.login.logout'),
-        'uri'         => '/logout/',
-        'permissions' => null,
-        'badge'       => null,
-    ],
 ];

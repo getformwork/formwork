@@ -29,13 +29,6 @@ class Route
     protected $action;
 
     /**
-     * Route action parameters
-     *
-     * @var array<string, mixed>
-     */
-    protected $actionParameters = [];
-
-    /**
      * Route methods
      *
      * @var list<string>
@@ -94,17 +87,6 @@ class Route
     }
 
     /**
-     * Set route action parameters
-     *
-     * @param array<string, mixed> $parameters
-     */
-    public function actionParameters(array $parameters): self
-    {
-        $this->actionParameters = $parameters;
-        return $this;
-    }
-
-    /**
      * Get route action
      *
      * @return callable|string
@@ -112,16 +94,6 @@ class Route
     public function getAction()
     {
         return $this->action;
-    }
-
-    /**
-     * Get route action parameters
-     *
-     * @return array<string, mixed>
-     */
-    public function getActionParameters(): array
-    {
-        return $this->actionParameters;
     }
 
     /**

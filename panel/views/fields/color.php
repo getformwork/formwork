@@ -1,8 +1,8 @@
-<?php $this->layout('@panel.fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div class="form-input-wrap">
     <div class="flex">
         <input <?= $this->attr([
-                    'class'       => $this->classes(['form-input-color', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                    'class'       => ['form-input-color', $field->get('class')],
                     'type'        => 'color',
                     'id'          => $field->name(),
                     'name'        => $field->formName(),

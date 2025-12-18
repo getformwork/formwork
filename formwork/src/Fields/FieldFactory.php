@@ -6,7 +6,6 @@ use Closure;
 use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 
@@ -43,12 +42,7 @@ final class FieldFactory
 
             unset($baseConfig['extend']);
 
-            $config = Arr::extend($baseConfig, $config);
-        }
-
-        // Set a default if defined in the config and not already set in the field data
-        if (!$field->has('default') && array_key_exists('default', $config)) {
-            $field->set('default', $config['default']);
+            $config = array_replace_recursive($baseConfig, $config);
         }
 
         $field->setMethods($config['methods'] ?? []);
@@ -57,9 +51,9 @@ final class FieldFactory
     }
 
     /**
-     * @param array{extend?: string, default?: mixed, methods?: array<string, Closure>} $default
+     * @param array{extend?: string, methods?: array<string, Closure>} $default
      *
-     * @return array{extend?: string, default?: mixed, methods?: array<string, Closure>}
+     * @return array{extend?: string, methods?: array<string, Closure>}
      */
     private function getFieldConfig(string $type, ?array $default = null): array
     {

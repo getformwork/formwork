@@ -35,7 +35,7 @@ final class FilesController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        return new Response($this->view('@panel.files.index', [
+        return new Response($this->view('files.index', [
             'title' => $this->translate('panel.files.files'),
             'files' => $this->getFiles(),
         ]));
@@ -107,27 +107,18 @@ final class FilesController extends AbstractController
             return $this->redirectToReferer(base: $this->panel->panelRoot());
         }
 
-        $valid = false;
-
         switch ($this->request->method()) {
             case RequestMethod::GET:
                 $data = $file->data();
 
                 $file->fields()->setValues($data);
 
-                $valid = $file->fields()->isValid();
-
                 break;
 
             case RequestMethod::POST:
                 $data = $this->request->input();
 
-                $file->fields()->setValues($data);
-
-                if (!($valid = $file->fields()->isValid())) {
-                    $this->panel->notify($this->translate('panel.files.metadata.cannotUpdate.invalidFields'), 'error');
-                    break;
-                }
+                $file->fields()->setValues($data)->validate();
 
                 $this->updateFileMetadata($file, $file->fields());
 
@@ -138,14 +129,12 @@ final class FilesController extends AbstractController
                 return $this->redirect($this->generateRoute('panel.files.edit', $routeParams->toArray()));
         }
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
-
-        return new Response($this->view('@panel.files.edit', [
+        return new Response($this->view('files.edit', [
             'title' => $file->name(),
             'model' => $model,
             'file'  => $file,
             ...$this->getPreviousAndNextFile($files, $file),
-        ]), $responseStatus);
+        ]));
     }
 
     /**
@@ -356,10 +345,20 @@ final class FilesController extends AbstractController
      */
     private function updateFileMetadata(File $file, FieldCollection $fieldCollection): void
     {
-        $data = Arr::exclude(
-            Arr::override($file->data(), Arr::undot($fieldCollection->extract('value'))),
-            Arr::undot($file->fields()->extract('default'))
-        );
+        $data = $file->data();
+
+        $scheme = $file->scheme();
+
+        $defaults = $scheme->fields()->extract('default');
+
+        foreach ($fieldCollection as $field) {
+            if ($field->isEmpty() || (Arr::has($defaults, $field->name()) && Arr::get($defaults, $field->name()) === $field->value())) {
+                unset($data[$field->name()]);
+                continue;
+            }
+
+            $data[$field->name()] = $field->value();
+        }
 
         $metaFile = $file->path() . $this->config->get('system.files.metadataExtension');
 

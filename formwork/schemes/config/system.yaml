@@ -31,7 +31,7 @@ layout:
         images:
             collapsible: true
             label: '{{panel.options.system.images}}'
-            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.avifQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault]
+            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault]
 
         backup:
             collapsible: true
@@ -146,14 +146,6 @@ fields:
     images.webpQuality:
         type: range
         label: '{{panel.options.system.images.webpQuality}}'
-        min: 0
-        max: 100
-        step: 5
-        ticks: true
-
-    images.avifQuality:
-        type: range
-        label: '{{panel.options.system.images.avifQuality}}'
         min: 0
         max: 100
         step: 5

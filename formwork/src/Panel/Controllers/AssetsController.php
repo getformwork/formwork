@@ -6,7 +6,6 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 
 final class AssetsController extends AbstractController
@@ -16,7 +15,7 @@ final class AssetsController extends AbstractController
      */
     public function asset(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), $routeParams->get('type'), Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
+        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), $routeParams->get('type'), $routeParams->get('file'));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             $headers = (

@@ -20,22 +20,12 @@
     margin-bottom: 0;
 }
 
-.form-input-tags-wrap:has(.is-invalid) {
-    border-color: var(--color-danger-500);
-}
-
 .form-input-wrap .form-input-icon + .form-input-tags-wrap {
     padding-left: 1.75rem;
 }
 
 .form-input-tags-wrap.focused {
     border-color: var(--color-accent-500);
-}
-
-.form-input-tags-wrap.focused:has(.is-invalid) {
-    border-color: var(--color-danger-500);
-
-    @include focusring($color-focusring-danger);
 }
 
 .form-input-tags-wrap .form-input {

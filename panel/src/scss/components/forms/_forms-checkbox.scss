@@ -37,14 +37,6 @@
     @include focusring;
 }
 
-.form-checkbox.is-invalid + .form-checkbox-text::before {
-    border-color: var(--color-danger-500);
-}
-
-.form-checkbox.is-invalid:focus + .form-checkbox-text::before {
-    @include focusring($color-focusring-danger);
-}
-
 .form-checkbox:checked + .form-checkbox-text:hover::before {
     border-color: var(--color-accent-400);
     background-color: var(--color-accent-400);

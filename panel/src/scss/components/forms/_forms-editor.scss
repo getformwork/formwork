@@ -288,13 +288,3 @@ img.ProseMirror-separator {
 .editor-wrap .dropdown-menu {
     margin-top: 0;
 }
-
-.editor-wrap:has(.is-invalid):focus-within {
-    @include focusring($color-focusring-danger);
-}
-
-.editor-wrap:has(.is-invalid) .editor-toolbar,
-.editor-wrap:has(.is-invalid) .ProseMirror,
-.editor-wrap:has(.is-invalid) .cm-editor {
-    border-color: var(--color-danger-500);
-}

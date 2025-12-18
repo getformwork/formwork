@@ -23,17 +23,6 @@ fields.date.nextMonth: Luna următoare
 fields.date.previousHour: Ora precedentă
 fields.date.previousMinute: Minutul precedent
 fields.date.previousMonth: Luna precedentă
-fields.error.invalidEmail: Adresă de e-mail invalidă
-fields.error.invalidValue: Valoare invalidă
-fields.error.patternMismatch: Valoarea nu corespunde modelului cerut
-fields.error.requiredValue: Câmp obligatoriu
-fields.error.stepMismatch: Valoarea nu respectă intervalul pasului de %d
-fields.error.tooManyItems: Numărul maxim de elemente permis este %d
-fields.error.valueAlreadyExists: Valoarea există deja
-fields.error.valueTooLarge: Valoarea este mai mare decât %d
-fields.error.valueTooLong: Valoarea depășește %d caractere cerute
-fields.error.valueTooShort: Valoarea este mai scurtă decât %d caractere cerute
-fields.error.valueTooSmall: Valoarea este mai mică decât %d
 fields.file.none: (Niciunul)
 fields.file.uploadLabel: <strong>Click</strong> pentru a alege un fișier de încărcat sau <strong>trage</strong> aici
 fields.image.none: (Niciuna)

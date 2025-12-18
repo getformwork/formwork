@@ -97,7 +97,6 @@ panel.files.info.mimeType: MIME тип
 panel.files.info.name: Назва
 panel.files.info.size: Розмір
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Неможливо оновити метадані файлу, деякі поля недійсні
 panel.files.metadata.updated: Метадані файлу оновлено
 panel.files.next: Наступний файл
 panel.files.pageNotFound: Неможливо отримати інформацію про файл, сторінка не знайдена
@@ -135,7 +134,6 @@ panel.modal.link.text: Текст
 panel.modal.link.title: Вставити посилання
 panel.modal.link.uri: URI
 panel.navigation.toggle: Перемкнути навігацію
-panel.options.cannotUpdate.invalidFields: Неможливо оновити параметри, деякі поля недійсні
 panel.options.options: Опції
 panel.options.site: Сайт
 panel.options.system: Система
@@ -177,7 +175,6 @@ panel.options.system.files: Файли
 panel.options.system.files.allowedExtensions: Дозволені розширення
 panel.options.system.files.allowedExtensions.noExtensions: Без розширень (файли не дозволені)
 panel.options.system.images: Зображення
-panel.options.system.images.avifQuality: Якість AVIF
 panel.options.system.images.clearCacheByDefault: Очистити кеш зображень за замовчуванням
 panel.options.system.images.clearCacheByDefault.disabled: Вимкнено
 panel.options.system.images.clearCacheByDefault.enabled: Увімкнено
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Неможливо дублюв�
 panel.pages.page.cannotDuplicate.pageNotFound: Неможливо дублювати сторінку, не знайдено
 panel.pages.page.cannotEdit.alreadyExists: Неможливо редагувати сторінку, сторінка з таким URI вже існує
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Неможливо редагувати slug сторінки індексу та помилок
-panel.pages.page.cannotEdit.invalidFields: Неможливо редагувати сторінку, деякі поля недійсні
 panel.pages.page.cannotEdit.invalidLanguage: 'Неможливо редагувати сторінку, недійсна мова: %s'
 panel.pages.page.cannotEdit.invalidParent: Неможливо редагувати сторінку, недійсна батьківська сторінка
 panel.pages.page.cannotEdit.invalidSlug: Неможливо редагувати slug сторінки, він повинен містити лише літери та цифри, розділені дефісами
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Неможливо створи�
 panel.users.user.cannotCreate.varMissing: Неможливо створити користувача, відсутня змінна
 panel.users.user.cannotDelete: Неможливо видалити користувача. Ви повинні бути адміністратором, і користувач не повинен бути в системі.
 panel.users.user.cannotEdit: Неможливо редагувати користувача %s. Ця дія заборонена.
-panel.users.user.cannotEdit.invalidFields: Неможливо редагувати користувача, деякі поля недійсні
 panel.users.user.created: Користувача створено
 panel.users.user.deleted: Користувача видалено
 panel.users.user.edited: Дані користувача оновлено

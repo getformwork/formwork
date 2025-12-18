@@ -4,7 +4,7 @@ namespace PhpCsFixer;
 
 $finder = Finder::create()
     ->in(dirname(__DIR__))
-    ->exclude(['cache', 'formwork/views', 'panel/node_modules', 'panel/views', 'site/plugins', 'site/templates']);
+    ->exclude(['cache', 'formwork/views', 'panel/node_modules', 'panel/views', 'site/templates']);
 
 $config = new Config();
 

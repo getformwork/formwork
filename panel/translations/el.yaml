@@ -97,7 +97,6 @@ panel.files.info.mimeType: Τύπος MIME
 panel.files.info.name: Όνομα
 panel.files.info.size: Μέγεθος
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Δεν είναι δυνατή η ενημέρωση των μεταδεδομένων του αρχείου, ορισμένα πεδία δεν είναι έγκυρα
 panel.files.metadata.updated: Τα μεταδεδομένα του αρχείου ενημερώθηκαν
 panel.files.next: Επόμενο αρχείο
 panel.files.pageNotFound: Δεν είναι δυνατή η ανάκτηση πληροφοριών, η σελίδα δεν βρέθηκε
@@ -135,7 +134,6 @@ panel.modal.link.text: Κείμενο
 panel.modal.link.title: Εισαγωγή συνδέσμου
 panel.modal.link.uri: URI
 panel.navigation.toggle: Εναλλαγή πλοήγησης
-panel.options.cannotUpdate.invalidFields: Δεν είναι δυνατή η ενημέρωση των ρυθμίσεων, ορισμένα πεδία δεν είναι έγκυρα
 panel.options.options: Επιλογές
 panel.options.site: Ιστότοπος
 panel.options.system: Σύστημα
@@ -177,7 +175,6 @@ panel.options.system.files: Αρχεία
 panel.options.system.files.allowedExtensions: Επιτρεπόμενες επεκτάσεις
 panel.options.system.files.allowedExtensions.noExtensions: Καμία επέκταση (δεν επιτρέπεται κανένα αρχείο)
 panel.options.system.images: Εικόνες
-panel.options.system.images.avifQuality: Ποιότητα AVIF
 panel.options.system.images.clearCacheByDefault: Εκκαθάριση cache εικόνων από προεπιλογή
 panel.options.system.images.clearCacheByDefault.disabled: Απενεργοποιημένο
 panel.options.system.images.clearCacheByDefault.enabled: Ενεργοποιημένο
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Δεν είναι δυνατός
 panel.pages.page.cannotDuplicate.pageNotFound: Δεν είναι δυνατός ο διπλασιασμός, η σελίδα δεν βρέθηκε
 panel.pages.page.cannotEdit.alreadyExists: Δεν είναι δυνατή η επεξεργασία, υπάρχει ήδη σελίδα με το ίδιο URI
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Δεν μπορεί να αλλάξει το slug της index ή error σελίδας
-panel.pages.page.cannotEdit.invalidFields: Δεν είναι δυνατή η επεξεργασία της σελίδας, ορισμένα πεδία δεν είναι έγκυρα
 panel.pages.page.cannotEdit.invalidLanguage: 'Δεν είναι δυνατή η επεξεργασία, μη έγκυρη γλώσσα: %s'
 panel.pages.page.cannotEdit.invalidParent: Δεν είναι δυνατή η επεξεργασία, μη έγκυρη γονική σελίδα
 panel.pages.page.cannotEdit.invalidSlug: Δεν είναι δυνατή η αλλαγή slug, πρέπει να περιέχει μόνο γράμματα και αριθμούς χωρισμένους με παύλες
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Δεν είναι δυνατή �
 panel.users.user.cannotCreate.varMissing: Δεν είναι δυνατή η δημιουργία χρήστη, λείπει μια μεταβλητή
 panel.users.user.cannotDelete: Δεν είναι δυνατή η διαγραφή χρήστη. Πρέπει να είσαι διαχειριστής και ο χρήστης να μην είναι συνδεδεμένος.
 panel.users.user.cannotEdit: Δεν είναι δυνατή η επεξεργασία του χρήστη %s. Η ενέργεια δεν επιτρέπεται.
-panel.users.user.cannotEdit.invalidFields: Δεν είναι δυνατή η επεξεργασία του χρήστη, ορισμένα πεδία δεν είναι έγκυρα
 panel.users.user.created: Ο χρήστης δημιουργήθηκε
 panel.users.user.deleted: Ο χρήστης διαγράφηκε
 panel.users.user.edited: Τα στοιχεία του χρήστη ενημερώθηκαν

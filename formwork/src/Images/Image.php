@@ -6,7 +6,6 @@ use Formwork\Files\File;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\AbstractHandler;
-use Formwork\Images\Handler\AvifHandler;
 use Formwork\Images\Handler\GifHandler;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Images\Handler\PngHandler;
@@ -437,14 +436,6 @@ class Image extends File
     }
 
     /**
-     * Convert image to AVIF
-     */
-    public function toAvif(): Image
-    {
-        return $this->process('image/avif');
-    }
-
-    /**
      * Save image to a given path with a given MIME type
      *
      * @throws RuntimeException If the image type is unsupported or conversion is not supported
@@ -456,7 +447,6 @@ class Image extends File
             'image/png'     => PngHandler::class,
             'image/gif'     => GifHandler::class,
             'image/webp'    => WebpHandler::class,
-            'image/avif'    => AvifHandler::class,
             'image/svg+xml' => SvgHandler::class,
             default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType)),
         };
@@ -524,7 +514,6 @@ class Image extends File
             'image/jpeg'    => $mimeType . $this->options['jpegQuality'] . $this->options['jpegProgressive'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/png'     => $mimeType . $this->options['pngCompression'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/webp'    => $mimeType . $this->options['webpQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
-            'image/avif'    => $mimeType . $this->options['avifQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/gif'     => $mimeType . $this->options['gifColors'],
             'image/svg+xml' => $mimeType,
             default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType)),
@@ -556,7 +545,6 @@ class Image extends File
             'image/png'     => PngHandler::fromPath($this->path, $this->options),
             'image/gif'     => GifHandler::fromPath($this->path, $this->options),
             'image/webp'    => WebpHandler::fromPath($this->path, $this->options),
-            'image/avif'    => AvifHandler::fromPath($this->path, $this->options),
             'image/svg+xml' => SvgHandler::fromPath($this->path, $this->options),
             default         => throw new RuntimeException('Unsupported image type'),
         };

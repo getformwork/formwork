@@ -69,18 +69,6 @@ return function (App $app) {
                 return $field->get('filename');
             },
 
-            'setValue' => function (Field $field, $value) {
-                if (
-                    $value instanceof UploadedFile || is_array($value)
-                    && Arr::some($value, fn($file) => $file instanceof UploadedFile)
-                ) {
-                    return $value;
-                }
-
-                // If the value does not contain `UploadedFile` instances, discard it and return null
-                return null;
-            },
-
             /**
              * Validate the field value
              */
@@ -104,7 +92,7 @@ return function (App $app) {
 
                     if ($value->isEmpty()) {
                         if ($field->isRequired()) {
-                            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()), 'requiredValue');
+                            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()));
                         }
                         return null;
                     }
@@ -130,7 +118,7 @@ return function (App $app) {
 
                 if ($value === []) {
                     if ($field->isRequired()) {
-                        throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()), 'requiredValue');
+                        throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $field->name(), $field->type()));
                     }
                     return null;
                 }

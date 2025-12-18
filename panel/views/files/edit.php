@@ -1,4 +1,4 @@
-<?php $this->layout('@panel.panel') ?>
+<?php $this->layout('panel') ?>
 
 <?php $this->modals()->addMultiple(['changes', 'renameFile', 'deleteFile']) ?>
 
@@ -104,7 +104,7 @@
                     <a class="file-info-entry-uri" href="<?= $file->uri() ?>"><?= $this->escape($file->uri()) ?></a>
                 </div>
                 <?php if ($file->type() === 'image') : ?>
-                    <?php $this->insert('@panel._files.images.info.info', ['file' => $file]) ?>
+                    <?php $this->insert('_files/images/info/info', ['file' => $file]) ?>
                 <?php endif ?>
             </div>
         </div>
@@ -117,7 +117,7 @@
                     <span class="caption"><?= $this->translate('panel.files.position') ?></span>
                 </div>
                 <div class="section-content">
-                    <?php $this->insert('@panel._files.images.position.map', ['exif' => $file->getExifData()]) ?>
+                    <?php $this->insert('_files/images/position/map', ['exif' => $file->getExifData()]) ?>
                 </div>
             </section>
         <?php endif ?>
@@ -128,13 +128,13 @@
                     <span class="caption"><?= $this->translate('panel.files.exif') ?></span>
                 </div>
                 <div class="section-content">
-                    <?php $this->insert('@panel._files.images.exif.data', ['exif' => $file->getExifData()]) ?>
+                    <?php $this->insert('_files/images/exif/data', ['exif' => $file->getExifData()]) ?>
                 </div>
             </section>
         <?php endif ?>
     <?php endif ?>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
     <?php if (!$file->fields()->isEmpty()): ?>
-        <?php $this->insert('@panel.fields', ['fields' => $file->fields()]) ?>
+        <?php $this->insert('fields', ['fields' => $file->fields()]) ?>
     <?php endif ?>
 </form>

@@ -1,9 +1,16 @@
-<?php $this->layout('@panel.panel') ?>
+<?php $this->layout('panel') ?>
 
-<div class="header">
-    <div class="header-icon"><?= $this->icon('toolbox') ?></div>
-    <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
-</div>
+<header class="panel-header">
+    <div class="panel-header-page-info">
+        <div class="panel-header-page-icon">
+            <?= $this->icon('toolbox') ?>
+        </div>
+        <div class="panel-header-page-title">
+            <div class="panel-header-page-title-text"><?= $this->translate('panel.tools.tools') ?></div>
+        </div>
+    </div>
+</header>
+
 
 <?= $tabs ?>
 

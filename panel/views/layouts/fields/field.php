@@ -1,4 +1,3 @@
-<?php $this->insert('@panel.fields.partials.label') ?>
+<?php $this->insert('fields.partials.label') ?>
 <?= $this->content() ?>
-<?php $this->insert('@panel.fields.partials.errors') ?>
-<?php $this->insert('@panel.fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>

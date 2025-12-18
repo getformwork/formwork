@@ -97,7 +97,6 @@ panel.files.info.mimeType: MIME türü
 panel.files.info.name: Ad
 panel.files.info.size: Boyut
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Dosya meta verileri güncellenemiyor, bazı alanlar geçersiz
 panel.files.metadata.updated: Dosya meta verileri güncellendi
 panel.files.next: Sonraki dosya
 panel.files.pageNotFound: Dosya bilgisi alınamıyor, sayfa bulunamadı
@@ -135,7 +134,6 @@ panel.modal.link.text: Metin
 panel.modal.link.title: Bağlantı ekle
 panel.modal.link.uri: URI
 panel.navigation.toggle: Navigasyonu aç/kapat
-panel.options.cannotUpdate.invalidFields: Ayarlar güncellenemiyor, bazı alanlar geçersiz
 panel.options.options: Seçenekler
 panel.options.site: Site
 panel.options.system: Sistem
@@ -177,7 +175,6 @@ panel.options.system.files: Dosyalar
 panel.options.system.files.allowedExtensions: İzin verilen uzantılar
 panel.options.system.files.allowedExtensions.noExtensions: Uzantı yok (dosya yükleme yok)
 panel.options.system.images: Görseller
-panel.options.system.images.avifQuality: AVIF kalitesi
 panel.options.system.images.clearCacheByDefault: Varsayılan olarak görsel önbelleğini temizle
 panel.options.system.images.clearCacheByDefault.disabled: Devre dışı
 panel.options.system.images.clearCacheByDefault.enabled: Etkin
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Sayfa çoğaltılamıyor, sayfa 
 panel.pages.page.cannotDuplicate.pageNotFound: Sayfa çoğaltılamıyor, sayfa bulunamadı
 panel.pages.page.cannotEdit.alreadyExists: Sayfa düzenlenemiyor, aynı URI’ye sahip bir sayfa zaten mevcut
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Ana ve hata sayfalarının slug’ı düzenlenemez
-panel.pages.page.cannotEdit.invalidFields: Sayfa düzenlenemiyor, bazı alanlar geçersiz
 panel.pages.page.cannotEdit.invalidLanguage: 'Sayfa düzenlenemiyor, geçersiz dil: %s'
 panel.pages.page.cannotEdit.invalidParent: Sayfa düzenlenemiyor, geçersiz üst sayfa
 panel.pages.page.cannotEdit.invalidSlug: Sayfa slug’ı yalnızca harf, rakam ve tire içermelidir
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Kullanıcı oluşturulamıyor, e
 panel.users.user.cannotCreate.varMissing: Kullanıcı oluşturulamıyor, eksik bir değişken var
 panel.users.user.cannotDelete: Kullanıcı silinemiyor. Yönetici olmanız ve kullanıcının giriş yapmamış olması gerekir.
 panel.users.user.cannotEdit: '%s kullanıcısı düzenlenemiyor. Bu işlem izin verilmemektedir.'
-panel.users.user.cannotEdit.invalidFields: Kullanıcı düzenlenemiyor, bazı alanlar geçersiz
 panel.users.user.created: Kullanıcı oluşturuldu
 panel.users.user.deleted: Kullanıcı silindi
 panel.users.user.edited: Kullanıcı verileri güncellendi

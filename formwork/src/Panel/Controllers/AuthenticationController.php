@@ -8,8 +8,6 @@ use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
-use Formwork\Panel\Events\PanelLoggedInEvent;
-use Formwork\Panel\Events\PanelLoggedOutEvent;
 use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Schemes\Schemes;
 use Formwork\Users\Exceptions\AuthenticationFailedException;
@@ -82,8 +80,6 @@ final class AuthenticationController extends AbstractController
 
                     $accessLimiter->resetAttempts();
 
-                    $this->events->dispatch(new PanelLoggedInEvent($user, $this->request));
-
                     if (($destination = $this->request->session()->get(self::SESSION_REDIRECT_KEY)) !== null) {
                         $this->request->session()->remove(self::SESSION_REDIRECT_KEY);
                         return new RedirectResponse($this->panel->uri($destination));
@@ -103,7 +99,7 @@ final class AuthenticationController extends AbstractController
         // Always generate a new CSRF token
         $this->csrfToken->generate($csrfTokenName);
 
-        return new Response($this->view('@panel.authentication.login', [
+        return new Response($this->view('authentication.login', [
             'title'  => $this->translate('panel.login.login'),
             'fields' => $fields,
         ]));
@@ -115,11 +111,8 @@ final class AuthenticationController extends AbstractController
     public function logout(): RedirectResponse
     {
         try {
-            $user = $this->panel->user();
-            $user->logout();
+            $this->panel->user()->logout();
             $this->csrfToken->destroy($this->panel->getCsrfTokenName());
-
-            $this->events->dispatch(new PanelLoggedOutEvent($user));
 
             if ($this->config->get('system.panel.logoutRedirect') === 'home') {
                 return $this->redirect('/');
@@ -142,6 +135,6 @@ final class AuthenticationController extends AbstractController
     {
         $defaults = ['title' => $this->translate('panel.login.login'), 'error' => true];
         $this->panel->notify($message, 'error');
-        return new Response($this->view('@panel.authentication.login', [...$defaults, ...$data]));
+        return new Response($this->view('authentication.login', [...$defaults, ...$data]));
     }
 }

@@ -70,10 +70,10 @@ final class PagesController extends AbstractController
 
         $this->modal('newPage')->setFieldsModel($parent);
 
-        return new Response($this->view('@panel.pages.index', [
+        return new Response($this->view('pages.index', [
             'title'     => $this->translate('panel.pages.pages'),
             'parent'    => $parent,
-            'pagesTree' => $this->view('@panel.pages.tree', [
+            'pagesTree' => $this->view('pages.tree', [
                 'pages'           => $pageCollection,
                 'parent'          => $parent,
                 'root'            => $parent,
@@ -81,6 +81,9 @@ final class PagesController extends AbstractController
                 'orderable'       => $this->panel->user()->permissions()->has('panel.pages.reorder'),
                 'headers'         => true,
                 'class'           => 'pages-tree-root',
+            ]),
+            'pagesCards' => $this->view('pages.cards', [
+                'pages' => $pageCollection,
             ]),
         ]));
     }
@@ -204,7 +207,7 @@ final class PagesController extends AbstractController
             }
 
             if ($page->languages()->available()->has($language)) {
-                $page->set('language', $language);
+                $page->setLanguage($language);
             }
         } elseif ($this->site->languages()->hasMultiple() && $page->language() !== null) {
             if ($page->route() === null) {
@@ -216,23 +219,16 @@ final class PagesController extends AbstractController
 
         $createNew = $this->request->query()->has('createNew');
 
-        // Clone the page fields to work with a separate copy
-        // This allows us to:
-        // 1. Remove upload fields after processing (they shouldn't be saved to page data)
-        // 2. Validate user input without modifying the original page fields
-        // 3. Keep the original page fields intact for rendering the form on validation errors
+        // Load page fields
         $fieldCollection = $page->fields()->deepClone();
-
-        $valid = false;
 
         switch ($this->request->method()) {
             case RequestMethod::GET:
                 // Load data from the page itself
                 $data = $page->data();
 
+                // Validate fields against data
                 $fieldCollection->setValues($data);
-
-                $valid = $fieldCollection->isValid();
 
                 break;
 
@@ -240,14 +236,10 @@ final class PagesController extends AbstractController
                 // Load data from POST variables
                 $data = $this->request->input();
 
-                $fieldCollection->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fieldCollection->isValid())) {
-                    $this->panel->notify($this->translate('panel.pages.page.cannotEdit.invalidFields'), 'error');
-                    break;
-                }
-
                 try {
+                    // Validate fields against data
+                    $fieldCollection->setValuesFromRequest($this->request, null)->validate();
+
                     $forceUpdate = false;
 
                     if ($this->request->query()->has('publish')) {
@@ -291,16 +283,14 @@ final class PagesController extends AbstractController
             ? new ContentHistory($page->contentPath())
             : null;
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
-
-        return new Response($this->view('@panel.pages.editor', [
+        return new Response($this->view('pages.editor', [
             'title'           => $this->translate('panel.pages.editPage', (string) $page->title()),
             'page'            => $page,
-            'fields'          => $fieldCollection,
+            'fields'          => $page->fields(),
             'currentLanguage' => $routeParams->get('language', $page->language()?->code()),
             'history'         => $contentHistory,
             ...$this->getPreviousAndNextPage($page),
-        ]), $responseStatus);
+        ]));
     }
 
     /**
@@ -417,7 +407,7 @@ final class PagesController extends AbstractController
         if ($routeParams->has('language')) {
             $language = $routeParams->get('language');
             if ($page->languages()->available()->has($language)) {
-                $page->set('language', $language);
+                $page->setLanguage($language);
             } else {
                 if ($this->request->isXmlHttpRequest()) {
                     return JsonResponse::error($this->translate('panel.pages.page.cannotDelete.invalidLanguage', $language), ResponseStatus::InternalServerError);
@@ -566,7 +556,6 @@ final class PagesController extends AbstractController
      */
     private function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection, bool $force = false): Page
     {
-        // Process upload fields first
         foreach ($fieldCollection as $field) {
             if ($field->type() === 'upload') {
                 if (!$field->isEmpty()) {
@@ -581,22 +570,16 @@ final class PagesController extends AbstractController
                         );
                     }
                     $this->updateLastModifiedTime($page);
-                    // Reload the page to refresh its internal state after file upload
-                    // Note: This reloads $page->fields() but doesn't affect our $fieldCollection
                     $page->reload();
                 }
-                // Remove upload field from the collection - upload fields should not be saved to page data
-                // They are only used for file uploads, not for storing values in the frontmatter
                 $fieldCollection->remove($field->name());
             }
         }
 
         $previousData = $page->data();
 
-        // Extract validated values from remaining fields (upload fields have been removed)
-        // These are the user's submitted values that were validated earlier
         /** @var array<string, mixed> */
-        $data = [...$fieldCollection->extract('value'), 'slug' => $requestData->get('slug')];
+        $data = [...$fieldCollection->everyItem()->value()->toArray(), 'slug' => $requestData->get('slug')];
 
         $page->setMultiple($data);
         $page->save($requestData->get('language'));

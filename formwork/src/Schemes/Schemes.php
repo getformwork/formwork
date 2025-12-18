@@ -74,30 +74,4 @@ class Schemes
 
         return $this->storage[$id] = $this->schemeFactory->make($id, $data);
     }
-
-    /**
-     * Get multiple schemes from ids
-     *
-     * @param list<string> $ids
-     *
-     * @return array<string, Scheme>
-     */
-    public function getMultiple(array $ids): array
-    {
-        $schemes = [];
-        foreach ($ids as $id) {
-            $schemes[$id] = $this->get($id);
-        }
-        return $schemes;
-    }
-
-    /**
-     * Get all loaded schemes
-     *
-     * @return array<string, Scheme>
-     */
-    public function getAll(): array
-    {
-        return $this->getMultiple(array_keys($this->data));
-    }
 }

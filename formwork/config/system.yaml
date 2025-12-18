@@ -57,7 +57,6 @@ images:
     jpegProgressive: true
     pngCompression: 6
     webpQuality: 85
-    avifQuality: 70
     gifColors: 256
     processPath: ${%ROOT_PATH%}/cache/images
     preserveColorProfile: true
@@ -95,10 +94,6 @@ panel:
     config:
         app: '${system.panel.path}/config/app.php'
         navigation: '${system.panel.path}/config/navigation.php'
-
-plugins:
-    enabled: true
-    path: '${%ROOT_PATH%}/site/plugins'
 
 users:
     paths:

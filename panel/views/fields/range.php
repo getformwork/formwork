@@ -1,8 +1,8 @@
-<?php $this->layout('@panel.fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <div class="flex">
     <div class="form-input-range">
         <input <?= $this->attr([
-                    'class'       => $this->classes(['form-input', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                    'class'       => 'form-input',
                     'type'       => 'range',
                     'id'         => $field->name(),
                     'name'       => $field->formName(),

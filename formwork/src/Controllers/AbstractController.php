@@ -4,7 +4,6 @@ namespace Formwork\Controllers;
 
 use Formwork\Cms\App;
 use Formwork\Config\Config;
-use Formwork\Events\EventDispatcher;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
@@ -29,7 +28,6 @@ abstract class AbstractController
         protected readonly Config $config,
         protected readonly ViewFactory $viewFactory,
         protected readonly Request $request,
-        protected readonly EventDispatcher $events,
     ) {
         $this->name = strtolower(Str::beforeLast(Str::afterLast(static::class, '\\'), 'Controller'));
     }

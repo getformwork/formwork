@@ -8,24 +8,15 @@
 .form-upload-drop-target {
     display: block;
     padding: 0.5rem;
-    border: 1px solid var(--color-base-800);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
     background-color: var(--color-base-800);
+    clear: both;
     font-size: 0.875rem;
 }
 
 .form-upload-drop-target:focus {
-    border-color: var(--color-accent-500);
     @include focusring;
-}
-
-.form-upload-drop-target:has(.is-invalid) {
-    border-color: var(--color-danger-500);
-}
-
-.form-upload-drop-target:has(.is-invalid):focus {
-    @include focusring($color-focusring-danger);
 }
 
 .form-upload-drop-target > span {

@@ -23,17 +23,6 @@ fields.date.nextMonth: Следующий месяц
 fields.date.previousHour: Предыдущий час
 fields.date.previousMinute: Предыдущая минута
 fields.date.previousMonth: Предыдущий месяц
-fields.error.invalidEmail: Недействительный адрес электронной почты
-fields.error.invalidValue: Недопустимое значение
-fields.error.patternMismatch: Значение не соответствует требуемому шаблону
-fields.error.requiredValue: Поле обязательно для заполнения
-fields.error.stepMismatch: Значение не соответствует шагу %d
-fields.error.tooManyItems: Максимальное количество допустимых элементов: %d
-fields.error.valueAlreadyExists: Значение уже существует
-fields.error.valueTooLarge: Значение больше %d
-fields.error.valueTooLong: Значение превышает %d требуемых символов
-fields.error.valueTooShort: Значение меньше %d требуемых символов
-fields.error.valueTooSmall: Значение меньше %d
 fields.file.none: (Нет)
 fields.file.uploadLabel: <strong>Нажмите</strong> чтобы выбрать файл для загрузки или <strong>тянуть</strong> это здесь
 fields.image.none: (Нет)

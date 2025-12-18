@@ -77,16 +77,7 @@ class FieldCollection extends AbstractCollection
      */
     public function isValid(): bool
     {
-        $valid = true;
-
-        // Iterate all fields to ensure all validations are run
-        foreach ($this as $field) {
-            if (!$field->isValid()) {
-                $valid = false;
-            }
-        }
-
-        return $valid;
+        return $this->every(fn($field) => $field->isValid());
     }
 
     /**
@@ -122,7 +113,7 @@ class FieldCollection extends AbstractCollection
      */
     public function setValuesFromRequest(Request $request, mixed $default = null): static
     {
-        return $this->setValues(Arr::extend(
+        return $this->setValues(array_merge_recursive(
             $request->query()->toArray(),
             $request->input()->toArray(),
             $request->files()->toArray()

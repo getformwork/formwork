@@ -97,7 +97,6 @@ panel.files.info.mimeType: Typ MIME
 panel.files.info.name: Nazwa
 panel.files.info.size: Rozmiar
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Nie można zaktualizować metadanych pliku, niektóre pola są nieprawidłowe
 panel.files.metadata.updated: Metadane pliku zaktualizowane
 panel.files.next: Następny plik
 panel.files.pageNotFound: Nie można pobrać informacji o pliku, strona nie została znaleziona
@@ -135,7 +134,6 @@ panel.modal.link.text: Tekst
 panel.modal.link.title: Wstaw link
 panel.modal.link.uri: URI
 panel.navigation.toggle: Przełącz nawigację
-panel.options.cannotUpdate.invalidFields: Nie można zaktualizować opcji, niektóre pola są nieprawidłowe
 panel.options.options: Opcje
 panel.options.site: Witryna
 panel.options.system: System
@@ -177,7 +175,6 @@ panel.options.system.files: Pliki
 panel.options.system.files.allowedExtensions: Dozwolone rozszerzenia
 panel.options.system.files.allowedExtensions.noExtensions: Brak rozszerzeń (brak plików)
 panel.options.system.images: Obrazy
-panel.options.system.images.avifQuality: Jakość AVIF
 panel.options.system.images.clearCacheByDefault: Domyślnie wyczyść pamięć podręczną obrazów
 panel.options.system.images.clearCacheByDefault.disabled: Wyłączone
 panel.options.system.images.clearCacheByDefault.enabled: Włączone
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Nie można zduplikować strony, 
 panel.pages.page.cannotDuplicate.pageNotFound: Nie można zduplikować strony, nie znaleziono
 panel.pages.page.cannotEdit.alreadyExists: Nie można edytować strony, strona o tym samym URI już istnieje
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Nie można edytować slug strony dla strony indeksu lub strony błędu
-panel.pages.page.cannotEdit.invalidFields: Nie można edytować strony, niektóre pola są nieprawidłowe
 panel.pages.page.cannotEdit.invalidLanguage: 'Nie można edytować strony, nieprawidłowy język: %s'
 panel.pages.page.cannotEdit.invalidParent: Nie można edytować strony, nieprawidłowa strona nadrzędna
 panel.pages.page.cannotEdit.invalidSlug: Nie można edytować slug strony, musi zawierać tylko litery i cyfry oddzielone myślnikami
@@ -339,7 +335,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Nie można utworzyć użytkownik
 panel.users.user.cannotCreate.varMissing: Nie można utworzyć użytkownika, brak zmiennej
 panel.users.user.cannotDelete: Nie można usunąć użytkownika. Musisz być administratorem, a użytkownik nie może być zalogowany.
 panel.users.user.cannotEdit: Nie można edytować użytkownika %s. Ta operacja jest niedozwolona.
-panel.users.user.cannotEdit.invalidFields: Nie można edytować użytkownika, niektóre pola są nieprawidłowe
 panel.users.user.created: Użytkownik utworzony
 panel.users.user.deleted: Użytkownik usunięty
 panel.users.user.edited: Dane użytkownika zaktualizowane

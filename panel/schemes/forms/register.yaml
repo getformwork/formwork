@@ -5,6 +5,7 @@ fields:
         type: text
         label: '{{user.fullname}}'
         required: true
+        autocomplete: name
 
     username:
         type: text
@@ -14,6 +15,7 @@ fields:
         pattern: '[a-zA-Z][a-zA-Z0-9]*([\-._][a-zA-Z0-9]+)*'
         minLength: 3
         maxLength: 20
+        autocomplete: username
 
     password:
         type: password
@@ -27,6 +29,7 @@ fields:
         type: email
         label: '{{user.email}}'
         required: true
+        autocomplete: email
 
     language:
         type: select

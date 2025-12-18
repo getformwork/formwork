@@ -51,7 +51,7 @@ final class Html
                 $items[] = $key;
             }
         }
-        return implode(' ', array_filter($items));
+        return implode(' ', $items);
     }
 
     /**

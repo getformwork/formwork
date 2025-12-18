@@ -8,7 +8,6 @@ use Formwork\Files\FileFactory;
 use Formwork\Languages\Languages;
 use Formwork\Languages\LanguagesFactory;
 use Formwork\Metadata\MetadataCollection;
-use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Model\Model;
 use Formwork\Pages\ContentFile;
 use Formwork\Pages\Exceptions\PageNotFoundException;
@@ -47,26 +46,27 @@ class Site extends Model implements Stringable
     /**
      * Site content file
      */
-    #[ReadonlyModelProperty]
     protected ?ContentFile $contentFile = null;
+
+    /**
+     * Site last modified time
+     */
+    protected int $lastModifiedTime;
 
     /**
      * Site route
      */
-    #[ReadonlyModelProperty]
-    protected ?string $route = '/';
+    protected ?string $route = null;
 
     /**
      * Site canonical route
      */
-    #[ReadonlyModelProperty]
     protected ?string $canonicalRoute = null;
 
     /**
      * Site slug
      */
-    #[ReadonlyModelProperty]
-    protected ?string $slug = '';
+    protected ?string $slug = null;
 
     /**
      * Site languages
@@ -76,20 +76,12 @@ class Site extends Model implements Stringable
     /**
      * Site templates
      */
-    #[ReadonlyModelProperty]
     protected Templates $templates;
 
     /**
      * Site users
      */
-    #[ReadonlyModelProperty]
     protected Users $users;
-
-    /**
-     * Site last modified time
-     */
-    #[ReadonlyModelProperty]
-    protected int $lastModifiedTime;
 
     /**
      * Site metadata
@@ -101,7 +93,6 @@ class Site extends Model implements Stringable
      *
      * @var array<string, Page>
      */
-    #[ReadonlyModelProperty]
     protected array $storage = [];
 
     /**
@@ -119,7 +110,6 @@ class Site extends Model implements Stringable
     /**
      * Site files
      */
-    #[ReadonlyModelProperty]
     protected FileCollection $files;
 
     /**
@@ -127,6 +117,7 @@ class Site extends Model implements Stringable
      */
     public function __construct(
         array $data,
+        protected App $app,
         protected Config $config,
         protected LanguagesFactory $languagesFactory,
         protected PageFactory $pageFactory,
@@ -235,14 +226,6 @@ class Site extends Model implements Stringable
     }
 
     /**
-     * Return defined schemes
-     */
-    public function schemes(): Schemes
-    {
-        return $this->app()->schemes();
-    }
-
-    /**
      * Get the current page of the site
      */
     public function currentPage(): ?Page
@@ -299,46 +282,6 @@ class Site extends Model implements Stringable
             return false;
         }
         return FileSystem::directoryModifiedSince($this->contentPath, $time);
-    }
-
-    /**
-     * Return whether the page is site
-     */
-    public function isSite(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Return whether the page is the index page
-     */
-    public function isIndexPage(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Return whether the page is the error page
-     */
-    public function isErrorPage(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Return whether the page is index or error page
-     */
-    public function isIndexOrErrorPage(): bool
-    {
-        return $this->isIndexPage() || $this->isErrorPage();
-    }
-
-    /**
-     * Return whether the page is deletable
-     */
-    public function isDeletable(): bool
-    {
-        return false;
     }
 
     /**
@@ -430,6 +373,22 @@ class Site extends Model implements Stringable
     }
 
     /**
+     * Set and return site current page
+     */
+    public function setCurrentPage(Page $page): Page
+    {
+        return $this->currentPage = $page;
+    }
+
+    /**
+     * Return alias of a given route
+     */
+    public function resolveRouteAlias(string $route): ?string
+    {
+        return $this->routeAliases[$route] ?? null;
+    }
+
+    /**
      * Get site index page
      *
      * @throws PageNotFoundException If the site index page cannot be found
@@ -452,19 +411,58 @@ class Site extends Model implements Stringable
     }
 
     /**
-     * Return alias of a given route
+     * Return whether the page is site
      */
-    public function resolveRouteAlias(string $route): ?string
+    public function isSite(): bool
     {
-        return $this->routeAliases[$route] ?? null;
+        return true;
     }
 
     /**
-     * Set and return site current page
+     * Return whether the page is the index page
      */
-    public function setCurrentPage(Page $page): Page
+    public function isIndexPage(): bool
     {
-        return $this->currentPage = $page;
+        return false;
+    }
+
+    /**
+     * Return whether the page is the error page
+     */
+    public function isErrorPage(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Return whether the page is deletable
+     */
+    public function isDeletable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Return defined schemes
+     */
+    public function schemes(): Schemes
+    {
+        return $this->app->schemes();
+    }
+
+    /**
+     * Load site dependencies
+     */
+    public function load(): void
+    {
+        $this->scheme = $this->app->schemes()->get('config.site');
+        $this->templates = $this->app->getService(Templates::class);
+        $this->users = $this->app->getService(Users::class);
+
+        $this->fields = $this->scheme->fields();
+        $this->fields->setModel($this);
+
+        $this->fields->setValues($this->data);
     }
 
     /**
@@ -486,28 +484,11 @@ class Site extends Model implements Stringable
                 continue;
             }
             if (in_array($extension, $this->config->get('system.files.allowedExtensions'), true)) {
-                $files[] = $this->app()->getService(FileFactory::class)->make(FileSystem::joinPaths($path, $file));
+                $files[] = $this->app->getService(FileFactory::class)->make(FileSystem::joinPaths($path, $file));
             }
         }
 
         return $this->files = new FileCollection($files);
-    }
-
-    /**
-     * Load site dependencies
-     *
-     * @internal
-     */
-    public function load(): void
-    {
-        $this->scheme = $this->app()->schemes()->get('config.site');
-        $this->templates = $this->app()->getService(Templates::class);
-        $this->users = $this->app()->getService(Users::class);
-
-        $this->fields = $this->scheme->fields();
-        $this->fields->setModel($this);
-
-        $this->fields->setValues($this->data);
     }
 
     /**
@@ -521,7 +502,7 @@ class Site extends Model implements Stringable
         $this->languages = $this->languagesFactory->make($config);
 
         if (($currentTranslation = $this->languages->current() ?? $this->languages->default()) !== null) {
-            $this->app()->translations()->setCurrent($currentTranslation->code());
+            $this->app->translations()->setCurrent($currentTranslation->code());
         }
     }
 
@@ -531,6 +512,16 @@ class Site extends Model implements Stringable
     protected function setMetadata(array $metadata): void
     {
         $this->data['metadata'] = $metadata;
+    }
+
+    /**
+     * Site storage
+     *
+     * @return array<string, Page>
+     */
+    protected function storage(): array
+    {
+        return $this->storage;
     }
 
     /**
@@ -547,6 +538,10 @@ class Site extends Model implements Stringable
     protected function setContentPath(string $path): void
     {
         $this->contentPath = FileSystem::normalizePath($path . '/');
+
+        $this->route = '/';
+
+        $this->slug = '';
     }
 
     /**
@@ -560,15 +555,5 @@ class Site extends Model implements Stringable
             $this->routeAliases[trim((string) $from, '/')] = Str::wrap((string) $to, '/');
         }
         $this->data['routeAliases'] = $this->routeAliases;
-    }
-
-    /**
-     * Site storage
-     *
-     * @return array<string, Page>
-     */
-    protected function storage(): array
-    {
-        return $this->storage;
     }
 }

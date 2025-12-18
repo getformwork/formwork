@@ -1,4 +1,4 @@
-<?php $this->layout('@panel.fields.field') ?>
+<?php $this->layout('fields.field') ?>
 <fieldset <?= $this->attr([
                 'class'  => $this->classes(['form-input-array', 'form-input-array-associative' => $field->isAssociative()]),
                 'id'     => $field->name(),
@@ -19,7 +19,7 @@
                             ]) ?>>
                 <?php endif ?>
                 <div class="form-input-array-value">
-                    <?php $this->insert('@panel.fields.' . $items->type(), ['field' => $items]) ?>
+                    <?php $this->insert('fields.' . $items->type(), ['field' => $items]) ?>
                 </div>
             </div>
             <button type="button" class="button button-link form-input-array-remove" title="<?= $this->translate('fields.array.remove') ?>" aria-label="<?= $this->translate('fields.array.remove') ?>"><?= $this->icon('minus-circle') ?></button>

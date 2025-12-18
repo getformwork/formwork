@@ -38,14 +38,6 @@
     }
 }
 
-.form-input-duration-wrap:has(.is-invalid) {
-    border-color: var(--color-danger-500);
-}
-
-.form-input-duration-wrap.focused:has(.is-invalid) {
-    @include focusring($color-focusring-danger);
-}
-
 .form-input-duration-wrap .form-input:focus {
     outline: none;
 }

@@ -97,7 +97,6 @@ panel.files.info.mimeType: MIME type
 panel.files.info.name: Name
 panel.files.info.size: Size
 panel.files.info.uri: URI
-panel.files.metadata.cannotUpdate.invalidFields: Cannot update file metadata, some fields are invalid
 panel.files.metadata.updated: File metadata updated
 panel.files.next: Next file
 panel.files.pageNotFound: Cannot get file info, page not found
@@ -135,7 +134,6 @@ panel.modal.link.text: Text
 panel.modal.link.title: Insert link
 panel.modal.link.uri: Uri
 panel.navigation.toggle: Toggle navigation
-panel.options.cannotUpdate.invalidFields: Cannot update options, some fields are invalid
 panel.options.options: Options
 panel.options.site: Site
 panel.options.system: System
@@ -177,7 +175,6 @@ panel.options.system.files: Files
 panel.options.system.files.allowedExtensions: Allowed extensions
 panel.options.system.files.allowedExtensions.noExtensions: No extensions (no file allowed)
 panel.options.system.images: Images
-panel.options.system.images.avifQuality: AVIF quality
 panel.options.system.images.clearCacheByDefault: Clear images cache by default
 panel.options.system.images.clearCacheByDefault.disabled: Disabled
 panel.options.system.images.clearCacheByDefault.enabled: Enabled
@@ -228,7 +225,6 @@ panel.pages.page.cannotDuplicate.notDuplicable: Cannot duplicate page, the page 
 panel.pages.page.cannotDuplicate.pageNotFound: Cannot duplicate page, page not found
 panel.pages.page.cannotEdit.alreadyExists: Cannot edit page, a page with the same uri already exists
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Cannot edit page slug of index and error pages
-panel.pages.page.cannotEdit.invalidFields: Cannot edit page, some fields are invalid
 panel.pages.page.cannotEdit.invalidLanguage: 'Cannot edit page, invalid language: %s'
 panel.pages.page.cannotEdit.invalidParent: Cannot edit page, invalid parent page
 panel.pages.page.cannotEdit.invalidSlug: Cannot edit page slug, it must contain only letters and numbers separated by dashes
@@ -249,6 +245,10 @@ panel.pages.pages.collapseAll: Collapse all
 panel.pages.pages.expandAll: Expand all
 panel.pages.pages.reorder: Reorder
 panel.pages.pages.search: Search pages...
+panel.pages.pages.empty: No pages found
+panel.pages.view.cards: Card view
+panel.pages.view.cards.reorderNote: To reorder pages, switch to list view using the view toggle button
+panel.pages.view.tree: List view
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Previous page
@@ -339,7 +339,6 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Cannot create user, the email ad
 panel.users.user.cannotCreate.varMissing: Cannot create user, missing a variable
 panel.users.user.cannotDelete: Cannot delete user. You must be an administrator and the user must not be logged in.
 panel.users.user.cannotEdit: Cannot edit user %s. The action is not allowed.
-panel.users.user.cannotEdit.invalidFields: Cannot edit user, some fields are invalid
 panel.users.user.created: User created
 panel.users.user.deleted: User deleted
 panel.users.user.edited: User data updated

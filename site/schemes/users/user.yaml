@@ -13,11 +13,13 @@ fields:
         label: '{{user.fullname}}'
         required: true
         icon: user
+        autocomplete: name
 
     email:
         type: email
         label: '{{user.email}}'
         required: true
+        autocomplete: email
 
     password:
         type: password

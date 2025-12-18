@@ -1,9 +1,9 @@
-<?php $this->layout('@panel.fields.field') ?>
+<?php $this->layout('fields.field') ?>
 
 <?php $this->modals()->addMultiple(['images', 'link']) ?>
 
 <textarea <?= $this->attr([
-                'class'         => $this->classes(['form-textarea', 'editor-textarea', 'is-loading', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                'class'         => ['form-textarea', 'editor-textarea', 'is-loading'],
                 'id'            => $field->name(),
                 'name'          => $field->formName(),
                 'placeholder'   => $field->placeholder(),

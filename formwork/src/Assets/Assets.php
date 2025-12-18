@@ -2,7 +2,6 @@
 
 namespace Formwork\Assets;
 
-use Formwork\Assets\Exceptions\AssetResolutionException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
@@ -11,35 +10,25 @@ use Formwork\Utils\Uri;
 class Assets
 {
     /**
-     * Resolution paths for namespaced assets
-     *
-     * @var array<string, array{path: string, uri: string}>
+     * Base path where asset files are located
      */
-    protected array $resolutionPaths = [];
+    protected string $basePath;
+
+    /**
+     * Base URI from which assets are accessible
+     */
+    protected string $baseUri;
 
     /**
      * Asset collection
      */
     private AssetCollection $collection;
 
-    public function __construct()
+    public function __construct(string $basePath, string $baseUri)
     {
+        $this->basePath = FileSystem::normalizePath($basePath);
+        $this->baseUri = Uri::normalize(Str::append($baseUri, '/'));
         $this->collection = new AssetCollection();
-    }
-
-    /**
-     * Set assets resolution paths
-     *
-     * @param array<string, array{path: string, uri: string}> $paths
-     */
-    public function setResolutionPaths(array $paths): void
-    {
-        foreach ($paths as $namespace => ['path' => $path, 'uri' => $uri]) {
-            $this->resolutionPaths[$namespace] = [
-                'path' => FileSystem::normalizePath($path),
-                'uri'  => Uri::normalize(Str::append($uri, '/')),
-            ];
-        }
     }
 
     /**
@@ -50,7 +39,8 @@ class Assets
     public function add(string $key, array $meta = []): void
     {
         if (!$this->collection->has($key)) {
-            ['path' => $path, 'uri' => $uri] = $this->resolve($key);
+            $path = FileSystem::joinPaths($this->basePath, Path::resolve($key, '/', DIRECTORY_SEPARATOR));
+            $uri = Path::join([$this->baseUri, Path::resolve($key, '/')]);
             $this->collection->set($key, new Asset($path, $uri, $meta));
         }
     }
@@ -71,7 +61,8 @@ class Assets
     public function get(string $key): Asset
     {
         if (!$this->collection->has($key)) {
-            ['path' => $path, 'uri' => $uri] = $this->resolve($key);
+            $path = FileSystem::joinPaths($this->basePath, Path::resolve($key, '/', DIRECTORY_SEPARATOR));
+            $uri = Path::join([$this->baseUri, Path::resolve($key, '/')]);
             $this->collection->set($key, new Asset($path, $uri));
         }
         return $this->collection->get($key);
@@ -99,34 +90,5 @@ class Assets
     public function images(): AssetCollection
     {
         return $this->collection->images();
-    }
-
-    /**
-     * Resolve asset path and URI from key, supporting namespaced syntax
-     *
-     * @return array{path: string, uri: string}
-     */
-    protected function resolve(string $key): array
-    {
-        if (Str::startsWith($key, '@')) {
-            if (!Str::contains($key, '/')) {
-                throw new AssetResolutionException(sprintf('Cannot resolve asset with key "%s": invalid namespaced syntax', $key));
-            }
-
-            [$namespace, $relativePath] = explode('/', Str::after($key, '@'), 2);
-        } else {
-            $namespace = 'template';
-            $relativePath = $key;
-        }
-
-        if (isset($this->resolutionPaths[$namespace])) {
-            ['path' => $path, 'uri' => $uri] = $this->resolutionPaths[$namespace];
-            return [
-                'path' => FileSystem::joinPaths($path, Path::resolve($relativePath, '/', DIRECTORY_SEPARATOR)),
-                'uri'  => Path::join([$uri, Path::resolve($relativePath, '/')]),
-            ];
-        }
-
-        throw new AssetResolutionException(sprintf('Cannot resolve asset with key "%s": namespace "%s" not defined', $key, $namespace));
     }
 }

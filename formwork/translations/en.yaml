@@ -23,17 +23,6 @@ fields.date.nextMonth: Next month
 fields.date.previousHour: Previous hour
 fields.date.previousMinute: Previous minute
 fields.date.previousMonth: Previous month
-fields.error.invalidEmail: Invalid email address
-fields.error.invalidValue: Invalid value
-fields.error.patternMismatch: The value does not match the required pattern
-fields.error.requiredValue: The field is required
-fields.error.stepMismatch: The value does not conform to the required step interval of %d
-fields.error.tooManyItems: The maximum number of items allowed is %d
-fields.error.valueAlreadyExists: The value already exists
-fields.error.valueTooLarge: The value is larger than %d
-fields.error.valueTooLong: The value is longer than the %d characters required
-fields.error.valueTooShort: The value is shorter than the %d characters required
-fields.error.valueTooSmall: The value is smaller than %d
 fields.file.none: (None)
 fields.file.uploadLabel: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 fields.image.none: (None)
@@ -63,7 +52,6 @@ page.routable: Routable
 page.routable.description: Routable pages are accessible from their address
 page.slug: Slug
 page.slug.suggestion: letters, numbers and dashes only
-page.status: Status
 page.status.notPublished: Not published
 page.status.published: Published
 page.status.published.description: Published pages are visible in the site and accessible from their address
@@ -73,6 +61,7 @@ page.template: Template
 page.text: Text
 page.title: Title
 page.unpublishDate: Unpublish date
+page.status: Status
 site.advanced: Advanced options
 site.advanced.aliases: Aliases
 site.advanced.aliases.alias: Alias

@@ -35,7 +35,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
             $response = JsonResponse::error($message, $responseStatus);
         } else {
             $response = new Response($this->view(
-                '@system.errors.error',
+                'errors.error',
                 [
                     'status'  => $responseStatus->code(),
                     'message' => $responseStatus->message(),

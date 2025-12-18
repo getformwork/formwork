@@ -1,5 +1,5 @@
 <?php if (!$layout->tabs()->isEmpty()): ?>
-    <?php $this->layout('@panel.fields.section-tabs') ?>
+    <?php $this->layout('fields.section-tabs') ?>
 <?php endif ?>
 
 <?php foreach ($layout->sections()->groupBy('tab', $layout->tabs()->first()?->name()) as $tabName => $sections): ?>
@@ -18,7 +18,7 @@
                         <?php foreach ($fields->getMultiple($section->get('fields', [])) as $field) : ?>
                             <?php if ($field->isVisible()) : ?>
                                 <div class="<?= $this->classes(['col-md-' . $field->get('width', '12-12')]) ?>">
-                                    <?php $this->insert('@panel.fields.' . $field->type(), ['field' => $field]) ?>
+                                    <?php $this->insert('fields.' . $field->type(), ['field' => $field]) ?>
                                 </div>
                             <?php endif ?>
                         <?php endforeach ?>

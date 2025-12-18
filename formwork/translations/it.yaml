@@ -23,17 +23,6 @@ fields.date.nextMonth: Mese successivo
 fields.date.previousHour: Ora precedente
 fields.date.previousMinute: Minuto precedente
 fields.date.previousMonth: Mese precedente
-fields.error.invalidEmail: Indirizzo email non valido
-fields.error.invalidValue: Valore non valido
-fields.error.patternMismatch: Il valore non corrisponde al formato richiesto
-fields.error.requiredValue: Il campo è obbligatorio
-fields.error.stepMismatch: Il valore non rispetta l'intervallo del passo di %d
-fields.error.tooManyItems: Il numero massimo di elementi consentito è %d
-fields.error.valueAlreadyExists: Il valore esiste già
-fields.error.valueTooLarge: Il valore è maggiore di %d
-fields.error.valueTooLong: Il valore è più lungo dei %d caratteri richiesti
-fields.error.valueTooShort: Il valore è più corto dei %d caratteri richiesti
-fields.error.valueTooSmall: Il valore è inferiore a %d
 fields.file.none: (Nessuno)
 fields.file.uploadLabel: <strong>Fare click</strong> per selezionare un file da caricare o <strong>trascinarlo</strong> qui
 fields.image.none: (Nessuna)

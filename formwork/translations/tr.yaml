@@ -23,17 +23,6 @@ fields.date.nextMonth: Sonraki ay
 fields.date.previousHour: Önceki saat
 fields.date.previousMinute: Önceki dakika
 fields.date.previousMonth: Önceki ay
-fields.error.invalidEmail: Geçersiz e-posta adresi
-fields.error.invalidValue: Geçersiz değer
-fields.error.patternMismatch: Değer gerekli desene uymuyor
-fields.error.requiredValue: Bu alan zorunludur
-fields.error.stepMismatch: Değer %d adım aralığına uymuyor
-fields.error.tooManyItems: İzin verilen en fazla öğe sayısı: %d
-fields.error.valueAlreadyExists: Değer zaten mevcut
-fields.error.valueTooLarge: Değer %d değerinden büyük
-fields.error.valueTooLong: Değer gerekli %d karakterden uzun
-fields.error.valueTooShort: Değer gerekli %d karakterden kısa
-fields.error.valueTooSmall: Değer %d değerinden küçük
 fields.file.none: (Yok)
 fields.file.uploadLabel: Bir dosya seçmek için <strong>tıklayın</strong> veya buraya <strong>sürükleyin</strong>
 fields.image.none: (Yok)
@@ -63,7 +52,6 @@ page.routable: Yönlendirilebilir
 page.routable.description: Yönlendirilebilir sayfalar adreslerinden erişilebilir
 page.slug: Slug
 page.slug.suggestion: yalnızca harfler, sayılar ve tireler
-page.status: Durum
 page.status.notPublished: Yayınlanmamış
 page.status.published: Yayınlanmış
 page.status.published.description: Yayınlanmış sayfalar sitede görünür ve adreslerinden erişilebilir
@@ -73,6 +61,7 @@ page.template: Şablon
 page.text: Metin
 page.title: Başlık
 page.unpublishDate: Yayından kaldırma tarihi
+page.status: Durum
 site.advanced: Gelişmiş ayarlar
 site.advanced.aliases: Takma adlar
 site.advanced.aliases.alias: Takma ad

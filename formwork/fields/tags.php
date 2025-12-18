@@ -9,8 +9,6 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'default' => [],
-
         'methods' => [
             'toString' => function ($field) {
                 return implode(', ', $field->value() ?? []);
@@ -41,7 +39,7 @@ return function (App $app) {
                 }
 
                 if ($field->limit() !== null && count($value) > $field->limit()) {
-                    throw new ValidationException(sprintf('Field "%s" of type "%s" has a limit of %d items', $field->name(), $field->type(), $field->get('limit')), 'tooManyItems', ['limit' => $field->get('limit')]);
+                    throw new ValidationException(sprintf('Field "%s" of type "%s" has a limit of %d items', $field->name(), $field->type(), $field->get('limit')));
                 }
 
                 return array_values(array_filter($value));

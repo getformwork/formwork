@@ -1,14 +1,24 @@
-<?php $this->layout('@panel.panel') ?>
+<?php $this->layout('panel') ?>
 
 <?php $this->modals()->addMultiple(['newUser', 'deleteUser']) ?>
 
-<div class="header">
-    <div class="header-icon"><?= $this->icon('users') ?></div>
-    <div class="header-title"><?= $this->translate('panel.users.users') ?> <span class="badge"><?= $users->count() ?></span></div>
-    <div>
+<header class="panel-header">
+    <div class="panel-header-page-info">
+        <div class="panel-header-page-icon">
+            <?= $this->icon('users') ?>
+        </div>
+        <div class="panel-header-page-title">
+            <div class="panel-header-page-title-text">
+                <?= $this->translate('panel.users.users') ?> 
+                <span class="badge"><?= $users->count() ?></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-header-actions">
         <button type="button" class="button button-accent" data-modal="newUserModal" <?php if (!$panel->user()->permissions()->has('panel.users.create')) : ?> disabled<?php endif ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
     </div>
-</div>
+</header>
 
 <section class="section">
     <div class="users-list-headers" aria-hidden="true">
@@ -22,7 +32,7 @@
         <?php foreach ($users as $user) : ?>
             <div class="users-item">
                 <div class="users-item-cell user-fullname">
-                    <?= $this->insert('@panel._user-image', ['user' => $user, 'class' => 'user-image']) ?>
+                    <?= $this->insert('_user-image', ['user' => $user, 'class' => 'user-image']) ?>
                     <a href="<?= $panel->uri('/users/' . $user->username() . '/profile/') ?>"><?= $this->escape($user->fullname()) ?></a>
                 </div>
                 <div class="users-item-cell user-username truncate"><?= $this->escape($user->username()) ?></div>

@@ -209,25 +209,23 @@ class Field implements Arrayable, Stringable
             $value = $value->value();
         }
 
-        try {
-            if ($this->isRequired() && Constraint::isEmpty($value)) {
-                throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()), 'requiredValue');
-            }
-
-            if ($this->hasMethod('validate')) {
-                $value = $this->callMethod('validate', [$value]);
-
-                if ($dynamic !== null) {
-                    $value = DynamicFieldValue::withComputed($value, $dynamic);
-                }
-
-                $this->set('value', $value);
-            }
-        } finally {
-            $this->validated = true;
-
-            $this->validating = false;
+        if ($this->isRequired() && Constraint::isEmpty($value)) {
+            throw new ValidationException(sprintf('Required field "%s" of type "%s" cannot be empty', $this->name(), $this->type()));
         }
+
+        if ($this->hasMethod('validate')) {
+            $value = $this->callMethod('validate', [$value]);
+
+            if ($dynamic !== null) {
+                $value = DynamicFieldValue::withComputed($value, $dynamic);
+            }
+
+            $this->set('value', $value);
+        }
+
+        $this->validated = true;
+
+        $this->validating = false;
 
         return $this;
     }
@@ -243,19 +241,6 @@ class Field implements Arrayable, Stringable
             return false;
         }
         return true;
-    }
-
-    /**
-     * Get validation error message
-     */
-    public function getValidationError(): ?string
-    {
-        try {
-            $this->validate();
-            return null;
-        } catch (ValidationException $e) {
-            return $this->translation->translate('fields.error.' . ($e->getIdentifier() ?? 'invalidValue'), ...array_values($e->getContext() ?? []));
-        }
     }
 
     /**

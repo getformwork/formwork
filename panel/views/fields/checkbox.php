@@ -2,7 +2,7 @@
     <label class="form-label form-checkbox-label">
         <input <?= $this->attr([
                     'type'     => 'checkbox',
-                    'class'    => $this->classes(['form-input', 'form-checkbox', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
+                    'class'    => ['form-input', 'form-checkbox'],
                     'id'       => $field->name(),
                     'name'     => $field->formName(),
                     'checked'  => $field->value() == true,
@@ -13,4 +13,4 @@
         <span class="form-checkbox-text"><?= $this->escape($field->label()) ?></span>
     </label>
 </div>
-<?php $this->insert('@panel.fields.partials.description') ?>
+<?php $this->insert('fields.partials.description') ?>

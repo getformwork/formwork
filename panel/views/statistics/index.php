@@ -1,10 +1,47 @@
-<?php $this->layout('@panel.panel') ?>
+<?php $this->layout('panel') ?>
 
-<div class="header">
-    <div class="header-icon"><?= $this->icon('chart-line') ?></div>
-    <div class="header-title"><?= $this->translate('panel.statistics.statistics') ?></div>
-</div>
+<header class="panel-header">
+    <div class="panel-header-page-info">
+        <div class="panel-header-page-icon">
+            <?= $this->icon('chart-line') ?>
+        </div>
+        <div class="panel-header-page-title">
+            <div class="panel-header-page-title-text"><?= $this->translate('panel.statistics.statistics') ?></div>
+        </div>
+    </div>
+</header>
 
+<!-- Statistics Overview Cards -->
+<section class="section">
+    <div class="row text-align-center">
+        <div class="col-xs-1-2 col-md-1-4">
+            <div style="padding: 1.5rem; border-radius: 0.5rem; background: rgba(59, 130, 246, 0.1);">
+                <div class="text-size-xxl text-bold text-color-blue"><?= $monthVisits ?></div>
+                <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyVisits') ?></span>
+            </div>
+        </div>
+        <div class="col-xs-1-2 col-md-1-4">
+            <div style="padding: 1.5rem; border-radius: 0.5rem; background: rgba(245, 158, 11, 0.1);">
+                <div class="text-size-xxl text-bold text-color-amber"><?= $monthUniqueVisits ?></div>
+                <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyUniqueVisitors') ?></span>
+            </div>
+        </div>
+        <div class="col-xs-1-2 col-md-1-4">
+            <div style="padding: 1.5rem; border-radius: 0.5rem; background: rgba(59, 130, 246, 0.1);">
+                <div class="text-size-xxl text-bold text-color-blue"><?= $weekVisits ?></div>
+                <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyVisits') ?></span>
+            </div>
+        </div>
+        <div class="col-xs-1-2 col-md-1-4">
+            <div style="padding: 1.5rem; border-radius: 0.5rem; background: rgba(245, 158, 11, 0.1);">
+                <div class="text-size-xxl text-bold text-color-amber"><?= $weekUniqueVisits ?></div>
+                <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyUniqueVisitors') ?></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chart Section -->
 <section class="section">
     <div class="row">
         <div class="col-xs-1-2">
@@ -20,26 +57,6 @@
         </div>
     </div>
     <div class="statistics-chart ct-chart is-loading" data-chart-data="<?= $this->escapeAttr($statistics) ?>"></div>
-</section>
-<section class="section">
-    <div class="row text-align-center">
-        <div class="col-xs-1-2 col-md-1-4">
-            <div class="text-size-xxl text-bold text-color-blue"><?= $monthVisits ?></div>
-            <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyVisits') ?></span>
-        </div>
-        <div class="col-xs-1-2 col-md-1-4">
-            <div class="text-size-xxl text-bold text-color-amber"><?= $monthUniqueVisits ?></div>
-            <span class="text-size-sm"><?= $this->translate('panel.statistics.monthlyUniqueVisitors') ?></span>
-        </div>
-        <div class="col-xs-1-2 col-md-1-4">
-            <div class="text-size-xxl text-bold text-color-blue"><?= $weekVisits ?></div>
-            <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyVisits') ?></span>
-        </div>
-        <div class="col-xs-1-2 col-md-1-4">
-            <div class="text-size-xxl text-bold text-color-amber"><?= $weekUniqueVisits ?></div>
-            <span class="text-size-sm"><?= $this->translate('panel.statistics.weeklyUniqueVisitors') ?></span>
-        </div>
-    </div>
 </section>
 
 <section class="section">

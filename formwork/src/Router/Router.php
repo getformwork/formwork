@@ -228,7 +228,7 @@ class Router
 
                 $this->container->define(RouteParams::class, $this->params);
 
-                $routeCallback = $this->parseAction($route->getAction(), $route->getActionParameters());
+                $routeCallback = $this->parseAction($route->getAction());
 
                 return $this->container->call($routeCallback);
             }
@@ -274,17 +274,15 @@ class Router
 
     /**
      * Load routes and filters from file
-     *
-     * @param array<string, mixed> $actionParameters
      */
-    public function loadFromFile(string $path, ?string $prefix = null, array $actionParameters = []): void
+    public function loadFromFile(string $path, ?string $prefix = null): void
     {
         $data = Php::parseFile($path);
 
         /**
          * @param Route|RouteFilter $o
          */
-        $setProps = static function ($o, array $props, ?string $prefix): void {
+        $setProps = static function ($o, array $props) use ($prefix): void {
             if (isset($props['methods'])) {
                 $o->methods(...$props['methods']);
             }
@@ -301,8 +299,7 @@ class Router
         if (isset($data['routes'])) {
             foreach ($data['routes'] as $routeName => $route) {
                 $r = $this->addRoute($routeName, $route['path'])
-                    ->action($route['action'])
-                    ->actionParameters(($route['actionParameters'] ?? []) + $actionParameters);
+                    ->action($route['action']);
 
                 if (isset($route['where'])) {
                     foreach ($route['where'] as $param => $constraint) {
@@ -310,14 +307,14 @@ class Router
                     }
                 }
 
-                $setProps($r, $route, $route['prefix'] ?? $prefix);
+                $setProps($r, $route);
             }
         }
 
         if (isset($data['filters'])) {
             foreach ($data['filters'] as $filterName => $filter) {
                 $f = $this->addFilter($filterName, $filter['action']);
-                $setProps($f, $filter, $filter['prefix'] ?? $prefix);
+                $setProps($f, $filter);
             }
         }
     }
@@ -436,12 +433,11 @@ class Router
     /**
      * Parse callback
      *
-     * @param callable|string      $action
-     * @param array<string, mixed> $actionParameters
+     * @param callable|string $action
      *
      * @throws InvalidRouteException If the callback is invalid
      */
-    protected function parseAction($action, array $actionParameters = []): Closure
+    protected function parseAction($action): Closure
     {
         // Parse Class@method callback syntax
         if (is_string($action) && Str::contains($action, '@')) {
@@ -449,7 +445,7 @@ class Router
              * @var class-string $controller
              */
             [$controller, $method] = explode('@', $action, 2);
-            $class = $this->container->build($controller, $actionParameters);
+            $class = $this->container->build($controller);
             return $class->$method(...);
         }
 

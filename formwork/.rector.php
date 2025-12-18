@@ -8,7 +8,6 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
-use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
@@ -35,7 +34,6 @@ return RectorConfig::configure()
         dirname(__DIR__) . '/panel/node_modules',
         dirname(__DIR__) . '/panel/views',
         dirname(__DIR__) . '/site/templates',
-        dirname(__DIR__) . '/site/plugins',
         dirname(__DIR__) . '/vendor',
         AddOverrideAttributeToOverriddenMethodsRector::class,
         ChangeSwitchToMatchRector::class,
@@ -47,6 +45,5 @@ return RectorConfig::configure()
         ReadOnlyPropertyRector::class,
         RemoveNullArgOnNullDefaultParamRector::class,
         RenamePropertyToMatchTypeRector::class,
-        ReturnBinaryOrToEarlyReturnRector::class,
         VariableConstFetchToClassConstFetchRector::class,
     ]);

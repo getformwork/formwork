@@ -12,8 +12,6 @@ use Formwork\Utils\Uri;
 
 return function (App $app) {
     return [
-        'assets' => $app->assets(...),
-
         'attr' => Html::attributes(...),
 
         'classes' => Html::classes(...),

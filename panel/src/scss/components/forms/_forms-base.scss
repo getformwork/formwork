@@ -5,26 +5,32 @@
 
 .form-input {
     width: 100%;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid var(--color-base-500);
+    padding: 0.375rem 0.625rem;
+    border: 1px solid var(--color-base-600);
     border-radius: var(--border-radius);
     margin: 0;
     margin-bottom: 0.75rem;
-    background-color: var(--color-base-900);
+    background-color: var(--color-base-700);
     color: var(--color-base-100);
     font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-text);
+    transition: border-color var(--transition-time-sm), background-color var(--transition-time-sm);
     @include appearance-none;
+
+    &:hover {
+        border-color: var(--color-base-500);
+    }
 
     &:focus {
         border-color: var(--color-accent-500);
+        background-color: var(--color-base-800);
         @include focusring;
     }
 
     &:disabled {
-        background-color: var(--color-base-700);
-        color: var(--color-base-300);
+        background-color: var(--color-base-800);
+        color: var(--color-base-400);
     }
 }
 
@@ -62,10 +68,11 @@
 }
 
 .form-select {
-    padding: 0.25rem 1.5rem 0.25rem 0.5rem;
-    background: var(--color-base-900) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-gray-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
-    background-color: var(--color-base-900);
+    padding: 0.375rem 1.75rem 0.375rem 0.625rem;
+    background: var(--color-base-700) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-gray-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
+    background-color: var(--color-base-700);
     background-size: 8px 6px;
+    cursor: pointer;
     /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
     @extend .form-input;
 
@@ -93,38 +100,20 @@
     font-size: calc(var(--font-size-sm) * 0.875);
 }
 
-.form-input-accent,
-.form-select-accent {
+.form-input-accent {
     border-color: var(--color-accent-500);
 }
 
-.form-input-success,
-.form-select-success {
+.form-input-success {
     border-color: var(--color-success-500);
-
-    &:focus {
-        @include focusring($color-focusring-success);
-    }
 }
 
-.form-input-warning,
-.form-select-warning {
+.form-input-warning {
     border-color: var(--color-warning-500);
-
-    &:focus {
-        @include focusring($color-focusring-warning);
-    }
 }
 
-.form-input-danger,
-.form-input.is-invalid,
-.form-select-danger,
-.form-select.is-invalid {
+.form-input-danger {
     border-color: var(--color-danger-500);
-
-    &:focus {
-        @include focusring($color-focusring-danger);
-    }
 }
 
 .form-input-invalid {
@@ -134,7 +123,7 @@
 
 .form-input-wrap {
     position: relative;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
 .form-input-wrap > .form-input {
@@ -183,13 +172,6 @@
     margin-top: -0.5rem;
     margin-bottom: 0.75rem;
     color: var(--color-base-300);
-    font-size: var(--font-size-sm);
-}
-
-.form-input-errors {
-    margin-top: -0.5rem;
-    margin-bottom: 0.75rem;
-    color: var(--color-danger-500);
     font-size: var(--font-size-sm);
 }
 

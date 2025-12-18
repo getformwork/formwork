@@ -4,20 +4,18 @@
 @use "sass:map";
 
 .section {
-    padding: 1.5rem 1.25rem;
-    margin-bottom: 1rem;
-    background-color: var(--color-base-900);
-    box-shadow: var(--box-shadow-sm);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background-color: transparent;
 
     @media (min-width: map.get($breakpoints, "sm")) {
-        padding: 1.5rem 1.75rem;
-        border-radius: var(--border-radius);
+        padding: 1rem 1.25rem;
     }
 }
 
 .section-header {
-    margin-bottom: 1rem;
-    font-size: var(--font-size-md);
+    margin-bottom: 0.75rem;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     @include user-select-none;
 }

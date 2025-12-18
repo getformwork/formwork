@@ -4,11 +4,9 @@ namespace Formwork\Panel;
 
 use Formwork\Assets\Assets;
 use Formwork\Config\Config;
-use Formwork\Events\EventDispatcher;
 use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
-use Formwork\Panel\Events\PanelNavigationLoadedEvent;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Panel\Navigation\NavigationItem;
 use Formwork\Panel\Navigation\NavigationItemCollection;
@@ -32,6 +30,11 @@ final class Panel
      */
     private NavigationItemCollection $navigation;
 
+    /**
+     * Assets instance
+     */
+    private Assets $assets;
+
     public function __construct(
         private readonly Container $container,
         private Config $config,
@@ -39,8 +42,6 @@ final class Panel
         private Users $users,
         private Modals $modals,
         private Translations $translations,
-        private Assets $assets,
-        private EventDispatcher $events,
     ) {}
 
     /**
@@ -117,7 +118,6 @@ final class Panel
             ]);
             $this->navigation = new NavigationItemCollection();
             $this->navigation->setMultiple(Arr::map($items, fn(array $data, string $id) => new NavigationItem($id, $data)));
-            $this->events->dispatch(new PanelNavigationLoadedEvent($this->navigation, $translation));
         }
         return $this->navigation;
     }
@@ -170,13 +170,10 @@ final class Panel
 
     /**
      * Get Assets instance
-     *
-     * @deprecated Use dependency injection to get the Assets service instead
      */
     public function assets(): Assets
     {
-        trigger_error(sprintf('%s() is deprecated since Formwork 2.3.0 and will be removed in a future release. Use dependency injection to get the Assets service instead', __METHOD__), E_USER_DEPRECATED);
-        return $this->assets;
+        return $this->assets ??= new Assets($this->config->get('system.panel.paths.assets'), $this->uri('/assets/'));
     }
 
     /**

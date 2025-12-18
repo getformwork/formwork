@@ -17,6 +17,7 @@ options:
         templates: [post]
         reverse: true
         orderable: false
+        subtree: true
 
     icon: page-listing
 
