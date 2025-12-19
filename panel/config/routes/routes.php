@@ -333,7 +333,7 @@ return [
                 foreach ($assets as $asset) {
                     $assetPath = FileSystem::joinPaths($path, $asset);
                     if (!FileSystem::isFile($assetPath, assertExists: false)) {
-                        $view = $viewFactory->make('errors.panel.assets');
+                        $view = $viewFactory->make('@system.errors.panel.assets');
                         return new Response($view->render(), ResponseStatus::InternalServerError);
                     }
                 }
