@@ -70,10 +70,19 @@ final class PagesController extends AbstractController
 
         $this->modal('newPage')->setFieldsModel($parent);
 
-        return new Response($this->view('@panel.pages.index', [
-            'title'     => $this->translate('panel.pages.pages'),
-            'parent'    => $parent,
-            'pagesTree' => $this->view('@panel.pages.tree', [
+        // Get view mode from query parameter or localStorage default
+        $viewMode = $this->request->query()->get('view', 'tree');
+
+        // Validate view mode
+        if (!in_array($viewMode, ['tree', 'card'])) {
+            $viewMode = 'tree';
+        }
+
+        $pagesContent = $viewMode === 'card'
+            ? $this->view('@panel.pages.cards', [
+                'pages' => $pageCollection,
+            ])
+            : $this->view('@panel.pages.tree', [
                 'pages'           => $pageCollection,
                 'parent'          => $parent,
                 'root'            => $parent,
@@ -81,7 +90,13 @@ final class PagesController extends AbstractController
                 'orderable'       => $this->panel->user()->permissions()->has('panel.pages.reorder'),
                 'headers'         => true,
                 'class'           => 'pages-tree-root',
-            ]),
+            ]);
+
+        return new Response($this->view('@panel.pages.index', [
+            'title'     => $this->translate('panel.pages.pages'),
+            'parent'    => $parent,
+            'pagesTree' => $pagesContent,
+            'viewMode'  => $viewMode,
         ]));
     }
 

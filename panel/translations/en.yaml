@@ -246,9 +246,12 @@ panel.pages.page.moved: Page moved!
 panel.pages.page.notFound: Page not found
 panel.pages.pages: Pages
 panel.pages.pages.collapseAll: Collapse all
+panel.pages.pages.empty: No pages found
 panel.pages.pages.expandAll: Expand all
 panel.pages.pages.reorder: Reorder
 panel.pages.pages.search: Search pages...
+panel.pages.pages.viewCard: Card view
+panel.pages.pages.viewTree: Tree view
 panel.pages.preview: Preview
 panel.pages.previewFile: Preview
 panel.pages.previous: Previous page

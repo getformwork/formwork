@@ -14,6 +14,8 @@ export class Pages {
         const commandCollapseAllPages = $("[data-command=collapse-all-pages]") as HTMLButtonElement;
         const commandReorderPages = $("[data-command=reorder-pages]") as HTMLButtonElement;
         const commandPreview = $("[data-command=preview]") as HTMLButtonElement;
+        const commandViewModeTree = $("[data-command=view-mode-tree]") as HTMLButtonElement;
+        const commandViewModeCard = $("[data-command=view-mode-card]") as HTMLButtonElement;
 
         const searchInput = $(".page-search") as HTMLInputElement;
 
@@ -59,6 +61,20 @@ export class Pages {
                 commandReorderPages.classList.toggle("active");
                 ($(".pages-tree") as HTMLElement).classList.toggle("is-reordering");
                 commandReorderPages.blur();
+            });
+        }
+
+        if (commandViewModeTree) {
+            commandViewModeTree.addEventListener("click", () => {
+                setViewMode("tree");
+                commandViewModeTree.blur();
+            });
+        }
+
+        if (commandViewModeCard) {
+            commandViewModeCard.addEventListener("click", () => {
+                setViewMode("card");
+                commandViewModeCard.blur();
             });
         }
 
@@ -295,6 +311,22 @@ export class Pages {
             if (commandReorderPages) {
                 commandReorderPages.disabled = orderablePages.length <= 1;
             }
+        }
+
+        function setViewMode(mode: "tree" | "card") {
+            // Store preference in localStorage
+            localStorage.setItem("pages-view-mode", mode);
+
+            // Update button states
+            if (commandViewModeTree && commandViewModeCard) {
+                commandViewModeTree.classList.toggle("active", mode === "tree");
+                commandViewModeCard.classList.toggle("active", mode === "card");
+            }
+
+            // Reload page with view mode parameter
+            const url = new URL(window.location.href);
+            url.searchParams.set("view", mode);
+            window.location.href = url.toString();
         }
 
         async function initSortable(element: HTMLElement) {
