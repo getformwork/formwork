@@ -73,8 +73,9 @@ final class PagesController extends AbstractController
         // Check if grid display is enabled in parent scheme
         $gridDisplayEnabled = $parent->scheme()->options()->get('children.subtreeGridDisplay', false);
 
-        // Get view mode from query parameter or default to tree
-        $viewMode = $this->request->query()->get('view', 'tree');
+        // Get view mode from query parameter or default based on grid display setting
+        $defaultView = $gridDisplayEnabled ? 'card' : 'tree';
+        $viewMode = $this->request->query()->get('view', $defaultView);
 
         // Validate view mode - only allow card view if grid display is enabled
         if (!in_array($viewMode, ['tree', 'card']) || ($viewMode === 'card' && !$gridDisplayEnabled)) {
