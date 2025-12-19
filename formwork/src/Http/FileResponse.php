@@ -78,7 +78,7 @@ class FileResponse extends Response
         }
 
         while ($length > 0 && !feof($file)) {
-            $read = fread($file, self::CHUNK_SIZE);
+            $read = fread($file, min(self::CHUNK_SIZE, $length));
 
             if ($read === false) {
                 break;
@@ -111,17 +111,22 @@ class FileResponse extends Response
 
         parent::prepare($request);
 
-        if (!$this->headers->has('Accept-Ranges') && in_array($request->method(), [RequestMethod::HEAD, RequestMethod::GET], true)) {
-            $this->headers->set('Accept-Ranges', 'bytes');
-        }
-
-        if ($request->method() === RequestMethod::HEAD || $this->requiresEmptyContent()) {
+        if ($this->requiresEmptyContent()) {
             $this->length = 0;
             return $this;
         }
 
+        if (!$this->headers->has('Accept-Ranges') && in_array($request->method(), [RequestMethod::HEAD, RequestMethod::GET], true)) {
+            $this->headers->set('Accept-Ranges', 'bytes');
+        }
+
         if ($request->method() === RequestMethod::GET && preg_match('/^bytes=(\d+)?-(\d+)?$/', $request->headers()->get('Range', ''), $matches, PREG_UNMATCHED_AS_NULL)) {
             [, $start, $end] = $matches;
+
+            // RFC 7233: ignore invalid "bytes=-"
+            if ($start === null && $end === null) {
+                return $this;
+            }
 
             if ($start === null) {
                 $start = max(0, $this->fileSize - (int) $end);
@@ -136,12 +141,17 @@ class FileResponse extends Response
                 $this->length = 0;
                 $this->responseStatus = ResponseStatus::RangeNotSatisfiable;
                 $this->headers->set('Content-Range', sprintf('bytes */%s', $this->fileSize));
+                $this->headers->set('Content-Length', '0');
             } else {
                 $this->length = (int) ($end - $start + 1);
                 $this->responseStatus = ResponseStatus::PartialContent;
                 $this->headers->set('Content-Range', sprintf('bytes %s-%s/%s', $start, $end, $this->fileSize));
                 $this->headers->set('Content-Length', sprintf('%s', $this->length));
             }
+        }
+
+        if ($request->method() === RequestMethod::HEAD) {
+            $this->length = 0;
         }
 
         return $this;
