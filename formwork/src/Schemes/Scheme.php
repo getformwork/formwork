@@ -104,7 +104,7 @@ class Scheme implements Arrayable
         // @phpstan-ignore argument.templateType
         $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn($data, $name) => $this->fieldFactory->make($name, $data, $fieldCollection)));
 
-        $layout = new Layout($this->data['layout'] ?? ['type' => 'default', 'sections' => []], $this->translations->getCurrent());
+        $layout = new Layout($this->data['layout'] ?? ['sections' => ['default' => ['fields' => array_keys($this->data['fields'] ?? [])]]], $this->translations->getCurrent());
 
         $fieldCollection->setLayout($layout);
 
