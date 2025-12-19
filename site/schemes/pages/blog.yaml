@@ -17,6 +17,9 @@ options:
         templates: [post]
         reverse: true
         orderable: false
+        subtree: true
+        # Enable grid/card view display for children pages
+        subtreeGridDisplay: true
 
     icon: page-listing
 

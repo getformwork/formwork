@@ -18,12 +18,14 @@
         </div>
     </div>
     <div class="flex gap-2">
-        <button type="button" class="button button-secondary <?= ($viewMode ?? 'tree') === 'tree' ? 'active' : '' ?>" data-command="view-mode-tree" title="<?= $this->translate('panel.pages.pages.viewTree') ?>">
-            <?= $this->icon('list') ?>
-        </button>
-        <button type="button" class="button button-secondary <?= ($viewMode ?? 'tree') === 'card' ? 'active' : '' ?>" data-command="view-mode-card" title="<?= $this->translate('panel.pages.pages.viewCard') ?>">
-            <?= $this->icon('file-icons') ?>
-        </button>
+        <?php if ($gridDisplayEnabled ?? false) : ?>
+            <button type="button" class="button button-secondary <?= ($viewMode ?? 'tree') === 'tree' ? 'active' : '' ?>" data-command="view-mode-tree" title="<?= $this->translate('panel.pages.pages.viewTree') ?>">
+                <?= $this->icon('list') ?>
+            </button>
+            <button type="button" class="button button-secondary <?= ($viewMode ?? 'tree') === 'card' ? 'active' : '' ?>" data-command="view-mode-card" title="<?= $this->translate('panel.pages.pages.viewCard') ?>">
+                <?= $this->icon('file-icons') ?>
+            </button>
+        <?php endif ?>
         <?php if ($panel->user()->permissions()->has('panel.pages.create')) : ?>
             <button type="button" class="button button-accent" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
         <?php endif ?>

@@ -70,15 +70,18 @@ final class PagesController extends AbstractController
 
         $this->modal('newPage')->setFieldsModel($parent);
 
-        // Get view mode from query parameter or localStorage default
+        // Check if grid display is enabled in parent scheme
+        $gridDisplayEnabled = $parent->scheme()->options()->get('children.subtreeGridDisplay', false);
+
+        // Get view mode from query parameter or default to tree
         $viewMode = $this->request->query()->get('view', 'tree');
 
-        // Validate view mode
-        if (!in_array($viewMode, ['tree', 'card'])) {
+        // Validate view mode - only allow card view if grid display is enabled
+        if (!in_array($viewMode, ['tree', 'card']) || ($viewMode === 'card' && !$gridDisplayEnabled)) {
             $viewMode = 'tree';
         }
 
-        $pagesContent = $viewMode === 'card'
+        $pagesContent = $viewMode === 'card' && $gridDisplayEnabled
             ? $this->view('@panel.pages.cards', [
                 'pages' => $pageCollection,
             ])
@@ -93,10 +96,11 @@ final class PagesController extends AbstractController
             ]);
 
         return new Response($this->view('@panel.pages.index', [
-            'title'     => $this->translate('panel.pages.pages'),
-            'parent'    => $parent,
-            'pagesTree' => $pagesContent,
-            'viewMode'  => $viewMode,
+            'title'              => $this->translate('panel.pages.pages'),
+            'parent'             => $parent,
+            'pagesTree'          => $pagesContent,
+            'viewMode'           => $viewMode,
+            'gridDisplayEnabled' => $gridDisplayEnabled,
         ]));
     }
 
