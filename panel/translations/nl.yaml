@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Kan bestand niet verwijderen, bestand nie
 panel.files.cannotDelete.pageNotFound: Kan bestand niet verwijderen, bestand niet gevonden
 panel.files.cannotRename.fileAlreadyExists: Kan bestand niet hernoemen, er bestaat al een bestand met die naam
 panel.files.cannotRename.fileNotFound: Kan bestand niet hernoemen, bestand niet gevonden
+panel.files.cannotRename.invalidFields: Bestand kan niet worden hernoemd, sommige velden zijn ongeldig
 panel.files.cannotRename.pageNotFound: Kan bestand niet hernoemen, pagina niet gevonden
 panel.files.cannotReplace.fileNotFound: Kan bestand niet vervangen, bestand niet gevonden
 panel.files.cannotReplace.multipleFiles: Kan bestand niet vervangen, meerdere bestanden opgegeven
 panel.files.cannotReplace.pageNotFound: Kan bestand niet vervangen, pagina niet gevonden
+panel.files.cannotUpload.invalidFields: Bestand kan niet worden geüpload, sommige velden zijn ongeldig
 panel.files.cannotUpload.pageNotFound: Kan bestand niet uploaden, pagina niet gevonden
 panel.files.deleted: Bestand verwijderd
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Acties
 panel.pages.page.cannotChangeNum: Paginanummer kan niet worden gewijzigd
 panel.pages.page.cannotCreate: Kan pagina niet aanmaken
 panel.pages.page.cannotCreate.alreadyExists: Kan pagina niet aanmaken, een pagina met dezelfde URI bestaat al
+panel.pages.page.cannotCreate.invalidFields: Pagina kan niet worden aangemaakt, sommige velden zijn ongeldig
 panel.pages.page.cannotCreate.invalidParent: Kan pagina niet aanmaken, ongeldige bovenliggende pagina
 panel.pages.page.cannotCreate.invalidSlug: Kan pagina niet aanmaken, slug van de pagina mag alleen letters en cijfers bevatten, gescheiden door streepjes
 panel.pages.page.cannotCreate.invalidTemplate: Kan pagina niet aanmaken, ongeldig sjabloon
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Kan pagina niet aanmaken, ontbrekende 
 panel.pages.page.cannotDelete.invalidLanguage: 'Kan pagina niet verwijderen, ongeldige taal: %s'
 panel.pages.page.cannotDelete.notDeletable: Kan pagina niet verwijderen, de pagina is niet verwijderbaar
 panel.pages.page.cannotDelete.pageNotFound: Kan pagina niet verwijderen, pagina niet gevonden
+panel.pages.page.cannotDuplicate.invalidFields: Pagina kan niet worden gedupliceerd, sommige velden zijn ongeldig
 panel.pages.page.cannotDuplicate.notDuplicable: Kan pagina niet dupliceren, niet dupliceerbaar
 panel.pages.page.cannotDuplicate.pageNotFound: Kan pagina niet dupliceren, niet gevonden
 panel.pages.page.cannotEdit.alreadyExists: Kan pagina niet bewerken, een pagina met dezelfde URI bestaat al
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Kan wachtwoord van een andere gebruiker n
 panel.users.user.cannotChangeRole: Kan rol van %s niet wijzigen. Deze actie is niet toegestaan.
 panel.users.user.cannotCreate.alreadyExists: Kan gebruiker niet aanmaken, een gebruiker met dezelfde naam bestaat al
 panel.users.user.cannotCreate.emailAlreadyUsed: Kan gebruiker niet aanmaken, het e-mailadres is al gekoppeld aan een account
+panel.users.user.cannotCreate.invalidFields: Gebruiker kan niet worden aangemaakt, sommige velden zijn ongeldig
 panel.users.user.cannotCreate.varMissing: Kan gebruiker niet aanmaken, ontbrekende variabele
 panel.users.user.cannotDelete: Kan gebruiker niet verwijderen. Je moet beheerder zijn en de gebruiker mag niet ingelogd zijn.
 panel.users.user.cannotEdit: Kan gebruiker %s niet bewerken. Deze actie is niet toegestaan.

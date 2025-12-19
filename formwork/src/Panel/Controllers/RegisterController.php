@@ -4,7 +4,6 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
@@ -12,7 +11,6 @@ use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Users\User;
 use Formwork\Utils\FileSystem;
-use RuntimeException;
 
 final class RegisterController extends AbstractController
 {
@@ -29,48 +27,46 @@ final class RegisterController extends AbstractController
 
         $fields = $schemes->get('forms.register')->fields();
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                return new Response($this->view('@panel.register.register', [
-                    'title'  => $this->translate('panel.register.register'),
-                    'fields' => $fields,
-                ]));
-
-            case RequestMethod::POST:
-                $fields->setValues($this->request->input());
-
-                if (!$fields->isValid()) {
-                    return new Response($this->view('register.register', [
-                        'title'  => $this->translate('panel.register.register'),
-                        'fields' => $fields,
-                    ]), ResponseStatus::UnprocessableEntity);
-                }
-
-                $username = $fields->get('username')->value();
-
-                $userData = [
-                    'username' => $username,
-                    'fullname' => $fields->get('fullname')->value(),
-                    'hash'     => Password::hash($fields->get('password')->value()),
-                    'email'    => $fields->get('email')->value(),
-                    'language' => $fields->get('language')->value(),
-                    'role'     => 'admin',
-                ];
-
-                Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
-
-                $this->request->session()->regenerate();
-                $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $username);
-
-                $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
-                $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-
-                $time = $accessLog->log($username);
-                $lastAccessRegistry->set($username, $time);
-
-                return $this->redirect($this->generateRoute('panel.index'));
+        if ($this->request->method() === RequestMethod::GET) {
+            return new Response($this->view('@panel.register.register', [
+                'title'  => $this->translate('panel.register.register'),
+                'fields' => $fields,
+            ]));
         }
 
-        throw new RuntimeException('Invalid Method');
+        $form = $this->form('register', $fields)
+            ->processRequest($this->request, uploadFiles: false);
+
+        if (!$form->isValid()) {
+            return new Response($this->view('@panel.register.register', [
+                'title'  => $this->translate('panel.register.register'),
+                'fields' => $form->fields(),
+            ]), $form->getResponseStatus());
+        }
+
+        $data = $form->data();
+        $username = $data->get('username');
+
+        $userData = [
+            'username' => $username,
+            'fullname' => $data->get('fullname'),
+            'hash'     => Password::hash($data->get('password')),
+            'email'    => $data->get('email'),
+            'language' => $data->get('language'),
+            'role'     => 'admin',
+        ];
+
+        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
+
+        $this->request->session()->regenerate();
+        $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $username);
+
+        $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
+        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
+
+        $time = $accessLog->log($username);
+        $lastAccessRegistry->set($username, $time);
+
+        return $this->redirect($this->generateRoute('panel.index'));
     }
 }

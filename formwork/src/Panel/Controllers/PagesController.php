@@ -5,8 +5,8 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Cms\Site;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Fields\FieldCollection;
 use Formwork\Files\File;
+use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RequestData;
 use Formwork\Http\RequestMethod;
@@ -114,15 +114,16 @@ final class PagesController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $requestData = $this->request->input();
+        $form = $this->form('new-page', $this->modal('newPage')->fields())
+            ->processRequest($this->request);
 
-        $fields = $this->modal('newPage')->fields();
+        if (!$form->isValid()) {
+            $this->panel->notify($this->translate('panel.pages.page.cannotCreate.invalidFields'), 'error');
+            return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
+        }
 
         try {
-            $fields->setValues($requestData)->validate();
-
-            // Let's create the page
-            $page = $this->createPage($fields, $pageFactory);
+            $page = $this->createPage($form->data(), $pageFactory);
             $this->panel->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel->notify($this->translate($e->getLanguageString()), 'error');
@@ -151,10 +152,6 @@ final class PagesController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $requestData = $this->request->input();
-
-        $fields = $this->modal('duplicatePage')->fields();
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null) {
@@ -167,11 +164,18 @@ final class PagesController extends AbstractController
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
 
+        $form = $this->form('duplicate-page', $this->modal('duplicatePage')->fields())
+            ->processRequest($this->request);
+
+        if (!$form->isValid()) {
+            $this->panel->notify($this->translate('panel.pages.page.cannotDuplicate.invalidFields'), 'error');
+            return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
+        }
+
         try {
-            $fields->setValues($requestData)->validate();
 
             // Let's duplicate the page
-            $duplicatePage = $this->duplicatePage($page, $fields);
+            $duplicatePage = $this->duplicatePage($page, $form->data());
             $this->panel->notify($this->translate('panel.pages.page.created'), 'success');
         } catch (TranslatedException $e) {
             $this->panel->notify($this->translate($e->getLanguageString()), 'error');
@@ -237,47 +241,24 @@ final class PagesController extends AbstractController
         $createNew = $this->request->query()->has('createNew');
 
         // Clone the page fields to work with a separate copy
-        // This allows us to:
-        // 1. Remove upload fields after processing (they shouldn't be saved to page data)
-        // 2. Validate user input without modifying the original page fields
-        // 3. Keep the original page fields intact for rendering the form on validation errors
         $fieldCollection = $page->fields()->deepClone();
 
-        $valid = false;
+        if ($this->request->method() === RequestMethod::GET) {
+            $fieldCollection->setValues($page->data())
+                ->isValid(); // Pre-validate to populate validation state
+        }
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                // Load data from the page itself
-                $data = $page->data();
+        $form = $this->form('page-editor', $fieldCollection)
+            ->setDefaultUploadsDestination($page->contentPath())
+            ->processRequest($this->request);
 
-                $fieldCollection->setValues($data);
-
-                $valid = $fieldCollection->isValid();
-
-                break;
-
-            case RequestMethod::POST:
-                // Load data from POST variables
-                $data = $this->request->input();
-
-                $fieldCollection->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fieldCollection->isValid())) {
-                    $this->panel->notify($this->translate('panel.pages.page.cannotEdit.invalidFields'), 'error');
-                    break;
-                }
-
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->panel->notify($this->translate('panel.pages.page.cannotEdit.invalidFields'), 'error');
+            } else {
                 try {
-                    $forceUpdate = false;
-
-                    if ($this->request->query()->has('publish')) {
-                        $fieldCollection->setValues(['published' => Constraint::isTruthy($this->request->query()->get('publish'))]);
-                        $forceUpdate = true;
-                    }
-
                     // Update the page
-                    $page = $this->updatePage($page, $data, $fieldCollection, force: $forceUpdate);
-
+                    $page = $this->updatePage($page, $form->data()->toArray(), $this->request->input(), force: Constraint::isTruthy($this->request->query()->get('publish')));
                     $this->panel->notify($this->translate('panel.pages.page.edited'), 'success');
                 } catch (TranslatedException $e) {
                     $this->panel->notify($this->translate($e->getLanguageString()), 'error');
@@ -301,6 +282,7 @@ final class PagesController extends AbstractController
                     return $this->redirect(Uri::make(['query' => implode('&', $query)], $this->generateRoute('panel.pages.edit.lang', ['page' => $page->route(), 'language' => $routeParams->get('language')])));
                 }
                 return $this->redirect(Uri::make(['query' => implode('&', $query)], $this->generateRoute('panel.pages.edit', ['page' => $page->route()])));
+            }
         }
 
         $this->modal('newPage')->setFieldsModel($page->parent() ?? $this->site);
@@ -311,16 +293,14 @@ final class PagesController extends AbstractController
             ? new ContentHistory($page->contentPath())
             : null;
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
-
         return new Response($this->view('@panel.pages.editor', [
             'title'           => $this->translate('panel.pages.editPage', (string) $page->title()),
             'page'            => $page,
-            'fields'          => $fieldCollection,
+            'fields'          => $form->fields(),
             'currentLanguage' => $routeParams->get('language', $page->language()?->code()),
             'history'         => $contentHistory,
             ...$this->getPreviousAndNextPage($page),
-        ]), $responseStatus);
+        ]), $form->getResponseStatus());
     }
 
     /**
@@ -485,32 +465,20 @@ final class PagesController extends AbstractController
         }
 
         $fieldCollection = $page->fields()->filterBy('type', 'upload');
-        $fieldCollection->setValuesFromRequest($this->request, null)->validate();
 
-        $uploadedFiles = [];
+        $form = $this->form('file-uploader', $fieldCollection)
+            ->setDefaultUploadsDestination($page->contentPath())
+            ->processRequest($this->request);
 
-        foreach ($fieldCollection as $field) {
-            try {
-                $files = $field->isMultiple() ? $field->value() : [$field->value()];
-                foreach ($files as $file) {
-                    $uploadedFiles[] = $this->fileUploader->upload(
-                        $file,
-                        $page->contentPath(),
-                        $field->filename(),
-                        $field->acceptMimeTypes(),
-                        $field->overwrite(),
-                    );
-                }
-            } catch (TranslatedException $e) {
-                return JsonResponse::error($this->translate('upload.error', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);
-            }
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return JsonResponse::error($this->translate('panel.files.cannotUpload.invalidFields'), ResponseStatus::InternalServerError);
         }
 
         $this->updateLastModifiedTime($page);
 
         return JsonResponse::success(
             $this->translate('panel.uploader.uploaded'),
-            data: Arr::map($uploadedFiles, fn(File $file) => [
+            data: Arr::map($form->uploadedFiles(), fn(File $file) => [
                 'name'             => $file->name(),
                 'size'             => $file->size(),
                 'lastModifiedTime' => Date::formatTimestamp(
@@ -540,11 +508,11 @@ final class PagesController extends AbstractController
     /**
      * Create a new page
      */
-    private function createPage(FieldCollection $fieldCollection, PageFactory $pageFactory): Page
+    private function createPage(FormData $formData, PageFactory $pageFactory): Page
     {
         $page = $pageFactory->make(['site' => $this->site, 'published' => false]);
 
-        $data = $fieldCollection->everyItem()->value()->toArray();
+        $data = $formData->toArray();
 
         $page->setMultiple($data);
 
@@ -566,9 +534,9 @@ final class PagesController extends AbstractController
     /**
      * Duplicate a page
      */
-    private function duplicatePage(Page $page, FieldCollection $fieldCollection): Page
+    private function duplicatePage(Page $page, FormData $formData): Page
     {
-        $data = [...$fieldCollection->everyItem()->value()->toArray(), 'published' => false];
+        $data = [...$formData->toArray(), 'published' => false];
 
         $duplicatePage = $page->duplicate($data);
 
@@ -583,42 +551,19 @@ final class PagesController extends AbstractController
 
     /**
      * Update a page
+     *
+     * @param array<string, mixed> $formData
      */
-    private function updatePage(Page $page, RequestData $requestData, FieldCollection $fieldCollection, bool $force = false): Page
+    private function updatePage(Page $page, array $formData, RequestData $requestData, bool $force = false): Page
     {
-        // Process upload fields first
-        foreach ($fieldCollection as $field) {
-            if ($field->type() === 'upload') {
-                if (!$field->isEmpty()) {
-                    $files = $field->isMultiple() ? $field->value() : [$field->value()];
-                    foreach ($files as $file) {
-                        $this->fileUploader->upload(
-                            $file,
-                            $field->destination() ?? $page->contentPath(),
-                            $field->filename(),
-                            $field->acceptMimeTypes(),
-                            $field->overwrite(),
-                        );
-                    }
-                    $this->updateLastModifiedTime($page);
-                    // Reload the page to refresh its internal state after file upload
-                    // Note: This reloads $page->fields() but doesn't affect our $fieldCollection
-                    $page->reload();
-                }
-                // Remove upload field from the collection - upload fields should not be saved to page data
-                // They are only used for file uploads, not for storing values in the frontmatter
-                $fieldCollection->remove($field->name());
-            }
-        }
-
         $previousData = $page->data();
 
-        // Extract validated values from remaining fields (upload fields have been removed)
-        // These are the user's submitted values that were validated earlier
-        /** @var array<string, mixed> */
-        $data = [...$fieldCollection->extract('value'), 'slug' => $requestData->get('slug')];
+        $page->setMultiple([...$formData, 'slug' => $requestData->get('slug')]);
 
-        $page->setMultiple($data);
+        if ($force) {
+            $page->set('published', true);
+        }
+
         $page->save($requestData->get('language'));
 
         if ($page->contentPath() === null) {

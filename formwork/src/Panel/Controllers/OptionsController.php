@@ -3,10 +3,8 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Config\Config;
-use Formwork\Fields\FieldCollection;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Utils\Arr;
@@ -46,30 +44,23 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        $valid = false;
+        // Set initial values on GET
+        if ($this->request->method() === RequestMethod::GET) {
+            $fields->setValues($this->config->get('system'))
+                ->isValid(); // Pre-validate to populate validation state
+        }
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                $fields->setValues($this->config->get('system'));
+        $form = $this->form('system-options', $fields)
+            ->processRequest($this->request);
 
-                $valid = $fields->isValid();
-
-                break;
-
-            case RequestMethod::POST:
-                $fields->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fields->isValid())) {
-                    $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
-                    break;
-                }
-
-                $this->handleUploads($fields);
-
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
+            } else {
                 $options = $this->getConfigOverrides()->get('system', []);
                 $defaults = $this->getConfigDefaults()->get('system');
 
-                $differ = $this->updateOptions('system', $fields, $options, $defaults);
+                $differ = $this->updateOptions('system', $form->data()->toArray(), $options, $defaults);
 
                 // Touch content folder to invalidate cache
                 if ($differ) {
@@ -81,9 +72,8 @@ final class OptionsController extends AbstractController
 
                 $this->panel->notify($this->translate('panel.options.updated'), 'success');
                 return $this->redirect($this->generateRoute('panel.options.system'));
+            }
         }
-
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
 
         return new Response($this->view('@panel.options.system', [
             'title' => $this->translate('panel.options.options'),
@@ -91,8 +81,8 @@ final class OptionsController extends AbstractController
                 'tabs'    => $this->tabs,
                 'current' => 'system',
             ]),
-            'fields' => $fields,
-        ]), $responseStatus);
+            'fields' => $form->fields(),
+        ]), $form->getResponseStatus());
     }
 
     /**
@@ -107,28 +97,22 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
-        $valid = false;
+        // Set initial values on GET
+        if ($this->request->method() === RequestMethod::GET) {
+            $fields->setValues($this->site->data())
+                ->isValid(); // Pre-validate to populate validation state
+        }
 
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                $fields->setValues($this->site->data());
+        $form = $this->form('site-options', $fields)
+            ->processRequest($this->request);
 
-                $valid = $fields->isValid();
-                break;
-
-            case RequestMethod::POST:
-                $fields->setValuesFromRequest($this->request, null);
-
-                if (!($valid = $fields->isValid())) {
-                    $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
-                    break;
-                }
-
-                $this->handleUploads($fields);
-
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
+            } else {
                 $options = $this->getConfigOverrides()->get('site', []);
                 $defaults = $this->getConfigDefaults()->get('site');
-                $differ = $this->updateOptions('site', $fields, $options, $defaults);
+                $differ = $this->updateOptions('site', $form->data()->toArray(), $options, $defaults);
 
                 // Touch content folder to invalidate cache
                 if ($differ) {
@@ -140,9 +124,8 @@ final class OptionsController extends AbstractController
 
                 $this->panel->notify($this->translate('panel.options.updated'), 'success');
                 return $this->redirect($this->generateRoute('panel.options.site'));
+            }
         }
-
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
 
         return new Response($this->view('@panel.options.site', [
             'title' => $this->translate('panel.options.options'),
@@ -150,8 +133,8 @@ final class OptionsController extends AbstractController
                 'tabs'    => $this->tabs,
                 'current' => 'site',
             ]),
-            'fields' => $fields,
-        ]), $responseStatus);
+            'fields' => $form->fields(),
+        ]), $form->getResponseStatus());
     }
 
     /**
@@ -179,42 +162,20 @@ final class OptionsController extends AbstractController
     }
 
     /**
-     * Handle upload fields
-     */
-    private function handleUploads(FieldCollection $fieldCollection): void
-    {
-        foreach ($fieldCollection->filterBy('type', 'upload') as $field) {
-            $files = $field->isMultiple() ? $field->value() : [$field->value()];
-            foreach ($files as $file) {
-                $this->fileUploader->upload(
-                    $file,
-                    $field->destination(),
-                    $field->filename(),
-                    $field->acceptMimeTypes(),
-                    $field->overwrite(),
-                );
-            }
-        }
-    }
-
-    /**
      * Update options of a given type with given data
      *
      * @param 'site'|'system'      $type
+     * @param array<string, mixed> $formData
      * @param array<string, mixed> $options
      * @param array<string, mixed> $defaults
      */
-    private function updateOptions(string $type, FieldCollection $fieldCollection, array $options, array $defaults): bool
+    private function updateOptions(string $type, array $formData, array $options, array $defaults): bool
     {
         $old = $options;
 
         // Update options with new values
-        $data = $fieldCollection
-            ->filter(fn($field) => $field->type() !== 'upload')
-            ->extract('value');
-
         $options = Arr::exclude(
-            Arr::override($options, Arr::undot($data)),
+            Arr::override($options, Arr::undot($formData)),
             $defaults
         );
 

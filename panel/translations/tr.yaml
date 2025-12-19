@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Dosya silinemiyor, dosya bulunamadı
 panel.files.cannotDelete.pageNotFound: Dosya silinemiyor, sayfa bulunamadı
 panel.files.cannotRename.fileAlreadyExists: Dosya yeniden adlandırılamıyor, aynı isimde bir dosya zaten mevcut
 panel.files.cannotRename.fileNotFound: Dosya yeniden adlandırılamıyor, dosya bulunamadı
+panel.files.cannotRename.invalidFields: Dosya yeniden adlandırılamıyor, bazı alanlar geçersiz
 panel.files.cannotRename.pageNotFound: Dosya yeniden adlandırılamıyor, sayfa bulunamadı
 panel.files.cannotReplace.fileNotFound: Dosya değiştirilemiyor, dosya bulunamadı
 panel.files.cannotReplace.multipleFiles: Dosya değiştirilemiyor, birden fazla dosya verildi
 panel.files.cannotReplace.pageNotFound: Dosya değiştirilemiyor, sayfa bulunamadı
+panel.files.cannotUpload.invalidFields: Dosya yüklenemiyor, bazı alanlar geçersiz
 panel.files.cannotUpload.pageNotFound: Dosya yüklenemiyor, sayfa bulunamadı
 panel.files.deleted: Dosya silindi
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: İşlemler
 panel.pages.page.cannotChangeNum: Sayfa numarası değiştirilemiyor
 panel.pages.page.cannotCreate: Sayfa oluşturulamıyor
 panel.pages.page.cannotCreate.alreadyExists: Sayfa oluşturulamıyor, aynı URI’ye sahip bir sayfa zaten mevcut
+panel.pages.page.cannotCreate.invalidFields: Sayfa oluşturulamıyor, bazı alanlar geçersiz
 panel.pages.page.cannotCreate.invalidParent: Sayfa oluşturulamıyor, geçersiz üst sayfa
 panel.pages.page.cannotCreate.invalidSlug: Sayfa slug’ı yalnızca harf, rakam ve tire içermelidir
 panel.pages.page.cannotCreate.invalidTemplate: Sayfa oluşturulamıyor, geçersiz şablon
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Sayfa oluşturulamıyor, eksik bir de�
 panel.pages.page.cannotDelete.invalidLanguage: 'Sayfa silinemiyor, geçersiz dil: %s'
 panel.pages.page.cannotDelete.notDeletable: Sayfa silinemiyor, sayfa silinebilir değil
 panel.pages.page.cannotDelete.pageNotFound: Sayfa silinemiyor, sayfa bulunamadı
+panel.pages.page.cannotDuplicate.invalidFields: Sayfa çoğaltılamıyor, bazı alanlar geçersiz
 panel.pages.page.cannotDuplicate.notDuplicable: Sayfa çoğaltılamıyor, sayfa çoğaltılabilir değil
 panel.pages.page.cannotDuplicate.pageNotFound: Sayfa çoğaltılamıyor, sayfa bulunamadı
 panel.pages.page.cannotEdit.alreadyExists: Sayfa düzenlenemiyor, aynı URI’ye sahip bir sayfa zaten mevcut
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Başka bir kullanıcının şifresi deği
 panel.users.user.cannotChangeRole: '%s rolü değiştirilemiyor. Bu işlem izin verilmemektedir.'
 panel.users.user.cannotCreate.alreadyExists: Kullanıcı oluşturulamıyor, aynı isimde bir kullanıcı zaten mevcut
 panel.users.user.cannotCreate.emailAlreadyUsed: Kullanıcı oluşturulamıyor, e-posta zaten mevcut
+panel.users.user.cannotCreate.invalidFields: Kullanıcı oluşturulamıyor, bazı alanlar geçersiz
 panel.users.user.cannotCreate.varMissing: Kullanıcı oluşturulamıyor, eksik bir değişken var
 panel.users.user.cannotDelete: Kullanıcı silinemiyor. Yönetici olmanız ve kullanıcının giriş yapmamış olması gerekir.
 panel.users.user.cannotEdit: '%s kullanıcısı düzenlenemiyor. Bu işlem izin verilmemektedir.'

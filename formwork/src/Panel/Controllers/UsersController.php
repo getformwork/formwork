@@ -3,13 +3,11 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Exceptions\TranslatedException;
-use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
-use Formwork\Fields\FieldCollection;
+use Formwork\Forms\FormData;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Images\Image;
 use Formwork\Log\Registry;
 use Formwork\Panel\Security\Password;
@@ -47,15 +45,15 @@ final class UsersController extends AbstractController
 
         $fields = $this->modal('newUser')->fields();
 
-        // Ensure no required data is missing
-        try {
-            $fields->setValues($this->request->input())->validate();
-        } catch (ValidationException) {
-            $this->panel->notify($this->translate('panel.users.user.cannotCreate.varMissing'), 'error');
+        $form = $this->form('new-user', $fields)
+            ->processRequest($this->request);
+
+        if (!$form->isValid()) {
+            $this->panel->notify($this->translate('panel.users.user.cannotCreate.invalidFields'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
-        $data = $fields->everyItem()->value();
+        $data = $form->data();
 
         $username = $data->get('username');
 
@@ -189,46 +187,45 @@ final class UsersController extends AbstractController
         // Disable role field if it cannot be changed
         $fields->get('role')->set('disabled', !$this->panel->user()->canChangeRoleOf($user));
 
-        $valid = false;
-
-        switch ($this->request->method()) {
-            case RequestMethod::GET:
-                $fields = $fields->setValues($user);
-
-                $valid = $fields->isValid();
-
-                break;
-            case RequestMethod::POST:
-                // Ensure that options can be changed
-                if ($this->panel->user()->canChangeOptionsOf($user)) {
-                    $fields->setValuesFromRequest($this->request, null);
-
-                    if (!($valid = $fields->isValid())) {
-                        $this->panel->notify($this->translate('panel.users.user.cannotEdit.invalidFields'), 'error');
-                        break;
-                    }
-
-                    try {
-                        $this->updateUser($user, $fields);
-                        $this->panel->notify($this->translate('panel.users.user.edited'), 'success');
-                    } catch (TranslatedException $e) {
-                        $this->panel->notify($this->translate($e->getLanguageString(), $user->username()), 'error');
-                    }
-                } else {
-                    $this->panel->notify($this->translate('panel.users.user.cannotEdit', $user->username()), 'error');
-                }
-
-                return $this->redirect($this->generateRoute('panel.users.profile', ['user' => $user->username()]));
+        // Set initial values on GET
+        if ($this->request->method() === RequestMethod::GET) {
+            $fields->setValues($user)
+                ->isValid(); // Pre-validate to populate validation state
         }
 
-        $responseStatus = ($valid || $this->request->method() === RequestMethod::GET) ? ResponseStatus::OK : ResponseStatus::UnprocessableEntity;
+        $form = $this->form('user-profile', $fields)
+            ->processRequest($this->request, uploadFiles: false, preserveEmpty: false);
+
+        if ($form->isSubmitted()) {
+            // Ensure that options can be changed
+            if (!$this->panel->user()->canChangeOptionsOf($user)) {
+                $this->panel->notify($this->translate('panel.users.user.cannotEdit', $user->username()), 'error');
+            } elseif (!$form->isValid()) {
+                $this->panel->notify($this->translate('panel.users.user.cannotEdit.invalidFields'), 'error');
+            } else {
+                try {
+                    // Handle image upload separately
+                    $image = null;
+                    if (($imageField = $form->fields()->get('image')) && !$imageField->isEmpty()) {
+                        $image = $this->uploadUserImage($user, $imageField);
+                    }
+
+                    $this->updateUser($user, $form->data(), $image);
+                    $this->panel->notify($this->translate('panel.users.user.edited'), 'success');
+                } catch (TranslatedException $e) {
+                    $this->panel->notify($this->translate($e->getLanguageString(), $user->username()), 'error');
+                }
+            }
+
+            return $this->redirect($this->generateRoute('panel.users.profile', ['user' => $user->username()]));
+        }
 
         return new Response($this->view('@panel.users.profile', [
             'title'  => $this->translate('panel.users.userProfile', $user->username()),
             'user'   => $user,
-            'fields' => $fields,
+            'fields' => $form->fields(),
             ...$this->getPreviousAndNextUser($user),
-        ]), $responseStatus);
+        ]), $form->getResponseStatus());
     }
 
     /**
@@ -248,48 +245,44 @@ final class UsersController extends AbstractController
     /**
      * Update user data from POST request
      */
-    private function updateUser(User $user, FieldCollection $fieldCollection): void
+    private function updateUser(User $user, FormData $formData, ?Image $image = null): void
     {
         $userData = $user->data();
 
-        foreach ($fieldCollection as $field) {
-            if ($field->isEmpty()) {
-                continue;
-            }
+        // Validate email uniqueness
+        if ($formData->has('email') && $formData->get('email') !== $user->email() && $this->site->users()->filterBy('email', $formData->get('email'))->count() > 0) {
+            throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $user->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
+        }
 
-            // Ensure email is not already used by another user
-            if ($field->name() === 'email' && $field->value() !== $user->email() && $this->site->users()->filterBy('email', $field->value())->count() > 0) {
-                throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $user->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
+        // Handle password change
+        if ($formData->has('password')) {
+            // Ensure that password can be changed
+            if (!$this->panel->user()->canChangePasswordOf($user)) {
+                throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannotChangePassword');
             }
+            // Hash the new password
+            Arr::set($userData, 'hash', Password::hash($formData->get('password')));
+        }
 
-            if ($field->name() === 'password') {
-                // Ensure that password can be changed
-                if (!$this->panel->user()->canChangePasswordOf($user)) {
-                    throw new TranslatedException(sprintf('Cannot change the password of %s', $user->username()), 'panel.users.user.cannotChangePassword');
-                }
-                // Hash the new password
-                Arr::set($userData, 'hash', Password::hash($field->value()));
-                continue;
+        // Handle role change
+        if ($formData->has('role') && $formData->get('role') !== $user->role()) {
+            // Ensure that user role can be changed
+            if (!$this->panel->user()->canChangeRoleOf($user)) {
+                throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannotChangeRole');
             }
+            Arr::set($userData, 'role', $formData->get('role'));
+        }
 
-            if ($field->name() === 'role') {
-                // Ensure that user role can be changed
-                if ($field->value() !== $user->role() && !$this->panel->user()->canChangeRoleOf($user)) {
-                    throw new TranslatedException(sprintf('Cannot change the role of %s', $user->username()), 'panel.users.user.cannotChangeRole');
-                }
-                Arr::set($userData, 'role', $field->value());
-                continue;
+        // Handle uploaded image
+        if ($image !== null) {
+            Arr::set($userData, 'image', $image->name());
+        }
+
+        // Merge remaining form data (excluding password, role, and image which were already handled)
+        foreach ($formData->toArray() as $key => $value) {
+            if (!in_array($key, ['password', 'role', 'image'], true)) {
+                Arr::set($userData, $key, $value);
             }
-
-            if ($field->name() === 'image') {
-                // Handle incoming files
-                if ($field->value() !== null && ($image = $this->uploadUserImage($user, $field)) !== null) {
-                    Arr::set($userData, 'image', $image);
-                }
-                continue;
-            }
-
-            Arr::set($userData, $field->name(), $field->value());
         }
 
         Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $user->username() . '.yaml'));
@@ -298,7 +291,7 @@ final class UsersController extends AbstractController
     /**
      * Upload a new image for a user
      */
-    private function uploadUserImage(User $user, Field $field): ?string
+    private function uploadUserImage(User $user, Field $field): ?Image
     {
         $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
 
@@ -331,7 +324,7 @@ final class UsersController extends AbstractController
 
         $this->panel->notify($this->translate('panel.user.image.uploaded'), 'success');
 
-        return $file->name();
+        return $file;
     }
 
     /**
