@@ -2,7 +2,7 @@
 
 <?php $this->modals()->addMultiple(['changes', 'deletePage', 'duplicatePage']) ?>
 
-<form method="post" data-form="page-editor-form" enctype="multipart/form-data">
+<form method="post" id="page-editor-form" data-form="page-editor-form" enctype="multipart/form-data">
     <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'tabindex' => -1, 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
     <header class="panel-header">
         <div class="min-w-0 flex-grow-1">
