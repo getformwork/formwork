@@ -72,7 +72,7 @@
 
 .file-name {
     flex: 1;
-    padding-left: 2rem;
+    padding-left: 1.5rem;
 }
 
 .file-thumbnail:not([src]) ~ .file-name {
@@ -135,7 +135,7 @@
 
 .file-thumbnail {
     position: absolute;
-    left: 0.25rem;
+    left: 0.5rem;
     width: 1.5rem;
     height: 1.5rem;
     border-radius: var(--border-radius);
