@@ -11,6 +11,11 @@
     @include user-select-none;
 }
 
+.files-item {
+    border-radius: 0;
+    background-color: var(--color-base-600);
+}
+
 .files-list-headers {
     display: flex;
     align-items: center;

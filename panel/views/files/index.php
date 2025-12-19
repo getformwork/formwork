@@ -12,7 +12,7 @@
         </div>
     </header>
 
-    <div class="section">
+    <div class="mt-4">
         <div class="section-content">
             <?php $this->insert('@panel._files.file.list', ['name' => 'view-files', 'files' => $files, 'columns' => ['parent', 'date', 'size']]) ?>
         </div>
