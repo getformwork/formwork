@@ -5,7 +5,7 @@
 /cache/*
 /logs/*
 /vendor/*
-
+/docs/
 /panel/assets/css/*
 /panel/assets/js/*
 /panel/logs/*
