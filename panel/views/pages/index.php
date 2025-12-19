@@ -49,6 +49,6 @@
     </div>
 </header>
 
-<section class="section">
+<section class="mt-4">
     <?= $pagesTree ?>
 </section>
