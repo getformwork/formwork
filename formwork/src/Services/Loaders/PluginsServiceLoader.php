@@ -32,9 +32,15 @@ final class PluginsServiceLoader implements ResolutionAwareServiceLoaderInterfac
             return;
         }
 
-        foreach (FileSystem::listDirectories($this->config->get('system.plugins.path')) as $directory) {
+        $pluginsPath = $this->config->get('system.plugins.path');
+
+        if (!FileSystem::isDirectory($pluginsPath, assertExists: false)) {
+            return;
+        }
+
+        foreach (FileSystem::listDirectories($pluginsPath) as $directory) {
             $id = Str::toCamelCase($directory);
-            $path = FileSystem::joinPaths($this->config->get('system.plugins.path'), $directory);
+            $path = FileSystem::joinPaths($pluginsPath, $directory);
 
             try {
                 $service->load($id, $path);
