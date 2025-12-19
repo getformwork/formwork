@@ -1,6 +1,6 @@
 <?php $this->layout('@panel.panel') ?>
 
-<div class="header">
+<header class="panel-header">
     <div class="flex mr-auto overflow-hidden">
         <div class="min-w-0 flex">
             <div class="header-icon"><?= $this->icon('pages') ?></div>
@@ -33,7 +33,7 @@
             <button type="button" class="button button-accent" data-modal="newPageModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.pages.newPage') ?></button>
         <?php endif ?>
     </div>
-</div>
+</header>
 
 <section class="section">
     <div class="flex flex-wrap">

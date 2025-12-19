@@ -4,26 +4,25 @@
 .header {
     position: sticky;
     z-index: 9;
-    top: 3.5rem;
+    top: 3rem;
     display: flex;
-    min-height: 4.5rem;
+    min-height: 3.5rem;
     align-items: center;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid var(--color-base-600);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-base-700);
     margin-bottom: 1rem;
-    background-color: var(--color-base-800);
+    background-color: var(--color-base-850);
     white-space: nowrap;
 
     @media (min-width: map.get($breakpoints, "sm")) {
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         margin-right: -1rem;
         margin-left: -1rem;
     }
 
     @media (min-width: map.get($breakpoints, "md")) {
-        min-height: 5.5rem;
         margin-right: -1.5rem;
-        margin-bottom: 1.75rem;
+        margin-bottom: 1.5rem;
         margin-left: -1.5rem;
     }
 }
@@ -35,8 +34,8 @@
 
 .header-title {
     flex-grow: 1;
-    font-size: var(--font-size-h5);
-    font-weight: 600;
+    font-size: var(--font-size-lg);
+    font-weight: 500;
 }
 
 .header-title a {

@@ -11,15 +11,16 @@
     left: 0;
     display: flex;
     align-items: center;
-    padding: 0.75rem;
+    padding: 0.625rem 0.75rem;
     padding-left: 3rem;
-    background-color: var(--color-base-600);
-    box-shadow: var(--box-shadow-sm);
+    background-color: var(--color-base-850);
+    border-bottom: 1px solid var(--color-base-800);
     color: var(--color-base-100);
     font-weight: 500;
+    font-size: var(--font-size-sm);
     @include user-select-none;
     @media (min-width: map.get($breakpoints, "md")) {
-        left: 16rem;
+        left: 14rem;
         padding-left: 1.5rem;
     }
 }
@@ -29,6 +30,7 @@
     align-items: center;
     margin-bottom: 2rem;
     cursor: pointer;
+    justify-content: center;
 }
 
 .panel-user-image {
@@ -66,10 +68,10 @@
 }
 
 .panel-main {
-    padding-top: 4rem;
+    padding-top: 3.5rem;
     @media (min-width: map.get($breakpoints, "md")) {
-        padding: 1.875rem;
-        padding-top: 4rem;
-        padding-left: 1.875rem + 16rem;
+        padding: 1.5rem;
+        padding-top: 3.5rem;
+        padding-left: 1.5rem + 14rem;
     }
 }
