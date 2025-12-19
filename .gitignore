@@ -10,6 +10,7 @@
 /panel/assets/js/*
 /panel/logs/*
 /panel/node_modules/*
+/panel/package-lock.json
 
 /site/config/plugins.yaml
 /site/plugins/*
