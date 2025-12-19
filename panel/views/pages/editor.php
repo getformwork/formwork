@@ -4,7 +4,7 @@
 
 <form method="post" data-form="page-editor-form" enctype="multipart/form-data">
     <input type="submit" <?= $this->attr(['hidden' => true, 'aria-hidden' => 'true', 'tabindex' => -1, 'data-command' => 'save', 'formaction' => $history?->isJustCreated() ? '?publish=false' : null]) ?>>
-    <div class="header">
+    <header class="panel-header">
         <div class="min-w-0 flex-grow-1">
             <div class="flex">
                 <div class="header-icon">
@@ -66,7 +66,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </header>
     <?php $this->insert('@panel.fields', ['fields' => $fields]) ?>
     <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
     <?php if ($history !== null && !$history->items()->isEmpty()): ?>

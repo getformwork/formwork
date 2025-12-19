@@ -1,10 +1,10 @@
 <?php $this->layout('@panel.panel') ?>
 
 <div data-view="dashboard">
-    <div class="header">
+    <header class="panel-header">
         <div class="header-icon"><?= $this->icon('home') ?></div>
         <div class="header-title"><?= $this->translate('panel.dashboard.dashboard') ?></div>
-    </div>
+    </header>
 
     <div class="row">
         <div class="col-md-1-3">

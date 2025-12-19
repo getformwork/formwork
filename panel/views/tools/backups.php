@@ -2,10 +2,10 @@
 
 <?php $this->modals()->add('deleteFile') ?>
 
-<div class="header">
+<header class="panel-header">
     <div class="header-icon"><?= $this->icon('toolbox') ?></div>
     <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
-</div>
+</header>
 
 <?= $tabs ?>
 <div data-view="backups">
