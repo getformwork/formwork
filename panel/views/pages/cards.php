@@ -44,7 +44,13 @@
 
                 <div class="page-card-content">
                     <div class="page-card-title">
-                        <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a>
+                        <div class="page-card-title-wrapper">
+                            <div class="page-icon">
+                                <?= $this->icon($page->icon()) ?>
+                                <?= $this->insert('@panel._pages.info', ['page' => $page]) ?>
+                            </div>
+                            <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/') ?>"><?= $this->escape($page->title()) ?></a>
+                        </div>
                     </div>
                     <div class="page-card-meta">
                         <span class="page-card-date"><?= $date ?></span>
