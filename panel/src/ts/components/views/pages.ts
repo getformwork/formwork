@@ -92,7 +92,7 @@ export class Pages {
             const handleSearch = () => {
                 const value = escapeHtml(searchInput.value);
                 if (value.length === 0) {
-                    ($(".pages-tree-root") as HTMLElement).classList.remove("is-filtered");
+                    const treeRoot = $(".pages-tree-root") as HTMLElement; if (treeRoot) { treeRoot.classList.remove("is-filtered"); }
 
                     $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element) as HTMLElement;
@@ -100,8 +100,17 @@ export class Pages {
                         ($(".pages-tree-row", element) as HTMLElement).style.display = "";
                         element.classList.toggle("is-expanded", element.dataset.expanded === "true");
                     });
+
+                    // Reset card view
+                    $$(".page-card").forEach((element) => {
+                        element.style.display = "";
+                        const title = $(".page-card-title a", element) as HTMLElement;
+                        if (title) {
+                            title.innerText = title.textContent;
+                        }
+                    });
                 } else {
-                    ($(".pages-tree-root") as HTMLElement).classList.add("is-filtered");
+                    const treeRoot = $(".pages-tree-root") as HTMLElement; if (treeRoot) { treeRoot.classList.add("is-filtered"); }
 
                     const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "gi");
 
@@ -118,6 +127,21 @@ export class Pages {
                         }
 
                         element.classList.add("is-expanded");
+
+                    });
+                     // Handle card view search
+                    $$(".page-card").forEach((element) => {
+                        const title = $(".page-card-title a", element) as HTMLElement;
+                        if (title) {
+                            const text = escapeHtml(title.textContent);
+
+                            if (text.match(regexp) !== null) {
+                                title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+                                element.style.display = "";
+                            } else {
+                                element.style.display = "none";
+                            }
+                        }
                     });
                 }
             };
