@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Datei kann nicht gelöscht werden, Datei 
 panel.files.cannotDelete.pageNotFound: Datei kann nicht gelöscht werden, Datei nicht gefunden
 panel.files.cannotRename.fileAlreadyExists: Datei kann nicht umbenannt werden, eine Datei mit demselben Namen existiert bereits
 panel.files.cannotRename.fileNotFound: Datei kann nicht umbenannt werden, Datei nicht gefunden
+panel.files.cannotRename.invalidFields: Datei kann nicht umbenannt werden, einige Felder sind ungültig
 panel.files.cannotRename.pageNotFound: Datei kann nicht umbenannt werden, Seite nicht gefunden
 panel.files.cannotReplace.fileNotFound: Datei kann nicht ersetzt werden, Datei nicht gefunden
 panel.files.cannotReplace.multipleFiles: Datei kann nicht ersetzt werden, mehrere Dateien angegeben
 panel.files.cannotReplace.pageNotFound: Datei kann nicht ersetzt werden, Seite nicht gefunden
+panel.files.cannotUpload.invalidFields: Datei kann nicht hochgeladen werden, einige Felder sind ungültig
 panel.files.cannotUpload.pageNotFound: Datei kann nicht hochgeladen werden, Seite nicht gefunden
 panel.files.deleted: Datei gelöscht
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Aktionen
 panel.pages.page.cannotChangeNum: Seitennummer kann nicht geändert werden
 panel.pages.page.cannotCreate: Seite kann nicht erstellt werden
 panel.pages.page.cannotCreate.alreadyExists: Seite kann nicht erstellt werden, eine Seite mit demselben URI existiert bereits
+panel.pages.page.cannotCreate.invalidFields: Seite kann nicht erstellt werden, einige Felder sind ungültig
 panel.pages.page.cannotCreate.invalidParent: Seite kann nicht erstellt werden, ungültige übergeordnete Seite
 panel.pages.page.cannotCreate.invalidSlug: Seite kann nicht erstellt werden, der Seiten-Slug darf nur Buchstaben und Zahlen enthalten, getrennt durch Bindestriche
 panel.pages.page.cannotCreate.invalidTemplate: Seite kann nicht erstellt werden, ungültige Vorlage
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Seite kann nicht erstellt werden, eine
 panel.pages.page.cannotDelete.invalidLanguage: "Seite kann nicht gelöscht werden, ungültige Sprache: %s"
 panel.pages.page.cannotDelete.notDeletable: Seite kann nicht gelöscht werden, die Seite ist nicht löschbar
 panel.pages.page.cannotDelete.pageNotFound: Seite kann nicht gelöscht werden, Seite nicht gefunden
+panel.pages.page.cannotDuplicate.invalidFields: Seite kann nicht dupliziert werden, einige Felder sind ungültig
 panel.pages.page.cannotDuplicate.notDuplicable: Seite kann nicht dupliziert werden, sie ist nicht duplizierbar
 panel.pages.page.cannotDuplicate.pageNotFound: Seite kann nicht dupliziert werden, nicht gefunden
 panel.pages.page.cannotEdit.alreadyExists: Seite kann nicht bearbeitet werden, eine Seite mit demselben URI existiert bereits
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Das Passwort eines anderen Benutzers kann
 panel.users.user.cannotChangeRole: Die Rolle von %s kann nicht geändert werden. Die Aktion ist nicht erlaubt.
 panel.users.user.cannotCreate.alreadyExists: Benutzer kann nicht erstellt werden, ein Benutzer mit demselben Namen existiert bereits
 panel.users.user.cannotCreate.emailAlreadyUsed: Benutzer kann nicht erstellt werden, die E-Mail-Adresse ist bereits mit einem Konto verknüpft
+panel.users.user.cannotCreate.invalidFields: Benutzer kann nicht erstellt werden, einige Felder sind ungültig
 panel.users.user.cannotCreate.varMissing: Benutzer kann nicht erstellt werden, eine Variable fehlt
 panel.users.user.cannotDelete: Benutzer kann nicht gelöscht werden. Sie müssen ein Administrator sein und der Benutzer darf nicht angemeldet sein.
 panel.users.user.cannotEdit: "%s Benutzer kann nicht bearbeitet werden. Die Aktion ist nicht erlaubt."

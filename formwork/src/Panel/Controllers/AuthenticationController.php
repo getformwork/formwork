@@ -2,7 +2,6 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
@@ -47,27 +46,25 @@ final class AuthenticationController extends AbstractController
             // Delay request processing for 0.5-1s
             usleep(random_int(500, 1000) * 1000);
 
-            $data = $this->request->input();
+            $form = $this->form('login', $fields)
+                ->processRequest($this->request);
 
-            try {
-                $fields->setValues($data)->validate();
-            } catch (ValidationException) {
+            if (!$form->isValid()) {
                 // If validation fails, generate a new CSRF token and return an error
                 $this->csrfToken->generate($csrfTokenName);
-                return $this->error($this->translate('panel.login.attempt.failed'), ['fields' => $fields]);
+                return $this->error($this->translate('panel.login.attempt.failed'), ['fields' => $form->fields()]);
             }
 
             $accessLimiter->registerAttempt();
 
-            $login = $data->get('login');
-
+            $login = $form->data()->get('login');
             /** @var ?User */
             $user = $this->site->users()->find(fn($user) => $user->username() === $login || $user->email() === $login);
 
             // Authenticate user
             if ($user !== null) {
                 try {
-                    $user->authenticate($data->get('password'));
+                    $user->authenticate($form->data()->get('password'));
 
                     // Regenerate CSRF token
                     $this->csrfToken->generate($csrfTokenName);

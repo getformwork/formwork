@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Cannot delete file, file not found
 panel.files.cannotDelete.pageNotFound: Cannot delete file, file not found
 panel.files.cannotRename.fileAlreadyExists: Cannot rename file, a file with the same name already exists
 panel.files.cannotRename.fileNotFound: Cannot rename file, file not found
+panel.files.cannotRename.invalidFields: Cannot rename file, some fields are invalid
 panel.files.cannotRename.pageNotFound: Cannot rename file, page not found
 panel.files.cannotReplace.fileNotFound: Cannot replace file, file not found
 panel.files.cannotReplace.multipleFiles: Cannot replace file, multiple file given
 panel.files.cannotReplace.pageNotFound: Cannot replace file, page not found
+panel.files.cannotUpload.invalidFields: Cannot upload file, some fields are invalid
 panel.files.cannotUpload.pageNotFound: Cannot upload file, page not found
 panel.files.deleted: File deleted
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Actions
 panel.pages.page.cannotChangeNum: Cannot change page number
 panel.pages.page.cannotCreate: Cannot create page
 panel.pages.page.cannotCreate.alreadyExists: Cannot create page, a page with the same uri already exists
+panel.pages.page.cannotCreate.invalidFields: Cannot create page, some fields are invalid
 panel.pages.page.cannotCreate.invalidParent: Cannot create page, invalid parent page
 panel.pages.page.cannotCreate.invalidSlug: Cannot create page, page slug must contain only letters and numbers separated by dashes
 panel.pages.page.cannotCreate.invalidTemplate: Cannot create page, invalid template
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Cannot create page, missing a variable
 panel.pages.page.cannotDelete.invalidLanguage: 'Cannot delete page, invalid language: %s'
 panel.pages.page.cannotDelete.notDeletable: Cannot delete page, the page is not deletable
 panel.pages.page.cannotDelete.pageNotFound: Cannot delete page, page not found
+panel.pages.page.cannotDuplicate.invalidFields: Cannot duplicate page, some fields are invalid
 panel.pages.page.cannotDuplicate.notDuplicable: Cannot duplicate page, the page is not duplicable
 panel.pages.page.cannotDuplicate.pageNotFound: Cannot duplicate page, page not found
 panel.pages.page.cannotEdit.alreadyExists: Cannot edit page, a page with the same uri already exists
@@ -339,6 +343,7 @@ panel.users.user.cannotChangePassword: Cannot change the password of another use
 panel.users.user.cannotChangeRole: Cannot change the role of %s. The action is not allowed.
 panel.users.user.cannotCreate.alreadyExists: Cannot create user, a user with the same name already exists
 panel.users.user.cannotCreate.emailAlreadyUsed: Cannot create user, the email address is already associated with an account
+panel.users.user.cannotCreate.invalidFields: Cannot create user, some fields are invalid
 panel.users.user.cannotCreate.varMissing: Cannot create user, missing a variable
 panel.users.user.cannotDelete: Cannot delete user. You must be an administrator and the user must not be logged in.
 panel.users.user.cannotEdit: Cannot edit user %s. The action is not allowed.

@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Δεν είναι δυνατή η δια�
 panel.files.cannotDelete.pageNotFound: Δεν είναι δυνατή η διαγραφή, η σελίδα δεν βρέθηκε
 panel.files.cannotRename.fileAlreadyExists: Δεν είναι δυνατή η μετονομασία, υπάρχει ήδη αρχείο με το ίδιο όνομα
 panel.files.cannotRename.fileNotFound: Δεν είναι δυνατή η μετονομασία, το αρχείο δεν βρέθηκε
+panel.files.cannotRename.invalidFields: Δεν είναι δυνατή η μετονομασία του αρχείου, ορισμένα πεδία δεν είναι έγκυρα
 panel.files.cannotRename.pageNotFound: Δεν είναι δυνατή η μετονομασία, η σελίδα δεν βρέθηκε
 panel.files.cannotReplace.fileNotFound: Δεν είναι δυνατή η αντικατάσταση, το αρχείο δεν βρέθηκε
 panel.files.cannotReplace.multipleFiles: Δεν είναι δυνατή η αντικατάσταση, δόθηκαν πολλά αρχεία
 panel.files.cannotReplace.pageNotFound: Δεν είναι δυνατή η αντικατάσταση, η σελίδα δεν βρέθηκε
+panel.files.cannotUpload.invalidFields: Δεν είναι δυνατή η μεταφόρτωση του αρχείου, ορισμένα πεδία δεν είναι έγκυρα
 panel.files.cannotUpload.pageNotFound: Δεν είναι δυνατή η μεταφόρτωση, η σελίδα δεν βρέθηκε
 panel.files.deleted: Το αρχείο διαγράφηκε
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Ενέργειες
 panel.pages.page.cannotChangeNum: Δεν είναι δυνατή η αλλαγή αριθμού σελίδας
 panel.pages.page.cannotCreate: Δεν είναι δυνατή η δημιουργία σελίδας
 panel.pages.page.cannotCreate.alreadyExists: Δεν είναι δυνατή η δημιουργία, υπάρχει ήδη σελίδα με το ίδιο URI
+panel.pages.page.cannotCreate.invalidFields: Δεν είναι δυνατή η δημιουργία της σελίδας, ορισμένα πεδία δεν είναι έγκυρα
 panel.pages.page.cannotCreate.invalidParent: Δεν είναι δυνατή η δημιουργία, μη έγκυρη γονική σελίδα
 panel.pages.page.cannotCreate.invalidSlug: Δεν είναι δυνατή η δημιουργία, το slug πρέπει να περιέχει μόνο γράμματα και αριθμούς χωρισμένους με παύλες
 panel.pages.page.cannotCreate.invalidTemplate: Δεν είναι δυνατή η δημιουργία, μη έγκυρο πρότυπο
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Δεν είναι δυνατή η δη
 panel.pages.page.cannotDelete.invalidLanguage: 'Δεν είναι δυνατή η διαγραφή, μη έγκυρη γλώσσα: %s'
 panel.pages.page.cannotDelete.notDeletable: Δεν είναι δυνατή η διαγραφή, η σελίδα δεν μπορεί να διαγραφεί
 panel.pages.page.cannotDelete.pageNotFound: Δεν είναι δυνατή η διαγραφή, η σελίδα δεν βρέθηκε
+panel.pages.page.cannotDuplicate.invalidFields: Δεν είναι δυνατή η αντιγραφή της σελίδας, ορισμένα πεδία δεν είναι έγκυρα
 panel.pages.page.cannotDuplicate.notDuplicable: Δεν είναι δυνατός ο διπλασιασμός, η σελίδα δεν μπορεί να αντιγραφεί
 panel.pages.page.cannotDuplicate.pageNotFound: Δεν είναι δυνατός ο διπλασιασμός, η σελίδα δεν βρέθηκε
 panel.pages.page.cannotEdit.alreadyExists: Δεν είναι δυνατή η επεξεργασία, υπάρχει ήδη σελίδα με το ίδιο URI
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Δεν μπορείς να αλλάξει
 panel.users.user.cannotChangeRole: Δεν είναι δυνατή η αλλαγή ρόλου του %s. Η ενέργεια δεν επιτρέπεται.
 panel.users.user.cannotCreate.alreadyExists: Δεν είναι δυνατή η δημιουργία χρήστη, υπάρχει ήδη χρήστης με το ίδιο όνομα
 panel.users.user.cannotCreate.emailAlreadyUsed: Δεν είναι δυνατή η δημιουργία χρήστη, το email χρησιμοποιείται ήδη
+panel.users.user.cannotCreate.invalidFields: Δεν είναι δυνατή η δημιουργία χρήστη, ορισμένα πεδία δεν είναι έγκυρα
 panel.users.user.cannotCreate.varMissing: Δεν είναι δυνατή η δημιουργία χρήστη, λείπει μια μεταβλητή
 panel.users.user.cannotDelete: Δεν είναι δυνατή η διαγραφή χρήστη. Πρέπει να είσαι διαχειριστής και ο χρήστης να μην είναι συνδεδεμένος.
 panel.users.user.cannotEdit: Δεν είναι δυνατή η επεξεργασία του χρήστη %s. Η ενέργεια δεν επιτρέπεται.

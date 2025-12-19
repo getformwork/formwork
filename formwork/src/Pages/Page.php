@@ -955,13 +955,13 @@ class Page extends Model implements Stringable
         );
 
         // Remove ignored fields
-        foreach ($this->fields() as $fieldCollection) {
-            if (in_array($fieldCollection->name(), self::IGNORED_FIELD_NAMES, true)) {
-                Arr::remove($frontmatter, $fieldCollection->name());
+        foreach ($this->fields() as $field) {
+            if (in_array($field->name(), self::IGNORED_FIELD_NAMES, true)) {
+                Arr::remove($frontmatter, $field->name());
             }
 
-            if (in_array($fieldCollection->type(), self::IGNORED_FIELD_TYPES, true)) {
-                Arr::remove($frontmatter, $fieldCollection->name());
+            if (in_array($field->type(), self::IGNORED_FIELD_TYPES, true)) {
+                Arr::remove($frontmatter, $field->name());
             }
         }
 

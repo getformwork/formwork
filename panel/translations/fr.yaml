@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Impossible de supprimer le fichier, fichi
 panel.files.cannotDelete.pageNotFound: Impossible de supprimer le fichier, page non trouvée
 panel.files.cannotRename.fileAlreadyExists: Impossible de renommer le fichier, un fichier portant le même nom existe déjà
 panel.files.cannotRename.fileNotFound: Impossible de renommer le fichier, fichier introuvable
+panel.files.cannotRename.invalidFields: Impossible de renommer le fichier, certains champs sont invalides
 panel.files.cannotRename.pageNotFound: Impossible de renommer le fichier, page introuvable
 panel.files.cannotReplace.fileNotFound: Impossible de remplacer le fichier, fichier non trouvé
 panel.files.cannotReplace.multipleFiles: Impossible de remplacer le fichier, plusieurs fichiers spécifiés
 panel.files.cannotReplace.pageNotFound: Impossible de remplacer le fichier, page non trouvée
+panel.files.cannotUpload.invalidFields: Impossible de téléverser le fichier, certains champs sont invalides
 panel.files.cannotUpload.pageNotFound: Impossible de téléverser le fichier, page introuvable
 panel.files.deleted: Fichier supprimé
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Actions
 panel.pages.page.cannotChangeNum: Impossible de changer le numéro de page
 panel.pages.page.cannotCreate: Impossible de créer une page
 panel.pages.page.cannotCreate.alreadyExists: Impossible de créer une page, une page avec le même uri existe déjà
+panel.pages.page.cannotCreate.invalidFields: Impossible de créer la page, certains champs sont invalides
 panel.pages.page.cannotCreate.invalidParent: Impossible de créer une page, page parente non valide
 panel.pages.page.cannotCreate.invalidSlug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
 panel.pages.page.cannotCreate.invalidTemplate: Impossible de créer une page, modèle non valide
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Impossible de créer une page, il manq
 panel.pages.page.cannotDelete.invalidLanguage: 'Impossible de supprimer la page, terme non défini : %s'
 panel.pages.page.cannotDelete.notDeletable: Impossible de supprimer la page, la page ne peut être supprimée
 panel.pages.page.cannotDelete.pageNotFound: Impossible de supprimer la page, page introuvable
+panel.pages.page.cannotDuplicate.invalidFields: Impossible de dupliquer la page, certains champs sont invalides
 panel.pages.page.cannotDuplicate.notDuplicable: Impossible de dupliquer la page, elle n’est pas duplicable
 panel.pages.page.cannotDuplicate.pageNotFound: Impossible de dupliquer la page, introuvable
 panel.pages.page.cannotEdit.alreadyExists: Impossible de modifier la page, une page avec la même url existe déjà
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Impossible de changer le mot de passe d�
 panel.users.user.cannotChangeRole: Impossible de changer le rôle de %s. L’action n’est pas autorisée.
 panel.users.user.cannotCreate.alreadyExists: Impossible de créer l’utilisateur, un utilisateur portant le même nom existe déjà
 panel.users.user.cannotCreate.emailAlreadyUsed: Impossible de créer l’utilisateur, l’adresse e-mail est déjà associée à un compte
+panel.users.user.cannotCreate.invalidFields: Impossible de créer l’utilisateur, certains champs sont invalides
 panel.users.user.cannotCreate.varMissing: Impossible de créer l’utilisateur, il manque une variable
 panel.users.user.cannotDelete: Impossible de supprimer l’utilisateur. Vous devez être un administrateur et l’utilisateur ne doit pas être connecté.
 panel.users.user.cannotEdit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.

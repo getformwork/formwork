@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Nie można usunąć pliku, plik nie zosta
 panel.files.cannotDelete.pageNotFound: Nie można usunąć pliku, strona nie została znaleziona
 panel.files.cannotRename.fileAlreadyExists: Nie można zmienić nazwy pliku, plik o tej samej nazwie już istnieje
 panel.files.cannotRename.fileNotFound: Nie można zmienić nazwy pliku, plik nie został znaleziony
+panel.files.cannotRename.invalidFields: Nie można zmienić nazwy pliku, niektóre pola są nieprawidłowe
 panel.files.cannotRename.pageNotFound: Nie można zmienić nazwy pliku, strona nie została znaleziona
 panel.files.cannotReplace.fileNotFound: Nie można zamienić pliku, plik nie został znaleziony
 panel.files.cannotReplace.multipleFiles: Nie można zamienić pliku, podano wiele plików
 panel.files.cannotReplace.pageNotFound: Nie można zamienić pliku, strona nie została znaleziona
+panel.files.cannotUpload.invalidFields: Nie można przesłać pliku, niektóre pola są nieprawidłowe
 panel.files.cannotUpload.pageNotFound: Nie można przesłać pliku, strona nie została znaleziona
 panel.files.deleted: Plik usunięty
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Akcje
 panel.pages.page.cannotChangeNum: Nie można zmienić numeru strony
 panel.pages.page.cannotCreate: Nie można utworzyć strony
 panel.pages.page.cannotCreate.alreadyExists: Nie można utworzyć strony, strona o tym samym URI już istnieje
+panel.pages.page.cannotCreate.invalidFields: Nie można utworzyć strony, niektóre pola są nieprawidłowe
 panel.pages.page.cannotCreate.invalidParent: Nie można utworzyć strony, nieprawidłowa strona nadrzędna
 panel.pages.page.cannotCreate.invalidSlug: Nie można utworzyć strony, slug strony musi zawierać tylko litery i cyfry oddzielone myślnikami
 panel.pages.page.cannotCreate.invalidTemplate: Nie można utworzyć strony, nieprawidłowy szablon
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Nie można utworzyć strony, brak zmie
 panel.pages.page.cannotDelete.invalidLanguage: 'Nie można usunąć strony, nieprawidłowy język: %s'
 panel.pages.page.cannotDelete.notDeletable: Nie można usunąć strony, strona nie jest do usunięcia
 panel.pages.page.cannotDelete.pageNotFound: Nie można usunąć strony, strona nie została znaleziona
+panel.pages.page.cannotDuplicate.invalidFields: Nie można zduplikować strony, niektóre pola są nieprawidłowe
 panel.pages.page.cannotDuplicate.notDuplicable: Nie można zduplikować strony, nie jest duplikowalna
 panel.pages.page.cannotDuplicate.pageNotFound: Nie można zduplikować strony, nie znaleziono
 panel.pages.page.cannotEdit.alreadyExists: Nie można edytować strony, strona o tym samym URI już istnieje
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Nie można zmienić hasła innego użytko
 panel.users.user.cannotChangeRole: Nie można zmienić roli użytkownika %s. Ta operacja jest niedozwolona.
 panel.users.user.cannotCreate.alreadyExists: Nie można utworzyć użytkownika, użytkownik o tej samej nazwie już istnieje
 panel.users.user.cannotCreate.emailAlreadyUsed: Nie można utworzyć użytkownika, adres e-mail jest już powiązany z kontem
+panel.users.user.cannotCreate.invalidFields: Nie można utworzyć użytkownika, niektóre pola są nieprawidłowe
 panel.users.user.cannotCreate.varMissing: Nie można utworzyć użytkownika, brak zmiennej
 panel.users.user.cannotDelete: Nie można usunąć użytkownika. Musisz być administratorem, a użytkownik nie może być zalogowany.
 panel.users.user.cannotEdit: Nie można edytować użytkownika %s. Ta operacja jest niedozwolona.

@@ -10,6 +10,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
+use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
@@ -46,6 +47,7 @@ return RectorConfig::configure()
         NullToStrictStringFuncCallArgRector::class,
         ReadOnlyPropertyRector::class,
         RemoveNullArgOnNullDefaultParamRector::class,
+        RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
         RenamePropertyToMatchTypeRector::class,
         ReturnBinaryOrToEarlyReturnRector::class,
         VariableConstFetchToClassConstFetchRector::class,

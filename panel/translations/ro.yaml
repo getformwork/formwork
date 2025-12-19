@@ -59,10 +59,12 @@ panel.files.cannotDelete.fileNotFound: Nu se poate șterge fișierul, fișierul 
 panel.files.cannotDelete.pageNotFound: Nu se poate șterge fișierul, fișierul nu a fost găsit
 panel.files.cannotRename.fileAlreadyExists: Nu se poate redenumi fișierul, există deja un fișier cu același nume
 panel.files.cannotRename.fileNotFound: Nu se poate redenumi fișierul, fișierul nu a fost găsit
+panel.files.cannotRename.invalidFields: Nu se poate redenumi fișierul, unele câmpuri sunt nevalide
 panel.files.cannotRename.pageNotFound: Nu se poate redenumi fișierul, pagina nu a fost găsită
 panel.files.cannotReplace.fileNotFound: Nu se poate înlocui fișierul, fișierul nu a fost găsit
 panel.files.cannotReplace.multipleFiles: Nu se poate înlocui fișierul, au fost trimise mai multe fișiere
 panel.files.cannotReplace.pageNotFound: Nu se poate înlocui fișierul, pagina nu a fost găsită
+panel.files.cannotUpload.invalidFields: Nu se poate încărca fișierul, unele câmpuri sunt nevalide
 panel.files.cannotUpload.pageNotFound: Nu se poate încărca fișierul, pagina nu a fost găsită
 panel.files.deleted: Fișier șters
 panel.files.exif: EXIF
@@ -217,6 +219,7 @@ panel.pages.page.actions: Acțiuni
 panel.pages.page.cannotChangeNum: Nu se poate schimba numărul paginii
 panel.pages.page.cannotCreate: Nu se poate crea pagina
 panel.pages.page.cannotCreate.alreadyExists: Nu se poate crea pagina, o pagină cu aceeași URI există deja
+panel.pages.page.cannotCreate.invalidFields: Nu se poate crea pagina, unele câmpuri sunt nevalide
 panel.pages.page.cannotCreate.invalidParent: Nu se poate crea pagina, pagină părinte invalidă
 panel.pages.page.cannotCreate.invalidSlug: Nu se poate crea pagina, slug-ul paginii trebuie să conțină doar litere și cifre separate prin cratime
 panel.pages.page.cannotCreate.invalidTemplate: Nu se poate crea pagina, șablon invalid
@@ -224,6 +227,7 @@ panel.pages.page.cannotCreate.varMissing: Nu se poate crea pagina, lipsește o v
 panel.pages.page.cannotDelete.invalidLanguage: 'Nu se poate șterge pagina, limbă invalidă: %s'
 panel.pages.page.cannotDelete.notDeletable: Nu se poate șterge pagina, pagina nu poate fi ștearsă
 panel.pages.page.cannotDelete.pageNotFound: Nu se poate șterge pagina, pagina nu a fost găsită
+panel.pages.page.cannotDuplicate.invalidFields: Nu se poate duplica pagina, unele câmpuri sunt nevalide
 panel.pages.page.cannotDuplicate.notDuplicable: Nu se poate duplica pagina, nu este duplicabilă
 panel.pages.page.cannotDuplicate.pageNotFound: Nu se poate duplica pagina, nu a fost găsită
 panel.pages.page.cannotEdit.alreadyExists: Nu se poate edita pagina, o pagină cu aceeași URI există deja
@@ -336,6 +340,7 @@ panel.users.user.cannotChangePassword: Nu se poate schimba parola altui utilizat
 panel.users.user.cannotChangeRole: Nu se poate schimba rolul lui %s. Această acțiune nu este permisă.
 panel.users.user.cannotCreate.alreadyExists: Nu se poate crea utilizatorul, un utilizator cu același nume există deja
 panel.users.user.cannotCreate.emailAlreadyUsed: Nu se poate crea utilizatorul, adresa de e-mail este deja asociată unui cont
+panel.users.user.cannotCreate.invalidFields: Nu se poate crea utilizatorul, unele câmpuri sunt nevalide
 panel.users.user.cannotCreate.varMissing: Nu se poate crea utilizatorul, lipsește o variabilă
 panel.users.user.cannotDelete: Nu se poate șterge utilizatorul. Trebuie să fii administrator și utilizatorul nu trebuie să fie autentificat.
 panel.users.user.cannotEdit: Nu se poate edita utilizatorul %s. Această acțiune nu este permisă.
