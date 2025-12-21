@@ -71,7 +71,7 @@ class Translations
             if ($fallbackIfInvalid) {
                 return $this->getFallback();
             }
-            throw new InvalidArgumentException('Invalid translation "' . $code . '"');
+            throw new InvalidArgumentException(sprintf('Invalid translation code "%s"', $code));
         }
 
         if (isset($this->storage[$code])) {

@@ -68,7 +68,7 @@ class FileResponse extends Response
         }
 
         if ($file === false) {
-            throw new RuntimeException('Unable to open file: ' . $this->path);
+            throw new RuntimeException(sprintf('Unable to open file: %s', $this->path));
         }
 
         ignore_user_abort(true);

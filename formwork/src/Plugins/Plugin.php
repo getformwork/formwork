@@ -10,6 +10,7 @@ use Formwork\Plugins\Controllers\AssetsController;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
+use InvalidArgumentException;
 use ReflectionMethod;
 
 class Plugin implements Arrayable
@@ -37,7 +38,7 @@ class Plugin implements Arrayable
         $this->id = basename($this->path);
 
         if (!preg_match('/^[a-z0-9-]+$/', $this->id)) {
-            throw new \InvalidArgumentException("Invalid plugin id '{$this->id}'. Plugin ids can only contain lowercase letters, numbers and hyphens.");
+            throw new InvalidArgumentException(sprintf('Invalid plugin id "%s". Plugin ids can only contain lowercase letters, numbers and hyphens.', $this->id));
         }
     }
 

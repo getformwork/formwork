@@ -31,7 +31,7 @@ class NodeInterpolator
         if ($this->node instanceof IdentifierNode) {
             return $this->interpolateIdentifierNode($this->node);
         }
-        throw new InterpolationException('Unexpected ' . $this->node);
+        throw new InterpolationException(sprintf('Unexpected %s', $this->node));
     }
 
     /**

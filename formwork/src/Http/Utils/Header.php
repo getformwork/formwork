@@ -30,7 +30,7 @@ final class Header
     public static function send(string $fieldName, string $fieldValue, bool $replace = true): void
     {
         if (headers_sent()) {
-            throw new RuntimeException(sprintf('Cannot send %d header, HTTP headers already sent', $fieldName));
+            throw new RuntimeException(sprintf('Cannot send %s header, HTTP headers already sent', $fieldName));
         }
         header($fieldName . ': ' . trim($fieldValue), $replace);
     }
