@@ -73,6 +73,16 @@ page.template: Πρότυπο
 page.text: Κείμενο
 page.title: Τίτλος
 page.unpublishDate: Ημερομηνία απόσυρσης
+plugin.author: Συγγραφέας
+plugin.description: Περιγραφή
+plugin.homepage: Αρχική σελίδα
+plugin.license: Άδεια
+plugin.plugin: Πρόσθετο
+plugin.status: Κατάσταση
+plugin.status.disabled: Απενεργοποιημένο
+plugin.status.enabled: Ενεργοποιημένο
+plugin.title: Τίτλος
+plugin.version: Έκδοση
 site.advanced: Προηγμένες επιλογές
 site.advanced.aliases: Ψευδώνυμα
 site.advanced.aliases.alias: Ψευδώνυμο

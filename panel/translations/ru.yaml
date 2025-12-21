@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Переключить дочерние страни
 panel.pages.viewChildren: Смотреть вложенные
 panel.pages.viewPage: Просмотреть страницу
 panel.panel: Панель администрирования
+panel.plugins.info: Информация
+panel.plugins.nextPlugin: Следующий плагин
+panel.plugins.plugin.cannotSave.invalidFields: Не удалось сохранить настройки плагина, некоторые поля недействительны
+panel.plugins.plugin.disabled: Плагин отключён
+panel.plugins.plugin.enabled: Плагин включён
+panel.plugins.plugin.notFound: Плагин не найден
+panel.plugins.plugin.saved: Настройки плагина сохранены
+panel.plugins.plugins: Плагины
+panel.plugins.previousPlugin: Предыдущий плагин
 panel.register.createUser: Formwork Администратор установлен, но не было найдено ни одного пользователя. Пожалуйста зарегистрировать пользователя в настоящее время.
 panel.register.register: Регистрация нового пользователя
 panel.request.error.postMaxSize: Запрос HTTP POST превышает максимально допустимый размер

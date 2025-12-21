@@ -270,6 +270,15 @@ panel.pages.toggleChildren: Toggle children pages
 panel.pages.viewChildren: View children pages
 panel.pages.viewPage: View page
 panel.panel: Administration panel
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Next plugin
+panel.plugins.plugin.cannotSave.invalidFields: Cannot save plugin options, some fields are invalid
+panel.plugins.plugin.disabled: Plugin disabled
+panel.plugins.plugin.enabled: Plugin enabled
+panel.plugins.plugin.notFound: Plugin not found
+panel.plugins.plugin.saved: Plugin options saved
+panel.plugins.plugins: Plugins
+panel.plugins.previousPlugin: Previous plugin
 panel.register.createUser: Formwork is installed but no users were found. Please register a user now.
 panel.register.register: Register new user
 panel.request.error.postMaxSize: The HTTP POST request exceeds the maximum allowed size

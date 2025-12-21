@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Alternar páginas secundarias
 panel.pages.viewChildren: Ver subpáginas
 panel.pages.viewPage: Ver página
 panel.panel: Panel de administración
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Plugin siguiente
+panel.plugins.plugin.cannotSave.invalidFields: No se pueden guardar las opciones del plugin, algunos campos no son válidos
+panel.plugins.plugin.disabled: Plugin deshabilitado
+panel.plugins.plugin.enabled: Plugin habilitado
+panel.plugins.plugin.notFound: Plugin no encontrado
+panel.plugins.plugin.saved: Opciones del plugin guardadas
+panel.plugins.plugins: Plugins
+panel.plugins.previousPlugin: Plugin anterior
 panel.register.createUser: Formwork está instalado pero no se encontraron usuarios. Por favor, registra un usuario ahora.
 panel.register.register: Registrar nuevo usuario
 panel.request.error.postMaxSize: La solicitud POST excede el tamaño máximo permitido

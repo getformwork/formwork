@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Przełącz strony podrzędne
 panel.pages.viewChildren: Pokaż podstrony
 panel.pages.viewPage: Wyświetl stronę
 panel.panel: Panel administracyjny
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Następna wtyczka
+panel.plugins.plugin.cannotSave.invalidFields: Nie można zapisać opcji wtyczki, niektóre pola są nieprawidłowe
+panel.plugins.plugin.disabled: Wtyczka wyłączona
+panel.plugins.plugin.enabled: Wtyczka włączona
+panel.plugins.plugin.notFound: Wtyczka nie została znaleziona
+panel.plugins.plugin.saved: Opcje wtyczki zapisane
+panel.plugins.plugins: Wtyczki
+panel.plugins.previousPlugin: Poprzednia wtyczka
 panel.register.createUser: Formwork jest zainstalowany, ale nie znaleziono żadnych użytkowników. Zarejestruj teraz użytkownika.
 panel.register.register: Zarejestruj nowego użytkownika
 panel.request.error.postMaxSize: Żądanie HTTP POST przekracza maksymalny dozwolony rozmiar

@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Alt sayfaları aç/kapat
 panel.pages.viewChildren: Alt sayfaları görüntüle
 panel.pages.viewPage: Sayfayı görüntüle
 panel.panel: Yönetim paneli
+panel.plugins.info: Bilgi
+panel.plugins.nextPlugin: Sonraki eklenti
+panel.plugins.plugin.cannotSave.invalidFields: Eklenti seçenekleri kaydedilemiyor, bazı alanlar geçersiz
+panel.plugins.plugin.disabled: Eklenti devre dışı
+panel.plugins.plugin.enabled: Eklenti etkin
+panel.plugins.plugin.notFound: Eklenti bulunamadı
+panel.plugins.plugin.saved: Eklenti seçenekleri kaydedildi
+panel.plugins.plugins: Eklentiler
+panel.plugins.previousPlugin: Önceki eklenti
 panel.register.createUser: Formwork kuruldu fakat kullanıcı bulunamadı. Lütfen şimdi bir kullanıcı oluşturun.
 panel.register.register: Yeni kullanıcı kaydı
 panel.request.error.postMaxSize: HTTP POST isteği izin verilen maksimum boyutu aşıyor

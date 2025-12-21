@@ -2,14 +2,15 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Data\Exceptions\InvalidValueException;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
-use Formwork\Panel\Security\Password;
-use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
 use Formwork\Users\User;
+use Formwork\Users\UserFactory;
 use Formwork\Utils\FileSystem;
 
 final class RegisterController extends AbstractController
@@ -17,7 +18,7 @@ final class RegisterController extends AbstractController
     /**
      * Register@register action
      */
-    public function register(Schemes $schemes): Response
+    public function register(Schemes $schemes, UserFactory $userFactory): Response
     {
         if (!$this->site->users()->isEmpty()) {
             return $this->redirectToReferer(default: $this->generateRoute('panel.index'), base: $this->panel->panelRoot());
@@ -44,29 +45,39 @@ final class RegisterController extends AbstractController
             ]), $form->getResponseStatus());
         }
 
-        $data = $form->data();
-        $username = $data->get('username');
+        $user = $userFactory->make([]);
 
-        $userData = [
-            'username' => $username,
-            'fullname' => $data->get('fullname'),
-            'hash'     => Password::hash($data->get('password')),
-            'email'    => $data->get('email'),
-            'language' => $data->get('language'),
-            'role'     => 'admin',
-        ];
-
-        Yaml::encodeToFile($userData, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $username . '.yaml'));
+        try {
+            $user->setMultiple([...$form->data()->toArray(), 'role' => 'admin']);
+            $user->save();
+        } catch (TranslatedException $e) {
+            return $this->error($this->translate($e->getLanguageString()), ['fields' => $form->fields()]);
+        } catch (InvalidValueException $e) {
+            $identifier = $e->getIdentifier() ?? 'invalidFields';
+            return $this->error($this->translate('panel.users.user.cannotCreate.' . $identifier), ['fields' => $form->fields()]);
+        }
 
         $this->request->session()->regenerate();
-        $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $username);
+        $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $user->username());
 
         $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
         $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
 
-        $time = $accessLog->log($username);
-        $lastAccessRegistry->set($username, $time);
+        $time = $accessLog->log($user->username());
+        $lastAccessRegistry->set($user->username(), $time);
 
         return $this->redirect($this->generateRoute('panel.index'));
+    }
+
+    /**
+     * Display registration form with an error notification
+     *
+     * @param array<string, mixed> $data
+     */
+    private function error(string $message, array $data = []): Response
+    {
+        $defaults = ['title' => $this->translate('panel.register.register'), 'error' => true];
+        $this->panel->notify($message, 'error');
+        return new Response($this->view('@panel.register.register', [...$defaults, ...$data]));
     }
 }

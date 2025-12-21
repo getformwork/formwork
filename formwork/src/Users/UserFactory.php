@@ -15,8 +15,8 @@ final class UserFactory
      *
      * @param array<string, mixed> $data
      */
-    public function make(array $data, Role $role): User
+    public function make(array $data): User
     {
-        return $this->container->build(User::class, compact('data', 'role'));
+        return $this->container->build(User::class, compact('data'));
     }
 }

@@ -73,6 +73,16 @@ page.template: Modèle
 page.text: Texte
 page.title: Titre
 page.unpublishDate: Date de péremption
+plugin.author: Auteur
+plugin.description: Description
+plugin.homepage: Site web
+plugin.license: Licence
+plugin.plugin: Plugin
+plugin.status: Statut
+plugin.status.disabled: Désactivé
+plugin.status.enabled: Activé
+plugin.title: Titre
+plugin.version: Version
 site.advanced: Options avancées
 site.advanced.aliases: Alias
 site.advanced.aliases.alias: Alias

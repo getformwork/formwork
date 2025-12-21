@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Comută subpagini
 panel.pages.viewChildren: Vezi subpagini
 panel.pages.viewPage: Vezi pagina
 panel.panel: Panoul de administrare
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Plugin următor
+panel.plugins.plugin.cannotSave.invalidFields: Nu se pot salva opțiunile pluginului, unele câmpuri sunt nevalide
+panel.plugins.plugin.disabled: Plugin dezactivat
+panel.plugins.plugin.enabled: Plugin activat
+panel.plugins.plugin.notFound: Plugin negăsit
+panel.plugins.plugin.saved: Opțiunile pluginului au fost salvate
+panel.plugins.plugins: Pluginuri
+panel.plugins.previousPlugin: Plugin anterior
 panel.register.createUser: Formwork este instalat dar nu s-au găsit utilizatori. Te rog înregistrează un utilizator acum.
 panel.register.register: Înregistrează utilizator nou
 panel.request.error.postMaxSize: Cererea HTTP POST depășește dimensiunea maximă permisă

@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Afficher/Masquer les sous-pages
 panel.pages.viewChildren: Voir les sous-pages
 panel.pages.viewPage: Voir la page
 panel.panel: Panneau d’administration
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Plugin suivant
+panel.plugins.plugin.cannotSave.invalidFields: Impossible d’enregistrer les options du plugin, certains champs sont invalides
+panel.plugins.plugin.disabled: Plugin désactivé
+panel.plugins.plugin.enabled: Plugin activé
+panel.plugins.plugin.notFound: Plugin introuvable
+panel.plugins.plugin.saved: Options du plugin enregistrées
+panel.plugins.plugins: Plugins
+panel.plugins.previousPlugin: Plugin précédent
 panel.register.createUser: Le compte panel est installé mais aucun utilisateur n’a été trouvé. Veuillez enregistrer un utilisateur maintenant.
 panel.register.register: Enregistrer un nouvel utilisateur
 panel.request.error.postMaxSize: La demande HTTP POST dépasse la taille maximale autorisée

@@ -265,6 +265,31 @@ return [
             'types'   => ['XHR'],
         ],
 
+        'panel.plugins' => [
+            'path'   => '/plugins/',
+            'action' => 'Formwork\Panel\Controllers\PluginsController@index',
+        ],
+
+        'panel.plugins.plugin' => [
+            'path'    => '/plugins/{id:[a-z-]+}/',
+            'action'  => 'Formwork\Panel\Controllers\PluginsController@plugin',
+            'methods' => ['GET', 'POST'],
+        ],
+
+        'panel.plugins.enable' => [
+            'path'    => '/plugins/{id:[a-z-]+}/enable/',
+            'action'  => 'Formwork\Panel\Controllers\PluginsController@enable',
+            'methods' => ['POST'],
+            'types'   => ['XHR'],
+        ],
+
+        'panel.plugins.disable' => [
+            'path'    => '/plugins/{id:[a-z-]+}/disable/',
+            'action'  => 'Formwork\Panel\Controllers\PluginsController@disable',
+            'methods' => ['POST'],
+            'types'   => ['XHR'],
+        ],
+
         'panel.register' => [
             'path'    => '/register/',
             'action'  => 'Formwork\Panel\Controllers\RegisterController@register',

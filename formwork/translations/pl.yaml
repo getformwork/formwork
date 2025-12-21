@@ -73,6 +73,16 @@ page.template: Szablon
 page.text: Tekst
 page.title: Tytuł
 page.unpublishDate: Data wycofania publikacji
+plugin.author: Autor
+plugin.description: Opis
+plugin.homepage: Strona główna
+plugin.license: Licencja
+plugin.plugin: Wtyczka
+plugin.status: Status
+plugin.status.disabled: Wyłączona
+plugin.status.enabled: Włączona
+plugin.title: Tytuł
+plugin.version: Wersja
 site.advanced: Zaawansowane opcje
 site.advanced.aliases: Alias
 site.advanced.aliases.alias: Alias

@@ -73,6 +73,16 @@ page.template: Sjabloon
 page.text: Tekst
 page.title: Titel
 page.unpublishDate: Datum van intrekking
+plugin.author: Auteur
+plugin.description: Beschrijving
+plugin.homepage: Homepage
+plugin.license: Licentie
+plugin.plugin: Plugin
+plugin.status: Status
+plugin.status.disabled: Uitgeschakeld
+plugin.status.enabled: Ingeschakeld
+plugin.title: Titel
+plugin.version: Versie
 site.advanced: Geavanceerde opties
 site.advanced.aliases: Aliassen
 site.advanced.aliases.alias: Alias

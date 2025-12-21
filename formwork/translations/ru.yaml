@@ -73,6 +73,16 @@ page.template: Шаблон
 page.text: Текст
 page.title: Заглавие
 page.unpublishDate: Дата Отменить публикацию
+plugin.author: Автор
+plugin.description: Описание
+plugin.homepage: Домашняя страница
+plugin.license: Лицензия
+plugin.plugin: Плагин
+plugin.status: Статус
+plugin.status.disabled: Отключён
+plugin.status.enabled: Включён
+plugin.title: Название
+plugin.version: Версия
 site.advanced: Расширенные настройки
 site.advanced.aliases: Псевдонимы
 site.advanced.aliases.alias: Псевдоним

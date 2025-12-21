@@ -4,9 +4,14 @@ namespace Formwork\Images;
 
 use Formwork\Files\File;
 use Formwork\Images\ColorProfile\ColorProfile;
+use Formwork\Images\Exception\ImageException;
+use Formwork\Images\Exception\UnsupportedConversionException;
+use Formwork\Images\Exception\UnsupportedTransformsException;
+use Formwork\Images\Exception\UnsupportedTypeException;
 use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\AbstractHandler;
 use Formwork\Images\Handler\AvifHandler;
+use Formwork\Images\Handler\Exceptions\UnsupportedFeatureException;
 use Formwork\Images\Handler\GifHandler;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Images\Handler\PngHandler;
@@ -35,7 +40,6 @@ use Formwork\Images\Transform\TransformCollection;
 use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
-use RuntimeException;
 
 class Image extends File
 {
@@ -74,7 +78,7 @@ class Image extends File
     /**
      * Get image MIME type
      *
-     * @throws RuntimeException If image info cannot be determined
+     * @throws ImageException If image info cannot be determined
      */
     public function mimeType(): string
     {
@@ -91,7 +95,7 @@ class Image extends File
                 return $this->mimeType = $mimeTypeFromFile;
             }
 
-            throw new RuntimeException('Failed to get image info');
+            throw new ImageException('Failed to get image info');
         }
 
         return $this->mimeType;
@@ -294,7 +298,7 @@ class Image extends File
     /**
      * Get color profile
      *
-     * @throws RuntimeException If the image has no color profile
+     * @throws UnsupportedFeatureException If the image does not support color profiles
      */
     public function getColorProfile(): ?ColorProfile
     {
@@ -304,7 +308,7 @@ class Image extends File
     /**
      * Set color profile
      *
-     * @throws RuntimeException If the image has no color profile
+     * @throws UnsupportedFeatureException If the image does not support color profiles
      */
     public function setColorProfile(ColorProfile $colorProfile): void
     {
@@ -314,7 +318,7 @@ class Image extends File
     /**
      * Remove color profile
      *
-     * @throws RuntimeException If the image has no color profile
+     * @throws UnsupportedFeatureException If the image does not support color profiles
      */
     public function removeColorProfile(): void
     {
@@ -332,7 +336,7 @@ class Image extends File
     /**
      * Get EXIF data
      *
-     * @throws RuntimeException If the image does not support EXIF data
+     * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
     public function getExifData(): ?ExifData
     {
@@ -342,7 +346,7 @@ class Image extends File
     /**
      * Set EXIF data
      *
-     * @throws RuntimeException If the image does not support EXIF data
+     * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
     public function setExifData(ExifData $exifData): void
     {
@@ -352,7 +356,7 @@ class Image extends File
     /**
      * Remove EXIF data
      *
-     * @throws RuntimeException If the image does not support EXIF data
+     * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
     public function removeExifData(): void
     {
@@ -394,11 +398,10 @@ class Image extends File
         $image->data = $this->data;
         $image->uriGenerator = $this->uriGenerator;
 
-        if (isset($image->handler)) {
-            $image->handler = $this->handler;
+        if (!$this->transforms->isEmpty()) {
+            $this->transforms = new TransformCollection();
         }
 
-        $this->transforms = new TransformCollection();
         unset($this->handler);
 
         return $image;
@@ -447,7 +450,9 @@ class Image extends File
     /**
      * Save image to a given path with a given MIME type
      *
-     * @throws RuntimeException If the image type is unsupported or conversion is not supported
+     * @throws UnsupportedTypeException       If the image type is unsupported
+     * @throws UnsupportedTransformsException If the image transforms are not supported
+     * @throws UnsupportedConversionException If the image conversion is not supported
      */
     public function saveAs(string $path, ?string $mimeType = null): void
     {
@@ -458,18 +463,25 @@ class Image extends File
             'image/webp'    => WebpHandler::class,
             'image/avif'    => AvifHandler::class,
             'image/svg+xml' => SvgHandler::class,
-            default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType)),
+            default         => throw new UnsupportedTypeException(sprintf('Unsupported image type %s', $mimeType)),
         };
 
         if (!$this->handler()->supportsTransforms()) {
+            if (!$this->transforms->isEmpty()) {
+                throw new UnsupportedTransformsException(sprintf('Image type %s does not support transformations', $this->mimeType()));
+            }
             if ($mimeType === $this->mimeType()) {
                 $this->handler()->saveAs($path);
                 return;
             }
-            throw new RuntimeException(sprintf('Unsupported image conversion from %s to %s', $this->mimeType(), $mimeType));
+            throw new UnsupportedConversionException(sprintf('Unsupported image conversion from %s to %s', $this->mimeType(), $mimeType));
         }
 
         $this->handler()->process($this->transforms, $handler)->saveAs($path);
+
+        if (!$this->transforms->isEmpty()) {
+            $this->transforms = new TransformCollection();
+        }
     }
 
     /**
@@ -514,7 +526,7 @@ class Image extends File
     /**
      * Get image hash based on its path, transforms and format
      *
-     * @throws RuntimeException If the image type is unsupported
+     * @throws UnsupportedTypeException If the image type is unsupported
      */
     protected function getHash(?string $mimeType = null): string
     {
@@ -527,7 +539,7 @@ class Image extends File
             'image/avif'    => $mimeType . $this->options['avifQuality'] . $this->options['preserveColorProfile'] . $this->options['preserveExifData'],
             'image/gif'     => $mimeType . $this->options['gifColors'],
             'image/svg+xml' => $mimeType,
-            default         => throw new RuntimeException(sprintf('Unsupported image type %s', $mimeType)),
+            default         => throw new UnsupportedTypeException(sprintf('Unsupported image type %s', $mimeType)),
         };
 
         return substr(hash('sha256', $this->path . $this->transforms->getSpecifier() . $format . FileSystem::lastModifiedTime($this->path)), 0, 32);
@@ -547,7 +559,7 @@ class Image extends File
     /**
      * Get handler for the image according to its MIME type
      *
-     * @throws RuntimeException If the image type is unsupported
+     * @throws UnsupportedTypeException If the image type is unsupported
      */
     protected function getHandler(): AbstractHandler
     {
@@ -558,23 +570,23 @@ class Image extends File
             'image/webp'    => WebpHandler::fromPath($this->path, $this->options),
             'image/avif'    => AvifHandler::fromPath($this->path, $this->options),
             'image/svg+xml' => SvgHandler::fromPath($this->path, $this->options),
-            default         => throw new RuntimeException('Unsupported image type'),
+            default         => throw new UnsupportedTypeException('Unsupported image type'),
         };
     }
 
     /**
      * Initialize image
      *
-     * @throws RuntimeException If `gd` extension is not loaded or image is not readable
+     * @throws ImageException If `gd` extension is not loaded or image is not readable
      */
     protected function initialize(): void
     {
         if (!extension_loaded('gd')) {
-            throw new RuntimeException(sprintf('Class %s requires the extension "gd" to be enabled', static::class));
+            throw new ImageException(sprintf('Class %s requires the extension "gd" to be enabled', static::class));
         }
 
         if (!FileSystem::isReadable($this->path)) {
-            throw new RuntimeException(sprintf('Image %s must be readable to be processed', $this->path));
+            throw new ImageException(sprintf('Image %s must be readable to be processed', $this->path));
         }
     }
 }

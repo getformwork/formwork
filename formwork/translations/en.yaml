@@ -73,6 +73,16 @@ page.template: Template
 page.text: Text
 page.title: Title
 page.unpublishDate: Unpublish date
+plugin.author: Author
+plugin.description: Description
+plugin.homepage: Homepage
+plugin.license: License
+plugin.plugin: Plugin
+plugin.status: Status
+plugin.status.disabled: Disabled
+plugin.status.enabled: Enabled
+plugin.title: Title
+plugin.version: Version
 site.advanced: Advanced options
 site.advanced.aliases: Aliases
 site.advanced.aliases.alias: Alias

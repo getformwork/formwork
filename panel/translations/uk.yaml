@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Перемкнути дочірні сторінки
 panel.pages.viewChildren: Перегляд підсторінок
 panel.pages.viewPage: Переглянути сторінку
 panel.panel: Панель адміністратора
+panel.plugins.info: Інформація
+panel.plugins.nextPlugin: Наступний плагін
+panel.plugins.plugin.cannotSave.invalidFields: Не вдалося зберегти налаштування плагіна, деякі поля недійсні
+panel.plugins.plugin.disabled: Плагін вимкнено
+panel.plugins.plugin.enabled: Плагін увімкнено
+panel.plugins.plugin.notFound: Плагін не знайдено
+panel.plugins.plugin.saved: Налаштування плагіна збережено
+panel.plugins.plugins: Плагіни
+panel.plugins.previousPlugin: Попередній плагін
 panel.register.createUser: Formwork встановлено, але користувачів не знайдено. Зареєструйте користувача зараз.
 panel.register.register: Зареєструвати нового користувача
 panel.request.error.postMaxSize: HTTP POST запит перевищує максимальний дозволений розмір

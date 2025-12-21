@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Εναλλαγή υποσελίδων
 panel.pages.viewChildren: Προβολή υποσελίδων
 panel.pages.viewPage: Προβολή σελίδας
 panel.panel: Πίνακας διαχείρισης
+panel.plugins.info: Πληροφορίες
+panel.plugins.nextPlugin: Επόμενο πρόσθετο
+panel.plugins.plugin.cannotSave.invalidFields: Δεν είναι δυνατή η αποθήκευση των επιλογών του πρόσθετου, ορισμένα πεδία δεν είναι έγκυρα
+panel.plugins.plugin.disabled: Το πρόσθετο απενεργοποιήθηκε
+panel.plugins.plugin.enabled: Το πρόσθετο ενεργοποιήθηκε
+panel.plugins.plugin.notFound: Το πρόσθετο δεν βρέθηκε
+panel.plugins.plugin.saved: Οι επιλογές του πρόσθετου αποθηκεύτηκαν
+panel.plugins.plugins: Πρόσθετα
+panel.plugins.previousPlugin: Προηγούμενο πρόσθετο
 panel.register.createUser: Το Formwork έχει εγκατασταθεί αλλά δεν βρέθηκαν χρήστες. Παρακαλώ δημιούργησε έναν χρήστη τώρα.
 panel.register.register: Εγγραφή νέου χρήστη
 panel.request.error.postMaxSize: Το αίτημα HTTP POST υπερβαίνει το μέγιστο επιτρεπόμενο μέγεθος

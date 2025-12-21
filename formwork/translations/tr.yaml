@@ -73,6 +73,16 @@ page.template: Şablon
 page.text: Metin
 page.title: Başlık
 page.unpublishDate: Yayından kaldırma tarihi
+plugin.author: Yazar
+plugin.description: Açıklama
+plugin.homepage: Ana sayfa
+plugin.license: Lisans
+plugin.plugin: Eklenti
+plugin.status: Durum
+plugin.status.disabled: Devre dışı
+plugin.status.enabled: Etkin
+plugin.title: Başlık
+plugin.version: Sürüm
 site.advanced: Gelişmiş ayarlar
 site.advanced.aliases: Takma adlar
 site.advanced.aliases.alias: Takma ad

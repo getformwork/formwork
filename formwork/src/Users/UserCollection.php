@@ -23,7 +23,15 @@ class UserCollection extends AbstractCollection
     }
 
     /**
-     * Get all available roles
+     * Get roles collection
+     */
+    public function roles(): RoleCollection
+    {
+        return $this->roleCollection;
+    }
+
+    /**
+     * Get all available roles as an array of role titles
      *
      * @return array<string, string>
      */

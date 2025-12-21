@@ -12,6 +12,7 @@ import { Tooltips } from "./components/tooltips";
 import { Backups } from "./components/views/backups";
 import { Dashboard } from "./components/views/dashboard";
 import { Pages } from "./components/views/pages";
+import { Plugins } from "./components/views/plugins";
 import { Statistics } from "./components/views/statistics";
 import { Updates } from "./components/views/updates";
 
@@ -73,6 +74,7 @@ class App {
         this.loadComponent(Statistics);
         this.loadComponent(Backups);
         this.loadComponent(Updates);
+        this.loadComponent(Plugins);
     }
 
     loadConfig(config: AppConfig) {

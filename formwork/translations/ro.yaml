@@ -73,6 +73,16 @@ page.template: Șablon
 page.text: Text
 page.title: Titlu
 page.unpublishDate: Dată depublicare
+plugin.author: Autor
+plugin.description: Descriere
+plugin.homepage: Pagina principală
+plugin.license: Licență
+plugin.plugin: Plugin
+plugin.status: Stare
+plugin.status.disabled: Dezactivat
+plugin.status.enabled: Activat
+plugin.title: Titlu
+plugin.version: Versiune
 site.advanced: Opțiuni avansate
 site.advanced.aliases: Aliasuri
 site.advanced.aliases.alias: Alias

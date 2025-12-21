@@ -73,6 +73,16 @@ page.template: Template
 page.text: Texto
 page.title: Titulo
 page.unpublishDate: Data de cancelamento da publicação
+plugin.author: Autor
+plugin.description: Descrição
+plugin.homepage: Página inicial
+plugin.license: Licença
+plugin.plugin: Plugin
+plugin.status: Estado
+plugin.status.disabled: Desativado
+plugin.status.enabled: Ativado
+plugin.title: Título
+plugin.version: Versão
 site.advanced: Opções avançadas
 site.advanced.aliases: Aliases
 site.advanced.aliases.alias: Alias

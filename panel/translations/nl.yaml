@@ -267,6 +267,15 @@ panel.pages.toggleChildren: Kindpagina's tonen/verbergen
 panel.pages.viewChildren: Bekijk subpagina's
 panel.pages.viewPage: Bekijk pagina
 panel.panel: Administratiepaneel
+panel.plugins.info: Info
+panel.plugins.nextPlugin: Volgende plugin
+panel.plugins.plugin.cannotSave.invalidFields: Pluginopties kunnen niet worden opgeslagen, sommige velden zijn ongeldig
+panel.plugins.plugin.disabled: Plugin uitgeschakeld
+panel.plugins.plugin.enabled: Plugin ingeschakeld
+panel.plugins.plugin.notFound: Plugin niet gevonden
+panel.plugins.plugin.saved: Pluginopties opgeslagen
+panel.plugins.plugins: Plugins
+panel.plugins.previousPlugin: Vorige plugin
 panel.register.createUser: Formwork is geïnstalleerd maar er zijn geen gebruikers gevonden. Maak nu een gebruiker aan.
 panel.register.register: Nieuwe gebruiker registreren
 panel.request.error.postMaxSize: De HTTP POST-aanvraag overschrijdt de maximaal toegestane grootte

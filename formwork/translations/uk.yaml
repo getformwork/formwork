@@ -73,6 +73,16 @@ page.template: Шаблон
 page.text: Текст
 page.title: Назва
 page.unpublishDate: Дата зняття публікації
+plugin.author: Автор
+plugin.description: Опис
+plugin.homepage: Домашня сторінка
+plugin.license: Ліцензія
+plugin.plugin: Плагін
+plugin.status: Статус
+plugin.status.disabled: Вимкнено
+plugin.status.enabled: Увімкнено
+plugin.title: Назва
+plugin.version: Версія
 site.advanced: Розширені опції
 site.advanced.aliases: Псевдоніми
 site.advanced.aliases.alias: Псевдонім

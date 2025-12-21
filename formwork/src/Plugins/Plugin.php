@@ -15,6 +15,11 @@ use ReflectionMethod;
 class Plugin implements Arrayable
 {
     /**
+     * Plugin id
+     */
+    protected string $id;
+
+    /**
      * Whether the plugin has been initialized
      */
     protected bool $initialized = false;
@@ -24,11 +29,17 @@ class Plugin implements Arrayable
      */
     protected PluginManifest $manifest;
 
-    public function __construct(
+    final public function __construct(
         protected string $path,
         protected App $app,
         protected ViewFactory $viewFactory
-    ) {}
+    ) {
+        $this->id = basename($this->path);
+
+        if (!preg_match('/^[a-z0-9-]+$/', $this->id)) {
+            throw new \InvalidArgumentException("Invalid plugin id '{$this->id}'. Plugin ids can only contain lowercase letters, numbers and hyphens.");
+        }
+    }
 
     /**
      * Get the plugin path
@@ -43,7 +54,7 @@ class Plugin implements Arrayable
      */
     final public function id(): string
     {
-        return basename($this->path());
+        return $this->id;
     }
 
     /**

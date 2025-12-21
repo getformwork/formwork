@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Panel\Security;
+namespace Formwork\Users\Utils;
 
 use Formwork\Traits\StaticClass;
 

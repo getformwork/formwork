@@ -1,9 +1,10 @@
 <?php
 
+use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Translations\Translation;
 
-return fn(Site $site, Translation $translation) => [
+return fn(App $app, Site $site, Translation $translation) => [
     'dashboard' => [
         'label'       => $translation->translate('panel.dashboard.dashboard'),
         'uri'         => '/dashboard/',
@@ -52,6 +53,14 @@ return fn(Site $site, Translation $translation) => [
         'permissions' => 'panel.tools',
         'badge'       => null,
         'icon'        => 'toolbox',
+    ],
+    'plugins' => [
+        'label'       => $translation->translate('panel.plugins.plugins'),
+        'uri'         => '/plugins/',
+        'permissions' => 'panel.plugins',
+        'badge'       => $app->plugins()->count(),
+        'icon'        => 'puzzle-piece',
+        'visible'     => !$app->plugins()->isEmpty(),
     ],
     'logout' => [
         'label'       => $translation->translate('panel.login.logout'),
