@@ -201,9 +201,14 @@ final class ServeCommand implements CommandInterface
                     exit(1);
 
                 default:
-                    [, $requestPort, $requestInfo] = $this->splitMessage($message);
-                    $requestPort ??= '';
-                    $this->requestData[$requestPort]['info'] = $requestInfo;
+                    if (($data = $this->splitMessage($message)) !== []) {
+                        [, $requestPort, $requestInfo] = $data;
+                        $requestPort ??= '';
+                        $this->requestData[$requestPort]['info'] = $requestInfo;
+                    } else {
+                        // Unknown message format
+                        $this->climate->to('error')->error($message);
+                    }
                     break;
             }
         }
