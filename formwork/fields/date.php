@@ -44,8 +44,21 @@ return function (App $app): array {
              *
              * The duration is formatted as a human-readable translated string representing
              * the time difference between the field value and the current time.
+             *
+             * @deprecated since 2.3.0 Use `$field->toTimeDistance()` instead
              */
-            'toDuration' => function (Field $field) use ($app): string {
+            'toDuration' => function (Field $field): string {
+                trigger_error('$field->toDuration() is deprecated since Formwork 2.3.0 and will be removed in a future release. Use $field->toTimeDistance() instead', E_USER_DEPRECATED);
+                return $field->toTimeDistance();
+            },
+
+            /**
+             * Return the field value as a time distance string.
+             *
+             * The string is formatted as a human-readable translated string representing
+             * the distance between the field value and the current time.
+             */
+            'toTimeDistance' => function (Field $field) use ($app): string {
                 return $field->isEmpty() ? '' : Date::formatTimestampAsDistance($field->toTimestamp(), $app->translations()->getCurrent());
             },
 
