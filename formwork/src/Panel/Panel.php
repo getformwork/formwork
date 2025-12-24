@@ -22,6 +22,7 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
+use UnexpectedValueException;
 
 final class Panel
 {
@@ -98,11 +99,17 @@ final class Panel
     }
 
     /**
-     * Return current route
+     * Return the current route relative to the panel root
+     *
+     * @throws UnexpectedValueException If the request URI is outside the panel root
      */
     public function route(): string
     {
-        return '/' . Str::removeStart($this->request->uri(), $this->panelRoot());
+        $requestUri = Uri::normalize($this->request->uri());
+        if (!Str::startsWith($requestUri, $this->panelRoot())) {
+            throw new UnexpectedValueException('The request URI is outside the panel root');
+        }
+        return '/' . Str::removeStart($requestUri, $this->panelRoot());
     }
 
     /**
