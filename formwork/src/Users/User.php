@@ -246,16 +246,15 @@ class User extends Model
     /**
      * Set a data value by key
      *
-     * * When setting the `username` key, an exception is thrown if the user
-     * already has a username assigned.
-     * * When setting the `password` key, the password is hashed and the plain value
-     * is not stored in the internal data array.
-     * * When setting the `email` key, the value is validated before being stored.
-     * * When setting the `role` key, the value is validated before being stored.
-     *
      * This method updates both the data array and the corresponding field
      * (if it exists). The field's validation may transform the value before
      * it's stored in the data array.
+     *
+     * @throws LogicException        If trying to change the username of an existing user
+     * @throws InvalidValueException If the password is too short
+     * @throws InvalidValueException If the e-mail address is not valid
+     * @throws InvalidValueException If the role does not exist
+     * @throws TranslatedException   If email is already used by another user
      */
     public function set(string $key, mixed $value): void
     {
