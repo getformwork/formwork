@@ -4,9 +4,6 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Cms\Site;
 use Formwork\Controllers\AbstractController as BaseAbstractController;
-use Formwork\Fields\FieldCollection;
-use Formwork\Files\Services\FileUploader;
-use Formwork\Forms\Form;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Panel;
 use Formwork\Router\Router;
@@ -22,7 +19,6 @@ abstract class AbstractController extends BaseAbstractController
         protected readonly Router $router,
         protected readonly CsrfToken $csrfToken,
         protected readonly Translations $translations,
-        protected readonly FileUploader $fileUploader,
         protected readonly Site $site,
         protected readonly Panel $panel,
     ) {
@@ -53,14 +49,6 @@ abstract class AbstractController extends BaseAbstractController
     protected function hasPermission(string $permission): bool
     {
         return $this->panel->user()->permissions()->has($permission);
-    }
-
-    /**
-     * Create a new form instance
-     */
-    protected function form(string $name, FieldCollection $fieldCollection): Form
-    {
-        return new Form($name, $fieldCollection, $this->fileUploader);
     }
 
     /**
