@@ -123,7 +123,7 @@ final class ServeCommand implements CommandInterface
     private function handleOutput(array $lines): void
     {
         foreach ($lines as $line) {
-            if (!preg_match('/^\[(.+)\] (.+)$/', $line, $matches, PREG_UNMATCHED_AS_NULL)) {
+            if (!preg_match('/^\[([^[\]]+)\] (.+)$/', $line, $matches, PREG_UNMATCHED_AS_NULL)) {
                 continue;
             }
 
