@@ -21,7 +21,7 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         $cacheFile = FileSystem::joinPaths($cachePath, "config.{$this->request->host()}.php");
 
         if (!FileSystem::isDirectory($cachePath, assertExists: false)) {
-            FileSystem::createDirectory($cachePath);
+            FileSystem::createDirectory($cachePath, recursive: true);
         }
 
         if (
