@@ -19,7 +19,7 @@
                             ]) ?>>
                 <?php endif ?>
                 <div class="form-input-array-value">
-                    <?php $this->insert('@panel.fields.' . $items->type(), ['field' => $items]) ?>
+                    <?php $this->insert("@panel.fields.{$items->type()}", ['field' => $items]) ?>
                 </div>
             </div>
             <button type="button" class="button button-link form-input-array-remove" title="<?= $this->translate('fields.array.remove') ?>" aria-label="<?= $this->translate('fields.array.remove') ?>"><?= $this->icon('minus-circle') ?></button>

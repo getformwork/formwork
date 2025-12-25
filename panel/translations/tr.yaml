@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Varsayılan dil
 panel.options.system.adminPanel.logoutRedirectsTo: Çıkış sonrası yönlendirme
 panel.options.system.adminPanel.logoutRedirectsTo.home: Ana sayfa
 panel.options.system.adminPanel.logoutRedirectsTo.login: Giriş sayfası
-panel.options.system.adminPanel.sessionTimeout: Oturum zaman aşımı
 panel.options.system.backup: Yedekleme
 panel.options.system.backup.backupFilesToKeep: Sunucuda tutulacak yedek sayısı
 panel.options.system.cache: Önbellek
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Devre dışı
 panel.options.system.images.jpegSaveProgressive.enabled: Etkin
 panel.options.system.images.pngCompressionLevel: PNG sıkıştırma seviyesi
 panel.options.system.images.webpQuality: WebP kalitesi
+panel.options.system.session.duration: Oturum zaman aşımı
+panel.options.system.sessions: Oturumlar
 panel.options.system.uploads.processImages: Yüklenen görselleri işle (optimize et)
 panel.options.system.uploads.processImages.disabled: Devre dışı
 panel.options.system.uploads.processImages.enabled: Etkin

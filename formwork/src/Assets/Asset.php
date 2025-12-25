@@ -63,7 +63,7 @@ class Asset
     {
         $uri = $this->uri;
         if ($includeVersion) {
-            $uri .= '?v=' . $this->version();
+            $uri .= "?v={$this->version()}";
         }
         return $uri;
     }
@@ -105,7 +105,7 @@ class Asset
      */
     public function toBase64(): string
     {
-        return 'data:' . $this->mimeType() . ';base64,' . base64_encode($this->content());
+        return "data:{$this->mimeType()};base64," . base64_encode($this->content());
     }
 
     /**

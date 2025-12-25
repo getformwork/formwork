@@ -130,7 +130,7 @@ final class PagesController extends AbstractController
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         } catch (InvalidValueException $e) {
             $identifier = $e->getIdentifier() ?? 'varMissing';
-            $this->panel->notify($this->translate('panel.pages.page.cannotCreate.' . $identifier), 'error');
+            $this->panel->notify($this->translate("panel.pages.page.cannotCreate.{$identifier}"), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
 
@@ -182,7 +182,7 @@ final class PagesController extends AbstractController
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         } catch (InvalidValueException $e) {
             $identifier = $e->getIdentifier() ?? 'varMissing';
-            $this->panel->notify($this->translate('panel.pages.page.cannotCreate.' . $identifier), 'error');
+            $this->panel->notify($this->translate("panel.pages.page.cannotCreate.{$identifier}"), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
 
@@ -264,7 +264,7 @@ final class PagesController extends AbstractController
                     $this->panel->notify($this->translate($e->getLanguageString()), 'error');
                 } catch (InvalidValueException $e) {
                     $identifier = $e->getIdentifier() ?? 'varMissing';
-                    $this->panel->notify($this->translate('panel.pages.page.cannotEdit.' . $identifier), 'error');
+                    $this->panel->notify($this->translate("panel.pages.page.cannotEdit.{$identifier}"), 'error');
                 }
 
                 if ($page->route() === null) {
@@ -443,7 +443,7 @@ final class PagesController extends AbstractController
         $this->panel->notify($this->translate('panel.pages.page.deleted'), 'success');
 
         // Try to redirect to referer unless it's to Pages@edit
-        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize(Str::append($this->request->referer(), '/')), Uri::make(['path' => $this->panel->uri('/pages/' . $routeParams->get('page') . '/edit/')], $this->request->baseUri()))) {
+        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize(Str::append($this->request->referer(), '/')), Uri::make(['path' => $this->panel->uri("/pages/{$routeParams->get('page')}/edit/")], $this->request->baseUri()))) {
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
         return $this->redirect($this->generateRoute('panel.pages'));

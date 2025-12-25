@@ -13,7 +13,7 @@
                 <?php if ($post->has('coverImage') && ($image = $post->coverImage())) : ?>
                     <img class="article-cover-image" src="<?= $image->uri() ?>" alt="<?= $this->escape($post->title()) ?>">
                 <?php endif ?>
-                <?php if (!$post->publishDate()->isEmpty()) : ?><time class="article-time"><?= $post->publishDate()->toDuration() ?></time><?php endif ?>
+                <?php if (!$post->publishDate()->isEmpty()) : ?><time class="article-time"><?= $post->publishDate()->toTimeDistance() ?></time><?php endif ?>
                 <h1 class="article-title"><a href="<?= $post->uri() ?>"><?= $this->escape($post->title()) ?></a></h1>
                 <?= $this->insert('_tags', ['post' => $post, 'blog' => $page]) ?>
                 <?php if (!$post->summary()->isEmpty()) : ?>

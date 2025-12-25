@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Standaardtaal
 panel.options.system.adminPanel.logoutRedirectsTo: Uitloggen doorsturen naar
 panel.options.system.adminPanel.logoutRedirectsTo.home: Startpagina
 panel.options.system.adminPanel.logoutRedirectsTo.login: Inlogpagina
-panel.options.system.adminPanel.sessionTimeout: Sessie time-out
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backups om op de server te bewaren
 panel.options.system.cache: Cache
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Uitgeschakeld
 panel.options.system.images.jpegSaveProgressive.enabled: Ingeschakeld
 panel.options.system.images.pngCompressionLevel: PNG-compressieniveau
 panel.options.system.images.webpQuality: WebP-kwaliteit
+panel.options.system.session.duration: Sessie time-out
+panel.options.system.sessions: Sessies
 panel.options.system.uploads.processImages: Verwerk (optimaliseer) geüploade afbeeldingen
 panel.options.system.uploads.processImages.disabled: Uitgeschakeld
 panel.options.system.uploads.processImages.enabled: Ingeschakeld

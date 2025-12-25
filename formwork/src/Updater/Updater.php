@@ -234,7 +234,7 @@ final class Updater
         ];
 
         if ($this->options['preferDistAssets'] && !empty($data['assets'])) {
-            $assetName = 'formwork-' . $data['tag_name'] . '.zip';
+            $assetName = "formwork-{$data['tag_name']}.zip";
             $key = array_search($assetName, array_column($data['assets'], 'name'), true);
 
             if ($key !== false) {

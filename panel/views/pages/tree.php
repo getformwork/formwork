@@ -65,7 +65,7 @@
                 <div class="pages-tree-item-cell page-date truncate show-from-lg"><?= $date ?></div>
                 <div class="pages-tree-item-cell page-status truncate show-from-xs">
                     <?= $this->insert('@panel._pages.status', ['page' => $page]) ?>
-                    <span class="page-status-label"><?= $this->translate('page.status.' . $page->status()) ?></span>
+                    <span class="page-status-label"><?= $this->translate("page.status.{$page->status()}") ?></span>
                 </div>
                 <div class="pages-tree-item-cell page-actions">
                     <?php if ($includeChildren && $page->hasChildren() && $subtree) : ?>

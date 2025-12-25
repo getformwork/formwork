@@ -23,13 +23,13 @@
             <div class="users-item">
                 <div class="users-item-cell user-fullname">
                     <?= $this->insert('@panel._user-image', ['user' => $user, 'class' => 'user-image']) ?>
-                    <a href="<?= $panel->uri('/users/' . $user->username() . '/profile/') ?>"><?= $this->escape($user->fullname()) ?></a>
+                    <a href="<?= $panel->uri("/users/{$user->username()}/profile/") ?>"><?= $this->escape($user->fullname()) ?></a>
                 </div>
                 <div class="users-item-cell user-username truncate"><?= $this->escape($user->username()) ?></div>
                 <div class="users-item-cell user-email truncate show-from-md"><?= $this->escape($user->email()) ?></div>
                 <div class="users-item-cell user-last-access truncate show-from-sm"><?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?></div>
                 <div class="users-item-cell user-actions">
-                    <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri('/users/' . $user->username() . '/delete/') ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
+                    <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri("/users/{$user->username()}/delete/") ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
                 </div>
             </div>
         <?php endforeach ?>

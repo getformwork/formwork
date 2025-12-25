@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Limba implicită
 panel.options.system.adminPanel.logoutRedirectsTo: Redirecționare după logout
 panel.options.system.adminPanel.logoutRedirectsTo.home: Acasă
 panel.options.system.adminPanel.logoutRedirectsTo.login: Pagina de autentificare
-panel.options.system.adminPanel.sessionTimeout: Timp expirare sesiune
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backup-uri de păstrat pe server
 panel.options.system.cache: Cache
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Dezactivat
 panel.options.system.images.jpegSaveProgressive.enabled: Activat
 panel.options.system.images.pngCompressionLevel: Nivel de compresie PNG
 panel.options.system.images.webpQuality: Calitate WebP
+panel.options.system.session.duration: Timp expirare sesiune
+panel.options.system.sessions: Sesiuni
 panel.options.system.uploads.processImages: Procesează (optimizează) imaginile încărcate
 panel.options.system.uploads.processImages.disabled: Dezactivat
 panel.options.system.uploads.processImages.enabled: Activat

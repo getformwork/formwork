@@ -118,7 +118,7 @@ final class LanguageCodes
             if ($continent !== null && count(array_intersect((array) $continent, $data['continents'])) < 1) {
                 continue;
             }
-            $result[$code] = $data['native'] . ' (' . $code . ')';
+            $result[$code] = "{$data['native']} ({$code})";
         }
         return $result;
     }

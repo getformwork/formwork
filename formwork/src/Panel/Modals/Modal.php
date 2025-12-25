@@ -116,7 +116,7 @@ class Modal implements Arrayable
         $fieldCollection = new FieldCollection();
 
         // @phpstan-ignore argument.templateType
-        $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn($data, $name) => $this->fieldFactory->make($this->id . '.' . $name, $data, $fieldCollection)));
+        $fieldCollection->setMultiple(Arr::map($this->data['fields'] ?? [], fn($data, $name) => $this->fieldFactory->make("{$this->id}.{$name}", $data, $fieldCollection)));
 
         if (isset($this->fieldsModel)) {
             $fieldCollection->setModel($this->fieldsModel);

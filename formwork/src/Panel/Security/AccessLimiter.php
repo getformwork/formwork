@@ -29,7 +29,7 @@ final class AccessLimiter
         Request $request,
     ) {
         // Hash visitor IP address followed by current host
-        $this->attemptHash = hash('sha256', $request->ip() . '@' . $request->host());
+        $this->attemptHash = hash('sha256', "{$request->ip()}@{$request->host()}");
 
         if ($registry->has($this->attemptHash)) {
             [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);

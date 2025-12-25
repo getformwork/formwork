@@ -72,7 +72,7 @@ class FileUploader
             ? $clientExtension
             : MimeType::toExtension($mimeType);
 
-        $filename = Str::slug($name ?? pathinfo($uploadedFile->clientName(), PATHINFO_FILENAME)) . '.' . $extension;
+        $filename = Str::slug($name ?? pathinfo($uploadedFile->clientName(), PATHINFO_FILENAME)) . ".{$extension}";
 
         $uploadedFile->move($destinationPath, $filename, $overwrite);
 

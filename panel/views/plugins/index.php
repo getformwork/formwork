@@ -15,17 +15,17 @@
         <?php foreach ($plugins as $plugin) : ?>
             <div class="plugins-item">
                 <div class="plugins-item-cell plugin-title truncate">
-                    <a href="<?= $panel->uri('/plugins/' . $plugin->id() . '/') ?>"><?= $this->escape($plugin->manifest()->title() ?? $plugin->name()) ?></a>
+                    <a href="<?= $panel->uri("/plugins/{$plugin->id()}/") ?>"><?= $this->escape($plugin->manifest()->title() ?? $plugin->name()) ?></a>
                     <?php if ($plugin->manifest()->version()): ?><span><?= $this->escape($plugin->manifest()->version()) ?></span><?php endif ?>
                 </div>
                 <div class="plugins-item-cell plugin-description truncate show-from-md"><?php if ($plugin->manifest()->description()): ?><?= $this->escape($plugin->manifest()->description()) ?><?php endif ?></div>
                 <div class="plugins-item-cell plugin-status">
                     <fieldset class="form-togglegroup">
                         <label class="form-label">
-                            <input class="form-input plugin-status-toggle" type="radio" name="<?= $plugin->id() ?>[enabled]" value="1" <?= $plugin->isEnabled() ? 'checked' : '' ?> data-action="<?= $panel->uri('/plugins/' . $plugin->id() . '/enable/') ?>"><span><?= $this->translate('plugin.status.enabled') ?></span>
+                            <input class="form-input plugin-status-toggle" type="radio" name="<?= $plugin->id() ?>[enabled]" value="1" <?= $plugin->isEnabled() ? 'checked' : '' ?> data-action="<?= $panel->uri("/plugins/{$plugin->id()}/enable/") ?>"><span><?= $this->translate('plugin.status.enabled') ?></span>
                         </label>
                         <label class="form-label">
-                            <input class="form-input plugin-status-toggle" type="radio" name="<?= $plugin->id() ?>[enabled]" value="0" <?= !$plugin->isEnabled() ? 'checked' : '' ?> data-action="<?= $panel->uri('/plugins/' . $plugin->id() . '/disable/') ?>"><span><?= $this->translate('plugin.status.disabled') ?></span>
+                            <input class="form-input plugin-status-toggle" type="radio" name="<?= $plugin->id() ?>[enabled]" value="0" <?= !$plugin->isEnabled() ? 'checked' : '' ?> data-action="<?= $panel->uri("/plugins/{$plugin->id()}/disable/") ?>"><span><?= $this->translate('plugin.status.disabled') ?></span>
                         </label>
                     </fieldset>
                 </div>

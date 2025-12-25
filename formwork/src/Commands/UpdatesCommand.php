@@ -8,6 +8,7 @@ use Formwork\Cms\App;
 use Formwork\Updater\Updater;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @since 2.1.0
@@ -120,8 +121,8 @@ final class UpdatesCommand implements CommandInterface
 
         try {
             $upToDate = $updater->checkUpdates();
-        } catch (\RuntimeException $e) {
-            $this->climate->error('Cannot check for updates: ' . $e->getMessage());
+        } catch (RuntimeException $e) {
+            $this->climate->error("Cannot check for updates: {$e->getMessage()}");
             exit(1);
         }
 
@@ -165,7 +166,7 @@ final class UpdatesCommand implements CommandInterface
 
         try {
             $upToDate = $updater->checkUpdates();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
             exit(1);
         }
@@ -186,7 +187,7 @@ final class UpdatesCommand implements CommandInterface
             $backupper = $this->getBackupper();
             try {
                 $backupper->backup();
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
                 exit(1);
             }
@@ -196,7 +197,7 @@ final class UpdatesCommand implements CommandInterface
         try {
             $this->climate->out("Updating <bold>Formwork</bold> to <bold><green>{$release['tag']}</green></bold>...");
             $updater->update();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->climate->error("Cannot install updates: {$e->getMessage()}");
             exit(1);
         }

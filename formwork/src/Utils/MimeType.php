@@ -1374,6 +1374,6 @@ final class MimeType
      */
     public static function extensionTypes(): array
     {
-        return Arr::mapKeys(Arr::map(self::MIME_TYPES, fn($value, $key) => sprintf('.%s (%s)', $key, $value)), fn($key) => '.' . $key);
+        return Arr::mapKeys(Arr::map(self::MIME_TYPES, fn($value, $key) => sprintf('.%s (%s)', $key, $value)), fn($key) => ".{$key}");
     }
 }

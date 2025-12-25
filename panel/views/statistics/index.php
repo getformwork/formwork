@@ -108,7 +108,7 @@
                     <?php foreach ($devices as $device => $views) : ?>
                         <tr>
                             <td class="table-cell statistics-histogram-cell" style="--percentage: <?= round($views / $totalDevices * 100, 2) ?>%">
-                                <div class="truncate"><?= $this->icon($device) ?> <?= $this->translate('panel.statistics.devices.type.' . $device) ?></div>
+                                <div class="truncate"><?= $this->icon($device) ?> <?= $this->translate("panel.statistics.devices.type.{$device}") ?></div>
                             </td>
                             <td class="table-cell text-align-right"><?= $views ?></td>
                         </tr>

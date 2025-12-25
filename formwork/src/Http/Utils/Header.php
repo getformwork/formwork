@@ -75,7 +75,7 @@ final class Header
     {
         $parts = [];
         foreach ($data as $key => $value) {
-            $parts[] = is_int($key) ? $value : $key . '=' . $value;
+            $parts[] = is_int($key) ? $value : "{$key}={$value}";
         }
         return implode('; ', $parts);
     }

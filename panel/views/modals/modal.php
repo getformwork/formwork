@@ -16,7 +16,7 @@
                     <p class="modal-text"><?= $this->escape($modal->message()) ?></p>
                 <?php endif ?>
                 <?php foreach ($modal->fields() as $field) : ?>
-                    <?php $this->insert('@panel.fields.' . $field->type(), ['field' => $field]) ?>
+                    <?php $this->insert("@panel.fields.{$field->type()}", ['field' => $field]) ?>
                 <?php endforeach ?>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>
@@ -26,7 +26,7 @@
                                 'type' => $button->formType(),
                                 'class' => $this->classes([
                                     'button',
-                                    'button-' . $button->variant(),
+                                    "button-{$button->variant()}",
                                     'button-right' => $button->align() === 'right',
                                 ]),
                                 'data-dismiss' => $button->action() === 'dismiss' ? $modal->id() : null,

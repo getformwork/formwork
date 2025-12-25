@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Мова за замовчув�
 panel.options.system.adminPanel.logoutRedirectsTo: Перенаправлення після виходу
 panel.options.system.adminPanel.logoutRedirectsTo.home: Головна
 panel.options.system.adminPanel.logoutRedirectsTo.login: Вхід
-panel.options.system.adminPanel.sessionTimeout: Часова сесія
 panel.options.system.backup: Резервне копіювання
 panel.options.system.backup.backupFilesToKeep: Кількість резервних копій для збереження на сервері
 panel.options.system.cache: Кеш
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Вимкнено
 panel.options.system.images.jpegSaveProgressive.enabled: Увімкнено
 panel.options.system.images.pngCompressionLevel: Рівень стиснення PNG
 panel.options.system.images.webpQuality: Якість WebP
+panel.options.system.session.duration: Часова сесія
+panel.options.system.sessions: Сесії
 panel.options.system.uploads.processImages: Обробляти (оптимізувати) завантажені зображення
 panel.options.system.uploads.processImages.disabled: Вимкнено
 panel.options.system.uploads.processImages.enabled: Увімкнено

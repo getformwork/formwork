@@ -65,7 +65,7 @@ final class Statistics
         $uri = Str::append(Uri::make(['query' => '', 'fragment' => ''], $this->request->uri()), '/');
 
         // Prefer speed over security for hashing, as it's not a security-critical operation
-        $hash = hash('xxh3', $ip . '@' . $uri);
+        $hash = hash('xxh3', "{$ip}@{$uri}");
 
         $timestamp = time();
 

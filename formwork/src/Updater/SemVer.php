@@ -50,8 +50,8 @@ final class SemVer implements Stringable
             $this->major,
             $this->minor,
             $this->patch,
-            $this->prerelease !== null ? '-' . $this->prerelease : '',
-            $this->buildMetadata !== null ? '+' . $this->buildMetadata : ''
+            $this->prerelease !== null ? "-{$this->prerelease}" : '',
+            $this->buildMetadata !== null ? "+{$this->buildMetadata}" : ''
         );
     }
 

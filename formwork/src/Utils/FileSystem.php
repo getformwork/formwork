@@ -687,7 +687,7 @@ final class FileSystem
     /**
      * List files and directories contained in a path
      *
-     * @param int $flags Any of `FileSystem::LIST_FILES`, `FileSystem::LIST_DIRECTORIES`, `FileSystem::LIST_EXCLUDE_EMPTY_DIRECTORIES`, `FileSystem::LIST_HIDDEN`, `FileSystem::LIST_VISIBLE`, `FileSystem::LIST_ALL` flags
+     * @param int-mask-of<self::LIST_*> $flags Any of `FileSystem::LIST_FILES`, `FileSystem::LIST_DIRECTORIES`, `FileSystem::LIST_EXCLUDE_EMPTY_DIRECTORIES`, `FileSystem::LIST_HIDDEN`, `FileSystem::LIST_VISIBLE`, `FileSystem::LIST_ALL` flags
      *
      * @throws InvalidArgumentException If the path is not a directory
      * @throws FileSystemException      If unable to open the directory
@@ -728,7 +728,7 @@ final class FileSystem
     /**
      * Recursively list files and directories contained in a path
      *
-     * @param int $flags Any of `FileSystem::LIST_FILES`, `FileSystem::LIST_DIRECTORIES`, `FileSystem::LIST_EXCLUDE_EMPTY_DIRECTORIES`, `FileSystem::LIST_HIDDEN`, `FileSystem::LIST_VISIBLE`, `FileSystem::LIST_ALL` flags
+     * @param int-mask-of<self::LIST_*> $flags Any of `FileSystem::LIST_FILES`, `FileSystem::LIST_DIRECTORIES`, `FileSystem::LIST_EXCLUDE_EMPTY_DIRECTORIES`, `FileSystem::LIST_HIDDEN`, `FileSystem::LIST_VISIBLE`, `FileSystem::LIST_ALL` flags
      *
      * @throws InvalidArgumentException If the path is not a directory
      *

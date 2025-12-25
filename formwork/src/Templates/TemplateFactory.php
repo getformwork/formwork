@@ -33,7 +33,7 @@ final class TemplateFactory
                 'site'      => $this->app->site(),
                 'csrfToken' => $this->app->getService(CsrfToken::class),
             ],
-            'scheme' => $this->schemes->get('pages.' . $name),
+            'scheme' => $this->schemes->get("pages.{$name}"),
         ]);
     }
 }

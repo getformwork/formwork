@@ -44,5 +44,5 @@
 </div>
 <div class="col-sm-1-2 col-md-1-4 mb-4">
     <div class="file-info-entry-title"><?= $this->translate('panel.files.info.image.exif.meteringMode') ?>:</div>
-    <?php if ($exif->meteringMode() !== null) : ?><?= $this->icon('camera-metering-' . $exif->meteringMode()) ?><?php else : ?>–<?php endif ?>
+    <?php if ($exif->meteringMode() !== null) : ?><?= $this->icon("camera-metering-{$exif->meteringMode()}") ?><?php else : ?>–<?php endif ?>
 </div>

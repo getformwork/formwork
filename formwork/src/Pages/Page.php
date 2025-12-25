@@ -299,14 +299,14 @@ class Page extends Model implements Stringable
 
         // Generate a unique slug by checking for existing copies
         $baseSlug = $this->slug();
-        $newSlug = $baseSlug . '-copy';
+        $newSlug = "{$baseSlug}-copy";
         $counter = 1;
 
         if ($this->parent() !== null) {
             $slugs = $this->parent()->children()->everyItem()->slug();
             while ($slugs->contains($newSlug)) {
                 $counter++;
-                $newSlug = $baseSlug . '-copy-' . $counter;
+                $newSlug = "{$baseSlug}-copy-{$counter}";
             }
         }
 
@@ -808,11 +808,11 @@ class Page extends Model implements Stringable
 
             $this->template ??= $site->templates()->get($contentFiles[$key]['template']);
 
-            $this->scheme ??= $site->schemes()->get('pages.' . $this->template);
+            $this->scheme ??= $site->schemes()->get("pages.{$this->template}");
         } else {
             $this->template ??= $site->templates()->get('default');
 
-            $this->scheme ??= $site->schemes()->get('pages.' . $this->template);
+            $this->scheme ??= $site->schemes()->get("pages.{$this->template}");
         }
 
         $this->fields ??= $this->scheme()->fields();
@@ -891,7 +891,7 @@ class Page extends Model implements Stringable
         $this->setNum();
 
         $contentDir = $this->num()
-            ? $this->num() . '-' . $this->slug()
+            ? "{$this->num()}-{$this->slug()}"
             : $this->slug();
 
         $contentPath = FileSystem::joinPaths(
@@ -908,7 +908,7 @@ class Page extends Model implements Stringable
             $filename = $this->template->name();
 
             if ($language !== null) {
-                $filename .= '.' . $language;
+                $filename .= ".{$language}";
             }
 
             $filename .= $config->get('system.pages.content.extension');
@@ -1084,7 +1084,7 @@ class Page extends Model implements Stringable
             }
             $this->template = $this->site()->templates()->get($template);
         }
-        $this->scheme = $this->site()->schemes()->get('pages.' . $template);
+        $this->scheme = $this->site()->schemes()->get("pages.{$template}");
     }
 
     /**

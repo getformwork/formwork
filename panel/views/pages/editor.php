@@ -73,7 +73,7 @@
         <div class="text-size-sm text-color-gray-medium"><?= $this->icon('clock-rotate-left') ?>
             <?= $this->translate(
                 'panel.pages.history.event.' . $history->lastItem()->event()->value,
-                '<a href="' . $panel->uri('/users/' . $history->lastItem()->user() . '/profile/') . '">' . $history->lastItem()->user() . '</a>',
+                '<a href="' . $panel->uri("/users/{$history->lastItem()->user()}/profile/") . '">' . $history->lastItem()->user() . '</a>',
                 '<span title="' . $this->datetime($history->lastItem()->time()) . '">' . $this->timedistance($history->lastItem()->time()) . '</span>'
             ) ?>
         </div>

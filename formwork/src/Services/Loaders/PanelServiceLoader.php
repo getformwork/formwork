@@ -42,7 +42,10 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         $container->define(Updater::class)
             ->parameter('options', $this->config->get('system.updates'));
 
-        $this->request->session()->setDuration($this->config->get('system.panel.sessionTimeout') * 60);
+        if ($this->config->has('system.panel.sessionTimeout')) {
+            trigger_error('The "system.panel.sessionTimeout" configuration option (in minutes) is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.session.duration" (in seconds) instead.', E_USER_DEPRECATED);
+            $this->request->session()->setDuration($this->config->get('system.panel.sessionTimeout') * 60);
+        }
 
         $container->define(ModalFactory::class);
         $container->define(Modals::class);

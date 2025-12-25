@@ -263,7 +263,9 @@ export class TagsInput {
                     case "Enter":
                         if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
                             this.addTagFromSelectedDropdownItem();
-                            event.preventDefault();
+                            if (this.innerInput.value !== "") {
+                                event.preventDefault();
+                            }
                         }
                         break;
                     case "ArrowUp":
@@ -351,8 +353,8 @@ export class TagsInput {
                     break;
                 case "Enter":
                 case "Comma":
-                    event.preventDefault();
                     if (value !== "") {
+                        event.preventDefault();
                         if (this.tags.length >= this.options.limit || this.tags.includes(value)) {
                             this.innerInput.classList.add("form-input-invalid");
                         } else {

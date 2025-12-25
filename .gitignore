@@ -12,7 +12,8 @@
 /panel/node_modules/*
 /panel/package-lock.json
 
-/site/config/plugins.yaml
+/site/auth/*
+/site/config/plugins/*
 /site/plugins/*
 /site/statistics/*
 /site/users/accounts/*

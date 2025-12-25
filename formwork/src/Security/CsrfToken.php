@@ -21,7 +21,7 @@ final class CsrfToken
     public function generate(string $name): string
     {
         $token = base64_encode(random_bytes(36));
-        $this->request->session()->set(self::SESSION_KEY_PREFIX . '.' . $name, $token);
+        $this->request->session()->set(self::SESSION_KEY_PREFIX . ".{$name}", $token);
         return $token;
     }
 
@@ -30,7 +30,7 @@ final class CsrfToken
      */
     public function has(string $name): bool
     {
-        return $this->request->session()->has(self::SESSION_KEY_PREFIX . '.' . $name);
+        return $this->request->session()->has(self::SESSION_KEY_PREFIX . ".{$name}");
     }
 
     /**
@@ -41,7 +41,7 @@ final class CsrfToken
         if ($autoGenerate && !$this->has($name)) {
             return $this->generate($name);
         }
-        return $this->request->session()->get(self::SESSION_KEY_PREFIX . '.' . $name);
+        return $this->request->session()->get(self::SESSION_KEY_PREFIX . ".{$name}");
     }
 
     /**
@@ -57,6 +57,6 @@ final class CsrfToken
      */
     public function destroy(string $name): void
     {
-        $this->request->session()->remove(self::SESSION_KEY_PREFIX . '.' . $name);
+        $this->request->session()->remove(self::SESSION_KEY_PREFIX . ".{$name}");
     }
 }

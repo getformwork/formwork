@@ -119,7 +119,7 @@ return [
     'ExposureTime' => [
         'description' => function (string $value) {
             [$num, $den] = explode('/', $value . '/1');
-            return $num > 1 ? round((int) $num / (int) $den, 1) : $num . '/' . $den;
+            return $num > 1 ? round((int) $num / (int) $den, 1) : "{$num}/{$den}";
         },
     ],
     'FNumber' => [

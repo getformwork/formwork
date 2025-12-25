@@ -1,7 +1,7 @@
 <button type="button" class="button button-link sidebar-toggle hide-from-md" aria-label="<?= $this->translate('panel.navigation.toggle') ?>"><?= $this->icon('bars') ?></button>
 <div class="sidebar show-from-md">
     <div class="logo"><a href="<?= $panel->uri('/dashboard/') ?>"><img src="<?= $this->assets()->get('@panel/images/icon.svg')->uri(includeVersion: true) ?>" alt=""> Formwork</a> <span class="show-from-md text-color-gray-medium text-size-xs"><?= $app::VERSION ?></span></div>
-    <a href="<?= $panel->uri('/users/' . $panel->user()->username() . '/profile/') ?>">
+    <a href="<?= $panel->uri("/users/{$panel->user()->username()}/profile/") ?>">
         <div class="panel-user-card">
             <div class="panel-user-image">
                 <?= $this->insert('@panel._user-image', ['user' => $panel->user()]) ?>

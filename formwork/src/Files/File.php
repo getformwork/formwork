@@ -187,7 +187,7 @@ class File extends Model implements Arrayable, Stringable
      */
     public function hash(): string
     {
-        return $this->hash ??= hash('sha256', $this->path . ':' . $this->lastModifiedTime());
+        return $this->hash ??= hash('sha256', "{$this->path}:{$this->lastModifiedTime()}");
     }
 
     /**

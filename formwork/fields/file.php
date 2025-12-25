@@ -63,7 +63,7 @@ return function (App $app) {
                 return $collection
                     ->map(static fn(File $file) => [
                         'value' => $file->name(),
-                        'icon'  => 'file-' . $file->type(),
+                        'icon'  => "file-{$file->type()}",
                         'thumb' => $file instanceof Image ? $file->square(300, 'contain')->uri() : null,
                     ])->toArray();
             },

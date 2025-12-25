@@ -211,7 +211,7 @@ final class FilesController extends AbstractController
         $name = Str::slug(FileSystem::name($data->get('filename')));
         $extension = FileSystem::extension($filename);
 
-        $newName = $name . '.' . $extension;
+        $newName = "{$name}.{$extension}";
 
         if ($newName !== $filename) {
             if ($model->files()->has($newName)) {

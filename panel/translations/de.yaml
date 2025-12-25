@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Standardsprache
 panel.options.system.adminPanel.logoutRedirectsTo: Abmelden leitet weiter zu
 panel.options.system.adminPanel.logoutRedirectsTo.home: Startseite
 panel.options.system.adminPanel.logoutRedirectsTo.login: Anmeldung
-panel.options.system.adminPanel.sessionTimeout: Sitzungszeitüberschreitung
 panel.options.system.backup: Sicherung
 panel.options.system.backup.backupFilesToKeep: Auf dem Server zu behaltende Sicherungen
 panel.options.system.cache: Cache
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Deaktiviert
 panel.options.system.images.jpegSaveProgressive.enabled: Aktiviert
 panel.options.system.images.pngCompressionLevel: PNG-Kompressionsniveau
 panel.options.system.images.webpQuality: WebP-Qualität
+panel.options.system.session.duration: Sitzungszeitüberschreitung
+panel.options.system.sessions: Sitzungen
 panel.options.system.uploads.processImages: Hochgeladene Bilder verarbeiten (optimieren)
 panel.options.system.uploads.processImages.disabled: Deaktiviert
 panel.options.system.uploads.processImages.enabled: Aktiviert

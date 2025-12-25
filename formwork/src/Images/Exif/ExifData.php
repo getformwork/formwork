@@ -151,7 +151,7 @@ class ExifData implements Arrayable
      */
     public function exposureTime(): ?string
     {
-        return $this->get('ExposureTime') ? $this->get('ExposureTime') . ' s' : null;
+        return $this->get('ExposureTime') ? "{$this->get('ExposureTime')} s" : null;
     }
 
     /**
@@ -159,7 +159,7 @@ class ExifData implements Arrayable
      */
     public function aperture(): ?string
     {
-        return $this->get('FNumber') ? 'ƒ/' . $this->get('FNumber') : null;
+        return $this->get('FNumber') ? "ƒ/{$this->get('FNumber')}" : null;
     }
 
     /**
@@ -167,7 +167,7 @@ class ExifData implements Arrayable
      */
     public function photographicSensitivity(): ?string
     {
-        return $this->get('PhotographicSensitivity') ? 'ISO ' . $this->get('PhotographicSensitivity') : null;
+        return $this->get('PhotographicSensitivity') ? "ISO {$this->get('PhotographicSensitivity')}" : null;
     }
 
     /**

@@ -17,8 +17,8 @@
                     <div class="row">
                         <?php foreach ($fields->getMultiple($section->get('fields', [])) as $field) : ?>
                             <?php if ($field->isVisible()) : ?>
-                                <div class="<?= $this->classes(['col-md-' . $field->get('width', '12-12')]) ?>">
-                                    <?php $this->insert('@panel.fields.' . $field->type(), ['field' => $field]) ?>
+                                <div class="<?= $this->classes(["col-md-{$field->get('width', '12-12')}"]) ?>">
+                                    <?php $this->insert("@panel.fields.{$field->type()}", ['field' => $field]) ?>
                                 </div>
                             <?php endif ?>
                         <?php endforeach ?>

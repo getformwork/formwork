@@ -106,7 +106,7 @@ final class ServeCommand implements CommandInterface
         $this->process = new Process([
             $php,
             '-S',
-            $this->host . ':' . $this->port,
+            "{$this->host}:{$this->port}",
             'formwork/server.php',
         ], dirname(__DIR__, 3), null, null, 0);
 
@@ -123,7 +123,7 @@ final class ServeCommand implements CommandInterface
     private function handleOutput(array $lines): void
     {
         foreach ($lines as $line) {
-            if (!preg_match('/^\[(.+)\] (.+)$/', $line, $matches, PREG_UNMATCHED_AS_NULL)) {
+            if (!preg_match('/^\[([^[\]]+)\] (.+)$/', $line, $matches, PREG_UNMATCHED_AS_NULL)) {
                 continue;
             }
 
@@ -201,9 +201,14 @@ final class ServeCommand implements CommandInterface
                     exit(1);
 
                 default:
-                    [, $requestPort, $requestInfo] = $this->splitMessage($message);
-                    $requestPort ??= '';
-                    $this->requestData[$requestPort]['info'] = $requestInfo;
+                    if (($data = $this->splitMessage($message)) !== []) {
+                        [, $requestPort, $requestInfo] = $data;
+                        $requestPort ??= '';
+                        $this->requestData[$requestPort]['info'] = $requestInfo;
+                    } else {
+                        // Unknown message format
+                        $this->climate->to('error')->error($message);
+                    }
                     break;
             }
         }
@@ -250,7 +255,7 @@ final class ServeCommand implements CommandInterface
         if ($dt > 60) {
             $m = floor($dt / 60); // minutes
             $s = round($dt % 60); // seconds
-            return $m . ' m ' . $s . ' s';
+            return "{$m} m {$s} s";
         }
 
         if ($dt > 1) {

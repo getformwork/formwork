@@ -153,7 +153,7 @@ final class PageController extends AbstractController
         if ($cacheable) {
             $lastModifiedTime = max($page->lastModifiedTime(), $this->site->lastModifiedTime());
             $headers = [
-                'ETag'          => hash('sha256', $output . ':' . $lastModifiedTime),
+                'ETag'          => hash('sha256', "{$output}:{$lastModifiedTime}"),
                 'Last-Modified' => gmdate('D, d M Y H:i:s T', $lastModifiedTime),
             ];
         }

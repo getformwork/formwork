@@ -137,7 +137,7 @@ class Config implements ArraySerializable
                 throw new ConfigLoadingException(sprintf('Unsupported config file type "%s"', $extension));
         }
 
-        $key = $prefix !== null ? $prefix . '.' . $name : $name;
+        $key = $prefix !== null ? "{$prefix}.{$name}" : $name;
         $this->config = Arr::extend($this->config, Arr::undot([$key => $data]));
     }
 

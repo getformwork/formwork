@@ -23,10 +23,15 @@ layout:
             label: '{{panel.options.system.cache}}'
             fields: [cache.enabled, cache.time]
 
+        sessions:
+            collapsible: true
+            label: '{{panel.options.system.sessions}}'
+            fields: [session.duration]
+
         panel:
             collapsible: true
             label: '{{panel.options.system.adminPanel}}'
-            fields: [panel.translation, panel.logoutRedirect, panel.sessionTimeout, panel.colorScheme]
+            fields: [panel.translation, panel.logoutRedirect, panel.colorScheme]
 
         images:
             collapsible: true
@@ -99,6 +104,13 @@ fields:
         intervals: [weeks, days, hours, minutes]
         translate: [label]
 
+    session.duration:
+        type: duration
+        label: '{{panel.options.system.session.duration}}'
+        min: 0
+        intervals: [hours, minutes]
+        translate: [label]
+
     panel.translation:
         type: select
         label: '{{panel.options.system.adminPanel.defaultLanguage}}'
@@ -112,14 +124,6 @@ fields:
         options:
             login: '{{panel.options.system.adminPanel.logoutRedirectsTo.login}}'
             home: '{{panel.options.system.adminPanel.logoutRedirectsTo.home}}'
-
-    panel.sessionTimeout:
-        type: duration
-        label: '{{panel.options.system.adminPanel.sessionTimeout}}'
-        min: 0
-        unit: minutes
-        intervals: [hours, minutes]
-        translate: [label]
 
     panel.colorScheme:
         type: togglegroup

@@ -6,7 +6,7 @@
     <header class="panel-header">
         <div class="min-w-0 flex-grow-1">
             <div class="flex">
-                <div class="header-icon"><?= $this->icon(is_null($file->type()) ? 'file' : 'file-' . $file->type()) ?></div>
+                <div class="header-icon"><?= $this->icon(is_null($file->type()) ? 'file' : "file-{$file->type()}") ?></div>
                 <div class="header-title truncate"><?= $this->escape($file->name()) ?></div>
             </div>
             <div class="truncate">

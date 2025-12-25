@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Язык по умолчани�
 panel.options.system.adminPanel.logoutRedirectsTo: Выход Перенаправление
 panel.options.system.adminPanel.logoutRedirectsTo.home: Главная
 panel.options.system.adminPanel.logoutRedirectsTo.login: Логин
-panel.options.system.adminPanel.sessionTimeout: Тайм-аут сеанса
 panel.options.system.backup: Резервный
 panel.options.system.backup.backupFilesToKeep: Резервные копии, чтобы сохранить на сервере
 panel.options.system.cache: Кэш
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Отключено
 panel.options.system.images.jpegSaveProgressive.enabled: Включено
 panel.options.system.images.pngCompressionLevel: PNG Уровень сжатия
 panel.options.system.images.webpQuality: Качество WebP
+panel.options.system.session.duration: Тайм-аут сеанса
+panel.options.system.sessions: Сессии
 panel.options.system.uploads.processImages: Обрабатывать (оптимизировать) загруженные изображения
 panel.options.system.uploads.processImages.disabled: Отключено
 panel.options.system.uploads.processImages.enabled: Включено

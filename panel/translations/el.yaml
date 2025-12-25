@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Προεπιλεγμένη γλ
 panel.options.system.adminPanel.logoutRedirectsTo: Μετά την αποσύνδεση, μετάβαση σε
 panel.options.system.adminPanel.logoutRedirectsTo.home: Αρχική
 panel.options.system.adminPanel.logoutRedirectsTo.login: Σύνδεση
-panel.options.system.adminPanel.sessionTimeout: Λήξη συνεδρίας
 panel.options.system.backup: Αντίγραφα ασφαλείας
 panel.options.system.backup.backupFilesToKeep: Αντίγραφα ασφαλείας που θα παραμείνουν στον διακομιστή
 panel.options.system.cache: Cache
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Απενεργοποι
 panel.options.system.images.jpegSaveProgressive.enabled: Ενεργοποιημένο
 panel.options.system.images.pngCompressionLevel: Επίπεδο συμπίεσης PNG
 panel.options.system.images.webpQuality: Ποιότητα WebP
+panel.options.system.session.duration: Λήξη συνεδρίας
+panel.options.system.sessions: Συνεδρίες
 panel.options.system.uploads.processImages: Βελτιστοποίηση εικόνων κατά τη μεταφόρτωση
 panel.options.system.uploads.processImages.disabled: Απενεργοποιημένο
 panel.options.system.uploads.processImages.enabled: Ενεργοποιημένο

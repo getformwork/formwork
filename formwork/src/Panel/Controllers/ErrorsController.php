@@ -74,18 +74,18 @@ final class ErrorsController extends AbstractController implements ErrorsControl
         }
 
         if ($this->request->isXmlHttpRequest()) {
-            $message = $this->translate('panel.errors.error.' . $name . '.status');
+            $message = $this->translate("panel.errors.error.{$name}.status");
             if (isset($data['throwable'])) {
                 $message .= ': ' . $data['throwable']->getMessage();
             }
             $response = JsonResponse::error($message, $responseStatus);
         } else {
             $response = new Response($this->view('@panel.errors.error', [
-                'title'       => $this->translate('panel.errors.error.' . $name . '.status'),
+                'title'       => $this->translate("panel.errors.error.{$name}.status"),
                 'code'        => $responseStatus->code(),
-                'status'      => $this->translate('panel.errors.error.' . $name . '.status'),
-                'heading'     => $this->translate('panel.errors.error.' . $name . '.heading'),
-                'description' => $this->translate('panel.errors.error.' . $name . '.description'),
+                'status'      => $this->translate("panel.errors.error.{$name}.status"),
+                'heading'     => $this->translate("panel.errors.error.{$name}.heading"),
+                'description' => $this->translate("panel.errors.error.{$name}.description"),
                 'action'      => $action,
                 ...$data,
             ]), $responseStatus);
@@ -175,6 +175,6 @@ final class ErrorsController extends AbstractController implements ErrorsControl
             ),
         ]);
 
-        return 'https://github.com/getformwork/formwork/issues/new/?' . $query;
+        return "https://github.com/getformwork/formwork/issues/new/?{$query}";
     }
 }

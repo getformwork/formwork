@@ -18,10 +18,10 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
     public function load(Container $container): Config
     {
         $cachePath = ROOT_PATH . '/cache/config/';
-        $cacheFile = FileSystem::joinPaths($cachePath, 'config.' . $this->request->host() . '.php');
+        $cacheFile = FileSystem::joinPaths($cachePath, "config.{$this->request->host()}.php");
 
         if (!FileSystem::isDirectory($cachePath, assertExists: false)) {
-            FileSystem::createDirectory($cachePath);
+            FileSystem::createDirectory($cachePath, recursive: true);
         }
 
         if (
@@ -51,6 +51,9 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         }
 
         date_default_timezone_set($config->get('system.date.timezone'));
+
+        $this->request->session()->setPath($config->get('system.session.path'));
+        $this->request->session()->setDuration($config->get('system.session.duration'));
 
         return $config;
     }

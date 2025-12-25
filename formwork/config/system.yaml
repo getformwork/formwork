@@ -11,6 +11,7 @@ backup:
         - '*.gitkeep'
         - 'backup/*'
         - 'cache/*'
+        - 'site/auth/*'
         - 'vendor/*'
         - '*node_modules/*'
 
@@ -85,7 +86,6 @@ panel:
     loginAttempts: 10
     loginResetTime: 300
     logoutRedirect: login
-    sessionTimeout: 120
     userImageSize: 512
     colorScheme: light
     paths:
@@ -116,6 +116,10 @@ schemes:
         panel: '${system.panel.path}/schemes'
         system: '${%SYSTEM_PATH%}/schemes'
         site: '${%ROOT_PATH%}/site/schemes'
+
+session:
+    path: '${%ROOT_PATH%}/site/auth/sessions'
+    duration: 7200
 
 templates:
     path: '${%ROOT_PATH%}/site/templates'

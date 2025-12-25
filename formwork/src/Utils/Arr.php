@@ -122,7 +122,7 @@ final class Arr
         foreach ($array as $key => $value) {
             if (is_array($value) && $value !== [] && self::isAssociative($value)) {
                 foreach (self::dot($value) as $subKey => $subValue) {
-                    $result[$key . '.' . $subKey] = $subValue;
+                    $result["{$key}.{$subKey}"] = $subValue;
                 }
             } else {
                 $result[$key] = $value;

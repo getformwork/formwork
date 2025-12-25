@@ -173,7 +173,7 @@ final class Uri
             $port = $parts['port'] ?? self::getDefaultPort($scheme);
             $result = $scheme . '://' . strtolower($parts['host']);
             if ($forcePort || (in_array('port', $givenParts, true) && !self::isDefaultPort($port, $scheme))) {
-                $result .= ':' . $port;
+                $result .= ":{$port}";
             }
         }
         // Normalize path slashes (leading and trailing separators are trimmed after so that the path

@@ -203,7 +203,7 @@ final class Date
                 $distance = sprintf(
                     '%d %s',
                     $interval,
-                    $translation->getStrings('date.duration.' . $intervalName)[$number]
+                    $translation->getStrings("date.duration.{$intervalName}")[$number]
                 );
                 break;
             }

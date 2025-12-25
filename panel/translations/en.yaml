@@ -149,7 +149,6 @@ panel.options.system.adminPanel.defaultLanguage: Default language
 panel.options.system.adminPanel.logoutRedirectsTo: Logout redirects to
 panel.options.system.adminPanel.logoutRedirectsTo.home: Home
 panel.options.system.adminPanel.logoutRedirectsTo.login: Login
-panel.options.system.adminPanel.sessionTimeout: Session timeout
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backups to keep on the server
 panel.options.system.cache: Cache
@@ -189,6 +188,8 @@ panel.options.system.images.jpegSaveProgressive.disabled: Disabled
 panel.options.system.images.jpegSaveProgressive.enabled: Enabled
 panel.options.system.images.pngCompressionLevel: PNG compression level
 panel.options.system.images.webpQuality: WebP quality
+panel.options.system.session.duration: Session timeout
+panel.options.system.sessions: Sessions
 panel.options.system.uploads.processImages: Process (optimize) uploaded images
 panel.options.system.uploads.processImages.disabled: Disabled
 panel.options.system.uploads.processImages.enabled: Enabled
