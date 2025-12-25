@@ -32,7 +32,7 @@
     border-radius: 8px;
     margin-top: 0.5rem;
     background-color: var(--color-base-850);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
     overflow-y: auto;
 }
 
@@ -43,9 +43,8 @@
 
 .dropdown-item {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
     width: 100%;
+    align-items: center;
     padding: 0.5rem 0.75rem;
     border: 0;
     border-radius: 6px;
@@ -54,6 +53,7 @@
     cursor: pointer !important;
     font-family: inherit;
     font-size: var(--font-size-sm);
+    gap: 0.5rem;
     text-align: inherit;
     white-space: nowrap;
 

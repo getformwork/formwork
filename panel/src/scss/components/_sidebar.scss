@@ -8,8 +8,8 @@
     left: 0;
     width: 14rem;
     padding: 0.75rem 1rem;
-    background: var(--color-base-900);
     border-right: 1px solid var(--color-base-700);
+    background: var(--color-base-900);
     @include user-select-none;
 }
 
@@ -52,13 +52,13 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
     padding: 0.625rem 0.75rem;
+    border-radius: 6px;
     margin: 0;
     margin-bottom: 0.125rem;
-    border-radius: 6px;
     color: var(--color-base-400);
     font-size: var(--font-size-sm);
+    gap: 0.75rem;
     transition: all var(--transition-time-sm);
 
     &:hover {
@@ -81,14 +81,14 @@
 }
 
 .sidebar-navigation > li .badge {
-    margin-left: auto;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 .sidebar-navigation > .active {
+    padding-left: calc(0.75rem - 3px);
+    border-left: 3px solid var(--color-accent-500);
     background-color: var(--color-base-800);
     color: var(--color-base-100);
     font-weight: 500;
-    border-left: 3px solid var(--color-accent-500);
-    padding-left: calc(0.75rem - 3px);
 }

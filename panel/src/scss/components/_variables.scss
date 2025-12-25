@@ -47,8 +47,8 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-shadow-md: #{$color-shadow-md};
     --color-shadow-lg: #{$color-shadow-lg};
 
-    --color-tooltip-inverted: #{rgba($color-base-light-100, 0.875)};
-    --color-tooltip: #{rgba($color-base-light-600, 0.875)};
+    --color-tooltip-inverted: #{rgba(#{$color-base-light-100}, 0.875)};
+    --color-tooltip: #{rgba(#{$color-base-light-600}, 0.875)};
 
     --color-base-100: #{$color-base-light-100};
     --color-base-200: #{$color-base-light-200};
@@ -149,8 +149,8 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-base-850: #{$color-base-dark-850};
     --color-base-900: #{$color-base-dark-900};
 
-    --color-tooltip-inverted: #{rgba($color-base-dark-100, 0.875)};
-    --color-tooltip: #{rgba($color-base-dark-600, 0.875)};
+    --color-tooltip-inverted: #{rgba(#{$color-base-dark-100}, 0.875)};
+    --color-tooltip: #{rgba(#{$color-base-dark-600}, 0.875)};
 }
 /* stylelint-enable */
 
