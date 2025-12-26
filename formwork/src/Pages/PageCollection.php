@@ -120,29 +120,58 @@ class PageCollection extends AbstractCollection implements Paginable
     /**
      * Search pages in the collection
      *
-     * @param string $query Query to search for
-     * @param int    $min   Minimum query length
+     * For each page, a score is computed based on the number of matches found in its fields. The
+     * final collection contains only pages with a score greater than zero, sorted by score in
+     * descending order.
+     *
+     * The search looks for exact matches of the entire query as well as individual keywords
+     * extracted from the query. The scoring weights for each field can be extended/overridden
+     * via the `$weights` parameter. Default weights for common fields are already provided
+     * (title: 8, summary: 4, content: 3, author: 2, uri: 1).
+     *
+     * The search is case-insensitive and ignores HTML tags in the page fields.
+     *
+     * @param string             $query             Query to search for
+     * @param int                $minimumLength     Minimum query length
+     * @param int                $maxKeywordMatches Maximum number of keyword matches to count per field for scoring purposes
+     * @param array<string, int> $weights           Weights for each field to consider in the scoring
      *
      * @throws RuntimeException If whitespace normalization fails
      */
-    public function search(string $query, int $min = 4): static
+    public function search(string $query, int $minimumLength = 4, int $maxKeywordMatches = 3, array $weights = []): static
     {
+        if (!extension_loaded('mbstring')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "mbstring" to be enabled', __METHOD__));
+        }
+
         $query = preg_replace(['/\s+/u', '/^\s+|\s+$/u'], [' ', ''], $query)
             ?? throw new RuntimeException(sprintf('Whitespace normalization failed with error: %s', preg_last_error_msg()));
 
-        if (strlen($query) < $min) {
+        if (mb_strlen($query) < $minimumLength) {
             $pageCollection = clone $this;
             $pageCollection->data = [];
+            return $pageCollection;
         }
 
         $keywords = explode(' ', $query);
 
-        $keywords = array_filter($keywords, fn(string $item): bool => strlen($item) > $min);
+        $keywords = array_filter($keywords, fn(string $item): bool => mb_strlen($item) >= $minimumLength);
 
-        $queryRegex = '/\b' . preg_quote($query, '/') . '\b/iu';
-        $keywordsRegex = '/(?:\b' . implode('\b|\b', $keywords) . '\b)/iu';
+        if ($keywords === []) {
+            $pageCollection = clone $this;
+            $pageCollection->data = [];
+            return $pageCollection;
+        }
 
-        $scores = [
+        // Use case-sensitive regex on lowercased text for better performance
+        $queryLower = mb_strtolower($query);
+        $keywordsLower = array_map(mb_strtolower(...), $keywords);
+
+        $queryRegex = '/\b' . preg_quote($queryLower, '/') . '\b/u';
+        $escapedKeywords = array_map(fn($keyword) => preg_quote($keyword, '/'), $keywordsLower);
+        $keywordsRegex = '/(?:\b' . implode('\b|\b', $escapedKeywords) . '\b)/u';
+
+        $weights += [
             'title'   => 8,
             'summary' => 4,
             'content' => 3,
@@ -154,13 +183,20 @@ class PageCollection extends AbstractCollection implements Paginable
 
         foreach ($pageCollection->data as $page) {
             $score = 0;
-            foreach (array_keys($scores) as $key) {
+
+            foreach ($weights as $key => $weight) {
                 $value = Str::removeHTML((string) $page->get($key));
 
-                $queryMatches = preg_match_all($queryRegex, $value);
-                $keywordsMatches = $keywords === [] ? 0 : preg_match_all($keywordsRegex, $value);
+                if ($value === '') {
+                    continue;
+                }
 
-                $score += ($queryMatches * 2 + min($keywordsMatches, 3)) * $scores[$key];
+                $valueLower = mb_strtolower($value);
+
+                $queryMatches = (int) preg_match_all($queryRegex, $valueLower);
+                $keywordsMatches = (int) preg_match_all($keywordsRegex, $valueLower);
+
+                $score += ($queryMatches * 2 + min($keywordsMatches, $maxKeywordMatches)) * $weight;
             }
 
             if ($score > 0) {
