@@ -194,3 +194,7 @@
 .is-thumbnails .file-thumbnail + .file-icon {
     display: none;
 }
+
+.color-scheme-dark .files-item:hover {
+    background-color: var(--color-base-700);
+}

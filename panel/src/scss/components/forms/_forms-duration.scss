@@ -36,6 +36,10 @@
         margin: 0;
         @include appearance-none;
     }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-500);
+    }
 }
 
 .form-input-duration-wrap:has(.is-invalid) {

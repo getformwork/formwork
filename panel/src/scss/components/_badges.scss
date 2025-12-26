@@ -6,11 +6,16 @@
     background-color: var(--color-base-600);
     color: var(--color-base-100);
     font-size: 0.75em;
+    font-variant-numeric: tabular-nums;
     font-weight: 600;
     line-height: 1.125;
     text-align: center;
     vertical-align: 0.125em;
     white-space: nowrap;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-500);
+    }
 }
 
 .badge .icon {
@@ -18,27 +23,32 @@
     min-height: auto;
 }
 
-.badge-blue {
+.badge-blue,
+.color-scheme-dark .badge-blue {
     background-color: var(--color-accent-800);
     color: var(--color-accent-300);
 }
 
-.badge-green {
+.badge-green,
+.color-scheme-dark .badge-green {
     background-color: var(--color-success-800);
     color: var(--color-success-300);
 }
 
-.badge-amber {
+.badge-amber,
+.color-scheme-dark .badge-amber {
     background-color: var(--color-warning-700);
     color: var(--color-warning-300);
 }
 
-.badge-red {
+.badge-red,
+.color-scheme-dark .badge-red {
     background-color: var(--color-danger-700);
     color: var(--color-danger-300);
 }
 
-.badge-purple {
+.badge-purple,
+.color-scheme-dark .badge-purple {
     background-color: var(--color-purple-800);
     color: var(--color-purple-300);
 }

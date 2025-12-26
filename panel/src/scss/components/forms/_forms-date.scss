@@ -18,6 +18,10 @@
     background-color: var(--color-base-900);
     box-shadow: var(--box-shadow-md);
     color: var(--color-base-100);
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
 }
 
 .calendar::after {
@@ -51,7 +55,7 @@
     outline: none;
 
     &:hover {
-        color: var(--color-accent-500);
+        color: var(--color-button-hover);
     }
 
     &:focus {

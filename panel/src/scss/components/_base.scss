@@ -5,6 +5,10 @@ html {
     text-size-adjust: 100%;
 }
 
+.color-scheme-dark {
+    color-scheme: dark;
+}
+
 body {
     margin: 0;
     background-color: var(--color-base-800);
@@ -12,6 +16,10 @@ body {
     font-family: var(--font-family-sans);
     line-height: var(--line-height-text);
     -webkit-tap-highlight-color: transparent;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-900);
+    }
 }
 
 * {
@@ -24,13 +32,13 @@ main {
 
 a {
     background-color: transparent;
-    color: var(--color-accent-500);
+    color: var(--color-link);
     outline-color: var(--color-focusring);
     text-decoration: none;
     transition: color var(--transition-time-sm);
 
     &:hover {
-        color: var(--color-accent-400);
+        color: var(--color-link-hover);
     }
 
     &:not([href]) {
@@ -59,7 +67,7 @@ pre {
 
 code {
     padding: 0.125rem 0.25rem;
-    color: var(--color-accent-500);
+    color: var(--color-code);
 }
 
 pre {
@@ -71,6 +79,11 @@ pre code {
     padding: 0;
     color: inherit;
     font-size: inherit;
+}
+
+.color-scheme-dark pre,
+.color-scheme-dark code {
+    background-color: var(--color-base-600);
 }
 
 blockquote {

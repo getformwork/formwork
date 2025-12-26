@@ -4,6 +4,10 @@
     display: flex;
     justify-content: center;
     background-color: var(--color-base-600);
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-500);
+    }
 }
 
 .file-preview-link {

@@ -47,6 +47,10 @@
     @media (width >= 26rem) {
         margin: 3rem auto;
     }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
 }
 
 .modal-size-large {

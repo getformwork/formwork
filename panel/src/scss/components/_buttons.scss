@@ -23,7 +23,7 @@
     @include user-select-none;
 
     &:hover {
-        color: var(--color-accent-500);
+        color: var(--color-button-hover);
     }
 
     &:focus {
