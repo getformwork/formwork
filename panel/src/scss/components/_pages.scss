@@ -61,6 +61,10 @@
     margin: 0.25rem 0 1rem;
     background-color: var(--color-base-900);
     box-shadow: var(--box-shadow-md);
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
 }
 
 .page-icon > .icon {

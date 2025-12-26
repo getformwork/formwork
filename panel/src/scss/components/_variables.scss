@@ -1,5 +1,7 @@
 @use "colors" as *;
 
+@use "functions" as *;
+
 // ===
 // Colors
 // ===
@@ -36,6 +38,7 @@ $color-shadow-md: rgba($color-blue-100, 7.5%);
 $color-shadow-lg: rgba($color-blue-100, 15%);
 
 /* stylelint-disable custom-property-empty-line-before */
+/* stylelint-disable scss/dollar-variable-no-missing-interpolation */
 :root {
     --color-backdrop: #{$color-backdrop};
     --color-selection: #{$color-selection};
@@ -47,6 +50,13 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
 
     --color-tooltip-inverted: #{rgba($color-base-light-100, 0.875)};
     --color-tooltip: #{rgba($color-base-light-600, 0.875)};
+
+    --color-link: #{$color-blue-500};
+    --color-link-hover: #{$color-blue-400};
+
+    --color-code: #{$color-blue-500};
+
+    --color-button-hover: #{$color-blue-500};
 
     --color-base-100: #{$color-base-light-100};
     --color-base-200: #{$color-base-light-200};
@@ -145,8 +155,17 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-base-800: #{$color-base-dark-800};
     --color-base-900: #{$color-base-dark-900};
 
+    --color-backdrop: #{tint($color-backdrop, 10%)};
+
     --color-tooltip-inverted: #{rgba($color-base-dark-100, 0.875)};
     --color-tooltip: #{rgba($color-base-dark-600, 0.875)};
+
+    --color-link: #{tint($color-blue-500, 30%)};
+    --color-link-hover: #{tint($color-blue-600, 30%)};
+
+    --color-code: #{tint($color-blue-500, 30%)};
+
+    --color-button-hover: #{tint($color-blue-500, 30%)};
 }
 /* stylelint-enable */
 

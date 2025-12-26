@@ -47,6 +47,7 @@
     border: 0;
     border-radius: 0;
     margin-bottom: 0.25rem;
+    background-color: transparent;
     font-family: inherit;
     font-size: var(--font-size-sm);
     line-height: inherit;
@@ -68,12 +69,20 @@
 
     &.sortable-chosen:not(.sortable-drag) {
         background-color: var(--color-accent-900);
+
+        .color-scheme-dark & {
+            background-color: var(--color-accent-300);
+        }
+    }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-500);
     }
 }
 
 .form-input-tags-wrap.disabled,
 .form-input-tags-wrap.disabled .form-input {
-    background-color: var(--color-base-800);
+    background-color: transparent;
 }
 
 .form-input-tags-wrap.disabled .tag {

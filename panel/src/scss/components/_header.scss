@@ -4,7 +4,7 @@
 .header {
     position: sticky;
     z-index: 9;
-    top: 3.5rem;
+    top: 3.375rem;
     display: flex;
     min-height: 4.5rem;
     align-items: center;
@@ -13,6 +13,10 @@
     margin-bottom: 1rem;
     background-color: var(--color-base-800);
     white-space: nowrap;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-900);
+    }
 
     @media (min-width: map.get($breakpoints, "sm")) {
         padding: 0.5rem 1.5rem;
@@ -44,5 +48,5 @@
 }
 
 .header-title a:hover {
-    color: var(--color-accent-500);
+    color: var(--color-link-hover);
 }

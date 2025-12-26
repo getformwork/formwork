@@ -9,6 +9,10 @@
     margin-bottom: 0.75rem;
     background-color: var(--color-base-900);
     font-size: 0;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
 }
 
 .form-input-wrap .form-togglegroup {

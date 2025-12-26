@@ -15,6 +15,10 @@
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: var(--border-radius);
     gap: 0 3rem;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-700);
+    }
 }
 
 .toolbar-button {
@@ -27,7 +31,7 @@
     &:hover,
     &:focus {
         background-color: var(--color-base-600);
-        color: var(--color-accent-500);
+        color: var(--color-button-hover);
     }
 
     &:focus {
@@ -49,20 +53,20 @@
     }
 }
 
-.toolbar-button.is-active,
-.dropdown-item.is-active {
-    background-color: var(--color-base-600);
-}
-
-.dropdown-item.is-active:hover {
-    background-color: var(--color-base-600);
-}
-
 .toolbar-button.is-active {
-    color: var(--color-accent-500);
+    background-color: var(--color-base-600);
+    color: var(--color-button-hover);
 
     &:disabled {
         color: var(--color-base-500);
+    }
+}
+
+.color-scheme-dark .toolbar-button.is-active {
+    background-color: var(--color-base-500);
+
+    &:disabled {
+        color: var(--color-base-700);
     }
 }
 
@@ -113,6 +117,10 @@
         color: var(--color-base-300);
         font-size: var(--font-size-sm);
         pointer-events: none;
+    }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
     }
 }
 
@@ -192,7 +200,7 @@ img.ProseMirror-separator {
 
 .ProseMirror a,
 .ProseMirror a:hover {
-    color: var(--color-accent-500);
+    color: var(--color-link);
     text-decoration: underline;
 }
 
@@ -252,6 +260,10 @@ img.ProseMirror-separator {
 
     &:focus {
         border-color: var(--color-accent-500);
+    }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
     }
 }
 

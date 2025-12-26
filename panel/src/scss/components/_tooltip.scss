@@ -8,6 +8,7 @@
     max-width: 20rem;
     padding: 0.25rem 0.375rem;
     border-radius: var(--border-radius);
+    backdrop-filter: blur(2px);
     background-color: var(--color-tooltip-inverted);
     box-shadow: var(--box-shadow-md);
     color: var(--color-base-900);
@@ -51,7 +52,7 @@
 
     &:hover {
         background-color: var(--color-base-600);
-        color: var(--color-accent-500);
+        color: var(--color-button-hover);
     }
 
     &:last-child {

@@ -44,6 +44,12 @@
     fill: var(--color-amber-500);
 }
 
+.color-scheme-dark {
+    .ct-area {
+        fill-opacity: 0.2;
+    }
+}
+
 .ct-label.ct-horizontal,
 .ct-label.ct-horizontal.ct-end {
     display: inline-block;

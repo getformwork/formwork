@@ -7,11 +7,20 @@
     padding: 1.5rem 1.25rem;
     margin-bottom: 1rem;
     background-color: var(--color-base-900);
-    box-shadow: var(--box-shadow-sm);
+    box-shadow:
+        var(--box-shadow-sm),
+        inset 0 0 0 1px var(--color-base-700);
 
     @media (min-width: map.get($breakpoints, "sm")) {
         padding: 1.5rem 1.75rem;
         border-radius: var(--border-radius);
+    }
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+        box-shadow:
+            var(--box-shadow-sm),
+            inset 0 0 0 1px var(--color-base-600);
     }
 }
 

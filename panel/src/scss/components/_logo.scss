@@ -21,6 +21,8 @@
 }
 
 .logo a {
-    padding-top: var(--focusring-width);
+    display: inline-block;
+    padding: 0.25rem;
+    margin: -0.25rem;
     color: var(--color-base-100);
 }

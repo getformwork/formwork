@@ -27,6 +27,10 @@
 
     &:hover {
         background-color: var(--color-base-800);
+
+        .color-scheme-dark & {
+            background-color: var(--color-base-700);
+        }
     }
 }
 
