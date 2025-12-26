@@ -14,16 +14,21 @@
 .files-list-headers {
     display: flex;
     align-items: center;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid var(--color-base-600);
-    font-size: var(--font-size-sm);
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid var(--color-base-600);
+    border-bottom: 1px solid var(--color-base-700);
+    color: var(--color-base-400);
+    font-size: var(--font-size-xs);
     font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     @include user-select-none;
 }
 
 .files-headers-cell,
 .files-item-cell {
     padding: 0.25rem 0.5rem;
+    font-size: var(--font-size-sm);
 }
 
 .is-thumbnails .files-items {
@@ -36,12 +41,21 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid var(--color-base-600);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0;
+    border-bottom: 1px solid var(--color-base-750);
+    background-color: var(--color-base-600);
     font-size: var(--font-size-sm);
+    transition: all var(--transition-time-sm);
 
     &:hover {
+        padding-left: calc(0.75rem - 2px);
+        border-left: 2px solid var(--color-accent-500);
         background-color: var(--color-base-800);
+    }
+
+    &:last-child {
+        border-bottom: 0;
     }
 }
 
@@ -51,10 +65,45 @@
 
 .file-icon {
     padding-right: 0.25rem;
+
+    .is-thumbnails & {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        padding: 0;
+        color: var(--color-base-500);
+        font-size: 4rem;
+        line-height: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    .is-thumbnails .file-thumbnail + & {
+        display: none;
+    }
 }
 
 .file-name {
     flex: 1;
+    padding-left: 2rem;
+
+    .is-thumbnails & {
+        position: absolute;
+        bottom: 0.5rem;
+        left: 50%;
+        display: block;
+        max-width: calc(100% - 0.5rem);
+        padding: 0 0.375rem;
+        border-radius: var(--border-radius);
+        background-color: var(--color-tooltip);
+        font-size: var(--font-size-xs);
+        text-align: center;
+        transform: translateX(-50%);
+        @include user-select-none;
+    }
+
+    .file-thumbnail:not([src]) ~ & {
+        padding-left: 0;
+    }
 }
 
 .file-parent {
@@ -113,7 +162,7 @@
 
 .file-thumbnail {
     position: absolute;
-    left: 0.25rem;
+    left: 0.75rem;
     width: 1.5rem;
     height: 1.5rem;
     border-radius: var(--border-radius);
@@ -123,6 +172,10 @@
 }
 
 .file-thumbnail:not([src]) {
+    display: none;
+}
+
+.file-thumbnail[src] ~ .file-icon {
     display: none;
 }
 
@@ -139,21 +192,6 @@
     padding: 0.25rem;
     border-radius: 0;
     background-color: transparent;
-}
-
-.is-thumbnails .file-name {
-    position: absolute;
-    bottom: 0.5rem;
-    left: 50%;
-    display: block;
-    max-width: calc(100% - 0.5rem);
-    padding: 0 0.375rem;
-    border-radius: var(--border-radius);
-    background-color: var(--color-tooltip);
-    font-size: var(--font-size-xs);
-    text-align: center;
-    transform: translateX(-50%);
-    @include user-select-none;
 }
 
 .is-thumbnails .dropdown {
@@ -178,19 +216,4 @@
         background-color: var(--color-base-500);
         color: inherit;
     }
-}
-
-.is-thumbnails .file-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    padding: 0;
-    color: var(--color-base-500);
-    font-size: 4rem;
-    line-height: 0;
-    transform: translate(-50%, -50%);
-}
-
-.is-thumbnails .file-thumbnail + .file-icon {
-    display: none;
 }

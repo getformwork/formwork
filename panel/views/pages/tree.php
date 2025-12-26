@@ -38,6 +38,10 @@
                         </div>
                     <?php endif ?>
                     <div class="page-icon mr-3">
+                        <?php $imagePreviewField = $page->scheme()->options()->get('imagePreviewField') ?>
+                        <?php if ($imagePreviewField !== null && $page->fields()->get($imagePreviewField)?->type() === 'image' && $page->get($imagePreviewField) != '') : ?>
+                            <img class="page-thumbnail" src="<?= $page->get($imagePreviewField)->square(80, 'cover')->uri() ?>" alt="" />
+                        <?php endif; ?>
                         <?= $this->icon($page->icon()) ?>
                         <?= $this->insert('@panel._pages.info', ['page' => $page]) ?>
                     </div>
@@ -55,14 +59,7 @@
                         <div class="page-route truncate mr-2" aria-hidden="true">
                             <span><?= $this->escape($page->canonicalRoute() ?? $page->route()) ?></span>
                         </div>
-                        <?php $imagePreviewField = $page->scheme()->options()->get('imagePreviewField') ?>
-                        <?php if ($imagePreviewField !== null && $page->fields()->get($imagePreviewField)?->type() === 'image' && $page->get($imagePreviewField) != '') : ?>
-                            <div class="row mt-3">
-                                <div class="col-sm-1-2 col-xs-1-3">
-                                    <img src="<?= $page->get($imagePreviewField)->square(300, 'contain')->uri() ?>" alt="" />
-                                </div>
-                            </div>
-                        <?php endif; ?>
+
                     </div>
                 </div>
                 <div class="pages-tree-item-cell page-date truncate show-from-lg"><?= $date ?></div>

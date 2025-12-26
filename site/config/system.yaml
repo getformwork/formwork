@@ -9,3 +9,5 @@ files:
         - .avif
         - .mp4
         - .webm
+debug:
+    enabled: true

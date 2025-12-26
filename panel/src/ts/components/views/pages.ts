@@ -14,6 +14,8 @@ export class Pages {
         const commandCollapseAllPages = $("[data-command=collapse-all-pages]") as HTMLButtonElement;
         const commandReorderPages = $("[data-command=reorder-pages]") as HTMLButtonElement;
         const commandPreview = $("[data-command=preview]") as HTMLButtonElement;
+        const commandViewModeTree = $("[data-command=view-mode-tree]") as HTMLButtonElement;
+        const commandViewModeCard = $("[data-command=view-mode-card]") as HTMLButtonElement;
 
         const searchInput = $(".page-search") as HTMLInputElement;
 
@@ -62,6 +64,20 @@ export class Pages {
             });
         }
 
+        if (commandViewModeTree) {
+            commandViewModeTree.addEventListener("click", () => {
+                setViewMode("tree");
+                commandViewModeTree.blur();
+            });
+        }
+
+        if (commandViewModeCard) {
+            commandViewModeCard.addEventListener("click", () => {
+                setViewMode("card");
+                commandViewModeCard.blur();
+            });
+        }
+
         if (commandExpandAllPages || commandCollapseAllPages || commandReorderPages) {
             setCommandsState();
         }
@@ -76,7 +92,7 @@ export class Pages {
             const handleSearch = () => {
                 const value = escapeHtml(searchInput.value);
                 if (value.length === 0) {
-                    ($(".pages-tree-root") as HTMLElement).classList.remove("is-filtered");
+                    const treeRoot = $(".pages-tree-root") as HTMLElement; if (treeRoot) { treeRoot.classList.remove("is-filtered"); }
 
                     $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element) as HTMLElement;
@@ -84,8 +100,17 @@ export class Pages {
                         ($(".pages-tree-row", element) as HTMLElement).style.display = "";
                         element.classList.toggle("is-expanded", element.dataset.expanded === "true");
                     });
+
+                    // Reset card view
+                    $$(".page-card").forEach((element) => {
+                        element.style.display = "";
+                        const title = $(".page-card-title a", element) as HTMLElement;
+                        if (title) {
+                            title.innerText = title.textContent;
+                        }
+                    });
                 } else {
-                    ($(".pages-tree-root") as HTMLElement).classList.add("is-filtered");
+                    const treeRoot = $(".pages-tree-root") as HTMLElement; if (treeRoot) { treeRoot.classList.add("is-filtered"); }
 
                     const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "gi");
 
@@ -102,6 +127,21 @@ export class Pages {
                         }
 
                         element.classList.add("is-expanded");
+
+                    });
+                     // Handle card view search
+                    $$(".page-card").forEach((element) => {
+                        const title = $(".page-card-title a", element) as HTMLElement;
+                        if (title) {
+                            const text = escapeHtml(title.textContent);
+
+                            if (text.match(regexp) !== null) {
+                                title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+                                element.style.display = "";
+                            } else {
+                                element.style.display = "none";
+                            }
+                        }
                     });
                 }
             };
@@ -295,6 +335,22 @@ export class Pages {
             if (commandReorderPages) {
                 commandReorderPages.disabled = orderablePages.length <= 1;
             }
+        }
+
+        function setViewMode(mode: "tree" | "card") {
+            // Store preference in localStorage
+            localStorage.setItem("pages-view-mode", mode);
+
+            // Update button states
+            if (commandViewModeTree && commandViewModeCard) {
+                commandViewModeTree.classList.toggle("active", mode === "tree");
+                commandViewModeCard.classList.toggle("active", mode === "card");
+            }
+
+            // Reload page with view mode parameter
+            const url = new URL(window.location.href);
+            url.searchParams.set("view", mode);
+            window.location.href = url.toString();
         }
 
         async function initSortable(element: HTMLElement) {

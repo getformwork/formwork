@@ -2,7 +2,7 @@
 <?php $this->modals()->add('uploadFile') ?>
 
 <div data-view="files">
-    <div class="header">
+    <header class="panel-header">
         <div class="header-icon"><?= $this->icon('files') ?></div>
         <div class="header-title"><?= $this->translate('panel.files.files') ?></div>
         <div>
@@ -10,9 +10,9 @@
                 <button type="button" class="button button-accent" data-modal="uploadFileModal"><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.files.upload') ?></button>
             <?php endif ?>
         </div>
-    </div>
+    </header>
 
-    <div class="section">
+    <div class="mt-4">
         <div class="section-content">
             <?php $this->insert('@panel._files.file.list', ['name' => 'view-files', 'files' => $files, 'columns' => ['parent', 'date', 'size']]) ?>
         </div>

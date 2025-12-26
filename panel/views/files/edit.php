@@ -3,7 +3,7 @@
 <?php $this->modals()->addMultiple(['changes', 'renameFile', 'deleteFile']) ?>
 
 <form method="post" enctype="multipart/form-data" data-form="file-form">
-    <div class="header">
+    <header class="panel-header">
         <div class="min-w-0 flex-grow-1">
             <div class="flex">
                 <div class="header-icon"><?= $this->icon(is_null($file->type()) ? 'file' : "file-{$file->type()}") ?></div>
@@ -34,7 +34,7 @@
                 <button type="submit" class="button button-accent" data-command="save"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.modal.action.save') ?></button>
             <?php endif ?>
         </div>
-    </div>
+    </header>
     <?php if ($file->type() === 'image') : ?>
         <div class="sections">
             <section class="section">
