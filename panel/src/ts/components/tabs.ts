@@ -17,7 +17,11 @@ export class Tabs {
 
             const selectedTab = window.localStorage.getItem(`formwork.tabStatus[${formName}]`);
             if (selectedTab) {
-                selectTab(selectedTab);
+                if (!$(`.tabs-tab[data-tab="${selectedTab}"]`, tabs)) {
+                    window.localStorage.removeItem(`formwork.tabStatus[${formName}]`);
+                } else {
+                    selectTab(selectedTab);
+                }
             }
 
             tabButtons.forEach((tabButton) => {

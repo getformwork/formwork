@@ -5,6 +5,9 @@ namespace Formwork\Controllers;
 use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
+use Formwork\Fields\FieldCollection;
+use Formwork\Files\Services\FileUploader;
+use Formwork\Forms\Form;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
@@ -29,6 +32,7 @@ abstract class AbstractController
         protected readonly Config $config,
         protected readonly ViewFactory $viewFactory,
         protected readonly Request $request,
+        protected readonly FileUploader $fileUploader,
         protected readonly EventDispatcher $events,
     ) {
         $this->name = strtolower(Str::beforeLast(Str::afterLast(static::class, '\\'), 'Controller'));
@@ -42,6 +46,14 @@ abstract class AbstractController
     protected function view(string $name, array $data = []): string
     {
         return $this->viewFactory->make($name, $data)->render();
+    }
+
+    /**
+     * Create a new form instance
+     */
+    protected function form(string $name, FieldCollection $fieldCollection): Form
+    {
+        return new Form($name, $fieldCollection, $this->fileUploader);
     }
 
     /**
