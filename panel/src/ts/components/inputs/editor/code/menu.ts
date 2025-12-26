@@ -8,7 +8,7 @@ function createButton(icon: keyof typeof icons, title: string) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `button toolbar-button`;
-    btn.title = title;
+    btn.dataset.tooltip = title;
     btn.ariaLabel = title;
     btn.innerHTML = icons[icon] || "";
     return btn;
