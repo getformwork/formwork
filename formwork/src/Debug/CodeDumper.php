@@ -4,9 +4,9 @@ namespace Formwork\Debug;
 
 use Formwork\Traits\StaticClass;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use InvalidArgumentException;
 use PhpToken;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use SensitiveParameter;
@@ -178,7 +178,7 @@ final class CodeDumper
 
         $result .= '<div class="__formwork-trace-params"><table>' . "\n";
 
-        if (!Str::endsWith($frame['function'], '{closure}') && $frame['function'] !== 'include') {
+        try {
             $reflection = isset($frame['class']) ? new ReflectionMethod($frame['class'], $frame['function']) : new ReflectionFunction($frame['function']);
             $parameterCount = count($reflection->getParameters());
 
@@ -211,6 +211,8 @@ final class CodeDumper
                     $result .= sprintf("<td>%s</td></tr>\n", ob_get_clean());
                 }
             }
+        } catch (ReflectionException) {
+            // Unable to reflect function/method, skip parameter dumping
         }
 
         if (isset($frame['args']) && $parameterCount < count($frame['args'])) {
