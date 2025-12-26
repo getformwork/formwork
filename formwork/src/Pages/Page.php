@@ -804,7 +804,11 @@ class Page extends Model implements Stringable
             // Set actual language
             $this->language ??= $key !== '' ? new Language($key) : null;
 
-            $this->contentFile ??= new ContentFile($contentFiles[$key]['path']);
+            try {
+                $this->contentFile ??= new ContentFile($contentFiles[$key]['path']);
+            } catch (UnexpectedValueException) {
+                $this->contentFile = null;
+            }
 
             $this->template ??= $site->templates()->get($contentFiles[$key]['template']);
 
