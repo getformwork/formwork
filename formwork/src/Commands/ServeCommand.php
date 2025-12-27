@@ -23,6 +23,11 @@ final class ServeCommand implements CommandInterface
     private int $port = 8000;
 
     /**
+     * Number of retry attempts left to restart the server on the next port
+     */
+    private int $retryAttempts = 10;
+
+    /**
      * Current request data for the server process
      *
      * @var array<mixed>
@@ -67,6 +72,12 @@ final class ServeCommand implements CommandInterface
                 'defaultValue' => $this->port,
                 'castTo'       => 'int',
             ],
+            'retry' => [
+                'longPrefix'   => 'retry',
+                'description'  => 'Number of retry attempts to bind the server to the next port if the specified one is not available',
+                'defaultValue' => $this->retryAttempts,
+                'castTo'       => 'int',
+            ],
             'help' => [
                 'prefix'      => 'h',
                 'longPrefix'  => 'help',
@@ -88,7 +99,10 @@ final class ServeCommand implements CommandInterface
         /** @var int */
         $port = $this->climate->arguments->get('port');
 
-        [$this->host, $this->port] = [$host, $port];
+        /** @var int */
+        $retryAttempts = $this->climate->arguments->get('retry');
+
+        [$this->host, $this->port, $this->retryAttempts] = [$host, $port, $retryAttempts];
 
         $this->start();
         exit(0);
@@ -182,6 +196,12 @@ final class ServeCommand implements CommandInterface
 
                 case Str::contains($line, 'Failed to listen on'):
                     $this->process->stop(0);
+
+                    if ($this->retryAttempts-- > 0) {
+                        $this->port++;
+                        $this->start();
+                        break;
+                    }
 
                     $this->climate->clear();
                     $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> <dark_gray>Server</dark_gray> <red>failed to listen on port <bold>%d</bold></red>', App::VERSION, $this->port));
