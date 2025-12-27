@@ -122,10 +122,6 @@
     pointer-events: none;
 }
 
-.file-thumbnail:not([src]) {
-    display: none;
-}
-
 .is-thumbnails .files-list-headers {
     display: none;
 }
@@ -191,7 +187,11 @@
     transform: translate(-50%, -50%);
 }
 
-.is-thumbnails .file-thumbnail + .file-icon {
+.file-thumbnail:not([src]) {
+    display: none;
+}
+
+.is-thumbnails .file-thumbnail:is([src]) + .file-icon {
     display: none;
 }
 
