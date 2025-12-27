@@ -480,13 +480,15 @@ class Site extends Model implements Stringable
 
         $path = $this->config->get('system.files.paths.site');
 
-        foreach (FileSystem::listFiles($path) as $file) {
-            $extension = '.' . FileSystem::extension($file);
-            if (Str::endsWith($file, $this->config->get('system.files.metadataExtension'))) {
-                continue;
-            }
-            if (in_array($extension, $this->config->get('system.files.allowedExtensions'), true)) {
-                $files[] = $this->app()->getService(FileFactory::class)->make(FileSystem::joinPaths($path, $file));
+        if (FileSystem::isDirectory($path, assertExists: false)) {
+            foreach (FileSystem::listFiles($path) as $file) {
+                $extension = '.' . FileSystem::extension($file);
+                if (Str::endsWith($file, $this->config->get('system.files.metadataExtension'))) {
+                    continue;
+                }
+                if (in_array($extension, $this->config->get('system.files.allowedExtensions'), true)) {
+                    $files[] = $this->app()->getService(FileFactory::class)->make(FileSystem::joinPaths($path, $file));
+                }
             }
         }
 
