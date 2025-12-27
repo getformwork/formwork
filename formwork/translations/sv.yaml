@@ -1,0 +1,157 @@
+date.distance.ago: '%s sedan'
+date.distance.in: 'om %s'
+date.duration.days: ['dag', 'dagar']
+date.duration.hours: ['timme', 'timmar']
+date.duration.minutes: ['minut', 'minuter']
+date.duration.months: ['månad', 'månader']
+date.duration.seconds: ['sekund', 'sekunder']
+date.duration.weeks: ['vecka', 'veckor']
+date.duration.years: ['år', 'år']
+date.months.long: ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December']
+date.months.short: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
+date.never: aldrig
+date.noDate: Inget datum
+date.now: nu
+date.today: Idag
+date.weekdays.long: ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
+date.weekdays.short: ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör']
+fields.array.add: Lägg till
+fields.array.remove: Ta bort
+fields.date.nextHour: Nästa timme
+fields.date.nextMinute: Nästa minut
+fields.date.nextMonth: Nästa månad
+fields.date.previousHour: Föregående timme
+fields.date.previousMinute: Föregående minut
+fields.date.previousMonth: Föregående månad
+fields.error.invalidEmail: Ogiltig e-postadress
+fields.error.invalidValue: Ogiltigt värde
+fields.error.patternMismatch: Värdet matchar inte det obligatoriska mönstret
+fields.error.requiredValue: Fältet är obligatoriskt
+fields.error.stepMismatch: Värdet överensstämmer inte med det obligatoriska stegintevallet %d
+fields.error.tooManyItems: Det maximala antalet tillåtna objekt är %d
+fields.error.valueAlreadyExists: Värdet finns redan
+fields.error.valueTooLarge: Värdet är större än %d
+fields.error.valueTooLong: Värdet är längre än de %d tecken som krävs
+fields.error.valueTooShort: Värdet är kortare än de %d tecken som krävs
+fields.error.valueTooSmall: Värdet är mindre än %d
+fields.file.none: (Ingen)
+fields.file.uploadLabel: <strong>Klicka</strong> för att välja en fil att ladda upp eller <strong>dra</strong> den hit
+fields.image.none: (Ingen)
+fields.select.empty: Inga matchande alternativ
+fields.tags.remove: Ta bort
+file.metadata: Metadata
+file.metadata.alternativeText: Alternativ text
+page.attributes: Attribut
+page.cacheable: Cachebar
+page.content: Innehåll
+page.files: Filer
+page.image: Bild
+page.listed: Listad
+page.listed.description: Listade sidor visas i menyn
+page.noFiles: Inga filer
+page.noImage: Ingen bild
+page.none: (Ingen)
+page.noTags: Inga taggar
+page.notListed: Inte listad
+page.notRoutable: Ej routbar
+page.options: Alternativ
+page.page: Sida
+page.parent: Föräldrasida
+page.postsPerPage: Inlägg per sida
+page.publishDate: Publiceringsdatum
+page.routable: Routbar
+page.routable.description: Routbara sidor är åtkomliga via sin adress
+page.slug: Slug
+page.slug.suggestion: endast bokstäver, siffror och bindestreck
+page.status: Status
+page.status.notPublished: Ej publicerad
+page.status.published: Publicerad
+page.status.published.description: Publicerade sidor är synliga på webbplatsen och åtkomliga via sin adress
+page.summary: Sammanfattning
+page.tags: Taggar
+page.template: Mall
+page.text: Text
+page.title: Titel
+page.unpublishDate: Avpubliceringsdatum
+plugin.author: Författare
+plugin.description: Beskrivning
+plugin.homepage: Hemsida
+plugin.license: Licens
+plugin.plugin: Tillägg
+plugin.status: Status
+plugin.status.disabled: Inaktiverad
+plugin.status.enabled: Aktiverad
+plugin.title: Titel
+plugin.version: Version
+site.advanced: Avancerade alternativ
+site.advanced.aliases: Alias
+site.advanced.aliases.alias: Alias
+site.advanced.aliases.description: Webbplatsruttalias för att mappa anpassade URI:er till specifika sidor
+site.advanced.aliases.route: Rutt
+site.advanced.metadata: HTML-metadata
+site.advanced.metadata.content: Innehåll
+site.advanced.metadata.description: HTML-metadata som ska läggas till som `<meta>`-taggar i sidornas `<head>`, till exempel OpenGraph-egenskaper för förhandsvisningar i sociala medier
+site.advanced.metadata.name: Namn
+site.info: Info
+site.info.author: Författare
+site.info.description: Beskrivning
+site.info.language: Språk
+site.info.title: Titel
+site.maintenance: Underhåll
+site.maintenance.enabled: Underhållsläge
+site.maintenance.enabled.disabled: Inaktiverat
+site.maintenance.enabled.enabled: Aktiverat
+site.maintenance.page: Underhållssida
+site.pages: Sidor
+site.pages.defaultTemplate: Standardmall
+site.pages.taxonomies: Taxonomier
+site.pages.taxonomies.description: Taxonomier för att organisera sidor, används i mallkontroller för att filtrera sidor
+site.pages.taxonomies.noTaxonomies: Inga taxonomier
+site.statistics: Statistik
+site.statistics.enabled: Spåra sidvisningar
+site.statistics.enabled.disabled: Inaktiverat
+site.statistics.enabled.enabled: Aktiverat
+site.statistics.trackLocalhost: Spåra besök från localhost
+site.statistics.trackLocalhost.disabled: Inaktiverat
+site.statistics.trackLocalhost.enabled: Aktiverat
+site.statistics.visitsDelay: Fördröjning mellan besök
+site.statistics.visitsDelay.description: Fördröjning mellan besök från samma användare till samma sida för att räknas som olika
+upload.error: Kan inte ladda upp filen. %s.
+upload.error.alreadyExists: En fil med samma namn finns redan
+upload.error.cannotMoveToDestination: Misslyckades med att flytta den uppladdade filen till destinationen
+upload.error.cannotWrite: Misslyckades med att skriva filen till disken
+upload.error.destinationTooLong: Sökvägen till destinationen är för lång
+upload.error.fileName: Ogiltigt filnamn
+upload.error.fileNameTooLong: Filnamnet är för långt
+upload.error.hiddenFiles: Kan inte ladda upp dolda filer som börjar med en punkt
+upload.error.mimeType: Filtypen är inte tillåten
+upload.error.noFile: Ingen fil laddades upp
+upload.error.noTemp: Saknar temporär mapp
+upload.error.partial: Den uppladdade filen laddades bara upp delvis
+upload.error.phpExtension: Filuppladdningen stoppades av ett tillägg
+upload.error.size: Den uppladdade filen överskrider den maximala filstorleken
+user.colorScheme: Färgschema
+user.colorScheme.auto: Auto
+user.colorScheme.dark: Mörkt
+user.colorScheme.light: Ljust
+user.email: E-post
+user.fullname: Fullständigt namn
+user.image: Bild
+user.language: Språk
+user.password: Lösenord
+user.password.placeholder: Skriv ett nytt lösenord för att ändra...
+user.role: Roll
+user.role.admin: Administratör
+user.role.editor: Redaktör
+user.role.user: Användare
+user.user: Användare
+user.username: Användarnamn
+zip.error.alreadyExists: Arkivet finns redan
+zip.error.cannotOpen: Kan inte öppna arkivet
+zip.error.cannotRead: Kan inte läsa arkivet
+zip.error.inconsistentArchive: Inkonsekvent arkiv
+zip.error.invalidArgument: Ogiltigt argument
+zip.error.memoryFailure: Minnesfel
+zip.error.notFound: Arkivet hittades inte
+zip.error.notZipArchive: Inte ett ZIP-arkiv
+zip.error.unspecified: Ospecificerat fel

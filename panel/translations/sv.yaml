@@ -1,0 +1,364 @@
+panel.backup.backup: Säkerhetskopia
+panel.backup.deleted: Säkerhetskopian borttagen
+panel.backup.error.cannotDelete: Kan inte ta bort säkerhetskopian. %s.
+panel.backup.error.cannotDelete.invalidFilename: Ogiltig säkerhetskopifil
+panel.backup.error.cannotDownload: Kan inte ladda ner säkerhetskopian. %s.
+panel.backup.error.cannotDownload.invalidFilename: Ogiltig säkerhetskopifil
+panel.backup.error.cannotMake: Kan inte skapa säkerhetskopia. %s.
+panel.backup.ready: Säkerhetskopian är klar. Startar nedladdning...
+panel.cache.clear: Rensa cache
+panel.cache.clear.images: Rensa bildcache
+panel.cache.clear.pages: Rensa sidcache
+panel.cache.cleared: Cache rensad
+panel.cache.cleared.images: Bildcache rensad
+panel.cache.cleared.pages: Sidcache rensad
+panel.cache.error: Kan inte rensa cache
+panel.dashboard.dashboard: Kontrollpanel
+panel.dashboard.lastModifiedPages: Senast redigerade sidor
+panel.dashboard.quickActions: Snabba åtgärder
+panel.dashboard.statistics: Statistik
+panel.dashboard.statistics.uniqueVisitors: Unika besökare
+panel.dashboard.statistics.visits: Besök
+panel.dashboard.welcome: Välkommen
+panel.dragToReorder: Dra för att ändra ordning
+panel.editor.bold: Fetstil
+panel.editor.bulletList: Punktlista
+panel.editor.code: Kod
+panel.editor.decreaseIndent: Minska indrag
+panel.editor.heading1: Rubrik 1
+panel.editor.heading2: Rubrik 2
+panel.editor.heading3: Rubrik 3
+panel.editor.heading4: Rubrik 4
+panel.editor.heading5: Rubrik 5
+panel.editor.heading6: Rubrik 6
+panel.editor.image: Bild
+panel.editor.increaseIndent: Öka indrag
+panel.editor.italic: Kursiv
+panel.editor.link: Länk
+panel.editor.numberedList: Numrerad lista
+panel.editor.paragraph: Stycke
+panel.editor.quote: Citat
+panel.editor.redo: Gör om
+panel.editor.summary: Sammanfattning
+panel.editor.toggleMarkdown: Växla Markdown
+panel.editor.undo: Ångra
+panel.errors.action.reportToGithub: Rapportera ett problem på GitHub
+panel.errors.action.returnToDashboard: Gå tillbaka till kontrollpanelen
+panel.errors.error.forbidden.description: Du har inte behörighet att komma åt denna sida.
+panel.errors.error.forbidden.heading: Oj, behörighet krävs!
+panel.errors.error.forbidden.status: Förbjuden
+panel.errors.error.internalServerError.description: Formwork stötte på ett fel vid hantering av din begäran. Kontrollera Formwork-konfigurationen eller serverlogg för fel.
+panel.errors.error.internalServerError.heading: Oj, något gick fel!
+panel.errors.error.internalServerError.status: Intern serverfel
+panel.errors.error.notFound.description: Sidan finns inte eller begäran är ogiltig.
+panel.errors.error.notFound.heading: Oj, sidan hittades inte!
+panel.errors.error.notFound.status: Hittades inte
+panel.files.actions: Åtgärder
+panel.files.backToPage: Tillbaka till sidan
+panel.files.cannotDelete.fileNotFound: Kan inte ta bort fil, filen hittades inte
+panel.files.cannotDelete.pageNotFound: Kan inte ta bort fil, filen hittades inte
+panel.files.cannotRename.fileAlreadyExists: Kan inte byta namn på fil, en fil med samma namn finns redan
+panel.files.cannotRename.fileNotFound: Kan inte byta namn på fil, filen hittades inte
+panel.files.cannotRename.invalidFields: Kan inte byta namn på fil, vissa fält är ogiltiga
+panel.files.cannotRename.pageNotFound: Kan inte byta namn på fil, sidan hittades inte
+panel.files.cannotReplace.fileNotFound: Kan inte ersätta fil, filen hittades inte
+panel.files.cannotReplace.multipleFiles: Kan inte ersätta fil, flera filer angivna
+panel.files.cannotReplace.pageNotFound: Kan inte ersätta fil, sidan hittades inte
+panel.files.cannotUpload.invalidFields: Kan inte ladda upp fil, vissa fält är ogiltiga
+panel.files.cannotUpload.pageNotFound: Kan inte ladda upp fil, sidan hittades inte
+panel.files.deleted: Fil borttagen
+panel.files.exif: EXIF
+panel.files.fileNotFound: Kan inte hämta filinformation, filen hittades inte
+panel.files.files: Filer
+panel.files.info: Information
+panel.files.info.image.colorDepth: Färgdjup
+panel.files.info.image.colorNumber: Antal färger
+panel.files.info.image.colorProfile: Färgprofil
+panel.files.info.image.colorSpace: Färgrymd
+panel.files.info.image.dimensions: Dimensioner
+panel.files.info.image.dimensions.widthByHeightPixels: '%d × %d pixlar'
+panel.files.info.image.exif.aperture: Bländare
+panel.files.info.image.exif.camera: Kamera
+panel.files.info.image.exif.creationDateAndTime: Skapelsedatum och tid
+panel.files.info.image.exif.exposureCompensation: Exponeringskompensation
+panel.files.info.image.exif.exposureProgram: Exponeringsprogram
+panel.files.info.image.exif.exposureTime: Exponeringstid
+panel.files.info.image.exif.flash: Blitz
+panel.files.info.image.exif.focalLength: Brännvidd
+panel.files.info.image.exif.lensModel: Objektivmodell
+panel.files.info.image.exif.meteringMode: Mätläge
+panel.files.info.image.exif.sensitivity: Känslighet
+panel.files.info.image.exif.whiteBalance: Vitbalans
+panel.files.info.image.frames: '%d ramar'
+panel.files.info.image.framesCount: Antal ramar
+panel.files.info.image.repeats: '%d upprepningar'
+panel.files.info.image.repeatsCount: Antal upprepningar
+panel.files.info.image.resolution: Upplösning
+panel.files.info.lastModifiedTime: Senast ändrad
+panel.files.info.mimeType: MIME-typ
+panel.files.info.name: Namn
+panel.files.info.size: Storlek
+panel.files.info.uri: URI
+panel.files.metadata.cannotUpdate.invalidFields: Kan inte uppdatera filmetadata, vissa fält är ogiltiga
+panel.files.metadata.updated: Filmetadata uppdaterad
+panel.files.next: Nästa fil
+panel.files.pageNotFound: Kan inte hämta filinformation, sidan hittades inte
+panel.files.parent: Överordnad
+panel.files.position: Position
+panel.files.preview: Förhandsgranska
+panel.files.previous: Föregående fil
+panel.files.renamed: Fil namnändrad
+panel.files.search: Sök filer...
+panel.files.upload: Ladda upp filer
+panel.files.uploaded: Filer uppladdade
+panel.files.viewAsList: Visa som lista
+panel.files.viewAsThumbnails: Visa som miniatyrer
+panel.login.attempt.failed: Inloggningsförsök misslyckades! Försök igen.
+panel.login.attempt.tooMany: För många inloggningsförsök. Försök igen om %d minuter.
+panel.login.loggedOut: Du har loggats ut
+panel.login.login: Logga in
+panel.login.logout: Logga ut
+panel.login.password: Lösenord
+panel.login.suspiciousRequestDetected: En misstänkt begäran har upptäckts och av säkerhetsskäl har du loggats ut. Logga in igen.
+panel.login.usernameOrEmail: Användarnamn eller e-post
+panel.manage: Hantera
+panel.modal.action.cancel: Avbryt
+panel.modal.action.continue: Fortsätt
+panel.modal.action.delete: Ta bort
+panel.modal.action.edit: Redigera
+panel.modal.action.rename: Byt namn
+panel.modal.action.save: Spara
+panel.modal.action.upload: Ladda upp
+panel.modal.action.uploadFile: Ladda upp fil
+panel.modal.images.noImages: Inga bilder här
+panel.modal.images.noImages.upload: Ladda upp några bilder
+panel.modal.images.title: Välj en bild
+panel.modal.link.text: Text
+panel.modal.link.title: Infoga länk
+panel.modal.link.uri: URI
+panel.navigation.toggle: Växla navigation
+panel.options.cannotUpdate.invalidFields: Kan inte uppdatera alternativ, vissa fält är ogiltiga
+panel.options.options: Alternativ
+panel.options.site: Webbplats
+panel.options.system: System
+panel.options.system.adminPanel: Administrationspanel
+panel.options.system.adminPanel.defaultColorScheme: Standardfärgschema
+panel.options.system.adminPanel.defaultColorScheme.dark: Mörkt
+panel.options.system.adminPanel.defaultColorScheme.light: Ljust
+panel.options.system.adminPanel.defaultLanguage: Standardspråk
+panel.options.system.adminPanel.logoutRedirectsTo: Vid utloggning, omdirigera till
+panel.options.system.adminPanel.logoutRedirectsTo.home: Startsida
+panel.options.system.adminPanel.logoutRedirectsTo.login: Inloggning
+panel.options.system.backup: Säkerhetskopia
+panel.options.system.backup.backupFilesToKeep: Säkerhetskopior att behålla på servern
+panel.options.system.cache: Cache
+panel.options.system.cache.disabled: Inaktiverad
+panel.options.system.cache.enabled: Aktiverad
+panel.options.system.cache.time: Cache-tid
+panel.options.system.content: Innehåll
+panel.options.system.content.allowHtml: Tillåt HTML i Markdown-fält
+panel.options.system.content.allowHtml.description: Potentiellt farliga taggar som `<script>` och `<style>` konverteras alltid till text
+panel.options.system.content.allowHtml.disabled: Inaktiverad
+panel.options.system.content.allowHtml.enabled: Aktiverad
+panel.options.system.dateAndTime: Datum och tid
+panel.options.system.dateAndTime.dateFormat: Datumformat
+panel.options.system.dateAndTime.firstWeekday: Första veckodagen
+panel.options.system.dateAndTime.firstWeekday.monday: Måndag
+panel.options.system.dateAndTime.firstWeekday.sunday: Söndag
+panel.options.system.dateAndTime.hourFormat: Tidsformat
+panel.options.system.dateAndTime.timezone: Tidszon
+panel.options.system.debug: Felsökning
+panel.options.system.debug.editorUri: Editor-URI
+panel.options.system.debug.editorUri.description: Använd `{{filename}}` och `{{line}}` för att bygga URI till kodeditorn
+panel.options.system.debug.mode: Felsökningsläge
+panel.options.system.debug.mode.description: Felsökningsläge visar felinformation och bör inaktiveras i produktion då det kan avslöja känslig data
+panel.options.system.debug.mode.disabled: Inaktiverad
+panel.options.system.debug.mode.enabled: Aktiverad
+panel.options.system.files: Filer
+panel.options.system.files.allowedExtensions: Tillåtna filändelser
+panel.options.system.files.allowedExtensions.noExtensions: Inga filändelser (ingen fil tillåten)
+panel.options.system.images: Bilder
+panel.options.system.images.avifQuality: AVIF-kvalitet
+panel.options.system.images.clearCacheByDefault: Rensa bildcache som standard
+panel.options.system.images.clearCacheByDefault.disabled: Inaktiverad
+panel.options.system.images.clearCacheByDefault.enabled: Aktiverad
+panel.options.system.images.jpegQuality: JPEG-kvalitet
+panel.options.system.images.jpegSaveProgressive: Spara JPEG-bilder som progressiva
+panel.options.system.images.jpegSaveProgressive.disabled: Inaktiverad
+panel.options.system.images.jpegSaveProgressive.enabled: Aktiverad
+panel.options.system.images.pngCompressionLevel: PNG-komprimeringsnivå
+panel.options.system.images.webpQuality: WebP-kvalitet
+panel.options.system.session.duration: Sessionstid
+panel.options.system.sessions: Sessioner
+panel.options.system.uploads.processImages: Behandla (optimera) uppladdade bilder
+panel.options.system.uploads.processImages.disabled: Inaktiverad
+panel.options.system.uploads.processImages.enabled: Aktiverad
+panel.options.updated: Alternativ uppdaterade
+panel.pages.changes.continue: Fortsätt utan att spara
+panel.pages.changes.detected: Ändringar upptäckta
+panel.pages.changes.detected.prompt: Du har ändringar som inte har sparats. Är du säker på att du vill lämna denna sida?
+panel.pages.changeSlug: Ändra slug
+panel.pages.changeSlug.generate: Generera från titel
+panel.pages.deleteFile: Ta bort fil
+panel.pages.deleteFile.prompt: Är du säker på att du vill ta bort denna fil? Åtgärden kan inte ångras.
+panel.pages.deletePage: Ta bort sida
+panel.pages.deletePage.prompt: Är du säker på att du vill ta bort denna sida? Åtgärden kan inte ångras.
+panel.pages.duplicatePage: Duplicera sida
+panel.pages.duplicatePage.title: '%s kopia'
+panel.pages.edit: Redigera sida
+panel.pages.editPage: Redigera sida %s
+panel.pages.history.event.created: Sida skapad av %s %s.
+panel.pages.history.event.edited: Sida redigerad av %s %s.
+panel.pages.languages: Språk
+panel.pages.languages.addLanguage: Lägg till %s
+panel.pages.languages.editLanguage: Redigera %s
+panel.pages.newPage: Ny sida
+panel.pages.newPage.site: Webbplats
+panel.pages.next: Nästa sida
+panel.pages.page: Sida
+panel.pages.page.actions: Åtgärder
+panel.pages.page.cannotChangeNum: Kan inte ändra sidnummer
+panel.pages.page.cannotCreate: Kan inte skapa sida
+panel.pages.page.cannotCreate.alreadyExists: Kan inte skapa sida, en sida med samma URI finns redan
+panel.pages.page.cannotCreate.invalidFields: Kan inte skapa sida, vissa fält är ogiltiga
+panel.pages.page.cannotCreate.invalidParent: Kan inte skapa sida, ogiltig överordnad sida
+panel.pages.page.cannotCreate.invalidSlug: Kan inte skapa sida, sidslug måste innehålla endast bokstäver och siffror separerade med bindestreck
+panel.pages.page.cannotCreate.invalidTemplate: Kan inte skapa sida, ogiltig mall
+panel.pages.page.cannotCreate.varMissing: Kan inte skapa sida, variabel saknas
+panel.pages.page.cannotDelete.invalidLanguage: 'Kan inte ta bort sida, ogiltigt språk: %s'
+panel.pages.page.cannotDelete.notDeletable: Kan inte ta bort sida, sidan kan inte tas bort
+panel.pages.page.cannotDelete.pageNotFound: Kan inte ta bort sida, sidan hittades inte
+panel.pages.page.cannotDuplicate.invalidFields: Kan inte duplicera sida, vissa fält är ogiltiga
+panel.pages.page.cannotDuplicate.notDuplicable: Kan inte duplicera sida, sidan kan inte dupliceras
+panel.pages.page.cannotDuplicate.pageNotFound: Kan inte duplicera sida, sidan hittades inte
+panel.pages.page.cannotEdit.alreadyExists: Kan inte redigera sida, en sida med samma URI finns redan
+panel.pages.page.cannotEdit.indexOrErrorPageSlug: Kan inte redigera sidslug för index- eller felsida
+panel.pages.page.cannotEdit.invalidFields: Kan inte redigera sida, vissa fält är ogiltiga
+panel.pages.page.cannotEdit.invalidLanguage: 'Kan inte redigera sida, ogiltigt språk: %s'
+panel.pages.page.cannotEdit.invalidParent: Kan inte redigera sida, ogiltig överordnad sida
+panel.pages.page.cannotEdit.invalidSlug: Kan inte redigera sidslug, den måste innehålla endast bokstäver och siffror separerade med bindestreck
+panel.pages.page.cannotEdit.invalidTemplate: Kan inte redigera sida, ogiltig mall
+panel.pages.page.cannotEdit.pageNotFound: Kan inte redigera sida, sidan hittades inte
+panel.pages.page.cannotEdit.varMissing: Kan inte redigera sida, variabel saknas
+panel.pages.page.cannotMove: Kan inte flytta sida
+panel.pages.page.cannotPreview.pageNotFound: Kan inte förhandsgranska sida, sidan hittades inte
+panel.pages.page.cannotPreview.parentChanged: Kan inte förhandsgranska sida, överordnad sida har ändrats
+panel.pages.page.created: Sida skapad!
+panel.pages.page.deleted: Sida borttagen
+panel.pages.page.edited: Sida redigerad
+panel.pages.page.lastModified: Senast ändrad
+panel.pages.page.moved: Sida flyttad!
+panel.pages.page.notFound: Sida hittades inte
+panel.pages.pages: Sidor
+panel.pages.pages.collapseAll: Kollapsa alla
+panel.pages.pages.expandAll: Expandera alla
+panel.pages.pages.reorder: Ändra ordning
+panel.pages.pages.search: Sök sidor...
+panel.pages.preview: Förhandsgranska
+panel.pages.previewFile: Förhandsgranska
+panel.pages.previous: Föregående sida
+panel.pages.publish: Publicera
+panel.pages.renameFile: Byt namn på fil
+panel.pages.renameFile.name: Namn
+panel.pages.replaceFile: Ersätt fil
+panel.pages.save: Spara
+panel.pages.saveAndCreateNew: Spara och skapa ny
+panel.pages.saveOnly: Spara utan publicering
+panel.pages.toggleChildren: Växla barn-sidor
+panel.pages.viewChildren: Visa barn-sidor
+panel.pages.viewPage: Visa sida
+panel.panel: Administrationspanel
+panel.plugins.info: Information
+panel.plugins.nextPlugin: Nästa plugin
+panel.plugins.plugin.cannotSave.invalidFields: Kan inte spara plugin-alternativ, vissa fält är ogiltiga
+panel.plugins.plugin.disabled: Plugin inaktiverad
+panel.plugins.plugin.enabled: Plugin aktiverad
+panel.plugins.plugin.notFound: Plugin hittades inte
+panel.plugins.plugin.saved: Plugin-alternativ sparade
+panel.plugins.plugins: Plugins
+panel.plugins.previousPlugin: Föregående plugin
+panel.register.createUser: Formwork är installerat men inga användare hittades. Registrera en användare nu.
+panel.register.register: Registrera ny användare
+panel.request.error.postMaxSize: HTTP POST-begäran överskrider maximal tillåten storlek
+panel.sections.toggle: Växla sektion
+panel.site.languages: Språk
+panel.site.languages.availableLanguages: Tillgängliga språk
+panel.site.languages.availableLanguages.noLanguages: Inga språk
+panel.site.languages.preferredLanguage: Använd webbläsarens föredragna språk
+panel.site.languages.preferredLanguage.disabled: Inaktiverad
+panel.site.languages.preferredLanguage.enabled: Aktiverad
+panel.statistics.devices: Enheter
+panel.statistics.devices.type: Typ
+panel.statistics.devices.type.desktop: Stationär dator
+panel.statistics.devices.type.mobile: Mobil
+panel.statistics.devices.type.tablet: Surfplatta
+panel.statistics.monthlyUniqueVisitors: Månatliga unika besökare
+panel.statistics.monthlyVisits: Månatliga besök
+panel.statistics.sources: Källor
+panel.statistics.sources.direct: Direkt
+panel.statistics.sources.site: Webbplats
+panel.statistics.statistics: Statistik
+panel.statistics.totalVisits: Totalt antal besök
+panel.statistics.totalVisits.percentTotal: '% av total'
+panel.statistics.totalVisits.uri: URI
+panel.statistics.visits: Besök
+panel.statistics.weeklyUniqueVisitors: Veckovisa unika besökare
+panel.statistics.weeklyVisits: Veckovisa besök
+panel.tools.backup.actions: Åtgärder
+panel.tools.backup.date: Datum
+panel.tools.backup.delete: Ta bort säkerhetskopia
+panel.tools.backup.file: Fil
+panel.tools.backup.size: Storlek
+panel.tools.backups: Säkerhetskopior
+panel.tools.info: Information
+panel.tools.latestBackup: 'Senaste säkerhetskopian:'
+panel.tools.latestBackups: Senaste säkerhetskopiorna
+panel.tools.tools: Verktyg
+panel.tools.updates: Uppdateringar
+panel.updates.availableForInstall: finns tillgänglig för installation
+panel.updates.check: Kontrollera uppdateringar
+panel.updates.install: Installera
+panel.updates.installed: Uppdatering installerad!
+panel.updates.installPrompt: Vill du installera uppdateringen?
+panel.updates.latestVersionAvailable: är den senaste tillgängliga versionen
+panel.updates.status.cannotCheck: Kan inte kontrollera uppdateringar. Försök senare.
+panel.updates.status.cannotInstall: Kan inte installera uppdatering
+panel.updates.status.cannotMakeBackup: Kan inte skapa säkerhetskopia före uppdatering
+panel.updates.status.checking: Kontrollerar uppdateringar...
+panel.updates.status.found: Uppdateringar hittades
+panel.updates.status.installing: Installerar uppdateringar...
+panel.updates.status.upToDate: Uppdaterad!
+panel.uploader.uploaded: Fil uppladdad
+panel.user.actions: Åtgärder
+panel.user.image.actions: Åtgärder
+panel.user.image.cannotDelete.defaultImage: Kan inte ta bort standardanvändarbilden
+panel.user.image.delete: Ta bort användarbild
+panel.user.image.delete.prompt: Är du säker på att du vill ta bort användarbilden? Åtgärden kan inte ångras.
+panel.user.image.deleted: Användarbild borttagen
+panel.user.image.uploaded: Användarbild uppladdad
+panel.user.lastAccess: Senaste åtkomst
+panel.users.deleteUser: Ta bort användare
+panel.users.deleteUser.prompt: Är du säker på att du vill ta bort denna användare? Åtgärden kan inte ångras.
+panel.users.newUser: Ny användare
+panel.users.newUser.password.suggestion: minst 8 tecken
+panel.users.newUser.username.suggestion: mellan 3-20 bokstäver, siffror och - . _
+panel.users.nextUser: Nästa användare
+panel.users.options: Alternativ
+panel.users.previousUser: Föregående användare
+panel.users.user.cannotChangeEmail.alreadyUsed: Kan inte ändra användarens e-post, adressen är redan associerad med ett konto
+panel.users.user.cannotChangePassword: Kan inte ändra lösenordet för en annan användare. Åtgärden är inte tillåten.
+panel.users.user.cannotChangeRole: Kan inte ändra rollen för %s. Åtgärden är inte tillåten.
+panel.users.user.cannotCreate.alreadyExists: Kan inte skapa användare, en användare med samma namn finns redan
+panel.users.user.cannotCreate.emailAlreadyUsed: Kan inte skapa användare, e-postadressen är redan associerad med ett konto
+panel.users.user.cannotCreate.invalidFields: Kan inte skapa användare, vissa fält är ogiltiga
+panel.users.user.cannotCreate.varMissing: Kan inte skapa användare, variabel saknas
+panel.users.user.cannotDelete: Kan inte ta bort användare. Du måste vara administratör och användaren får inte vara inloggad.
+panel.users.user.cannotEdit: Kan inte redigera användare %s. Åtgärden är inte tillåten.
+panel.users.user.cannotEdit.invalidFields: Kan inte redigera användare, vissa fält är ogiltiga
+panel.users.user.created: Användare skapad
+panel.users.user.deleted: Användare borttagen
+panel.users.user.edited: Användardata uppdaterad
+panel.users.user.notFound: Användare hittades inte
+panel.users.userProfile: '%s användarprofil'
+panel.users.users: Användare
+panel.viewSite: Visa webbplats
