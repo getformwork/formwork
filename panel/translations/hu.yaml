@@ -1,0 +1,364 @@
+panel.backup.backup: Biztonsági mentés
+panel.backup.deleted: Biztonsági mentés törölve
+panel.backup.error.cannotDelete: Nem lehet törölni a biztonsági mentést. %s.
+panel.backup.error.cannotDelete.invalidFilename: Érvénytelen biztonsági mentés fájl
+panel.backup.error.cannotDownload: Nem lehet letölteni a biztonsági mentést. %s.
+panel.backup.error.cannotDownload.invalidFilename: Érvénytelen biztonsági mentés fájl
+panel.backup.error.cannotMake: Nem lehet biztonsági mentést készíteni. %s.
+panel.backup.ready: A biztonsági mentés elkészült. Letöltés indítása...
+panel.cache.clear: Gyorsítótár törlése
+panel.cache.clear.images: Képek gyorsítótárának törlése
+panel.cache.clear.pages: Oldalak gyorsítótárának törlése
+panel.cache.cleared: Gyorsítótár törölve
+panel.cache.cleared.images: Képek gyorsítótára törölve
+panel.cache.cleared.pages: Oldalak gyorsítótára törölve
+panel.cache.error: Nem lehet törölni a gyorsítótárat
+panel.dashboard.dashboard: Vezérlőpult
+panel.dashboard.lastModifiedPages: Legutóbb szerkesztett oldalak
+panel.dashboard.quickActions: Gyorsműveletek
+panel.dashboard.statistics: Statisztikák
+panel.dashboard.statistics.uniqueVisitors: Egyedi látogatók
+panel.dashboard.statistics.visits: Látogatások
+panel.dashboard.welcome: Üdvözöljük
+panel.dragToReorder: Húzza az átrendezéshez
+panel.editor.bold: Félkövér
+panel.editor.bulletList: Felsorolás
+panel.editor.code: Kód
+panel.editor.decreaseIndent: Behúzás csökkentése
+panel.editor.heading1: Címsor 1
+panel.editor.heading2: Címsor 2
+panel.editor.heading3: Címsor 3
+panel.editor.heading4: Címsor 4
+panel.editor.heading5: Címsor 5
+panel.editor.heading6: Címsor 6
+panel.editor.image: Kép
+panel.editor.increaseIndent: Behúzás növelése
+panel.editor.italic: Dőlt
+panel.editor.link: Hivatkozás
+panel.editor.numberedList: Számozott lista
+panel.editor.paragraph: Bekezdés
+panel.editor.quote: Idézet
+panel.editor.redo: Ismét
+panel.editor.summary: Összefoglaló
+panel.editor.toggleMarkdown: Markdown váltása
+panel.editor.undo: Visszavonás
+panel.errors.action.reportToGithub: Hiba jelentése GitHubon
+panel.errors.action.returnToDashboard: Vissza a vezérlőpultra
+panel.errors.error.forbidden.description: Nincs jogosultsága az oldal megtekintéséhez.
+panel.errors.error.forbidden.heading: Hoppá, jogosultság szükséges!
+panel.errors.error.forbidden.status: Tiltott
+panel.errors.error.internalServerError.description: A Formwork hiba miatt nem tudta kiszolgálni a kérést. Ellenőrizze a konfigurációt vagy a szervernaplót.
+panel.errors.error.internalServerError.heading: Hoppá, valami hiba történt!
+panel.errors.error.internalServerError.status: Belső szerverhiba
+panel.errors.error.notFound.description: Az oldal nem létezik vagy a kérés érvénytelen.
+panel.errors.error.notFound.heading: Hoppá, az oldal nem található!
+panel.errors.error.notFound.status: Nem található
+panel.files.actions: Műveletek
+panel.files.backToPage: Vissza az oldalra
+panel.files.cannotDelete.fileNotFound: Nem lehet törölni a fájlt, a fájl nem található
+panel.files.cannotDelete.pageNotFound: Nem lehet törölni a fájlt, az oldal nem található
+panel.files.cannotRename.fileAlreadyExists: Nem lehet átnevezni a fájlt, már létezik ilyen nevű fájl
+panel.files.cannotRename.fileNotFound: Nem lehet átnevezni a fájlt, a fájl nem található
+panel.files.cannotRename.invalidFields: Nem lehet átnevezni a fájlt, egyes mezők érvénytelenek
+panel.files.cannotRename.pageNotFound: Nem lehet átnevezni a fájlt, az oldal nem található
+panel.files.cannotReplace.fileNotFound: Nem lehet lecserélni a fájlt, a fájl nem található
+panel.files.cannotReplace.multipleFiles: Nem lehet lecserélni a fájlt, több fájl lett megadva
+panel.files.cannotReplace.pageNotFound: Nem lehet lecserélni a fájlt, az oldal nem található
+panel.files.cannotUpload.invalidFields: Nem lehet feltölteni a fájlt, egyes mezők érvénytelenek
+panel.files.cannotUpload.pageNotFound: Nem lehet feltölteni a fájlt, az oldal nem található
+panel.files.deleted: Fájl törölve
+panel.files.exif: EXIF
+panel.files.fileNotFound: Nem lehet lekérni a fájl adatait, a fájl nem található
+panel.files.files: Fájlok
+panel.files.info: Információ
+panel.files.info.image.colorDepth: Színmélység
+panel.files.info.image.colorNumber: Színek száma
+panel.files.info.image.colorProfile: Színprofil
+panel.files.info.image.colorSpace: Színtér
+panel.files.info.image.dimensions: Méretek
+panel.files.info.image.dimensions.widthByHeightPixels: '%d × %d pixel'
+panel.files.info.image.exif.aperture: Rekesz
+panel.files.info.image.exif.camera: Kamera
+panel.files.info.image.exif.creationDateAndTime: Készítés dátuma és ideje
+panel.files.info.image.exif.exposureCompensation: Expozíció kompenzáció
+panel.files.info.image.exif.exposureProgram: Expozíciós program
+panel.files.info.image.exif.exposureTime: Expozíciós idő
+panel.files.info.image.exif.flash: Vaku
+panel.files.info.image.exif.focalLength: Gyújtótávolság
+panel.files.info.image.exif.lensModel: Objektív modell
+panel.files.info.image.exif.meteringMode: Fénymérési mód
+panel.files.info.image.exif.sensitivity: Érzékenység
+panel.files.info.image.exif.whiteBalance: Fehéregyensúly
+panel.files.info.image.frames: '%d képkocka'
+panel.files.info.image.framesCount: Képkockák száma
+panel.files.info.image.repeats: '%d ismétlés'
+panel.files.info.image.repeatsCount: Ismétlések száma
+panel.files.info.image.resolution: Felbontás
+panel.files.info.lastModifiedTime: Utolsó módosítás ideje
+panel.files.info.mimeType: MIME típus
+panel.files.info.name: Név
+panel.files.info.size: Méret
+panel.files.info.uri: URI
+panel.files.metadata.cannotUpdate.invalidFields: Nem lehet frissíteni a metaadatokat, egyes mezők érvénytelenek
+panel.files.metadata.updated: Fájl metaadatok frissítve
+panel.files.next: Következő fájl
+panel.files.pageNotFound: Nem lehet lekérni a fájl adatait, az oldal nem található
+panel.files.parent: Szülő
+panel.files.position: Pozíció
+panel.files.preview: Előnézet
+panel.files.previous: Előző fájl
+panel.files.renamed: Fájl átnevezve
+panel.files.search: Fájlok keresése...
+panel.files.upload: Fájlok feltöltése
+panel.files.uploaded: Fájlok feltöltve
+panel.files.viewAsList: Lista nézet
+panel.files.viewAsThumbnails: Miniatűr nézet
+panel.login.attempt.failed: Bejelentkezési kísérlet sikertelen! Próbálja újra.
+panel.login.attempt.tooMany: Túl sok bejelentkezési kísérlet. Próbálja újra %d perc múlva.
+panel.login.loggedOut: Kijelentkezett
+panel.login.login: Bejelentkezés
+panel.login.logout: Kijelentkezés
+panel.login.password: Jelszó
+panel.login.suspiciousRequestDetected: Gyanús kérés észlelve, biztonsági okokból kijelentkeztettük. Kérjük, jelentkezzen be újra.
+panel.login.usernameOrEmail: Felhasználónév vagy e-mail
+panel.manage: Kezelés
+panel.modal.action.cancel: Mégse
+panel.modal.action.continue: Folytatás
+panel.modal.action.delete: Törlés
+panel.modal.action.edit: Szerkesztés
+panel.modal.action.rename: Átnevezés
+panel.modal.action.save: Mentés
+panel.modal.action.upload: Feltöltés
+panel.modal.action.uploadFile: Fájl feltöltése
+panel.modal.images.noImages: Nincsenek képek
+panel.modal.images.noImages.upload: Kérjük, töltsön fel képeket
+panel.modal.images.title: Kép kiválasztása
+panel.modal.link.text: Szöveg
+panel.modal.link.title: Hivatkozás beszúrása
+panel.modal.link.uri: URI
+panel.navigation.toggle: Navigáció váltása
+panel.options.cannotUpdate.invalidFields: Nem lehet frissíteni a beállításokat, egyes mezők érvénytelenek
+panel.options.options: Beállítások
+panel.options.site: Oldal
+panel.options.system: Rendszer
+panel.options.system.adminPanel: Adminisztrációs felület
+panel.options.system.adminPanel.defaultColorScheme: Alapértelmezett színséma
+panel.options.system.adminPanel.defaultColorScheme.dark: Sötét
+panel.options.system.adminPanel.defaultColorScheme.light: Világos
+panel.options.system.adminPanel.defaultLanguage: Alapértelmezett nyelv
+panel.options.system.adminPanel.logoutRedirectsTo: Kijelentkezés utáni átirányítás
+panel.options.system.adminPanel.logoutRedirectsTo.home: Kezdőlap
+panel.options.system.adminPanel.logoutRedirectsTo.login: Bejelentkezés
+panel.options.system.backup: Biztonsági mentés
+panel.options.system.backup.backupFilesToKeep: Megtartandó biztonsági mentések száma
+panel.options.system.cache: Gyorsítótár
+panel.options.system.cache.disabled: Kikapcsolva
+panel.options.system.cache.enabled: Bekapcsolva
+panel.options.system.cache.time: Gyorsítótár ideje
+panel.options.system.content: Tartalom
+panel.options.system.content.allowHtml: HTML engedélyezése Markdown mezőkben
+panel.options.system.content.allowHtml.description: A potenciálisan veszélyes címkék, mint a `<script>` és `<style>`, mindig szöveggé alakulnak
+panel.options.system.content.allowHtml.disabled: Kikapcsolva
+panel.options.system.content.allowHtml.enabled: Bekapcsolva
+panel.options.system.dateAndTime: Dátum és idő
+panel.options.system.dateAndTime.dateFormat: Dátumformátum
+panel.options.system.dateAndTime.firstWeekday: A hét első napja
+panel.options.system.dateAndTime.firstWeekday.monday: Hétfő
+panel.options.system.dateAndTime.firstWeekday.sunday: Vasárnap
+panel.options.system.dateAndTime.hourFormat: Óraformátum
+panel.options.system.dateAndTime.timezone: Időzóna
+panel.options.system.debug: Hibakeresés
+panel.options.system.debug.editorUri: Szerkesztő URI
+panel.options.system.debug.editorUri.description: Használja a `{{filename}}` és `{{line}}` változókat a szerkesztő URI összeállításához
+panel.options.system.debug.mode: Hibakeresési mód
+panel.options.system.debug.mode.description: A hibakeresési mód részletes hibaadatokat jelenít meg, ezért éles környezetben ki kell kapcsolni
+panel.options.system.debug.mode.disabled: Kikapcsolva
+panel.options.system.debug.mode.enabled: Bekapcsolva
+panel.options.system.files: Fájlok
+panel.options.system.files.allowedExtensions: Engedélyezett kiterjesztések
+panel.options.system.files.allowedExtensions.noExtensions: Nincs kiterjesztés (fájl feltöltése nem engedélyezett)
+panel.options.system.images: Képek
+panel.options.system.images.avifQuality: AVIF minőség
+panel.options.system.images.clearCacheByDefault: Képek gyorsítótárának törlése alapértelmezetten
+panel.options.system.images.clearCacheByDefault.disabled: Kikapcsolva
+panel.options.system.images.clearCacheByDefault.enabled: Bekapcsolva
+panel.options.system.images.jpegQuality: JPEG minőség
+panel.options.system.images.jpegSaveProgressive: Progresszív JPEG mentése
+panel.options.system.images.jpegSaveProgressive.disabled: Kikapcsolva
+panel.options.system.images.jpegSaveProgressive.enabled: Bekapcsolva
+panel.options.system.images.pngCompressionLevel: PNG tömörítési szint
+panel.options.system.images.webpQuality: WebP minőség
+panel.options.system.session.duration: Munkamenet időtúllépés
+panel.options.system.sessions: Munkamenetek
+panel.options.system.uploads.processImages: Feltöltött képek feldolgozása (optimalizálása)
+panel.options.system.uploads.processImages.disabled: Kikapcsolva
+panel.options.system.uploads.processImages.enabled: Bekapcsolva
+panel.options.updated: Beállítások frissítve
+panel.pages.changes.continue: Folytatás mentés nélkül
+panel.pages.changes.detected: Változások észlelve
+panel.pages.changes.detected.prompt: Nem mentett módosítások vannak. Biztosan elhagyja az oldalt?
+panel.pages.changeSlug: Slug szerkesztése
+panel.pages.changeSlug.generate: Generálás a címből
+panel.pages.deleteFile: Fájl törlése
+panel.pages.deleteFile.prompt: Biztosan törli ezt a fájlt? A művelet nem vonható vissza.
+panel.pages.deletePage: Oldal törlése
+panel.pages.deletePage.prompt: Biztosan törli ezt az oldalt? A művelet nem vonható vissza.
+panel.pages.duplicatePage: Oldal duplikálása
+panel.pages.duplicatePage.title: '%s másolat'
+panel.pages.edit: Oldal szerkesztése
+panel.pages.editPage: 'Oldal szerkesztése: %s'
+panel.pages.history.event.created: Oldal létrehozva (%s %s).
+panel.pages.history.event.edited: Oldal szerkesztve (%s %s).
+panel.pages.languages: Nyelvek
+panel.pages.languages.addLanguage: '%s hozzáadása'
+panel.pages.languages.editLanguage: '%s szerkesztése'
+panel.pages.newPage: Új oldal
+panel.pages.newPage.site: Oldal
+panel.pages.next: Következő oldal
+panel.pages.page: Oldal
+panel.pages.page.actions: Műveletek
+panel.pages.page.cannotChangeNum: Nem lehet megváltoztatni az oldalszámot
+panel.pages.page.cannotCreate: Nem lehet oldalt létrehozni
+panel.pages.page.cannotCreate.alreadyExists: Nem lehet oldalt létrehozni, az URI már létezik
+panel.pages.page.cannotCreate.invalidFields: Nem lehet oldalt létrehozni, egyes mezők érvénytelenek
+panel.pages.page.cannotCreate.invalidParent: Nem lehet oldalt létrehozni, érvénytelen szülő oldal
+panel.pages.page.cannotCreate.invalidSlug: Nem lehet oldalt létrehozni, a slug csak betűket és számokat tartalmazhat kötőjelekkel elválasztva
+panel.pages.page.cannotCreate.invalidTemplate: Nem lehet oldalt létrehozni, érvénytelen sablon
+panel.pages.page.cannotCreate.varMissing: Nem lehet oldalt létrehozni, hiányzik egy változó
+panel.pages.page.cannotDelete.invalidLanguage: 'Nem lehet törölni az oldalt, érvénytelen nyelv: %s'
+panel.pages.page.cannotDelete.notDeletable: Nem lehet törölni az oldalt, az oldal nem törölhető
+panel.pages.page.cannotDelete.pageNotFound: Nem lehet törölni az oldalt, az oldal nem található
+panel.pages.page.cannotDuplicate.invalidFields: Nem lehet duplikálni az oldalt, egyes mezők érvénytelenek
+panel.pages.page.cannotDuplicate.notDuplicable: Nem lehet duplikálni az oldalt, az oldal nem duplikálható
+panel.pages.page.cannotDuplicate.pageNotFound: Nem lehet duplikálni az oldalt, az oldal nem található
+panel.pages.page.cannotEdit.alreadyExists: Nem lehet szerkeszteni az oldalt, az URI már létezik
+panel.pages.page.cannotEdit.indexOrErrorPageSlug: Nem lehet szerkeszteni az index- és hibaoldalak slugját
+panel.pages.page.cannotEdit.invalidFields: Nem lehet szerkeszteni az oldalt, egyes mezők érvénytelenek
+panel.pages.page.cannotEdit.invalidLanguage: 'Nem lehet szerkeszteni az oldalt, érvénytelen nyelv: %s'
+panel.pages.page.cannotEdit.invalidParent: Nem lehet szerkeszteni az oldalt, érvénytelen szülő oldal
+panel.pages.page.cannotEdit.invalidSlug: Nem lehet szerkeszteni a slugot, csak betűk és számok megengedettek kötőjelekkel elválasztva
+panel.pages.page.cannotEdit.invalidTemplate: Nem lehet szerkeszteni az oldalt, érvénytelen sablon
+panel.pages.page.cannotEdit.pageNotFound: Nem lehet szerkeszteni az oldalt, az oldal nem található
+panel.pages.page.cannotEdit.varMissing: Nem lehet szerkeszteni az oldalt, hiányzik egy változó
+panel.pages.page.cannotMove: Nem lehet áthelyezni az oldalt
+panel.pages.page.cannotPreview.pageNotFound: Nem lehet előnézetet megjeleníteni, az oldal nem található
+panel.pages.page.cannotPreview.parentChanged: Nem lehet előnézetet megjeleníteni, a szülő oldal megváltozott
+panel.pages.page.created: Oldal létrehozva!
+panel.pages.page.deleted: Oldal törölve
+panel.pages.page.edited: Oldal szerkesztve
+panel.pages.page.lastModified: Utolsó módosítás
+panel.pages.page.moved: Oldal áthelyezve!
+panel.pages.page.notFound: Oldal nem található
+panel.pages.pages: Oldalak
+panel.pages.pages.collapseAll: Összes összecsukása
+panel.pages.pages.expandAll: Összes kibontása
+panel.pages.pages.reorder: Átrendezés
+panel.pages.pages.search: Oldalak keresése...
+panel.pages.preview: Előnézet
+panel.pages.previewFile: Előnézet
+panel.pages.previous: Előző oldal
+panel.pages.publish: Közzététel
+panel.pages.renameFile: Fájl átnevezése
+panel.pages.renameFile.name: Név
+panel.pages.replaceFile: Fájl cseréje
+panel.pages.save: Mentés
+panel.pages.saveAndCreateNew: Mentés és új létrehozása
+panel.pages.saveOnly: Mentés közzététel nélkül
+panel.pages.toggleChildren: Gyermekoldalak váltása
+panel.pages.viewChildren: Gyermekoldalak megtekintése
+panel.pages.viewPage: Oldal megtekintése
+panel.panel: Adminisztrációs felület
+panel.plugins.info: Információ
+panel.plugins.nextPlugin: Következő bővítmény
+panel.plugins.plugin.cannotSave.invalidFields: Nem lehet menteni a bővítmény beállításait, egyes mezők érvénytelenek
+panel.plugins.plugin.disabled: Bővítmény letiltva
+panel.plugins.plugin.enabled: Bővítmény engedélyezve
+panel.plugins.plugin.notFound: Bővítmény nem található
+panel.plugins.plugin.saved: Bővítmény beállításai mentve
+panel.plugins.plugins: Bővítmények
+panel.plugins.previousPlugin: Előző bővítmény
+panel.register.createUser: A Formwork telepítve van, de nincs felhasználó. Kérjük, regisztráljon egyet most.
+panel.register.register: Új felhasználó regisztrálása
+panel.request.error.postMaxSize: A HTTP POST kérés meghaladja a megengedett maximális méretet
+panel.sections.toggle: Szakasz váltása
+panel.site.languages: Nyelvek
+panel.site.languages.availableLanguages: Elérhető nyelvek
+panel.site.languages.availableLanguages.noLanguages: Nincsenek nyelvek
+panel.site.languages.preferredLanguage: Böngésző által preferált nyelv használata
+panel.site.languages.preferredLanguage.disabled: Kikapcsolva
+panel.site.languages.preferredLanguage.enabled: Bekapcsolva
+panel.statistics.devices: Eszközök
+panel.statistics.devices.type: Típus
+panel.statistics.devices.type.desktop: Asztali
+panel.statistics.devices.type.mobile: Mobil
+panel.statistics.devices.type.tablet: Tablet
+panel.statistics.monthlyUniqueVisitors: Havi egyedi látogatók
+panel.statistics.monthlyVisits: Havi látogatások
+panel.statistics.sources: Források
+panel.statistics.sources.direct: Közvetlen
+panel.statistics.sources.site: Oldal
+panel.statistics.statistics: Statisztikák
+panel.statistics.totalVisits: Összes látogatás
+panel.statistics.totalVisits.percentTotal: '% összesen'
+panel.statistics.totalVisits.uri: URI
+panel.statistics.visits: Látogatások
+panel.statistics.weeklyUniqueVisitors: Heti egyedi látogatók
+panel.statistics.weeklyVisits: Heti látogatások
+panel.tools.backup.actions: Műveletek
+panel.tools.backup.date: Dátum
+panel.tools.backup.delete: Biztonsági mentés törlése
+panel.tools.backup.file: Fájl
+panel.tools.backup.size: Méret
+panel.tools.backups: Biztonsági mentések
+panel.tools.info: Információ
+panel.tools.latestBackup: 'Legutóbbi biztonsági mentés:'
+panel.tools.latestBackups: Legutóbbi biztonsági mentések
+panel.tools.tools: Eszközök
+panel.tools.updates: Frissítések
+panel.updates.availableForInstall: elérhető telepítésre
+panel.updates.check: Frissítések ellenőrzése
+panel.updates.install: Telepítés
+panel.updates.installed: Frissítés telepítve!
+panel.updates.installPrompt: Szeretné telepíteni a frissítést?
+panel.updates.latestVersionAvailable: a legfrissebb elérhető verzió
+panel.updates.status.cannotCheck: Nem lehet ellenőrizni a frissítéseket. Próbálja később.
+panel.updates.status.cannotInstall: Nem lehet telepíteni a frissítést
+panel.updates.status.cannotMakeBackup: Nem lehet biztonsági mentést készíteni frissítés előtt
+panel.updates.status.checking: Frissítések keresése...
+panel.updates.status.found: Frissítések találhatók
+panel.updates.status.installing: Frissítések telepítése...
+panel.updates.status.upToDate: Naprakész!
+panel.uploader.uploaded: Fájl feltöltve
+panel.user.actions: Műveletek
+panel.user.image.actions: Műveletek
+panel.user.image.cannotDelete.defaultImage: Az alapértelmezett felhasználói kép nem törölhető
+panel.user.image.delete: Felhasználói kép törlése
+panel.user.image.delete.prompt: Biztosan törli a felhasználói képet? A művelet nem vonható vissza.
+panel.user.image.deleted: Felhasználói kép törölve
+panel.user.image.uploaded: Felhasználói kép feltöltve
+panel.user.lastAccess: Utolsó hozzáférés
+panel.users.deleteUser: Felhasználó törlése
+panel.users.deleteUser.prompt: Biztosan törli ezt a felhasználót? A művelet nem vonható vissza.
+panel.users.newUser: Új felhasználó
+panel.users.newUser.password.suggestion: legalább 8 karakter
+panel.users.newUser.username.suggestion: 3–20 betű, szám és - . _
+panel.users.nextUser: Következő felhasználó
+panel.users.options: Beállítások
+panel.users.previousUser: Előző felhasználó
+panel.users.user.cannotChangeEmail.alreadyUsed: Nem lehet módosítani az e-mail címet, már használatban van
+panel.users.user.cannotChangePassword: Más felhasználó jelszava nem módosítható
+panel.users.user.cannotChangeRole: Nem lehet módosítani %s szerepkörét
+panel.users.user.cannotCreate.alreadyExists: Nem lehet létrehozni a felhasználót, már létezik ilyen nevű
+panel.users.user.cannotCreate.emailAlreadyUsed: Nem lehet létrehozni a felhasználót, az e-mail cím már használatban van
+panel.users.user.cannotCreate.invalidFields: Nem lehet létrehozni a felhasználót, egyes mezők érvénytelenek
+panel.users.user.cannotCreate.varMissing: Nem lehet létrehozni a felhasználót, hiányzik egy változó
+panel.users.user.cannotDelete: Nem lehet törölni a felhasználót. Adminisztrátor jogosultság szükséges, és a felhasználó nem lehet bejelentkezve.
+panel.users.user.cannotEdit: 'Nem lehet szerkeszteni a felhasználót: %s'
+panel.users.user.cannotEdit.invalidFields: Nem lehet szerkeszteni a felhasználót, egyes mezők érvénytelenek
+panel.users.user.created: Felhasználó létrehozva
+panel.users.user.deleted: Felhasználó törölve
+panel.users.user.edited: Felhasználói adatok frissítve
+panel.users.user.notFound: Felhasználó nem található
+panel.users.userProfile: '%s felhasználói profil'
+panel.users.users: Felhasználók
+panel.viewSite: Oldal megtekintése

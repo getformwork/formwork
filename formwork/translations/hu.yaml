@@ -1,0 +1,157 @@
+date.distance.ago: '%s ezelőtt'
+date.distance.in: '%s múlva'
+date.duration.days: ['nap', 'nap']
+date.duration.hours: ['óra', 'óra']
+date.duration.minutes: ['perc', 'perc']
+date.duration.months: ['hónap', 'hónap']
+date.duration.seconds: ['másodperc', 'másodperc']
+date.duration.weeks: ['hét', 'hét']
+date.duration.years: ['év', 'év']
+date.months.long: ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December']
+date.months.short: ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Szept', 'Okt', 'Nov', 'Dec']
+date.never: soha
+date.noDate: Nincs dátum
+date.now: most
+date.today: Ma
+date.weekdays.long: ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat']
+date.weekdays.short: ['Vas', 'Hét', 'Ked', 'Sze', 'Csü', 'Pén', 'Szo']
+fields.array.add: Hozzáadás
+fields.array.remove: Eltávolítás
+fields.date.nextHour: Következő óra
+fields.date.nextMinute: Következő perc
+fields.date.nextMonth: Következő hónap
+fields.date.previousHour: Előző óra
+fields.date.previousMinute: Előző perc
+fields.date.previousMonth: Előző hónap
+fields.error.invalidEmail: Érvénytelen e-mail cím
+fields.error.invalidValue: Érvénytelen érték
+fields.error.patternMismatch: Az érték nem felel meg az előírt mintának
+fields.error.requiredValue: A mező kitöltése kötelező
+fields.error.stepMismatch: 'Az érték nem felel meg a megadott lépésköznek: %d'
+fields.error.tooManyItems: 'A megengedett elemek maximális száma: %d'
+fields.error.valueAlreadyExists: Az érték már létezik
+fields.error.valueTooLarge: Az érték nagyobb mint %d
+fields.error.valueTooLong: Az érték hosszabb a megengedett %d karakternél
+fields.error.valueTooShort: Az érték rövidebb a megkövetelt %d karakternél
+fields.error.valueTooSmall: Az érték kisebb mint %d
+fields.file.none: (Nincs)
+fields.file.uploadLabel: <strong>Kattints</strong> a fájl kiválasztásához vagy <strong>húzd</strong> ide
+fields.image.none: (Nincs)
+fields.select.empty: Nincs megfelelő találat
+fields.tags.remove: Eltávolítás
+file.metadata: Metaadatok
+file.metadata.alternativeText: Alternatív szöveg
+page.attributes: Tulajdonságok
+page.cacheable: Gyorsítótárazható
+page.content: Tartalom
+page.files: Fájlok
+page.image: Kép
+page.listed: Listázva
+page.listed.description: A listázott oldalak láthatók a menüben
+page.noFiles: Nincsenek fájlok
+page.noImage: Nincs kép
+page.none: (Nincs)
+page.noTags: Nincsenek címkék
+page.notListed: Nincs listázva
+page.notRoutable: Nem elérhető útvonalon
+page.options: Beállítások
+page.page: Oldal
+page.parent: Szülő oldal
+page.postsPerPage: Bejegyzések oldalanként
+page.publishDate: Közzététel dátuma
+page.routable: Elérhető
+page.routable.description: Az elérhető oldalak az URL-jükön keresztül megnyithatók
+page.slug: Slug
+page.slug.suggestion: csak betűk, számok és kötőjelek
+page.status: Állapot
+page.status.notPublished: Nincs közzétéve
+page.status.published: Közzétéve
+page.status.published.description: A közzétett oldalak láthatók az oldalon és elérhetők az URL-jükön
+page.summary: Összefoglaló
+page.tags: Címkék
+page.template: Sablon
+page.text: Szöveg
+page.title: Cím
+page.unpublishDate: Közzététel visszavonásának dátuma
+plugin.author: Szerző
+plugin.description: Leírás
+plugin.homepage: Honlap
+plugin.license: Licenc
+plugin.plugin: Bővítmény
+plugin.status: Állapot
+plugin.status.disabled: Letiltva
+plugin.status.enabled: Engedélyezve
+plugin.title: Cím
+plugin.version: Verzió
+site.advanced: Speciális beállítások
+site.advanced.aliases: Aliasok
+site.advanced.aliases.alias: Alias
+site.advanced.aliases.description: Oldalútvonal-aliasok egyéni URI-k oldalakhoz rendeléséhez
+site.advanced.aliases.route: Útvonal
+site.advanced.metadata: HTML metaadatok
+site.advanced.metadata.content: Tartalom
+site.advanced.metadata.description: HTML metaadatok, amelyek `<meta>` címkékként kerülnek az oldal `<head>` részébe (pl. OpenGraph)
+site.advanced.metadata.name: Név
+site.info: Információ
+site.info.author: Szerző
+site.info.description: Leírás
+site.info.language: Nyelv
+site.info.title: Cím
+site.maintenance: Karbantartás
+site.maintenance.enabled: Karbantartási mód
+site.maintenance.enabled.disabled: Kikapcsolva
+site.maintenance.enabled.enabled: Bekapcsolva
+site.maintenance.page: Karbantartási oldal
+site.pages: Oldalak
+site.pages.defaultTemplate: Alapértelmezett sablon
+site.pages.taxonomies: Taxonómiák
+site.pages.taxonomies.description: Oldalak rendszerezésére szolgáló taxonómiák
+site.pages.taxonomies.noTaxonomies: Nincsenek taxonómiák
+site.statistics: Statisztikák
+site.statistics.enabled: Oldallátogatások követése
+site.statistics.enabled.disabled: Kikapcsolva
+site.statistics.enabled.enabled: Bekapcsolva
+site.statistics.trackLocalhost: Localhost látogatások követése
+site.statistics.trackLocalhost.disabled: Kikapcsolva
+site.statistics.trackLocalhost.enabled: Bekapcsolva
+site.statistics.visitsDelay: Látogatási késleltetés
+site.statistics.visitsDelay.description: Két azonos felhasználótól érkező látogatás közti idő
+upload.error: A fájl feltöltése sikertelen. %s.
+upload.error.alreadyExists: Már létezik ilyen nevű fájl
+upload.error.cannotMoveToDestination: A feltöltött fájl áthelyezése sikertelen
+upload.error.cannotWrite: Nem sikerült a fájlt lemezre írni
+upload.error.destinationTooLong: A célútvonal túl hosszú
+upload.error.fileName: Érvénytelen fájlnév
+upload.error.fileNameTooLong: A fájlnév túl hosszú
+upload.error.hiddenFiles: Ponttal kezdődő rejtett fájlok nem tölthetők fel
+upload.error.mimeType: Nem engedélyezett fájltípus
+upload.error.noFile: Nem lett fájl feltöltve
+upload.error.noTemp: Hiányzik az ideiglenes mappa
+upload.error.partial: A fájl csak részben lett feltöltve
+upload.error.phpExtension: A feltöltést egy PHP kiterjesztés leállította
+upload.error.size: A fájl meghaladja a maximális méretet
+user.colorScheme: Színséma
+user.colorScheme.auto: Automatikus
+user.colorScheme.dark: Sötét
+user.colorScheme.light: Világos
+user.email: E-mail
+user.fullname: Teljes név
+user.image: Kép
+user.language: Nyelv
+user.password: Jelszó
+user.password.placeholder: Új jelszó megadása…
+user.role: Szerepkör
+user.role.admin: Adminisztrátor
+user.role.editor: Szerkesztő
+user.role.user: Felhasználó
+user.user: Felhasználó
+user.username: Felhasználónév
+zip.error.alreadyExists: Az archívum már létezik
+zip.error.cannotOpen: Az archívum nem nyitható meg
+zip.error.cannotRead: Az archívum nem olvasható
+zip.error.inconsistentArchive: Inkonzisztens archívum
+zip.error.invalidArgument: Érvénytelen argumentum
+zip.error.memoryFailure: Memóriahiba
+zip.error.notFound: Az archívum nem található
+zip.error.notZipArchive: Nem ZIP archívum
+zip.error.unspecified: Nem meghatározott hiba
