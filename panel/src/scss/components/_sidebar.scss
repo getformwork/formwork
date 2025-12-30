@@ -13,8 +13,15 @@
     padding: 1rem 1.5rem;
     background: linear-gradient(to bottom, #{var(--color-base-900)} 0%, #{var(--color-base-800)} 100%);
     background-color: var(--color-base-900);
-    box-shadow: inset -1px 0 0 0 var(--color-base-600);
+    box-shadow:
+        var(--box-shadow-lg),
+        inset -1px 0 0 0 var(--color-base-600);
+
     @include user-select-none;
+
+    @media (min-width: map.get($breakpoints, "md")) {
+        box-shadow: inset -1px 0 0 0 var(--color-base-600);
+    }
 
     .color-scheme-dark & {
         background: linear-gradient(to bottom, #{var(--color-base-800)} 0%, #{var(--color-base-700)} 100%);
@@ -24,6 +31,10 @@
 
 .sidebar.show {
     display: block;
+}
+
+body:has(.sidebar.show) {
+    overflow: hidden;
 }
 
 .sidebar-wrapper {
