@@ -30,7 +30,7 @@ final class Collection extends AbstractCollection
     public function toImmutable(): static
     {
         if (!$this->isMutable()) {
-            throw new LogicException('Cannot convert an already immmutable collection to immmutable');
+            throw new LogicException('Cannot convert an already immutable collection to immutable');
         }
         $collection = $this->clone();
         $collection->mutable = false;
