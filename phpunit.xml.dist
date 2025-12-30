@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php" colors="true" backupGlobals="false" cacheDirectory="tests/.phpunit.cache">
+    <testsuites>
+        <testsuite name="Formwork Test Suite">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">./formwork/src</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">./formwork/src/Images/Exif/tables</directory>
+            <directory suffix=".php">./formwork/src/Utils/scripts</directory>
+        </exclude>
+    </source>
+</phpunit>
