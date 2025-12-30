@@ -33,10 +33,6 @@ $color-focusring-success: rgba($color-green-500, 0.375);
 $color-focusring-warning: rgba($color-amber-500, 0.375);
 $color-focusring-danger: rgba($color-red-500, 0.375);
 
-$color-shadow-sm: rgba($color-blue-100, 3.75%);
-$color-shadow-md: rgba($color-blue-100, 7.5%);
-$color-shadow-lg: rgba($color-blue-100, 15%);
-
 /* stylelint-disable custom-property-empty-line-before */
 /* stylelint-disable scss/dollar-variable-no-missing-interpolation */
 :root {
@@ -44,9 +40,9 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-selection: #{$color-selection};
     --color-focusring: #{$color-focusring};
 
-    --color-shadow-sm: #{$color-shadow-sm};
-    --color-shadow-md: #{$color-shadow-md};
-    --color-shadow-lg: #{$color-shadow-lg};
+    --color-shadow-sm: #{rgba($color-blue-100, 3.75%)};
+    --color-shadow-md: #{rgba($color-blue-100, 7.5%)};
+    --color-shadow-lg: #{rgba($color-blue-100, 15%)};
 
     --color-tooltip-inverted: #{rgba($color-base-light-100, 0.875)};
     --color-tooltip: #{rgba($color-base-light-600, 0.875)};
@@ -108,7 +104,8 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-danger-800: var(--color-red-800);
     --color-danger-900: var(--color-red-900);
 
-    --border-radius: 4px;
+    --border-radius: 0.375rem;
+    --border-radius-sm: 0.25rem;
 
     --focusring-width: 2px;
     --caret-width: 0.25rem;
@@ -156,6 +153,10 @@ $color-shadow-lg: rgba($color-blue-100, 15%);
     --color-base-900: #{$color-base-dark-900};
 
     --color-backdrop: #{tint($color-backdrop, 10%)};
+
+    --color-shadow-sm: #{rgba($color-black, 25%)};
+    --color-shadow-md: #{rgba($color-black, 25%)};
+    --color-shadow-lg: #{rgba($color-black, 25%)};
 
     --color-tooltip-inverted: #{rgba($color-base-dark-100, 0.875)};
     --color-tooltip: #{rgba($color-base-dark-600, 0.875)};
