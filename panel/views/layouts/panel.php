@@ -17,7 +17,7 @@
 <body>
     <?php $this->insert('@panel._sidebar') ?>
     <header class="panel-header">
-        <span class="show-from-sm text-color-gray-dark"><?= $this->translate('panel.panel') ?></span>
+        <span class="show-from-sm"><?= $this->translate('panel.panel') ?></span>
         <span class="show-from-sm ml-5 mr-2 text-color-gray-medium">/</span>
         <?php if ($panel->user()->permissions()->has('panel.options.site')) : ?>
             <span class="flex-grow-1"><a class="button button-link" href="<?= $panel->uri('/options/site/') ?>"><?= $this->icon('globe') ?> <span class="ml-2"><?= $this->escape($site->title()) ?></span></a></span>

@@ -15,9 +15,7 @@
     padding-left: 3rem;
     background-color: var(--color-base-700);
     box-shadow: inset 0 -1px 0 0 var(--color-base-600);
-    color: var(--color-base-100);
     font-size: var(--font-size-sm);
-    font-weight: 500;
     @include user-select-none;
 
     .color-scheme-dark & {
