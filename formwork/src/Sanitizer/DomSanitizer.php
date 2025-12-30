@@ -263,7 +263,10 @@ class DomSanitizer
 
         $uri = html_entity_decode($uri);
 
-        return filter_var($uri, FILTER_SANITIZE_URL)
-            ?: throw new RuntimeException('Cannot sanitize URI');
+        if (($uri = filter_var($uri, FILTER_SANITIZE_URL)) === false) {
+            throw new RuntimeException('Cannot sanitize URI');
+        }
+
+        return $uri;
     }
 }
