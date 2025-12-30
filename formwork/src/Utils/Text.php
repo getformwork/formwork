@@ -50,7 +50,8 @@ final class Text
      */
     public static function splitWords(string $text, ?int $limit = null): array
     {
-        return explode(self::WHITESPACE_SEQUENCE, self::normalizeWhitespace($text), $limit ?? PHP_INT_MAX);
+        $words = explode(self::WHITESPACE_SEQUENCE, self::normalizeWhitespace($text), $limit ?? PHP_INT_MAX);
+        return $words === [''] ? [] : $words;
     }
 
     /**
