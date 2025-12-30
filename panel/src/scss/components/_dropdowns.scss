@@ -85,6 +85,10 @@
     &.selected {
         background-color: var(--color-accent-500);
         color: var(--color-white);
+
+        .color-scheme-dark & {
+            background-color: var(--color-accent-300);
+        }
     }
 
     &.is-active,
@@ -99,7 +103,8 @@
 }
 
 .color-scheme-dark .dropdown-item {
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: var(--color-base-600);
     }
 
