@@ -45,7 +45,9 @@ jobs:
             zip -r formwork-${{ github.event.release.tag_name }}.zip . -x \
             \*.git/\* \
             \*.github/\* \
-            \*node_modules/\*
+            \*node_modules/\* \
+            \tests/\* \
+            \phpunit.xml.dist
 
       - name: Upload release assets
         uses: svenstaro/upload-release-action@v2
