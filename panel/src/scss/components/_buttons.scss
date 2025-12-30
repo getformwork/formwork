@@ -70,6 +70,25 @@
         background-color: var(--color-accent-800);
         color: var(--color-base-800);
     }
+
+    .color-scheme-dark & {
+        border-color: var(--color-accent-400);
+        background-color: var(--color-accent-400);
+
+        &:hover,
+        &:focus,
+        &.active {
+            border-color: var(--color-accent-500);
+            background-color: var(--color-accent-500);
+        }
+
+        &:disabled,
+        &.disabled {
+            border-color: var(--color-accent-200);
+            background-color: var(--color-accent-200);
+            color: var(--color-base-400);
+        }
+    }
 }
 
 .button-secondary {
@@ -91,22 +110,30 @@
     &.disabled {
         border-color: var(--color-base-800);
         background-color: var(--color-base-800);
-        box-shadow: 0 2px 0 var(--color-base-600);
         color: var(--color-base-500);
+    }
+
+    .color-scheme-dark & {
+        &:disabled,
+        &.disabled {
+            border-color: var(--color-base-700);
+            background-color: var(--color-base-700);
+            color: var(--color-base-500);
+        }
     }
 }
 
 .button-success {
-    border: 2px solid var(--color-success-500);
-    background-color: var(--color-success-500);
-    box-shadow: 0 1px 0 var(--color-shadow-lg);
+    border: 1px solid var(--color-success-400);
+    background-color: var(--color-success-400);
+    box-shadow: 0 2px 0 var(--color-base-500);
     color: var(--color-white);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: var(--color-success-400);
-        background-color: var(--color-success-400);
+        border-color: var(--color-success-300);
+        background-color: var(--color-success-300);
         box-shadow: 0 2px 0 var(--color-base-400);
         color: var(--color-white);
     }
@@ -115,32 +142,68 @@
     &.disabled {
         border-color: var(--color-success-800);
         background-color: var(--color-success-800);
-        box-shadow: 0 2px 0 var(--color-base-600);
         color: var(--color-base-800);
+    }
+
+    .color-scheme-dark & {
+        border-color: var(--color-success-300);
+        background-color: var(--color-success-300);
+
+        &:hover,
+        &:focus,
+        &.active {
+            border-color: var(--color-success-400);
+            background-color: var(--color-success-400);
+        }
+
+        &:disabled,
+        &.disabled {
+            border-color: var(--color-success-200);
+            background-color: var(--color-success-200);
+            color: var(--color-base-400);
+        }
     }
 }
 
 .button-warning {
-    border: 1px solid var(--color-warning-500);
-    background-color: var(--color-warning-500);
+    border: 1px solid var(--color-warning-700);
+    background-color: var(--color-warning-700);
     box-shadow: 0 2px 0 var(--color-base-500);
-    color: var(--color-white);
+    color: var(--color-base-100);
 
     &:hover,
     &:focus,
     &.active {
-        border-color: var(--color-warning-400);
-        background-color: var(--color-warning-400);
+        border-color: var(--color-warning-600);
+        background-color: var(--color-warning-600);
         box-shadow: 0 2px 0 var(--color-base-400);
-        color: var(--color-white);
+        color: var(--color-base-100);
     }
 
     &:disabled,
     &.disabled {
         border-color: var(--color-warning-800);
         background-color: var(--color-warning-800);
-        box-shadow: 0 2px 0 var(--color-base-600);
         color: var(--color-base-800);
+    }
+
+    .color-scheme-dark & {
+        border-color: var(--color-warning-300);
+        background-color: var(--color-warning-300);
+
+        &:hover,
+        &:focus,
+        &.active {
+            border-color: var(--color-warning-400);
+            background-color: var(--color-warning-400);
+        }
+
+        &:disabled,
+        &.disabled {
+            border-color: var(--color-warning-200);
+            background-color: var(--color-warning-200);
+            color: var(--color-base-400);
+        }
     }
 }
 
@@ -165,6 +228,25 @@
         background-color: var(--color-danger-800);
         box-shadow: 0 2px 0 var(--color-base-600);
         color: var(--color-base-800);
+    }
+
+    .color-scheme-dark & {
+        border-color: var(--color-danger-400);
+        background-color: var(--color-danger-400);
+
+        &:hover,
+        &:focus,
+        &.active {
+            border-color: var(--color-danger-500);
+            background-color: var(--color-danger-500);
+        }
+
+        &:disabled,
+        &.disabled {
+            border-color: var(--color-danger-200);
+            background-color: var(--color-danger-200);
+            color: var(--color-base-400);
+        }
     }
 }
 
