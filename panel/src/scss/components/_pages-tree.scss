@@ -207,4 +207,8 @@
 
 .pages-tree.is-dragging > .is-not-orderable .pages-tree-row:hover {
     background-color: var(--color-danger-900);
+
+    .color-scheme-dark & {
+        background-color: var(--color-danger-200);
+    }
 }
