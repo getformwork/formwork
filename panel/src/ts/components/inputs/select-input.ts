@@ -216,13 +216,23 @@ export class SelectInput {
             item.dataset[key] = option.dataset[key];
         }
 
+        let mousedownCaptured = false;
+
         item.addEventListener("mousedown", (event) => {
             if (!item.classList.contains("disabled")) {
-                this.selectDropdownItem(item);
-                this.setCurrent(item);
-            } else {
-                event.preventDefault();
+                mousedownCaptured = true;
             }
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        item.addEventListener("click", (event) => {
+            if (mousedownCaptured) {
+                this.setCurrent(item);
+                this.labelInput.blur();
+            }
+            mousedownCaptured = false;
+            event.preventDefault();
             event.stopPropagation();
         });
 

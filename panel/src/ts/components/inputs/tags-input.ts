@@ -130,7 +130,6 @@ export class TagsInput {
             Sortable.create(this.list, {
                 forceFallback: true,
                 animation: 150,
-                filter: ".tag-remove",
 
                 onChoose: () => {
                     if (this.dropdown) {
@@ -140,13 +139,6 @@ export class TagsInput {
 
                 onStart: () => {
                     this.field.classList.add("is-dragging");
-                },
-
-                onFilter: (event: SortableEvent) => {
-                    if (event.target.matches(".tag-remove")) {
-                        this.removeTag(event.item.innerText);
-                        this.list.removeChild(event.item);
-                    }
                 },
 
                 onEnd: (event: SortableEvent) => {
@@ -428,10 +420,22 @@ export class TagsInput {
         tagRemove.title = this.options.labels.remove;
         tagRemove.role = "button";
 
+        let mousedownCaptured = false;
+
         tagRemove.addEventListener("mousedown", (event) => {
-            this.removeTag(value);
-            parent.removeChild(tag);
+            mousedownCaptured = true;
             event.preventDefault();
+            event.stopPropagation();
+        });
+
+        tagRemove.addEventListener("click", (event) => {
+            if (mousedownCaptured) {
+                this.removeTag(value);
+                parent.removeChild(tag);
+            }
+            mousedownCaptured = false;
+            event.preventDefault();
+            event.stopPropagation();
         });
         tag.appendChild(tagRemove);
     }
