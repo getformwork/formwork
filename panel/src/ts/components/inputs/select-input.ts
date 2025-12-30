@@ -216,13 +216,25 @@ export class SelectInput {
             item.dataset[key] = option.dataset[key];
         }
 
+        let mousedownCaptured = false;
+
         item.addEventListener("mousedown", (event) => {
             if (!item.classList.contains("disabled")) {
+                mousedownCaptured = true;
                 this.selectDropdownItem(item);
-                this.setCurrent(item);
-            } else {
-                event.preventDefault();
             }
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        item.addEventListener("click", (event) => {
+            const keyboardActivation = event.detail === 0;
+            if (mousedownCaptured || keyboardActivation) {
+                this.setCurrent(item);
+                this.labelInput.blur();
+            }
+            mousedownCaptured = false;
+            event.preventDefault();
             event.stopPropagation();
         });
 

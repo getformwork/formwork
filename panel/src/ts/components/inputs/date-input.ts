@@ -432,7 +432,7 @@ class Calendar {
         ($(".prevMonth", element) as HTMLElement).innerHTML = chevronLeft;
         ($(".nextMonth", element) as HTMLElement).innerHTML = chevronRight;
 
-        ($(".currentMonth", element) as HTMLElement).addEventListener("mousedown", (event) => {
+        ($(".currentMonth", element) as HTMLElement).addEventListener("click", (event) => {
             this.now();
             this.dispatchChange();
             event.preventDefault();
