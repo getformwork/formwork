@@ -429,7 +429,8 @@ export class TagsInput {
         });
 
         tagRemove.addEventListener("click", (event) => {
-            if (mousedownCaptured) {
+            const keyboardActivation = event.detail === 0;
+            if (mousedownCaptured || keyboardActivation) {
                 this.removeTag(value);
                 parent.removeChild(tag);
             }

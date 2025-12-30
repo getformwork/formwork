@@ -221,13 +221,15 @@ export class SelectInput {
         item.addEventListener("mousedown", (event) => {
             if (!item.classList.contains("disabled")) {
                 mousedownCaptured = true;
+                this.selectDropdownItem(item);
             }
             event.preventDefault();
             event.stopPropagation();
         });
 
         item.addEventListener("click", (event) => {
-            if (mousedownCaptured) {
+            const keyboardActivation = event.detail === 0;
+            if (mousedownCaptured || keyboardActivation) {
                 this.setCurrent(item);
                 this.labelInput.blur();
             }
