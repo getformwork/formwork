@@ -34,6 +34,7 @@ return RectorConfig::configure()
         dirname(__DIR__) . '/panel/views',
         dirname(__DIR__) . '/site/templates',
         dirname(__DIR__) . '/site/plugins',
+        dirname(__DIR__) . '/tests',
         dirname(__DIR__) . '/vendor',
         ChangeSwitchToMatchRector::class,
         ClosureToArrowFunctionRector::class,
