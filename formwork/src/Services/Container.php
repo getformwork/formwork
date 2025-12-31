@@ -3,14 +3,16 @@
 namespace Formwork\Services;
 
 use Closure;
+use Formwork\Services\Exceptions\ContainerException;
+use Formwork\Services\Exceptions\ServiceNotFoundException;
 use Formwork\Services\Exceptions\ServiceResolutionException;
-use LogicException;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 
-class Container
+class Container implements ContainerInterface
 {
     /**
      * Defined services
@@ -89,7 +91,7 @@ class Container
     public function alias(string $alias, string $target): void
     {
         if ($alias === $target) {
-            throw new LogicException(sprintf('Cannot alias "%s" to itself', $target));
+            throw new ContainerException(sprintf('Cannot alias "%s" to itself', $target));
         }
         $this->aliases[$alias] = $target;
     }
@@ -106,7 +108,7 @@ class Container
     public function get(string $name): object
     {
         if (!$this->has($name)) {
-            throw new LogicException(sprintf('Instance of "%s" not found', $name));
+            throw new ServiceNotFoundException(sprintf('Instance of "%s" not found', $name));
         }
         if (isset($this->aliases[$name])) {
             $alias = $this->aliases[$name];
@@ -232,7 +234,7 @@ class Container
             if (array_key_exists($name, $parameters)) {
                 if ($reflectionParameter->isVariadic()) {
                     if (!is_array($parameters[$name])) {
-                        throw new LogicException(sprintf('The parameter value for the variadic argument $%s must be an array', $name));
+                        throw new ContainerException(sprintf('The parameter value for the variadic argument $%s must be an array', $name));
                     }
                     $arguments = [...$arguments, ...array_values($parameters[$name])];
                     continue;
@@ -258,7 +260,11 @@ class Container
                 continue;
             }
 
-            throw new LogicException(sprintf('Cannot instantiate argument $%s: no container definition satisfies the parameter type and no default value is available', $name));
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+                throw new ServiceNotFoundException(sprintf('Cannot instantiate argument $%s: no container definition satisfies the parameter type "%s" and no default value is available', $name, $type->getName()));
+            }
+
+            throw new ContainerException(sprintf('Cannot instantiate argument $%s: no default value is available', $name));
         }
 
         return $arguments;
