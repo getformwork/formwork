@@ -4,8 +4,9 @@ namespace Formwork\Events;
 
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
+use Psr\EventDispatcher\StoppableEventInterface;
 
-class Event
+class Event implements StoppableEventInterface
 {
     use DataMultipleGetter;
     use DataMultipleSetter;
