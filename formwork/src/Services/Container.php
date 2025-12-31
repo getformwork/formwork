@@ -232,7 +232,7 @@ class Container
             if (array_key_exists($name, $parameters)) {
                 if ($reflectionParameter->isVariadic()) {
                     if (!is_array($parameters[$name])) {
-                        throw new LogicException(sprintf('The parameter for the variadic argument $%s must be an array', $name));
+                        throw new LogicException(sprintf('The parameter value for the variadic argument $%s must be an array', $name));
                     }
                     $arguments = [...$arguments, ...array_values($parameters[$name])];
                     continue;
@@ -253,12 +253,12 @@ class Container
                 continue;
             }
 
-            // Skip optional parameters without default value (variadic parameters)
+            // Skip optional parameters without default value (e.g., variadic parameters)
             if ($reflectionParameter->isOptional()) {
                 continue;
             }
 
-            throw new LogicException(sprintf('Cannot instantiate argument $%s', $name));
+            throw new LogicException(sprintf('Cannot instantiate argument $%s: no container definition satisfies the parameter type and no default value is available', $name));
         }
 
         return $arguments;
