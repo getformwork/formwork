@@ -242,6 +242,12 @@ class Container
                 continue;
             }
 
+            // Resolve class/interface if defined in the container
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin() && $this->has($type->getName())) {
+                $arguments[] = $this->get($type->getName());
+                continue;
+            }
+
             if ($reflectionParameter->isDefaultValueAvailable()) {
                 $arguments[] = $reflectionParameter->getDefaultValue();
                 continue;
@@ -252,11 +258,7 @@ class Container
                 continue;
             }
 
-            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                throw new LogicException(sprintf('Cannot instantiate argument $%s', $name));
-            }
-
-            $arguments[] = $this->get($type->getName());
+            throw new LogicException(sprintf('Cannot instantiate argument $%s', $name));
         }
 
         return $arguments;
