@@ -3,41 +3,42 @@
 namespace Formwork\Events;
 
 use Closure;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 
-class EventDispatcher
+class EventDispatcher implements EventDispatcherInterface
 {
-    /**
-     * @var array<string, list<Closure>>
-     */
-    protected array $listeners = [];
+    public function __construct(
+        private ListenerProvider $listenerProvider = new ListenerProvider()
+    ) {}
 
     /**
      * Register an event listener
      *
-     * @param Closure(Event): void $listener
+     * @template TEvent of Event|object
+     *
+     * @param Closure(TEvent): void $listener
      */
     public function on(string $eventName, Closure $listener): void
     {
-        $this->listeners[$eventName][] = $listener;
+        $this->listenerProvider->addListener($eventName, $listener);
     }
 
     /**
      * Dispatch an event
+     *
+     * @inheritDoc
      */
-    public function dispatch(Event $event): void
+    public function dispatch(object $event): object
     {
-        $eventName = $event->name();
-
-        if (!isset($this->listeners[$eventName])) {
-            return;
-        }
-
-        foreach ($this->listeners[$eventName] as $listener) {
-            $listener($event);
-
-            if ($event->isPropagationStopped()) {
+        foreach ($this->listenerProvider->getListenersForEvent($event) as $listener) {
+            if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) {
                 break;
             }
+
+            $listener($event);
         }
+
+        return $event;
     }
 }
