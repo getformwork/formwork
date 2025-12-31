@@ -230,23 +230,35 @@ class Container
             $name = $reflectionParameter->getName();
 
             if (array_key_exists($name, $parameters)) {
+                if ($reflectionParameter->isVariadic()) {
+                    if (!is_array($parameters[$name])) {
+                        throw new LogicException(sprintf('The parameter value for the variadic argument $%s must be an array', $name));
+                    }
+                    $arguments = [...$arguments, ...array_values($parameters[$name])];
+                    continue;
+                }
+
                 $arguments[] = $parameters[$name];
                 continue;
             }
 
-            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                if ($reflectionParameter->isOptional()) {
-                    continue;
-                }
-                if ($reflectionParameter->isDefaultValueAvailable()) {
-                    $arguments[] = $reflectionParameter->getDefaultValue();
-                    continue;
-                }
-
-                throw new LogicException(sprintf('Cannot instantiate argument $%s', $name));
+            // Resolve class/interface if defined in the container
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin() && $this->has($type->getName())) {
+                $arguments[] = $this->get($type->getName());
+                continue;
             }
 
-            $arguments[] = $this->get($type->getName());
+            if ($reflectionParameter->isDefaultValueAvailable()) {
+                $arguments[] = $reflectionParameter->getDefaultValue();
+                continue;
+            }
+
+            // Skip optional parameters without default value (e.g., variadic parameters)
+            if ($reflectionParameter->isOptional()) {
+                continue;
+            }
+
+            throw new LogicException(sprintf('Cannot instantiate argument $%s: no container definition satisfies the parameter type and no default value is available', $name));
         }
 
         return $arguments;
