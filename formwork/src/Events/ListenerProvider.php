@@ -15,6 +15,9 @@ class ListenerProvider implements ListenerProviderInterface
     /**
      * Register a listener for an event class
      *
+     * The event name can be either a custom name from an `Event` instance
+     * (as returned by `Event::name()`) or the class name of a generic event object.
+     *
      * @template TEvent of Event|object
      *
      * @param Closure(TEvent): void $listener
