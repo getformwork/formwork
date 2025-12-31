@@ -230,19 +230,29 @@ class Container
             $name = $reflectionParameter->getName();
 
             if (array_key_exists($name, $parameters)) {
+                if ($reflectionParameter->isVariadic()) {
+                    if (!is_array($parameters[$name])) {
+                        throw new LogicException(sprintf('The parameter for the variadic argument $%s must be an array', $name));
+                    }
+                    $arguments = [...$arguments, ...array_values($parameters[$name])];
+                    continue;
+                }
+
                 $arguments[] = $parameters[$name];
                 continue;
             }
 
-            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                if ($reflectionParameter->isOptional()) {
-                    continue;
-                }
-                if ($reflectionParameter->isDefaultValueAvailable()) {
-                    $arguments[] = $reflectionParameter->getDefaultValue();
-                    continue;
-                }
+            if ($reflectionParameter->isDefaultValueAvailable()) {
+                $arguments[] = $reflectionParameter->getDefaultValue();
+                continue;
+            }
 
+            // Skip optional parameters without default value (variadic parameters)
+            if ($reflectionParameter->isOptional()) {
+                continue;
+            }
+
+            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
                 throw new LogicException(sprintf('Cannot instantiate argument $%s', $name));
             }
 
