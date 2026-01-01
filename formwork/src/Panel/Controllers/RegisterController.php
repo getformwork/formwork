@@ -6,12 +6,9 @@ use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Log\Log;
-use Formwork\Log\Registry;
+use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Schemes\Schemes;
-use Formwork\Users\User;
 use Formwork\Users\UserFactory;
-use Formwork\Utils\FileSystem;
 
 final class RegisterController extends AbstractController
 {
@@ -57,14 +54,8 @@ final class RegisterController extends AbstractController
             return $this->error($this->translate('panel.users.user.cannotCreate.' . $identifier), ['fields' => $form->fields()]);
         }
 
-        $this->request->session()->regenerate();
-        $this->request->session()->set(User::SESSION_LOGGED_USER_KEY, $user->username());
-
-        $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
-        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-
-        $time = $accessLog->log($user->username());
-        $lastAccessRegistry->set($user->username(), $time);
+        $user->authenticate($form->data()->get('password'));
+        $this->events->dispatch(new PanelLoggedInEvent($user, $this->request));
 
         return $this->redirect($this->generateRoute('panel.index'));
     }

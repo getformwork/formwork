@@ -6,9 +6,12 @@ use Formwork\Assets\Assets;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
 use Formwork\Controllers\ErrorsControllerInterface;
+use Formwork\Events\EventDispatcher;
 use Formwork\Http\Request;
+use Formwork\Log\Logger;
 use Formwork\Log\Registry;
 use Formwork\Panel\Controllers\ErrorsController;
+use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Modals\ModalFactory;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Panel\Panel;
@@ -30,6 +33,8 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         private Schemes $schemes,
         private Translations $translations,
         private Assets $assets,
+        private Logger $logger,
+        private EventDispatcher $eventDispatcher,
     ) {}
 
     public function load(Container $container): Panel
@@ -49,6 +54,8 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
         $container->define(ModalFactory::class);
         $container->define(Modals::class);
+
+        $this->eventDispatcher->on('panelLoggedIn', $this->onPanelLoggedIn(...));
 
         return $container->build(Panel::class);
     }
@@ -84,5 +91,13 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
                 ->alias(ErrorsControllerInterface::class)
                 ->lazy(false);
         }
+    }
+
+    private function onPanelLoggedIn(PanelLoggedInEvent $panelLoggedInEvent): void
+    {
+        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
+        $lastAccessRegistry->set($panelLoggedInEvent->user()->username(), sprintf('%F', microtime(true)));
+
+        $this->logger->info('Panel user {username} logged in', ['username' => $panelLoggedInEvent->user()->username()]);
     }
 }

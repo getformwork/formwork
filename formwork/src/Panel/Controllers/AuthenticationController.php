@@ -5,8 +5,6 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
-use Formwork\Log\Log;
-use Formwork\Log\Registry;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Events\PanelLoggedOutEvent;
 use Formwork\Panel\Security\AccessLimiter;
@@ -14,7 +12,6 @@ use Formwork\Schemes\Schemes;
 use Formwork\Users\Exceptions\AuthenticationFailedException;
 use Formwork\Users\Exceptions\UserNotLoggedException;
 use Formwork\Users\User;
-use Formwork\Utils\FileSystem;
 
 final class AuthenticationController extends AbstractController
 {
@@ -68,14 +65,6 @@ final class AuthenticationController extends AbstractController
 
                     // Regenerate CSRF token
                     $this->csrfToken->generate($csrfTokenName);
-
-                    $accessLog = new Log(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'access.json'));
-                    $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-
-                    $username = $user->username();
-
-                    $time = $accessLog->log($username);
-                    $lastAccessRegistry->set($username, $time);
 
                     $accessLimiter->resetAttempts();
 
