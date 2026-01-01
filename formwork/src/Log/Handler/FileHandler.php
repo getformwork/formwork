@@ -13,6 +13,11 @@ use RuntimeException;
 class FileHandler extends AbstractHandler
 {
     /**
+     * @var resource
+     */
+    protected $handle;
+
+    /**
      * @inheritDoc
      */
     public function __construct(
@@ -21,6 +26,11 @@ class FileHandler extends AbstractHandler
         string $level = LogLevel::DEBUG,
     ) {
         parent::__construct($formatter, $level);
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 
     /**
@@ -36,8 +46,16 @@ class FileHandler extends AbstractHandler
 
         $line = $this->formatter->format($datetime, $level, $message, $context);
 
+        $this->write($line);
+    }
+
+    /**
+     * Open the log stream for writing
+     */
+    protected function open(): void
+    {
         if (
-            !Str::startsWith($this->path, 'php://')
+            !Str::contains($this->path, '://')
             && !FileSystem::isDirectory($directory = dirname($this->path), assertExists: false)
         ) {
             FileSystem::createDirectory($directory, recursive: true);
@@ -47,14 +65,41 @@ class FileHandler extends AbstractHandler
             throw new RuntimeException(sprintf('Unable to open the stream "%s" for writing in append mode', $this->path));
         }
 
-        $locked = flock($handle, LOCK_EX);
+        $this->handle = $handle;
+    }
 
-        fwrite($handle, $line . PHP_EOL);
+    /**
+     * Write a line to the log stream
+     */
+    protected function write(string $line): void
+    {
+        $data = $line . PHP_EOL;
 
-        if ($locked) {
-            flock($handle, LOCK_UN);
+        if (!is_resource($this->handle)) {
+            $this->open();
         }
 
-        fclose($handle);
+        $locked = flock($this->handle, LOCK_EX);
+
+        $bytesWritten = fwrite($this->handle, $data);
+
+        if ($locked) {
+            flock($this->handle, LOCK_UN);
+        }
+
+        if ($bytesWritten === false || $bytesWritten < strlen($data)) {
+            $this->close();
+            throw new RuntimeException(sprintf('Unable to write log data to stream "%s"', $this->path));
+        }
+    }
+
+    /**
+     * Close the log stream
+     */
+    protected function close(): void
+    {
+        if (is_resource($this->handle)) {
+            fclose($this->handle);
+        }
     }
 }
