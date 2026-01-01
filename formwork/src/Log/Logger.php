@@ -48,11 +48,13 @@ class Logger extends AbstractLogger implements LoggerInterface
             throw new InvalidArgumentException(sprintf('Invalid log level: "%s"', (string) $level));
         }
 
+        $datetime = new DateTimeImmutable(sprintf('@%.6F', microtime(true)));
+
         foreach ($this->handlers as $handler) {
             $handler->handle(
-                new DateTimeImmutable(sprintf('@%F', microtime(true))),
+                $datetime,
                 (string) $level,
-                $message,
+                (string) $message,
                 $context
             );
         }
