@@ -13,7 +13,7 @@ AddDefaultCharset utf-8
     RewriteRule ^.* index.php [L]
 
     ## Prevent direct access to Formwork folders
-    RewriteRule ^(panel|backup|bin|cache|formwork|site|vendor)/.* index.php [L,NC]
+    RewriteRule ^(panel|backup|bin|cache|formwork|logs|site|vendor)/.* index.php [L,NC]
 
     ## Prevent access to specific files
     RewriteRule ^(.*)\.(md|yml|yaml|json|neon)/?$ index.php [L,NC]

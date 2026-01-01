@@ -6,7 +6,7 @@ $path = $_SERVER['SCRIPT_NAME'];
 // Emulate the `mod_rewrite` rules defined in .htaccess
 if ($path !== '/index.php' && is_file($root . $path)) {
     switch (true) {
-        case preg_match('~^/(panel|backup|bin|cache|formwork|site|vendor)/.*~i', $path):
+        case preg_match('~^/(panel|backup|bin|cache|formwork|logs|site|vendor)/.*~i', $path):
         case preg_match('~^/(.*)\.(md|yml|yaml|json|neon)/?$~i', $path):
         case preg_match('~^/(LICENSE|composer\.lock)/?$~i', $path):
         case preg_match('~(^|/)\.(?!well-known)/?~i', $path):
