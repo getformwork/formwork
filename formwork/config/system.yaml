@@ -65,6 +65,13 @@ images:
     preserveExifData: true
     clearCacheByDefault: false
 
+logs:
+    handlers:
+        default:
+            type: file
+            path: '${%ROOT_PATH%}/logs/formwork.log'
+            level: info
+
 metadata:
     setGenerator: true
 
