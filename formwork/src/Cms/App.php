@@ -22,6 +22,7 @@ use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Images\ImageFactory;
 use Formwork\Languages\LanguagesFactory;
+use Formwork\Log\Logger;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Pages\PaginationFactory;
@@ -33,6 +34,7 @@ use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
+use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\PluginsServiceLoader;
 use Formwork\Services\Loaders\SchemesServiceLoader;
@@ -49,6 +51,7 @@ use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 final class App
@@ -243,6 +246,10 @@ final class App
         $container->define(Container::class, $container);
 
         $container->define(self::class, $this);
+
+        $container->define(Logger::class)
+            ->loader(LoggerServiceLoader::class)
+            ->alias(LoggerInterface::class);
 
         $container->define(EventDispatcher::class)
             ->alias('events');
