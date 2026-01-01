@@ -125,19 +125,25 @@ final class ServeCommand implements CommandInterface
         ], dirname(__DIR__, 3), null, null, 0);
 
         $this->process->run(function ($type, $buffer): void {
-            $this->handleOutput(explode("\n", $buffer));
+            $this->handleOutput($type, explode("\n", $buffer));
         });
     }
 
     /**
      * Handle server output
      *
+     * @param 'err'|'out'  $type
      * @param list<string> $lines
      */
-    private function handleOutput(array $lines): void
+    private function handleOutput(string $type, array $lines): void
     {
         foreach ($lines as $line) {
+            if ($line === '') {
+                continue;
+            }
+
             if (!preg_match('/^\[([^[\]]+)\] (.+)$/', $line, $matches, PREG_UNMATCHED_AS_NULL)) {
+                $this->outputRawLine($type, $line);
                 continue;
             }
 
@@ -227,7 +233,7 @@ final class ServeCommand implements CommandInterface
                         $this->requestData[$requestPort]['info'] = $requestInfo;
                     } else {
                         // Unknown message format
-                        $this->climate->to('error')->error($message);
+                        $this->outputRawLine($type, $line);
                     }
                     break;
             }
@@ -287,5 +293,26 @@ final class ServeCommand implements CommandInterface
         }
 
         return round($dt * 1e6) . ' μs'; // microseconds
+    }
+
+    /**
+     * Output a raw line without processing
+     *
+     * @param 'err'|'out' $type
+     */
+    private function outputRawLine(string $type, string $line): void
+    {
+        switch ($type) {
+            case 'out':
+                $this->climate->to('out')->out($line);
+                break;
+
+            case 'err':
+                $this->climate->to('error')->error($line);
+                break;
+
+            default:
+                throw new UnexpectedValueException(sprintf('Unexpected output type "%s"', $type));
+        }
     }
 }
