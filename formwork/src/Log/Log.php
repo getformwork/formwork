@@ -2,6 +2,11 @@
 
 namespace Formwork\Log;
 
+trigger_error(sprintf('%s is deprecated since Formwork 2.3.0. Use the new %s instead', Log::class, Logger::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated since Formwork 2.3.0. Use `Formwork\Log\Logger` instead
+ */
 class Log extends Registry
 {
     public function __construct(
