@@ -131,6 +131,7 @@ fields:
         options:
             light: '{{panel.options.system.adminPanel.defaultColorScheme.light}}'
             dark: '{{panel.options.system.adminPanel.defaultColorScheme.dark}}'
+            auto: '{{panel.options.system.adminPanel.defaultColorScheme.auto}}'
 
     images.jpegQuality:
         type: range

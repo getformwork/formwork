@@ -143,6 +143,7 @@ panel.options.site: Ιστότοπος
 panel.options.system: Σύστημα
 panel.options.system.adminPanel: Πίνακας διαχείρισης
 panel.options.system.adminPanel.defaultColorScheme: Προεπιλεγμένο χρωματικό θέμα
+panel.options.system.adminPanel.defaultColorScheme.auto: Αυτόματο
 panel.options.system.adminPanel.defaultColorScheme.dark: Σκούρο
 panel.options.system.adminPanel.defaultColorScheme.light: Ανοιχτό
 panel.options.system.adminPanel.defaultLanguage: Προεπιλεγμένη γλώσσα

@@ -143,6 +143,7 @@ panel.options.site: Site
 panel.options.system: Système
 panel.options.system.adminPanel: Panneau d’administration
 panel.options.system.adminPanel.defaultColorScheme: Schéma de couleur par défaut du panneau d'administration
+panel.options.system.adminPanel.defaultColorScheme.auto: Auto
 panel.options.system.adminPanel.defaultColorScheme.dark: Foncé
 panel.options.system.adminPanel.defaultColorScheme.light: Clair
 panel.options.system.adminPanel.defaultLanguage: Langue par défaut

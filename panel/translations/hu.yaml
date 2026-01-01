@@ -143,6 +143,7 @@ panel.options.site: Oldal
 panel.options.system: Rendszer
 panel.options.system.adminPanel: Adminisztrációs felület
 panel.options.system.adminPanel.defaultColorScheme: Alapértelmezett színséma
+panel.options.system.adminPanel.defaultColorScheme.auto: Automatikus
 panel.options.system.adminPanel.defaultColorScheme.dark: Sötét
 panel.options.system.adminPanel.defaultColorScheme.light: Világos
 panel.options.system.adminPanel.defaultLanguage: Alapértelmezett nyelv

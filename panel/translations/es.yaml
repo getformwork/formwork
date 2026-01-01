@@ -143,6 +143,7 @@ panel.options.site: Sitio
 panel.options.system: Sistema
 panel.options.system.adminPanel: Panel de administración
 panel.options.system.adminPanel.defaultColorScheme: Esquema de color predeterminado
+panel.options.system.adminPanel.defaultColorScheme.auto: Automático
 panel.options.system.adminPanel.defaultColorScheme.dark: Oscuro
 panel.options.system.adminPanel.defaultColorScheme.light: Claro
 panel.options.system.adminPanel.defaultLanguage: Idioma predeterminado

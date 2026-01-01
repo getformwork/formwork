@@ -143,6 +143,7 @@ panel.options.site: Webseite
 panel.options.system: System
 panel.options.system.adminPanel: Administrationspanel
 panel.options.system.adminPanel.defaultColorScheme: Standard-Farbschema
+panel.options.system.adminPanel.defaultColorScheme.auto: Automatisch
 panel.options.system.adminPanel.defaultColorScheme.dark: Dunkel
 panel.options.system.adminPanel.defaultColorScheme.light: Hell
 panel.options.system.adminPanel.defaultLanguage: Standardsprache

@@ -143,6 +143,7 @@ panel.options.site: Site
 panel.options.system: Sistem
 panel.options.system.adminPanel: Panoul de administrare
 panel.options.system.adminPanel.defaultColorScheme: Schema de culori implicită
+panel.options.system.adminPanel.defaultColorScheme.auto: Automat
 panel.options.system.adminPanel.defaultColorScheme.dark: Întunecat
 panel.options.system.adminPanel.defaultColorScheme.light: Deschis
 panel.options.system.adminPanel.defaultLanguage: Limba implicită

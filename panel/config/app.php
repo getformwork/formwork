@@ -11,7 +11,7 @@ return fn(Site $site, Panel $panel, CsrfToken $csrfToken, Config $config, Transl
     'siteUri'     => $site->uri(includeLanguage: false),
     'baseUri'     => $panel->panelUri(),
     'csrfToken'   => $csrfToken->get($panel->getCsrfTokenName()),
-    'colorScheme' => $panel->isLoggedIn() ? $panel->user()->colorScheme()->getCompatibleSchemes() : null,
+    'colorScheme' => $panel->compatibleColorSchemes(),
     'DateInput'   => [
         'weekStarts'     => $config->get('system.date.weekStarts'),
         'dateFormat'     => Date::formatToPattern($config->get('system.date.dateFormat')),

@@ -143,6 +143,7 @@ panel.options.site: Webbplats
 panel.options.system: System
 panel.options.system.adminPanel: Administrationspanel
 panel.options.system.adminPanel.defaultColorScheme: Standardfärgschema
+panel.options.system.adminPanel.defaultColorScheme.auto: Auto
 panel.options.system.adminPanel.defaultColorScheme.dark: Mörkt
 panel.options.system.adminPanel.defaultColorScheme.light: Ljust
 panel.options.system.adminPanel.defaultLanguage: Standardspråk

@@ -143,6 +143,7 @@ panel.options.site: Сайт
 panel.options.system: Система
 panel.options.system.adminPanel: Панель администратора
 panel.options.system.adminPanel.defaultColorScheme: Цветовая схема по умолчанию
+panel.options.system.adminPanel.defaultColorScheme.auto: Авто
 panel.options.system.adminPanel.defaultColorScheme.dark: Тёмная
 panel.options.system.adminPanel.defaultColorScheme.light: Светлая
 panel.options.system.adminPanel.defaultLanguage: Язык по умолчанию

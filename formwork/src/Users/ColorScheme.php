@@ -10,6 +10,8 @@ enum ColorScheme: string
 
     /**
      * Get compatible schemes for the current scheme
+     *
+     * @return 'dark'|'light dark'|'light'
      */
     public function getCompatibleSchemes(): string
     {

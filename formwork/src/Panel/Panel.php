@@ -187,21 +187,31 @@ final class Panel
     }
 
     /**
-     * Get the panel color scheme
+     * Get the actual panel color scheme
      *
      * If the user is logged in and has set a color scheme, it will be used.
      * Otherwise, the default color scheme from the configuration will be used.
      */
     public function colorScheme(): ColorScheme
     {
-        $colorScheme = ColorScheme::from($this->config->get('system.panel.colorScheme'));
-        if ($this->isLoggedIn()) {
-            if ($this->user()->colorScheme() === ColorScheme::Auto) {
-                return ColorScheme::from($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value));
-            }
-            return $this->user()->colorScheme();
+        $colorScheme = $this->colorSchemeOption();
+
+        if ($colorScheme === ColorScheme::Auto) {
+            // Get color scheme from cookie to avoid flash of incorrect color scheme
+            return ColorScheme::from($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value));
         }
+
         return $colorScheme;
+    }
+
+    /**
+     * Get compatible color schemes for the current color scheme option
+     *
+     * @return 'dark'|'light dark'|'light'
+     */
+    public function compatibleColorSchemes(): string
+    {
+        return $this->colorSchemeOption()->getCompatibleSchemes();
     }
 
     /**
@@ -252,5 +262,15 @@ final class Panel
         return $this->container->call(require $this->config->get('system.panel.config.app'), [
             'translation' => $this->translations->getCurrent(),
         ]);
+    }
+
+    /**
+     * Get the color scheme option (user's choice or default from config)
+     */
+    private function colorSchemeOption(): ColorScheme
+    {
+        return $this->isLoggedIn()
+            ? $this->user()->colorScheme()
+            : ColorScheme::from($this->config->get('system.panel.colorScheme'));
     }
 }

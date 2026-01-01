@@ -94,7 +94,7 @@ panel:
     loginResetTime: 300
     logoutRedirect: login
     userImageSize: 512
-    colorScheme: light
+    colorScheme: auto
     paths:
         assets: '${system.panel.path}/assets'
         logs: '${system.panel.path}/logs'

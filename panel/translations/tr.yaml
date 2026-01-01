@@ -143,6 +143,7 @@ panel.options.site: Site
 panel.options.system: Sistem
 panel.options.system.adminPanel: Yönetim paneli
 panel.options.system.adminPanel.defaultColorScheme: Varsayılan renk şeması
+panel.options.system.adminPanel.defaultColorScheme.auto: Otomatik
 panel.options.system.adminPanel.defaultColorScheme.dark: Koyu
 panel.options.system.adminPanel.defaultColorScheme.light: Açık
 panel.options.system.adminPanel.defaultLanguage: Varsayılan dil
