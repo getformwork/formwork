@@ -75,13 +75,15 @@ class Client
     {
         $connection = $this->connect($uri, $options);
 
-        $content = @stream_get_contents($connection['handle'], $connection['length'] ?? -1);
+        try {
+            $content = @stream_get_contents($connection['handle'], $connection['length'] ?? -1);
 
-        if ($content === false) {
-            throw new RuntimeException(sprintf('Cannot get stream contents from "%s"', $uri));
+            if ($content === false) {
+                throw new RuntimeException(sprintf('Cannot get stream contents from "%s"', $uri));
+            }
+        } finally {
+            @fclose($connection['handle']);
         }
-
-        @fclose($connection['handle']);
 
         $encoding = $connection['headers']['Content-Encoding'] ?? null;
 
@@ -120,17 +122,21 @@ class Client
     {
         $connection = $this->connect($uri, $options);
 
-        if (($destination = @fopen($file, 'w')) === false) {
-            throw new RuntimeException(sprintf('Cannot open destination "%s" for writing', $file));
+        try {
+            if (($destination = @fopen($file, 'w')) === false) {
+                throw new RuntimeException(sprintf('Cannot open destination "%s" for writing', $file));
+            }
+
+            try {
+                if (@stream_copy_to_stream($connection['handle'], $destination, $connection['length'] ?? -1) === false) {
+                    throw new RuntimeException(sprintf('Cannot copy stream contents from "%s" to "%s"', $uri, $file));
+                }
+            } finally {
+                @fclose($destination);
+            }
+        } finally {
+            @fclose($connection['handle']);
         }
-
-        if (@stream_copy_to_stream($connection['handle'], $destination, $connection['length'] ?? -1) === false) {
-            throw new RuntimeException(sprintf('Cannot copy stream contents from "%s" to "%s"', $uri, $file));
-        }
-
-        @fclose($destination);
-
-        @fclose($connection['handle']);
     }
 
     /**
@@ -166,17 +172,19 @@ class Client
             return true;
         });
 
-        if (($handle = @fopen($uri, 'r', false, $context)) === false) {
-            $messages = implode("\n", array_map(
-                static fn(int $i, array $error): string => sprintf('#%d %s', $i, str_replace("\n", ' ', $error['message'])),
-                array_keys($errors),
-                $errors
-            ));
+        try {
+            if (($handle = @fopen($uri, 'r', false, $context)) === false) {
+                $messages = implode("\n", array_map(
+                    static fn(int $i, array $error): string => sprintf('#%d %s', $i, str_replace("\n", ' ', $error['message'])),
+                    array_keys($errors),
+                    $errors
+                ));
 
-            throw new ConnectionException(sprintf("Cannot connect to \"%s\". Error messages:\n%s", $uri, $messages));
+                throw new ConnectionException(sprintf("Cannot connect to \"%s\". Error messages:\n%s", $uri, $messages));
+            }
+        } finally {
+            restore_error_handler();
         }
-
-        restore_error_handler();
 
         if (!@$http_response_header) {
             throw new RuntimeException(sprintf('Cannot get headers for "%s"', $uri));
@@ -196,7 +204,6 @@ class Client
             $length = 0;
         }
 
-        //TODO
         return [
             'status'  => $currentResponse['statusCode'],
             'headers' => $currentResponse['headers'],
