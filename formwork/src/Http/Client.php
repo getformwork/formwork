@@ -186,7 +186,12 @@ class Client
             restore_error_handler();
         }
 
-        if (!@$http_response_header) {
+        // @todo use the function directly when we drop support for PHP < 8.4
+        if (function_exists('http_get_last_response_headers')) {
+            $http_response_header = http_get_last_response_headers();
+        }
+
+        if (empty($http_response_header)) {
             throw new RuntimeException(sprintf('Cannot get headers for "%s"', $uri));
         }
 
