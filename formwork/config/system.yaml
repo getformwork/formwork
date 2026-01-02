@@ -12,6 +12,7 @@ backup:
         - 'backup/*'
         - 'cache/*'
         - 'site/auth/*'
+        - 'site/sessions/*'
         - 'vendor/*'
         - '*node_modules/*'
 
@@ -125,7 +126,7 @@ schemes:
         site: '${%ROOT_PATH%}/site/schemes'
 
 session:
-    path: '${%ROOT_PATH%}/site/auth/sessions'
+    path: '${%ROOT_PATH%}/site/sessions'
     duration: 7200
 
 templates:
@@ -146,7 +147,7 @@ updates:
     preferDistAssets: true
     backupBefore: true
     cleanupAfterInstall: true
-    registryFile: '${system.panel.paths.logs}/updates.json'
+    registryFile: '${%ROOT_PATH%}/cache/updates.json'
     ignore:
         - 'backup/*'
         - 'cache/*'
