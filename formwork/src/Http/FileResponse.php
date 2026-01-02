@@ -61,40 +61,44 @@ class FileResponse extends Response
         }
 
         $file = fopen($this->path, 'r');
-        $output = fopen('php://output', 'w');
-
-        if ($output === false) {
-            throw new RuntimeException('Unable to open output stream');
-        }
 
         if ($file === false) {
             throw new RuntimeException(sprintf('Unable to open file: %s', $this->path));
         }
 
-        ignore_user_abort(true);
+        $output = fopen('php://output', 'w');
 
-        if ($this->offset > 0) {
-            fseek($file, $this->offset);
+        if ($output === false) {
+            fclose($file);
+            throw new RuntimeException('Unable to open output stream');
         }
 
-        while ($length > 0 && !feof($file)) {
-            $read = fread($file, min(self::CHUNK_SIZE, $length));
+        try {
+            ignore_user_abort(true);
 
-            if ($read === false) {
-                break;
+            if ($this->offset > 0) {
+                fseek($file, $this->offset);
             }
 
-            $written = fwrite($output, $read);
+            while ($length > 0 && !feof($file)) {
+                $read = fread($file, min(self::CHUNK_SIZE, $length));
 
-            if (connection_aborted() || $written === false) {
-                break;
+                if ($read === false) {
+                    break;
+                }
+
+                $written = fwrite($output, $read);
+
+                if (connection_aborted() || $written === false) {
+                    break;
+                }
+
+                $length -= $written;
             }
-
-            $length -= $written;
+        } finally {
+            fclose($file);
+            fclose($output);
         }
-
-        fclose($output);
-        fclose($file);
 
         $this->flush();
     }
