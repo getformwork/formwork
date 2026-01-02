@@ -313,7 +313,11 @@ final class Str
                     return '{{' . $key . '}}';
                 }
 
-                return is_array($data) ? $data[$key] : $data($key);
+                if (is_array($data)) {
+                    return $data[$key] ?? '{{' . $key . '}}';
+                }
+
+                return $data($key);
             },
             $string,
             flags: PREG_UNMATCHED_AS_NULL
