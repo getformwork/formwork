@@ -1,14 +1,18 @@
 import { circleSmallFill } from "./icons";
-import type { LineChartData } from "chartist";
 import { Tooltip } from "./tooltip";
 
+interface NumericChartistData {
+    labels: (string | number)[];
+    series: number[][];
+}
+
 export class StatisticsChart {
-    constructor(container: HTMLElement, data: LineChartData) {
+    constructor(container: HTMLElement, data: NumericChartistData) {
         container.classList.add("is-loading");
         this.init(container, data);
     }
 
-    private async init(container: HTMLElement, data: LineChartData) {
+    private async init(container: HTMLElement, data: NumericChartistData) {
         const spacing = 100;
 
         const options = {
@@ -51,18 +55,15 @@ export class StatisticsChart {
 
         container.addEventListener("mouseover", (event) => {
             const target = event.target as SVGElement;
-            if (target.getAttribute("class") === "ct-point") {
+            if (target.getAttribute("class") === "ct-point" && target.hasAttribute("ct:index")) {
                 const strokeWidth = parseFloat(getComputedStyle(target).strokeWidth);
-                const index = target.getAttribute("ct:index");
-                if (index) {
-                    // @ts-expect-error TODO
-                    const text = `<div>${data.labels[index]}<br><span class="text-color-blue">${circleSmallFill}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${circleSmallFill}</span>${data.series[1][index]}</div>`;
-                    const tooltip = new Tooltip(text, {
-                        referenceElement: event.target as HTMLElement,
-                        offset: { x: 0, y: -strokeWidth },
-                    });
-                    tooltip.show();
-                }
+                const index = parseInt(target.getAttribute("ct:index") as string);
+                const text = `<div>${data.labels[index]}<br><span class="text-color-blue">${circleSmallFill}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${circleSmallFill}</span>${data.series[1][index]}</div>`;
+                const tooltip = new Tooltip(text, {
+                    referenceElement: event.target as HTMLElement,
+                    offset: { x: 0, y: -strokeWidth },
+                });
+                tooltip.show();
             }
         });
     }
