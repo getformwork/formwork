@@ -53,10 +53,13 @@ class Client
     public function defaults(): array
     {
         return [
-            'version'   => 1.1,
-            'method'    => 'GET',
-            'timeout'   => -1,
-            'headers'   => ['User-Agent' => ini_get('user_agent') ?: self::DEFAULT_USER_AGENT, 'Accept-Encoding' => 'gzip, deflate'],
+            'version' => 1.1,
+            'method'  => 'GET',
+            'timeout' => -1,
+            'headers' => [
+                'User-Agent'      => ini_get('user_agent') ?: self::DEFAULT_USER_AGENT,
+                'Accept-Encoding' => 'gzip', // Avoid potentially broken "deflate" responses
+            ],
             'content'   => '',
             'redirects' => ['follow' => true, 'limit' => 5],
             'ssl'       => ['verify' => true, 'cabundle' => null],
@@ -80,11 +83,15 @@ class Client
 
         @fclose($connection['handle']);
 
-        if (($connection['headers']['Content-Encoding'] ?? null) === 'gzip') {
+        $encoding = $connection['headers']['Content-Encoding'] ?? null;
+
+        if ($encoding === 'gzip') {
             $content = gzdecode($content);
             if ($content === false) {
                 throw new RuntimeException(sprintf('Cannot decode gzipped contents from "%s"', $uri));
             }
+        } elseif ($encoding !== null) {
+            throw new RuntimeException(sprintf('Unsupported Content-Encoding "%s" from "%s"', $encoding, $uri));
         }
 
         return new Response($content, ResponseStatus::fromCode($connection['status']), $connection['headers']);
