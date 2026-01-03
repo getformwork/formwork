@@ -88,6 +88,9 @@ class Registry
     public function save(): void
     {
         $this->load();
+        if (!FileSystem::isDirectory($directory = dirname($this->filename), assertExists: false)) {
+            FileSystem::createDirectory($directory, true);
+        }
         Json::encodeToFile($this->storage, $this->filename);
         $this->saved = true;
     }
