@@ -47,13 +47,13 @@ class Authenticator
             throw $e;
         }
 
+        $this->rateLimiter->resetAttempts();
+
         $this->session->regenerate();
         $this->session->set(self::SESSION_LOGGED_USER_KEY, $user->username());
 
         $user->set('lastAccess', time());
         $user->save();
-
-        $this->rateLimiter->resetAttempts();
 
         return $user;
     }
