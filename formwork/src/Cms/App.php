@@ -5,6 +5,7 @@ namespace Formwork\Cms;
 use BadMethodCallException;
 use ErrorException;
 use Formwork\Assets\Assets;
+use Formwork\Authentication\Authenticator;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\FilesCache;
 use Formwork\Cms\Events\ExceptionThrownEvent;
@@ -20,6 +21,7 @@ use Formwork\Files\FileUriGenerator;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
+use Formwork\Http\Session\Session;
 use Formwork\Images\ImageFactory;
 use Formwork\Languages\LanguagesFactory;
 use Formwork\Log\Logger;
@@ -33,6 +35,7 @@ use Formwork\Schemes\Schemes;
 use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AssetsServiceLoader;
+use Formwork\Services\Loaders\AuthenticationServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
@@ -257,6 +260,8 @@ final class App
         $container->define(Request::class, fn() => Request::fromGlobals())
             ->alias('request');
 
+        $container->define(Session::class, fn(Request $request) => $request->session());
+
         $container->define(Config::class)
             ->loader(ConfigServiceLoader::class)
             ->alias('config');
@@ -316,6 +321,9 @@ final class App
         $container->define(Users::class)
             ->loader(UsersServiceLoader::class)
             ->alias('users');
+
+        $container->define(Authenticator::class)
+            ->loader(AuthenticationServiceLoader::class);
 
         $container->define(Assets::class)
             ->loader(AssetsServiceLoader::class)

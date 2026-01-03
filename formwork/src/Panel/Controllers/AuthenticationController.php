@@ -2,16 +2,17 @@
 
 namespace Formwork\Panel\Controllers;
 
+use Formwork\Authentication\Authenticator;
+use Formwork\Authentication\Exceptions\AuthenticationFailedException;
+use Formwork\Authentication\Exceptions\RateLimitExceededException;
+use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
+use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Events\PanelLoggedOutEvent;
-use Formwork\Panel\Security\AccessLimiter;
 use Formwork\Schemes\Schemes;
-use Formwork\Users\Exceptions\AuthenticationFailedException;
-use Formwork\Users\Exceptions\UserNotLoggedException;
-use Formwork\Users\User;
 
 final class AuthenticationController extends AbstractController
 {
@@ -23,7 +24,7 @@ final class AuthenticationController extends AbstractController
     /**
      * Authentication@login action
      */
-    public function login(AccessLimiter $accessLimiter, Schemes $schemes): Response
+    public function login(Schemes $schemes, Authenticator $authenticator): Response
     {
         if ($this->panel->isLoggedIn()) {
             return $this->redirect($this->generateRoute('panel.index'));
@@ -31,63 +32,48 @@ final class AuthenticationController extends AbstractController
 
         $fields = $schemes->get('forms.login')->fields();
 
-        $csrfTokenName = $this->panel->getCsrfTokenName();
-
-        if ($accessLimiter->hasReachedLimit()) {
-            $minutes = round($this->config->get('system.panel.loginResetTime') / 60);
-            $this->csrfToken->generate($csrfTokenName);
-            return $this->error($this->translate('panel.login.attempt.tooMany', $minutes), ['fields' => $fields]);
-        }
-
         if ($this->request->method() === RequestMethod::POST) {
-            // Delay request processing for 0.5-1s
-            usleep(random_int(500, 1000) * 1000);
-
             $form = $this->form('login', $fields)
                 ->processRequest($this->request);
 
             if (!$form->isValid()) {
-                // If validation fails, generate a new CSRF token and return an error
-                $this->csrfToken->generate($csrfTokenName);
-                return $this->error($this->translate('panel.login.attempt.failed'), ['fields' => $form->fields()]);
+                return $this->error(
+                    $this->translate('panel.login.attempt.failed'),
+                    ['fields' => $form->fields()]
+                );
             }
 
-            $accessLimiter->registerAttempt();
+            try {
+                $user = $authenticator->login($form->data()->get('login'), $form->data()->get('password'));
 
-            $login = $form->data()->get('login');
-            /** @var ?User */
-            $user = $this->site->users()->find(fn($user) => $user->username() === $login || $user->email() === $login);
+                // Regenerate CSRF token
+                $this->csrfToken->generate($this->panel->getCsrfTokenName());
 
-            // Authenticate user
-            if ($user !== null) {
-                try {
-                    $user->authenticate($form->data()->get('password'));
+                $this->events->dispatch(new PanelLoggedInEvent($user, $this->request));
 
-                    // Regenerate CSRF token
-                    $this->csrfToken->generate($csrfTokenName);
-
-                    $accessLimiter->resetAttempts();
-
-                    $this->events->dispatch(new PanelLoggedInEvent($user, $this->request));
-
-                    if (($destination = $this->request->session()->get(self::SESSION_REDIRECT_KEY)) !== null) {
-                        $this->request->session()->remove(self::SESSION_REDIRECT_KEY);
-                        return new RedirectResponse($this->panel->uri($destination));
-                    }
-
-                    return $this->redirect($this->generateRoute('panel.index'));
-                } catch (AuthenticationFailedException) {
-                    // Do nothing, the error response will be sent below
+                if (($destination = $this->request->session()->get(self::SESSION_REDIRECT_KEY)) !== null) {
+                    $this->request->session()->remove(self::SESSION_REDIRECT_KEY);
+                    return new RedirectResponse($this->panel->uri($destination));
                 }
+
+                return $this->redirect($this->generateRoute('panel.index'));
+            } catch (RateLimitExceededException $e) {
+                // Regenerate CSRF token
+                $this->csrfToken->generate($this->panel->getCsrfTokenName());
+
+                return $this->error(
+                    $this->translate('panel.login.attempt.tooMany', round($e->getResetTime() / 60)),
+                    ['fields' => $fields],
+                    ResponseStatus::TooManyRequests,
+                    ['Retry-After' => (string) $e->getResetTime()]
+                );
+            } catch (AuthenticationFailedException) {
+                return $this->error(
+                    $this->translate('panel.login.attempt.failed'),
+                    ['fields' => $fields]
+                );
             }
-
-            $this->csrfToken->generate($csrfTokenName);
-
-            return $this->error($this->translate('panel.login.attempt.failed'), ['fields' => $fields]);
         }
-
-        // Always generate a new CSRF token
-        $this->csrfToken->generate($csrfTokenName);
 
         return new Response($this->view('@panel.authentication.login', [
             'title'  => $this->translate('panel.login.login'),
@@ -113,7 +99,7 @@ final class AuthenticationController extends AbstractController
 
             $this->panel->notify($this->translate('panel.login.loggedOut'), 'info');
         } catch (UserNotLoggedException) {
-            // Do nothing if user is not logged, the user will be redirected to the login page
+            // Do nothing if user is not logged in, the user will be redirected to the login page
         }
 
         return $this->redirect($this->generateRoute('panel.index'));
@@ -122,12 +108,13 @@ final class AuthenticationController extends AbstractController
     /**
      * Display login view with an error notification
      *
-     * @param array<string, mixed> $data
+     * @param array<string, mixed>  $data
+     * @param array<string, string> $headers
      */
-    private function error(string $message, array $data = []): Response
+    private function error(string $message, array $data = [], ResponseStatus $responseStatus = ResponseStatus::OK, array $headers = []): Response
     {
         $defaults = ['title' => $this->translate('panel.login.login'), 'error' => true];
         $this->panel->notify($message, 'error');
-        return new Response($this->view('@panel.authentication.login', [...$defaults, ...$data]));
+        return new Response($this->view('@panel.authentication.login', [...$defaults, ...$data]), $responseStatus, $headers);
     }
 }

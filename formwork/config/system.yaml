@@ -1,3 +1,9 @@
+authentication:
+    registryPath: '${%ROOT_PATH%}/site/auth/registry/'
+    limits:
+        maxAttempts: 1
+        resetTime: 3000
+
 backup:
     path: '${%ROOT_PATH%}/backup'
     name: formwork-backup
@@ -91,8 +97,6 @@ panel:
     root: panel
     path: '${%ROOT_PATH%}/panel'
     translation: en
-    loginAttempts: 10
-    loginResetTime: 300
     logoutRedirect: login
     userImageSize: 512
     colorScheme: auto

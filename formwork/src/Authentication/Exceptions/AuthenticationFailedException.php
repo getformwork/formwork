@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Users\Exceptions;
+namespace Formwork\Authentication\Exceptions;
 
 use RuntimeException;
 

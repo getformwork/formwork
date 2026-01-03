@@ -3,6 +3,7 @@
 namespace Formwork\Panel;
 
 use Formwork\Assets\Assets;
+use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
 use Formwork\Http\Request;
@@ -15,7 +16,6 @@ use Formwork\Panel\Navigation\NavigationItemCollection;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
 use Formwork\Users\ColorScheme;
-use Formwork\Users\Exceptions\UserNotLoggedException;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use Formwork\Utils\Arr;

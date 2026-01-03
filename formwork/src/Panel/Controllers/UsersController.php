@@ -10,7 +10,6 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
-use Formwork\Log\Registry;
 use Formwork\Router\RouteParams;
 use Formwork\Users\User;
 use Formwork\Users\UserFactory;
@@ -111,11 +110,6 @@ final class UsersController extends AbstractController
             $this->panel->notify($this->translate($e->getLanguageString()), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.users'), base: $this->panel->panelRoot());
         }
-
-        $lastAccessRegistry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-
-        // Remove user last access from registry
-        $lastAccessRegistry->remove($user->username());
 
         $this->panel->notify($this->translate('panel.users.user.deleted'), 'success');
         return $this->redirect($this->generateRoute('panel.users'));

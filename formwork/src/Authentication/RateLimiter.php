@@ -1,14 +1,15 @@
 <?php
 
-namespace Formwork\Panel\Security;
+namespace Formwork\Authentication;
 
+use Formwork\Authentication\Exceptions\RateLimitExceededException;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 
-final class AccessLimiter
+final class RateLimiter
 {
     /**
-     * Hash which identifies the visitor which make attempts
+     * Hash which identifies the visitor making the access attempts
      */
     private string $attemptHash;
 
@@ -37,13 +38,23 @@ final class AccessLimiter
     }
 
     /**
+     * Assert that access attempts are allowed
+     *
+     * @throws RateLimitExceededException If attempts limit is reached
+     */
+    public function assertAllowed(): void
+    {
+        $this->registerAttempt();
+        if ($this->hasReachedLimit()) {
+            throw new RateLimitExceededException('Rate limit exceeded', $this->resetTime);
+        }
+    }
+
+    /**
      * Return whether attempts limit is reached
      */
     public function hasReachedLimit(): bool
     {
-        if (isset($this->lastAttemptTime) && time() - $this->lastAttemptTime > $this->resetTime) {
-            $this->resetAttempts();
-        }
         return $this->attempts > $this->limit;
     }
 
@@ -52,6 +63,9 @@ final class AccessLimiter
      */
     public function registerAttempt(): void
     {
+        if (isset($this->lastAttemptTime) && time() - $this->lastAttemptTime > $this->resetTime) {
+            $this->resetAttempts();
+        }
         $this->registry->set($this->attemptHash, [++$this->attempts, time()]);
     }
 
@@ -62,5 +76,13 @@ final class AccessLimiter
     {
         $this->attempts = 0;
         $this->registry->remove($this->attemptHash);
+    }
+
+    /**
+     * Get the attempts reset time
+     */
+    public function getResetTime(): int
+    {
+        return $this->resetTime;
     }
 }
