@@ -2,30 +2,29 @@
 
 namespace Formwork\Users;
 
+use Formwork\Authentication\Authenticator;
+use Formwork\Authentication\Exceptions\AuthenticationFailedException;
+use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Config\Config;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
 use Formwork\Images\Image;
-use Formwork\Log\Registry;
 use Formwork\Model\Model;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
-use Formwork\Users\Exceptions\AuthenticationFailedException;
 use Formwork\Users\Exceptions\UserImageNotFoundException;
-use Formwork\Users\Exceptions\UserNotLoggedException;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use LogicException;
 use SensitiveParameter;
+use UnexpectedValueException;
 
 class User extends Model
 {
-    public const string SESSION_LOGGED_USER_KEY = '_formwork_logged_user';
-
     public const int MINIMUM_PASSWORD_LENGTH = 8;
 
     protected const string MODEL_IDENTIFIER = 'user';
@@ -44,17 +43,13 @@ class User extends Model
         'role'        => 'user',
         'image'       => null,
         'colorScheme' => 'auto',
+        'lastAccess'  => null,
     ];
 
     /**
      * User image
      */
     protected ?Image $image = null;
-
-    /**
-     * User last access time
-     */
-    protected ?int $lastAccess = null;
 
     /**
      * @param array<string, mixed> $data
@@ -149,11 +144,7 @@ class User extends Model
         #[SensitiveParameter]
         string $password,
     ): void {
-        if (!$this->verifyPassword($password)) {
-            throw new AuthenticationFailedException(sprintf('Authentication failed for user "%s"', $this->username()));
-        }
-        $this->request->session()->regenerate();
-        $this->request->session()->set(self::SESSION_LOGGED_USER_KEY, $this->username());
+        $this->getAuthenticator()->login($this->username(), $password);
     }
 
     /**
@@ -163,7 +154,7 @@ class User extends Model
         #[SensitiveParameter]
         string $password,
     ): bool {
-        return Password::verify($password, $this->hash());
+        return Password::verify($password, $this->getPasswordHash());
     }
 
     /**
@@ -173,11 +164,10 @@ class User extends Model
      */
     public function logout(): void
     {
-        if (!$this->isLoggedIn()) {
+        if ($this->getAuthenticator()->getUser()?->username() !== $this->username()) {
             throw new UserNotLoggedException(sprintf('Cannot logout user "%s": user not logged', $this->username()));
         }
-        $this->request->session()->remove(self::SESSION_LOGGED_USER_KEY);
-        $this->request->session()->destroy();
+        $this->getAuthenticator()->logout();
     }
 
     /**
@@ -185,7 +175,7 @@ class User extends Model
      */
     public function isLoggedIn(): bool
     {
-        return $this->request->session()->get(self::SESSION_LOGGED_USER_KEY) === $this->username();
+        return $this->getAuthenticator()->getUser()?->username() === $this->username();
     }
 
     /**
@@ -232,15 +222,17 @@ class User extends Model
     }
 
     /**
-     * Get the user last access time
+     * Get data by key returning a default value if key is not present
+     *
+     * @throws LogicException If trying to access the user password hash
      */
-    public function lastAccess(): ?int
+    public function get(string $key, mixed $default = null): mixed
     {
-        if ($this->lastAccess !== null) {
-            return $this->lastAccess;
+        if ($key === 'hash') {
+            throw new LogicException('Cannot access user password hash');
         }
-        $registry = new Registry(FileSystem::joinPaths($this->config->get('system.panel.paths.logs'), 'lastAccess.json'));
-        return $this->lastAccess = $registry->has($this->username()) ? (int) $registry->get($this->username()) : null;
+
+        return parent::get($key, $default);
     }
 
     /**
@@ -406,6 +398,15 @@ class User extends Model
     }
 
     /**
+     * Get user password hash
+     */
+    protected function getPasswordHash(): string
+    {
+        return Arr::get($this->data, 'hash')
+            ?? throw new UnexpectedValueException(sprintf('User "%s" has no password hash set', $this->username()));
+    }
+
+    /**
      * Set user password hash
      *
      * @throws InvalidValueException If the password is too short
@@ -416,5 +417,13 @@ class User extends Model
             throw new InvalidValueException(sprintf('Password must be at least %d characters long', self::MINIMUM_PASSWORD_LENGTH));
         }
         Arr::set($this->data, 'hash', Password::hash($password));
+    }
+
+    /**
+     * Get the authenticator service
+     */
+    protected function getAuthenticator(): Authenticator
+    {
+        return $this->app()->getService(Authenticator::class);
     }
 }
