@@ -53,6 +53,8 @@ class Authenticator
         $user->set('lastAccess', time());
         $user->save();
 
+        $this->rateLimiter->resetAttempts();
+
         return $user;
     }
 
