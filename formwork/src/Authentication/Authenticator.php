@@ -76,6 +76,9 @@ class Authenticator
         $this->session->regenerate();
     }
 
+    /**
+     * Get currently logged in user if any
+     */
     public function getUser(): ?User
     {
         $username = $this->session->get(self::SESSION_LOGGED_USER_KEY);
