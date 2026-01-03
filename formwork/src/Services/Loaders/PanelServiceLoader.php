@@ -39,19 +39,19 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     public function load(Container $container): Panel
     {
-        if ($this->config->has('system.panel.loginAttempts') || $this->config->has('system.panel.resetTime')) {
+        if ($this->config->has('system.panel.loginAttempts') || $this->config->has('system.panel.loginResetTime')) {
             if ($this->config->has('system.panel.loginAttempts')) {
-                trigger_error('The "system.panel.loginAttempts" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.maxAttempts" instead.', E_USER_DEPRECATED);
+                trigger_error('The "system.panel.loginAttempts" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.limits.maxAttempts" instead.', E_USER_DEPRECATED);
             }
 
             if ($this->config->has('system.panel.loginResetTime')) {
-                trigger_error('The "system.panel.resetTime" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.resetTime" instead.', E_USER_DEPRECATED);
+                trigger_error('The "system.panel.loginResetTime" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.limits.resetTime" instead.', E_USER_DEPRECATED);
             }
 
             $container->define(RateLimiter::class)
                 ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->get('system.authentication.registryPath'), 'accessAttempts.json')))
-                ->parameter('limit', $this->config->get('system.panel.loginAttempts', $this->config->get('system.authentication.maxAttempts')))
-                ->parameter('resetTime', $this->config->get('system.panel.loginResetTime', $this->config->get('system.authentication.resetTime')));
+                ->parameter('limit', $this->config->get('system.panel.loginAttempts', $this->config->get('system.authentication.limits.maxAttempts')))
+                ->parameter('resetTime', $this->config->get('system.panel.loginResetTime', $this->config->get('system.authentication.limits.resetTime')));
 
             $container->resolve(RateLimiter::class);
         }
