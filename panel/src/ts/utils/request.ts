@@ -43,8 +43,8 @@ export class Request {
         if (typeof callback === "function") {
             const handler = () => {
                 const response = JSON.parse(request.response);
-                const code = response.code || request.status;
-                if (parseInt(code) === 400) {
+                const code = parseInt(response.code) || request.status;
+                if (code === 400 || code === 403) {
                     // location.reload();
                 } else {
                     callback(response, request);

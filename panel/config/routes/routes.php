@@ -340,7 +340,7 @@ return [
                     );
 
                     if ($request->isXmlHttpRequest()) {
-                        return JsonResponse::error('Bad Request: the CSRF token is not valid', ResponseStatus::BadRequest);
+                        return JsonResponse::error('Bad Request: the CSRF token is not valid', ResponseStatus::Forbidden);
                     }
 
                     return new RedirectResponse($panel->uri('/login/'));
