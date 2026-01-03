@@ -74,8 +74,8 @@ class Authenticator
         if (!$this->isLoggedIn()) {
             throw new UserNotLoggedException('Cannot logout, no user is logged in');
         }
-        $this->session->remove(self::SESSION_LOGGED_USER_KEY);
         $this->session->regenerate();
+        $this->session->remove(self::SESSION_LOGGED_USER_KEY);
     }
 
     /**
