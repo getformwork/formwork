@@ -47,6 +47,7 @@ class Authenticator
             throw $e;
         }
 
+        $this->session->regenerate();
         $this->session->set(self::SESSION_LOGGED_USER_KEY, $user->username());
 
         $user->set('lastAccess', time());
@@ -72,6 +73,7 @@ class Authenticator
             throw new UserNotLoggedException('Cannot logout, no user is logged in');
         }
         $this->session->remove(self::SESSION_LOGGED_USER_KEY);
+        $this->session->regenerate();
     }
 
     public function getUser(): ?User
