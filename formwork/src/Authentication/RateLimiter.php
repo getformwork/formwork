@@ -66,6 +66,10 @@ final class RateLimiter
         if (isset($this->lastAttemptTime) && time() - $this->lastAttemptTime > $this->resetTime) {
             $this->resetAttempts();
         }
+        if ($this->hasReachedLimit()) {
+            // Do not register further attempts if limit is reached
+            return;
+        }
         $this->registry->set($this->attemptHash, [++$this->attempts, time()]);
     }
 
