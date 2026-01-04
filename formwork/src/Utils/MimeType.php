@@ -1289,11 +1289,16 @@ final class MimeType
     /**
      * Get MIME type from a file
      *
+     * @throws RuntimeException If the given path is not a readable file
      * @throws RuntimeException If the `fileinfo` extension is not loaded
      */
     public static function fromFile(string $file): string
     {
         $mimeType = null;
+
+        if (!(FileSystem::isFile($file, assertExists: false) && FileSystem::isReadable($file, assertExists: false))) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist or is not readable', $file));
+        }
 
         if (!extension_loaded('fileinfo')) {
             throw new RuntimeException(sprintf('%s() requires the extension "fileinfo" to be enabled', __METHOD__));
