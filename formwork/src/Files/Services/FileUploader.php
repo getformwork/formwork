@@ -52,6 +52,10 @@ class FileUploader
      */
     public function upload(UploadedFile $uploadedFile, string $destinationPath, ?string $name = null, ?array $allowedMimeTypes = null, bool $overwrite = false): File
     {
+        if (!$uploadedFile->isUploaded()) {
+            throw new TranslatedException('No file uploaded', 'upload.error.noFile');
+        }
+
         $mimeType = MimeType::fromFile($uploadedFile->tempPath());
 
         $allowedMimeTypes ??= $this->allowedMimeTypes;
