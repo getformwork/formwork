@@ -9,13 +9,14 @@ use Formwork\Http\Response;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Schemes\Schemes;
 use Formwork\Users\UserFactory;
+use Formwork\Users\Users;
 
 final class RegisterController extends AbstractController
 {
     /**
      * Register@register action
      */
-    public function register(Schemes $schemes, UserFactory $userFactory): Response
+    public function register(Schemes $schemes, UserFactory $userFactory, Users $users): Response
     {
         if (!$this->site->users()->isEmpty()) {
             return $this->redirectToReferer(default: $this->generateRoute('panel.index'), base: $this->panel->panelRoot());
@@ -53,6 +54,9 @@ final class RegisterController extends AbstractController
             $identifier = $e->getIdentifier() ?? 'invalidFields';
             return $this->error($this->translate('panel.users.user.cannotCreate.' . $identifier), ['fields' => $form->fields()]);
         }
+
+        // Add the new user to the `Users` collection in order to authenticate them
+        $users->set($user->username(), $user);
 
         $user->authenticate($form->data()->get('password'));
         $this->events->dispatch(new PanelLoggedInEvent($user, $this->request));
