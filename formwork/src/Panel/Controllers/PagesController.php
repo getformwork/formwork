@@ -450,7 +450,7 @@ final class PagesController extends AbstractController
             ->setDefaultUploadsDestination($page->contentPath())
             ->processRequest($this->request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid() || $form->uploadedFiles() === []) {
             return JsonResponse::error($this->translate('panel.files.cannotUpload.invalidFields'), ResponseStatus::InternalServerError);
         }
 
