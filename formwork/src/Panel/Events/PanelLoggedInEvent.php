@@ -6,6 +6,9 @@ use Formwork\Events\Event;
 use Formwork\Http\Request;
 use Formwork\Users\User;
 
+/**
+ * @since 2.3.0
+ */
 class PanelLoggedInEvent extends Event
 {
     public function __construct(User $user, Request $request)

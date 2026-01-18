@@ -11,6 +11,9 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Utils\Arr;
 use LogicException;
 
+/**
+ * @since 2.3.0
+ */
 class Form
 {
     private bool $submitted = false;

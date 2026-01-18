@@ -7,6 +7,9 @@ use Formwork\Utils\FileSystem;
 use SessionHandlerInterface;
 use SessionUpdateTimestampHandlerInterface;
 
+/**
+ * @since 2.3.0
+ */
 class FileSessionHandler implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /**

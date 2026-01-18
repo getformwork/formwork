@@ -137,6 +137,8 @@ class Scheme implements Arrayable
      * Extend the scheme with an array of data
      *
      * @param array<string, mixed> $data
+     *
+     * @since 2.3.0
      */
     public function extendWith(array $data): void
     {
@@ -145,6 +147,8 @@ class Scheme implements Arrayable
 
     /**
      * Get the extended scheme, if any
+     *
+     * @since 2.3.0
      */
     public function getExtendedScheme(): ?Scheme
     {

@@ -45,6 +45,8 @@ final class ViewFactory
      * Add a view resolution path
      *
      * @param array<string, string> $resolutionPaths
+     *
+     * @since 2.3.0
      */
     public function setResolutionPaths(array $resolutionPaths): void
     {

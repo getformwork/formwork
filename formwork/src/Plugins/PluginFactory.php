@@ -8,6 +8,9 @@ use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use RuntimeException;
 
+/**
+ * @since 2.3.0
+ */
 class PluginFactory
 {
     public function __construct(private Container $container) {}

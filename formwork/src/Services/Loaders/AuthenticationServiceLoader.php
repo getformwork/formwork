@@ -10,6 +10,9 @@ use Formwork\Services\Container;
 use Formwork\Services\ServiceLoaderInterface;
 use Formwork\Utils\FileSystem;
 
+/**
+ * @since 2.3.0
+ */
 class AuthenticationServiceLoader implements ServiceLoaderInterface
 {
     public function __construct(

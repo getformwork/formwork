@@ -64,7 +64,7 @@ final class App
     /**
      * Current Formwork version
      */
-    public const string VERSION = '2.2.2';
+    public const string VERSION = '2.3.0';
 
     /**
      * App services container
@@ -146,6 +146,8 @@ final class App
 
     /**
      * Get Assets instance
+     *
+     * @since 2.3.0
      */
     public function assets(): Assets
     {
@@ -162,6 +164,8 @@ final class App
 
     /**
      * Get EventDispatcher instance
+     *
+     * @since 2.3.0
      */
     public function events(): EventDispatcher
     {
@@ -170,6 +174,8 @@ final class App
 
     /**
      * Get Plugins instance
+     *
+     * @since 2.3.0
      */
     public function plugins(): Plugins
     {
@@ -220,14 +226,8 @@ final class App
             $response = $this->router()->dispatch();
         } catch (Throwable $throwable) {
             $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
-
-            try {
-                $controller = $this->container->get(ErrorsControllerInterface::class);
-                $response = $controller->error(throwable: $throwable);
-            } catch (Throwable) {
-                ini_restore('display_errors');
-                throw $throwable;
-            }
+            $controller = $this->container->get(ErrorsControllerInterface::class);
+            $response = $controller->error(throwable: $throwable);
         }
 
         $this->request()->session()->save();

@@ -17,6 +17,9 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 
+/**
+ * @since 2.3.0
+ */
 final class PluginsController extends AbstractController
 {
     /**

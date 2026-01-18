@@ -32,6 +32,8 @@ class InvalidValueException extends RuntimeException
      * Get the context of the invalid value
      *
      * @return ?array<string, mixed>
+     *
+     * @since 2.3.0
      */
     public function getContext(): ?array
     {

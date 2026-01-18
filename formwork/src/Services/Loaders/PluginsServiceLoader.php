@@ -11,6 +11,9 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
 
+/**
+ * @since 2.3.0
+ */
 final class PluginsServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(

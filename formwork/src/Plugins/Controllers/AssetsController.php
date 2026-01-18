@@ -12,6 +12,9 @@ use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
 
+/**
+ * @since 2.3.0
+ */
 final class AssetsController extends AbstractController
 {
     public function __construct(

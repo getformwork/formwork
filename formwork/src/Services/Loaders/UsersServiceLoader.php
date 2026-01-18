@@ -31,6 +31,9 @@ final class UsersServiceLoader implements ResolutionAwareServiceLoaderInterface
         return $this->users = new Users([], $this->roleCollection = new RoleCollection());
     }
 
+    /**
+     * @since 2.3.0
+     */
     public function onResolved(object $service, Container $container): void
     {
         $this->loadRoles();

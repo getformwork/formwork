@@ -20,7 +20,7 @@
     <?= $this->content() ?>
     <footer class="footer">
         <div class="container">
-            &copy; 2017-2025 &mdash; Made with <a href="https://github.com/getformwork/formwork">Formwork</a>
+            &copy; 2017-2026 &mdash; Made with <a href="https://github.com/getformwork/formwork">Formwork</a>
         </div>
     </footer>
 </body>

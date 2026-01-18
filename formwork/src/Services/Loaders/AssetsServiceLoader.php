@@ -8,6 +8,9 @@ use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 
+/**
+ * @since 2.3.0
+ */
 final class AssetsServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(

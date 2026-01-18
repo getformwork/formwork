@@ -247,6 +247,8 @@ class Field implements Arrayable, Stringable
 
     /**
      * Get validation error message
+     *
+     * @since 2.3.0
      */
     public function getValidationError(): ?string
     {

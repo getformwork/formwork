@@ -69,6 +69,8 @@ class NavigationItem implements Arrayable
 
     /**
      * Get navigation item visibility
+     *
+     * @since 2.3.0
      */
     public function visible(): bool
     {

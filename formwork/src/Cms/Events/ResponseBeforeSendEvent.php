@@ -6,6 +6,9 @@ use Formwork\Events\Event;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 
+/**
+ * @since 2.3.0
+ */
 class ResponseBeforeSendEvent extends Event
 {
     public function __construct(Response $response, Request $request)

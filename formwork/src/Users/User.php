@@ -274,6 +274,8 @@ class User extends Model
 
     /**
      * Save user data to file
+     *
+     * @since 2.3.0
      */
     public function save(): void
     {

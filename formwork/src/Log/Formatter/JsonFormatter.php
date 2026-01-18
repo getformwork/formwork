@@ -5,6 +5,9 @@ namespace Formwork\Log\Formatter;
 use DateTimeInterface;
 use Formwork\Parsers\Json;
 
+/**
+ * @since 2.3.0
+ */
 class JsonFormatter extends AbstractFormatter
 {
     public const DATE_FORMAT = 'Y-m-d\TH:i:s.uP';

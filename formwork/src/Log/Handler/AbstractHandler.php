@@ -8,6 +8,9 @@ use Formwork\Log\Logger;
 use InvalidArgumentException;
 use Psr\Log\LogLevel;
 
+/**
+ * @since 2.3.0
+ */
 abstract class AbstractHandler implements HandlerInterface
 {
     /**

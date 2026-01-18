@@ -8,6 +8,8 @@ use Psr\Log\LogLevel;
 
 /**
  * @inheritDoc
+ *
+ * @since 2.3.0
  */
 class StderrHandler extends FileHandler
 {

@@ -41,11 +41,11 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
     {
         if ($this->config->has('system.panel.loginAttempts') || $this->config->has('system.panel.loginResetTime')) {
             if ($this->config->has('system.panel.loginAttempts')) {
-                trigger_error('The "system.panel.loginAttempts" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.limits.maxAttempts" instead.', E_USER_DEPRECATED);
+                trigger_error('The "system.panel.loginAttempts" configuration option is deprecated since Formwork 2.3.0. Use "system.authentication.limits.maxAttempts" instead.', E_USER_DEPRECATED);
             }
 
             if ($this->config->has('system.panel.loginResetTime')) {
-                trigger_error('The "system.panel.loginResetTime" configuration option is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.authentication.limits.resetTime" instead.', E_USER_DEPRECATED);
+                trigger_error('The "system.panel.loginResetTime" configuration option is deprecated since Formwork 2.3.0. Use "system.authentication.limits.resetTime" instead.', E_USER_DEPRECATED);
             }
 
             $container->define(RateLimiter::class)
@@ -60,7 +60,7 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             ->parameter('options', $this->config->get('system.updates'));
 
         if ($this->config->has('system.panel.sessionTimeout')) {
-            trigger_error('The "system.panel.sessionTimeout" configuration option (in minutes) is deprecated since Formwork 2.3.0 and will be removed in a future release. Use "system.session.duration" (in seconds) instead.', E_USER_DEPRECATED);
+            trigger_error('The "system.panel.sessionTimeout" configuration option (in minutes) is deprecated since Formwork 2.3.0. Use "system.session.duration" (in seconds) instead.', E_USER_DEPRECATED);
             $this->request->session()->setDuration($this->config->get('system.panel.sessionTimeout') * 60);
         }
 

@@ -5,6 +5,9 @@ namespace Formwork\Log\Handler;
 use DateTimeInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @since 2.3.0
+ */
 interface HandlerInterface
 {
     /**

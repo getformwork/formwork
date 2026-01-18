@@ -6,6 +6,9 @@ use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
+/**
+ * @since 2.3.0
+ */
 class EventDispatcher implements EventDispatcherInterface
 {
     public function __construct(

@@ -31,6 +31,8 @@ class Assets
      * Set assets resolution paths
      *
      * @param array<string, array{path: string, uri: string}> $paths
+     *
+     * @since 2.3.0
      */
     public function setResolutionPaths(array $paths): void
     {
@@ -105,6 +107,8 @@ class Assets
      * Resolve asset path and URI from key, supporting namespaced syntax
      *
      * @return array{path: string, uri: string}
+     *
+     * @since 2.3.0
      */
     protected function resolve(string $key): array
     {

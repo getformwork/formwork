@@ -81,6 +81,8 @@ class Schemes
      * @param list<string> $ids
      *
      * @return array<string, Scheme>
+     *
+     * @since 2.3.0
      */
     public function getMultiple(array $ids): array
     {
@@ -95,6 +97,8 @@ class Schemes
      * Get all loaded schemes
      *
      * @return array<string, Scheme>
+     *
+     * @since 2.3.0
      */
     public function getAll(): array
     {

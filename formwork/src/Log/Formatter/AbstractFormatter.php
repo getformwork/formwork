@@ -12,6 +12,9 @@ use Stringable;
 use Throwable;
 use UnitEnum;
 
+/**
+ * @since 2.3.0
+ */
 abstract class AbstractFormatter implements FormatterInterface
 {
     abstract public function format(DateTimeInterface $datetime, string $level, string $message, array $context): string;

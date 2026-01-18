@@ -6,6 +6,9 @@ use Formwork\Events\Event;
 use Formwork\Http\Request;
 use Throwable;
 
+/**
+ * @since 2.3.0
+ */
 class ExceptionThrownEvent extends Event
 {
     public function __construct(Throwable $throwable, Request $request)

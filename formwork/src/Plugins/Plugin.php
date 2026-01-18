@@ -13,6 +13,9 @@ use Formwork\View\ViewFactory;
 use InvalidArgumentException;
 use ReflectionMethod;
 
+/**
+ * @since 2.3.0
+ */
 class Plugin implements Arrayable
 {
     /**

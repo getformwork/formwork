@@ -97,6 +97,8 @@ class Route
      * Set route action parameters
      *
      * @param array<string, mixed> $parameters
+     *
+     * @since 2.3.0
      */
     public function actionParameters(array $parameters): self
     {
@@ -118,6 +120,8 @@ class Route
      * Get route action parameters
      *
      * @return array<string, mixed>
+     *
+     * @since 2.3.0
      */
     public function getActionParameters(): array
     {

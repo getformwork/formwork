@@ -5,6 +5,9 @@ namespace Formwork\Authentication\Exceptions;
 use RuntimeException;
 use Throwable;
 
+/**
+ * @since 2.3.0
+ */
 class RateLimitExceededException extends RuntimeException
 {
     /**

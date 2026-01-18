@@ -5,6 +5,9 @@ namespace Formwork\Plugins;
 use Formwork\Data\Contracts\Arrayable;
 use UnexpectedValueException;
 
+/**
+ * @since 2.3.0
+ */
 class PluginManifest implements Arrayable
 {
     protected ?string $title = null;

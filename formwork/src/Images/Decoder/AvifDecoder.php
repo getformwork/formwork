@@ -6,6 +6,9 @@ use Generator;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
+/**
+ * @since 2.3.0
+ */
 final class AvifDecoder implements DecoderInterface
 {
     /**

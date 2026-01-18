@@ -10,6 +10,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Stringable;
 
+/**
+ * @since 2.3.0
+ */
 class Logger extends AbstractLogger implements LoggerInterface
 {
     public const LOG_LEVELS = [

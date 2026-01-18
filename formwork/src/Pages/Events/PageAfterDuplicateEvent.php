@@ -5,6 +5,9 @@ namespace Formwork\Pages\Events;
 use Formwork\Events\Event;
 use Formwork\Pages\Page;
 
+/**
+ * @since 2.3.0
+ */
 class PageAfterDuplicateEvent extends Event
 {
     public function __construct(Page $page, Page $duplicatePage)

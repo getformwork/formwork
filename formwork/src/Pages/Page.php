@@ -665,6 +665,8 @@ class Page extends Model implements Stringable
 
     /**
      * Return whether the page is index or error page
+     *
+     * @since 2.3.0
      */
     public function isIndexOrErrorPage(): bool
     {

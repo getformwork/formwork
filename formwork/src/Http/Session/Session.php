@@ -245,6 +245,8 @@ class Session implements Arrayable
 
     /**
      * Set the session files path
+     *
+     * @since 2.3.0
      */
     public function setPath(string $path): void
     {

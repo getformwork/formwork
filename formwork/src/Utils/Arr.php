@@ -362,6 +362,8 @@ final class Arr
      * @param array<array-key, mixed> ...$extensions
      *
      * @return array<array-key, mixed>
+     *
+     * @since 2.3.0
      */
     public static function extend(array $array, array ...$extensions): array
     {
@@ -399,6 +401,8 @@ final class Arr
      * @param array<array-key, mixed> ...$overrides
      *
      * @return array<array-key, mixed>
+     *
+     * @since 2.3.0
      */
     public static function override(array $array, array ...$overrides): array
     {
@@ -430,6 +434,8 @@ final class Arr
      * @param array<array-key, mixed> ...$exclusions
      *
      * @return array<array-key, mixed>
+     *
+     * @since 2.3.0
      */
     public static function exclude(array $array, array ...$exclusions): array
     {

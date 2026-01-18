@@ -6,6 +6,9 @@ use Formwork\Events\Event;
 use Formwork\Panel\Navigation\NavigationItemCollection;
 use Formwork\Translations\Translation;
 
+/**
+ * @since 2.3.0
+ */
 class PanelNavigationLoadedEvent extends Event
 {
     public function __construct(NavigationItemCollection $navigationItemCollection, Translation $translation)

@@ -1,5 +1,98 @@
 # Changelog
 
+# [2.3.0](https://github.com/getformwork/formwork/releases/tag/2.3.0)
+
+**Enhancements**
+- **Add Events functionality**
+- **Add Plugins functionality**
+- **Add support for AVIF images**
+- **Expose error messages in the panel for invalid fields after submission**
+- **Add Hungarian and Swedish translations** (🤖 AI generated, reviews are welcome)
+- **Improve dark color scheme styles in the panel**
+- **Add new `Authenticator` service to decouple authentication from panel**
+- **Implement PSR-3 compatible `Logger`**
+- **Implement PSR-11 `ContainerInterface`**
+- **Implement PSR-14 `EventDispatcherInterface`**
+- Store validated data with `Model::set()` if there is a corresponding field
+- Correctly set `ReadonlyModelProperty` attribute to avoid unexpected changes to model properties
+- Move fields initialization and validation to `Page::load()`
+- Add the possibility to create pages from the constructor by retrieving `App` instance if not provided
+- Sync page data with fields in `Page::load()`
+- Add `Config::hasMultiple()`
+- Add `Config::getMultiple()`
+- Add `Config::set()` and `Config::setMultiple()`
+- Add `Schemes::getMultiple()` and `Schemes::getAll()`
+- Add `Translations::getMultiple()` and `Translations::getAll()`
+- Allow Scheme extension with `Scheme::extend()` and `Scheme::extendWith()`
+- Set validated status even if validation fails
+- Add context to `InvalidValueException`
+- Add the possibility to get translated validation error
+- Add styles for invalid fields
+- Add the possibility to pass route actions parameters
+- Add view namespaces
+- Make Assets a service resolving namespaced resources
+- Add the possibility to set `NavigationItem` visibility in the panel
+- Add the possibility to specify config prefix with `Config::loadFile()` and `Config::loadFromPath()`
+- Add `Arr::extend()`, `Arr::override()` and `Arr::exclude()` to handle data with more consistency
+- Add default values support to field config files
+- Add `Form` class to streamline incoming data process and validation
+- Add Plugins views to panel
+- Add specific exception classes for `Image`
+- Add `User::save()`, `User::delete()` and `User::deleteImage()`
+- Add custom session handler
+- Add the possibility to specify the number of retry attempts (by default 10) of the `serve` command to bind to an available port
+- Improve panel navigation spacing
+- Improve panel header styles
+- Use consistent border-radius and box-shadow values in panel styles
+- Improve array input spacing and sortable styles in panel
+- Use click event instead of mousedown to avoid unexpected actions in the panel
+- Allow `Container::buildArguments()` to use default values for unspecified classes, interfaces and support variadic parameters
+- Add the possibility to set auto color scheme to the panel login
+- Avoid processing HTTP ranges for responses requiring empty content
+
+**Bug fixes**
+- Allow and return an appropriate value for empty non-required fields
+- Correctly merge dotted keys with `Config::loadFile()`
+- Ignore empty values passed to `Html::classes()`
+- Iterate all fields to ensure all validations are run in `FieldCollection::isValid()`
+- Validate unique slug with unspecified root
+- Fix HTTP Range handling for file responses (RFC 7233–compliance and Safari compatibility)
+- Define default section for layoutless schemes
+- Clear image transforms after processing images in `Image::saveAs()`
+- Fix `serve` command failing with log messages containing brackets
+- Fix config service loading with missing cache/config folder
+- Fix translations service loading with missing site/translations folder
+- Normalize and ensure `Panel::route()` is inside the panel root
+- Fix no tab selection from invalid local storage value in the panel interface
+- Fix backtrace frame dumping for unreflectable functions
+- Handle potential exceptions when initializing contentFile in Page class
+- Correctly add tooltips to panel editor toolbar commands
+- Check if site/files is a directory before getting files
+- Fix metadata prefix set even if a colon is not present in the name
+- Fix `DomSanitizer::sanitizeUri()` throwing exception for valid empty values
+- Remove leading and trailing whitespace with `Text::normalizeWhitespace()`
+- Return empty array if input is empty with `Text::splitWords()`
+- Fix discarded stdout/stderr data while serving pages with the `serve` command
+- Always close connections and restore error handlers in the `Client` class
+- Always close streams in `FileResponse::send()`
+- Avoid errors for undefined data keys in `Str::interpolate()`
+- Set correct 403 Forbidden status when CSRF token is invalid on XHR requests
+- Ensure `MimeType::fromFile()` is given a readable file
+- Check if file was actually uploaded in `FileUploader::upload()`
+
+**Security**
+- Normalize assets paths to avoid directory traversal
+- Avoid potentially broken "deflate" responses and throw on unsupported content encodings
+
+**Deprecations**
+- Poorly-named `$dateField->toDuration()` deprecated in favor of `$dateField->toTimeDistance()`
+- `Log` class deprecated in favor of the new PSR-3 compatible `Logger`
+- Page setter methods deprecated in favor of using `$page->set()`
+- `Page::isSlugEditable()` and `Page::isSlugReadonly()`
+- `Panel::assets()` in favor of the `Assets` service
+- `system.panel.loginAttempts` and `system.panel.loginResetTime` options in favor of `system.authentication.limits.maxAttempts` and `system.authentication.limits.resetTime`
+- `system.panel.sessionDuration` option in favor of `system.session.duration`
+
 # [2.2.2](https://github.com/getformwork/formwork/releases/tag/2.2.2)
 
 **Enhancements**

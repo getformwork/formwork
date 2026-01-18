@@ -10,6 +10,9 @@ use Formwork\Utils\Str;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
+/**
+ * @since 2.3.0
+ */
 class Plugins extends PluginCollection
 {
     public function __construct(

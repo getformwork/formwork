@@ -10,6 +10,9 @@ use Formwork\Users\User;
 use Formwork\Users\Users;
 use SensitiveParameter;
 
+/**
+ * @since 2.3.0
+ */
 class Authenticator
 {
     public const string SESSION_LOGGED_USER_KEY = '_formwork_logged_user';

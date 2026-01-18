@@ -202,6 +202,8 @@ class Model implements Arrayable
 
     /**
      * Get the application instance
+     *
+     * @since 2.3.0
      */
     protected function app(): App
     {

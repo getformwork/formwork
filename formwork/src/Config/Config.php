@@ -38,6 +38,8 @@ class Config implements ArraySerializable
      * Check if multiple keys exist in the config
      *
      * @param list<string> $keys
+     *
+     * @since 2.3.0
      */
     public function hasMultiple(array $keys): bool
     {
@@ -70,6 +72,8 @@ class Config implements ArraySerializable
      * @throws UnresolvedConfigException If the config has not been resolved
      *
      * @return array<string, mixed>
+     *
+     * @since 2.3.0
      */
     public function getMultiple(array $keys, mixed $default = null): array
     {
@@ -82,6 +86,8 @@ class Config implements ArraySerializable
 
     /**
      * Set a value in the config
+     *
+     * @since 2.3.0
      */
     public function set(string $key, mixed $value): void
     {
@@ -92,6 +98,8 @@ class Config implements ArraySerializable
      * Set multiple values in the config
      *
      * @param array<string, mixed> $values
+     *
+     * @since 2.3.0
      */
     public function setMultiple(array $values): void
     {

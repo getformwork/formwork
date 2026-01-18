@@ -104,6 +104,8 @@ class Translations
      * @throws InvalidArgumentException If any of the translation codes is invalid and fallback is not requested
      *
      * @return array<string, Translation>
+     *
+     * @since 2.3.0
      */
     public function getMultiple(array $codes, bool $fallbackIfInvalid = false): array
     {
@@ -118,6 +120,8 @@ class Translations
      * Get all loaded translations
      *
      * @return array<string, Translation>
+     *
+     * @since 2.3.0
      */
     public function getAll(): array
     {

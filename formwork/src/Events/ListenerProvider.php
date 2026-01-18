@@ -5,6 +5,9 @@ namespace Formwork\Events;
 use Closure;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
+/**
+ * @since 2.3.0
+ */
 class ListenerProvider implements ListenerProviderInterface
 {
     /**

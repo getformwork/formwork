@@ -50,6 +50,8 @@ abstract class AbstractController
 
     /**
      * Create a new form instance
+     *
+     * @since 2.3.0
      */
     protected function form(string $name, FieldCollection $fieldCollection): Form
     {

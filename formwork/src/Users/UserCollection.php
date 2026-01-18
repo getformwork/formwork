@@ -24,6 +24,8 @@ class UserCollection extends AbstractCollection
 
     /**
      * Get roles collection
+     *
+     * @since 2.3.0
      */
     public function roles(): RoleCollection
     {

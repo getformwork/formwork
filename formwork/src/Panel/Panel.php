@@ -178,11 +178,11 @@ final class Panel
     /**
      * Get Assets instance
      *
-     * @deprecated Use dependency injection to get the Assets service instead
+     * @deprecated since 2.3.0 Use dependency injection to get the Assets service instead
      */
     public function assets(): Assets
     {
-        trigger_error(sprintf('%s() is deprecated since Formwork 2.3.0 and will be removed in a future release. Use dependency injection to get the Assets service instead', __METHOD__), E_USER_DEPRECATED);
+        trigger_error(sprintf('%s() is deprecated since Formwork 2.3.0. Use dependency injection to get the Assets service instead', __METHOD__), E_USER_DEPRECATED);
         return $this->assets;
     }
 

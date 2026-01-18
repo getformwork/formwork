@@ -10,6 +10,9 @@ use Formwork\Utils\Str;
 use Psr\Log\LogLevel;
 use RuntimeException;
 
+/**
+ * @since 2.3.0
+ */
 class FileHandler extends AbstractHandler
 {
     /**

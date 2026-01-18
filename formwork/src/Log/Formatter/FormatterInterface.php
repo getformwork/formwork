@@ -5,6 +5,9 @@ namespace Formwork\Log\Formatter;
 use DateTimeInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @since 2.3.0
+ */
 interface FormatterInterface
 {
     /**

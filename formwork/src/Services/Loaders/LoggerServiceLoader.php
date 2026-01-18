@@ -14,6 +14,9 @@ use Formwork\Services\Container;
 use Formwork\Services\ServiceLoaderInterface;
 use InvalidArgumentException;
 
+/**
+ * @since 2.3.0
+ */
 final class LoggerServiceLoader implements ServiceLoaderInterface
 {
     public function __construct(

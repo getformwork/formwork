@@ -11,6 +11,8 @@ use Iterator;
 
 /**
  * @implements Iterator<array-key, mixed>
+ *
+ * @since 2.3.0
  */
 class FormData implements Arrayable, Countable, Iterator
 {

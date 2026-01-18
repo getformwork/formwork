@@ -12,6 +12,9 @@ use GdImage;
 use RuntimeException;
 use UnexpectedValueException;
 
+/**
+ * @since 2.3.0
+ */
 final class AvifHandler extends AbstractHandler
 {
     public function getInfo(): ImageInfo

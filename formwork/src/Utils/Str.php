@@ -342,6 +342,8 @@ final class Str
 
     /**
      * Convert a string to dash-case
+     *
+     * @since 2.3.0
      */
     public static function toDashCase(string $string): string
     {
@@ -353,6 +355,8 @@ final class Str
 
     /**
      * Convert a string to snake_case
+     *
+     * @since 2.3.0
      */
     public static function toSnakeCase(string $string): string
     {
@@ -364,6 +368,8 @@ final class Str
 
     /**
      * Convert a string to camelCase
+     *
+     * @since 2.3.0
      */
     public static function toCamelCase(string $string): string
     {

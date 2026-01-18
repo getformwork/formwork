@@ -5,6 +5,9 @@ namespace Formwork\Cms\Events;
 use Formwork\Events\Event;
 use Formwork\Router\Router;
 
+/**
+ * @since 2.3.0
+ */
 class RoutesBeforeLoadEvent extends Event
 {
     public function __construct(Router $router)

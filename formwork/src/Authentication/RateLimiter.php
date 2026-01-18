@@ -6,6 +6,9 @@ use Formwork\Authentication\Exceptions\RateLimitExceededException;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 
+/**
+ * @since 2.3.0
+ */
 final class RateLimiter
 {
     /**
