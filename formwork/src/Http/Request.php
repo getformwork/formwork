@@ -16,7 +16,7 @@ class Request
      *
      * @var array<string, int>
      */
-    public const array DEFAULT_PORTS = ['http' => 80, 'https' => 430];
+    public const array DEFAULT_PORTS = ['http' => 80, 'https' => 443];
 
     /**
      * List of IP addresses considered as localhost
