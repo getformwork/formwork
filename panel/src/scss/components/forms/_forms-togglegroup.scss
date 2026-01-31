@@ -61,10 +61,22 @@
     color: var(--color-base-500);
 }
 
+.color-scheme-dark .form-togglegroup .form-input[type="radio"]:focus + span {
+    background-color: var(--color-accent-500);
+}
+
 .form-togglegroup:disabled .form-input[type="radio"]:checked + span {
     background-color: var(--color-base-700);
 }
 
+.color-scheme-dark .form-togglegroup .form-input[type="radio"]:checked + span {
+    background-color: var(--color-accent-400);
+}
+
 .form-togglegroup .form-input[type="radio"]:checked:enabled:hover + span {
     background-color: var(--color-accent-400);
+}
+
+.color-scheme-dark .form-togglegroup .form-input[type="radio"]:checked:enabled:hover + span {
+    background-color: var(--color-accent-500);
 }
