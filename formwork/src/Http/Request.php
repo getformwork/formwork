@@ -373,7 +373,7 @@ class Request
     }
 
     /**
-     * Geth the request input data. Corresponds to `$_POST`
+     * Get the request input data. Corresponds to `$_POST`
      */
     public function input(): RequestData
     {
