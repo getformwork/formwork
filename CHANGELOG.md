@@ -12,9 +12,6 @@
 - Fix image picker styles
 - Serve actual index.php script with PHP built-in server
 
-**Security**
-- Restrict media MIME types to determine the result of `File::type()` based on supported formats
-
 # [2.3.0](https://github.com/getformwork/formwork/releases/tag/2.3.0)
 
 **Enhancements**
