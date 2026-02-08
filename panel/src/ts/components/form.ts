@@ -58,7 +58,7 @@ export class Form {
 
         ".form-togglegroup": (element: HTMLFieldSetElement) => this.formInputs.push(new TogglegroupInput(element)),
 
-        ".image-picker": (element: HTMLSelectElement) => this.formInputs.push(new ImagePicker(element)),
+        ".image-picker": (element: HTMLInputElement) => this.formInputs.push(new ImagePicker(element)),
 
         "input[type=file]": (element: HTMLInputElement) => this.formInputs.push(new UploadInput(element, this)),
 

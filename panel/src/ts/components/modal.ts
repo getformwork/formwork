@@ -51,6 +51,8 @@ export class Modal {
     }
 
     open(options: ModalShowOptions = {}) {
+        this.dispatchCallback("before-open", options.triggerElement);
+
         this.element.role = "dialog";
         this.element.ariaModal = "true";
         this.element.classList.add("open");
@@ -75,11 +77,11 @@ export class Modal {
     }
 
     close(options: ModalHideOptions = {}) {
-        const modal = this.element;
+        this.dispatchCallback("before-close", options.triggerElement);
 
-        modal.classList.remove("open");
-        modal.role = null;
-        modal.ariaModal = null;
+        this.element.classList.remove("open");
+        this.element.role = null;
+        this.element.ariaModal = null;
 
         this.removeBackdrop();
 
@@ -88,8 +90,16 @@ export class Modal {
         this.dispatchCallback("close", options.triggerElement);
     }
 
+    onBeforeOpen(callback: ModalCallback) {
+        this.callbacks["before-open"] = callback;
+    }
+
     onOpen(callback: ModalCallback) {
         this.callbacks["open"] = callback;
+    }
+
+    onBeforeClose(callback: ModalCallback) {
+        this.callbacks["before-close"] = callback;
     }
 
     onClose(callback: ModalCallback) {

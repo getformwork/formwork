@@ -42,6 +42,42 @@ final class FilesController extends AbstractController
     }
 
     /**
+     * FilesController@list action
+     */
+    public function list(RouteParams $routeParams): JsonResponse|Response
+    {
+        if (!$this->hasPermission('panel.files.list')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
+        $model = $this->getModel($routeParams);
+
+        if ($model === null) {
+            return $this->forward(ErrorsController::class, 'notFound');
+        }
+
+        $data = [];
+
+        foreach ($model->files() as $file) {
+            $data[] = [
+                'filename'         => $file->name(),
+                'uri'              => $file->uri(),
+                'size'             => $file->size(),
+                'lastModifiedTime' => Date::formatTimestamp(
+                    $file->lastModifiedTime(),
+                    $this->config->get('system.date.datetimeFormat'),
+                    $this->translations->getCurrent()
+                ),
+                'type'      => $file->type(),
+                'thumbnail' => $this->getThumbnailUri($file),
+                'actions'   => $this->getActionsUri($file, $model),
+            ];
+        }
+
+        return JsonResponse::success('', data: $data);
+    }
+
+    /**
      * FilesController@upload action
      */
     public function upload(): Response
