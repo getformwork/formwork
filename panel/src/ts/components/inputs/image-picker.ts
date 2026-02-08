@@ -27,10 +27,10 @@ export class ImagePicker {
 
     update() {
         const parentElement = this.element.parentElement as HTMLElement;
+        const emptyState = $(".image-picker-empty-state", parentElement) as HTMLElement;
 
         $(".image-picker-thumbnails", parentElement)?.remove();
-
-        const emptyState = $(".image-picker-empty-state", parentElement) as HTMLElement;
+        emptyState.style.display = "";
 
         const selectImage = (thumbnail: HTMLElement) => {
             $$(".image-picker-thumbnail", parentElement).forEach((element) => {
@@ -75,8 +75,6 @@ export class ImagePicker {
                     parentElement.appendChild(container);
 
                     emptyState.style.display = "none";
-                } else {
-                    emptyState.style.display = "block";
                 }
             },
         );
