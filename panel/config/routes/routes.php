@@ -115,6 +115,13 @@ return [
             'action' => 'Formwork\Panel\Controllers\FilesController@index',
         ],
 
+        'panel.files.list' => [
+            'path'    => '/files/list/{model:page|site}/{id:all}?/',
+            'action'  => 'Formwork\Panel\Controllers\FilesController@list',
+            'methods' => ['POST'],
+            'types'   => ['XHR'],
+        ],
+
         'panel.files.upload' => [
             'path'    => '/files/upload/',
             'action'  => 'Formwork\Panel\Controllers\FilesController@upload',
