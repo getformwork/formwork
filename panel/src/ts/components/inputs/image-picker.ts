@@ -1,11 +1,12 @@
 import { $, $$ } from "../../utils/selectors";
+import { app } from "../../app";
+import { Request } from "../../utils/request";
+
 export class ImagePicker {
-    readonly element: HTMLSelectElement;
+    readonly element: HTMLInputElement;
 
-    constructor(element: HTMLSelectElement) {
+    constructor(element: HTMLInputElement) {
         this.element = element;
-
-        this.initInput();
     }
 
     get name() {
@@ -24,38 +25,60 @@ export class ImagePicker {
         this.element.value = value;
     }
 
-    private initInput() {
-        this.element.hidden = true;
-        this.element.ariaHidden = "true";
-        this.element.tabIndex = -1;
+    update() {
+        const parentElement = this.element.parentElement as HTMLElement;
 
-        const pickImage = (thumbnail: HTMLElement) => {
-            $$(".image-picker-thumbnail").forEach((element) => {
+        $(".image-picker-thumbnails", parentElement)?.remove();
+
+        const emptyState = $(".image-picker-empty-state", parentElement) as HTMLElement;
+
+        const selectImage = (thumbnail: HTMLElement) => {
+            $$(".image-picker-thumbnail", parentElement).forEach((element) => {
                 element.classList.remove("selected");
             });
             thumbnail.classList.add("selected");
             this.element.value = thumbnail.dataset.uri ?? "";
         };
 
-        const options = $$("option", this.element);
-
-        if (options.length > 0) {
-            const container = document.createElement("div");
-            container.className = "image-picker-thumbnails";
-
-            for (const option of Array.from(options) as HTMLOptionElement[]) {
-                const thumbnail = document.createElement("div");
-                thumbnail.className = "image-picker-thumbnail";
-                thumbnail.style.backgroundImage = `url(${option.dataset.thumbnail ?? option.value})`;
-                thumbnail.dataset.uri = option.value;
-                thumbnail.dataset.filename = option.text;
-                thumbnail.addEventListener("click", () => pickImage(thumbnail));
-                thumbnail.addEventListener("dblclick", () => pickImage(thumbnail));
-                container.appendChild(thumbnail);
+        const pickImage = (thumbnail: HTMLElement) => {
+            selectImage(thumbnail);
+            const modal = this.element.closest(".modal") as HTMLElement;
+            if (modal) {
+                app.modals[modal.id].triggerCommand("pick-image");
             }
+        };
 
-            (this.element.parentNode as ParentNode).insertBefore(container, this.element);
-            ($(".image-picker-empty-state") as HTMLElement).style.display = "none";
-        }
+        new Request(
+            {
+                method: "POST",
+                url: this.element.dataset.src as string,
+                data: { "csrf-token": app.config.csrfToken as string },
+            },
+            ({ data }: { data: Record<string, any> }) => {
+                const images = Object.values(data).filter((file) => file.type === "image");
+
+                if (images.length > 0) {
+                    const container = document.createElement("div");
+                    container.className = "image-picker-thumbnails";
+
+                    for (const image of images) {
+                        const thumbnail = document.createElement("div");
+                        thumbnail.className = "image-picker-thumbnail";
+                        thumbnail.style.backgroundImage = `url(${image.thumbnail})`;
+                        thumbnail.dataset.uri = image.uri;
+                        thumbnail.dataset.filename = image.filename;
+                        thumbnail.addEventListener("click", () => selectImage(thumbnail));
+                        thumbnail.addEventListener("dblclick", () => pickImage(thumbnail));
+                        container.appendChild(thumbnail);
+                    }
+
+                    parentElement.appendChild(container);
+
+                    emptyState.style.display = "none";
+                } else {
+                    emptyState.style.display = "block";
+                }
+            },
+        );
     }
 }

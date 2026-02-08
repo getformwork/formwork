@@ -6,6 +6,7 @@ export { sinkListItem, wrapInList } from "prosemirror-schema-list";
 import { redo as historyRedo, undo as historyUndo, redoDepth, undoDepth } from "prosemirror-history";
 import { $ } from "../../../../utils/selectors";
 import { app } from "../../../../app";
+import type { ImagePicker } from "../../image-picker";
 import { schema } from "prosemirror-markdown";
 
 export const insertLink: Command = (state, dispatch, view) => {
@@ -107,6 +108,11 @@ export const insertImage: Command = (state, dispatch, view) => {
     }
     if (view) {
         const { imagesModal } = app.modals;
+
+        imagesModal.onBeforeOpen((modal) => {
+            const imagePicker = modal.form?.inputs[`${imagesModal.element.id}[imagepicker]`] as ImagePicker;
+            imagePicker.update();
+        });
 
         imagesModal.open();
 
