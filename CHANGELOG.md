@@ -1,5 +1,20 @@
 # Changelog
 
+# [2.3.1](https://github.com/getformwork/formwork/releases/tag/2.3.1)
+
+**Enhancements**
+- **Update image picker on modal open**
+- Improve togglegroup styles for dark color scheme
+
+**Bug fixes**
+- Fix default HTTPS port in `Http\Request`
+- Fix ProseMirror caret disappearing in dark color scheme
+- Fix image picker styles
+- Serve actual index.php script with PHP built-in server
+
+**Security**
+- Restrict media MIME types to determine the result of `File::type()` based on supported formats
+
 # [2.3.0](https://github.com/getformwork/formwork/releases/tag/2.3.0)
 
 **Enhancements**
