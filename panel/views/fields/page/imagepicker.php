@@ -5,5 +5,5 @@
         <h4 class="h5"><?= $this->translate('panel.modal.images.noImages') ?></h4>
     </div>
 
-    <input type="hidden" class="form-input image-picker" name="<?= $field->formName() ?>" data-src="<?= $this->uri($app->router()->generate('panel.files.list', ['model' => $model->getModelIdentifier(), 'id' => $model->route()])) ?>">
+    <input type="hidden" class="form-input image-picker" id="<?= $field->name() ?>" name="<?= $field->formName() ?>" data-src="<?= $this->uri($app->router()->generate('panel.files.list', ['model' => $model->getModelIdentifier(), 'id' => $model->route()])) ?>">
 <?php endif ?>
