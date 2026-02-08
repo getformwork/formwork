@@ -99,6 +99,7 @@
 
 .cm-content .cm-line {
     padding: 0;
+    caret-color: var(--color-base-100);
 }
 
 .ProseMirror {
@@ -138,9 +139,6 @@
 /* stylelint-disable */
 .ProseMirror {
     position: relative;
-}
-
-.ProseMirror {
     word-wrap: break-word;
     white-space: pre-wrap;
     white-space: break-spaces;
