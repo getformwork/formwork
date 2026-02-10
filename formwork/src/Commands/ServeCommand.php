@@ -52,6 +52,9 @@ final class ServeCommand implements CommandInterface
     public function __construct()
     {
         $this->climate = new CLImate();
+
+        // Fix clear command for terminals that don't clear the scrollback buffer with the default clear command
+        $this->climate->style->addCommand('clear', "\033[H\033[2J\033[3J");
     }
 
     public function __invoke(?array $argv = null): never
@@ -154,6 +157,7 @@ final class ServeCommand implements CommandInterface
             switch (true) {
                 case Str::contains($line, 'Development Server ('):
                     $this->climate->clear();
+                    $this->climate->br();
                     $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> <dark_gray>Server ready in %s</dark_gray>', App::VERSION, $this->formatTime(microtime(true) - $this->startTime)));
                     $this->climate->br();
                     $this->climate->out(sprintf('PHP runtime <bold>%s</bold>', preg_replace('/^PHP (\d+\.\d+\.\d+[^ ]*) Development Server.+/', '$1', $message)));
