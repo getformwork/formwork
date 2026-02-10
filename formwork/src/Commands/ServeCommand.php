@@ -158,7 +158,7 @@ final class ServeCommand implements CommandInterface
                 case Str::contains($line, 'Development Server ('):
                     $this->climate->clear();
                     $this->climate->br();
-                    $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> <dark_gray>Server ready in %s</dark_gray>', App::VERSION, $this->formatTime(microtime(true) - $this->startTime)));
+                    $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <dark_gray>ready in %s</dark_gray>', App::VERSION, $this->formatTime(microtime(true) - $this->startTime)));
                     $this->climate->br();
                     $this->climate->out(sprintf('PHP runtime <bold>%s</bold>', preg_replace('/^PHP (\d+\.\d+\.\d+[^ ]*) Development Server.+/', '$1', $message)));
                     $this->climate->br();
@@ -207,6 +207,11 @@ final class ServeCommand implements CommandInterface
                 case Str::contains($line, 'Failed to listen on'):
                     $this->process->stop(0);
 
+                    if (!Str::contains($message, 'Address already in use')) {
+                        $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>%s</red>', App::VERSION, lcfirst($message)));
+                        exit(1);
+                    }
+
                     if ($this->retryAttempts-- > 0) {
                         $this->port++;
                         $this->start();
@@ -214,7 +219,8 @@ final class ServeCommand implements CommandInterface
                     }
 
                     $this->climate->clear();
-                    $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> <dark_gray>Server</dark_gray> <red>failed to listen on port <bold>%d</bold></red>', App::VERSION, $this->port));
+                    $this->climate->br();
+                    $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>failed to listen on port <bold>%d</bold></red>', App::VERSION, $this->port));
                     $this->climate->br();
                     $this->climate->out('<dark_gray>Press <bold>CTRL+C</bold> to quit</dark_gray>');
                     $this->climate->br();
