@@ -123,7 +123,7 @@ final class ServeCommand implements CommandInterface
         $this->process = new Process([
             $php,
             '-S',
-            "{$this->host}:{$this->port}",
+            "{$this->formatHost($this->host)}:{$this->port}",
             'formwork/server.php',
         ], dirname(__DIR__, 3), null, null, 0);
 
@@ -162,7 +162,7 @@ final class ServeCommand implements CommandInterface
                     $this->climate->br();
                     $this->climate->out(sprintf('PHP runtime <bold>%s</bold>', preg_replace('/^PHP (\d+\.\d+\.\d+[^ ]*) Development Server.+/', '$1', $message)));
                     $this->climate->br();
-                    $this->climate->out(sprintf('➜ Listening on <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->host, $this->port));
+                    $this->climate->out(sprintf('➜ Listening on <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->formatHost($this->host), $this->port));
                     $this->climate->br();
                     $this->climate->out('<dark_gray>Press <bold>CTRL+C</bold> to stop</dark_gray>');
                     $this->climate->br();
@@ -275,6 +275,17 @@ final class ServeCommand implements CommandInterface
         }
 
         throw new UnexpectedValueException(sprintf('Unexpected status code %d', $status));
+    }
+
+    /**
+     * Format host for display and binding
+     */
+    private function formatHost(string $host): string
+    {
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            return "[{$host}]";
+        }
+        return $host;
     }
 
     /**
