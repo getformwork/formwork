@@ -6,7 +6,7 @@
                 'type'         => 'password',
                 'id'           => $field->name(),
                 'name'         => $field->formName(),
-                'value'        => $field->value(),
+                'value'        => null, // Never expose the value of a password field
                 'placeholder'  => $field->placeholder(),
                 'minlength'    => $field->minLength(),
                 'maxlength'    => $field->maxLength(),
