@@ -1,5 +1,6 @@
 import * as esbuild from "esbuild";
 import process from "process";
+import fs from "fs/promises";
 
 const watch = process.argv.includes("--watch");
 
@@ -20,5 +21,6 @@ if (watch) {
     const ctx = await esbuild.context(options);
     await ctx.watch();
 } else {
+    await fs.rm("./assets/js/chunks/", { recursive: true, force: true });
     await esbuild.build(options);
 }
