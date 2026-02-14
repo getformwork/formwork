@@ -29,6 +29,7 @@ final class TemplateFactory
             'path'    => $path,
             'methods' => [],
             'vars'    => [
+                'app'       => $this->app,
                 'router'    => $this->app->router(),
                 'site'      => $this->app->site(),
                 'csrfToken' => $this->app->getService(CsrfToken::class),
