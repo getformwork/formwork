@@ -252,6 +252,8 @@ class Plugin implements Arrayable
 
     /**
      * Load plugin services
+     *
+     * @since 2.3.2
      */
     protected function loadServices(Container $container): void {}
 }

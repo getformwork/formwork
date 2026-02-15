@@ -1,5 +1,21 @@
 # Changelog
 
+# [2.3.2](https://github.com/getformwork/formwork/releases/tag/2.3.2)
+
+**Enhancements**
+- **Use assets folder to store cached assets and serve them directly**
+- Disable login button during login to avoid multiple submissions
+- Expose `$app` variable to templates
+- Add the possibility to load plugin services
+
+**Bug fixes**
+- Fix `serve` command screen not clearing correctly in some terminals
+- Fix `serve` command handling IPv6 hosts incorrectly
+- Fix `serve` command retrying on non-port related errors
+
+**Security**
+- Avoid exposing the value of password fields
+
 # [2.3.1](https://github.com/getformwork/formwork/releases/tag/2.3.1)
 
 **Enhancements**
