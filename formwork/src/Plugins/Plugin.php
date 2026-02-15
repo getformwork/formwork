@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Parsers\Yaml;
 use Formwork\Plugins\Controllers\AssetsController;
+use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
@@ -35,6 +36,7 @@ class Plugin implements Arrayable
 
     final public function __construct(
         protected string $path,
+        private Container $container,
         protected App $app,
         protected ViewFactory $viewFactory
     ) {
@@ -102,6 +104,7 @@ class Plugin implements Arrayable
         $this->loadTranslations();
         $this->loadViews();
         $this->loadAssets();
+        $this->loadServices($this->container);
 
         $this->initialized = true;
     }
@@ -246,4 +249,9 @@ class Plugin implements Arrayable
                 ->actionParameters(['plugin' => $this]);
         }
     }
+
+    /**
+     * Load plugin services
+     */
+    protected function loadServices(Container $container): void {}
 }
