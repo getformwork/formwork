@@ -67,7 +67,7 @@ images:
     webpQuality: 85
     avifQuality: 70
     gifColors: 256
-    processPath: ${%ROOT_PATH%}/cache/images
+    processPath: ${%ROOT_PATH%}/assets/images
     preserveColorProfile: true
     preserveExifData: true
     clearCacheByDefault: false

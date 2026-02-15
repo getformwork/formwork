@@ -24,7 +24,11 @@ return [
             'action' => 'Formwork\Controllers\PageController@load',
         ],
         'assets' => [
-            'path'   => '/assets/{id}/{name}/',
+            /** @todo require the type param in Formwork >= 3.0.0 */
+            'path'  => '/assets/{type}?/{id}/{name}/',
+            'where' => [
+                'type' => ['images', null],
+            ],
             'action' => 'Formwork\Controllers\AssetsController@asset',
         ],
         'assets.template' => [

@@ -4,6 +4,7 @@ namespace Formwork\Controllers;
 
 use Formwork\Http\FileResponse;
 use Formwork\Http\Response;
+use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -15,6 +16,11 @@ final class AssetsController extends AbstractController
      */
     public function asset(RouteParams $routeParams): Response
     {
+        if (!$routeParams->has('type')) {
+            trigger_error('The "assets" route without a "type" parameter is deprecated and will be removed in a future version', E_USER_DEPRECATED);
+            return $this->redirect($this->router->rewrite(['type' => 'images']), ResponseStatus::MovedPermanently);
+        }
+
         $path = FileSystem::joinPaths($this->config->get('system.images.processPath'), $routeParams->get('id'), $routeParams->get('name'));
 
         if (FileSystem::isFile($path, assertExists: false)) {
