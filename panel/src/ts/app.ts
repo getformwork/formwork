@@ -11,6 +11,7 @@ import { Tooltips } from "./components/tooltips";
 
 import { Backups } from "./components/views/backups";
 import { Dashboard } from "./components/views/dashboard";
+import { Login } from "./components/views/login";
 import { Pages } from "./components/views/pages";
 import { Plugins } from "./components/views/plugins";
 import { Statistics } from "./components/views/statistics";
@@ -68,6 +69,7 @@ class App {
         this.loadComponent(Notifications);
         this.loadComponent(Sections);
 
+        this.loadComponent(Login);
         this.loadComponent(Dashboard);
         this.loadComponent(Pages);
         this.loadComponent(Files);
