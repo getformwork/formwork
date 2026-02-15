@@ -38,7 +38,7 @@ class FileUriGenerator
         if (Str::startsWith($path, FileSystem::normalizePath($this->config->get('system.images.processPath')))) {
             $id = basename(dirname($path));
             $name = basename($path);
-            $uriPath = $this->router->generate('assets', compact('id', 'name'));
+            $uriPath = $this->router->generate('assets', ['type' => 'images', 'id' => $id, 'name' => $name]);
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 

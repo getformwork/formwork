@@ -1,6 +1,7 @@
 .DS_Store
 .php-cs-fixer.cache
 
+/assets/*
 /backup/*
 /cache/*
 /logs/*
