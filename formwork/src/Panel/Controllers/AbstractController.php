@@ -6,7 +6,6 @@ use Formwork\Cms\Site;
 use Formwork\Controllers\AbstractController as BaseAbstractController;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Panel;
-use Formwork\Router\Router;
 use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
@@ -16,23 +15,12 @@ abstract class AbstractController extends BaseAbstractController
 {
     public function __construct(
         private Container $container,
-        protected readonly Router $router,
         protected readonly CsrfToken $csrfToken,
         protected readonly Translations $translations,
         protected readonly Site $site,
         protected readonly Panel $panel,
     ) {
         $this->container->call(parent::__construct(...));
-    }
-
-    /**
-     * Generate a route by name
-     *
-     * @param array<string, mixed> $params
-     */
-    protected function generateRoute(string $name, array $params = []): string
-    {
-        return $this->router->generate($name, $params);
     }
 
     /**

@@ -12,6 +12,7 @@ use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Router\Router;
 use Formwork\Services\Container;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
@@ -32,6 +33,7 @@ abstract class AbstractController
         protected readonly Config $config,
         protected readonly ViewFactory $viewFactory,
         protected readonly Request $request,
+        protected readonly Router $router,
         protected readonly FileUploader $fileUploader,
         protected readonly EventDispatcher $events,
     ) {
@@ -102,5 +104,15 @@ abstract class AbstractController
         }
         $instance = $this->container->build($controller);
         return $this->container->call($instance->$action(...), $parameters);
+    }
+
+    /**
+     * Generate a route by name
+     *
+     * @param array<string, mixed> $params
+     */
+    protected function generateRoute(string $name, array $params = []): string
+    {
+        return $this->router->generate($name, $params);
     }
 }

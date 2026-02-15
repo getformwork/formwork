@@ -11,7 +11,6 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Events\PageOutputEvent;
 use Formwork\Pages\Page;
 use Formwork\Router\RouteParams;
-use Formwork\Router\Router;
 use Formwork\Services\Container;
 use Formwork\Statistics\Statistics;
 use Formwork\Utils\FileSystem;
@@ -20,7 +19,6 @@ final class PageController extends AbstractController
 {
     public function __construct(
         private Container $container,
-        private Router $router,
         private Site $site,
         private FilesCache $filesCache,
     ) {
