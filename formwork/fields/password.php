@@ -9,7 +9,12 @@ return function (App $app) {
         'extend' => 'text',
 
         'methods' => [
-            'ignoreEmpty' => function (Field $field) {
+            /**
+             * Return whether to ignore empty values when setting the field value
+             *
+             * This is useful for password fields, where you don't want to overwrite the existing password with an empty value if the user doesn't enter a new password.
+             */
+            'ignoreEmpty' => function (Field $field): bool {
                 return $field->is('ignoreEmpty', false);
             },
 
