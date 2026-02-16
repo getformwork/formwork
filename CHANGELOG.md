@@ -1,5 +1,14 @@
 # Changelog
 
+# [2.3.3](https://github.com/getformwork/formwork/releases/tag/2.3.3)
+
+**Enhancements**
+- Add the possibility to ignore empty values in password fields
+
+**Bug fixes**
+- Fix range input appearance for dark color scheme
+- Ignore assets folder in backups
+
 # [2.3.2](https://github.com/getformwork/formwork/releases/tag/2.3.2)
 
 **Enhancements**
