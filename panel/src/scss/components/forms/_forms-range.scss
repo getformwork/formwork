@@ -58,6 +58,8 @@
     }
 
     &:focus {
+        --thumb-color: var(--color-accent-400);
+
         outline: none;
     }
 
@@ -72,13 +74,22 @@
     }
 
     &:focus::-webkit-slider-thumb {
-        background-color: var(--color-accent-400);
+        background-color: var(--thumb-color);
         @include focusring;
     }
 
     &:focus::-moz-range-thumb {
-        background-color: var(--color-accent-400);
+        background-color: var(--thumb-color);
         @include focusring;
+    }
+
+    .color-scheme-dark & {
+        --track-color: var(--color-accent-400);
+        --thumb-color: var(--color-accent-400);
+    }
+
+    .color-scheme-dark &:hover {
+        --thumb-color: var(--color-accent-500);
     }
 }
 
