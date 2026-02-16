@@ -3,7 +3,6 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Config\Config;
-use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
@@ -44,11 +43,8 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        // Set initial values on GET
-        if ($this->request->method() === RequestMethod::GET) {
-            $fields->setValues($this->config->get('system'))
-                ->isValid(); // Pre-validate to populate validation state
-        }
+        $fields->setValues($this->config->get('system'))
+            ->isValid(); // Pre-validate to populate validation state
 
         $form = $this->form('system-options', $fields)
             ->processRequest($this->request);
@@ -97,11 +93,8 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
-        // Set initial values on GET
-        if ($this->request->method() === RequestMethod::GET) {
-            $fields->setValues($this->site->data())
-                ->isValid(); // Pre-validate to populate validation state
-        }
+        $fields->setValues($this->site->data())
+            ->isValid(); // Pre-validate to populate validation state
 
         $form = $this->form('site-options', $fields)
             ->processRequest($this->request);

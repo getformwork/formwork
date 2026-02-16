@@ -9,7 +9,6 @@ use Formwork\Files\File;
 use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RequestData;
-use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
@@ -223,10 +222,8 @@ final class PagesController extends AbstractController
         // Clone the page fields to work with a separate copy
         $fieldCollection = $page->fields()->deepClone();
 
-        if ($this->request->method() === RequestMethod::GET) {
-            $fieldCollection->setValues($page->data())
-                ->isValid(); // Pre-validate to populate validation state
-        }
+        $fieldCollection->setValues($page->data())
+            ->isValid(); // Pre-validate to populate validation state
 
         $form = $this->form('page-editor', $fieldCollection)
             ->setDefaultUploadsDestination($page->contentPath())
