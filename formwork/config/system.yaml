@@ -15,6 +15,7 @@ backup:
         - '*.DS_Store'
         - '*.gitignore'
         - '*.gitkeep'
+        - 'assets/*'
         - 'backup/*'
         - 'cache/*'
         - 'site/auth/*'
