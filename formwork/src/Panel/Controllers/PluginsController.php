@@ -4,7 +4,6 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Fields\FieldCollection;
 use Formwork\Http\JsonResponse;
-use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Parsers\Yaml;
@@ -72,11 +71,7 @@ final class PluginsController extends AbstractController
 
         $fields = $scheme->fields();
 
-        // Set initial values on GET
-        if ($this->request->method() === RequestMethod::GET) {
-            $data = $this->config->get("plugins.{$name}", []);
-            $fields->setValues($data);
-        }
+        $fields->setValues($this->config->get("plugins.{$name}", []));
 
         $form = $this->form('plugin-options', $fields)
             ->processRequest($this->request);

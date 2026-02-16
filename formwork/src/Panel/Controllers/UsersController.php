@@ -7,7 +7,6 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Field;
 use Formwork\Forms\FormData;
 use Formwork\Http\FileResponse;
-use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
 use Formwork\Router\RouteParams;
@@ -173,11 +172,7 @@ final class UsersController extends AbstractController
         // Disable role field if it cannot be changed
         $fields->get('role')->set('disabled', !$this->panel->user()->canChangeRoleOf($user));
 
-        // Set initial values on GET
-        if ($this->request->method() === RequestMethod::GET) {
-            $fields->setValues($user)
-                ->isValid(); // Pre-validate to populate validation state
-        }
+        $fields->setValues($user);
 
         $form = $this->form('user-profile', $fields)
             ->processRequest($this->request, uploadFiles: false, preserveEmpty: false);

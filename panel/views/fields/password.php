@@ -12,7 +12,7 @@
                 'maxlength'    => $field->maxLength(),
                 'pattern'      => $field->pattern(),
                 'autocomplete' => $field->autocomplete(),
-                'required'     => $field->isRequired(),
+                'required'     => $field->isRequired() && !$field->ignoreEmpty(),
                 'disabled'     => $field->isDisabled(),
                 'hidden'       => $field->isHidden(),
             ]) ?>>

@@ -9,7 +9,6 @@ use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
-use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Images\Image;
@@ -145,11 +144,7 @@ final class FilesController extends AbstractController
             return $this->redirectToReferer(base: $this->panel->panelRoot());
         }
 
-        // Set initial values on GET
-        if ($this->request->method() === RequestMethod::GET) {
-            $file->fields()->setValues($file->data())
-                ->isValid(); // Pre-validate to populate validation state
-        }
+        $file->fields()->setValues($file->data());
 
         $form = $this->form('file-metadata', $file->fields())
             ->processRequest($this->request, uploadFiles: false);
