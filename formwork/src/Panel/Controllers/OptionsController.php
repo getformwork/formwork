@@ -43,8 +43,7 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        $fields->setValues($this->config->get('system'))
-            ->isValid(); // Pre-validate to populate validation state
+        $fields->setValues($this->config->get('system'));
 
         $form = $this->form('system-options', $fields)
             ->processRequest($this->request);
@@ -93,8 +92,7 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
-        $fields->setValues($this->site->data())
-            ->isValid(); // Pre-validate to populate validation state
+        $fields->setValues($this->site->data());
 
         $form = $this->form('site-options', $fields)
             ->processRequest($this->request);

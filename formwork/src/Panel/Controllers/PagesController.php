@@ -222,8 +222,7 @@ final class PagesController extends AbstractController
         // Clone the page fields to work with a separate copy
         $fieldCollection = $page->fields()->deepClone();
 
-        $fieldCollection->setValues($page->data())
-            ->isValid(); // Pre-validate to populate validation state
+        $fieldCollection->setValues($page->data());
 
         $form = $this->form('page-editor', $fieldCollection)
             ->setDefaultUploadsDestination($page->contentPath())

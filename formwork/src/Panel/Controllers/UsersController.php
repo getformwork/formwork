@@ -172,8 +172,7 @@ final class UsersController extends AbstractController
         // Disable role field if it cannot be changed
         $fields->get('role')->set('disabled', !$this->panel->user()->canChangeRoleOf($user));
 
-        $fields->setValues($user)
-            ->isValid(); // Pre-validate to populate validation state
+        $fields->setValues($user);
 
         $form = $this->form('user-profile', $fields)
             ->processRequest($this->request, uploadFiles: false, preserveEmpty: false);

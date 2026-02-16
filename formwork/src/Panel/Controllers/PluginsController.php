@@ -71,8 +71,7 @@ final class PluginsController extends AbstractController
 
         $fields = $scheme->fields();
 
-        $fields->setValues($this->config->get("plugins.{$name}", []))
-            ->isValid(); // Pre-validate to populate validation state
+        $fields->setValues($this->config->get("plugins.{$name}", []));
 
         $form = $this->form('plugin-options', $fields)
             ->processRequest($this->request);

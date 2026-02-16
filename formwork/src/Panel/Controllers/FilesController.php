@@ -144,8 +144,7 @@ final class FilesController extends AbstractController
             return $this->redirectToReferer(base: $this->panel->panelRoot());
         }
 
-        $file->fields()->setValues($file->data())
-            ->isValid(); // Pre-validate to populate validation state
+        $file->fields()->setValues($file->data());
 
         $form = $this->form('file-metadata', $file->fields())
             ->processRequest($this->request, uploadFiles: false);
