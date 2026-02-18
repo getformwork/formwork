@@ -56,10 +56,12 @@ final class UsersController extends AbstractController
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
-        // Get the role
-        $roleId = $form->data()->get('role', 'user');
+        $currentUser = $this->panel->user();
 
-        if (!$this->site->users()->roles()->has($roleId)) {
+        // Prevent non-admins from escalating privileges by assigning a role different from their own
+        $role = $currentUser->isAdmin() ? $form->data()->get('role') : $currentUser->role()->id();
+
+        if (!$this->site->users()->roles()->has($role)) {
             $this->panel->notify($this->translate('panel.users.user.cannotCreate.invalidRole'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
@@ -67,7 +69,7 @@ final class UsersController extends AbstractController
         $user = $userFactory->make([]);
 
         try {
-            $user->setMultiple($form->data()->toArray());
+            $user->setMultiple([...$form->data()->toArray(), 'role' => $role]);
             $user->save();
         } catch (TranslatedException $e) {
             $this->panel->notify($this->translate($e->getLanguageString()), 'error');
