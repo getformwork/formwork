@@ -6,3 +6,4 @@ permissions:
     panel.pages: true
     panel.statistics: true
     panel.users: true
+    panel.users.create: false
