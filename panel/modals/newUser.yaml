@@ -44,6 +44,7 @@ fields:
         label: '{{user.role}}'
         default: editor
         options@: site.users.availableRoles
+        visible@: formwork.panel.user.isAdmin
 
 buttons:
     dismiss:
