@@ -14,6 +14,11 @@ final class DashboardController extends AbstractController
     public function index(Statistics $statistics): Response
     {
         if (!$this->hasPermission('panel.dashboard')) {
+
+            // Prevent session lock: log out user without dashboard access
+            // (forbidden error links directly to the dashboard)
+            $this->panel->user()->logout();
+
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
