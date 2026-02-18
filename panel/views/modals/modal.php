@@ -16,7 +16,9 @@
                     <p class="modal-text"><?= $this->escape($modal->message()) ?></p>
                 <?php endif ?>
                 <?php foreach ($modal->fields() as $field) : ?>
-                    <?php $this->insert("@panel.fields.{$field->type()}", ['field' => $field]) ?>
+                    <?php if ($field->isVisible()) : ?>
+                        <?php $this->insert("@panel.fields.{$field->type()}", ['field' => $field]) ?>
+                    <?php endif ?>
                 <?php endforeach ?>
                 <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
             </div>
