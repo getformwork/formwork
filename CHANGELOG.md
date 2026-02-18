@@ -1,5 +1,16 @@
 # Changelog
 
+# [2.3.4](https://github.com/getformwork/formwork/releases/tag/2.3.4)
+
+**Security**
+- Fix role assignment to prevent privilege escalation via user creation
+- Remove user creation from the editor role
+
+**Bug fixes**
+- Fix ignored visibility check in modal fields
+- Fix session lock for users without dashboard access
+- Fix view name for panel assets errors
+
 # [2.3.3](https://github.com/getformwork/formwork/releases/tag/2.3.3)
 
 **Enhancements**
