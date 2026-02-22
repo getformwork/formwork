@@ -1,6 +1,6 @@
 # Changelog
 
-# [2.3.4](https://github.com/getformwork/formwork/releases/tag/2.3.4)
+# [2.3.4](https://github.com/getformwork/formwork/releases/tag/2.3.4)
 
 **Security**
 - Fix role assignment to prevent privilege escalation via user creation
@@ -11,7 +11,7 @@
 - Fix session lock for users without dashboard access
 - Fix view name for panel assets errors
 
-# [2.3.3](https://github.com/getformwork/formwork/releases/tag/2.3.3)
+# [2.3.3](https://github.com/getformwork/formwork/releases/tag/2.3.3)
 
 **Enhancements**
 - Add the possibility to ignore empty values in password fields
