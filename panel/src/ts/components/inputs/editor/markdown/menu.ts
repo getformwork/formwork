@@ -106,9 +106,9 @@ class MenuView {
     }
 }
 
-export function menuPlugin(id: string) {
-    let modalsInitialized = false;
+let modalsInitialized = false;
 
+export function menuPlugin(id: string) {
     if (!modalsInitialized) {
         initModals();
         modalsInitialized = true;

@@ -93,14 +93,12 @@ export class DurationInput {
 
     private updateHiddenInput() {
         const intervals: Partial<Record<TimeInterval, number>> = {};
-        let seconds = 0;
-        let step = 0;
         Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
             intervals[i] = parseInt(input.value);
         });
-        seconds = this.intervalsToSeconds(intervals);
+        let seconds = this.intervalsToSeconds(intervals);
         if (this.element.step) {
-            step = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
+            const step = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
             seconds = Math.floor(seconds / step) * step;
         }
         if (this.element.min) {
