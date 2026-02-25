@@ -1,0 +1,23 @@
+/** @type {import('stylelint').Config} */
+export default {
+    extends: ["stylelint-config-standard-scss"],
+
+    ignoreFiles: ["./assets/css/*.css", "./assets/scss/*.scss", "./assets/scss/vendor/*.scss"],
+
+    plugins: ["stylelint-scss", "stylelint-order"],
+
+    rules: {
+        "at-rule-empty-line-before": null,
+        "selector-max-type": 2,
+
+        "scss/dollar-variable-empty-line-before": null,
+        "scss/dollar-variable-colon-space-after": null,
+
+        "order/properties-order": [
+            ["composes", "all", "position", "z-index", "top", "right", "bottom", "left", "display", "overflow", "width", "min-width", "max-width", "height", "min-height", "max-height", "box-sizing", "flex", "flex-basis", "flex-direction", "flex-flow", "flex-grow", "flex-shrink", "flex-wrap", "align-content", "align-items", "align-self", "justify-content", "order", "padding", "padding-top", "padding-right", "padding-bottom", "padding-left", "border", "border-width", "border-style", "border-color", "border-radius", "border-top", "border-top-width", "border-top-style", "border-top-color", "border-top-radius", "border-right", "border-right-width", "border-right-style", "border-right-color", "border-right-radius", "border-bottom", "border-bottom-width", "border-bottom-style", "border-bottom-color", "border-bottom-radius", "border-left", "border-left-width", "border-left-style", "border-left-color", "border-left-radius", "margin", "margin-top", "margin-right", "margin-bottom", "margin-left"],
+            {
+                unspecified: "bottomAlphabetical",
+            },
+        ],
+    },
+};
