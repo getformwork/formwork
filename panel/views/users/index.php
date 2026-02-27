@@ -6,7 +6,9 @@
     <div class="header-icon"><?= $this->icon('users') ?></div>
     <div class="header-title"><?= $this->translate('panel.users.users') ?> <span class="badge"><?= $users->count() ?></span></div>
     <div>
-        <button type="button" class="button button-accent" data-modal="newUserModal" <?php if (!$panel->user()->permissions()->has('panel.users.create')) : ?> disabled<?php endif ?>><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
+        <?php if ($panel->user()->permissions()->has('panel.users.create')) : ?>
+            <button type="button" class="button button-accent" data-modal="newUserModal"><?= $this->icon('plus-circle') ?> <?= $this->translate('panel.users.newUser') ?></button>
+        <?php endif ?>
     </div>
 </div>
 
