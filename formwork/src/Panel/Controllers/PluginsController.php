@@ -148,7 +148,7 @@ final class PluginsController extends AbstractController
      */
     private function updatePluginsOptions(Plugin $plugin, array $options): void
     {
-        $options = Arr::override($this->config->get("plugins.{$plugin->name()}", []), $options);
+        $options = Arr::override($this->config->get("plugins.{$plugin->name()}", []), Arr::undot($options));
 
         if (!FileSystem::isDirectory(ROOT_PATH . '/site/config/plugins/', assertExists: false)) {
             FileSystem::createDirectory(ROOT_PATH . '/site/config/plugins/');
