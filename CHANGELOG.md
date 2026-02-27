@@ -1,5 +1,15 @@
 # Changelog
 
+# [2.3.5](https://github.com/getformwork/formwork/releases/tag/2.3.5)
+
+**Enhancements**
+- Improve disabled togglegroups styles
+- Remove user creation button when permission is missing
+
+**Bug fixes**
+- Fix plugin options update to correctly handle dots in field names
+- Fix plugin toggle to handle changed form values
+
 # [2.3.4](https://github.com/getformwork/formwork/releases/tag/2.3.4)
 
 **Security**
