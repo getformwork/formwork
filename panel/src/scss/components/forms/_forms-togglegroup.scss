@@ -58,7 +58,7 @@
 
 .form-togglegroup:disabled .form-input[type="radio"] + span {
     background-color: transparent;
-    color: var(--color-base-500);
+    color: var(--color-base-400);
 }
 
 .color-scheme-dark .form-togglegroup .form-input[type="radio"]:focus + span {
@@ -66,7 +66,13 @@
 }
 
 .form-togglegroup:disabled .form-input[type="radio"]:checked + span {
-    background-color: var(--color-base-700);
+    background-color: var(--color-accent-800);
+    color: var(--color-base-800);
+
+    .color-scheme-dark & {
+        background-color: var(--color-accent-200);
+        color: var(--color-base-200);
+    }
 }
 
 .color-scheme-dark .form-togglegroup .form-input[type="radio"]:checked + span {
