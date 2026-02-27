@@ -7,34 +7,35 @@ import { throttle } from "../../utils/events";
 export class Plugins {
     constructor() {
         $$(".plugin-status-toggle").forEach((toggle: HTMLInputElement) => {
-            toggle.addEventListener(
-                "change",
-                throttle((event: Event) => {
-                    const toggle = event.target as HTMLInputElement;
-                    const action = toggle.dataset.action;
+            const fieldset = toggle.closest(".form-togglegroup") as HTMLFieldSetElement;
+            const action = toggle.dataset.action;
 
-                    if (action) {
-                        $$(".plugin-status-toggle").forEach((t: HTMLInputElement) => (t.disabled = true));
+            toggle.addEventListener("change", () => {
+                if (!action) {
+                    return;
+                }
 
-                        new Request(
-                            {
-                                method: "POST",
-                                url: action,
-                                data: { "csrf-token": app.config.csrfToken as string },
-                            },
-                            (response) => {
-                                if (response.status === "success") {
-                                    window.location.reload();
-                                } else {
-                                    const notification = new Notification(response.message, response.status);
-                                    notification.show();
-                                    $$(".plugin-status-toggle").forEach((t: HTMLInputElement) => (t.disabled = false));
-                                }
-                            },
-                        );
-                    }
-                }, 500),
-            );
+                fieldset.disabled = true;
+
+                throttle(() => {
+                    new Request(
+                        {
+                            method: "POST",
+                            url: action,
+                            data: { "csrf-token": app.config.csrfToken as string },
+                        },
+                        (response) => {
+                            if (response.status === "success" && !app.forms["plugin-form"]?.hasChanged()) {
+                                window.location.reload();
+                            } else {
+                                const notification = new Notification(response.message, response.status);
+                                notification.show();
+                                fieldset.disabled = false;
+                            }
+                        },
+                    );
+                }, 500)();
+            });
         });
     }
 }
