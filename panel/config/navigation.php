@@ -9,7 +9,6 @@ return fn(App $app, Site $site, Translation $translation) => [
         'label'       => $translation->translate('panel.dashboard.dashboard'),
         'uri'         => '/dashboard/',
         'permissions' => 'panel.dashboard',
-        'badge'       => null,
         'icon'        => 'home',
     ],
     'pages' => [
@@ -23,14 +22,12 @@ return fn(App $app, Site $site, Translation $translation) => [
         'label'       => $translation->translate('panel.files.files'),
         'uri'         => '/files/',
         'permissions' => 'panel.files',
-        'badge'       => null,
         'icon'        => 'files',
     ],
     'statistics' => [
         'label'       => $translation->translate('panel.statistics.statistics'),
         'uri'         => '/statistics/',
         'permissions' => 'panel.statistics',
-        'badge'       => null,
         'icon'        => 'chart-line',
     ],
     'users' => [
@@ -44,15 +41,42 @@ return fn(App $app, Site $site, Translation $translation) => [
         'label'       => $translation->translate('panel.options.options'),
         'uri'         => '/options/',
         'permissions' => 'panel.options',
-        'badge'       => null,
         'icon'        => 'gear',
+        'children'    => [
+            'site' => [
+                'label'       => $translation->translate('panel.options.site'),
+                'uri'         => '/options/site/',
+                'permissions' => 'panel.options.site',
+            ],
+            'system' => [
+                'label'       => $translation->translate('panel.options.system'),
+                'uri'         => '/options/system/',
+                'permissions' => 'panel.options.system',
+            ],
+        ],
     ],
     'tools' => [
         'label'       => $translation->translate('panel.tools.tools'),
         'uri'         => '/tools/',
         'permissions' => 'panel.tools',
-        'badge'       => null,
         'icon'        => 'toolbox',
+        'children'    => [
+            'backups' => [
+                'label'       => $translation->translate('panel.tools.backups'),
+                'uri'         => '/tools/backups/',
+                'permissions' => 'panel.tools.backups',
+            ],
+            'updates' => [
+                'label'       => $translation->translate('panel.tools.updates'),
+                'uri'         => '/tools/updates/',
+                'permissions' => 'panel.tools.updates',
+            ],
+            'info' => [
+                'label'       => $translation->translate('panel.tools.info'),
+                'uri'         => '/tools/info/',
+                'permissions' => 'panel.tools.info',
+            ],
+        ],
     ],
     'plugins' => [
         'label'       => $translation->translate('panel.plugins.plugins'),
@@ -63,9 +87,7 @@ return fn(App $app, Site $site, Translation $translation) => [
         'visible'     => !$app->plugins()->isEmpty(),
     ],
     'logout' => [
-        'label'       => $translation->translate('panel.login.logout'),
-        'uri'         => '/logout/',
-        'permissions' => null,
-        'badge'       => null,
+        'label' => $translation->translate('panel.login.logout'),
+        'uri'   => '/logout/',
     ],
 ];

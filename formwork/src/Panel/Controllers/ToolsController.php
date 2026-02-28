@@ -13,13 +13,6 @@ use Formwork\Utils\Str;
 final class ToolsController extends AbstractController
 {
     /**
-     * All options tabs
-     *
-     * @var list<string>
-     */
-    private array $tabs = ['backups', 'updates', 'info'];
-
-    /**
      * Cached composer.json data
      *
      * @var array<string, mixed>
@@ -57,11 +50,7 @@ final class ToolsController extends AbstractController
         ]);
 
         return new Response($this->view('@panel.tools.backups', [
-            'title' => $this->translate('panel.tools.backups'),
-            'tabs'  => $this->view('@panel.tools.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'backups',
-            ]),
+            'title'   => $this->translate('panel.tools.backups'),
             'backups' => Collection::from($backups),
         ]));
     }
@@ -76,11 +65,7 @@ final class ToolsController extends AbstractController
         }
 
         return new Response($this->view('@panel.tools.updates', [
-            'title' => $this->translate('panel.tools.updates'),
-            'tabs'  => $this->view('@panel.tools.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'updates',
-            ]),
+            'title'          => $this->translate('panel.tools.updates'),
             'currentVersion' => $this->app::VERSION,
         ]));
     }
@@ -220,11 +205,7 @@ final class ToolsController extends AbstractController
         ksort($data['HTTP Response Headers']);
 
         return new Response($this->view('@panel.tools.info', [
-            'title' => $this->translate('panel.tools.info'),
-            'tabs'  => $this->view('@panel.tools.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'info',
-            ]),
+            'title'    => $this->translate('panel.tools.info'),
             'formwork' => $formwork,
             'warnings' => $warnings,
             'info'     => $data,

@@ -3,12 +3,24 @@
 namespace Formwork\Panel\Navigation;
 
 use Formwork\Data\AbstractCollection;
+use Formwork\Data\Contracts\ArraySerializable;
+use Formwork\Utils\Arr;
 
-class NavigationItemCollection extends AbstractCollection
+class NavigationItemCollection extends AbstractCollection implements ArraySerializable
 {
     protected bool $associative = true;
 
     protected ?string $dataType = NavigationItem::class;
 
     protected bool $mutable = true;
+
+    public function toArray(): array
+    {
+        return Arr::map($this->data, fn(NavigationItem $navigationItem) => $navigationItem->toArray());
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(Arr::map($data, fn(array $item, string $id) => NavigationItem::fromArray([...$item, 'id' => $id])));
+    }
 }

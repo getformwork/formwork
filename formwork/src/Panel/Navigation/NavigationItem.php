@@ -2,19 +2,26 @@
 
 namespace Formwork\Panel\Navigation;
 
-use Formwork\Data\Contracts\Arrayable;
-use Formwork\Data\Traits\DataArrayable;
+use Formwork\Data\Contracts\ArraySerializable;
 
-class NavigationItem implements Arrayable
+class NavigationItem implements ArraySerializable
 {
-    use DataArrayable;
+    /**
+     * @var array<string,mixed>
+     */
+    protected array $data = [];
 
     /**
      * @param array<string, mixed> $data
      */
     public function __construct(protected string $id, array $data)
     {
-        $this->data = $data;
+        foreach ($data as $key => $value) {
+            if ($key === 'children') {
+                $value = NavigationItemCollection::fromArray($value);
+            }
+            $this->data[$key] = $value;
+        }
     }
 
     /**
@@ -46,7 +53,7 @@ class NavigationItem implements Arrayable
      */
     public function permissions(): ?string
     {
-        return $this->data['permissions'];
+        return $this->data['permissions'] ?? null;
     }
 
     /**
@@ -75,5 +82,27 @@ class NavigationItem implements Arrayable
     public function visible(): bool
     {
         return $this->data['visible'] ?? true;
+    }
+
+    /**
+     * Get navigation item children
+     */
+    public function children(): ?NavigationItemCollection
+    {
+        return $this->data['children'] ?? null;
+    }
+
+    public function toArray(): array
+    {
+        $data = $this->data;
+        if (isset($data['children'])) {
+            $data['children'] = $data['children']->toArray();
+        }
+        return [...$data, 'id' => $this->id];
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self($data['id'], $data);
     }
 }
