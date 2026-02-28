@@ -13,13 +13,6 @@ use UnexpectedValueException;
 final class OptionsController extends AbstractController
 {
     /**
-     * All options tabs
-     *
-     * @var list<string>
-     */
-    private array $tabs = ['site', 'system'];
-
-    /**
      * Options@index action
      */
     public function index(): Response
@@ -71,11 +64,7 @@ final class OptionsController extends AbstractController
         }
 
         return new Response($this->view('@panel.options.system', [
-            'title' => $this->translate('panel.options.options'),
-            'tabs'  => $this->view('@panel.options.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'system',
-            ]),
+            'title'  => $this->translate('panel.options.options'),
             'fields' => $form->fields(),
         ]), $form->getResponseStatus());
     }
@@ -119,11 +108,7 @@ final class OptionsController extends AbstractController
         }
 
         return new Response($this->view('@panel.options.site', [
-            'title' => $this->translate('panel.options.options'),
-            'tabs'  => $this->view('@panel.options.tabs', [
-                'tabs'    => $this->tabs,
-                'current' => 'site',
-            ]),
+            'title'  => $this->translate('panel.options.options'),
             'fields' => $form->fields(),
         ]), $form->getResponseStatus());
     }

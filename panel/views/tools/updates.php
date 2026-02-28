@@ -5,7 +5,7 @@
     <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
 </div>
 
-<?= $tabs ?>
+<?php $this->insert('@panel.partials.navigation.tabs', ['items' => $panel->navigation()->get('tools')->children(), 'current' => 'updates']) ?>
 
 <section id="updater-component" class="section">
     <div class="row">

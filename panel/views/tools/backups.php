@@ -7,7 +7,8 @@
     <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
 </div>
 
-<?= $tabs ?>
+<?php $this->insert('@panel.partials.navigation.tabs', ['items' => $panel->navigation()->get('tools')->children(), 'current' => 'backups']) ?>
+
 <div data-view="backups">
     <section class="section">
         <button type="button" class="button button-secondary mr-6" data-command="make-backup"><?= $this->icon('clock-rotate-left') ?> <?= $this->translate('panel.backup.backup') ?></button>
