@@ -11,14 +11,12 @@ use Formwork\Http\Session\MessageType;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Panel\Events\PanelNavigationLoadedEvent;
 use Formwork\Panel\Modals\Modals;
-use Formwork\Panel\Navigation\NavigationItem;
 use Formwork\Panel\Navigation\NavigationItemCollection;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
 use Formwork\Users\ColorScheme;
 use Formwork\Users\User;
 use Formwork\Users\Users;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -117,15 +115,20 @@ final class Panel
      */
     public function navigation(): NavigationItemCollection
     {
-        $translation = $this->translations->getCurrent();
-        if (!isset($this->navigation)) {
-            $items = $this->container->call(require $this->config->get('system.panel.config.navigation'), [
-                'translation' => $translation,
-            ]);
-            $this->navigation = new NavigationItemCollection();
-            $this->navigation->setMultiple(Arr::map($items, fn(array $data, string $id) => new NavigationItem($id, $data)));
-            $this->events->dispatch(new PanelNavigationLoadedEvent($this->navigation, $translation));
+        if (isset($this->navigation)) {
+            return $this->navigation;
         }
+
+        $translation = $this->translations->getCurrent();
+
+        $this->navigation = NavigationItemCollection::fromArray(
+            $this->container->call(require $this->config->get('system.panel.config.navigation'), [
+                'translation' => $translation,
+            ])
+        );
+
+        $this->events->dispatch(new PanelNavigationLoadedEvent($this->navigation, $translation));
+
         return $this->navigation;
     }
 
