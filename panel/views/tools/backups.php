@@ -7,7 +7,7 @@
     <div class="header-title"><?= $this->translate('panel.tools.tools') ?></div>
 </div>
 
-<?php $this->insert('@panel.partials.navigation.tabs', ['items' => $panel->navigation()->get('tools')->children(), 'current' => 'backups']) ?>
+<?php $this->insert('@panel._navigation.tabs', ['items' => $panel->navigation()->get('tools')->children(), 'current' => 'backups']) ?>
 
 <div data-view="backups">
     <section class="section">

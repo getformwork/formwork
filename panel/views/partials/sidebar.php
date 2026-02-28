@@ -15,7 +15,7 @@
     <nav class="sidebar-wrapper">
         <div class="caption mb-8"><?= $this->translate('panel.manage') ?></div>
         <ul class="sidebar-navigation">
-            <?php $this->insert('@panel.partials.navigation.sidebar', ['items' => $panel->navigation()]) ?>
+            <?php $this->insert('@panel._navigation.sidebar', ['items' => $panel->navigation()]) ?>
         </ul>
     </nav>
 </div>

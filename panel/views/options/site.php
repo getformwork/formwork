@@ -11,7 +11,7 @@
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
         </div>
     </div>
-    <?php $this->insert('@panel.partials.navigation.tabs', ['items' => $panel->navigation()->get('options')->children(), 'current' => 'site']) ?>
+    <?php $this->insert('@panel._navigation.tabs', ['items' => $panel->navigation()->get('options')->children(), 'current' => 'site']) ?>
     <div>
         <?php $this->insert('@panel.fields', ['fields' => $fields]) ?>
     </div>
