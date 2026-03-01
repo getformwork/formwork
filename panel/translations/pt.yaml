@@ -7,11 +7,15 @@ panel.backup.error.cannotDownload.invalidFilename: Ficheiro de backup inválido
 panel.backup.error.cannotMake: Não é possível fazer cópia de segurança. %s.
 panel.backup.ready: Cópia de segurança pronta. A iniciar o download...
 panel.cache.clear: Limpar cache
+panel.cache.clear.all: Limpar todas as caches
+panel.cache.clear.config: Limpar cache de configuração
 panel.cache.clear.images: Limpar cache de imagens
 panel.cache.clear.pages: Limpar cache de páginas
 panel.cache.cleared: Cache limpa
-panel.cache.cleared.images: Cache de imagens limpo
-panel.cache.cleared.pages: Cache de páginas limpo
+panel.cache.cleared.all: Todas as caches limpas
+panel.cache.cleared.config: Cache de configuração limpa
+panel.cache.cleared.images: Cache de imagens limpa
+panel.cache.cleared.pages: Cache de páginas limpa
 panel.cache.error: Não é possível limpar o cache
 panel.dashboard.dashboard: Painel
 panel.dashboard.lastModifiedPages: Últimas páginas editadas

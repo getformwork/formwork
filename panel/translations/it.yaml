@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: File di backup non valido.
 panel.backup.error.cannotMake: Impossibile eseguire il backup. %s.
 panel.backup.ready: Backup pronto. Inizio a scaricare...
 panel.cache.clear: Svuota cache
+panel.cache.clear.all: Svuota tutte le cache
+panel.cache.clear.config: Svuota cache configurazione
 panel.cache.clear.images: Svuota cache immagini
 panel.cache.clear.pages: Svuota cache pagine
 panel.cache.cleared: Cache svuotata
+panel.cache.cleared.all: Tutte le cache svuotate
+panel.cache.cleared.config: Cache configurazione svuotata
 panel.cache.cleared.images: Cache immagini svuotata
 panel.cache.cleared.pages: Cache pagine svuotata
 panel.cache.error: Impossibile svuotare la cache

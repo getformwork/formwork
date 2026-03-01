@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Невірне ім’я фа
 panel.backup.error.cannotMake: Неможливо створити резервну копію. %s.
 panel.backup.ready: Резервна копія готова. Починаємо завантаження...
 panel.cache.clear: Очистити кеш
+panel.cache.clear.all: Очистити всі кеші
+panel.cache.clear.config: Очистити кеш конфігурації
 panel.cache.clear.images: Очистити кеш зображень
 panel.cache.clear.pages: Очистити кеш сторінок
 panel.cache.cleared: Кеш очищено
+panel.cache.cleared.all: Усі кеші очищено
+panel.cache.cleared.config: Кеш конфігурації очищено
 panel.cache.cleared.images: Кеш зображень очищено
 panel.cache.cleared.pages: Кеш сторінок очищено
 panel.cache.error: Неможливо очистити кеш

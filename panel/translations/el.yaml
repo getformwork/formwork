@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Μη έγκυρο αρχεί�
 panel.backup.error.cannotMake: Δεν είναι δυνατή η δημιουργία αντιγράφου ασφαλείας. %s.
 panel.backup.ready: Το αντίγραφο ασφαλείας είναι έτοιμο. Ξεκινά η λήψη...
 panel.cache.clear: Εκκαθάριση cache
+panel.cache.clear.all: Εκκαθάριση όλων των cache
+panel.cache.clear.config: Εκκαθάριση cache ρυθμίσεων
 panel.cache.clear.images: Εκκαθάριση cache εικόνων
 panel.cache.clear.pages: Εκκαθάριση cache σελίδων
 panel.cache.cleared: Η cache εκκαθαρίστηκε
+panel.cache.cleared.all: Όλες οι cache εκκαθαρίστηκαν
+panel.cache.cleared.config: Η cache ρυθμίσεων εκκαθαρίστηκε
 panel.cache.cleared.images: Η cache εικόνων εκκαθαρίστηκε
 panel.cache.cleared.pages: Η cache σελίδων εκκαθαρίστηκε
 panel.cache.error: Δεν είναι δυνατή η εκκαθάριση της cache

@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Érvénytelen biztonsági men
 panel.backup.error.cannotMake: Nem lehet biztonsági mentést készíteni. %s.
 panel.backup.ready: A biztonsági mentés elkészült. Letöltés indítása...
 panel.cache.clear: Gyorsítótár törlése
+panel.cache.clear.all: Az összes gyorsítótár törlése
+panel.cache.clear.config: A konfigurációs gyorsítótár törlése
 panel.cache.clear.images: Képek gyorsítótárának törlése
 panel.cache.clear.pages: Oldalak gyorsítótárának törlése
 panel.cache.cleared: Gyorsítótár törölve
+panel.cache.cleared.all: Az összes gyorsítótár törölve
+panel.cache.cleared.config: A konfigurációs gyorsítótár törölve
 panel.cache.cleared.images: Képek gyorsítótára törölve
 panel.cache.cleared.pages: Oldalak gyorsítótára törölve
 panel.cache.error: Nem lehet törölni a gyorsítótárat

@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Nieprawidłowy plik kopii zap
 panel.backup.error.cannotMake: Nie można utworzyć kopii zapasowej. %s.
 panel.backup.ready: Kopia zapasowa gotowa. Rozpoczynanie pobierania...
 panel.cache.clear: Wyczyść pamięć podręczną
+panel.cache.clear.all: Wyczyść wszystkie pamięci podręczne
+panel.cache.clear.config: Wyczyść pamięć podręczną konfiguracji
 panel.cache.clear.images: Wyczyść pamięć podręczną obrazów
 panel.cache.clear.pages: Wyczyść pamięć podręczną stron
 panel.cache.cleared: Pamięć podręczna wyczyszczona
+panel.cache.cleared.all: Wszystkie pamięci podręczne zostały wyczyszczone
+panel.cache.cleared.config: Pamięć podręczna konfiguracji została wyczyszczona
 panel.cache.cleared.images: Pamięć podręczna obrazów wyczyszczona
 panel.cache.cleared.pages: Pamięć podręczna stron wyczyszczona
 panel.cache.error: Nie można wyczyścić pamięci podręcznej

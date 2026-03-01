@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Недопустимый фа
 panel.backup.error.cannotMake: Невозможно сделать резервную копию. %s.
 panel.backup.ready: Резервное копирование готовы. Начинается загрузка ...
 panel.cache.clear: Очистить кэш
+panel.cache.clear.all: Очистить все кэши
+panel.cache.clear.config: Очистить кэш конфигурации
 panel.cache.clear.images: Очистить кэш изображений
 panel.cache.clear.pages: Очистить кэш страниц
 panel.cache.cleared: Кэш очищается
+panel.cache.cleared.all: Все кэши очищены
+panel.cache.cleared.config: Кэш конфигурации очищен
 panel.cache.cleared.images: Кэш изображений очищен
 panel.cache.cleared.pages: Кэш страниц очищен
 panel.cache.error: Невозможно очистить кэш

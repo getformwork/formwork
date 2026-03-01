@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Archivo de respaldo inválido
 panel.backup.error.cannotMake: No se puede crear el respaldo. %s.
 panel.backup.ready: Respaldo listo. Iniciando descarga...
 panel.cache.clear: Limpiar caché
+panel.cache.clear.all: Limpiar todas las cachés
+panel.cache.clear.config: Limpiar caché de configuración
 panel.cache.clear.images: Limpiar caché de imágenes
 panel.cache.clear.pages: Limpiar caché de páginas
 panel.cache.cleared: Caché limpiada
+panel.cache.cleared.all: Todas cachés limpiadas
+panel.cache.cleared.config: Caché de configuración limpiada
 panel.cache.cleared.images: Caché de imágenes limpiada
 panel.cache.cleared.pages: Caché de páginas limpiada
 panel.cache.error: No se puede limpiar la caché

@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Fișier de backup invalid
 panel.backup.error.cannotMake: Nu se poate crea backup-ul. %s.
 panel.backup.ready: Backup gata. Încep descărcarea...
 panel.cache.clear: Golește cache-ul
+panel.cache.clear.all: Golește toate cache-urile
+panel.cache.clear.config: Golește cache-ul de configurare
 panel.cache.clear.images: Golește cache-ul de imagini
 panel.cache.clear.pages: Golește cache-ul de pagini
 panel.cache.cleared: Cache golit
+panel.cache.cleared.all: Toate cache-urile au fost golite
+panel.cache.cleared.config: Cache-ul de configurare a fost golit
 panel.cache.cleared.images: Cache-ul de imagini a fost golit
 panel.cache.cleared.pages: Cache-ul de pagini a fost golit
 panel.cache.error: Nu se poate goli cache-ul

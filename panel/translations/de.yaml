@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Ungültige Sicherungsdatei
 panel.backup.error.cannotMake: Sicherung kann nicht erstellt werden. %s.
 panel.backup.ready: Sicherung bereit. Download wird gestartet...
 panel.cache.clear: Cache leeren
+panel.cache.clear.all: Alle Caches löschen
+panel.cache.clear.config: Konfigurations-Cache löschen
 panel.cache.clear.images: Bilder-Cache löschen
 panel.cache.clear.pages: Seiten-Cache löschen
 panel.cache.cleared: Cache geleert
+panel.cache.cleared.all: Alle Caches wurden geleert
+panel.cache.cleared.config: Konfigurations-Cache wurde geleert
 panel.cache.cleared.images: Bilder-Cache geleert
 panel.cache.cleared.pages: Seiten-Cache geleert
 panel.cache.error: Cache kann nicht gelöscht werden

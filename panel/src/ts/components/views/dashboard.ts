@@ -9,6 +9,9 @@ export class Dashboard {
         const clearCacheCommand = $("[data-view=dashboard] [data-command=clear-cache]");
         const clearPagesCacheCommand = $("[data-view=dashboard] [data-command=clear-pages-cache]");
         const clearImagesCacheCommand = $("[data-view=dashboard] [data-command=clear-images-cache]");
+        const clearConfigCacheCommand = $("[data-view=dashboard] [data-command=clear-config-cache]");
+        const clearAllCacheCommand = $("[data-view=dashboard] [data-command=clear-all-cache]");
+
         const chart = $(".dashboard-chart");
 
         const clearCache = (type?: string) => {
@@ -36,6 +39,14 @@ export class Dashboard {
 
         if (clearImagesCacheCommand) {
             clearImagesCacheCommand.addEventListener("click", () => clearCache("images"));
+        }
+
+        if (clearConfigCacheCommand) {
+            clearConfigCacheCommand.addEventListener("click", () => clearCache("config"));
+        }
+
+        if (clearAllCacheCommand) {
+            clearAllCacheCommand.addEventListener("click", () => clearCache("all"));
         }
 
         if (chart) {

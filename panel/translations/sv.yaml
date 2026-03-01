@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Ogiltig säkerhetskopifil
 panel.backup.error.cannotMake: Kan inte skapa säkerhetskopia. %s.
 panel.backup.ready: Säkerhetskopian är klar. Startar nedladdning...
 panel.cache.clear: Rensa cache
+panel.cache.clear.all: Rensa alla cacheminnen
+panel.cache.clear.config: Rensa konfigurationscache
 panel.cache.clear.images: Rensa bildcache
 panel.cache.clear.pages: Rensa sidcache
 panel.cache.cleared: Cache rensad
+panel.cache.cleared.all: Alla cacheminnen rensade
+panel.cache.cleared.config: Konfigurationscache rensad
 panel.cache.cleared.images: Bildcache rensad
 panel.cache.cleared.pages: Sidcache rensad
 panel.cache.error: Kan inte rensa cache

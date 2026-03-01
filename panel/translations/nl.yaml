@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Ongeldig back-upbestand
 panel.backup.error.cannotMake: Kan backup niet aanmaken. %s.
 panel.backup.ready: Backup gereed. Start downloaden...
 panel.cache.clear: Cache legen
+panel.cache.clear.all: Alle caches legen
+panel.cache.clear.config: Configuratiecache legen
 panel.cache.clear.images: Cache voor afbeeldingen legen
 panel.cache.clear.pages: Cache voor pagina's legen
 panel.cache.cleared: Cache geleegd
+panel.cache.cleared.all: Alle caches geleegd
+panel.cache.cleared.config: Configuratiecache geleegd
 panel.cache.cleared.images: Afbeeldingscache geleegd
 panel.cache.cleared.pages: Pagina-cache geleegd
 panel.cache.error: Kan cache niet legen
