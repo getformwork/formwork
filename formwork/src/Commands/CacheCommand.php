@@ -4,9 +4,12 @@ namespace Formwork\Commands;
 
 use Formwork\Cache\FilesCache;
 use Formwork\Cms\App;
+use Formwork\Services\Loaders\ConfigServiceLoader;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 /**
  * @since 2.1.0
@@ -19,6 +22,8 @@ final class CacheCommand implements CommandInterface
     private CLImate $climate;
 
     private App $app;
+
+    private ?LoggerInterface $logger = null;
 
     /**
      * @var array<string, array{description: string}>
@@ -65,6 +70,10 @@ final class CacheCommand implements CommandInterface
         $this->app = App::instance();
         $this->app->load();
 
+        if ($this->app->hasService(LoggerInterface::class)) {
+            $this->logger = $this->app->getService(LoggerInterface::class);
+        }
+
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
             exit(0);
@@ -103,21 +112,19 @@ final class CacheCommand implements CommandInterface
     {
         switch ($type) {
             case 'all':
-                $this->clearConfigCache();
-                $this->clearImagesCache();
-                $this->clearPagesCache();
+                $this->clearCaches(['pages' => true, 'images' => true, 'config' => true]);
                 $this->climate->green('All caches cleared.');
                 break;
             case 'config':
-                $this->clearConfigCache();
+                $this->clearCaches(['config' => true]);
                 $this->climate->green('Config cache cleared.');
                 break;
             case 'pages':
-                $this->clearPagesCache();
+                $this->clearCaches(['pages' => true]);
                 $this->climate->green('Pages cache cleared.');
                 break;
             case 'images':
-                $this->clearImagesCache();
+                $this->clearCaches(['images' => true]);
                 $this->climate->green('Images cache cleared.');
                 break;
             default:
@@ -236,13 +243,29 @@ final class CacheCommand implements CommandInterface
     }
 
     /**
-     * Clear config cache
+     * Clear specified caches
+     *
+     * @param array<string, bool> $types
      */
-    private function clearConfigCache(): void
+    private function clearCaches(array $types): void
     {
-        $path = ROOT_PATH . '/cache/config/';
-        FileSystem::delete($path, recursive: true);
-        FileSystem::createDirectory($path, recursive: true);
+        $types = Arr::filter($types, fn($clear) => $clear);
+
+        foreach (array_keys($types) as $type) {
+            switch ($type) {
+                case 'pages':
+                    $this->clearPagesCache();
+                    break;
+                case 'images':
+                    $this->clearImagesCache();
+                    break;
+                case 'config':
+                    $this->clearConfigCache();
+                    break;
+            }
+        }
+
+        $this->logger?->notice('Cache cleared ({types}) from CLI', ['types' => implode(', ', array_keys($types))]);
     }
 
     /**
@@ -269,6 +292,14 @@ final class CacheCommand implements CommandInterface
         if ($site->contentPath() !== null) {
             FileSystem::touch($site->contentPath());
         }
+    }
+
+    /**
+     * Clear config cache
+     */
+    private function clearConfigCache(): void
+    {
+        ConfigServiceLoader::clearCache();
     }
 
     /**
