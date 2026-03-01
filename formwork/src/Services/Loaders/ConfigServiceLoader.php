@@ -11,17 +11,21 @@ use Formwork\Utils\FileSystem;
 
 final class ConfigServiceLoader implements ServiceLoaderInterface
 {
+    /**
+     * Config cache path
+     */
+    private const string CACHE_PATH = ROOT_PATH . '/cache/config/';
+
     public function __construct(
         private Request $request,
     ) {}
 
     public function load(Container $container): Config
     {
-        $cachePath = ROOT_PATH . '/cache/config/';
-        $cacheFile = FileSystem::joinPaths($cachePath, "config.{$this->request->host()}.php");
+        $cacheFile = FileSystem::joinPaths(self::CACHE_PATH, "config.{$this->request->host()}.php");
 
-        if (!FileSystem::isDirectory($cachePath, assertExists: false)) {
-            FileSystem::createDirectory($cachePath, recursive: true);
+        if (!FileSystem::isDirectory(self::CACHE_PATH, assertExists: false)) {
+            FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
         }
 
         if (
@@ -56,5 +60,16 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         $this->request->session()->setDuration($config->get('system.session.duration'));
 
         return $config;
+    }
+
+    /**
+     * Clear config cache
+     *
+     * @internal
+     */
+    public static function clearCache(): void
+    {
+        FileSystem::delete(self::CACHE_PATH, recursive: true);
+        FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
     }
 }
