@@ -13,9 +13,19 @@ use UnexpectedValueException;
 final class ServeCommand implements CommandInterface
 {
     /**
+     * @var list<string> List of loopback hosts
+     */
+    private const array LOOPBACK_HOSTS = ['localhost', '127.0.0.1', '::1'];
+
+    /**
+     * @var list<string> List of wildcard hosts
+     */
+    private const array WILDCARD_HOSTS = ['0.0.0.0', '::'];
+
+    /**
      * Host to bind the server to
      */
-    private string $host = '127.0.0.1';
+    private string $host = 'localhost';
 
     /**
      * Port to bind the server to
@@ -66,7 +76,7 @@ final class ServeCommand implements CommandInterface
         $this->climate->arguments->add([
             'host' => [
                 'longPrefix'   => 'host',
-                'description'  => 'Host to bind the server to',
+                'description'  => 'Host to bind the server to (if the value is omitted, the server will bind to all interfaces)',
                 'defaultValue' => $this->host,
             ],
             'port' => [
@@ -89,7 +99,8 @@ final class ServeCommand implements CommandInterface
             ],
         ]);
 
-        $this->climate->arguments->parse();
+        // Ignore parsing errors to handle passing `--host` without a value as a flag to bind to all interfaces
+        @$this->climate->arguments->parse();
 
         if ($this->climate->arguments->get('help')) {
             $this->climate->usage($argv);
@@ -97,7 +108,9 @@ final class ServeCommand implements CommandInterface
         }
 
         /** @var string */
-        $host = $this->climate->arguments->get('host');
+        $host = $this->climate->arguments->defined('host')
+            ? ($this->climate->arguments->get('host') ?: '0.0.0.0') // Bind to all interfaces if `--host` is passed without a value
+            : $this->host;
 
         /** @var int */
         $port = $this->climate->arguments->get('port');
@@ -164,6 +177,14 @@ final class ServeCommand implements CommandInterface
                     $this->climate->br();
                     $this->climate->out(sprintf('➜ Listening on <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->formatHost($this->host), $this->port));
                     $this->climate->br();
+
+                    if (in_array($this->host, self::WILDCARD_HOSTS, true)) {
+                        foreach ($this->getLocalNetworkIps() as $localNetworkIp) {
+                            $this->climate->out(sprintf('➜ Remote address: <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->formatHost($localNetworkIp), $this->port));
+                            $this->climate->br();
+                        }
+                    }
+
                     $this->climate->out('<dark_gray>Press <bold>CTRL+C</bold> to stop</dark_gray>');
                     $this->climate->br();
                     break;
@@ -335,5 +356,35 @@ final class ServeCommand implements CommandInterface
             default:
                 throw new UnexpectedValueException(sprintf('Unexpected output type "%s"', $type));
         }
+    }
+
+    /**
+     * Get local network IP addresses, excluding loopback interfaces
+     *
+     * @return list<string>
+     */
+    private function getLocalNetworkIps(): array
+    {
+        if (($interfaces = net_get_interfaces()) === false) {
+            return [];
+        }
+
+        $localNetworkIps = [];
+
+        foreach ($interfaces as $interface) {
+            if (!isset($interface['unicast'])) {
+                continue;
+            }
+            foreach ($interface['unicast'] as $data) {
+                if (
+                    $data['family'] === AF_INET // IPv4 addresses only
+                    && !in_array($data['address'], self::LOOPBACK_HOSTS, true) // Exclude loopback address
+                ) {
+                    $localNetworkIps[] = $data['address'];
+                }
+            }
+        }
+
+        return $localNetworkIps;
     }
 }
