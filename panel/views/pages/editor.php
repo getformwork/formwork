@@ -35,6 +35,7 @@
                         <button type="button" class="dropdown-item" data-modal="duplicatePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/duplicate/') ?>" data-duplicate-title="<?= $this->escapeAttr($this->translate('panel.pages.duplicatePage.title', $page->title())) ?>" <?php if (!$page->isDuplicable()) : ?> disabled<?php endif ?>><?= $this->icon('duplicate') ?> <?= $this->translate('panel.pages.duplicatePage') ?></button>
                     <?php endif ?>
                     <?php if ($panel->user()->permissions()->has('panel.pages.delete')) : ?>
+                        <hr class="dropdown-separator">
                         <button type="button" class="dropdown-item" data-modal="deletePageModal" data-modal-action="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/delete/' . ($currentLanguage ? 'language/' . $currentLanguage . '/' : '')) ?>" <?php if (!$page->isDeletable()) : ?> disabled<?php endif ?>><?= $this->icon('trash') ?> <?= $this->translate('panel.pages.deletePage') ?></button>
                     <?php endif ?>
                 </div>

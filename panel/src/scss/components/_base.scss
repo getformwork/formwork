@@ -92,6 +92,12 @@ blockquote {
     margin: 1rem 0;
 }
 
+hr {
+    border: 0;
+    border-top: 1px solid var(--color-base-500);
+    margin: 1rem 0;
+}
+
 [hidden] {
     display: none;
 }

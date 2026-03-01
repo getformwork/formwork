@@ -132,6 +132,11 @@
     height: 0;
     border-top: 1px solid var(--color-base-500);
     margin: 0.25rem 0;
+
+    &:first-child,
+    &:last-child {
+        display: none;
+    }
 }
 
 .dropdown-list .dropdown-item > .dropdown-thumb {
