@@ -69,7 +69,7 @@ final class Statistics
         $userAgent = $this->request->userAgent();
 
         // Prefer speed over security for hashing, as it's not a security-critical operation
-        $hash = hash('xxh3', "{$date}{$ip}{$uri}{$userAgent}");
+        $hash = hash('xxh3', "{$date}|{$ip}|{$uri}|{$userAgent}");
 
         if (
             $this->registries['sessions']->has($hash)
@@ -86,7 +86,7 @@ final class Statistics
 
         $todayUniqueVisits = $this->registries['uniqueVisits']->has($date) ? (int) $this->registries['uniqueVisits']->get($date) : 0;
 
-        $visitor = hash('xxh3', "{$date}{$ip}{$userAgent}");
+        $visitor = hash('xxh3', "{$date}|{$ip}|{$userAgent}");
 
         // Remove legacy trackable visitor key based on IP
         /** @todo remove this logic in Formwork 3.0.0 */
