@@ -183,6 +183,16 @@ final class App
     }
 
     /**
+     * Check if a service is defined in the container
+     *
+     * @param class-string<T>|string $name
+     */
+    public function hasService(string $name): bool
+    {
+        return $this->container->has($name);
+    }
+
+    /**
      * Get a service from the container
      *
      * @template T of object
