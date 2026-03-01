@@ -61,13 +61,15 @@ final class Statistics
             return;
         }
 
+        $timestamp = time();
+        $date = date(self::DATE_FORMAT, $timestamp);
+
         $ip = IpAnonymizer::anonymize($this->request->ip());
         $uri = Str::append(Uri::make(['query' => '', 'fragment' => ''], $this->request->uri()), '/');
+        $userAgent = $this->request->userAgent();
 
         // Prefer speed over security for hashing, as it's not a security-critical operation
-        $hash = hash('xxh3', "{$ip}@{$uri}");
-
-        $timestamp = time();
+        $hash = hash('xxh3', "{$date}{$ip}{$uri}{$userAgent}");
 
         if (
             $this->registries['sessions']->has($hash)
@@ -79,18 +81,27 @@ final class Statistics
 
         $this->registries['sessions']->set($hash, $timestamp);
 
-        $date = date(self::DATE_FORMAT, $timestamp);
-
         $todayVisits = $this->registries['visits']->has($date) ? (int) $this->registries['visits']->get($date) : 0;
         $this->registries['visits']->set($date, $todayVisits + 1);
 
         $todayUniqueVisits = $this->registries['uniqueVisits']->has($date) ? (int) $this->registries['uniqueVisits']->get($date) : 0;
-        if (!$this->registries['visitors']->has($ip) || $this->registries['visitors']->get($ip) !== $date) {
+
+        $visitor = hash('xxh3', "{$date}{$ip}{$userAgent}");
+
+        // Remove legacy trackable visitor key based on IP
+        /** @todo remove this logic in Formwork 3.0.0 */
+        if ($this->registries['visitors']->has($ip)) {
+            $lastVisit = $this->registries['visitors']->get($ip);
+            $this->registries['visitors']->remove($ip);
+            $this->registries['visitors']->set($visitor, $lastVisit);
+        }
+
+        if (!$this->registries['visitors']->has($visitor) || $this->registries['visitors']->get($visitor) !== $date) {
             $this->registries['uniqueVisits']->set($date, $todayUniqueVisits + 1);
             $this->registries['uniqueVisits']->save();
         }
 
-        $this->registries['visitors']->set($ip, $date);
+        $this->registries['visitors']->set($visitor, $date);
 
         $pageViews = $this->registries['pageViews']->has($uri) ? (int) $this->registries['pageViews']->get($uri) : 0;
         $this->registries['pageViews']->set($uri, $pageViews + 1);
