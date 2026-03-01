@@ -111,7 +111,7 @@ return function (App $app): array {
                 try {
                     return date($format, Date::toTimestamp($value, $inputFormats));
                 } catch (InvalidArgumentException $e) {
-                    throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')));
+                    throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s":%s', $field->name(), $field->type(), Str::after($e->getMessage(), ':')), null, [], $e->getCode(), $e);
                 }
             },
         ],
