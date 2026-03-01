@@ -59,7 +59,7 @@ final class Backupper
         }
 
         if (is_int($status) && $status !== ZipArchive::ER_OK) {
-            // @phpstan-ignore-next-line
+            /** @var key-of<ZipErrors::ERROR_MESSAGES> $status */
             throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
         }
 
