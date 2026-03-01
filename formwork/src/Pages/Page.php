@@ -600,11 +600,19 @@ class Page extends Model implements Stringable
     }
 
     /**
-     * Return all page media files (images and videos)
+     * Return all page audios
+     */
+    public function audios(): FileCollection
+    {
+        return $this->files()->filterBy('type', 'audio');
+    }
+
+    /**
+     * Return all page media files (images, videos, and audios)
      */
     public function media(): FileCollection
     {
-        return $this->files()->filterBy('type', fn(string $type) => in_array($type, ['image', 'video'], true));
+        return $this->files()->filterBy('type', fn(string $type) => in_array($type, ['image', 'video', 'audio'], true));
     }
 
     /**
