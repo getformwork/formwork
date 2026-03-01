@@ -12,7 +12,7 @@ panel.cache.clear.config: Limpiar caché de configuración
 panel.cache.clear.images: Limpiar caché de imágenes
 panel.cache.clear.pages: Limpiar caché de páginas
 panel.cache.cleared: Caché limpiada
-panel.cache.cleared.all: Todas cachés limpiadas
+panel.cache.cleared.all: Todas las cachés limpiadas
 panel.cache.cleared.config: Caché de configuración limpiada
 panel.cache.cleared.images: Caché de imágenes limpiada
 panel.cache.cleared.pages: Caché de páginas limpiada
