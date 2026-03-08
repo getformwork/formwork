@@ -94,6 +94,10 @@
     font-family: var(--font-family-mono);
 }
 
+.text-uppercase {
+    text-transform: uppercase;
+}
+
 @include make-util(
     "whitespace",
     "white-space",
