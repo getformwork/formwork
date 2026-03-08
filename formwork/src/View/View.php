@@ -186,6 +186,20 @@ class View
     }
 
     /**
+     * Return whether the specified block is defined
+     *
+     * @throws RenderingException If called outside of rendering context
+     */
+    public function defined(string $block): bool
+    {
+        if (!$this->rendering) {
+            throw new RenderingException(sprintf('%s() is allowed only in rendering context', __METHOD__));
+        }
+
+        return isset($this->blocks[$block]);
+    }
+
+    /**
      * End the capturing of last block
      *
      * @throws RenderingException If called outside of rendering context
@@ -296,6 +310,8 @@ class View
 
         if (isset($this->layout)) {
             $this->layout->vars = $this->vars;
+            $this->layout->blocks = $this->blocks;
+
             $contents = ob_get_contents();
 
             if ($contents === false) {
