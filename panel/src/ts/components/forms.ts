@@ -7,7 +7,9 @@ export class Forms {
     constructor() {
         $$("[data-form]").forEach((element: HTMLFormElement) => {
             if (element.dataset.form) {
-                this[element.dataset.form] = new Form(element);
+                this[element.dataset.form] = new Form(element, {
+                    preventUnloadOnChanges: element.dataset.ignoreChanges !== "true",
+                });
             }
         });
     }
