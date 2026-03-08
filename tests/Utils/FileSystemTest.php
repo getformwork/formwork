@@ -796,6 +796,7 @@ final class FileSystemTest extends TestCase
 
     public function testListDirectoriesIncludingHidden(): void
     {
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/dir/.hiddendir');
         $dirs = iterator_to_array(FileSystem::listDirectories(TESTS_TMP_PATH . '/dir', includeHidden: true));
         $this->assertContains('.hiddendir', $dirs);
     }
