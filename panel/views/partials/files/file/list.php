@@ -57,7 +57,7 @@
                     <a class="dropdown-item" data-command="previewFile" href="" target=""><?= $this->icon('eye') ?> <?= $this->translate('panel.pages.previewFile') ?></a>
                     <hr class="dropdown-separator">
                     <?php if ($panel->user()->permissions()->has('panel.pages.renameFiles')) : ?>
-                        <button type="button" class="dropdown-item" data-command="renameFile" data-modal="renameFileItemModal" data-action=""><?= $this->icon('pencil') ?> <?= $this->translate('panel.pages.renameFile') ?></button>
+                        <button type="button" class="dropdown-item" data-command="renameFile" data-modal="renameFileItemModal" data-action=""><?= $this->icon('input-text') ?> <?= $this->translate('panel.pages.renameFile') ?></button>
                     <?php endif ?>
                     <?php if ($panel->user()->permissions()->has('panel.pages.replaceFiles')) : ?>
                         <button type="button" class="dropdown-item" data-command="replaceFile" data-action="" data-mimetype=""><?= $this->icon('cloud-upload') ?> <?= $this->translate('panel.pages.replaceFile') ?></button>

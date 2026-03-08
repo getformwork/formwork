@@ -15,7 +15,7 @@ buttons:
 
     submit:
         action: command
-        icon: pencil
+        icon: input-text
         label: '{{panel.modal.action.rename}}'
         align: right
         command: rename-file

@@ -22,14 +22,14 @@ function readSVGFiles(dir) {
 }
 
 function generateModule(svgs) {
-    let content = "// This file is auto-generated. Do not edit directly.\n\n";
+    let content = "// This file is auto-generated. Do not edit directly.\n";
 
     svgs.forEach(({ name, svg }) => {
         const cleanedSVG = svg
             .replace(/\r?\n|\r/g, " ")
             .replace(/\s+/g, " ")
             .trim();
-        content += `export const ${name} = \`${cleanedSVG}\\n\`;\n\n`;
+        content += `\nexport const ${name} = \`${cleanedSVG}\\n\`;\n`;
     });
 
     return content;
