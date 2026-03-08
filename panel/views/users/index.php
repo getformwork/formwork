@@ -31,7 +31,12 @@
                 <div class="users-item-cell user-email truncate show-from-md"><?= $this->escape($user->email()) ?></div>
                 <div class="users-item-cell user-last-access truncate show-from-sm"><?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?></div>
                 <div class="users-item-cell user-actions">
-                    <button type="button" class="button button-link" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri("/users/{$user->username()}/delete/") ?>" title="<?= $this->translate('panel.users.deleteUser') ?>" aria-label="<?= $this->translate('panel.users.deleteUser') ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?></button>
+                    <div class="dropdown">
+                        <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.user.actions') ?>" aria-label="<?= $this->translate('panel.user.actions') ?>" data-dropdown="dropdown-user-<?= $user->username() ?>"><?= $this->icon('ellipsis-v') ?></button>
+                        <div class="dropdown-menu" id="dropdown-user-<?= $user->username() ?>">
+                            <button type="button" class="dropdown-item" data-modal="deleteUserModal" data-modal-action="<?= $panel->uri("/users/{$user->username()}/delete/") ?>" <?php if (!$panel->user()->canDeleteUser($user)) : ?>disabled<?php endif ?>><?= $this->icon('trash') ?> <?= $this->translate('panel.users.deleteUser') ?></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         <?php endforeach ?>
