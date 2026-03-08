@@ -35,20 +35,41 @@ final class Debug
             overflow-x: auto;
         }
 
+        .color-scheme-dark .__formwork-dump {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+
         .__formwork-dump .__type-bool {
             color: #75438a;
+        }
+
+        .color-scheme-dark .__formwork-dump .__type-bool {
+            color: #d48cf2;
         }
 
         .__formwork-dump .__type-number {
             color: #75438a;
         }
 
+        .color-scheme-dark .__formwork-dump .__type-number {
+            color: #d48cf2;
+        }
+
         .__formwork-dump .__type-string {
             color: #b35e14;
         }
 
+        .color-scheme-dark .__formwork-dump .__type-string {
+            color: #ea9143;
+        }
+
         .__formwork-dump .__type-null {
             color: #75438a;
+        }
+
+        .color-scheme-dark .__formwork-dump .__type-null {
+            color: #d48cf2;
         }
 
         .__formwork-dump .__note,
@@ -56,6 +77,11 @@ final class Debug
             color: #777;
             cursor: default;
             font-size: 0.875em;
+        }
+
+        .color-scheme-dark .__formwork-dump .__note,
+        .color-scheme-dark .__formwork-dump .__ref {
+            color: #aaa;
         }
 
         .__formwork-dump .__visibility {
@@ -85,21 +111,43 @@ final class Debug
             color: #047d65;
         }
 
+        .color-scheme-dark .__formwork-dump .__type-name,
+        .color-scheme-dark .__formwork-dump .__type-array {
+            color: #07dfb3;
+        }
+
         .__formwork-dump .__type-property {
             color: #1d75b3;
+        }
+
+        .color-scheme-dark .__formwork-dump .__type-property {
+            color: #40abf7;
         }
 
         .__formwork-dump .__type-keyword {
             color: #dd4a68;
         }
 
+        .color-scheme-dark .__formwork-dump .__type-keyword {
+            color: #ff5c7c;
+        }
+
         .__formwork-dump .__ref:target {
             background-color: #ff0;
+        }
+
+        .color-scheme-dark .__formwork-dump .__ref:target {
+            background-color: #925e0a;
         }
 
         .__formwork-dump .__ref a,
         .__formwork-dump .__ref a:hover {
             color: #1d75b3;
+        }
+
+        .color-scheme-dark .__formwork-dump .__ref a,
+        .color-scheme-dark .__formwork-dump .__ref a:hover {
+            color: #40abf7;
         }
 
         .__formwork-dump-collapsed {

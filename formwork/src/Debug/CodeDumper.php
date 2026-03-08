@@ -34,6 +34,11 @@ final class CodeDumper
                 text-align: left;
             }
 
+            .color-scheme-dark .__formwork-code {
+                background-color: #333;
+                color: #f0f0f0;
+            }
+
             .__formwork-code .__line {
                 color: #aaa;
                 user-select: none;
@@ -44,32 +49,65 @@ final class CodeDumper
                 border-radius: 4px;
             }
 
+            .color-scheme-dark .__formwork-code .__highlighted-line {
+                background-color: #665600;
+                color: #f0f0f0;
+            }
+
             .__formwork-code .__type-number {
                 color: #75438a;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-number {
+                color: #d48cf2;
             }
 
             .__formwork-code .__type-string {
                 color: #b35e14;
             }
 
+            .color-scheme-dark .__formwork-code .__type-string {
+                color: #ea9143;
+            }
+
             .__formwork-code .__type-null {
                 color: #75438a;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-null {
+                color: #d48cf2;
             }
 
             .__formwork-code .__type-comment {
                 color: #777;
             }
 
+            .color-scheme-dark .__formwork-code .__type-comment {
+                color: #888;
+            }
+
             .__formwork-code .__type-name {
                 color: #047d65;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-name {
+                color: #07dfb3;
             }
 
             .__formwork-code .__type-var {
                 color: #1d75b3;
             }
 
+            .color-scheme-dark .__formwork-code .__type-var {
+                color: #40abf7;
+            }
+
             .__formwork-code .__type-keyword {
                 color: #dd4a68;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-keyword {
+                color: #ff5c7c;
             }
 
             .__formwork-trace-call {
@@ -82,8 +120,17 @@ final class CodeDumper
                 font-size: 13px;
             }
 
+            .color-scheme-dark .__formwork-trace-call {
+                background-color: #333;
+                color: #f0f0f0;
+            }
+
             .__formwork-trace-call .__name {
                 color: #047d65;
+            }
+
+            .color-scheme-dark .__formwork-trace-call .__name {
+                color:  #07dfb3;
             }
 
             .__formwork-trace-params {
@@ -112,11 +159,13 @@ final class CodeDumper
                 padding-right: 8px;
             }
 
+            .color-scheme-dark .__formwork-trace-params .__param-name {
+                color:  #40abf7;
+            }
+
             .__formwork-trace-params code {
                 padding: 2px 4px;
                 border-radius: 4px;
-                background-color: #f0f0f0;
-                color: inherit;
                 font-size: inherit;
             }
 
@@ -172,7 +221,7 @@ final class CodeDumper
             return;
         }
 
-        $result = sprintf('<div class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</div>', $frame['class'] ?? '', $frame['type'] ?? '', $frame['function']);
+        $result = sprintf('<pre class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</pre>', $frame['class'] ?? '', $frame['type'] ?? '', $frame['function']);
 
         $parameterCount = 0;
 
