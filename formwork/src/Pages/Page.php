@@ -601,6 +601,8 @@ class Page extends Model implements Stringable
 
     /**
      * Return all page audios
+     *
+     * @since 2.3.6
      */
     public function audios(): FileCollection
     {

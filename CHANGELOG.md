@@ -1,5 +1,16 @@
 # Changelog
 
+# [2.3.6](https://github.com/getformwork/formwork/releases/tag/2.3.6)
+
+**Enhancements**
+- **Add the possibility to define panel navigation item children (tabs, useful for plugins)**
+- **Reduce statistics visits and visitors identifiability**
+- **Add proper dark color scheme support to `Debug` and `CodeDumper`**
+- Add tooltip to page status in the editor view
+- Add separators to dropdowns for better visual organization
+- Add `App::hasService()`
+- Add `Page::audios()` method and allow audio files by default
+
 # [2.3.5](https://github.com/getformwork/formwork/releases/tag/2.3.5)
 
 **Enhancements**

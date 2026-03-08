@@ -64,7 +64,7 @@ final class App
     /**
      * Current Formwork version
      */
-    public const string VERSION = '2.3.5';
+    public const string VERSION = '2.3.6';
 
     /**
      * App services container
@@ -184,6 +184,8 @@ final class App
 
     /**
      * Check if a service is defined in the container
+     *
+     * @since 2.3.6
      *
      * @param class-string<T>|string $name
      */
