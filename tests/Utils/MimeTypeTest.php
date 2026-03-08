@@ -41,7 +41,7 @@ final class MimeTypeTest extends TestCase
         Environment::disableExtension('fileinfo');
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('requires the extension "fileinfo" to be enabled');
-        MimeType::fromFile(__DIR__ . '/fixtures/MimeType/sample.html');
+        MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/sample.html');
     }
 
     public function testExtensions(): void
