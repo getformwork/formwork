@@ -6,6 +6,7 @@ use BadMethodCallException;
 use ErrorException;
 use Formwork\Assets\Assets;
 use Formwork\Authentication\Authenticator;
+use Formwork\Backup\Backupper;
 use Formwork\Cache\CacheManager;
 use Formwork\Cms\Events\ExceptionThrownEvent;
 use Formwork\Cms\Events\ResponseBeforeSendEvent;
@@ -50,6 +51,7 @@ use Formwork\Templates\TemplateFactory;
 use Formwork\Templates\Templates;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
+use Formwork\Updater\Updater;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\Utils\Str;
@@ -368,6 +370,12 @@ final class App
         $container->define(Plugins::class)
             ->loader(PluginsServiceLoader::class)
             ->alias('plugins');
+
+        $container->define(Backupper::class)
+            ->parameter('options', fn(Config $config) => $config->get('system.backup'));
+
+        $container->define(Updater::class)
+            ->parameter('options', fn(Config $config) => $config->get('system.updates'));
     }
 
     /**

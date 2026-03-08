@@ -3,8 +3,11 @@
 namespace Formwork\Backup;
 
 use Formwork\Backup\Utils\ZipErrors;
+use Formwork\Cms\App;
 use Formwork\Exceptions\TranslatedException;
+use Formwork\Http\Request;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 use RuntimeException;
 use ZipArchive;
 
@@ -13,12 +16,13 @@ final class Backupper
     /**
      * Date format used in backup archive name
      */
-    private const string DATE_FORMAT = 'YmdHis';
+    private const string DATE_FORMAT = 'Ymd-His';
 
     /**
-     * @param array<mixed> $options
+     * @param array<string, mixed> $options
      */
     public function __construct(
+        private Request $request,
         private array $options,
     ) {
         if (!extension_loaded('zip')) {
@@ -31,7 +35,7 @@ final class Backupper
      *
      * @return string Backup archive file path
      */
-    public function backup(): string
+    public function backup(?string $name = null, ?string $hostname = null): string
     {
         $previousMaxExecutionTime = ini_set('max_execution_time', $this->options['maxExecutionTime']);
 
@@ -42,9 +46,21 @@ final class Backupper
             FileSystem::createDirectory($this->options['path'], recursive: true);
         }
 
-        $name = sprintf('%s-%s-%s.zip', str_replace([' ', '.'], '-', $this->options['hostname'] ?? 'unknown-host'), $this->options['name'], date(self::DATE_FORMAT));
+        $date = date(self::DATE_FORMAT);
 
-        $destination = FileSystem::joinPaths($path, $name);
+        $suffix = "-{$date}.zip";
+
+        $name = Str::interpolate($name ?? $this->options['name'], [
+            'hostname' => str_replace('.', '-', $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
+            'site'     => Str::slug(App::instance()->site()->title() ?? 'unknown-site'),
+            'context'  => PHP_SAPI === 'cli' ? 'cli' : 'web',
+            'version'  => App::VERSION,
+            'random'   => FileSystem::randomName(),
+        ]);
+
+        $filename = rtrim(substr($name, 0, 75 - strlen($suffix)), '-_') . $suffix;
+
+        $destination = FileSystem::joinPaths($path, $filename);
 
         $zipArchive = new ZipArchive();
 

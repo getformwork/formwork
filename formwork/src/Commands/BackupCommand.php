@@ -104,8 +104,8 @@ final class BackupCommand implements CommandInterface
     {
         $this->climate->out('Creating backup... this may take a while depending on the size of your installation.');
         /** @var string $hostname */
-        $hostname = $this->climate->arguments->get('hostname') ?: null;
-        $file = $this->getBackupper($hostname)->backup();
+        $hostname = $this->climate->arguments->get('hostname') ?: (gethostname() ?: 'local-cli');
+        $file = $this->app->getService(Backupper::class)->backup(hostname: $hostname);
         $this->climate->br()->out(sprintf('<green>Backup created:</green> %s', $file));
     }
 
@@ -116,7 +116,7 @@ final class BackupCommand implements CommandInterface
      */
     public function list(array $argv = []): void
     {
-        $backups = $this->getBackupper()->getBackups();
+        $backups = $this->app->getService(Backupper::class)->getBackups();
         if (count($backups) === 0) {
             $this->climate->green('No backups found.');
             return;
@@ -129,14 +129,6 @@ final class BackupCommand implements CommandInterface
 
             $this->climate->out(sprintf('  <light_gray>[%s]</light_gray> %s <cyan>%s</cyan>', $time, $name, $size));
         }
-    }
-
-    /**
-     * Get Backupper instance
-     */
-    private function getBackupper(?string $hostname = null): Backupper
-    {
-        return new Backupper([...$this->app->config()->getArray('system.backup'), 'hostname' => $hostname ?? (gethostname() ?: 'local-cli')]);
     }
 
     /**

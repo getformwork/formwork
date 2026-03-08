@@ -18,13 +18,12 @@ final class BackupController extends AbstractController
     /**
      * Backup@make action
      */
-    public function make(): JsonResponse|Response
+    public function make(Backupper $backupper): JsonResponse|Response
     {
         if (!$this->hasPermission('panel.backup.make')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {

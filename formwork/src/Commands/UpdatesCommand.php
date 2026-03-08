@@ -117,10 +117,10 @@ final class UpdatesCommand implements CommandInterface
     {
         $force = $this->climate->arguments->defined('force');
 
-        $updater = $this->getUpdater(['force' => $force]);
+        $updater = $this->app->getService(Updater::class);
 
         try {
-            $upToDate = $updater->checkUpdates();
+            $upToDate = $updater->checkUpdates($force);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
             exit(1);
@@ -158,14 +158,10 @@ final class UpdatesCommand implements CommandInterface
         $backup = !$this->climate->arguments->defined('no-backup');
         $preferDist = !$this->climate->arguments->defined('no-prefer-dist');
         $cleanup = !$this->climate->arguments->defined('no-cleanup');
-        $updater = $this->getUpdater([
-            'force'               => $force,
-            'preferDistAssets'    => $preferDist,
-            'cleanupAfterInstall' => $cleanup,
-        ]);
+        $updater = $this->app->getService(Updater::class);
 
         try {
-            $upToDate = $updater->checkUpdates();
+            $upToDate = $updater->checkUpdates(force: $force, preferDistAssets: $preferDist);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
             exit(1);
@@ -184,9 +180,9 @@ final class UpdatesCommand implements CommandInterface
 
         if ($backup) {
             $this->climate->out('Creating backup before update... this may take a while depending on the size of your installation and site.');
-            $backupper = $this->getBackupper();
             try {
-                $backupper->backup();
+                $this->app->getService(Backupper::class)
+                    ->backup(hostname: gethostname() ?: 'local-cli');
             } catch (RuntimeException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
                 exit(1);
@@ -196,7 +192,7 @@ final class UpdatesCommand implements CommandInterface
 
         try {
             $this->climate->out("Updating <bold>Formwork</bold> to <bold><green>{$release['tag']}</green></bold>...");
-            $updater->update();
+            $updater->update(force: $force, preferDistAssets: $preferDist, cleanupAfterInstall: $cleanup);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot install updates: {$e->getMessage()}");
             exit(1);
@@ -212,24 +208,6 @@ final class UpdatesCommand implements CommandInterface
         }
 
         $this->climate->out("<bold>Formwork</bold> has been updated successfully to <bold><green>{$release['tag']}</green></bold>.");
-    }
-
-    /**
-     * Get Updater instance
-     *
-     * @param array<string, mixed> $config
-     */
-    private function getUpdater(array $config): Updater
-    {
-        return new Updater([...$this->app->config()->getArray('system.updates'), ...$config], App::instance());
-    }
-
-    /**
-     * Get Backupper instance
-     */
-    private function getBackupper(): Backupper
-    {
-        return new Backupper([...$this->app->config()->getArray('system.backup'), 'hostname' => gethostname() ?: 'local-cli']);
     }
 
     /**

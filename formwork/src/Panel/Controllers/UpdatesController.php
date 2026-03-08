@@ -47,14 +47,14 @@ final class UpdatesController extends AbstractController
     public function update(
         Updater $updater,
         #[Service('cache.pages')]
-        AbstractCache $cache
+        AbstractCache $cache,
+        Backupper $backupper,
     ): JsonResponse|Response {
         if (!$this->hasPermission('panel.updates.update')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        if ($this->config->getBool('system.updates.backupBefore')) {
-            $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
+        if ($this->config->get('system.updates.backupBefore')) {
             try {
                 $backupper->backup();
             } catch (TranslatedException) {

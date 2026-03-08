@@ -20,7 +20,6 @@ use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Translations\Translations;
-use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 
@@ -55,9 +54,6 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
             $container->resolve(RateLimiter::class);
         }
-
-        $container->define(Updater::class)
-            ->parameter('options', $this->config->getArray('system.updates'));
 
         if ($this->config->has('system.panel.sessionTimeout')) {
             trigger_error('The "system.panel.sessionTimeout" configuration option (in minutes) is deprecated since Formwork 2.3.0. Use "system.session.duration" (in seconds) instead.', E_USER_DEPRECATED);
