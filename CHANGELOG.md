@@ -1,5 +1,10 @@
 # Changelog
 
+# [2.3.7](https://github.com/getformwork/formwork/releases/tag/2.3.7)
+
+**Bug fixes**
+- Fix login form showing unsaved changes dialog on page update
+
 # [2.3.6](https://github.com/getformwork/formwork/releases/tag/2.3.6)
 
 **Enhancements**
