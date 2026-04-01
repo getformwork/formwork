@@ -38,7 +38,7 @@
         "@codemirror/commands": "^6.10.2",
         "@codemirror/lang-markdown": "^6.5.0",
         "@codemirror/language": "^6.12.2",
-        "@codemirror/state": "^6.5.4",
+        "@codemirror/state": "^6.6.0",
         "@codemirror/view": "^6.39.15",
         "@lezer/highlight": "^1.2.3",
         "chartist": "^1.5.0",
