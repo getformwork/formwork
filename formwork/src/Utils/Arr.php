@@ -77,12 +77,10 @@ final class Arr
         $key = array_pop($segments);
         foreach ($segments as $segment) {
             if (!array_key_exists($segment, $array)) {
-                // @phpstan-ignore parameterByRef.type
                 $array[$segment] = [];
             }
             $array = &$array[$segment];
         }
-        // @phpstan-ignore parameterByRef.type
         $array[$key] = $value;
     }
 
