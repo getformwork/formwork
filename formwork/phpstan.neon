@@ -12,6 +12,7 @@ parameters:
 		- ../panel/views
 		- ../site/templates
 		- ../site/plugins
+		- ../tests
 		- ../vendor
 	scanFiles:
 		- ../index.php

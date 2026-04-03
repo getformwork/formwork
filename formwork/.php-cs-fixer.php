@@ -4,7 +4,7 @@ namespace PhpCsFixer;
 
 $finder = Finder::create()
     ->in(dirname(__DIR__))
-    ->exclude(['cache', 'formwork/views', 'panel/node_modules', 'panel/views', 'site/plugins', 'site/templates']);
+    ->exclude(['cache', 'formwork/views', 'panel/node_modules', 'panel/views', 'site/plugins', 'site/templates', 'tests']);
 
 $config = new Config();
 
@@ -51,4 +51,5 @@ return $config
         'single_quote' => true,
         'string_implicit_backslashes' => true,
     ])
-    ->setFinder($finder);
+    ->setFinder($finder)
+    ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache');

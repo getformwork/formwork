@@ -38,11 +38,13 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^2.0.3",
-        "rector/rector": "^2.0.3"
+        "rector/rector": "^2.0.3",
+        "phpunit/phpunit": "^12.0"
     },
     "scripts": {
-        "fix": "php-cs-fixer fix --config=formwork/.php-cs-fixer.php --cache-file=formwork/.php-cs-fixer.cache --verbose",
-        "fix:check": "php-cs-fixer check --config=formwork/.php-cs-fixer.php --cache-file=formwork/.php-cs-fixer.cache",
+        "fix": "php-cs-fixer fix --config=formwork/.php-cs-fixer.php --verbose",
+        "fix:check": "php-cs-fixer check --config=formwork/.php-cs-fixer.php",
+        "fix:tests": "php-cs-fixer fix tests/ --config=formwork/.php-cs-fixer.php --verbose",
         "phpstan": "phpstan analyse --configuration=formwork/phpstan.neon",
         "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
         "rector": "rector --config=formwork/.rector.php",
@@ -50,6 +52,8 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php bin/serve"
-        ]
+        ],
+        "test": "phpunit",
+        "test:coverage": "phpunit -d pcov.enabled=1 --coverage-html tests/coverage"
     }
 }
