@@ -1,5 +1,10 @@
 # Changelog
 
+# [2.3.8](https://github.com/getformwork/formwork/releases/tag/2.3.8)
+
+**Bug fixes**
+- Fix deprecated null array offset for PHP >= 8.5
+
 # [2.3.7](https://github.com/getformwork/formwork/releases/tag/2.3.7)
 
 **Bug fixes**
