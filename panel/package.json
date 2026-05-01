@@ -61,7 +61,7 @@
         "eslint-config-prettier": "^10.1.8",
         "globals": "^17.4.0",
         "postcss": "^8.5.8",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "sass": "^1.99.0",
         "stylelint": "^17.6.0",
         "stylelint-config-standard-scss": "^17.0.0",
