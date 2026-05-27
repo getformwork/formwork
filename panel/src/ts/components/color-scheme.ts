@@ -22,6 +22,8 @@ export class ColorScheme {
             document.documentElement.classList.add(`color-scheme-${colorScheme}`);
         };
 
+        const darkColorSchemeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
         const setPreferredColorScheme = (change = false) => {
             const cookies = getCookies();
             const cookieName = "formwork_preferred_color_scheme";
@@ -30,7 +32,7 @@ export class ColorScheme {
 
             if (window.matchMedia("(prefers-color-scheme: light)").matches) {
                 colorScheme = "light";
-            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            } else if (darkColorSchemeMediaQuery.matches) {
                 colorScheme = "dark";
             }
 
@@ -49,7 +51,7 @@ export class ColorScheme {
 
         window.addEventListener("beforeunload", () => setPreferredColorScheme());
         window.addEventListener("pagehide", () => setPreferredColorScheme());
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => setPreferredColorScheme(true));
+        darkColorSchemeMediaQuery.addEventListener("change", () => setPreferredColorScheme(true));
 
         if (getSupportedColorSchemes() === "light dark") {
             setPreferredColorScheme(true);

@@ -1,6 +1,6 @@
 import * as icons from "../icons";
 import { $, $$ } from "../../utils/selectors";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import { makeSearchRegExp } from "../../utils/validation";
 import { toCamelCase } from "../../utils/strings";
 
 type SelectInputListItem = {
@@ -11,7 +11,7 @@ type SelectInputListItem = {
     dataset: Record<string, string>;
 };
 
-interface SelectInputOptions {
+export interface SelectInputOptions {
     labels: {
         empty: string;
     };
@@ -22,7 +22,7 @@ export class SelectInput {
 
     readonly element: HTMLSelectElement;
 
-    private dropdown: HTMLElement;
+    private dropdown: HTMLElement = document.createElement("div");
 
     private labelInput: HTMLInputElement;
 
@@ -80,7 +80,7 @@ export class SelectInput {
 
         if (!hasWrap) {
             wrap.className = "form-input-wrap";
-            (this.element.parentNode as ParentNode).insertBefore(wrap, this.element.nextSibling);
+            this.element.after(wrap);
         }
 
         this.element.hidden = true;
@@ -101,17 +101,15 @@ export class SelectInput {
             this.labelInput.disabled = true;
         }
 
-        for (const key in this.element.dataset) {
-            this.labelInput.dataset[key] = this.element.dataset[key];
-        }
+        Object.assign(this.labelInput.dataset, this.element.dataset);
 
         const list: SelectInputListItem[] = [];
 
-        $$("option", this.element).forEach((option: HTMLOptionElement) => {
+        $$<HTMLOptionElement>("option", this.element).forEach((option) => {
             const dataset: Record<string, string> = {};
 
-            for (const key in option.dataset) {
-                dataset[key] = option.dataset[key] as string;
+            for (const [key, value] of Object.entries(option.dataset)) {
+                dataset[key] = value!;
             }
 
             list.push({
@@ -160,15 +158,10 @@ export class SelectInput {
     }
 
     removeOption(value: string) {
-        const option = $(`option[value="${value}"]`, this.element) as HTMLOptionElement;
-        if (option) {
-            option.remove();
-        }
+        const option = $<HTMLOptionElement>(`option[value="${value}"]`, this.element);
+        option?.remove();
 
-        const item = $(`.dropdown-item[data-value="${value}"]`, this.dropdown);
-        if (item) {
-            item.remove();
-        }
+        $(`.dropdown-item[data-value="${value}"]`, this.dropdown)?.remove();
 
         if (option?.selected) {
             this.selectFirstDropdownItem();
@@ -178,7 +171,7 @@ export class SelectInput {
 
     sortDropdownItems() {
         const items = $$(".dropdown-item", this.dropdown);
-        const sorted = Array.from(items).sort((a, b) => (a.dataset.value as string).localeCompare(b.dataset.value as string));
+        const sorted = [...items].sort((a, b) => (a.dataset.value ?? "").localeCompare(b.dataset.value ?? ""));
         for (const item of sorted) {
             this.dropdown.appendChild(item);
         }
@@ -209,11 +202,11 @@ export class SelectInput {
             item.insertAdjacentHTML("afterbegin", icons[icon]);
         }
 
-        for (const key in option.dataset) {
+        for (const [key, value] of Object.entries(option.dataset)) {
             if (["icon", "thumb"].includes(key)) {
                 continue;
             }
-            item.dataset[key] = option.dataset[key];
+            item.dataset[key] = value;
         }
 
         let mousedownCaptured = false;
@@ -370,30 +363,17 @@ export class SelectInput {
     }
 
     private filterDropdown(value: string) {
-        const filter = (element: HTMLElement) => {
-            if (value === "") {
-                return true;
-            }
-            const text = `${element.textContent}`;
-            const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "i");
-            return regexp.test(text);
-        };
-
+        const regexp = value !== "" ? makeSearchRegExp(value) : null;
         let visibleItems = 0;
         $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (value === null || filter(element)) {
+            if (!regexp || regexp.test(element.textContent)) {
                 element.style.display = "block";
                 visibleItems++;
             } else {
                 element.style.display = "none";
             }
         });
-
-        if (visibleItems > 0) {
-            this.emptyState.style.display = "none";
-        } else {
-            this.emptyState.style.display = "block";
-        }
+        this.emptyState.style.display = visibleItems > 0 ? "none" : "block";
     }
 
     private scrollToDropdownItem(item: HTMLElement) {
@@ -414,10 +394,7 @@ export class SelectInput {
     }
 
     private selectDropdownItem(item: HTMLElement) {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            selectedItem.classList.remove("selected");
-        }
+        $(".dropdown-item.selected", this.dropdown)?.classList.remove("selected");
         if (item) {
             const isDisabled = item.classList.contains("disabled");
             if (!isDisabled) {
@@ -477,7 +454,7 @@ export class SelectInput {
     }
 
     private setCurrent(item: HTMLElement = this.getCurrent()) {
-        this.element.value = item.dataset.value as string;
+        this.element.value = item.dataset.value ?? "";
         this.labelInput.value = item.innerText.trim();
         this.element.dispatchEvent(new Event("input", { bubbles: true }));
         this.element.dispatchEvent(new Event("change", { bubbles: true }));

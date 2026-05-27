@@ -16,7 +16,7 @@ export class Dashboard {
                 {
                     method: "POST",
                     url: `${app.config.baseUri}cache/clear/${type ?? ""}/`.replace(/\/+$/, "/"),
-                    data: { "csrf-token": app.config.csrfToken as string },
+                    data: { "csrf-token": app.config.csrfToken },
                 },
                 (response) => {
                     const icon = response.status === "error" ? "exclamationOctagon" : "checkCircle";

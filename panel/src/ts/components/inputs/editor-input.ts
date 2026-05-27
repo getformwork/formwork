@@ -24,11 +24,35 @@ function getTextareaHeight(textarea: HTMLTextAreaElement): number {
     return height;
 }
 
-interface EditorInputOptions {
+export interface EditorInputOptions {
     baseUri: string;
     height: number;
     spellcheck: boolean;
     inputEventHandler: (value: string) => void;
+    labels?: {
+        toggleMarkdown: string;
+        paragraph: string;
+        code: string;
+        heading1: string;
+        heading2: string;
+        heading3: string;
+        heading4: string;
+        heading5: string;
+        heading6: string;
+        bold: string;
+        italic: string;
+        bulletList: string;
+        numberedList: string;
+        quote: string;
+        increaseIndent: string;
+        decreaseIndent: string;
+        image: string;
+        link: string;
+        undo: string;
+        redo: string;
+        edit: string;
+        delete: string;
+    };
 }
 
 export class EditorInput {
@@ -80,8 +104,9 @@ export class EditorInput {
             toggleButton.type = "button";
             toggleButton.classList.add("button", "toolbar-button", "editor-toggle-markdown");
             toggleButton.dataset.command = "toggle-markdown";
-            toggleButton.title = app.config.EditorInput.labels.toggleMarkdown;
-            toggleButton.ariaLabel = app.config.EditorInput.labels.toggleMarkdown;
+            const toggleLabel = app.config.EditorInput?.labels?.toggleMarkdown ?? "";
+            toggleButton.title = toggleLabel;
+            toggleButton.ariaLabel = toggleLabel;
             toggleButton.disabled = this.element.disabled;
             toggleButton.innerHTML = markdown;
             toolbar.appendChild(toggleButton);

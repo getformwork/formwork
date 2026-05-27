@@ -27,7 +27,7 @@ export class Modal {
     constructor(element: HTMLElement) {
         this.element = element;
 
-        const formElement = $("form", this.element) as HTMLFormElement | null;
+        const formElement = $<HTMLFormElement>("form", this.element);
 
         this.form = formElement
             ? new Form(formElement, {
@@ -57,17 +57,15 @@ export class Modal {
         this.element.ariaModal = "true";
         this.element.classList.add("open");
 
-        if (options.action) {
-            if (this.form) {
-                this.form.element.action = options.action;
-            }
+        if (options.action && this.form) {
+            this.form.element.action = options.action;
         }
 
         (document.activeElement as HTMLElement | null)?.blur(); // Don't retain focus on any element
 
         this.getFirstFocusableElement(this.element)?.focus();
 
-        $$(".tooltip").forEach((tooltip) => tooltip.parentNode && tooltip.parentNode.removeChild(tooltip));
+        $$(".tooltip").forEach((tooltip) => tooltip.remove());
 
         this.createBackdrop();
 
@@ -123,10 +121,7 @@ export class Modal {
     }
 
     private removeBackdrop() {
-        const backdrop = $(".modal-backdrop");
-        if (backdrop && backdrop.parentNode) {
-            backdrop.parentNode.removeChild(backdrop);
-        }
+        $(".modal-backdrop")?.remove();
     }
 
     private dispatchCallback(name: string, triggerElement?: HTMLElement) {
@@ -137,24 +132,47 @@ export class Modal {
     }
 
     private registerEvents() {
+        this.registerOpenTriggers();
+        this.registerCommandTriggers();
+        this.registerDismissTrigger();
+        this.registerEscapeHandler();
+        this.registerBackdropClickHandler();
+        this.registerFocusHandler();
+    }
+
+    private registerOpenTriggers() {
         document.addEventListener("click", (event) => {
-            const target = (event.target as HTMLElement).closest(`[data-modal="${this.element.id}"]`) as HTMLElement;
-            if (target) {
-                this.open({ action: target.dataset.modalAction, triggerElement: target });
+            const target = (event.target as HTMLElement).closest<HTMLElement>(`[data-modal="${this.element.id}"]`);
+            if (!target) {
+                return;
             }
+
+            this.open({ action: target.dataset.modalAction, triggerElement: target });
         });
+    }
 
-        $$("[data-command]", this.element).forEach((commandButton) => commandButton.addEventListener("click", () => this.triggerCommand(commandButton.dataset.command as string, commandButton)));
+    private registerCommandTriggers() {
+        $$("[data-command]", this.element).forEach((commandButton) => {
+            commandButton.addEventListener("click", () => {
+                this.triggerCommand(commandButton.dataset.command ?? "", commandButton);
+            });
+        });
+    }
 
+    private registerDismissTrigger() {
         const dismissButton = $("[data-dismiss]", this.element);
         dismissButton?.addEventListener("click", () => this.close({ triggerElement: dismissButton }));
+    }
 
+    private registerEscapeHandler() {
         document.addEventListener("keyup", (event) => {
             if (event.key === "Escape") {
                 this.close();
             }
         });
+    }
 
+    private registerBackdropClickHandler() {
         let mousedownCaptured = false;
 
         this.element.addEventListener("mousedown", (event) => {
@@ -167,10 +185,12 @@ export class Modal {
             }
             mousedownCaptured = false;
         });
+    }
 
+    private registerFocusHandler() {
         window.addEventListener("focus", () => {
-            if (this.element.classList.contains("open")) {
-                this.getFirstFocusableElement(this.element).focus();
+            if (this.isOpen) {
+                this.getFirstFocusableElement(this.element)?.focus();
             }
         });
     }

@@ -38,7 +38,7 @@ export class Updates {
             };
 
             window.setTimeout(() => {
-                const data = { "csrf-token": app.config.csrfToken as string };
+                const data = { "csrf-token": app.config.csrfToken };
 
                 new Request(
                     {
@@ -67,13 +67,13 @@ export class Updates {
                 newVersion.style.display = "none";
                 spinner.classList.remove("spinner-info");
                 $(".icon", spinner)?.remove();
-                updateStatus.innerText = updateStatus.dataset.installingText as string;
+                updateStatus.innerText = updateStatus.dataset.installingText ?? "";
 
                 new Request(
                     {
                         method: "POST",
                         url: `${app.config.baseUri}updates/update/`,
-                        data: { "csrf-token": app.config.csrfToken as string },
+                        data: { "csrf-token": app.config.csrfToken },
                     },
                     (response) => {
                         const notification = new Notification(response.message, response.status, { icon: "checkCircle" });

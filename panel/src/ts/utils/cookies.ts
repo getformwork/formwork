@@ -12,8 +12,8 @@ export function getCookies() {
 
 export function setCookie(name: string, value: string, options: Record<string, string | number>) {
     let cookie = `${name}=${value}`;
-    for (const option in options) {
-        cookie += `;${option}=${options[option]}`;
+    for (const [option, value] of Object.entries(options)) {
+        cookie += `;${option}=${value}`;
     }
     document.cookie = cookie;
 }

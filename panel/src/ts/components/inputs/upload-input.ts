@@ -21,7 +21,7 @@ export class UploadInput {
     private readonly dropTargetLabel: HTMLElement;
     private readonly defaultDropLabel: string;
 
-    private readonly filesList: FilesList;
+    private readonly filesList?: FilesList;
 
     constructor(element: HTMLInputElement, form: Form) {
         this.element = element;
@@ -35,7 +35,7 @@ export class UploadInput {
 
         this.initInput();
 
-        const filesList = $(`.files-list[data-for="${this.element.id}"]`) as HTMLElement;
+        const filesList = $(`.files-list[data-for="${this.element.id}"]`);
 
         if (filesList) {
             this.filesList = new FilesList(filesList, this.form);
@@ -75,17 +75,17 @@ export class UploadInput {
             this.updateDropTargetLabel();
         });
 
-        this.dropTarget.addEventListener("drag", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragstart", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragend", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragover", (event) => {
-            this.dropTarget.classList.add("drag");
-            event.preventDefault();
-        });
-        this.dropTarget.addEventListener("dragenter", (event) => {
-            this.dropTarget.classList.add("drag");
-            event.preventDefault();
-        });
+        for (const type of ["drag", "dragstart", "dragend"]) {
+            this.dropTarget.addEventListener(type, (event) => event.preventDefault());
+        }
+
+        for (const type of ["dragover", "dragenter"]) {
+            this.dropTarget.addEventListener(type, (event) => {
+                this.dropTarget.classList.add("drag");
+                event.preventDefault();
+            });
+        }
+
         this.dropTarget.addEventListener("dragleave", (event) => {
             this.dropTarget.classList.remove("drag");
             event.preventDefault();
@@ -124,13 +124,13 @@ export class UploadInput {
                     return;
                 }
 
-                let files = Array.from(this.element.files);
+                let files = [...this.element.files];
 
                 this.updateDropTargetLabel(files, true);
 
                 for (const file of files) {
                     const formData = new FormData();
-                    formData.append("csrf-token", app.config.csrfToken as string);
+                    formData.append("csrf-token", app.config.csrfToken);
                     formData.append(this.element.name, file);
 
                     new Request(
@@ -145,11 +145,12 @@ export class UploadInput {
                                 const data = response.data[0];
                                 const template = $("template[id=files-item]") as HTMLTemplateElement;
                                 this.addFilesItem(data, template);
-                                this.filesList.sort(".file-name");
-                                this.filesList.element.hidden = false;
+                                this.filesList?.sort(".file-name");
+                                if (this.filesList) {
+                                    this.filesList.element.hidden = false;
+                                }
 
-                                for (const name in this.form.inputs) {
-                                    const input = this.form.inputs[name];
+                                for (const input of Object.values(this.form.inputs)) {
                                     if (input instanceof SelectInput && (input.element.classList.contains("form-file") || (input.element.classList.contains("form-image") && data.type === "image"))) {
                                         input.addOption({
                                             label: data.name,
@@ -191,7 +192,7 @@ export class UploadInput {
         return `${(size / 1024 ** exp).toFixed(2)} ${units[exp]}`;
     }
 
-    private updateDropTargetLabel(files: File[] = Array.from(this.element.files ?? []), uploading: boolean = this.isSubmitted) {
+    private updateDropTargetLabel(files: File[] = [...(this.element.files ?? [])], uploading: boolean = this.isSubmitted) {
         if (files.length) {
             const filenames: string[] = [];
             for (const file of files) {
@@ -262,6 +263,8 @@ export class UploadInput {
 
         deleteFileCommand.dataset.action = info.actions.delete;
 
-        $(".files-items", this.filesList.element)?.appendChild(node);
+        if (this.filesList) {
+            $(".files-items", this.filesList.element)?.appendChild(node);
+        }
     }
 }

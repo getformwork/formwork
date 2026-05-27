@@ -98,7 +98,7 @@ export class ArrayInput {
 
         this.form.duplicateInput(valueInput, $(".form-input-array-value", newItem) as HTMLElement);
 
-        const parent = item.parentNode as ParentNode;
+        const parent = item.parentNode;
 
         this.clearItem(newItem);
         this.bindItemEvents(newItem);
@@ -110,9 +110,9 @@ export class ArrayInput {
         }
 
         if (item.nextSibling) {
-            parent.insertBefore(newItem, item.nextSibling);
+            parent?.insertBefore(newItem, item.nextSibling);
         } else {
-            parent.appendChild(newItem);
+            parent?.appendChild(newItem);
         }
 
         // Focus the new input item
@@ -120,9 +120,9 @@ export class ArrayInput {
     }
 
     private removeItem(item: HTMLElement) {
-        const parent = item.parentNode as ParentNode;
-        if ($$(".form-input-array-row", parent).length > 1) {
-            parent.removeChild(item);
+        const parent = item.parentNode;
+        if (parent && $$(".form-input-array-row", parent).length > 1) {
+            item.remove();
             this.itemCache.delete(item);
         } else {
             this.clearItem(item);

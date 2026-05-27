@@ -13,10 +13,10 @@ const defaultOptions: RequestOptions = {
 };
 
 export class Request {
-    constructor(userOptions: Partial<RequestOptions>, callback: (response: Record<string, any>, request: XMLHttpRequest) => void) {
+    constructor(userOptions: Partial<RequestOptions>, callback?: (response: Record<string, any>, request: XMLHttpRequest) => void) {
         const request = new XMLHttpRequest();
 
-        const options: RequestOptions = Object.assign({}, defaultOptions, userOptions);
+        const options: RequestOptions = { ...defaultOptions, ...userOptions };
 
         if (!options.headers["X-Requested-With"]) {
             options.headers["X-Requested-With"] = "XMLHttpRequest";
@@ -24,29 +24,21 @@ export class Request {
 
         request.open(options.method, options.url, true);
 
-        for (const key in options.headers) {
-            request.setRequestHeader(key, options.headers[key]);
+        for (const [key, value] of Object.entries(options.headers)) {
+            request.setRequestHeader(key, value);
         }
 
-        switch (true) {
-            case options.data instanceof FormData:
-            case options.data instanceof URLSearchParams:
-            case options.data instanceof Blob:
-                request.send(options.data);
-                break;
-
-            default:
-                request.send(new URLSearchParams(options.data));
-                break;
+        if (options.data instanceof FormData || options.data instanceof URLSearchParams || options.data instanceof Blob) {
+            request.send(options.data);
+        } else {
+            request.send(new URLSearchParams(options.data));
         }
 
         if (typeof callback === "function") {
             const handler = () => {
                 const response = JSON.parse(request.response);
                 const code = parseInt(response.code) || request.status;
-                if (code === 400 || code === 403) {
-                    // location.reload();
-                } else {
+                if (code !== 400 && code !== 403) {
                     callback(response, request);
                 }
             };

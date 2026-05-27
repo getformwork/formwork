@@ -1,5 +1,5 @@
 import { $, $$ } from "../../utils/selectors";
-import { escapeHtml, escapeRegExp, makeDiacriticsRegExp, makeSlug } from "../../utils/validation";
+import { escapeHtml, makeSearchRegExp, makeSlug } from "../../utils/validation";
 import type { MoveEvent, SortableEvent } from "sortablejs";
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
@@ -57,7 +57,7 @@ export class Pages {
         if (commandReorderPages) {
             commandReorderPages.addEventListener("click", () => {
                 commandReorderPages.classList.toggle("active");
-                ($(".pages-tree") as HTMLElement).classList.toggle("is-reordering");
+                $(".pages-tree")?.classList.toggle("is-reordering");
                 commandReorderPages.blur();
             });
         }
@@ -76,7 +76,7 @@ export class Pages {
             const handleSearch = () => {
                 const value = escapeHtml(searchInput.value);
                 if (value.length === 0) {
-                    ($(".pages-tree-root") as HTMLElement).classList.remove("is-filtered");
+                    $(".pages-tree-root")?.classList.remove("is-filtered");
 
                     $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element) as HTMLElement;
@@ -85,9 +85,9 @@ export class Pages {
                         element.classList.toggle("is-expanded", element.dataset.expanded === "true");
                     });
                 } else {
-                    ($(".pages-tree-root") as HTMLElement).classList.add("is-filtered");
+                    $(".pages-tree-root")?.classList.add("is-filtered");
 
-                    const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "gi");
+                    const regexp = makeSearchRegExp(value, "gi");
 
                     $$(".pages-tree-item").forEach((element) => {
                         const title = $(".page-title a", element) as HTMLElement;
@@ -110,11 +110,9 @@ export class Pages {
             searchInput.addEventListener("search", handleSearch);
 
             document.addEventListener("keydown", (event) => {
-                if (event.ctrlKey || event.metaKey) {
-                    if (event.key === "f" && document.activeElement !== searchInput) {
-                        searchInput.focus();
-                        event.preventDefault();
-                    }
+                if ((event.ctrlKey || event.metaKey) && event.key === "f" && document.activeElement !== searchInput) {
+                    searchInput.focus();
+                    event.preventDefault();
                 }
             });
         }
@@ -148,13 +146,13 @@ export class Pages {
                     templateSelect.value = allowedTemplates[0];
 
                     templateSelect.dropdownItems.forEach((item) => {
-                        if (!allowedTemplates.includes(item.dataset.value as string)) {
+                        if (!allowedTemplates.includes(item.dataset.value ?? "")) {
                             item.classList.add("disabled");
                         }
                     });
                 } else {
                     if ("previousValue" in templateSelect.element.dataset) {
-                        templateSelect.value = templateSelect.element.dataset.previousValue as string;
+                        templateSelect.value = templateSelect.element.dataset.previousValue ?? "";
                         delete templateSelect.element.dataset.previousValue;
                     }
 
@@ -187,7 +185,7 @@ export class Pages {
                         method: "POST",
                         url: action,
                         data: {
-                            "csrf-token": app.config.csrfToken as string,
+                            "csrf-token": app.config.csrfToken,
                         },
                     },
                     (response) => {
@@ -344,7 +342,7 @@ export class Pages {
                     sortable.option("disabled", true);
 
                     const data = {
-                        "csrf-token": app.config.csrfToken as string,
+                        "csrf-token": app.config.csrfToken,
                         page: event.item.dataset.route,
                         before: (event.item.nextElementSibling! as HTMLElement).dataset.route,
                         parent: element.dataset.parent,

@@ -18,7 +18,7 @@ export class Notification {
     type: NotificationType;
     options: NotificationOptions;
     containerElement: HTMLElement | null;
-    notificationElement: HTMLElement;
+    notificationElement?: HTMLElement;
 
     constructor(text: string, type: NotificationType, options: Partial<NotificationOptions> = {}) {
         const defaults: NotificationOptions = {
@@ -44,9 +44,9 @@ export class Notification {
         this.text = text;
         this.type = type;
 
-        this.options = Object.assign({}, defaults, options);
+        this.options = { ...defaults, ...options };
 
-        this.containerElement = $(".notification-container") as HTMLElement;
+        this.containerElement = $(".notification-container");
     }
 
     show() {
@@ -73,7 +73,9 @@ export class Notification {
 
             notification.addEventListener("mouseenter", () => clearTimeout(timer));
 
-            notification.addEventListener("mouseleave", () => ((timer = window.setTimeout(() => this.remove())), this.options.mouseleaveDelay));
+            notification.addEventListener("mouseleave", () => {
+                timer = window.setTimeout(() => this.remove(), this.options.mouseleaveDelay);
+            });
 
             return notification;
         };
@@ -82,25 +84,17 @@ export class Notification {
             this.options.icon = this.options.defaultIcons[this.type];
         }
 
-        if (this.options.icon) {
-            this.notificationElement = create(this.text, this.type, this.options.interval);
-            this.notificationElement.insertAdjacentHTML("afterbegin", icons[this.options.icon] || "");
-        } else {
-            this.notificationElement = create(this.text, this.type, this.options.interval);
-        }
+        this.notificationElement = create(this.text, this.type, this.options.interval);
+        this.notificationElement.insertAdjacentHTML("afterbegin", icons[this.options.icon] || "");
     }
 
     remove() {
-        this.notificationElement.classList.add("fadeout");
+        this.notificationElement?.classList.add("fadeout");
 
         window.setTimeout(() => {
-            if (this.containerElement && this.notificationElement && this.notificationElement.parentNode) {
-                this.containerElement.removeChild(this.notificationElement);
-            }
+            this.notificationElement?.remove();
             if (this.containerElement && this.containerElement.childNodes.length < 1) {
-                if (this.containerElement.parentNode) {
-                    document.body.removeChild(this.containerElement);
-                }
+                this.containerElement.remove();
                 this.containerElement = null;
             }
         }, this.options.fadeOutDelay);

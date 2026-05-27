@@ -11,23 +11,34 @@ import { Tooltips } from "./components/tooltips";
 
 import { Backups } from "./components/views/backups";
 import { Dashboard } from "./components/views/dashboard";
+import type { DateInputOptions } from "./components/inputs/date-input";
+import type { DurationInputOptions } from "./components/inputs/duration-input";
+import type { EditorInputOptions } from "./components/inputs/editor-input";
 import { Login } from "./components/views/login";
 import { Pages } from "./components/views/pages";
 import { Plugins } from "./components/views/plugins";
+import type { SelectInputOptions } from "./components/inputs/select-input";
 import { Statistics } from "./components/views/statistics";
+import type { TagsInputOptions } from "./components/inputs/tags-input";
 import { Updates } from "./components/views/updates";
+
+interface BackupsConfig {
+    labels: {
+        now: string;
+    };
+}
 
 interface AppConfig {
     siteUri: string;
     baseUri: string;
-    csrfToken?: string;
+    csrfToken: string;
     colorScheme?: string;
-    DateInput?: any;
-    DurationInput?: any;
-    EditorInput?: any;
-    SelectInput?: any;
-    TagsInput?: any;
-    Backups?: any;
+    DateInput?: DateInputOptions;
+    DurationInput?: DurationInputOptions;
+    EditorInput?: EditorInputOptions;
+    SelectInput?: SelectInputOptions;
+    TagsInput?: TagsInputOptions;
+    Backups?: BackupsConfig;
 }
 
 interface Component {
@@ -42,6 +53,7 @@ class App {
     config: AppConfig = {
         siteUri: "/",
         baseUri: "/",
+        csrfToken: "",
     };
 
     modals: Modals = {};
@@ -80,15 +92,10 @@ class App {
     }
 
     loadConfig(config: AppConfig) {
-        Object.assign(this.config, config);
+        this.config = { ...this.config, ...config };
     }
 
-    loadComponent(
-        component: Component,
-        options: ComponentConfig = {
-            globalAlias: undefined,
-        },
-    ) {
+    loadComponent(component: Component, options: ComponentConfig = {}) {
         const instance = new component(this);
         const { globalAlias } = options;
         if (globalAlias) {

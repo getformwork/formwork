@@ -36,7 +36,7 @@ export class Tooltips {
                         return;
                     }
 
-                    this.tooltip = new Tooltip(element.dataset.tooltip as string, {
+                    this.tooltip = new Tooltip(element.dataset.tooltip ?? "", {
                         referenceElement: element,
                         position,
                         offset,
@@ -84,7 +84,7 @@ export class Tooltips {
 
                 this.tooltip?.remove();
 
-                this.tooltip = new Tooltip(element.dataset.tooltip as string, {
+                this.tooltip = new Tooltip(element.dataset.tooltip ?? "", {
                     referenceElement: element,
                     position: "bottom",
                     offset: {

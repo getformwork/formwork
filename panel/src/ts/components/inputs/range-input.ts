@@ -53,7 +53,7 @@ export class RangeInput {
         updateValueLabel(this.element);
 
         if ("ticks" in this.element.dataset) {
-            const count = this.element.dataset.ticks as string;
+            const count = this.element.dataset.ticks ?? "";
 
             switch (count) {
                 case "0":

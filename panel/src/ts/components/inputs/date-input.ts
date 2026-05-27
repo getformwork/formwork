@@ -5,7 +5,7 @@ import { longClick } from "../../utils/events";
 import { mod } from "../../utils/math";
 import { throttle } from "../../utils/events";
 
-interface DateInputOptions {
+export interface DateInputOptions {
     weekStarts: number;
     dateFormat: string;
     dateTimeFormat: string;
@@ -179,7 +179,7 @@ export class DateInput {
         return format.replace(regex, (match: string, $1) => {
             switch (match) {
                 case "YY":
-                    return `${date.getFullYear()}`.substr(-2);
+                    return `${date.getFullYear()}`.slice(-2);
                 case "YYYY":
                     return date.getFullYear();
                 case "M":
@@ -203,7 +203,7 @@ export class DateInput {
                 case "WW":
                     return `${weekOfYear(date)}`.padStart(2, "0");
                 case "RR":
-                    return weekNumberingYear(date).toString().substr(-2);
+                    return weekNumberingYear(date).toString().slice(-2);
                 case "RRRR":
                     return weekNumberingYear(date);
                 case "H":
@@ -244,12 +244,12 @@ class Calendar {
 
     readonly element: HTMLElement;
 
-    private year: number;
-    private month: number;
-    private day: number;
-    private hours: number;
-    private minutes: number;
-    private seconds: number;
+    private year: number = 0;
+    private month: number = 0;
+    private day: number = 0;
+    private hours: number = 0;
+    private minutes: number = 0;
+    private seconds: number = 0;
 
     constructor(input: DateInput) {
         this.input = input;
@@ -525,7 +525,7 @@ class Calendar {
             }
             switch (event.key) {
                 case "Enter":
-                    ($(".calendar-day.selected", element) as HTMLElement).click();
+                    $(".calendar-day.selected", element)?.click();
                     this.hide();
                     break;
                 case "Backspace":

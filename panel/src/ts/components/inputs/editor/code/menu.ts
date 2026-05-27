@@ -66,12 +66,13 @@ class Menu {
 }
 
 export function MenuPlugin() {
+    const labels = app.config.EditorInput?.labels;
     return ViewPlugin.define(
         (view) =>
             new Menu(
                 [
-                    { dom: createButton("rotateLeft", app.config.EditorInput.labels.undo), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
-                    { dom: createButton("rotateRight", app.config.EditorInput.labels.redo), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
+                    { dom: createButton("rotateLeft", labels?.undo ?? ""), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
+                    { dom: createButton("rotateRight", labels?.redo ?? ""), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
                 ],
                 view,
             ),

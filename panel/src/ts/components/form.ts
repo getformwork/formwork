@@ -1,11 +1,9 @@
-import "../polyfills/request-submit";
 import { $, $$ } from "../utils/selectors";
 import { app } from "../app";
 import { ArrayInput } from "./inputs/array-input";
 import { ColorInput } from "./inputs/color-input";
 import { DateInput } from "./inputs/date-input";
 import { DurationInput } from "./inputs/duration-input";
-import { EditorInput } from "./inputs/editor-input";
 import { ImagePicker } from "./inputs/image-picker";
 import { Input } from "./inputs/input";
 import { RangeInput } from "./inputs/range-input";
@@ -41,20 +39,24 @@ export class Form {
         preventUnloadOnChanges: true,
     };
 
-    private associations: { [key: string]: (element: HTMLElement) => void } = {
-        ".editor-textarea": (element: HTMLTextAreaElement) => this.formInputs.push(new EditorInput(element)),
+    private associations: Record<string, (element: any) => void> = {
+        ".editor-textarea": (element: HTMLTextAreaElement) => {
+            import("./inputs/editor-input").then(({ EditorInput }) => {
+                this.formInputs.push(new EditorInput(element));
+            });
+        },
 
         ".form-input-color": (element: HTMLInputElement) => this.formInputs.push(new ColorInput(element)),
 
         ".form-input-array": (element: HTMLFieldSetElement) => this.formInputs.push(new ArrayInput(element, this)),
 
-        ".form-input-date": (element: HTMLInputElement) => this.formInputs.push(new DateInput(element, app.config.DateInput)),
+        ".form-input-date": (element: HTMLInputElement) => this.formInputs.push(new DateInput(element, app.config.DateInput ?? {})),
 
-        ".form-input-duration": (element: HTMLInputElement) => this.formInputs.push(new DurationInput(element, app.config.DurationInput)),
+        ".form-input-duration": (element: HTMLInputElement) => this.formInputs.push(new DurationInput(element, app.config.DurationInput ?? {})),
 
         ".form-input-slug": (element: HTMLInputElement) => this.formInputs.push(new SlugInput(element)),
 
-        ".form-input-tags": (element: HTMLInputElement) => this.formInputs.push(new TagsInput(element, app.config.TagsInput)),
+        ".form-input-tags": (element: HTMLInputElement) => this.formInputs.push(new TagsInput(element, app.config.TagsInput ?? {})),
 
         ".form-togglegroup": (element: HTMLFieldSetElement) => this.formInputs.push(new TogglegroupInput(element)),
 
@@ -64,7 +66,7 @@ export class Form {
 
         "input[type=range]": (element: HTMLInputElement) => this.formInputs.push(new RangeInput(element)),
 
-        ".form-select": (element: HTMLSelectElement) => this.formInputs.push(new SelectInput(element, app.config.SelectInput)),
+        ".form-select": (element: HTMLSelectElement) => this.formInputs.push(new SelectInput(element, app.config.SelectInput ?? {})),
 
         ".form-input-action[data-reset]": (element: HTMLButtonElement) => {
             const targetId = element.dataset.reset;
@@ -85,11 +87,7 @@ export class Form {
                     const inputs = targetId.split(",");
                     for (const name of inputs) {
                         const input = $(`input[name="${name}"]`) as HTMLInputElement;
-                        if (!element.checked) {
-                            input.disabled = true;
-                        } else {
-                            input.disabled = false;
-                        }
+                        input.disabled = !element.checked;
                     }
                 }
             });
@@ -117,36 +115,30 @@ export class Form {
         }
     }
 
-    get inputs(): { [name: string]: FormInput } {
-        const inputs: { [name: string]: FormInput } = {};
-        for (const input of this.formInputs) {
-            inputs[input.name] = input;
-        }
-        return inputs;
+    get inputs(): Record<string, FormInput> {
+        return Object.fromEntries(this.formInputs.map((input) => [input.name, input]));
     }
 
     private loadInputs(parent: HTMLElement = this.element) {
-        for (const selector in this.associations) {
+        for (const [selector, handler] of Object.entries(this.associations)) {
             $$(selector, parent).forEach((element: HTMLElement) => {
-                this.associations[selector](element);
+                handler(element);
             });
         }
     }
 
     private loadInput(element: HTMLElement) {
-        for (const selector in this.associations) {
+        for (const [selector, handler] of Object.entries(this.associations)) {
             if (element.matches(selector)) {
-                this.associations[selector](element);
+                handler(element);
             }
         }
     }
 
     hasChanged(checkFileInputs: boolean = true) {
-        const fileInputs = $$("input[type=file]", this.element) as NodeListOf<HTMLInputElement>;
-
-        if (checkFileInputs === true && fileInputs.length > 0) {
-            for (const fileInput of Array.from(fileInputs)) {
-                if (fileInput.files && fileInput.files.length > 0) {
+        if (checkFileInputs) {
+            for (const fileInput of $$<HTMLInputElement>("input[type=file]", this.element)) {
+                if (fileInput.files?.length) {
                     return true;
                 }
             }
@@ -156,44 +148,17 @@ export class Form {
     }
 
     duplicateInput(element: HTMLInputLike, targetElement: HTMLElement) {
-        let newNode: HTMLElement;
-        let newInput: HTMLInputLike | undefined = undefined;
         const wrap = element.closest(".form-input-wrap");
+        const duplicated = wrap ? this.duplicateWrappedInput(element, wrap) : this.duplicateStandaloneInput(element);
+        const { newNode, newInput } = duplicated;
 
-        if (wrap) {
-            newNode = wrap.cloneNode() as HTMLElement;
-            for (const child of Array.from(wrap.children)) {
-                if (child === element) {
-                    newInput = child.cloneNode(true) as HTMLInputLike;
-                    if (newInput instanceof HTMLInputElement && (newInput.type === "checkbox" || newInput.type === "radio")) {
-                        newInput.checked = false;
-                    } else {
-                        newInput.value = "";
-                    }
-                    newNode.appendChild(newInput);
-                } else if (child.matches(`.form-input-action, .form-input-description, .form-input-icon`)) {
-                    newNode.appendChild(child.cloneNode(true));
-                }
-            }
-            if (newInput === undefined) {
-                throw new Error("Could not replicate input: input element not found in wrapper.");
-            }
-        } else {
-            newInput = newNode = element.cloneNode(true) as HTMLInputLike;
-            if (newInput instanceof HTMLInputElement && (newInput.type === "checkbox" || newInput.type === "radio")) {
-                newInput.checked = false;
-            } else {
-                newInput.value = "";
-            }
-        }
-
-        // Generate a new unique ID for the duplicated input
+        // Keep labels connected to the duplicated input by assigning a unique ID.
         const previousId = (element as HTMLElement).id;
         const newId = `${element.tagName.toLowerCase()}-${Math.random().toString(36).slice(2)}`;
         newInput.id = newId;
 
         if (wrap && previousId) {
-            $$(`label[for="${previousId}"]`).forEach((label: HTMLLabelElement) => {
+            $$<HTMLLabelElement>(`label[for="${previousId}"]`).forEach((label) => {
                 label.htmlFor = newId;
             });
         }
@@ -205,6 +170,57 @@ export class Form {
         } else {
             this.loadInput(newInput);
         }
+    }
+
+    private duplicateWrappedInput(element: HTMLInputLike, wrap: Element) {
+        const newNode = wrap.cloneNode() as HTMLElement;
+        let newInput: HTMLInputLike | undefined;
+
+        for (const child of wrap.children) {
+            if (child === element) {
+                newInput = this.cloneAndResetInput(element);
+                newNode.appendChild(newInput);
+                continue;
+            }
+
+            if (child.matches(`.form-input-action, .form-input-description, .form-input-icon`)) {
+                newNode.appendChild(child.cloneNode(true));
+            }
+        }
+
+        if (!newInput) {
+            throw new Error("Could not replicate input: input element not found in wrapper.");
+        }
+
+        return { newNode, newInput };
+    }
+
+    private duplicateStandaloneInput(element: HTMLInputLike) {
+        const newInput = this.cloneAndResetInput(element);
+        return { newNode: newInput as HTMLElement, newInput };
+    }
+
+    private cloneAndResetInput(element: HTMLInputLike) {
+        const newInput = element.cloneNode(true) as HTMLInputLike;
+        if (newInput instanceof HTMLInputElement && (newInput.type === "checkbox" || newInput.type === "radio")) {
+            newInput.checked = false;
+        } else {
+            newInput.value = "";
+        }
+        return newInput;
+    }
+
+    private openChangesModalForHref(href: string) {
+        const changesModal = app.modals["changesModal"];
+
+        changesModal.onOpen((modal) => {
+            const continueCommand = $("[data-command=continue]", modal.element);
+            if (continueCommand) {
+                continueCommand.dataset.href = href;
+            }
+        });
+
+        changesModal.open();
     }
 
     private preventUnloadOnChanges() {
@@ -233,24 +249,18 @@ export class Form {
                 }
             });
 
-            $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
+            $$<HTMLAnchorElement>('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element) => {
                 if (element.closest(".editor-wrap")) {
                     return;
                 }
 
                 element.addEventListener("click", (event) => {
-                    if (this.hasChanged()) {
-                        event.preventDefault();
-
-                        app.modals["changesModal"].onOpen((modal) => {
-                            const continueCommand = $("[data-command=continue]", modal.element);
-                            if (continueCommand) {
-                                continueCommand.dataset.href = element.href;
-                            }
-                        });
-
-                        app.modals["changesModal"].open();
+                    if (!this.hasChanged()) {
+                        return;
                     }
+
+                    event.preventDefault();
+                    this.openChangesModalForHref(element.href);
                 });
             });
         }

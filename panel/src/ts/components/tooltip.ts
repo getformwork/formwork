@@ -18,8 +18,8 @@ interface TooltipOptions {
 export class Tooltip {
     text: string;
     options: TooltipOptions;
-    delayTimer: number;
-    timeoutTimer: number;
+    delayTimer: number = 0;
+    timeoutTimer: number = 0;
     element: HTMLElement;
 
     get removed() {
@@ -27,7 +27,7 @@ export class Tooltip {
     }
 
     constructor(text: string, options: Partial<TooltipOptions> = {}) {
-        const defaults = {
+        const defaults: TooltipOptions = {
             container: document.body,
             referenceElement: document.body,
             position: "top",
@@ -43,7 +43,7 @@ export class Tooltip {
         };
 
         this.text = text;
-        this.options = Object.assign({}, defaults, options);
+        this.options = { ...defaults, ...options };
 
         this.element = document.createElement("div");
         this.element.className = "tooltip";

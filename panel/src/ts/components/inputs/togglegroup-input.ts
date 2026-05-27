@@ -17,7 +17,7 @@ export class TogglegroupInput {
 
     set name(value: string) {
         this.element.name = value;
-        $$("input", this.element)?.forEach((input: HTMLInputElement) => {
+        $$<HTMLInputElement>("input", this.element)?.forEach((input) => {
             input.name = value;
         });
     }

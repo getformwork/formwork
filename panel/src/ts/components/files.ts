@@ -26,7 +26,7 @@ export class Files {
                 renameFileModal.onOpen((modal, trigger) => {
                     if (trigger) {
                         const input = $('[id="renameFileModal.filename"]', modal.element) as HTMLInputElement;
-                        input.value = trigger.dataset.filename as string;
+                        input.value = trigger.dataset.filename ?? "";
                         input.setSelectionRange(0, input.value.lastIndexOf("."));
                     }
                 });
@@ -38,19 +38,19 @@ export class Files {
                 replaceFileCommand.addEventListener("click", () => {
                     const form = document.createElement("form");
                     form.hidden = true;
-                    form.action = replaceFileCommand.dataset.action as string;
+                    form.action = replaceFileCommand.dataset.action ?? "";
                     form.method = "post";
                     form.enctype = "multipart/form-data";
 
                     const fileInput = document.createElement("input");
                     fileInput.name = "file";
                     fileInput.type = "file";
-                    fileInput.accept = replaceFileCommand.dataset.extension as string;
+                    fileInput.accept = replaceFileCommand.dataset.extension ?? "";
                     form.appendChild(fileInput);
 
                     const csrfInput = document.createElement("input");
                     csrfInput.name = "csrf-token";
-                    csrfInput.value = app.config.csrfToken as string;
+                    csrfInput.value = app.config.csrfToken;
                     form.appendChild(csrfInput);
 
                     fileInput.click();

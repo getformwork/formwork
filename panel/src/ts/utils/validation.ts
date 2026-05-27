@@ -147,3 +147,7 @@ export function validateSlug(slug: string) {
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
 }
+
+export function makeSearchRegExp(value: string, flags: string = "i") {
+    return new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, flags);
+}

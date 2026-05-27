@@ -13,21 +13,15 @@ export class Backups {
             makeBackupCommand.addEventListener("click", function () {
                 const button = this as HTMLButtonElement;
 
-                const getSpinner = () => {
-                    let spinner = $(".spinner");
+                let spinner = $(".spinner");
 
-                    if (!spinner) {
-                        spinner = document.createElement("div");
-                        button.insertAdjacentElement("afterend", spinner);
-                    }
+                if (!spinner) {
+                    spinner = document.createElement("div");
+                    button.insertAdjacentElement("afterend", spinner);
+                }
 
-                    spinner.className = "spinner";
-                    spinner.innerText = "";
-
-                    return spinner;
-                };
-
-                const spinner = getSpinner();
+                spinner.className = "spinner";
+                spinner.innerText = "";
 
                 button.disabled = true;
 
@@ -35,7 +29,7 @@ export class Backups {
                     {
                         method: "POST",
                         url: `${app.config.baseUri}backup/make/`,
-                        data: { "csrf-token": app.config.csrfToken as string },
+                        data: { "csrf-token": app.config.csrfToken },
                     },
                     (response) => {
                         if (response.status === "success") {
@@ -57,9 +51,12 @@ export class Backups {
                                 ($(".backup-size", node) as HTMLElement).innerText = response.data.size;
                                 ($(".backup-delete", node) as HTMLElement).dataset.modalAction = response.data.deleteUri;
 
-                                ($(".backup-last-time") as HTMLElement).innerText = app.config.Backups.labels.now;
+                                const lastTime = $(".backup-last-time");
+                                if (lastTime) {
+                                    lastTime.innerText = app.config.Backups?.labels.now ?? "";
+                                }
 
-                                ($("tbody", table) as HTMLElement).prepend(node);
+                                $("tbody", table)?.prepend(node);
 
                                 const limit = response.data.maxFiles;
 
@@ -84,7 +81,7 @@ export class Backups {
 
                         if (response.status === "success") {
                             window.setTimeout(() => {
-                                triggerDownload(response.data.uri, app.config.csrfToken as string);
+                                triggerDownload(response.data.uri, app.config.csrfToken);
                             }, 1000);
                         }
                     },

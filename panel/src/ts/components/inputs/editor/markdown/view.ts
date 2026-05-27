@@ -24,7 +24,7 @@ export class MarkdownView {
     constructor(id: string, target: Element, content: string, inputEventHandler: (content: string) => void, options: MarkdownViewOptions = {}) {
         this.view = new EditorView(target, {
             state: EditorState.create({
-                doc: defaultMarkdownParser.parse(content) as any,
+                doc: defaultMarkdownParser.parse(content),
                 plugins: [
                     buildInputRules(schema),
                     keymap(buildKeymap(schema)),
@@ -61,7 +61,7 @@ export class MarkdownView {
     set content(value: string) {
         this.view.updateState(
             EditorState.create({
-                doc: defaultMarkdownParser.parse(value) as any,
+                doc: defaultMarkdownParser.parse(value),
                 plugins: this.view.state.plugins,
             }),
         );

@@ -5,6 +5,7 @@ export class Tabs {
         $$(".tabs").forEach((tabs) => {
             const formName = tabs.closest("form")?.dataset.form;
             const tabButtons = $$(".tabs-tab[data-tab]", tabs);
+            const tabStatusKey = this.getTabStatusKey(formName);
 
             const selectTab = (name: string) => {
                 tabButtons.forEach((button) => {
@@ -15,21 +16,33 @@ export class Tabs {
                 });
             };
 
-            const selectedTab = window.localStorage.getItem(`formwork.tabStatus[${formName}]`);
-            if (selectedTab) {
-                if (!$(`.tabs-tab[data-tab="${selectedTab}"]`, tabs)) {
-                    window.localStorage.removeItem(`formwork.tabStatus[${formName}]`);
-                } else {
-                    selectTab(selectedTab);
-                }
-            }
+            this.restoreSelectedTab(tabs, tabStatusKey, selectTab);
 
             tabButtons.forEach((tabButton) => {
                 tabButton.addEventListener("click", () => {
-                    selectTab(tabButton.dataset.tab as string);
-                    window.localStorage.setItem(`formwork.tabStatus[${formName}]`, tabButton.dataset.tab as string);
+                    const selectedTab = tabButton.dataset.tab ?? "";
+                    selectTab(selectedTab);
+                    window.localStorage.setItem(tabStatusKey, selectedTab);
                 });
             });
         });
+    }
+
+    private getTabStatusKey(formName: string | undefined) {
+        return `formwork.tabStatus[${formName}]`;
+    }
+
+    private restoreSelectedTab(tabs: HTMLElement, tabStatusKey: string, selectTab: (name: string) => void) {
+        const selectedTab = window.localStorage.getItem(tabStatusKey);
+        if (!selectedTab) {
+            return;
+        }
+
+        if (!$(`.tabs-tab[data-tab="${selectedTab}"]`, tabs)) {
+            window.localStorage.removeItem(tabStatusKey);
+            return;
+        }
+
+        selectTab(selectedTab);
     }
 }

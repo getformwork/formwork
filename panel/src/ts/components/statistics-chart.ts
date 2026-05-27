@@ -57,7 +57,7 @@ export class StatisticsChart {
             const target = event.target as SVGElement;
             if (target.getAttribute("class") === "ct-point" && target.hasAttribute("ct:index")) {
                 const strokeWidth = parseFloat(getComputedStyle(target).strokeWidth);
-                const index = parseInt(target.getAttribute("ct:index") as string);
+                const index = parseInt(target.getAttribute("ct:index") ?? "");
                 const text = `<div>${data.labels[index]}<br><span class="text-color-blue">${circleSmallFill}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${circleSmallFill}</span>${data.series[1][index]}</div>`;
                 const tooltip = new Tooltip(text, {
                     referenceElement: event.target as HTMLElement,

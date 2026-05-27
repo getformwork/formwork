@@ -1,6 +1,6 @@
 import type * as icons from "./icons";
 import { $, $$ } from "../utils/selectors";
-import { escapeHtml, escapeRegExp, makeDiacriticsRegExp } from "../utils/validation";
+import { escapeHtml, makeSearchRegExp } from "../utils/validation";
 import { app } from "../app";
 import { debounce } from "../utils/events";
 import type { Form } from "./form";
@@ -24,13 +24,13 @@ export class FilesList {
 
     sort(selector: string = ".file-name") {
         const filesItems = $$(".files-item", this.element);
-        Array.from(filesItems)
-            .sort((a: HTMLElement, b: HTMLElement) => {
+        [...filesItems]
+            .sort((a, b) => {
                 const keyA = $(selector, a)?.textContent;
                 const keyB = $(selector, b)?.textContent;
                 return keyA?.localeCompare(keyB ?? "") ?? 0;
             })
-            .forEach((element: HTMLElement) => {
+            .forEach((element) => {
                 element.parentElement?.appendChild(element);
             });
     }
@@ -39,9 +39,9 @@ export class FilesList {
         const toggle = $(".form-togglegroup.files-list-view-as", this.element);
         const searchInput = $(".files-search", this.element) as HTMLInputElement;
 
-        $$(".file-thumbnail[data-src]", this.element).forEach((thumbnail: HTMLImageElement | HTMLVideoElement) => {
+        $$<HTMLImageElement | HTMLVideoElement>(".file-thumbnail[data-src]", this.element).forEach((thumbnail) => {
             thumbnail.addEventListener("error", () => thumbnail.removeAttribute("src"));
-            thumbnail.src = thumbnail.dataset.src as string;
+            thumbnail.src = thumbnail.dataset.src ?? "";
         });
 
         if (toggle) {
@@ -53,12 +53,12 @@ export class FilesList {
             const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${key}]`);
 
             if (viewAs) {
-                $$("input", toggle).forEach((input: HTMLInputElement) => (input.checked = false));
+                $$<HTMLInputElement>("input", toggle).forEach((input) => (input.checked = false));
                 ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
                 this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
             }
 
-            $$("input", toggle).forEach((input: HTMLInputElement) => {
+            $$<HTMLInputElement>("input", toggle).forEach((input) => {
                 input.addEventListener("input", () => {
                     this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
                     window.localStorage.setItem(`formwork.filesListViewAs[${key}]`, input.value);
@@ -80,99 +80,117 @@ export class FilesList {
 
         this.element.addEventListener("click", (event) => {
             const element = (event.target as HTMLElement).closest("[data-command=replaceFile]") as HTMLElement;
-            if (element) {
-                const fileInput = document.createElement("input");
-                fileInput.type = "file";
-                fileInput.accept = element.dataset.mimetype as string;
-                fileInput.click();
-
-                fileInput.addEventListener("change", () => {
-                    if (fileInput.files?.length) {
-                        const formData = new FormData();
-                        formData.append("csrf-token", app.config.csrfToken as string);
-                        formData.append("file", fileInput.files[0]);
-
-                        new Request(
-                            {
-                                method: "POST",
-                                url: element.dataset.action as string,
-                                data: formData,
-                            },
-                            (response) => {
-                                const notification = new Notification(response.message, response.status);
-
-                                if (response.status === "success") {
-                                    if (element.closest("[data-form=file-form]")) {
-                                        window.location.reload();
-                                    } else if (response.data.thumbnail) {
-                                        const thumbnail = $(".file-thumbnail", element.closest(".files-item") as HTMLElement) as HTMLImageElement | HTMLVideoElement;
-                                        thumbnail.src = response.data.thumbnail;
-
-                                        const fileDate = $(".file-date", element.closest(".files-item") as HTMLElement) as HTMLElement;
-                                        fileDate.textContent = response.data.lastModifiedTime;
-
-                                        const fileSize = $(".file-size", element.closest(".files-item") as HTMLElement) as HTMLElement;
-                                        fileSize.textContent = response.data.size;
-                                    }
-                                }
-
-                                notification.show();
-                            },
-                        );
-                    }
-
-                    fileInput.remove();
-                });
+            if (!element) {
+                return;
             }
+
+            this.openReplaceFilePicker(element);
         });
 
         if (searchInput) {
-            const handleSearch = () => {
-                const value = escapeHtml(searchInput.value);
-                ($(".files-item") as HTMLElement).classList.toggle("is-filtered", value.length > 0);
-
-                $$(".files-item").forEach((element) => {
-                    let matches = 0;
-
-                    for (const selector of [".file-name a", ".file-parent-title"]) {
-                        const item = $(selector, element) as HTMLElement;
-
-                        if (!item) {
-                            continue;
-                        }
-
-                        const text = escapeHtml(item.textContent);
-
-                        const regexp = value ? new RegExp(`${makeDiacriticsRegExp(escapeRegExp(value))}`, "gi") : null;
-
-                        if (regexp && text.match(regexp) !== null) {
-                            item.innerHTML = text.replace(regexp, "<mark>$&</mark>");
-                            matches++;
-                        } else {
-                            item.innerHTML = text;
-                        }
-                    }
-
-                    if (!value || matches > 0) {
-                        element.style.display = "";
-                    } else {
-                        element.style.display = "none";
-                    }
-                });
-            };
+            const handleSearch = () => this.filterFiles(searchInput.value);
 
             searchInput.addEventListener("keyup", debounce(handleSearch, 100));
             searchInput.addEventListener("search", handleSearch);
 
             document.addEventListener("keydown", (event) => {
-                if (event.ctrlKey || event.metaKey) {
-                    if (event.key === "f" && document.activeElement !== searchInput) {
-                        searchInput.focus();
-                        event.preventDefault();
-                    }
+                if ((event.ctrlKey || event.metaKey) && event.key === "f" && document.activeElement !== searchInput) {
+                    searchInput.focus();
+                    event.preventDefault();
                 }
             });
         }
+    }
+
+    private openReplaceFilePicker(element: HTMLElement) {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = element.dataset.mimetype ?? "";
+        fileInput.click();
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files?.[0];
+            if (file) {
+                this.replaceFile(element, file);
+            }
+
+            fileInput.remove();
+        });
+    }
+
+    private replaceFile(element: HTMLElement, file: File) {
+        const formData = new FormData();
+        formData.append("csrf-token", app.config.csrfToken);
+        formData.append("file", file);
+
+        new Request(
+            {
+                method: "POST",
+                url: element.dataset.action,
+                data: formData,
+            },
+            (response) => {
+                if (response.status === "success") {
+                    this.handleFileReplaceSuccess(element, response.data);
+                }
+
+                new Notification(response.message, response.status).show();
+            },
+        );
+    }
+
+    private handleFileReplaceSuccess(element: HTMLElement, data: Record<string, string>) {
+        if (element.closest("[data-form=file-form]")) {
+            window.location.reload();
+            return;
+        }
+
+        if (!data.thumbnail) {
+            return;
+        }
+
+        const filesItem = element.closest(".files-item") as HTMLElement;
+        const thumbnail = $(".file-thumbnail", filesItem) as HTMLImageElement | HTMLVideoElement;
+        thumbnail.src = data.thumbnail;
+
+        const fileDate = $(".file-date", filesItem) as HTMLElement;
+        fileDate.textContent = data.lastModifiedTime;
+
+        const fileSize = $(".file-size", filesItem) as HTMLElement;
+        fileSize.textContent = data.size;
+    }
+
+    private filterFiles(rawValue: string) {
+        const value = escapeHtml(rawValue);
+        const regexp = value ? makeSearchRegExp(value, "gi") : null;
+
+        $(".files-item")?.classList.toggle("is-filtered", value.length > 0);
+
+        $$(".files-item").forEach((element) => {
+            const matches = this.highlightFileSearchMatches(element, regexp);
+            element.style.display = !value || matches > 0 ? "" : "none";
+        });
+    }
+
+    private highlightFileSearchMatches(element: HTMLElement, regexp: RegExp | null) {
+        let matches = 0;
+
+        for (const selector of [".file-name a", ".file-parent-title"]) {
+            const item = $(selector, element) as HTMLElement;
+            if (!item) {
+                continue;
+            }
+
+            const text = escapeHtml(item.textContent);
+            const hasMatch = regexp ? text.match(regexp) !== null : false;
+            item.innerHTML = hasMatch ? text.replace(regexp!, "<mark>$&</mark>") : text;
+
+            if (hasMatch) {
+                matches++;
+            }
+        }
+
+        return matches;
     }
 
     private initModals() {
@@ -189,7 +207,7 @@ export class FilesList {
             renameFileItemModal.onOpen((modal, trigger) => {
                 if (trigger) {
                     const input = $('[id="renameFileItemModal.filename"]', modal.element) as HTMLInputElement;
-                    input.value = (trigger.closest("[data-filename]") as HTMLElement)?.dataset.filename as string;
+                    input.value = (trigger.closest("[data-filename]") as HTMLElement)?.dataset.filename ?? "";
                     input.setSelectionRange(0, input.value.lastIndexOf("."));
 
                     Object.assign(modal.data, {
@@ -202,45 +220,43 @@ export class FilesList {
             });
 
             renameFileItemModal.onCommand("rename-file", (modal) => {
-                const { action, item, filename, input } = modal.data;
+                const { action, item, filename, input } = modal.data as { action: string; item: HTMLElement; filename: string; input: HTMLInputElement };
 
                 new Request(
                     {
                         method: "POST",
-                        url: action as string,
+                        url: action,
                         data: {
                             filename,
-                            "renameFileItemModal[filename]": (input as HTMLInputElement).value,
-                            "csrf-token": app.config.csrfToken as string,
+                            "renameFileItemModal[filename]": input.value,
+                            "csrf-token": app.config.csrfToken,
                         },
                     },
                     (response) => {
                         if (response.status === "success") {
                             const data = response.data;
 
-                            (item as HTMLElement).dataset.filename = data.filename;
+                            item.dataset.filename = data.filename;
 
-                            const anchor = $(".file-name a", item as HTMLElement) as HTMLAnchorElement;
+                            const anchor = $(".file-name a", item) as HTMLAnchorElement;
                             anchor.innerText = data.filename;
                             anchor.href = data.uri;
 
-                            ($("[data-command=infoFile]", item as HTMLElement) as HTMLAnchorElement).href = data.actions.info;
-                            ($("[data-command=previewFile]", item as HTMLElement) as HTMLAnchorElement).href = data.uri;
-                            ($("[data-command=renameFile]", item as HTMLElement) as HTMLElement).dataset.action = data.actions.rename;
-                            ($("[data-command=replaceFile]", item as HTMLElement) as HTMLElement).dataset.action = data.actions.replace;
-                            ($("[data-command=deleteFile]", item as HTMLElement) as HTMLElement).dataset.action = data.actions.delete;
+                            ($("[data-command=infoFile]", item) as HTMLAnchorElement).href = data.actions.info;
+                            ($("[data-command=previewFile]", item) as HTMLAnchorElement).href = data.uri;
+                            ($("[data-command=renameFile]", item) as HTMLElement).dataset.action = data.actions.rename;
+                            ($("[data-command=replaceFile]", item) as HTMLElement).dataset.action = data.actions.replace;
+                            ($("[data-command=deleteFile]", item) as HTMLElement).dataset.action = data.actions.delete;
 
                             if (data.thumbnail) {
-                                const thumbnail = $(".file-thumbnail", item as HTMLElement) as HTMLImageElement | HTMLVideoElement;
+                                const thumbnail = $(".file-thumbnail", item) as HTMLImageElement | HTMLVideoElement;
                                 thumbnail.src = data.thumbnail;
                             }
 
                             if (this.form) {
-                                for (const name in this.form.inputs) {
-                                    const input = this.form.inputs[name];
-
+                                for (const input of Object.values(this.form.inputs)) {
                                     if (input instanceof SelectInput && (input.element.classList.contains("form-file") || input.element.classList.contains("form-image"))) {
-                                        input.removeOption(filename as string);
+                                        input.removeOption(filename);
                                         input.addOption({
                                             label: data.filename,
                                             value: data.filename,
@@ -251,7 +267,7 @@ export class FilesList {
                                     }
 
                                     if (input instanceof TagsInput && (input.element.classList.contains("form-files") || input.element.classList.contains("form-images"))) {
-                                        input.removeDropdownItem(filename as string);
+                                        input.removeDropdownItem(filename);
                                         input.addDropdownItem({
                                             label: data.filename,
                                             value: data.filename,
@@ -291,34 +307,33 @@ export class FilesList {
             });
 
             deleteFileItemModal.onCommand("delete-file", (modal) => {
-                const { action, item, filename } = modal.data;
+                const { action, item, filename } = modal.data as { action: string; item: HTMLElement; filename: string };
 
                 new Request(
                     {
                         method: "POST",
-                        url: action as string,
+                        url: action,
                         data: {
                             filename,
-                            "csrf-token": app.config.csrfToken as string,
+                            "csrf-token": app.config.csrfToken,
                         },
                     },
                     (response) => {
                         if (response.status === "success") {
-                            (item as HTMLElement).remove();
+                            item.remove();
 
                             if (this.element.querySelectorAll(".files-item").length === 0) {
                                 this.element.hidden = true;
                             }
 
                             if (this.form) {
-                                for (const name in this.form.inputs) {
-                                    const input = this.form.inputs[name];
+                                for (const input of Object.values(this.form.inputs)) {
                                     if (input instanceof SelectInput && (input.element.classList.contains("form-file") || input.element.classList.contains("form-image"))) {
-                                        input.removeOption(filename as string);
+                                        input.removeOption(filename);
                                     }
 
                                     if (input instanceof TagsInput && (input.element.classList.contains("form-files") || input.element.classList.contains("form-images"))) {
-                                        input.removeDropdownItem(filename as string);
+                                        input.removeDropdownItem(filename);
                                     }
                                 }
                             }

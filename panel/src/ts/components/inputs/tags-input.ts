@@ -1,11 +1,11 @@
 import * as icons from "../icons";
 import { $, $$ } from "../../utils/selectors";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
 import { debounce } from "../../utils/events";
+import { makeSearchRegExp } from "../../utils/validation";
 import type { SortableEvent } from "sortablejs";
 import { toCamelCase } from "../../utils/strings";
 
-interface TagsInputOptions {
+export interface TagsInputOptions {
     labels: { [key: string]: string };
     addKeyCodes: string[];
     limit: number;
@@ -25,7 +25,7 @@ export class TagsInput {
 
     private options: TagsInputOptions;
     private tags: string[] = [];
-    private placeholder: string;
+    private placeholder: string = "";
     private dropdown: HTMLElement | undefined;
 
     private field: HTMLDivElement;
@@ -33,7 +33,7 @@ export class TagsInput {
     private innerInput: HTMLInputElement;
 
     constructor(element: HTMLInputElement, options: Partial<TagsInputOptions>) {
-        const defaults = { labels: { remove: "Remove" }, addKeyCodes: ["Comma"], limit: Infinity, accept: "options" as "options" | "any", orderable: true };
+        const defaults: TagsInputOptions = { labels: { remove: "Remove" }, addKeyCodes: ["Comma"], limit: Infinity, accept: "options", orderable: true };
 
         this.element = element;
 
@@ -72,7 +72,7 @@ export class TagsInput {
 
     private async createField() {
         if ("limit" in this.element.dataset) {
-            this.options.limit = parseInt(this.element.dataset.limit as string);
+            this.options.limit = parseInt(this.element.dataset.limit ?? "");
         }
 
         if (!("orderable" in this.element.dataset)) {
@@ -98,7 +98,7 @@ export class TagsInput {
             this.innerInput.disabled = true;
         }
 
-        (this.element.parentNode as ParentNode).replaceChild(this.field, this.element);
+        this.element.replaceWith(this.field);
         this.field.appendChild(this.list);
         this.field.appendChild(this.innerInput);
         this.field.appendChild(this.element);
@@ -186,10 +186,7 @@ export class TagsInput {
     }
 
     removeDropdownItem(value: string) {
-        const item = $(`.dropdown-item[data-value="${value}"]`, this.dropdown);
-        if (item) {
-            this.dropdown?.removeChild(item);
-        }
+        $(`.dropdown-item[data-value="${value}"]`, this.dropdown)?.remove();
         this.updateDropdown();
         this.removeTag(value);
         $$(".tag", this.list).forEach((tag) => {
@@ -201,7 +198,7 @@ export class TagsInput {
 
     sortDropdownItems() {
         const items = $$(".dropdown-item", this.dropdown);
-        const sorted = Array.from(items).sort((a, b) => (a.dataset.value as string).localeCompare(b.dataset.value as string));
+        const sorted = [...items].sort((a, b) => (a.dataset.value ?? "").localeCompare(b.dataset.value ?? ""));
         for (const item of sorted) {
             this.dropdown?.appendChild(item);
         }
@@ -213,15 +210,15 @@ export class TagsInput {
             const isAssociative = !Array.isArray(list);
 
             if ("accept" in this.element.dataset) {
-                this.options.accept = (this.element.dataset.accept ?? "options") as "options" | "any";
+                this.options.accept = (this.element.dataset.accept ?? "options") as TagsInputOptions["accept"];
             }
 
             this.dropdown = document.createElement("div");
             this.dropdown.className = "dropdown-list";
             this.dropdown.style.display = "none";
 
-            for (const key in list) {
-                const { value, icon, thumb } = typeof list[key] === "object" ? list[key] : { value: list[key], icon: undefined, thumb: undefined };
+            for (const [key, item] of Object.entries(list)) {
+                const { value, icon, thumb } = typeof item === "object" ? item : { value: item, icon: undefined, thumb: undefined };
 
                 this.addDropdownItem({
                     label: value,
@@ -477,7 +474,7 @@ export class TagsInput {
         }
         let visibleItems = 0;
         $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (!this.tags.includes(element.dataset.value as string)) {
+            if (!this.tags.includes(element.dataset.value ?? "")) {
                 element.style.display = "block";
                 visibleItems++;
             } else {
@@ -505,9 +502,9 @@ export class TagsInput {
             if (value === "") {
                 return true;
             }
-            const text = `${element.textContent}`;
-            const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "i");
-            if (text.match(regexp) !== null && element.style.display !== "none") {
+            const text = element.textContent;
+            const regexp = makeSearchRegExp(value);
+            if (regexp.test(text) && element.style.display !== "none") {
                 element.style.display = "block";
                 visibleItems++;
             } else {
@@ -544,15 +541,12 @@ export class TagsInput {
     private addTagFromSelectedDropdownItem() {
         const selectedItem = $(".dropdown-item.selected", this.dropdown);
         if (selectedItem && getComputedStyle(selectedItem).display !== "none") {
-            this.innerInput.value = selectedItem.dataset.value as string;
+            this.innerInput.value = selectedItem.dataset.value ?? "";
         }
     }
 
     private selectDropdownItem(item: HTMLElement) {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            selectedItem.classList.remove("selected");
-        }
+        $(".dropdown-item.selected", this.dropdown)?.classList.remove("selected");
         if (item) {
             item.classList.add("selected");
             this.scrollToDropdownItem(item);

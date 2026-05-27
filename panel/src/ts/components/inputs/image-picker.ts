@@ -51,11 +51,11 @@ export class ImagePicker {
         new Request(
             {
                 method: "POST",
-                url: this.element.dataset.src as string,
-                data: { "csrf-token": app.config.csrfToken as string },
+                url: this.element.dataset.src,
+                data: { "csrf-token": app.config.csrfToken },
             },
-            ({ data }: { data: Record<string, any> }) => {
-                const images = Object.values(data).filter((file) => file.type === "image");
+            (response) => {
+                const images = Object.values(response.data as Record<string, any>).filter((file) => file.type === "image");
 
                 if (images.length > 0) {
                     const container = document.createElement("div");

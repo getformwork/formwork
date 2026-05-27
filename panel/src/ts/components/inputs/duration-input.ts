@@ -1,7 +1,16 @@
 import { $ } from "../../utils/selectors";
 import { getSafeInteger } from "../../utils/numbers";
 
-const TIME_INTERVALS = {
+const TIME_INTERVAL_KEYS = ["years", "months", "weeks", "days", "hours", "minutes", "seconds"] as const;
+
+type TimeInterval = (typeof TIME_INTERVAL_KEYS)[number];
+type TimeIntervalLabel = [singular: string, plural: string];
+
+function isTimeInterval(s: string): s is TimeInterval {
+    return TIME_INTERVAL_KEYS.includes(s as TimeInterval);
+}
+
+const TIME_INTERVALS: Record<TimeInterval, number> = {
     years: 60 * 60 * 24 * 365,
     months: 60 * 60 * 24 * 30,
     weeks: 60 * 60 * 24 * 7,
@@ -11,10 +20,7 @@ const TIME_INTERVALS = {
     seconds: 1,
 };
 
-type TimeInterval = keyof typeof TIME_INTERVALS;
-type TimeIntervalLabel = [singular: string, plural: string];
-
-interface DurationInputOptions {
+export interface DurationInputOptions {
     unit: TimeInterval;
     intervals: TimeInterval[];
     labels: Record<TimeInterval, TimeIntervalLabel>;
@@ -25,7 +31,7 @@ export class DurationInput {
 
     readonly options: DurationInputOptions;
 
-    private field: HTMLElement;
+    private field: HTMLElement = document.createElement("div");
 
     private innerInputs: Partial<Record<TimeInterval, HTMLInputElement>> = {};
     private labels: Partial<Record<TimeInterval, HTMLLabelElement>> = {};
@@ -74,28 +80,35 @@ export class DurationInput {
     private secondsToIntervals(seconds: number, intervalNames: TimeInterval[] = this.options.intervals) {
         const intervals: Partial<Record<TimeInterval, number>> = {};
         seconds = getSafeInteger(seconds);
-        Object.keys(TIME_INTERVALS).forEach((t: TimeInterval) => {
+        for (const t of TIME_INTERVAL_KEYS) {
             if (intervalNames.includes(t)) {
-                intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
-                seconds -= intervals[t] * TIME_INTERVALS[t];
+                const v = Math.floor(seconds / TIME_INTERVALS[t]);
+                intervals[t] = v;
+                seconds -= v * TIME_INTERVALS[t];
             }
-        });
+        }
         return intervals;
     }
 
     private intervalsToSeconds(intervals: Partial<Record<TimeInterval, number>>) {
         let seconds = 0;
-        Object.entries(intervals).forEach(([interval, value]: [TimeInterval, number]) => {
-            seconds += value * TIME_INTERVALS[interval];
-        });
+        for (const t of TIME_INTERVAL_KEYS) {
+            const value = intervals[t];
+            if (value !== undefined) {
+                seconds += value * TIME_INTERVALS[t];
+            }
+        }
         return getSafeInteger(seconds);
     }
 
     private updateHiddenInput() {
         const intervals: Partial<Record<TimeInterval, number>> = {};
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
-            intervals[i] = parseInt(input.value);
-        });
+        for (const t of TIME_INTERVAL_KEYS) {
+            const input = this.innerInputs[t];
+            if (input) {
+                intervals[t] = parseInt(input.value);
+            }
+        }
         let seconds = this.intervalsToSeconds(intervals);
         if (this.element.step) {
             const step = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
@@ -114,9 +127,12 @@ export class DurationInput {
 
     private updateInnerInputs() {
         const intervals = this.secondsToIntervals(parseInt(this.element.value) * TIME_INTERVALS[this.options.unit]);
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
-            input.value = `${intervals[i] || 0}`;
-        });
+        for (const t of TIME_INTERVAL_KEYS) {
+            const input = this.innerInputs[t];
+            if (input) {
+                input.value = `${intervals[t] ?? 0}`;
+            }
+        }
     }
 
     private updateInnerInputsLength() {
@@ -126,9 +142,13 @@ export class DurationInput {
     }
 
     private updateLabels() {
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
-            (this.labels[i] as HTMLLabelElement).innerText = this.options.labels[i][parseInt(input.value) === 1 ? 0 : 1];
-        });
+        for (const t of TIME_INTERVAL_KEYS) {
+            const input = this.innerInputs[t];
+            const label = this.labels[t];
+            if (input && label) {
+                label.innerText = this.options.labels[t][parseInt(input.value) === 1 ? 0 : 1];
+            }
+        }
     }
 
     private createInnerInputs(intervals: Partial<Record<TimeInterval, number>>, steps: Partial<Record<TimeInterval, number>>) {
@@ -216,17 +236,20 @@ export class DurationInput {
         this.element.ariaHidden = "true";
 
         if ("intervals" in this.element.dataset) {
-            this.options.intervals = (this.element.dataset.intervals as string).split(", ") as TimeInterval[];
+            this.options.intervals = (this.element.dataset.intervals ?? "").split(", ").filter(isTimeInterval);
         }
 
         if ("unit" in this.element.dataset) {
-            this.options.unit = this.element.dataset.unit as TimeInterval;
+            const unit = this.element.dataset.unit;
+            if (unit && isTimeInterval(unit)) {
+                this.options.unit = unit;
+            }
         }
 
         const valueSeconds = parseInt(this.element.value) * TIME_INTERVALS[this.options.unit];
         const stepSeconds = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
         const field = this.createInnerInputs(this.secondsToIntervals(valueSeconds || 0), this.secondsToIntervals(stepSeconds || 1));
-        (this.element.parentNode as ParentNode).replaceChild(field, this.element);
+        this.element.replaceWith(field);
         field.appendChild(this.element);
         $(`label[for="${this.element.id}"]`)?.addEventListener("click", () => $(".form-input", field)?.focus());
     }

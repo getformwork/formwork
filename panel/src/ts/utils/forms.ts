@@ -1,14 +1,14 @@
 export function serializeObject(object: Record<string, string | number | boolean>) {
     const serialized: string[] = [];
-    for (const property in object) {
-        serialized.push(`${encodeURIComponent(property)}=${encodeURIComponent(object[property])}`);
+    for (const [property, value] of Object.entries(object)) {
+        serialized.push(`${encodeURIComponent(property)}=${encodeURIComponent(value)}`);
     }
     return serialized.join("&");
 }
 
 export function serializeForm(form: HTMLFormElement) {
     const serialized: string[] = [];
-    for (const field of Array.from(form.elements) as HTMLFormElement[]) {
+    for (const field of [...form.elements] as HTMLFormElement[]) {
         if (field.name && !field.disabled && field.dataset.formIgnore !== "true" && field.type !== "file" && field.type !== "reset" && field.type !== "submit" && field.type !== "button") {
             if (field.type === "select-multiple") {
                 for (const option of field.options) {

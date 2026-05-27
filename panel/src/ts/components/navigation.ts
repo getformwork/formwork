@@ -2,28 +2,27 @@ import { $ } from "../utils/selectors";
 
 export class Navigation {
     constructor() {
-        if ($(".sidebar-toggle")) {
-            $(".sidebar-toggle")?.addEventListener("click", () => {
-                if (($(".sidebar") as HTMLElement).classList.toggle("show")) {
+        const sidebarToggle = $(".sidebar-toggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", () => {
+                if ($(".sidebar")?.classList.toggle("show")) {
                     if (!$(".sidebar-backdrop")) {
                         const backdrop = document.createElement("div");
                         backdrop.className = "sidebar-backdrop hide-from-md";
                         document.body.appendChild(backdrop);
                     }
                 } else {
-                    const backdrop = $(".sidebar-backdrop");
-                    if (backdrop) {
-                        (backdrop.parentNode as ParentNode).removeChild(backdrop);
-                    }
+                    $(".sidebar-backdrop")?.remove();
                 }
             });
         }
 
-        if ($("[data-command=save]")) {
+        const saveCommand = $("[data-command=save]");
+        if (saveCommand) {
             document.addEventListener("keydown", (event) => {
                 if (!event.altKey && (event.ctrlKey || event.metaKey)) {
                     if (event.key === "s") {
-                        $("[data-command=save]")?.click();
+                        saveCommand.click();
                         event.preventDefault();
                     }
                 }

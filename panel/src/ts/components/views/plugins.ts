@@ -6,7 +6,7 @@ import { throttle } from "../../utils/events";
 
 export class Plugins {
     constructor() {
-        $$(".plugin-status-toggle").forEach((toggle: HTMLInputElement) => {
+        $$<HTMLInputElement>(".plugin-status-toggle").forEach((toggle) => {
             const fieldset = toggle.closest(".form-togglegroup") as HTMLFieldSetElement;
             const action = toggle.dataset.action;
 
@@ -22,7 +22,7 @@ export class Plugins {
                         {
                             method: "POST",
                             url: action,
-                            data: { "csrf-token": app.config.csrfToken as string },
+                            data: { "csrf-token": app.config.csrfToken },
                         },
                         (response) => {
                             if (response.status === "success" && !app.forms["plugin-form"]?.hasChanged()) {
