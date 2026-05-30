@@ -7,7 +7,7 @@ class ArrayKeysNode extends AbstractNode
     public const string TYPE = 'array keys';
 
     /**
-     * @param list<array-key> $value
+     * @param list<AbstractNode> $value
      */
     public function __construct(array $value)
     {
