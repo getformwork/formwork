@@ -25,7 +25,7 @@ export class DurationInput {
 
     readonly options: DurationInputOptions;
 
-    private field: HTMLElement;
+    private field!: HTMLElement;
 
     private innerInputs: Partial<Record<TimeInterval, HTMLInputElement>> = {};
     private labels: Partial<Record<TimeInterval, HTMLLabelElement>> = {};
@@ -74,7 +74,7 @@ export class DurationInput {
     private secondsToIntervals(seconds: number, intervalNames: TimeInterval[] = this.options.intervals) {
         const intervals: Partial<Record<TimeInterval, number>> = {};
         seconds = getSafeInteger(seconds);
-        Object.keys(TIME_INTERVALS).forEach((t: TimeInterval) => {
+        (Object.keys(TIME_INTERVALS) as TimeInterval[]).forEach((t) => {
             if (intervalNames.includes(t)) {
                 intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
                 seconds -= intervals[t] * TIME_INTERVALS[t];
@@ -85,7 +85,7 @@ export class DurationInput {
 
     private intervalsToSeconds(intervals: Partial<Record<TimeInterval, number>>) {
         let seconds = 0;
-        Object.entries(intervals).forEach(([interval, value]: [TimeInterval, number]) => {
+        (Object.entries(intervals) as [TimeInterval, number][]).forEach(([interval, value]) => {
             seconds += value * TIME_INTERVALS[interval];
         });
         return getSafeInteger(seconds);
@@ -93,7 +93,7 @@ export class DurationInput {
 
     private updateHiddenInput() {
         const intervals: Partial<Record<TimeInterval, number>> = {};
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
+        (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             intervals[i] = parseInt(input.value);
         });
         let seconds = this.intervalsToSeconds(intervals);
@@ -114,7 +114,7 @@ export class DurationInput {
 
     private updateInnerInputs() {
         const intervals = this.secondsToIntervals(parseInt(this.element.value) * TIME_INTERVALS[this.options.unit]);
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
+        (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             input.value = `${intervals[i] || 0}`;
         });
     }
@@ -126,7 +126,7 @@ export class DurationInput {
     }
 
     private updateLabels() {
-        Object.entries(this.innerInputs).forEach(([i, input]: [TimeInterval, HTMLInputElement]) => {
+        (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             (this.labels[i] as HTMLLabelElement).innerText = this.options.labels[i][parseInt(input.value) === 1 ? 0 : 1];
         });
     }

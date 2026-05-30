@@ -27,7 +27,7 @@ export class Modal {
     constructor(element: HTMLElement) {
         this.element = element;
 
-        const formElement = $("form", this.element) as HTMLFormElement | null;
+        const formElement = $<HTMLFormElement>("form", this.element);
 
         this.form = formElement
             ? new Form(formElement, {

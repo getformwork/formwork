@@ -18,7 +18,7 @@ export class Notification {
     type: NotificationType;
     options: NotificationOptions;
     containerElement: HTMLElement | null;
-    notificationElement: HTMLElement;
+    notificationElement!: HTMLElement;
 
     constructor(text: string, type: NotificationType, options: Partial<NotificationOptions> = {}) {
         const defaults: NotificationOptions = {
@@ -46,7 +46,7 @@ export class Notification {
 
         this.options = Object.assign({}, defaults, options);
 
-        this.containerElement = $(".notification-container") as HTMLElement;
+        this.containerElement = $(".notification-container");
     }
 
     show() {

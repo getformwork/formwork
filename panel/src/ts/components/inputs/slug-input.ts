@@ -27,7 +27,7 @@ export class SlugInput {
     }
 
     private initInput() {
-        const source = $(`[id="${this.element.dataset.source}"]`) as HTMLInputElement | null;
+        const source = $<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`[id="${this.element.dataset.source}"]`);
         const autoUpdate = "autoUpdate" in this.element.dataset && this.element.dataset.autoUpdate === "true";
 
         if (source) {
@@ -42,7 +42,7 @@ export class SlugInput {
                 source.addEventListener("input", generateSlug);
                 this.element.value = makeSlug(source.value);
             } else {
-                const generateButton = $(`[data-generate-slug="${this.element.id}"]`) as HTMLButtonElement | null;
+                const generateButton = $(`[data-generate-slug="${this.element.id}"]`);
                 if (generateButton) {
                     generateButton.addEventListener("click", generateSlug);
                 }

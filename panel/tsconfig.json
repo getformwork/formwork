@@ -1,15 +1,15 @@
 {
-    "include": [
-        "./src/ts/**/*.ts"
-    ],
+    "include": ["./src/ts/**/*.ts"],
     "compilerOptions": {
         "esModuleInterop": true,
-        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
         "lib": ["ES2020", "DOM"],
         "noEmit": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
+        "noUncheckedSideEffectImports": true,
+        "strictBuiltinIteratorReturn": true,
         "strictNullChecks": true,
-        "useDefineForClassFields": true,
+        "useDefineForClassFields": true
     }
 }

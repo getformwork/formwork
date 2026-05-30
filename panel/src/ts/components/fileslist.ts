@@ -39,7 +39,7 @@ export class FilesList {
         const toggle = $(".form-togglegroup.files-list-view-as", this.element);
         const searchInput = $(".files-search", this.element) as HTMLInputElement;
 
-        $$(".file-thumbnail[data-src]", this.element).forEach((thumbnail: HTMLImageElement | HTMLVideoElement) => {
+        $$<HTMLImageElement | HTMLVideoElement>(".file-thumbnail[data-src]", this.element).forEach((thumbnail) => {
             thumbnail.addEventListener("error", () => thumbnail.removeAttribute("src"));
             thumbnail.src = thumbnail.dataset.src as string;
         });
@@ -53,12 +53,12 @@ export class FilesList {
             const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${key}]`);
 
             if (viewAs) {
-                $$("input", toggle).forEach((input: HTMLInputElement) => (input.checked = false));
+                $$<HTMLInputElement>("input", toggle).forEach((input) => (input.checked = false));
                 ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
                 this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
             }
 
-            $$("input", toggle).forEach((input: HTMLInputElement) => {
+            $$<HTMLInputElement>("input", toggle).forEach((input) => {
                 input.addEventListener("input", () => {
                     this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
                     window.localStorage.setItem(`formwork.filesListViewAs[${key}]`, input.value);
@@ -95,7 +95,7 @@ export class FilesList {
                         new Request(
                             {
                                 method: "POST",
-                                url: element.dataset.action as string,
+                                url: element.dataset.action,
                                 data: formData,
                             },
                             (response) => {
