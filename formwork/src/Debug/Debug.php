@@ -330,7 +330,7 @@ final class Debug
 
                     $typeFormatter = fn(string $type) => preg_replace_callback('/\??([^|&]+)/', fn(array $matches) => match ($matches[1]) {
                         'bool', 'true', 'false', 'int', 'float', 'string', 'null', 'array', 'mixed', 'void', 'never', 'callable', 'iterable', 'resource' => sprintf('<span class="__type-keyword">%s</span>', $matches[0]),
-                        default => sprintf('<span class="__type-name">%s</span>', $matches[0]),
+                        default                                                                                                                          => sprintf('<span class="__type-name">%s</span>', $matches[0]),
                     }, $type);
 
                     foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
