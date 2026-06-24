@@ -18,6 +18,7 @@ use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 return RectorConfig::configure()
     ->withPhpSets(php83: true)
@@ -51,4 +52,5 @@ return RectorConfig::configure()
         RenamePropertyToMatchTypeRector::class,
         ReturnBinaryOrToEarlyReturnRector::class,
         VariableConstFetchToClassConstFetchRector::class,
+        SafeDeclareStrictTypesRector::class,
     ]);
