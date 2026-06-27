@@ -191,7 +191,7 @@ class User extends Model
      */
     public function canDeleteUser(User $user): bool
     {
-        return $this->isAdmin() && !$user->isLoggedIn();
+        return $this->isAdmin() && $this->username() !== $user->username();
     }
 
     /**
@@ -199,10 +199,7 @@ class User extends Model
      */
     public function canChangeOptionsOf(User $user): bool
     {
-        if ($this->isAdmin()) {
-            return true;
-        }
-        return $user->isLoggedIn();
+        return $this->isAdmin() || $this->username() === $user->username();
     }
 
     /**
@@ -210,7 +207,7 @@ class User extends Model
      */
     public function canChangePasswordOf(User $user): bool
     {
-        return $user->isLoggedIn();
+        return $this->username() === $user->username();
     }
 
     /**
@@ -218,7 +215,7 @@ class User extends Model
      */
     public function canChangeRoleOf(User $user): bool
     {
-        return $this->isAdmin() && !$user->isLoggedIn();
+        return $this->isAdmin() && $this->username() !== $user->username();
     }
 
     /**
