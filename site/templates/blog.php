@@ -11,7 +11,7 @@
         <?php foreach ($posts as $post) : ?>
             <article class="article">
                 <?php if ($post->has('coverImage') && ($image = $post->coverImage())) : ?>
-                    <img class="article-cover-image" src="<?= $image->uri() ?>" alt="<?= $this->escape($post->title()) ?>">
+                    <img class="article-cover-image" src="<?= $image->uri() ?>" alt="<?= $this->escapeAttr($post->title()) ?>">
                 <?php endif ?>
                 <?php if (!$post->publishDate()->isEmpty()) : ?><time class="article-time"><?= $post->publishDate()->toTimeDistance() ?></time><?php endif ?>
                 <h1 class="article-title"><a href="<?= $post->uri() ?>"><?= $this->escape($post->title()) ?></a></h1>

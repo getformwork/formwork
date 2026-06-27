@@ -2,7 +2,7 @@
 <html lang="<?= $app->translations()->getCurrent()->code() ?>" class="color-scheme-<?= $panel->colorScheme()->value ?>">
 
 <head>
-    <title><?php if (!empty($title)) : ?><?= $title ?> | <?php endif ?>Formwork</title>
+    <title><?php if (!empty($title)) : ?><?= $this->escape($title) ?> | <?php endif ?>Formwork</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="<?= $this->assets()->get('@panel/images/icon.svg')->uri() ?>">
