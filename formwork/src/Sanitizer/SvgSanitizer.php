@@ -19,6 +19,11 @@ class SvgSanitizer extends DomSanitizer
 
     protected array $uriAttributes = SvgReference::URI_ATTRIBUTES;
 
+    /**
+     * @var list<string>
+     */
+    protected array $smilElements = SvgReference::SMIL_ELEMENTS;
+
     public function __construct(
         protected DomParserInterface $domParser = new PhpDomParser(),
     ) {}
@@ -40,6 +45,19 @@ class SvgSanitizer extends DomSanitizer
     {
         parent::sanitizeDocumentFragment($domDocumentFragment);
         $this->addExplicitSvgNamespace($domDocumentFragment);
+    }
+
+    protected function sanitizeNodeAttribute(DOMElement $domElement, DOMAttr $domAttr): void
+    {
+        parent::sanitizeNodeAttribute($domElement, $domAttr);
+
+        if (
+            in_array($domElement->nodeName, $this->smilElements, true)
+            && $domAttr->name === 'attributeName'
+            && !$this->isSafeSmilAttributeName($domAttr->value)
+        ) {
+            $domElement->removeAttribute($domAttr->name);
+        }
     }
 
     protected function addExplicitSvgNamespace(DOMDocumentFragment $domDocumentFragment): void
@@ -79,5 +97,14 @@ class SvgSanitizer extends DomSanitizer
         $domElement->append(...$svg->childNodes);
 
         $svg->replaceWith($domElement);
+    }
+
+    /**
+     * Return whether the SMIL `attributeName` is allowed and not a URI attribute (which would be unsafe)
+     */
+    private function isSafeSmilAttributeName(string $attributeName): bool
+    {
+        return in_array($attributeName, $this->allowedAttributes, true)
+            && !in_array($attributeName, $this->uriAttributes, true);
     }
 }
