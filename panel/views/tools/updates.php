@@ -10,7 +10,7 @@
 <section id="updater-component" class="section">
     <div class="row">
         <div class="col-md-1-1">
-            <div class="checker"><span class="spinner"></span><span class="update-status" data-checking-text="<?= $this->translate('panel.updates.status.checking') ?>" data-installing-text="<?= $this->translate('panel.updates.status.installing') ?>"><?= $this->translate('panel.updates.status.checking') ?></span></div>
+            <div class="checker"><span class="spinner"></span><span class="update-status" data-checking-text="<?= $this->escapeAttr($this->translate('panel.updates.status.checking')) ?>" data-installing-text="<?= $this->escapeAttr($this->translate('panel.updates.status.installing')) ?>"><?= $this->translate('panel.updates.status.checking') ?></span></div>
         </div>
     </div>
     <div class="row new-version mt-9" style="display: none;">

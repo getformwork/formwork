@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title><?= $message ?? 'Internal Server Error' ?> | Formwork</title>
+    <title><?= $this->escape($message ?? 'Internal Server Error') ?> | Formwork</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -132,5 +132,5 @@
     <div class="container">
         <h1>
             <span class="error-code"><?= $status ?? 500 ?></span>
-            <span class="error-status"><?= $message ?? 'Internal Server Error' ?></span>
+            <span class="error-status"><?= $this->escape($message ?? 'Internal Server Error') ?></span>
         </h1>
