@@ -11,13 +11,17 @@ final class SvgDecoder implements DecoderInterface
 {
     public function decode(string &$data): Generator
     {
+        if ($data === '') {
+            throw new InvalidArgumentException('Invalid SVG data');
+        }
+
         $domDocument = new DOMDocument();
 
         $domDocument->loadXML($data, LIBXML_NOERROR);
 
         $root = $domDocument->documentElement;
 
-        if (!($root instanceof DOMElement && $root->nodeName === 'svg')) {
+        if (!$root instanceof DOMElement || $root->nodeName !== 'svg') {
             throw new InvalidArgumentException('Invalid SVG data');
         }
 

@@ -841,7 +841,7 @@ class Page extends Model implements Stringable
         $this->languages ??= new Languages([
             'available' => $languages,
             'default'   => $defaultLanguage,
-            'current'   => $this->language ?? null,
+            'current'   => $this->language,
             'requested' => $site->languages()->requested(),
             'preferred' => $site->languages()->preferred(),
         ]);

@@ -773,10 +773,12 @@ final class Arr
         bool $caseSensitive = false,
         bool $preserveKeys = true,
     ): array {
+        // @phpstan-ignore function.alreadyNarrowedType
         if (!in_array($direction, [SORT_ASC, SORT_DESC], true)) {
             throw new UnexpectedValueException(sprintf('%s() only accepts SORT_ASC and SORT_DESC as "direction" option', __METHOD__));
         }
 
+        // @phpstan-ignore function.alreadyNarrowedType
         if (!in_array($type, [SORT_REGULAR, SORT_NUMERIC, SORT_STRING, SORT_NATURAL], true)) {
             throw new UnexpectedValueException(sprintf('%s() only accepts SORT_REGULAR, SORT_NUMERIC, SORT_STRING and SORT_NATURAL as "type" option', __METHOD__));
         }

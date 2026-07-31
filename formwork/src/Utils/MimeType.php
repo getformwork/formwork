@@ -1296,7 +1296,7 @@ final class MimeType
     {
         $mimeType = null;
 
-        if (!(FileSystem::isFile($file, assertExists: false) && FileSystem::isReadable($file, assertExists: false))) {
+        if ($file === '' || (!FileSystem::isFile($file, assertExists: false) || !FileSystem::isReadable($file, assertExists: false))) {
             throw new RuntimeException(sprintf('The file "%s" does not exist or is not readable', $file));
         }
 
