@@ -242,6 +242,7 @@ class DomSanitizer
     {
         if (!in_array($domAttr->nodeName, $this->allowedAttributes, true)) {
             $domElement->removeAttribute($domAttr->nodeName);
+            return;
         }
 
         if (in_array($domAttr->nodeName, $this->uriAttributes, true)) {
