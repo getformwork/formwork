@@ -231,22 +231,31 @@ class DomSanitizer
                 continue;
             }
 
-            if (!in_array($attribute->nodeName, $this->allowedAttributes, true)) {
-                $domElement->removeAttribute($attribute->nodeName);
+            $this->sanitizeNodeAttribute($domElement, $attribute);
+        }
+    }
+
+    /**
+     * Sanitize a single DOM element attribute
+     */
+    protected function sanitizeNodeAttribute(DOMElement $domElement, DOMAttr $domAttr): void
+    {
+        if (!in_array($domAttr->nodeName, $this->allowedAttributes, true)) {
+            $domElement->removeAttribute($domAttr->nodeName);
+            return;
+        }
+
+        if (in_array($domAttr->nodeName, $this->uriAttributes, true)) {
+            $uri = $this->sanitizeUri((string) $domAttr->nodeValue);
+
+            $scheme = Uri::scheme($uri);
+
+            if ($scheme === null && !Str::startsWith($uri, '//')) {
+                return;
             }
 
-            if (in_array($attribute->nodeName, $this->uriAttributes, true)) {
-                $uri = $this->sanitizeUri((string) $attribute->nodeValue);
-
-                $scheme = Uri::scheme($uri);
-
-                if ($scheme === null && !Str::startsWith($uri, '//')) {
-                    continue;
-                }
-
-                if (!$this->allowExternalUris || !in_array($scheme, $this->allowedUriSchemes, true)) {
-                    $domElement->removeAttribute($attribute->nodeName);
-                }
+            if (!$this->allowExternalUris || !in_array($scheme, $this->allowedUriSchemes, true)) {
+                $domElement->removeAttribute($domAttr->nodeName);
             }
         }
     }
