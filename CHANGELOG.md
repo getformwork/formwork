@@ -1,18 +1,34 @@
 # Changelog
 
-# [2.3.8](https://github.com/getformwork/formwork/releases/tag/2.3.8)
+# [2.3.9](https://github.com/getformwork/formwork/releases/tag/2.3.9)
+
+**Enhancements**
+
+- Reduce panel chunks size
 
 **Bug fixes**
+
+- Enforce explicit actor-target checks for profile/password updates
+- Enforce escaping for dynamic content in views and templates
+- Drop unsafe SMIL `attributeName` values in SVG sanitization
+- Fix comparison logic in `Path::isRelativeTo()`
+
+# [2.3.8](https://github.com/getformwork/formwork/releases/tag/2.3.8)
+
+**Bug fixes**
+
 - Fix deprecated null array offset for PHP >= 8.5
 
 # [2.3.7](https://github.com/getformwork/formwork/releases/tag/2.3.7)
 
 **Bug fixes**
+
 - Fix login form showing unsaved changes dialog on page update
 
 # [2.3.6](https://github.com/getformwork/formwork/releases/tag/2.3.6)
 
 **Enhancements**
+
 - **Add the possibility to define panel navigation item children (tabs, useful for plugins)**
 - **Reduce statistics visits and visitors identifiability**
 - **Add proper dark color scheme support to `Debug` and `CodeDumper`**
@@ -24,20 +40,24 @@
 # [2.3.5](https://github.com/getformwork/formwork/releases/tag/2.3.5)
 
 **Enhancements**
+
 - Improve disabled togglegroups styles
 - Remove user creation button when permission is missing
 
 **Bug fixes**
+
 - Fix plugin options update to correctly handle dots in field names
 - Fix plugin toggle to handle changed form values
 
 # [2.3.4](https://github.com/getformwork/formwork/releases/tag/2.3.4)
 
 **Security**
+
 - Fix role assignment to prevent privilege escalation via user creation
 - Remove user creation from the editor role
 
 **Bug fixes**
+
 - Fix ignored visibility check in modal fields
 - Fix session lock for users without dashboard access
 - Fix view name for panel assets errors
@@ -45,35 +65,42 @@
 # [2.3.3](https://github.com/getformwork/formwork/releases/tag/2.3.3)
 
 **Enhancements**
+
 - Add the possibility to ignore empty values in password fields
 
 **Bug fixes**
+
 - Fix range input appearance for dark color scheme
 - Ignore assets folder in backups
 
 # [2.3.2](https://github.com/getformwork/formwork/releases/tag/2.3.2)
 
 **Enhancements**
+
 - **Use assets folder to store cached assets and serve them directly**
 - Disable login button during login to avoid multiple submissions
 - Expose `$app` variable to templates
 - Add the possibility to load plugin services
 
 **Bug fixes**
+
 - Fix `serve` command screen not clearing correctly in some terminals
 - Fix `serve` command handling IPv6 hosts incorrectly
 - Fix `serve` command retrying on non-port related errors
 
 **Security**
+
 - Avoid exposing the value of password fields
 
 # [2.3.1](https://github.com/getformwork/formwork/releases/tag/2.3.1)
 
 **Enhancements**
+
 - **Update image picker on modal open**
 - Improve togglegroup styles for dark color scheme
 
 **Bug fixes**
+
 - Fix default HTTPS port in `Http\Request`
 - Fix ProseMirror caret disappearing in dark color scheme
 - Fix image picker styles
@@ -82,6 +109,7 @@
 # [2.3.0](https://github.com/getformwork/formwork/releases/tag/2.3.0)
 
 **Enhancements**
+
 - **Add Events functionality**
 - **Add Plugins functionality**
 - **Add support for AVIF images**
@@ -130,6 +158,7 @@
 - Avoid processing HTTP ranges for responses requiring empty content
 
 **Bug fixes**
+
 - Allow and return an appropriate value for empty non-required fields
 - Correctly merge dotted keys with `Config::loadFile()`
 - Ignore empty values passed to `Html::classes()`
@@ -160,10 +189,12 @@
 - Check if file was actually uploaded in `FileUploader::upload()`
 
 **Security**
+
 - Normalize assets paths to avoid directory traversal
 - Avoid potentially broken "deflate" responses and throw on unsupported content encodings
 
 **Deprecations**
+
 - Poorly-named `$dateField->toDuration()` deprecated in favor of `$dateField->toTimeDistance()`
 - `Log` class deprecated in favor of the new PSR-3 compatible `Logger`
 - Page setter methods deprecated in favor of using `$page->set()`
@@ -175,11 +206,13 @@
 # [2.2.2](https://github.com/getformwork/formwork/releases/tag/2.2.2)
 
 **Enhancements**
+
 - Generate a unique slug by checking for existing copies in `Page::duplicate()`
 - Add browser previews for audio and pdf files
 - Hide panel file thumbnails on image load error
 
 **Bug fixes**
+
 - Fix file item template for uploaded files
 - Fix file(s) and image(s) field options not updated on file deletion
 - Fix unsupported video thumbnails added to file(s) input on upload
@@ -189,11 +222,13 @@
 - Correctly update drop target label when uploading multiple files
 
 **Security**
+
 - Restrict media MIME types to determine the result of `File::type()` based on supported formats
 
 # [2.2.1](https://github.com/getformwork/formwork/releases/tag/2.2.1)
 
 **Enhancements**
+
 - **Add `PageCollection::routable()` to filter routable pages**
 - **Add `Page::delete()`**
 - Preview pages as published regardless of their actual status
@@ -201,12 +236,14 @@
 - Store tabs state in localStorage to persist between panel views loads
 
 **Bug fixes**
+
 - Fix query and fragment being removed by `Uri::resolveRelative()`
 - Fix duplicate page button in the panel remaining disabled even if all children pages were removed
 
 # [2.2.0](https://github.com/getformwork/formwork/releases/tag/2.2.0)
 
 **Enhancements**
+
 - **Add support for taxonomies**
 - **Add the possibility to define item field options in the array fields**
 - **Add the possibility to define field layout tabs**
@@ -233,9 +270,11 @@
 - Display canonical route in the page editor as in other views
 
 **Security**
+
 - Use `innerHTML` only if needed and on escaped input
 
 **Bug fixes**
+
 - Fix page handling of fields with dot notation in the frontmatter
 - Fix page setters and default values handling
 - Fix URL-encoded strings in request input keys
@@ -244,17 +283,20 @@
 - Avoid PHP 8.5 deprecations
 
 **Deprecations**
+
 - Deprecate `allowTags` option in page schemes
 
 # [2.1.5](https://github.com/getformwork/formwork/releases/tag/2.1.5)
 
 **Bug fixes**
+
 - Update panel dependencies to fix vulnerabilities
 - Add missing files icon
 
 # [2.1.4](https://github.com/getformwork/formwork/releases/tag/2.1.4)
 
 **Enhancements**
+
 - Display version info of all required packages in the panel info view
 - Add the possibility to remove field icons with `icon: null`
 - Display page info by hovering page icon in the editor
@@ -263,33 +305,39 @@
 - Add the possibility to set modal forms target
 
 **Bug fixes**
+
 - Move symfony/process to non-dev requires to ensure it's available for the `bin/serve` command
 - Fix slug input not being initialized with source input default value
 
 # [2.1.3](https://github.com/getformwork/formwork/releases/tag/2.1.3)
 
 **Enhancements**
+
 - Add descriptions to advanced site fields
 - Add `--hostname` option to the `bin/formwork backup` command
 - Reduce backup size by ignoring vendor files by default
 
 **Bug fixes**
+
 - Fix route aliases not available in panel site options
 
 # [2.1.2](https://github.com/getformwork/formwork/releases/tag/2.1.2)
 
 **Bug fixes**
+
 - Fix file permissions ignored on updates extraction
 
 # [2.1.1](https://github.com/getformwork/formwork/releases/tag/2.1.1)
 
 **Bug fixes**
+
 - Fix missing absolute path preventing backup creation in some environments
 - Move league/climate to non-dev requires to ensure it's available for the `bin/formwork` command
 
 # [2.1.0](https://github.com/getformwork/formwork/releases/tag/2.1.0)
 
 **Enhancements**
+
 - **Add the possibility to navigate the pages tree**
 - **Add the `bin/formwork` command to manage cache, backups and updates from cli**
 - **Add support for custom page cache time with `cache.time` option**
@@ -305,11 +353,13 @@
 - Improve styling of disabled state of panel buttons and inputs
 
 **Bug fixes**
+
 - Fix error code dump for dark color scheme
 
 # [2.0.1](https://github.com/getformwork/formwork/releases/tag/2.0.1)
 
 **Bug fixes**
+
 - Fix `Image::resize()` default parameter values to match the corresponding transform
 - Fix updater etag check
 - Fix updater skipping first archive file
@@ -334,6 +384,7 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - Set model values in the corresponding field if exists
 
 **Bug fixes**
+
 - Use requested route as cache key to inlude parameters
 - Correctly handle bootstrap from cli
 
@@ -348,6 +399,7 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - Rename `system.pages.content.safeMode` to `system.page.content.allowHtml`
 
 **Enhancements**
+
 - **Refactor login and allow using e-mail to authenticate**
 - **Update starter site content**
 - Improve editor response to state change and remember selected mode
@@ -415,6 +467,7 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - Fix tooltips showing after modal opening
 
 **Security**
+
 - Restrict uploaded files destinations
 
 ## [2.0.0-beta.4](https://github.com/getformwork/formwork/releases/tag/2.0.0-beta.4)
@@ -446,10 +499,12 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - Rename helpers to methods to avoid confusion in naming
 
 **Bug fixes**
+
 - Fix panel errors not being sent to the error log
 - Fix new page template filtering
 
 **Security**
+
 - Properly validate select fields
 - Escape site title
 
@@ -528,7 +583,7 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - Use attribute `ReadonlyModelProperty` to control Model::set() write access
 - Add `Page::videos()` and `Page::media()`
 - Allow defining icon in page schemes options
-- Change default session durations to 2 
+- Change default session durations to 2
 - Load only video metadata in thumbnails
 - Add preview size to dimensionless images
 - Add `AbstractController::forward()` to forward requests to other controllers
@@ -542,6 +597,7 @@ See [2.0.0-beta.1](#200-beta1) to [2.0.0-rc.1](#200-rc1) changelogs for breaking
 - **Add `Sanitizer` class to sanitize Markdown and SVG output**
 
 ## [2.0.0-beta.1](https://github.com/getformwork/formwork/releases/tag/2.0.0-beta.1)
+
 As the upcoming version 2.0.0 is a major release and the code has been extensively rewritten (~ 900 commits), here are listed only the most notable changes (the list may not be exhaustive and could change):
 
 **Breaking Changes**
@@ -582,4 +638,5 @@ As the upcoming version 2.0.0 is a major release and the code has been extensive
 - Escaped page titles and tags in default templates
 
 ## [1.13.2](https://github.com/getformwork/formwork/releases/tag/1.13.2) - [0.6.9](https://github.com/getformwork/formwork/releases/tag/0.6.9)
+
 ➡️ Read previous [CHANGELOG.md](https://github.com/getformwork/formwork/blob/1.x/CHANGELOG.md) on the `1.x` branch.
