@@ -36,13 +36,13 @@
     },
     "dependencies": {
         "@codemirror/commands": "^6.10.4",
-        "@codemirror/lang-markdown": "^6.5.1",
+        "@codemirror/lang-markdown": "^6.5.2",
         "@codemirror/language": "^6.12.4",
         "@codemirror/state": "^6.7.1",
-        "@codemirror/view": "^6.43.7",
+        "@codemirror/view": "^6.43.8",
         "@lezer/highlight": "^1.2.3",
         "chartist": "^1.5.0",
-        "prosemirror-commands": "^1.7.1",
+        "prosemirror-commands": "^1.7.2",
         "prosemirror-history": "^1.5.0",
         "prosemirror-inputrules": "^1.5.1",
         "prosemirror-keymap": "^1.2.3",
@@ -60,8 +60,8 @@
         "esbuild": "^0.28.1",
         "eslint": "^10.8.0",
         "eslint-config-prettier": "^10.1.8",
-        "globals": "^17.8.0",
-        "postcss": "^8.5.25",
+        "globals": "^17.9.0",
+        "postcss": "^8.5.26",
         "prettier": "^3.9.6",
         "sass": "^1.102.0",
         "stylelint": "^17.14.1",
@@ -69,7 +69,7 @@
         "stylelint-order": "^8.1.1",
         "stylelint-scss": "^7.2.0",
         "typescript": "npm:@typescript/typescript6@^6.0.2",
-        "typescript-eslint": "^8.65.0"
+        "typescript-eslint": "^8.66.0"
     },
-    "packageManager": "pnpm@11.2.2+sha512.36e6621fad506178936455e70247b8808ef4ec25797a9f437a93281a020484e2607f6a469a22e982987c3dbb8866e3071514ab10a4a1749e06edcd1ec118436f"
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }
