@@ -68,7 +68,7 @@ final class BackupController extends AbstractController
      */
     public function delete(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.backup.download')) {
+        if (!$this->hasPermission('panel.backup.delete')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
