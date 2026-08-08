@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.3.10](https://github.com/getformwork/formwork/releases/tag/2.3.10)
+
+**Bug fixes**
+
+- Fix incorrect permission check in `BackupController::delete()`
+
 # [2.3.9](https://github.com/getformwork/formwork/releases/tag/2.3.9)
 
 **Enhancements**
