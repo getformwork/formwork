@@ -1,5 +1,15 @@
 # Changelog
 
+# [2.3.11](https://github.com/getformwork/formwork/releases/tag/2.3.11)
+
+**Enhancements**
+
+- Correctly ensure platform requests (extensions) in the codebase
+
+**Bug fixes**
+
+- Validate and correctly detect statistics sources with `Visitor::getSource()`
+
 # [2.3.10](https://github.com/getformwork/formwork/releases/tag/2.3.10)
 
 **Bug fixes**

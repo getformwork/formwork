@@ -61,6 +61,8 @@ final class Visitor
      * Get the source of the visitor based on the referer and host headers
      *
      * @return string|null The source of the visitor, an empty string if it is a direct visit, or null if it cannot be determined or is invalid
+     *
+     * @since 2.3.11
      */
     public static function getSource(Request $request): ?string
     {
