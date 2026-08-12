@@ -106,8 +106,7 @@ final class Statistics
         $pageViews = $this->registries['pageViews']->has($uri) ? (int) $this->registries['pageViews']->get($uri) : 0;
         $this->registries['pageViews']->set($uri, $pageViews + 1);
 
-        if (($referer = $this->request->referer()) === null || ($source = Uri::host($referer)) !== $this->request->host()) {
-            $source ??= '';
+        if ($source = Visitor::getSource($this->request)) {
             $sourceVisits = $this->registries['sources']->has($source) ? (int) $this->registries['sources']->get($source) : 0;
             $this->registries['sources']->set($source, $sourceVisits + 1);
         }
