@@ -5,6 +5,7 @@ namespace Formwork\Backup;
 use Formwork\Backup\Utils\ZipErrors;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
+use RuntimeException;
 use ZipArchive;
 
 final class Backupper
@@ -19,7 +20,11 @@ final class Backupper
      */
     public function __construct(
         private array $options,
-    ) {}
+    ) {
+        if (!extension_loaded('zip')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "zip" to be enabled', self::class));
+        }
+    }
 
     /**
      * Make a backup of all site files

@@ -87,7 +87,7 @@ class Client
 
         $encoding = $connection['headers']['Content-Encoding'] ?? null;
 
-        if ($encoding === 'gzip') {
+        if ($encoding === 'gzip' && extension_loaded('zlib')) {
             $content = gzdecode($content);
             if ($content === false) {
                 throw new RuntimeException(sprintf('Cannot decode gzipped contents from "%s"', $uri));

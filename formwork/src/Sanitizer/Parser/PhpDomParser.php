@@ -5,6 +5,7 @@ namespace Formwork\Sanitizer\Parser;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMNode;
+use RuntimeException;
 
 class PhpDomParser implements DomParserInterface
 {
@@ -12,6 +13,10 @@ class PhpDomParser implements DomParserInterface
 
     public function __construct()
     {
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "dom" to be enabled', static::class));
+        }
+
         $this->dom = new DOMDocument();
     }
 

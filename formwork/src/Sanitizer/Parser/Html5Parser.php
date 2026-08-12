@@ -5,6 +5,7 @@ namespace Formwork\Sanitizer\Parser;
 use DOMDocumentFragment;
 use DOMNode;
 use Masterminds\HTML5;
+use RuntimeException;
 
 class Html5Parser implements DomParserInterface
 {
@@ -12,6 +13,10 @@ class Html5Parser implements DomParserInterface
 
     public function __construct()
     {
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "dom" to be enabled', static::class));
+        }
+
         $this->dom = new HTML5();
     }
 

@@ -207,6 +207,10 @@ final class PngHandler extends AbstractHandler
      */
     private function decodeProfile(string $data): array
     {
+        if (!extension_loaded('zlib')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "zlib" to be enabled', __METHOD__));
+        }
+
         $name = $this->unpack('Z*', $data)[1];
         $value = gzuncompress(substr($data, strlen($name) + 2))
             ?: throw new UnexpectedValueException('Invalid color profile string');
@@ -218,6 +222,10 @@ final class PngHandler extends AbstractHandler
      */
     private function encodeProfile(string $name, string $value): string
     {
+        if (!extension_loaded('zlib')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "zlib" to be enabled', __METHOD__));
+        }
+
         return trim($name) . "\x0\x0" . gzcompress($value);
     }
 
