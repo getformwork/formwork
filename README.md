@@ -22,7 +22,7 @@
 ## Requirements
 
 - PHP **8.3** or higher
-- PHP extensions `dom`, `exif`,`fileinfo`, `filter`, `gd`, `libxml`, `mbstring`, `openssl`, `session`, `tokenizer`, `zip`, `zlib`
+- PHP extensions `dom`, `exif`, `fileinfo`, `filter`, `gd`, `libxml`, `mbstring`, `openssl`, `session`, `tokenizer`, `zip`, `zlib`
 
 ## Installing
 
