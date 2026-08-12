@@ -9,6 +9,7 @@ use Formwork\Http\Client;
 use Formwork\Log\Registry;
 use Formwork\Parsers\Json;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use RuntimeException;
 use ZipArchive;
@@ -252,7 +253,12 @@ final class Updater
                 }
 
                 $root = ROOT_PATH;
-                $destination = FileSystem::joinPaths($root, $filename);
+                $destination = Path::resolve($filename, $root, DIRECTORY_SEPARATOR);
+
+                if (!Path::isRelativeTo($destination, $root)) {
+                    throw new RuntimeException(sprintf('Cannot extract "%s" from zip archive: invalid destination', $filename));
+                }
+
 
                 $destinationDirectory = dirname($destination);
 
