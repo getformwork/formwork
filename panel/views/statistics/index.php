@@ -83,7 +83,7 @@
                     <?php foreach ($sources as $source => $views) : ?>
                         <tr>
                             <td class="table-cell statistics-histogram-cell" style="--percentage: <?= round($views / $totalSources * 100, 2) ?>%">
-                                <div class="truncate"><?= $this->icon('globe') ?> <?= $source ?: $this->translate('panel.statistics.sources.direct') ?></div>
+                                <div class="truncate"><?= $this->icon('globe') ?> <?= $this->escape($source) ?: $this->translate('panel.statistics.sources.direct') ?></div>
                             </td>
                             <td class="table-cell text-align-right"><?= $views ?></td>
                         </tr>

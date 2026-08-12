@@ -5,6 +5,9 @@ namespace Formwork\Http\Utils;
 use Detection\MobileDetect;
 use Formwork\Http\Request;
 use Formwork\Traits\StaticClass;
+use Formwork\Utils\Str;
+use Formwork\Utils\Uri;
+use InvalidArgumentException;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
 final class Visitor
@@ -52,5 +55,50 @@ final class Visitor
     public static function isDesktop(Request $request): bool
     {
         return self::getDeviceType($request) === DeviceType::Desktop;
+    }
+
+    /**
+     * Get the source of the visitor based on the referer and host headers
+     *
+     * @return string|null The source of the visitor, an empty string if it is a direct visit, or null if it cannot be determined or is invalid
+     */
+    public static function getSource(Request $request): ?string
+    {
+        $referer = $request->referer();
+        if ($referer === null || $referer === '') {
+            return '';
+        }
+
+        try {
+            $source = Uri::host($referer);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+
+        if ($source === null || filter_var($source, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+            return null;
+        }
+
+        $hostHeader = $request->host();
+        if ($hostHeader === null || Str::contains($hostHeader, '://')) {
+            return null;
+        }
+
+        try {
+            // Host header may contain a port number, so we need to extract the host part only
+            // adding '//' to tell the parser the input is an authority component
+            $host = Uri::host('//' . $hostHeader);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+
+        if (
+            $host === null || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+            || $source === $host // Source and host are lowercased by `Uri::host()`
+        ) {
+            return null;
+        }
+
+        return $source;
     }
 }
