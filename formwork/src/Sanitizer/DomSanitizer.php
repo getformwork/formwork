@@ -65,7 +65,11 @@ class DomSanitizer
 
     public function __construct(
         protected DomParserInterface $domParser = new Html5Parser(),
-    ) {}
+    ) {
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "dom" to be enabled', static::class));
+        }
+    }
 
     /**
      * Set the method used to sanitize elements

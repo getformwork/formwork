@@ -9,6 +9,7 @@ use PhpToken;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use RuntimeException;
 use SensitiveParameter;
 use SensitiveParameterValue;
 
@@ -349,6 +350,10 @@ final class CodeDumper
      */
     private static function highlightPhpCode(string $code): string
     {
+        if (!extension_loaded('tokenizer')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "tokenizer" to be enabled', __METHOD__));
+        }
+
         $code = str_replace("\r\n", "\n", $code);
         $code = (string) preg_replace('/(__halt_compiler\s*\(\)\s*;).*/is', '$1', $code);
         $code = rtrim($code);

@@ -69,6 +69,10 @@ final class Updater
         private array $options,
         private App $app,
     ) {
+        if (!extension_loaded('zip')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "zip" to be enabled', self::class));
+        }
+
         $this->registry = new Registry($this->options['registryFile']);
 
         if ($this->registry->toArray() === []) {

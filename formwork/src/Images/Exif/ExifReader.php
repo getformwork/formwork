@@ -110,6 +110,10 @@ class ExifReader
 
     public function __construct()
     {
+        if (!extension_loaded('exif')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "exif" to be enabled', static::class));
+        }
+
         static::$ExifTable ??= require __DIR__ . '/tables/Exif.php';
     }
 

@@ -10,6 +10,7 @@
 🏗 Formwork is a simple, fast and flexible flat-file CMS that allows you to create and manage websites without the need for a database.
 
 ## Features
+
 - 🗂️ File-based structure
 - 📝 Markdown + YAML for your content
 - 🪗 Flexible structured content
@@ -19,15 +20,18 @@
 ![](site/pages/index/formwork.png)
 
 ## Requirements
+
 - PHP **8.3** or higher
-- PHP extensions `dom`, `fileinfo`, `gd`, `mbstring`, `openssl` and `zip`
+- PHP extensions `dom`, `exif`, `fileinfo`, `filter`, `gd`, `libxml`, `mbstring`, `openssl`, `session`, `tokenizer`, `zip`, `zlib`
 
 ## Installing
 
 ### From GitHub releases
+
 You can download a ready-to-use `.zip` archive from [GitHub releases page](https://github.com/getformwork/formwork/releases) and just extract it in the webroot of your server.
 
 ### With Composer
+
 If you prefer to install the latest stable release of Formwork with [Composer](https://getcomposer.org/) you can use this command:
 
 ```shell
@@ -39,6 +43,7 @@ Composer will create a `formwork` folder with a fresh ready-to-use Formwork inst
 To use the administration panel you need to build the [assets](#building-administration-panel-assets-with-yarn).
 
 ### Cloning from GitHub
+
 If you want to get the currently worked master version, you can clone the GitHub repository and then install the dependencies with Composer.
 
 1. Clone the repository in your webroot:
@@ -57,6 +62,7 @@ composer install
 3. Build the administration panel [assets](#building-administration-panel-assets-with-yarn).
 
 ### Building administration panel assets with pnpm
+
 After installing with Composer or cloning from GitHub, you need to build the panel assets with [pnpm](https://pnpm.io/) by running the following commands:
 
 ```shell

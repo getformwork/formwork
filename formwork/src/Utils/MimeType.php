@@ -1304,6 +1304,10 @@ final class MimeType
             throw new RuntimeException(sprintf('%s() requires the extension "fileinfo" to be enabled', __METHOD__));
         }
 
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "dom" to be enabled', __METHOD__));
+        }
+
         $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($file);
 
         $extension = FileSystem::extension($file);
