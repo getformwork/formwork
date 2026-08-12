@@ -5,7 +5,9 @@ namespace Formwork\Http\Utils;
 use Detection\MobileDetect;
 use Formwork\Http\Request;
 use Formwork\Traits\StaticClass;
+use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
+use InvalidArgumentException;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
 final class Visitor
@@ -56,20 +58,44 @@ final class Visitor
     }
 
     /**
-     * Return the source of the visitor, if any
-     * If the visitor has no source ("direct" visit), an empty string is returned
-     * If the source is invalid or the same as the current host, null is returned
+     * Get the source of the visitor based on the referer and host headers
+     *
+     * @return string|null The source of the visitor, an empty string if it is a direct visit, or null if it cannot be determined or is invalid
      */
     public static function getSource(Request $request): ?string
     {
         $referer = $request->referer();
-        if ($referer === null) {
+        if ($referer === null || $referer === '') {
             return '';
         }
 
-        $source = Uri::host($referer);
+        try {
+            $source = Uri::host($referer);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
 
-        if (filter_var($source, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false || $source === $request->host()) {
+        if ($source === null || filter_var($source, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+            return null;
+        }
+
+        $hostHeader = $request->host();
+        if ($hostHeader === null || Str::contains($hostHeader, '://')) {
+            return null;
+        }
+
+        try {
+            // Host header may contain a port number, so we need to extract the host part only
+            // adding '//' to tell the parser the input is an authority component
+            $host = Uri::host('//' . $hostHeader);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+
+        if (
+            $host === null || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+            || $source === $host // Source and host are lowercased by `Uri::host()`
+        ) {
             return null;
         }
 
