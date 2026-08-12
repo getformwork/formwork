@@ -152,6 +152,7 @@ updates:
     time: 900
     force: false
     tempFile: '${%ROOT_PATH%}/.formwork-update.zip'
+    lockTimeout: 300
     preferDistAssets: true
     backupBefore: true
     cleanupAfterInstall: true
