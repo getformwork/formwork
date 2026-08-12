@@ -12,3 +12,6 @@ max_line_length = off
 [*.md]
 trim_trailing_whitespace = false
 insert_final_newline = false
+
+[*.yaml]
+quote_type = single

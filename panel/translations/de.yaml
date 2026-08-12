@@ -211,8 +211,8 @@ panel.pages.editPage: Seite bearbeiten %s
 panel.pages.history.event.created: Seite erstellt von %s %s.
 panel.pages.history.event.edited: Seite bearbeitet von %s %s.
 panel.pages.languages: Sprachen
-panel.pages.languages.addLanguage: "%s hinzufügen"
-panel.pages.languages.editLanguage: "%s bearbeiten"
+panel.pages.languages.addLanguage: '%s hinzufügen'
+panel.pages.languages.editLanguage: '%s bearbeiten'
 panel.pages.newPage: Neue Seite
 panel.pages.newPage.site: Webseite
 panel.pages.next: Nächste Seite
@@ -226,7 +226,7 @@ panel.pages.page.cannotCreate.invalidParent: Seite kann nicht erstellt werden, u
 panel.pages.page.cannotCreate.invalidSlug: Seite kann nicht erstellt werden, der Seiten-Slug darf nur Buchstaben und Zahlen enthalten, getrennt durch Bindestriche
 panel.pages.page.cannotCreate.invalidTemplate: Seite kann nicht erstellt werden, ungültige Vorlage
 panel.pages.page.cannotCreate.varMissing: Seite kann nicht erstellt werden, eine Variable fehlt
-panel.pages.page.cannotDelete.invalidLanguage: "Seite kann nicht gelöscht werden, ungültige Sprache: %s"
+panel.pages.page.cannotDelete.invalidLanguage: 'Seite kann nicht gelöscht werden, ungültige Sprache: %s'
 panel.pages.page.cannotDelete.notDeletable: Seite kann nicht gelöscht werden, die Seite ist nicht löschbar
 panel.pages.page.cannotDelete.pageNotFound: Seite kann nicht gelöscht werden, Seite nicht gefunden
 panel.pages.page.cannotDuplicate.invalidFields: Seite kann nicht dupliziert werden, einige Felder sind ungültig
@@ -235,7 +235,7 @@ panel.pages.page.cannotDuplicate.pageNotFound: Seite kann nicht dupliziert werde
 panel.pages.page.cannotEdit.alreadyExists: Seite kann nicht bearbeitet werden, eine Seite mit demselben URI existiert bereits
 panel.pages.page.cannotEdit.indexOrErrorPageSlug: Slug von Index- und Fehlerseiten kann nicht bearbeitet werden
 panel.pages.page.cannotEdit.invalidFields: Seite kann nicht bearbeitet werden, einige Felder sind ungültig
-panel.pages.page.cannotEdit.invalidLanguage: "Seite kann nicht bearbeitet werden, ungültige Sprache: %s"
+panel.pages.page.cannotEdit.invalidLanguage: 'Seite kann nicht bearbeitet werden, ungültige Sprache: %s'
 panel.pages.page.cannotEdit.invalidParent: Seite kann nicht bearbeitet werden, ungültige übergeordnete Seite
 panel.pages.page.cannotEdit.invalidSlug: Seiten-Slug kann nicht bearbeitet werden, er darf nur Buchstaben und Zahlen enthalten, getrennt durch Bindestriche
 panel.pages.page.cannotEdit.invalidTemplate: Seite kann nicht bearbeitet werden, ungültige Vorlage
@@ -300,7 +300,7 @@ panel.statistics.sources.direct: Direkt
 panel.statistics.sources.site: Webseite
 panel.statistics.statistics: Statistiken
 panel.statistics.totalVisits: Gesamtbesuche
-panel.statistics.totalVisits.percentTotal: "% Gesamt"
+panel.statistics.totalVisits.percentTotal: '% Gesamt'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.visits: Besuche
 panel.statistics.weeklyUniqueVisitors: Wöchentlich eindeutige Besucher
@@ -312,7 +312,7 @@ panel.tools.backup.file: Datei
 panel.tools.backup.size: Größe
 panel.tools.backups: Sicherungen
 panel.tools.info: Info
-panel.tools.latestBackup: "Letzte Sicherung:"
+panel.tools.latestBackup: 'Letzte Sicherung:'
 panel.tools.latestBackups: Letzte Sicherungen
 panel.tools.tools: Werkzeuge
 panel.tools.updates: Updates
@@ -354,7 +354,7 @@ panel.users.user.cannotCreate.emailAlreadyUsed: Benutzer kann nicht erstellt wer
 panel.users.user.cannotCreate.invalidFields: Benutzer kann nicht erstellt werden, einige Felder sind ungültig
 panel.users.user.cannotCreate.varMissing: Benutzer kann nicht erstellt werden, eine Variable fehlt
 panel.users.user.cannotDelete: Benutzer kann nicht gelöscht werden. Sie müssen ein Administrator sein und der Benutzer darf nicht angemeldet sein.
-panel.users.user.cannotEdit: "%s Benutzer kann nicht bearbeitet werden. Die Aktion ist nicht erlaubt."
+panel.users.user.cannotEdit: '%s Benutzer kann nicht bearbeitet werden. Die Aktion ist nicht erlaubt.'
 panel.users.user.cannotEdit.invalidFields: Benutzer kann nicht bearbeitet werden, einige Felder sind ungültig
 panel.users.user.created: Benutzer erstellt
 panel.users.user.deleted: Benutzer gelöscht
