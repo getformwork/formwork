@@ -8,6 +8,7 @@ use Formwork\Traits\StaticClass;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
+use UnexpectedValueException;
 
 final class Visitor
 {
@@ -80,7 +81,12 @@ final class Visitor
             return null;
         }
 
-        $host = $request->host();
+        try {
+            $host = $request->host();
+        } catch (UnexpectedValueException) {
+            return null;
+        }
+
         if (
             $host === null || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
             || $source === $host // Source and host are already lowercased by `Uri::host()` and `Request::host()`
