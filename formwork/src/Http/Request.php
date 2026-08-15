@@ -206,18 +206,29 @@ class Request
             $host = $this->getForwardedDirective('host')[0] ?? $host;
         }
 
-        // Normalize host by converting to lowercase, trimming whitespace, and removing port if present
-        $host = (string) preg_replace('/:\d+$/', '', strtolower(trim((string) $host)));
-
-        if (filter_var($host = trim($host, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
-            return "[$host]";
+        if ($host === null) {
+            return null;
         }
+
+        // Normalize host by converting to lowercase and trimming whitespace
+        $host = strtolower(trim($host));
+
+        if (filter_var(
+            $ipv6 = (string) preg_replace('/^\[|\](:\d+)?$/', '', $host),
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_IPV6
+        ) !== false) {
+            return "[$ipv6]";
+        }
+
+        // Remove port number
+        $host = (string) preg_replace('/:\d+$/', '', $host);
 
         if (filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
             return $host;
         }
 
-        throw new UnexpectedValueException(sprintf('Invalid host: %s', $host));
+        throw new UnexpectedValueException(sprintf('Invalid host: "%s"', $host));
     }
 
     /**
