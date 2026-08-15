@@ -8,6 +8,7 @@ use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class Request
 {
@@ -192,16 +193,31 @@ class Request
 
     /**
      * Get the request host name
+     *
+     * @throws UnexpectedValueException If the host is invalid
      */
     public function host(): ?string
     {
-        $host = $this->headers->get('Host');
+        $host = $this->headers->get('Host')
+            ?? $this->server->get('SERVER_NAME')
+            ?? $this->server->get('SERVER_ADDR');
 
         if ($this->isFromTrustedProxy()) {
-            return $this->getForwardedDirective('host')[0] ?? $host;
+            $host = $this->getForwardedDirective('host')[0] ?? $host;
         }
 
-        return $host;
+        // Normalize host by converting to lowercase, trimming whitespace, and removing port if present
+        $host = (string) preg_replace('/:\d+$/', '', strtolower(trim((string) $host)));
+
+        if (filter_var($host = trim($host, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return "[$host]";
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
+            return $host;
+        }
+
+        throw new UnexpectedValueException(sprintf('Invalid host: %s', $host));
     }
 
     /**
