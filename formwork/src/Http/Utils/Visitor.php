@@ -5,10 +5,10 @@ namespace Formwork\Http\Utils;
 use Detection\MobileDetect;
 use Formwork\Http\Request;
 use Formwork\Traits\StaticClass;
-use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
+use UnexpectedValueException;
 
 final class Visitor
 {
@@ -81,22 +81,15 @@ final class Visitor
             return null;
         }
 
-        $hostHeader = $request->host();
-        if ($hostHeader === null || Str::contains($hostHeader, '://')) {
-            return null;
-        }
-
         try {
-            // Host header may contain a port number, so we need to extract the host part only
-            // adding '//' to tell the parser the input is an authority component
-            $host = Uri::host('//' . $hostHeader);
-        } catch (InvalidArgumentException) {
+            $host = $request->host();
+        } catch (UnexpectedValueException) {
             return null;
         }
 
         if (
             $host === null || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-            || $source === $host // Source and host are lowercased by `Uri::host()`
+            || $source === $host // Source and host are already lowercased by `Uri::host()` and `Request::host()`
         ) {
             return null;
         }
