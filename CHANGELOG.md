@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.3.12](https://github.com/getformwork/formwork/releases/tag/2.3.12)
+
+**Enhancements**
+
+- Handle exceptions during error response generation
+- Enforce single quotes on yaml files
+
+**Bug fixes**
+
+- Validate request host in `Request::host()`
+- Avoid config cache for invalid hosts
+- Fix Turkish translation
+
 # [2.3.11](https://github.com/getformwork/formwork/releases/tag/2.3.11)
 
 **Enhancements**
