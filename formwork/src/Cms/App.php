@@ -237,9 +237,14 @@ final class App
             $this->load();
             $response = $this->router()->dispatch();
         } catch (Throwable $throwable) {
-            $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
-            $controller = $this->container->get(ErrorsControllerInterface::class);
-            $response = $controller->error(throwable: $throwable);
+            try {
+                $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
+                $controller = $this->container->get(ErrorsControllerInterface::class);
+                $response = $controller->error(throwable: $throwable);
+            } catch (Throwable) {
+                // If an exception is thrown while handling the error, rethrow the original exception
+                throw $throwable;
+            }
         }
 
         $this->request()->session()->save();
