@@ -3,6 +3,7 @@
 namespace Formwork\Services;
 
 use Closure;
+use Formwork\Services\Attributes\Service;
 use Formwork\Services\Exceptions\ContainerException;
 use Formwork\Services\Exceptions\ServiceNotFoundException;
 use Formwork\Services\Exceptions\ServiceResolutionException;
@@ -250,6 +251,15 @@ class Container implements ContainerInterface
                 }
 
                 $arguments[] = $parameters[$name];
+                continue;
+            }
+
+            // Resolve specific service if defined with the #[Service] attribute
+            if (($serviceAttributes = $reflectionParameter->getAttributes(Service::class)) !== []) {
+                if (count($serviceAttributes) > 1) {
+                    throw new ContainerException(sprintf('Multiple #[Service] attributes found for argument $%s', $name));
+                }
+                $arguments[] = $this->get($serviceAttributes[0]->newInstance()->name);
                 continue;
             }
 
