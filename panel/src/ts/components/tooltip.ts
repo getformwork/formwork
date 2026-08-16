@@ -18,8 +18,8 @@ interface TooltipOptions {
 export class Tooltip {
     text: string;
     options: TooltipOptions;
-    delayTimer: number;
-    timeoutTimer: number;
+    delayTimer?: number;
+    timeoutTimer?: number;
     element: HTMLElement;
 
     get removed() {

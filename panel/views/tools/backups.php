@@ -24,7 +24,9 @@
                     <th class="table-header truncate" style="width: 100%"><?= $this->translate('panel.tools.backup.file') ?></th>
                     <th class="table-header truncate text-align-center show-from-md" style="width: 25%"><?= $this->translate('panel.tools.backup.date') ?></th>
                     <th class="table-header truncate text-align-center show-from-sm" style="width: 15%"><?= $this->translate('panel.tools.backup.size') ?></th>
-                    <th class="table-header text-align-center" style="width: 15%"><?= $this->translate('panel.tools.backup.actions') ?></th>
+                    <?php if ($panel->user()->permissions()->has('panel.backup.delete')) : ?>
+                        <th class="table-header text-align-center" style="width: 15%"><?= $this->translate('panel.tools.backup.actions') ?></th>
+                    <?php endif ?>
                 </tr>
             </thead>
             <tbody>
@@ -33,9 +35,11 @@
                         <td class="table-cell truncate"><?= $this->icon('file-archive') ?> <a href="<?= $panel->uri("/backup/download/{$backup['encodedName']}/") ?>"><?= $this->escape($backup['name']) ?></a></td>
                         <td class="table-cell truncate text-align-center show-from-md"><?= $this->datetime($backup['timestamp']) ?></td>
                         <td class="table-cell truncate text-align-center show-from-sm"><?= $backup['size'] ?></td>
-                        <td class="table-cell text-align-center">
-                            <button type="button" class="button button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri("/backup/delete/{$backup['encodedName']}/") ?>" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
-                        </td>
+                        <?php if ($panel->user()->permissions()->has('panel.backup.delete')) : ?>
+                            <td class="table-cell text-align-center">
+                                <button type="button" class="button button-link" data-modal="deleteFileModal" data-modal-action="<?= $panel->uri("/backup/delete/{$backup['encodedName']}/") ?>" title="<?= $this->translate('panel.tools.backup.delete') ?>" aria-label="<?= $this->translate('panel.tools.backup.delete') ?>"><?= $this->icon('trash') ?></button>
+                            </td>
+                        <?php endif ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>

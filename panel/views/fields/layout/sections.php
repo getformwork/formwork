@@ -2,7 +2,7 @@
     <?php $this->layout('@panel.fields.section-tabs') ?>
 <?php endif ?>
 
-<?php foreach ($layout->sections()->groupBy('tab', $layout->tabs()->first()?->name()) as $tabName => $sections): ?>
+<?php foreach ($layout->sections()->groupBy('tab', (string) $layout->tabs()->first()?->name()) as $tabName => $sections): ?>
     <?php $this->define('sections') ?>
     <div class="sections">
         <?php foreach ($sections as $section) : ?>

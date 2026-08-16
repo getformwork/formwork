@@ -304,7 +304,7 @@ panel.statistics.sources.direct: Прямые
 panel.statistics.sources.site: Сайт
 panel.statistics.statistics: Статистика
 panel.statistics.totalVisits: Всего посещений
-panel.statistics.totalVisits.percentTotal: "% от общего"
+panel.statistics.totalVisits.percentTotal: '% от общего'
 panel.statistics.totalVisits.uri: URI
 panel.statistics.visits: Визиты
 panel.statistics.weeklyUniqueVisitors: Уникальные посетители в неделю
@@ -316,7 +316,7 @@ panel.tools.backup.file: Файл
 panel.tools.backup.size: Размер
 panel.tools.backups: Резервные копии
 panel.tools.info: Информация
-panel.tools.latestBackup: "Последняя резервная копия:"
+panel.tools.latestBackup: 'Последняя резервная копия:'
 panel.tools.latestBackups: Последние резервные копии
 panel.tools.tools: Инструменты
 panel.tools.updates: Обновления

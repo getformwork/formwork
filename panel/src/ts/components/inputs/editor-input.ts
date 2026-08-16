@@ -1,10 +1,15 @@
 import { $ } from "../../utils/selectors";
 import { app } from "../../app";
-import { type CodeView } from "./editor/code/view";
 import { debounce } from "../../utils/events";
 import { escapeRegExp } from "../../utils/validation";
 import { markdown } from "../icons";
-import { type MarkdownView } from "./editor/markdown/view";
+
+interface EditorView {
+    view: { dom: HTMLElement; focus(): void };
+    content: string;
+    editable: boolean;
+    destroy(): void;
+}
 
 function addBaseUri(markdown: string, baseUri: string) {
     return markdown.replace(/(!\[.*\])\((?!https?:\/\/)([^)]+)\)/g, `$1(${baseUri}$2)`);
@@ -40,7 +45,7 @@ export class EditorInput {
 
     private container: HTMLElement | null;
 
-    private editor: MarkdownView | CodeView | undefined;
+    private editor: EditorView | undefined;
 
     private editorPromise: Promise<void>;
 

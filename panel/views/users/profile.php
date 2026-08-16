@@ -31,7 +31,7 @@
             <div class="h3 mb-0"><?= $this->escape($user->fullname()) ?></div>
             <div class="text-color-gray-medium mb-4"><?= $this->escape($user->username()) ?></div>
             <div class="mb-2"><a href="mailto:<?= $user->email() ?>"><?= $this->escape($user->email()) ?></a></div>
-            <div class="text-size-sm mb-2"><strong><?= $this->translate('user.role') ?>:</strong> <?= $user->role()->title() ?></div>
+            <div class="text-size-sm mb-2"><strong><?= $this->translate('user.role') ?>:</strong> <?= $this->escape($user->role()->title()) ?></div>
             <div class="text-size-sm"><strong><?= $this->translate('panel.user.lastAccess') ?>:</strong> <?= is_null($user->lastAccess()) ? '&infin;' : $this->datetime($user->lastAccess()) ?></div>
         </div>
     </section>

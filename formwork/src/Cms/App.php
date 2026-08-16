@@ -64,7 +64,7 @@ final class App
     /**
      * Current Formwork version
      */
-    public const string VERSION = '2.3.5';
+    public const string VERSION = '2.3.12';
 
     /**
      * App services container
@@ -185,6 +185,8 @@ final class App
     /**
      * Check if a service is defined in the container
      *
+     * @since 2.3.6
+     *
      * @param class-string<T>|string $name
      */
     public function hasService(string $name): bool
@@ -235,9 +237,14 @@ final class App
             $this->load();
             $response = $this->router()->dispatch();
         } catch (Throwable $throwable) {
-            $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
-            $controller = $this->container->get(ErrorsControllerInterface::class);
-            $response = $controller->error(throwable: $throwable);
+            try {
+                $this->events()->dispatch(new ExceptionThrownEvent($throwable, $this->request()));
+                $controller = $this->container->get(ErrorsControllerInterface::class);
+                $response = $controller->error(throwable: $throwable);
+            } catch (Throwable) {
+                // If an exception is thrown while handling the error, rethrow the original exception
+                throw $throwable;
+            }
         }
 
         $this->request()->session()->save();

@@ -42,34 +42,35 @@ export class Form {
     };
 
     private associations: { [key: string]: (element: HTMLElement) => void } = {
-        ".editor-textarea": (element: HTMLTextAreaElement) => this.formInputs.push(new EditorInput(element)),
+        ".editor-textarea": (element) => this.formInputs.push(new EditorInput(element as HTMLTextAreaElement)),
 
-        ".form-input-color": (element: HTMLInputElement) => this.formInputs.push(new ColorInput(element)),
+        ".form-input-color": (element) => this.formInputs.push(new ColorInput(element as HTMLInputElement)),
 
-        ".form-input-array": (element: HTMLFieldSetElement) => this.formInputs.push(new ArrayInput(element, this)),
+        ".form-input-array": (element) => this.formInputs.push(new ArrayInput(element as HTMLFieldSetElement, this)),
 
-        ".form-input-date": (element: HTMLInputElement) => this.formInputs.push(new DateInput(element, app.config.DateInput)),
+        ".form-input-date": (element) => this.formInputs.push(new DateInput(element as HTMLInputElement, app.config.DateInput)),
 
-        ".form-input-duration": (element: HTMLInputElement) => this.formInputs.push(new DurationInput(element, app.config.DurationInput)),
+        ".form-input-duration": (element) => this.formInputs.push(new DurationInput(element as HTMLInputElement, app.config.DurationInput)),
 
-        ".form-input-slug": (element: HTMLInputElement) => this.formInputs.push(new SlugInput(element)),
+        ".form-input-slug": (element) => this.formInputs.push(new SlugInput(element as HTMLInputElement)),
 
-        ".form-input-tags": (element: HTMLInputElement) => this.formInputs.push(new TagsInput(element, app.config.TagsInput)),
+        ".form-input-tags": (element) => this.formInputs.push(new TagsInput(element as HTMLInputElement, app.config.TagsInput)),
 
-        ".form-togglegroup": (element: HTMLFieldSetElement) => this.formInputs.push(new TogglegroupInput(element)),
+        ".form-togglegroup": (element) => this.formInputs.push(new TogglegroupInput(element as HTMLFieldSetElement)),
 
-        ".image-picker": (element: HTMLInputElement) => this.formInputs.push(new ImagePicker(element)),
+        ".image-picker": (element) => this.formInputs.push(new ImagePicker(element as HTMLInputElement)),
 
-        "input[type=file]": (element: HTMLInputElement) => this.formInputs.push(new UploadInput(element, this)),
+        "input[type=file]": (element) => this.formInputs.push(new UploadInput(element as HTMLInputElement, this)),
 
-        "input[type=range]": (element: HTMLInputElement) => this.formInputs.push(new RangeInput(element)),
+        "input[type=range]": (element) => this.formInputs.push(new RangeInput(element as HTMLInputElement)),
 
-        ".form-select": (element: HTMLSelectElement) => this.formInputs.push(new SelectInput(element, app.config.SelectInput)),
+        ".form-select": (element) => this.formInputs.push(new SelectInput(element as HTMLSelectElement, app.config.SelectInput)),
 
-        ".form-input-action[data-reset]": (element: HTMLButtonElement) => {
-            const targetId = element.dataset.reset;
+        ".form-input-action[data-reset]": (element) => {
+            const button = element as HTMLButtonElement;
+            const targetId = button.dataset.reset;
             if (targetId) {
-                element.addEventListener("click", () => {
+                button.addEventListener("click", () => {
                     const target = document.getElementById(targetId) as HTMLInputElement;
                     target.value = "";
                     target.dispatchEvent(new Event("input", { bubbles: true }));
@@ -78,14 +79,18 @@ export class Form {
             }
         },
 
-        "input[data-enable]": (element: HTMLInputElement) => {
-            element.addEventListener("change", () => {
-                const targetId = element.dataset.enable;
+        "input[data-enable]": (element) => {
+            const inputElement = element as HTMLInputElement;
+            inputElement.addEventListener("change", () => {
+                const targetId = inputElement.dataset.enable;
                 if (targetId) {
                     const inputs = targetId.split(",");
                     for (const name of inputs) {
-                        const input = $(`input[name="${name}"]`) as HTMLInputElement;
-                        if (!element.checked) {
+                        const input = $<HTMLInputElement>(`input[name="${name}"]`);
+                        if (!input) {
+                            continue;
+                        }
+                        if (!inputElement.checked) {
                             input.disabled = true;
                         } else {
                             input.disabled = false;
@@ -95,9 +100,10 @@ export class Form {
             });
         },
 
-        "input, select, textarea": (element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
-            if (!this.formInputs.find((input) => input.element === element)) {
-                this.formInputs.push(new Input(element));
+        "input, select, textarea": (element) => {
+            const inputElement = element as HTMLInputLike;
+            if (!this.formInputs.find((input) => input.element === inputElement)) {
+                this.formInputs.push(new Input(inputElement));
             }
         },
     };
@@ -142,7 +148,7 @@ export class Form {
     }
 
     hasChanged(checkFileInputs: boolean = true) {
-        const fileInputs = $$("input[type=file]", this.element) as NodeListOf<HTMLInputElement>;
+        const fileInputs = $$<HTMLInputElement>("input[type=file]", this.element);
 
         if (checkFileInputs === true && fileInputs.length > 0) {
             for (const fileInput of Array.from(fileInputs)) {
@@ -193,7 +199,7 @@ export class Form {
         newInput.id = newId;
 
         if (wrap && previousId) {
-            $$(`label[for="${previousId}"]`).forEach((label: HTMLLabelElement) => {
+            $$<HTMLLabelElement>(`label[for="${previousId}"]`).forEach((label) => {
                 label.htmlFor = newId;
             });
         }
@@ -233,7 +239,7 @@ export class Form {
                 }
             });
 
-            $$('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element: HTMLAnchorElement) => {
+            $$<HTMLAnchorElement>('a[href]:not([href^="#"]):not([target="_blank"]):not([target^="formwork-"])').forEach((element) => {
                 if (element.closest(".editor-wrap")) {
                     return;
                 }

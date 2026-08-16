@@ -71,7 +71,7 @@ final class Header
                 throw new UnexpectedValueException('Cannot parse quality value and factor');
             }
             [$value, $factor] = $valueAndFactor + ['', 1.0];
-            $result[(string) $value] = round((float) $factor, 3);
+            $result[$value] = round((float) $factor, 3);
         }
         arsort($result);
         return $result;

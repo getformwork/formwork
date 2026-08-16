@@ -18,7 +18,6 @@ export default defineConfig([
         ignores: ["*.min.js"],
         rules: {
             "arrow-body-style": ["error", "as-needed"],
-            curly: ["error", "all"],
             eqeqeq: ["error", "always"],
             "no-console": ["warn"],
             "no-else-return": ["error"],
@@ -68,4 +67,9 @@ export default defineConfig([
         },
     },
     eslintConfigPrettier,
+    {
+        rules: {
+            curly: ["error", "all"],
+        },
+    },
 ]);

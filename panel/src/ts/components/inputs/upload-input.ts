@@ -21,7 +21,7 @@ export class UploadInput {
     private readonly dropTargetLabel: HTMLElement;
     private readonly defaultDropLabel: string;
 
-    private readonly filesList: FilesList;
+    private readonly filesList!: FilesList;
 
     constructor(element: HTMLInputElement, form: Form) {
         this.element = element;

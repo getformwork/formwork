@@ -2,7 +2,7 @@
 <div class="section-header">
     <div class="caption"><?= $this->translate('panel.login.login') ?></div>
 </div>
-<form action="<?= $panel->uri('/login/') ?>" method="post" data-form="login-form">
+<form action="<?= $panel->uri('/login/') ?>" method="post" data-form="login-form" data-ignore-changes="true">
     <?php foreach ($fields as $field) : ?>
         <?php $this->insert("@panel.fields.{$field->type()}", ['field' => $field]) ?>
     <?php endforeach ?>

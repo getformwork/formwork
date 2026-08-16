@@ -318,4 +318,17 @@ class SvgReference
         'href',
         'xlink:href',
     ];
+
+    /**
+     * SMIL elements that require handling of the `attributeName` attribute to ensure it is safe
+     *
+     * @var list<string>
+     */
+    public const array SMIL_ELEMENTS = [
+        'animate',
+        'animateMotion',
+        'animateTransform',
+        'discard',
+        'set',
+    ];
 }

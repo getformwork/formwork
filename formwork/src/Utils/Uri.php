@@ -187,7 +187,7 @@ final class Uri
         if (!empty($parts['query'])) {
             $result .= '?' . (is_array($parts['query']) ? http_build_query($parts['query']) : ltrim($parts['query'], '?'));
         }
-        if (!empty($parts['fragment'])) {
+        if (isset($parts['fragment']) && ($parts['fragment'] !== '')) {
             $result .= '#' . ltrim($parts['fragment'], '#');
         }
         return $result;

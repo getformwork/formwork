@@ -6,18 +6,30 @@ use DOMDocument;
 use DOMElement;
 use Generator;
 use InvalidArgumentException;
+use RuntimeException;
 
 final class SvgDecoder implements DecoderInterface
 {
+    public function __construct()
+    {
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('Class %s requires the extension "dom" to be enabled', self::class));
+        }
+    }
+
     public function decode(string &$data): Generator
     {
+        if ($data === '') {
+            throw new InvalidArgumentException('Invalid SVG data');
+        }
+
         $domDocument = new DOMDocument();
 
         $domDocument->loadXML($data, LIBXML_NOERROR);
 
         $root = $domDocument->documentElement;
 
-        if (!($root instanceof DOMElement && $root->nodeName === 'svg')) {
+        if (!$root instanceof DOMElement || $root->nodeName !== 'svg') {
             throw new InvalidArgumentException('Invalid SVG data');
         }
 

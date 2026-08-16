@@ -461,15 +461,15 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
         if ($args > 2) {
             $parameters = match ($value) {
-                'equalTo', '==' => [Constraint::isEqualTo(...), $comparison, false],
-                'notEqualTo', '!=' => [Constraint::isNotEqualTo(...), $comparison, false],
-                'strictlyEqualTo', '===' => [Constraint::isEqualTo(...), $comparison, true],
-                'strictlyNotEqualTo', '!==' => [Constraint::isNotEqualTo(...), $comparison, true],
-                'greaterThan', '>' => [Constraint::isGreaterThan(...), $comparison],
+                'equalTo', '=='              => [Constraint::isEqualTo(...), $comparison, false],
+                'notEqualTo', '!='           => [Constraint::isNotEqualTo(...), $comparison, false],
+                'strictlyEqualTo', '==='     => [Constraint::isEqualTo(...), $comparison, true],
+                'strictlyNotEqualTo', '!=='  => [Constraint::isNotEqualTo(...), $comparison, true],
+                'greaterThan', '>'           => [Constraint::isGreaterThan(...), $comparison],
                 'greaterThanOrEqualTo', '>=' => [Constraint::isGreaterThanOrEqualTo(...), $comparison],
-                'lessThan', '<' => [Constraint::isLessThan(...), $comparison],
-                'lessThanOrEqualTo', '<=' => [Constraint::isLessThanOrEqualTo(...), $comparison],
-                default => throw new LogicException(sprintf('Unknown filter "%s"', $value)),
+                'lessThan', '<'              => [Constraint::isLessThan(...), $comparison],
+                'lessThanOrEqualTo', '<='    => [Constraint::isLessThanOrEqualTo(...), $comparison],
+                default                      => throw new LogicException(sprintf('Unknown filter "%s"', $value)),
             };
         }
 

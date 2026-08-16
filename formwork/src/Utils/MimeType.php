@@ -1296,12 +1296,16 @@ final class MimeType
     {
         $mimeType = null;
 
-        if (!(FileSystem::isFile($file, assertExists: false) && FileSystem::isReadable($file, assertExists: false))) {
+        if ($file === '' || (!FileSystem::isFile($file, assertExists: false) || !FileSystem::isReadable($file, assertExists: false))) {
             throw new RuntimeException(sprintf('The file "%s" does not exist or is not readable', $file));
         }
 
         if (!extension_loaded('fileinfo')) {
             throw new RuntimeException(sprintf('%s() requires the extension "fileinfo" to be enabled', __METHOD__));
+        }
+
+        if (!extension_loaded('dom')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "dom" to be enabled', __METHOD__));
         }
 
         $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($file);

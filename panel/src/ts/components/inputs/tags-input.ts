@@ -25,7 +25,7 @@ export class TagsInput {
 
     private options: TagsInputOptions;
     private tags: string[] = [];
-    private placeholder: string;
+    private placeholder: string = "";
     private dropdown: HTMLElement | undefined;
 
     private field: HTMLDivElement;

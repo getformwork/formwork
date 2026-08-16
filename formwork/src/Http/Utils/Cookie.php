@@ -104,6 +104,7 @@ final class Cookie
             header($cookie);
         }
 
+        // @phpstan-ignore nullCoalesce.unnecessary
         return $result ?? null;
     }
 

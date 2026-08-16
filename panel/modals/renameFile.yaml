@@ -15,6 +15,6 @@ buttons:
 
     submit:
         action: submit
-        icon: pencil
+        icon: input-text
         label: '{{panel.modal.action.rename}}'
         align: right

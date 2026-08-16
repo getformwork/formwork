@@ -49,7 +49,12 @@ final class Path
         if (!self::isAbsolute($base)) {
             throw new InvalidArgumentException('$base must be an absolute path');
         }
-        return Str::startsWith(self::normalize($path), self::normalize($base));
+        $normalizedPath = self::normalize($path);
+        $normalizedBase = self::normalize($base);
+        return $normalizedPath === $normalizedBase || Str::startsWith(
+            $normalizedPath,
+            Str::append($normalizedBase, self::DEFAULT_SEPARATOR)
+        );
     }
 
     /**

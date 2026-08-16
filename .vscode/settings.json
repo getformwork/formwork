@@ -4,4 +4,8 @@
     "prettier.useEditorConfig": true,
     "prettier.embeddedLanguageFormatting": "off",
     "stylelint.configBasedir": "./panel",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "intelephense.diagnostics.undefinedVariables": "local"
 }

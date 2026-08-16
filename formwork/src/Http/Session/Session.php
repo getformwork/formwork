@@ -70,7 +70,7 @@ class Session implements Arrayable
         protected Request $request,
     ) {
         if (!extension_loaded('session')) {
-            throw new RuntimeException('Sessions extension not available');
+            throw new RuntimeException(sprintf('Class %s requires the extension "session" to be enabled', static::class));
         }
 
         if (session_status() === PHP_SESSION_DISABLED) {

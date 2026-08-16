@@ -9,6 +9,7 @@ use PhpToken;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use RuntimeException;
 use SensitiveParameter;
 use SensitiveParameterValue;
 
@@ -34,6 +35,11 @@ final class CodeDumper
                 text-align: left;
             }
 
+            .color-scheme-dark .__formwork-code {
+                background-color: #333;
+                color: #f0f0f0;
+            }
+
             .__formwork-code .__line {
                 color: #aaa;
                 user-select: none;
@@ -44,32 +50,65 @@ final class CodeDumper
                 border-radius: 4px;
             }
 
+            .color-scheme-dark .__formwork-code .__highlighted-line {
+                background-color: #665600;
+                color: #f0f0f0;
+            }
+
             .__formwork-code .__type-number {
                 color: #75438a;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-number {
+                color: #d48cf2;
             }
 
             .__formwork-code .__type-string {
                 color: #b35e14;
             }
 
+            .color-scheme-dark .__formwork-code .__type-string {
+                color: #ea9143;
+            }
+
             .__formwork-code .__type-null {
                 color: #75438a;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-null {
+                color: #d48cf2;
             }
 
             .__formwork-code .__type-comment {
                 color: #777;
             }
 
+            .color-scheme-dark .__formwork-code .__type-comment {
+                color: #888;
+            }
+
             .__formwork-code .__type-name {
                 color: #047d65;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-name {
+                color: #07dfb3;
             }
 
             .__formwork-code .__type-var {
                 color: #1d75b3;
             }
 
+            .color-scheme-dark .__formwork-code .__type-var {
+                color: #40abf7;
+            }
+
             .__formwork-code .__type-keyword {
                 color: #dd4a68;
+            }
+
+            .color-scheme-dark .__formwork-code .__type-keyword {
+                color: #ff5c7c;
             }
 
             .__formwork-trace-call {
@@ -82,8 +121,17 @@ final class CodeDumper
                 font-size: 13px;
             }
 
+            .color-scheme-dark .__formwork-trace-call {
+                background-color: #333;
+                color: #f0f0f0;
+            }
+
             .__formwork-trace-call .__name {
                 color: #047d65;
+            }
+
+            .color-scheme-dark .__formwork-trace-call .__name {
+                color:  #07dfb3;
             }
 
             .__formwork-trace-params {
@@ -112,11 +160,13 @@ final class CodeDumper
                 padding-right: 8px;
             }
 
+            .color-scheme-dark .__formwork-trace-params .__param-name {
+                color:  #40abf7;
+            }
+
             .__formwork-trace-params code {
                 padding: 2px 4px;
                 border-radius: 4px;
-                background-color: #f0f0f0;
-                color: inherit;
                 font-size: inherit;
             }
 
@@ -172,7 +222,7 @@ final class CodeDumper
             return;
         }
 
-        $result = sprintf('<div class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</div>', $frame['class'] ?? '', $frame['type'] ?? '', $frame['function']);
+        $result = sprintf('<pre class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</pre>', $frame['class'] ?? '', $frame['type'] ?? '', $frame['function']);
 
         $parameterCount = 0;
 
@@ -300,6 +350,10 @@ final class CodeDumper
      */
     private static function highlightPhpCode(string $code): string
     {
+        if (!extension_loaded('tokenizer')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "tokenizer" to be enabled', __METHOD__));
+        }
+
         $code = str_replace("\r\n", "\n", $code);
         $code = (string) preg_replace('/(__halt_compiler\s*\(\)\s*;).*/is', '$1', $code);
         $code = rtrim($code);
@@ -311,9 +365,9 @@ final class CodeDumper
                 T_ATTRIBUTE, T_COMMENT, T_DOC_COMMENT, T_INLINE_HTML => '__type-comment',
                 T_LINE, T_FILE, T_DIR, T_TRAIT_C, T_METHOD_C, T_FUNC_C, T_NS_C, T_CLASS_C,
                 T_STRING, T_ARRAY, T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE => '__type-name',
-                T_LNUMBER, T_DNUMBER => '__type-number',
-                T_VARIABLE => '__type-var',
-                T_ENCAPSED_AND_WHITESPACE, T_CONSTANT_ENCAPSED_STRING => '__type-string',
+                T_LNUMBER, T_DNUMBER                                                         => '__type-number',
+                T_VARIABLE                                                                   => '__type-var',
+                T_ENCAPSED_AND_WHITESPACE, T_CONSTANT_ENCAPSED_STRING                        => '__type-string',
                 T_ABSTRACT, T_AS, T_BREAK, T_CALLABLE, T_CASE, T_CATCH, T_CLASS, T_CLONE, T_CLOSE_TAG, T_CONST, T_CONTINUE, T_DECLARE,
                 T_DEFAULT, T_DO, T_ECHO, T_ELSE, T_ELSEIF, T_EMPTY, T_ENDDECLARE, T_ENDFOR, T_ENDFOREACH, T_ENDIF, T_ENDSWITCH, T_ENDWHILE,
                 T_ENUM, T_EVAL, T_EXIT, T_EXTENDS, T_FINAL, T_FINALLY, T_FN, T_FOR, T_FOREACH, T_FUNCTION, T_GLOBAL, T_GOTO, T_IF,
@@ -321,8 +375,8 @@ final class CodeDumper
                 T_LOGICAL_XOR, T_MATCH, T_NAMESPACE, T_NEW, T_OPEN_TAG_WITH_ECHO, T_OPEN_TAG, T_PRINT, T_PRIVATE, T_PROTECTED, T_PUBLIC,
                 T_READONLY, T_REQUIRE_ONCE, T_REQUIRE, T_RETURN, T_STATIC, T_SWITCH, T_THROW, T_TRAIT, T_TRY, T_UNSET, T_USE, T_VAR,
                 T_WHILE, T_YIELD_FROM, T_YIELD, => '__type-keyword',
-                T_WHITESPACE => $last,
-                default      => '',
+                T_WHITESPACE                    => $last,
+                default                         => '',
             };
 
             if ($last !== $next) {

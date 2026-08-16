@@ -87,6 +87,7 @@ return [
         'request.validateCsrf' => [
             'action' => static function (Config $config, Request $request, Router $router, CsrfToken $csrfToken, ErrorsControllerInterface $errorsController) {
                 if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
+                    // CSRF validation is handled by a separate filter in the panel routes
                     return;
                 }
 

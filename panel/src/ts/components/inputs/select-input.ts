@@ -22,7 +22,7 @@ export class SelectInput {
 
     readonly element: HTMLSelectElement;
 
-    private dropdown: HTMLElement;
+    private dropdown!: HTMLElement;
 
     private labelInput: HTMLInputElement;
 
@@ -107,7 +107,7 @@ export class SelectInput {
 
         const list: SelectInputListItem[] = [];
 
-        $$("option", this.element).forEach((option: HTMLOptionElement) => {
+        $$<HTMLOptionElement>("option", this.element).forEach((option) => {
             const dataset: Record<string, string> = {};
 
             for (const key in option.dataset) {

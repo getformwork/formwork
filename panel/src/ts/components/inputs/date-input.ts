@@ -244,12 +244,12 @@ class Calendar {
 
     readonly element: HTMLElement;
 
-    private year: number;
-    private month: number;
-    private day: number;
-    private hours: number;
-    private minutes: number;
-    private seconds: number;
+    private year!: number;
+    private month!: number;
+    private day!: number;
+    private hours!: number;
+    private minutes!: number;
+    private seconds!: number;
 
     constructor(input: DateInput) {
         this.input = input;

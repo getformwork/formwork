@@ -87,7 +87,7 @@ class Client
 
         $encoding = $connection['headers']['Content-Encoding'] ?? null;
 
-        if ($encoding === 'gzip') {
+        if ($encoding === 'gzip' && extension_loaded('zlib')) {
             $content = gzdecode($content);
             if ($content === false) {
                 throw new RuntimeException(sprintf('Cannot decode gzipped contents from "%s"', $uri));
@@ -191,7 +191,7 @@ class Client
             $http_response_header = http_get_last_response_headers();
         }
 
-        if (empty($http_response_header)) {
+        if (!isset($http_response_header) || $http_response_header === []) {
             throw new RuntimeException(sprintf('Cannot get headers for "%s"', $uri));
         }
 

@@ -37,7 +37,7 @@ class PluginFactory
          */
         $className = 'Formwork\Plugins\\' . ucfirst(Str::toCamelCase($name)) . 'Plugin';
 
-        if (!(class_exists($className) && is_subclass_of($className, Plugin::class))) {
+        if (!class_exists($className) || !is_subclass_of($className, Plugin::class)) {
             throw new RuntimeException(sprintf('Plugin class "%s" not found in file "%s"', $className, $classFile));
         }
 

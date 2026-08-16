@@ -9,3 +9,6 @@ files:
         - .avif
         - .mp4
         - .webm
+        - .mp3
+        - .ogg
+        - .m4a
