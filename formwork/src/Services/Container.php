@@ -11,6 +11,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
+use Throwable;
 
 class Container implements ContainerInterface
 {
@@ -211,8 +212,13 @@ class Container implements ContainerInterface
             array_pop($this->resolveStack);
         }
 
-        if (isset($loaderInstance) && $loaderInstance instanceof ResolutionAwareServiceLoaderInterface) {
-            $loaderInstance->onResolved($service, $this);
+        try {
+            if (isset($loaderInstance) && $loaderInstance instanceof ResolutionAwareServiceLoaderInterface) {
+                $loaderInstance->onResolved($service, $this);
+            }
+        } catch (Throwable $throwable) {
+            unset($this->resolved[$name]);
+            throw $throwable;
         }
 
         return $service;
