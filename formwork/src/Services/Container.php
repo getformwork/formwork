@@ -88,12 +88,28 @@ class Container implements ContainerInterface
 
     /**
      * Alias a service to another service
+     *
+     * @throws ContainerException If a circular alias is detected
      */
     public function alias(string $alias, string $target): void
     {
-        if ($alias === $target) {
-            throw new ContainerException(sprintf('Cannot alias "%s" to itself', $target));
+        $visited = [$alias => true];
+        $current = $target;
+
+        while (true) {
+            if (isset($visited[$current])) {
+                throw new ContainerException(sprintf('Circular service alias detected: "%s"', implode('" -> "', [...array_keys($visited), $current])));
+            }
+
+            $visited[$current] = true;
+
+            if (!isset($this->aliases[$current])) {
+                break;
+            }
+
+            $current = $this->aliases[$current];
         }
+
         $this->aliases[$alias] = $target;
     }
 
@@ -108,12 +124,10 @@ class Container implements ContainerInterface
      */
     public function get(string $name): object
     {
+        $name = $this->resolveAlias($name);
+
         if (!$this->has($name)) {
             throw new ServiceNotFoundException(sprintf('Instance of "%s" not found', $name));
-        }
-        if (isset($this->aliases[$name])) {
-            $alias = $this->aliases[$name];
-            return $this->get($alias);
         }
 
         return $this->resolved[$name] ??= $this->resolve($name);
@@ -124,12 +138,7 @@ class Container implements ContainerInterface
      */
     public function has(string $name): bool
     {
-        if (isset($this->aliases[$name])) {
-            $alias = $this->aliases[$name];
-            return $this->has($alias);
-        }
-
-        return isset($this->defined[$name]);
+        return isset($this->defined[$this->resolveAlias($name)]);
     }
 
     /**
@@ -137,12 +146,7 @@ class Container implements ContainerInterface
      */
     public function isResolved(string $name): bool
     {
-        if (isset($this->aliases[$name])) {
-            $alias = $this->aliases[$name];
-            return $this->isResolved($alias);
-        }
-
-        return isset($this->resolved[$name]);
+        return isset($this->resolved[$this->resolveAlias($name)]);
     }
 
     /**
@@ -150,10 +154,7 @@ class Container implements ContainerInterface
      */
     public function resolve(string $name): object
     {
-        if (isset($this->aliases[$name])) {
-            $alias = $this->aliases[$name];
-            return $this->resolve($alias);
-        }
+        $name = $this->resolveAlias($name);
 
         /**
          * @var class-string $name
@@ -276,5 +277,24 @@ class Container implements ContainerInterface
         }
 
         return $arguments;
+    }
+
+    /**
+     * Resolve an alias
+     */
+    private function resolveAlias(string $name): string
+    {
+        $visited = [];
+
+        while (isset($this->aliases[$name])) {
+            if (isset($visited[$name])) {
+                throw new ContainerException(sprintf('Circular service alias detected: "%s"', implode('" -> "', [...array_keys($visited), $name])));
+            }
+
+            $visited[$name] = true;
+            $name = $this->aliases[$name];
+        }
+
+        return $name;
     }
 }
