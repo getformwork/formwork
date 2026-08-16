@@ -27,6 +27,9 @@
                         <div class="dropdown-menu" id="dropdown-cache-options">
                             <button type="button" class="dropdown-item" data-command="clear-pages-cache"><?= $this->translate('panel.cache.clear.pages') ?></button>
                             <button type="button" class="dropdown-item" data-command="clear-images-cache"><?= $this->translate('panel.cache.clear.images') ?></button>
+                            <button type="button" class="dropdown-item" data-command="clear-config-cache"><?= $this->translate('panel.cache.clear.config') ?></button>
+                            <hr class="dropdown-separator">
+                            <button type="button" class="dropdown-item" data-command="clear-all-cache"><?= $this->translate('panel.cache.clear.all') ?></button>
                         </div>
                     </div>
                 <?php endif ?>

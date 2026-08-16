@@ -12,6 +12,11 @@ use UnexpectedValueException;
 
 final class ConfigServiceLoader implements ServiceLoaderInterface
 {
+    /**
+     * Config cache path
+     */
+    private const string CACHE_PATH = ROOT_PATH . '/cache/config/';
+
     public function __construct(
         private Request $request,
     ) {}
@@ -50,6 +55,17 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         return $config;
     }
 
+    /**
+     * Clear config cache
+     *
+     * @internal
+     */
+    public static function clearCache(): void
+    {
+        FileSystem::delete(self::CACHE_PATH, recursive: true);
+        FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
+    }
+
     private function getConfigCacheFile(): ?string
     {
         try {
@@ -58,11 +74,10 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
             return null;
         }
 
-        $cachePath = ROOT_PATH . '/cache/config/';
-        $cacheFile = FileSystem::joinPaths($cachePath, "config.{$host}.php");
+        $cacheFile = FileSystem::joinPaths(self::CACHE_PATH, "config.{$host}.php");
 
-        if (!FileSystem::isDirectory($cachePath, assertExists: false)) {
-            FileSystem::createDirectory($cachePath, recursive: true);
+        if (!FileSystem::isDirectory(self::CACHE_PATH, assertExists: false)) {
+            FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
         }
 
         return $cacheFile;

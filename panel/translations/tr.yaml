@@ -7,9 +7,13 @@ panel.backup.error.cannotDownload.invalidFilename: Geçersiz yedek dosyası
 panel.backup.error.cannotMake: Yedek oluşturulamıyor. %s.
 panel.backup.ready: Yedek hazır. İndirme başlatılıyor...
 panel.cache.clear: Önbelleği temizle
+panel.cache.clear.all: Tüm önbellekleri temizle
+panel.cache.clear.config: Yapılandırma önbelleğini temizle
 panel.cache.clear.images: Görsellerin önbelleğini temizle
 panel.cache.clear.pages: Sayfa önbelleğini temizle
 panel.cache.cleared: Önbellek temizlendi
+panel.cache.cleared.all: Tüm önbellekler temizlendi
+panel.cache.cleared.config: Yapılandırma önbelleği temizlendi
 panel.cache.cleared.images: Görsel önbelleği temizlendi
 panel.cache.cleared.pages: Sayfa önbelleği temizlendi
 panel.cache.error: Önbellek temizlenemiyor
