@@ -164,50 +164,52 @@ class Container implements ContainerInterface
 
         $this->resolveStack[] = $name;
 
-        if (!$this->has($name)) {
-            throw new ServiceResolutionException(sprintf('Trying to resolve undefined service "%s"', $name));
-        }
-
-        $definition = $this->defined[$name];
-
-        $parameters = $definition->getParameters();
-
-        foreach ($parameters as &$parameter) {
-            if ($parameter instanceof Closure) {
-                $parameter = $this->call($parameter);
-            }
-        }
-
-        $object = $definition->getObject();
-
-        $loader = $definition->getLoader();
-
-        if ($loader !== null) {
-            if ($object !== null) {
-                throw new ServiceResolutionException('Instantiated object cannot have loaders');
+        try {
+            if (!$this->has($name)) {
+                throw new ServiceResolutionException(sprintf('Trying to resolve undefined service "%s"', $name));
             }
 
-            if (!is_subclass_of($loader, ServiceLoaderInterface::class)) {
-                throw new ServiceResolutionException('Invalid loader');
+            $definition = $this->defined[$name];
+
+            $parameters = $definition->getParameters();
+
+            foreach ($parameters as &$parameter) {
+                if ($parameter instanceof Closure) {
+                    $parameter = $this->call($parameter);
+                }
             }
 
-            /**
-             * @var ServiceLoaderInterface
-             */
-            $loaderInstance = $this->build($loader, $parameters);
+            $object = $definition->getObject();
 
-            $service = $loaderInstance->load($this);
-        } elseif ($object === null) {
-            $service = $this->build($name, $parameters);
-        } elseif ($object instanceof Closure) {
-            $service = $this->call($object, $parameters);
-        } else {
-            $service = $object;
+            $loader = $definition->getLoader();
+
+            if ($loader !== null) {
+                if ($object !== null) {
+                    throw new ServiceResolutionException('Instantiated object cannot have loaders');
+                }
+
+                if (!is_subclass_of($loader, ServiceLoaderInterface::class)) {
+                    throw new ServiceResolutionException('Invalid loader');
+                }
+
+                /**
+                 * @var ServiceLoaderInterface
+                 */
+                $loaderInstance = $this->build($loader, $parameters);
+
+                $service = $loaderInstance->load($this);
+            } elseif ($object === null) {
+                $service = $this->build($name, $parameters);
+            } elseif ($object instanceof Closure) {
+                $service = $this->call($object, $parameters);
+            } else {
+                $service = $object;
+            }
+
+            $this->resolved[$name] = $service;
+        } finally {
+            array_pop($this->resolveStack);
         }
-
-        $this->resolved[$name] = $service;
-
-        array_pop($this->resolveStack);
 
         if (isset($loaderInstance) && $loaderInstance instanceof ResolutionAwareServiceLoaderInterface) {
             $loaderInstance->onResolved($service, $this);
