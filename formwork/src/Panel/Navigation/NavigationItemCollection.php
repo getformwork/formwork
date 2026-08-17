@@ -19,7 +19,6 @@ class NavigationItemCollection extends AbstractCollection implements ArraySerial
 
     public function toArray(): array
     {
-        /** @var array<string, NavigationItem> */
         return Arr::map($this->data, fn(NavigationItem $navigationItem) => $navigationItem->toArray());
     }
 

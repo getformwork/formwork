@@ -6,18 +6,16 @@ use Formwork\Data\Contracts\Arrayable;
 
 /**
  * @phpstan-require-implements Arrayable
- *
- * @template TData of array<int|string, mixed> = array<string, mixed>
  */
 trait DataArrayable
 {
     /**
-     * @var TData
+     * @var array<mixed>
      */
     protected array $data = [];
 
     /**
-     * @return TData
+     * @return array<mixed>
      */
     public function toArray(): array
     {

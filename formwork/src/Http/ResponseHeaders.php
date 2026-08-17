@@ -15,7 +15,6 @@ use Iterator;
  */
 class ResponseHeaders implements Arrayable, Countable, Iterator
 {
-    /** @use DataArrayable<array<string, string>> */
     use DataArrayable;
 
     /** @use DataCountableIterator<array<string, string>> */

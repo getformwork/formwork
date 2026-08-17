@@ -20,7 +20,6 @@ use LogicException;
  */
 abstract class AbstractCollection implements Arrayable, Countable, Iterator
 {
-    /** @use DataArrayable<array<int|string, T>> */
     use DataArrayable;
 
     /** @use DataCountableIterator<array<int|string, T>> */
