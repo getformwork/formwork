@@ -15,19 +15,26 @@ use Iterator;
  */
 class ResponseHeaders implements Arrayable, Countable, Iterator
 {
+    /** @use DataArrayable<array<string, string>> */
     use DataArrayable;
+
+    /** @use DataCountableIterator<array<string, string>> */
     use DataCountableIterator;
+
+    /** @use DataMultipleGetter<array<string, string>> */
     use DataMultipleGetter {
         has as protected baseHas;
         get as protected baseGet;
     }
+
+    /** @use DataMultipleSetter<array<string, string>> */
     use DataMultipleSetter {
         set as protected baseSet;
         remove as protected baseRemove;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {
@@ -47,6 +54,11 @@ class ResponseHeaders implements Arrayable, Countable, Iterator
         return $this->baseHas(Header::fixHeaderName($key));
     }
 
+    /**
+     * @template TKey of string
+     *
+     * @param TKey $key
+     */
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->baseGet(Header::fixHeaderName($key), $default);

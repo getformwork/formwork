@@ -2,6 +2,9 @@
 
 namespace Formwork\Data;
 
+/**
+ * @template T
+ */
 class Pagination
 {
     /**
@@ -20,7 +23,8 @@ class Pagination
     protected int $currentPage = 1;
 
     /**
-     * @param int $length Number of items in each pagination page
+     * @param AbstractCollection<T> $collection Collection to paginate
+     * @param int                   $length     Number of items in each pagination page
      */
     public function __construct(
         AbstractCollection $collection,

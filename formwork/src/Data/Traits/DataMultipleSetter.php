@@ -2,14 +2,18 @@
 
 namespace Formwork\Data\Traits;
 
+/**
+ * @template TData of array<string, mixed> = array<string, mixed>
+ */
 trait DataMultipleSetter
 {
+    /** @use DataSetter<TData> */
     use DataSetter;
 
     /**
      * Set multiple values
      *
-     * @param array<string, mixed> $keysAndValues
+     * @param array<key-of<TData>, value-of<TData>> $keysAndValues
      */
     public function setMultiple(array $keysAndValues): void
     {
@@ -21,7 +25,7 @@ trait DataMultipleSetter
     /**
      * Remove multiple values
      *
-     * @param list<string> $keys
+     * @param list<key-of<TData>> $keys
      */
     public function removeMultiple(array $keys): void
     {

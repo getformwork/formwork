@@ -32,7 +32,17 @@ class Modal implements Arrayable
     protected ModalButtonCollection $buttons;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array{
+     *     title?: ?string,
+     *     message?: ?string,
+     *     action?: ?string,
+     *     target?: ?string,
+     *     size?: string,
+     *     open?: bool,
+     *     form?: bool,
+     *     fields?: array<string, array<string, mixed>>,
+     *     buttons?: array<array<string, mixed>>,
+     * } $data
      */
     public function __construct(
         string $id,

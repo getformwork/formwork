@@ -822,11 +822,11 @@ class Page extends Model implements Stringable
                 $this->contentFile = null;
             }
 
-            $this->template ??= $site->templates()->get($contentFiles[$key]['template']);
+            $this->template ??= $this->resolveTemplate($contentFiles[$key]['template']);
 
             $this->scheme ??= $site->schemes()->get("pages.{$this->template}");
         } else {
-            $this->template ??= $site->templates()->get('default');
+            $this->template ??= $this->resolveTemplate('default');
 
             $this->scheme ??= $site->schemes()->get("pages.{$this->template}");
         }
@@ -1092,14 +1092,7 @@ class Page extends Model implements Stringable
      */
     protected function setTemplate(Template|string $template): void
     {
-        if ($template instanceof Template) {
-            $this->template = $template;
-        } else {
-            if (!$this->site()->templates()->has($template)) {
-                throw new InvalidValueException('Invalid page template', 'invalidTemplate');
-            }
-            $this->template = $this->site()->templates()->get($template);
-        }
+        $this->template = $this->resolveTemplate($template);
         $this->scheme = $this->site()->schemes()->get("pages.{$template}");
     }
 
@@ -1207,5 +1200,21 @@ class Page extends Model implements Stringable
     protected function validateSlug(string $slug): bool
     {
         return (bool) preg_match(self::SLUG_REGEX, $slug);
+    }
+
+    /**
+     * Resolve a template from a string or Template instance
+     */
+    protected function resolveTemplate(string|Template $template): Template
+    {
+        if (is_string($template)) {
+            $template = $this->site()->templates()->get($template);
+        }
+
+        if ($template === null) {
+            throw new InvalidValueException('Invalid page template', 'invalidTemplate');
+        }
+
+        return $template;
     }
 }

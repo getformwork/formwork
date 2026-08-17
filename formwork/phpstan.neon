@@ -16,7 +16,7 @@ parameters:
 	scanFiles:
 		- ../index.php
 	ignoreErrors:
-		- '#^Call to an undefined method Formwork\\Data\\CollectionDataProxy\:\:#'
+		- '#^Call to an undefined method Formwork\\Data\\CollectionDataProxy#'
 		- '#^Call to an undefined method Formwork\\Fields\\Field\:\:#'
 		- '#^Call to an undefined method Formwork\\Pages\\Page\:\:#'
 		- '#^Call to an undefined method Formwork\\Cms\\Site\:\:#'

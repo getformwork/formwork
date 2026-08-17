@@ -7,6 +7,7 @@ use Formwork\Data\Traits\DataArrayable;
 
 class Messages implements Arrayable
 {
+    /** @use DataArrayable<array<string, list<string>>> */
     use DataArrayable;
 
     /**

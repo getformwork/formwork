@@ -5,6 +5,11 @@ namespace Formwork\Data;
 use Formwork\Utils\Arr;
 use LogicException;
 
+/**
+ * @template T
+ *
+ * @extends AbstractCollection<T>
+ */
 final class Collection extends AbstractCollection
 {
     /**

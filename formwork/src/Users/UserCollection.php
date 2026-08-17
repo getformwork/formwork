@@ -4,6 +4,9 @@ namespace Formwork\Users;
 
 use Formwork\Data\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<User>
+ */
 class UserCollection extends AbstractCollection
 {
     protected bool $associative = true;

@@ -4,6 +4,9 @@ namespace Formwork\Panel\Modals;
 
 use Formwork\Data\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<Modal>
+ */
 class ModalCollection extends AbstractCollection
 {
     protected bool $associative = true;

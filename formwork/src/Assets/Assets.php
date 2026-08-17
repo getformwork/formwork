@@ -76,6 +76,7 @@ class Assets
             ['path' => $path, 'uri' => $uri] = $this->resolve($key);
             $this->collection->set($key, new Asset($path, $uri));
         }
+        /** @var Asset */
         return $this->collection->get($key);
     }
 

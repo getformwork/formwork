@@ -6,9 +6,14 @@ use Iterator;
 
 /**
  * @phpstan-require-implements Iterator
+ *
+ * @template TData of array<int|string, mixed> = array<int|string, mixed>
  */
 trait DataIterator
 {
+    /**
+     * @var TData
+     */
     protected array $data = [];
 
     /**
@@ -24,6 +29,7 @@ trait DataIterator
      */
     public function current(): mixed
     {
+        /** @var mixed */
         return current($this->data);
     }
 

@@ -16,12 +16,12 @@ final class Arr
      * Get data by key returning a default value if key is not present in a given array,
      * using dot notation to traverse if literal key is not found
      *
+     * @template TValue
+     *
      * @param array<string, TValue> $array
      * @param TValue|null           $default
      *
      * @return TValue|null
-     *
-     * @template TValue
      */
     public static function get(array $array, string $key, mixed $default = null): mixed
     {
@@ -41,9 +41,9 @@ final class Arr
      * Return whether a key is present in a given array, using dot notation to traverse
      * if literal key is not found
      *
-     * @param array<string, TValue> $array
-     *
      * @template TValue
+     *
+     * @param array<string, TValue> $array
      */
     public static function has(array $array, string $key): bool
     {
@@ -62,10 +62,10 @@ final class Arr
     /**
      * Set data by key using dot notation to traverse if literal key is not found
      *
+     * @template TValue
+     *
      * @param array<string, TValue> $array
      * @param TValue                $value
-     *
-     * @template TValue
      */
     public static function set(array &$array, string $key, mixed $value): void
     {
@@ -109,11 +109,11 @@ final class Arr
     /**
      * Convert a multidimensional array to a dot notation array, skipping non-associative arrays
      *
+     * @template TValue
+     *
      * @param array<array-key, TValue> $array
      *
      * @return array<string, TValue>
-     *
-     * @template TValue
      */
     public static function dot(array $array): array
     {
@@ -135,11 +135,11 @@ final class Arr
     /**
      * Convert a dot notation array to a multidimensional array
      *
+     * @template TValue
+     *
      * @param array<string, TValue> $array
      *
      * @return array<array-key, TValue>
-     *
-     * @template TValue
      */
     public static function undot(array $array): array
     {
@@ -155,9 +155,9 @@ final class Arr
     /**
      * Remove from an array all the occurrences of the given value
      *
-     * @param array<array-key, TValue> $array
-     *
      * @template TValue
+     *
+     * @param array<array-key, TValue> $array
      */
     public static function pull(array &$array, mixed $value): void
     {
@@ -171,17 +171,17 @@ final class Arr
     /**
      * Remove a portion of the array and replace it with something else like `array_splice` but also preserve string keys from the replacement array
      *
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReplacementKey of array-key
+     * @template TReplacementValue
+     *
      * @param array<TKey|TReplacementKey, TReplacementValue|TValue> $array
      * @param array<TReplacementKey, TReplacementValue>             $replacement
      *
      * @throws UnexpectedValueException If some keys in the replacement array are the same of the resulting array
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
-     * @template TReplacementKey of array-key
-     * @template TReplacementValue
      */
     public static function splice(array &$array, int $offset, ?int $length = null, array $replacement = []): array
     {
@@ -217,12 +217,12 @@ final class Arr
     /**
      * Move an item from the given index to another
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey,TValue> $array
      * @param int                $fromIndex The source index to move from
      * @param int                $toIndex   The destination index to move to
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function moveItem(array &$array, int $fromIndex, int $toIndex): void
     {
@@ -234,12 +234,12 @@ final class Arr
     /**
      * Return an array of `[$key, $value]` pairs from the given array
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array
      *
      * @return array<array{TKey, TValue}>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function entries(array $array): array
     {
@@ -256,11 +256,11 @@ final class Arr
      * Get the array value at the given index,
      * negative indices are not allowed, use `Arr:at()` instead
      *
+     * @template TValue
+     *
      * @param array<array-key, TValue> $array
      *
      * @return TValue|null
-     *
-     * @template TValue
      */
     public static function nth(array $array, int $index): mixed
     {
@@ -271,11 +271,11 @@ final class Arr
      * Get the array value at the given index,
      * negative indices are allowed and start from the end
      *
+     * @template TValue
+     *
      * @param array<array-key, TValue> $array
      *
      * @return TValue|null
-     *
-     * @template TValue
      */
     public static function at(array $array, int $index): mixed
     {
@@ -296,12 +296,12 @@ final class Arr
     /**
      * Get the key of the given value or null if not found
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array
      *
      * @return TKey
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function keyOf(array $array, mixed $value): int|string|null
     {
@@ -312,12 +312,12 @@ final class Arr
     /**
      * Return the duplicate items of the array
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function duplicates(array $array): array
     {
@@ -327,13 +327,13 @@ final class Arr
     /**
      * Recursively append items from the second array that are missing in the first
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array1
      * @param array<TKey, TValue> $array2
      *
      * @return array<TKey, array<TValue>|TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function appendMissing(array $array1, array $array2): array
     {
@@ -468,12 +468,12 @@ final class Arr
     /**
      * Return a random value from a given array
      *
+     * @template TValue
+     *
      * @param array<array-key, TValue> $array
      * @param TValue|null              $default
      *
      * @return TValue|null
-     *
-     * @template TValue
      */
     public static function random(array $array, mixed $default = null): mixed
     {
@@ -483,13 +483,13 @@ final class Arr
     /**
      * Return a given array with its values shuffled optionally preserving the key/value pairs
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array
      * @param bool                $preserveKeys Whether to preserve the original keys
      *
      * @return ($preserveKeys is true ? array<TKey, TValue> : list<TValue>)
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function shuffle(array $array, bool $preserveKeys = false): array
     {
@@ -524,14 +524,14 @@ final class Arr
      *
      * The key of each element is passed to the callback as second argument
      *
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReturn
+     *
      * @param array<TKey, TValue>             $array
      * @param callable(TValue, TKey): TReturn $callback
      *
      * @return array<TKey, TReturn>
-     *
-     * @template TKey of array-key
-     * @template TValue
-     * @template TReturn
      */
     public static function map(array $array, callable $callback): array
     {
@@ -544,14 +544,14 @@ final class Arr
      *
      * The value of each element is passed to the callback as second argument
      *
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReturn of array-key
+     *
      * @param array<TKey, TValue>             $array
      * @param callable(TKey, TValue): TReturn $callback
      *
      * @return array<TReturn, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
-     * @template TReturn of array-key
      */
     public static function mapKeys(array $array, callable $callback): array
     {
@@ -564,13 +564,13 @@ final class Arr
      *
      * The key of each element is passed to the callback as second argument
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue>          $array
      * @param callable(TValue, TKey): bool $callback
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function filter(array $array, callable $callback): array
     {
@@ -582,13 +582,13 @@ final class Arr
      *
      * The key of each element is passed to the callback as second argument
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue>          $array
      * @param callable(TValue, TKey): bool $callback
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function reject(array $array, callable $callback): array
     {
@@ -655,13 +655,13 @@ final class Arr
      *
      * The original array keys are preserved
      *
-     * @param array<TKey, array<K, V>> $array
-     *
-     * @return array<TKey, V>
-     *
      * @template TKey of array-key
      * @template K of array-key
      * @template V
+     *
+     * @param array<TKey, array<K, V>> $array
+     *
+     * @return array<TKey, V>
      */
     public static function extract(array $array, string $key, mixed $default = null): array
     {
@@ -671,14 +671,14 @@ final class Arr
     /**
      * Group array items using the return value of the given callback
      *
+     * @template TKey of array-key
+     * @template TReturn of string|Stringable
+     * @template TValue
+     *
      * @param array<TKey, TValue>             $array
      * @param callable(TValue, TKey): TReturn $callback
      *
      * @return array<string, list<TValue>>
-     *
-     * @template TKey of array-key
-     * @template TReturn of string|Stringable
-     * @template TValue
      */
     public static function group(array $array, callable $callback): array
     {
@@ -701,15 +701,15 @@ final class Arr
     /**
      * Flatten array items up to the specified depth
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue> $array
      * @param int                 $depth Maximum depth to flatten
      *
      * @throws UnexpectedValueException If the depth parameter is negative
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function flatten(array $array, int $depth = PHP_INT_MAX): array
     {
@@ -750,6 +750,9 @@ final class Arr
     /**
      * Sort an array with the given options
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<TKey, TValue>                                    $array
      * @param \SORT_ASC|\SORT_DESC                                   $direction     Direction of sorting. Possible values are `SORT_ASC` and `SORT_DESC`.
      * @param \SORT_NATURAL|\SORT_NUMERIC|\SORT_REGULAR|\SORT_STRING $type          Type of sorting. Possible values are `SORT_NATURAL`, `SORT_NUMERIC`, `SORT_REGULAR` and `SORT_STRING`.
@@ -761,9 +764,6 @@ final class Arr
      * @throws UnexpectedValueException If the type parameter is not one of the supported sorting types
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function sort(
         array $array,
@@ -830,12 +830,12 @@ final class Arr
     /**
      * Try to convert the given object to array
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @throws UnexpectedValueException If the object cannot be converted to an array
      *
      * @return ($object is array<TKey, TValue>|Traversable<TKey, TValue> ? array<TKey, TValue> : array<mixed>)
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function from(mixed $object): array
     {
@@ -854,12 +854,12 @@ final class Arr
     /**
      * Create an array from `[$key, $value]` pairs
      *
+     * @template TKey of array-key
+     * @template TValue
+     *
      * @param array<array{TKey, TValue}> $entries
      *
      * @return array<TKey, TValue>
-     *
-     * @template TKey of array-key
-     * @template TValue
      */
     public static function fromEntries(array $entries): array
     {

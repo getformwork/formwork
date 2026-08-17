@@ -9,6 +9,11 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\Str;
 use RuntimeException;
 
+/**
+ * @extends AbstractCollection<Page|Site>
+ *
+ * @implements Paginable<Page|Site>
+ */
 class PageCollection extends AbstractCollection implements Paginable
 {
     protected ?string $dataType = Page::class . '|' . Site::class;
@@ -244,7 +249,10 @@ class PageCollection extends AbstractCollection implements Paginable
      */
     public function withoutParent(Page $page): static
     {
-        return $this->without($page->parent());
+        if (($parent = $page->parent()) !== null) {
+            return $this->without($parent);
+        }
+        return $this->clone();
     }
 
     /**
@@ -252,7 +260,10 @@ class PageCollection extends AbstractCollection implements Paginable
      */
     public function withoutPageAndParent(Page $page): static
     {
-        return $this->without($page)->without($page->parent());
+        if (($parent = $page->parent()) !== null) {
+            return $this->without($page, $parent);
+        }
+        return $this->without($page);
     }
 
     /**

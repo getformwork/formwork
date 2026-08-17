@@ -6,6 +6,9 @@ use Formwork\Data\AbstractCollection;
 use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Utils\Arr;
 
+/**
+ * @extends AbstractCollection<NavigationItem>
+ */
 class NavigationItemCollection extends AbstractCollection implements ArraySerializable
 {
     protected bool $associative = true;
@@ -16,6 +19,7 @@ class NavigationItemCollection extends AbstractCollection implements ArraySerial
 
     public function toArray(): array
     {
+        /** @var array<string, NavigationItem> */
         return Arr::map($this->data, fn(NavigationItem $navigationItem) => $navigationItem->toArray());
     }
 

@@ -146,11 +146,11 @@ trait PaginationUri
 
         $routeName = Str::removeEnd($this->router->current()->getName(), static::$routeSuffix);
 
-        if (!$this->router->routes()->has($routeName)) {
+        if (($baseRoute = $this->router->routes()->get($routeName)) === null) {
             throw new RuntimeException(sprintf('Cannot generate pagination routes, base route "%s" is not defined', $routeName));
         }
 
-        return $this->baseRoute = $this->router->routes()->get($routeName);
+        return $this->baseRoute = $baseRoute;
     }
 
     /**
@@ -164,10 +164,10 @@ trait PaginationUri
 
         $routeName = $this->baseRoute()->getName() . static::$routeSuffix;
 
-        if (!$this->router->routes()->has($routeName)) {
+        if (($paginationRoute = $this->router->routes()->get($routeName)) === null) {
             throw new RuntimeException(sprintf('Cannot generate pagination for route "%s", route "%s" is not defined', $this->baseRoute()->getName(), $routeName));
         }
 
-        return $this->paginationRoute = $this->router->routes()->get($routeName);
+        return $this->paginationRoute = $paginationRoute;
     }
 }

@@ -48,11 +48,9 @@ class Plugins extends PluginCollection
      */
     public function initialize(string $name): void
     {
-        if (!$this->has($name)) {
+        if (($plugin = $this->get($name)) === null) {
             throw new InvalidArgumentException(sprintf('Invalid plugin "%s"', $name));
         }
-
-        $plugin = $this->get($name);
 
         $plugin->autoload()?->register();
 
