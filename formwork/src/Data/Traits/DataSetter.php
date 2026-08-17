@@ -17,6 +17,7 @@ trait DataSetter
     /**
      * Set a data value by key
      *
+     * @param key-of<TData>   $key
      * @param value-of<TData> $value
      */
     public function set(string $key, mixed $value): void

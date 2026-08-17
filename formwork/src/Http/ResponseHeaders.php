@@ -53,13 +53,9 @@ class ResponseHeaders implements Arrayable, Countable, Iterator
         return $this->baseHas(Header::fixHeaderName($key));
     }
 
-    /**
-     * @template TKey of string
-     *
-     * @param TKey $key
-     */
     public function get(string $key, mixed $default = null): mixed
     {
+        /** @var string $key */
         return $this->baseGet(Header::fixHeaderName($key), $default);
     }
 
