@@ -547,7 +547,7 @@ final class Arr
      * @param array<TKey, TValue>             $array
      * @param callable(TKey, TValue): TReturn $callback
      *
-     * @return array<TReturn, TKey>
+     * @return array<TReturn, TValue>
      *
      * @template TKey of array-key
      * @template TValue
