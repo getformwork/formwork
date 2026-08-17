@@ -14,6 +14,9 @@ trait DataArrayable
      */
     protected array $data = [];
 
+    /**
+     * @return array<mixed>
+     */
     public function toArray(): array
     {
         return $this->data;

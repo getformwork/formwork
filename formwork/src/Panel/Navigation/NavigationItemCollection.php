@@ -6,6 +6,9 @@ use Formwork\Data\AbstractCollection;
 use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Utils\Arr;
 
+/**
+ * @extends AbstractCollection<NavigationItem>
+ */
 class NavigationItemCollection extends AbstractCollection implements ArraySerializable
 {
     protected bool $associative = true;

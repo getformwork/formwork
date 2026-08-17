@@ -94,8 +94,10 @@ final class PageController extends AbstractController
                 $upperLevel = $this->config->get('system.pages.index');
             }
 
-            if ((($parent = $this->site->findPage($upperLevel)) !== null) && $parent->files()->has($filename)) {
-                $file = $parent->files()->get($filename);
+            if (
+                ($parent = $this->site->findPage($upperLevel)) !== null
+                && ($file = $parent->files()->get($filename)) !== null
+            ) {
                 return new FileResponse($file->path(), autoEtag: true, autoLastModified: true);
             }
         }

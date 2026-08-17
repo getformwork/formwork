@@ -2,6 +2,8 @@
 
 namespace Formwork\Pages;
 
+use Formwork\Cms\Site;
+
 final class PageCollectionFactory
 {
     public function __construct(
@@ -11,7 +13,7 @@ final class PageCollectionFactory
     /**
      * Create a new PageCollection instance
      *
-     * @param array<int|string, mixed> $data
+     * @param array<int|string, Page|Site> $data
      */
     public function make(array $data): PageCollection
     {

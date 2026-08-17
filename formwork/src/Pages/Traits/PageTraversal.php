@@ -246,6 +246,7 @@ trait PageTraversal
      */
     public function previousSibling(): ?Page
     {
+        /** @var ?Page */
         return $this->inclusiveSiblings()->nth($this->index() - 1);
     }
 
@@ -254,6 +255,7 @@ trait PageTraversal
      */
     public function nextSibling(): ?Page
     {
+        /** @var ?Page */
         return $this->inclusiveSiblings()->nth($this->index() + 1);
     }
 

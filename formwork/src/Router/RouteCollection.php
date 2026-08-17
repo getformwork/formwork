@@ -4,6 +4,9 @@ namespace Formwork\Router;
 
 use Formwork\Data\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<Route>
+ */
 class RouteCollection extends AbstractCollection
 {
     protected bool $associative = true;

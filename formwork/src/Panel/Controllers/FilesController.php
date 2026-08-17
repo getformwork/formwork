@@ -22,6 +22,7 @@ use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 final class FilesController extends AbstractController
 {
@@ -88,7 +89,9 @@ final class FilesController extends AbstractController
         $form = $this->form('upload-file', $this->modal('uploadFile')->fields())
             ->processRequest($this->request, uploadFiles: false);
 
-        $filesField = $form->fields()->get('files');
+        if (($filesField = $form->fields()->get('files')) === null) {
+            throw new UnexpectedValueException('Missing "files" field in upload file form');
+        }
 
         if (!$form->isSubmitted() || !$form->isValid() || $filesField->isEmpty()) {
             $this->panel->notify($this->translate('panel.files.cannotUpload.invalidFields'), 'error');
@@ -97,8 +100,11 @@ final class FilesController extends AbstractController
 
         $files = $filesField->isMultiple() ? $filesField->value() : [$filesField->value()];
 
-        /** @var Page|Site */
-        $parent = $form->fields()->get('parent')->return();
+        $parent = $form->fields()->get('parent')?->return();
+
+        if ($parent === null) {
+            throw new UnexpectedValueException('Missing "parent" field in upload file form');
+        }
 
         $destination = $parent instanceof Site
             ? $this->config->get('system.files.paths.site')
@@ -351,7 +357,7 @@ final class FilesController extends AbstractController
     }
 
     /**
-     * @return array<array{FileCollection, Page|Site}>
+     * @return array<array{File, Page|Site}>
      */
     private function getFiles(): array
     {

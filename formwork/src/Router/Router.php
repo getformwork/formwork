@@ -244,7 +244,10 @@ class Router
      */
     public function generate(string $name, array $params): string
     {
-        return $this->generateRoute($this->routes->get($name), $params);
+        if (($route = $this->routes->get($name)) === null) {
+            throw new InvalidArgumentException(sprintf('Route "%s" does not exist', $name));
+        }
+        return $this->generateRoute($route, $params);
     }
 
     /**
@@ -254,7 +257,10 @@ class Router
      */
     public function generateWith(string $name, array $params): string
     {
-        return $this->generateRoute($this->routes->get($name), $params + $this->params->toArray());
+        if (($route = $this->routes->get($name)) === null) {
+            throw new InvalidArgumentException(sprintf('Route "%s" does not exist', $name));
+        }
+        return $this->generateRoute($route, $params + $this->params->toArray());
     }
 
     /**

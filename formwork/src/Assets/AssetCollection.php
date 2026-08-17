@@ -5,6 +5,9 @@ namespace Formwork\Assets;
 use Formwork\Data\AbstractCollection;
 use Formwork\Utils\Str;
 
+/**
+ * @extends AbstractCollection<Asset>
+ */
 class AssetCollection extends AbstractCollection
 {
     protected bool $associative = true;

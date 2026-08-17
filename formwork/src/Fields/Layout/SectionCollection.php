@@ -5,6 +5,9 @@ namespace Formwork\Fields\Layout;
 use Formwork\Data\AbstractCollection;
 use Formwork\Utils\Arr;
 
+/**
+ * @extends AbstractCollection<Section>
+ */
 class SectionCollection extends AbstractCollection
 {
     protected bool $associative = true;

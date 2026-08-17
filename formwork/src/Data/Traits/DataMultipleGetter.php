@@ -2,14 +2,18 @@
 
 namespace Formwork\Data\Traits;
 
+/**
+ * @template TData of array<string, mixed> = array<string, mixed>
+ */
 trait DataMultipleGetter
 {
+    /** @use DataGetter<TData> */
     use DataGetter;
 
     /**
      * Return whether multiple keys are present
      *
-     * @param list<string> $keys
+     * @param list<key-of<TData>> $keys
      */
     public function hasMultiple(array $keys): bool
     {
@@ -25,9 +29,13 @@ trait DataMultipleGetter
     /**
      * Get an array containing multiple values
      *
-     * @param list<string> $keys
+     * @template TKey of key-of<TData>
+     * @template TDefault
      *
-     * @return array<string, mixed>
+     * @param list<TKey> $keys
+     * @param TDefault   $default
+     *
+     * @return array<TKey, TDefault|value-of<TData>>
      */
     public function getMultiple(array $keys, mixed $default = null): array
     {

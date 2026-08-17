@@ -360,6 +360,7 @@ final class PagesController extends AbstractController
 
         $pageCollection->moveItem($from, $to);
 
+        /** @var Page $page */
         foreach ($pageCollection->filterBy('orderable')->values() as $i => $page) {
             $num = $i + 1;
             if ($num !== $page->num()) {
@@ -581,7 +582,7 @@ final class PagesController extends AbstractController
     /**
      * Get previous and next page helper
      *
-     * @return array{previousPage: ?Page, nextPage: ?Page}
+     * @return array{previousPage: Page|Site|null, nextPage: Page|Site|null}
      */
     private function getPreviousAndNextPage(Page $page): array
     {

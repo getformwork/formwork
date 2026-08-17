@@ -4,6 +4,9 @@ namespace Formwork\Images\Transform;
 
 use Formwork\Data\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<AbstractTransform>
+ */
 class TransformCollection extends AbstractCollection
 {
     protected ?string $dataType = AbstractTransform::class;

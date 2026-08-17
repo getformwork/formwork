@@ -13,12 +13,20 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\Str;
 use InvalidArgumentException;
 
-/**
- * @property array{title?: array<string, string>|string, extend?: string, options?: array<string, mixed>, layout?: array<string, mixed>, fields?: array<string, mixed>} $data
- */
 class Scheme implements Arrayable
 {
     use DataArrayable;
+
+    /**
+     * @var array{
+     *     title?: array<string, string>|string,
+     *     extend?: string,
+     *     options?: array<string, mixed>,
+     *     layout?: array<string, mixed>,
+     *     fields?: array<string, mixed>
+     * }
+     */
+    protected array $data = [];
 
     /**
      * Scheme path
@@ -36,7 +44,13 @@ class Scheme implements Arrayable
     protected SchemeOptions $options;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array{
+     *     title?: array<string, string>|string,
+     *     extend?: string,
+     *     options?: array<string, mixed>,
+     *     layout?: array<string, mixed>,
+     *     fields?: array<string, mixed>
+     * } $data
      *
      * @throws InvalidArgumentException If the extended scheme ID is invalid
      * @throws InvalidArgumentException If a scheme tries to extend itself
@@ -101,7 +115,6 @@ class Scheme implements Arrayable
     {
         $fieldCollection = new FieldCollection();
 
-        // @phpstan-ignore argument.templateType
         $fieldCollection->setMultiple(Arr::map(
             $this->data['fields'] ?? [],
             fn($data, $name) => $this->fieldFactory->make($name, $data, $fieldCollection)
@@ -130,18 +143,25 @@ class Scheme implements Arrayable
             throw new InvalidArgumentException(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
         }
 
-        $this->data = Arr::extend($scheme->data, $this->data);
+        $this->extendWith($scheme->data);
     }
 
     /**
      * Extend the scheme with an array of data
      *
-     * @param array<string, mixed> $data
+     * @param array{
+     *     title?: array<string, string>|string,
+     *     extend?: string,
+     *     options?: array<string, mixed>,
+     *     layout?: array<string, mixed>,
+     *     fields?: array<string, mixed>
+     * } $data
      *
      * @since 2.3.0
      */
     public function extendWith(array $data): void
     {
+        // @phpstan-ignore assign.propertyType
         $this->data = Arr::extend($data, $this->data);
     }
 

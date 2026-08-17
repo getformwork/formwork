@@ -5,6 +5,9 @@ namespace Formwork\Languages;
 use Formwork\Data\AbstractCollection;
 use Formwork\Utils\Arr;
 
+/**
+ * @extends AbstractCollection<Language>
+ */
 class LanguageCollection extends AbstractCollection
 {
     protected ?string $dataType = Language::class;

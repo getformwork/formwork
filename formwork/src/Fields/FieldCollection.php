@@ -8,6 +8,9 @@ use Formwork\Http\Request;
 use Formwork\Model\Model;
 use Formwork\Utils\Arr;
 
+/**
+ * @extends AbstractCollection<Field>
+ */
 class FieldCollection extends AbstractCollection
 {
     protected bool $associative = true;

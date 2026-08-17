@@ -45,6 +45,8 @@ abstract class AbstractController extends BaseAbstractController
     protected function modal(string $name): Modal
     {
         $this->panel->modals()->add($name);
+
+        /** @var Modal */
         return $this->panel->modals()->get($name);
     }
 

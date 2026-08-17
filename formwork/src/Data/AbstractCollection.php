@@ -14,23 +14,31 @@ use Iterator;
 use LogicException;
 
 /**
- * @implements Iterator<int|string,mixed>
+ * @implements Iterator<int|string, T>
+ *
+ * @template T
  */
 abstract class AbstractCollection implements Arrayable, Countable, Iterator
 {
     use DataArrayable;
+
+    /** @use DataCountableIterator<array<int|string, T>> */
     use DataCountableIterator;
+
+    /** @use DataMultipleGetter<array<string, T>> */
     use DataMultipleGetter {
         has as protected baseHas;
         get as protected baseGet;
     }
+
+    /** @use DataMultipleSetter<array<string, T>> */
     use DataMultipleSetter {
         set as protected baseSet;
         remove as protected baseRemove;
     }
 
     /**
-     * @var array<int|string, mixed>
+     * @var array<int|string, T>
      */
     protected array $data = [];
 
@@ -50,7 +58,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     protected bool $mutable = false;
 
     /**
-     * @param array<int|string, mixed> $data
+     * @param array<int|string, T> $data
      *
      * @throws LogicException If collection associativeness mismatches data or if typed collection is created from data of different types
      */
@@ -113,6 +121,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return the collection item at the specified index
+     *
+     * @return T|null
      */
     public function nth(int $index): mixed
     {
@@ -123,6 +133,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * Return the collection item at the specified index
      *
      * A negative index starts from the last item
+     *
+     * @return T|null
      */
     public function at(int $index): mixed
     {
@@ -131,6 +143,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return first collection item
+     *
+     * @return T|null
      */
     public function first(): mixed
     {
@@ -139,6 +153,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return last collection item
+     *
+     * @return T|null
      */
     public function last(): mixed
     {
@@ -147,6 +163,10 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a random item or a given default value if the collection is empty
+     *
+     * @param T|null $default
+     *
+     * @return T|null
      */
     public function random(mixed $default = null): mixed
     {
@@ -198,7 +218,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Get the values of all items
      *
-     * @return list<mixed>
+     * @return list<T>
      */
     public function values(): array
     {
@@ -231,6 +251,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Find the first item in the collection for which the given callback returns `true`
+     *
+     * @return T|null
      */
     public function find(callable $callback): mixed
     {
@@ -398,7 +420,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Group collection items using a callback
      *
-     * @return array<mixed>
+     * @return array<string, list<T>>
      */
     public function group(callable $callback): array
     {
@@ -410,7 +432,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * Typed collections should implement their own version of this method, optimised for their data type
      *
-     * @return array<mixed>
+     * @return array<T>
      */
     public function extract(string $key, mixed $default = null): array
     {
@@ -423,7 +445,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * This method is similar to `extract()` but does not preserve keys
      *
-     * @return array<mixed>
+     * @return list<T>
      */
     public function pluck(string $key, mixed $default = null): array
     {
@@ -500,7 +522,9 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Group the collection using the given key from each item
      *
-     * @return array<string, mixed>
+     * @param T|null $default
+     *
+     * @return array<string, list<T|null>>
      */
     public function groupBy(string $key, mixed $default = null): array
     {
@@ -524,6 +548,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * Return a copy of the collection with the given values
      *
      * If a value is already in the collection, it will not be added
+     *
+     * @param T ...$values
      */
     public function with(mixed ...$values): static
     {
@@ -540,6 +566,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection without the given values
+     *
+     * @param T ...$values
      */
     public function without(mixed ...$values): static
     {
@@ -556,6 +584,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * Return a special object on which property accesses and method calls
      * are redirected to every item of the collection and the results
      * are collected again
+     *
+     * @return CollectionDataProxy<T>
      */
     public function everyItem(): CollectionDataProxy
     {
@@ -564,6 +594,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection with the union of the values of the given collections
+     *
+     * @param self<T> ...$collections
      */
     public function union(self ...$collections): static
     {
@@ -578,6 +610,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection with the intersection of the values of the given collections
+     *
+     * @param self<T> ...$collections
      */
     public function intersection(self ...$collections): static
     {
@@ -592,6 +626,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection with the values of the given collections removed
+     *
+     * @param self<T> ...$collections
      */
     public function difference(self ...$collections): static
     {
@@ -606,6 +642,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Add the given value to the collection
+     *
+     * @param T $value
      *
      * @throws LogicException If the collection is not mutable, associative, or if value type is invalid
      */
@@ -625,7 +663,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Add multiple values to the collection
      *
-     * @param list<mixed> $values
+     * @param list<T> $values
      */
     public function addMultiple(array $values): void
     {
@@ -636,6 +674,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Remove all occurrences of the given value from the collection
+     *
+     * @param T $value
      *
      * @throws LogicException If the collection is not mutable or is associative
      */
@@ -651,7 +691,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Remove all occurrences of the given values from the collection
      *
-     * @param list<mixed> $values
+     * @param list<T> $values
      */
     public function pullMultiple(array $values): void
     {
@@ -685,7 +725,15 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      *
      * A default value is returned if the item is not present
      *
+     * @template TKey of string
+     * @template TDefault
+     *
+     * @param TKey     $key
+     * @param TDefault $default
+     *
      * @throws LogicException If the collection is not associative
+     *
+     * @return T|TDefault
      */
     public function get(string $key, mixed $default = null): mixed
     {
@@ -697,6 +745,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Set a collection item
+     *
+     * @param T $value
      *
      * @throws LogicException If the collection is not associative, not mutable, or if value type is invalid
      */
@@ -712,6 +762,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
         if ($this->dataType() !== 'array') {
             // Avoid dot notation traversal by setting the key before
+            // @phpstan-ignore assign.propertyType
             $this->data[$key] = null;
         }
 
@@ -733,6 +784,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Merge another collection into the current
+     *
+     * @param self<T> ...$collection
      *
      * @throws LogicException If the collection is not mutable, if associativeness differs, or if data types differ
      */

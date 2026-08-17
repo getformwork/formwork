@@ -116,6 +116,7 @@ class User extends Model
             throw new LogicException(sprintf('User "%s" has an invalid role assigned: "%s"', $this->username(), $role));
         }
 
+        /** @var Role */
         return $this->users->roles()->get($role);
     }
 

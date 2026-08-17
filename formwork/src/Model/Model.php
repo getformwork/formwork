@@ -119,6 +119,7 @@ class Model implements Arrayable
 
         // Get values from fields
         if ($this->fields->has($key)) {
+            /** @var Field */
             $field = $this->fields->get($key);
 
             // If defined use the value returned by `return()`

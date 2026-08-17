@@ -13,6 +13,7 @@ class Modals extends ModalCollection
      *
      * @param string $name
      */
+    // @phpstan-ignore method.childParameterType
     public function add(mixed $name): void
     {
         if (!$this->has($name)) {

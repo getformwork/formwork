@@ -135,7 +135,7 @@ class Request
      */
     public function root(): string
     {
-        return '/' . ltrim(preg_replace('~[^/]+$~', '', $this->server->get('SCRIPT_NAME', '')), '/');
+        return '/' . ltrim((string) preg_replace('~[^/]+$~', '', $this->server->get('SCRIPT_NAME', '')), '/');
     }
 
     /**

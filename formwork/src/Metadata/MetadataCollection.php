@@ -4,6 +4,9 @@ namespace Formwork\Metadata;
 
 use Formwork\Data\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<Metadata>
+ */
 class MetadataCollection extends AbstractCollection
 {
     protected bool $associative = true;
@@ -22,10 +25,23 @@ class MetadataCollection extends AbstractCollection
     }
 
     /**
+     * Set multiple metadata
+     *
+     * @param array<string, string> $keysAndValues
+     */
+    // @phpstan-ignore method.childParameterType
+    public function setMultiple(array $keysAndValues): void
+    {
+        // @phpstan-ignore argument.type
+        parent::setMultiple($keysAndValues);
+    }
+
+    /**
      * Set a metadata
      *
      * @param string $value
      */
+    // @phpstan-ignore method.childParameterType
     public function set(string $key, $value): void
     {
         $this->data[$key] = new Metadata($key, $value);

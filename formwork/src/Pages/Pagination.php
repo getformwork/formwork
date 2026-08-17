@@ -7,6 +7,9 @@ use Formwork\Data\Pagination as BasePagination;
 use Formwork\Pages\Traits\PaginationUri;
 use Formwork\Router\Router;
 
+/**
+ * @extends BasePagination<Page|Site>
+ */
 class Pagination extends BasePagination
 {
     use PaginationUri;

@@ -51,11 +51,9 @@ final class PluginsController extends AbstractController
 
         $name = Str::toCamelCase($routeParams->get('id'));
 
-        if (!$plugins->has($name)) {
+        if (($plugin = $plugins->get($name)) === null) {
             return $this->forward(ErrorsController::class, 'notFound');
         }
-
-        $plugin = $plugins->get($name);
 
         $scheme = $this->getPluginScheme($plugin);
 
@@ -105,11 +103,11 @@ final class PluginsController extends AbstractController
 
         $name = Str::toCamelCase($routeParams->get('id'));
 
-        if (!$plugins->has($name)) {
+        if (($plugin = $plugins->get($name)) === null) {
             return JsonResponse::error($this->translate('panel.plugins.plugin.notFound'), ResponseStatus::NotFound);
         }
 
-        $this->togglePluginStatus($plugins->get($name), true);
+        $this->togglePluginStatus($plugin, true);
 
         $this->panel->notify($this->translate('panel.plugins.plugin.enabled'), 'success');
         return JsonResponse::success($this->translate('panel.plugins.plugin.enabled'));
@@ -126,11 +124,11 @@ final class PluginsController extends AbstractController
 
         $name = Str::toCamelCase($routeParams->get('id'));
 
-        if (!$plugins->has($name)) {
+        if (($plugin = $plugins->get($name)) === null) {
             return JsonResponse::error($this->translate('panel.plugins.plugin.notFound'), ResponseStatus::NotFound);
         }
 
-        $this->togglePluginStatus($plugins->get($name), false);
+        $this->togglePluginStatus($plugin, false);
 
         $this->panel->notify($this->translate('panel.plugins.plugin.disabled'), 'success');
         return JsonResponse::success($this->translate('panel.plugins.plugin.disabled'));
