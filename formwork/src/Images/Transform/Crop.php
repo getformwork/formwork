@@ -30,6 +30,9 @@ final class Crop extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{originX: int, originY: int, width: int, height: int, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['originX'], $data['originY'], $data['width'], $data['height']);

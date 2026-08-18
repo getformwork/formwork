@@ -17,6 +17,9 @@ final class Scale extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{factor: float, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['factor']);

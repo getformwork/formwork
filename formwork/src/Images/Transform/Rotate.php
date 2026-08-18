@@ -12,6 +12,9 @@ final class Rotate extends AbstractTransform
         private float $angle,
     ) {}
 
+    /**
+     * @param array{angle: float, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['angle']);

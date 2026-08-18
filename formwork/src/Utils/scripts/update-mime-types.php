@@ -12,6 +12,7 @@ if ($data === false) {
     exit('Failed to fetch MIME types database' . PHP_EOL);
 }
 
+/** @var ?array<string, array{source: string, charset?: string, compressible?: bool, extensions?: list<string>, ...}> $json */
 $json = json_decode($data, true);
 
 if ($json === null) {

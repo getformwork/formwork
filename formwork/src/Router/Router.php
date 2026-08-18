@@ -285,10 +285,27 @@ class Router
      */
     public function loadFromFile(string $path, ?string $prefix = null, array $actionParameters = []): void
     {
+        /**
+         * @var array{
+         *     routes?: array<string, array{
+         *         path: string,
+         *         action: callable|string,
+         *         actionParameters?: array<string, mixed>,
+         *         where?: array<string, array<mixed>|Closure>,
+         *         prefix?: string
+         *     }>,
+         *     filters?: array<string, array{
+         *         action: callable|string,
+         *         prefix?: string,
+         *         methods?: list<string>,
+         *     }>,
+         *  }
+         */
         $data = Php::parseFile($path);
 
         /**
-         * @param Route|RouteFilter $o
+         * @param Route|RouteFilter                                   $o
+         * @param array{methods?: list<string>, types?: list<string>} $props
          */
         $setProps = static function ($o, array $props, ?string $prefix): void {
             if (isset($props['methods'])) {

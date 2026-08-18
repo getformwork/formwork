@@ -55,7 +55,6 @@ class ResponseHeaders implements Arrayable, Countable, Iterator
 
     public function get(string $key, mixed $default = null): mixed
     {
-        /** @var string $key */
         return $this->baseGet(Header::fixHeaderName($key), $default);
     }
 

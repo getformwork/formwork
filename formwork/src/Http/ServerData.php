@@ -5,6 +5,9 @@ namespace Formwork\Http;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Str;
 
+/**
+ * @extends RequestData<array<string, string>>
+ */
 class ServerData extends RequestData
 {
     /**

@@ -128,6 +128,7 @@ final class Uri
     public static function queryToArray(string $uri): array
     {
         parse_str(self::query($uri) ?? '', $array);
+        /** @var array<array<string>|string> $array */
         return $array;
     }
 
@@ -267,12 +268,22 @@ final class Uri
     /**
      * Parse URI component, throwing an exception when the URI is invalid
      *
+     * @param int $component The URI component to parse
+     *
      * @throws InvalidArgumentException If the URI is invalid or contains malformed data
+     *
+     * @return ($component is \PHP_URL_PORT ? int<0, 65535>|null : string|null)
      */
-    private static function parseComponent(string $uri, int $component): mixed
+    private static function parseComponent(string $uri, int $component): int|string|null
     {
-        // Avoid altered UTF-8 characters from `parse_url()` output by encoding the URI first
-        $result = parse_url(self::encode($uri), $component);
+        if (!in_array($component, [PHP_URL_SCHEME, PHP_URL_HOST, PHP_URL_PORT, PHP_URL_PATH, PHP_URL_QUERY, PHP_URL_FRAGMENT], true)) {
+            throw new InvalidArgumentException('Invalid URI component');
+        }
+        /** @var false|int<0, 65535>|string|null $result */
+        $result = parse_url(
+            self::encode($uri), // Avoid altered UTF-8 characters from `parse_url()` output by encoding the URI first
+            $component
+        );
         if ($result === false) {
             throw new InvalidArgumentException(sprintf('Invalid URI "%s"', $uri));
         }

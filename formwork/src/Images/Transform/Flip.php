@@ -22,6 +22,9 @@ final class Flip extends AbstractTransform
         private FlipDirection $flipDirection,
     ) {}
 
+    /**
+     * @param array{direction: FlipDirection, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['direction']);

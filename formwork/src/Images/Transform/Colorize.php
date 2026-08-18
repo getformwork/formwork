@@ -32,6 +32,9 @@ final class Colorize extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{red: int, green: int, blue: int, alpha: int, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['red'], $data['green'], $data['blue'], $data['alpha']);

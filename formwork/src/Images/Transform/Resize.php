@@ -28,6 +28,9 @@ final class Resize extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{width: int|null, height: int|null, mode: ResizeMode, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['width'], $data['height'], $data['mode']);

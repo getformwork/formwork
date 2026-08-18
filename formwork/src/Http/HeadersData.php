@@ -2,6 +2,9 @@
 
 namespace Formwork\Http;
 
+/**
+ * @extends RequestData<array<string, string>>
+ */
 class HeadersData extends RequestData
 {
     /**

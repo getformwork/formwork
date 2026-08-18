@@ -17,6 +17,9 @@ final class Contrast extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{amount: int, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['amount']);

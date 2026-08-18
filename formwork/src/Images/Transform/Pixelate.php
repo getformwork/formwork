@@ -11,6 +11,9 @@ final class Pixelate extends AbstractTransform
         private int $amount,
     ) {}
 
+    /**
+     * @param array{amount: int, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['amount']);

@@ -11,15 +11,21 @@ use Iterator;
 
 /**
  * @implements Iterator<array-key, mixed>
+ *
+ * @template TData of array<string, mixed> = array<string, mixed>
  */
 class RequestData implements Arrayable, Countable, Iterator
 {
     use DataArrayable;
+
+    /** @use DataCountableIterator<TData> */
     use DataCountableIterator;
+
+    /** @use DataMultipleGetter<TData> */
     use DataMultipleGetter;
 
     /**
-     * @param array<string, mixed> $data
+     * @param TData $data
      */
     public function __construct(array $data)
     {

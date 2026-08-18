@@ -35,16 +35,22 @@ class Request
 
     /**
      * Request input data. Corresponds to `$_POST`
+     *
+     * @var RequestData<array<string, string>>
      */
     protected RequestData $input;
 
     /**
      * Request query data. Corresponds to `$_GET`
+     *
+     * @var RequestData<array<string, string>>
      */
     protected RequestData $query;
 
     /**
      * Request cookies data. Corresponds to `$_COOKIE`
+     *
+     * @var RequestData<array<string, string>>
      */
     protected RequestData $cookies;
 
@@ -401,6 +407,8 @@ class Request
 
     /**
      * Get the request input data. Corresponds to `$_POST`
+     *
+     * @return RequestData<array<string, string>>
      */
     public function input(): RequestData
     {
@@ -409,6 +417,8 @@ class Request
 
     /**
      * Get the request query data. Corresponds to `$_GET`
+     *
+     * @return RequestData<array<string, string>>
      */
     public function query(): RequestData
     {
@@ -417,6 +427,8 @@ class Request
 
     /**
      * Get the request cookies data. Corresponds to `$_COOKIE`
+     *
+     * @return RequestData<array<string, string>>
      */
     public function cookies(): RequestData
     {
@@ -461,7 +473,7 @@ class Request
     public function hasPreviousSession(): bool
     {
         $sessionName = $this->session()->name();
-        return $this->cookies->has($sessionName) && $this->session()->exists($this->cookies->get($sessionName));
+        return ($id = $this->cookies->get($sessionName)) !== null && $this->session()->exists($id);
     }
 
     /**
@@ -542,9 +554,12 @@ class Request
      *
      * @since 2.2.0
      *
-     * @param array<mixed> $data
+     * @template TKey of array-key
+     * @template TValue
      *
-     * @return array<mixed>
+     * @param array<TKey, TValue> $data
+     *
+     * @return array<TKey, TValue>
      */
     protected function prepareKeys(array $data): array
     {
@@ -554,6 +569,7 @@ class Request
             $result[is_string($key) ? rawurldecode($key) : $key] = is_array($value) ? $this->prepareKeys($value) : $value;
         }
 
+        /** @var array<TKey, TValue> $result */
         return $result;
     }
 

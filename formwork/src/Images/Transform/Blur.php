@@ -43,6 +43,9 @@ final class Blur extends AbstractTransform
         }
     }
 
+    /**
+     * @param array{amount: int, mode: BlurMode, ...} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self($data['amount'], $data['mode']);
