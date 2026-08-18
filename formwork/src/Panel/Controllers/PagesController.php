@@ -306,11 +306,11 @@ final class PagesController extends AbstractController
         // Validate fields against data
         $page->fields()->setValues($requestData, null)->validate();
 
-        if ($page->template()->name() !== ($template = $requestData->get('template'))) {
-            $page->reload(['template' => $this->site->templates()->get($template)]);
+        if (($requestTemplate = $requestData->get('template')) !== null && $page->template()->name() !== $requestTemplate) {
+            $page->reload(['template' => $this->site->templates()->get($requestTemplate)]);
         }
 
-        if ($page->parent() !== ($this->resolveParent($requestData->get('parent')))) {
+        if ((($requestParent = $requestData->get('parent')) !== null) && $page->parent() !== ($this->resolveParent($requestParent))) {
             $this->panel->notify($this->translate('panel.pages.page.cannotPreview.parentChanged'), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
@@ -343,7 +343,10 @@ final class PagesController extends AbstractController
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
-        $parent = $this->resolveParent($requestData->get('parent'));
+        /** @var string $requestParent */
+        $requestParent = $requestData->get('parent');
+
+        $parent = $this->resolveParent($requestParent);
         if (!$parent->hasChildren()) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'), ResponseStatus::InternalServerError);
         }
