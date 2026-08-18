@@ -69,7 +69,7 @@ final class PluginsController extends AbstractController
 
         $fields = $scheme->fields();
 
-        $fields->setValues($this->config->get("plugins.{$name}", []));
+        $fields->setValues($this->config->getArray("plugins.{$name}", []));
 
         $form = $this->form('plugin-options', $fields)
             ->processRequest($this->request);
@@ -146,7 +146,7 @@ final class PluginsController extends AbstractController
      */
     private function updatePluginsOptions(Plugin $plugin, array $options): void
     {
-        $options = Arr::override($this->config->get("plugins.{$plugin->name()}", []), Arr::undot($options));
+        $options = Arr::override($this->config->getArray("plugins.{$plugin->name()}", []), Arr::undot($options));
 
         if (!FileSystem::isDirectory(ROOT_PATH . '/site/config/plugins/', assertExists: false)) {
             FileSystem::createDirectory(ROOT_PATH . '/site/config/plugins/');

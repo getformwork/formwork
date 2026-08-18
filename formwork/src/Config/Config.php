@@ -10,6 +10,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use UnexpectedValueException;
 
 class Config implements ArraySerializable
 {
@@ -62,6 +63,80 @@ class Config implements ArraySerializable
             throw new UnresolvedConfigException('Unresolved config');
         }
         return Arr::get($this->config, $key, $default);
+    }
+
+    /**
+     * Get a string value from the config
+     *
+     * @throws UnexpectedValueException If the config value is not a string
+     */
+    public function getString(string $key, ?string $default = null): string
+    {
+        $value = $this->get($key, $default);
+        if (!is_string($value)) {
+            throw new UnexpectedValueException(sprintf('Config value for key "%s" is not a string, got %s', $key, get_debug_type($value)));
+        }
+        return $value;
+    }
+
+    /**
+     * Get a boolean value from the config
+     *
+     * @throws UnexpectedValueException If the config value is not a boolean
+     */
+    public function getBool(string $key, ?bool $default = null): bool
+    {
+        $value = $this->get($key, $default);
+        if (!is_bool($value)) {
+            throw new UnexpectedValueException(sprintf('Config value for key "%s" is not a boolean, got %s', $key, get_debug_type($value)));
+        }
+        return $value;
+    }
+
+    /**
+     * Get an integer value from the config
+     *
+     * @throws UnexpectedValueException If the config value is not an integer
+     */
+    public function getInt(string $key, ?int $default = null): int
+    {
+        $value = $this->get($key, $default);
+        if (!is_int($value)) {
+            throw new UnexpectedValueException(sprintf('Config value for key "%s" is not an integer, got %s', $key, get_debug_type($value)));
+        }
+        return $value;
+    }
+
+    /**
+     * Get a float value from the config
+     *
+     * @throws UnexpectedValueException If the config value is not a float
+     */
+    public function getFloat(string $key, ?float $default = null): float
+    {
+        $value = $this->get($key, $default);
+        if (!is_float($value)) {
+            throw new UnexpectedValueException(sprintf('Config value for key "%s" is not a float, got %s', $key, get_debug_type($value)));
+        }
+        return $value;
+    }
+
+    /**
+     * Get an array value from the config
+     *
+     * @param ?array<mixed> $default
+     *
+     * @throws UnexpectedValueException If the config value is not an array
+     *
+     * @return array<mixed>
+     */
+    public function getArray(string $key, ?array $default = null): array
+    {
+        $value = $this->get($key, $default);
+        if (!is_array($value)) {
+            throw new UnexpectedValueException(sprintf('Config value for key "%s" is not an array, got %s', $key, get_debug_type($value)));
+        }
+        return $value;
     }
 
     /**

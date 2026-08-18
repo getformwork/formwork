@@ -40,7 +40,7 @@ final class ToolsController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $backupper = new Backupper([...$this->config->get('system.backup'), 'hostname' => $this->request->host()]);
+        $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
 
         $backups = Arr::map($backupper->getBackups(), fn(string $path, int $timestamp): array => [
             'name'        => basename($path),
@@ -100,7 +100,7 @@ final class ToolsController extends AbstractController
 
         $warnings = [];
 
-        if ($this->config->get('system.debug.enabled')) {
+        if ($this->config->getBool('system.debug.enabled')) {
             $warnings[] = 'Debug mode enabled, remember to turn it off in production';
         }
 

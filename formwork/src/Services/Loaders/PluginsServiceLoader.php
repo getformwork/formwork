@@ -31,11 +31,11 @@ final class PluginsServiceLoader implements ResolutionAwareServiceLoaderInterfac
      */
     public function onResolved(object $service, Container $container): void
     {
-        if (!$this->config->get('system.plugins.enabled')) {
+        if (!$this->config->getBool('system.plugins.enabled')) {
             return;
         }
 
-        $pluginsPath = $this->config->get('system.plugins.path');
+        $pluginsPath = $this->config->getString('system.plugins.path');
 
         if (!FileSystem::isDirectory($pluginsPath, assertExists: false)) {
             return;

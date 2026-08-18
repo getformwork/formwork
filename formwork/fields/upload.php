@@ -16,7 +16,7 @@ return function (App $app) {
              * Return the accepted MIME types for the field
              */
             'acceptMimeTypes' => function (Field $field) use ($app) {
-                $allowedExtensions = $app->config()->get('system.files.allowedExtensions', '');
+                $allowedExtensions = $app->config()->getArray('system.files.allowedExtensions', []);
 
                 $accept = is_string($field->get('accept'))
                     ? preg_split('/\s*,\s*/', $field->get('accept'), flags: PREG_SPLIT_NO_EMPTY)
@@ -89,7 +89,7 @@ return function (App $app) {
                     return null;
                 }
 
-                $allowedExtensions = $app->config()->get('system.files.allowedExtensions', '');
+                $allowedExtensions = $app->config()->getArray('system.files.allowedExtensions', []);
                 $allowedMimeTypes = Arr::map($allowedExtensions, MimeType::fromExtension(...));
                 $acceptMimeTypes = $field->acceptMimeTypes();
 

@@ -11,7 +11,7 @@
                 'class'            => $this->classes(['form-input', 'form-input-upload', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
                 'id'               => $field->name(),
                 'name'             => $field->formName() . ($field->get('multiple') ? '[]' : ''),
-                'accept'           => $field->get('accept', implode(', ', $app->config()->get('system.files.allowedExtensions'))),
+                'accept'           => $field->get('accept', implode(', ', $app->config()->getArray('system.files.allowedExtensions', []))),
                 'multiple'         => $field->get('multiple'),
                 'required'         => false,
                 'disabled'         => $field->isDisabled(),

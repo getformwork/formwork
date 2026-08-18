@@ -49,8 +49,8 @@ final class UpdatesController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        if ($this->config->get('system.updates.backupBefore')) {
-            $backupper = new Backupper([...$this->config->get('system.backup'), 'hostname' => $this->request->host()]);
+        if ($this->config->getBool('system.updates.backupBefore')) {
+            $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
             try {
                 $backupper->backup();
             } catch (TranslatedException) {
@@ -66,7 +66,7 @@ final class UpdatesController extends AbstractController
                 'status' => $this->translate('panel.updates.status.cannotInstall'),
             ]);
         }
-        if ($this->config->get('system.cache.enabled')) {
+        if ($this->config->getBool('system.cache.enabled')) {
             $cache->clear();
         }
         return JsonResponse::success($this->translate('panel.updates.installed'), data: [

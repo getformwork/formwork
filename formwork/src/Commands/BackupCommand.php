@@ -136,7 +136,7 @@ final class BackupCommand implements CommandInterface
      */
     private function getBackupper(?string $hostname = null): Backupper
     {
-        return new Backupper([...$this->app->config()->get('system.backup'), 'hostname' => $hostname ?? (gethostname() ?: 'local-cli')]);
+        return new Backupper([...$this->app->config()->getArray('system.backup'), 'hostname' => $hostname ?? (gethostname() ?: 'local-cli')]);
     }
 
     /**

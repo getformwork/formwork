@@ -35,7 +35,7 @@ final class CacheController extends AbstractController
             case 'default':
                 $this->clearCaches([
                     'pages'  => true,
-                    'images' => $this->config->get('system.images.clearCacheByDefault'),
+                    'images' => $this->config->getBool('system.images.clearCacheByDefault'),
                 ]);
                 return JsonResponse::success($this->translate('panel.cache.cleared'), data: compact('type'));
             case 'all':
@@ -97,7 +97,7 @@ final class CacheController extends AbstractController
      */
     private function clearImagesCache(): void
     {
-        $path = $this->config->get('system.images.processPath');
+        $path = $this->config->getString('system.images.processPath');
         FileSystem::delete($path, recursive: true);
         FileSystem::createDirectory($path, recursive: true);
     }

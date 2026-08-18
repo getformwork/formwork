@@ -68,7 +68,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
     {
         Response::cleanOutputBuffers();
 
-        if ($this->config->get('system.debug.enabled') || $this->request->isLocalhost()) {
+        if ($this->config->getBool('system.debug.enabled') || $this->request->isLocalhost()) {
             $data['throwable'] = $throwable;
             $data['stackTrace'] = $throwable !== null ? $this->getTrace($throwable) : [];
         }

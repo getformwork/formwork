@@ -18,7 +18,7 @@ final class TemplatesServiceLoader implements ServiceLoaderInterface
 
     public function load(Container $container): Templates
     {
-        $path = $this->config->get('system.templates.path');
+        $path = $this->config->getString('system.templates.path');
 
         $templates = [];
 

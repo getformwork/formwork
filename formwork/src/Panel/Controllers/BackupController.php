@@ -24,7 +24,7 @@ final class BackupController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $backupper = new Backupper([...$this->config->get('system.backup'), 'hostname' => $this->request->host()]);
+        $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
@@ -35,10 +35,10 @@ final class BackupController extends AbstractController
         return JsonResponse::success($this->translate('panel.backup.ready'), data: [
             'filename'  => $filename,
             'uri'       => $this->panel->uri("/backup/download/{$uriName}/"),
-            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $this->config->get('system.date.datetimeFormat'), $this->translations->getCurrent()),
+            'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $this->config->getString('system.date.datetimeFormat'), $this->translations->getCurrent()),
             'size'      => FileSystem::formatSize(FileSystem::size($file)),
             'deleteUri' => $this->panel->uri("/backup/delete/{$uriName}/"),
-            'maxFiles'  => $this->config->get('system.backup.maxFiles'),
+            'maxFiles'  => $this->config->getInt('system.backup.maxFiles'),
         ]);
     }
 
@@ -51,7 +51,7 @@ final class BackupController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
+        $file = FileSystem::joinPaths($this->config->getString('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {
                 return new FileResponse($file, download: true);
@@ -72,7 +72,7 @@ final class BackupController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        $file = FileSystem::joinPaths($this->config->get('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
+        $file = FileSystem::joinPaths($this->config->getString('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
             if (FileSystem::isFile($file, assertExists: false)) {
                 FileSystem::delete($file);

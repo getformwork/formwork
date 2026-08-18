@@ -15,11 +15,11 @@ final class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     public function load(Container $container): Site
     {
-        $config = $this->config->get('site');
+        $config = $this->config->getArray('site');
 
         return $container->build(Site::class, ['data' => [
             ...$config,
-            'contentPath' => $this->config->get('system.pages.path'),
+            'contentPath' => $this->config->getString('system.pages.path'),
         ]]);
     }
 

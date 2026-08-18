@@ -21,7 +21,7 @@ final class AssetsController extends AbstractController
             return $this->redirect($this->router->rewrite(['type' => 'images']), ResponseStatus::MovedPermanently);
         }
 
-        $path = FileSystem::joinPaths($this->config->get('system.images.processPath'), $routeParams->get('id'), $routeParams->get('name'));
+        $path = FileSystem::joinPaths($this->config->getString('system.images.processPath'), $routeParams->get('id'), $routeParams->get('name'));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path, headers: ['Cache-Control' => 'private, max-age=31536000, immutable'], autoEtag: true, autoLastModified: true);
@@ -35,7 +35,7 @@ final class AssetsController extends AbstractController
      */
     public function template(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.templates.path'), 'assets', Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
+        $path = FileSystem::joinPaths($this->config->getString('system.templates.path'), 'assets', Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             $headers = $this->request->query()->has('v')

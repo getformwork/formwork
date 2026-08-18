@@ -63,7 +63,7 @@ final class FieldFactory
      */
     private function getFieldConfig(string $type, ?array $default = null): array
     {
-        $configPath = FileSystem::joinPaths($this->config->get('system.fields.path'), $type . '.php');
+        $configPath = FileSystem::joinPaths($this->config->getString('system.fields.path'), $type . '.php');
 
         if (!FileSystem::exists($configPath)) {
             if ($default !== null) {

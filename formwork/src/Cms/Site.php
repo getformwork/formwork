@@ -270,8 +270,8 @@ class Site extends Model implements Stringable
         }
 
         $defaults = [
-            'charset'   => $this->config->get('system.charset'),
-            'generator' => $this->config->get('system.metadata.setGenerator') ? 'Formwork' : null,
+            'charset'   => $this->config->getString('system.charset'),
+            'generator' => $this->config->getBool('system.metadata.setGenerator') ? 'Formwork' : null,
         ];
 
         $data = array_filter([...$defaults, ...$this->data['metadata']]);
@@ -436,7 +436,7 @@ class Site extends Model implements Stringable
      */
     public function indexPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.index'))
+        return $this->findPage($this->config->getString('system.pages.index'))
             ?? throw new PageNotFoundException('Site index page not found');
     }
 
@@ -447,7 +447,7 @@ class Site extends Model implements Stringable
      */
     public function errorPage(): Page
     {
-        return $this->findPage($this->config->get('system.pages.error'))
+        return $this->findPage($this->config->getString('system.pages.error'))
             ?? throw new PageNotFoundException('Site error page not found');
     }
 
@@ -478,15 +478,15 @@ class Site extends Model implements Stringable
 
         $files = [];
 
-        $path = $this->config->get('system.files.paths.site');
+        $path = $this->config->getString('system.files.paths.site');
 
         if (FileSystem::isDirectory($path, assertExists: false)) {
             foreach (FileSystem::listFiles($path) as $file) {
                 $extension = '.' . FileSystem::extension($file);
-                if (Str::endsWith($file, $this->config->get('system.files.metadataExtension'))) {
+                if (Str::endsWith($file, $this->config->getString('system.files.metadataExtension'))) {
                     continue;
                 }
-                if (in_array($extension, $this->config->get('system.files.allowedExtensions'), true)) {
+                if (in_array($extension, $this->config->getArray('system.files.allowedExtensions', []), true)) {
                     $files[] = $this->app()->getService(FileFactory::class)->make(FileSystem::joinPaths($path, $file));
                 }
             }

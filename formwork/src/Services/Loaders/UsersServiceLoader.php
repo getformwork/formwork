@@ -42,7 +42,7 @@ final class UsersServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     private function loadRoles(): void
     {
-        foreach (FileSystem::listFiles($path = $this->config->get('system.users.paths.roles')) as $file) {
+        foreach (FileSystem::listFiles($path = $this->config->getString('system.users.paths.roles')) as $file) {
             /**
              * @var array{title: string, permissions?: array<string, bool>}
              */
@@ -55,7 +55,7 @@ final class UsersServiceLoader implements ResolutionAwareServiceLoaderInterface
 
     private function loadUsers(): void
     {
-        foreach (FileSystem::listFiles($path = $this->config->get('system.users.paths.accounts')) as $file) {
+        foreach (FileSystem::listFiles($path = $this->config->getString('system.users.paths.accounts')) as $file) {
             /**
              * @var array{username: string, fullname: string, hash: string, email: string, language: string, role?: string, image?: string, colorScheme?: string}
              */

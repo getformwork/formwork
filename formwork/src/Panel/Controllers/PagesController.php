@@ -463,7 +463,7 @@ final class PagesController extends AbstractController
                 'size'             => $file->size(),
                 'lastModifiedTime' => Date::formatTimestamp(
                     $file->lastModifiedTime(),
-                    $this->config->get('system.date.datetimeFormat'),
+                    $this->config->getString('system.date.datetimeFormat'),
                     $this->translations->getCurrent()
                 ),
                 'type'      => $file->type(),

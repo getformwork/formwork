@@ -22,7 +22,7 @@ final class SchemesServiceLoader implements ResolutionAwareServiceLoaderInterfac
 
         $container->define(FieldFactory::class);
 
-        DynamicFieldValue::$varsLoader = fn() => $container->call(require $this->config->get('system.fields.dynamic.vars.file'));
+        DynamicFieldValue::$varsLoader = fn() => $container->call(require $this->config->getString('system.fields.dynamic.vars.file'));
 
         return $container->build(Schemes::class);
     }
@@ -32,7 +32,7 @@ final class SchemesServiceLoader implements ResolutionAwareServiceLoaderInterfac
      */
     public function onResolved(object $service, Container $container): void
     {
-        $service->loadFromPath($this->config->get('system.schemes.paths.system'));
-        $service->loadFromPath($this->config->get('system.schemes.paths.site'));
+        $service->loadFromPath($this->config->getString('system.schemes.paths.system'));
+        $service->loadFromPath($this->config->getString('system.schemes.paths.site'));
     }
 }

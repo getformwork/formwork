@@ -27,7 +27,7 @@ final class LoggerServiceLoader implements ServiceLoaderInterface
     public function load(Container $container): Logger
     {
         $logger = $container->build(Logger::class);
-        foreach ($this->config->get('system.logs.handlers', []) as $handlerConfig) {
+        foreach ($this->config->getArray('system.logs.handlers', []) as $handlerConfig) {
             $logger->addHandler($this->buildHandler($handlerConfig));
         }
 

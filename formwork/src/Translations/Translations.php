@@ -89,7 +89,7 @@ class Translations
 
         $translation = new Translation($code, $data);
 
-        if (($this->config->get('system.translations.fallback')) !== $code) {
+        if (($this->config->getString('system.translations.fallback')) !== $code) {
             $translation->setFallback($this->getFallback());
         }
 
@@ -153,7 +153,7 @@ class Translations
      */
     public function getFallback(): Translation
     {
-        $fallbackCode = $this->config->get('system.translations.fallback');
+        $fallbackCode = $this->config->getString('system.translations.fallback');
         return $this->get($fallbackCode);
     }
 }

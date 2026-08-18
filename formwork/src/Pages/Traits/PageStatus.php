@@ -32,7 +32,10 @@ trait PageStatus
 
         $now = time();
 
-        $formats = $this->app()->config()->getMultiple(['system.date.dateFormat', 'system.date.datetimeFormat']);
+        $formats = [
+            $this->app()->config()->getString('system.date.dateFormat'),
+            $this->app()->config()->getString('system.date.datetimeFormat'),
+        ];
 
         if ($publishDate = ($this->data['publishDate'] ?? null)) {
             if (!is_string($publishDate)) {

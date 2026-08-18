@@ -24,10 +24,10 @@ final class TranslationsServiceLoader implements ResolutionAwareServiceLoaderInt
      */
     public function onResolved(object $service, Container $container): void
     {
-        $service->loadFromPath($this->config->get('system.translations.paths.system'));
+        $service->loadFromPath($this->config->getString('system.translations.paths.system'));
 
-        if (FileSystem::isDirectory($this->config->get('system.translations.paths.site'), assertExists: false)) {
-            $service->loadFromPath($this->config->get('system.translations.paths.site'));
+        if (FileSystem::isDirectory($this->config->getString('system.translations.paths.site'), assertExists: false)) {
+            $service->loadFromPath($this->config->getString('system.translations.paths.site'));
         }
     }
 }

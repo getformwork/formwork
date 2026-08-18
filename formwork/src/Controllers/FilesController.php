@@ -14,7 +14,7 @@ final class FilesController extends AbstractController
      */
     public function file(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.files.paths.site'), $routeParams->get('name'));
+        $path = FileSystem::joinPaths($this->config->getString('system.files.paths.site'), $routeParams->get('name'));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path);
