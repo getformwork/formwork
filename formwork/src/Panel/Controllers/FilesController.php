@@ -65,7 +65,7 @@ final class FilesController extends AbstractController
                 'size'             => $file->size(),
                 'lastModifiedTime' => Date::formatTimestamp(
                     $file->lastModifiedTime(),
-                    $this->config->get('system.date.datetimeFormat'),
+                    $this->config->getString('system.date.datetimeFormat'),
                     $this->translations->getCurrent()
                 ),
                 'type'      => $file->type(),
@@ -107,7 +107,7 @@ final class FilesController extends AbstractController
         }
 
         $destination = $parent instanceof Site
-            ? $this->config->get('system.files.paths.site')
+            ? $this->config->getString('system.files.paths.site')
             : $parent->contentPath();
 
         try {
@@ -275,7 +275,7 @@ final class FilesController extends AbstractController
                 'size'             => $file->size(),
                 'lastModifiedTime' => Date::formatTimestamp(
                     $file->lastModifiedTime(),
-                    $this->config->get('system.date.datetimeFormat'),
+                    $this->config->getString('system.date.datetimeFormat'),
                     $this->translations->getCurrent()
                 ),
                 'type'      => $file->type(),
@@ -344,7 +344,7 @@ final class FilesController extends AbstractController
                 'size'             => $file->size(),
                 'lastModifiedTime' => Date::formatTimestamp(
                     $file->lastModifiedTime(),
-                    $this->config->get('system.date.datetimeFormat'),
+                    $this->config->getString('system.date.datetimeFormat'),
                     $this->translations->getCurrent()
                 ),
                 'type'      => $file->type(),
@@ -395,7 +395,7 @@ final class FilesController extends AbstractController
             Arr::undot($file->fields()->extract('default'))
         );
 
-        $metaFile = $file->path() . $this->config->get('system.files.metadataExtension');
+        $metaFile = $file->path() . $this->config->getString('system.files.metadataExtension');
 
         if ($data === [] && FileSystem::exists($metaFile)) {
             FileSystem::delete($metaFile);

@@ -31,8 +31,8 @@ class FileUploader
         protected Config $config,
         protected FileFactory $fileFactory,
     ) {
-        $this->allowedMimeTypes = Arr::map($this->config->get('system.files.allowedExtensions'), fn(string $ext) => MimeType::fromExtension($ext));
-        $this->baseDestinations = $this->config->get('system.files.uploads.baseDestinations');
+        $this->allowedMimeTypes = Arr::map($this->config->getArray('system.files.allowedExtensions', []), fn(string $ext) => MimeType::fromExtension($ext));
+        $this->baseDestinations = $this->config->getArray('system.files.uploads.baseDestinations', []);
     }
 
     /**
@@ -89,7 +89,7 @@ class FileUploader
                 case 'image/webp':
                 case 'image/avif':
                     // Process JPEG, PNG, WebP and AVIF images according to system options (e.g. quality)
-                    if ($this->config->get('system.uploads.processImages') && !$file->info()->isAnimation()) {
+                    if ($this->config->getBool('system.uploads.processImages') && !$file->info()->isAnimation()) {
                         $file->save();
                     }
                     break;

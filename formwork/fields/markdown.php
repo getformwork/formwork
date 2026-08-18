@@ -29,9 +29,9 @@ return function (App $app, Site $site) {
                     [
                         'site'                 => $site,
                         'baseRoute'            => $currentPage !== null ? $currentPage->route() : '/',
-                        'allowHtml'            => $app->config()->get('system.pages.content.allowHtml'),
-                        'addHeadingIds'        => $app->config()->get('system.pages.content.addHeadingIds'),
-                        'commonmarkExtensions' => $app->config()->get('system.pages.content.commonmarkExtensions', []),
+                        'allowHtml'            => $app->config()->getBool('system.pages.content.allowHtml'),
+                        'addHeadingIds'        => $app->config()->getBool('system.pages.content.addHeadingIds'),
+                        'commonmarkExtensions' => $app->config()->getArray('system.pages.content.commonmarkExtensions', []),
                     ]
                 );
             },

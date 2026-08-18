@@ -69,7 +69,7 @@ final class Panel
      */
     public function path(): string
     {
-        return $this->config->get('system.panel.path');
+        return $this->config->getString('system.panel.path');
     }
 
     /**
@@ -85,7 +85,7 @@ final class Panel
      */
     public function panelRoot(): string
     {
-        return Uri::normalize(Str::append($this->config->get('system.panel.root'), '/'));
+        return Uri::normalize(Str::append($this->config->getString('system.panel.root'), '/'));
     }
 
     /**
@@ -122,7 +122,7 @@ final class Panel
         $translation = $this->translations->getCurrent();
 
         $this->navigation = NavigationItemCollection::fromArray(
-            $this->container->call(require $this->config->get('system.panel.config.navigation'), [
+            $this->container->call(require $this->config->getString('system.panel.config.navigation'), [
                 'translation' => $translation,
             ])
         );
@@ -233,7 +233,7 @@ final class Panel
             return $translations;
         }
 
-        $path = $this->config->get('system.translations.paths.panel');
+        $path = $this->config->getString('system.translations.paths.panel');
 
         foreach (FileSystem::listFiles($path) as $file) {
             if (FileSystem::extension($file) === 'yaml') {
@@ -262,7 +262,7 @@ final class Panel
      */
     public function getAppConfig(): array
     {
-        return $this->container->call(require $this->config->get('system.panel.config.app'), [
+        return $this->container->call(require $this->config->getString('system.panel.config.app'), [
             'translation' => $this->translations->getCurrent(),
         ]);
     }
@@ -274,6 +274,6 @@ final class Panel
     {
         return $this->isLoggedIn()
             ? $this->user()->colorScheme()
-            : ColorScheme::from($this->config->get('system.panel.colorScheme'));
+            : ColorScheme::from($this->config->getString('system.panel.colorScheme'));
     }
 }

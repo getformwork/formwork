@@ -203,7 +203,7 @@ final class UpdatesCommand implements CommandInterface
         }
         $this->climate->br();
 
-        if ($this->app->config()->get('system.cache.enabled')) {
+        if ($this->app->config()->getBool('system.cache.enabled')) {
             $this->climate->out('Clearing cache...');
             $this->app->getService(AbstractCache::class)->clear();
             $this->climate->br();
@@ -219,7 +219,7 @@ final class UpdatesCommand implements CommandInterface
      */
     private function getUpdater(array $config): Updater
     {
-        return new Updater([...$this->app->config()->get('system.updates'), ...$config], App::instance());
+        return new Updater([...$this->app->config()->getArray('system.updates'), ...$config], App::instance());
     }
 
     /**
@@ -227,7 +227,7 @@ final class UpdatesCommand implements CommandInterface
      */
     private function getBackupper(): Backupper
     {
-        return new Backupper([...$this->app->config()->get('system.backup'), 'hostname' => gethostname() ?: 'local-cli']);
+        return new Backupper([...$this->app->config()->getArray('system.backup'), 'hostname' => gethostname() ?: 'local-cli']);
     }
 
     /**

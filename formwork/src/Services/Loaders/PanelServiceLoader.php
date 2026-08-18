@@ -49,19 +49,19 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             }
 
             $container->define(RateLimiter::class)
-                ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->get('system.authentication.registryPath'), 'accessAttempts.json')))
-                ->parameter('limit', $this->config->get('system.panel.loginAttempts', $this->config->get('system.authentication.limits.maxAttempts')))
-                ->parameter('resetTime', $this->config->get('system.panel.loginResetTime', $this->config->get('system.authentication.limits.resetTime')));
+                ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
+                ->parameter('limit', $this->config->getInt('system.panel.loginAttempts', $this->config->getInt('system.authentication.limits.maxAttempts')))
+                ->parameter('resetTime', $this->config->getInt('system.panel.loginResetTime', $this->config->getInt('system.authentication.limits.resetTime')));
 
             $container->resolve(RateLimiter::class);
         }
 
         $container->define(Updater::class)
-            ->parameter('options', $this->config->get('system.updates'));
+            ->parameter('options', $this->config->getArray('system.updates'));
 
         if ($this->config->has('system.panel.sessionTimeout')) {
             trigger_error('The "system.panel.sessionTimeout" configuration option (in minutes) is deprecated since Formwork 2.3.0. Use "system.session.duration" (in seconds) instead.', E_USER_DEPRECATED);
-            $this->request->session()->setDuration($this->config->get('system.panel.sessionTimeout') * 60);
+            $this->request->session()->setDuration($this->config->getInt('system.panel.sessionTimeout') * 60);
         }
 
         $container->define(ModalFactory::class);
@@ -77,17 +77,17 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
      */
     public function onResolved(object $service, Container $container): void
     {
-        $this->viewFactory->setResolutionPaths(['panel' => $this->config->get('system.views.paths.panel')]);
-        $this->viewFactory->setMethods($container->call(require $this->config->get('system.views.methods.panel')));
+        $this->viewFactory->setResolutionPaths(['panel' => $this->config->getString('system.views.paths.panel')]);
+        $this->viewFactory->setMethods($container->call(require $this->config->getString('system.views.methods.panel')));
 
         $this->assets->setResolutionPaths(['panel' => [
-            'path' => $this->config->get('system.panel.paths.assets'),
+            'path' => $this->config->getString('system.panel.paths.assets'),
             'uri'  => $service->uri('/assets/'),
         ]]);
 
-        $this->schemes->loadFromPath($this->config->get('system.schemes.paths.panel'));
+        $this->schemes->loadFromPath($this->config->getString('system.schemes.paths.panel'));
 
-        $this->translations->loadFromPath($this->config->get('system.translations.paths.panel'));
+        $this->translations->loadFromPath($this->config->getString('system.translations.paths.panel'));
 
         // Resolve site to avoid panel language to be changed after
         $container->get(Site::class);
@@ -95,7 +95,7 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         if ($service->isLoggedIn()) {
             $this->translations->setCurrent($service->user()->language());
         } else {
-            $this->translations->setCurrent($this->config->get('system.panel.translation'));
+            $this->translations->setCurrent($this->config->getString('system.panel.translation'));
         }
 
         if ($service->isLoggedIn()) {

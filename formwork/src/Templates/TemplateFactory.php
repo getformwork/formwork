@@ -22,7 +22,7 @@ final class TemplateFactory
      */
     public function make(string $name): Template
     {
-        $path = $this->config->get('system.templates.path');
+        $path = $this->config->getString('system.templates.path');
 
         return $this->container->build(Template::class, [
             'name'    => $name,

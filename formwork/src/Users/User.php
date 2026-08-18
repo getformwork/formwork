@@ -86,7 +86,7 @@ class User extends Model
             return $this->image;
         }
 
-        $path = FileSystem::joinPaths($this->config->get('system.users.paths.images'), (string) ($this->data['image'] ?? null));
+        $path = FileSystem::joinPaths($this->config->getString('system.users.paths.images'), (string) ($this->data['image'] ?? null));
 
         if (!FileSystem::isFile($path, assertExists: false)) {
             return $this->image = null;
@@ -281,7 +281,7 @@ class User extends Model
             throw new LogicException('Cannot save a user with no username assigned');
         }
 
-        Yaml::encodeToFile($this->data, FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $this->username() . '.yaml'));
+        Yaml::encodeToFile($this->data, FileSystem::joinPaths($this->config->getString('system.users.paths.accounts'), $this->username() . '.yaml'));
     }
 
     /**
@@ -294,7 +294,7 @@ class User extends Model
         }
 
         // Delete user file
-        FileSystem::delete(FileSystem::joinPaths($this->config->get('system.users.paths.accounts'), $this->username() . '.yaml'));
+        FileSystem::delete(FileSystem::joinPaths($this->config->getString('system.users.paths.accounts'), $this->username() . '.yaml'));
 
         // Delete user image if exists
         if ($this->image() !== null) {
@@ -334,7 +334,7 @@ class User extends Model
     protected function setImage(string|Image|null $image): void
     {
         if ($image instanceof Image) {
-            $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
+            $imagesPath = FileSystem::joinPaths($this->config->getString('system.users.paths.images'));
 
             if (!Str::startsWith($image->path(), $imagesPath)) {
                 throw new LogicException('User image must be located in the user images directory');

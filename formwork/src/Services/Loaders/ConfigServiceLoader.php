@@ -47,10 +47,10 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
             }
         }
 
-        date_default_timezone_set($config->get('system.date.timezone'));
+        date_default_timezone_set($config->getString('system.date.timezone'));
 
-        $this->request->session()->setPath($config->get('system.session.path'));
-        $this->request->session()->setDuration($config->get('system.session.duration'));
+        $this->request->session()->setPath($config->getString('system.session.path'));
+        $this->request->session()->setDuration($config->getInt('system.session.duration'));
 
         return $config;
     }

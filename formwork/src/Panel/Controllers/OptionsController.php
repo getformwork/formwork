@@ -36,7 +36,7 @@ final class OptionsController extends AbstractController
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
-        $fields->setValues($this->config->get('system'));
+        $fields->setValues($this->config->getArray('system'));
 
         $form = $this->form('system-options', $fields)
             ->processRequest($this->request);
@@ -45,8 +45,8 @@ final class OptionsController extends AbstractController
             if (!$form->isValid()) {
                 $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
             } else {
-                $options = $this->getConfigOverrides()->get('system', []);
-                $defaults = $this->getConfigDefaults()->get('system');
+                $options = $this->getConfigOverrides()->getArray('system', []);
+                $defaults = $this->getConfigDefaults()->getArray('system');
 
                 $differ = $this->updateOptions('system', $form->data()->toArray(), $options, $defaults);
 
@@ -90,8 +90,8 @@ final class OptionsController extends AbstractController
             if (!$form->isValid()) {
                 $this->panel->notify($this->translate('panel.options.cannotUpdate.invalidFields'), 'error');
             } else {
-                $options = $this->getConfigOverrides()->get('site', []);
-                $defaults = $this->getConfigDefaults()->get('site');
+                $options = $this->getConfigOverrides()->getArray('site', []);
+                $defaults = $this->getConfigDefaults()->getArray('site');
                 $differ = $this->updateOptions('site', $form->data()->toArray(), $options, $defaults);
 
                 // Touch content folder to invalidate cache

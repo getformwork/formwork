@@ -67,7 +67,7 @@ return [
     'filters' => [
         'request.validateSize' => [
             'action' => static function (Config $config, Request $request, Router $router, ErrorsControllerInterface $errorsController) {
-                if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
+                if ($config->getBool('system.panel.enabled') && $router->requestHasPrefix($config->getString('system.panel.root'))) {
                     return;
                 }
 
@@ -86,7 +86,7 @@ return [
 
         'request.validateCsrf' => [
             'action' => static function (Config $config, Request $request, Router $router, CsrfToken $csrfToken, ErrorsControllerInterface $errorsController) {
-                if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
+                if ($config->getBool('system.panel.enabled') && $router->requestHasPrefix($config->getString('system.panel.root'))) {
                     // CSRF validation is handled by a separate filter in the panel routes
                     return;
                 }
@@ -113,7 +113,7 @@ return [
                     $router->setRequest(Str::removeStart($router->request(), '/' . $requested));
                 } elseif (($preferred = $site->languages()->preferred()) !== null) {
                     // Don't redirect if we are in Panel
-                    if ($config->get('system.panel.enabled') && $router->requestHasPrefix($config->get('system.panel.root'))) {
+                    if ($config->getBool('system.panel.enabled') && $router->requestHasPrefix($config->getString('system.panel.root'))) {
                         return;
                     }
                     return new RedirectResponse($request->root() . $preferred . $router->request());

@@ -770,7 +770,7 @@ class Page extends Model implements Stringable
 
                 $extension = '.' . FileSystem::extension($file);
 
-                if ($extension === $config->get('system.pages.content.extension')) {
+                if ($extension === $config->getString('system.pages.content.extension')) {
                     $language = '';
 
                     if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
@@ -789,10 +789,10 @@ class Page extends Model implements Stringable
                         }
                     }
                 } else {
-                    if (Str::endsWith($file, $config->get('system.files.metadataExtension'))) {
+                    if (Str::endsWith($file, $config->getString('system.files.metadataExtension'))) {
                         continue;
                     }
-                    if (in_array($extension, $config->get('system.files.allowedExtensions'), true)) {
+                    if (in_array($extension, $config->getArray('system.files.allowedExtensions', []), true)) {
                         $files[] = $this->app()->getService(FileFactory::class)->make(FileSystem::joinPaths($this->path, $file));
                     }
                 }
@@ -927,7 +927,7 @@ class Page extends Model implements Stringable
                 $filename .= ".{$language}";
             }
 
-            $filename .= $config->get('system.pages.content.extension');
+            $filename .= $config->getString('system.pages.content.extension');
 
             $fileContent = Str::wrap(Yaml::encode($frontmatter), '---' . PHP_EOL) . $content;
 
@@ -1052,7 +1052,7 @@ class Page extends Model implements Stringable
 
             if ($mode === 'date') {
                 $timestamp = isset($this->data['publishDate'])
-                    ? Date::toTimestamp($this->data['publishDate'], [$this->app()->config()->get('system.date.dateFormat'), $this->app()->config()->get('system.date.datetimeFormat')])
+                    ? Date::toTimestamp($this->data['publishDate'], [$this->app()->config()->getString('system.date.dateFormat'), $this->app()->config()->getString('system.date.datetimeFormat')])
                     : ($this->contentFile()?->lastModifiedTime() ?? time());
                 $num = (int) date(self::DATE_NUM_FORMAT, $timestamp);
             } elseif ($this->parent() === null) {

@@ -47,7 +47,7 @@ final class FileFactory
 
         $instance->setScheme($this->schemes->get($instance::SCHEME_IDENTIFIER));
 
-        $metadataFile = $path . $this->config->get('system.files.metadataExtension');
+        $metadataFile = $path . $this->config->getString('system.files.metadataExtension');
 
         $metadata = FileSystem::exists($metadataFile) ? Yaml::parseFile($metadataFile) : [];
 

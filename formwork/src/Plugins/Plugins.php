@@ -71,7 +71,7 @@ class Plugins extends PluginCollection
                 throw new UnexpectedValueException('Unexpected non-string plugin name');
             }
 
-            if (!$this->config->get("plugins.{$name}.enabled")) {
+            if (!$this->config->getBool("plugins.{$name}.enabled")) {
                 continue;
             }
 

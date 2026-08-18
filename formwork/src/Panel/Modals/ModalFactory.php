@@ -21,7 +21,7 @@ final class ModalFactory
      */
     public function make(string $id): Modal
     {
-        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.modals'), $id . '.yaml');
+        $path = FileSystem::joinPaths($this->config->getString('system.panel.paths.modals'), $id . '.yaml');
 
         $data = FileSystem::exists($path) ? Yaml::parseFile($path) : [];
 

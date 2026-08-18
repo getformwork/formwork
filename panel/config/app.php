@@ -13,9 +13,9 @@ return fn(Site $site, Panel $panel, CsrfToken $csrfToken, Config $config, Transl
     'csrfToken'   => $csrfToken->get($panel->getCsrfTokenName()),
     'colorScheme' => $panel->compatibleColorSchemes(),
     'DateInput'   => [
-        'weekStarts'     => $config->get('system.date.weekStarts'),
-        'dateFormat'     => Date::formatToPattern($config->get('system.date.dateFormat')),
-        'dateTimeFormat' => Date::formatToPattern($config->get('system.date.datetimeFormat')),
+        'weekStarts'     => $config->getInt('system.date.weekStarts'),
+        'dateFormat'     => Date::formatToPattern($config->getString('system.date.dateFormat')),
+        'dateTimeFormat' => Date::formatToPattern($config->getString('system.date.datetimeFormat')),
         'time'           => true,
         'labels'         => [
             'today'      => $translation->translate('date.today'),

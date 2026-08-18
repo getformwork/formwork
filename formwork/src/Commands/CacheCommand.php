@@ -219,7 +219,7 @@ final class CacheCommand implements CommandInterface
      */
     private function imagesCacheStats(): void
     {
-        $path = $this->app->config()->get('system.images.processPath');
+        $path = $this->app->config()->getString('system.images.processPath');
         $items = iterator_to_array(FileSystem::listContents($path));
         $size = FileSystem::directorySize($path);
 
@@ -233,7 +233,7 @@ final class CacheCommand implements CommandInterface
      */
     private function pagesCacheStats(): void
     {
-        $path = $this->app->config()->get('system.cache.path');
+        $path = $this->app->config()->getString('system.cache.path');
         $items = iterator_to_array(FileSystem::listContents($path));
         $size = FileSystem::directorySize($path);
 
@@ -273,7 +273,7 @@ final class CacheCommand implements CommandInterface
      */
     private function clearImagesCache(): void
     {
-        $path = $this->app->config()->get('system.images.processPath');
+        $path = $this->app->config()->getString('system.images.processPath');
         FileSystem::delete($path, recursive: true);
         FileSystem::createDirectory($path, recursive: true);
     }

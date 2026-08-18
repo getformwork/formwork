@@ -16,7 +16,7 @@ final class AssetsController extends AbstractController
      */
     public function asset(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.panel.paths.assets'), $routeParams->get('type'), Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
+        $path = FileSystem::joinPaths($this->config->getString('system.panel.paths.assets'), $routeParams->get('type'), Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             $headers = (

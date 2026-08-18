@@ -20,7 +20,7 @@ final class ImageFactory
         /**
          * @var array<string, mixed>
          */
-        $defaults = $this->config->get('system.images', []);
+        $defaults = $this->config->getArray('system.images', []);
 
         return new Image($path, [...$defaults, ...$options]);
     }

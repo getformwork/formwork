@@ -114,7 +114,7 @@ class Plugin implements Arrayable
      */
     final public function isEnabled(): bool
     {
-        return $this->app->config()->get("plugins.{$this->name()}.enabled", false);
+        return $this->app->config()->getBool("plugins.{$this->name()}.enabled", false);
     }
 
     /**
@@ -177,6 +177,7 @@ class Plugin implements Arrayable
     {
         $manifestPath = FileSystem::joinPaths($this->path, 'plugin.yaml');
 
+        /** @var array<string, mixed> $data */
         $data = FileSystem::isFile($manifestPath, assertExists: false)
             ? Yaml::parseFile($manifestPath)
             : [];

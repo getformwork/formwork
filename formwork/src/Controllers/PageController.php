@@ -30,7 +30,7 @@ final class PageController extends AbstractController
      */
     public function load(RouteParams $routeParams, Statistics $statistics): Response
     {
-        $trackable = $this->config->get('site.statistics.enabled');
+        $trackable = $this->config->getBool('site.statistics.enabled');
 
         if ($this->site->get('maintenance.enabled') && !$this->app->panel()->isLoggedIn()) {
             $trackable = false;
@@ -44,7 +44,7 @@ final class PageController extends AbstractController
         }
 
         if (!isset($route)) {
-            $route = $routeParams->get('page', $this->config->get('system.pages.index'));
+            $route = $routeParams->get('page', $this->config->getString('system.pages.index'));
 
             if ($resolvedAlias = $this->site->resolveRouteAlias($route)) {
                 $route = $resolvedAlias;
@@ -69,7 +69,7 @@ final class PageController extends AbstractController
                 return $this->getPageResponse($this->site->errorPage());
             }
 
-            if ($this->config->get('system.cache.enabled') && ($page->fields()->has('publishDate') || $page->fields()->has('unpublishDate')) && (
+            if ($this->config->getBool('system.cache.enabled') && ($page->fields()->has('publishDate') || $page->fields()->has('unpublishDate')) && (
                 ($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
                 || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))
             )) {
@@ -91,7 +91,7 @@ final class PageController extends AbstractController
             $upperLevel = dirname((string) $route);
 
             if ($upperLevel === '.') {
-                $upperLevel = $this->config->get('system.pages.index');
+                $upperLevel = $this->config->getString('system.pages.index');
             }
 
             if (
@@ -130,7 +130,7 @@ final class PageController extends AbstractController
         // Use requested route as cache key to include parameters like pagination and tags
         $cacheKey = $this->router->request();
 
-        $cacheable = $this->config->get('system.cache.enabled')
+        $cacheable = $this->config->getBool('system.cache.enabled')
             && $this->isRequestCacheable()
             && $page->cacheable()
             && !$page->isErrorPage();

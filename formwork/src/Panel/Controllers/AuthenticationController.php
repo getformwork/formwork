@@ -93,7 +93,7 @@ final class AuthenticationController extends AbstractController
 
             $this->events->dispatch(new PanelLoggedOutEvent($user));
 
-            if ($this->config->get('system.panel.logoutRedirect') === 'home') {
+            if ($this->config->getString('system.panel.logoutRedirect') === 'home') {
                 return $this->redirect('/');
             }
 

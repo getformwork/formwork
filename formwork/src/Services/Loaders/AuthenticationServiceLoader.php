@@ -22,9 +22,9 @@ class AuthenticationServiceLoader implements ServiceLoaderInterface
     public function load(Container $container): Authenticator
     {
         $container->define(RateLimiter::class)
-            ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->get('system.authentication.registryPath'), 'accessAttempts.json')))
-            ->parameter('limit', $this->config->get('system.authentication.limits.maxAttempts'))
-            ->parameter('resetTime', $this->config->get('system.authentication.limits.resetTime'));
+            ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
+            ->parameter('limit', $this->config->getInt('system.authentication.limits.maxAttempts'))
+            ->parameter('resetTime', $this->config->getInt('system.authentication.limits.resetTime'));
 
         return $container->build(Authenticator::class);
     }

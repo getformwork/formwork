@@ -31,7 +31,7 @@ final class AssetsServiceLoader implements ResolutionAwareServiceLoaderInterface
         // Configure template assets namespace
         $service->setResolutionPaths([
             'template' => [
-                'path' => $this->config->get('system.templates.path') . '/assets',
+                'path' => $this->config->getString('system.templates.path') . '/assets',
                 'uri'  => $this->site->uri('/site/templates/assets/', includeLanguage: false),
             ],
         ]);

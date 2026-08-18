@@ -284,8 +284,8 @@ final class App
             ->alias('config');
 
         $container->define(ViewFactory::class)
-            ->parameter('resolutionPaths', fn(Config $config) => ['system' => $config->get('system.views.paths.system')])
-            ->parameter('methods', fn(Container $container, Config $config) => $container->call(require $config->get('system.views.methods.system')));
+            ->parameter('resolutionPaths', fn(Config $config) => ['system' => $config->getString('system.views.paths.system')])
+            ->parameter('methods', fn(Container $container, Config $config) => $container->call(require $config->getString('system.views.methods.system')));
 
         $container->define(ErrorsController::class)
             ->alias(ErrorsControllerInterface::class);
@@ -323,13 +323,13 @@ final class App
             ->alias('templates');
 
         $container->define(Statistics::class)
-            ->parameter('options', fn(Config $config) => $config->get('site.statistics'))
+            ->parameter('options', fn(Config $config) => $config->getArray('site.statistics'))
             ->parameter('translation', fn(Translations $translations) => $translations->getCurrent())
             ->alias('statistics');
 
         $container->define(FilesCache::class)
-            ->parameter('path', fn(Config $config) => $config->get('system.cache.path'))
-            ->parameter('defaultTtl', fn(Config $config) => $config->get('system.cache.time'))
+            ->parameter('path', fn(Config $config) => $config->getString('system.cache.path'))
+            ->parameter('defaultTtl', fn(Config $config) => $config->getInt('system.cache.time'))
             ->alias(AbstractCache::class)
             ->alias('cache');
 
@@ -376,14 +376,14 @@ final class App
     {
         $this->events()->dispatch(new RoutesBeforeLoadEvent($this->router()));
 
-        if ($this->config()->get('system.panel.enabled')) {
+        if ($this->config()->getBool('system.panel.enabled')) {
             $this->router()->loadFromFile(
-                $this->config()->get('system.routes.files.panel'),
-                Str::wrap($this->config()->get('system.panel.root'), '/')
+                $this->config()->getString('system.routes.files.panel'),
+                Str::wrap($this->config()->getString('system.panel.root'), '/')
             );
         }
 
-        $this->router()->loadFromFile($this->config()->get('system.routes.files.system'));
+        $this->router()->loadFromFile($this->config()->getString('system.routes.files.system'));
 
         $this->events()->dispatch(new RoutesAfterLoadEvent($this->router()));
     }

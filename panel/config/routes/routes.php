@@ -359,7 +359,7 @@ return [
 
         'panel.checkAssets' => [
             'action' => static function (Config $config, ViewFactory $viewFactory) {
-                $path = $config->get('system.panel.paths.assets');
+                $path = $config->getString('system.panel.paths.assets');
                 $assets = ['css/panel.min.css', 'js/app.min.js'];
 
                 foreach ($assets as $asset) {

@@ -219,7 +219,7 @@ final class UsersController extends AbstractController
      */
     public function images(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.users.paths.images'), $routeParams->get('image'));
+        $path = FileSystem::joinPaths($this->config->getString('system.users.paths.images'), $routeParams->get('image'));
 
         if (FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path, headers: ['Cache-Control' => 'private, max-age=31536000, immutable'], autoEtag: true, autoLastModified: true);
@@ -233,7 +233,7 @@ final class UsersController extends AbstractController
      */
     private function uploadUserImage(Field $field): ?Image
     {
-        $imagesPath = FileSystem::joinPaths($this->config->get('system.users.paths.images'));
+        $imagesPath = FileSystem::joinPaths($this->config->getString('system.users.paths.images'));
 
         $files = $field->isMultiple() ? $field->value() : [$field->value()];
 
@@ -252,7 +252,7 @@ final class UsersController extends AbstractController
             return null;
         }
 
-        $userImageSize = $this->config->get('system.panel.userImageSize');
+        $userImageSize = $this->config->getInt('system.panel.userImageSize');
 
         // Square off uploaded image
         $file->square($userImageSize)->save();

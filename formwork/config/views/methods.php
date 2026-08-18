@@ -57,9 +57,9 @@ return function (App $app) {
                 [
                     'site'                 => $app->site(),
                     'baseRoute'            => $currentPage !== null ? $currentPage->route() : '/',
-                    'allowHtml'            => $app->config()->get('system.pages.content.allowHtml'),
-                    'addHeadingIds'        => $app->config()->get('system.pages.content.addHeadingIds'),
-                    'commonmarkExtensions' => $app->config()->get('system.pages.content.commonmarkExtensions', []),
+                    'allowHtml'            => $app->config()->getBool('system.pages.content.allowHtml'),
+                    'addHeadingIds'        => $app->config()->getBool('system.pages.content.addHeadingIds'),
+                    'commonmarkExtensions' => $app->config()->getArray('system.pages.content.commonmarkExtensions', []),
                 ]
             );
         },
@@ -70,7 +70,7 @@ return function (App $app) {
         'date' => static function (int $timestamp, ?string $format = null) use ($app): string {
             return Date::formatTimestamp(
                 $timestamp,
-                $format ?? $app->config()->get('system.date.dateFormat'),
+                $format ?? $app->config()->getString('system.date.dateFormat'),
                 $app->translations()->getCurrent()
             );
         },
@@ -79,7 +79,7 @@ return function (App $app) {
          * Formats a timestamp as a datetime string
          */
         'datetime' => static function (int $timestamp) use ($app): string {
-            return Date::formatTimestamp($timestamp, $app->config()->get('system.date.datetimeFormat'), $app->translations()->getCurrent());
+            return Date::formatTimestamp($timestamp, $app->config()->getString('system.date.datetimeFormat'), $app->translations()->getCurrent());
         },
 
         /**
