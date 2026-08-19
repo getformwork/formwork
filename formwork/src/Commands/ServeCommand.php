@@ -99,8 +99,12 @@ final class ServeCommand implements CommandInterface
             ],
         ]);
 
-        // Ignore parsing errors to handle passing `--host` without a value as a flag to bind to all interfaces
-        @$this->climate->arguments->parse();
+        // --host without a value binds to all interfaces
+        foreach (array_keys($argv, '--host', true) as $key) {
+            $argv[$key] = '--host=0.0.0.0';
+        }
+
+        $this->climate->arguments->parse($argv);
 
         if ($this->climate->arguments->get('help')) {
             $this->climate->usage($argv);
@@ -108,9 +112,12 @@ final class ServeCommand implements CommandInterface
         }
 
         /** @var string */
-        $host = $this->climate->arguments->defined('host')
-            ? ($this->climate->arguments->get('host') ?: '0.0.0.0') // Bind to all interfaces if `--host` is passed without a value
-            : $this->host;
+        $host = $this->climate->arguments->get('host');
+
+        if (!$this->isValidHost($host)) {
+            $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>failed to listen on invalid host <bold>%s</bold></red>', App::VERSION, $host));
+            exit(1);
+        }
 
         /** @var int */
         $port = $this->climate->arguments->get('port');
@@ -305,6 +312,15 @@ final class ServeCommand implements CommandInterface
     }
 
     /**
+     * Check if host is a valid IP address or hostname
+     */
+    private function isValidHost(string $host): bool
+    {
+        return filter_var($host, FILTER_VALIDATE_IP) !== false
+            || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+    }
+
+    /**
      * Format host for display and binding
      */
     private function formatHost(string $host): string
@@ -365,6 +381,12 @@ final class ServeCommand implements CommandInterface
      */
     private function getLocalNetworkIps(): array
     {
+        if (!function_exists('net_get_interfaces')) {
+            $this->climate->to('error')->out('<yellow>Cannot get local network IP addresses: function net_get_interfaces() is not available</yellow>');
+            $this->climate->br();
+            return [];
+        }
+
         if (($interfaces = net_get_interfaces()) === false) {
             return [];
         }
