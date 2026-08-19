@@ -9,6 +9,7 @@ use Formwork\Http\Request;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
+use UnexpectedValueException;
 use ZipArchive;
 
 final class Backupper
@@ -59,6 +60,10 @@ final class Backupper
         ]);
 
         $filename = rtrim(substr($name, 0, 75 - strlen($suffix)), '-_') . $suffix;
+
+        if (!preg_match('/^[A-Za-z0-9._-]+$/', $filename)) {
+            throw new UnexpectedValueException(sprintf('Backup name "%s" contains invalid characters. Backup names can only contain letters, numbers, dots, underscores and hyphens.', $filename));
+        }
 
         $destination = FileSystem::joinPaths($path, $filename);
 
