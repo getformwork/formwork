@@ -5,45 +5,27 @@ namespace Formwork\Cache;
 use DateInterval;
 use Formwork\Cache\Exceptions\InvalidKeyException;
 use Formwork\Cache\Exceptions\InvalidNamespaceException;
-use Formwork\Parsers\Php;
-use Formwork\Utils\FileSystem;
-use UnexpectedValueException;
 
-class FilesCache extends AbstractCache implements CountableCache
+class ArrayCache extends AbstractCache implements CountableCache
 {
     /**
-     * Cache path
+     * @var array<string, CacheItem>
      */
-    protected string $path;
+    protected array $items = [];
 
     /**
-     * @param string                $path       Cache path
      * @param ?string               $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
      *
      * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
-        string $path,
         protected ?string $namespace = null,
         protected int|DateInterval|null $defaultTtl = null,
     ) {
-        if ($this->namespace !== null) {
-            if (!$this->isValidNamespace($this->namespace)) {
-                throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
-            }
-            $this->path = FileSystem::joinPaths($path, $this->namespace);
-        } else {
-            $this->path = $path;
+        if (!$this->isValidNamespace($this->namespace)) {
+            throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
         }
-    }
-
-    /**
-     * Return the cache path
-     */
-    public function path(): string
-    {
-        return $this->path;
     }
 
     public function namespace(): ?string
@@ -74,14 +56,7 @@ class FilesCache extends AbstractCache implements CountableCache
             ? $cachedTime + $ttl
             : null;
 
-        if (!FileSystem::exists($this->path)) {
-            FileSystem::createDirectory($this->path, recursive: true);
-        }
-
-        Php::encodeToFile(
-            new CacheItem($value, $expirationTime, $cachedTime),
-            $this->getFile($key)
-        );
+        $this->items[$key] = new CacheItem($value, $expirationTime, $cachedTime);
 
         return true;
     }
@@ -91,20 +66,13 @@ class FilesCache extends AbstractCache implements CountableCache
         if (!$this->isValidKey($key)) {
             throw new InvalidKeyException(sprintf('Key "%s" is not valid', $key));
         }
-
-        if (FileSystem::exists($file = $this->getFile($key))) {
-            FileSystem::delete($file);
-        }
-
+        unset($this->items[$key]);
         return true;
     }
 
     public function clear(): bool
     {
-        if (FileSystem::exists($this->path)) {
-            FileSystem::delete($this->path, recursive: true);
-            FileSystem::createDirectory($this->path, recursive: true);
-        }
+        $this->items = [];
         return true;
     }
 
@@ -120,10 +88,7 @@ class FilesCache extends AbstractCache implements CountableCache
 
     public function count(): int
     {
-        if (!FileSystem::exists($this->path)) {
-            return 0;
-        }
-        return count(iterator_to_array(FileSystem::listFiles($this->path)));
+        return count($this->items);
     }
 
     /**
@@ -135,26 +100,17 @@ class FilesCache extends AbstractCache implements CountableCache
             throw new InvalidKeyException(sprintf('Key "%s" is not valid', $key));
         }
 
-        $file = $this->getFile($key);
-
-        if (!FileSystem::exists($file)) {
+        if (!isset($this->items[$key])) {
             return null;
         }
 
-        if (!($cacheItem = Php::parseFile($file)) instanceof CacheItem) {
-            throw new UnexpectedValueException(sprintf('Cache file "%s" does not contain a valid cache item', $file));
-        }
+        $cacheItem = $this->items[$key];
 
         if ($cacheItem->isExpired()) {
-            FileSystem::delete($file);
+            unset($this->items[$key]);
             return null;
         }
 
         return $cacheItem;
-    }
-
-    protected function getFile(string $key): string
-    {
-        return FileSystem::joinPaths($this->path, hash('sha256', $key));
     }
 }

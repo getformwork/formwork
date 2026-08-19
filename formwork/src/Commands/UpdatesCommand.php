@@ -205,7 +205,9 @@ final class UpdatesCommand implements CommandInterface
 
         if ($this->app->config()->getBool('system.cache.enabled')) {
             $this->climate->out('Clearing cache...');
-            $this->app->getService(AbstractCache::class)->clear();
+            /** @var AbstractCache $cache */
+            $cache = $this->app->getService('cache.pages');
+            $cache->clear();
             $this->climate->br();
         }
 

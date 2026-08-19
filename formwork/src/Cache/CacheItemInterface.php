@@ -6,7 +6,7 @@ use Formwork\Data\Contracts\ArraySerializable;
 
 interface CacheItemInterface extends ArraySerializable
 {
-    public function __construct(mixed $value, int $expirationTime, int $cachedTime);
+    public function __construct(mixed $value, ?int $expirationTime, int $cachedTime);
 
     /**
      * Return the cached value
@@ -16,10 +16,15 @@ interface CacheItemInterface extends ArraySerializable
     /**
      * Return the expiration time
      */
-    public function expirationTime(): int;
+    public function expirationTime(): ?int;
 
     /**
      * Return the caching time
      */
     public function cachedTime(): int;
+
+    /**
+     * Return whether the cache item is expired
+     */
+    public function isExpired(): bool;
 }

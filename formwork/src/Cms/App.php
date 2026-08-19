@@ -6,8 +6,7 @@ use BadMethodCallException;
 use ErrorException;
 use Formwork\Assets\Assets;
 use Formwork\Authentication\Authenticator;
-use Formwork\Cache\AbstractCache;
-use Formwork\Cache\FilesCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cms\Events\ExceptionThrownEvent;
 use Formwork\Cms\Events\ResponseBeforeSendEvent;
 use Formwork\Cms\Events\RoutesAfterLoadEvent;
@@ -327,10 +326,7 @@ final class App
             ->parameter('translation', fn(Translations $translations) => $translations->getCurrent())
             ->alias('statistics');
 
-        $container->define(FilesCache::class)
-            ->parameter('path', fn(Config $config) => $config->getString('system.cache.path'))
-            ->parameter('defaultTtl', fn(Config $config) => $config->getInt('system.cache.time'))
-            ->alias(AbstractCache::class)
+        $container->define(CacheManager::class)
             ->alias('cache');
 
         $container->define(UserFactory::class);
