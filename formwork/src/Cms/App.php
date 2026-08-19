@@ -6,8 +6,7 @@ use BadMethodCallException;
 use ErrorException;
 use Formwork\Assets\Assets;
 use Formwork\Authentication\Authenticator;
-use Formwork\Cache\AbstractCache;
-use Formwork\Cache\FilesCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cms\Events\ExceptionThrownEvent;
 use Formwork\Cms\Events\ResponseBeforeSendEvent;
 use Formwork\Cms\Events\RoutesAfterLoadEvent;
@@ -36,6 +35,7 @@ use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Services\Loaders\AuthenticationServiceLoader;
+use Formwork\Services\Loaders\CacheServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
@@ -327,11 +327,12 @@ final class App
             ->parameter('translation', fn(Translations $translations) => $translations->getCurrent())
             ->alias('statistics');
 
-        $container->define(FilesCache::class)
-            ->parameter('path', fn(Config $config) => $config->getString('system.cache.path'))
-            ->parameter('defaultTtl', fn(Config $config) => $config->getInt('system.cache.time'))
-            ->alias(AbstractCache::class)
+        $container->define(CacheManager::class)
             ->alias('cache');
+
+        $container->define('cache.pages')
+            ->parameter('namespace', 'pages')
+            ->loader(CacheServiceLoader::class);
 
         $container->define(UserFactory::class);
 

@@ -6,7 +6,7 @@ class CacheItem implements CacheItemInterface
 {
     public function __construct(
         protected mixed $value,
-        protected int $expirationTime,
+        protected ?int $expirationTime,
         protected int $cachedTime,
     ) {}
 
@@ -21,7 +21,7 @@ class CacheItem implements CacheItemInterface
     /**
      * Return the expiration time
      */
-    public function expirationTime(): int
+    public function expirationTime(): ?int
     {
         return $this->expirationTime;
     }
@@ -32,6 +32,14 @@ class CacheItem implements CacheItemInterface
     public function cachedTime(): int
     {
         return $this->cachedTime;
+    }
+
+    /**
+     * Return whether the cache item is expired
+     */
+    public function isExpired(): bool
+    {
+        return $this->expirationTime !== null && time() >= $this->expirationTime;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Formwork\Controllers;
 
-use Formwork\Cache\FilesCache;
+use Formwork\Cache\AbstractCache;
 use Formwork\Cms\Site;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RequestMethod;
@@ -11,6 +11,7 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Events\PageOutputEvent;
 use Formwork\Pages\Page;
 use Formwork\Router\RouteParams;
+use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
 use Formwork\Statistics\Statistics;
 use Formwork\Utils\FileSystem;
@@ -20,7 +21,8 @@ final class PageController extends AbstractController
     public function __construct(
         private Container $container,
         private Site $site,
-        private FilesCache $filesCache,
+        #[Service('cache.pages')]
+        private AbstractCache $cache,
     ) {
         $this->container->call(parent::__construct(...));
     }
@@ -32,7 +34,7 @@ final class PageController extends AbstractController
     {
         $trackable = $this->config->getBool('site.statistics.enabled');
 
-        if ($this->site->get('maintenance.enabled') && !$this->app->panel()->isLoggedIn()) {
+        if ($this->isMaintenanceEnabled()) {
             $trackable = false;
 
             if (($maintenancePage = $this->site->get('maintenance.page')) instanceof Page) {
@@ -69,12 +71,8 @@ final class PageController extends AbstractController
                 return $this->getPageResponse($this->site->errorPage());
             }
 
-            if ($this->config->getBool('system.cache.enabled') && ($page->fields()->has('publishDate') || $page->fields()->has('unpublishDate')) && (
-                ($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
-                || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()))
-            )) {
-                // Clear cache if the site was not modified since the page has been published or unpublished
-                $this->filesCache->clear();
+            if ($this->shouldClearCacheForScheduledPublication($page)) {
+                $this->cache->clear();
                 if ($this->site->contentPath() !== null) {
                     FileSystem::touch($this->site->contentPath());
                 }
@@ -114,7 +112,32 @@ final class PageController extends AbstractController
     }
 
     /**
-     * Get a response for a page
+     * Check if maintenance mode is enabled and the user is not logged in
+     */
+    private function isMaintenanceEnabled(): bool
+    {
+        return $this->site->get('maintenance.enabled') && !$this->app->panel()->isLoggedIn();
+    }
+
+    /**
+     * Check if the cache should be cleared for a page with scheduled publication
+     */
+    private function shouldClearCacheForScheduledPublication(Page $page): bool
+    {
+        if (!$this->config->getBool('system.cache.enabled')) {
+            return false;
+        }
+
+        if (!$page->fields()->has('publishDate') && !$page->fields()->has('unpublishDate')) {
+            return false;
+        }
+
+        return ($page->isPublished() && !$page->publishDate()->isEmpty() && !$this->site->modifiedSince($page->publishDate()->toTimestamp()))
+            || (!$page->isPublished() && !$page->unpublishDate()->isEmpty() && !$this->site->modifiedSince($page->unpublishDate()->toTimestamp()));
+    }
+
+    /**
+     * Get the response for a page
      */
     private function getPageResponse(Page $page): Response
     {
@@ -128,23 +151,12 @@ final class PageController extends AbstractController
         $page = $this->site->currentPage();
 
         // Use requested route as cache key to include parameters like pagination and tags
-        $cacheKey = $this->router->request();
+        $cacheKey = rawurlencode($this->router->request());
 
-        $cacheable = $this->config->getBool('system.cache.enabled')
-            && $this->isRequestCacheable()
-            && $page->cacheable()
-            && !$page->isErrorPage();
+        $cacheable = $cacheKey !== '' && $this->isPageCacheable($page);
 
-        if ($cacheable && $this->filesCache->has($cacheKey)) {
-            /**
-             * @var int
-             */
-            $cachedTime = $this->filesCache->cachedTime($cacheKey);
-            // Validate cached response
-            if (!$this->site->modifiedSince($cachedTime)) {
-                return $this->filesCache->fetch($cacheKey);
-            }
-            $this->filesCache->delete($cacheKey);
+        if ($cacheable && ($cachedResponse = $this->getCachedResponse($cacheKey)) !== null) {
+            return $cachedResponse;
         }
 
         $output = $page->render();
@@ -163,10 +175,28 @@ final class PageController extends AbstractController
         $response = new Response($output, $page->responseStatus(), $page->headers() + $headers);
 
         if ($cacheable) {
-            $this->filesCache->save($cacheKey, $response, $page->get('cache.time', null));
+            $this->cache->set($cacheKey, $response, $page->get('cache.time', null));
         }
 
         return $response;
+    }
+
+    /**
+     * Return whether the page is cacheable
+     */
+    private function isPageCacheable(Page $page): bool
+    {
+        if (!$this->config->getBool('system.cache.enabled')) {
+            return false;
+        }
+
+        if ($this->isMaintenanceEnabled()) {
+            return false;
+        }
+
+        return $this->isRequestCacheable()
+            && $page->cacheable()
+            && !$page->isErrorPage();
     }
 
     /**
@@ -176,5 +206,33 @@ final class PageController extends AbstractController
     {
         return in_array($this->request->method(), [RequestMethod::GET, RequestMethod::HEAD])
             && $this->request->query()->isEmpty();
+    }
+
+    /**
+     * Get a cached response for a given key, if it exists and is still valid
+     *
+     * @param non-empty-string $key
+     */
+    private function getCachedResponse(string $key): ?Response
+    {
+        $cacheItem = $this->cache->getItem($key);
+
+        if ($cacheItem === null) {
+            return null;
+        }
+
+        if ($this->site->modifiedSince($cacheItem->cachedTime())) {
+            $this->cache->delete($key);
+            return null;
+        }
+
+        $response = $cacheItem->value();
+
+        if (!$response instanceof Response) {
+            $this->cache->delete($key);
+            return null;
+        }
+
+        return $response;
     }
 }

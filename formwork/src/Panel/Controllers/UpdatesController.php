@@ -8,6 +8,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Services\Attributes\Service;
 use Formwork\Updater\Updater;
 use RuntimeException;
 
@@ -43,8 +44,11 @@ final class UpdatesController extends AbstractController
     /**
      * Updates@update action
      */
-    public function update(Updater $updater, AbstractCache $cache): JsonResponse|Response
-    {
+    public function update(
+        Updater $updater,
+        #[Service('cache.pages')]
+        AbstractCache $cache
+    ): JsonResponse|Response {
         if (!$this->hasPermission('panel.updates.update')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }

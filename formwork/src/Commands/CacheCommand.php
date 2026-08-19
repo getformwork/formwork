@@ -2,6 +2,8 @@
 
 namespace Formwork\Commands;
 
+use Formwork\Cache\AbstractCache;
+use Formwork\Cache\CountableCache;
 use Formwork\Cache\FilesCache;
 use Formwork\Cms\App;
 use Formwork\Services\Loaders\ConfigServiceLoader;
@@ -233,13 +235,16 @@ final class CacheCommand implements CommandInterface
      */
     private function pagesCacheStats(): void
     {
-        $path = $this->app->config()->getString('system.cache.path');
-        $items = iterator_to_array(FileSystem::listContents($path));
-        $size = FileSystem::directorySize($path);
+        /** @var AbstractCache $cache */
+        $cache = $this->app->getService('cache.pages');
 
         $this->climate->out('<green>Pages Cache</green>');
-        $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', count($items)));
-        $this->climate->out(sprintf('  Total size:   <cyan>%s</cyan>', FileSystem::formatSize($size)));
+        $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', $cache instanceof CountableCache ? count($cache) : 0));
+
+        if ($cache instanceof FilesCache) {
+            $size = FileSystem::exists($path = $cache->path()) ? FileSystem::directorySize($path) : 0;
+            $this->climate->out(sprintf('  Total size:   <cyan>%s</cyan>', FileSystem::formatSize($size)));
+        }
     }
 
     /**
@@ -283,8 +288,8 @@ final class CacheCommand implements CommandInterface
      */
     private function clearPagesCache(): void
     {
-        /** @var FilesCache */
-        $cache = $this->app->getService('cache');
+        /** @var AbstractCache $cache */
+        $cache = $this->app->getService('cache.pages');
 
         $cache->clear();
 

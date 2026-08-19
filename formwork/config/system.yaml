@@ -25,8 +25,11 @@ backup:
 
 cache:
     enabled: false
-    path: '${%ROOT_PATH%}/cache/pages'
+    path: '${%ROOT_PATH%}/cache'
     time: 604800
+    namespaces:
+        pages:
+            handler: files
 
 charset: utf-8
 

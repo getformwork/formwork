@@ -6,6 +6,7 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
+use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Utils\Arr;
@@ -16,6 +17,7 @@ final class CacheController extends AbstractController
 {
     public function __construct(
         private Container $container,
+        #[Service('cache.pages')]
         private AbstractCache $pagesCache,
         private ?LoggerInterface $logger = null,
     ) {
