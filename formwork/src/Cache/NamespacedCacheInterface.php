@@ -8,6 +8,8 @@ interface NamespacedCacheInterface extends CacheInterface
 {
     /**
      * Return the cache namespace
+     *
+     * @return non-empty-string
      */
-    public function namespace(): ?string;
+    public function namespace(): string;
 }

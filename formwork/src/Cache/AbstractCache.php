@@ -20,6 +20,8 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Fetch cached item
      *
+     * @param non-empty-string $key
+     *
      * @deprecated since 2.4.0 Use PSR-16 compatible get() method instead
      */
     public function fetch(string $key): mixed
@@ -33,7 +35,8 @@ abstract class AbstractCache implements NamespacedCacheInterface
      *
      * @template TDefault of mixed
      *
-     * @param TDefault $default
+     * @param non-empty-string $key
+     * @param TDefault         $default
      *
      * @throws InvalidKeyException If the key is not valid
      *
@@ -43,6 +46,8 @@ abstract class AbstractCache implements NamespacedCacheInterface
 
     /**
      * Save data to cache
+     *
+     * @param non-empty-string $key
      *
      * @deprecated since 2.4.0 Use PSR-16 compatible set() method instead
      */
@@ -55,12 +60,16 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Set data to cache
      *
+     * @param non-empty-string $key
+     *
      * @throws InvalidKeyException If the key is not valid
      */
     abstract public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool;
 
     /**
      * Delete cached item
+     *
+     * @param non-empty-string $key
      *
      * @throws InvalidKeyException If the key is not valid
      */
@@ -74,9 +83,9 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Fetch multiple items from cache
      *
-     * @param list<string> $keys
+     * @param list<non-empty-string> $keys
      *
-     * @return array<string, mixed>
+     * @return array<non-empty-string, mixed>
      *
      * @deprecated since 2.4.0 Use PSR-16 compatible getMultiple() method instead
      */
@@ -89,11 +98,11 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Get multiple items from cache
      *
-     * @param iterable<string> $keys
+     * @param iterable<non-empty-string> $keys
      *
      * @throws InvalidKeyException If any of the keys is not valid
      *
-     * @return iterable<string, mixed>
+     * @return iterable<non-empty-string, mixed>
      */
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
@@ -109,7 +118,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
      *
      * @deprecated since 2.4.0 Use PSR-16 compatible setMultiple() method instead
      *
-     * @param array<string, mixed> $keysAndValues
+     * @param array<non-empty-string, mixed> $keysAndValues
      */
     public function saveMultiple(iterable $keysAndValues): void
     {
@@ -120,7 +129,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Set multiple cache items
      *
-     * @param iterable<string, mixed> $values
+     * @param iterable<non-empty-string, mixed> $values
      *
      * @throws InvalidKeyException If any of the keys is not valid
      */
@@ -136,7 +145,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Delete multiple cache items
      *
-     * @param iterable<string> $keys
+     * @param iterable<non-empty-string> $keys
      *
      * @throws InvalidKeyException If any of the keys is not valid
      */
@@ -152,6 +161,8 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Return whether an item is cached
      *
+     * @param non-empty-string $key
+     *
      * @throws InvalidKeyException If the key is not valid
      */
     abstract public function has(string $key): bool;
@@ -159,7 +170,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Return whether multiple items are cached
      *
-     * @param iterable<string> $keys
+     * @param iterable<non-empty-string> $keys
      *
      * @throws InvalidKeyException If any of the keys is not valid
      */
@@ -176,6 +187,8 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Return the time when an item was cached
      *
+     * @param non-empty-string $key
+     *
      * @throws InvalidKeyException If the key is not valid
      */
     abstract public function cachedTime(string $key): ?int;
@@ -183,15 +196,20 @@ abstract class AbstractCache implements NamespacedCacheInterface
     /**
      * Get a cached item as a `CacheItemInterface` object
      *
+     * @param non-empty-string $key
+     *
      * @internal
      *
      * @throws InvalidKeyException If the key is not valid
      */
     abstract public function getItem(string $key): ?CacheItemInterface;
 
-    protected function isValidNamespace(?string $namespace): bool
+    /**
+     * Return whether a cache namespace is valid
+     */
+    protected function isValidNamespace(string $namespace): bool
     {
-        return $namespace === null || (bool) preg_match(self::NAMESPACE_REGEX, $namespace);
+        return $namespace !== '' && (bool) preg_match(self::NAMESPACE_REGEX, $namespace);
     }
 
     /**
@@ -199,7 +217,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
      */
     protected function isValidKey(string $key): bool
     {
-        return strcspn($key, self::RESERVED_KEY_CHARACTERS) === strlen($key);
+        return $key !== '' && strcspn($key, self::RESERVED_KEY_CHARACTERS) === strlen($key);
     }
 
     /**

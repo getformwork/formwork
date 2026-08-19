@@ -13,6 +13,9 @@ use InvalidArgumentException;
 
 final class CacheServiceLoader implements ServiceLoaderInterface
 {
+    /**
+     * @param non-empty-string $namespace
+     */
     public function __construct(
         private Config $config,
         private CacheManager $cacheManager,

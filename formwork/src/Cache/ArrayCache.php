@@ -14,13 +14,13 @@ class ArrayCache extends AbstractCache implements CountableCache
     protected array $items = [];
 
     /**
-     * @param ?string               $namespace  Cache namespace
+     * @param non-empty-string      $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
      *
      * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
-        protected ?string $namespace = null,
+        protected string $namespace,
         protected int|DateInterval|null $defaultTtl = null,
     ) {
         if (!$this->isValidNamespace($this->namespace)) {
@@ -28,7 +28,7 @@ class ArrayCache extends AbstractCache implements CountableCache
         }
     }
 
-    public function namespace(): ?string
+    public function namespace(): string
     {
         return $this->namespace;
     }

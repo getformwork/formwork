@@ -18,24 +18,20 @@ class FilesCache extends AbstractCache implements CountableCache
 
     /**
      * @param string                $path       Cache path
-     * @param ?string               $namespace  Cache namespace
+     * @param non-empty-string      $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
      *
      * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
         string $path,
-        protected ?string $namespace = null,
+        protected string $namespace,
         protected int|DateInterval|null $defaultTtl = null,
     ) {
-        if ($this->namespace !== null) {
-            if (!$this->isValidNamespace($this->namespace)) {
-                throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
-            }
-            $this->path = FileSystem::joinPaths($path, $this->namespace);
-        } else {
-            $this->path = $path;
+        if (!$this->isValidNamespace($this->namespace)) {
+            throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
         }
+        $this->path = FileSystem::joinPaths($path, $this->namespace);
     }
 
     /**
@@ -46,7 +42,7 @@ class FilesCache extends AbstractCache implements CountableCache
         return $this->path;
     }
 
-    public function namespace(): ?string
+    public function namespace(): string
     {
         return $this->namespace;
     }

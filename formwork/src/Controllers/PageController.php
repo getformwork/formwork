@@ -153,7 +153,7 @@ final class PageController extends AbstractController
         // Use requested route as cache key to include parameters like pagination and tags
         $cacheKey = rawurlencode($this->router->request());
 
-        $cacheable = $this->isPageCacheable($page);
+        $cacheable = $cacheKey !== '' && $this->isPageCacheable($page);
 
         if ($cacheable && ($cachedResponse = $this->getCachedResponse($cacheKey)) !== null) {
             return $cachedResponse;
@@ -210,6 +210,8 @@ final class PageController extends AbstractController
 
     /**
      * Get a cached response for a given key, if it exists and is still valid
+     *
+     * @param non-empty-string $key
      */
     private function getCachedResponse(string $key): ?Response
     {

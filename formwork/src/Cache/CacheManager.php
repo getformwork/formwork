@@ -7,12 +7,14 @@ use InvalidArgumentException;
 class CacheManager
 {
     /**
-     * @param array<string, NamespacedCacheInterface> $caches
+     * @param array<non-empty-string, NamespacedCacheInterface> $caches
      */
     public function __construct(protected array $caches = []) {}
 
     /**
      * Get a cache instance by its namespace
+     *
+     * @param non-empty-string $namespace
      *
      * @throws InvalidArgumentException
      */
@@ -23,6 +25,8 @@ class CacheManager
 
     /**
      * Return whether a cache instance exists for the given namespace
+     *
+     * @param non-empty-string $namespace
      */
     public function has(string $namespace): bool
     {
@@ -40,9 +44,9 @@ class CacheManager
     /**
      * Get multiple cache instances by their namespaces
      *
-     * @param list<string> $namespaces
+     * @param list<non-empty-string> $namespaces
      *
-     * @return array<string, NamespacedCacheInterface>
+     * @return array<non-empty-string, NamespacedCacheInterface>
      */
     public function getMultiple(array $namespaces): array
     {
@@ -56,7 +60,7 @@ class CacheManager
     /**
      * Get all cache instances
      *
-     * @return array<string, NamespacedCacheInterface>
+     * @return array<non-empty-string, NamespacedCacheInterface>
      */
     public function getAll(): array
     {
