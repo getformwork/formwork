@@ -35,6 +35,7 @@ use Formwork\Security\CsrfToken;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Services\Loaders\AuthenticationServiceLoader;
+use Formwork\Services\Loaders\CacheServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
@@ -328,6 +329,10 @@ final class App
 
         $container->define(CacheManager::class)
             ->alias('cache');
+
+        $container->define('cache.pages')
+            ->parameter('namespace', 'pages')
+            ->loader(CacheServiceLoader::class);
 
         $container->define(UserFactory::class);
 

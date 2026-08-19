@@ -17,10 +17,6 @@ final class SiteServiceLoader implements ResolutionAwareServiceLoaderInterface
     {
         $config = $this->config->getArray('site');
 
-        $container->define('cache.pages')
-            ->parameter('namespace', 'pages')
-            ->loader(CacheServiceLoader::class);
-
         return $container->build(Site::class, ['data' => [
             ...$config,
             'contentPath' => $this->config->getString('system.pages.path'),
