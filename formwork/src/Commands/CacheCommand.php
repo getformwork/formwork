@@ -288,7 +288,7 @@ final class CacheCommand implements CommandInterface
      */
     private function clearPagesCache(): void
     {
-        /** @var FilesCache */
+        /** @var AbstractCache $cache */
         $cache = $this->app->getService('cache.pages');
 
         $cache->clear();
