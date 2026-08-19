@@ -190,7 +190,7 @@ final class PageController extends AbstractController
             return false;
         }
 
-        if ($this->site->get('maintenance.enabled')) {
+        if ($this->isMaintenanceEnabled()) {
             return false;
         }
 
