@@ -13,9 +13,19 @@ use UnexpectedValueException;
 final class ServeCommand implements CommandInterface
 {
     /**
+     * @var list<string> List of loopback hosts
+     */
+    private const array LOOPBACK_HOSTS = ['localhost', '127.0.0.1', '::1'];
+
+    /**
+     * @var list<string> List of wildcard hosts
+     */
+    private const array WILDCARD_HOSTS = ['0.0.0.0', '::'];
+
+    /**
      * Host to bind the server to
      */
-    private string $host = '127.0.0.1';
+    private string $host = 'localhost';
 
     /**
      * Port to bind the server to
@@ -66,7 +76,7 @@ final class ServeCommand implements CommandInterface
         $this->climate->arguments->add([
             'host' => [
                 'longPrefix'   => 'host',
-                'description'  => 'Host to bind the server to',
+                'description'  => 'Host to bind the server to (if the value is omitted, the server will bind to all interfaces)',
                 'defaultValue' => $this->host,
             ],
             'port' => [
@@ -89,7 +99,12 @@ final class ServeCommand implements CommandInterface
             ],
         ]);
 
-        $this->climate->arguments->parse();
+        // --host without a value binds to all interfaces
+        foreach (array_keys($argv, '--host', true) as $key) {
+            $argv[$key] = '--host=0.0.0.0';
+        }
+
+        $this->climate->arguments->parse($argv);
 
         if ($this->climate->arguments->get('help')) {
             $this->climate->usage($argv);
@@ -98,6 +113,11 @@ final class ServeCommand implements CommandInterface
 
         /** @var string */
         $host = $this->climate->arguments->get('host');
+
+        if (!$this->isValidHost($host)) {
+            $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>failed to listen on invalid host <bold>%s</bold></red>', App::VERSION, $host));
+            exit(1);
+        }
 
         /** @var int */
         $port = $this->climate->arguments->get('port');
@@ -164,6 +184,14 @@ final class ServeCommand implements CommandInterface
                     $this->climate->br();
                     $this->climate->out(sprintf('➜ Listening on <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->formatHost($this->host), $this->port));
                     $this->climate->br();
+
+                    if (in_array($this->host, self::WILDCARD_HOSTS, true)) {
+                        foreach ($this->getLocalNetworkIps() as $localNetworkIp) {
+                            $this->climate->out(sprintf('➜ Remote address: <cyan>http://%s:<bold>%s</bold>/</cyan>', $this->formatHost($localNetworkIp), $this->port));
+                            $this->climate->br();
+                        }
+                    }
+
                     $this->climate->out('<dark_gray>Press <bold>CTRL+C</bold> to stop</dark_gray>');
                     $this->climate->br();
                     break;
@@ -284,6 +312,15 @@ final class ServeCommand implements CommandInterface
     }
 
     /**
+     * Check if host is a valid IP address or hostname
+     */
+    private function isValidHost(string $host): bool
+    {
+        return filter_var($host, FILTER_VALIDATE_IP) !== false
+            || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+    }
+
+    /**
      * Format host for display and binding
      */
     private function formatHost(string $host): string
@@ -335,5 +372,41 @@ final class ServeCommand implements CommandInterface
             default:
                 throw new UnexpectedValueException(sprintf('Unexpected output type "%s"', $type));
         }
+    }
+
+    /**
+     * Get local network IP addresses, excluding loopback interfaces
+     *
+     * @return list<string>
+     */
+    private function getLocalNetworkIps(): array
+    {
+        if (!function_exists('net_get_interfaces')) {
+            $this->climate->to('error')->out('<yellow>Cannot get local network IP addresses: function net_get_interfaces() is not available</yellow>');
+            $this->climate->br();
+            return [];
+        }
+
+        if (($interfaces = net_get_interfaces()) === false) {
+            return [];
+        }
+
+        $localNetworkIps = [];
+
+        foreach ($interfaces as $interface) {
+            if (!isset($interface['unicast'])) {
+                continue;
+            }
+            foreach ($interface['unicast'] as $data) {
+                if (
+                    $data['family'] === AF_INET // IPv4 addresses only
+                    && !in_array($data['address'], self::LOOPBACK_HOSTS, true) // Exclude loopback address
+                ) {
+                    $localNetworkIps[] = $data['address'];
+                }
+            }
+        }
+
+        return $localNetworkIps;
     }
 }
