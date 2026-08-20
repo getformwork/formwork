@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @since 2.1.0
@@ -114,7 +115,13 @@ final class BackupCommand implements CommandInterface
         $name = $this->climate->arguments->get('name') ?: null;
         /** @var string $hostname */
         $hostname = $this->climate->arguments->get('hostname') ?: (gethostname() ?: 'local-cli');
-        $file = $this->app->getService(Backupper::class)->backup($name, $hostname);
+        $backupper = $this->app->getService(Backupper::class);
+        try {
+            $file = $backupper->backup($name, $hostname);
+        } catch (RuntimeException $e) {
+            $this->climate->error($e->getMessage());
+            exit(1);
+        }
         $this->climate->br()->out(sprintf('<green>Backup created:</green> %s', $file));
     }
 
