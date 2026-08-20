@@ -259,7 +259,6 @@ final class Updater
                     throw new RuntimeException(sprintf('Cannot extract "%s" from zip archive: invalid destination', $filename));
                 }
 
-
                 $destinationDirectory = dirname($destination);
 
                 if ($this->isCopiable($filename)) {
