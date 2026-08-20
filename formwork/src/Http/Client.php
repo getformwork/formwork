@@ -123,16 +123,27 @@ class Client
         $connection = $this->connect($uri, $options);
 
         try {
-            if (($destination = @fopen($file, 'w')) === false) {
-                throw new RuntimeException(sprintf('Cannot open destination "%s" for writing', $file));
+            $temporaryFile = FileSystem::createTemporaryFile(dirname($file));
+
+            if (($destination = @fopen($temporaryFile, 'w')) === false) {
+                throw new RuntimeException(sprintf('Cannot open temporary file "%s" for writing', $temporaryFile));
             }
 
             try {
-                if (@stream_copy_to_stream($connection['handle'], $destination, $connection['length'] ?? -1) === false) {
-                    throw new RuntimeException(sprintf('Cannot copy stream contents from "%s" to "%s"', $uri, $file));
+                if (($bytesCopied = @stream_copy_to_stream($connection['handle'], $destination, $connection['length'] ?? -1)) === false) {
+                    throw new RuntimeException(sprintf('Cannot copy stream contents from "%s" to temporary file "%s"', $uri, $temporaryFile));
+                }
+
+                if ($connection['length'] !== null && $bytesCopied !== $connection['length']) {
+                    throw new RuntimeException(sprintf('Incomplete download from "%s": expected %d bytes, got %d', $uri, $connection['length'], $bytesCopied));
+                }
+
+                if (!@rename($temporaryFile, $file)) {
+                    throw new RuntimeException(sprintf('Cannot move temporary file "%s" to destination "%s"', $temporaryFile, $file));
                 }
             } finally {
                 @fclose($destination);
+                @unlink($temporaryFile);
             }
         } finally {
             @fclose($connection['handle']);
