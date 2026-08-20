@@ -6,7 +6,7 @@ authentication:
 
 backup:
     path: '${%ROOT_PATH%}/backup'
-    name: formwork-backup
+    name: '{{hostname}}-formwork-backup'
     maxExecutionTime: 180
     maxFiles: 10
     ignore:

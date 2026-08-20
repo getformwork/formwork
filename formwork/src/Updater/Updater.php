@@ -32,7 +32,7 @@ final class Updater
     /**
      * Updates registry default data
      *
-     * @var array{lastCheck: ?int, lastUpdate: ?int, currentRelease: string, releaseArchiveEtag: ?string, release: ?array{name: string, tag: string, date: int, archive: string}, upToDate: bool}
+     * @var array{lastCheck: ?int, lastUpdate: ?int, currentRelease: string, releaseArchiveEtag: ?string, release: ?array{name: string, tag: string, date: int, archive: string}, upToDate: bool, preferDistAssets: bool}
      */
     private array $registryDefaults = [
         'lastCheck'          => null,
@@ -41,6 +41,7 @@ final class Updater
         'releaseArchiveEtag' => null,
         'release'            => null,
         'upToDate'           => false,
+        'preferDistAssets'   => true,
     ];
 
     /**
@@ -67,7 +68,6 @@ final class Updater
      */
     public function __construct(
         private array $options,
-        private App $app,
     ) {
         if (!extension_loaded('zip')) {
             throw new RuntimeException(sprintf('Class %s requires the extension "zip" to be enabled', self::class));
@@ -87,22 +87,26 @@ final class Updater
      *
      * @return bool Whether updates are found or not
      */
-    public function checkUpdates(): bool
+    public function checkUpdates(?bool $force = null, ?bool $preferDistAssets = null): bool
     {
+        $preferDistAssets ??= $this->options['preferDistAssets'];
+
         if (
-            !$this->options['force']
+            !($force ?? $this->options['force'])
             && $this->registry->has('currentRelease') && $this->registry->get('currentRelease') === App::VERSION
             && $this->registry->has('lastCheck') && time() - $this->registry->get('lastCheck') < $this->options['time']
+            && $this->registry->has('preferDistAssets') && $this->registry->get('preferDistAssets') === $preferDistAssets
         ) {
             $this->release = $this->registry->get('release');
             return $this->registry->get('upToDate');
         }
 
-        $this->loadRelease();
+        $this->loadRelease($preferDistAssets);
 
         $this->registry->set('lastCheck', time());
         $this->registry->set('currentRelease', App::VERSION);
         $this->registry->set('release', $this->release);
+        $this->registry->set('preferDistAssets', $preferDistAssets);
 
         $isInstallable = $this->isVersionInstallable($this->release['tag']);
         $isSameVersion = $this->release['tag'] === $this->registry->get('currentRelease');
@@ -132,9 +136,9 @@ final class Updater
      *
      * @return bool|null Whether Formwork was updated or not
      */
-    public function update(): ?bool
+    public function update(?bool $force = null, ?bool $preferDistAssets = null, ?bool $cleanupAfterInstall = null): ?bool
     {
-        $this->checkUpdates();
+        $this->checkUpdates($force, $preferDistAssets);
 
         if ($this->registry->get('upToDate')) {
             return null;
@@ -182,7 +186,7 @@ final class Updater
 
         FileSystem::delete($this->options['tempFile']);
 
-        if ($this->options['cleanupAfterInstall']) {
+        if ($cleanupAfterInstall ?? $this->options['cleanupAfterInstall']) {
             $deletableFiles = $this->findDeletableFiles($installedFiles);
             foreach ($deletableFiles as $deletableFile) {
                 FileSystem::delete($deletableFile);
@@ -212,12 +216,8 @@ final class Updater
     /**
      * Load latest release data
      */
-    private function loadRelease(): void
+    private function loadRelease(bool $preferDistAssets = true): void
     {
-        if (isset($this->release)) {
-            return;
-        }
-
         $data = Json::parse($this->client->fetch(self::API_RELEASE_URI)->content());
 
         if ($data === []) {
@@ -237,7 +237,7 @@ final class Updater
             'archive' => $data['zipball_url'],
         ];
 
-        if ($this->options['preferDistAssets'] && !empty($data['assets'])) {
+        if ($preferDistAssets && !empty($data['assets'])) {
             $assetName = "formwork-{$data['tag_name']}.zip";
             $key = array_search($assetName, array_column($data['assets'], 'name'), true);
 
@@ -270,7 +270,7 @@ final class Updater
      */
     private function isVersionInstallable(string $version): bool
     {
-        $semVer = SemVer::fromString($this->app::VERSION);
+        $semVer = SemVer::fromString($this->registry->get('currentRelease'));
         $new = SemVer::fromString($version);
         return !$new->isPrerelease() && $semVer->compareWith($new, '!=') && $semVer->compareWith($new, '^');
     }

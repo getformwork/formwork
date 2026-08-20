@@ -34,13 +34,11 @@ final class ToolsController extends AbstractController
     /**
      * Tools@backups action
      */
-    public function backups(): Response
+    public function backups(Backupper $backupper): Response
     {
         if (!$this->hasPermission('panel.tools.backups')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
-
-        $backupper = new Backupper([...$this->config->getArray('system.backup'), 'hostname' => $this->request->host()]);
 
         $backups = Arr::map($backupper->getBackups(), fn(string $path, int $timestamp): array => [
             'name'        => basename($path),

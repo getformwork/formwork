@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @since 2.1.0
@@ -43,6 +44,13 @@ final class BackupCommand implements CommandInterface
             'action' => [
                 'description' => 'Backup action to perform (make, list)',
                 'required'    => true,
+            ],
+            'name' => [
+                'longPrefix'   => 'name',
+                'description'  => 'Set the name for the backup, use {{hostname}}, {{site}}, {{context}}, {{version}} and {{random}} as placeholders',
+                'defaultValue' => null,
+                'castTo'       => 'string',
+                'noValue'      => false,
             ],
             'hostname' => [
                 'longPrefix'   => 'hostname',
@@ -103,9 +111,17 @@ final class BackupCommand implements CommandInterface
     public function make(array $argv = []): void
     {
         $this->climate->out('Creating backup... this may take a while depending on the size of your installation.');
+        /** @var ?string $name */
+        $name = $this->climate->arguments->get('name') ?: null;
         /** @var string $hostname */
-        $hostname = $this->climate->arguments->get('hostname') ?: null;
-        $file = $this->getBackupper($hostname)->backup();
+        $hostname = $this->climate->arguments->get('hostname') ?: (gethostname() ?: 'local-cli');
+        $backupper = $this->app->getService(Backupper::class);
+        try {
+            $file = $backupper->backup($name, $hostname);
+        } catch (RuntimeException $e) {
+            $this->climate->error($e->getMessage());
+            exit(1);
+        }
         $this->climate->br()->out(sprintf('<green>Backup created:</green> %s', $file));
     }
 
@@ -116,7 +132,7 @@ final class BackupCommand implements CommandInterface
      */
     public function list(array $argv = []): void
     {
-        $backups = $this->getBackupper()->getBackups();
+        $backups = $this->app->getService(Backupper::class)->getBackups();
         if (count($backups) === 0) {
             $this->climate->green('No backups found.');
             return;
@@ -129,14 +145,6 @@ final class BackupCommand implements CommandInterface
 
             $this->climate->out(sprintf('  <light_gray>[%s]</light_gray> %s <cyan>%s</cyan>', $time, $name, $size));
         }
-    }
-
-    /**
-     * Get Backupper instance
-     */
-    private function getBackupper(?string $hostname = null): Backupper
-    {
-        return new Backupper([...$this->app->config()->getArray('system.backup'), 'hostname' => $hostname ?? (gethostname() ?: 'local-cli')]);
     }
 
     /**
