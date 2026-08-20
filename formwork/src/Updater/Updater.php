@@ -32,7 +32,7 @@ final class Updater
     /**
      * Updates registry default data
      *
-     * @var array{lastCheck: ?int, lastUpdate: ?int, currentRelease: string, releaseArchiveEtag: ?string, release: ?array{name: string, tag: string, date: int, archive: string}, upToDate: bool}
+     * @var array{lastCheck: ?int, lastUpdate: ?int, currentRelease: string, releaseArchiveEtag: ?string, release: ?array{name: string, tag: string, date: int, archive: string}, upToDate: bool, preferDistAssets: bool}
      */
     private array $registryDefaults = [
         'lastCheck'          => null,
@@ -41,6 +41,7 @@ final class Updater
         'releaseArchiveEtag' => null,
         'release'            => null,
         'upToDate'           => false,
+        'preferDistAssets'   => true,
     ];
 
     /**
@@ -88,20 +89,24 @@ final class Updater
      */
     public function checkUpdates(?bool $force = null, ?bool $preferDistAssets = null): bool
     {
+        $preferDistAssets ??= $this->options['preferDistAssets'];
+
         if (
             !($force ?? $this->options['force'])
             && $this->registry->has('currentRelease') && $this->registry->get('currentRelease') === App::VERSION
             && $this->registry->has('lastCheck') && time() - $this->registry->get('lastCheck') < $this->options['time']
+            && $this->registry->has('preferDistAssets') && $this->registry->get('preferDistAssets') === $preferDistAssets
         ) {
             $this->release = $this->registry->get('release');
             return $this->registry->get('upToDate');
         }
 
-        $this->loadRelease($preferDistAssets ?? $this->options['preferDistAssets']);
+        $this->loadRelease($preferDistAssets);
 
         $this->registry->set('lastCheck', time());
         $this->registry->set('currentRelease', App::VERSION);
         $this->registry->set('release', $this->release);
+        $this->registry->set('preferDistAssets', $preferDistAssets);
 
         $isInstallable = $this->isVersionInstallable($this->release['tag']);
         $isSameVersion = $this->release['tag'] === $this->registry->get('currentRelease');
@@ -213,10 +218,6 @@ final class Updater
      */
     private function loadRelease(bool $preferDistAssets = true): void
     {
-        if (isset($this->release)) {
-            return;
-        }
-
         $data = Json::parse($this->client->fetch(self::API_RELEASE_URI)->content());
 
         if ($data === []) {
