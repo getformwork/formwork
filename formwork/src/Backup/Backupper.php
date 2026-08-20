@@ -40,56 +40,58 @@ final class Backupper
     {
         $previousMaxExecutionTime = ini_set('max_execution_time', $this->options['maxExecutionTime']);
 
-        $source = ROOT_PATH;
+        try {
+            $source = ROOT_PATH;
 
-        $path = $this->options['path'];
-        if (!FileSystem::exists($this->options['path'])) {
-            FileSystem::createDirectory($this->options['path'], recursive: true);
-        }
-
-        $date = date(self::DATE_FORMAT);
-
-        $suffix = "-{$date}.zip";
-
-        $name = Str::interpolate($name ?? $this->options['name'], [
-            'hostname' => str_replace('.', '-', $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
-            'site'     => Str::slug(App::instance()->site()->title() ?? 'unknown-site'),
-            'context'  => PHP_SAPI === 'cli' ? 'cli' : 'web',
-            'version'  => App::VERSION,
-            'random'   => FileSystem::randomName(),
-        ]);
-
-        $filename = rtrim(substr($name, 0, 75 - strlen($suffix)), '-_') . $suffix;
-
-        if (!preg_match('/^[A-Za-z0-9._-]+$/', $filename)) {
-            throw new UnexpectedValueException(sprintf('Backup name "%s" contains invalid characters. Backup names can only contain letters, numbers, dots, underscores and hyphens.', $filename));
-        }
-
-        $destination = FileSystem::joinPaths($path, $filename);
-
-        $zipArchive = new ZipArchive();
-
-        if (($status = $zipArchive->open($destination, ZipArchive::CREATE)) === true) {
-            foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
-                if ($this->isCopiable($file)) {
-                    $zipArchive->addFile(FileSystem::joinPaths($source, $file), $file);
-                }
+            $path = $this->options['path'];
+            if (!FileSystem::exists($this->options['path'])) {
+                FileSystem::createDirectory($this->options['path'], recursive: true);
             }
-            $zipArchive->close();
+
+            $date = date(self::DATE_FORMAT);
+
+            $suffix = "-{$date}.zip";
+
+            $name = Str::interpolate($name ?? $this->options['name'], [
+                'hostname' => str_replace('.', '-', $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
+                'site'     => Str::slug(App::instance()->site()->title() ?? 'unknown-site'),
+                'context'  => PHP_SAPI === 'cli' ? 'cli' : 'web',
+                'version'  => App::VERSION,
+                'random'   => FileSystem::randomName(),
+            ]);
+
+            $filename = rtrim(substr($name, 0, 75 - strlen($suffix)), '-_') . $suffix;
+
+            if (!preg_match('/^[A-Za-z0-9._-]+$/', $filename)) {
+                throw new UnexpectedValueException(sprintf('Backup name "%s" contains invalid characters. Backup names can only contain letters, numbers, dots, underscores and hyphens.', $filename));
+            }
+
+            $destination = FileSystem::joinPaths($path, $filename);
+
+            $zipArchive = new ZipArchive();
+
+            if (($status = $zipArchive->open($destination, ZipArchive::CREATE)) === true) {
+                foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
+                    if ($this->isCopiable($file)) {
+                        $zipArchive->addFile(FileSystem::joinPaths($source, $file), $file);
+                    }
+                }
+                $zipArchive->close();
+            }
+
+            $this->deleteOldBackups();
+
+            if (is_int($status) && $status !== ZipArchive::ER_OK) {
+                /** @var key-of<ZipErrors::ERROR_MESSAGES> $status */
+                throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
+            }
+
+            return $destination;
+        } finally {
+            if ($previousMaxExecutionTime !== false) {
+                ini_set('max_execution_time', $previousMaxExecutionTime);
+            }
         }
-
-        $this->deleteOldBackups();
-
-        if ($previousMaxExecutionTime !== false) {
-            ini_set('max_execution_time', $previousMaxExecutionTime);
-        }
-
-        if (is_int($status) && $status !== ZipArchive::ER_OK) {
-            /** @var key-of<ZipErrors::ERROR_MESSAGES> $status */
-            throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
-        }
-
-        return $destination;
     }
 
     /**
