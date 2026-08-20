@@ -372,10 +372,10 @@ final class App
             ->alias('plugins');
 
         $container->define(Backupper::class)
-            ->parameter('options', fn(Config $config) => $config->get('system.backup'));
+            ->parameter('options', fn(Config $config) => $config->getArray('system.backup'));
 
         $container->define(Updater::class)
-            ->parameter('options', fn(Config $config) => $config->get('system.updates'));
+            ->parameter('options', fn(Config $config) => $config->getArray('system.updates'));
     }
 
     /**

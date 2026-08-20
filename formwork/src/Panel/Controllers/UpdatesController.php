@@ -54,7 +54,7 @@ final class UpdatesController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
 
-        if ($this->config->get('system.updates.backupBefore')) {
+        if ($this->config->getBool('system.updates.backupBefore')) {
             try {
                 $backupper->backup();
             } catch (TranslatedException) {
