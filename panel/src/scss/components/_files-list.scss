@@ -43,6 +43,10 @@
     &:hover {
         background-color: var(--color-base-800);
     }
+
+    .color-scheme-dark &:hover {
+        background-color: var(--color-base-700);
+    }
 }
 
 .files-item .dropdown {
@@ -95,9 +99,28 @@
     }
 
     &:active,
-    &:focus-within {
+    &:focus-within,
+    &.is-selected {
         border-color: var(--color-accent-500);
         @include focusring;
+    }
+}
+
+.is-list .files-item {
+    &.is-selected {
+        background-color: var(--color-accent-500);
+        color: var(--color-white);
+
+        & .file-name a,
+        & .file-parent a,
+        & .dropdown-button {
+            color: inherit;
+            transition: color 0s;
+        }
+    }
+
+    .color-scheme-dark &.is-selected {
+        background-color: var(--color-accent-300);
     }
 }
 
@@ -193,8 +216,4 @@
 
 .is-thumbnails .file-thumbnail:is([src]) + .file-icon {
     display: none;
-}
-
-.color-scheme-dark .files-item:hover {
-    background-color: var(--color-base-700);
 }

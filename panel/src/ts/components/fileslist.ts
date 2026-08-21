@@ -13,6 +13,7 @@ import { toCamelCase } from "../utils/strings";
 export class FilesList {
     readonly element: HTMLElement;
     readonly form?: Form;
+    private selectionAnchor?: HTMLElement;
 
     constructor(element: HTMLElement, form?: Form) {
         this.element = element;
@@ -56,11 +57,13 @@ export class FilesList {
                 $$<HTMLInputElement>("input", toggle).forEach((input) => (input.checked = false));
                 ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
                 this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
+                this.element.classList.toggle("is-list", viewAs === "list");
             }
 
             $$<HTMLInputElement>("input", toggle).forEach((input) => {
                 input.addEventListener("input", () => {
                     this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
+                    this.element.classList.toggle("is-list", input.value === "list");
                     window.localStorage.setItem(`formwork.filesListViewAs[${key}]`, input.value);
                 });
             });
@@ -68,12 +71,59 @@ export class FilesList {
 
         document.addEventListener("click", (event) => {
             const target = event.target as HTMLElement;
-            if (!target.closest(".dropdown") && target.closest(".files-item")) {
-                const item = target.closest(".files-item") as HTMLElement;
-                const list = item.closest(".files-list") as HTMLElement;
-                const anchor = $(".file-name a", item) as HTMLAnchorElement;
-                if (list.classList.contains("is-thumbnails") && anchor.href) {
-                    location.href = anchor.href;
+
+            const filesItem = target.closest(".files-item");
+
+            if (filesItem) {
+                if (target.closest(".dropdown")) {
+                    $$(".files-item.is-selected", this.element).forEach((element) => {
+                        element.classList.remove("is-selected");
+                    });
+                    this.selectionAnchor = undefined;
+                    this.updateCommandsState();
+                } else if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
+                    filesItem.classList.toggle("is-selected");
+                    this.selectionAnchor = filesItem as HTMLElement;
+                } else if (event.shiftKey) {
+                    event.preventDefault();
+                    const items = Array.from($$(".files-item", this.element));
+                    const currentIndex = items.indexOf(filesItem as HTMLElement);
+
+                    if (!this.selectionAnchor || !items.includes(this.selectionAnchor)) {
+                        this.selectionAnchor = filesItem as HTMLElement;
+                    }
+
+                    const anchorIndex = items.indexOf(this.selectionAnchor);
+                    const start = Math.min(anchorIndex, currentIndex);
+                    const end = Math.max(anchorIndex, currentIndex);
+
+                    items.forEach((element, index) => element.classList.toggle("is-selected", index >= start && index <= end));
+                } else {
+                    $$(".files-item.is-selected", this.element).forEach((element) => element.classList.remove("is-selected"));
+                    filesItem.classList.add("is-selected");
+                    this.selectionAnchor = filesItem as HTMLElement;
+
+                    const anchor = $(".file-name a", filesItem) as HTMLAnchorElement;
+                    if (this.element.classList.contains("is-thumbnails") && anchor.href) {
+                        location.href = anchor.href;
+                    }
+                }
+
+                if (!event.ctrlKey && !event.metaKey && !filesItem?.classList.contains("is-selected")) {
+                    $$(".files-item.is-selected").forEach((element) => {
+                        element.classList.remove("is-selected");
+                    });
+                }
+
+                this.updateCommandsState();
+            } else if (!target.closest(".dropdown") && !target.closest(".modal") && !target.closest(".files-selection-actions")) {
+                const selectedItems = $$(".files-item.is-selected", this.element);
+
+                if (selectedItems.length > 0) {
+                    selectedItems.forEach((element) => element.classList.remove("is-selected"));
+                    this.selectionAnchor = undefined;
+                    this.updateCommandsState();
                 }
             }
         });
@@ -281,17 +331,109 @@ export class FilesList {
 
         if (deleteFileItemModal) {
             deleteFileItemModal.onOpen((modal, trigger) => {
-                if (trigger) {
+                if (!trigger) {
+                    return;
+                }
+
+                const item = trigger.closest<HTMLElement>(".files-item");
+
+                if (item) {
                     Object.assign(modal.data, {
                         action: trigger.dataset.action,
-                        item: trigger.closest(".files-item"),
-                        filename: (trigger.closest(".files-item") as HTMLElement)?.dataset.filename,
+                        item,
+                        filename: item.dataset.filename,
+                        items: undefined,
                     });
+
+                    modal.setMessage(app.translation.get("panel.pages.deleteFile.prompt"));
+                } else if (trigger.closest(".files-selection-actions")) {
+                    const selectedItems = $$(".files-item.is-selected", this.element);
+
+                    Object.assign(modal.data, {
+                        action: undefined,
+                        item: undefined,
+                        filename: undefined,
+                        items: selectedItems,
+                    });
+
+                    if (selectedItems.length > 1) {
+                        modal.setMessage(app.translation.get("panel.pages.deleteFile.multiple.prompt").replace("%d", String(selectedItems.length)));
+                    } else {
+                        modal.setMessage(app.translation.get("panel.pages.deleteFile.prompt"));
+                    }
                 }
             });
 
             deleteFileItemModal.onCommand("delete-file", (modal) => {
-                const { action, item, filename } = modal.data;
+                const { action, item, filename, items } = modal.data;
+
+                if (items) {
+                    const selectedItems = items as HTMLElement[];
+
+                    let pending = selectedItems.length;
+                    let deletedCount = 0;
+                    let lastMessage = "";
+
+                    selectedItems.forEach((selectedItem) => {
+                        const deleteCommand = $("[data-command=deleteFile]", selectedItem);
+                        const itemAction = deleteCommand?.dataset.action;
+                        const itemFilename = selectedItem.dataset.filename;
+
+                        if (!itemAction) {
+                            pending -= 1;
+                            return;
+                        }
+
+                        new Request(
+                            {
+                                method: "POST",
+                                url: itemAction,
+                                data: {
+                                    filename: itemFilename,
+                                    "csrf-token": app.config.csrfToken as string,
+                                },
+                            },
+                            (response) => {
+                                pending -= 1;
+                                lastMessage = response.message;
+
+                                if (response.status === "success") {
+                                    deletedCount += 1;
+                                    selectedItem.remove();
+
+                                    if (this.form) {
+                                        for (const name in this.form.inputs) {
+                                            const input = this.form.inputs[name];
+                                            if (input instanceof SelectInput && (input.element.classList.contains("form-file") || input.element.classList.contains("form-image"))) {
+                                                input.removeOption(itemFilename as string);
+                                            }
+
+                                            if (input instanceof TagsInput && (input.element.classList.contains("form-files") || input.element.classList.contains("form-images"))) {
+                                                input.removeDropdownItem(itemFilename as string);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (pending === 0) {
+                                    if (this.element.querySelectorAll(".files-item").length === 0) {
+                                        this.element.hidden = true;
+                                    }
+
+                                    this.updateCommandsState();
+
+                                    const allDeleted = deletedCount === selectedItems.length;
+                                    const message = allDeleted && deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : lastMessage;
+                                    const notification = new Notification(message, allDeleted ? "success" : "error");
+                                    notification.show();
+                                }
+                            },
+                        );
+                    });
+
+                    modal.close();
+                    return;
+                }
 
                 new Request(
                     {
@@ -333,6 +475,18 @@ export class FilesList {
 
                 modal.close();
             });
+        }
+    }
+
+    private updateCommandsState() {
+        const selectionActions = $(".files-selection-actions", this.element);
+        if (selectionActions) {
+            const selectedItems = $$(".files-item.is-selected", this.element);
+
+            selectionActions.hidden = selectedItems.length === 0;
+
+            const countElement = $(".files-selection-count", selectionActions) as HTMLElement;
+            countElement.textContent = `(${selectedItems.length})`;
         }
     }
 }

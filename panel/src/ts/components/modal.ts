@@ -50,6 +50,13 @@ export class Modal {
         return this.state === "closed";
     }
 
+    setMessage(message: string) {
+        const messageElement = $(".modal-text", this.element);
+        if (messageElement) {
+            messageElement.textContent = message;
+        }
+    }
+
     open(options: ModalShowOptions = {}) {
         this.dispatchCallback("before-open", options.triggerElement);
 

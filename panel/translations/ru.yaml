@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Невозможно заменить ф
 panel.files.cannotUpload.invalidFields: Невозможно загрузить файл, некоторые поля недействительны
 panel.files.cannotUpload.pageNotFound: Невозможно загрузить файл, страница не найдена
 panel.files.deleted: Файл удален
+panel.files.deleted.multiple: 'Удалено файлов: %d'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Невозможно получить информацию о файле, файл не найден
 panel.files.files: Файлы
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: У вас есть какие-то изме
 panel.pages.changeSlug: Редактировать Slug
 panel.pages.changeSlug.generate: Сформировать из названия
 panel.pages.deleteFile: Удалить файл
+panel.pages.deleteFile.multiple.prompt: Вы уверены, что хотите удалить эти %d файла? Это действие не может быть отменено.
 panel.pages.deleteFile.prompt: Вы уверены, что хотите удалить этот файл? Это действие не может быть отменено.
 panel.pages.deletePage: Удалить страницу
 panel.pages.deletePage.prompt: Вы уверены, что хотите удалить эту страницу? Это действие не может быть отменено.

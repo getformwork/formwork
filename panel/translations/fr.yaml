@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Impossible de remplacer le fichier, page
 panel.files.cannotUpload.invalidFields: Impossible de téléverser le fichier, certains champs sont invalides
 panel.files.cannotUpload.pageNotFound: Impossible de téléverser le fichier, page introuvable
 panel.files.deleted: Fichier supprimé
+panel.files.deleted.multiple: '%d fichiers supprimés'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Impossible de récupérer les informations sur le fichier, fichier non trouvé
 panel.files.files: Fichiers
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Vous avez des modifications qui n’ont pas
 panel.pages.changeSlug: Modifier le permalien
 panel.pages.changeSlug.generate: Générer automatiquement à partir du titre
 panel.pages.deleteFile: Supprimer le fichier
+panel.pages.deleteFile.multiple.prompt: Êtes-vous sûr de vouloir supprimer ces %d fichiers ? Cette action est irréversible.
 panel.pages.deleteFile.prompt: ÊtesVous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.
 panel.pages.deletePage: Supprimer la page
 panel.pages.deletePage.prompt: ÊtesVous sûr de vouloir supprimer cette page ? Cette action est irréversible.

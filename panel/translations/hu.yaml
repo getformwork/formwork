@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Nem lehet lecserélni a fájlt, az oldal
 panel.files.cannotUpload.invalidFields: Nem lehet feltölteni a fájlt, egyes mezők érvénytelenek
 panel.files.cannotUpload.pageNotFound: Nem lehet feltölteni a fájlt, az oldal nem található
 panel.files.deleted: Fájl törölve
+panel.files.deleted.multiple: '%d fájl törölve'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Nem lehet lekérni a fájl adatait, a fájl nem található
 panel.files.files: Fájlok
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Nem mentett módosítások vannak. Biztosan
 panel.pages.changeSlug: Slug szerkesztése
 panel.pages.changeSlug.generate: Generálás a címből
 panel.pages.deleteFile: Fájl törlése
+panel.pages.deleteFile.multiple.prompt: Biztosan törli ezt a(z) %d fájlt? A művelet nem vonható vissza.
 panel.pages.deleteFile.prompt: Biztosan törli ezt a fájlt? A művelet nem vonható vissza.
 panel.pages.deletePage: Oldal törlése
 panel.pages.deletePage.prompt: Biztosan törli ezt az oldalt? A művelet nem vonható vissza.

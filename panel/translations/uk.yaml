@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Неможливо замінити фа
 panel.files.cannotUpload.invalidFields: Неможливо завантажити файл, деякі поля недійсні
 panel.files.cannotUpload.pageNotFound: Неможливо завантажити файл, сторінка не знайдена
 panel.files.deleted: Файл видалено
+panel.files.deleted.multiple: 'Видалено файлів: %d'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Неможливо отримати інформацію про файл, файл не знайдено
 panel.files.files: Файли
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: У вас є незбережені змі�
 panel.pages.changeSlug: Редагувати slug
 panel.pages.changeSlug.generate: Генерувати з назви
 panel.pages.deleteFile: Видалити файл
+panel.pages.deleteFile.multiple.prompt: Ви впевнені, що хочете видалити ці %d файлів? Цю дію не можна скасувати.
 panel.pages.deleteFile.prompt: Ви впевнені, що хочете видалити цей файл? Цю дію не можна скасувати.
 panel.pages.deletePage: Видалити сторінку
 panel.pages.deletePage.prompt: Ви впевнені, що хочете видалити цю сторінку? Цю дію не можна скасувати.
