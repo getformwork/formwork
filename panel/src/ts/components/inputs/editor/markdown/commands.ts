@@ -163,7 +163,9 @@ export function canInsert(state: EditorState, nodeType: NodeType) {
     const $from = state.selection.$from;
     for (let d = $from.depth; d >= 0; d--) {
         const index = $from.index(d);
-        if ($from.node(d).canReplaceWith(index, index, nodeType)) {return true;}
+        if ($from.node(d).canReplaceWith(index, index, nodeType)) {
+            return true;
+        }
     }
     return false;
 }
