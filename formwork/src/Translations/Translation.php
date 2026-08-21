@@ -2,6 +2,7 @@
 
 namespace Formwork\Translations;
 
+use Formwork\Utils\Arr;
 use InvalidArgumentException;
 use Stringable;
 
@@ -66,7 +67,7 @@ class Translation
     }
 
     /**
-     * Return a formatted language string
+     * Return the language strings for a given key with multiple values (e.g. plural forms, weekdays, etc.)
      *
      * @throws InvalidArgumentException If the language string key is invalid and no fallback is available
      *
@@ -83,5 +84,18 @@ class Translation
         }
 
         throw new InvalidArgumentException(sprintf('Invalid language string "%s"', $key));
+    }
+
+    /**
+     * Return all language strings
+     *
+     * @return array<string, list<string>|string>
+     */
+    public function getAllStrings(): array
+    {
+        if ($this->fallback !== null && $this->fallback->code() !== $this->code) {
+            return Arr::override($this->fallback->getAllStrings(), $this->data);
+        }
+        return $this->data;
     }
 }

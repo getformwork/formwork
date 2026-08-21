@@ -1,6 +1,7 @@
 import * as icons from "../icons";
 import { $, $$ } from "../../utils/selectors";
 import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import { app } from "../../app";
 import { debounce } from "../../utils/events";
 import type { SortableEvent } from "sortablejs";
 import { toCamelCase } from "../../utils/strings";
@@ -33,7 +34,15 @@ export class TagsInput {
     private innerInput: HTMLInputElement;
 
     constructor(element: HTMLInputElement, options: Partial<TagsInputOptions>) {
-        const defaults = { labels: { remove: "Remove" }, addKeyCodes: ["Comma"], limit: Infinity, accept: "options" as "options" | "any", orderable: true };
+        const defaults = {
+            labels: {
+                remove: app.translation.get("fields.tags.remove", "Remove"),
+            },
+            addKeyCodes: ["Comma"],
+            limit: Infinity,
+            accept: "options" as "options" | "any",
+            orderable: true,
+        };
 
         this.element = element;
 

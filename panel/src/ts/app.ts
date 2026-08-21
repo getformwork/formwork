@@ -8,6 +8,7 @@ import { Notifications } from "./components/notifications";
 import { Sections } from "./components/sections";
 import { Tabs } from "./components/tabs";
 import { Tooltips } from "./components/tooltips";
+import { Translation } from "./components/translation";
 
 import { Backups } from "./components/views/backups";
 import { Dashboard } from "./components/views/dashboard";
@@ -20,6 +21,10 @@ import { Updates } from "./components/views/updates";
 interface AppConfig {
     siteUri: string;
     baseUri: string;
+    translation: {
+        code: string;
+        data: { [key: string]: string | string[] };
+    };
     csrfToken?: string;
     colorScheme?: string;
     DateInput?: any;
@@ -42,7 +47,13 @@ class App {
     config: AppConfig = {
         siteUri: "/",
         baseUri: "/",
+        translation: {
+            code: "en",
+            data: {},
+        },
     };
+
+    translation: Translation = {} as Translation;
 
     modals: Modals = {};
 
@@ -52,6 +63,10 @@ class App {
 
     load(config: AppConfig) {
         this.loadConfig(config);
+
+        this.loadComponent(Translation, {
+            globalAlias: "translation",
+        });
 
         this.loadComponent(Modals, {
             globalAlias: "modals",
@@ -97,4 +112,5 @@ class App {
     }
 }
 
+export type { App };
 export const app = new App();

@@ -70,8 +70,8 @@ export function MenuPlugin() {
         (view) =>
             new Menu(
                 [
-                    { dom: createButton("rotateLeft", app.config.EditorInput.labels.undo), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
-                    { dom: createButton("rotateRight", app.config.EditorInput.labels.redo), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
+                    { dom: createButton("rotateLeft", app.translation.get("panel.editor.undo", "Undo")), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
+                    { dom: createButton("rotateRight", app.translation.get("panel.editor.redo", "Redo")), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
                 ],
                 view,
             ),
