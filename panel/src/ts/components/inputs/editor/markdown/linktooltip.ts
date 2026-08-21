@@ -67,9 +67,9 @@ class LinkTooltipView {
             this.tooltip = new Tooltip(
                 `<div class="editor-link-tooltip truncate mr-4"><a href="${addBaseUri(link.attrs.href, this.baseUri)}" target="_blank">${link.attrs.href}</a></div>
                 <div class="separator"></div>
-                <button type="button" class="tooltip-button" data-command="edit-link">${app.config.EditorInput.labels.edit}</button>
+                <button type="button" class="tooltip-button" data-command="edit-link">${app.translation.get("panel.modal.action.edit", "Edit")}</button>
                 <div class="separator"></div>
-                <button type="button" class="tooltip-button" data-command="delete-link" aria-label="${app.config.EditorInput.labels.delete}" data-tooltip="${app.config.EditorInput.labels.delete}"></button>`,
+                <button type="button" class="tooltip-button" data-command="delete-link" aria-label="${app.translation.get("panel.modal.action.delete", "Delete")}" data-tooltip="${app.translation.get("panel.modal.action.delete", "Delete")}"></button>`,
                 {
                     referenceElement: linkDom,
                     removeOnMouseout: false,

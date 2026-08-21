@@ -85,8 +85,8 @@ export class EditorInput {
             toggleButton.type = "button";
             toggleButton.classList.add("button", "toolbar-button", "editor-toggle-markdown");
             toggleButton.dataset.command = "toggle-markdown";
-            toggleButton.title = app.config.EditorInput.labels.toggleMarkdown;
-            toggleButton.ariaLabel = app.config.EditorInput.labels.toggleMarkdown;
+            toggleButton.title = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
+            toggleButton.ariaLabel = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
             toggleButton.disabled = this.element.disabled;
             toggleButton.innerHTML = markdown;
             toolbar.appendChild(toggleButton);

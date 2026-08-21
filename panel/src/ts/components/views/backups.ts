@@ -57,7 +57,7 @@ export class Backups {
                                 ($(".backup-size", node) as HTMLElement).innerText = response.data.size;
                                 ($(".backup-delete", node) as HTMLElement).dataset.modalAction = response.data.deleteUri;
 
-                                ($(".backup-last-time") as HTMLElement).innerText = app.config.Backups.labels.now;
+                                ($(".backup-last-time") as HTMLElement).innerText = app.translation.get("date.now", "Now");
 
                                 ($("tbody", table) as HTMLElement).prepend(node);
 

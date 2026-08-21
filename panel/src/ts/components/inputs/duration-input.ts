@@ -1,4 +1,5 @@
 import { $ } from "../../utils/selectors";
+import { app } from "../../app";
 import { getSafeInteger } from "../../utils/numbers";
 
 const TIME_INTERVALS = {
@@ -35,13 +36,13 @@ export class DurationInput {
             unit: "seconds",
             intervals: ["years", "months", "weeks", "days", "hours", "minutes", "seconds"],
             labels: {
-                years: ["year", "years"],
-                months: ["month", "months"],
-                weeks: ["week", "weeks"],
-                days: ["day", "days"],
-                hours: ["hour", "hours"],
-                minutes: ["minute", "minutes"],
-                seconds: ["second", "seconds"],
+                years: app.translation.getStrings("date.duration.years", ["year", "years"]) as TimeIntervalLabel,
+                months: app.translation.getStrings("date.duration.months", ["month", "months"]) as TimeIntervalLabel,
+                weeks: app.translation.getStrings("date.duration.weeks", ["week", "weeks"]) as TimeIntervalLabel,
+                days: app.translation.getStrings("date.duration.days", ["day", "days"]) as TimeIntervalLabel,
+                hours: app.translation.getStrings("date.duration.hours", ["hour", "hours"]) as TimeIntervalLabel,
+                minutes: app.translation.getStrings("date.duration.minutes", ["minute", "minutes"]) as TimeIntervalLabel,
+                seconds: app.translation.getStrings("date.duration.seconds", ["second", "seconds"]) as TimeIntervalLabel,
             },
         };
 

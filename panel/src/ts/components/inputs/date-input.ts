@@ -1,6 +1,7 @@
 import { $, $$ } from "../../utils/selectors";
 import { calendarClock, chevronDown, chevronLeft, chevronRight, chevronUp } from "../icons";
 import { getOuterHeight, getOuterWidth } from "../../utils/dimensions";
+import { app } from "../../app";
 import { longClick } from "../../utils/events";
 import { mod } from "../../utils/math";
 import { throttle } from "../../utils/events";
@@ -46,21 +47,21 @@ export class DateInput {
             dateTimeFormat: "YYYY-MM-DD HH:mm:ss",
             time: false,
             labels: {
-                today: "Today",
+                today: app.translation.get("date.today", "Today"),
                 weekdays: {
-                    long: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                    short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    long: app.translation.getStrings("date.weekdays.long", ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]),
+                    short: app.translation.getStrings("date.weekdays.short", ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]),
                 },
                 months: {
-                    long: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                    short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    long: app.translation.getStrings("date.months.long", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]),
+                    short: app.translation.getStrings("date.months.short", ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]),
                 },
-                prevMonth: "Previous month",
-                nextMonth: "Next month",
-                prevHour: "Previous hour",
-                nextHour: "Next hour",
-                prevMinute: "Previous minute",
-                nextMinute: "Next minute",
+                prevMonth: app.translation.get("fields.date.previousMonth", "Previous month"),
+                nextMonth: app.translation.get("fields.date.nextMonth", "Next month"),
+                prevHour: app.translation.get("fields.date.previousHour", "Previous hour"),
+                nextHour: app.translation.get("fields.date.nextHour", "Next hour"),
+                prevMinute: app.translation.get("fields.date.previousMinute", "Previous minute"),
+                nextMinute: app.translation.get("fields.date.nextMinute", "Next minute"),
             },
             onChange(date: Date, input: DateInput) {
                 input.element.value = input.formatDateTime(date, input.format);

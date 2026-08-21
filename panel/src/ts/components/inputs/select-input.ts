@@ -1,6 +1,7 @@
 import * as icons from "../icons";
 import { $, $$ } from "../../utils/selectors";
 import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import { app } from "../../app";
 import { toCamelCase } from "../../utils/strings";
 
 type SelectInputListItem = {
@@ -29,7 +30,11 @@ export class SelectInput {
     private emptyState: HTMLDivElement;
 
     constructor(element: HTMLSelectElement, options: Partial<SelectInputOptions>) {
-        const defaults: SelectInputOptions = { labels: { empty: "No matching options" } };
+        const defaults: SelectInputOptions = {
+            labels: {
+                empty: app.translation.get("fields.select.empty", "No matching options"),
+            },
+        };
 
         this.element = element;
 
