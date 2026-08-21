@@ -172,7 +172,7 @@ class ExifReader
 
                 case 'rational':
                     $parsedValue = is_array($value)
-                        ? array_map(fn(string $value): float => $this->parseRational($value), $value)
+                        ? array_map($this->parseRational(...), $value)
                         : $this->parseRational($value);
                     break;
 
@@ -261,7 +261,7 @@ class ExifReader
     protected function parseCoordinates(array $value, ?string $cardinalRef): float
     {
         [$degrees, $minutes, $seconds] = array_map(
-            fn(string $value): float => $this->parseRational($value),
+            $this->parseRational(...),
             array_replace(['0', '0', '0'], $value)
         );
         $direction = ($cardinalRef === 'S' || $cardinalRef === 'W') ? -1 : 1;

@@ -151,7 +151,7 @@ final class GifHandler extends AbstractHandler
 
         ob_start();
 
-        if (imagegif($image, null) === false) {
+        if (imagegif($image) === false) {
             throw new RuntimeException('Cannot set data from GdImage');
         }
 

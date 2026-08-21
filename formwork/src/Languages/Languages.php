@@ -110,7 +110,7 @@ class Languages
             return $language;
         }
         if (is_string($language)) {
-            return $this->available->get($language, null);
+            return $this->available->get($language);
         }
         return null;
     }

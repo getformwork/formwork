@@ -84,7 +84,7 @@ return function (App $app) {
              * Return the maximum number of items allowed in the field
              */
             'limit' => function (Field $field): ?int {
-                return $field->get('limit', null);
+                return $field->get('limit');
             },
 
             /**
