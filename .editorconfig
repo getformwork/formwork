@@ -15,3 +15,7 @@ insert_final_newline = false
 
 [*.yaml]
 quote_type = single
+
+[{.github/**/*.yml,.github/**.yaml}]
+indent_size = 2
+quote_type = double

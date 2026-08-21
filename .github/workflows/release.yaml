@@ -9,28 +9,25 @@ permissions:
 
 jobs:
   release:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-            php-version: '8.3'
-            tools: composer
+          php-version: "8.3"
+          tools: composer
 
       - name: Install dependencies
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: latest
 
@@ -42,10 +39,10 @@ jobs:
 
       - name: Create archive
         run: |
-            zip -r formwork-${{ github.event.release.tag_name }}.zip . -x \
-            \*.git/\* \
-            \*.github/\* \
-            \*node_modules/\*
+          zip -r formwork-${{ github.event.release.tag_name }}.zip . -x \
+          \*.git/\* \
+          \*.github/\* \
+          \*node_modules/\*
 
       - name: Upload release assets
         uses: svenstaro/upload-release-action@v2
