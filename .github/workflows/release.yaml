@@ -24,12 +24,11 @@ jobs:
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
+        uses: pnpm/setup@v2
         with:
-          node-version: latest
+          package-json-file: panel/package.json
+          cache: true
+          cache-dependency-path: panel/pnpm-lock.yaml
 
       - name: Build panel assets
         run: |
