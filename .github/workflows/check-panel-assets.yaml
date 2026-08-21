@@ -13,6 +13,8 @@ on:
     paths:
       - "panel/src/**"
 
+  workflow_dispatch:
+
 permissions:
   contents: read
 

@@ -13,6 +13,8 @@ on:
     paths:
       - "**.php"
 
+  workflow_dispatch:
+
 permissions:
   contents: read
 
