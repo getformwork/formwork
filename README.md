@@ -2,7 +2,7 @@
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getformwork/formwork.svg?color=%237a86b8&version=2.x-dev)](#requirements)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](https://github.com/phpstan/phpstan)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/getformwork/formwork/check.yaml)](https://github.com/getformwork/formwork/actions/workflows/check.yaml)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/getformwork/formwork/check-php.yaml)](https://github.com/getformwork/formwork/actions/workflows/check-php.yaml)
 [![GitHub Release Date](https://img.shields.io/github/release-date/getformwork/formwork.svg)](https://github.com/getformwork/formwork/releases/latest)
 [![GitHub All Releases](https://img.shields.io/github/downloads/getformwork/formwork/total.svg)](https://github.com/getformwork/formwork/releases)
 [![Packagist](https://img.shields.io/packagist/dt/getformwork/formwork.svg?color=%23f28d1a&label=Packagist%20downloads)](https://packagist.org/packages/getformwork/formwork)
