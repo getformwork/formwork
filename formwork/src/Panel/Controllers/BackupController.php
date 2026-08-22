@@ -11,7 +11,7 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
-use RuntimeException;
+use Formwork\Utils\Path;
 
 final class BackupController extends AbstractController
 {
@@ -29,7 +29,7 @@ final class BackupController extends AbstractController
         } catch (TranslatedException $e) {
             return JsonResponse::error($this->translate('panel.backup.error.cannotMake', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);
         }
-        $filename = basename($file);
+        $filename = Path::basename($file);
         $uriName = rawurlencode(base64_encode($filename));
         return JsonResponse::success($this->translate('panel.backup.ready'), data: [
             'filename'  => $filename,
@@ -49,13 +49,13 @@ final class BackupController extends AbstractController
         if (!$this->hasPermission('panel.backup.download')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
-
-        $file = FileSystem::joinPaths($this->config->getString('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
-            if (FileSystem::isFile($file, assertExists: false)) {
+            $backupPath = Path::normalize($this->config->getString('system.backup.path'));
+            $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));
+            if (Path::dirname($file) === $backupPath && FileSystem::isFile($file, assertExists: false)) {
                 return new FileResponse($file, download: true);
             }
-            throw new RuntimeException($this->translate('panel.backup.error.cannotDownload.invalidFilename'));
+            throw new TranslatedException('Invalid backup filename', 'panel.backup.error.cannotDownload.invalidFilename');
         } catch (TranslatedException $e) {
             $this->panel->notify($this->translate('panel.backup.error.cannotDownload', $this->translate($e->getLanguageString())), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.tools.backups'), base: $this->panel->panelRoot());
@@ -70,15 +70,15 @@ final class BackupController extends AbstractController
         if (!$this->hasPermission('panel.backup.delete')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
-
-        $file = FileSystem::joinPaths($this->config->getString('system.backup.path'), basename(base64_decode((string) $routeParams->get('backup'))));
         try {
-            if (FileSystem::isFile($file, assertExists: false)) {
+            $backupPath = Path::normalize($this->config->getString('system.backup.path'));
+            $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));
+            if (Path::dirname($file) === $backupPath && FileSystem::isFile($file, assertExists: false)) {
                 FileSystem::delete($file);
                 $this->panel->notify($this->translate('panel.backup.deleted'), 'success');
                 return $this->redirectToReferer(default: $this->generateRoute('panel.tools.backups'), base: $this->generateRoute('panel.index'));
             }
-            throw new RuntimeException($this->translate('panel.backup.error.cannotDelete.invalidFilename'));
+            throw new TranslatedException('Invalid backup filename', 'panel.backup.error.cannotDelete.invalidFilename');
         } catch (TranslatedException $e) {
             $this->panel->notify($this->translate('panel.backup.error.cannotDelete', $this->translate($e->getLanguageString())), 'error');
             return $this->redirectToReferer(default: $this->generateRoute('panel.tools.backups'), base: $this->panel->panelRoot());
