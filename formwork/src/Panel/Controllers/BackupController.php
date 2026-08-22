@@ -50,7 +50,7 @@ final class BackupController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
         try {
-            $backupPath = Path::normalize($this->config->getString('system.backup.path'));
+            $backupPath = rtrim(Path::normalize($this->config->getString('system.backup.path')), '/');
             $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));
             if (Path::dirname($file) === $backupPath && FileSystem::isFile($file, assertExists: false)) {
                 return new FileResponse($file, download: true);
@@ -71,7 +71,7 @@ final class BackupController extends AbstractController
             return $this->forward(ErrorsController::class, 'forbidden');
         }
         try {
-            $backupPath = Path::normalize($this->config->getString('system.backup.path'));
+            $backupPath = rtrim(Path::normalize($this->config->getString('system.backup.path')), '/');
             $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));
             if (Path::dirname($file) === $backupPath && FileSystem::isFile($file, assertExists: false)) {
                 FileSystem::delete($file);
