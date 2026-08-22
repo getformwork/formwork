@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Nu se poate înlocui fișierul, pagina n
 panel.files.cannotUpload.invalidFields: Nu se poate încărca fișierul, unele câmpuri sunt nevalide
 panel.files.cannotUpload.pageNotFound: Nu se poate încărca fișierul, pagina nu a fost găsită
 panel.files.deleted: Fișier șters
+panel.files.deleted.multiple: '%d fișiere șterse'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Nu se pot obține informații despre fișier, fișierul nu a fost găsit
 panel.files.files: Fișiere
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Ai modificări care nu au fost salvate. Eș
 panel.pages.changeSlug: Editează slug
 panel.pages.changeSlug.generate: Generează din titlu
 panel.pages.deleteFile: Șterge fișier
+panel.pages.deleteFile.multiple.prompt: Ești sigur că vrei să ștergi aceste %d fișiere? Această acțiune nu poate fi anulată.
 panel.pages.deleteFile.prompt: Ești sigur că vrei să ștergi acest fișier? Această acțiune nu poate fi anulată.
 panel.pages.deletePage: Șterge pagină
 panel.pages.deletePage.prompt: Ești sigur că vrei să ștergi această pagină? Această acțiune nu poate fi anulată.

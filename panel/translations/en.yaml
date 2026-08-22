@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Cannot replace file, page not found
 panel.files.cannotUpload.invalidFields: Cannot upload file, some fields are invalid
 panel.files.cannotUpload.pageNotFound: Cannot upload file, page not found
 panel.files.deleted: File deleted
+panel.files.deleted.multiple: '%d files deleted'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Cannot get file info, file not found
 panel.files.files: Files
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: You have some changes that have not been sa
 panel.pages.changeSlug: Edit slug
 panel.pages.changeSlug.generate: Generate from title
 panel.pages.deleteFile: Delete file
+panel.pages.deleteFile.multiple.prompt: Are you sure you want to delete these %d files? This action can’t be undone.
 panel.pages.deleteFile.prompt: Are you sure you want to delete this file? This action can’t be undone.
 panel.pages.deletePage: Delete page
 panel.pages.deletePage.prompt: Are you sure you want to delete this page? This action can’t be undone.

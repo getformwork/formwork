@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Dosya değiştirilemiyor, sayfa bulunama
 panel.files.cannotUpload.invalidFields: Dosya yüklenemiyor, bazı alanlar geçersiz
 panel.files.cannotUpload.pageNotFound: Dosya yüklenemiyor, sayfa bulunamadı
 panel.files.deleted: Dosya silindi
+panel.files.deleted.multiple: '%d dosya silindi'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Dosya bilgisi alınamıyor, dosya bulunamadı
 panel.files.files: Dosyalar
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Kaydedilmemiş değişiklikleriniz var. Bu 
 panel.pages.changeSlug: Slug’ı düzenle
 panel.pages.changeSlug.generate: Başlıktan oluştur
 panel.pages.deleteFile: Dosyayı sil
+panel.pages.deleteFile.multiple.prompt: Bu %d dosyayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 panel.pages.deleteFile.prompt: Bu dosyayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 panel.pages.deletePage: Sayfayı sil
 panel.pages.deletePage.prompt: Bu sayfayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.

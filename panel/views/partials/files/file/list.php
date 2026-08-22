@@ -1,12 +1,17 @@
 <?php $this->modals()->addMultiple(['deleteFileItem', 'renameFileItem']) ?>
 
-<div <?= $this->attr(['class' => 'files-list', 'data-for' => $name, 'hidden' => count($files) === 0]) ?>>
+<div <?= $this->attr(['class' => ['files-list', 'is-list'], 'data-for' => $name, 'hidden' => count($files) === 0]) ?>>
     <div class="flex flex-wrap">
         <div class="flex-grow-1 mr-4">
             <div class="form-input-wrap">
                 <span class="form-input-icon"><?= $this->icon('search') ?></span>
                 <input class="form-input files-search" id="files.search" type="search" placeholder="<?= $this->translate('panel.files.search') ?>">
             </div>
+        </div>
+        <div class="files-selection-actions mr-4" hidden>
+            <?php if ($panel->user()->permissions()->has('panel.pages.deleteFiles')) : ?>
+                <button type="button" class="button button-danger" data-modal="deleteFileItemModal"><?= $this->icon('trash') ?> <?= $this->translate('panel.modal.action.delete') ?> <span class="files-selection-count"></span></button>
+            <?php endif ?>
         </div>
         <fieldset class="form-togglegroup files-list-view-as" data-for="<?= $name ?>">
             <label class="form-label"><input class="form-input" type="radio" name="<?= $name ?>-list-view-as" value="list" checked aria-label="<?= $this->translate('panel.files.viewAsList') ?>" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>

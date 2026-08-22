@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: No se puede reemplazar el archivo, pági
 panel.files.cannotUpload.invalidFields: No se puede subir el archivo, algunos campos no son válidos
 panel.files.cannotUpload.pageNotFound: No se puede subir el archivo, página no encontrada
 panel.files.deleted: Archivo eliminado
+panel.files.deleted.multiple: '%d archivos eliminados'
 panel.files.exif: EXIF
 panel.files.fileNotFound: No se pueden obtener las información del archivo, archivo no encontrado
 panel.files.files: Archivos
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Tienes algunos cambios que no se han guarda
 panel.pages.changeSlug: Editar slug
 panel.pages.changeSlug.generate: Generar a partir del título
 panel.pages.deleteFile: Borrar archivo
+panel.pages.deleteFile.multiple.prompt: ¿Estás seguro de que quieres borrar estos %d archivos? Esta acción no se puede deshacer.
 panel.pages.deleteFile.prompt: ¿Estás seguro de que quieres borrar este archivo? Esta acción no se puede deshacer.
 panel.pages.deletePage: Borrar página
 panel.pages.deletePage.prompt: ¿Estás seguro de que quieres borrar esta página? Esta acción no se puede deshacer.

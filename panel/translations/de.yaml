@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Datei kann nicht ersetzt werden, Seite n
 panel.files.cannotUpload.invalidFields: Datei kann nicht hochgeladen werden, einige Felder sind ungültig
 panel.files.cannotUpload.pageNotFound: Datei kann nicht hochgeladen werden, Seite nicht gefunden
 panel.files.deleted: Datei gelöscht
+panel.files.deleted.multiple: '%d Dateien gelöscht'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Dateiinfo kann nicht abgerufen werden, Datei nicht gefunden
 panel.files.files: Dateien
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Es gibt einige ungespeicherte Änderungen. 
 panel.pages.changeSlug: Slug bearbeiten
 panel.pages.changeSlug.generate: Aus Titel generieren
 panel.pages.deleteFile: Datei löschen
+panel.pages.deleteFile.multiple.prompt: Möchten Sie diese %d Dateien wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 panel.pages.deleteFile.prompt: Möchten Sie diese Datei wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 panel.pages.deletePage: Seite löschen
 panel.pages.deletePage.prompt: Möchten Sie diese Seite wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.

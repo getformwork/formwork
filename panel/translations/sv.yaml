@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Kan inte ersätta fil, sidan hittades in
 panel.files.cannotUpload.invalidFields: Kan inte ladda upp fil, vissa fält är ogiltiga
 panel.files.cannotUpload.pageNotFound: Kan inte ladda upp fil, sidan hittades inte
 panel.files.deleted: Fil borttagen
+panel.files.deleted.multiple: '%d filer borttagna'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Kan inte hämta filinformation, filen hittades inte
 panel.files.files: Filer
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Du har ändringar som inte har sparats. Är
 panel.pages.changeSlug: Ändra slug
 panel.pages.changeSlug.generate: Generera från titel
 panel.pages.deleteFile: Ta bort fil
+panel.pages.deleteFile.multiple.prompt: Är du säker på att du vill ta bort dessa %d filer? Åtgärden kan inte ångras.
 panel.pages.deleteFile.prompt: Är du säker på att du vill ta bort denna fil? Åtgärden kan inte ångras.
 panel.pages.deletePage: Ta bort sida
 panel.pages.deletePage.prompt: Är du säker på att du vill ta bort denna sida? Åtgärden kan inte ångras.

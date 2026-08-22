@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Nie można zamienić pliku, strona nie z
 panel.files.cannotUpload.invalidFields: Nie można przesłać pliku, niektóre pola są nieprawidłowe
 panel.files.cannotUpload.pageNotFound: Nie można przesłać pliku, strona nie została znaleziona
 panel.files.deleted: Plik usunięty
+panel.files.deleted.multiple: 'Usunięto %d plików'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Nie można pobrać informacji o pliku, plik nie został znaleziony
 panel.files.files: Pliki
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Masz niezapisane zmiany. Czy na pewno chces
 panel.pages.changeSlug: Edytuj slug
 panel.pages.changeSlug.generate: Generuj z tytułu
 panel.pages.deleteFile: Usuń plik
+panel.pages.deleteFile.multiple.prompt: Czy na pewno chcesz usunąć te %d pliki? Ta akcja jest nieodwracalna.
 panel.pages.deleteFile.prompt: Czy na pewno chcesz usunąć ten plik? Ta akcja jest nieodwracalna.
 panel.pages.deletePage: Usuń stronę
 panel.pages.deletePage.prompt: Czy na pewno chcesz usunąć tę stronę? Ta akcja jest nieodwracalna.

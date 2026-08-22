@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Kan bestand niet vervangen, pagina niet 
 panel.files.cannotUpload.invalidFields: Bestand kan niet worden geüpload, sommige velden zijn ongeldig
 panel.files.cannotUpload.pageNotFound: Kan bestand niet uploaden, pagina niet gevonden
 panel.files.deleted: Bestand verwijderd
+panel.files.deleted.multiple: '%d bestanden verwijderd'
 panel.files.exif: EXIF
 panel.files.fileNotFound: Kan bestandgegevens niet ophalen, bestand niet gevonden
 panel.files.files: Bestanden
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Je hebt wijzigingen die niet zijn opgeslage
 panel.pages.changeSlug: Slug bewerken
 panel.pages.changeSlug.generate: Genereer vanuit titel
 panel.pages.deleteFile: Bestand verwijderen
+panel.pages.deleteFile.multiple.prompt: Weet je zeker dat je deze %d bestanden wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
 panel.pages.deleteFile.prompt: Weet je zeker dat je dit bestand wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
 panel.pages.deletePage: Pagina verwijderen
 panel.pages.deletePage.prompt: Weet je zeker dat je deze pagina wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.

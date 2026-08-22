@@ -71,6 +71,7 @@ panel.files.cannotReplace.pageNotFound: Δεν είναι δυνατή η αντ
 panel.files.cannotUpload.invalidFields: Δεν είναι δυνατή η μεταφόρτωση του αρχείου, ορισμένα πεδία δεν είναι έγκυρα
 panel.files.cannotUpload.pageNotFound: Δεν είναι δυνατή η μεταφόρτωση, η σελίδα δεν βρέθηκε
 panel.files.deleted: Το αρχείο διαγράφηκε
+panel.files.deleted.multiple: Διαγράφηκαν %d αρχεία
 panel.files.exif: EXIF
 panel.files.fileNotFound: Δεν είναι δυνατή η ανάκτηση πληροφοριών, το αρχείο δεν βρέθηκε
 panel.files.files: Αρχεία
@@ -205,6 +206,7 @@ panel.pages.changes.detected.prompt: Υπάρχουν μη αποθηκευμέ�
 panel.pages.changeSlug: Επεξεργασία slug
 panel.pages.changeSlug.generate: Δημιουργία από τον τίτλο
 panel.pages.deleteFile: Διαγραφή αρχείου
+panel.pages.deleteFile.multiple.prompt: Θέλεις σίγουρα να διαγράψεις αυτά τα %d αρχεία; Η ενέργεια δεν μπορεί να αναιρεθεί.
 panel.pages.deleteFile.prompt: Θέλεις σίγουρα να διαγράψεις αυτό το αρχείο; Η ενέργεια δεν μπορεί να αναιρεθεί.
 panel.pages.deletePage: Διαγραφή σελίδας
 panel.pages.deletePage.prompt: Θέλεις σίγουρα να διαγράψεις αυτή τη σελίδα; Η ενέργεια δεν μπορεί να αναιρεθεί.
