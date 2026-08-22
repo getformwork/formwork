@@ -88,6 +88,7 @@ export class FilesList {
                 }
 
                 if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
                     filesItem.classList.toggle("is-selected");
                     this.selectionAnchor = filesItem;
                     this.updateSelectionActions();
@@ -95,6 +96,7 @@ export class FilesList {
                 }
 
                 if (event.shiftKey) {
+                    event.preventDefault();
                     const items = Array.from($$(".files-item", this.element));
                     const currentIndex = items.indexOf(filesItem);
 
@@ -471,7 +473,7 @@ export class FilesList {
 
     private hasSelectionActions() {
         const selectionActions = $(".files-selection-actions", this.element);
-        return selectionActions && selectionActions.children.length > 0;
+        return !!selectionActions && selectionActions.children.length > 0;
     }
 
     private clearSelection() {
