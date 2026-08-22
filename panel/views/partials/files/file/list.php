@@ -9,7 +9,9 @@
             </div>
         </div>
         <div class="files-selection-actions mr-4" hidden>
-            <button type="button" class="button button-danger" data-modal="deleteFileItemModal"><?= $this->icon('trash') ?> <?= $this->translate('panel.modal.action.delete') ?> <span class="files-selection-count"></span></button>
+            <?php if ($panel->user()->permissions()->has('panel.pages.deleteFiles')) : ?>
+                <button type="button" class="button button-danger" data-modal="deleteFileItemModal"><?= $this->icon('trash') ?> <?= $this->translate('panel.modal.action.delete') ?> <span class="files-selection-count"></span></button>
+            <?php endif ?>
         </div>
         <fieldset class="form-togglegroup files-list-view-as" data-for="<?= $name ?>">
             <label class="form-label"><input class="form-input" type="radio" name="<?= $name ?>-list-view-as" value="list" checked aria-label="<?= $this->translate('panel.files.viewAsList') ?>" data-form-ignore="true" autocomplete="off"><span title="<?= $this->translate('panel.files.viewAsList') ?>"><?= $this->icon('file-list') ?></span></label>
