@@ -71,6 +71,38 @@ final class Path
     }
 
     /**
+     * Return the directory name of a path
+     *
+     * This method is similar to the built-in `dirname()` function,
+     * but it works regardless of the separator and allows specifying a custom one
+     *
+     * @throws InvalidArgumentException If the separator is not a valid directory separator
+     */
+    public static function dirname(string $path, string $separator = self::DEFAULT_SEPARATOR): string
+    {
+        if (!self::isSeparator($separator)) {
+            throw new InvalidArgumentException('$separator must be a valid directory separator');
+        }
+        $dirname = dirname(str_replace('\\', '/', $path));
+        return $separator === '/'
+            ? $dirname
+            : str_replace('/', $separator, $dirname);
+    }
+
+    /**
+     * Return the trailing component of a path
+     *
+     * This method is similar to the built-in `basename()` function,
+     * but it works regardless of the separator
+     *
+     * @param string $suffix Optional suffix to remove from the trailing component
+     */
+    public static function basename(string $path, string $suffix = ''): string
+    {
+        return basename(str_replace('\\', '/', $path), $suffix);
+    }
+
+    /**
      * Split a path into segments removing `.` and `..`
      *
      * @return array<string>
