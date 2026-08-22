@@ -72,8 +72,12 @@ export class FilesList {
         document.addEventListener("click", (event) => {
             const target = event.target as HTMLElement;
 
-            const filesItem = target.closest(".files-item");
+const filesItem = target.closest<HTMLElement>(".files-item");
 
+// Ignore clicks on file items that belong to a different FilesList instance
+if (filesItem && !this.element.contains(filesItem)) {
+    return;
+}
             if (filesItem) {
                 if (target.closest(".dropdown")) {
                     $$(".files-item.is-selected", this.element).forEach((element) => {
@@ -110,11 +114,11 @@ export class FilesList {
                     }
                 }
 
-                if (!event.ctrlKey && !event.metaKey && !filesItem?.classList.contains("is-selected")) {
-                    $$(".files-item.is-selected").forEach((element) => {
-                        element.classList.remove("is-selected");
-                    });
-                }
+if (!event.ctrlKey && !event.metaKey && !filesItem.classList.contains("is-selected")) {
+    $$(".files-item.is-selected", this.element).forEach((element) => {
+        element.classList.remove("is-selected");
+    });
+}
 
                 this.updateCommandsState();
             } else if (!target.closest(".dropdown") && !target.closest(".modal") && !target.closest(".files-selection-actions")) {
