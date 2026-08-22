@@ -369,10 +369,20 @@ class HtmlReference
      */
     public const array URI_ATTRIBUTES = [
         'action',
-        'src',
-        'href',
-        'lowsrc',
+        'archive',
         'background',
+        'cite',
+        'classid',
+        'codebase',
+        'data',
+        'formaction',
+        'href',
+        'longdesc',
+        'lowsrc',
+        'manifest',
         'ping',
+        'poster',
+        'src',
+        'usemap',
     ];
 }
