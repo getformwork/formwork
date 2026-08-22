@@ -71,31 +71,35 @@ export class FilesList {
 
         document.addEventListener("click", (event) => {
             const target = event.target as HTMLElement;
+            const filesItem = target.closest<HTMLElement>(".files-item");
 
-const filesItem = target.closest<HTMLElement>(".files-item");
+            if (!filesItem || !this.element.contains(filesItem)) {
+                if (!target.closest(".modal, .files-selection-actions")) {
+                    this.clearSelection();
+                }
+                // Ignore clicks on file items that belong to a different FilesList instance
+                return;
+            }
 
-// Ignore clicks on file items that belong to a different FilesList instance
-if (filesItem && !this.element.contains(filesItem)) {
-    return;
-}
-            if (filesItem) {
+            if (this.hasSelectionActions()) {
                 if (target.closest(".dropdown")) {
-                    $$(".files-item.is-selected", this.element).forEach((element) => {
-                        element.classList.remove("is-selected");
-                    });
-                    this.selectionAnchor = undefined;
-                    this.updateCommandsState();
-                } else if (event.ctrlKey || event.metaKey) {
-                    event.preventDefault();
+                    this.clearSelection();
+                    return;
+                }
+
+                if (event.ctrlKey || event.metaKey) {
                     filesItem.classList.toggle("is-selected");
-                    this.selectionAnchor = filesItem as HTMLElement;
-                } else if (event.shiftKey) {
-                    event.preventDefault();
+                    this.selectionAnchor = filesItem;
+                    this.updateSelectionActions();
+                    return;
+                }
+
+                if (event.shiftKey) {
                     const items = Array.from($$(".files-item", this.element));
-                    const currentIndex = items.indexOf(filesItem as HTMLElement);
+                    const currentIndex = items.indexOf(filesItem);
 
                     if (!this.selectionAnchor || !items.includes(this.selectionAnchor)) {
-                        this.selectionAnchor = filesItem as HTMLElement;
+                        this.selectionAnchor = filesItem;
                     }
 
                     const anchorIndex = items.indexOf(this.selectionAnchor);
@@ -103,32 +107,15 @@ if (filesItem && !this.element.contains(filesItem)) {
                     const end = Math.max(anchorIndex, currentIndex);
 
                     items.forEach((element, index) => element.classList.toggle("is-selected", index >= start && index <= end));
-                } else {
-                    $$(".files-item.is-selected", this.element).forEach((element) => element.classList.remove("is-selected"));
-                    filesItem.classList.add("is-selected");
-                    this.selectionAnchor = filesItem as HTMLElement;
-
-                    const anchor = $(".file-name a", filesItem) as HTMLAnchorElement;
-                    if (this.element.classList.contains("is-thumbnails") && anchor.href) {
-                        location.href = anchor.href;
-                    }
+                    this.updateSelectionActions();
+                    return;
                 }
+            }
 
-if (!event.ctrlKey && !event.metaKey && !filesItem.classList.contains("is-selected")) {
-    $$(".files-item.is-selected", this.element).forEach((element) => {
-        element.classList.remove("is-selected");
-    });
-}
-
-                this.updateCommandsState();
-            } else if (!target.closest(".dropdown") && !target.closest(".modal") && !target.closest(".files-selection-actions")) {
-                const selectedItems = $$(".files-item.is-selected", this.element);
-
-                if (selectedItems.length > 0) {
-                    selectedItems.forEach((element) => element.classList.remove("is-selected"));
-                    this.selectionAnchor = undefined;
-                    this.updateCommandsState();
-                }
+            const anchor = $(".file-name a", filesItem) as HTMLAnchorElement;
+            if (this.element.classList.contains("is-thumbnails") && anchor.href) {
+                this.clearSelection();
+                location.href = anchor.href;
             }
         });
 
@@ -424,7 +411,7 @@ if (!event.ctrlKey && !event.metaKey && !filesItem.classList.contains("is-select
                                         this.element.hidden = true;
                                     }
 
-                                    this.updateCommandsState();
+                                    this.updateSelectionActions();
 
                                     const allDeleted = deletedCount === selectedItems.length;
                                     const message = allDeleted && deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : lastMessage;
@@ -482,13 +469,26 @@ if (!event.ctrlKey && !event.metaKey && !filesItem.classList.contains("is-select
         }
     }
 
-    private updateCommandsState() {
+    private hasSelectionActions() {
         const selectionActions = $(".files-selection-actions", this.element);
-        if (selectionActions) {
+        return selectionActions && selectionActions.children.length > 0;
+    }
+
+    private clearSelection() {
+        const selectedItems = $$(".files-item.is-selected", this.element);
+        if (selectedItems.length === 0) {
+            return;
+        }
+        selectedItems.forEach((element) => element.classList.remove("is-selected"));
+        this.selectionAnchor = undefined;
+        this.updateSelectionActions();
+    }
+
+    private updateSelectionActions() {
+        const selectionActions = $(".files-selection-actions", this.element);
+        if (selectionActions && selectionActions.children.length > 0) {
             const selectedItems = $$(".files-item.is-selected", this.element);
-
             selectionActions.hidden = selectedItems.length === 0;
-
             const countElement = $(".files-selection-count", selectionActions) as HTMLElement;
             countElement.textContent = `(${selectedItems.length})`;
         }
