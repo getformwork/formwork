@@ -76,6 +76,8 @@ final class Path
      * This method is similar to the built-in `dirname()` function,
      * but it works regardless of the separator and allows specifying a custom one
      *
+     * @since 2.3.13
+     *
      * @throws InvalidArgumentException If the separator is not a valid directory separator
      */
     public static function dirname(string $path, string $separator = self::DEFAULT_SEPARATOR): string
@@ -94,6 +96,8 @@ final class Path
      *
      * This method is similar to the built-in `basename()` function,
      * but it works regardless of the separator
+     *
+     * @since 2.3.13
      *
      * @param string $suffix Optional suffix to remove from the trailing component
      */

@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.3.13](https://github.com/getformwork/formwork/releases/tag/2.3.13)
+
+**Bug fixes**
+
+- Correctly sanitize requested backup files
+- Add missing URI attributes to `HtmlSanitizer`
+
 # [2.3.12](https://github.com/getformwork/formwork/releases/tag/2.3.12)
 
 **Enhancements**
