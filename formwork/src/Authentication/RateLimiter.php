@@ -32,8 +32,10 @@ final class RateLimiter
         private int $resetTime,
         Request $request,
     ) {
-        // Hash visitor IP address followed by current host
-        $this->attemptHash = hash('sha256', "{$request->ip()}@{$request->host()}");
+        // Hash visitor IP address followed by the ROOT_PATH constant.
+        // Do NOT use any client-controlled values as formerly done with
+        // `$request->host()`, as this could be used to bypass the rate limit
+        $this->attemptHash = hash('sha256', "{$request->ip()}@" . ROOT_PATH);
 
         if ($registry->has($this->attemptHash)) {
             [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);
