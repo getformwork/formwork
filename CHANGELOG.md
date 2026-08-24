@@ -1,8 +1,14 @@
 # Changelog
 
+# [2.3.14](https://github.com/getformwork/formwork/releases/tag/2.3.14)
+
+**Security**
+
+- Avoid request-controlled values in authentication rate limiter hashes
+
 # [2.3.13](https://github.com/getformwork/formwork/releases/tag/2.3.13)
 
-**Bug fixes**
+**Security**
 
 - Correctly sanitize requested backup files
 - Add missing URI attributes to `HtmlSanitizer`
