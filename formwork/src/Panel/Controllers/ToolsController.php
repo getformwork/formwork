@@ -137,19 +137,14 @@ final class ToolsController extends AbstractController
             ],
             'HTTP Request Headers'  => $this->request->headers()->toArray(),
             'HTTP Response Headers' => $this->getHeaders(),
+            'Environment Variables' => Arr::reject([...getenv(), ...$this->request->server()->toArray()], fn($value, $key) => Str::startsWith($key, 'HTTP_')),
             'Server'                => [
-                'IP Address'     => $_SERVER['SERVER_ADDR'],
-                'Port'           => $_SERVER['SERVER_PORT'],
-                'Name'           => $_SERVER['SERVER_NAME'],
-                'Software'       => $_SERVER['SERVER_SOFTWARE'],
                 'Apache Modules' => implode(', ', function_exists('apache_get_modules') ? apache_get_modules() : []),
-                'Protocol'       => $_SERVER['SERVER_PROTOCOL'],
                 'HTTPS'          => $this->request->isSecure() ? 'on' : 'off',
-                'Request Time'   => gmdate('D, d M Y H:i:s T', $_SERVER['REQUEST_TIME']),
+                'Request Time'   => gmdate('D, d M Y H:i:s T', (int) $this->request->server()->get('REQUEST_TIME')),
             ],
             'Client' => [
                 'IP Address' => $this->request->ip(),
-                'Port'       => $_SERVER['REMOTE_PORT'],
             ],
             'Session' => [
                 'Session Cookie Lifetime' => ini_get('session.cookie_lifetime'),
@@ -201,6 +196,7 @@ final class ToolsController extends AbstractController
 
         ksort($data['HTTP Request Headers']);
         ksort($data['HTTP Response Headers']);
+        ksort($data['Environment Variables']);
 
         return new Response($this->view('@panel.tools.info', [
             'title'    => $this->translate('panel.tools.info'),
