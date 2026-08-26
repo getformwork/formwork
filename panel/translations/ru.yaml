@@ -277,6 +277,7 @@ panel.pages.viewPage: Просмотреть страницу
 panel.panel: Панель администрирования
 panel.plugins.info: Информация
 panel.plugins.nextPlugin: Следующий плагин
+panel.plugins.plugin.cannotEnable.initializationError: Невозможно включить плагин. Произошла ошибка при инициализации плагина.
 panel.plugins.plugin.cannotSave.invalidFields: Не удалось сохранить настройки плагина, некоторые поля недействительны
 panel.plugins.plugin.disabled: Плагин отключён
 panel.plugins.plugin.enabled: Плагин включён

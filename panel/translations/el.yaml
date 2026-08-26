@@ -277,6 +277,7 @@ panel.pages.viewPage: Προβολή σελίδας
 panel.panel: Πίνακας διαχείρισης
 panel.plugins.info: Πληροφορίες
 panel.plugins.nextPlugin: Επόμενο πρόσθετο
+panel.plugins.plugin.cannotEnable.initializationError: Δεν είναι δυνατή η ενεργοποίηση του πρόσθετου. Παρουσιάστηκε σφάλμα κατά την αρχικοποίηση του πρόσθετου.
 panel.plugins.plugin.cannotSave.invalidFields: Δεν είναι δυνατή η αποθήκευση των επιλογών του πρόσθετου, ορισμένα πεδία δεν είναι έγκυρα
 panel.plugins.plugin.disabled: Το πρόσθετο απενεργοποιήθηκε
 panel.plugins.plugin.enabled: Το πρόσθετο ενεργοποιήθηκε

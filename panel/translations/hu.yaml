@@ -277,6 +277,7 @@ panel.pages.viewPage: Oldal megtekintése
 panel.panel: Adminisztrációs felület
 panel.plugins.info: Információ
 panel.plugins.nextPlugin: Következő bővítmény
+panel.plugins.plugin.cannotEnable.initializationError: Nem lehet engedélyezni a bővítményt. Hiba történt a bővítmény inicializálása során.
 panel.plugins.plugin.cannotSave.invalidFields: Nem lehet menteni a bővítmény beállításait, egyes mezők érvénytelenek
 panel.plugins.plugin.disabled: Bővítmény letiltva
 panel.plugins.plugin.enabled: Bővítmény engedélyezve

@@ -277,6 +277,7 @@ panel.pages.viewPage: Sayfayı görüntüle
 panel.panel: Yönetim paneli
 panel.plugins.info: Bilgi
 panel.plugins.nextPlugin: Sonraki eklenti
+panel.plugins.plugin.cannotEnable.initializationError: Eklenti etkinleştirilemiyor. Eklenti başlatılırken bir hata oluştu.
 panel.plugins.plugin.cannotSave.invalidFields: Eklenti seçenekleri kaydedilemiyor, bazı alanlar geçersiz
 panel.plugins.plugin.disabled: Eklenti devre dışı
 panel.plugins.plugin.enabled: Eklenti etkin

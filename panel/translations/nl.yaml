@@ -277,6 +277,7 @@ panel.pages.viewPage: Bekijk pagina
 panel.panel: Administratiepaneel
 panel.plugins.info: Info
 panel.plugins.nextPlugin: Volgende plugin
+panel.plugins.plugin.cannotEnable.initializationError: Kan plugin niet inschakelen. Er is een fout opgetreden bij het initialiseren van de plugin.
 panel.plugins.plugin.cannotSave.invalidFields: Pluginopties kunnen niet worden opgeslagen, sommige velden zijn ongeldig
 panel.plugins.plugin.disabled: Plugin uitgeschakeld
 panel.plugins.plugin.enabled: Plugin ingeschakeld

@@ -7,6 +7,7 @@ use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Parsers\Yaml;
+use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Plugins\Plugin;
 use Formwork\Plugins\Plugins;
 use Formwork\Router\RouteParams;
@@ -108,6 +109,14 @@ final class PluginsController extends AbstractController
         }
 
         $this->togglePluginStatus($plugin, true);
+
+        try {
+            $plugins->initialize($name);
+        } catch (PluginInitializationException) {
+            $this->togglePluginStatus($plugin, false);
+            $this->panel->notify($this->translate('panel.plugins.plugin.cannotEnable.initializationError'), 'error');
+            return JsonResponse::error($this->translate('panel.plugins.plugin.cannotEnable.initializationError'), ResponseStatus::InternalServerError);
+        }
 
         $this->panel->notify($this->translate('panel.plugins.plugin.enabled'), 'success');
         return JsonResponse::success($this->translate('panel.plugins.plugin.enabled'));

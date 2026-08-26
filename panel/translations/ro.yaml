@@ -277,6 +277,7 @@ panel.pages.viewPage: Vezi pagina
 panel.panel: Panoul de administrare
 panel.plugins.info: Info
 panel.plugins.nextPlugin: Plugin următor
+panel.plugins.plugin.cannotEnable.initializationError: Pluginul nu poate fi activat. A apărut o eroare la inițializarea pluginului.
 panel.plugins.plugin.cannotSave.invalidFields: Nu se pot salva opțiunile pluginului, unele câmpuri sunt nevalide
 panel.plugins.plugin.disabled: Plugin dezactivat
 panel.plugins.plugin.enabled: Plugin activat

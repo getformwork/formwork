@@ -277,6 +277,7 @@ panel.pages.viewPage: Ver página
 panel.panel: Panel de administración
 panel.plugins.info: Info
 panel.plugins.nextPlugin: Plugin siguiente
+panel.plugins.plugin.cannotEnable.initializationError: No se puede activar el plugin. Se produjo un error al inicializar el plugin.
 panel.plugins.plugin.cannotSave.invalidFields: No se pueden guardar las opciones del plugin, algunos campos no son válidos
 panel.plugins.plugin.disabled: Plugin deshabilitado
 panel.plugins.plugin.enabled: Plugin habilitado

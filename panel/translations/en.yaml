@@ -277,6 +277,7 @@ panel.pages.viewPage: View page
 panel.panel: Administration panel
 panel.plugins.info: Info
 panel.plugins.nextPlugin: Next plugin
+panel.plugins.plugin.cannotEnable.initializationError: Cannot enable plugin. An error occurred while initializing the plugin.
 panel.plugins.plugin.cannotSave.invalidFields: Cannot save plugin options, some fields are invalid
 panel.plugins.plugin.disabled: Plugin disabled
 panel.plugins.plugin.enabled: Plugin enabled
