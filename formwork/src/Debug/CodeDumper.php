@@ -36,7 +36,7 @@ final class CodeDumper
             }
 
             .color-scheme-dark .__formwork-code {
-                background-color: #333;
+                background-color: #333638;
                 color: #f0f0f0;
             }
 

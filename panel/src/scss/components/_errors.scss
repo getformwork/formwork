@@ -48,9 +48,13 @@
     max-width: 87.5rem;
     padding: 1.5rem 2rem;
     border-radius: var(--border-radius);
-    margin: 0 auto 4rem;
+    margin: 0 auto 2rem;
     background-color: var(--color-base-900);
     text-align: left;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
 }
 
 .error-debug-details h3 {
