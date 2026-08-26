@@ -66,14 +66,14 @@ class Plugins extends PluginCollection
             throw new PluginInitializationException(sprintf('Failed autoload for plugin "%s"', $name), $e->getCode(), previous: $e);
         }
 
-        foreach ($plugin->getEventListeners() as $eventName => $eventListener) {
-            $this->eventDispatcher->on($eventName, $plugin->{$eventListener}(...));
-        }
-
         try {
             $plugin->initialize();
         } catch (Throwable $e) {
             throw new PluginInitializationException(sprintf('Failed initialization for plugin "%s"', $name), $e->getCode(), previous: $e);
+        }
+
+        foreach ($plugin->getEventListeners() as $eventName => $eventListener) {
+            $this->eventDispatcher->on($eventName, $plugin->{$eventListener}(...));
         }
     }
 
