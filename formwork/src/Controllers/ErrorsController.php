@@ -24,7 +24,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
 
         if ($this->config->getBool('system.debug.enabled') || $this->request->isLocalhost()) {
             $data['throwable'] = $throwable;
-            $data['stackTrace'] = $throwable !== null ? $this->getTrace($throwable) : [];
+            $data['traceResolver'] = $this->getTrace(...);
         }
 
         if ($this->request->isXmlHttpRequest()) {
@@ -80,14 +80,19 @@ final class ErrorsController extends AbstractController implements ErrorsControl
      */
     private function logThrowable(Throwable $throwable): void
     {
-        error_log(sprintf(
-            "Uncaught %s: %s in %s:%s\nStack trace:\n%s\n",
-            $throwable::class,
-            $throwable->getMessage(),
-            $throwable->getFile(),
-            $throwable->getLine(),
-            $throwable->getTraceAsString()
-        ));
+        // Log the throwable like the native PHP exception handler does
+        $messages = [];
+        do {
+            array_unshift($messages, sprintf(
+                "%s: %s in %s:%s\nStack trace:\n%s\n",
+                $throwable::class,
+                $throwable->getMessage(),
+                $throwable->getFile(),
+                $throwable->getLine(),
+                $throwable->getTraceAsString()
+            ));
+        } while ($throwable = $throwable->getPrevious());
+        error_log('Uncaught ' . implode("\nNext ", $messages));
     }
 
     /**
@@ -95,8 +100,12 @@ final class ErrorsController extends AbstractController implements ErrorsControl
      *
      * @return array<array{file?: string, line?: int, function?: string, class?: string, object?: object, type?: string, args?: list<mixed>}>
      */
-    private function getTrace(Throwable $throwable): array
+    private function getTrace(?Throwable $throwable): array
     {
+        if ($throwable === null) {
+            return [];
+        }
+
         $trace = $throwable->getTrace();
 
         $file = $throwable->getFile();

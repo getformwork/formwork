@@ -90,7 +90,7 @@
         }
 
         .error-debug-details {
-            margin: 0 auto 4rem;
+            margin: 0 auto 2rem;
             max-width: 87.5rem;
             text-align: left;
             border-radius: 4px;
