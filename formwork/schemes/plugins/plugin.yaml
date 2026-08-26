@@ -1,0 +1,11 @@
+title: Plugin
+
+fields:
+    enabled:
+        label: Enabled
+        type: togglegroup
+        options:
+            1: Enabled
+            0: Disabled
+        default: 0
+        visible: false

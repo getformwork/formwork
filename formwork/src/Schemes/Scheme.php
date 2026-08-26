@@ -202,6 +202,21 @@ class Scheme implements Arrayable
     }
 
     /**
+     * Check if the scheme extends another scheme
+     */
+    public function extendsScheme(Scheme|string $scheme): bool
+    {
+        $id = $scheme instanceof Scheme ? $scheme->id() : $scheme;
+        while ($extendedScheme = $this->getExtendedScheme()) {
+            if ($extendedScheme->id() === $id) {
+                return true;
+            }
+            $extendedScheme = $extendedScheme->getExtendedScheme();
+        }
+        return false;
+    }
+
+    /**
      * Translate a value
      */
     protected function translate(mixed $value, Translation $translation): mixed

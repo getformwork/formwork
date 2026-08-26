@@ -2,7 +2,6 @@
 
 namespace Formwork\Panel\Controllers;
 
-use Formwork\Fields\FieldCollection;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
@@ -56,19 +55,7 @@ final class PluginsController extends AbstractController
             return $this->forward(ErrorsController::class, 'notFound');
         }
 
-        $scheme = $this->getPluginScheme($plugin);
-
-        // If no scheme, just show plugin info
-        if ($scheme === null) {
-            return new Response($this->view('@panel.plugins.plugin', [
-                'title'  => $plugin->manifest()->title() ?? $plugin->name(),
-                'plugin' => $plugin,
-                'fields' => new FieldCollection(),
-                ...$this->getPreviousAndNextPlugin($plugin),
-            ]));
-        }
-
-        $fields = $scheme->fields();
+        $fields = $this->getPluginScheme($plugin)->fields();
 
         $fields->setValues($this->config->getArray("plugins.{$name}", []));
 
@@ -88,7 +75,7 @@ final class PluginsController extends AbstractController
         return new Response($this->view('@panel.plugins.plugin', [
             'title'  => $plugin->manifest()->title() ?? $plugin->name(),
             'plugin' => $plugin,
-            'fields' => $form->fields(),
+            'fields' => $form->fields()->filter(fn($field) => $field->isVisible()),
             ...$this->getPreviousAndNextPlugin($plugin),
         ]), $form->getResponseStatus());
     }
@@ -168,25 +155,32 @@ final class PluginsController extends AbstractController
     /**
      * Get scheme for a given plugin
      */
-    private function getPluginScheme(Plugin $plugin): ?Scheme
+    private function getPluginScheme(Plugin $plugin): Scheme
     {
         $id = $plugin->id();
 
         $schemes = $this->app->schemes();
 
         if ($schemes->has("plugins.{$id}")) {
-            return $schemes->get("plugins.{$id}");
+            $scheme = $schemes->get("plugins.{$id}");
+        } else {
+            // Try to load scheme from plugin path
+            $path = FileSystem::joinPaths($plugin->path(), "schemes/plugins/{$id}.yaml");
+
+            if (FileSystem::exists($path)) {
+                $schemes->load("plugins.{$id}", $path);
+                $scheme = $schemes->get("plugins.{$id}");
+            }
         }
 
-        // Try to load scheme from plugin path
-        $path = FileSystem::joinPaths($plugin->path(), "schemes/plugins/{$id}.yaml");
-
-        if (FileSystem::exists($path)) {
-            $schemes->load("plugins.{$id}", $path);
-            return $schemes->get("plugins.{$id}");
+        // Require that the scheme extends the base plugin scheme,
+        // so that the `enabled` field is always present
+        if (isset($scheme) && !$scheme->extendsScheme('plugins.plugin')) {
+            // @phpstan-ignore argument.type
+            $scheme->extendWith($schemes->get('plugins.plugin')->toArray());
         }
 
-        return null;
+        return $scheme ?? $schemes->get('plugins.plugin');
     }
 
     /**
