@@ -349,13 +349,15 @@ final class Debug
                     $parts = [];
 
                     $meta = [
+                        'file'  => $reflectionFunction->getFileName(),
+                        'line'  => $reflectionFunction->getStartLine(),
                         'scope' => $reflectionFunction->isStatic() ? null : $reflectionFunction->getClosureScopeClass()?->getName(),
                         'class' => $reflectionFunction->isStatic() ? null : $reflectionFunction->getClosureCalledClass()?->getName(),
                         'this'  => $reflectionFunction->getClosureThis(),
                     ];
 
                     foreach ($meta as $property => $value) {
-                        if ($value === null) {
+                        if ($value === null || $value === false) {
                             continue;
                         }
                         $parts[] = str_repeat(' ', $indent + self::INDENT_SPACES)
