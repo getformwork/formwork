@@ -207,12 +207,16 @@ class Scheme implements Arrayable
     public function extendsScheme(Scheme|string $scheme): bool
     {
         $id = $scheme instanceof Scheme ? $scheme->id() : $scheme;
-        while ($extendedScheme = $this->getExtendedScheme()) {
-            if ($extendedScheme->id() === $id) {
+
+        $extended = $this->getExtendedScheme();
+
+        while ($extended instanceof Scheme) {
+            if ($extended->id() === $id) {
                 return true;
             }
-            $extendedScheme = $extendedScheme->getExtendedScheme();
+            $extended = $extended->getExtendedScheme();
         }
+
         return false;
     }
 
