@@ -127,6 +127,8 @@ class Plugin implements Arrayable
 
     /**
      * Get the plugin autoloader
+     *
+     * @internal This method is called during plugin initialization. Since it can have side effects, it should not be called directly
      */
     public function autoload(): ?ClassLoader
     {
