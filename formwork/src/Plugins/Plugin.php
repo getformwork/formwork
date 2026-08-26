@@ -42,6 +42,10 @@ class Plugin implements Arrayable
     ) {
         $this->id = basename($this->path);
 
+        if ($this->id === 'plugin') {
+            throw new InvalidArgumentException('Invalid plugin id "plugin". The plugin id "plugin" is reserved.');
+        }
+
         if (!preg_match('/^[a-z0-9-]+$/', $this->id)) {
             throw new InvalidArgumentException(sprintf('Invalid plugin id "%s". Plugin ids can only contain lowercase letters, numbers and hyphens.', $this->id));
         }
