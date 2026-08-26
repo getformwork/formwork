@@ -52,7 +52,12 @@ class Plugins extends PluginCollection
             throw new InvalidArgumentException(sprintf('Invalid plugin "%s"', $name));
         }
 
-        $plugin->autoload()?->register();
+        if ($autoload = $plugin->autoload()) {
+            // Requiring vendor/autoload.php always prepends the autoloader to the stack,
+            // so we need to unregister and re-register without prepending
+            $autoload->unregister();
+            $autoload->register(prepend: false);
+        }
 
         foreach ($plugin->getEventListeners() as $eventName => $eventListener) {
             $this->eventDispatcher->on($eventName, $plugin->{$eventListener}(...));
