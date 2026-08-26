@@ -304,7 +304,8 @@ final class PagesController extends AbstractController
         $originalValues = $page->getMultiple(['published', 'cacheable']);
 
         // Validate fields against data
-        $page->fields()->setValues($requestData, null)->validate();
+        // (avoid specifying a `null` default value to use each field's own defaults instead)
+        $page->fields()->setValues($requestData)->validate();
 
         if (($requestTemplate = $requestData->get('template')) !== null && $page->template()->name() !== $requestTemplate) {
             $page->reload(['template' => $this->site->templates()->get($requestTemplate)]);
