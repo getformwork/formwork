@@ -88,8 +88,8 @@ metadata:
 
 pages:
     path: '${%ROOT_PATH%}/site/pages'
-    index: index
-    error: error
+    index: /index/
+    error: /error/
     content:
         extension: .md
         allowHtml: false
