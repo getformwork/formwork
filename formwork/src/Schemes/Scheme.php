@@ -203,17 +203,29 @@ class Scheme implements Arrayable
 
     /**
      * Check if the scheme extends another scheme
+     *
+     * @throws RecursionException If there is recursion in scheme extension
      */
     public function extendsScheme(Scheme|string $scheme): bool
     {
-        $id = $scheme instanceof Scheme ? $scheme->id() : $scheme;
+        $id = $scheme instanceof Scheme ? $scheme->id : $scheme;
 
         $extended = $this->getExtendedScheme();
 
+        $visited = [$this->id => true];
+
         while ($extended instanceof Scheme) {
-            if ($extended->id() === $id) {
+            $extendedId = $extended->id;
+
+            if (isset($visited[$extendedId])) {
+                throw new RecursionException(sprintf('Recursion in the extension of the scheme "%s". Extension chain: "%s"', $this->id, implode('" > "', array_keys($visited))));
+            }
+
+            if ($extendedId === $id) {
                 return true;
             }
+
+            $visited[$extendedId] = true;
             $extended = $extended->getExtendedScheme();
         }
 
