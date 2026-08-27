@@ -1,5 +1,5 @@
 authentication:
-    registryPath: '${%ROOT_PATH%}/site/auth/registry/'
+    registryPath: '${%ROOT_PATH%}/site/auth/registry'
     limits:
         maxAttempts: 10
         resetTime: 300
