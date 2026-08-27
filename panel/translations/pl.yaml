@@ -277,6 +277,7 @@ panel.pages.viewPage: Wyświetl stronę
 panel.panel: Panel administracyjny
 panel.plugins.info: Info
 panel.plugins.nextPlugin: Następna wtyczka
+panel.plugins.plugin.cannotEnable.initializationError: Nie można włączyć wtyczki. Wystąpił błąd podczas inicjalizacji wtyczki.
 panel.plugins.plugin.cannotSave.invalidFields: Nie można zapisać opcji wtyczki, niektóre pola są nieprawidłowe
 panel.plugins.plugin.disabled: Wtyczka wyłączona
 panel.plugins.plugin.enabled: Wtyczka włączona

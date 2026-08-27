@@ -3,11 +3,12 @@ import { app } from "../../app";
 import { Notification } from "../notification";
 import { Request } from "../../utils/request";
 import { throttle } from "../../utils/events";
+import { TogglegroupInput } from "../inputs/togglegroup-input";
 
 export class Plugins {
     constructor() {
         $$<HTMLInputElement>(".plugin-status-toggle").forEach((toggle) => {
-            const fieldset = toggle.closest(".form-togglegroup") as HTMLFieldSetElement;
+            const togglegroup = new TogglegroupInput(toggle.closest(".form-togglegroup") as HTMLFieldSetElement);
             const action = toggle.dataset.action;
 
             toggle.addEventListener("change", () => {
@@ -15,7 +16,7 @@ export class Plugins {
                     return;
                 }
 
-                fieldset.disabled = true;
+                togglegroup.element.disabled = true;
 
                 throttle(() => {
                     new Request(
@@ -25,12 +26,15 @@ export class Plugins {
                             data: { "csrf-token": app.config.csrfToken as string },
                         },
                         (response) => {
-                            if (response.status === "success" && !app.forms["plugin-form"]?.hasChanged()) {
+                            if (!app.forms["plugin-form"]?.hasChanged()) {
                                 window.location.reload();
                             } else {
                                 const notification = new Notification(response.message, response.status);
                                 notification.show();
-                                fieldset.disabled = false;
+                                if (response.status === "error") {
+                                    togglegroup.value = toggle.value === "1" ? "0" : "1";
+                                }
+                                togglegroup.element.disabled = false;
                             }
                         },
                     );

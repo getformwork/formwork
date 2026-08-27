@@ -5,9 +5,11 @@ namespace Formwork\Plugins;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
 use Formwork\Plugins\Events\PluginsInitializedEvent;
+use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use InvalidArgumentException;
+use Throwable;
 use UnexpectedValueException;
 
 /**
@@ -44,7 +46,8 @@ class Plugins extends PluginCollection
     /**
      * Initialize a plugin from id
      *
-     * @throws InvalidArgumentException If the plugin id is invalid
+     * @throws InvalidArgumentException      If the plugin id is invalid
+     * @throws PluginInitializationException If the plugin autoload or initialization fails
      */
     public function initialize(string $name): void
     {
@@ -52,13 +55,26 @@ class Plugins extends PluginCollection
             throw new InvalidArgumentException(sprintf('Invalid plugin "%s"', $name));
         }
 
-        $plugin->autoload()?->register();
+        try {
+            if ($autoload = $plugin->autoload()) {
+                // Requiring vendor/autoload.php always prepends the autoloader to the stack,
+                // so we need to unregister and re-register without prepending
+                $autoload->unregister();
+                $autoload->register(prepend: false);
+            }
+        } catch (Throwable $e) {
+            throw new PluginInitializationException(sprintf('Failed autoload for plugin "%s"', $name), $e->getCode(), previous: $e);
+        }
+
+        try {
+            $plugin->initialize();
+        } catch (Throwable $e) {
+            throw new PluginInitializationException(sprintf('Failed initialization for plugin "%s"', $name), $e->getCode(), previous: $e);
+        }
 
         foreach ($plugin->getEventListeners() as $eventName => $eventListener) {
             $this->eventDispatcher->on($eventName, $plugin->{$eventListener}(...));
         }
-
-        $plugin->initialize();
     }
 
     /**

@@ -277,6 +277,7 @@ panel.pages.viewPage: Visa sida
 panel.panel: Administrationspanel
 panel.plugins.info: Information
 panel.plugins.nextPlugin: Nästa plugin
+panel.plugins.plugin.cannotEnable.initializationError: Kan inte aktivera pluginet. Ett fel uppstod när pluginet initierades.
 panel.plugins.plugin.cannotSave.invalidFields: Kan inte spara plugin-alternativ, vissa fält är ogiltiga
 panel.plugins.plugin.disabled: Plugin inaktiverad
 panel.plugins.plugin.enabled: Plugin aktiverad

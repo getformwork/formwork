@@ -277,6 +277,7 @@ panel.pages.viewPage: Переглянути сторінку
 panel.panel: Панель адміністратора
 panel.plugins.info: Інформація
 panel.plugins.nextPlugin: Наступний плагін
+panel.plugins.plugin.cannotEnable.initializationError: Неможливо ввімкнути плагін. Під час ініціалізації плагіна сталася помилка.
 panel.plugins.plugin.cannotSave.invalidFields: Не вдалося зберегти налаштування плагіна, деякі поля недійсні
 panel.plugins.plugin.disabled: Плагін вимкнено
 panel.plugins.plugin.enabled: Плагін увімкнено
