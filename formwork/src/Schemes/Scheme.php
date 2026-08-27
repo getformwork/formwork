@@ -147,6 +147,7 @@ class Scheme implements Arrayable
      * @param Scheme|string $scheme Scheme instance or scheme id to extend with
      *
      * @throws InvalidArgumentException If the scheme tries to extend itself
+     * @throws InvalidArgumentException If the scheme ID is invalid or not found
      * @throws RecursionException       If there is recursion in scheme extension
      */
     public function extend(Scheme|string $scheme): void
