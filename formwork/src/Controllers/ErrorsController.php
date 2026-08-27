@@ -80,19 +80,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
      */
     private function logThrowable(Throwable $throwable): void
     {
-        // Log the throwable like the native PHP exception handler does
-        $messages = [];
-        do {
-            array_unshift($messages, sprintf(
-                "%s: %s in %s:%s\nStack trace:\n%s\n",
-                $throwable::class,
-                $throwable->getMessage(),
-                $throwable->getFile(),
-                $throwable->getLine(),
-                $throwable->getTraceAsString()
-            ));
-        } while ($throwable = $throwable->getPrevious());
-        error_log('Uncaught ' . implode("\nNext ", $messages));
+        error_log("Uncaught {$throwable}");
     }
 
     /**
