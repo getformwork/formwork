@@ -4,6 +4,7 @@ namespace Formwork\Schemes;
 
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
+use Formwork\Exceptions\RecursionException;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Fields\Layout\Layout;
@@ -27,6 +28,13 @@ class Scheme implements Arrayable
      * }
      */
     protected array $data = [];
+
+    /**
+     * Scheme IDs currently being extended.
+     *
+     * @var array<string, true>
+     */
+    protected static array $extending = [];
 
     /**
      * Scheme path
@@ -54,6 +62,7 @@ class Scheme implements Arrayable
      *
      * @throws InvalidArgumentException If the extended scheme ID is invalid
      * @throws InvalidArgumentException If a scheme tries to extend itself
+     * @throws RecursionException       If there is recursion in scheme extension
      */
     public function __construct(
         protected string $id,
@@ -65,7 +74,7 @@ class Scheme implements Arrayable
         $this->data = $data;
 
         if (isset($this->data['extend'])) {
-            $this->extend($this->schemes->get($this->data['extend']));
+            $this->extend($this->data['extend']);
         }
 
         $this->options = new SchemeOptions($this->data['options'] ?? []);
@@ -135,15 +144,31 @@ class Scheme implements Arrayable
     /**
      * Extend the scheme with another scheme
      *
+     * @param Scheme|string $scheme Scheme instance or scheme id to extend with
+     *
      * @throws InvalidArgumentException If the scheme tries to extend itself
+     * @throws RecursionException       If there is recursion in scheme extension
      */
-    public function extend(Scheme $scheme): void
+    public function extend(Scheme|string $scheme): void
     {
-        if ($scheme->id === $this->id) {
+        $id = $scheme instanceof Scheme ? $scheme->id : $scheme;
+
+        if ($id === $this->id) {
             throw new InvalidArgumentException(sprintf('Scheme "%s" cannot be extended by itself', $this->id));
         }
 
-        $this->extendWith($scheme->data);
+        if (isset(self::$extending[$this->id])) {
+            throw new RecursionException(sprintf('Recursion in the extension of the scheme "%s". Extension chain: "%s"', $this->id, implode('" > "', [...array_keys(self::$extending), $this->id])));
+        }
+
+        self::$extending[$this->id] = true;
+
+        try {
+            $base = $scheme instanceof Scheme ? $scheme : $this->schemes->get($id);
+            $this->extendWith($base->data);
+        } finally {
+            unset(self::$extending[$this->id]);
+        }
     }
 
     /**
