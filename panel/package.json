@@ -58,18 +58,18 @@
         "@types/sortablejs": "^1.15.9",
         "@typescript/native": "npm:typescript@^7.0.2",
         "esbuild": "^0.28.2",
-        "eslint": "^10.8.1",
+        "eslint": "^10.9.1",
         "eslint-config-prettier": "^10.1.8",
         "globals": "^17.11.0",
         "postcss": "^8.5.26",
         "prettier": "^3.9.6",
-        "sass": "^1.102.0",
+        "sass": "^1.103.1",
         "stylelint": "^17.14.1",
         "stylelint-config-standard-scss": "^17.0.0",
         "stylelint-order": "^8.1.1",
         "stylelint-scss": "^7.2.0",
         "typescript": "npm:@typescript/typescript6@^6.0.2",
-        "typescript-eslint": "^8.67.0"
+        "typescript-eslint": "^8.68.0"
     },
     "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }
