@@ -38,15 +38,15 @@
         "@codemirror/commands": "^6.11.0",
         "@codemirror/lang-markdown": "^6.5.2",
         "@codemirror/language": "^6.12.4",
-        "@codemirror/state": "^6.7.1",
-        "@codemirror/view": "^6.43.9",
+        "@codemirror/state": "^6.7.2",
+        "@codemirror/view": "^6.43.10",
         "@lezer/highlight": "^1.2.3",
         "chartist": "^1.5.0",
         "prosemirror-commands": "^1.7.2",
         "prosemirror-history": "^1.5.0",
         "prosemirror-inputrules": "^1.5.1",
         "prosemirror-keymap": "^1.2.3",
-        "prosemirror-markdown": "^1.13.6",
+        "prosemirror-markdown": "^1.13.7",
         "prosemirror-model": "^1.25.11",
         "prosemirror-schema-list": "^1.5.1",
         "prosemirror-state": "^1.4.4",
@@ -60,7 +60,7 @@
         "esbuild": "^0.28.2",
         "eslint": "^10.9.1",
         "eslint-config-prettier": "^10.1.8",
-        "globals": "^17.11.0",
+        "globals": "^17.12.0",
         "postcss": "^8.5.26",
         "prettier": "^3.9.6",
         "sass": "^1.103.1",
@@ -69,7 +69,7 @@
         "stylelint-order": "^8.1.1",
         "stylelint-scss": "^7.2.0",
         "typescript": "npm:@typescript/typescript6@^6.0.2",
-        "typescript-eslint": "^8.68.0"
+        "typescript-eslint": "^8.69.0"
     },
     "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }
