@@ -172,7 +172,7 @@ final class SemVer implements Stringable
      */
     public function compareWith(self $version, string $operator): bool
     {
-        if (!in_array($operator, self::COMPARISON_OPERATORS)) {
+        if (!in_array($operator, self::COMPARISON_OPERATORS, true)) {
             throw new InvalidArgumentException(sprintf('Invalid operator for version comparison: "%s". Use one of the following: "%s"', $operator, implode('", "', self::COMPARISON_OPERATORS)));
         }
         if ($operator === '~') {

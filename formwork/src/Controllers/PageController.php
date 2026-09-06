@@ -204,7 +204,7 @@ final class PageController extends AbstractController
      */
     private function isRequestCacheable(): bool
     {
-        return in_array($this->request->method(), [RequestMethod::GET, RequestMethod::HEAD])
+        return in_array($this->request->method(), [RequestMethod::GET, RequestMethod::HEAD], true)
             && $this->request->query()->isEmpty();
     }
 

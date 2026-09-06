@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
+use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveDefaultValueFromAssignedPropertyRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
@@ -19,6 +21,10 @@ return RectorConfig::configure()
     ->withImportNames(importShortClasses: false)
     ->withPaths([
         dirname(__DIR__),
+    ])
+    ->withRules([
+        StrictInArrayRector::class,
+        StrictArraySearchRector::class,
     ])
     ->withSkip([
         __DIR__ . '/views',
