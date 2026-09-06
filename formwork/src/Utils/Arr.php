@@ -833,9 +833,11 @@ final class Arr
      * @template TKey of array-key
      * @template TValue
      *
+     * @param Arrayable|iterable<mixed>|mixed $object
+     *
      * @throws UnexpectedValueException If the object cannot be converted to an array
      *
-     * @return ($object is array<TKey, TValue>|Traversable<TKey, TValue> ? array<TKey, TValue> : array<mixed>)
+     * @return ($object is iterable<TKey, TValue> ? array<TKey, TValue> : array<mixed>)
      */
     public static function from(mixed $object): array
     {
