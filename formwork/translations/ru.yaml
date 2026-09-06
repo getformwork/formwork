@@ -28,7 +28,7 @@ fields.error.invalidValue: Недопустимое значение
 fields.error.patternMismatch: Значение не соответствует требуемому шаблону
 fields.error.requiredValue: Поле обязательно для заполнения
 fields.error.stepMismatch: Значение не соответствует шагу %d
-fields.error.tooManyItems: Максимальное количество допустимых элементов: %d
+fields.error.tooManyItems: 'Максимальное количество допустимых элементов: %d'
 fields.error.valueAlreadyExists: Значение уже существует
 fields.error.valueTooLarge: Значение больше %d
 fields.error.valueTooLong: Значение превышает %d требуемых символов
