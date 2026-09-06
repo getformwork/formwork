@@ -13,6 +13,7 @@ use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Translations\Translations;
 use Formwork\Traits\Methods;
+use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Str;
 use Stringable;
@@ -60,7 +61,7 @@ class Field implements Arrayable, Stringable
         array $data = [],
         protected ?FieldCollection $parentFieldCollection = null,
     ) {
-        $this->setMultiple($data);
+        $this->setMultiple(Arr::override($this->defaults(), $data));
 
         if ($this->has('fields')) {
             throw new UnexpectedValueException('Fields may not have other fields inside');
@@ -357,5 +358,21 @@ class Field implements Arrayable, Stringable
     protected function callMethod(string $method, array $arguments = []): mixed
     {
         return $this->methods[$method](...[$this, ...$arguments]);
+    }
+
+    /**
+     * Return default field data
+     *
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
+    {
+        return [
+            'formName' => Str::dotNotationToBrackets($this->name()),
+            'required' => false,
+            'disabled' => false,
+            'visible'  => true,
+            'readonly' => false,
+        ];
     }
 }
