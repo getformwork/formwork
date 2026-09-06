@@ -1,8 +1,23 @@
 <?php $this->layout('@panel.panel') ?>
 
 <div class="header">
-    <div class="header-icon"><?= $this->icon('chart-line') ?></div>
-    <div class="header-title"><?= $this->translate('panel.statistics.statistics') ?></div>
+    <div class="flex mr-auto overflow-hidden">
+        <div class="min-w-0 flex">
+            <div class="header-icon"><?= $this->icon('chart-line') ?></div>
+            <div class="header-title"><?= $this->translate('panel.statistics.statistics') ?></div>
+        </div>
+    </div>
+    <div>
+        <?php if ($panel->user()->permissions()->has('panel.statistics.download')) : ?>
+            <div class="dropdown mb-0">
+                <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-statistics-download"><?= $this->icon('cloud-download') ?> Download</button>
+                <div class="dropdown-menu" id="dropdown-statistics-download">
+                    <a class="dropdown-item" href="<?= $panel->uri('/statistics/download/tsv/') ?>">Download TSV</a>
+                    <a class="dropdown-item" href="<?= $panel->uri('/statistics/download/csv/') ?>">Download CSV</a>
+                </div>
+            </div>
+        <?php endif ?>
+    </div>
 </div>
 
 <section class="section">
