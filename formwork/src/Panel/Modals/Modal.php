@@ -164,10 +164,7 @@ class Modal implements Arrayable
      */
     public function buttons(): ModalButtonCollection
     {
-        if (!isset($this->buttons)) {
-            $this->buttons = new ModalButtonCollection(Arr::map($this->data['buttons'] ?? [], fn(array $data) => new ModalButton($data, $this->translation)));
-        }
-        return $this->buttons;
+        return $this->buttons ??= new ModalButtonCollection(Arr::map($this->data['buttons'] ?? [], fn(array $data) => new ModalButton($data, $this->translation)));
     }
 
     /**

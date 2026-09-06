@@ -550,10 +550,7 @@ class Image extends File
      */
     protected function handler(): AbstractHandler
     {
-        if (!isset($this->handler)) {
-            $this->handler = $this->getHandler();
-        }
-        return $this->handler;
+        return $this->handler ??= $this->getHandler();
     }
 
     /**
