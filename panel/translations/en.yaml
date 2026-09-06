@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Default language
 panel.options.system.adminPanel.logoutRedirectsTo: Logout redirects to
 panel.options.system.adminPanel.logoutRedirectsTo.home: Home
 panel.options.system.adminPanel.logoutRedirectsTo.login: Login
+panel.options.system.authentication.maxAttempts: Maximum authentication attempts
+panel.options.system.authentication.resetTime: Maximum authentication attempts reset time
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backups to keep on the server
+panel.options.system.backup.maxExecutionTime: Maximum script execution time for backup creation
+panel.options.system.backup.name: Backup name
+panel.options.system.backup.name.description: Use the placeholders `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}` to build the backup name. Date and time are appended automatically
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Disabled
 panel.options.system.cache.enabled: Enabled
 panel.options.system.cache.time: Cache time
 panel.options.system.content: Content
+panel.options.system.content.addHeadingIds: Add heading IDs to Markdown fields
+panel.options.system.content.addHeadingIds.disabled: Disabled
+panel.options.system.content.addHeadingIds.enabled: Enabled
 panel.options.system.content.allowHtml: Allow HTML in Markdown fields
 panel.options.system.content.allowHtml.description: Potentially dangerous tags like `<script>` and `<style>` are always converted to text
 panel.options.system.content.allowHtml.disabled: Disabled
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Save JPEG images as progressive
 panel.options.system.images.jpegSaveProgressive.disabled: Disabled
 panel.options.system.images.jpegSaveProgressive.enabled: Enabled
 panel.options.system.images.pngCompressionLevel: PNG compression level
+panel.options.system.images.preserveColorProfile: Preserve color profile
+panel.options.system.images.preserveColorProfile.disabled: Disabled
+panel.options.system.images.preserveColorProfile.enabled: Enabled
+panel.options.system.images.preserveExifData: Preserve EXIF data
+panel.options.system.images.preserveExifData.disabled: Disabled
+panel.options.system.images.preserveExifData.enabled: Enabled
 panel.options.system.images.webpQuality: WebP quality
+panel.options.system.metadata.setGenerator: Set generator meta tag
+panel.options.system.metadata.setGenerator.description: Include the `<meta name="generator">` tag in the pages `<head>` with the content set to `Formwork`
+panel.options.system.metadata.setGenerator.disabled: Disabled
+panel.options.system.metadata.setGenerator.enabled: Enabled
+panel.options.system.pages.error: Error page
+panel.options.system.pages.index: Index page
+panel.options.system.plugins: Plugins
+panel.options.system.plugins.disabled: Disabled
+panel.options.system.plugins.enabled: Enabled
+panel.options.system.security: Security
 panel.options.system.session.duration: Session timeout
-panel.options.system.sessions: Sessions
+panel.options.system.updates: Updates
+panel.options.system.updates.backupBefore: Make a backup before updating
+panel.options.system.updates.backupBefore.disabled: Disabled
+panel.options.system.updates.backupBefore.enabled: Enabled
+panel.options.system.updates.time: Minimum time between update checks
 panel.options.system.uploads.processImages: Process (optimize) uploaded images
 panel.options.system.uploads.processImages.disabled: Disabled
 panel.options.system.uploads.processImages.enabled: Enabled

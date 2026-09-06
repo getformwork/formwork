@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Язык по умолчани�
 panel.options.system.adminPanel.logoutRedirectsTo: Выход Перенаправление
 panel.options.system.adminPanel.logoutRedirectsTo.home: Главная
 panel.options.system.adminPanel.logoutRedirectsTo.login: Логин
+panel.options.system.authentication.maxAttempts: Максимальное количество попыток аутентификации
+panel.options.system.authentication.resetTime: Время сброса максимального количества попыток аутентификации
 panel.options.system.backup: Резервный
 panel.options.system.backup.backupFilesToKeep: Резервные копии, чтобы сохранить на сервере
+panel.options.system.backup.maxExecutionTime: Максимальное время выполнения скрипта для создания резервной копии
+panel.options.system.backup.name: Имя резервной копии
+panel.options.system.backup.name.description: Используйте заполнители `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}` для создания имени резервной копии. Дата и время добавляются автоматически
 panel.options.system.cache: Кэш
 panel.options.system.cache.disabled: Выключить
 panel.options.system.cache.enabled: Включить
 panel.options.system.cache.time: Кэш Время
 panel.options.system.content: Контент
+panel.options.system.content.addHeadingIds: Добавлять идентификаторы к заголовкам в полях Markdown
+panel.options.system.content.addHeadingIds.disabled: Отключено
+panel.options.system.content.addHeadingIds.enabled: Включено
 panel.options.system.content.allowHtml: Разрешить HTML в полях Markdown
 panel.options.system.content.allowHtml.description: Потенциально опасные теги, такие как `<script>` и `<style>`, всегда преобразуются в текст
 panel.options.system.content.allowHtml.disabled: Отключено
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Сохранять изобра
 panel.options.system.images.jpegSaveProgressive.disabled: Отключено
 panel.options.system.images.jpegSaveProgressive.enabled: Включено
 panel.options.system.images.pngCompressionLevel: PNG Уровень сжатия
+panel.options.system.images.preserveColorProfile: Сохранять цветовой профиль
+panel.options.system.images.preserveColorProfile.disabled: Отключено
+panel.options.system.images.preserveColorProfile.enabled: Включено
+panel.options.system.images.preserveExifData: Сохранять данные EXIF
+panel.options.system.images.preserveExifData.disabled: Отключено
+panel.options.system.images.preserveExifData.enabled: Включено
 panel.options.system.images.webpQuality: Качество WebP
+panel.options.system.metadata.setGenerator: Устанавливать метатег генератора
+panel.options.system.metadata.setGenerator.description: Включать тег `<meta name="generator">` в `<head>` страниц, устанавливая его содержимое в `Formwork`
+panel.options.system.metadata.setGenerator.disabled: Отключено
+panel.options.system.metadata.setGenerator.enabled: Включено
+panel.options.system.pages.error: Страница ошибки
+panel.options.system.pages.index: Главная страница
+panel.options.system.plugins: Плагины
+panel.options.system.plugins.disabled: Отключено
+panel.options.system.plugins.enabled: Включено
+panel.options.system.security: Безопасность
 panel.options.system.session.duration: Тайм-аут сеанса
-panel.options.system.sessions: Сессии
+panel.options.system.updates: Обновления
+panel.options.system.updates.backupBefore: Создавать резервную копию перед обновлением
+panel.options.system.updates.backupBefore.disabled: Отключено
+panel.options.system.updates.backupBefore.enabled: Включено
+panel.options.system.updates.time: Минимальное время между проверками обновлений
 panel.options.system.uploads.processImages: Обрабатывать (оптимизировать) загруженные изображения
 panel.options.system.uploads.processImages.disabled: Отключено
 panel.options.system.uploads.processImages.enabled: Включено

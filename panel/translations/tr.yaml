@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Varsayılan dil
 panel.options.system.adminPanel.logoutRedirectsTo: Çıkış sonrası yönlendirme
 panel.options.system.adminPanel.logoutRedirectsTo.home: Ana sayfa
 panel.options.system.adminPanel.logoutRedirectsTo.login: Giriş sayfası
+panel.options.system.authentication.maxAttempts: Maksimum kimlik doğrulama denemesi sayısı
+panel.options.system.authentication.resetTime: Maksimum kimlik doğrulama denemesi sayısının sıfırlanma süresi
 panel.options.system.backup: Yedekleme
 panel.options.system.backup.backupFilesToKeep: Sunucuda tutulacak yedek sayısı
+panel.options.system.backup.maxExecutionTime: Yedek oluşturma için maksimum betik yürütme süresi
+panel.options.system.backup.name: Yedek adı
+panel.options.system.backup.name.description: Yedek adını oluşturmak için `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}` yer tutucularını kullanın. Tarih ve saat otomatik olarak eklenir
 panel.options.system.cache: Önbellek
 panel.options.system.cache.disabled: Devre dışı
 panel.options.system.cache.enabled: Etkin
 panel.options.system.cache.time: Önbellek süresi
 panel.options.system.content: İçerik
+panel.options.system.content.addHeadingIds: Markdown alanlarındaki başlıklara kimlik ekle
+panel.options.system.content.addHeadingIds.disabled: Devre dışı
+panel.options.system.content.addHeadingIds.enabled: Etkin
 panel.options.system.content.allowHtml: Markdown alanlarında HTML’e izin ver
 panel.options.system.content.allowHtml.description: '`<script>` ve `<style>` gibi potansiyel olarak tehlikeli etiketler her zaman metne dönüştürülür'
 panel.options.system.content.allowHtml.disabled: Devre dışı
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: JPEG görselleri aşamalı kayd
 panel.options.system.images.jpegSaveProgressive.disabled: Devre dışı
 panel.options.system.images.jpegSaveProgressive.enabled: Etkin
 panel.options.system.images.pngCompressionLevel: PNG sıkıştırma seviyesi
+panel.options.system.images.preserveColorProfile: Renk profilini koru
+panel.options.system.images.preserveColorProfile.disabled: Devre dışı
+panel.options.system.images.preserveColorProfile.enabled: Etkin
+panel.options.system.images.preserveExifData: EXIF verilerini koru
+panel.options.system.images.preserveExifData.disabled: Devre dışı
+panel.options.system.images.preserveExifData.enabled: Etkin
 panel.options.system.images.webpQuality: WebP kalitesi
+panel.options.system.metadata.setGenerator: Generator meta etiketini ayarla
+panel.options.system.metadata.setGenerator.description: Sayfaların `<head>` bölümüne içeriği `Formwork` olarak ayarlanmış `<meta name="generator">` etiketini ekle
+panel.options.system.metadata.setGenerator.disabled: Devre dışı
+panel.options.system.metadata.setGenerator.enabled: Etkin
+panel.options.system.pages.error: Hata sayfası
+panel.options.system.pages.index: Dizin sayfası
+panel.options.system.plugins: Eklentiler
+panel.options.system.plugins.disabled: Devre dışı
+panel.options.system.plugins.enabled: Etkin
+panel.options.system.security: Güvenlik
 panel.options.system.session.duration: Oturum zaman aşımı
-panel.options.system.sessions: Oturumlar
+panel.options.system.updates: Güncellemeler
+panel.options.system.updates.backupBefore: Güncellemeden önce yedek oluştur
+panel.options.system.updates.backupBefore.disabled: Devre dışı
+panel.options.system.updates.backupBefore.enabled: Etkin
+panel.options.system.updates.time: Güncelleme kontrolleri arasındaki minimum süre
 panel.options.system.uploads.processImages: Yüklenen görselleri işle (optimize et)
 panel.options.system.uploads.processImages.disabled: Devre dışı
 panel.options.system.uploads.processImages.enabled: Etkin

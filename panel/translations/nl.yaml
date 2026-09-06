@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Standaardtaal
 panel.options.system.adminPanel.logoutRedirectsTo: Uitloggen doorsturen naar
 panel.options.system.adminPanel.logoutRedirectsTo.home: Startpagina
 panel.options.system.adminPanel.logoutRedirectsTo.login: Inlogpagina
+panel.options.system.authentication.maxAttempts: Maximumaantal authenticatiepogingen
+panel.options.system.authentication.resetTime: Hersteltijd voor het maximumaantal authenticatiepogingen
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backups om op de server te bewaren
+panel.options.system.backup.maxExecutionTime: Maximale uitvoertijd van het script voor het maken van de back-up
+panel.options.system.backup.name: Naam van de back-up
+panel.options.system.backup.name.description: Gebruik de tijdelijke aanduidingen `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}` om de naam van de back-up op te bouwen. Datum en tijd worden automatisch toegevoegd
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Uitgeschakeld
 panel.options.system.cache.enabled: Ingeschakeld
 panel.options.system.cache.time: Cache-tijd
 panel.options.system.content: Inhoud
+panel.options.system.content.addHeadingIds: Kop-ID's toevoegen aan Markdown-velden
+panel.options.system.content.addHeadingIds.disabled: Uitgeschakeld
+panel.options.system.content.addHeadingIds.enabled: Ingeschakeld
 panel.options.system.content.allowHtml: HTML toestaan in Markdown-velden
 panel.options.system.content.allowHtml.description: Potentieel gevaarlijke tags zoals `<script>` en `<style>` worden altijd naar tekst geconverteerd
 panel.options.system.content.allowHtml.disabled: Uitgeschakeld
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Sla JPEG-afbeeldingen progressi
 panel.options.system.images.jpegSaveProgressive.disabled: Uitgeschakeld
 panel.options.system.images.jpegSaveProgressive.enabled: Ingeschakeld
 panel.options.system.images.pngCompressionLevel: PNG-compressieniveau
+panel.options.system.images.preserveColorProfile: Kleurprofiel behouden
+panel.options.system.images.preserveColorProfile.disabled: Uitgeschakeld
+panel.options.system.images.preserveColorProfile.enabled: Ingeschakeld
+panel.options.system.images.preserveExifData: EXIF-gegevens behouden
+panel.options.system.images.preserveExifData.disabled: Uitgeschakeld
+panel.options.system.images.preserveExifData.enabled: Ingeschakeld
 panel.options.system.images.webpQuality: WebP-kwaliteit
+panel.options.system.metadata.setGenerator: Generator-metatag instellen
+panel.options.system.metadata.setGenerator.description: Neem de `<meta name="generator">`-tag op in de `<head>` van de pagina's, met de inhoud ingesteld op `Formwork`
+panel.options.system.metadata.setGenerator.disabled: Uitgeschakeld
+panel.options.system.metadata.setGenerator.enabled: Ingeschakeld
+panel.options.system.pages.error: Foutpagina
+panel.options.system.pages.index: Indexpagina
+panel.options.system.plugins: Plug-ins
+panel.options.system.plugins.disabled: Uitgeschakeld
+panel.options.system.plugins.enabled: Ingeschakeld
+panel.options.system.security: Beveiliging
 panel.options.system.session.duration: Sessie time-out
-panel.options.system.sessions: Sessies
+panel.options.system.updates: Updates
+panel.options.system.updates.backupBefore: Een back-up maken vóór het bijwerken
+panel.options.system.updates.backupBefore.disabled: Uitgeschakeld
+panel.options.system.updates.backupBefore.enabled: Ingeschakeld
+panel.options.system.updates.time: Minimale tijd tussen updatecontroles
 panel.options.system.uploads.processImages: Verwerk (optimaliseer) geüploade afbeeldingen
 panel.options.system.uploads.processImages.disabled: Uitgeschakeld
 panel.options.system.uploads.processImages.enabled: Ingeschakeld

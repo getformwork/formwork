@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Alapértelmezett nyelv
 panel.options.system.adminPanel.logoutRedirectsTo: Kijelentkezés utáni átirányítás
 panel.options.system.adminPanel.logoutRedirectsTo.home: Kezdőlap
 panel.options.system.adminPanel.logoutRedirectsTo.login: Bejelentkezés
+panel.options.system.authentication.maxAttempts: Hitelesítési kísérletek maximális száma
+panel.options.system.authentication.resetTime: A hitelesítési kísérletek maximális számának visszaállítási ideje
 panel.options.system.backup: Biztonsági mentés
 panel.options.system.backup.backupFilesToKeep: Megtartandó biztonsági mentések száma
+panel.options.system.backup.maxExecutionTime: A biztonsági mentés létrehozásához szükséges szkript maximális végrehajtási ideje
+panel.options.system.backup.name: Biztonsági mentés neve
+panel.options.system.backup.name.description: 'A biztonsági mentés nevének létrehozásához használja a következő helyőrzőket: `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}`. A dátum és az idő automatikusan hozzáadásra kerül'
 panel.options.system.cache: Gyorsítótár
 panel.options.system.cache.disabled: Kikapcsolva
 panel.options.system.cache.enabled: Bekapcsolva
 panel.options.system.cache.time: Gyorsítótár ideje
 panel.options.system.content: Tartalom
+panel.options.system.content.addHeadingIds: Címazonosítók hozzáadása a Markdown-mezőkhöz
+panel.options.system.content.addHeadingIds.disabled: Letiltva
+panel.options.system.content.addHeadingIds.enabled: Engedélyezve
 panel.options.system.content.allowHtml: HTML engedélyezése Markdown mezőkben
 panel.options.system.content.allowHtml.description: A potenciálisan veszélyes címkék, mint a `<script>` és `<style>`, mindig szöveggé alakulnak
 panel.options.system.content.allowHtml.disabled: Kikapcsolva
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Progresszív JPEG mentése
 panel.options.system.images.jpegSaveProgressive.disabled: Kikapcsolva
 panel.options.system.images.jpegSaveProgressive.enabled: Bekapcsolva
 panel.options.system.images.pngCompressionLevel: PNG tömörítési szint
+panel.options.system.images.preserveColorProfile: Színprofil megőrzése
+panel.options.system.images.preserveColorProfile.disabled: Letiltva
+panel.options.system.images.preserveColorProfile.enabled: Engedélyezve
+panel.options.system.images.preserveExifData: EXIF-adatok megőrzése
+panel.options.system.images.preserveExifData.disabled: Letiltva
+panel.options.system.images.preserveExifData.enabled: Engedélyezve
 panel.options.system.images.webpQuality: WebP minőség
+panel.options.system.metadata.setGenerator: Generátor meta tag beállítása
+panel.options.system.metadata.setGenerator.description: A `<meta name="generator">` címke elhelyezése az oldalak `<head>` elemében `Formwork` értékkel
+panel.options.system.metadata.setGenerator.disabled: Letiltva
+panel.options.system.metadata.setGenerator.enabled: Engedélyezve
+panel.options.system.pages.error: Hibaoldal
+panel.options.system.pages.index: Indexoldal
+panel.options.system.plugins: Bővítmények
+panel.options.system.plugins.disabled: Letiltva
+panel.options.system.plugins.enabled: Engedélyezve
+panel.options.system.security: Biztonság
 panel.options.system.session.duration: Munkamenet időtúllépés
-panel.options.system.sessions: Munkamenetek
+panel.options.system.updates: Frissítések
+panel.options.system.updates.backupBefore: Biztonsági mentés készítése frissítés előtt
+panel.options.system.updates.backupBefore.disabled: Letiltva
+panel.options.system.updates.backupBefore.enabled: Engedélyezve
+panel.options.system.updates.time: A frissítések ellenőrzése közötti minimális idő
 panel.options.system.uploads.processImages: Feltöltött képek feldolgozása (optimalizálása)
 panel.options.system.uploads.processImages.disabled: Kikapcsolva
 panel.options.system.uploads.processImages.enabled: Bekapcsolva
