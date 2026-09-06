@@ -236,6 +236,10 @@ final class Debug
      */
     public static function dump(mixed ...$data): void
     {
+        // Dump data only if the client explicitly accepts HTML
+        if (!str_contains($_SERVER['HTTP_ACCEPT'] ?? '*/*', 'text/html')) {
+            return;
+        }
         if (!headers_sent()) {
             ob_start();
         }
