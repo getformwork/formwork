@@ -4,6 +4,7 @@ namespace Formwork\Http;
 
 use Formwork\Http\Utils\Header;
 use Formwork\Utils\FileSystem;
+use LogicException;
 use RuntimeException;
 
 class FileResponse extends Response
@@ -32,9 +33,10 @@ class FileResponse extends Response
         protected string $path,
         ResponseStatus $responseStatus = ResponseStatus::OK,
         array $headers = [],
-        bool $download = false,
+        protected bool $download = false,
         protected bool $autoEtag = false,
         protected bool $autoLastModified = false,
+        protected bool $deleteAfterSend = false,
     ) {
         $this->fileSize = FileSystem::fileSize($path);
 
@@ -101,6 +103,10 @@ class FileResponse extends Response
         }
 
         $this->flush();
+
+        if ($this->deleteAfterSend) {
+            unlink($this->path);
+        }
     }
 
     public function prepare(Request $request): static
@@ -158,6 +164,20 @@ class FileResponse extends Response
             $this->length = 0;
         }
 
+        return $this;
+    }
+
+    /**
+     * Set filename for download
+     *
+     * @throws LogicException If the response is not a download response
+     */
+    public function setFilename(string $filename): static
+    {
+        if (!$this->download) {
+            throw new LogicException('Cannot set filename for inline file response');
+        }
+        $this->headers->set('Content-Disposition', Header::make(['attachment', 'filename' => $filename]));
         return $this;
     }
 }
