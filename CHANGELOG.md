@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.3.15](https://github.com/getformwork/formwork/releases/tag/2.3.15)
+
+**Bug fixes**
+
+- Fix bootstrap error views requiring unavailable view methods
+
 # [2.3.14](https://github.com/getformwork/formwork/releases/tag/2.3.14)
 
 **Security**
