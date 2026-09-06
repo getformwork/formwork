@@ -9,6 +9,8 @@ use Formwork\Utils\Arr;
  */
 trait DataGetter
 {
+    use DataAccessors;
+
     /**
      * @var TData
      */
@@ -21,7 +23,8 @@ trait DataGetter
      */
     public function has(string $key): bool
     {
-        return Arr::has($this->data, $key);
+        return isset($this->dataGetters()[$key])
+            || Arr::has($this->data, $key);
     }
 
     /**
@@ -37,6 +40,13 @@ trait DataGetter
      */
     public function get(string $key, mixed $default = null): mixed
     {
+        if ($getter = $this->dataGetters()[$key] ?? null) {
+            return match ($getter['type']) {
+                'property' => $this->{$getter['name']},
+                'method'   => $this->{$getter['name']}(),
+            };
+        }
+
         return Arr::get($this->data, $key, $default);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Formwork\Images;
 
+use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Files\File;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\Exception\ImageException;
@@ -37,7 +39,6 @@ use Formwork\Images\Transform\Scale;
 use Formwork\Images\Transform\Sharpen;
 use Formwork\Images\Transform\Smoothen;
 use Formwork\Images\Transform\TransformCollection;
-use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 
@@ -47,16 +48,14 @@ class Image extends File
 
     protected const string MODEL_IDENTIFIER = 'image';
 
-    #[ReadonlyModelProperty]
+    #[Getter(export: false)]
     protected AbstractHandler $handler;
 
-    #[ReadonlyModelProperty]
     protected ImageInfo $info;
 
-    #[ReadonlyModelProperty]
+    #[Getter(export: false)]
     protected TransformCollection $transforms;
 
-    #[ReadonlyModelProperty]
     protected ?string $type = 'image';
 
     /**
@@ -64,12 +63,14 @@ class Image extends File
      */
     public function __construct(
         string $path,
+        #[Getter(export: false)]
         protected array $options,
     ) {
         parent::__construct($path);
         $this->transforms = new TransformCollection();
     }
 
+    #[Getter]
     public function path(): string
     {
         return $this->process()->path;
@@ -80,6 +81,7 @@ class Image extends File
      *
      * @throws ImageException If image info cannot be determined
      */
+    #[Getter]
     public function mimeType(): string
     {
         if (!isset($this->mimeType)) {
@@ -300,6 +302,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support color profiles
      */
+    #[Getter]
     public function getColorProfile(): ?ColorProfile
     {
         return $this->handler()->getColorProfile();
@@ -310,6 +313,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support color profiles
      */
+    #[Setter]
     public function setColorProfile(ColorProfile $colorProfile): void
     {
         $this->handler()->setColorProfile($colorProfile);
@@ -338,6 +342,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
+    #[Getter]
     public function getExifData(): ?ExifData
     {
         return $this->handler()->getExifData();
@@ -348,6 +353,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
+    #[Setter]
     public function setExifData(ExifData $exifData): void
     {
         $this->handler()->setExifData($exifData);
@@ -487,6 +493,7 @@ class Image extends File
     /**
      * Get image info as an array
      */
+    #[Getter]
     public function info(): ImageInfo
     {
         return $this->handler()->getInfo();
@@ -498,6 +505,7 @@ class Image extends File
      *
      * @since 2.1.0
      */
+    #[Getter]
     public function width(): int
     {
         return $this->process()->info()->width();
@@ -509,18 +517,10 @@ class Image extends File
      *
      * @since 2.1.0
      */
+    #[Getter]
     public function height(): int
     {
         return $this->process()->info()->height();
-    }
-
-    public function toArray(): array
-    {
-        return [
-            ...parent::toArray(),
-            'imageInfo' => $this->info()->toArray(),
-            'uri'       => $this->uri(),
-        ];
     }
 
     /**

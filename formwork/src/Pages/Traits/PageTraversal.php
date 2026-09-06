@@ -4,6 +4,7 @@ namespace Formwork\Pages\Traits;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
+use Formwork\Data\Attributes\Getter;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\PageCollectionFactory;
@@ -65,6 +66,7 @@ trait PageTraversal
     /**
      * Get parent page or site
      */
+    #[Getter]
     public function parent(): Page|Site|null
     {
         if (isset($this->parent)) {
@@ -103,6 +105,7 @@ trait PageTraversal
     /**
      * Return children pages
      */
+    #[Getter]
     public function children(): PageCollection
     {
         if (isset($this->children)) {
@@ -135,6 +138,7 @@ trait PageTraversal
     /**
      * Return descendant pages
      */
+    #[Getter]
     public function descendants(): PageCollection
     {
         if (isset($this->descendants)) {
@@ -167,6 +171,7 @@ trait PageTraversal
     /**
      * Return ancestor pages
      */
+    #[Getter]
     public function ancestors(): PageCollection
     {
         if (isset($this->ancestors)) {
@@ -204,6 +209,7 @@ trait PageTraversal
     /**
      * Return sibling pages
      */
+    #[Getter]
     public function siblings(): PageCollection
     {
         return $this->siblings ?? ($this->siblings = $this->inclusiveSiblings()->without($this));
@@ -212,6 +218,7 @@ trait PageTraversal
     /**
      * Return a collection containing the page and its siblings
      */
+    #[Getter]
     public function inclusiveSiblings(): PageCollection
     {
         if (isset($this->inclusiveSiblings)) {

@@ -3,6 +3,7 @@
 namespace Formwork\Fields;
 
 use Closure;
+use Formwork\Data\Attributes\Getter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
@@ -78,6 +79,7 @@ class Field implements Arrayable, Stringable
     /**
      * Get field name
      */
+    #[Getter]
     public function name(): string
     {
         return $this->name;
@@ -96,7 +98,7 @@ class Field implements Arrayable, Stringable
      */
     public function formName(): string
     {
-        return $this->get('formName', Str::dotNotationToBrackets($this->name()));
+        return $this->get('formName');
     }
 
     /**
@@ -168,7 +170,7 @@ class Field implements Arrayable, Stringable
      */
     public function isVisible(): bool
     {
-        return $this->is('visible', true);
+        return $this->is('visible');
     }
 
     /**
