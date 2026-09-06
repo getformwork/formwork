@@ -7,6 +7,7 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\DeadCode\Rector\Property\RemoveDefaultValueFromAssignedPropertyRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
@@ -16,7 +17,7 @@ use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 return RectorConfig::configure()
-    ->withPhpSets(php83: true)
+    ->withPhpSets()
     ->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true, naming: true, instanceOf: true, privatization: true)
     ->withImportNames(importShortClasses: false)
     ->withPaths([
@@ -40,6 +41,7 @@ return RectorConfig::configure()
         FlipTypeControlToUseExclusiveTypeRector::class,
         ReadOnlyPropertyRector::class,
         RemoveDefaultValueFromAssignedPropertyRector::class,
+        RemovePhpVersionIdCheckRector::class,
         RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
         RenamePropertyToMatchTypeRector::class,
         SafeDeclareStrictTypesRector::class,
