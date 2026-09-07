@@ -174,6 +174,14 @@ return [
             'action' => 'Formwork\Panel\Controllers\StatisticsController@index',
         ],
 
+        'panel.statistics.download' => [
+            'path'   => '/statistics/download/{format}?/',
+            'action' => 'Formwork\Panel\Controllers\StatisticsController@download',
+            'where'  => [
+                'format' => ['csv', 'tsv', null],
+            ],
+        ],
+
         'panel.users' => [
             'path'   => '/users/',
             'action' => 'Formwork\Panel\Controllers\UsersController@index',

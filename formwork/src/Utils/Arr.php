@@ -828,6 +828,42 @@ final class Arr
     }
 
     /**
+     * Combine multiple arrays element by element into a list of entries,
+     * padding shorter arrays with the default value
+     *
+     * @param list<array<mixed>> $arrays
+     *
+     * @throws UnexpectedValueException
+     *
+     * @return list<list<mixed>>
+     */
+    public static function zip(array $arrays, mixed $default = null): array
+    {
+        $entries = 0;
+
+        foreach ($arrays as $i => $array) {
+            // @phpstan-ignore function.alreadyNarrowedType
+            if (!is_array($array)) {
+                throw new UnexpectedValueException('All elements of the $arrays parameter must be arrays');
+            }
+            $arrays[$i] = array_values($array);
+            $entries = max($entries, count($array));
+        }
+
+        $result = [];
+
+        for ($i = 0; $i < $entries; $i++) {
+            $entry = [];
+            foreach ($arrays as $array) {
+                $entry[] = array_key_exists($i, $array) ? $array[$i] : $default;
+            }
+            $result[] = $entry;
+        }
+
+        return $result;
+    }
+
+    /**
      * Try to convert the given object to array
      *
      * @template TKey of array-key
