@@ -19,6 +19,12 @@ final class Debug
     private const int INDENT_SPACES = 2;
 
     /**
+     * Maximum number of stack frames to include in the backtrace to get context
+     * (adjust according to the maximum nesting depth of the call to `getContext()`)
+     */
+    private const int BACKTRACE_LIMIT = 3;
+
+    /**
      * CSS styles for debug output
      */
     private static string $css = <<<'CSS'
@@ -33,6 +39,12 @@ final class Debug
             font-family: SFMono-Regular, "SF Mono", "Cascadia Mono", "Liberation Mono", Menlo, Consolas, monospace;
             font-size: 13px;
             overflow-x: auto;
+        }
+
+        .__formwork-dump-item + .__formwork-dump-item {
+            border-top: 1px dashed #ccc;
+            margin-top: 8px;
+            padding-top: 8px;
         }
 
         .color-scheme-dark .__formwork-dump {
@@ -224,6 +236,10 @@ final class Debug
      */
     public static function dump(mixed ...$data): void
     {
+        // Dump data only if the client explicitly accepts HTML
+        if (!str_contains($_SERVER['HTTP_ACCEPT'] ?? '*/*', 'text/html')) {
+            return;
+        }
         if (!headers_sent()) {
             ob_start();
         }
@@ -231,9 +247,19 @@ final class Debug
             echo '<style>' . self::$css . '</style>', '<script>' . self::$js . '</script>';
             self::$stylesDumped = true;
         }
-        foreach ($data as $d) {
-            echo self::dumpToString($d);
+        echo '<pre class="__formwork-dump">';
+        if ($info = self::getContext()) {
+            echo sprintf(
+                '<div class="__formwork-dump-item"><span class="__type-name" title="%s">%s</span>, line <span class="__type-number">%d</span></div>',
+                $info['file'],
+                basename($info['file']),
+                $info['line']
+            );
         }
+        foreach ($data as $d) {
+            echo sprintf('<div class="__formwork-dump-item">%s</div>', self::outputData($d));
+        }
+        echo '</pre>';
         echo '<script>__formwork_dump_goto(window.location.hash.slice(1))</script>';
     }
 
@@ -421,5 +447,19 @@ final class Debug
         }
 
         throw new UnexpectedValueException('Unexpected value for debug');
+    }
+
+    /**
+     * @return ?array{file: string, line: int}
+     */
+    private static function getContext(): ?array
+    {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, self::BACKTRACE_LIMIT);
+        foreach ($backtrace as $frame) {
+            if (isset($frame['file'], $frame['line']) && $frame['file'] !== __FILE__) {
+                return ['file' => $frame['file'], 'line' => $frame['line']];
+            }
+        }
+        return null;
     }
 }
