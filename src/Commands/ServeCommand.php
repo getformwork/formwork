@@ -144,6 +144,8 @@ final class ServeCommand implements CommandInterface
             $php,
             '-S',
             "{$this->formatHost($this->host)}:{$this->port}",
+            '-t',
+            ROOT_PATH,
             'formwork/server.php',
         ], dirname(__DIR__, 3), null, null, 0);
 
