@@ -1,8 +1,0 @@
-#!/usr/bin/env php
-<?php
-
-use Formwork\Commands\ServeCommand;
-
-require dirname(__DIR__) . '/formwork/bootstrap.php';
-
-(new ServeCommand())($argv);

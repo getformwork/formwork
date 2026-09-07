@@ -99,7 +99,7 @@ pages:
 panel:
     enabled: true
     root: panel
-    path: '${%ROOT_PATH%}/panel'
+    path: '${%SYSTEM_PATH%}/panel'
     translation: en
     logoutRedirect: login
     userImageSize: 512

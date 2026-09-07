@@ -1,8 +1,0 @@
-#!/usr/bin/env php
-<?php
-
-use Formwork\Commands\FormworkCommandRunner;
-
-require dirname(__DIR__) . '/formwork/bootstrap.php';
-
-(new FormworkCommandRunner())($argv);
