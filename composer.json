@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Formwork\\": "formwork/src/"
+            "Formwork\\": "src/"
         }
     },
     "require": {
