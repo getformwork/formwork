@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Domyślny język
 panel.options.system.adminPanel.logoutRedirectsTo: Przekierowanie po wylogowaniu
 panel.options.system.adminPanel.logoutRedirectsTo.home: Strona główna
 panel.options.system.adminPanel.logoutRedirectsTo.login: Strona logowania
+panel.options.system.authentication.maxAttempts: Maksymalna liczba prób uwierzytelnienia
+panel.options.system.authentication.resetTime: Czas resetowania maksymalnej liczby prób uwierzytelnienia
 panel.options.system.backup: Kopia zapasowa
 panel.options.system.backup.backupFilesToKeep: Liczba kopii zapasowych do przechowywania na serwerze
+panel.options.system.backup.maxExecutionTime: Maksymalny czas wykonywania skryptu na utworzenie kopii zapasowej
+panel.options.system.backup.name: Nazwa kopii zapasowej
+panel.options.system.backup.name.description: Użyj symboli zastępczych `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}`, aby utworzyć nazwę kopii zapasowej. Data i godzina są dodawane automatycznie
 panel.options.system.cache: Pamięć podręczna
 panel.options.system.cache.disabled: Wyłączona
 panel.options.system.cache.enabled: Włączona
 panel.options.system.cache.time: Czas pamięci podręcznej
 panel.options.system.content: Zawartość
+panel.options.system.content.addHeadingIds: Dodaj identyfikatory nagłówków do pól Markdown
+panel.options.system.content.addHeadingIds.disabled: Wyłączone
+panel.options.system.content.addHeadingIds.enabled: Włączone
 panel.options.system.content.allowHtml: Zezwól na HTML w polach Markdown
 panel.options.system.content.allowHtml.description: Potencjalnie niebezpieczne tagi, takie jak `<script>` i `<style>`, są zawsze zamieniane na tekst
 panel.options.system.content.allowHtml.disabled: Wyłączone
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Zapisuj obrazy JPEG jako progre
 panel.options.system.images.jpegSaveProgressive.disabled: Wyłączone
 panel.options.system.images.jpegSaveProgressive.enabled: Włączone
 panel.options.system.images.pngCompressionLevel: Poziom kompresji PNG
+panel.options.system.images.preserveColorProfile: Zachowaj profil kolorów
+panel.options.system.images.preserveColorProfile.disabled: Wyłączone
+panel.options.system.images.preserveColorProfile.enabled: Włączone
+panel.options.system.images.preserveExifData: Zachowaj dane EXIF
+panel.options.system.images.preserveExifData.disabled: Wyłączone
+panel.options.system.images.preserveExifData.enabled: Włączone
 panel.options.system.images.webpQuality: Jakość WebP
+panel.options.system.metadata.setGenerator: Ustaw znacznik meta generatora
+panel.options.system.metadata.setGenerator.description: Dołącz tag `<meta name="generator">` do sekcji `<head>` stron, ustawiając jego zawartość na `Formwork`
+panel.options.system.metadata.setGenerator.disabled: Wyłączone
+panel.options.system.metadata.setGenerator.enabled: Włączone
+panel.options.system.pages.error: Strona błędu
+panel.options.system.pages.index: Strona indeksu
+panel.options.system.plugins: Wtyczki
+panel.options.system.plugins.disabled: Wyłączone
+panel.options.system.plugins.enabled: Włączone
+panel.options.system.security: Bezpieczeństwo
 panel.options.system.session.duration: Limit czasu sesji
-panel.options.system.sessions: Sesje
+panel.options.system.updates: Aktualizacje
+panel.options.system.updates.backupBefore: Utwórz kopię zapasową przed aktualizacją
+panel.options.system.updates.backupBefore.disabled: Wyłączone
+panel.options.system.updates.backupBefore.enabled: Włączone
+panel.options.system.updates.time: Minimalny czas między sprawdzaniem aktualizacji
 panel.options.system.uploads.processImages: Przetwarzaj (optymalizuj) przesyłane obrazy
 panel.options.system.uploads.processImages.disabled: Wyłączone
 panel.options.system.uploads.processImages.enabled: Włączone

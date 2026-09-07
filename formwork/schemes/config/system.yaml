@@ -11,37 +11,47 @@ layout:
         content:
             collapsible: true
             label: '{{panel.options.system.content}}'
-            fields: [pages.content.allowHtml]
+            fields: [pages.index, pages.error, pages.content.allowHtml, pages.content.addHeadingIds, metadata.setGenerator]
 
         files:
             collapsible: true
             label: '{{panel.options.system.files}}'
             fields: [files.allowedExtensions]
 
+        images:
+            collapsible: true
+            label: '{{panel.options.system.images}}'
+            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.avifQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault, images.preserveColorProfile, images.preserveExifData]
+
         cache:
             collapsible: true
             label: '{{panel.options.system.cache}}'
             fields: [cache.enabled, cache.time]
 
-        sessions:
+        security:
             collapsible: true
-            label: '{{panel.options.system.sessions}}'
-            fields: [session.duration]
+            label: '{{panel.options.system.security}}'
+            fields: [authentication.limits.maxAttempts, authentication.limits.resetTime, session.duration]
 
         panel:
             collapsible: true
             label: '{{panel.options.system.adminPanel}}'
             fields: [panel.translation, panel.logoutRedirect, panel.colorScheme]
 
-        images:
+        plugins:
             collapsible: true
-            label: '{{panel.options.system.images}}'
-            fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.avifQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault]
+            label: '{{panel.options.system.plugins}}'
+            fields: [plugins.enabled]
 
         backup:
             collapsible: true
             label: '{{panel.options.system.backup}}'
-            fields: [backup.maxFiles]
+            fields: [backup.name, backup.maxExecutionTime, backup.maxFiles]
+
+        updates:
+            collapsible: true
+            label: '{{panel.options.system.updates}}'
+            fields: [updates.time, updates.backupBefore]
 
         debug:
             collapsible: true
@@ -73,6 +83,16 @@ fields:
             0: '{{panel.options.system.dateAndTime.firstWeekday.sunday}}'
             1: '{{panel.options.system.dateAndTime.firstWeekday.monday}}'
 
+    pages.index:
+        type: page
+        label: '{{panel.options.system.pages.index}}'
+        required: true
+
+    pages.error:
+        type: page
+        label: '{{panel.options.system.pages.error}}'
+        required: true
+
     pages.content.allowHtml:
         type: togglegroup
         label: '{{panel.options.system.content.allowHtml}}'
@@ -81,6 +101,21 @@ fields:
             1: '{{panel.options.system.content.allowHtml.enabled}}'
             0: '{{panel.options.system.content.allowHtml.disabled}}'
 
+    pages.content.addHeadingIds:
+        type: togglegroup
+        label: '{{panel.options.system.content.addHeadingIds}}'
+        options:
+            1: '{{panel.options.system.content.addHeadingIds.enabled}}'
+            0: '{{panel.options.system.content.addHeadingIds.disabled}}'
+
+    metadata.setGenerator:
+        type: togglegroup
+        label: '{{panel.options.system.metadata.setGenerator}}'
+        description: '{{panel.options.system.metadata.setGenerator.description}}'
+        options:
+            1: '{{panel.options.system.metadata.setGenerator.enabled}}'
+            0: '{{panel.options.system.metadata.setGenerator.disabled}}'
+
     files.allowedExtensions:
         type: tags
         label: '{{panel.options.system.files.allowedExtensions}}'
@@ -88,50 +123,6 @@ fields:
         placeholder: '{{panel.options.system.files.allowedExtensions.noExtensions}}'
         pattern: '\.[a-zA-Z0-9]+'
         options@: mimeTypes.getExtensionTypes()
-
-    cache.enabled:
-        type: togglegroup
-        label: '{{panel.options.system.cache}}'
-        options:
-            1: '{{panel.options.system.cache.enabled}}'
-            0: '{{panel.options.system.cache.disabled}}'
-
-    cache.time:
-        type: duration
-        label: '{{panel.options.system.cache.time}}'
-        min: 900
-        step: 900
-        intervals: [weeks, days, hours, minutes]
-        translate: [label]
-
-    session.duration:
-        type: duration
-        label: '{{panel.options.system.session.duration}}'
-        min: 0
-        intervals: [hours, minutes]
-        translate: [label]
-
-    panel.translation:
-        type: select
-        label: '{{panel.options.system.adminPanel.defaultLanguage}}'
-        icon: translate
-        translate: [label]
-        options@: formwork.panel.availableTranslations
-
-    panel.logoutRedirect:
-        type: togglegroup
-        label: '{{panel.options.system.adminPanel.logoutRedirectsTo}}'
-        options:
-            login: '{{panel.options.system.adminPanel.logoutRedirectsTo.login}}'
-            home: '{{panel.options.system.adminPanel.logoutRedirectsTo.home}}'
-
-    panel.colorScheme:
-        type: togglegroup
-        label: '{{panel.options.system.adminPanel.defaultColorScheme}}'
-        options:
-            light: '{{panel.options.system.adminPanel.defaultColorScheme.light}}'
-            dark: '{{panel.options.system.adminPanel.defaultColorScheme.dark}}'
-            auto: '{{panel.options.system.adminPanel.defaultColorScheme.auto}}'
 
     images.jpegQuality:
         type: range
@@ -178,12 +169,105 @@ fields:
             1: '{{panel.options.system.images.clearCacheByDefault.enabled}}'
             0: '{{panel.options.system.images.clearCacheByDefault.disabled}}'
 
+    images.preserveColorProfile:
+        type: togglegroup
+        label: '{{panel.options.system.images.preserveColorProfile}}'
+        options:
+            1: '{{panel.options.system.images.preserveColorProfile.enabled}}'
+            0: '{{panel.options.system.images.preserveColorProfile.disabled}}'
+
+    images.preserveExifData:
+        type: togglegroup
+        label: '{{panel.options.system.images.preserveExifData}}'
+        options:
+            1: '{{panel.options.system.images.preserveExifData.enabled}}'
+            0: '{{panel.options.system.images.preserveExifData.disabled}}'
+
     uploads.processImages:
         type: togglegroup
         label: '{{panel.options.system.uploads.processImages}}'
         options:
             1: '{{panel.options.system.uploads.processImages.enabled}}'
             0: '{{panel.options.system.uploads.processImages.disabled}}'
+
+    cache.enabled:
+        type: togglegroup
+        label: '{{panel.options.system.cache}}'
+        options:
+            1: '{{panel.options.system.cache.enabled}}'
+            0: '{{panel.options.system.cache.disabled}}'
+
+    cache.time:
+        type: duration
+        label: '{{panel.options.system.cache.time}}'
+        min: 900
+        step: 900
+        intervals: [weeks, days, hours, minutes]
+        translate: [label]
+
+    authentication.limits.maxAttempts:
+        type: number
+        label: '{{panel.options.system.authentication.maxAttempts}}'
+        min: 1
+        max: 20
+        required: true
+
+    authentication.limits.resetTime:
+        type: duration
+        label: '{{panel.options.system.authentication.resetTime}}'
+        min: 60
+        step: 60
+        intervals: [hours, minutes]
+        translate: [label]
+
+    session.duration:
+        type: duration
+        label: '{{panel.options.system.session.duration}}'
+        min: 0
+        intervals: [hours, minutes]
+        translate: [label]
+
+    panel.translation:
+        type: select
+        label: '{{panel.options.system.adminPanel.defaultLanguage}}'
+        icon: translate
+        translate: [label]
+        options@: formwork.panel.availableTranslations
+
+    panel.logoutRedirect:
+        type: togglegroup
+        label: '{{panel.options.system.adminPanel.logoutRedirectsTo}}'
+        options:
+            login: '{{panel.options.system.adminPanel.logoutRedirectsTo.login}}'
+            home: '{{panel.options.system.adminPanel.logoutRedirectsTo.home}}'
+
+    panel.colorScheme:
+        type: togglegroup
+        label: '{{panel.options.system.adminPanel.defaultColorScheme}}'
+        options:
+            light: '{{panel.options.system.adminPanel.defaultColorScheme.light}}'
+            dark: '{{panel.options.system.adminPanel.defaultColorScheme.dark}}'
+            auto: '{{panel.options.system.adminPanel.defaultColorScheme.auto}}'
+
+    plugins.enabled:
+        type: togglegroup
+        label: '{{panel.options.system.plugins}}'
+        options:
+            1: '{{panel.options.system.plugins.enabled}}'
+            0: '{{panel.options.system.plugins.disabled}}'
+
+    backup.name:
+        type: text
+        label: '{{panel.options.system.backup.name}}'
+        description: '{{panel.options.system.backup.name.description}}'
+        class: form-input-monospace
+        required: true
+
+    backup.maxExecutionTime:
+        type: duration
+        label: '{{panel.options.system.backup.maxExecutionTime}}'
+        intervals: [minutes, seconds]
+        translate: [label]
 
     backup.maxFiles:
         type: select
@@ -193,6 +277,20 @@ fields:
             10: 10
             15: 15
             20: 20
+
+    updates.time:
+        type: duration
+        label: '{{panel.options.system.updates.time}}'
+        min: 60
+        intervals: [hours, minutes]
+        translate: [label]
+
+    updates.backupBefore:
+        type: togglegroup
+        label: '{{panel.options.system.updates.backupBefore}}'
+        options:
+            1: '{{panel.options.system.updates.backupBefore.enabled}}'
+            0: '{{panel.options.system.updates.backupBefore.disabled}}'
 
     debug.enabled:
         type: togglegroup
@@ -207,3 +305,4 @@ fields:
         label: '{{panel.options.system.debug.editorUri}}'
         description: '{{panel.options.system.debug.editorUri.description}}'
         class: form-input-monospace
+        required: true

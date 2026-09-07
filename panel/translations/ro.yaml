@@ -155,13 +155,21 @@ panel.options.system.adminPanel.defaultLanguage: Limba implicită
 panel.options.system.adminPanel.logoutRedirectsTo: Redirecționare după logout
 panel.options.system.adminPanel.logoutRedirectsTo.home: Acasă
 panel.options.system.adminPanel.logoutRedirectsTo.login: Pagina de autentificare
+panel.options.system.authentication.maxAttempts: Numărul maxim de încercări de autentificare
+panel.options.system.authentication.resetTime: Timpul de resetare a numărului maxim de încercări de autentificare
 panel.options.system.backup: Backup
 panel.options.system.backup.backupFilesToKeep: Backup-uri de păstrat pe server
+panel.options.system.backup.maxExecutionTime: Timpul maxim de execuție al scriptului pentru crearea copiei de siguranță
+panel.options.system.backup.name: Numele copiei de siguranță
+panel.options.system.backup.name.description: Folosește substituenții `{{hostname}}`, `{{site}}`, `{{context}}`, `{{version}}`, `{{random}}` pentru a crea numele copiei de siguranță. Data și ora sunt adăugate automat
 panel.options.system.cache: Cache
 panel.options.system.cache.disabled: Dezactivat
 panel.options.system.cache.enabled: Activat
 panel.options.system.cache.time: Timp cache
 panel.options.system.content: Conținut
+panel.options.system.content.addHeadingIds: Adaugă ID-uri titlurilor în câmpurile Markdown
+panel.options.system.content.addHeadingIds.disabled: Dezactivat
+panel.options.system.content.addHeadingIds.enabled: Activat
 panel.options.system.content.allowHtml: Permite HTML în câmpurile Markdown
 panel.options.system.content.allowHtml.description: Etichete potențial periculoase precum `<script>` și `<style>` sunt întotdeauna convertite în text
 panel.options.system.content.allowHtml.disabled: Dezactivat
@@ -193,9 +201,29 @@ panel.options.system.images.jpegSaveProgressive: Salvează imaginile JPEG ca pro
 panel.options.system.images.jpegSaveProgressive.disabled: Dezactivat
 panel.options.system.images.jpegSaveProgressive.enabled: Activat
 panel.options.system.images.pngCompressionLevel: Nivel de compresie PNG
+panel.options.system.images.preserveColorProfile: Păstrează profilul de culoare
+panel.options.system.images.preserveColorProfile.disabled: Dezactivat
+panel.options.system.images.preserveColorProfile.enabled: Activat
+panel.options.system.images.preserveExifData: Păstrează datele EXIF
+panel.options.system.images.preserveExifData.disabled: Dezactivat
+panel.options.system.images.preserveExifData.enabled: Activat
 panel.options.system.images.webpQuality: Calitate WebP
+panel.options.system.metadata.setGenerator: Setează metaeticheta generatorului
+panel.options.system.metadata.setGenerator.description: Include eticheta `<meta name="generator">` în `<head>`-ul paginilor, cu conținutul setat la `Formwork`
+panel.options.system.metadata.setGenerator.disabled: Dezactivat
+panel.options.system.metadata.setGenerator.enabled: Activat
+panel.options.system.pages.error: Pagina de eroare
+panel.options.system.pages.index: Pagina de index
+panel.options.system.plugins: Module
+panel.options.system.plugins.disabled: Dezactivat
+panel.options.system.plugins.enabled: Activat
+panel.options.system.security: Securitate
 panel.options.system.session.duration: Timp expirare sesiune
-panel.options.system.sessions: Sesiuni
+panel.options.system.updates: Actualizări
+panel.options.system.updates.backupBefore: Creează o copie de siguranță înainte de actualizare
+panel.options.system.updates.backupBefore.disabled: Dezactivat
+panel.options.system.updates.backupBefore.enabled: Activat
+panel.options.system.updates.time: Timpul minim între verificările de actualizări
 panel.options.system.uploads.processImages: Procesează (optimizează) imaginile încărcate
 panel.options.system.uploads.processImages.disabled: Dezactivat
 panel.options.system.uploads.processImages.enabled: Activat
