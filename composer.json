@@ -1,7 +1,7 @@
 {
     "name": "getformwork/formwork",
     "description": "A simple, fast and flexible flat-file CMS to create and manage websites without a database",
-    "type": "project",
+    "type": "library",
     "homepage": "https://getformwork.org",
     "license": "MIT",
     "authors": [
