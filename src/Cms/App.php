@@ -57,6 +57,7 @@ use Formwork\Users\Users;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 
 final class App
@@ -80,6 +81,8 @@ final class App
 
     public function __construct()
     {
+        $this->defineConstants();
+
         $this->initializeSingleton();
 
         $this->container = new Container();
@@ -258,6 +261,20 @@ final class App
         $response->send();
 
         return $response;
+    }
+
+    private function defineConstants(): void
+    {
+        if (!defined('ROOT_PATH')) {
+            if (($scriptFilename = realpath($_SERVER['SCRIPT_FILENAME'] ?? '')) === false) {
+                throw new RuntimeException('Cannot determine ROOT_PATH');
+            }
+            define('ROOT_PATH', dirname($scriptFilename));
+        }
+
+        if (!defined('SYSTEM_PATH')) {
+            define('SYSTEM_PATH', dirname(__DIR__, 2));
+        }
     }
 
     /**
