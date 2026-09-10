@@ -48,15 +48,11 @@
         "rector/rector": "^2.0.3"
     },
     "scripts": {
-        "fix": "php-cs-fixer fix --config=formwork/.php-cs-fixer.php --cache-file=formwork/.php-cs-fixer.cache --verbose",
-        "fix:check": "php-cs-fixer check --config=formwork/.php-cs-fixer.php --cache-file=formwork/.php-cs-fixer.cache",
-        "phpstan": "phpstan analyse --configuration=formwork/phpstan.neon",
-        "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
-        "rector": "rector --config=formwork/.rector.php",
-        "rector:check": "rector --dry-run --config=formwork/.rector.php",
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
-            "php bin/serve"
-        ]
+        "fix": "php-cs-fixer fix --config=.php-cs-fixer.php --cache-file=.php-cs-fixer.cache --verbose",
+        "fix:check": "php-cs-fixer check --config=.php-cs-fixer.php --cache-file=.php-cs-fixer.cache",
+        "phpstan": "phpstan analyse --configuration=phpstan.neon",
+        "phpstan:baseline": "phpstan analyse --configuration=phpstan.neon --generate-baseline=phpstan-baseline.neon",
+        "rector": "rector --config=.rector.php",
+        "rector:check": "rector --dry-run --config=.rector.php"
     }
 }

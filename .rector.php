@@ -21,20 +21,17 @@ return RectorConfig::configure()
     ->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true, naming: true, instanceOf: true, privatization: true)
     ->withImportNames(importShortClasses: false)
     ->withPaths([
-        dirname(__DIR__),
+        __DIR__,
     ])
     ->withRules([
         StrictInArrayRector::class,
         StrictArraySearchRector::class,
     ])
     ->withSkip([
+        __DIR__ . '/panel/node_modules',
+        __DIR__ . '/panel/views',
+        __DIR__ . '/vendor',
         __DIR__ . '/views',
-        dirname(__DIR__) . '/cache',
-        dirname(__DIR__) . '/panel/node_modules',
-        dirname(__DIR__) . '/panel/views',
-        dirname(__DIR__) . '/site/templates',
-        dirname(__DIR__) . '/site/plugins',
-        dirname(__DIR__) . '/vendor',
         ChangeSwitchToMatchRector::class,
         ClosureToArrowFunctionRector::class,
         CompactToVariablesRector::class,

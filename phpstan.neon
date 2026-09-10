@@ -1,23 +1,19 @@
 includes:
-	- phpstan-baseline.neon
-	- phar://phpstan.phar/conf/bleedingEdge.neon
+    - phpstan-baseline.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
 parameters:
-	level: 8
-	paths:
-		- ../
-	excludePaths:
-		- views
-		- ../cache
-		- ../panel/node_modules(?)
-		- ../panel/views
-		- ../site/templates
-		- ../site/plugins
-		- ../vendor
-	scanFiles:
-		- ../index.php
-	ignoreErrors:
-		- '#^Call to an undefined method Formwork\\Data\\CollectionDataProxy#'
-		- '#^Call to an undefined method Formwork\\Fields\\Field\:\:#'
-		- '#^Call to an undefined method Formwork\\Pages\\Page\:\:#'
-		- '#^Call to an undefined method Formwork\\Cms\\Site\:\:#'
-		- '#^Call to an undefined method Formwork\\Users\\User\:\:#'
+    level: 8
+    paths:
+        - .
+    excludePaths:
+        - panel/node_modules(?)
+        - panel/views
+        - vendor
+        - views
+    ignoreErrors:
+        - '#^Constant (ROOT|SYSTEM)_PATH not found.#'
+        - '#^Call to an undefined method Formwork\\Data\\CollectionDataProxy#'
+        - '#^Call to an undefined method Formwork\\Fields\\Field\:\:#'
+        - '#^Call to an undefined method Formwork\\Pages\\Page\:\:#'
+        - '#^Call to an undefined method Formwork\\Cms\\Site\:\:#'
+        - '#^Call to an undefined method Formwork\\Users\\User\:\:#'
