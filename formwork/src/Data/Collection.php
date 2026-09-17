@@ -109,6 +109,6 @@ final class Collection extends AbstractCollection
             }
         }
 
-        return self::create($data, $dataType, Arr::isAssociative($data), $mutable);
+        return self::create($data, $dataType, !array_is_list($data), $mutable);
     }
 }

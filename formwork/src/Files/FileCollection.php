@@ -19,7 +19,7 @@ class FileCollection extends AbstractCollection
      */
     public function __construct(array $data = [])
     {
-        if (!Arr::isAssociative($data)) {
+        if (array_is_list($data)) {
             $data = Arr::mapKeys($data, fn($key, File $file) => $file->name());
         }
 

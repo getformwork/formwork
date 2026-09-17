@@ -121,7 +121,7 @@ final class Arr
         $result = [];
 
         foreach ($array as $key => $value) {
-            if (is_array($value) && $value !== [] && self::isAssociative($value)) {
+            if (is_array($value) && $value !== [] && !array_is_list($value)) {
                 foreach (self::dot($value) as $subKey => $subValue) {
                     $result["{$key}.{$subKey}"] = $subValue;
                 }
@@ -186,7 +186,7 @@ final class Arr
      */
     public static function splice(array &$array, int $offset, ?int $length = null, array $replacement = []): array
     {
-        if (!self::isAssociative($replacement)) {
+        if (array_is_list($replacement)) {
             return array_splice($array, $offset, $length, $replacement);
         }
 
@@ -514,10 +514,13 @@ final class Arr
      * Return whether the given array is not empty and its keys are not sequential
      *
      * @param array<mixed> $array
+     *
+     * @deprecated since 2.4.0 Use built-in `!array_is_list()` instead
      */
     public static function isAssociative(array $array): bool
     {
-        return $array !== [] && array_keys($array) !== range(0, count($array) - 1);
+        trigger_error(sprintf('%s() is deprecated since 2.4.0. Use built-in !array_is_list() instead.', __METHOD__), E_USER_DEPRECATED);
+        return !array_is_list($array);
     }
 
     /**

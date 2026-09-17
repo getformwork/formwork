@@ -55,7 +55,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      */
     public function __construct(array $data = [])
     {
-        if ($data !== [] && ($selfAssoc = $this->isAssociative()) !== ($dataAssoc = Arr::isAssociative($data))) {
+        if ($data !== [] && ($selfAssoc = $this->isAssociative()) !== ($dataAssoc = !array_is_list($data))) {
             throw new LogicException(sprintf(
                 '%s collections cannot be created from %s data',
                 $selfAssoc ? 'Associative' : 'Non-associative',

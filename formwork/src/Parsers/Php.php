@@ -3,7 +3,6 @@
 namespace Formwork\Parsers;
 
 use Formwork\Data\Contracts\ArraySerializable;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use LogicException;
@@ -77,7 +76,7 @@ final class Php extends AbstractEncoder
 
                 foreach ($data as $key => $value) {
                     $parts[] = str_repeat(' ', $indent + self::INDENT_SPACES)
-                        . (Arr::isAssociative($data) ? self::encodeData($key) . ' => ' : '')
+                        . (!array_is_list($data) ? self::encodeData($key) . ' => ' : '')
                         . self::encodeData($value, $indent + self::INDENT_SPACES);
                 }
 
