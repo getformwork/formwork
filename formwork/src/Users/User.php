@@ -76,11 +76,17 @@ class User extends Model
         return $data;
     }
 
+    public function toArray(): array
+    {
+        return $this->convertToArray(includeAllProperties: false);
+    }
+
     /**
      * Return user image
      *
      * @throws UserImageNotFoundException If the user image file is not a valid image
      */
+    #[Getter]
     public function image(): ?Image
     {
         if ($this->image !== null) {
@@ -324,6 +330,7 @@ class User extends Model
     /**
      * Set user image
      */
+    #[Setter]
     protected function setImage(string|Image|null $image): void
     {
         if ($image instanceof Image) {
