@@ -161,7 +161,7 @@ trait DataAccessors
         foreach (['get', 'is'] as $prefix) {
             $length = strlen($prefix);
 
-            if (Str::startsWith($name, $prefix) && isset($name[$length]) && ctype_upper($name[$length])) {
+            if (str_starts_with($name, $prefix) && isset($name[$length]) && ctype_upper($name[$length])) {
                 return lcfirst(Str::after($name, $prefix));
             }
         }
@@ -178,7 +178,7 @@ trait DataAccessors
         $prefix = 'set';
         $length = strlen($prefix);
 
-        if (Str::startsWith($name, $prefix) && isset($name[$length]) && ctype_upper($name[$length])) {
+        if (str_starts_with($name, $prefix) && isset($name[$length]) && ctype_upper($name[$length])) {
             return lcfirst(Str::after($name, $prefix));
         }
 

@@ -181,7 +181,7 @@ final class Uri
         // is always considered relative and we can then add a trailing slash conditionally)
         $normalizedPath = '/' . trim(Path::normalize($parts['path'] ?? ''), '/');
         // Add trailing slash only if the trailing component is not empty or a filename
-        if ($normalizedPath !== '/' && !Str::contains(basename($normalizedPath), '.')) {
+        if ($normalizedPath !== '/' && !str_contains(basename($normalizedPath), '.')) {
             $normalizedPath .= '/';
         }
         $result .= $normalizedPath;
@@ -235,12 +235,12 @@ final class Uri
      */
     public static function resolveRelative(string $uri, string $base): string
     {
-        if (Str::startsWith($uri, '#')) {
+        if (str_starts_with($uri, '#')) {
             return self::make(['fragment' => $uri], $base);
         }
         $parts = self::parse($uri);
         $basePath = (string) self::path($base);
-        if (!Str::endsWith($basePath, '/')) {
+        if (!str_ends_with($basePath, '/')) {
             $basePath = dirname($basePath);
         }
         return self::make(

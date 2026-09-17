@@ -104,7 +104,7 @@ final class Panel
     public function route(): string
     {
         $requestUri = Uri::normalize($this->request->uri());
-        if (!Str::startsWith($requestUri, $this->panelRoot())) {
+        if (!str_starts_with($requestUri, $this->panelRoot())) {
             throw new UnexpectedValueException('The request URI is outside the panel root');
         }
         return '/' . Str::removeStart($requestUri, $this->panelRoot());

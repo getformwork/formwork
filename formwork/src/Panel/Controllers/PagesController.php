@@ -424,7 +424,7 @@ final class PagesController extends AbstractController
         $this->panel->notify($this->translate('panel.pages.page.deleted'), 'success');
 
         // Try to redirect to referer unless it's to Pages@edit
-        if ($this->request->referer() !== null && !Str::startsWith(Uri::normalize(Str::append($this->request->referer(), '/')), Uri::make(['path' => $this->panel->uri("/pages/{$routeParams->get('page')}/edit/")], $this->request->baseUri()))) {
+        if ($this->request->referer() !== null && !str_starts_with(Uri::normalize(Str::append($this->request->referer(), '/')), Uri::make(['path' => $this->panel->uri("/pages/{$routeParams->get('page')}/edit/")], $this->request->baseUri()))) {
             return $this->redirectToReferer(default: $this->generateRoute('panel.pages'), base: $this->panel->panelRoot());
         }
         return $this->redirect($this->generateRoute('panel.pages'));

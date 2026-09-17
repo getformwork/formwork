@@ -4,7 +4,6 @@ namespace Formwork\Http;
 
 use Formwork\Http\Header as HttpHeader;
 use Formwork\Http\Utils\Header;
-use Formwork\Utils\Str;
 
 class Response implements ResponseInterface
 {
@@ -113,7 +112,7 @@ class Response implements ResponseInterface
 
         if (!$this->headers->has('Content-Type')) {
             $this->headers->set('Content-Type', Header::make(['text/html', 'charset' => 'utf-8']));
-        } elseif (Str::startsWith($contentType = $this->headers->get('Content-Type'), 'text/') && !Str::contains($contentType, 'charset')) {
+        } elseif (str_starts_with($contentType = $this->headers->get('Content-Type'), 'text/') && !str_contains($contentType, 'charset')) {
             $this->headers->set('Content-Type', Header::make([$contentType, 'charset' => 'utf-8']));
         }
 

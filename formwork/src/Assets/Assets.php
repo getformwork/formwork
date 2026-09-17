@@ -113,8 +113,8 @@ class Assets
      */
     protected function resolve(string $key): array
     {
-        if (Str::startsWith($key, '@')) {
-            if (!Str::contains($key, '/')) {
+        if (str_starts_with($key, '@')) {
+            if (!str_contains($key, '/')) {
                 throw new AssetResolutionException(sprintf('Cannot resolve asset with key "%s": invalid namespaced syntax', $key));
             }
 

@@ -8,7 +8,6 @@ use Formwork\Cms\App;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
-use Formwork\Utils\Str;
 use Throwable;
 
 final class ErrorsController extends AbstractController implements ErrorsControllerInterface
@@ -103,7 +102,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
             if (
                 isset($trace[0], $trace[0]['class'], $trace[0]['function'])
                 && $trace[0]['class'] === App::class
-                && Str::endsWith($trace[0]['function'], '{closure}')
+                && str_ends_with($trace[0]['function'], '{closure}')
             ) {
                 array_shift($trace);
             }

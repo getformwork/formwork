@@ -300,7 +300,7 @@ class Field implements Arrayable, Stringable
 
     public function set(string $key, mixed $value): void
     {
-        if (Str::endsWith($key, '@')) {
+        if (str_ends_with($key, '@')) {
             $key = Str::beforeLast($key, '@');
             $value = new DynamicFieldValue($key, $value, $this);
         }

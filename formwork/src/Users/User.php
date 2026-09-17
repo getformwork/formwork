@@ -7,6 +7,7 @@ use Formwork\Authentication\Exceptions\AuthenticationFailedException;
 use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Config\Config;
 use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\FileFactory;
@@ -19,7 +20,6 @@ use Formwork\Users\Exceptions\UserImageNotFoundException;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use LogicException;
 use SensitiveParameter;
 use UnexpectedValueException;
@@ -336,7 +336,7 @@ class User extends Model
         if ($image instanceof Image) {
             $imagesPath = FileSystem::joinPaths($this->config->getString('system.users.paths.images'));
 
-            if (!Str::startsWith($image->path(), $imagesPath)) {
+            if (!str_starts_with($image->path(), $this->config->getString('system.users.paths.images'))) {
                 throw new LogicException('User image must be located in the user images directory');
             }
 

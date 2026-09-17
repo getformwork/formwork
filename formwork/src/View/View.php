@@ -266,7 +266,7 @@ class View
     {
         [$namespace, $name] = $this->parseViewName($viewName);
 
-        if (Str::startsWith($name, '_')) {
+        if (str_starts_with($name, '_')) {
             $name = 'partials/' . Str::removeStart($name, '_');
         }
 
@@ -355,7 +355,7 @@ class View
     {
         $name = str_replace('.', '/', $name);
 
-        if (Str::startsWith($name, '@')) {
+        if (str_starts_with($name, '@')) {
             $parts = explode('/', $name, 2);
             return [substr($parts[0], 1), $parts[1] ?? ''];
         }

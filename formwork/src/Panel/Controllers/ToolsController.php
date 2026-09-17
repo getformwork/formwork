@@ -137,7 +137,7 @@ final class ToolsController extends AbstractController
             ],
             'HTTP Request Headers'  => $this->request->headers()->toArray(),
             'HTTP Response Headers' => $this->getHeaders(),
-            'Environment Variables' => Arr::reject([...getenv(), ...$this->request->server()->toArray()], fn($value, $key) => Str::startsWith($key, 'HTTP_')),
+            'Environment Variables' => Arr::reject([...getenv(), ...$this->request->server()->toArray()], fn($value, $key) => str_starts_with($key, 'HTTP_')),
             'Server'                => [
                 'Apache Modules' => implode(', ', function_exists('apache_get_modules') ? apache_get_modules() : []),
                 'HTTPS'          => $this->request->isSecure() ? 'on' : 'off',
@@ -252,7 +252,7 @@ final class ToolsController extends AbstractController
         $required = [];
         if (($composer = $this->getComposerJson()) !== []) {
             foreach ($composer['require'] as $package => $version) {
-                if ($package !== 'php' && !Str::startsWith($package, 'ext-')) {
+                if ($package !== 'php' && !str_starts_with($package, 'ext-')) {
                     $required[] = $package;
                 }
             }
@@ -270,7 +270,7 @@ final class ToolsController extends AbstractController
         $extensions = [];
         if (($composer = $this->getComposerJson()) !== []) {
             foreach ($composer['require'] as $package => $version) {
-                if (Str::startsWith($package, 'ext-')) {
+                if (str_starts_with($package, 'ext-')) {
                     $extensions[] = Str::after($package, 'ext-');
                 }
             }

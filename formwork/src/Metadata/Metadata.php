@@ -29,7 +29,7 @@ class Metadata implements Stringable
         protected string $content,
     ) {
         $this->name = strtolower($name);
-        if (!Str::contains($name, ':') || ($prefix = Str::before($name, ':')) === '') {
+        if (!str_contains($name, ':') || ($prefix = Str::before($name, ':')) === '') {
             return;
         }
 

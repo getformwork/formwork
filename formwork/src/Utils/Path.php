@@ -51,7 +51,7 @@ final class Path
         }
         $normalizedPath = self::normalize($path);
         $normalizedBase = self::normalize($base);
-        return $normalizedPath === $normalizedBase || Str::startsWith(
+        return $normalizedPath === $normalizedBase || str_starts_with(
             $normalizedPath,
             Str::append($normalizedBase, self::DEFAULT_SEPARATOR)
         );

@@ -10,7 +10,6 @@ use Formwork\Http\Request;
 use Formwork\Http\Session\Handler\FileSessionHandler;
 use Formwork\Http\Utils\Cookie;
 use Formwork\Http\Utils\Header;
-use Formwork\Utils\Str;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -284,7 +283,7 @@ class Session implements Arrayable
             $this->start();
         }
 
-        if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
+        if (str_starts_with($key, self::SESSION_MESSAGES_KEY)) {
             throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
@@ -300,7 +299,7 @@ class Session implements Arrayable
             $this->start();
         }
 
-        if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
+        if (str_starts_with($key, self::SESSION_MESSAGES_KEY)) {
             throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
@@ -316,7 +315,7 @@ class Session implements Arrayable
             $this->start();
         }
 
-        if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
+        if (str_starts_with($key, self::SESSION_MESSAGES_KEY)) {
             throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 
@@ -332,7 +331,7 @@ class Session implements Arrayable
             $this->start();
         }
 
-        if (Str::startsWith($key, self::SESSION_MESSAGES_KEY)) {
+        if (str_starts_with($key, self::SESSION_MESSAGES_KEY)) {
             throw new InvalidArgumentException(sprintf('The key "%s" is reserved', self::SESSION_MESSAGES_KEY));
         }
 

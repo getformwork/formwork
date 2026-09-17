@@ -6,7 +6,6 @@ use DateTimeInterface;
 use Formwork\Log\Formatter\FormatterInterface;
 use Formwork\Log\Formatter\JsonFormatter;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use Psr\Log\LogLevel;
 use RuntimeException;
 
@@ -58,7 +57,7 @@ class FileHandler extends AbstractHandler
     protected function open(): void
     {
         if (
-            !Str::contains($this->path, '://')
+            !str_contains($this->path, '://')
             && !FileSystem::isDirectory($directory = dirname($this->path), assertExists: false)
         ) {
             FileSystem::createDirectory($directory, recursive: true);

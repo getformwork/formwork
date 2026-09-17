@@ -150,7 +150,7 @@ class Plugin implements Arrayable
 
         foreach (get_class_methods($this) as $method) {
             $reflection = new ReflectionMethod($this, $method);
-            if ($reflection->isPublic() && Str::startsWith($method, 'on')) {
+            if ($reflection->isPublic() && str_starts_with($method, 'on')) {
                 $eventName = lcfirst(Str::after($method, 'on'));
                 $handlers[$eventName] = $method;
             }

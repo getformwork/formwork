@@ -169,7 +169,7 @@ class Request
     {
         $uri = rawurldecode((string) $this->server->get('REQUEST_URI'));
         $root = $this->root();
-        if (Str::startsWith($uri, $root)) {
+        if (str_starts_with($uri, $root)) {
             return Path::join(['/', Str::removeStart($uri, $root)]);
         }
         return $uri;
@@ -275,7 +275,7 @@ class Request
     public function validateReferer(string $path = '/'): bool
     {
         $base = Uri::normalize(Uri::base($this->absoluteUri()) . Str::wrap($path, '/'));
-        return Str::startsWith((string) $this->referer(), $base);
+        return str_starts_with((string) $this->referer(), $base);
     }
 
     /**

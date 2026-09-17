@@ -491,7 +491,7 @@ class Site extends Model implements Stringable
         if (FileSystem::isDirectory($path, assertExists: false)) {
             foreach (FileSystem::listFiles($path) as $file) {
                 $extension = '.' . FileSystem::extension($file);
-                if (Str::endsWith($file, $this->config->getString('system.files.metadataExtension'))) {
+                if (str_ends_with($file, $this->config->getString('system.files.metadataExtension'))) {
                     continue;
                 }
                 if (in_array($extension, $this->config->getArray('system.files.allowedExtensions', []), true)) {

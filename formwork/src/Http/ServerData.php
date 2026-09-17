@@ -21,7 +21,7 @@ class ServerData extends RequestData
     {
         $headers = Arr::filter($this->data, function ($value, $key) {
             switch (true) {
-                case Str::startsWith($key, 'HTTP_'):
+                case str_starts_with($key, 'HTTP_'):
                 case in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH']):
                     return true;
 

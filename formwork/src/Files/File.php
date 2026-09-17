@@ -10,7 +10,6 @@ use Formwork\Model\Model;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
-use Formwork\Utils\Str;
 use RuntimeException;
 use Stringable;
 
@@ -135,16 +134,16 @@ class File extends Model implements Arrayable, Stringable
         if ($this->type !== null) {
             return $this->type;
         }
-        if (Str::startsWith($this->mimeType(), 'text')) {
+        if (str_starts_with($this->mimeType(), 'text')) {
             return $this->type = 'text';
         }
-        if (Str::startsWith($this->mimeType(), 'image') && $this->matchExtensions(['gif', 'jpg', 'jpeg', 'jpe', 'png', 'svg', 'webp'])) {
+        if (str_starts_with($this->mimeType(), 'image') && $this->matchExtensions(['gif', 'jpg', 'jpeg', 'jpe', 'png', 'svg', 'webp'])) {
             return $this->type = 'image';
         }
-        if (Str::startsWith($this->mimeType(), 'audio') && $this->matchExtensions(['mp3', 'mpga', 'mp2', 'm2a', 'mp2a', 'm3a', 'm4a', 'mp4a', 'aac', 'wav', 'oga', 'ogg', 'spx', 'opus', 'flac'])) {
+        if (str_starts_with($this->mimeType(), 'audio') && $this->matchExtensions(['mp3', 'mpga', 'mp2', 'm2a', 'mp2a', 'm3a', 'm4a', 'mp4a', 'aac', 'wav', 'oga', 'ogg', 'spx', 'opus', 'flac'])) {
             return $this->type = 'audio';
         }
-        if (Str::startsWith($this->mimeType(), 'video') && $this->matchExtensions(['mp4', 'mpg4', 'mp4v', 'webm', 'ogg', 'mov'])) {
+        if (str_starts_with($this->mimeType(), 'video') && $this->matchExtensions(['mp4', 'mpg4', 'mp4v', 'webm', 'ogg', 'mov'])) {
             return $this->type = 'video';
         }
         if ($this->matchExtensions(['pdf'])) {

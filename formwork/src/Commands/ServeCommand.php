@@ -4,7 +4,6 @@ namespace Formwork\Commands;
 
 use DateTimeImmutable;
 use Formwork\Cms\App;
-use Formwork\Utils\Str;
 use League\CLImate\CLImate;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -175,7 +174,7 @@ final class ServeCommand implements CommandInterface
             $date = (new DateTimeImmutable($date));
 
             switch (true) {
-                case Str::contains($line, 'Development Server ('):
+                case str_contains($line, 'Development Server ('):
                     $this->climate->clear();
                     $this->climate->br();
                     $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <dark_gray>ready in %s</dark_gray>', App::VERSION, $this->formatTime(microtime(true) - $this->startTime)));
@@ -196,7 +195,7 @@ final class ServeCommand implements CommandInterface
                     $this->climate->br();
                     break;
 
-                case Str::contains($line, 'Accepted'):
+                case str_contains($line, 'Accepted'):
                     $acceptedTime = microtime(true);
 
                     [, $requestPort, $requestInfo] = $this->splitMessage($message);
@@ -206,7 +205,7 @@ final class ServeCommand implements CommandInterface
 
                     break;
 
-                case Str::contains($line, 'Closing'):
+                case str_contains($line, 'Closing'):
                     $closingTime = microtime(true);
 
                     [, $requestPort, $requestInfo] = $this->splitMessage($message);
@@ -232,10 +231,10 @@ final class ServeCommand implements CommandInterface
 
                     break;
 
-                case Str::contains($line, 'Failed to listen on'):
+                case str_contains($line, 'Failed to listen on'):
                     $this->process->stop(0);
 
-                    if (!Str::contains($message, 'Address already in use')) {
+                    if (!str_contains($message, 'Address already in use')) {
                         $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>%s</red>', App::VERSION, lcfirst($message)));
                         exit(1);
                     }

@@ -467,7 +467,7 @@ class Router
     protected function parseAction($action, array $actionParameters = []): Closure
     {
         // Parse Class@method callback syntax
-        if (is_string($action) && Str::contains($action, '@')) {
+        if (is_string($action) && str_contains($action, '@')) {
             /**
              * @var class-string $controller
              */
@@ -549,7 +549,7 @@ class Router
      */
     protected function matchPrefix(?string $prefix): bool
     {
-        return $prefix === null || Str::startsWith($this->requestUri, Str::wrap($prefix, '/'));
+        return $prefix === null || str_starts_with($this->requestUri, Str::wrap($prefix, '/'));
     }
 
     /**

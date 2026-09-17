@@ -134,7 +134,7 @@ final class FileSystem
      */
     public static function isVisible(string $path): bool
     {
-        return !Str::startsWith(basename($path), '.');
+        return !str_starts_with(basename($path), '.');
     }
 
     /**

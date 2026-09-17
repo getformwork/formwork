@@ -144,25 +144,34 @@ final class Str
 
     /**
      * Return whether $haystack string starts with $needle
+     *
+     * @deprecated since 2.4.0 Use built-in `str_starts_with()` instead
      */
     public static function startsWith(string $haystack, string $needle): bool
     {
+        trigger_error(sprintf('%s() is deprecated since 2.4.0. Use built-in str_starts_with() instead.', __METHOD__), E_USER_DEPRECATED);
         return str_starts_with($haystack, $needle);
     }
 
     /**
      * Return whether $haystack string ends with $needle
+     *
+     * @deprecated since 2.4.0 Use built-in `str_ends_with()` instead
      */
     public static function endsWith(string $haystack, string $needle): bool
     {
+        trigger_error(sprintf('%s() is deprecated since 2.4.0. Use built-in str_ends_with() instead.', __METHOD__), E_USER_DEPRECATED);
         return str_ends_with($haystack, $needle);
     }
 
     /**
      * Return whether $haystack string contains $needle (the empty string is always contained)
+     *
+     * @deprecated since 2.4.0 Use built-in `str_contains()` instead
      */
     public static function contains(string $haystack, string $needle): bool
     {
+        trigger_error(sprintf('%s() is deprecated since 2.4.0. Use built-in str_contains() instead.', __METHOD__), E_USER_DEPRECATED);
         return str_contains($haystack, $needle);
     }
 
@@ -252,7 +261,7 @@ final class Str
      */
     public static function append(string $string, string $suffix): string
     {
-        return self::endsWith($string, $suffix) ? $string : $string . $suffix;
+        return str_ends_with($string, $suffix) ? $string : $string . $suffix;
     }
 
     /**
@@ -260,7 +269,7 @@ final class Str
      */
     public static function prepend(string $string, string $prefix): string
     {
-        return self::startsWith($string, $prefix) ? $string : $prefix . $string;
+        return str_starts_with($string, $prefix) ? $string : $prefix . $string;
     }
 
     /**
@@ -276,7 +285,7 @@ final class Str
      */
     public static function removeStart(string $haystack, string $needle): string
     {
-        return self::startsWith($haystack, $needle) ? substr($haystack, strlen($needle)) : $haystack;
+        return str_starts_with($haystack, $needle) ? substr($haystack, strlen($needle)) : $haystack;
     }
 
     /**
@@ -284,7 +293,7 @@ final class Str
      */
     public static function removeEnd(string $haystack, string $needle): string
     {
-        return self::endsWith($haystack, $needle) ? substr($haystack, 0, -strlen($needle)) : $haystack;
+        return str_ends_with($haystack, $needle) ? substr($haystack, 0, -strlen($needle)) : $haystack;
     }
 
     /**

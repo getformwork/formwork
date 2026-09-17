@@ -12,7 +12,6 @@ use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 
 return [
@@ -380,7 +379,7 @@ return [
                         return new RedirectResponse($site->uri());
                     }
 
-                    if ($panel->route() !== '/register/' && !Str::startsWith($panel->route(), '/assets/')) {
+                    if ($panel->route() !== '/register/' && !str_starts_with($panel->route(), '/assets/')) {
                         return new RedirectResponse($panel->uri('/register/'));
                     }
                 }
@@ -394,7 +393,7 @@ return [
                 if (
                     !$site->users()->isEmpty() && !$panel->isLoggedIn()
                     && !in_array($panel->route(), ['/login/', '/logout/'], true)
-                    && !Str::startsWith($panel->route(), '/assets/')
+                    && !str_starts_with($panel->route(), '/assets/')
                 ) {
                     $request->session()->set(AuthenticationController::SESSION_REDIRECT_KEY, $panel->route());
                     return new RedirectResponse($panel->uri('/login/'));

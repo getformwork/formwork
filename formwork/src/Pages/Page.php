@@ -186,7 +186,7 @@ class Page extends Model implements Stringable
 
     public function __call(string $name, array $arguments): mixed
     {
-        if (method_exists($this, $name) && Str::startsWith($name, 'set')) {
+        if (method_exists($this, $name) && str_starts_with($name, 'set')) {
             trigger_error(sprintf('Calling page setter methods directly is deprecated since Formwork 2.3.0. Use $page->set(\'%s\', $value) instead of $page->%s($value)', strtolower(Str::after($name, 'set')), $name), E_USER_DEPRECATED);
             return $this->{$name}(...$arguments);
         }
@@ -820,7 +820,7 @@ class Page extends Model implements Stringable
                         }
                     }
                 } else {
-                    if (Str::endsWith($file, $config->getString('system.files.metadataExtension'))) {
+                    if (str_ends_with($file, $config->getString('system.files.metadataExtension'))) {
                         continue;
                     }
                     if (in_array($extension, $config->getArray('system.files.allowedExtensions', []), true)) {

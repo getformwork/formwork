@@ -7,7 +7,6 @@ use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
-use Formwork\Utils\Str;
 
 final class AssetsController extends AbstractController
 {
@@ -24,7 +23,7 @@ final class AssetsController extends AbstractController
                 || $routeParams->get('type') === 'icons'
 
                 // Panel js chunks contain an hash in their filename, they can be cached with immutability
-                || ($routeParams->get('type') === 'js' && Str::startsWith($routeParams->get('file'), 'chunks/'))
+                || ($routeParams->get('type') === 'js' && str_starts_with($routeParams->get('file'), 'chunks/'))
             )
                 ? ['Cache-Control' => 'private, max-age=31536000, immutable']
                 : [];

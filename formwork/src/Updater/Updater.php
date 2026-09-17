@@ -265,7 +265,7 @@ final class Updater
                     if (!FileSystem::exists($destinationDirectory)) {
                         FileSystem::createDirectory($destinationDirectory);
                     }
-                    if (!Str::endsWith($destination, DIRECTORY_SEPARATOR)) {
+                    if (!str_ends_with($destination, DIRECTORY_SEPARATOR)) {
                         if ($zipArchive->extractTo($root, $filename) === false) {
                             throw new RuntimeException(sprintf('Cannot extract "%s" from zip archive', $filename));
                         }
@@ -357,7 +357,7 @@ final class Updater
      */
     private function parseSha256Checksum(?string $checksum): ?string
     {
-        if ($checksum === null || !Str::startsWith($checksum, 'sha256:')) {
+        if ($checksum === null || !str_starts_with($checksum, 'sha256:')) {
             return null;
         }
 

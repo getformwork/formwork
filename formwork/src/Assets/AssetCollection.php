@@ -3,7 +3,6 @@
 namespace Formwork\Assets;
 
 use Formwork\Data\AbstractCollection;
-use Formwork\Utils\Str;
 
 /**
  * @extends AbstractCollection<Asset>
@@ -42,7 +41,7 @@ class AssetCollection extends AbstractCollection
     public function images(): static
     {
         return $this->filter(function (Asset $asset) {
-            return Str::startsWith($asset->mimeType(), 'image/');
+            return str_starts_with($asset->mimeType(), 'image/');
         });
     }
 }

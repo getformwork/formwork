@@ -10,7 +10,6 @@ use DOMNodeList;
 use DOMText;
 use Formwork\Sanitizer\Parser\DomParserInterface;
 use Formwork\Sanitizer\Parser\Html5Parser;
-use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -254,7 +253,7 @@ class DomSanitizer
 
             $scheme = Uri::scheme($uri);
 
-            if ($scheme === null && !Str::startsWith($uri, '//')) {
+            if ($scheme === null && !str_starts_with($uri, '//')) {
                 return;
             }
 
