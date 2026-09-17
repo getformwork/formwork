@@ -4,7 +4,6 @@ namespace Formwork\Data;
 
 use Countable;
 use Formwork\Data\Contracts\Arrayable;
-use Formwork\Data\Traits\DataArrayable;
 use Formwork\Data\Traits\DataCountableIterator;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
@@ -20,22 +19,14 @@ use LogicException;
  */
 abstract class AbstractCollection implements Arrayable, Countable, Iterator
 {
-    use DataArrayable;
-
     /** @use DataCountableIterator<array<int|string, T>> */
     use DataCountableIterator;
 
     /** @use DataMultipleGetter<array<string, T>> */
-    use DataMultipleGetter {
-        has as protected baseHas;
-        get as protected baseGet;
-    }
+    use DataMultipleGetter;
 
     /** @use DataMultipleSetter<array<string, T>> */
-    use DataMultipleSetter {
-        set as protected baseSet;
-        remove as protected baseRemove;
-    }
+    use DataMultipleSetter;
 
     /**
      * @var array<int|string, T>
@@ -718,7 +709,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         if (!$this->isAssociative()) {
             throw new LogicException('Value presence can be checked only in associative collections');
         }
-        return $this->baseHas($key);
+        return Arr::has($this->data, $key);
     }
 
     /** Get a collection item by the given key
@@ -740,7 +731,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         if (!$this->isAssociative()) {
             throw new LogicException('Values can be get only from associative collections');
         }
-        return $this->baseGet($key, $default);
+        return Arr::get($this->data, $key, $default);
     }
 
     /**
@@ -766,7 +757,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
             $this->data[$key] = null;
         }
 
-        $this->baseSet($key, $value);
+        Arr::set($this->data, $key, $value);
     }
 
     /**
@@ -779,7 +770,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         if (!$this->isAssociative() || !$this->isMutable()) {
             throw new LogicException('Values can be removed only from associative and mutable collections');
         }
-        $this->baseRemove($key);
+        Arr::remove($this->data, $key);
     }
 
     /**
@@ -804,5 +795,10 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         }
 
         $this->data = [...$this->data, ...$collection->data];
+    }
+
+    public function toArray(): array
+    {
+        return $this->data;
     }
 }
