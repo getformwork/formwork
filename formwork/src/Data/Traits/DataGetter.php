@@ -42,7 +42,7 @@ trait DataGetter
     {
         if ($getter = $this->dataGetters()[$key] ?? null) {
             return match ($getter['type']) {
-                'property' => $this->{$getter['name']},
+                'property' => $this->{$getter['name']} ?? $default,
                 'method'   => $this->{$getter['name']}(),
             };
         }

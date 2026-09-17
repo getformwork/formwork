@@ -161,7 +161,6 @@ class Page extends Model implements Stringable
     /**
      * Reference to the site
      */
-    #[Setter]
     protected Site $site;
 
     /**
@@ -201,6 +200,18 @@ class Page extends Model implements Stringable
     public function site(): Site
     {
         return $this->site ??= $this->app()->site();
+    }
+
+    /**
+     * Set site
+     */
+    #[Setter]
+    public function setSite(Site $site): void
+    {
+        if (isset($this->site)) {
+            throw new RuntimeException('Site already set for the page');
+        }
+        $this->site = $site;
     }
 
     /**
@@ -636,7 +647,7 @@ class Page extends Model implements Stringable
     /**
      * Return whether the page has loaded
      */
-    #[Getter(key: 'loaded', export: false)]
+    #[Getter(key: 'loaded')]
     public function hasLoaded(): bool
     {
         return $this->loaded;
@@ -1035,6 +1046,18 @@ class Page extends Model implements Stringable
         $this->route ??= Uri::normalize(Str::append($routePath, '/'));
 
         $this->slug ??= basename($this->route);
+    }
+
+    /**
+     * Set the canonical page URI
+     */
+    #[Setter]
+    protected function setCanonicalRoute(?string $canonicalRoute): void
+    {
+        if ($canonicalRoute !== null) {
+            $canonicalRoute = Path::normalize($canonicalRoute);
+        }
+        $this->data['canonicalRoute'] = $canonicalRoute;
     }
 
     /**

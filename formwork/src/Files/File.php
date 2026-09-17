@@ -3,6 +3,7 @@
 namespace Formwork\Files;
 
 use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Model\Model;
@@ -213,6 +214,7 @@ class File extends Model implements Arrayable, Stringable
      *
      * @internal
      */
+    #[Setter]
     public function setUriGenerator(FileUriGenerator $uriGenerator): void
     {
         $this->uriGenerator = $uriGenerator;
@@ -244,9 +246,17 @@ class File extends Model implements Arrayable, Stringable
         return $this->uriGenerator->generateAbsolute($this);
     }
 
+    public function toArray(): array
+    {
+        // Use `convertToArray(false)` to avoid including all properties implicitly
+        // as before Formwork 2.4.0
+        return $this->convertToArray(includeAllProperties: false);
+    }
+
     /**
      * Set file scheme
      */
+    #[Setter]
     public function setScheme(Scheme $scheme): void
     {
         $this->scheme = $scheme;

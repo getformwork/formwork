@@ -6,6 +6,7 @@ use Formwork\Authentication\Authenticator;
 use Formwork\Authentication\Exceptions\AuthenticationFailedException;
 use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Config\Config;
+use Formwork\Data\Attributes\Getter;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\FileFactory;
@@ -220,20 +221,6 @@ class User extends Model
     }
 
     /**
-     * Get data by key returning a default value if key is not present
-     *
-     * @throws LogicException If trying to access the user password hash
-     */
-    public function get(string $key, mixed $default = null): mixed
-    {
-        if ($key === 'hash') {
-            throw new LogicException('Cannot access user password hash');
-        }
-
-        return parent::get($key, $default);
-    }
-
-    /**
      * Set a data value by key
      *
      * This method updates both the data array and the corresponding field
@@ -313,6 +300,12 @@ class User extends Model
 
         Arr::remove($this->data, 'image');
         $this->save();
+    }
+
+    #[Getter(export: false)]
+    protected function hash(): never
+    {
+        throw new LogicException('Cannot access user password hash');
     }
 
     /**
@@ -411,8 +404,10 @@ class User extends Model
      *
      * @throws InvalidValueException If the password is too short
      */
-    protected function setPasswordHash(string $password): void
-    {
+    protected function setPasswordHash(
+        #[SensitiveParameter]
+        string $password
+    ): void {
         if (strlen($password) < self::MINIMUM_PASSWORD_LENGTH) {
             throw new InvalidValueException(sprintf('Password must be at least %d characters long', self::MINIMUM_PASSWORD_LENGTH));
         }

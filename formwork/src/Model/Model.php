@@ -16,6 +16,7 @@ use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
 use LogicException;
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionProperty;
 
 /**
@@ -69,7 +70,7 @@ class Model implements Arrayable
             return $this->get($name);
         }
 
-        throw new LogicException(sprintf('Call to undefined method %s::%s()', static::class, $name));
+        throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
 
     /**
@@ -123,7 +124,7 @@ class Model implements Arrayable
     {
         if ($getter = $this->dataGetters()[$key] ?? null) {
             return match ($getter['type']) {
-                'property' => $this->{$getter['name']},
+                'property' => $this->{$getter['name']} ?? $default,
                 'method'   => $this->{$getter['name']}(),
             };
         }
@@ -176,7 +177,7 @@ class Model implements Arrayable
         }
 
         if (isset($this->dataGetters()[$key])) {
-            throw new LogicException(sprintf('Cannot set getter-only key %s', $key));
+            throw new LogicException(sprintf('Cannot set getter-only key "%s"', $key));
         }
 
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
@@ -217,33 +218,7 @@ class Model implements Arrayable
      */
     public function toArray(): array
     {
-        $data = [];
-
-        foreach ($this->dataGetters() as $key => $accessor) {
-            if ($accessor['export']) {
-                $data[$key] = match ($accessor['type']) {
-                    'method'   => $this->{$accessor['name']}(),
-                    'property' => $this->{$accessor['name']},
-                };
-            }
-        }
-
-        $properties = array_diff(
-            array_keys(get_class_vars(static::class)),
-            array_keys($this->dataGetters()),
-            ['data', 'dataAccessors']
-        );
-
-        if (count($properties) > 0) {
-            trigger_error(sprintf('Getting the following properties implicitly with the toArray() method is deprecated since Formwork 2.4.0: %s. Add the %s(export: true) attribute to the properties to explicitly allow this behavior', implode(', ', array_map(fn($property) => static::class . '::$' . $property, $properties)), Getter::class), E_USER_DEPRECATED);
-        }
-
-        /** @var list<string> $properties */
-        $data += [...$this->data, ...$this->getMultiple($properties)];
-
-        ksort($data);
-
-        return $data;
+        return $this->convertToArray(includeAllProperties: true);
     }
 
     /**
@@ -251,9 +226,61 @@ class Model implements Arrayable
      *
      * @return array<string, mixed>
      */
+    #[Getter(export: false)]
     public function data(): array
     {
         return $this->data;
+    }
+
+    /**
+     * Return the model data
+     *
+     * This is needed until Formwork 3.0.0 to bypass properties without accessors in models that were never exported (like File and Image)
+     *
+     * @internal
+     *
+     * @todo Remove in Formwork 3.0.0 as `toArray()` will be the same as calling `convertToArray(false)`
+     *
+     * @return array<string, mixed>
+     */
+    protected function convertToArray(bool $includeAllProperties = false): array
+    {
+        $data = $this->data;
+
+        foreach ($this->dataGetters() as $key => $accessor) {
+            if ($accessor['export'] === false) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $data[$key] = match ($accessor['type']) {
+                'method'   => $this->{$accessor['name']}(),
+                'property' => $this->{$accessor['name']},
+            };
+        }
+
+        $properties = $includeAllProperties
+            ? array_diff(
+                Arr::map(
+                    Arr::reject((new ReflectionClass(static::class))->getProperties(), fn($p) => $p->isPromoted()),
+                    fn($p) => $p->getName()
+                ),
+                array_keys($this->dataGetters()),
+                array_column($this->dataGetters(), 'name'),
+                ['data', 'dataAccessors']
+            )
+            : [];
+
+        if (count($properties) > 0) {
+            trigger_error(sprintf('Getting the following properties implicitly with the toArray() method is deprecated since Formwork 2.4.0: %s. Add the %s(export: true) attribute to the properties to explicitly allow this behavior', implode(', ', array_map(fn($property) => static::class . '::$' . $property, $properties)), Getter::class), E_USER_DEPRECATED);
+        }
+
+        /** @var list<string> $properties */
+        $data += $this->getMultiple($properties);
+
+        ksort($data);
+
+        return $data;
     }
 
     /**
@@ -261,6 +288,7 @@ class Model implements Arrayable
      *
      * @since 2.3.0
      */
+    #[Getter]
     protected function app(): App
     {
         return $this->app ?? App::instance();

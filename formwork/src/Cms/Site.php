@@ -95,6 +95,7 @@ class Site extends Model implements Stringable
      *
      * @var array<string, Page>
      */
+    #[Getter]
     protected array $storage = [];
 
     /**

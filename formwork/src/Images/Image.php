@@ -63,7 +63,6 @@ class Image extends File
      */
     public function __construct(
         string $path,
-        #[Getter(export: false)]
         protected array $options,
     ) {
         parent::__construct($path);
@@ -302,7 +301,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support color profiles
      */
-    #[Getter]
+    #[Getter(export: false)]
     public function getColorProfile(): ?ColorProfile
     {
         return $this->handler()->getColorProfile();
@@ -342,7 +341,7 @@ class Image extends File
      *
      * @throws UnsupportedFeatureException If the image does not support EXIF data
      */
-    #[Getter]
+    #[Getter(export: false)]
     public function getExifData(): ?ExifData
     {
         return $this->handler()->getExifData();
@@ -491,7 +490,7 @@ class Image extends File
     }
 
     /**
-     * Get image info as an array
+     * Get image info
      */
     #[Getter]
     public function info(): ImageInfo
@@ -521,6 +520,17 @@ class Image extends File
     public function height(): int
     {
         return $this->process()->info()->height();
+    }
+
+    public function toArray(): array
+    {
+        $data = [
+            ...parent::toArray(),
+            'imageInfo' => $this->info()->toArray(), // @todo Remove in Formwork 3.0.0
+            'uri'       => $this->uri(),  // @todo Remove in Formwork 3.0.0
+        ];
+        ksort($data);
+        return $data;
     }
 
     /**
