@@ -2,7 +2,7 @@
 
 namespace Formwork\Pages\Traits;
 
-use Formwork\Model\Attributes\ReadonlyModelProperty;
+use Formwork\Data\Attributes\Getter;
 use Formwork\Utils\Str;
 
 trait PageUid
@@ -10,7 +10,6 @@ trait PageUid
     /**
      * Page uid (unique identifier)
      */
-    #[ReadonlyModelProperty]
     protected string $uid;
 
     /**
@@ -21,6 +20,7 @@ trait PageUid
     /**
      * Get the page unique identifier
      */
+    #[Getter]
     public function uid(): string
     {
         if (isset($this->uid)) {

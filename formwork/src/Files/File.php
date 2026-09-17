@@ -2,9 +2,10 @@
 
 namespace Formwork\Files;
 
+use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Files\Exceptions\FileUriGenerationException;
-use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Model\Model;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\FileSystem;
@@ -28,19 +29,16 @@ class File extends Model implements Arrayable, Stringable
     /**
      * File name
      */
-    #[ReadonlyModelProperty]
     protected string $name;
 
     /**
      * File extension
      */
-    #[ReadonlyModelProperty]
     protected string $extension;
 
     /**
      * File MIME type
      */
-    #[ReadonlyModelProperty]
     protected string $mimeType;
 
     /**
@@ -48,33 +46,29 @@ class File extends Model implements Arrayable, Stringable
      *
      * @var 'archive'|'audio'|'document'|'image'|'pdf'|'presentation'|'spreadsheet'|'text'|'video'|null
      */
-    #[ReadonlyModelProperty]
     protected ?string $type = null;
 
     /**
      * File size in a human-readable format
      */
-    #[ReadonlyModelProperty]
     protected string $size;
 
     /**
      * File last modified time
      */
-    #[ReadonlyModelProperty]
     protected int $lastModifiedTime;
 
     /**
      * File hash
      */
-    #[ReadonlyModelProperty]
     protected string $hash;
 
     /**
      * File content hash
      */
-    #[ReadonlyModelProperty]
     protected string $contentHash;
 
+    #[Getter(export: false)]
     protected FileUriGenerator $uriGenerator;
 
     /**
@@ -95,6 +89,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file path
      */
+    #[Getter]
     public function path(): string
     {
         return $this->path;
@@ -103,6 +98,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file name
      */
+    #[Getter]
     public function name(): string
     {
         return $this->name;
@@ -111,6 +107,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file extension
      */
+    #[Getter]
     public function extension(): string
     {
         return $this->extension;
@@ -119,6 +116,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file MIME type
      */
+    #[Getter]
     public function mimeType(): string
     {
         return $this->mimeType ??= FileSystem::mimeType($this->path);
@@ -131,6 +129,7 @@ class File extends Model implements Arrayable, Stringable
      *
      * @return 'archive'|'audio'|'document'|'image'|'pdf'|'presentation'|'spreadsheet'|'text'|'video'|null
      */
+    #[Getter]
     public function type(): ?string
     {
         if ($this->type !== null) {
@@ -169,6 +168,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file size
      */
+    #[Getter]
     public function size(): string
     {
         return $this->size ??= FileSystem::formatSize(FileSystem::fileSize($this->path));
@@ -177,6 +177,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file last modified time
      */
+    #[Getter]
     public function lastModifiedTime(): int
     {
         return $this->lastModifiedTime ??= FileSystem::lastModifiedTime($this->path);
@@ -185,6 +186,7 @@ class File extends Model implements Arrayable, Stringable
     /**
      * Get file hash
      */
+    #[Getter(export: false)]
     public function hash(): string
     {
         return $this->hash ??= hash('sha256', "{$this->path}:{$this->lastModifiedTime()}");
@@ -195,6 +197,7 @@ class File extends Model implements Arrayable, Stringable
      *
      * @throws RuntimeException If file hash calculation fails
      */
+    #[Getter(export: false)]
     public function contentHash(): string
     {
         if (isset($this->contentHash)) {
@@ -211,6 +214,7 @@ class File extends Model implements Arrayable, Stringable
      *
      * @internal
      */
+    #[Setter]
     public function setUriGenerator(FileUriGenerator $uriGenerator): void
     {
         $this->uriGenerator = $uriGenerator;
@@ -244,19 +248,15 @@ class File extends Model implements Arrayable, Stringable
 
     public function toArray(): array
     {
-        return [
-            'path'             => $this->path,
-            'name'             => $this->name,
-            'extension'        => $this->extension,
-            'type'             => $this->type(),
-            'size'             => $this->size(),
-            'lastModifiedTime' => $this->lastModifiedTime(),
-        ];
+        // Use `convertToArray(false)` to avoid including all properties implicitly
+        // as before Formwork 2.4.0
+        return $this->convertToArray(includeAllProperties: false);
     }
 
     /**
      * Set file scheme
      */
+    #[Setter]
     public function setScheme(Scheme $scheme): void
     {
         $this->scheme = $scheme;

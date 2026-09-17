@@ -17,11 +17,12 @@ final class Arr
      * using dot notation to traverse if literal key is not found
      *
      * @template TValue
+     * @template TDefault
      *
-     * @param array<string, TValue> $array
-     * @param TValue|null           $default
+     * @param array<array-key, TValue> $array
+     * @param TDefault|TValue          $default
      *
-     * @return TValue|null
+     * @return TDefault|TValue
      */
     public static function get(array $array, string $key, mixed $default = null): mixed
     {
@@ -43,7 +44,7 @@ final class Arr
      *
      * @template TValue
      *
-     * @param array<string, TValue> $array
+     * @param array<array-key, TValue> $array
      */
     public static function has(array $array, string $key): bool
     {
@@ -64,8 +65,8 @@ final class Arr
      *
      * @template TValue
      *
-     * @param array<string, TValue> $array
-     * @param TValue                $value
+     * @param array<array-key, TValue> $array
+     * @param TValue                   $value
      */
     public static function set(array &$array, string $key, mixed $value): void
     {
@@ -87,7 +88,7 @@ final class Arr
     /**
      * Remove data by key using dot notation to traverse if literal key is not found
      *
-     * @param array<mixed> $array
+     * @param array<array-key, mixed> $array
      */
     public static function remove(array &$array, string $key): void
     {

@@ -3,12 +3,13 @@
 namespace Formwork\Cms;
 
 use Formwork\Config\Config;
+use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Languages\Languages;
 use Formwork\Languages\LanguagesFactory;
 use Formwork\Metadata\MetadataCollection;
-use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Model\Model;
 use Formwork\Pages\ContentFile;
 use Formwork\Pages\Exceptions\PageNotFoundException;
@@ -47,25 +48,21 @@ class Site extends Model implements Stringable
     /**
      * Site content file
      */
-    #[ReadonlyModelProperty]
     protected ?ContentFile $contentFile = null;
 
     /**
      * Site route
      */
-    #[ReadonlyModelProperty]
     protected ?string $route = '/';
 
     /**
      * Site canonical route
      */
-    #[ReadonlyModelProperty]
     protected ?string $canonicalRoute = null;
 
     /**
      * Site slug
      */
-    #[ReadonlyModelProperty]
     protected ?string $slug = '';
 
     /**
@@ -76,19 +73,16 @@ class Site extends Model implements Stringable
     /**
      * Site templates
      */
-    #[ReadonlyModelProperty]
     protected Templates $templates;
 
     /**
      * Site users
      */
-    #[ReadonlyModelProperty]
     protected Users $users;
 
     /**
      * Site last modified time
      */
-    #[ReadonlyModelProperty]
     protected int $lastModifiedTime;
 
     /**
@@ -101,7 +95,7 @@ class Site extends Model implements Stringable
      *
      * @var array<string, Page>
      */
-    #[ReadonlyModelProperty]
+    #[Getter]
     protected array $storage = [];
 
     /**
@@ -119,7 +113,6 @@ class Site extends Model implements Stringable
     /**
      * Site files
      */
-    #[ReadonlyModelProperty]
     protected FileCollection $files;
 
     /**
@@ -163,6 +156,7 @@ class Site extends Model implements Stringable
     /**
      * Get site path
      */
+    #[Getter]
     public function path(): ?string
     {
         return $this->path;
@@ -171,11 +165,13 @@ class Site extends Model implements Stringable
     /**
      * Get site filename
      */
+    #[Getter]
     public function contentFile(): ?ContentFile
     {
         return $this->contentFile;
     }
 
+    #[Getter]
     public function contentPath(): ?string
     {
         return $this->contentPath;
@@ -189,6 +185,7 @@ class Site extends Model implements Stringable
     /**
      * Get site route
      */
+    #[Getter]
     public function route(): ?string
     {
         return $this->route;
@@ -197,6 +194,7 @@ class Site extends Model implements Stringable
     /**
      * Get site canonical route
      */
+    #[Getter]
     public function canonicalRoute(): ?string
     {
         return $this->canonicalRoute;
@@ -205,6 +203,7 @@ class Site extends Model implements Stringable
     /**
      * Get site slug
      */
+    #[Getter]
     public function slug(): ?string
     {
         return $this->slug;
@@ -213,6 +212,7 @@ class Site extends Model implements Stringable
     /**
      * Get site languages
      */
+    #[Getter]
     public function languages(): Languages
     {
         return $this->languages;
@@ -221,6 +221,7 @@ class Site extends Model implements Stringable
     /**
      * Get site templates
      */
+    #[Getter]
     public function templates(): Templates
     {
         return $this->templates;
@@ -229,6 +230,7 @@ class Site extends Model implements Stringable
     /**
      * Get site users
      */
+    #[Getter]
     public function users(): Users
     {
         return $this->users;
@@ -245,6 +247,7 @@ class Site extends Model implements Stringable
     /**
      * Get the current page of the site
      */
+    #[Getter]
     public function currentPage(): ?Page
     {
         return $this->currentPage;
@@ -255,6 +258,7 @@ class Site extends Model implements Stringable
      *
      * @return array<string, string>
      */
+    #[Getter]
     public function routeAliases(): array
     {
         return $this->routeAliases;
@@ -263,6 +267,7 @@ class Site extends Model implements Stringable
     /**
      * Get site metadata
      */
+    #[Getter]
     public function metadata(): MetadataCollection
     {
         if (isset($this->metadata)) {
@@ -282,6 +287,7 @@ class Site extends Model implements Stringable
     /**
      * Get site last modified time
      */
+    #[Getter]
     public function lastModifiedTime(): ?int
     {
         if ($this->contentPath === null) {
@@ -462,6 +468,7 @@ class Site extends Model implements Stringable
     /**
      * Set and return site current page
      */
+    #[Setter]
     public function setCurrentPage(Page $page): Page
     {
         return $this->currentPage = $page;
@@ -470,6 +477,7 @@ class Site extends Model implements Stringable
     /**
      * Get site files
      */
+    #[Getter]
     public function files(): FileCollection
     {
         if (isset($this->files)) {
@@ -517,6 +525,7 @@ class Site extends Model implements Stringable
      *
      * @param array{available: list<string>, httpPreferred: bool, default?: string} $config
      */
+    #[Setter]
     protected function setLanguages(array $config): void
     {
         $this->data['languages'] = $config;
@@ -530,6 +539,7 @@ class Site extends Model implements Stringable
     /**
      * @param array<string, mixed> $metadata
      */
+    #[Setter]
     protected function setMetadata(array $metadata): void
     {
         $this->data['metadata'] = $metadata;
@@ -538,6 +548,7 @@ class Site extends Model implements Stringable
     /**
      * Set site path
      */
+    #[Setter]
     protected function setPath(string $path): void
     {
         $this->path = $this->data['path'] = $path;
@@ -546,6 +557,7 @@ class Site extends Model implements Stringable
     /**
      * Set site content path
      */
+    #[Setter]
     protected function setContentPath(string $path): void
     {
         $this->contentPath = FileSystem::normalizePath($path . '/');
@@ -556,6 +568,7 @@ class Site extends Model implements Stringable
      *
      * @param array<string, string> $aliases
      */
+    #[Setter]
     protected function setRouteAliases(array $aliases): void
     {
         foreach ($aliases as $from => $to) {

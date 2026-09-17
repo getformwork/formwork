@@ -9,6 +9,8 @@ use Formwork\Data\Contracts\Arrayable;
  */
 trait DataArrayable
 {
+    use DataAccessors;
+
     /**
      * @var array<mixed>
      */
@@ -19,6 +21,17 @@ trait DataArrayable
      */
     public function toArray(): array
     {
-        return $this->data;
+        $data = [];
+
+        foreach ($this->dataGetters() as $key => $accessor) {
+            if ($accessor['export']) {
+                $data[$key] = match ($accessor['type']) {
+                    'method'   => $this->{$accessor['name']}(),
+                    'property' => $this->{$accessor['name']},
+                };
+            }
+        }
+
+        return $data + $this->data;
     }
 }

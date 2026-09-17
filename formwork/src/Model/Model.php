@@ -4,6 +4,8 @@ namespace Formwork\Model;
 
 use BadMethodCallException;
 use Formwork\Cms\App;
+use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataMultipleGetter;
 use Formwork\Data\Traits\DataMultipleSetter;
@@ -12,12 +14,24 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
+use LogicException;
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionProperty;
 
+/**
+ * @template TData of array<string, mixed> = array<string, mixed>
+ */
 class Model implements Arrayable
 {
+    /**
+     * @use DataMultipleGetter<TData>
+     */
     use DataMultipleGetter;
+
+    /**
+     * @use DataMultipleSetter<TData>
+     */
     use DataMultipleSetter;
 
     /**
@@ -30,25 +44,21 @@ class Model implements Arrayable
      *
      * @var array<string, mixed>
      */
-    #[ReadonlyModelProperty]
     protected array $data = [];
 
     /**
      * Application instance
      */
-    #[ReadonlyModelProperty]
     protected App $app;
 
     /**
      * Model scheme
      */
-    #[ReadonlyModelProperty]
     protected Scheme $scheme;
 
     /**
      * Model fields
      */
-    #[ReadonlyModelProperty]
     protected FieldCollection $fields;
 
     /**
@@ -74,6 +84,7 @@ class Model implements Arrayable
     /**
      * Return the model scheme
      */
+    #[Getter]
     public function scheme(): Scheme
     {
         return $this->scheme;
@@ -82,6 +93,7 @@ class Model implements Arrayable
     /**
      * Return the model fields
      */
+    #[Getter]
     public function fields(): FieldCollection
     {
         return $this->fields;
@@ -92,7 +104,11 @@ class Model implements Arrayable
      */
     public function has(string $key): bool
     {
+        if (isset($this->dataGetters()[$key])) {
+            return true;
+        }
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
+            trigger_error(sprintf('Checking the existence of the %s::$%s property implicitly with the has() method is deprecated since Formwork 2.4.0. Add the %s attribute to the property to explicitly allow this behavior', static::class, $key, Getter::class), E_USER_DEPRECATED);
             return true;
         }
         if ($this->fields->has($key)) {
@@ -106,14 +122,23 @@ class Model implements Arrayable
      */
     public function get(string $key, mixed $default = null): mixed
     {
+        if ($getter = $this->dataGetters()[$key] ?? null) {
+            return match ($getter['type']) {
+                'property' => $this->{$getter['name']} ?? $default,
+                'method'   => $this->{$getter['name']}(),
+            };
+        }
+
         // Get values from property
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
             // Call getter method if exists. We check property existence before
             // to avoid using get to call methods arbitrarily
             if (method_exists($this, $key)) {
+                trigger_error(sprintf('Using the implicit getter method %s::%s() is deprecated since Formwork 2.4.0. Add the %s attribute to the method to make it explicit', static::class, $key, Getter::class), E_USER_DEPRECATED);
                 return $this->{$key}();
             }
 
+            trigger_error(sprintf('Getting the %s::$%s property implicitly with the get() method is deprecated since Formwork 2.4.0. Add the %s attribute to the property to explicitly allow this behavior', static::class, $key, Getter::class), E_USER_DEPRECATED);
             return $this->{$key} ?? $default;
         }
 
@@ -143,6 +168,18 @@ class Model implements Arrayable
      */
     public function set(string $key, mixed $value): void
     {
+        if ($setter = $this->dataSetters()[$key] ?? null) {
+            match ($setter['type']) {
+                'property' => $this->{$setter['name']} = $value,
+                'method'   => $this->{$setter['name']}($value),
+            };
+            return;
+        }
+
+        if (isset($this->dataGetters()[$key])) {
+            throw new LogicException(sprintf('Cannot set getter-only key "%s"', $key));
+        }
+
         if (property_exists($this, $key) && !(new ReflectionProperty($this, $key))->isPromoted()) {
             if ($this->isReadonly($key)) {
                 throw new BadMethodCallException(sprintf('Cannot set readonly model property %s::$%s', static::class, $key));
@@ -150,10 +187,12 @@ class Model implements Arrayable
 
             // If defined use a setter
             if (method_exists($this, $setter = 'set' . ucfirst($key))) {
+                trigger_error(sprintf('Using the implicit setter method %s::set%s() is deprecated since Formwork 2.4.0. Add the %s attribute to the method to make it explicit', static::class, ucfirst($key), Setter::class), E_USER_DEPRECATED);
                 $this->{$setter}($value);
                 return;
             }
 
+            trigger_error(sprintf('Setting the %s::$%s property implicitly with the set() method is deprecated since Formwork 2.4.0. Add the %s attribute to the property %s::$%s to explicitly allow this behavior', static::class, $key, Setter::class, static::class, $key), E_USER_DEPRECATED);
             $this->{$key} = $value;
             return;
         }
@@ -179,16 +218,7 @@ class Model implements Arrayable
      */
     public function toArray(): array
     {
-        $properties = array_keys(get_class_vars(static::class));
-
-        Arr::pull($properties, 'data');
-
-        /** @var list<string> $properties */
-        $data = [...$this->data, ...$this->getMultiple($properties)];
-
-        ksort($data);
-
-        return $data;
+        return $this->convertToArray(includeAllProperties: true);
     }
 
     /**
@@ -196,9 +226,61 @@ class Model implements Arrayable
      *
      * @return array<string, mixed>
      */
+    #[Getter(export: false)]
     public function data(): array
     {
         return $this->data;
+    }
+
+    /**
+     * Return the model data
+     *
+     * This is needed until Formwork 3.0.0 to bypass properties without accessors in models that were never exported (like File and Image)
+     *
+     * @internal
+     *
+     * @todo Remove in Formwork 3.0.0 as `toArray()` will be the same as calling `convertToArray(false)`
+     *
+     * @return array<string, mixed>
+     */
+    protected function convertToArray(bool $includeAllProperties = false): array
+    {
+        $data = $this->data;
+
+        foreach ($this->dataGetters() as $key => $accessor) {
+            if ($accessor['export'] === false) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $data[$key] = match ($accessor['type']) {
+                'method'   => $this->{$accessor['name']}(),
+                'property' => $this->{$accessor['name']},
+            };
+        }
+
+        $properties = $includeAllProperties
+            ? array_diff(
+                Arr::map(
+                    Arr::reject((new ReflectionClass(static::class))->getProperties(), fn($p) => $p->isPromoted()),
+                    fn($p) => $p->getName()
+                ),
+                array_keys($this->dataGetters()),
+                array_column($this->dataGetters(), 'name'),
+                ['data', 'dataAccessors']
+            )
+            : [];
+
+        if (count($properties) > 0) {
+            trigger_error(sprintf('Getting the following properties implicitly with the toArray() method is deprecated since Formwork 2.4.0: %s. Add the %s(export: true) attribute to the properties to explicitly allow this behavior', implode(', ', array_map(fn($property) => static::class . '::$' . $property, $properties)), Getter::class), E_USER_DEPRECATED);
+        }
+
+        /** @var list<string> $properties */
+        $data += $this->getMultiple($properties);
+
+        ksort($data);
+
+        return $data;
     }
 
     /**
@@ -206,6 +288,7 @@ class Model implements Arrayable
      *
      * @since 2.3.0
      */
+    #[Getter]
     protected function app(): App
     {
         return $this->app ?? App::instance();

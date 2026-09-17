@@ -4,6 +4,8 @@ namespace Formwork\Pages;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
+use Formwork\Data\Attributes\Getter;
+use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Files\File;
 use Formwork\Files\FileCollection;
@@ -12,7 +14,6 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Languages\Language;
 use Formwork\Languages\Languages;
 use Formwork\Metadata\MetadataCollection;
-use Formwork\Model\Attributes\ReadonlyModelProperty;
 use Formwork\Model\Model;
 use Formwork\Pages\Events\PageAfterDeleteEvent;
 use Formwork\Pages\Events\PageAfterDuplicateEvent;
@@ -95,13 +96,11 @@ class Page extends Model implements Stringable
     /**
      * Page path relative to the content path
      */
-    #[ReadonlyModelProperty]
     protected ?string $relativePath = null;
 
     /**
      * Page route
      */
-    #[ReadonlyModelProperty]
     protected ?string $route = null;
 
     /**
@@ -117,13 +116,11 @@ class Page extends Model implements Stringable
     /**
      * Page content file
      */
-    #[ReadonlyModelProperty]
     protected ?ContentFile $contentFile = null;
 
     /**
      * Page last modified time
      */
-    #[ReadonlyModelProperty]
     protected int $lastModifiedTime;
 
     /**
@@ -134,7 +131,6 @@ class Page extends Model implements Stringable
     /**
      * Available page languages
      */
-    #[ReadonlyModelProperty]
     protected Languages $languages;
 
     /**
@@ -150,7 +146,6 @@ class Page extends Model implements Stringable
     /**
      * Page files
      */
-    #[ReadonlyModelProperty]
     protected FileCollection $files;
 
     /**
@@ -161,7 +156,6 @@ class Page extends Model implements Stringable
     /**
      * Page loading state
      */
-    #[ReadonlyModelProperty]
     protected bool $loaded = false;
 
     /**
@@ -202,9 +196,22 @@ class Page extends Model implements Stringable
     /**
      * Return site
      */
+    #[Getter]
     public function site(): Site
     {
         return $this->site ??= $this->app()->site();
+    }
+
+    /**
+     * Set site
+     */
+    #[Setter]
+    public function setSite(Site $site): void
+    {
+        if (isset($this->site)) {
+            throw new RuntimeException('Site already set for the page');
+        }
+        $this->site = $site;
     }
 
     /**
@@ -402,6 +409,7 @@ class Page extends Model implements Stringable
     /**
      * Get page path
      */
+    #[Getter]
     public function path(): ?string
     {
         return $this->path;
@@ -410,6 +418,7 @@ class Page extends Model implements Stringable
     /**
      * Get page relative path
      */
+    #[Getter]
     public function relativePath(): ?string
     {
         return $this->relativePath;
@@ -434,6 +443,7 @@ class Page extends Model implements Stringable
     /**
      * Get page route
      */
+    #[Getter]
     public function route(): ?string
     {
         return $this->route;
@@ -442,6 +452,7 @@ class Page extends Model implements Stringable
     /**
      * Get the canonical page URI, or `null` if not available
      */
+    #[Getter]
     public function canonicalRoute(): ?string
     {
         return empty($this->data['canonicalRoute'])
@@ -452,6 +463,7 @@ class Page extends Model implements Stringable
     /**
      * Get page slug
      */
+    #[Getter]
     public function slug(): ?string
     {
         return $this->slug;
@@ -460,6 +472,7 @@ class Page extends Model implements Stringable
     /**
      * Get page num
      */
+    #[Getter]
     public function num(): ?int
     {
         if ($this->num !== null) {
@@ -473,6 +486,7 @@ class Page extends Model implements Stringable
     /**
      * Return page icon
      */
+    #[Getter]
     public function icon(): string
     {
         return $this->data['icon'] ?? $this->scheme()->options()->get('icon', 'page');
@@ -481,6 +495,7 @@ class Page extends Model implements Stringable
     /**
      * Get page filename
      */
+    #[Getter]
     public function contentFile(): ?ContentFile
     {
         return $this->contentFile;
@@ -489,6 +504,7 @@ class Page extends Model implements Stringable
     /**
      * Get page template
      */
+    #[Getter]
     public function template(): Template
     {
         return $this->template;
@@ -497,6 +513,7 @@ class Page extends Model implements Stringable
     /**
      * Get page last modified time
      */
+    #[Getter]
     public function lastModifiedTime(): ?int
     {
         if ($this->path === null) {
@@ -513,6 +530,7 @@ class Page extends Model implements Stringable
     /**
      * Get page language
      */
+    #[Getter]
     public function language(): ?Language
     {
         return $this->language;
@@ -521,6 +539,7 @@ class Page extends Model implements Stringable
     /**
      * Get page languages
      */
+    #[Getter]
     public function languages(): Languages
     {
         return $this->languages;
@@ -529,6 +548,7 @@ class Page extends Model implements Stringable
     /**
      * Get page metadata
      */
+    #[Getter]
     public function metadata(): MetadataCollection
     {
         if (isset($this->metadata)) {
@@ -547,6 +567,7 @@ class Page extends Model implements Stringable
      *
      * @since 2.2.0
      */
+    #[Getter]
     public function taxonomy(): array
     {
         return $this->data['taxonomy'];
@@ -555,6 +576,7 @@ class Page extends Model implements Stringable
     /**
      * Get page HTTP response status
      */
+    #[Getter]
     public function responseStatus(): ResponseStatus
     {
         if (isset($this->responseStatus)) {
@@ -578,6 +600,7 @@ class Page extends Model implements Stringable
     /**
      * Get page files
      */
+    #[Getter]
     public function files(): FileCollection
     {
         return $this->files;
@@ -586,6 +609,7 @@ class Page extends Model implements Stringable
     /**
      * Return all page images
      */
+    #[Getter(export: false)]
     public function images(): FileCollection
     {
         return $this->files()->filterBy('type', 'image');
@@ -594,6 +618,7 @@ class Page extends Model implements Stringable
     /**
      * Return all page videos
      */
+    #[Getter(export: false)]
     public function videos(): FileCollection
     {
         return $this->files()->filterBy('type', 'video');
@@ -604,6 +629,7 @@ class Page extends Model implements Stringable
      *
      * @since 2.3.6
      */
+    #[Getter(export: false)]
     public function audios(): FileCollection
     {
         return $this->files()->filterBy('type', 'audio');
@@ -612,6 +638,7 @@ class Page extends Model implements Stringable
     /**
      * Return all page media files (images, videos, and audios)
      */
+    #[Getter(export: false)]
     public function media(): FileCollection
     {
         return $this->files()->filterBy('type', fn(string $type) => in_array($type, ['image', 'video', 'audio'], true));
@@ -620,6 +647,7 @@ class Page extends Model implements Stringable
     /**
      * Return whether the page has loaded
      */
+    #[Getter(key: 'loaded')]
     public function hasLoaded(): bool
     {
         return $this->loaded;
@@ -680,7 +708,10 @@ class Page extends Model implements Stringable
      */
     public function isIndexOrErrorPage(): bool
     {
-        return $this->isIndexPage() || $this->isErrorPage();
+        if ($this->isIndexPage()) {
+            return true;
+        }
+        return $this->isErrorPage();
     }
 
     /**
@@ -990,6 +1021,7 @@ class Page extends Model implements Stringable
      *
      * @throws UnexpectedValueException If site path is missing
      */
+    #[Setter]
     protected function setPath(?string $path): void
     {
         if ($path === null) {
@@ -1017,10 +1049,23 @@ class Page extends Model implements Stringable
     }
 
     /**
+     * Set the canonical page URI
+     */
+    #[Setter]
+    protected function setCanonicalRoute(?string $canonicalRoute): void
+    {
+        if ($canonicalRoute !== null) {
+            $canonicalRoute = Path::normalize($canonicalRoute);
+        }
+        $this->data['canonicalRoute'] = $canonicalRoute;
+    }
+
+    /**
      * Set page slug
      *
      * @throws InvalidValueException If the slug is invalid, for index or error pages, or if a page with the same route already exists
      */
+    #[Setter]
     protected function setSlug(string $slug): void
     {
         if (!$this->validateSlug($slug)) {
@@ -1043,6 +1088,7 @@ class Page extends Model implements Stringable
      *
      * If no arguments are passed, the num is set based on the current mode
      */
+    #[Setter]
     protected function setNum(?int $num = null): void
     {
         if (func_num_args() === 0) {
@@ -1070,6 +1116,7 @@ class Page extends Model implements Stringable
      *
      * @throws InvalidValueException If the parent is invalid
      */
+    #[Setter]
     protected function setParent(Page|Site|string $parent): void
     {
         $previousParent = $this->parent();
@@ -1090,6 +1137,7 @@ class Page extends Model implements Stringable
      *
      * @throws InvalidValueException If the template is invalid
      */
+    #[Setter]
     protected function setTemplate(Template|string $template): void
     {
         $this->template = $this->resolveTemplate($template);
@@ -1101,6 +1149,7 @@ class Page extends Model implements Stringable
      *
      * @throws InvalidValueException If the language is invalid
      */
+    #[Setter]
     protected function setLanguage(Language|string|null $language): void
     {
         if ($language === null) {
@@ -1131,6 +1180,7 @@ class Page extends Model implements Stringable
      *
      * @param array<string, mixed>|MetadataCollection $metadata
      */
+    #[Setter]
     protected function setMetadata(MetadataCollection|array $metadata): void
     {
         if ($metadata instanceof MetadataCollection) {
@@ -1149,6 +1199,7 @@ class Page extends Model implements Stringable
      *
      * @since 2.2.0
      */
+    #[Setter]
     protected function setTaxonomy(array $taxonomy): void
     {
         if (!Arr::every($taxonomy, fn($terms, $taxonomyName) => is_string($taxonomyName)
@@ -1163,6 +1214,7 @@ class Page extends Model implements Stringable
      *
      * @since 2.2.0
      */
+    #[Setter]
     protected function setResponseStatus(ResponseStatus|int|null $responseStatus): void
     {
         if ($responseStatus === null) {
