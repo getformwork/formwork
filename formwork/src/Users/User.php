@@ -227,43 +227,6 @@ class User extends Model
     }
 
     /**
-     * Set a data value by key
-     *
-     * This method updates both the data array and the corresponding field
-     * (if it exists). The field's validation may transform the value before
-     * it's stored in the data array.
-     *
-     * @throws LogicException        If trying to change the username of an existing user
-     * @throws InvalidValueException If the password is too short
-     * @throws InvalidValueException If the e-mail address is not valid
-     * @throws InvalidValueException If the role does not exist
-     * @throws TranslatedException   If email is already used by another user
-     */
-    public function set(string $key, mixed $value): void
-    {
-        if ($key === 'username' && $this->get('username') !== null) {
-            throw new LogicException('Cannot change username of an existing user');
-        }
-
-        if ($key === 'password') {
-            $this->setPasswordHash((string) $value);
-
-            // Do not store plain password in data array
-            return;
-        }
-
-        if ($key === 'email') {
-            $this->validateEmail((string) $value);
-        }
-
-        if ($key === 'role') {
-            $this->validateRole((string) $value);
-        }
-
-        parent::set($key, $value);
-    }
-
-    /**
      * Save user data to file
      *
      * @since 2.3.0
@@ -328,6 +291,82 @@ class User extends Model
     }
 
     /**
+     * Set user username
+     *
+     * @throws LogicException if the username is already set
+     */
+    #[Setter]
+    protected function setUsername(string $username): void
+    {
+        if ($this->username() !== null) {
+            throw new LogicException('Cannot change username of an existing user');
+        }
+
+        $this->data['username'] = $username;
+    }
+
+    /**
+     * Get user password hash
+     */
+    protected function getPasswordHash(): string
+    {
+        return Arr::get($this->data, 'hash')
+            ?? throw new UnexpectedValueException(sprintf('User "%s" has no password hash set', $this->username()));
+    }
+
+    /**
+     * Set user password hash
+     *
+     * @throws InvalidValueException If the password is too short
+     */
+    #[Setter('password')]
+    protected function setPasswordHash(
+        #[SensitiveParameter]
+        string $password
+    ): void {
+        if (strlen($password) < self::MINIMUM_PASSWORD_LENGTH) {
+            throw new InvalidValueException(sprintf('Password must be at least %d characters long', self::MINIMUM_PASSWORD_LENGTH));
+        }
+
+        Arr::set($this->data, 'hash', Password::hash($password));
+    }
+
+    /**
+     * Set user email
+     *
+     * @throws TranslatedException   If email is already used by another user
+     * @throws InvalidValueException If the e-mail address is not valid
+     */
+    #[Setter]
+    protected function setEmail(string $email): void
+    {
+        if ($email !== $this->email() && $this->users->some(fn(User $user) => $user->email() === $email)) {
+            throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidValueException(sprintf('Invalid e-mail address "%s"', $email));
+        }
+
+        $this->data['email'] = $email;
+    }
+
+    /**
+     * Set user role
+     *
+     * @throws InvalidValueException if the role does not exist
+     */
+    #[Setter]
+    protected function setRole(string $role): void
+    {
+        if (!$this->users->roles()->has($role)) {
+            throw new InvalidValueException(sprintf('Role "%s" does not exist', $role));
+        }
+
+        $this->data['role'] = $role;
+    }
+
+    /**
      * Set user image
      */
     #[Setter]
@@ -367,58 +406,6 @@ class User extends Model
         if (FileSystem::isFile($path, assertExists: false)) {
             FileSystem::delete($path);
         }
-    }
-
-    /**
-     * Validate user email
-     *
-     * @throws TranslatedException   If email is already used by another user
-     * @throws InvalidValueException If the e-mail address is not valid
-     */
-    protected function validateEmail(string $email): void
-    {
-        if ($email !== $this->email() && $this->users->some(fn(User $user) => $user->email() === $email)) {
-            throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidValueException(sprintf('Invalid e-mail address "%s"', $email));
-        }
-    }
-
-    /**
-     * Validate user role
-     *
-     * @throws InvalidValueException If the role does not exist
-     */
-    protected function validateRole(string $role): void
-    {
-        if (!$this->users->roles()->has($role)) {
-            throw new InvalidValueException(sprintf('Role "%s" does not exist', $role));
-        }
-    }
-
-    /**
-     * Get user password hash
-     */
-    protected function getPasswordHash(): string
-    {
-        return Arr::get($this->data, 'hash')
-            ?? throw new UnexpectedValueException(sprintf('User "%s" has no password hash set', $this->username()));
-    }
-
-    /**
-     * Set user password hash
-     *
-     * @throws InvalidValueException If the password is too short
-     */
-    protected function setPasswordHash(
-        #[SensitiveParameter]
-        string $password
-    ): void {
-        if (strlen($password) < self::MINIMUM_PASSWORD_LENGTH) {
-            throw new InvalidValueException(sprintf('Password must be at least %d characters long', self::MINIMUM_PASSWORD_LENGTH));
-        }
-        Arr::set($this->data, 'hash', Password::hash($password));
     }
 
     /**
