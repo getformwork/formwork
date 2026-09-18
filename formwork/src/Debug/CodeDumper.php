@@ -256,7 +256,7 @@ final class CodeDumper
                     }
 
                     ob_start();
-                    Debug::dump($value);
+                    echo Debug::dumpToString($value, true);
 
                     $result .= sprintf("<td>%s</td></tr>\n", ob_get_clean());
                 }
@@ -267,7 +267,7 @@ final class CodeDumper
 
         if (isset($frame['args']) && $parameterCount < count($frame['args'])) {
             foreach (array_slice($frame['args'], $parameterCount) as $i => $value) {
-                $result .= sprintf("<tr class=\"__row\">\n<td class=\"__param-name\"><code>#%d</code></td>\n<td>%s</td></tr>\n", $parameterCount + $i, Debug::dumpToString($value));
+                $result .= sprintf("<tr class=\"__row\">\n<td class=\"__param-name\"><code>#%d</code></td>\n<td>%s</td></tr>\n", $parameterCount + $i, Debug::dumpToString($value, true));
             }
         }
         $result .= '</table></div>';

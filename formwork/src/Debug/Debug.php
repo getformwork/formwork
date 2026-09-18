@@ -279,8 +279,12 @@ final class Debug
      *
      * @throws UnexpectedValueException If an unexpected value type is encountered during debugging
      */
-    public static function dumpToString(mixed $data): string
+    public static function dumpToString(mixed $data, bool $dumpStylesIfNeeded = false): string
     {
+        if ($dumpStylesIfNeeded && !self::$stylesDumped) {
+            echo '<style>' . self::$css . '</style>', '<script>' . self::$js . '</script>';
+            self::$stylesDumped = true;
+        }
         return sprintf('<pre class="__formwork-dump">%s</pre>', self::outputData($data));
     }
 
