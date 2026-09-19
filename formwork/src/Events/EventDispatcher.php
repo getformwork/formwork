@@ -30,7 +30,11 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * Dispatch an event
      *
-     * @inheritDoc
+     * @template TEvent of Event|object
+     *
+     * @param TEvent $event The event to dispatch
+     *
+     * @return TEvent The Event that was passed, now modified by listeners
      */
     public function dispatch(object $event): object
     {
