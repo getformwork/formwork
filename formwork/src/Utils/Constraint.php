@@ -192,4 +192,52 @@ final class Constraint
         }
         return true;
     }
+
+    /**
+     * Return whether a value is an URI
+     */
+    public static function isUri(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_URL) !== false;
+    }
+
+    /**
+     * Return whether a value is an email address
+     */
+    public static function isEmail(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * Return whether a value is an IP address
+     */
+    public static function isIp(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_IP) !== false;
+    }
+
+    /**
+     * Return whether a value is an IPv4 address
+     */
+    public static function isIpv4(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+    }
+
+    /**
+     * Return whether a value is an IPv6 address
+     */
+    public static function isIpv6(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+    }
+
+    /**
+     * Return whether a value is a valid hostname
+     */
+    public static function isHostname(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+    }
 }

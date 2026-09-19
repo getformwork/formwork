@@ -4,6 +4,7 @@ namespace Formwork\Http;
 
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Session\Session;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
@@ -219,18 +220,14 @@ class Request
         // Normalize host by converting to lowercase and trimming whitespace
         $host = strtolower(trim($host));
 
-        if (filter_var(
-            $ipv6 = (string) preg_replace('/^\[|\](:\d+)?$/', '', $host),
-            FILTER_VALIDATE_IP,
-            FILTER_FLAG_IPV6
-        ) !== false) {
+        if (Constraint::isIpv6($ipv6 = (string) preg_replace('/^\[|\](:\d+)?$/', '', $host))) {
             return "[$ipv6]";
         }
 
         // Remove port number
         $host = (string) preg_replace('/:\d+$/', '', $host);
 
-        if (filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
+        if (Constraint::isHostname($host)) {
             return $host;
         }
 

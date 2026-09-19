@@ -5,6 +5,7 @@ namespace Formwork\Http\Utils;
 use Detection\MobileDetect;
 use Formwork\Http\Request;
 use Formwork\Traits\StaticClass;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
@@ -77,7 +78,7 @@ final class Visitor
             return null;
         }
 
-        if ($source === null || filter_var($source, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+        if ($source === null || !Constraint::isHostname($source)) {
             return null;
         }
 
@@ -88,7 +89,7 @@ final class Visitor
         }
 
         if (
-            $host === null || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+            $host === null || !Constraint::isHostname($host)
             || $source === $host // Source and host are already lowercased by `Uri::host()` and `Request::host()`
         ) {
             return null;

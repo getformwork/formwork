@@ -19,6 +19,7 @@ use Formwork\Schemes\Schemes;
 use Formwork\Users\Exceptions\UserImageNotFoundException;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use SensitiveParameter;
@@ -344,7 +345,7 @@ class User extends Model
             throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
         }
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!Constraint::isEmail($email)) {
             throw new InvalidValueException(sprintf('Invalid e-mail address "%s"', $email));
         }
 

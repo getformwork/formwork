@@ -5,6 +5,7 @@ namespace Formwork\Http;
 use Formwork\Cms\App;
 use Formwork\Http\Exceptions\ConnectionException;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use RuntimeException;
@@ -159,7 +160,7 @@ class Client
      */
     protected function connect(string $uri, array $options = []): array
     {
-        if (filter_var($uri, FILTER_VALIDATE_URL) === false) {
+        if (!Constraint::isUri($uri)) {
             throw new InvalidArgumentException(sprintf('Cannot connect to "%s": invalid URI', $uri));
         }
 

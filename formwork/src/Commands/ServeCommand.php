@@ -4,6 +4,7 @@ namespace Formwork\Commands;
 
 use DateTimeImmutable;
 use Formwork\Cms\App;
+use Formwork\Utils\Constraint;
 use League\CLImate\CLImate;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -315,8 +316,7 @@ final class ServeCommand implements CommandInterface
      */
     private function isValidHost(string $host): bool
     {
-        return filter_var($host, FILTER_VALIDATE_IP) !== false
-            || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+        return Constraint::isIp($host) || Constraint::isHostname($host);
     }
 
     /**
@@ -324,7 +324,7 @@ final class ServeCommand implements CommandInterface
      */
     private function formatHost(string $host): string
     {
-        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (Constraint::isIpv6($host)) {
             return "[{$host}]";
         }
         return $host;

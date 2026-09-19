@@ -17,7 +17,7 @@ return function (App $app) {
                     return '';
                 }
 
-                if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                if (!Constraint::isEmail($value)) {
                     throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not a valid e-mail address', $field->name(), $field->type()), 'invalidEmail');
                 }
 
