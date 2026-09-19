@@ -75,7 +75,7 @@ final class PluginsController extends AbstractController
         return new Response($this->view('@panel.plugins.plugin', [
             'title'  => $plugin->manifest()->title() ?? $plugin->name(),
             'plugin' => $plugin,
-            'fields' => $form->fields()->reject(fn($field) => $field->name() === 'enabled'),
+            'fields' => $form->fields()->filterBy('name', '!==', 'enabled'),
             ...$this->getPreviousAndNextPlugin($plugin),
         ]), $form->getResponseStatus());
     }
