@@ -3,10 +3,11 @@
 namespace Formwork\Services\Loaders;
 
 use Formwork\Assets\Assets;
-use Formwork\Cms\Site;
+use Formwork\Cms\UriGenerator;
 use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
+use Formwork\Utils\FileSystem;
 
 /**
  * @since 2.3.0
@@ -15,7 +16,7 @@ final class AssetsServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(
         private Config $config,
-        private Site $site,
+        private UriGenerator $uriGenerator,
     ) {}
 
     public function load(Container $container): Assets
@@ -31,8 +32,8 @@ final class AssetsServiceLoader implements ResolutionAwareServiceLoaderInterface
         // Configure template assets namespace
         $service->setResolutionPaths([
             'template' => [
-                'path' => $this->config->getString('system.templates.path') . '/assets',
-                'uri'  => $this->site->uri('/site/templates/assets/', includeLanguage: false),
+                'path' => FileSystem::joinPaths($this->config->getString('system.templates.path'), 'assets'),
+                'uri'  => $this->uriGenerator->path('/site/templates/assets/'),
             ],
         ]);
     }

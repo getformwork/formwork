@@ -15,7 +15,7 @@ use Formwork\Http\Request;
 use Formwork\Images\Image;
 use Formwork\Model\Model;
 use Formwork\Parsers\Yaml;
-use Formwork\Schemes\Schemes;
+use Formwork\Schemes\Scheme;
 use Formwork\Users\Exceptions\UserImageNotFoundException;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
@@ -58,15 +58,12 @@ class User extends Model
      */
     public function __construct(
         array $data,
-        protected Schemes $schemes,
         protected Config $config,
         protected Request $request,
         protected FileFactory $fileFactory,
         protected Users $users,
     ) {
         $this->data = Arr::override($this->defaults, Arr::undot($data));
-
-        $this->load();
     }
 
     public function __debugInfo(): array
@@ -75,6 +72,12 @@ class User extends Model
         // Unset hash to avoid exposure
         unset($data['hash']);
         return $data;
+    }
+
+    #[Getter]
+    public function scheme(): Scheme
+    {
+        return $this->scheme ??= $this->app()->schemes()->get('users.user');
     }
 
     public function toArray(): array
@@ -276,19 +279,6 @@ class User extends Model
     protected function hash(): never
     {
         throw new LogicException('Cannot access user password hash');
-    }
-
-    /**
-     * Load user scheme and fields
-     */
-    protected function load(): void
-    {
-        $this->scheme = $this->schemes->get('users.user');
-
-        $this->fields = $this->scheme->fields();
-        $this->fields->setModel($this);
-
-        $this->fields->setValues($this->data);
     }
 
     /**

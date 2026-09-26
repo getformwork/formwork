@@ -6,7 +6,6 @@ use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
 use Formwork\Fields\FieldCollection;
-use Formwork\Files\Services\FileUploader;
 use Formwork\Forms\Form;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
@@ -16,7 +15,6 @@ use Formwork\Router\Router;
 use Formwork\Services\Container;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
-use Formwork\Utils\Uri;
 use Formwork\View\ViewFactory;
 use InvalidArgumentException;
 
@@ -31,10 +29,8 @@ abstract class AbstractController
         private readonly Container $container,
         protected readonly App $app,
         protected readonly Config $config,
-        protected readonly ViewFactory $viewFactory,
         protected readonly Request $request,
         protected readonly Router $router,
-        protected readonly FileUploader $fileUploader,
         protected readonly EventDispatcher $events,
     ) {
         $this->name = strtolower(Str::beforeLast(Str::afterLast(static::class, '\\'), 'Controller'));
@@ -47,7 +43,7 @@ abstract class AbstractController
      */
     protected function view(string $name, array $data = []): string
     {
-        return $this->viewFactory->make($name, $data)->render();
+        return $this->container->get(ViewFactory::class)->make($name, $data)->render();
     }
 
     /**
@@ -57,7 +53,7 @@ abstract class AbstractController
      */
     protected function form(string $name, FieldCollection $fieldCollection): Form
     {
-        return new Form($name, $fieldCollection, $this->fileUploader);
+        return $this->container->build(Form::class, ['name' => $name, 'fields' => $fieldCollection]);
     }
 
     /**
@@ -67,8 +63,7 @@ abstract class AbstractController
      */
     protected function redirect(string $route, ResponseStatus $responseStatus = ResponseStatus::Found, array $headers = []): RedirectResponse
     {
-        $uri = Uri::make([], Path::join([$this->request->root(), $route]));
-        return new RedirectResponse($uri, $responseStatus, $headers);
+        return new RedirectResponse($this->app->uri()->path($route), $responseStatus, $headers);
     }
 
     /**

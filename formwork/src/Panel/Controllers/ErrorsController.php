@@ -30,7 +30,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
     public function notFound(): Response
     {
         return $this->makeErrorResponse(ResponseStatus::NotFound, 'notFound', [
-            'href'  => $this->panel->uri('/dashboard/'),
+            'href'  => $this->app->uri()->route('panel.dashboard'),
             'label' => $this->translate('panel.errors.action.returnToDashboard'),
         ]);
     }
@@ -52,7 +52,7 @@ final class ErrorsController extends AbstractController implements ErrorsControl
     public function forbidden(): Response
     {
         return $this->makeErrorResponse(ResponseStatus::Forbidden, 'forbidden', [
-            'href'  => $this->panel->uri('/dashboard/'),
+            'href'  => $this->app->uri()->route('panel.dashboard'),
             'label' => $this->translate('panel.errors.action.returnToDashboard'),
         ]);
     }

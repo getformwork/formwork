@@ -8,7 +8,6 @@ use Formwork\Data\Attributes\Setter;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Languages\Languages;
-use Formwork\Languages\LanguagesFactory;
 use Formwork\Metadata\MetadataCollection;
 use Formwork\Model\Model;
 use Formwork\Pages\ContentFile;
@@ -20,6 +19,7 @@ use Formwork\Pages\PageFactory;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Pages\Traits\PageUid;
 use Formwork\Pages\Traits\PageUri;
+use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Templates\Templates;
 use Formwork\Users\Users;
@@ -121,7 +121,6 @@ class Site extends Model implements Stringable
     public function __construct(
         array $data,
         protected Config $config,
-        protected LanguagesFactory $languagesFactory,
         protected PageFactory $pageFactory,
         protected PageCollectionFactory $pageCollectionFactory,
     ) {
@@ -215,7 +214,7 @@ class Site extends Model implements Stringable
     #[Getter]
     public function languages(): Languages
     {
-        return $this->languages;
+        return $this->languages ??= $this->app()->getService(Languages::class);
     }
 
     /**
@@ -224,7 +223,7 @@ class Site extends Model implements Stringable
     #[Getter]
     public function templates(): Templates
     {
-        return $this->templates;
+        return $this->templates ??= $this->app()->getService(Templates::class);
     }
 
     /**
@@ -233,7 +232,7 @@ class Site extends Model implements Stringable
     #[Getter]
     public function users(): Users
     {
-        return $this->users;
+        return $this->users ??= $this->app()->getService(Users::class);
     }
 
     /**
@@ -508,16 +507,12 @@ class Site extends Model implements Stringable
      *
      * @internal
      */
-    public function load(): void
+    public function load(): void {}
+
+    #[Getter]
+    public function scheme(): Scheme
     {
-        $this->scheme = $this->app()->schemes()->get('config.site');
-        $this->templates = $this->app()->getService(Templates::class);
-        $this->users = $this->app()->getService(Users::class);
-
-        $this->fields = $this->scheme->fields();
-        $this->fields->setModel($this);
-
-        $this->fields->setValues($this->data);
+        return $this->scheme ??= $this->app()->schemes()->get('config.site');
     }
 
     /**
@@ -529,11 +524,6 @@ class Site extends Model implements Stringable
     protected function setLanguages(array $config): void
     {
         $this->data['languages'] = $config;
-        $this->languages = $this->languagesFactory->make($config);
-
-        if (($currentTranslation = $this->languages->current() ?? $this->languages->default()) !== null) {
-            $this->app()->translations()->setCurrent($currentTranslation->code());
-        }
     }
 
     /**

@@ -38,7 +38,6 @@ class Plugin implements Arrayable
         protected string $path,
         private Container $container,
         protected App $app,
-        protected ViewFactory $viewFactory
     ) {
         $this->id = basename($this->path);
 
@@ -106,7 +105,7 @@ class Plugin implements Arrayable
         $this->loadConfig();
         $this->loadSchemes();
         $this->loadTranslations();
-        $this->loadViews();
+        $this->loadViews($this->container);
         $this->loadAssets();
         $this->loadServices($this->container);
 
@@ -228,11 +227,11 @@ class Plugin implements Arrayable
     /**
      * Load plugin views
      */
-    protected function loadViews(): void
+    protected function loadViews(Container $container): void
     {
         $viewsPath = FileSystem::joinPaths($this->path(), 'views');
         if (FileSystem::isDirectory($viewsPath, assertExists: false)) {
-            $this->viewFactory->setResolutionPaths([$this->namespace() => $viewsPath]);
+            $container->get(ViewFactory::class)->setResolutionPaths([$this->namespace() => $viewsPath]);
         }
     }
 
@@ -246,7 +245,7 @@ class Plugin implements Arrayable
             $this->app->assets()->setResolutionPaths([
                 $this->namespace() => [
                     'path' => $assetsPath,
-                    'uri'  => $this->app->site()->uri("/plugins/{$this->id()}/assets", includeLanguage: false),
+                    'uri'  => $this->app->uri()->path("/plugins/{$this->id()}/assets"),
                 ],
             ]);
 

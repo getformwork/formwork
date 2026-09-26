@@ -33,10 +33,10 @@ final class BackupController extends AbstractController
         $uriName = rawurlencode(base64_encode($filename));
         return JsonResponse::success($this->translate('panel.backup.ready'), data: [
             'filename'  => $filename,
-            'uri'       => $this->panel->uri("/backup/download/{$uriName}/"),
+            'uri'       => $this->app->uri()->route('panel.backup.download', ['backup' => $uriName]),
             'date'      => Date::formatTimestamp(FileSystem::lastModifiedTime($file), $this->config->getString('system.date.datetimeFormat'), $this->translations->getCurrent()),
             'size'      => FileSystem::formatSize(FileSystem::size($file)),
-            'deleteUri' => $this->panel->uri("/backup/delete/{$uriName}/"),
+            'deleteUri' => $this->app->uri()->route('panel.backup.delete', ['backup' => $uriName]),
             'maxFiles'  => $this->config->getInt('system.backup.maxFiles'),
         ]);
     }

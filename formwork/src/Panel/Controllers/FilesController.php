@@ -7,6 +7,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\File;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
@@ -18,9 +19,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Path;
 use Formwork\Utils\Str;
-use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
@@ -80,7 +79,7 @@ final class FilesController extends AbstractController
     /**
      * FilesController@upload action
      */
-    public function upload(): Response
+    public function upload(FileUploader $fileUploader): Response
     {
         if (!$this->hasPermission('panel.files.upload')) {
             return $this->forward(ErrorsController::class, 'forbidden');
@@ -112,7 +111,7 @@ final class FilesController extends AbstractController
 
         try {
             foreach ($files as $file) {
-                $this->fileUploader->upload(
+                $fileUploader->upload(
                     $file,
                     $destination,
                     $filesField->filename(),
@@ -290,7 +289,7 @@ final class FilesController extends AbstractController
     /**
      * FilesController@replace action
      */
-    public function replace(RouteParams $routeParams): JsonResponse|Response
+    public function replace(RouteParams $routeParams, FileUploader $fileUploader): JsonResponse|Response
     {
         if (!$this->hasPermission('panel.files.replace')) {
             return $this->forward(ErrorsController::class, 'forbidden');
@@ -319,7 +318,7 @@ final class FilesController extends AbstractController
             }
 
             try {
-                $file = $this->fileUploader->upload(
+                $file = $fileUploader->upload(
                     $files[0],
                     dirname($file->path()),
                     FileSystem::name($filename),
@@ -439,12 +438,12 @@ final class FilesController extends AbstractController
     {
         $params = ['model' => $model->getModelIdentifier(), 'id' => $model->route(), 'filename' => $file->name()];
         $actions = [
-            'info'    => $this->router->generate('panel.files.edit', $params),
-            'rename'  => $this->router->generate('panel.files.rename', $params),
-            'replace' => $this->router->generate('panel.files.replace', $params),
-            'delete'  => $this->router->generate('panel.files.delete', $params),
+            'info'    => ['panel.files.edit', $params],
+            'rename'  => ['panel.files.rename', $params],
+            'replace' => ['panel.files.replace', $params],
+            'delete'  => ['panel.files.delete', $params],
         ];
-        return Arr::map($actions, fn(string $route): string => Uri::make([], Path::join([$this->request->root(), $route])));
+        return Arr::map($actions, fn(array $action): string => $this->app->uri()->route(...$action));
     }
 
     private function getThumbnailUri(File $file): ?string
