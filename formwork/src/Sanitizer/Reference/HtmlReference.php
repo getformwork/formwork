@@ -377,12 +377,14 @@ class HtmlReference
         'data',
         'formaction',
         'href',
+        'imagesrcset',
         'longdesc',
         'lowsrc',
         'manifest',
         'ping',
         'poster',
         'src',
+        'srcset',
         'usemap',
     ];
 }
