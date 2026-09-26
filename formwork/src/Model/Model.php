@@ -92,10 +92,20 @@ class Model implements Arrayable
 
     /**
      * Return the model fields
+     *
+     * The field collection is created lazily and cached for the lifetime of the model
      */
     #[Getter]
     public function fields(): FieldCollection
     {
+        if (isset($this->fields)) {
+            return $this->fields;
+        }
+
+        $this->fields = $this->scheme()->fields();
+        $this->fields->setModel($this);
+        $this->fields->setValues($this->data);
+
         return $this->fields;
     }
 
@@ -111,7 +121,7 @@ class Model implements Arrayable
             trigger_error(sprintf('Checking the existence of the %s::$%s property implicitly with the has() method is deprecated since Formwork 2.4.0. Add the %s attribute to the property to explicitly allow this behavior', static::class, $key, Getter::class), E_USER_DEPRECATED);
             return true;
         }
-        if ($this->fields->has($key)) {
+        if ($this->fields()->has($key)) {
             return true;
         }
         return Arr::has($this->data, $key);
@@ -143,9 +153,9 @@ class Model implements Arrayable
         }
 
         // Get values from fields
-        if ($this->fields->has($key)) {
+        if ($this->fields()->has($key)) {
             /** @var Field */
-            $field = $this->fields->get($key);
+            $field = $this->fields()->get($key);
 
             // If defined use the value returned by `return()`
             if ($field->hasMethod('return')) {
@@ -200,9 +210,9 @@ class Model implements Arrayable
         // Set value in the corresponding field if exists
         // Note: This updates the field in $this->fields, which may not be
         // the same instance as a cloned field collection used elsewhere
-        if (isset($this->fields) && $this->fields->has($key)) {
+        if (isset($this->fields) && $this->fields()->has($key)) {
             /** @var Field */
-            $field = $this->fields->get($key);
+            $field = $this->fields()->get($key);
             $field->set('value', $value);
             $field->validate();
 

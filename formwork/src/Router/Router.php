@@ -3,10 +3,12 @@
 namespace Formwork\Router;
 
 use Closure;
+use Formwork\Events\EventDispatcher;
 use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Parsers\Php;
+use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Router\Exceptions\InvalidRouteException;
 use Formwork\Router\Exceptions\RouteNotFoundException;
 use Formwork\Services\Container;
@@ -88,6 +90,7 @@ class Router
     public function __construct(
         protected Container $container,
         protected Request $request,
+        protected EventDispatcher $events
     ) {
         $this->routes = new RouteCollection();
         $this->filters = new RouteFilterCollection();
@@ -229,6 +232,10 @@ class Router
                 $this->container->define(RouteParams::class, $this->params);
 
                 $routeCallback = $this->parseAction($route->getAction(), $route->getActionParameters());
+                $routeCallback = $this->events->dispatch(new RouteActionResolvedEvent(
+                    $route,
+                    $this->parseAction($route->getAction(), $route->getActionParameters())
+                ))->action();
 
                 return $this->container->call($routeCallback);
             }
@@ -298,6 +305,7 @@ class Router
          *         action: callable|string,
          *         prefix?: string,
          *         methods?: list<string>,
+         *         types?: list<string>,
          *     }>,
          *  }
          */

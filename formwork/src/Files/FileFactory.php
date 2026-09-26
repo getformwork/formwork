@@ -5,7 +5,6 @@ namespace Formwork\Files;
 use Closure;
 use Formwork\Config\Config;
 use Formwork\Parsers\Yaml;
-use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
 use RuntimeException;
@@ -18,7 +17,6 @@ final class FileFactory
     public function __construct(
         private Container $container,
         private Config $config,
-        private Schemes $schemes,
         private array $associations = [],
     ) {}
 
@@ -45,14 +43,11 @@ final class FileFactory
             throw new RuntimeException(sprintf('Invalid object of type %s, only instances of %s are allowed', get_debug_type($instance), File::class));
         }
 
-        $instance->setScheme($this->schemes->get($instance::SCHEME_IDENTIFIER));
-
         $metadataFile = $path . $this->config->getString('system.files.metadataExtension');
 
         $metadata = FileSystem::exists($metadataFile) ? Yaml::parseFile($metadataFile) : [];
 
         $instance->setMultiple($metadata);
-        $instance->fields()->setValues($metadata);
 
         $instance->setUriGenerator($this->container->get(FileUriGenerator::class));
 

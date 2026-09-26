@@ -1,13 +1,12 @@
 <?php
 
-use Formwork\Cms\Site;
+use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
-use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Panel;
 use Formwork\Security\CsrfToken;
 use Formwork\Translations\Translations;
@@ -18,7 +17,7 @@ return [
     'routes' => [
         'panel.index' => [
             'path'   => '/',
-            'action' => fn(Panel $panel) => new RedirectResponse($panel->uri('/dashboard/')),
+            'action' => fn(App $app) => new RedirectResponse($app->uri()->route('panel.dashboard')),
         ],
 
         'panel.login' => [
@@ -310,7 +309,7 @@ return [
 
     'filters' => [
         'panel.request.validateSize' => [
-            'action' => static function (Request $request, Translations $translations, Panel $panel) {
+            'action' => static function (App $app, Request $request, Translations $translations, Panel $panel) {
                 // Validate HTTP request Content-Length according to `post_max_size` directive
                 if ($request->contentLength() !== null) {
                     $maxSize = FileSystem::shorthandToBytes(ini_get('post_max_size') ?: '0');
@@ -320,7 +319,7 @@ return [
                             $translations->getCurrent()->translate('panel.request.error.postMaxSize'),
                             'error'
                         );
-                        return new RedirectResponse($panel->uri());
+                        return new RedirectResponse($app->uri()->route('panel.dashboard'));
                     }
                 }
             },
@@ -329,7 +328,7 @@ return [
         ],
 
         'panel.request.validateCsrf' => [
-            'action' => static function (Request $request, Translations $translations, Panel $panel, CsrfToken $csrfToken) {
+            'action' => static function (App $app, Request $request, Translations $translations, Panel $panel, CsrfToken $csrfToken) {
                 $tokenName = $panel->getCsrfTokenName();
                 $token = (string) $request->input()->get('csrf-token');
 
@@ -349,7 +348,7 @@ return [
                         return JsonResponse::error('Bad Request: the CSRF token is not valid', ResponseStatus::Forbidden);
                     }
 
-                    return new RedirectResponse($panel->uri('/login/'));
+                    return new RedirectResponse($app->uri()->route('panel.login'));
                 }
             },
             'methods' => ['POST'],
@@ -357,46 +356,18 @@ return [
         ],
 
         'panel.checkAssets' => [
-            'action' => static function (Config $config, ViewFactory $viewFactory) {
+            'action' => static function (App $app, Config $config) {
                 $path = $config->getString('system.panel.paths.assets');
                 $assets = ['css/panel.min.css', 'js/app.min.js'];
 
                 foreach ($assets as $asset) {
                     $assetPath = FileSystem::joinPaths($path, $asset);
                     if (!FileSystem::isFile($assetPath, assertExists: false)) {
-                        $view = $viewFactory->make('@system.errors.panel.assets');
-                        return new Response($view->render(), ResponseStatus::InternalServerError);
+                        return new Response(
+                            $app->getService(ViewFactory::class)->make('@system.errors.panel.assets')->render(),
+                            ResponseStatus::InternalServerError
+                        );
                     }
-                }
-            },
-        ],
-
-        'panel.register' => [
-            'action' => static function (Request $request, Site $site, Panel $panel) {
-                // Register panel if no user exists
-                if ($site->users()->isEmpty()) {
-                    if (!$request->isLocalhost()) {
-                        return new RedirectResponse($site->uri());
-                    }
-
-                    if ($panel->route() !== '/register/' && !str_starts_with($panel->route(), '/assets/')) {
-                        return new RedirectResponse($panel->uri('/register/'));
-                    }
-                }
-            },
-            'methods' => ['GET', 'POST'],
-        ],
-
-        'panel.redirectToLogin' => [
-            'action' => static function (Request $request, Site $site, Panel $panel) {
-                // Redirect to login if no user is logged
-                if (
-                    !$site->users()->isEmpty() && !$panel->isLoggedIn()
-                    && !in_array($panel->route(), ['/login/', '/logout/'], true)
-                    && !str_starts_with($panel->route(), '/assets/')
-                ) {
-                    $request->session()->set(AuthenticationController::SESSION_REDIRECT_KEY, $panel->route());
-                    return new RedirectResponse($panel->uri('/login/'));
                 }
             },
         ],

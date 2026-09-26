@@ -23,6 +23,7 @@ use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\Session\Session;
 use Formwork\Images\ImageFactory;
+use Formwork\Languages\Languages;
 use Formwork\Languages\LanguagesFactory;
 use Formwork\Log\Logger;
 use Formwork\Pages\PageCollectionFactory;
@@ -38,6 +39,7 @@ use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Services\Loaders\AuthenticationServiceLoader;
 use Formwork\Services\Loaders\CacheServiceLoader;
 use Formwork\Services\Loaders\ConfigServiceLoader;
+use Formwork\Services\Loaders\LanguagesServiceLoader;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Services\Loaders\PluginsServiceLoader;
@@ -112,6 +114,14 @@ final class App
     public function router(): Router
     {
         return $this->container->get(Router::class);
+    }
+
+    /**
+     * Get UriGenerator instance
+     */
+    public function uri(): UriGenerator
+    {
+        return $this->container->get(UriGenerator::class);
     }
 
     /**
@@ -265,9 +275,11 @@ final class App
      */
     private function loadServices(Container $container): void
     {
-        $container->define(Container::class, $container);
+        $container->define(Container::class, $container)
+            ->lazy(false);
 
-        $container->define(self::class, $this);
+        $container->define(self::class, $this)
+            ->lazy(false);
 
         $container->define(Logger::class)
             ->loader(LoggerServiceLoader::class)
@@ -283,7 +295,8 @@ final class App
 
         $container->define(Config::class)
             ->loader(ConfigServiceLoader::class)
-            ->alias('config');
+            ->alias('config')
+            ->lazy(false);
 
         $container->define(ViewFactory::class)
             ->parameter('resolutionPaths', fn(Config $config) => ['system' => $config->getString('system.views.paths.system')])
@@ -297,6 +310,9 @@ final class App
 
         $container->define(Router::class)
             ->alias('router');
+
+        $container->define(UriGenerator::class)
+            ->alias('uri');
 
         $container->define(Translations::class)
             ->loader(TranslationsServiceLoader::class)
@@ -313,6 +329,9 @@ final class App
         $container->define(PageCollectionFactory::class);
 
         $container->define(LanguagesFactory::class);
+
+        $container->define(Languages::class)
+            ->loader(LanguagesServiceLoader::class);
 
         $container->define(Site::class)
             ->loader(SiteServiceLoader::class)

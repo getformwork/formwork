@@ -5,6 +5,7 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Fields\Field;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Forms\FormData;
 use Formwork\Http\FileResponse;
 use Formwork\Http\Response;
@@ -149,15 +150,11 @@ final class UsersController extends AbstractController
     /**
      * Users@profile action
      */
-    public function profile(RouteParams $routeParams): Response
+    public function profile(RouteParams $routeParams, FileUploader $fileUploader): Response
     {
         if (!$this->hasPermission('panel.users.profile')) {
             return $this->forward(ErrorsController::class, 'forbidden');
         }
-
-        $scheme = $this->app->schemes()->get('users.user');
-
-        $fields = $scheme->fields();
 
         $user = $this->site->users()->get($routeParams->get('user'));
 
@@ -166,15 +163,13 @@ final class UsersController extends AbstractController
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
-        $fields->setModel($user);
+        $fields = $user->fields();
 
         // Hide password field if the user cannot change it
         $fields->get('password')?->set('visible', $this->panel->user()->canChangePasswordOf($user));
 
         // Disable role field if it cannot be changed
         $fields->get('role')?->set('disabled', !$this->panel->user()->canChangeRoleOf($user));
-
-        $fields->setValues($user);
 
         $form = $this->form('user-profile', $fields)
             ->processRequest($this->request, uploadFiles: false, preserveEmpty: false);
@@ -190,7 +185,7 @@ final class UsersController extends AbstractController
                     // Handle image upload
                     $image = null;
                     if (($imageField = $form->fields()->get('image')) && !$imageField->isEmpty()) {
-                        $image = $this->uploadUserImage($imageField);
+                        $image = $this->uploadUserImage($imageField, $fileUploader);
                     }
 
                     $this->updateUser($user, $form->data(), $image);
@@ -231,7 +226,7 @@ final class UsersController extends AbstractController
     /**
      * Upload a new image for a user
      */
-    private function uploadUserImage(Field $field): ?Image
+    private function uploadUserImage(Field $field, FileUploader $fileUploader): ?Image
     {
         $imagesPath = FileSystem::joinPaths($this->config->getString('system.users.paths.images'));
 
@@ -241,7 +236,7 @@ final class UsersController extends AbstractController
             return null;
         }
 
-        $file = $this->fileUploader->upload(
+        $file = $fileUploader->upload(
             $files[0],
             $imagesPath,
             FileSystem::randomName(),

@@ -118,7 +118,9 @@ class Scheme implements Arrayable
     }
 
     /**
-     * Get scheme fields
+     * Create a field collection from the scheme definition
+     *
+     * The returned collection is a new instance on each call
      */
     public function fields(): FieldCollection
     {

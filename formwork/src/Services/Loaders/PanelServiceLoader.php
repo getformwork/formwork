@@ -3,37 +3,42 @@
 namespace Formwork\Services\Loaders;
 
 use Formwork\Assets\Assets;
-use Formwork\Authentication\RateLimiter;
+use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
 use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Events\EventDispatcher;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Log\Logger;
-use Formwork\Log\Registry;
+use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Controllers\ErrorsController;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Modals\ModalFactory;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Panel\Panel;
+use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Translations\Translations;
-use Formwork\Utils\FileSystem;
+use Formwork\Users\Users;
+use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 
 final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 {
     public function __construct(
-        private Config $config,
-        private ViewFactory $viewFactory,
-        private Request $request,
-        private Schemes $schemes,
-        private Translations $translations,
-        private Assets $assets,
+        private App $app,
         private Logger $logger,
         private EventDispatcher $eventDispatcher,
+        private Request $request,
+        private Config $config,
+        private ViewFactory $viewFactory,
+        private Translations $translations,
+        private Schemes $schemes,
+        private Users $users,
+        private Assets $assets,
     ) {}
 
     public function load(Container $container): Panel
@@ -46,13 +51,6 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             if ($this->config->has('system.panel.loginResetTime')) {
                 trigger_error('The "system.panel.loginResetTime" configuration option is deprecated since Formwork 2.3.0. Use "system.authentication.limits.resetTime" instead.', E_USER_DEPRECATED);
             }
-
-            $container->define(RateLimiter::class)
-                ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
-                ->parameter('limit', $this->config->getInt('system.panel.loginAttempts', $this->config->getInt('system.authentication.limits.maxAttempts')))
-                ->parameter('resetTime', $this->config->getInt('system.panel.loginResetTime', $this->config->getInt('system.authentication.limits.resetTime')));
-
-            $container->resolve(RateLimiter::class);
         }
 
         if ($this->config->has('system.panel.sessionTimeout')) {
@@ -62,6 +60,8 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
         $container->define(ModalFactory::class);
         $container->define(Modals::class);
+
+        $this->eventDispatcher->on('routeActionResolved', $this->onRouteActionResolved(...));
 
         $this->eventDispatcher->on('panelLoggedIn', $this->onPanelLoggedIn(...));
 
@@ -104,5 +104,35 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
     private function onPanelLoggedIn(PanelLoggedInEvent $panelLoggedInEvent): void
     {
         $this->logger->info('Panel user {username} logged in', ['username' => $panelLoggedInEvent->user()->username()]);
+    }
+
+    private function onRouteActionResolved(RouteActionResolvedEvent $routeActionResolvedEvent): void
+    {
+        $route = $routeActionResolvedEvent->route();
+
+        if ($route->getPrefix() !== Str::wrap($this->config->getString('system.panel.root'), '/')) {
+            return;
+        }
+
+        if ($this->users->isEmpty()) {
+            // Register panel if no user exists
+
+            if (!$this->request->isLocalhost()) {
+                $routeActionResolvedEvent->setAction(fn() => new RedirectResponse($this->app->uri()->path('/')));
+            }
+
+            if (!in_array($route->getName(), ['panel.register', 'panel.assets'], true)) {
+                $routeActionResolvedEvent->setAction(fn() => new RedirectResponse($this->app->uri()->route('panel.register')));
+            }
+        } elseif (!$this->users->loggedIn()) {
+            // Redirect to login if user is not logged in
+
+            if (in_array($route->getName(), ['panel.login', 'panel.logout', 'panel.assets'], true)) {
+                return;
+            }
+
+            $this->request->session()->set(AuthenticationController::SESSION_REDIRECT_KEY, $this->app->panel()->route());
+            $routeActionResolvedEvent->setAction(fn() => new RedirectResponse($this->app->uri()->route('panel.login')));
+        }
     }
 }

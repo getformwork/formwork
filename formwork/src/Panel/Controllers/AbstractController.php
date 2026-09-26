@@ -57,11 +57,7 @@ abstract class AbstractController extends BaseAbstractController
      */
     protected function view(string $name, array $data = []): string
     {
-        $view = $this->viewFactory->make(
-            $name,
-            [...$this->defaults(), ...$data],
-        );
-        return $view->render();
+        return parent::view($name, [...$this->defaults(), ...$data]);
     }
 
     /**

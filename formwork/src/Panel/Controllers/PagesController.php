@@ -20,7 +20,6 @@ use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
-use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use UnexpectedValueException;
@@ -477,11 +476,11 @@ final class PagesController extends AbstractController
                     default => null,
                 },
                 'actions' => Arr::map([
-                    'info'    => $this->router->generate('panel.files.edit', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]),
-                    'rename'  => $this->router->generate('panel.files.rename', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]),
-                    'replace' => $this->router->generate('panel.files.replace', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]),
-                    'delete'  => $this->router->generate('panel.files.delete', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]),
-                ], fn(string $route): string => Uri::make([], Path::join([$this->request->root(), $route]))),
+                    'info'    => ['panel.files.edit', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]],
+                    'rename'  => ['panel.files.rename', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]],
+                    'replace' => ['panel.files.replace', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]],
+                    'delete'  => ['panel.files.delete', ['model' => $page->getModelIdentifier(), 'id' => $page->route(), 'filename' => $file->name()]],
+                ], fn(array $action): string => $this->app->uri()->route(...$action)),
             ]),
         );
     }

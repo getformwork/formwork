@@ -240,7 +240,7 @@ class Page extends Model implements Stringable
         ];
 
         // Merge with scheme default field values
-        $defaults = Arr::override($defaults, Arr::undot($this->fields()->extract('default')));
+        $defaults = Arr::override($defaults, Arr::undot($this->scheme()->fields()->extract('default')));
 
         // If the page doesn't have a route, by default it won't be routable nor cacheable
         if ($this->route() === null) {
@@ -862,9 +862,6 @@ class Page extends Model implements Stringable
             $this->scheme ??= $site->schemes()->get("pages.{$this->template}");
         }
 
-        $this->fields ??= $this->scheme()->fields();
-        $this->fields->setModel($this);
-
         $defaultLanguage = in_array((string) $site->languages()->default(), $languages, true)
             ? $site->languages()->default()
             : null;
@@ -890,8 +887,6 @@ class Page extends Model implements Stringable
                 'parent'   => $this->parent() ?? $site,
             ],
         );
-
-        $this->fields->setValues($this->data);
 
         $this->loaded = true;
 

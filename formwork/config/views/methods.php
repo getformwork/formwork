@@ -5,10 +5,8 @@ use Formwork\Http\Utils\Header;
 use Formwork\Parsers\Markdown;
 use Formwork\Utils\Date;
 use Formwork\Utils\Html;
-use Formwork\Utils\Path;
 use Formwork\Utils\Str;
 use Formwork\Utils\Text;
-use Formwork\Utils\Uri;
 
 return function (App $app) {
     return [
@@ -44,7 +42,7 @@ return function (App $app) {
          * Generates a URI for the given route
          */
         'uri' => static function (string $route) use ($app): string {
-            return Uri::make([], Path::join([$app->request()->root(), $route]));
+            return $app->uri()->path($route);
         },
 
         /**

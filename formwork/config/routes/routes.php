@@ -6,6 +6,7 @@ use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
+use Formwork\Languages\Languages;
 use Formwork\Router\Router;
 use Formwork\Security\CsrfToken;
 use Formwork\Utils\Arr;
@@ -104,14 +105,14 @@ return [
         ],
 
         'language' => [
-            'action' => function (Config $config, Request $request, Router $router, Site $site) {
-                if (!$site->languages()->hasMultiple()) {
+            'action' => function (Config $config, Request $request, Router $router, Languages $languages) {
+                if (!$languages->hasMultiple()) {
                     return;
                 }
-                if (($requested = $site->languages()->requested()) !== null) {
+                if (($requested = $languages->requested()) !== null) {
                     // @phpstan-ignore method.internal
                     $router->setRequest(Str::removeStart($router->request(), '/' . $requested));
-                } elseif (($preferred = $site->languages()->preferred()) !== null) {
+                } elseif (($preferred = $languages->preferred()) !== null) {
                     // Don't redirect if we are in Panel
                     if ($config->getBool('system.panel.enabled') && $router->requestHasPrefix($config->getString('system.panel.root'))) {
                         return;
