@@ -10,7 +10,6 @@ use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Plugins\Plugin;
 use Formwork\Plugins\Plugins;
 use Formwork\Router\RouteParams;
-use Formwork\Schemes\Scheme;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -55,7 +54,7 @@ final class PluginsController extends AbstractController
             return $this->forward(ErrorsController::class, 'notFound');
         }
 
-        $fields = $this->getPluginScheme($plugin)->fields();
+        $fields = $plugin->scheme()->fields();
 
         $fields->setValues($this->config->getArray("plugins.{$name}", []));
 
@@ -150,37 +149,6 @@ final class PluginsController extends AbstractController
 
         $path = FileSystem::joinPaths(ROOT_PATH . '/site/config/plugins', Path::resolve("{$plugin->id()}.yaml", '/', DIRECTORY_SEPARATOR));
         Yaml::encodeToFile($options, $path);
-    }
-
-    /**
-     * Get scheme for a given plugin
-     */
-    private function getPluginScheme(Plugin $plugin): Scheme
-    {
-        $id = $plugin->id();
-
-        $schemes = $this->app->schemes();
-
-        if ($schemes->has("plugins.{$id}")) {
-            $scheme = $schemes->get("plugins.{$id}");
-        } else {
-            // Try to load scheme from plugin path
-            $path = FileSystem::joinPaths($plugin->path(), "schemes/plugins/{$id}.yaml");
-
-            if (FileSystem::exists($path)) {
-                $schemes->load("plugins.{$id}", $path);
-                $scheme = $schemes->get("plugins.{$id}");
-            }
-        }
-
-        // Require that the scheme extends the base plugin scheme,
-        // so that the `enabled` field is always present
-        if (isset($scheme) && !$scheme->extendsScheme('plugins.plugin')) {
-            // @phpstan-ignore argument.type
-            $scheme->extendWith($schemes->get('plugins.plugin')->toArray());
-        }
-
-        return $scheme ?? $schemes->get('plugins.plugin');
     }
 
     /**

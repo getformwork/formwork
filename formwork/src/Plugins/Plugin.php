@@ -8,6 +8,7 @@ use Formwork\Data\Contracts\Arrayable;
 use Formwork\Parsers\Yaml;
 use Formwork\Plugins\Controllers\AssetsController;
 use Formwork\Plugins\Exceptions\PluginInitializationException;
+use Formwork\Schemes\Scheme;
 use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -30,6 +31,11 @@ class Plugin implements Arrayable
      * Whether the plugin has been initialized
      */
     protected bool $initialized = false;
+
+    /**
+     * Plugin scheme
+     */
+    protected Scheme $scheme;
 
     /**
      * Plugin manifest
@@ -82,6 +88,39 @@ class Plugin implements Arrayable
     final public function namespace(): string
     {
         return "plugin:{$this->id()}";
+    }
+
+    /**
+     * Get the plugin scheme
+     */
+    final public function scheme(): Scheme
+    {
+        if (isset($this->scheme)) {
+            return $this->scheme;
+        }
+
+        $schemes = $this->app->schemes();
+
+        if ($schemes->has("plugins.{$this->id}")) {
+            $scheme = $schemes->get("plugins.{$this->id}");
+        } else {
+            // Try to load scheme from plugin path
+            $path = FileSystem::joinPaths($this->path(), "schemes/plugins/{$this->id}.yaml");
+
+            if (FileSystem::exists($path)) {
+                $schemes->load("plugins.{$this->id}", $path);
+                $scheme = $schemes->get("plugins.{$this->id}");
+            }
+        }
+
+        // Require that the scheme extends the base plugin scheme,
+        // so that the `enabled` field is always present
+        if (isset($scheme) && !$scheme->extendsScheme('plugins.plugin')) {
+            // @phpstan-ignore argument.type
+            $scheme->extendWith($schemes->get('plugins.plugin')->toArray());
+        }
+
+        return $this->scheme = $scheme ?? $schemes->get('plugins.plugin');
     }
 
     /**
