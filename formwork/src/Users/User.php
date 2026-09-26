@@ -74,6 +74,7 @@ class User extends Model
         return $data;
     }
 
+    #[Getter]
     public function scheme(): Scheme
     {
         return $this->scheme ??= $this->app()->schemes()->get('users.user');

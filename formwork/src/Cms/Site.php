@@ -509,6 +509,7 @@ class Site extends Model implements Stringable
      */
     public function load(): void {}
 
+    #[Getter]
     public function scheme(): Scheme
     {
         return $this->scheme ??= $this->app()->schemes()->get('config.site');

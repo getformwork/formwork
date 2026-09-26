@@ -261,9 +261,10 @@ class File extends Model implements Arrayable, Stringable
         $this->scheme = $scheme;
     }
 
+    #[Getter]
     public function scheme(): Scheme
     {
-        return $this->app()->schemes()->get(static::SCHEME_IDENTIFIER);
+        return $this->scheme ??= $this->app()->schemes()->get(static::SCHEME_IDENTIFIER);
     }
 
     /**
