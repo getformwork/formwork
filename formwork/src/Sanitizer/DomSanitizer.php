@@ -249,25 +249,19 @@ class DomSanitizer
             return;
         }
 
-        if (in_array($domAttr->nodeName, $this->uriAttributes, true)) {
-            $uri = $this->sanitizeUri((string) $domAttr->nodeValue);
-
-            $scheme = Uri::scheme($uri);
-
-            if ($scheme === null && !Str::startsWith($uri, '//')) {
-                return;
-            }
-
-            if (!$this->allowExternalUris || !in_array($scheme, $this->allowedUriSchemes, true)) {
-                $domElement->removeAttribute($domAttr->nodeName);
-            }
+        if (
+            in_array($domAttr->nodeName, $this->uriAttributes, true)
+            && !$this->isSafeUriAttribute($domElement, $domAttr)
+        ) {
+            $domElement->removeAttribute($domAttr->nodeName);
+            return;
         }
     }
 
     /**
-     * Sanitize a URI by removing invalid characters and decoding HTML entities
+     * Decode a URI by removing invalid characters and decoding HTML entities
      */
-    protected function sanitizeUri(string $uri): string
+    protected function decodeUri(string $uri): string
     {
         $uri = rawurldecode($uri);
 
@@ -281,5 +275,29 @@ class DomSanitizer
         }
 
         return $uri;
+    }
+
+    /**
+     * Return whether the given URI attribute is safe according to the allowed URI schemes and external URI policy
+     */
+    protected function isSafeUriAttribute(DOMElement $domElement, DOMAttr $domAttr): bool
+    {
+        return $this->isSafeUri((string) $domAttr->nodeValue);
+    }
+
+    /**
+     * Return whether the given URI is safe according to the allowed URI schemes and external URI policy
+     */
+    protected function isSafeUri(string $uri): bool
+    {
+        $uri = $this->decodeUri($uri);
+
+        $scheme = Uri::scheme($uri);
+
+        if ($scheme === null && !Str::startsWith($uri, '//')) {
+            return true;
+        }
+
+        return $this->allowExternalUris && in_array($scheme, $this->allowedUriSchemes, true);
     }
 }
