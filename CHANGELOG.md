@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.3.16](https://github.com/getformwork/formwork/releases/tag/2.3.16)
+
+**Security**
+
+- Sanitize URIs in `<meta http-equiv="refresh" ...>` and image candidate string attributes
+
 # [2.3.15](https://github.com/getformwork/formwork/releases/tag/2.3.15)
 
 **Bug fixes**
