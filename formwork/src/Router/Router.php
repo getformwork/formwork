@@ -231,7 +231,6 @@ class Router
 
                 $this->container->define(RouteParams::class, $this->params);
 
-                $routeCallback = $this->parseAction($route->getAction(), $route->getActionParameters());
                 $routeCallback = $this->events->dispatch(new RouteActionResolvedEvent(
                     $route,
                     $this->parseAction($route->getAction(), $route->getActionParameters())
