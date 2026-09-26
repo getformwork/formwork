@@ -57,6 +57,7 @@ class SvgSanitizer extends DomSanitizer
             && !$this->isSafeSmilAttributeName($domAttr->value)
         ) {
             $domElement->removeAttribute($domAttr->name);
+            return;
         }
     }
 
