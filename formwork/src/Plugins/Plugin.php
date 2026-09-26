@@ -7,12 +7,14 @@ use Formwork\Cms\App;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Parsers\Yaml;
 use Formwork\Plugins\Controllers\AssetsController;
+use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Services\Container;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 use InvalidArgumentException;
 use ReflectionMethod;
+use Throwable;
 
 /**
  * @since 2.3.0
@@ -102,12 +104,16 @@ class Plugin implements Arrayable
             return;
         }
 
-        $this->loadConfig();
-        $this->loadSchemes();
-        $this->loadTranslations();
-        $this->loadViews($this->container);
-        $this->loadAssets();
-        $this->loadServices($this->container);
+        try {
+            $this->loadConfig();
+            $this->loadSchemes();
+            $this->loadTranslations();
+            $this->loadViews($this->container);
+            $this->loadAssets();
+            $this->loadServices($this->container);
+        } catch (Throwable $e) {
+            throw new PluginInitializationException(sprintf('Failed initialization for plugin "%s"', $this->name()), $e->getCode(), previous: $e);
+        }
 
         $this->initialized = true;
     }
