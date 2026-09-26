@@ -3,6 +3,7 @@
 namespace Formwork\Services\Loaders;
 
 use Formwork\Assets\Assets;
+use Formwork\Authentication\RateLimiter;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
@@ -11,6 +12,7 @@ use Formwork\Events\EventDispatcher;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Log\Logger;
+use Formwork\Log\Registry;
 use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Controllers\ErrorsController;
 use Formwork\Panel\Events\PanelLoggedInEvent;
@@ -23,6 +25,7 @@ use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Translations\Translations;
 use Formwork\Users\Users;
+use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 
@@ -44,6 +47,8 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
     public function load(Container $container): Panel
     {
         if ($this->config->has('system.panel.loginAttempts') || $this->config->has('system.panel.loginResetTime')) {
+            /** @todo Remove this block once the deprecated options are fully removed */
+
             if ($this->config->has('system.panel.loginAttempts')) {
                 trigger_error('The "system.panel.loginAttempts" configuration option is deprecated since Formwork 2.3.0. Use "system.authentication.limits.maxAttempts" instead.', E_USER_DEPRECATED);
             }
@@ -51,6 +56,13 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             if ($this->config->has('system.panel.loginResetTime')) {
                 trigger_error('The "system.panel.loginResetTime" configuration option is deprecated since Formwork 2.3.0. Use "system.authentication.limits.resetTime" instead.', E_USER_DEPRECATED);
             }
+
+            $container->define(RateLimiter::class)
+                ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
+                ->parameter('limit', $this->config->getInt('system.panel.loginAttempts', $this->config->getInt('system.authentication.limits.maxAttempts')))
+                ->parameter('resetTime', $this->config->getInt('system.panel.loginResetTime', $this->config->getInt('system.authentication.limits.resetTime')));
+
+            $container->resolve(RateLimiter::class);
         }
 
         if ($this->config->has('system.panel.sessionTimeout')) {
@@ -119,6 +131,7 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
 
             if (!$this->request->isLocalhost()) {
                 $routeActionResolvedEvent->setAction(fn() => new RedirectResponse($this->app->uri()->path('/')));
+                return;
             }
 
             if (!in_array($route->getName(), ['panel.register', 'panel.assets'], true)) {
