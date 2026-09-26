@@ -94,13 +94,20 @@ final class PluginsController extends AbstractController
             return JsonResponse::error($this->translate('panel.plugins.plugin.notFound'), ResponseStatus::NotFound);
         }
 
+        $fields = $plugin->scheme()->fields();
+
+        $fields->setValues($this->config->getArray("plugins.{$name}", []));
+
+        if (!$fields->isValid()) {
+            return JsonResponse::error($this->translate('panel.plugins.plugin.cannotSave.invalidFields'), ResponseStatus::UnprocessableEntity);
+        }
+
         $this->togglePluginStatus($plugin, true);
 
         try {
             $plugins->initialize($name);
         } catch (PluginInitializationException) {
             $this->togglePluginStatus($plugin, false);
-            $this->panel->notify($this->translate('panel.plugins.plugin.cannotEnable.initializationError'), 'error');
             return JsonResponse::error($this->translate('panel.plugins.plugin.cannotEnable.initializationError'), ResponseStatus::InternalServerError);
         }
 

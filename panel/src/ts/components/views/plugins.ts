@@ -11,8 +11,19 @@ export class Plugins {
             const togglegroup = new TogglegroupInput(toggle.closest(".form-togglegroup") as HTMLFieldSetElement);
             const action = toggle.dataset.action;
 
+            const form = app.forms["plugin-form"];
+
             toggle.addEventListener("change", () => {
                 if (!action) {
+                    return;
+                }
+
+                const switchToggle = () => {
+                    togglegroup.value = toggle.value === "1" ? "0" : "1";
+                };
+
+                if (toggle.value === "1" && form && !form.element.noValidate && !form.element.reportValidity()) {
+                    switchToggle();
                     return;
                 }
 
@@ -26,13 +37,13 @@ export class Plugins {
                             data: { "csrf-token": app.config.csrfToken as string },
                         },
                         (response) => {
-                            if (!app.forms["plugin-form"]?.hasChanged()) {
+                            if (response.status === "success" && !form?.hasChanged()) {
                                 window.location.reload();
                             } else {
                                 const notification = new Notification(response.message, response.status);
                                 notification.show();
                                 if (response.status === "error") {
-                                    togglegroup.value = toggle.value === "1" ? "0" : "1";
+                                    switchToggle();
                                 }
                                 togglegroup.element.disabled = false;
                             }
