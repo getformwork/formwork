@@ -16,11 +16,6 @@ use Stringable;
 class File extends Model implements Arrayable, Stringable
 {
     /**
-     * File scheme identifier
-     */
-    public const string SCHEME_IDENTIFIER = 'files.file';
-
-    /**
      * Model identifier
      */
     protected const string MODEL_IDENTIFIER = 'file';
@@ -264,7 +259,15 @@ class File extends Model implements Arrayable, Stringable
     #[Getter]
     public function scheme(): Scheme
     {
-        return $this->scheme ??= $this->app()->schemes()->get(static::SCHEME_IDENTIFIER);
+        if (isset($this->scheme)) {
+            return $this->scheme;
+        }
+
+        if ($this->app()->schemes()->has("files.{$this->type()}")) {
+            $this->scheme = $this->app()->schemes()->get("files.{$this->type()}");
+        }
+
+        return $this->scheme ??= $this->app()->schemes()->get('files.file');
     }
 
     /**

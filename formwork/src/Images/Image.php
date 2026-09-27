@@ -44,8 +44,6 @@ use Formwork\Utils\MimeType;
 
 class Image extends File
 {
-    public const string SCHEME_IDENTIFIER = 'files.image';
-
     protected const string MODEL_IDENTIFIER = 'image';
 
     #[Getter(export: false)]
