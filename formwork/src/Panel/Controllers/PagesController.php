@@ -218,12 +218,7 @@ final class PagesController extends AbstractController
 
         $createNew = $this->request->query()->has('createNew');
 
-        // Clone the page fields to work with a separate copy
-        $fieldCollection = $page->fields()->deepClone();
-
-        $fieldCollection->setValues($page->data());
-
-        $form = $this->form('page-editor', $fieldCollection)
+        $form = $this->form('page-editor', $page->fields())
             ->setDefaultUploadsDestination($page->contentPath())
             ->processRequest($this->request);
 
