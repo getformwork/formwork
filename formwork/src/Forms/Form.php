@@ -63,8 +63,10 @@ class Form
             );
 
             // Set field values from request data
-            // (avoid specifying a `null` default value to use each field's own defaults instead)
-            $this->fields->setValues($this->requestData);
+            // (avoid specifying a `null` default value and use each field's own defaults instead)
+            $this->fields
+                ->setValues($this->fields->extract('default'))
+                ->setValues($this->requestData);
 
             // Validate all fields
             $this->valid = $this->fields->isValid();
