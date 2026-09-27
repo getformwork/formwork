@@ -8,13 +8,11 @@ use Formwork\Files\File;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
-use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Images\Image;
 use Formwork\Pages\Page;
-use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
@@ -156,7 +154,8 @@ final class FilesController extends AbstractController
             if (!$form->isValid()) {
                 $this->panel->notify($this->translate('panel.files.metadata.cannotUpdate.invalidFields'), 'error');
             } else {
-                $this->updateFileMetadata($file, $form->data());
+                $file->setMultiple($form->data()->toArray());
+                $file->save();
                 $this->updateLastModifiedTime($model);
                 $this->panel->notify($this->translate('panel.files.metadata.updated'), 'success');
                 return $this->redirect($this->generateRoute('panel.files.edit', $routeParams->toArray()));
@@ -380,26 +379,6 @@ final class FilesController extends AbstractController
             'site'  => $this->site,
             default => throw new InvalidArgumentException('Invalid model'),
         };
-    }
-
-    /**
-     * Update file metadata
-     */
-    private function updateFileMetadata(File $file, FormData $formData): void
-    {
-        $data = Arr::exclude(
-            Arr::override($file->data(), Arr::undot($formData->toArray())),
-            Arr::undot($file->fields()->extract('default'))
-        );
-
-        $metaFile = $file->path() . $this->config->getString('system.files.metadataExtension');
-
-        if ($data === [] && FileSystem::exists($metaFile)) {
-            FileSystem::delete($metaFile);
-            return;
-        }
-
-        FileSystem::write($metaFile, Yaml::encode($data));
     }
 
     /**

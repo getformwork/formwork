@@ -367,11 +367,11 @@ class Image extends File
     }
 
     /**
-     * Save image
+     * Save image and its metadata
      */
     public function save(): void
     {
-        $this->saveAs($this->path);
+        $this->saveAs($this->path, saveMetadata: true);
     }
 
     /**
@@ -457,7 +457,7 @@ class Image extends File
      * @throws UnsupportedTransformsException If the image transforms are not supported
      * @throws UnsupportedConversionException If the image conversion is not supported
      */
-    public function saveAs(string $path, ?string $mimeType = null): void
+    public function saveAs(string $path, ?string $mimeType = null, bool $saveMetadata = false): void
     {
         $handler = match ($mimeType ?? $this->mimeType()) {
             'image/jpeg'    => JpegHandler::class,
@@ -484,6 +484,10 @@ class Image extends File
 
         if (!$this->transforms->isEmpty()) {
             $this->transforms = new TransformCollection();
+        }
+
+        if ($saveMetadata) {
+            $this->writeMetadata($path);
         }
     }
 

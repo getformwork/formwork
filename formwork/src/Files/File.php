@@ -7,7 +7,9 @@ use Formwork\Data\Attributes\Setter;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Model\Model;
+use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Scheme;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use RuntimeException;
@@ -268,6 +270,36 @@ class File extends Model implements Arrayable, Stringable
         }
 
         return $this->scheme ??= $this->app()->schemes()->get('files.file');
+    }
+
+    /**
+     * Save file metadata
+     */
+    public function save(): void
+    {
+        $this->writeMetadata($this->path);
+    }
+
+    /**
+     * Write file metadata to the specified path
+     */
+    protected function writeMetadata(string $path): void
+    {
+        $data = Arr::exclude(
+            $this->data,
+            Arr::undot($this->fields()->extract('default'))
+        );
+
+        $metaFile = $path . $this->app()->config()->getString('system.files.metadataExtension');
+
+        if ($data === []) {
+            if (FileSystem::exists($metaFile)) {
+                FileSystem::delete($metaFile);
+            }
+            return;
+        }
+
+        FileSystem::write($metaFile, Yaml::encode($data));
     }
 
     /**
