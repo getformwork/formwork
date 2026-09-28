@@ -15,6 +15,11 @@
             "Formwork\\": "formwork/src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Formwork\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=8.3",
         "ext-dom": "*",
@@ -46,7 +51,7 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^2.0.3",
         "rector/rector": "^2.0.3",
-        "phpunit/phpunit": "^12.0"
+        "phpunit/phpunit": "^12.5"
     },
     "scripts": {
         "fix": "php-cs-fixer fix --config=formwork/.php-cs-fixer.php --verbose",
@@ -56,6 +61,7 @@
         "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
         "rector": "rector --config=formwork/.rector.php",
         "rector:check": "rector --dry-run --config=formwork/.rector.php",
+        "tests": "phpunit",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php bin/serve"
