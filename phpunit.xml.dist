@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/bootstrap.php" colors="true" backupGlobals="false" cacheDirectory="tests/.phpunit.cache">
+<phpunit bootstrap="tests/bootstrap.php" colors="true" backupGlobals="false">
     <testsuites>
-        <testsuite name="Formwork Test Suite">
-            <directory>./tests</directory>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
 

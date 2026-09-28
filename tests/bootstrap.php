@@ -1,6 +1,6 @@
 <?php
 
-use Composer\Autoload\ClassLoader;
+use Formwork\Cms\App;
 
 define('ROOT_PATH', dirname(__DIR__));
 
@@ -12,6 +12,8 @@ const TESTS_TMP_PATH = TESTS_PATH . '/tmp';
 
 require ROOT_PATH . '/vendor/autoload.php';
 
-$autoloader = new ClassLoader();
-$autoloader->addPsr4('Formwork\Tests\\', TESTS_PATH);
-$autoloader->register();
+require TESTS_PATH . '/Environment.php';
+
+require TESTS_PATH . '/Unit/Utils/Fixtures/functions.php';
+
+(new App())->load();
