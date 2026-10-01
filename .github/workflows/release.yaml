@@ -24,7 +24,7 @@ jobs:
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Setup pnpm
-        uses: pnpm/setup@v2
+        uses: pnpm/setup@v3
         with:
           package-json-file: panel/package.json
           cache: true
