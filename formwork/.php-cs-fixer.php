@@ -51,4 +51,5 @@ return $config
         'single_quote' => true,
         'string_implicit_backslashes' => true,
     ])
-    ->setFinder($finder);
+    ->setFinder($finder)
+    ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache');
