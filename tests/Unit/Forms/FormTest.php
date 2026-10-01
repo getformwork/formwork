@@ -311,7 +311,7 @@ class FormTest extends TestCase
 
         $form->processRequest($this->createRequest(RequestMethod::POST, files: [
             'attachment' => $this->uploadData(),
-        ]), uploadFiles: false,);
+        ]), uploadFiles: false, );
 
         $this->assertSame([], $form->uploadedFiles());
     }
