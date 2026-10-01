@@ -61,12 +61,11 @@
         "phpstan:baseline": "phpstan analyse --configuration=formwork/phpstan.neon --generate-baseline=formwork/phpstan-baseline.neon",
         "rector": "rector --config=formwork/.rector.php",
         "rector:check": "rector --dry-run --config=formwork/.rector.php",
-        "tests": "phpunit",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php bin/serve"
         ],
         "test": "phpunit",
-        "test:coverage": "phpunit -d pcov.enabled=1 --coverage-html tests/coverage"
+        "test:coverage": "@php -d pcov.enabled=1 vendor/bin/phpunit --coverage-html tests/coverage"
     }
 }
