@@ -177,16 +177,19 @@ final class Arr
      * @template TReplacementKey of array-key
      * @template TReplacementValue
      *
-     * @param array<TKey|TReplacementKey, TReplacementValue|TValue> $array
-     * @param array<TReplacementKey, TReplacementValue>             $replacement
+     * @param array<TKey, TValue>                       $array
+     * @param array<TReplacementKey, TReplacementValue> $replacement
+     *
+     * @param-out array<TKey|TReplacementKey, TReplacementValue|TValue> $array
      *
      * @throws UnexpectedValueException If some keys in the replacement array are the same of the resulting array
      *
-     * @return array<TKey, TValue>
+     * @return array<TKey|TReplacementKey, TReplacementValue|TValue>
      */
     public static function splice(array &$array, int $offset, ?int $length = null, array $replacement = []): array
     {
         if (array_is_list($replacement)) {
+            // @phpstan-ignore paramOut.type
             return array_splice($array, $offset, $length, $replacement);
         }
 
@@ -210,6 +213,7 @@ final class Arr
             throw new UnexpectedValueException(sprintf('Cannot replace %s items from offset %d: some keys in the replacement array are the same of the resulting array', $length, $offset));
         }
 
+        // @phpstan-ignore paramOut.type
         $array = [...$before, ...$replacement, ...$after];
 
         return $replaced;
@@ -828,6 +832,7 @@ final class Arr
             }
         }
 
+        // @phpstan-ignore return.type
         return $result;
     }
 
