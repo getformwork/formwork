@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\Concat\DirnameDirConcatStringToDirectStringPathRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\Config\RectorConfig;
@@ -38,7 +40,9 @@ return RectorConfig::configure()
         ChangeSwitchToMatchRector::class,
         ClosureToArrowFunctionRector::class,
         CompactToVariablesRector::class,
+        DirnameDirConcatStringToDirectStringPathRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        ObjectExplicitBoolCompareRector::class,
         ReadOnlyPropertyRector::class,
         RemoveDefaultValueFromAssignedPropertyRector::class,
         RemovePhpVersionIdCheckRector::class,
