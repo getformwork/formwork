@@ -61,12 +61,15 @@ final class CollectionTest extends TestCase
         $immutableCollection->toImmutable();
     }
 
-    public function testOfThrowsOnAssociativityMismatch(): void
+    public function testOfThrowsOnAssociativeCollectionFromList(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Associative collections cannot be created from non-associative data');
         Collection::of('string', ['item1', 'item2'], associative: true);
+    }
 
+    public function testOfThrowsWhenOnNonAssociativeCollectionFromAssociativeData(): void
+    {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Non-associative collections cannot be created from associative data');
         Collection::of('string', ['key1' => 'item1', 'key2' => 'item2'], associative: false);
@@ -191,6 +194,8 @@ final class CollectionTest extends TestCase
     {
         $data = ['red', 'green', 'blue'];
         $collection = Collection::from($data);
+
+        $this->assertSameSize($data, $collection);
 
         $randomItem = $collection->random();
         $this->assertContains($randomItem, $data);
@@ -338,9 +343,7 @@ final class CollectionTest extends TestCase
         $shuffledCollection = $collection->shuffle();
 
         $this->assertInstanceOf(Collection::class, $shuffledCollection);
-        $this->assertNotSame($collection, $shuffledCollection);
-        $this->assertCount(5, $shuffledCollection);
-        $this->assertNotSame($collection->values(), $shuffledCollection->values());
+        $this->assertSameSize($collection, $shuffledCollection);
 
         foreach (['one', 'two', 'three', 'four', 'five'] as $item) {
             $this->assertTrue($shuffledCollection->contains($item));

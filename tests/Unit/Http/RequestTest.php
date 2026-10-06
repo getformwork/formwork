@@ -2,10 +2,10 @@
 
 namespace Formwork\Tests\Unit\Http;
 
+use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\RequestType;
-use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Session\Session;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,19 +32,19 @@ final class RequestTest extends TestCase
     {
         return [
             'document root' => [
-                'scriptName' => '/index.php',
+                'scriptName'   => '/index.php',
                 'expectedRoot' => '/',
             ],
             'nested application' => [
-                'scriptName' => '/formwork/index.php',
+                'scriptName'   => '/formwork/index.php',
                 'expectedRoot' => '/formwork/',
             ],
             'absolute cli script path' => [
-                'scriptName' => '/project/vendor/bin/phpunit',
+                'scriptName'   => '/project/vendor/bin/phpunit',
                 'expectedRoot' => '/project/vendor/bin/',
             ],
             'missing script name' => [
-                'scriptName' => '',
+                'scriptName'   => '',
                 'expectedRoot' => '/',
             ],
         ];
@@ -96,14 +96,14 @@ final class RequestTest extends TestCase
     public function testBasicAccessorsExposeMethodServerAndRequestHeaders(): void
     {
         $request = $this->request([
-            'REQUEST_METHOD' => 'GET',
-            'SERVER_PROTOCOL' => 'HTTP/2',
-            'REMOTE_ADDR' => '192.0.2.10',
-            'CONTENT_LENGTH' => '42',
-            'QUERY_STRING' => 'page=2',
-            'HTTP_REFERER' => 'https://example.test/source/',
-            'HTTP_USER_AGENT' => 'RequestTest/1.0',
-            'HTTP_ACCEPT' => 'text/html, application/json;q=0.8',
+            'REQUEST_METHOD'       => 'GET',
+            'SERVER_PROTOCOL'      => 'HTTP/2',
+            'REMOTE_ADDR'          => '192.0.2.10',
+            'CONTENT_LENGTH'       => '42',
+            'QUERY_STRING'         => 'page=2',
+            'HTTP_REFERER'         => 'https://example.test/source/',
+            'HTTP_USER_AGENT'      => 'RequestTest/1.0',
+            'HTTP_ACCEPT'          => 'text/html, application/json;q=0.8',
             'HTTP_ACCEPT_ENCODING' => 'gzip, br;q=0.5',
             'HTTP_ACCEPT_LANGUAGE' => 'it-IT, en;q=0.7',
         ]);
@@ -161,11 +161,11 @@ final class RequestTest extends TestCase
     public function testTrustedForwardedHeadersOverrideConnectionMetadata(): void
     {
         $request = $this->request([
-            'REMOTE_ADDR' => '10.0.0.10',
+            'REMOTE_ADDR'    => '10.0.0.10',
             'HTTP_FORWARDED' => 'for=203.0.113.9;host=Example.org:8443;proto=https;port=8443',
-            'SERVER_NAME' => 'internal.test',
-            'SERVER_PORT' => '80',
-            'HTTPS' => 'off',
+            'SERVER_NAME'    => 'internal.test',
+            'SERVER_PORT'    => '80',
+            'HTTPS'          => 'off',
         ]);
         $request->setTrustedProxies(['10.0.0.10']);
 
@@ -179,11 +179,11 @@ final class RequestTest extends TestCase
     public function testUntrustedForwardedHeadersAreIgnored(): void
     {
         $request = $this->request([
-            'REMOTE_ADDR' => '192.0.2.10',
+            'REMOTE_ADDR'    => '192.0.2.10',
             'HTTP_FORWARDED' => 'for=203.0.113.9;host=public.test;proto=https;port=8443',
-            'SERVER_NAME' => 'internal.test',
-            'SERVER_PORT' => '8080',
-            'HTTPS' => 'off',
+            'SERVER_NAME'    => 'internal.test',
+            'SERVER_PORT'    => '8080',
+            'HTTPS'          => 'off',
         ]);
 
         $this->assertFalse($request->isFromTrustedProxy());
@@ -196,13 +196,13 @@ final class RequestTest extends TestCase
     public function testXForwardedHeadersAreUsedForTrustedProxies(): void
     {
         $request = $this->request([
-            'REMOTE_ADDR' => '10.0.0.10',
-            'HTTP_X_FORWARDED_FOR' => '203.0.113.9',
-            'HTTP_X_FORWARDED_HOST' => 'public.test:9443',
+            'REMOTE_ADDR'            => '10.0.0.10',
+            'HTTP_X_FORWARDED_FOR'   => '203.0.113.9',
+            'HTTP_X_FORWARDED_HOST'  => 'public.test:9443',
             'HTTP_X_FORWARDED_PROTO' => 'https',
-            'HTTP_X_FORWARDED_PORT' => '9443',
-            'SERVER_NAME' => 'internal.test',
-            'SERVER_PORT' => '80',
+            'HTTP_X_FORWARDED_PORT'  => '9443',
+            'SERVER_NAME'            => 'internal.test',
+            'SERVER_PORT'            => '80',
         ]);
         $request->setTrustedProxies(['10.0.0.10']);
 
@@ -215,8 +215,8 @@ final class RequestTest extends TestCase
     public function testSecurityLocalhostAndRequestTypeAreDetected(): void
     {
         $secure = $this->request([
-            'REMOTE_ADDR' => '127.0.0.1',
-            'HTTPS' => 'on',
+            'REMOTE_ADDR'           => '127.0.0.1',
+            'HTTPS'                 => 'on',
             'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
         ]);
 
@@ -243,9 +243,9 @@ final class RequestTest extends TestCase
     public function testRefererCanBeValidatedAgainstTheCurrentOriginAndPath(): void
     {
         $request = $this->request([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/current',
-            'SERVER_NAME' => 'example.test',
+            'SCRIPT_NAME'  => '/index.php',
+            'REQUEST_URI'  => '/current',
+            'SERVER_NAME'  => 'example.test',
             'HTTP_REFERER' => 'http://example.test/admin/users?tab=active',
         ]);
 
@@ -262,20 +262,20 @@ final class RequestTest extends TestCase
             [],
             [
                 'avatar%5Bimage%5D' => [
-                    'name' => 'avatar.png',
+                    'name'      => 'avatar.png',
                     'full_path' => 'avatar.png',
-                    'type' => 'image/png',
-                    'tmp_name' => '/tmp/php-avatar',
-                    'error' => UPLOAD_ERR_OK,
-                    'size' => '12',
+                    'type'      => 'image/png',
+                    'tmp_name'  => '/tmp/php-avatar',
+                    'error'     => UPLOAD_ERR_OK,
+                    'size'      => '12',
                 ],
                 'documents' => [
-                    'name' => ['first.txt', 'second.txt'],
+                    'name'      => ['first.txt', 'second.txt'],
                     'full_path' => ['first.txt', 'second.txt'],
-                    'type' => ['text/plain', 'text/plain'],
-                    'tmp_name' => ['/tmp/php-first', '/tmp/php-second'],
-                    'error' => [UPLOAD_ERR_OK, UPLOAD_ERR_NO_FILE],
-                    'size' => ['10', '0'],
+                    'type'      => ['text/plain', 'text/plain'],
+                    'tmp_name'  => ['/tmp/php-first', '/tmp/php-second'],
+                    'error'     => [UPLOAD_ERR_OK, UPLOAD_ERR_NO_FILE],
+                    'size'      => ['10', '0'],
                 ],
             ],
         );
@@ -344,8 +344,8 @@ final class RequestTest extends TestCase
             $files,
             $server + [
                 'REQUEST_METHOD' => 'GET',
-                'SERVER_NAME' => 'localhost',
-                'SERVER_PORT' => '80',
+                'SERVER_NAME'    => 'localhost',
+                'SERVER_PORT'    => '80',
             ],
         );
     }

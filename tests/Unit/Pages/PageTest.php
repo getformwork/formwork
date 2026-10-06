@@ -10,6 +10,7 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
@@ -19,6 +20,8 @@ final class PageTest extends TestCase
 {
     private App $app;
 
+    private Site $fixtureSite;
+
     private int $temporarySiteCounter = 0;
 
     protected function setUp(): void
@@ -26,6 +29,7 @@ final class PageTest extends TestCase
         parent::setUp();
         $this->setUpTempDirectory();
         $this->app = App::instance();
+        $this->fixtureSite = $this->temporarySite();
     }
 
     protected function tearDown(): void
@@ -96,16 +100,16 @@ final class PageTest extends TestCase
 
     public function testNumberPrefixAndSlugAreSeparated(): void
     {
-        $page = $this->fixturePage('/about');
+        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/fixtures/numbered-site'));
 
         $this->assertSame(1, $page->num());
-        $this->assertSame('about', $page->slug());
-        $this->assertSame('/about/', $page->route());
+        $this->assertSame('numbered', $page->slug());
+        $this->assertSame('/numbered/', $page->route());
     }
 
     public function testTemplateLanguageAndContentFileAreResolvedFromTheFilename(): void
     {
-        $page = $this->temporaryPage('localized', ['title' => 'Localized']);
+        $page = $this->temporaryPage('about');
 
         $this->assertSame('page', $page->template()->name());
         $this->assertNull($page->language());
@@ -115,16 +119,13 @@ final class PageTest extends TestCase
     public function testMultilingualContentSelectsTheRequestedLanguageAndTracksAvailableVersions(): void
     {
         $site = $this->temporarySite();
-        $path = rtrim((string) $site->contentPath(), '/') . '/localized/';
-        mkdir($path, 0o777, true);
-        file_put_contents($path . 'page.en.md', "---\ntitle: English\n---\nEnglish content");
-        file_put_contents($path . 'page.it.md', "---\ntitle: Italiano\n---\nContenuto italiano");
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
 
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
         $this->assertSame('it', $page->language()?->code());
         $this->assertSame('Italiano', $page->title());
-        $this->assertSame('Contenuto italiano', trim(strip_tags($page->content())));
+        $this->assertSame('Questa pagina spiega come è organizzato il sito e dove trovare le sezioni principali.', trim(strip_tags($page->content())));
         $this->assertTrue($page->languages()->available()->has('en'));
         $this->assertTrue($page->languages()->available()->has('it'));
     }
@@ -132,10 +133,7 @@ final class PageTest extends TestCase
     public function testInvalidLanguageIsRejectedAfterLoading(): void
     {
         $site = $this->temporarySite();
-        $path = rtrim((string) $site->contentPath(), '/') . '/localized/';
-        mkdir($path, 0o777, true);
-        file_put_contents($path . 'page.en.md', "---\ntitle: English\n---\nEnglish content");
-        file_put_contents($path . 'page.it.md', "---\ntitle: Italiano\n---\nContenuto italiano");
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
         $this->expectException(InvalidValueException::class);
@@ -144,7 +142,7 @@ final class PageTest extends TestCase
 
     public function testIconFallsBackToTheSchemeAndCanBeOverridden(): void
     {
-        $page = $this->temporaryPage('icon');
+        $page = $this->temporaryPage('about');
         $defaultIcon = $page->icon();
 
         $this->assertIsString($defaultIcon);
@@ -153,25 +151,24 @@ final class PageTest extends TestCase
 
     public function testStatusHonoursPublishedAndDateWindows(): void
     {
-        $page = $this->temporaryPage('status', ['published' => false]);
+        $page = $this->temporaryPage('about');
+        $page->set('published', false);
         $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $page->status());
 
-        $page = $this->temporaryPage('future', [
-            'published'   => true,
-            'publishDate' => "'" . date('Y-m-d', time() + 86400) . "'",
-        ]);
+        $page = $this->temporaryPage('about');
+        $page->set('published', true);
+        $page->set('publishDate', '2099-01-01');
         $this->assertFalse($page->isPublished());
 
-        $page = $this->temporaryPage('expired', [
-            'published'     => true,
-            'unpublishDate' => "'" . date('Y-m-d', time() - 86400) . "'",
-        ]);
+        $page = $this->temporaryPage('about');
+        $page->set('published', true);
+        $page->set('unpublishDate', '2000-01-01');
         $this->assertFalse($page->isPublished());
     }
 
     public function testMetadataTaxonomyAndResponseStatusAreNormalized(): void
     {
-        $page = $this->temporaryPage('data');
+        $page = $this->temporaryPage('about');
 
         $page->set('metadata', ['description' => 'A description']);
         $page->set('taxonomy', ['tags' => ['php', 'cms']]);
@@ -184,7 +181,7 @@ final class PageTest extends TestCase
 
     public function testCanonicalRouteIsNormalizedAndNullWhenEmpty(): void
     {
-        $page = $this->temporaryPage('canonical');
+        $page = $this->temporaryPage('about');
 
         $this->assertNull($page->canonicalRoute());
         $page->set('canonicalRoute', 'docs//page/');
@@ -195,7 +192,7 @@ final class PageTest extends TestCase
 
     public function testInvalidSlugTemplateAndParentAreRejected(): void
     {
-        $page = $this->temporaryPage('validation');
+        $page = $this->temporaryPage('about');
 
         $this->expectException(InvalidValueException::class);
         $page->set('slug', 'not a valid slug');
@@ -203,7 +200,7 @@ final class PageTest extends TestCase
 
     public function testInvalidTemplateIsRejected(): void
     {
-        $page = $this->temporaryPage('template-validation');
+        $page = $this->temporaryPage('about');
 
         $this->expectException(InvalidValueException::class);
         $page->set('template', 'does-not-exist');
@@ -213,7 +210,7 @@ final class PageTest extends TestCase
     {
         $site = $this->temporarySite();
         $parent = $this->temporaryPage('parent', site: $site);
-        $child = $this->temporaryPage('child', site: $site);
+        $child = $this->temporaryPage('about', site: $site);
 
         $child->set('parent', '.');
         $this->assertSame($site, $child->parent());
@@ -227,7 +224,7 @@ final class PageTest extends TestCase
     #[DataProvider('invalidTaxonomyProvider')]
     public function testRejectsInvalidTaxonomy(mixed $taxonomy, string $exception): void
     {
-        $page = $this->temporaryPage('invalid-taxonomy');
+        $page = $this->temporaryPage('about');
 
         $this->expectException($exception);
         $page->set('taxonomy', $taxonomy);
@@ -239,12 +236,12 @@ final class PageTest extends TestCase
         $blog = $this->fixturePage('/blog');
         $index = $this->fixturePage('/');
 
-        $this->assertSame($this->app->site(), $about->parent());
-        $this->assertTrue($about->isChildOf($this->app->site()));
+        $this->assertSame($this->fixtureSite, $about->parent());
+        $this->assertTrue($about->isChildOf($this->fixtureSite));
         $this->assertTrue($about->isSiblingOf($blog));
         $this->assertTrue($about->isSiblingOf($index));
         $this->assertTrue($about->hasAncestors());
-        $this->assertFalse($about->isAncestorOf($this->app->site()));
+        $this->assertFalse($about->isAncestorOf($this->fixtureSite));
         $this->assertSame(0, $about->index());
         $this->assertSame(1, $about->level());
         $this->assertSame($blog, $about->nextSibling());
@@ -253,7 +250,7 @@ final class PageTest extends TestCase
         $this->assertTrue($about->inclusiveSiblings()->contains($about));
     }
 
-    public function testSiblingPredicateIsSymmetricAndExposesCurrentRegression(): void
+    public function testSiblingPredicateIsSymmetric(): void
     {
         $about = $this->fixturePage('/about');
         $blog = $this->fixturePage('/blog');
@@ -266,9 +263,9 @@ final class PageTest extends TestCase
 
     public function testIsEmptyIsTrueOnlyWhenThereIsNoFrontmatter(): void
     {
-        $empty = $this->temporaryPage('empty', frontmatter: []);
-        $nonEmpty = $this->temporaryPage('non-empty', ['title' => 'Not empty']);
-        $withoutContentFile = $this->temporaryPage('directory-only', createContentFile: false);
+        $empty = $this->temporaryPage('empty');
+        $nonEmpty = $this->temporaryPage('about');
+        $withoutContentFile = $this->temporaryPage('directory-only');
 
         $this->assertTrue($empty->isEmpty());
         $this->assertFalse($nonEmpty->isEmpty());
@@ -295,7 +292,7 @@ final class PageTest extends TestCase
 
     public function testSaveMovesAndReloadsThePageFromDisk(): void
     {
-        $page = $this->temporaryPage('editable', ['title' => 'Before'], content: 'Before');
+        $page = $this->temporaryPage('about');
 
         $page->set('slug', 'renamed');
         $page->set('title', 'After');
@@ -311,7 +308,7 @@ final class PageTest extends TestCase
 
     public function testSaveOmitsRuntimeFieldsFromFrontmatter(): void
     {
-        $page = $this->temporaryPage('frontmatter', ['title' => 'Before']);
+        $page = $this->temporaryPage('about');
         $page->set('title', 'After');
         $page->set('slug', 'renamed');
         $page->set('template', 'page');
@@ -338,7 +335,7 @@ final class PageTest extends TestCase
 
     public function testReloadRejectsAnUnloadedPage(): void
     {
-        $page = $this->temporaryPage('reloadable');
+        $page = $this->temporaryPage('about');
         $page->reload();
         $this->assertTrue($page->hasLoaded());
 
@@ -352,7 +349,7 @@ final class PageTest extends TestCase
 
     public function testDuplicateCreatesAnIndependentCopyAndDeleteRemovesIt(): void
     {
-        $page = $this->temporaryPage('original', ['title' => 'Original']);
+        $page = $this->temporaryPage('original');
         $duplicate = $page->duplicate(['title' => 'Copy']);
 
         $this->assertNotSame($page, $duplicate);
@@ -368,7 +365,7 @@ final class PageTest extends TestCase
 
     public function testDuplicateGeneratesTheNextAvailableCopySlug(): void
     {
-        $page = $this->temporaryPage('original', ['title' => 'Original']);
+        $page = $this->temporaryPage('original');
         $first = $page->duplicate();
         $second = $page->duplicate();
 
@@ -379,10 +376,7 @@ final class PageTest extends TestCase
     public function testDeleteCanRemoveOnlyTheCurrentLanguageOrAllLanguages(): void
     {
         $site = $this->temporarySite();
-        $path = rtrim((string) $site->contentPath(), '/') . '/localized/';
-        mkdir($path, 0o777, true);
-        file_put_contents($path . 'page.en.md', "---\ntitle: English\n---\nEnglish content");
-        file_put_contents($path . 'page.it.md', "---\ntitle: Italiano\n---\nContenuto italiano");
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
         $page->delete();
@@ -407,12 +401,7 @@ final class PageTest extends TestCase
 
     public function testFilesAndMediaCollectionsAreConsistent(): void
     {
-        $page = $this->temporaryPage('assets');
-        $directory = (string) $page->contentPath();
-        copy(ROOT_PATH . '/site/pages/index/formwork.png', $directory . '/photo.png');
-        copy(ROOT_PATH . '/site/files/friday.mp4', $directory . '/clip.mp4');
-        $this->writeSilentWav($directory . '/sound.mp3');
-
+        $page = $this->temporaryPage('about');
         $config = $this->app->config();
         $pagesPath = $config->getString('system.pages.path');
         $config->set('system.pages.path', TESTS_TMP_PATH);
@@ -443,7 +432,7 @@ final class PageTest extends TestCase
 
     public function testContentAndFilePredicatesRemainCoherentAfterReload(): void
     {
-        $page = $this->temporaryPage('predicates');
+        $page = $this->temporaryPage('about');
 
         $this->assertTrue($page->hasContentFile());
         $this->assertFalse($page->isSite());
@@ -474,7 +463,7 @@ final class PageTest extends TestCase
             });
         }
 
-        $page = $this->temporaryPage('events');
+        $page = $this->temporaryPage('about');
         $page->save();
         $duplicate = $page->duplicate();
         $duplicate->delete();
@@ -499,48 +488,34 @@ final class PageTest extends TestCase
         $this->assertStringContainsString('About', $output);
     }
 
+    public static function invalidTaxonomyProvider(): iterable
+    {
+        yield 'scalar' => ['not-an-array', \TypeError::class];
+        yield 'non-string taxonomy name' => [[1 => ['term']], InvalidValueException::class];
+        yield 'non-list terms' => [['tags' => 'php'], InvalidValueException::class];
+        yield 'non-string term' => [['tags' => [1]], InvalidValueException::class];
+    }
+
     private function fixturePage(string $route): Page
     {
-        $page = $this->app->site()->findPage($route);
+        $page = $this->fixtureSite->findPage($route);
 
         return $page ?? $this->fail(sprintf('Fixture page %s was not found', $route));
     }
 
-    /**
-     * @param array<string, mixed> $frontmatter
-     */
-    private function temporaryPage(
-        string $relativePath,
-        array $frontmatter = ['title' => 'Temporary page'],
-        string $content = 'Temporary content',
-        bool $createContentFile = true,
-        ?Site $site = null,
-    ): Page {
+    private function temporaryPage(string $relativePath, ?Site $site = null): Page
+    {
         $site ??= $this->temporarySite();
-        $path = rtrim((string) $site->contentPath(), '/') . '/' . trim($relativePath, '/') . '/';
-        if (!is_dir($path)) {
-            mkdir($path, 0o777, true);
-        }
-
-        if ($createContentFile) {
-            $yaml = "---\n";
-            foreach ($frontmatter as $key => $value) {
-                $yaml .= sprintf("%s: %s\n", $key, is_bool($value) ? ($value ? 'true' : 'false') : $value);
-            }
-            file_put_contents($path . 'page.md', $yaml . "---\n" . $content);
-        }
+        $path = FileSystem::joinPaths((string) $site->contentPath(), trim($relativePath, '/')) . '/';
+        FileSystem::assertExists($path);
 
         return new Page(['site' => $site, 'path' => $path], $this->app);
     }
 
-    private function temporarySite(): Site
+    private function temporarySite(string $fixturePath = __DIR__ . '/fixtures/site'): Site
     {
-        $path = TESTS_TMP_PATH . '/pages-' . ++$this->temporarySiteCounter;
-        mkdir($path, 0o777, true);
-        mkdir($path . '/index', 0o777, true);
-        file_put_contents($path . '/index/index.md', "---\ntitle: Temporary index\n---\n");
-        mkdir($path . '/error', 0o777, true);
-        file_put_contents($path . '/error/error.md', "---\ntitle: Temporary error\n---\n");
+        $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pages-' . ++$this->temporarySiteCounter);
+        FileSystem::copyDirectory($fixturePath, $path);
 
         return new Site(
             ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
@@ -548,25 +523,5 @@ final class PageTest extends TestCase
             $this->app->getService(PageFactory::class),
             $this->app->getService(PageCollectionFactory::class),
         );
-    }
-
-    private function writeSilentWav(string $path): void
-    {
-        $sampleRate = 8000;
-        $channels = 1;
-        $bitsPerSample = 16;
-        $data = str_repeat("\0", (int) ($sampleRate * $channels * ($bitsPerSample / 8) / 10));
-        $header = 'RIFF' . pack('V', 36 + strlen($data)) . 'WAVE';
-        $header .= 'fmt ' . pack('VvvVVvv', 16, 1, $channels, $sampleRate, $sampleRate * $channels * 2, 2, $bitsPerSample);
-        $header .= 'data' . pack('V', strlen($data));
-        file_put_contents($path, $header . $data);
-    }
-
-    public static function invalidTaxonomyProvider(): iterable
-    {
-        yield 'scalar' => ['not-an-array', \TypeError::class];
-        yield 'non-string taxonomy name' => [[1 => ['term']], InvalidValueException::class];
-        yield 'non-list terms' => [['tags' => 'php'], InvalidValueException::class];
-        yield 'non-string term' => [['tags' => [1]], InvalidValueException::class];
     }
 }

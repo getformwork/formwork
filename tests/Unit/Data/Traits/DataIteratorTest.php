@@ -3,9 +3,9 @@
 namespace Formwork\Tests\Unit\Data\Traits;
 
 use Formwork\Data\Traits\DataIterator;
+use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Data\Fixtures\DataIteratorFixture;
-use PHPUNit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(DataIterator::class)]
 final class DataIteratorTest extends TestCase

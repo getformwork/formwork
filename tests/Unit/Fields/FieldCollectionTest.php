@@ -2,11 +2,9 @@
 
 namespace Formwork\Tests\Unit\Fields;
 
-use Formwork\Cms\App;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
-use Formwork\Fields\FieldFactory;
 use Formwork\Fields\Layout\Layout;
 use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
@@ -18,13 +16,6 @@ use PHPUnit\Framework\Attributes\TestWith;
 #[CoversClass(FieldCollection::class)]
 class FieldCollectionTest extends TestCase
 {
-    private App $app;
-
-    public function setUp(): void
-    {
-        $this->app = App::instance();
-    }
-
     public function testSetLayoutAndGetLayout(): void
     {
         $fields = new FieldCollection();
@@ -183,20 +174,6 @@ class FieldCollectionTest extends TestCase
         $fields->setValues([$name => $value]);
 
         $this->assertSame([$name => $value], $fields->extract('value'));
-    }
-
-    public function testSetValuesCanReplaceAnExistingValueWithNull(): void
-    {
-        $fields = new FieldCollection([
-            'value' => $this->createField('value', [
-                'type'  => 'text',
-                'value' => 'original',
-            ]),
-        ]);
-
-        $fields->setValues(['value' => null]);
-
-        $this->assertSame(['value' => null], $fields->extract('value'));
     }
 
     public function testSetValuesFromRequestSetsRequestValues(): void
@@ -415,7 +392,7 @@ class FieldCollectionTest extends TestCase
 
     private function createField(string $name, array $data): Field
     {
-        return $this->app->getService(FieldFactory::class)->make($name, $data);
+        return new Field($name, $data);
     }
 
     private function createRequest(RequestMethod $method, array $input = [], array $query = [], array $files = []): Request

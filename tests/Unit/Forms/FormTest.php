@@ -42,7 +42,7 @@ class FormTest extends TestCase
         $this->assertSame($fields, $form->fields()->toArray());
     }
 
-    public function testNewFormIsNotSubmittedAndIsValid(): void
+    public function testNewFormIsNotSubmittedAndIsInvalid(): void
     {
         $form = $this->createForm('contact');
 
@@ -731,14 +731,13 @@ class FormTest extends TestCase
         mixed $expectedMissingValue,
     ): void {
         $fieldName = $type;
-        $fields = [
+
+        $form = $this->createForm('test', [
             $fieldName => $this->createField($fieldName, [
                 'type' => $type,
                 ...$config,
             ]),
-        ];
-
-        $form = $this->createForm('test', $fields);
+        ]);
 
         $form->processRequest($this->createRequest(RequestMethod::POST, input: [
             $fieldName => $submittedValue,
@@ -749,7 +748,12 @@ class FormTest extends TestCase
             $form->data()->toArray(),
         );
 
-        $form = $this->createForm('test', $fields);
+        $form = $this->createForm('test', [
+            $fieldName => $this->createField($fieldName, [
+                'type' => $type,
+                ...$config,
+            ]),
+        ]);
 
         $form->processRequest($this->createRequest(RequestMethod::POST));
 
