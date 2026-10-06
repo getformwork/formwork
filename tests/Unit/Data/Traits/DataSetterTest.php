@@ -3,9 +3,9 @@
 namespace Formwork\Tests\Unit\Data\Traits;
 
 use Formwork\Data\Traits\DataSetter;
+use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Data\Fixtures\DataSetterFixture;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\TestCase;
 
 #[CoversTrait(DataSetter::class)]
 final class DataSetterTest extends TestCase

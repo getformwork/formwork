@@ -3,9 +3,9 @@
 namespace Formwork\Tests\Unit\Data\Traits;
 
 use Formwork\Data\Traits\DataMultipleGetter;
+use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Data\Fixtures\DataMultipleGetterFixture;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\TestCase;
 
 #[CoversTrait(DataMultipleGetter::class)]
 class DataMultipleGetterTest extends TestCase
