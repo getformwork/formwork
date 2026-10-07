@@ -26,14 +26,14 @@ final class MimeTypeTest extends TestCase
 
     public function testFromFile(): void
     {
-        $this->assertSame('text/html', MimeType::fromFile(__DIR__ . '/fixtures/files/mimetype/sample.html'));
-        $this->assertSame('text/yaml', MimeType::fromFile(__DIR__ . '/fixtures/files/mimetype/sample.yaml'));
+        $this->assertSame('text/html', MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/sample.html'));
+        $this->assertSame('text/yaml', MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/sample.yaml'));
     }
 
     public function testFromFileWithSvg(): void
     {
-        $this->assertSame('image/svg+xml', MimeType::fromFile(__DIR__ . '/fixtures/files/mimetype/valid.svg'));
-        $this->assertSame('application/octet-stream', MimeType::fromFile(__DIR__ . '/fixtures/files/mimetype/invalid.svg'));
+        $this->assertSame('image/svg+xml', MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/valid.svg'));
+        $this->assertSame('application/octet-stream', MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/invalid.svg'));
     }
 
     public function testFromFileThrowsOnDisabledFileinfo(): void

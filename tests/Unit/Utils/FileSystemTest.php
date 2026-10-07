@@ -17,7 +17,7 @@ final class FileSystemTest extends TestCase
     protected function setUp(): void
     {
         FileSystemFixture::enableAll();
-        FileSystem::copyDirectory(__DIR__ . '/fixtures/files/tmp', TESTS_TMP_PATH, overwrite: true);
+        FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/tmp', TESTS_TMP_PATH, overwrite: true);
         FileSystem::createDirectory(TESTS_TMP_PATH . '/emptydir');
     }
 

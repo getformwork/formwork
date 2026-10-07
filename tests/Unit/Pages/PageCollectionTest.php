@@ -192,7 +192,7 @@ final class PageCollectionTest extends TestCase
     private function temporarySite(): Site
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-collection-' . ++$this->temporarySiteCounter);
-        FileSystem::copyDirectory(__DIR__ . '/fixtures/site', $path);
+        FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
 
         return new Site(
             ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],

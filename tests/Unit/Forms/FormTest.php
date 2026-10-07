@@ -13,19 +13,25 @@ use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\ResponseStatus;
+use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Form::class)]
-class FormTest extends TestCase
+final class FormTest extends TestCase
 {
     private App $app;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        parent::setUp();
         $this->app = App::instance();
+
+        // `FieldFactory` is registered lazily by the schemes service loader,
+        // so make sure it is available regardless of the test execution order
+        $this->app->getService(Schemes::class);
     }
 
     public function testNameAndFieldsAreAvailable(): void
