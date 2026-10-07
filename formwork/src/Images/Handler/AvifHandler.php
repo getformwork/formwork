@@ -253,8 +253,7 @@ final class AvifHandler extends AbstractHandler
         $this->primaryItemId = null;
 
         foreach ($this->decoder->decode($this->data) as $decoded) {
-            $body = (string) $decoded['value'];
-            $this->boxes[] = Box::create((string) $decoded['type'], $body, (int) $decoded['offset'] + (int) $decoded['size'] - strlen($body));
+            $this->boxes[] = Box::fromDecoded($decoded);
         }
 
         $this->meta = $this->topLevelBox('meta');
@@ -277,11 +276,11 @@ final class AvifHandler extends AbstractHandler
         }
 
         if (($box = $this->meta->child('iinf')) !== null) {
-            $this->items = $this->track($box, ItemInfo::parse($box->body));
+            $this->items = $this->track($box, ItemInfo::parse($box));
         }
 
         if (($box = $this->meta->child('iref')) !== null) {
-            $this->references = $this->track($box, ItemReferences::parse($box->body));
+            $this->references = $this->track($box, ItemReferences::parse($box));
         }
 
         if (($box = $this->meta->child('pitm')) !== null) {
@@ -352,7 +351,7 @@ final class AvifHandler extends AbstractHandler
     private function updateModels(): void
     {
         foreach ($this->models as [$box, $model]) {
-            $box->body = $model->serialize();
+            $model->writeTo($box);
         }
     }
 

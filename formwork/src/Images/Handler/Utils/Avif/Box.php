@@ -2,8 +2,6 @@
 
 namespace Formwork\Images\Handler\Utils\Avif;
 
-use UnexpectedValueException;
-
 /**
  * ISO base media file format box
  *
@@ -11,11 +9,6 @@ use UnexpectedValueException;
  */
 final class Box
 {
-    /**
-     * Boxes containing other boxes, with the length of the data preceding their children
-     */
-    private const array CONTAINERS = ['meta' => 4, 'iprp' => 0, 'ipco' => 0];
-
     /**
      * @param string    $type       Four-character box type
      * @param string    $body       Box payload, or the data preceding the children for container boxes
@@ -30,49 +23,18 @@ final class Box
     ) {}
 
     /**
-     * Create a box from its payload, parsing the children of container boxes
-     */
-    public static function create(string $type, string $body, ?int $bodyOffset = null): self
-    {
-        $prefixLength = self::CONTAINERS[$type] ?? null;
-
-        if ($prefixLength === null) {
-            return new self($type, $body, [], $bodyOffset);
-        }
-
-        return new self($type, substr($body, 0, $prefixLength), self::parseAll(substr($body, $prefixLength)), $bodyOffset);
-    }
-
-    /**
-     * Parse a sequence of boxes
+     * Create a box from the data returned by the AVIF decoder
      *
-     * @return list<Box>
+     * @param array<string, mixed> $decoded
      */
-    public static function parseAll(string $data): array
+    public static function fromDecoded(array $decoded): self
     {
-        $reader = new ByteReader($data);
-        $boxes = [];
-
-        while (!$reader->isAtEnd()) {
-            $size = $reader->uint(4);
-            $type = $reader->bytes(4);
-            $headerSize = 8;
-
-            if ($size === 1) {
-                $size = $reader->uint(8);
-                $headerSize = 16;
-            } elseif ($size === 0) {
-                $size = $reader->remaining() + $headerSize;
-            }
-
-            if ($size < $headerSize) {
-                throw new UnexpectedValueException('Invalid box size');
-            }
-
-            $boxes[] = self::create($type, $reader->bytes($size - $headerSize));
-        }
-
-        return $boxes;
+        return new self(
+            (string) $decoded['type'],
+            (string) $decoded['value'],
+            array_values(array_map(self::fromDecoded(...), (array) ($decoded['children'] ?? []))),
+            (int) $decoded['offset'] + (int) $decoded['headerSize'],
+        );
     }
 
     /**

@@ -17,31 +17,28 @@ final class ItemReferences
         private array $references = [],
     ) {}
 
-    public static function parse(string $body): self
+    public static function parse(Box $box): self
     {
-        $reader = new ByteReader($body);
-
-        $version = $reader->uint(1);
-        $reader->skip(3);
+        $version = ord($box->body[0]);
         $idSize = $version === 0 ? 2 : 4;
         $references = [];
 
-        foreach (Box::parseAll($reader->bytes($reader->remaining())) as $box) {
-            $boxReader = new ByteReader($box->body);
-            $from = $boxReader->uint($idSize);
+        foreach ($box->children as $child) {
+            $reader = new ByteReader($child->body);
+            $from = $reader->uint($idSize);
             $to = [];
 
-            for ($count = $boxReader->uint(2); $count > 0; $count--) {
-                $to[] = $boxReader->uint($idSize);
+            for ($count = $reader->uint(2); $count > 0; $count--) {
+                $to[] = $reader->uint($idSize);
             }
 
-            $references[] = ['type' => $box->type, 'from' => $from, 'to' => $to];
+            $references[] = ['type' => $child->type, 'from' => $from, 'to' => $to];
         }
 
         return new self($version, $references);
     }
 
-    public function serialize(): string
+    public function writeTo(Box $box): void
     {
         $ids = array_merge(...array_map(static fn(array $reference) => [$reference['from'], ...$reference['to']], $this->references));
 
@@ -49,7 +46,8 @@ final class ItemReferences
         $version = max([$this->version, ...$ids]) > 0xFFFF ? 1 : $this->version;
         $idSize = $version === 0 ? 2 : 4;
 
-        $writer = (new ByteWriter())->uint($version, 1)->uint(0, 3);
+        $box->body = (new ByteWriter())->uint($version, 1)->uint(0, 3)->toString();
+        $box->children = [];
 
         foreach ($this->references as $reference) {
             $body = (new ByteWriter())->uint($reference['from'], $idSize)->uint(count($reference['to']), 2);
@@ -58,10 +56,8 @@ final class ItemReferences
                 $body->uint($id, $idSize);
             }
 
-            $writer->bytes((new Box($reference['type'], $body->toString()))->serialize());
+            $box->children[] = new Box($reference['type'], $body->toString());
         }
-
-        return $writer->toString();
     }
 
     public function add(string $type, int $from, int $to): void

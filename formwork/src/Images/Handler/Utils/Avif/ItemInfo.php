@@ -17,27 +17,17 @@ final class ItemInfo
         private array $entries,
     ) {}
 
-    public static function parse(string $body): self
+    public static function parse(Box $box): self
     {
-        $reader = new ByteReader($body);
-
-        $version = $reader->uint(1);
-        $reader->skip(3);
-        $reader->skip($version === 0 ? 2 : 4);
-
-        return new self($version, Box::parseAll($reader->bytes($reader->remaining())));
+        return new self(ord($box->body[0]), $box->children);
     }
 
-    public function serialize(): string
+    public function writeTo(Box $box): void
     {
         $version = count($this->entries) > 0xFFFF ? 1 : $this->version;
 
-        return (new ByteWriter())
-            ->uint($version, 1)
-            ->uint(0, 3)
-            ->uint(count($this->entries), $version === 0 ? 2 : 4)
-            ->bytes(implode('', array_map(static fn(Box $entry) => $entry->serialize(), $this->entries)))
-            ->toString();
+        $box->body = (new ByteWriter())->uint($version, 1)->uint(0, 3)->uint(count($this->entries), $version === 0 ? 2 : 4)->toString();
+        $box->children = $this->entries;
     }
 
     /**

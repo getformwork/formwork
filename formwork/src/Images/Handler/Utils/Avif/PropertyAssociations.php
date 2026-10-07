@@ -42,7 +42,7 @@ final class PropertyAssociations
         return new self($version, $flags, $items);
     }
 
-    public function serialize(): string
+    public function writeTo(Box $box): void
     {
         $indexes = array_column(array_merge(...array_values($this->items)), 'index');
         $version = max([$this->version, ...array_keys($this->items)]) > 0xFFFF ? 1 : $this->version;
@@ -60,7 +60,7 @@ final class PropertyAssociations
             }
         }
 
-        return $writer->toString();
+        $box->body = $writer->toString();
     }
 
     /**

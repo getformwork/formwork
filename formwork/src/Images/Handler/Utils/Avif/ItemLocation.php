@@ -67,7 +67,7 @@ final class ItemLocation
         return new self($version, $offsetSize, $lengthSize, $baseOffsetSize, $indexSize, $items);
     }
 
-    public function serialize(): string
+    public function writeTo(Box $box): void
     {
         $idSize = $this->version < 2 ? 2 : 4;
 
@@ -91,7 +91,7 @@ final class ItemLocation
             }
         }
 
-        return $writer->toString();
+        $box->body = $writer->toString();
     }
 
     /**
