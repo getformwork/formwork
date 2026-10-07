@@ -1011,4 +1011,124 @@ final class CollectionTest extends TestCase
         $this->expectExceptionMessage('Collections with data of different types cannot be merged');
         $collection1->merge($collection2);
     }
+
+    public function testImmutableCollectionRejectsEveryMutatingOperation(): void
+    {
+        $collection = Collection::from(['a', 'b'], mutable: false);
+
+        foreach (
+            [
+                static fn() => $collection->add('c'),
+                static fn() => $collection->pull('a'),
+                static fn() => $collection->moveItem(0, 1),
+            ] as $operation
+        ) {
+            try {
+                $operation();
+                $this->fail('An immutable collection was mutated.');
+            } catch (LogicException) {
+                // Expected
+            }
+        }
+
+        $this->assertSame(['a', 'b'], $collection->values());
+    }
+
+    public function testMoveItemPreservesCollectionValuesAndOnlyChangesOrder(): void
+    {
+        $collection = Collection::from(['a', 'b', 'c'], mutable: true);
+
+        $collection->moveItem(0, 2);
+
+        $this->assertSame(['b', 'c', 'a'], $collection->values());
+    }
+
+    public function testFailedMutationLeavesTheCollectionUnchanged(): void
+    {
+        $collection = Collection::of('string', ['first'], mutable: true);
+        $before = $collection->toArray();
+
+        try {
+            $collection->add(123);
+            $this->fail('The invalid value should have been rejected.');
+        } catch (LogicException) {
+            // Expected
+        }
+
+        $this->assertSame($before, $collection->toArray());
+    }
+
+    public function testNonMutatingTransformationsDoNotChangeTheSource(): void
+    {
+        $source = Collection::from([3, 1, 2]);
+        $original = $source->toArray();
+
+        $source->reverse();
+        $source->shuffle();
+        $source->unique();
+        $source->duplicates();
+        $source->slice(1);
+        $source->limit(2);
+        $source->map(fn(int $value): int => $value * 2);
+        $source->filter(fn(int $value): bool => $value > 1);
+        $source->reject(fn(int $value): bool => $value > 1);
+        $source->sort();
+        $source->flatten();
+        $source->with(4);
+        $source->without(1);
+
+        $this->assertSame($original, $source->toArray());
+    }
+
+    public function testClonePreservesCollectionConfiguration(): void
+    {
+        $collection = Collection::of('string', ['a' => 'A', 'b' => 'B'], associative: true, mutable: true);
+        $clone = $collection->clone();
+
+        $this->assertNotSame($collection, $clone);
+        $this->assertSame($collection->toArray(), $clone->toArray());
+        $this->assertSame($collection->isAssociative(), $clone->isAssociative());
+        $this->assertSame($collection->isMutable(), $clone->isMutable());
+        $this->assertSame($collection->dataType(), $clone->dataType());
+    }
+
+    public function testMutabilityConversionsPreserveDataAndDoNotAliasCollections(): void
+    {
+        $immutable = Collection::from(['a', 'b']);
+        $mutable = $immutable->toMutable();
+        $roundTrip = $mutable->toImmutable();
+
+        $this->assertFalse($immutable->isMutable());
+        $this->assertTrue($mutable->isMutable());
+        $this->assertFalse($roundTrip->isMutable());
+        $this->assertSame($immutable->toArray(), $mutable->toArray());
+        $this->assertSame($immutable->toArray(), $roundTrip->toArray());
+
+        $mutable->add('c');
+        $this->assertSame(['a', 'b'], $immutable->toArray());
+        $this->assertSame(['a', 'b'], $roundTrip->toArray());
+    }
+
+    public function testReversingTwiceRestoresTheOriginalOrder(): void
+    {
+        $collection = Collection::from(['a', 'b', 'c']);
+
+        $this->assertSame($collection->toArray(), $collection->reverse()->reverse()->toArray());
+    }
+
+    public function testDeepCloneBreaksObjectIdentityWhileCloneDoesNot(): void
+    {
+        $item = new \stdClass();
+        $item->value = 'original';
+        $collection = Collection::from([$item]);
+
+        $shallow = $collection->clone();
+        $deep = $collection->deepClone();
+
+        $this->assertSame($item, $shallow->first());
+        $this->assertNotSame($item, $deep->first());
+
+        $deep->first()->value = 'changed';
+        $this->assertSame('original', $item->value);
+    }
 }

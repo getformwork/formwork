@@ -94,4 +94,23 @@ final class YamlTest extends TestCase
     {
         $this->assertSame('', Yaml::encode([]));
     }
+
+    public function testRoundTripPreservesNestedData(): void
+    {
+        $data = [
+            'title'   => 'Test',
+            'enabled' => false,
+            'count'   => 0,
+            'tags'    => ['php', 'cms'],
+            'nested'  => ['value' => 'text'],
+        ];
+
+        $this->assertSame($data, Yaml::parse(Yaml::encode($data)));
+    }
+
+    public function testYamlEmptyDataHasAnExplicitEmptyEncoding(): void
+    {
+        $this->assertSame('', Yaml::encode([]));
+        $this->assertSame([], Yaml::parse(Yaml::encode([])));
+    }
 }
