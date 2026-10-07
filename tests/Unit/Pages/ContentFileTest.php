@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Pages;
 
 use Formwork\Pages\ContentFile;
 use Formwork\Tests\TestCase;
+use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
@@ -32,7 +33,7 @@ final class ContentFileTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/invalid-page.md';
         $this->setUpTempDirectory();
-        file_put_contents($path, 'not a page');
+        FileSystem::write($path, 'not a page');
 
         try {
             $this->expectException(UnexpectedValueException::class);

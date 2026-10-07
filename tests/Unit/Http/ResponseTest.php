@@ -3,6 +3,7 @@
 namespace Formwork\Tests\Unit\Http;
 
 use Formwork\Http\Request;
+use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
@@ -25,9 +26,9 @@ final class ResponseTest extends TestCase
 
     public function testResponsePreparationHandlesHeadAndConditionalRequests(): void
     {
-        $request = $this->request(['REQUEST_METHOD' => 'HEAD']);
+        $request = $this->request(RequestMethod::HEAD);
         $response = new Response('body', ResponseStatus::OK, ['ETag' => 'tag', 'Content-Length' => '4']);
-        $requestWithMatch = $this->request(['HTTP_IF_NONE_MATCH' => 'tag']);
+        $requestWithMatch = $this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => 'tag']);
 
         $response->prepare($request);
         $this->assertSame('', $response->content());
@@ -61,13 +62,86 @@ final class ResponseTest extends TestCase
         $this->assertSame('no-cache, private', $response->headers()->get('Cache-Control'));
     }
 
+    public function testPrepareIsStableWhenAppliedTwiceToTheSameRequest(): void
+    {
+        $response = new Response('content', ResponseStatus::OK, [
+            'ETag'           => '"abc"',
+            'Content-Length' => '7',
+        ]);
+        $request = $this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => '"abc"']);
+
+        $response->prepare($request);
+        $first = $response->toArray();
+        $response->prepare($request);
+
+        $this->assertSame($first, $response->toArray());
+    }
+
+    public function testConditionalNotModifiedResponsesCannotRetainAResponseBody(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"']);
+
+        $response->prepare($this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => '"abc"']));
+
+        $this->assertSame(ResponseStatus::NotModified, $response->status());
+        $this->assertSame('', $response->content());
+        $this->assertFalse($response->headers()->has('Content-Type'));
+        $this->assertFalse($response->headers()->has('Content-Length'));
+    }
+
+    public function testNoContentResponsesRemoveEntityHeadersAndBody(): void
+    {
+        $response = new Response('body', ResponseStatus::NoContent, [
+            'Content-Type'   => 'text/plain',
+            'Content-Length' => '4',
+        ]);
+
+        $response->prepare($this->request(RequestMethod::GET));
+
+        $this->assertSame('', $response->content());
+        $this->assertFalse($response->headers()->has('Content-Type'));
+        $this->assertFalse($response->headers()->has('Content-Length'));
+    }
+
+    public function testHeadPreparationSuppressesBodyButPreservesEntityMetadata(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, [
+            'Content-Type'   => 'text/plain',
+            'Content-Length' => '4',
+        ]);
+
+        $response->prepare($this->request(RequestMethod::HEAD));
+
+        $this->assertSame('', $response->content());
+        $this->assertSame('text/plain', $response->headers()->get('Content-Type'));
+        $this->assertSame('4', $response->headers()->get('Content-Length'));
+    }
+
+    public function testSendWritesExactlyThePreparedContent(): void
+    {
+        $response = new Response('expected');
+
+        ob_start();
+        $response->send();
+        $output = ob_get_clean();
+
+        $this->assertSame('expected', $output);
+    }
+
+    public function testArrayRoundTripPreservesStatusContentAndHeaders(): void
+    {
+        $response = new Response('content', ResponseStatus::Created, ['X-Test' => 'value']);
+
+        $this->assertSame($response->toArray(), Response::fromArray($response->toArray())->toArray());
+    }
+
     /**
      * @param array<string, string> $server
      */
-    private function request(array $server = []): Request
+    private function request(RequestMethod $method = RequestMethod::GET, array $server = []): Request
     {
         return new Request([], [], [], [], $server + [
-            'REQUEST_METHOD' => 'GET',
+            'REQUEST_METHOD' => $method->value,
             'SERVER_NAME'    => 'example.test',
             'SERVER_PORT'    => '80',
         ]);

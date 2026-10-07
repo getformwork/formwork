@@ -94,4 +94,26 @@ class JsonTest extends TestCase
 
         $this->assertJsonStringEqualsJsonString('{}', Json::encode($data, ['forceObject' => true]));
     }
+
+    public function testRoundTripPreservesMeaningfulScalarTypes(): void
+    {
+        $data = [
+            'null'     => null,
+            'false'    => false,
+            'zero'     => 0,
+            'fraction' => 1.0,
+            'empty'    => '',
+            'list'     => [],
+            'nested'   => ['value' => 'text'],
+        ];
+
+        $this->assertSame($data, Json::parse(Json::encode($data)));
+    }
+
+    public function testEmptyArrayUsesObjectEncodingByDefault(): void
+    {
+        $this->assertSame([], Json::parse(Json::encode([])));
+        $this->assertSame([], Json::parse(Json::encode([], ['forceObject' => true])));
+        $this->assertSame('{}', Json::encode([], ['forceObject' => true]));
+    }
 }

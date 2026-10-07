@@ -1338,4 +1338,119 @@ final class ArrTest extends TestCase
 
         $this->assertSame($expected, Arr::fromEntries($entries));
     }
+
+    public function testLiteralDottedKeysTakePrecedenceOverNestedPaths(): void
+    {
+        $array = [
+            'user.name' => 'literal',
+            'user'      => ['name' => 'nested'],
+        ];
+
+        $this->assertSame('literal', Arr::get($array, 'user.name'));
+        $this->assertTrue(Arr::has($array, 'user.name'));
+
+        Arr::set($array, 'user.name', 'changed');
+        $this->assertSame('changed', $array['user.name']);
+        $this->assertSame('nested', $array['user']['name']);
+
+        Arr::remove($array, 'user.name');
+        $this->assertSame(['name' => 'nested'], $array['user']);
+    }
+
+    public function testDotAndUndotRoundTripNestedAssociativeArrays(): void
+    {
+        $source = [
+            'user' => [
+                'name'    => 'Alice',
+                'profile' => ['city' => 'Bologna'],
+            ],
+            'tags' => ['php', 'cms'],
+        ];
+
+        $this->assertSame($source, Arr::undot(Arr::dot($source)));
+    }
+
+    public function testDotDoesNotFlattenLists(): void
+    {
+        $source = ['items' => [['id' => 1], ['id' => 2]]];
+
+        $this->assertSame($source, Arr::undot(Arr::dot($source)));
+        $this->assertSame(['items' => $source['items']], Arr::dot($source));
+    }
+
+    public function testGetDistinguishesMissingValuesFromExistingNullValues(): void
+    {
+        $array = ['present' => null];
+
+        $this->assertTrue(Arr::has($array, 'present'));
+        $this->assertNull(Arr::get($array, 'present', 'fallback'));
+        $this->assertSame('fallback', Arr::get($array, 'missing', 'fallback'));
+    }
+
+    public function testMoveItemPreservesAllValuesAndKeys(): void
+    {
+        $array = ['first' => 'A', 'second' => 'B', 'third' => 'C'];
+
+        Arr::moveItem($array, 0, 2);
+
+        $this->assertSame(['second' => 'B', 'third' => 'C', 'first' => 'A'], $array);
+    }
+
+    public function testSpliceRejectsReplacementKeyCollisionsWithoutChangingTheArray(): void
+    {
+        $array = ['a' => 1, 'b' => 2, 'c' => 3];
+        $before = $array;
+
+        try {
+            Arr::splice($array, 1, 1, ['a' => 20]);
+            $this->fail('The replacement key should have been rejected.');
+        } catch (UnexpectedValueException) {
+            // Expected.
+        }
+
+        $this->assertSame($before, $array);
+    }
+
+    public function testAppendMissingAddsOnlyMissingValuesRecursively(): void
+    {
+        $first = ['config' => ['enabled' => true]];
+        $second = ['config' => ['enabled' => false, 'cache' => true], 'extra' => 1];
+
+        $this->assertSame([
+            'config' => ['enabled' => true, 'cache' => true],
+            'extra'  => 1,
+        ], Arr::appendMissing($first, $second));
+    }
+
+    public function testExtendConcatenatesListsAndRecursesIntoAssociativeArrays(): void
+    {
+        $first = ['items' => [1], 'config' => ['a' => 1]];
+        $second = ['items' => [2], 'config' => ['b' => 2]];
+
+        $this->assertSame([
+            'items'  => [1, 2],
+            'config' => ['a' => 1, 'b' => 2],
+        ], Arr::extend($first, $second));
+        $this->assertSame(['items' => [1], 'config' => ['a' => 1]], $first);
+    }
+
+    public function testOverrideReplacesListsAtomicallyAndRecursesIntoAssociativeArrays(): void
+    {
+        $first = ['items' => [1, 2], 'config' => ['a' => 1, 'nested' => ['x' => 1]]];
+        $second = ['items' => [3], 'config' => ['nested' => ['y' => 2]]];
+
+        $this->assertSame([
+            'items'  => [3],
+            'config' => ['a' => 1, 'nested' => ['x' => 1, 'y' => 2]],
+        ], Arr::override($first, $second));
+    }
+
+    public function testExcludeRemovesEmptyParentsAfterRecursiveExclusion(): void
+    {
+        $array = ['config' => ['a' => 1, 'b' => 2], 'keep' => true];
+
+        $this->assertSame(['keep' => true], Arr::exclude($array, [
+            'config' => ['a' => 1, 'b' => 2],
+        ]));
+    }
 }

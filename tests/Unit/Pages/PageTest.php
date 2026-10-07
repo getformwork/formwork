@@ -488,6 +488,130 @@ final class PageTest extends TestCase
         $this->assertStringContainsString('About', $output);
     }
 
+    public function testChangingSlugKeepsPathIdentityUntilSave(): void
+    {
+        $page = $this->temporaryPage('about');
+        $path = $page->path();
+
+        $page->set('slug', 'renamed');
+
+        $this->assertSame($path, $page->path());
+        $this->assertSame('renamed', $page->slug());
+    }
+
+    public function testReloadReconstructsAllDerivedAndCachedStateFromDisk(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->metadata();
+        $path = $page->contentFile()?->path();
+        $this->assertNotNull($path);
+
+        FileSystem::write($path, "---\ntitle: Reloaded\nmetadata:\n  description: Fresh\n---\nFresh content\n");
+
+        $page->reload();
+
+        $this->assertSame('Reloaded', $page->title());
+        $this->assertSame('Fresh content', $page->contentFile()?->content());
+        $this->assertSame('Fresh', $page->metadata()->get('description')->content());
+    }
+
+    public function testReloadAfterExternalPathChangeDoesNotRetainOldLazyProperties(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->route();
+        $page->num();
+        $page->lastModifiedTime();
+
+        $page->reload();
+
+        $this->assertSame('/about/', $page->route());
+        $this->assertSame('about', $page->slug());
+        $this->assertNotNull($page->lastModifiedTime());
+    }
+
+    public function testDuplicateDoesNotShareMutableMetadataStateWithTheSource(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->set('metadata', ['description' => 'Original']);
+        $originalMetadata = $page->metadata();
+
+        $duplicate = $page->duplicate();
+        $duplicate->metadata()->set('description', 'Duplicate');
+
+        $this->assertSame('Original', $originalMetadata->get('description')->content());
+        $this->assertSame('Duplicate', $duplicate->metadata()->get('description')->content());
+    }
+
+    public function testDuplicateGetsAnIndependentDataSet(): void
+    {
+        $page = $this->temporaryPage('original');
+        $duplicate = $page->duplicate();
+
+        $duplicate->set('title', 'Duplicate');
+
+        $this->assertNotSame($page->title(), $duplicate->title());
+    }
+
+    public function testDuplicateFillsTheFirstAvailableCopySlug(): void
+    {
+        $page = $this->temporaryPage('original');
+        $first = $page->duplicate();
+        $second = $page->duplicate();
+        $first->delete();
+        $third = $page->duplicate();
+
+        $this->assertSame('original-copy', $third->slug());
+        $this->assertSame($third->contentPath(), $first->contentPath());
+        $this->assertSame('original-copy-2', $second->slug());
+    }
+
+    public function testSaveReloadRoundTripPreservesThePersistedState(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->setMultiple([
+            'slug'    => 'renamed',
+            'title'   => 'Persisted title',
+            'content' => 'Persisted content',
+        ]);
+        $page->save();
+        $page->reload();
+
+        $this->assertSame('renamed', $page->slug());
+        $this->assertSame('/renamed/', $page->route());
+        $this->assertSame('Persisted title', $page->title());
+        $this->assertSame('Persisted content', $page->contentFile()?->content());
+    }
+
+    public function testChangingLanguageReloadsTheCorrespondingContentVersion(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
+        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
+
+        $this->assertSame('it', $page->language()?->code());
+        $page->set('language', 'en');
+
+        $this->assertSame('en', $page->language()?->code());
+        $this->assertSame('English', $page->title());
+    }
+
+    public function testInvalidLanguageChangeLeavesTheCurrentLanguageUntouched(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
+        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
+
+        try {
+            $page->set('language', 'fr');
+            $this->fail('The invalid language should have been rejected.');
+        } catch (\Throwable) {
+            // Expected.
+        }
+
+        $this->assertSame('it', $page->language()?->code());
+        $this->assertSame('Italiano', $page->title());
+    }
+
     public static function invalidTaxonomyProvider(): iterable
     {
         yield 'scalar' => ['not-an-array', \TypeError::class];

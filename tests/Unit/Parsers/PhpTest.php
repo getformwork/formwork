@@ -144,4 +144,31 @@ final class PhpTest extends TestCase
 
         $this->assertSame($data, include $filePath);
     }
+
+    public function testRoundTripPreservesArraysAndScalars(): void
+    {
+        $data = [
+            'string'  => 'text',
+            'integer' => 42,
+            'float'   => 1.5,
+            'boolean' => false,
+            'null'    => null,
+            'nested'  => ['value' => 'nested'],
+        ];
+
+        $path = TESTS_TMP_PATH . '/semantic.php';
+        $this->setUpTempDirectory();
+        try {
+            Php::encodeToFile($data, $path);
+            $this->assertSame($data, Php::parseFile($path));
+        } finally {
+            $this->tearDownTempDirectory();
+        }
+    }
+
+    public function testParserNeverEvaluatesStringInput(): void
+    {
+        $this->expectException(LogicException::class);
+        Php::parse('<?php return ["executed" => true];');
+    }
 }
