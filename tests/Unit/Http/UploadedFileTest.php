@@ -39,6 +39,6 @@ final class UploadedFileTest extends TestCase
         $this->assertSame('No file was uploaded', $file->getErrorMessage());
         $this->assertSame('upload.error.noFile', $file->getErrorTranslationString());
         $this->expectException(TranslatedException::class);
-        $file->move(__DIR__ . '/fixtures/files', 'document.txt');
+        $file->move(__DIR__ . '/Fixtures/files', 'document.txt');
     }
 }

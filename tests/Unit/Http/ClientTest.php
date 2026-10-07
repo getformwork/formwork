@@ -89,7 +89,7 @@ final class ClientTest extends TestCase
             'content'   => '',
             'redirects' => ['follow' => true, 'limit' => 5],
             'timeout'   => -1,
-            'ssl'       => ['verify' => true, 'cabundle' => __DIR__ . '/fixtures/files/missing-ca.pem'],
+            'ssl'       => ['verify' => true, 'cabundle' => __DIR__ . '/Fixtures/files/missing-ca.pem'],
         ]);
     }
 }

@@ -10,6 +10,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileResponse::class)]
 final class FileResponseTest extends TestCase
@@ -59,6 +60,59 @@ final class FileResponseTest extends TestCase
         $this->assertSame(ResponseStatus::RangeNotSatisfiable, $invalid->status());
         $this->assertSame('bytes */' . $size, $invalid->headers()->get('Content-Range'));
         $this->assertSame('0', $invalid->headers()->get('Content-Length'));
+    }
+
+    #[DataProvider('satisfiableRangeProvider')]
+    public function testFileResponseServesSatisfiableRangesWithTheExactBoundaries(string $range, int $start, int $end): void
+    {
+        $path = $this->fixturePath();
+        $size = FileSystem::fileSize($path);
+        $response = new FileResponse($path);
+        $response->prepare($this->request(server: ['HTTP_RANGE' => $range]));
+
+        $this->assertSame(ResponseStatus::PartialContent, $response->status());
+        $this->assertSame(sprintf('bytes %d-%d/%d', $start, $end, $size), $response->headers()->get('Content-Range'));
+        $this->assertSame((string) ($end - $start + 1), $response->headers()->get('Content-Length'));
+    }
+
+    /**
+     * The fixture is 31 bytes long
+     *
+     * @return iterable<string, array{string, int, int}>
+     */
+    public static function satisfiableRangeProvider(): iterable
+    {
+        yield 'single first byte' => ['bytes=0-0', 0, 0];
+        yield 'single byte in the middle' => ['bytes=3-3', 3, 3];
+        yield 'single last byte' => ['bytes=30-30', 30, 30];
+        yield 'last byte by suffix' => ['bytes=-1', 30, 30];
+        yield 'whole file' => ['bytes=0-30', 0, 30];
+        yield 'end beyond the file is clamped' => ['bytes=5-999', 5, 30];
+        yield 'suffix longer than the file is clamped' => ['bytes=-999', 0, 30];
+    }
+
+    public function testFileResponseRejectsRangesStartingAfterTheirEndOrAfterTheFile(): void
+    {
+        $size = FileSystem::fileSize($this->fixturePath());
+
+        foreach (['bytes=5-4', 'bytes=' . $size . '-' . $size, 'bytes=' . $size . '-'] as $range) {
+            $response = new FileResponse($this->fixturePath());
+            $response->prepare($this->request(server: ['HTTP_RANGE' => $range]));
+
+            $this->assertSame(ResponseStatus::RangeNotSatisfiable, $response->status(), $range);
+            $this->assertSame('bytes */' . $size, $response->headers()->get('Content-Range'), $range);
+        }
+    }
+
+    public function testFileResponseIgnoresMalformedRanges(): void
+    {
+        foreach (['bytes=-', 'items=0-4', 'bytes=a-b', 'bytes=0-4,6-8'] as $range) {
+            $response = new FileResponse($this->fixturePath());
+            $response->prepare($this->request(server: ['HTTP_RANGE' => $range]));
+
+            $this->assertSame(ResponseStatus::OK, $response->status(), $range);
+            $this->assertFalse($response->headers()->has('Content-Range'), $range);
+        }
     }
 
     public function testFileResponseAddsAcceptRangesForHeadAndSkipsRangesForEmptyResponses(): void
@@ -225,7 +279,7 @@ final class FileResponseTest extends TestCase
 
     private function fixturePath(): string
     {
-        return __DIR__ . '/fixtures/files/sample.txt';
+        return __DIR__ . '/Fixtures/files/sample.txt';
     }
 
     /**

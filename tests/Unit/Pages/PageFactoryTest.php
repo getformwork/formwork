@@ -26,7 +26,7 @@ final class PageFactoryTest extends TestCase
         $this->setUpTempDirectory();
         $this->app = App::instance();
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-factory-site');
-        FileSystem::copyDirectory(__DIR__ . '/fixtures/site', $path);
+        FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
         $this->fixtureSite = new Site(
             ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
             $this->app->config(),

@@ -212,6 +212,66 @@ final class RequestTest extends TestCase
         $this->assertTrue($request->isSecure());
     }
 
+    #[DataProvider('forwardedProtoProvider')]
+    public function testForwardedProtoOverridesTheConnectionSchemeForTrustedProxies(string $proto, bool $expectedSecure): void
+    {
+        foreach ([['HTTPS' => 'on'], ['HTTPS' => 'off'], []] as $connection) {
+            $request = $this->request([
+                'REMOTE_ADDR'            => '10.0.0.10',
+                'HTTP_X_FORWARDED_PROTO' => $proto,
+            ] + $connection);
+            $request->setTrustedProxies(['10.0.0.10']);
+
+            $this->assertSame($expectedSecure, $request->isSecure(), sprintf('Forwarded proto "%s" with %s', $proto, json_encode($connection)));
+        }
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function forwardedProtoProvider(): iterable
+    {
+        yield 'https' => ['https', true];
+        yield 'uppercase https' => ['HTTPS', true];
+        yield 'on' => ['on', true];
+        yield 'ssl' => ['ssl', true];
+        yield 'one' => ['1', true];
+        yield 'http' => ['http', false];
+        yield 'off' => ['off', false];
+        yield 'zero' => ['0', false];
+    }
+
+    public function testForwardedProtoIsIgnoredForUntrustedProxies(): void
+    {
+        $request = $this->request([
+            'REMOTE_ADDR'            => '192.0.2.10',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'HTTPS'                  => 'off',
+        ]);
+        $request->setTrustedProxies(['10.0.0.10']);
+
+        $this->assertFalse($request->isSecure());
+    }
+
+    #[DataProvider('localhostProvider')]
+    public function testLocalhostIsDetectedFromTheClientIpAddress(string $ip, bool $expected): void
+    {
+        $this->assertSame($expected, $this->request(['REMOTE_ADDR' => $ip])->isLocalhost());
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function localhostProvider(): iterable
+    {
+        yield 'IPv4 loopback' => ['127.0.0.1', true];
+        yield 'IPv6 loopback' => ['::1', true];
+        yield 'other loopback address' => ['127.0.0.2', false];
+        yield 'private IPv4 address' => ['192.168.1.10', false];
+        yield 'documentation IPv4 address' => ['192.0.2.10', false];
+        yield 'documentation IPv6 address' => ['2001:db8::1', false];
+    }
+
     public function testSecurityLocalhostAndRequestTypeAreDetected(): void
     {
         $secure = $this->request([
@@ -233,24 +293,41 @@ final class RequestTest extends TestCase
         $this->assertSame(RequestType::Http, $regular->type());
     }
 
-    public function testNonGetContentReadsTheRequestBodyAndReturnsNullWhenItIsEmpty(): void
+    public function testNonGetContentIsNullWhenTheRequestBodyIsEmpty(): void
     {
         $request = $this->request(['REQUEST_METHOD' => 'POST']);
 
         $this->assertNull($request->content());
     }
 
-    public function testRefererCanBeValidatedAgainstTheCurrentOriginAndPath(): void
+    #[DataProvider('refererProvider')]
+    public function testRefererIsValidatedAgainstTheCurrentOriginAndPath(?string $referer, string $path, bool $expected): void
     {
-        $request = $this->request([
+        $request = $this->request(array_filter([
             'SCRIPT_NAME'  => '/index.php',
             'REQUEST_URI'  => '/current',
             'SERVER_NAME'  => 'example.test',
-            'HTTP_REFERER' => 'http://example.test/admin/users?tab=active',
-        ]);
+            'HTTP_REFERER' => $referer,
+        ], static fn(?string $value): bool => $value !== null));
 
-        $this->assertTrue($request->validateReferer('/admin'));
-        $this->assertFalse($request->validateReferer('/panel'));
+        $this->assertSame($expected, $request->validateReferer($path));
+    }
+
+    /**
+     * @return iterable<string, array{?string, string, bool}>
+     */
+    public static function refererProvider(): iterable
+    {
+        yield 'page under the path' => ['http://example.test/admin/users?tab=active', '/admin', true];
+        yield 'path root with trailing slash' => ['http://example.test/admin/', '/admin', true];
+        yield 'path without leading slash' => ['http://example.test/admin/users', 'admin', true];
+        yield 'default path accepts any page of the site' => ['http://example.test/anything', '/', true];
+        yield 'different path' => ['http://example.test/admin/users', '/panel', false];
+        yield 'path sharing only a prefix' => ['http://example.test/admin-evil/users', '/admin', false];
+        yield 'different host' => ['http://evil.test/admin/users', '/admin', false];
+        yield 'host containing the current one' => ['http://example.test.evil.test/admin/users', '/admin', false];
+        yield 'different scheme' => ['https://example.test/admin/users', '/admin', false];
+        yield 'missing referer' => [null, '/admin', false];
     }
 
     public function testUploadedFilesAreNormalizedIntoUploadedFileObjects(): void
@@ -307,22 +384,37 @@ final class RequestTest extends TestCase
         $session->save();
     }
 
-    public function testFromGlobalsUsesTheScriptNameExposedByThePhpRuntime(): void
+    public function testFromGlobalsBuildsTheRequestFromThePhpSuperglobals(): void
     {
-        $request = Request::fromGlobals();
-        $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
-        $expectedRoot = '/' . ltrim((string) preg_replace('~[^/]+$~', '', $scriptName), '/');
+        $superglobals = [$_SERVER, $_POST, $_GET, $_COOKIE, $_FILES];
 
-        $this->assertSame(
-            $expectedRoot,
-            $request->root(),
-            sprintf('Request::root() is derived from SCRIPT_NAME=%s', var_export($scriptName, true)),
-        );
+        try {
+            $_SERVER = [
+                'REQUEST_METHOD' => 'POST',
+                'SCRIPT_NAME'    => '/formwork/index.php',
+                'REQUEST_URI'    => '/formwork/about',
+                'SERVER_NAME'    => 'example.test',
+                'SERVER_PORT'    => '80',
+            ];
+            $_POST = ['title' => 'Hello'];
+            $_GET = ['page' => '2'];
+            $_COOKIE = ['theme' => 'dark'];
+            $_FILES = [];
+
+            $request = Request::fromGlobals();
+        } finally {
+            [$_SERVER, $_POST, $_GET, $_COOKIE, $_FILES] = $superglobals;
+        }
+
+        $this->assertSame(RequestMethod::POST, $request->method());
+        $this->assertSame('/formwork/', $request->root());
+        $this->assertSame('/about', $request->uri());
+        $this->assertSame(['title' => 'Hello'], $request->input()->toArray());
+        $this->assertSame(['page' => '2'], $request->query()->toArray());
+        $this->assertSame(['theme' => 'dark'], $request->cookies()->toArray());
+        $this->assertSame([], $request->files()->getAll());
     }
 
-    /**
-     * @param array<string, string> $server
-     */
     /**
      * @param array<string, string> $server
      * @param array<string, mixed>  $input

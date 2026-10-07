@@ -82,6 +82,43 @@ final class SessionTest extends TestCase
         $session->save();
     }
 
+    public function testRegenerateDestroysTheOldSessionAndMovesItsDataToTheNewOne(): void
+    {
+        $directory = FileSystem::joinPaths(TESTS_TMP_PATH, 'session-regenerate');
+        FileSystem::createDirectory($directory);
+
+        $session = $this->session();
+        $session->setPath($directory);
+        $session->start();
+        $oldId = session_id();
+        $session->set('value', 42);
+        $session->save();
+
+        $this->assertFileExists(FileSystem::joinPaths($directory, 'sess_' . $oldId));
+
+        $session->start();
+        $session->regenerate();
+        $newId = session_id();
+        $session->save();
+
+        $this->assertNotSame($oldId, $newId);
+        $this->assertFileDoesNotExist(FileSystem::joinPaths($directory, 'sess_' . $oldId));
+        $this->assertFileExists(FileSystem::joinPaths($directory, 'sess_' . $newId));
+        $this->assertStringContainsString('value|i:42;', (string) file_get_contents(FileSystem::joinPaths($directory, 'sess_' . $newId)));
+    }
+
+    public function testRegenerateCanDiscardTheSessionData(): void
+    {
+        $session = $this->session();
+        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
+        $session->start();
+        $session->set('value', 42);
+        $session->regenerate(preserveData: false);
+
+        $this->assertFalse($session->has('value'));
+        $session->save();
+    }
+
     public function testSessionRejectsChangingConfigurationAfterStart(): void
     {
         $session = $this->session();

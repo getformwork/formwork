@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Pages;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
+use Formwork\Pages\ContentFile;
 use Formwork\Pages\Events\PageAfterDeleteEvent;
 use Formwork\Pages\Events\PageAfterDuplicateEvent;
 use Formwork\Pages\Events\PageAfterSaveEvent;
@@ -243,6 +244,34 @@ final class PageEventsTest extends TestCase
         $this->assertSame('From listener', $duplicate->title());
     }
 
+    public function testSaveEventsAreDispatchedBeforeAndAfterThePageIsWritten(): void
+    {
+        $page = $this->page('/about');
+        $file = (string) $page->contentFile()?->path();
+        $active = true;
+        $titles = [];
+
+        $this->app->events()->on('pageBeforeSave', function (PageBeforeSaveEvent $event) use (&$active, &$titles, $page, $file): void {
+            if ($active && $event->page() === $page) {
+                $titles['before'] = (new ContentFile($file))->frontmatter()['title'];
+                $page->set('title', 'Changed by listener');
+            }
+        });
+        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $event) use (&$active, &$titles, $page, $file): void {
+            if ($active && $event->page() === $page) {
+                $titles['after'] = (new ContentFile($file))->frontmatter()['title'];
+            }
+        });
+
+        try {
+            $page->save();
+        } finally {
+            $active = false;
+        }
+
+        $this->assertSame(['before' => 'About', 'after' => 'Changed by listener'], $titles);
+    }
+
     private function page(string $route): Page
     {
         $site = $this->temporarySite();
@@ -254,7 +283,7 @@ final class PageEventsTest extends TestCase
     private function temporarySite(): Site
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-events-' . ++$this->temporarySiteCounter);
-        FileSystem::copyDirectory(__DIR__ . '/fixtures/site', $path);
+        FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
 
         return new Site(
             ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],

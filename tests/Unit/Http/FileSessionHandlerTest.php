@@ -25,7 +25,7 @@ final class FileSessionHandlerTest extends TestCase
     public function testHandlerReadsWritesValidatesAndDestroysSessions(): void
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'sessions');
-        FileSystem::copyDirectory(__DIR__ . '/fixtures/sessions', $path);
+        FileSystem::copyDirectory(__DIR__ . '/Fixtures/sessions', $path);
         $handler = new FileSessionHandler($path);
 
         $this->assertTrue($handler->open('', 'formwork'));

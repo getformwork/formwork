@@ -100,7 +100,7 @@ final class PageTest extends TestCase
 
     public function testNumberPrefixAndSlugAreSeparated(): void
     {
-        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/fixtures/numbered-site'));
+        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/Fixtures/numbered-site'));
 
         $this->assertSame(1, $page->num());
         $this->assertSame('numbered', $page->slug());
@@ -112,6 +112,7 @@ final class PageTest extends TestCase
         $page = $this->temporaryPage('about');
 
         $this->assertSame('page', $page->template()->name());
+        $this->assertSame('page.md', basename((string) $page->contentFile()?->path()));
         $this->assertNull($page->language());
         $this->assertSame([], $page->languages()->available()->toArray());
     }
@@ -124,6 +125,7 @@ final class PageTest extends TestCase
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
         $this->assertSame('it', $page->language()?->code());
+        $this->assertSame('page.it.md', basename((string) $page->contentFile()?->path()));
         $this->assertSame('Italiano', $page->title());
         $this->assertSame('Questa pagina spiega come è organizzato il sito e dove trovare le sezioni principali.', trim(strip_tags($page->content())));
         $this->assertTrue($page->languages()->available()->has('en'));
@@ -140,30 +142,35 @@ final class PageTest extends TestCase
         $page->set('language', 'fr');
     }
 
-    public function testIconFallsBackToTheSchemeAndCanBeOverridden(): void
+    public function testIconIsReadFromTheSchemeAndCanBeOverridden(): void
     {
-        $page = $this->temporaryPage('about');
-        $defaultIcon = $page->icon();
+        $page = $this->temporaryPage('blog');
 
-        $this->assertIsString($defaultIcon);
-        $this->assertSame($defaultIcon, $page->icon());
+        $this->assertSame('page-listing', $page->icon());
+        $this->assertSame('page', $this->temporaryPage('about')->icon());
+
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'about') . '/';
+        FileSystem::write($path . 'page.md', "---\ntitle: About\nicon: custom-icon\n---\n\nContent\n");
+        $custom = new Page(['site' => $site, 'path' => $path], $this->app);
+
+        $this->assertSame('custom-icon', $custom->icon());
     }
 
-    public function testStatusHonoursPublishedAndDateWindows(): void
+    /**
+     * @param array<string, mixed> $data
+     */
+    #[DataProvider('statusProvider')]
+    public function testStatusHonoursPublishedAndDateWindows(array $data, string $expectedStatus): void
     {
         $page = $this->temporaryPage('about');
-        $page->set('published', false);
-        $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $page->status());
 
-        $page = $this->temporaryPage('about');
-        $page->set('published', true);
-        $page->set('publishDate', '2099-01-01');
-        $this->assertFalse($page->isPublished());
+        foreach ($data as $key => $value) {
+            $page->set($key, $value);
+        }
 
-        $page = $this->temporaryPage('about');
-        $page->set('published', true);
-        $page->set('unpublishDate', '2000-01-01');
-        $this->assertFalse($page->isPublished());
+        $this->assertSame($expectedStatus, $page->status());
+        $this->assertSame($expectedStatus === Page::PAGE_STATUS_PUBLISHED, $page->isPublished());
     }
 
     public function testMetadataTaxonomyAndResponseStatusAreNormalized(): void
@@ -190,12 +197,27 @@ final class PageTest extends TestCase
         $this->assertNull($page->canonicalRoute());
     }
 
-    public function testInvalidSlugTemplateAndParentAreRejected(): void
+    #[DataProvider('invalidSlugProvider')]
+    public function testInvalidSlugIsRejected(string $slug): void
     {
         $page = $this->temporaryPage('about');
 
-        $this->expectException(InvalidValueException::class);
-        $page->set('slug', 'not a valid slug');
+        try {
+            $page->set('slug', $slug);
+            $this->fail(sprintf('Slug "%s" should have been rejected', $slug));
+        } catch (InvalidValueException) {
+            $this->assertSame('about', $page->slug());
+        }
+    }
+
+    #[DataProvider('validSlugProvider')]
+    public function testValidSlugIsAccepted(string $slug): void
+    {
+        $page = $this->temporaryPage('about');
+
+        $page->set('slug', $slug);
+
+        $this->assertSame($slug, $page->slug());
     }
 
     public function testInvalidTemplateIsRejected(): void
@@ -444,12 +466,14 @@ final class PageTest extends TestCase
         $this->assertSame($page->files(), $page->files());
     }
 
-    public function testLifecycleEventsAreDispatchedWithTheExpectedNames(): void
+    public function testLifecycleEventsAreDispatchedInOrderWithTheExpectedPages(): void
     {
-        $names = [];
+        $page = $this->temporaryPage('original');
+
+        /** @var list<array{string, Page}> $events */
+        $events = [];
         foreach (
             [
-                'pageLoaded',
                 'pageBeforeSave',
                 'pageAfterSave',
                 'pageBeforeDuplicate',
@@ -458,19 +482,37 @@ final class PageTest extends TestCase
                 'pageAfterDelete',
             ] as $name
         ) {
-            $this->app->events()->on($name, function (object $event) use (&$names): void {
-                $names[] = $event->name();
+            $this->app->events()->on($name, function (object $event) use (&$events): void {
+                $events[] = [$event->name(), $event->page()];
             });
         }
 
-        $page = $this->temporaryPage('about');
         $page->save();
         $duplicate = $page->duplicate();
         $duplicate->delete();
 
-        foreach (['pageLoaded', 'pageBeforeSave', 'pageAfterSave', 'pageBeforeDuplicate', 'pageAfterDuplicate', 'pageBeforeDelete', 'pageAfterDelete'] as $name) {
-            $this->assertContains($name, $names);
-        }
+        $this->assertSame(
+            ['pageBeforeSave', 'pageAfterSave', 'pageBeforeDuplicate', 'pageAfterDuplicate', 'pageBeforeDelete', 'pageAfterDelete'],
+            array_column($events, 0),
+        );
+
+        // Save and duplicate events refer to the original page, delete events to the one being deleted
+        $this->assertSame(
+            [$page, $page, $page, $page, $duplicate, $duplicate],
+            array_column($events, 1),
+        );
+    }
+
+    public function testPageLoadedEventIsDispatchedWhenAPageIsLoaded(): void
+    {
+        $loaded = [];
+        $this->app->events()->on('pageLoaded', function (object $event) use (&$loaded): void {
+            $loaded[] = $event->page();
+        });
+
+        $page = $this->temporaryPage('about');
+
+        $this->assertContains($page, $loaded);
     }
 
     public function testRenderDispatchesPageRenderEventAndReturnsMarkup(): void
@@ -612,6 +654,62 @@ final class PageTest extends TestCase
         $this->assertSame('Italiano', $page->title());
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>, string}>
+     */
+    public static function statusProvider(): iterable
+    {
+        yield 'published by default' => [[], Page::PAGE_STATUS_PUBLISHED];
+        yield 'explicitly published' => [['published' => true], Page::PAGE_STATUS_PUBLISHED];
+        yield 'explicitly not published' => [['published' => false], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'publish date in the past' => [['publishDate' => '2000-01-01'], Page::PAGE_STATUS_PUBLISHED];
+        yield 'publish date in the future' => [['publishDate' => '2099-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'unpublish date in the future' => [['unpublishDate' => '2099-01-01'], Page::PAGE_STATUS_PUBLISHED];
+        yield 'unpublish date in the past' => [['unpublishDate' => '2000-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'inside the publication window' => [
+            ['publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_PUBLISHED,
+        ];
+        yield 'window already closed' => [
+            ['publishDate' => '2000-01-01', 'unpublishDate' => '2001-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
+        yield 'window not opened yet' => [
+            ['publishDate' => '2098-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
+        yield 'not published overrides a valid window' => [
+            ['published' => false, 'publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidSlugProvider(): iterable
+    {
+        yield 'empty' => [''];
+        yield 'spaces' => ['not a valid slug'];
+        yield 'underscore' => ['under_score'];
+        yield 'leading hyphen' => ['-slug'];
+        yield 'trailing hyphen' => ['slug-'];
+        yield 'consecutive hyphens' => ['a--b'];
+        yield 'slash' => ['a/b'];
+        yield 'accented character' => ['perché'];
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function validSlugProvider(): iterable
+    {
+        yield 'lowercase' => ['renamed'];
+        yield 'mixed case' => ['Mixed-Case'];
+        yield 'digits only' => ['2024'];
+        yield 'hyphenated' => ['my-new-page-2'];
+    }
+
     public static function invalidTaxonomyProvider(): iterable
     {
         yield 'scalar' => ['not-an-array', \TypeError::class];
@@ -636,7 +734,7 @@ final class PageTest extends TestCase
         return new Page(['site' => $site, 'path' => $path], $this->app);
     }
 
-    private function temporarySite(string $fixturePath = __DIR__ . '/fixtures/site'): Site
+    private function temporarySite(string $fixturePath = __DIR__ . '/Fixtures/site'): Site
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pages-' . ++$this->temporarySiteCounter);
         FileSystem::copyDirectory($fixturePath, $path);
