@@ -2,11 +2,11 @@
 
 namespace Formwork\Images\Handler;
 
-use Formwork\Images\Avif\AvifFile;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\AvifDecoder;
 use Formwork\Images\Exif\ExifData;
+use Formwork\Images\Handler\Utils\Avif\AvifFile;
 use Formwork\Images\ImageInfo;
 use GdImage;
 use RuntimeException;

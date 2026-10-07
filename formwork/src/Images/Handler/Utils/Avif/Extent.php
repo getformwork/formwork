@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Images\Avif;
+namespace Formwork\Images\Handler\Utils\Avif;
 
 /**
  * Location of a chunk of item data described by an `iloc` box

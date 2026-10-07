@@ -1,6 +1,6 @@
 <?php
 
-namespace Formwork\Images\Avif;
+namespace Formwork\Images\Handler\Utils\Avif;
 
 /**
  * Item property association box (`ipma`)
