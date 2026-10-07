@@ -108,6 +108,8 @@ final class FileSystemTest extends TestCase
 
     public function testIsReadable(): void
     {
+        $this->skipIfFilePermissionsAreNotEnforced();
+
         $this->assertTrue(FileSystem::isReadable(TESTS_TMP_PATH . '/sample.txt'));
 
         $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
@@ -120,6 +122,8 @@ final class FileSystemTest extends TestCase
 
     public function testIsWritable(): void
     {
+        $this->skipIfFilePermissionsAreNotEnforced();
+
         $this->assertTrue(FileSystem::isWritable(TESTS_TMP_PATH . '/sample.txt'));
 
         $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
@@ -689,6 +693,8 @@ final class FileSystemTest extends TestCase
 
     public function testReadThrowsOnFileUnreadable(): void
     {
+        $this->skipIfFilePermissionsAreNotEnforced();
+
         $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o444);
 
@@ -883,6 +889,8 @@ final class FileSystemTest extends TestCase
 
     public function testWriteThrowsOnFileUnwritable(): void
     {
+        $this->skipIfFilePermissionsAreNotEnforced();
+
         $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o222);
 
@@ -967,5 +975,15 @@ final class FileSystemTest extends TestCase
     {
         $name = FileSystem::randomName('test_');
         $this->assertStringStartsWith('test_', $name);
+    }
+
+    /**
+     * The root user bypasses file permission checks, so tests relying on them cannot work
+     */
+    private function skipIfFilePermissionsAreNotEnforced(): void
+    {
+        if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+            $this->markTestSkipped('File permissions are not enforced for the root user.');
+        }
     }
 }
