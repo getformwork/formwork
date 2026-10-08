@@ -6,12 +6,26 @@ use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Tests\PhpServer;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Response::class)]
 final class ResponseTest extends TestCase
 {
+    private static PhpServer $server;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$server = PhpServer::start(__DIR__ . '/Fixtures/endpoint.php');
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::$server->stop();
+    }
+
     public function testResponseCanBeSerializedAndRestored(): void
     {
         $response = new Response('body', ResponseStatus::Created, ['X-Test' => 'yes']);
@@ -47,19 +61,6 @@ final class ResponseTest extends TestCase
             $this->assertFalse($response->headers()->has('Content-Length'));
             $this->assertFalse($response->headers()->has('Content-Type'));
         }
-    }
-
-    public function testResponseSendWritesContentAndAddsDefaultHeaders(): void
-    {
-        $response = new Response('body');
-
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame('body', $output);
-        $this->assertSame('text/html; charset=utf-8', $response->headers()->get('Content-Type'));
-        $this->assertSame('no-cache, private', $response->headers()->get('Cache-Control'));
     }
 
     public function testPrepareIsStableWhenAppliedTwiceToTheSameRequest(): void
@@ -117,22 +118,130 @@ final class ResponseTest extends TestCase
         $this->assertSame('4', $response->headers()->get('Content-Length'));
     }
 
-    public function testSendWritesExactlyThePreparedContent(): void
+    public function testSendWritesTheContentWithTheStatusAndDefaultHeaders(): void
     {
-        $response = new Response('expected');
+        $response = $this->sendResponse(['body' => 'Hello']);
 
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame('expected', $output);
+        $this->assertSame(200, $response['status']);
+        $this->assertSame('Hello', $response['body']);
+        $this->assertContains('Content-Type: text/html; charset=utf-8', $response['headers']);
+        $this->assertContains('Cache-Control: no-cache, private', $response['headers']);
     }
 
-    public function testArrayRoundTripPreservesStatusContentAndHeaders(): void
+    public function testSendUsesTheStatusOfTheResponse(): void
     {
-        $response = new Response('content', ResponseStatus::Created, ['X-Test' => 'value']);
+        $this->assertSame(404, $this->sendResponse(['status' => 404])['status']);
+    }
 
-        $this->assertSame($response->toArray(), Response::fromArray($response->toArray())->toArray());
+    public function testSendKeepsTheGivenHeaders(): void
+    {
+        $response = $this->sendResponse(['headers' => json_encode([
+            'X-Own'         => 'own',
+            'Cache-Control' => 'max-age=60',
+            'Content-Type'  => 'application/json',
+        ])]);
+
+        $this->assertContains('X-Own: own', $response['headers']);
+        $this->assertContains('Cache-Control: max-age=60', $response['headers']);
+        $this->assertContains('Content-Type: application/json', $response['headers']);
+        $this->assertNotContains('Cache-Control: no-cache, private', $response['headers']);
+    }
+
+    #[DataProvider('contentTypeProvider')]
+    public function testTextContentTypesGetACharsetWhenMissing(string $contentType, string $expected): void
+    {
+        $response = $this->sendResponse(['headers' => json_encode(['Content-Type' => $contentType])]);
+
+        $this->assertContains('Content-Type: ' . $expected, $response['headers']);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function contentTypeProvider(): iterable
+    {
+        yield 'plain text' => ['text/plain', 'text/plain; charset=utf-8'];
+        yield 'CSS' => ['text/css', 'text/css; charset=utf-8'];
+        yield 'text with a charset' => ['text/plain; charset=iso-8859-1', 'text/plain; charset=iso-8859-1'];
+        yield 'JSON' => ['application/json', 'application/json'];
+        yield 'image' => ['image/png', 'image/png'];
+    }
+
+    public function testHeadersSetBeforeSendingAreMergedAndCookiesAreKept(): void
+    {
+        $response = $this->sendResponse(['headers' => json_encode(['X-Own' => 'own'])]);
+
+        $this->assertContains('X-Before: before', $response['headers']);
+        $this->assertContains('X-Own: own', $response['headers']);
+        $this->assertCount(1, array_filter($response['headers'], static fn(string $header): bool => str_starts_with($header, 'Set-Cookie: before=1')));
+    }
+
+    public function testHeadersOfTheResponseWinOverTheOnesSetBeforeSending(): void
+    {
+        $response = $this->sendResponse(['headers' => json_encode(['X-Before' => 'response'])]);
+
+        $this->assertContains('X-Before: response', $response['headers']);
+        $this->assertNotContains('X-Before: before', $response['headers']);
+    }
+
+    #[DataProvider('validatorProvider')]
+    public function testConditionalGetRequestsAreAnsweredWithNotModifiedOnlyWhenValidatorsMatch(array $requestHeaders, ResponseStatus $expected): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"', 'Last-Modified' => 'Wed, 01 Jan 2025 00:00:00 GMT']);
+        $request = $this->request(RequestMethod::GET, $requestHeaders);
+
+        $response->prepare($request);
+
+        $this->assertSame($expected, $response->status());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>, ResponseStatus}>
+     */
+    public static function validatorProvider(): iterable
+    {
+        yield 'matching ETag' => [['HTTP_IF_NONE_MATCH' => '"abc"'], ResponseStatus::NotModified];
+        yield 'different ETag' => [['HTTP_IF_NONE_MATCH' => '"other"'], ResponseStatus::OK];
+        yield 'ETag in a list' => [['HTTP_IF_NONE_MATCH' => '"other", "abc"'], ResponseStatus::NotModified];
+        yield 'weak ETag' => [['HTTP_IF_NONE_MATCH' => 'W/"abc"'], ResponseStatus::NotModified];
+        yield 'any ETag' => [['HTTP_IF_NONE_MATCH' => '*'], ResponseStatus::NotModified];
+        yield 'matching modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'], ResponseStatus::NotModified];
+        yield 'different modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Tue, 31 Dec 2024 00:00:00 GMT'], ResponseStatus::OK];
+        yield 'ETag takes precedence over the modification date' => [
+            ['HTTP_IF_NONE_MATCH' => '"other"', 'HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'],
+            ResponseStatus::OK,
+        ];
+        yield 'no validators' => [[], ResponseStatus::OK];
+    }
+
+    public function testConditionalHeadersDoNotAffectRequestsOtherThanGetAndHead(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"']);
+
+        $response->prepare($this->request(RequestMethod::POST, ['HTTP_IF_NONE_MATCH' => '"abc"']));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertSame('body', $response->content());
+    }
+
+    public function testNotModifiedIsOnlyUsedForSuccessfulResponses(): void
+    {
+        $response = new Response('missing', ResponseStatus::NotFound, ['ETag' => '"abc"']);
+
+        $response->prepare($this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => '"abc"']));
+
+        $this->assertSame(ResponseStatus::NotFound, $response->status());
+        $this->assertSame('missing', $response->content());
+    }
+
+    /**
+     * @param array<string, string> $query
+     *
+     * @return array{status: int, headers: list<string>, body: string}
+     */
+    private function sendResponse(array $query = []): array
+    {
+        return self::$server->request(http_build_query(['action' => 'response', ...$query]));
     }
 
     /**

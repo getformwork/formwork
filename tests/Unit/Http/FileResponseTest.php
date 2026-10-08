@@ -42,26 +42,6 @@ final class FileResponseTest extends TestCase
         $this->assertSame('attachment; filename=download.txt', $response->headers()->get('Content-Disposition'));
     }
 
-    public function testFileResponseHandlesSuffixOpenEndedAndUnsatisfiableRanges(): void
-    {
-        $path = $this->fixturePath();
-        $size = FileSystem::fileSize($path);
-
-        $suffix = new FileResponse($path);
-        $suffix->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=-5']));
-        $this->assertSame('bytes ' . ($size - 5) . '-' . ($size - 1) . '/' . $size, $suffix->headers()->get('Content-Range'));
-
-        $openEnded = new FileResponse($path);
-        $openEnded->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=3-']));
-        $this->assertSame('bytes 3-' . ($size - 1) . '/' . $size, $openEnded->headers()->get('Content-Range'));
-
-        $invalid = new FileResponse($path);
-        $invalid->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=999-1000']));
-        $this->assertSame(ResponseStatus::RangeNotSatisfiable, $invalid->status());
-        $this->assertSame('bytes */' . $size, $invalid->headers()->get('Content-Range'));
-        $this->assertSame('0', $invalid->headers()->get('Content-Length'));
-    }
-
     #[DataProvider('satisfiableRangeProvider')]
     public function testFileResponseServesSatisfiableRangesWithTheExactBoundaries(string $range, int $start, int $end): void
     {
@@ -85,6 +65,8 @@ final class FileResponseTest extends TestCase
         yield 'single first byte' => ['bytes=0-0', 0, 0];
         yield 'single byte in the middle' => ['bytes=3-3', 3, 3];
         yield 'single last byte' => ['bytes=30-30', 30, 30];
+        yield 'open ended range' => ['bytes=3-', 3, 30];
+        yield 'suffix range' => ['bytes=-5', 26, 30];
         yield 'last byte by suffix' => ['bytes=-1', 30, 30];
         yield 'whole file' => ['bytes=0-30', 0, 30];
         yield 'end beyond the file is clamped' => ['bytes=5-999', 5, 30];
@@ -101,6 +83,7 @@ final class FileResponseTest extends TestCase
 
             $this->assertSame(ResponseStatus::RangeNotSatisfiable, $response->status(), $range);
             $this->assertSame('bytes */' . $size, $response->headers()->get('Content-Range'), $range);
+            $this->assertSame('0', $response->headers()->get('Content-Length'), $range);
         }
     }
 
@@ -115,6 +98,41 @@ final class FileResponseTest extends TestCase
         }
     }
 
+    public function testValidatorsAreNotAddedUnlessRequested(): void
+    {
+        $response = new FileResponse($this->fixturePath());
+        $response->prepare($this->request());
+
+        $this->assertFalse($response->headers()->has('ETag'));
+        $this->assertFalse($response->headers()->has('Last-Modified'));
+    }
+
+    public function testRequestedValidatorsDependOnTheFile(): void
+    {
+        $first = FileSystem::joinPaths(TESTS_TMP_PATH, 'first.txt');
+        $second = FileSystem::joinPaths(TESTS_TMP_PATH, 'second.txt');
+        FileSystem::write($first, 'first');
+        FileSystem::write($second, 'second');
+        touch($first, 1_700_000_000);
+
+        $firstResponse = (new FileResponse($first, autoEtag: true, autoLastModified: true))->prepare($this->request());
+        $secondResponse = (new FileResponse($second, autoEtag: true, autoLastModified: true))->prepare($this->request());
+
+        $this->assertSame('Tue, 14 Nov 2023 22:13:20 GMT', $firstResponse->headers()->get('Last-Modified'));
+        $this->assertNotSame($firstResponse->headers()->get('ETag'), $secondResponse->headers()->get('ETag'));
+    }
+
+    public function testFileResponseAnswersConditionalRequestsWithNotModified(): void
+    {
+        $response = new FileResponse($this->fixturePath(), autoEtag: true);
+        $etag = $response->prepare($this->request())->headers()->get('ETag');
+
+        $conditional = (new FileResponse($this->fixturePath(), autoEtag: true))->prepare($this->request(server: ['HTTP_IF_NONE_MATCH' => (string) $etag]));
+
+        $this->assertSame(ResponseStatus::NotModified, $conditional->status());
+        $this->assertSame('', $conditional->content());
+    }
+
     public function testFileResponseAddsAcceptRangesForHeadAndSkipsRangesForEmptyResponses(): void
     {
         $path = $this->fixturePath();
@@ -125,27 +143,6 @@ final class FileResponseTest extends TestCase
 
         $this->assertSame('bytes', $head->headers()->get('Accept-Ranges'));
         $this->assertFalse($empty->headers()->has('Accept-Ranges'));
-    }
-
-    public function testFileResponseSendStreamsFullContent(): void
-    {
-        $response = new FileResponse($this->fixturePath());
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame("Formwork HTTP fixture content.\n", $output);
-    }
-
-    public function testFileResponseSendStreamsPartialContent(): void
-    {
-        $response = new FileResponse($this->fixturePath());
-        $response->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=0-4']));
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame('Formw', $output);
     }
 
     public function testHeadResponseDoesNotStreamOrDeleteTheFile(): void
@@ -159,6 +156,7 @@ final class FileResponseTest extends TestCase
         $output = ob_get_clean();
 
         $this->assertSame('', $output);
+        $this->assertSame('', $response->content());
         $this->assertTrue(FileSystem::exists($path));
     }
 
@@ -170,55 +168,39 @@ final class FileResponseTest extends TestCase
         $response->setFilename('download.txt');
     }
 
-    public function testPreparedRangeHeadersMatchTheBytesActuallySent(): void
+    /**
+     * @param array<string, string> $server
+     */
+    #[DataProvider('sentContentProvider')]
+    public function testSentBodyMatchesTheAnnouncedStatusAndHeaders(array $server, ResponseStatus $status, string $expectedBody, ?string $expectedRange): void
     {
         $path = TESTS_TMP_PATH . '/range.txt';
         FileSystem::write($path, '0123456789');
         $response = new FileResponse($path);
-        $response->prepare($this->request(RequestMethod::GET, ['HTTP_RANGE' => 'bytes=2-5']));
+        $response->prepare($this->request(RequestMethod::GET, $server));
 
         ob_start();
         $response->send();
         $output = ob_get_clean();
 
-        $this->assertSame(ResponseStatus::PartialContent, $response->status());
-        $this->assertSame('bytes 2-5/10', $response->headers()->get('Content-Range'));
-        $this->assertSame('4', $response->headers()->get('Content-Length'));
-        $this->assertSame('2345', $output);
+        $this->assertSame($status, $response->status());
+        $this->assertSame($expectedBody, $output);
+        $this->assertSame((string) strlen($expectedBody), $response->headers()->get('Content-Length'));
+        $this->assertSame($expectedRange, $response->headers()->get('Content-Range'));
     }
 
-    public function testSuffixRangeHeadersMatchTheSuffixBytes(): void
+    /**
+     * @return iterable<string, array{array<string, string>, ResponseStatus, string, ?string}>
+     */
+    public static function sentContentProvider(): iterable
     {
-        $path = TESTS_TMP_PATH . '/range.txt';
-        FileSystem::write($path, '0123456789');
-
-        $response = new FileResponse($path);
-        $response->prepare($this->request(RequestMethod::GET, ['HTTP_RANGE' => 'bytes=-3']));
-
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame('bytes 7-9/10', $response->headers()->get('Content-Range'));
-        $this->assertSame('3', $response->headers()->get('Content-Length'));
-        $this->assertSame('789', $output);
-    }
-
-    public function testUnsatisfiableRangeProducesNoBodyAndConsistentHeaders(): void
-    {
-        $path = TESTS_TMP_PATH . '/range.txt';
-        FileSystem::write($path, '0123456789');
-        $response = new FileResponse($path);
-        $response->prepare($this->request(RequestMethod::GET, ['HTTP_RANGE' => 'bytes=20-30']));
-
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame(ResponseStatus::RangeNotSatisfiable, $response->status());
-        $this->assertSame('bytes */10', $response->headers()->get('Content-Range'));
-        $this->assertSame('0', $response->headers()->get('Content-Length'));
-        $this->assertSame('', $output);
+        yield 'whole file' => [[], ResponseStatus::OK, '0123456789', null];
+        yield 'bounded range' => [['HTTP_RANGE' => 'bytes=2-5'], ResponseStatus::PartialContent, '2345', 'bytes 2-5/10'];
+        yield 'single byte' => [['HTTP_RANGE' => 'bytes=0-0'], ResponseStatus::PartialContent, '0', 'bytes 0-0/10'];
+        yield 'open ended range' => [['HTTP_RANGE' => 'bytes=7-'], ResponseStatus::PartialContent, '789', 'bytes 7-9/10'];
+        yield 'suffix range' => [['HTTP_RANGE' => 'bytes=-3'], ResponseStatus::PartialContent, '789', 'bytes 7-9/10'];
+        yield 'range clamped to the file size' => [['HTTP_RANGE' => 'bytes=8-99'], ResponseStatus::PartialContent, '89', 'bytes 8-9/10'];
+        yield 'unsatisfiable range' => [['HTTP_RANGE' => 'bytes=20-30'], ResponseStatus::RangeNotSatisfiable, '', 'bytes */10'];
     }
 
     public function testZeroLengthFileIsStillDeletedWhenDeleteAfterSendIsEnabled(): void
@@ -231,19 +213,6 @@ final class FileResponseTest extends TestCase
         $response->send();
 
         $this->assertFileDoesNotExist($path);
-    }
-
-    public function testHeadNeverDeletesTheSourceFile(): void
-    {
-        $path = TESTS_TMP_PATH . '/head.txt';
-        FileSystem::write($path, 'body');
-        $response = new FileResponse($path, deleteAfterSend: true);
-        $response->prepare($this->request(RequestMethod::HEAD));
-
-        $response->send();
-
-        $this->assertFileExists($path);
-        $this->assertSame('', $response->content());
     }
 
     public function testAutoValidatorsRemainStableAcrossRepeatedPreparation(): void
@@ -260,21 +229,6 @@ final class FileResponseTest extends TestCase
 
         $this->assertSame($etag, $response->headers()->get('ETag'));
         $this->assertSame($modified, $response->headers()->get('Last-Modified'));
-    }
-
-    public function testFullResponseStreamsTheEntireFile(): void
-    {
-        $path = TESTS_TMP_PATH . '/full.txt';
-        FileSystem::write($path, '0123456789');
-        $response = new FileResponse($path);
-        $response->prepare($this->request(RequestMethod::GET));
-
-        ob_start();
-        $response->send();
-        $output = ob_get_clean();
-
-        $this->assertSame('0123456789', $output);
-        $this->assertSame('10', $response->headers()->get('Content-Length'));
     }
 
     private function fixturePath(): string

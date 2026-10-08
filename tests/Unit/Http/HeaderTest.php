@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Http;
 
 use Formwork\Http\Header;
-use Formwork\Http\Utils\Header as ResponseHeader;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
@@ -25,8 +24,26 @@ final class HeaderTest extends TestCase
         Header::combine([[]]);
     }
 
-    public function testResponseHeaderFormatting(): void
+    public function testCombineTurnsTokensWithoutValueIntoFlags(): void
     {
-        $this->assertSame('a=b; c', ResponseHeader::make(['a' => 'b', 'c']));
+        $this->assertSame(
+            ['secure' => true, 'max-age' => '5'],
+            Header::combine(Header::split('secure; max-age=5', ';=')),
+        );
+    }
+
+    public function testQualityValuesDefaultToOneAndAreSortedByQuality(): void
+    {
+        $this->assertSame(
+            ['text/html' => 1.0, 'application/json' => 0.9, '*/*' => 0.1],
+            Header::parseQualityValues('*/*;q=0.1, application/json;q=0.9, text/html'),
+        );
+    }
+
+    public function testHeaderNamesAreNormalized(): void
+    {
+        $this->assertSame('Content-Type', Header::fixHeaderName('CONTENT_TYPE'));
+        $this->assertSame('X-Custom-Header', Header::fixHeaderName('x-custom_header'));
+        $this->assertSame('Accept', Header::fixHeaderName('accept'));
     }
 }

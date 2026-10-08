@@ -18,4 +18,19 @@ final class RedirectResponseTest extends TestCase
         $this->assertSame('yes', $response->headers()->get('X-Redirect'));
         $this->assertSame(ResponseStatus::SeeOther, $response->status());
     }
+
+    public function testRedirectUsesFoundStatusAndAnEmptyBodyByDefault(): void
+    {
+        $response = new RedirectResponse('/next');
+
+        $this->assertSame(ResponseStatus::Found, $response->status());
+        $this->assertSame('', $response->content());
+    }
+
+    public function testTheGivenUriIsNotOverriddenByAnExtraLocationHeader(): void
+    {
+        $response = new RedirectResponse('/next', headers: ['Location' => '/elsewhere']);
+
+        $this->assertSame('/next', $response->headers()->get('Location'));
+    }
 }
