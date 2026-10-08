@@ -1,0 +1,1 @@
+<?php $this->layout('main') ?>outer(<?= $this->content() ?>)
