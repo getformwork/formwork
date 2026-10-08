@@ -6,6 +6,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Utils\Html;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Html::class)]
 final class HtmlTest extends TestCase
@@ -45,12 +46,42 @@ final class HtmlTest extends TestCase
     public function testTagThrowsOnVoidWithContent(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot set tag content, <img> is a void element');
         Html::tag('img', [], 'Content');
     }
 
-    public function testIsVoid(): void
+    public function testTagLowercasesItsNameAndJoinsMultipleContents(): void
     {
-        $this->assertTrue(Html::isVoid('img'));
-        $this->assertFalse(Html::isVoid('div'));
+        $this->assertSame('<p>one<b>two</b></p>', Html::tag('P', [], 'one', Html::tag('b', [], 'two')));
+        $this->assertSame('<br>', Html::tag('BR'));
+        $this->assertSame('<p></p>', Html::tag('p'));
+    }
+
+    public function testTagEscapesQuotesAndAmpersandsInAttributeValues(): void
+    {
+        $this->assertSame('<a title="a &quot;quoted&quot; &amp; <tagged> title"></a>', Html::tag('a', ['title' => 'a "quoted" & <tagged> title']));
+        $this->assertSame('<a title="x &amp; y"></a>', Html::tag('a', ['title' => 'x &amp; y']));
+    }
+
+    #[DataProvider('voidElementProvider')]
+    public function testIsVoid(string $tag, bool $expected): void
+    {
+        $this->assertSame($expected, Html::isVoid($tag));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function voidElementProvider(): iterable
+    {
+        foreach (['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'] as $tag) {
+            yield $tag => [$tag, true];
+        }
+
+        yield 'uppercase void element' => ['IMG', true];
+        yield 'div' => ['div', false];
+        yield 'paragraph' => ['p', false];
+        yield 'script' => ['script', false];
+        yield 'unknown tag' => ['custom-element', false];
     }
 }

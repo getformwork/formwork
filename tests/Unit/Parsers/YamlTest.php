@@ -6,6 +6,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 #[CoversClass(Yaml::class)]
 final class YamlTest extends TestCase
@@ -53,6 +54,12 @@ final class YamlTest extends TestCase
         $this->assertSame($expected, Yaml::parseFile($yamlFilePath));
     }
 
+    public function testParseRejectsInvalidYaml(): void
+    {
+        $this->expectException(ParseException::class);
+        Yaml::parse('title: [unclosed');
+    }
+
     public function testEncode(): void
     {
         $data = [
@@ -93,6 +100,7 @@ final class YamlTest extends TestCase
     public function testEncodeReturnsEmptyStringForEmptyData(): void
     {
         $this->assertSame('', Yaml::encode([]));
+        $this->assertSame([], Yaml::parse(''));
     }
 
     public function testRoundTripPreservesNestedData(): void
@@ -108,9 +116,24 @@ final class YamlTest extends TestCase
         $this->assertSame($data, Yaml::parse(Yaml::encode($data)));
     }
 
-    public function testYamlEmptyDataHasAnExplicitEmptyEncoding(): void
+    public function testRoundTripKeepsStringsThatLookLikeOtherTypes(): void
     {
-        $this->assertSame('', Yaml::encode([]));
-        $this->assertSame([], Yaml::parse(Yaml::encode([])));
+        $data = [
+            'number'    => '123',
+            'boolean'   => 'true',
+            'null'      => 'null',
+            'tilde'     => '~',
+            'yes'       => 'yes',
+            'float'     => '1.0',
+            'empty'     => '',
+            'colon'     => 'with: colon',
+            'dash'      => '- dash',
+            'hash'      => '#hash',
+            'padded'    => ' padded ',
+            'tab'       => "tab\there",
+            'multiline' => "first line\nsecond line\n",
+        ];
+
+        $this->assertSame($data, Yaml::parse(Yaml::encode($data)));
     }
 }

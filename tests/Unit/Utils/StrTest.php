@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Utils;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\Str;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversClass(Str::class)]
@@ -48,6 +49,11 @@ final class StrTest extends TestCase
         $this->assertSame('Hello &amp; welcome to <Formwork> &quot;Framework&quot;!', Str::escapeAttr('Hello & welcome to <Formwork> "Framework"!'));
     }
 
+    public function testEscapeDoesNotEncodeEntitiesTwice(): void
+    {
+        $this->assertSame('a &amp; b &lt;i&gt; &quot;q&quot; &#039;s&#039;', Str::escape('a &amp; b <i> "q" \'s\''));
+    }
+
     public function testRemoveTags(): void
     {
         $this->assertSame('Hello, welcome to Formwork!', Str::removeHtml('Hello, <b>welcome</b> to Formwork!'));
@@ -57,7 +63,38 @@ final class StrTest extends TestCase
     {
         $this->assertSame('hello-world', Str::slug('Hello World!'));
         $this->assertSame('hello-world', Str::slug(' Hello  ~  World !'));
-        $this->assertSame('de-etna-erklaerung', Str::slug('De Ætna Erklärung'));
+        $this->assertSame('de-aetna-erklaerung', Str::slug('De Ætna Erklärung'));
+    }
+
+    #[DataProvider('slugProvider')]
+    public function testSlugContainsOnlyLowercaseWordsSeparatedBySingleHyphens(string $input, string $expected): void
+    {
+        $this->assertSame($expected, Str::slug($input));
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function slugProvider(): iterable
+    {
+        yield 'sentence' => ['Hello, World!', 'hello-world'];
+        yield 'surrounding punctuation' => ['!hello!', 'hello'];
+        yield 'angle brackets and equals sign' => ['a<b>c=d', 'abcd'];
+        yield 'dots are removed' => ['a.b.c', 'abc'];
+        yield 'underscores become hyphens' => ['a_b', 'a-b'];
+        yield 'apostrophes become hyphens' => ["it's", 'it-s'];
+        yield 'lowercase accented letters are transliterated' => ['crème brûlée', 'creme-brulee'];
+        yield 'German sharp s and umlauts' => ['Straße Erklärung', 'strasse-erklaerung'];
+        yield 'uppercase accented letters are transliterated' => ['Ünïcödé Straße', 'uenicoede-strasse'];
+        yield 'uppercase accented initial' => ['Über uns', 'ueber-uns'];
+        yield 'accented capital at the start of a sentence' => ['È tutto', 'e-tutto'];
+        yield 'repeated separators are collapsed' => ['Hello  -  World', 'hello-world'];
+        yield 'leading and trailing spaces' => ['  Hello World  ', 'hello-world'];
+        yield 'leading and trailing hyphens' => ['--hello--', 'hello'];
+        yield 'trailing symbol after a space' => ['Hello World ~', 'hello-world'];
+        yield 'leading symbol before a space' => ['~ Hello', 'hello'];
+        yield 'only symbols' => ['!!!', ''];
+        yield 'empty' => ['', ''];
     }
 
     public function testAppend(): void
@@ -122,6 +159,12 @@ final class StrTest extends TestCase
         Str::chunk('Hello, world!', -1, ' ');
     }
 
+    public function testChunkWithZeroLengthIsRejected(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        Str::chunk('Hello', 0, ' ');
+    }
+
     public function testDashCase(): void
     {
         $this->assertSame('hello-world-string', Str::toDashCase('HelloWorldString'));
@@ -136,5 +179,26 @@ final class StrTest extends TestCase
     {
         $this->assertSame('helloWorldString', Str::toCamelCase('hello_world_string'));
         $this->assertSame('helloWorldString', Str::toCamelCase('hello-world-string'));
+    }
+
+    #[DataProvider('caseConversionProvider')]
+    public function testCaseConversions(string $input, string $dash, string $snake, string $camel): void
+    {
+        $this->assertSame($dash, Str::toDashCase($input));
+        $this->assertSame($snake, Str::toSnakeCase($input));
+        $this->assertSame($camel, Str::toCamelCase($input));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string, string}>
+     */
+    public static function caseConversionProvider(): iterable
+    {
+        yield 'camel case' => ['camelCase', 'camel-case', 'camel_case', 'camelCase'];
+        yield 'pascal case' => ['PascalCase', 'pascal-case', 'pascal_case', 'pascalCase'];
+        yield 'acronym followed by a word' => ['XMLHttpRequest', 'xml-http-request', 'xml_http_request', 'xMLHttpRequest'];
+        yield 'dash case' => ['already-dash', 'already-dash', 'already-dash', 'alreadyDash'];
+        yield 'snake case' => ['snake_case', 'snake_case', 'snake_case', 'snakeCase'];
+        yield 'single letter' => ['a', 'a', 'a', 'a'];
     }
 }

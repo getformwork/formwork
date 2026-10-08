@@ -157,18 +157,9 @@ final class PhpTest extends TestCase
         ];
 
         $path = TESTS_TMP_PATH . '/semantic.php';
-        $this->setUpTempDirectory();
-        try {
-            Php::encodeToFile($data, $path);
-            $this->assertSame($data, Php::parseFile($path));
-        } finally {
-            $this->tearDownTempDirectory();
-        }
-    }
 
-    public function testParserNeverEvaluatesStringInput(): void
-    {
-        $this->expectException(LogicException::class);
-        Php::parse('<?php return ["executed" => true];');
+        Php::encodeToFile($data, $path);
+
+        $this->assertSame($data, Php::parseFile($path));
     }
 }

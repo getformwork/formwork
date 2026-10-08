@@ -3,11 +3,14 @@
 namespace Formwork\Tests\Unit\Utils;
 
 use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
 use Formwork\Tests\TestCase;
 use Formwork\Translations\Translation;
 use Formwork\Utils\Date;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Date::class)]
 final class DateTest extends TestCase
@@ -42,6 +45,52 @@ final class DateTest extends TestCase
         Date::toTimestamp('invalid-date', 'Y-m-d');
     }
 
+    #[DataProvider('impossibleDateProvider')]
+    public function testToTimestampRejectsDatesThatDoNotExist(string $date): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Date::toTimestamp($date, 'Y-m-d');
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function impossibleDateProvider(): iterable
+    {
+        yield 'month out of range' => ['2024-13-01'];
+        yield 'day out of range' => ['2024-01-32'];
+        yield 'both out of range' => ['2024-13-45'];
+        yield 'February 30th' => ['2024-02-30'];
+        yield 'February 29th of a common year' => ['2023-02-29'];
+        yield 'April 31st' => ['2024-04-31'];
+    }
+
+    public function testToTimestampAcceptsLeapDays(): void
+    {
+        $this->assertSame(1709164800, Date::toTimestamp('2024-02-29', 'Y-m-d'));
+    }
+
+    public function testToTimestampTreatsDatesAsUtc(): void
+    {
+        $this->assertSame(0, Date::toTimestamp('1970-01-01', 'Y-m-d'));
+        $this->assertSame(86_400, Date::toTimestamp('1970-01-02', 'Y-m-d'));
+    }
+
+    public function testToTimestampErrorMentionsTheInvalidDate(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid date "abc"');
+        Date::toTimestamp('abc', 'Y-m-d');
+    }
+
+    public function testToTimestampTriesEveryFormatBeforeFailing(): void
+    {
+        $this->assertSame(1869436800, Date::toTimestamp('29/03/2029', ['Y-m-d', 'd/m/Y', 'm.d.Y']));
+
+        $this->expectException(InvalidArgumentException::class);
+        Date::toTimestamp('29.03.2029-extra', ['Y-m-d', 'd/m/Y']);
+    }
+
     public function testFormatToPattern(): void
     {
         $this->assertSame('YYYY-MM-DD', Date::formatToPattern('Y-m-d'));
@@ -66,6 +115,33 @@ final class DateTest extends TestCase
         $this->assertSame('Giovedì 29 Marzo 2029', Date::formatDateTime($dateTime, 'l d F Y', $translation));
     }
 
+    public function testFormatAcceptsImmutableDateTimesAndKeepsTheirTimeZone(): void
+    {
+        $translation = new Translation('it', $this->translation);
+        $dateTime = new DateTimeImmutable('2029-03-29 15:30:00', new DateTimeZone('Europe/Rome'));
+
+        $this->assertSame('Gio, 29 Mar 2029 15:30:00 +0200', Date::formatDateTime($dateTime, 'r', $translation));
+        $this->assertSame('15:30', Date::formatDateTime($dateTime, 'H:i', $translation));
+    }
+
+    public function testFormatDoesNotModifyTheGivenDateTime(): void
+    {
+        $translation = new Translation('it', $this->translation);
+        $dateTime = new DateTimeImmutable('2029-03-29 15:30:00');
+
+        Date::formatDateTime($dateTime, 'l d F Y', $translation);
+
+        $this->assertSame('2029-03-29 15:30:00', $dateTime->format('Y-m-d H:i:s'));
+    }
+
+    public function testFormatDistanceAcceptsImmutableDateTimes(): void
+    {
+        $translation = new Translation('it', $this->translation);
+
+        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTimeImmutable('@' . (time() - 5 * 86400)), $translation));
+        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTimeImmutable('@' . (time() + 3 * 3600)), $translation));
+    }
+
     public function testFormatWithTimestamp(): void
     {
         $translation = new Translation('it', $this->translation);
@@ -80,9 +156,9 @@ final class DateTest extends TestCase
 
         $now = time();
 
-        $this->assertSame('adesso', Date::formatDateTimeAsDistance(new DateTime('@' . $now), $translation, $now));
-        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTime('@' . ($now - 5 * 86400)), $translation, $now));
-        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTime('@' . ($now + 3 * 3600)), $translation, $now));
+        $this->assertSame('adesso', Date::formatDateTimeAsDistance(new DateTime('@' . $now), $translation));
+        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTime('@' . ($now - 5 * 86400)), $translation));
+        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTime('@' . ($now + 3 * 3600)), $translation));
     }
 
     public function testFormatDistanceWithTimestamp(): void
@@ -91,8 +167,8 @@ final class DateTest extends TestCase
 
         $now = time();
 
-        $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation, $now));
-        $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation, $now));
-        $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation, $now));
+        $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation));
+        $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation));
+        $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation));
     }
 }

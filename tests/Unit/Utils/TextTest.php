@@ -67,6 +67,47 @@ final class TextTest extends TestCase
         $this->assertSame('Hello World! This is a test.', Text::truncateWords('Hello World! This is a test.', 10));
     }
 
+    public function testTruncateKeepsTextThatFitsExactly(): void
+    {
+        $this->assertSame('Hello world', Text::truncate('Hello world', 11));
+        $this->assertSame('Hello…', Text::truncate('Hello world', 10));
+    }
+
+    public function testTruncateCutsAtTheLastWordThatFits(): void
+    {
+        $this->assertSame('Hello…', Text::truncate('Hello wonderful world', 12));
+        $this->assertSame('Hello wonderful…', Text::truncate('Hello wonderful world', 15));
+        $this->assertSame('Hello wonderful…', Text::truncate('Hello wonderful world', 16));
+    }
+
+    public function testTruncateNormalizesWhitespaceBeforeMeasuring(): void
+    {
+        $this->assertSame('Hello world', Text::truncate("  Hello \n\t world  ", 20));
+    }
+
+    public function testTruncateCountsMultibyteCharacters(): void
+    {
+        $this->assertSame('Così è la…', Text::truncate('Così è la vita ancora', 10));
+    }
+
+    public function testTruncateUsesTheGivenEllipsis(): void
+    {
+        $this->assertSame('Hello...', Text::truncate('Hello world', 7, '...'));
+    }
+
+    public function testTruncateWordsKeepsTextWithExactlyTheGivenWords(): void
+    {
+        $this->assertSame('one two three', Text::truncateWords('one two three', 3));
+        $this->assertSame('one two…', Text::truncateWords('one two three', 2));
+        $this->assertSame('…', Text::truncateWords('one two three', 0));
+    }
+
+    public function testTruncateWordsIgnoresExtraWhitespace(): void
+    {
+        $this->assertSame('one…', Text::truncateWords("  one   two\n", 1));
+        $this->assertSame('', Text::truncateWords('', 2));
+    }
+
     public function testEstimateReadingTime(): void
     {
         $this->assertSame(1, Text::readingTime(''));
