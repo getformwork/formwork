@@ -25,6 +25,27 @@ final class ResponseHeaderUtilsTest extends TestCase
         self::$server->stop();
     }
 
+    public function testNotFoundSendsTheNotFoundStatus(): void
+    {
+        $this->assertSame(404, self::$server->request('action=not-found')['status']);
+    }
+
+    public function testRedirectRejectsNonRedirectionStatuses(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('only 3XX statuses are allowed');
+        Header::redirect('/next', ResponseStatus::OK);
+    }
+
+    public function testRedirectSendsTheStatusAndTheLocation(): void
+    {
+        $response = self::$server->request('action=redirect');
+
+        $this->assertSame(303, $response['status']);
+        $this->assertContains('Location: /target', $response['headers']);
+        $this->assertSame('', $response['body']);
+    }
+
     /**
      * @param list<string|int> $data
      */
@@ -59,28 +80,9 @@ final class ResponseHeaderUtilsTest extends TestCase
         );
     }
 
-    public function testContentTypeSendsTheContentTypeHeader(): void
-    {
-        $this->assertContains('Content-Type: text/plain; charset=utf-8', self::$server->request('action=content-type')['headers']);
-    }
-
     public function testSendStatusSetsTheResponseStatus(): void
     {
         $this->assertSame(201, self::$server->request('action=status')['status']);
-    }
-
-    public function testNotFoundSendsTheNotFoundStatus(): void
-    {
-        $this->assertSame(404, self::$server->request('action=not-found')['status']);
-    }
-
-    public function testRedirectSendsTheStatusAndTheLocation(): void
-    {
-        $response = self::$server->request('action=redirect');
-
-        $this->assertSame(303, $response['status']);
-        $this->assertContains('Location: /target', $response['headers']);
-        $this->assertSame('', $response['body']);
     }
 
     public function testSendFailsOnceTheResponseOutputHasStarted(): void
@@ -91,11 +93,9 @@ final class ResponseHeaderUtilsTest extends TestCase
         $this->assertSame([], $this->headersNamed('X-Formwork-Test', $response['headers']));
     }
 
-    public function testRedirectRejectsNonRedirectionStatuses(): void
+    public function testContentTypeSendsTheContentTypeHeader(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('only 3XX statuses are allowed');
-        Header::redirect('/next', ResponseStatus::OK);
+        $this->assertContains('Content-Type: text/plain; charset=utf-8', self::$server->request('action=content-type')['headers']);
     }
 
     /**

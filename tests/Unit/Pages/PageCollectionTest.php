@@ -60,6 +60,14 @@ final class PageCollectionTest extends TestCase
         $this->assertSame(2, $paginated->pagination()->currentPage());
     }
 
+    public function testSearchReturnsAnEmptyCollectionForShortQueries(): void
+    {
+        $collection = $this->collection($this->page('/about'));
+
+        $this->assertTrue($collection->search('abc')->isEmpty());
+        $this->assertTrue($collection->search('one two', minimumLength: 4)->isEmpty());
+    }
+
     public function testSearchReturnsMatchingResultsInDescendingOrder(): void
     {
         $about = $this->page('/about');
@@ -100,12 +108,30 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$about], $results->values());
     }
 
-    public function testSearchReturnsAnEmptyCollectionForShortQueries(): void
+    public function testSearchDoesNotAddTransientScoresToTheSourcePages(): void
     {
-        $collection = $this->collection($this->page('/about'));
+        $about = $this->page('/about');
+        $about->set('title', 'PHP guide');
+        $this->assertFalse($about->has('score'));
 
-        $this->assertTrue($collection->search('abc')->isEmpty());
-        $this->assertTrue($collection->search('one two', minimumLength: 4)->isEmpty());
+        $this->collection($about)->search('PHP guide');
+
+        $this->assertFalse($about->has('score'));
+    }
+
+    public function testSearchPreservesResultOrderAfterRepeatedExecution(): void
+    {
+        $about = $this->page('/about');
+        $blog = $this->page('/blog');
+        $about->set('title', 'PHP guide');
+        $blog->set('title', 'PHP');
+        $collection = $this->collection($about, $blog);
+
+        $first = $collection->search('PHP', minimumLength: 3);
+        $second = $collection->search('PHP', minimumLength: 3);
+
+        $this->assertSame($first->values(), $second->values());
+        $this->assertSame([$about, $blog], $first->values());
     }
 
     public function testPageRelationshipExclusionMethodsRemoveExpectedPages(): void
@@ -122,17 +148,6 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$child, $about], $collection->withoutParent($child)->values());
         $this->assertSame([$about], $collection->withoutPageAndParent($child)->values());
         $this->assertSame([$child, $about], $collection->withoutSiblings($about)->values());
-    }
-
-    public function testSearchDoesNotAddTransientScoresToTheSourcePages(): void
-    {
-        $about = $this->page('/about');
-        $about->set('title', 'PHP guide');
-        $this->assertFalse($about->has('score'));
-
-        $this->collection($about)->search('PHP guide');
-
-        $this->assertFalse($about->has('score'));
     }
 
     public function testPaginationDoesNotMutateTheSourceCollection(): void
@@ -178,21 +193,6 @@ final class PageCollectionTest extends TestCase
         $this->assertSame($before, $collection->values());
         $this->assertSame($parent, $collection->at(0));
         $this->assertSame($child, $collection->at(1));
-    }
-
-    public function testSearchPreservesResultOrderAfterRepeatedExecution(): void
-    {
-        $about = $this->page('/about');
-        $blog = $this->page('/blog');
-        $about->set('title', 'PHP guide');
-        $blog->set('title', 'PHP');
-        $collection = $this->collection($about, $blog);
-
-        $first = $collection->search('PHP', minimumLength: 3);
-        $second = $collection->search('PHP', minimumLength: 3);
-
-        $this->assertSame($first->values(), $second->values());
-        $this->assertSame([$about, $blog], $first->values());
     }
 
     private function page(string $route): Page

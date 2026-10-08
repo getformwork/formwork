@@ -68,13 +68,6 @@ final class TextTest extends TestCase
         $this->assertSame('Hello World! This is a test.', Text::truncateWords('Hello World! This is a test.', 10));
     }
 
-    public function testEstimateReadingTime(): void
-    {
-        $this->assertSame(1, Text::readingTime(''));
-        $this->assertSame(1, Text::readingTime('This is a short text.'));
-        $this->assertSame(3, Text::readingTime(str_repeat('This is a short text. ', 100)));
-    }
-
     public function testTruncateKeepsTextThatFitsExactly(): void
     {
         $this->assertSame('Hello world', Text::truncate('Hello world', 11));
@@ -103,6 +96,26 @@ final class TextTest extends TestCase
         $this->assertSame('Hello...', Text::truncate('Hello world', 7, '...'));
     }
 
+    public function testTruncateWordsKeepsTextWithExactlyTheGivenWords(): void
+    {
+        $this->assertSame('one two three', Text::truncateWords('one two three', 3));
+        $this->assertSame('one two…', Text::truncateWords('one two three', 2));
+        $this->assertSame('…', Text::truncateWords('one two three', 0));
+    }
+
+    public function testTruncateWordsIgnoresExtraWhitespace(): void
+    {
+        $this->assertSame('one…', Text::truncateWords("  one   two\n", 1));
+        $this->assertSame('', Text::truncateWords('', 2));
+    }
+
+    public function testEstimateReadingTime(): void
+    {
+        $this->assertSame(1, Text::readingTime(''));
+        $this->assertSame(1, Text::readingTime('This is a short text.'));
+        $this->assertSame(3, Text::readingTime(str_repeat('This is a short text. ', 100)));
+    }
+
     #[DataProvider('longWordProvider')]
     public function testTruncatedTextNeverExceedsTheLengthWhenThereIsNoWordBoundary(string $text, int $length): void
     {
@@ -117,18 +130,5 @@ final class TextTest extends TestCase
         yield 'single long word' => ['abcdefghijkl', 5];
         yield 'zero length' => ['Hello world', 0];
         yield 'long first word' => ['Supercalifragilistic word', 5];
-    }
-
-    public function testTruncateWordsKeepsTextWithExactlyTheGivenWords(): void
-    {
-        $this->assertSame('one two three', Text::truncateWords('one two three', 3));
-        $this->assertSame('one two…', Text::truncateWords('one two three', 2));
-        $this->assertSame('…', Text::truncateWords('one two three', 0));
-    }
-
-    public function testTruncateWordsIgnoresExtraWhitespace(): void
-    {
-        $this->assertSame('one…', Text::truncateWords("  one   two\n", 1));
-        $this->assertSame('', Text::truncateWords('', 2));
     }
 }

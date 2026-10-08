@@ -188,27 +188,6 @@ final class PageEventsTest extends TestCase
         $this->assertFalse($afterCalled);
     }
 
-    public function testAfterSaveFailureDoesNotUndoCompletedPersistence(): void
-    {
-        $page = $this->page('/about');
-        $page->set('title', 'Persisted');
-        $this->app->events()->on('pageAfterSave', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
-                throw new \RuntimeException('after failure');
-            }
-        });
-
-        try {
-            $page->save();
-            $this->fail('The after-save exception should have propagated.');
-        } catch (\RuntimeException $exception) {
-            $this->assertSame('after failure', $exception->getMessage());
-        }
-
-        $page->reload();
-        $this->assertSame('Persisted', $page->title());
-    }
-
     public function testBeforeDeleteFailureLeavesThePageOnDisk(): void
     {
         $page = $this->page('/about');
@@ -242,6 +221,27 @@ final class PageEventsTest extends TestCase
         $duplicate = $page->duplicate(['title' => 'Original override']);
 
         $this->assertSame('From listener', $duplicate->title());
+    }
+
+    public function testAfterSaveFailureDoesNotUndoCompletedPersistence(): void
+    {
+        $page = $this->page('/about');
+        $page->set('title', 'Persisted');
+        $this->app->events()->on('pageAfterSave', function (object $event) use ($page): void {
+            if ($event->page() === $page) {
+                throw new \RuntimeException('after failure');
+            }
+        });
+
+        try {
+            $page->save();
+            $this->fail('The after-save exception should have propagated.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('after failure', $exception->getMessage());
+        }
+
+        $page->reload();
+        $this->assertSame('Persisted', $page->title());
     }
 
     public function testSaveEventsAreDispatchedBeforeAndAfterThePageIsWritten(): void

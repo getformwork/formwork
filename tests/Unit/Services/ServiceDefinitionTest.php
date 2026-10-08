@@ -48,23 +48,6 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertTrue($container->has('service.alias'));
     }
 
-    public function testObjectDefinitionsRejectLoaders(): void
-    {
-        $definition = (new Container())->define('service', new SimpleService());
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Instantiated object cannot have loaders');
-        $definition->loader(TestServiceLoader::class);
-    }
-
-    public function testAliasesResolveToTheSameInstanceAsTheDefinition(): void
-    {
-        $container = new Container();
-        $container->define(SimpleService::class)->alias('simple');
-
-        $this->assertSame($container->get(SimpleService::class), $container->get('simple'));
-    }
-
     public function testNewDefinitionsStartWithoutAObjectOrLoader(): void
     {
         $definition = (new Container())->define('service');
@@ -110,5 +93,22 @@ final class ServiceDefinitionTest extends TestCase
         $definition->lazy(false);
 
         $this->assertSame($resolved, $container->get(SimpleService::class));
+    }
+
+    public function testObjectDefinitionsRejectLoaders(): void
+    {
+        $definition = (new Container())->define('service', new SimpleService());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Instantiated object cannot have loaders');
+        $definition->loader(TestServiceLoader::class);
+    }
+
+    public function testAliasesResolveToTheSameInstanceAsTheDefinition(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->alias('simple');
+
+        $this->assertSame($container->get(SimpleService::class), $container->get('simple'));
     }
 }

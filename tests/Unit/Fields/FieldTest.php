@@ -76,6 +76,21 @@ final class FieldTest extends TestCase
         $this->assertFalse($field->isValid());
     }
 
+    public function testValidationOfAFieldDependingOnItselfIsDetected(): void
+    {
+        $field = new Field('name', ['type' => 'text']);
+        $field->setMethods([
+            'validate' => static function (Field $field, mixed $value): mixed {
+                $field->validate();
+
+                return $value;
+            },
+        ]);
+
+        $this->expectException(RecursionException::class);
+        $field->validate();
+    }
+
     public function testFieldsAreVisibleEnabledEditableAndOptionalByDefault(): void
     {
         $field = new Field('name', ['type' => 'text']);
@@ -85,6 +100,12 @@ final class FieldTest extends TestCase
         $this->assertFalse($field->isDisabled());
         $this->assertFalse($field->isReadonly());
         $this->assertFalse($field->isRequired());
+    }
+
+    public function testFieldsCannotContainOtherFields(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        new Field('group', ['type' => 'text', 'fields' => []]);
     }
 
     public function testStateFlagsCanBeSetThroughTheFieldData(): void
@@ -137,12 +158,6 @@ final class FieldTest extends TestCase
         $this->assertSame('Alice', (string) $field);
     }
 
-    public function testFieldsCannotContainOtherFields(): void
-    {
-        $this->expectException(UnexpectedValueException::class);
-        new Field('group', ['type' => 'text', 'fields' => []]);
-    }
-
     public function testParentCollectionIsExposed(): void
     {
         $parent = new FieldCollection();
@@ -190,20 +205,5 @@ final class FieldTest extends TestCase
         $limited->setTranslation($translation);
         $this->assertSame('{{field.name}}', $limited->label());
         $this->assertSame('Name', $limited->placeholder());
-    }
-
-    public function testValidationOfAFieldDependingOnItselfIsDetected(): void
-    {
-        $field = new Field('name', ['type' => 'text']);
-        $field->setMethods([
-            'validate' => static function (Field $field, mixed $value): mixed {
-                $field->validate();
-
-                return $value;
-            },
-        ]);
-
-        $this->expectException(RecursionException::class);
-        $field->validate();
     }
 }

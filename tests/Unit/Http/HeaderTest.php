@@ -24,6 +24,13 @@ final class HeaderTest extends TestCase
         Header::combine([[]]);
     }
 
+    public function testHeaderNamesAreNormalized(): void
+    {
+        $this->assertSame('Content-Type', Header::fixHeaderName('CONTENT_TYPE'));
+        $this->assertSame('X-Custom-Header', Header::fixHeaderName('x-custom_header'));
+        $this->assertSame('Accept', Header::fixHeaderName('accept'));
+    }
+
     public function testCombineTurnsTokensWithoutValueIntoFlags(): void
     {
         $this->assertSame(
@@ -38,12 +45,5 @@ final class HeaderTest extends TestCase
             ['text/html' => 1.0, 'application/json' => 0.9, '*/*' => 0.1],
             Header::parseQualityValues('*/*;q=0.1, application/json;q=0.9, text/html'),
         );
-    }
-
-    public function testHeaderNamesAreNormalized(): void
-    {
-        $this->assertSame('Content-Type', Header::fixHeaderName('CONTENT_TYPE'));
-        $this->assertSame('X-Custom-Header', Header::fixHeaderName('x-custom_header'));
-        $this->assertSame('Accept', Header::fixHeaderName('accept'));
     }
 }

@@ -107,6 +107,50 @@ final class RouteTest extends TestCase
         $this->assertSame(['id' => $constraint], $route->getConstraints());
     }
 
+    #[DataProvider('patternProvider')]
+    public function testParameterPatternsAcceptOnlyTheirOwnValues(string $pattern, string $value, bool $matches): void
+    {
+        $router = $this->router('/value/' . $value . '/');
+        $router->addRoute('value', '/value/{param:' . $pattern . '}')
+            ->action(static fn(RouteParams $params): Response => new Response($params->get('param')));
+
+        if (!$matches) {
+            $this->expectException(RouteNotFoundException::class);
+        }
+
+        $this->assertSame($value, $router->dispatch()->content());
+    }
+
+    /**
+     * @return iterable<string, array{string, string, bool}>
+     */
+    public static function patternProvider(): iterable
+    {
+        yield 'any accepts a segment' => ['any', 'some-value_1', true];
+        yield 'any rejects nested segments' => ['any', 'a/b', false];
+        yield 'all accepts nested segments' => ['all', 'a/b/c.txt', true];
+        yield 'slug accepts hyphenated words' => ['slug', 'hello-world-2', true];
+        yield 'slug rejects underscores' => ['slug', 'hello_world', false];
+        yield 'slug rejects leading hyphens' => ['slug', '-hello', false];
+        yield 'slug rejects consecutive hyphens' => ['slug', 'hello--world', false];
+        yield 'alnum accepts letters and digits' => ['alnum', 'abc123', true];
+        yield 'alnum rejects hyphens' => ['alnum', 'abc-123', false];
+        yield 'alpha accepts letters' => ['alpha', 'abcXYZ', true];
+        yield 'alpha rejects digits' => ['alpha', 'abc1', false];
+        yield 'digits accepts leading zeros' => ['digits', '007', true];
+        yield 'digits rejects letters' => ['digits', '12a', false];
+        yield 'xdigits accepts hexadecimal digits' => ['xdigits', 'deadbeef09', true];
+        yield 'xdigits rejects other letters' => ['xdigits', 'deadbeeg', false];
+        yield 'number accepts positive integers' => ['number', '12', true];
+        yield 'number rejects leading zeros' => ['number', '012', false];
+        yield 'number rejects decimals' => ['number', '1.5', false];
+        yield 'base64 accepts padding' => ['base64', 'YWJjZA==', true];
+        yield 'base64 rejects excessive padding' => ['base64', 'YWJj===', false];
+        yield 'base64 rejects spaces' => ['base64', 'YW Jj', false];
+        yield 'custom regex' => ['[a-c]+', 'abcab', true];
+        yield 'custom regex mismatch' => ['[a-c]+', 'abd', false];
+    }
+
     #[DataProvider('matchingProvider')]
     public function testRouteMatchingExposesStaticAndExtractedParameters(
         string $routePath,
@@ -136,6 +180,54 @@ final class RouteTest extends TestCase
             'dynamic digits parameter'        => ['/users/{id:digits}', '/users/42/', ['id' => '42']],
             'optional parameter omitted'      => ['/archive/{year:digits}?', '/archive/', []],
             'optional parameter present'      => ['/archive/{year:digits}?', '/archive/2025/', ['year' => '2025']],
+        ];
+    }
+
+    #[DataProvider('requirementsProvider')]
+    public function testRouteMethodTypeAndPrefixRequirementsParticipateInMatching(
+        string $method,
+        ?string $requestedWith,
+        string $routePrefix,
+        array $routeMethods,
+        array $routeTypes,
+        bool $matches,
+    ): void {
+        $router = $this->router('/admin/dashboard/', $method, $requestedWith);
+        $router->addRoute('dashboard', '/dashboard/')
+            ->action(static fn(): Response => new Response('matched'))
+            ->prefix($routePrefix)
+            ->methods(...$routeMethods)
+            ->types(...$routeTypes);
+
+        if (!$matches) {
+            $this->expectException(RouteNotFoundException::class);
+        }
+
+        $response = $router->dispatch();
+
+        if ($matches) {
+            $this->assertSame('matched', $response->content());
+        }
+    }
+
+    /**
+     * @return array<string, array{string, ?string, string, list<string>, list<string>, bool}>
+     */
+    public static function requirementsProvider(): array
+    {
+        return [
+            'matching method and prefix' => ['GET', null, '/admin', ['GET'], ['HTTP'], true],
+            'HEAD is equivalent to GET'  => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true],
+            'method mismatch'            => ['POST', null, '/admin', ['GET'], ['HTTP'], false],
+            'matching XHR type'          => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true],
+            'type mismatch'              => ['GET', null, '/admin', ['GET'], ['XHR'], false],
+            'prefix mismatch'            => ['GET', null, '/other', ['GET'], ['HTTP'], false],
+            'prefix sharing only a stem' => ['GET', null, '/adm', ['GET'], ['HTTP'], false],
+            'one of several methods'     => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true],
+            'one of several types'       => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true],
+            'no allowed methods'         => ['GET', null, '/admin', [], ['HTTP'], false],
+            'no allowed types'           => ['GET', null, '/admin', ['GET'], [], false],
+            'route without the request prefix' => ['GET', null, '', ['GET'], ['HTTP'], false],
         ];
     }
 
@@ -192,98 +284,6 @@ final class RouteTest extends TestCase
 
         $this->assertSame('fallback', $router->dispatch()->content());
         $this->assertSame($fallback, $router->current());
-    }
-
-    #[DataProvider('patternProvider')]
-    public function testParameterPatternsAcceptOnlyTheirOwnValues(string $pattern, string $value, bool $matches): void
-    {
-        $router = $this->router('/value/' . $value . '/');
-        $router->addRoute('value', '/value/{param:' . $pattern . '}')
-            ->action(static fn(RouteParams $params): Response => new Response($params->get('param')));
-
-        if (!$matches) {
-            $this->expectException(RouteNotFoundException::class);
-        }
-
-        $this->assertSame($value, $router->dispatch()->content());
-    }
-
-    /**
-     * @return iterable<string, array{string, string, bool}>
-     */
-    public static function patternProvider(): iterable
-    {
-        yield 'any accepts a segment' => ['any', 'some-value_1', true];
-        yield 'any rejects nested segments' => ['any', 'a/b', false];
-        yield 'all accepts nested segments' => ['all', 'a/b/c.txt', true];
-        yield 'slug accepts hyphenated words' => ['slug', 'hello-world-2', true];
-        yield 'slug rejects underscores' => ['slug', 'hello_world', false];
-        yield 'slug rejects leading hyphens' => ['slug', '-hello', false];
-        yield 'slug rejects consecutive hyphens' => ['slug', 'hello--world', false];
-        yield 'alnum accepts letters and digits' => ['alnum', 'abc123', true];
-        yield 'alnum rejects hyphens' => ['alnum', 'abc-123', false];
-        yield 'alpha accepts letters' => ['alpha', 'abcXYZ', true];
-        yield 'alpha rejects digits' => ['alpha', 'abc1', false];
-        yield 'digits accepts leading zeros' => ['digits', '007', true];
-        yield 'digits rejects letters' => ['digits', '12a', false];
-        yield 'xdigits accepts hexadecimal digits' => ['xdigits', 'deadbeef09', true];
-        yield 'xdigits rejects other letters' => ['xdigits', 'deadbeeg', false];
-        yield 'number accepts positive integers' => ['number', '12', true];
-        yield 'number rejects leading zeros' => ['number', '012', false];
-        yield 'number rejects decimals' => ['number', '1.5', false];
-        yield 'base64 accepts padding' => ['base64', 'YWJjZA==', true];
-        yield 'base64 rejects excessive padding' => ['base64', 'YWJj===', false];
-        yield 'base64 rejects spaces' => ['base64', 'YW Jj', false];
-        yield 'custom regex' => ['[a-c]+', 'abcab', true];
-        yield 'custom regex mismatch' => ['[a-c]+', 'abd', false];
-    }
-
-    #[DataProvider('requirementsProvider')]
-    public function testRouteMethodTypeAndPrefixRequirementsParticipateInMatching(
-        string $method,
-        ?string $requestedWith,
-        string $routePrefix,
-        array $routeMethods,
-        array $routeTypes,
-        bool $matches,
-    ): void {
-        $router = $this->router('/admin/dashboard/', $method, $requestedWith);
-        $router->addRoute('dashboard', '/dashboard/')
-            ->action(static fn(): Response => new Response('matched'))
-            ->prefix($routePrefix)
-            ->methods(...$routeMethods)
-            ->types(...$routeTypes);
-
-        if (!$matches) {
-            $this->expectException(RouteNotFoundException::class);
-        }
-
-        $response = $router->dispatch();
-
-        if ($matches) {
-            $this->assertSame('matched', $response->content());
-        }
-    }
-
-    /**
-     * @return array<string, array{string, ?string, string, list<string>, list<string>, bool}>
-     */
-    public static function requirementsProvider(): array
-    {
-        return [
-            'matching method and prefix' => ['GET', null, '/admin', ['GET'], ['HTTP'], true],
-            'HEAD is equivalent to GET'  => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true],
-            'method mismatch'            => ['POST', null, '/admin', ['GET'], ['HTTP'], false],
-            'matching XHR type'          => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true],
-            'type mismatch'              => ['GET', null, '/admin', ['GET'], ['XHR'], false],
-            'prefix mismatch'            => ['GET', null, '/other', ['GET'], ['HTTP'], false],
-            'prefix sharing only a stem' => ['GET', null, '/adm', ['GET'], ['HTTP'], false],
-            'one of several methods'     => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true],
-            'one of several types'       => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true],
-            'no allowed methods'         => ['GET', null, '/admin', [], ['HTTP'], false],
-            'no allowed types'           => ['GET', null, '/admin', ['GET'], [], false],
-            'route without the request prefix' => ['GET', null, '', ['GET'], ['HTTP'], false],
-        ];
     }
 
     private function router(string $path, string $method = 'GET', ?string $requestedWith = null): Router

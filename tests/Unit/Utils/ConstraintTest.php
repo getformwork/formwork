@@ -100,6 +100,73 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isLessThanOrEqualTo(2, 1));
     }
 
+    #[DataProvider('uriProvider')]
+    public function testIsUri(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isUri($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function uriProvider(): iterable
+    {
+        yield 'https with path query and fragment' => ['https://example.com/path?x=1#fragment', true];
+        yield 'http with port' => ['http://localhost:8080/a', true];
+        yield 'ftp' => ['ftp://host/file', true];
+        yield 'mailto' => ['mailto:user@example.com', true];
+        yield 'script scheme' => ['javascript:alert(1)', false];
+        yield 'scheme relative' => ['//example.com', false];
+        yield 'host only' => ['example.com', false];
+        yield 'missing host' => ['http://', false];
+        yield 'space in the host' => ['http://exa mple.com', false];
+        yield 'empty' => ['', false];
+    }
+
+    #[DataProvider('emailProvider')]
+    public function testIsEmail(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isEmail($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function emailProvider(): iterable
+    {
+        yield 'simple address' => ['user@example.com', true];
+        yield 'tag and subdomain' => ['user+tag@sub.example.co', true];
+        yield 'missing domain' => ['user@', false];
+        yield 'missing local part' => ['@example.com', false];
+        yield 'space' => ['user name@example.com', false];
+        yield 'consecutive dots in the domain' => ['user@example..com', false];
+        yield 'no at sign' => ['user.example.com', false];
+        yield 'empty' => ['', false];
+    }
+
+    #[DataProvider('hostnameProvider')]
+    public function testIsHostname(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isHostname($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function hostnameProvider(): iterable
+    {
+        yield 'domain' => ['example.com', true];
+        yield 'single label' => ['localhost', true];
+        yield 'subdomain with a hyphen' => ['sub-domain.example.com', true];
+        yield 'uppercase' => ['EXAMPLE.COM', true];
+        yield 'leading hyphen' => ['-bad.example.com', false];
+        yield 'trailing hyphen' => ['bad-.example.com', false];
+        yield 'underscore' => ['exa_mple.com', false];
+        yield 'empty label' => ['example..com', false];
+        yield 'label longer than 63 characters' => [str_repeat('a', 64) . '.com', false];
+        yield 'empty' => ['', false];
+    }
+
     public function testMatches(): void
     {
         $this->assertTrue(Constraint::matchesRegex('hello', '/^h.*o$/'));
@@ -236,50 +303,6 @@ final class ConstraintTest extends TestCase
         $this->assertTrue(Constraint::isInIntegerRange(7, 10, 1, step: 3));
     }
 
-    #[DataProvider('uriProvider')]
-    public function testIsUri(string $value, bool $expected): void
-    {
-        $this->assertSame($expected, Constraint::isUri($value));
-    }
-
-    /**
-     * @return iterable<string, array{string, bool}>
-     */
-    public static function uriProvider(): iterable
-    {
-        yield 'https with path query and fragment' => ['https://example.com/path?x=1#fragment', true];
-        yield 'http with port' => ['http://localhost:8080/a', true];
-        yield 'ftp' => ['ftp://host/file', true];
-        yield 'mailto' => ['mailto:user@example.com', true];
-        yield 'script scheme' => ['javascript:alert(1)', false];
-        yield 'scheme relative' => ['//example.com', false];
-        yield 'host only' => ['example.com', false];
-        yield 'missing host' => ['http://', false];
-        yield 'space in the host' => ['http://exa mple.com', false];
-        yield 'empty' => ['', false];
-    }
-
-    #[DataProvider('emailProvider')]
-    public function testIsEmail(string $value, bool $expected): void
-    {
-        $this->assertSame($expected, Constraint::isEmail($value));
-    }
-
-    /**
-     * @return iterable<string, array{string, bool}>
-     */
-    public static function emailProvider(): iterable
-    {
-        yield 'simple address' => ['user@example.com', true];
-        yield 'tag and subdomain' => ['user+tag@sub.example.co', true];
-        yield 'missing domain' => ['user@', false];
-        yield 'missing local part' => ['@example.com', false];
-        yield 'space' => ['user name@example.com', false];
-        yield 'consecutive dots in the domain' => ['user@example..com', false];
-        yield 'no at sign' => ['user.example.com', false];
-        yield 'empty' => ['', false];
-    }
-
     #[DataProvider('ipProvider')]
     public function testIpValidators(string $value, bool $ip, bool $ipv4, bool $ipv6): void
     {
@@ -302,28 +325,5 @@ final class ConstraintTest extends TestCase
         yield 'leading zeros' => ['192.168.001.001', false, false, false];
         yield 'two abbreviations in IPv6' => ['1::2::3', false, false, false];
         yield 'empty' => ['', false, false, false];
-    }
-
-    #[DataProvider('hostnameProvider')]
-    public function testIsHostname(string $value, bool $expected): void
-    {
-        $this->assertSame($expected, Constraint::isHostname($value));
-    }
-
-    /**
-     * @return iterable<string, array{string, bool}>
-     */
-    public static function hostnameProvider(): iterable
-    {
-        yield 'domain' => ['example.com', true];
-        yield 'single label' => ['localhost', true];
-        yield 'subdomain with a hyphen' => ['sub-domain.example.com', true];
-        yield 'uppercase' => ['EXAMPLE.COM', true];
-        yield 'leading hyphen' => ['-bad.example.com', false];
-        yield 'trailing hyphen' => ['bad-.example.com', false];
-        yield 'underscore' => ['exa_mple.com', false];
-        yield 'empty label' => ['example..com', false];
-        yield 'label longer than 63 characters' => [str_repeat('a', 64) . '.com', false];
-        yield 'empty' => ['', false];
     }
 }

@@ -42,6 +42,17 @@ final class FileUriGeneratorTest extends TestCase
         $this->assertSame('/about/team/team.txt', $this->generator($config, $uri)->generate(new File('/site/pages/1-about/2-team/team.txt')));
     }
 
+    public function testGeneratesPageContentPathsForNestedFilesInPageDirectories(): void
+    {
+        $uri = $this->createMock(UriGenerator::class);
+        $uri->expects($this->once())->method('path')->with('/blog/2024/post/cover.jpg')->willReturn('/blog/2024/post/cover.jpg');
+
+        $this->assertSame(
+            '/blog/2024/post/cover.jpg',
+            $this->generator($this->config(), $uri)->generate(new File('/site/pages/3-blog/1-2024/post/cover.jpg')),
+        );
+    }
+
     public function testGeneratesUserImageAndPanelAssetPaths(): void
     {
         $config = $this->config();
@@ -63,6 +74,23 @@ final class FileUriGeneratorTest extends TestCase
         $generator->generate(new File('/outside/file.txt'));
     }
 
+    public function testAbsoluteUriResolvesTheGeneratedUriAgainstTheRequestUri(): void
+    {
+        $request = new Request([], [], [], [], [
+            'REQUEST_URI' => '/panel/current',
+            'HTTP_HOST'   => 'example.test',
+            'SERVER_NAME' => 'example.test',
+            'SERVER_PORT' => '443',
+            'HTTPS'       => 'on',
+        ]);
+        $uri = $this->createStub(UriGenerator::class);
+        $generator = new FileUriGenerator($this->config(), $request, $uri);
+        $file = new File('/site/files/logo.png');
+        $uri->method('route')->willReturn('/files/logo.png');
+
+        $this->assertSame('https://example.test/files/logo.png', $generator->generateAbsolute($file));
+    }
+
     #[DataProvider('siblingDirectoryProvider')]
     public function testDirectoriesSharingOnlyAPrefixWithAConfiguredPathAreNotMatched(string $path): void
     {
@@ -82,34 +110,6 @@ final class FileUriGeneratorTest extends TestCase
         yield 'pages' => ['/site/pages-draft/about/team.txt'];
         yield 'user images' => ['/site/users/images-private/avatar.png'];
         yield 'panel assets' => ['/panel/assets-source/icons/menu.svg'];
-    }
-
-    public function testGeneratesPageContentPathsForNestedFilesInPageDirectories(): void
-    {
-        $uri = $this->createMock(UriGenerator::class);
-        $uri->expects($this->once())->method('path')->with('/blog/2024/post/cover.jpg')->willReturn('/blog/2024/post/cover.jpg');
-
-        $this->assertSame(
-            '/blog/2024/post/cover.jpg',
-            $this->generator($this->config(), $uri)->generate(new File('/site/pages/3-blog/1-2024/post/cover.jpg')),
-        );
-    }
-
-    public function testAbsoluteUriResolvesTheGeneratedUriAgainstTheRequestUri(): void
-    {
-        $request = new Request([], [], [], [], [
-            'REQUEST_URI' => '/panel/current',
-            'HTTP_HOST'   => 'example.test',
-            'SERVER_NAME' => 'example.test',
-            'SERVER_PORT' => '443',
-            'HTTPS'       => 'on',
-        ]);
-        $uri = $this->createStub(UriGenerator::class);
-        $generator = new FileUriGenerator($this->config(), $request, $uri);
-        $file = new File('/site/files/logo.png');
-        $uri->method('route')->willReturn('/files/logo.png');
-
-        $this->assertSame('https://example.test/files/logo.png', $generator->generateAbsolute($file));
     }
 
     private function config(): Config

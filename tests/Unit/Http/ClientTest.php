@@ -80,6 +80,124 @@ final class ClientTest extends TestCase
         $this->assertSame(-1, $client->defaults()['timeout']);
     }
 
+    public function testResponseHeaderParserHandlesRedirectChains(): void
+    {
+        $responses = (new TestClient())->split([
+            'HTTP/1.1 301 Moved Permanently',
+            'location: /next',
+            'HTTP/1.1 200 OK',
+            'Content-Length: 4',
+            'content-type: text/plain',
+            'X-Empty:',
+        ]);
+
+        $this->assertCount(2, $responses);
+        $this->assertSame(301, $responses[0]['statusCode']);
+        $this->assertSame('Moved Permanently', $responses[0]['reasonPhrase']);
+        $this->assertSame(['Location' => '/next'], $responses[0]['headers']);
+        $this->assertSame(200, $responses[1]['statusCode']);
+        $this->assertSame('HTTP/1.1', $responses[1]['HTTPVersion']);
+        $this->assertSame(['Content-Length' => '4', 'Content-Type' => 'text/plain', 'X-Empty' => ''], $responses[1]['headers']);
+    }
+
+    public function testResponseHeadersWithoutAStatusLineAreRejected(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        (new TestClient())->split(['Content-Type: text/plain']);
+    }
+
+    public function testFetchHeadersReturnsOnlyTheHeaders(): void
+    {
+        $headers = (new Client())->fetchHeaders($this->url('/ok'));
+
+        $this->assertInstanceOf(ResponseHeaders::class, $headers);
+        $this->assertSame('value', $headers->get('X-Custom'));
+        $this->assertSame('5', $headers->get('Content-Length'));
+    }
+
+    public function testFetchReturnsTheBodyStatusAndHeaders(): void
+    {
+        $response = (new Client())->fetch($this->url('/ok'));
+
+        $this->assertSame('hello', $response->content());
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertSame('text/plain', $response->headers()->get('Content-Type'));
+        $this->assertSame('value', $response->headers()->get('X-Custom'));
+    }
+
+    public function testFetchSendsTheConfiguredMethodHeadersAndBody(): void
+    {
+        $response = (new Client(['headers' => ['X-Default' => 'default']]))->fetch($this->url('/echo'), [
+            'method'  => 'POST',
+            'content' => 'payload',
+            'headers' => ['x-request' => 'per request', 'Content-Length' => '7'],
+        ]);
+
+        $request = json_decode($response->content(), true);
+
+        $this->assertSame('POST', $request['method']);
+        $this->assertSame('payload', $request['body']);
+        $this->assertSame('per request', $request['headers']['X-Request']);
+        $this->assertSame('default', $request['headers']['X-Default']);
+        $this->assertSame('gzip', $request['headers']['Accept-Encoding']);
+        $this->assertSame('close', $request['headers']['Connection']);
+    }
+
+    public function testFetchDecodesGzippedContent(): void
+    {
+        $this->assertSame('compressed content', (new Client())->fetch($this->url('/gzip'))->content());
+    }
+
+    public function testFetchRejectsInvalidGzippedContent(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot decode gzipped contents');
+        (new Client())->fetch($this->url('/bad-gzip'));
+    }
+
+    public function testFetchRejectsUnsupportedContentEncodings(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported Content-Encoding "deflate"');
+        (new Client())->fetch($this->url('/deflate'));
+    }
+
+    public function testFetchFollowsRedirectsByDefault(): void
+    {
+        $response = (new Client())->fetch($this->url('/redirect'));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertSame('hello', $response->content());
+    }
+
+    public function testInvalidUrisAreRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('invalid URI');
+        (new Client())->fetch('not a uri');
+    }
+
+    public function testConnectionFailuresExposeTheUri(): void
+    {
+        $server = stream_socket_server('tcp://127.0.0.1:0');
+        $this->assertNotFalse($server);
+        $port = substr((string) strrchr((string) stream_socket_get_name($server, false), ':'), 1);
+        fclose($server);
+
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port));
+        (new Client(['timeout' => 1]))->fetch('http://127.0.0.1:' . $port);
+    }
+
+    public function testConnectionIsClosedUnlessAnotherConnectionHeaderIsGiven(): void
+    {
+        $default = json_decode((new Client())->fetch($this->url('/echo'))->content(), true);
+        $explicit = json_decode((new Client())->fetch($this->url('/echo'), ['headers' => ['connection' => 'keep-alive']])->content(), true);
+
+        $this->assertSame('close', $default['headers']['Connection']);
+        $this->assertSame('keep-alive', $explicit['headers']['Connection']);
+    }
+
     public function testHeaderNamesAreNormalizedAndCompactedForTheRequest(): void
     {
         $client = new TestClient();
@@ -136,115 +254,6 @@ final class ClientTest extends TestCase
         (new TestClient())->context($this->contextOptions(TESTS_TMP_PATH . '/missing-ca.pem'));
     }
 
-    public function testResponseHeaderParserHandlesRedirectChains(): void
-    {
-        $responses = (new TestClient())->split([
-            'HTTP/1.1 301 Moved Permanently',
-            'location: /next',
-            'HTTP/1.1 200 OK',
-            'Content-Length: 4',
-            'content-type: text/plain',
-            'X-Empty:',
-        ]);
-
-        $this->assertCount(2, $responses);
-        $this->assertSame(301, $responses[0]['statusCode']);
-        $this->assertSame('Moved Permanently', $responses[0]['reasonPhrase']);
-        $this->assertSame(['Location' => '/next'], $responses[0]['headers']);
-        $this->assertSame(200, $responses[1]['statusCode']);
-        $this->assertSame('HTTP/1.1', $responses[1]['HTTPVersion']);
-        $this->assertSame(['Content-Length' => '4', 'Content-Type' => 'text/plain', 'X-Empty' => ''], $responses[1]['headers']);
-    }
-
-    public function testResponseHeadersWithoutAStatusLineAreRejected(): void
-    {
-        $this->expectException(UnexpectedValueException::class);
-        (new TestClient())->split(['Content-Type: text/plain']);
-    }
-
-    public function testInvalidUrisAreRejected(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('invalid URI');
-        (new Client())->fetch('not a uri');
-    }
-
-    public function testConnectionFailuresExposeTheUri(): void
-    {
-        $server = stream_socket_server('tcp://127.0.0.1:0');
-        $this->assertNotFalse($server);
-        $port = substr((string) strrchr((string) stream_socket_get_name($server, false), ':'), 1);
-        fclose($server);
-
-        $this->expectException(ConnectionException::class);
-        $this->expectExceptionMessage(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port));
-        (new Client(['timeout' => 1]))->fetch('http://127.0.0.1:' . $port);
-    }
-
-    public function testFetchReturnsTheBodyStatusAndHeaders(): void
-    {
-        $response = (new Client())->fetch($this->url('/ok'));
-
-        $this->assertSame('hello', $response->content());
-        $this->assertSame(ResponseStatus::OK, $response->status());
-        $this->assertSame('text/plain', $response->headers()->get('Content-Type'));
-        $this->assertSame('value', $response->headers()->get('X-Custom'));
-    }
-
-    public function testFetchSendsTheConfiguredMethodHeadersAndBody(): void
-    {
-        $response = (new Client(['headers' => ['X-Default' => 'default']]))->fetch($this->url('/echo'), [
-            'method'  => 'POST',
-            'content' => 'payload',
-            'headers' => ['x-request' => 'per request', 'Content-Length' => '7'],
-        ]);
-
-        $request = json_decode($response->content(), true);
-
-        $this->assertSame('POST', $request['method']);
-        $this->assertSame('payload', $request['body']);
-        $this->assertSame('per request', $request['headers']['X-Request']);
-        $this->assertSame('default', $request['headers']['X-Default']);
-        $this->assertSame('gzip', $request['headers']['Accept-Encoding']);
-        $this->assertSame('close', $request['headers']['Connection']);
-    }
-
-    public function testConnectionIsClosedUnlessAnotherConnectionHeaderIsGiven(): void
-    {
-        $default = json_decode((new Client())->fetch($this->url('/echo'))->content(), true);
-        $explicit = json_decode((new Client())->fetch($this->url('/echo'), ['headers' => ['connection' => 'keep-alive']])->content(), true);
-
-        $this->assertSame('close', $default['headers']['Connection']);
-        $this->assertSame('keep-alive', $explicit['headers']['Connection']);
-    }
-
-    public function testFetchDecodesGzippedContent(): void
-    {
-        $this->assertSame('compressed content', (new Client())->fetch($this->url('/gzip'))->content());
-    }
-
-    public function testFetchRejectsInvalidGzippedContent(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Cannot decode gzipped contents');
-        (new Client())->fetch($this->url('/bad-gzip'));
-    }
-
-    public function testFetchRejectsUnsupportedContentEncodings(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unsupported Content-Encoding "deflate"');
-        (new Client())->fetch($this->url('/deflate'));
-    }
-
-    public function testFetchFollowsRedirectsByDefault(): void
-    {
-        $response = (new Client())->fetch($this->url('/redirect'));
-
-        $this->assertSame(ResponseStatus::OK, $response->status());
-        $this->assertSame('hello', $response->content());
-    }
-
     public function testRedirectsCanBeDisabled(): void
     {
         $response = (new Client(['redirects' => ['follow' => false]]))->fetch($this->url('/redirect'));
@@ -266,15 +275,6 @@ final class ClientTest extends TestCase
 
         $this->assertSame(ResponseStatus::NotFound, $response->status());
         $this->assertSame('nope', $response->content());
-    }
-
-    public function testFetchHeadersReturnsOnlyTheHeaders(): void
-    {
-        $headers = (new Client())->fetchHeaders($this->url('/ok'));
-
-        $this->assertInstanceOf(ResponseHeaders::class, $headers);
-        $this->assertSame('value', $headers->get('X-Custom'));
-        $this->assertSame('5', $headers->get('Content-Length'));
     }
 
     public function testDownloadWritesTheBodyToTheDestination(): void
@@ -326,14 +326,6 @@ final class ClientTest extends TestCase
 class TestClient extends Client
 {
     /**
-     * @return array<string, mixed>
-     */
-    public function options(): array
-    {
-        return $this->options;
-    }
-
-    /**
      * @param array<string, mixed> $options
      *
      * @return resource
@@ -371,5 +363,13 @@ class TestClient extends Client
     public function compact(array $headers): array
     {
         return $this->compactHeaders($headers);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function options(): array
+    {
+        return $this->options;
     }
 }

@@ -30,6 +30,15 @@ final class ArrTest extends TestCase
         $this->assertNull(Arr::get($data, 'user.age'));
     }
 
+    public function testGetDistinguishesMissingValuesFromExistingNullValues(): void
+    {
+        $array = ['present' => null];
+
+        $this->assertTrue(Arr::has($array, 'present'));
+        $this->assertNull(Arr::get($array, 'present', 'fallback'));
+        $this->assertSame('fallback', Arr::get($array, 'missing', 'fallback'));
+    }
+
     public function testHas(): void
     {
         $data = [
@@ -114,6 +123,24 @@ final class ArrTest extends TestCase
         ];
 
         $this->assertSame($expected, Arr::dot($data));
+    }
+
+    #[DataProvider('flattenDepthProvider')]
+    public function testFlattenStopsAtTheGivenDepth(int $depth, array $expected): void
+    {
+        $this->assertSame($expected, Arr::flatten([1, [2, [3, [4]]]], $depth));
+    }
+
+    /**
+     * @return iterable<string, array{int, array<mixed>}>
+     */
+    public static function flattenDepthProvider(): iterable
+    {
+        yield 'depth zero keeps the array untouched' => [0, [1, [2, [3, [4]]]]];
+        yield 'depth one' => [1, [1, 2, [3, [4]]]];
+        yield 'depth two' => [2, [1, 2, 3, [4]]];
+        yield 'depth three' => [3, [1, 2, 3, 4]];
+        yield 'unlimited depth by default' => [PHP_INT_MAX, [1, 2, 3, 4]];
     }
 
     public function testExpand(): void
@@ -216,12 +243,56 @@ final class ArrTest extends TestCase
         Arr::splice($data, 1, 1, ['country' => 'Canada']);
     }
 
+    public function testSpliceRejectsReplacementKeyCollisionsWithoutChangingTheArray(): void
+    {
+        $array = ['a' => 1, 'b' => 2, 'c' => 3];
+        $before = $array;
+
+        try {
+            Arr::splice($array, 1, 1, ['a' => 20]);
+            $this->fail('The replacement key should have been rejected.');
+        } catch (UnexpectedValueException) {
+            // Expected.
+        }
+
+        $this->assertSame($before, $array);
+    }
+
+    public function testSpliceInsertsWithoutRemovingWhenTheLengthIsZero(): void
+    {
+        $data = ['a' => 1, 'b' => 2];
+
+        $removed = Arr::splice($data, 1, 0, ['z' => 9]);
+
+        $this->assertSame([], $removed);
+        $this->assertSame(['a' => 1, 'z' => 9, 'b' => 2], $data);
+    }
+
+    public function testSpliceWithoutLengthRemovesEverythingFromTheOffset(): void
+    {
+        $data = ['a' => 1, 'b' => 2, 'c' => 3];
+
+        $removed = Arr::splice($data, 1, null, ['z' => 9]);
+
+        $this->assertSame(['b' => 2, 'c' => 3], $removed);
+        $this->assertSame(['a' => 1, 'z' => 9], $data);
+    }
+
     public function testMove(): void
     {
         $data = ['apple', 'banana', 'cherry',  'banana'];
 
         Arr::moveItem($data, 0, 2);
         $this->assertSame(['banana', 'cherry', 'apple', 'banana'], $data);
+    }
+
+    public function testMoveItemPreservesAllValuesAndKeys(): void
+    {
+        $array = ['first' => 'A', 'second' => 'B', 'third' => 'C'];
+
+        Arr::moveItem($array, 0, 2);
+
+        $this->assertSame(['second' => 'B', 'third' => 'C', 'first' => 'A'], $array);
     }
 
     public function testEntries(): void
@@ -260,12 +331,51 @@ final class ArrTest extends TestCase
         $this->assertNull(Arr::at($data, -5));
     }
 
+    public function testAtReturnsItemsByPositionFromTheStartOrTheEnd(): void
+    {
+        $data = ['x' => 5, 'y' => 6, 'z' => 7];
+
+        $this->assertSame(5, Arr::at($data, 0));
+        $this->assertSame(6, Arr::at($data, 1));
+        $this->assertSame(7, Arr::at($data, -1));
+        $this->assertSame(5, Arr::at($data, -3));
+    }
+
+    public function testAtReturnsNullOutsideTheArray(): void
+    {
+        $this->assertNull(Arr::at([5, 6, 7], 3));
+        $this->assertNull(Arr::at([5, 6, 7], -4));
+        $this->assertNull(Arr::at([], 0));
+        $this->assertNull(Arr::at([], -1));
+    }
+
     public function testIndex(): void
     {
         $data = ['apple', 'banana', 'cherry',  'banana'];
 
         $this->assertSame(1, Arr::indexOf($data, 'banana'));
         $this->assertNull(Arr::indexOf($data, 'orange'));
+    }
+
+    public function testIndexOfAndKeyOfCompareValuesStrictly(): void
+    {
+        $this->assertNull(Arr::indexOf(['1', 2, 0], 1));
+        $this->assertNull(Arr::indexOf(['a', 0], '0'));
+        $this->assertNull(Arr::keyOf(['x' => '1'], 1));
+        $this->assertNull(Arr::keyOf(['x' => 0], false));
+
+        $this->assertSame(1, Arr::indexOf(['1', 1, 1], 1));
+        $this->assertSame('y', Arr::keyOf(['x' => '1', 'y' => 1, 'z' => 1], 1));
+    }
+
+    public function testIndexOfIgnoresKeysWhileKeyOfReturnsThem(): void
+    {
+        $data = ['a' => 'first', 'b' => 'second'];
+
+        $this->assertSame(1, Arr::indexOf($data, 'second'));
+        $this->assertSame('b', Arr::keyOf($data, 'second'));
+        $this->assertNull(Arr::indexOf($data, 'missing'));
+        $this->assertNull(Arr::keyOf($data, 'missing'));
     }
 
     public function testKey(): void
@@ -314,6 +424,17 @@ final class ArrTest extends TestCase
 
         $result = Arr::appendMissing($data, ['roles' => ['admin', 'editor', 'user'], 'language' => 'en', 'cache' => false]);
         $this->assertSame($expected, $result);
+    }
+
+    public function testAppendMissingAddsOnlyMissingValuesRecursively(): void
+    {
+        $first = ['config' => ['enabled' => true]];
+        $second = ['config' => ['enabled' => false, 'cache' => true], 'extra' => 1];
+
+        $this->assertSame([
+            'config' => ['enabled' => true, 'cache' => true],
+            'extra'  => 1,
+        ], Arr::appendMissing($first, $second));
     }
 
     public function testExtend(): void
@@ -489,6 +610,18 @@ final class ArrTest extends TestCase
 
         $result = Arr::extend($base, $extension);
         $this->assertSame($expected, $result);
+    }
+
+    public function testExtendConcatenatesListsAndRecursesIntoAssociativeArrays(): void
+    {
+        $first = ['items' => [1], 'config' => ['a' => 1]];
+        $second = ['items' => [2], 'config' => ['b' => 2]];
+
+        $this->assertSame([
+            'items'  => [1, 2],
+            'config' => ['a' => 1, 'b' => 2],
+        ], Arr::extend($first, $second));
+        $this->assertSame(['items' => [1], 'config' => ['a' => 1]], $first);
     }
 
     public function testOverride(): void
@@ -685,6 +818,17 @@ final class ArrTest extends TestCase
 
         $result = Arr::override($base, $override);
         $this->assertSame($expected, $result);
+    }
+
+    public function testOverrideReplacesListsAtomicallyAndRecursesIntoAssociativeArrays(): void
+    {
+        $first = ['items' => [1, 2], 'config' => ['a' => 1, 'nested' => ['x' => 1]]];
+        $second = ['items' => [3], 'config' => ['nested' => ['y' => 2]]];
+
+        $this->assertSame([
+            'items'  => [3],
+            'config' => ['a' => 1, 'nested' => ['x' => 1, 'y' => 2]],
+        ], Arr::override($first, $second));
     }
 
     public function testExclude(): void
@@ -955,6 +1099,15 @@ final class ArrTest extends TestCase
 
         $result = Arr::exclude($array, $exclusion);
         $this->assertSame($expected, $result);
+    }
+
+    public function testExcludeRemovesEmptyParentsAfterRecursiveExclusion(): void
+    {
+        $array = ['config' => ['a' => 1, 'b' => 2], 'keep' => true];
+
+        $this->assertSame(['keep' => true], Arr::exclude($array, [
+            'config' => ['a' => 1, 'b' => 2],
+        ]));
     }
 
     public function testRandom(): void
@@ -1296,6 +1449,22 @@ final class ArrTest extends TestCase
         Arr::sort($data, sortBy: ['roles' => 0, 'permissions' => 1, 'cache' => 2, 'notifications' => 3, 'test' => 4]);
     }
 
+    public function testSortIsCaseInsensitiveByDefault(): void
+    {
+        $this->assertSame(['A', 'a', 'b', 'B', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'])));
+    }
+
+    public function testSortCanBeCaseSensitive(): void
+    {
+        $this->assertSame(['A', 'B', 'a', 'b', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'], caseSensitive: true)));
+    }
+
+    public function testSortCanBeDescendingAndPreservesKeysByDefault(): void
+    {
+        $this->assertSame([2 => 'c', 0 => 'b', 1 => 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC));
+        $this->assertSame(['c', 'b', 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC, preserveKeys: false));
+    }
+
     public function testToArray(): void
     {
         $user = [
@@ -1377,174 +1546,5 @@ final class ArrTest extends TestCase
 
         $this->assertSame($source, Arr::undot(Arr::dot($source)));
         $this->assertSame(['items' => $source['items']], Arr::dot($source));
-    }
-
-    public function testGetDistinguishesMissingValuesFromExistingNullValues(): void
-    {
-        $array = ['present' => null];
-
-        $this->assertTrue(Arr::has($array, 'present'));
-        $this->assertNull(Arr::get($array, 'present', 'fallback'));
-        $this->assertSame('fallback', Arr::get($array, 'missing', 'fallback'));
-    }
-
-    public function testMoveItemPreservesAllValuesAndKeys(): void
-    {
-        $array = ['first' => 'A', 'second' => 'B', 'third' => 'C'];
-
-        Arr::moveItem($array, 0, 2);
-
-        $this->assertSame(['second' => 'B', 'third' => 'C', 'first' => 'A'], $array);
-    }
-
-    public function testSpliceRejectsReplacementKeyCollisionsWithoutChangingTheArray(): void
-    {
-        $array = ['a' => 1, 'b' => 2, 'c' => 3];
-        $before = $array;
-
-        try {
-            Arr::splice($array, 1, 1, ['a' => 20]);
-            $this->fail('The replacement key should have been rejected.');
-        } catch (UnexpectedValueException) {
-            // Expected.
-        }
-
-        $this->assertSame($before, $array);
-    }
-
-    public function testAppendMissingAddsOnlyMissingValuesRecursively(): void
-    {
-        $first = ['config' => ['enabled' => true]];
-        $second = ['config' => ['enabled' => false, 'cache' => true], 'extra' => 1];
-
-        $this->assertSame([
-            'config' => ['enabled' => true, 'cache' => true],
-            'extra'  => 1,
-        ], Arr::appendMissing($first, $second));
-    }
-
-    public function testExtendConcatenatesListsAndRecursesIntoAssociativeArrays(): void
-    {
-        $first = ['items' => [1], 'config' => ['a' => 1]];
-        $second = ['items' => [2], 'config' => ['b' => 2]];
-
-        $this->assertSame([
-            'items'  => [1, 2],
-            'config' => ['a' => 1, 'b' => 2],
-        ], Arr::extend($first, $second));
-        $this->assertSame(['items' => [1], 'config' => ['a' => 1]], $first);
-    }
-
-    public function testOverrideReplacesListsAtomicallyAndRecursesIntoAssociativeArrays(): void
-    {
-        $first = ['items' => [1, 2], 'config' => ['a' => 1, 'nested' => ['x' => 1]]];
-        $second = ['items' => [3], 'config' => ['nested' => ['y' => 2]]];
-
-        $this->assertSame([
-            'items'  => [3],
-            'config' => ['a' => 1, 'nested' => ['x' => 1, 'y' => 2]],
-        ], Arr::override($first, $second));
-    }
-
-    public function testExcludeRemovesEmptyParentsAfterRecursiveExclusion(): void
-    {
-        $array = ['config' => ['a' => 1, 'b' => 2], 'keep' => true];
-
-        $this->assertSame(['keep' => true], Arr::exclude($array, [
-            'config' => ['a' => 1, 'b' => 2],
-        ]));
-    }
-
-    public function testSpliceInsertsWithoutRemovingWhenTheLengthIsZero(): void
-    {
-        $data = ['a' => 1, 'b' => 2];
-
-        $removed = Arr::splice($data, 1, 0, ['z' => 9]);
-
-        $this->assertSame([], $removed);
-        $this->assertSame(['a' => 1, 'z' => 9, 'b' => 2], $data);
-    }
-
-    public function testSpliceWithoutLengthRemovesEverythingFromTheOffset(): void
-    {
-        $data = ['a' => 1, 'b' => 2, 'c' => 3];
-
-        $removed = Arr::splice($data, 1, null, ['z' => 9]);
-
-        $this->assertSame(['b' => 2, 'c' => 3], $removed);
-        $this->assertSame(['a' => 1, 'z' => 9], $data);
-    }
-
-    public function testAtReturnsItemsByPositionFromTheStartOrTheEnd(): void
-    {
-        $data = ['x' => 5, 'y' => 6, 'z' => 7];
-
-        $this->assertSame(5, Arr::at($data, 0));
-        $this->assertSame(6, Arr::at($data, 1));
-        $this->assertSame(7, Arr::at($data, -1));
-        $this->assertSame(5, Arr::at($data, -3));
-    }
-
-    public function testAtReturnsNullOutsideTheArray(): void
-    {
-        $this->assertNull(Arr::at([5, 6, 7], 3));
-        $this->assertNull(Arr::at([5, 6, 7], -4));
-        $this->assertNull(Arr::at([], 0));
-        $this->assertNull(Arr::at([], -1));
-    }
-
-    public function testIndexOfAndKeyOfCompareValuesStrictly(): void
-    {
-        $this->assertNull(Arr::indexOf(['1', 2, 0], 1));
-        $this->assertNull(Arr::indexOf(['a', 0], '0'));
-        $this->assertNull(Arr::keyOf(['x' => '1'], 1));
-        $this->assertNull(Arr::keyOf(['x' => 0], false));
-
-        $this->assertSame(1, Arr::indexOf(['1', 1, 1], 1));
-        $this->assertSame('y', Arr::keyOf(['x' => '1', 'y' => 1, 'z' => 1], 1));
-    }
-
-    public function testIndexOfIgnoresKeysWhileKeyOfReturnsThem(): void
-    {
-        $data = ['a' => 'first', 'b' => 'second'];
-
-        $this->assertSame(1, Arr::indexOf($data, 'second'));
-        $this->assertSame('b', Arr::keyOf($data, 'second'));
-        $this->assertNull(Arr::indexOf($data, 'missing'));
-        $this->assertNull(Arr::keyOf($data, 'missing'));
-    }
-
-    #[DataProvider('flattenDepthProvider')]
-    public function testFlattenStopsAtTheGivenDepth(int $depth, array $expected): void
-    {
-        $this->assertSame($expected, Arr::flatten([1, [2, [3, [4]]]], $depth));
-    }
-
-    /**
-     * @return iterable<string, array{int, array<mixed>}>
-     */
-    public static function flattenDepthProvider(): iterable
-    {
-        yield 'depth zero keeps the array untouched' => [0, [1, [2, [3, [4]]]]];
-        yield 'depth one' => [1, [1, 2, [3, [4]]]];
-        yield 'depth two' => [2, [1, 2, 3, [4]]];
-        yield 'depth three' => [3, [1, 2, 3, 4]];
-        yield 'unlimited depth by default' => [PHP_INT_MAX, [1, 2, 3, 4]];
-    }
-
-    public function testSortIsCaseInsensitiveByDefault(): void
-    {
-        $this->assertSame(['A', 'a', 'b', 'B', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'])));
-    }
-
-    public function testSortCanBeCaseSensitive(): void
-    {
-        $this->assertSame(['A', 'B', 'a', 'b', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'], caseSensitive: true)));
-    }
-
-    public function testSortCanBeDescendingAndPreservesKeysByDefault(): void
-    {
-        $this->assertSame([2 => 'c', 0 => 'b', 1 => 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC));
-        $this->assertSame(['c', 'b', 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC, preserveKeys: false));
     }
 }

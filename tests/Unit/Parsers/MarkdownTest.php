@@ -57,6 +57,35 @@ final class MarkdownTest extends TestCase
         $this->assertSame("<p>An <em class=\"custom\">emphasized</em> word</p>\n", Markdown::parse('An *emphasized* word', $options));
     }
 
+    public function testParseWithCommonMarkExtensionsDoesNotAddEnvironmentExtensions(): void
+    {
+        $options = [
+            'commonmarkExtensions' => [
+                CommonMarkCoreExtension::class => [
+                    'enabled' => true,
+                ],
+            ],
+        ];
+        $markdown = "# Title\n\nA *simple* [link](https://example.com).";
+
+        $this->assertSame(Markdown::parse($markdown), Markdown::parse($markdown, $options));
+    }
+
+    public function testParseThrowsUnexpectedValueExceptionOnInvalidCommonMarkExtension(): void
+    {
+        $options = [
+            'commonmarkExtensions' => [
+                stdClass::class => [
+                    'enabled' => true,
+                ],
+            ],
+        ];
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid CommonMark extension "stdClass"');
+        Markdown::parse('', $options);
+    }
+
     public function testExtensionsAreEnabledByDefault(): void
     {
         $options = ['commonmarkExtensions' => [CommonMarkExtensionFixture::class => []]];
@@ -75,20 +104,6 @@ final class MarkdownTest extends TestCase
         ];
 
         $this->assertSame("<p><em>word</em></p>\n", Markdown::parse('*word*', $options));
-    }
-
-    public function testParseWithCommonMarkExtensionsDoesNotAddEnvironmentExtensions(): void
-    {
-        $options = [
-            'commonmarkExtensions' => [
-                CommonMarkCoreExtension::class => [
-                    'enabled' => true,
-                ],
-            ],
-        ];
-        $markdown = "# Title\n\nA *simple* [link](https://example.com).";
-
-        $this->assertSame(Markdown::parse($markdown), Markdown::parse($markdown, $options));
     }
 
     public function testRawHtmlIsEscapedByDefault(): void
@@ -143,6 +158,11 @@ final class MarkdownTest extends TestCase
         $this->assertSame("<h2>Section</h2>\n", Markdown::parse('## Section'));
     }
 
+    public function testHeadingsWithoutSlugCharactersDoNotGetAnEmptyId(): void
+    {
+        $this->assertStringNotContainsString('id=""', Markdown::parse('## !!!', ['addHeadingIds' => true]));
+    }
+
     public function testHeadingIdsAreUniqueWhenTitlesRepeat(): void
     {
         $html = Markdown::parse("## Same\n\n## Same", ['addHeadingIds' => true]);
@@ -151,25 +171,5 @@ final class MarkdownTest extends TestCase
 
         $this->assertCount(2, $matches[1]);
         $this->assertCount(2, array_unique($matches[1]));
-    }
-
-    public function testHeadingsWithoutSlugCharactersDoNotGetAnEmptyId(): void
-    {
-        $this->assertStringNotContainsString('id=""', Markdown::parse('## !!!', ['addHeadingIds' => true]));
-    }
-
-    public function testParseThrowsUnexpectedValueExceptionOnInvalidCommonMarkExtension(): void
-    {
-        $options = [
-            'commonmarkExtensions' => [
-                stdClass::class => [
-                    'enabled' => true,
-                ],
-            ],
-        ];
-
-        $this->expectException(UnexpectedValueException::class);
-        $this->expectExceptionMessage('Invalid CommonMark extension "stdClass"');
-        Markdown::parse('', $options);
     }
 }

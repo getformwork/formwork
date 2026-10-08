@@ -90,6 +90,46 @@ final class ResponseTest extends TestCase
         $this->assertFalse($response->headers()->has('Content-Length'));
     }
 
+    #[DataProvider('validatorProvider')]
+    public function testConditionalGetRequestsAreAnsweredWithNotModifiedOnlyWhenValidatorsMatch(array $requestHeaders, ResponseStatus $expected): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"', 'Last-Modified' => 'Wed, 01 Jan 2025 00:00:00 GMT']);
+        $request = $this->request(RequestMethod::GET, $requestHeaders);
+
+        $response->prepare($request);
+
+        $this->assertSame($expected, $response->status());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>, ResponseStatus}>
+     */
+    public static function validatorProvider(): iterable
+    {
+        yield 'matching ETag' => [['HTTP_IF_NONE_MATCH' => '"abc"'], ResponseStatus::NotModified];
+        yield 'different ETag' => [['HTTP_IF_NONE_MATCH' => '"other"'], ResponseStatus::OK];
+        yield 'ETag in a list' => [['HTTP_IF_NONE_MATCH' => '"other", "abc"'], ResponseStatus::NotModified];
+        yield 'weak ETag' => [['HTTP_IF_NONE_MATCH' => 'W/"abc"'], ResponseStatus::NotModified];
+        yield 'any ETag' => [['HTTP_IF_NONE_MATCH' => '*'], ResponseStatus::NotModified];
+        yield 'matching modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'], ResponseStatus::NotModified];
+        yield 'different modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Tue, 31 Dec 2024 00:00:00 GMT'], ResponseStatus::OK];
+        yield 'ETag takes precedence over the modification date' => [
+            ['HTTP_IF_NONE_MATCH' => '"other"', 'HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'],
+            ResponseStatus::OK,
+        ];
+        yield 'no validators' => [[], ResponseStatus::OK];
+    }
+
+    public function testConditionalHeadersDoNotAffectRequestsOtherThanGetAndHead(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"']);
+
+        $response->prepare($this->request(RequestMethod::POST, ['HTTP_IF_NONE_MATCH' => '"abc"']));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertSame('body', $response->content());
+    }
+
     public function testNoContentResponsesRemoveEntityHeadersAndBody(): void
     {
         $response = new Response('body', ResponseStatus::NoContent, [
@@ -182,46 +222,6 @@ final class ResponseTest extends TestCase
 
         $this->assertContains('X-Before: response', $response['headers']);
         $this->assertNotContains('X-Before: before', $response['headers']);
-    }
-
-    #[DataProvider('validatorProvider')]
-    public function testConditionalGetRequestsAreAnsweredWithNotModifiedOnlyWhenValidatorsMatch(array $requestHeaders, ResponseStatus $expected): void
-    {
-        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"', 'Last-Modified' => 'Wed, 01 Jan 2025 00:00:00 GMT']);
-        $request = $this->request(RequestMethod::GET, $requestHeaders);
-
-        $response->prepare($request);
-
-        $this->assertSame($expected, $response->status());
-    }
-
-    /**
-     * @return iterable<string, array{array<string, string>, ResponseStatus}>
-     */
-    public static function validatorProvider(): iterable
-    {
-        yield 'matching ETag' => [['HTTP_IF_NONE_MATCH' => '"abc"'], ResponseStatus::NotModified];
-        yield 'different ETag' => [['HTTP_IF_NONE_MATCH' => '"other"'], ResponseStatus::OK];
-        yield 'ETag in a list' => [['HTTP_IF_NONE_MATCH' => '"other", "abc"'], ResponseStatus::NotModified];
-        yield 'weak ETag' => [['HTTP_IF_NONE_MATCH' => 'W/"abc"'], ResponseStatus::NotModified];
-        yield 'any ETag' => [['HTTP_IF_NONE_MATCH' => '*'], ResponseStatus::NotModified];
-        yield 'matching modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'], ResponseStatus::NotModified];
-        yield 'different modification date' => [['HTTP_IF_MODIFIED_SINCE' => 'Tue, 31 Dec 2024 00:00:00 GMT'], ResponseStatus::OK];
-        yield 'ETag takes precedence over the modification date' => [
-            ['HTTP_IF_NONE_MATCH' => '"other"', 'HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT'],
-            ResponseStatus::OK,
-        ];
-        yield 'no validators' => [[], ResponseStatus::OK];
-    }
-
-    public function testConditionalHeadersDoNotAffectRequestsOtherThanGetAndHead(): void
-    {
-        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"']);
-
-        $response->prepare($this->request(RequestMethod::POST, ['HTTP_IF_NONE_MATCH' => '"abc"']));
-
-        $this->assertSame(ResponseStatus::OK, $response->status());
-        $this->assertSame('body', $response->content());
     }
 
     public function testNotModifiedIsOnlyUsedForSuccessfulResponses(): void

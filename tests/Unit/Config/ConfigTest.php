@@ -25,20 +25,6 @@ final class ConfigTest extends TestCase
         $this->tearDownTempDirectory();
     }
 
-    public function testUnresolvedConfigCanBeModifiedButNotRead(): void
-    {
-        $config = new Config();
-
-        $this->assertFalse($config->has('missing'));
-        $this->assertTrue($config->hasMultiple([]));
-
-        $config->set('name', 'Formwork');
-        $this->assertTrue($config->has('name'));
-
-        $this->expectException(UnresolvedConfigException::class);
-        $config->toArray();
-    }
-
     public function testHasAndHasMultipleDistinguishPresentNullFromMissingKeys(): void
     {
         $config = new Config(['present' => null, 'nested' => ['value' => false]], resolved: true);
@@ -116,6 +102,15 @@ final class ConfigTest extends TestCase
         yield 'array rejects string' => ['getArray', 'paths', '/site', 'array'];
     }
 
+    public function testTypedGettersRejectMissingKeysWithoutADefault(): void
+    {
+        $config = new Config(resolved: true);
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Config value for key "missing" is not a string, got null');
+        $config->getString('missing');
+    }
+
     public function testTypedGettersAcceptTypedDefaultsForMissingValues(): void
     {
         $config = new Config(resolved: true);
@@ -143,15 +138,6 @@ final class ConfigTest extends TestCase
             ],
             'nullable' => null,
         ], $config->toArray());
-    }
-
-    public function testTypedGettersRejectMissingKeysWithoutADefault(): void
-    {
-        $config = new Config(resolved: true);
-
-        $this->expectException(UnexpectedValueException::class);
-        $this->expectExceptionMessage('Config value for key "missing" is not a string, got null');
-        $config->getString('missing');
     }
 
     public function testToArrayReturnsTheResolvedNestedConfiguration(): void
@@ -210,6 +196,14 @@ final class ConfigTest extends TestCase
         $config->resolve();
     }
 
+    public function testResolveRejectsCircularReferences(): void
+    {
+        $config = new Config(['first' => '${second}', 'second' => '${first}']);
+
+        $this->expectException(ConfigResolutionException::class);
+        $config->resolve();
+    }
+
     public function testResolveInterpolatesEveryReferenceInAValueAndLeavesOtherValuesUntouched(): void
     {
         $config = new Config([
@@ -255,14 +249,6 @@ final class ConfigTest extends TestCase
 
         $this->assertSame('/project/site', $config->get('base'));
         $this->assertSame('/project/site/index', $config->get('url'));
-    }
-
-    public function testResolveRejectsCircularReferences(): void
-    {
-        $config = new Config(['first' => '${second}', 'second' => '${first}']);
-
-        $this->expectException(ConfigResolutionException::class);
-        $config->resolve();
     }
 
     public function testResolveDoesNotInterpolateEscapedReferences(): void
@@ -365,5 +351,19 @@ final class ConfigTest extends TestCase
 
         $this->assertTrue($config->getBool('system.enabled'));
         $this->assertSame(['system' => ['enabled' => true]], $config->toArray());
+    }
+
+    public function testUnresolvedConfigCanBeModifiedButNotRead(): void
+    {
+        $config = new Config();
+
+        $this->assertFalse($config->has('missing'));
+        $this->assertTrue($config->hasMultiple([]));
+
+        $config->set('name', 'Formwork');
+        $this->assertTrue($config->has('name'));
+
+        $this->expectException(UnresolvedConfigException::class);
+        $config->toArray();
     }
 }

@@ -11,6 +11,26 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(IpAnonymizer::class)]
 final class IpAnonymizerTest extends TestCase
 {
+    #[DataProvider('invalidAddressProvider')]
+    public function testInvalidIpAddressesAreRejected(string $address): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        IpAnonymizer::anonymize($address);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidAddressProvider(): iterable
+    {
+        yield 'text' => ['invalid'];
+        yield 'empty string' => [''];
+        yield 'incomplete IPv4' => ['1.2.3'];
+        yield 'out of range octet' => ['256.0.0.1'];
+        yield 'trailing whitespace' => ['192.0.2.123 '];
+        yield 'IPv4 with a port' => ['192.0.2.123:80'];
+    }
+
     #[DataProvider('addressProvider')]
     public function testAddressesAreAnonymizedKeepingOnlyTheNetworkPrefix(string $address, string $expected): void
     {
@@ -39,25 +59,5 @@ final class IpAnonymizerTest extends TestCase
 
             $this->assertSame($once, IpAnonymizer::anonymize($once));
         }
-    }
-
-    #[DataProvider('invalidAddressProvider')]
-    public function testInvalidIpAddressesAreRejected(string $address): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        IpAnonymizer::anonymize($address);
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function invalidAddressProvider(): iterable
-    {
-        yield 'text' => ['invalid'];
-        yield 'empty string' => [''];
-        yield 'incomplete IPv4' => ['1.2.3'];
-        yield 'out of range octet' => ['256.0.0.1'];
-        yield 'trailing whitespace' => ['192.0.2.123 '];
-        yield 'IPv4 with a port' => ['192.0.2.123:80'];
     }
 }

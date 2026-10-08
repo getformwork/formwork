@@ -212,66 +212,6 @@ final class RequestTest extends TestCase
         $this->assertTrue($request->isSecure());
     }
 
-    #[DataProvider('forwardedProtoProvider')]
-    public function testForwardedProtoOverridesTheConnectionSchemeForTrustedProxies(string $proto, bool $expectedSecure): void
-    {
-        foreach ([['HTTPS' => 'on'], ['HTTPS' => 'off'], []] as $connection) {
-            $request = $this->request([
-                'REMOTE_ADDR'            => '10.0.0.10',
-                'HTTP_X_FORWARDED_PROTO' => $proto,
-            ] + $connection);
-            $request->setTrustedProxies(['10.0.0.10']);
-
-            $this->assertSame($expectedSecure, $request->isSecure(), sprintf('Forwarded proto "%s" with %s', $proto, json_encode($connection)));
-        }
-    }
-
-    /**
-     * @return iterable<string, array{string, bool}>
-     */
-    public static function forwardedProtoProvider(): iterable
-    {
-        yield 'https' => ['https', true];
-        yield 'uppercase https' => ['HTTPS', true];
-        yield 'on' => ['on', true];
-        yield 'ssl' => ['ssl', true];
-        yield 'one' => ['1', true];
-        yield 'http' => ['http', false];
-        yield 'off' => ['off', false];
-        yield 'zero' => ['0', false];
-    }
-
-    public function testForwardedProtoIsIgnoredForUntrustedProxies(): void
-    {
-        $request = $this->request([
-            'REMOTE_ADDR'            => '192.0.2.10',
-            'HTTP_X_FORWARDED_PROTO' => 'https',
-            'HTTPS'                  => 'off',
-        ]);
-        $request->setTrustedProxies(['10.0.0.10']);
-
-        $this->assertFalse($request->isSecure());
-    }
-
-    #[DataProvider('localhostProvider')]
-    public function testLocalhostIsDetectedFromTheClientIpAddress(string $ip, bool $expected): void
-    {
-        $this->assertSame($expected, $this->request(['REMOTE_ADDR' => $ip])->isLocalhost());
-    }
-
-    /**
-     * @return iterable<string, array{string, bool}>
-     */
-    public static function localhostProvider(): iterable
-    {
-        yield 'IPv4 loopback' => ['127.0.0.1', true];
-        yield 'IPv6 loopback' => ['::1', true];
-        yield 'other loopback address' => ['127.0.0.2', false];
-        yield 'private IPv4 address' => ['192.168.1.10', false];
-        yield 'documentation IPv4 address' => ['192.0.2.10', false];
-        yield 'documentation IPv6 address' => ['2001:db8::1', false];
-    }
-
     public function testSecurityLocalhostAndRequestTypeAreDetected(): void
     {
         $secure = $this->request([
@@ -413,6 +353,66 @@ final class RequestTest extends TestCase
         $this->assertSame(['page' => '2'], $request->query()->toArray());
         $this->assertSame(['theme' => 'dark'], $request->cookies()->toArray());
         $this->assertSame([], $request->files()->getAll());
+    }
+
+    #[DataProvider('forwardedProtoProvider')]
+    public function testForwardedProtoOverridesTheConnectionSchemeForTrustedProxies(string $proto, bool $expectedSecure): void
+    {
+        foreach ([['HTTPS' => 'on'], ['HTTPS' => 'off'], []] as $connection) {
+            $request = $this->request([
+                'REMOTE_ADDR'            => '10.0.0.10',
+                'HTTP_X_FORWARDED_PROTO' => $proto,
+            ] + $connection);
+            $request->setTrustedProxies(['10.0.0.10']);
+
+            $this->assertSame($expectedSecure, $request->isSecure(), sprintf('Forwarded proto "%s" with %s', $proto, json_encode($connection)));
+        }
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function forwardedProtoProvider(): iterable
+    {
+        yield 'https' => ['https', true];
+        yield 'uppercase https' => ['HTTPS', true];
+        yield 'on' => ['on', true];
+        yield 'ssl' => ['ssl', true];
+        yield 'one' => ['1', true];
+        yield 'http' => ['http', false];
+        yield 'off' => ['off', false];
+        yield 'zero' => ['0', false];
+    }
+
+    public function testForwardedProtoIsIgnoredForUntrustedProxies(): void
+    {
+        $request = $this->request([
+            'REMOTE_ADDR'            => '192.0.2.10',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'HTTPS'                  => 'off',
+        ]);
+        $request->setTrustedProxies(['10.0.0.10']);
+
+        $this->assertFalse($request->isSecure());
+    }
+
+    #[DataProvider('localhostProvider')]
+    public function testLocalhostIsDetectedFromTheClientIpAddress(string $ip, bool $expected): void
+    {
+        $this->assertSame($expected, $this->request(['REMOTE_ADDR' => $ip])->isLocalhost());
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function localhostProvider(): iterable
+    {
+        yield 'IPv4 loopback' => ['127.0.0.1', true];
+        yield 'IPv6 loopback' => ['::1', true];
+        yield 'other loopback address' => ['127.0.0.2', false];
+        yield 'private IPv4 address' => ['192.168.1.10', false];
+        yield 'documentation IPv4 address' => ['192.0.2.10', false];
+        yield 'documentation IPv6 address' => ['2001:db8::1', false];
     }
 
     /**

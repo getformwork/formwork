@@ -43,6 +43,52 @@ final class DateTest extends TestCase
         Date::toTimestamp('invalid-date', 'Y-m-d');
     }
 
+    #[DataProvider('impossibleDateProvider')]
+    public function testToTimestampRejectsDatesThatDoNotExist(string $date): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Date::toTimestamp($date, 'Y-m-d');
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function impossibleDateProvider(): iterable
+    {
+        yield 'month out of range' => ['2024-13-01'];
+        yield 'day out of range' => ['2024-01-32'];
+        yield 'both out of range' => ['2024-13-45'];
+        yield 'February 30th' => ['2024-02-30'];
+        yield 'February 29th of a common year' => ['2023-02-29'];
+        yield 'April 31st' => ['2024-04-31'];
+    }
+
+    public function testToTimestampAcceptsLeapDays(): void
+    {
+        $this->assertSame(1709164800, Date::toTimestamp('2024-02-29', 'Y-m-d'));
+    }
+
+    public function testToTimestampTreatsDatesAsUtc(): void
+    {
+        $this->assertSame(0, Date::toTimestamp('1970-01-01', 'Y-m-d'));
+        $this->assertSame(86_400, Date::toTimestamp('1970-01-02', 'Y-m-d'));
+    }
+
+    public function testToTimestampErrorMentionsTheInvalidDate(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid date "abc"');
+        Date::toTimestamp('abc', 'Y-m-d');
+    }
+
+    public function testToTimestampTriesEveryFormatBeforeFailing(): void
+    {
+        $this->assertSame(1869436800, Date::toTimestamp('29/03/2029', ['Y-m-d', 'd/m/Y', 'm.d.Y']));
+
+        $this->expectException(InvalidArgumentException::class);
+        Date::toTimestamp('29.03.2029-extra', ['Y-m-d', 'd/m/Y']);
+    }
+
     public function testFormatToPattern(): void
     {
         $this->assertSame('YYYY-MM-DD', Date::formatToPattern('Y-m-d'));
@@ -95,51 +141,5 @@ final class DateTest extends TestCase
         $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation, $now));
         $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation, $now));
         $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation, $now));
-    }
-
-    #[DataProvider('impossibleDateProvider')]
-    public function testToTimestampRejectsDatesThatDoNotExist(string $date): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        Date::toTimestamp($date, 'Y-m-d');
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function impossibleDateProvider(): iterable
-    {
-        yield 'month out of range' => ['2024-13-01'];
-        yield 'day out of range' => ['2024-01-32'];
-        yield 'both out of range' => ['2024-13-45'];
-        yield 'February 30th' => ['2024-02-30'];
-        yield 'February 29th of a common year' => ['2023-02-29'];
-        yield 'April 31st' => ['2024-04-31'];
-    }
-
-    public function testToTimestampAcceptsLeapDays(): void
-    {
-        $this->assertSame(1709164800, Date::toTimestamp('2024-02-29', 'Y-m-d'));
-    }
-
-    public function testToTimestampTreatsDatesAsUtc(): void
-    {
-        $this->assertSame(0, Date::toTimestamp('1970-01-01', 'Y-m-d'));
-        $this->assertSame(86_400, Date::toTimestamp('1970-01-02', 'Y-m-d'));
-    }
-
-    public function testToTimestampErrorMentionsTheInvalidDate(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid date "abc"');
-        Date::toTimestamp('abc', 'Y-m-d');
-    }
-
-    public function testToTimestampTriesEveryFormatBeforeFailing(): void
-    {
-        $this->assertSame(1869436800, Date::toTimestamp('29/03/2029', ['Y-m-d', 'd/m/Y', 'm.d.Y']));
-
-        $this->expectException(InvalidArgumentException::class);
-        Date::toTimestamp('29.03.2029-extra', ['Y-m-d', 'd/m/Y']);
     }
 }

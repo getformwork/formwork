@@ -224,14 +224,6 @@ final class ContainerTest extends TestCase
         $container->call(static fn(string ...$values): array => $values, ['values' => 'invalid']);
     }
 
-    public function testVariadicParametersAreOptional(): void
-    {
-        $container = new Container();
-
-        $this->assertSame([], $container->build(VariadicService::class)->values);
-        $this->assertSame([], $container->call(static fn(string ...$values): array => $values));
-    }
-
     public function testVariadicArgumentsAreAlwaysPassedByPosition(): void
     {
         $container = new Container();
@@ -239,6 +231,14 @@ final class ContainerTest extends TestCase
         $built = $container->build(VariadicService::class, ['values' => ['first' => 'a', 'second' => 'b']]);
 
         $this->assertSame(['a', 'b'], $built->values);
+    }
+
+    public function testVariadicParametersAreOptional(): void
+    {
+        $container = new Container();
+
+        $this->assertSame([], $container->build(VariadicService::class)->values);
+        $this->assertSame([], $container->call(static fn(string ...$values): array => $values));
     }
 
     public function testParameterClosuresAreEvaluatedBeforeFactoryResolution(): void

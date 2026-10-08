@@ -54,6 +54,12 @@ final class YamlTest extends TestCase
         $this->assertSame($expected, Yaml::parseFile($yamlFilePath));
     }
 
+    public function testParseRejectsInvalidYaml(): void
+    {
+        $this->expectException(ParseException::class);
+        Yaml::parse("title: [unclosed");
+    }
+
     public function testEncode(): void
     {
         $data = [
@@ -95,12 +101,6 @@ final class YamlTest extends TestCase
     {
         $this->assertSame('', Yaml::encode([]));
         $this->assertSame([], Yaml::parse(''));
-    }
-
-    public function testParseRejectsInvalidYaml(): void
-    {
-        $this->expectException(ParseException::class);
-        Yaml::parse("title: [unclosed");
     }
 
     public function testRoundTripPreservesNestedData(): void

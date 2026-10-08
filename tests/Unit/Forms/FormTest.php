@@ -215,6 +215,25 @@ final class FormTest extends TestCase
         $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
     }
 
+    public function testInvalidSubmissionDoesNotInvokeTheUploader(): void
+    {
+        $uploader = $this->createMock(FileUploader::class);
+        $uploader->expects($this->never())->method('upload');
+        $form = $this->createForm('upload', [
+            'name'  => $this->createField('name', ['type' => 'text', 'required' => true]),
+            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
+        ], $uploader);
+
+        $form->processRequest($this->createRequest(
+            RequestMethod::POST,
+            files: ['photo' => $this->uploadData()],
+        ));
+
+        $this->assertFalse($form->isValid());
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
+        $this->assertSame([], $form->uploadedFiles());
+    }
+
     public function testFormDataContainsNonUploadFields(): void
     {
         $fields = [
@@ -261,6 +280,27 @@ final class FormTest extends TestCase
         $this->assertSame(['name' => 'Sempronius'], $form->data()->toArray());
     }
 
+    public function testUploadFailureDoesNotFabricateAnUploadedFile(): void
+    {
+        $uploader = $this->createStub(FileUploader::class);
+        $uploader->method('upload')->willThrowException(new \RuntimeException('upload failed'));
+        $form = $this->createForm('upload', [
+            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
+        ], $uploader);
+
+        try {
+            $form->processRequest($this->createRequest(
+                RequestMethod::POST,
+                files: ['photo' => $this->uploadData()],
+            ));
+            $this->fail('The upload exception should have propagated.');
+        } catch (\RuntimeException) {
+            // Expected.
+        }
+
+        $this->assertSame([], $form->uploadedFiles());
+    }
+
     public function testPreserveEmptyKeepsEmptyFields(): void
     {
         $fields = [
@@ -289,6 +329,23 @@ final class FormTest extends TestCase
         $form->processRequest($this->createRequest(RequestMethod::POST), preserveEmpty: false);
 
         $this->assertSame([], $form->data()->toArray());
+    }
+
+    public function testPreserveEmptyFalseChangesOnlyTheFormDataProjection(): void
+    {
+        $fields = [
+            'name'    => $this->createField('name', ['type' => 'text']),
+            'message' => $this->createField('message', ['type' => 'text']),
+        ];
+        $form = $this->createForm('contact', $fields);
+
+        $form->processRequest($this->createRequest(
+            RequestMethod::POST,
+            input: ['name' => 'Alice'],
+        ), preserveEmpty: false);
+
+        $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
+        $this->assertSame('', $form->fields()->get('message')->value());
     }
 
     public function testSetDefaultUploadsDestinationReturnsTheSameForm(): void
@@ -442,6 +499,24 @@ final class FormTest extends TestCase
         $this->assertSame([$uploadedFile], $form->uploadedFiles());
     }
 
+    public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
+    {
+        $uploaded = new File('/uploads/result.jpg');
+        $uploader = $this->createMock(FileUploader::class);
+        $uploader->expects($this->once())
+            ->method('upload')
+            ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
+            ->willReturn($uploaded);
+
+        $form = $this->createForm('upload', [
+            'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
+        ], $uploader);
+        $form->setDefaultUploadsDestination('/default');
+        $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
+
+        $this->assertSame([$uploaded], $form->uploadedFiles());
+    }
+
     public function testFieldUploadDestinationTakesPrecedenceOverDefaultDestination(): void
     {
         $uploadedFile = new File('/field-uploads/photo.jpg');
@@ -542,6 +617,47 @@ final class FormTest extends TestCase
         ]));
 
         $this->assertSame([$firstResult, $secondResult], $form->uploadedFiles());
+    }
+
+    #[DataProvider('fieldTypesProvider')]
+    public function testFieldTypeValues(
+        string $type,
+        array $config,
+        mixed $submittedValue,
+        mixed $expectedSubmittedValue,
+        mixed $expectedMissingValue,
+    ): void {
+        $fieldName = $type;
+
+        $form = $this->createForm('test', [
+            $fieldName => $this->createField($fieldName, [
+                'type' => $type,
+                ...$config,
+            ]),
+        ]);
+
+        $form->processRequest($this->createRequest(RequestMethod::POST, input: [
+            $fieldName => $submittedValue,
+        ]));
+
+        $this->assertSame(
+            [$fieldName => $expectedSubmittedValue],
+            $form->data()->toArray(),
+        );
+
+        $form = $this->createForm('test', [
+            $fieldName => $this->createField($fieldName, [
+                'type' => $type,
+                ...$config,
+            ]),
+        ]);
+
+        $form->processRequest($this->createRequest(RequestMethod::POST));
+
+        $this->assertSame(
+            [$fieldName => $expectedMissingValue],
+            $form->data()->toArray(),
+        );
     }
 
     public static function fieldTypesProvider(): iterable
@@ -726,122 +842,6 @@ final class FormTest extends TestCase
             'first',
             null,
         ];
-    }
-
-    #[DataProvider('fieldTypesProvider')]
-    public function testFieldTypeValues(
-        string $type,
-        array $config,
-        mixed $submittedValue,
-        mixed $expectedSubmittedValue,
-        mixed $expectedMissingValue,
-    ): void {
-        $fieldName = $type;
-
-        $form = $this->createForm('test', [
-            $fieldName => $this->createField($fieldName, [
-                'type' => $type,
-                ...$config,
-            ]),
-        ]);
-
-        $form->processRequest($this->createRequest(RequestMethod::POST, input: [
-            $fieldName => $submittedValue,
-        ]));
-
-        $this->assertSame(
-            [$fieldName => $expectedSubmittedValue],
-            $form->data()->toArray(),
-        );
-
-        $form = $this->createForm('test', [
-            $fieldName => $this->createField($fieldName, [
-                'type' => $type,
-                ...$config,
-            ]),
-        ]);
-
-        $form->processRequest($this->createRequest(RequestMethod::POST));
-
-        $this->assertSame(
-            [$fieldName => $expectedMissingValue],
-            $form->data()->toArray(),
-        );
-    }
-
-    public function testPreserveEmptyFalseChangesOnlyTheFormDataProjection(): void
-    {
-        $fields = [
-            'name'    => $this->createField('name', ['type' => 'text']),
-            'message' => $this->createField('message', ['type' => 'text']),
-        ];
-        $form = $this->createForm('contact', $fields);
-
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            input: ['name' => 'Alice'],
-        ), preserveEmpty: false);
-
-        $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
-        $this->assertSame('', $form->fields()->get('message')->value());
-    }
-
-    public function testInvalidSubmissionDoesNotInvokeTheUploader(): void
-    {
-        $uploader = $this->createMock(FileUploader::class);
-        $uploader->expects($this->never())->method('upload');
-        $form = $this->createForm('upload', [
-            'name'  => $this->createField('name', ['type' => 'text', 'required' => true]),
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
-        ], $uploader);
-
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            files: ['photo' => $this->uploadData()],
-        ));
-
-        $this->assertFalse($form->isValid());
-        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
-        $this->assertSame([], $form->uploadedFiles());
-    }
-
-    public function testUploadFailureDoesNotFabricateAnUploadedFile(): void
-    {
-        $uploader = $this->createStub(FileUploader::class);
-        $uploader->method('upload')->willThrowException(new \RuntimeException('upload failed'));
-        $form = $this->createForm('upload', [
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
-        ], $uploader);
-
-        try {
-            $form->processRequest($this->createRequest(
-                RequestMethod::POST,
-                files: ['photo' => $this->uploadData()],
-            ));
-            $this->fail('The upload exception should have propagated.');
-        } catch (\RuntimeException) {
-            // Expected.
-        }
-
-        $this->assertSame([], $form->uploadedFiles());
-    }
-
-    public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
-    {
-        $uploaded = new File('/uploads/result.jpg');
-        $uploader = $this->createMock(FileUploader::class);
-        $uploader->expects($this->once())
-            ->method('upload')
-            ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
-            ->willReturn($uploaded);
-
-        $form = $this->createForm('upload', [
-            'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
-        ], $uploader);
-        $form->setDefaultUploadsDestination('/default');
-        $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
-
-        $this->assertSame([$uploaded], $form->uploadedFiles());
     }
 
     private function createField(string $name, array $data): Field

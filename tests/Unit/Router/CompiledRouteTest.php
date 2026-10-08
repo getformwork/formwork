@@ -36,6 +36,20 @@ final class CompiledRouteTest extends TestCase
         $this->assertSame(['id', 'tab'], $compiled->params());
     }
 
+    public function testCompilationRejectsParametersWithoutSeparator(): void
+    {
+        $this->expectException(InvalidRouteException::class);
+        $this->expectExceptionMessage('Parameter "id" must be preceded by a separator');
+        $this->compile(new Route('invalid', '/users{id}'));
+    }
+
+    public function testCompilationRejectsRepeatedParameters(): void
+    {
+        $this->expectException(InvalidRouteException::class);
+        $this->expectExceptionMessage('Parameter "id" cannot be used more than once');
+        $this->compile(new Route('invalid', '/users/{id}/{id}'));
+    }
+
     /**
      * @param array<int, ?string> $expectedGroups
      */
@@ -69,20 +83,6 @@ final class CompiledRouteTest extends TestCase
         yield 'custom separator' => ['/search,{term}', '/search,php/', true, ['php']];
         yield 'alternation in the pattern stays inside its group' => ['/lang/{code:en|it}', '/lang/it/', true, ['it']];
         yield 'alternation does not escape the whole path' => ['/lang/{code:en|it}', '/other/en/', false];
-    }
-
-    public function testCompilationRejectsParametersWithoutSeparator(): void
-    {
-        $this->expectException(InvalidRouteException::class);
-        $this->expectExceptionMessage('Parameter "id" must be preceded by a separator');
-        $this->compile(new Route('invalid', '/users{id}'));
-    }
-
-    public function testCompilationRejectsRepeatedParameters(): void
-    {
-        $this->expectException(InvalidRouteException::class);
-        $this->expectExceptionMessage('Parameter "id" cannot be used more than once');
-        $this->compile(new Route('invalid', '/users/{id}/{id}'));
     }
 
     private function compile(Route $route): CompiledRoute

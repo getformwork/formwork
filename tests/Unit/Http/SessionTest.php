@@ -54,6 +54,29 @@ final class SessionTest extends TestCase
         $session->save();
     }
 
+    public function testSessionCannotBeStartedTwice(): void
+    {
+        $session = $this->session();
+        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
+        $session->start();
+
+        try {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Session already started');
+            $session->start();
+        } finally {
+            $session->save();
+        }
+    }
+
+    public function testSessionCookiesAreSessionCookiesWithoutADuration(): void
+    {
+        $cookie = (string) $this->sessionCookie($this->sessionRequest('write')['headers']);
+
+        $this->assertStringNotContainsString('expires=', $cookie);
+        $this->assertStringNotContainsString('Max-Age', $cookie);
+    }
+
     /**
      * @param Closure(Session): mixed $operation
      */
@@ -113,6 +136,34 @@ final class SessionTest extends TestCase
         $session->save();
     }
 
+    /**
+     * @param Closure(Session): mixed $change
+     */
+    #[DataProvider('configurationChangeProvider')]
+    public function testSessionRejectsChangingNameAndPathAfterStart(Closure $change, string $message): void
+    {
+        $session = $this->session();
+        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
+        $session->start();
+
+        try {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage($message);
+            $change($session);
+        } finally {
+            $session->save();
+        }
+    }
+
+    /**
+     * @return iterable<string, array{Closure(Session): mixed, string}>
+     */
+    public static function configurationChangeProvider(): iterable
+    {
+        yield 'name' => [static fn(Session $session) => $session->setName('another'), 'Cannot set session name'];
+        yield 'save path' => [static fn(Session $session) => $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'another-path')), 'Cannot set session save path'];
+    }
+
     public function testRegenerateDestroysTheOldSessionAndMovesItsDataToTheNewOne(): void
     {
         $directory = FileSystem::joinPaths(TESTS_TMP_PATH, 'session-regenerate');
@@ -150,34 +201,6 @@ final class SessionTest extends TestCase
         $session->save();
     }
 
-    /**
-     * @param Closure(Session): mixed $change
-     */
-    #[DataProvider('configurationChangeProvider')]
-    public function testSessionRejectsChangingNameAndPathAfterStart(Closure $change, string $message): void
-    {
-        $session = $this->session();
-        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
-        $session->start();
-
-        try {
-            $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage($message);
-            $change($session);
-        } finally {
-            $session->save();
-        }
-    }
-
-    /**
-     * @return iterable<string, array{Closure(Session): mixed, string}>
-     */
-    public static function configurationChangeProvider(): iterable
-    {
-        yield 'name' => [static fn(Session $session) => $session->setName('another'), 'Cannot set session name'];
-        yield 'save path' => [static fn(Session $session) => $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'another-path')), 'Cannot set session save path'];
-    }
-
     public function testDestroyEndsTheSessionAndRemovesItsData(): void
     {
         $session = $this->session();
@@ -189,6 +212,17 @@ final class SessionTest extends TestCase
 
         $this->assertFalse($session->isStarted());
         $this->assertSame(PHP_SESSION_NONE, session_status());
+    }
+
+    public function testDestroyRemovesTheSessionFileAndExpiresTheCookie(): void
+    {
+        $id = $this->sessionId($this->sessionRequest('write'));
+        $this->assertFileExists(TESTS_TMP_PATH . '/sessions/sess_' . $id);
+
+        $response = $this->sessionRequest('destroy', $id);
+
+        $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/sessions/sess_' . $id);
+        $this->assertStringContainsString('expires=Thu, 01 Jan 1970', (string) $this->sessionCookie($response['headers']));
     }
 
     public function testExistsComparesTheGivenIdWithTheCurrentOne(): void
@@ -203,21 +237,6 @@ final class SessionTest extends TestCase
 
         $this->assertFalse($session->exists('another-session-id-0123456789'));
         $this->assertFalse($session->isStarted());
-    }
-
-    public function testSessionCannotBeStartedTwice(): void
-    {
-        $session = $this->session();
-        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
-        $session->start();
-
-        try {
-            $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage('Session already started');
-            $session->start();
-        } finally {
-            $session->save();
-        }
     }
 
     public function testNewVisitorsReceiveAnHttpOnlyStrictSessionCookie(): void
@@ -250,6 +269,16 @@ final class SessionTest extends TestCase
         $this->assertSame([], json_decode($third['body'], true)['messages']);
     }
 
+    #[DataProvider('invalidSessionIdProvider')]
+    public function testMalformedSessionIdsInTheCookieAreIgnored(string $suppliedId): void
+    {
+        $response = $this->sessionRequest('read', $suppliedId);
+        $id = $this->sessionId($response);
+
+        $this->assertNotSame($suppliedId, $id);
+        $this->assertMatchesRegularExpression('/^[a-z0-9,-]{22,256}$/i', $id);
+    }
+
     /**
      * @return iterable<string, array{string}>
      */
@@ -259,16 +288,6 @@ final class SessionTest extends TestCase
         yield 'path traversal' => ['../../etc/passwd-0000000000000'];
         yield 'invalid characters' => ['abcdefghijklmnopqrstuvwxyz!@#$%'];
         yield 'too long' => [str_repeat('a', 257)];
-    }
-
-    #[DataProvider('invalidSessionIdProvider')]
-    public function testMalformedSessionIdsInTheCookieAreIgnored(string $suppliedId): void
-    {
-        $response = $this->sessionRequest('read', $suppliedId);
-        $id = $this->sessionId($response);
-
-        $this->assertNotSame($suppliedId, $id);
-        $this->assertMatchesRegularExpression('/^[a-z0-9,-]{22,256}$/i', $id);
     }
 
     public function testUnknownWellFormedSessionIdsAreReplacedByNewOnes(): void
@@ -288,25 +307,6 @@ final class SessionTest extends TestCase
 
         $this->assertStringContainsString('expires=', $cookie);
         $this->assertMatchesRegularExpression('/Max-Age=(3[56][0-9]{2})/', $cookie);
-    }
-
-    public function testSessionCookiesAreSessionCookiesWithoutADuration(): void
-    {
-        $cookie = (string) $this->sessionCookie($this->sessionRequest('write')['headers']);
-
-        $this->assertStringNotContainsString('expires=', $cookie);
-        $this->assertStringNotContainsString('Max-Age', $cookie);
-    }
-
-    public function testDestroyRemovesTheSessionFileAndExpiresTheCookie(): void
-    {
-        $id = $this->sessionId($this->sessionRequest('write'));
-        $this->assertFileExists(TESTS_TMP_PATH . '/sessions/sess_' . $id);
-
-        $response = $this->sessionRequest('destroy', $id);
-
-        $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/sessions/sess_' . $id);
-        $this->assertStringContainsString('expires=Thu, 01 Jan 1970', (string) $this->sessionCookie($response['headers']));
     }
 
     /**

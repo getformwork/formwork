@@ -38,10 +38,12 @@ final class MimeTypeTest extends TestCase
         $this->assertSame('application/octet-stream', MimeType::fromExtension(''));
     }
 
-    public function testExtensionsAreCaseInsensitive(): void
+    public function testFromFileThrowsOnDisabledFileinfo(): void
     {
-        $this->assertSame('image/jpeg', MimeType::fromExtension('JPG'));
-        $this->assertSame('application/pdf', MimeType::fromExtension('Pdf'));
+        Environment::disableExtension('fileinfo');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('requires the extension "fileinfo" to be enabled');
+        MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/sample.html');
     }
 
     #[DataProvider('fileProvider')]
@@ -94,18 +96,16 @@ final class MimeTypeTest extends TestCase
         yield 'directory' => [__DIR__];
     }
 
-    public function testFromFileThrowsOnDisabledFileinfo(): void
-    {
-        Environment::disableExtension('fileinfo');
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('requires the extension "fileinfo" to be enabled');
-        MimeType::fromFile(__DIR__ . '/Fixtures/files/mimetype/sample.html');
-    }
-
     public function testExtensions(): void
     {
         $this->assertSame(['jpg', 'jpeg', 'jpe'], MimeType::getAssociatedExtensions('image/jpeg'));
         $this->assertSame([], MimeType::getAssociatedExtensions('unknown/mime-type'));
+    }
+
+    public function testExtensionsAreCaseInsensitive(): void
+    {
+        $this->assertSame('image/jpeg', MimeType::fromExtension('JPG'));
+        $this->assertSame('application/pdf', MimeType::fromExtension('Pdf'));
     }
 
     public function testToExtension(): void

@@ -32,6 +32,13 @@ final class ResponseStatusTest extends TestCase
         ];
     }
 
+    public function testStatusCodesAreUnique(): void
+    {
+        $codes = array_map(static fn(ResponseStatus $status): int => $status->code(), ResponseStatus::cases());
+
+        $this->assertSame($codes, array_values(array_unique($codes)));
+    }
+
     public function testEveryStatusIsConsistentWithItsValueAndType(): void
     {
         foreach (ResponseStatus::cases() as $status) {
@@ -49,13 +56,6 @@ final class ResponseStatusTest extends TestCase
                 $status->name,
             );
         }
-    }
-
-    public function testStatusCodesAreUnique(): void
-    {
-        $codes = array_map(static fn(ResponseStatus $status): int => $status->code(), ResponseStatus::cases());
-
-        $this->assertSame($codes, array_values(array_unique($codes)));
     }
 
     public function testUnknownStatusCodesAreRejected(): void

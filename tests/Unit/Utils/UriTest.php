@@ -126,6 +126,44 @@ final class UriTest extends TestCase
         $this->assertSame('https://example.com/search/?q=test+value&lang=en', Uri::make(['scheme' => 'https', 'host' => 'example.com', 'path' => '/search', 'query' => ['q' => 'test value', 'lang' => 'en']], 'http://localhost'));
     }
 
+    public function testMakeKeepsTheNonDefaultPortOfTheGivenUri(): void
+    {
+        $this->assertSame('http://localhost:8080/b/', Uri::make(['path' => '/b'], 'http://localhost:8080/a'));
+        $this->assertSame('http://localhost:8080/a/', Uri::make([], 'http://localhost:8080/a'));
+    }
+
+    public function testMakeKeepsExplicitPortsOfOtherSchemes(): void
+    {
+        $this->assertSame('http://example.com:443/a/', Uri::make(['port' => 443], 'http://example.com/a'));
+        $this->assertSame('https://example.com:80/a/', Uri::make(['scheme' => 'https', 'port' => 80], 'http://example.com/a'));
+    }
+
+    public function testMakeOmitsDefaultPortsUnlessForced(): void
+    {
+        $this->assertSame('http://example.com/a/', Uri::make(['port' => 80], 'http://example.com/a'));
+        $this->assertSame('https://example.com/a/', Uri::make(['scheme' => 'https', 'port' => 443], 'http://example.com/a'));
+        $this->assertSame('http://example.com:80/a/', Uri::make([], 'http://example.com/a', forcePort: true));
+        $this->assertSame('https://example.com:443/a/', Uri::make(['scheme' => 'https'], 'http://example.com/a', forcePort: true));
+    }
+
+    public function testMakeLowercasesSchemeAndHost(): void
+    {
+        $this->assertSame('https://example.com/a/', Uri::make(['scheme' => 'HTTPS', 'host' => 'EXAMPLE.com'], '/a'));
+    }
+
+    public function testMakeOnlyAddsTrailingSlashesToDirectories(): void
+    {
+        $this->assertSame('http://example.com/file.txt', Uri::make(['path' => 'file.txt'], 'http://example.com/a'));
+        $this->assertSame('http://example.com/dir/', Uri::make(['path' => 'dir'], 'http://example.com/a'));
+        $this->assertSame('/', Uri::make(['path' => ''], ''));
+    }
+
+    public function testMakeIgnoresEmptyQueriesAndFragments(): void
+    {
+        $this->assertSame('http://example.com/a/', Uri::make(['query' => '', 'fragment' => ''], 'http://example.com/a'));
+        $this->assertSame('http://example.com/a/?x=1#top', Uri::make(['query' => '?x=1', 'fragment' => '#top'], 'http://example.com/a'));
+    }
+
     public function testNormalize(): void
     {
         $this->assertSame('http://example.com/path/to/resource.jpg', Uri::normalize('http://example.com/path/to/resource.jpg'));
@@ -161,43 +199,5 @@ final class UriTest extends TestCase
     public function testEncode(): void
     {
         $this->assertSame('/path/to/resource?key=%7B%7D&foo=%C3%89%C6%92#%C3%A5n%C2%A9', Uri::encode('/path/to/resource?key={}&foo=Éƒ#ån©'));
-    }
-
-    public function testMakeKeepsTheNonDefaultPortOfTheGivenUri(): void
-    {
-        $this->assertSame('http://localhost:8080/b/', Uri::make(['path' => '/b'], 'http://localhost:8080/a'));
-        $this->assertSame('http://localhost:8080/a/', Uri::make([], 'http://localhost:8080/a'));
-    }
-
-    public function testMakeOmitsDefaultPortsUnlessForced(): void
-    {
-        $this->assertSame('http://example.com/a/', Uri::make(['port' => 80], 'http://example.com/a'));
-        $this->assertSame('https://example.com/a/', Uri::make(['scheme' => 'https', 'port' => 443], 'http://example.com/a'));
-        $this->assertSame('http://example.com:80/a/', Uri::make([], 'http://example.com/a', forcePort: true));
-        $this->assertSame('https://example.com:443/a/', Uri::make(['scheme' => 'https'], 'http://example.com/a', forcePort: true));
-    }
-
-    public function testMakeKeepsExplicitPortsOfOtherSchemes(): void
-    {
-        $this->assertSame('http://example.com:443/a/', Uri::make(['port' => 443], 'http://example.com/a'));
-        $this->assertSame('https://example.com:80/a/', Uri::make(['scheme' => 'https', 'port' => 80], 'http://example.com/a'));
-    }
-
-    public function testMakeLowercasesSchemeAndHost(): void
-    {
-        $this->assertSame('https://example.com/a/', Uri::make(['scheme' => 'HTTPS', 'host' => 'EXAMPLE.com'], '/a'));
-    }
-
-    public function testMakeOnlyAddsTrailingSlashesToDirectories(): void
-    {
-        $this->assertSame('http://example.com/file.txt', Uri::make(['path' => 'file.txt'], 'http://example.com/a'));
-        $this->assertSame('http://example.com/dir/', Uri::make(['path' => 'dir'], 'http://example.com/a'));
-        $this->assertSame('/', Uri::make(['path' => ''], ''));
-    }
-
-    public function testMakeIgnoresEmptyQueriesAndFragments(): void
-    {
-        $this->assertSame('http://example.com/a/', Uri::make(['query' => '', 'fragment' => ''], 'http://example.com/a'));
-        $this->assertSame('http://example.com/a/?x=1#top', Uri::make(['query' => '?x=1', 'fragment' => '#top'], 'http://example.com/a'));
     }
 }

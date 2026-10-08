@@ -122,19 +122,6 @@ final class FileTest extends TestCase
         yield 'unmapped application' => ['application/x-unmapped', null];
     }
 
-    private static function zipContent(): string
-    {
-        $path = (string) tempnam(sys_get_temp_dir(), 'zip');
-        $zip = new ZipArchive();
-        $zip->open($path, ZipArchive::OVERWRITE);
-        $zip->addFromString('entry.txt', 'content');
-        $zip->close();
-        $content = (string) file_get_contents($path);
-        unlink($path);
-
-        return $content;
-    }
-
     public function testTypeIsComputedOnlyOnce(): void
     {
         $path = TESTS_TMP_PATH . '/note.txt';
@@ -251,6 +238,19 @@ final class FileTest extends TestCase
         $file->save();
 
         $this->assertSame(['caption' => 'A custom caption'], Yaml::parseFile($meta));
+    }
+
+    private static function zipContent(): string
+    {
+        $path = (string) tempnam(sys_get_temp_dir(), 'zip');
+        $zip = new ZipArchive();
+        $zip->open($path, ZipArchive::OVERWRITE);
+        $zip->addFromString('entry.txt', 'content');
+        $zip->close();
+        $content = (string) file_get_contents($path);
+        unlink($path);
+
+        return $content;
     }
 
     private function app(): App

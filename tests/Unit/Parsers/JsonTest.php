@@ -53,6 +53,12 @@ class JsonTest extends TestCase
         $this->assertSame($expected, Json::parseFile($jsonFilePath));
     }
 
+    public function testParseRejectsInvalidJson(): void
+    {
+        $this->expectException(JsonException::class);
+        Json::parse('{"title": ');
+    }
+
     public function testEncode(): void
     {
         $data = [
@@ -95,17 +101,6 @@ class JsonTest extends TestCase
         $this->assertSame('{}', Json::encode([], ['forceObject' => true]));
     }
 
-    public function testNestedEmptyArraysAreStillEncodedAsLists(): void
-    {
-        $this->assertSame('{"items":[],"map":{"a":[]}}', Json::encode(['items' => [], 'map' => ['a' => []]]));
-    }
-
-    public function testForceObjectEncodesListsAsObjects(): void
-    {
-        $this->assertSame('[1,2]', Json::encode([1, 2]));
-        $this->assertSame('{"0":1,"1":2}', Json::encode([1, 2], ['forceObject' => true]));
-    }
-
     public function testEncodeKeepsSlashesAndUnicodeUnlessEscapingIsRequested(): void
     {
         $this->assertSame('{"path":"/a/b","name":"è"}', Json::encode(['path' => '/a/b', 'name' => 'è']));
@@ -117,10 +112,15 @@ class JsonTest extends TestCase
         $this->assertSame('[1.0,2]', Json::encode([1.0, 2]));
     }
 
-    public function testParseRejectsInvalidJson(): void
+    public function testNestedEmptyArraysAreStillEncodedAsLists(): void
     {
-        $this->expectException(JsonException::class);
-        Json::parse('{"title": ');
+        $this->assertSame('{"items":[],"map":{"a":[]}}', Json::encode(['items' => [], 'map' => ['a' => []]]));
+    }
+
+    public function testForceObjectEncodesListsAsObjects(): void
+    {
+        $this->assertSame('[1,2]', Json::encode([1, 2]));
+        $this->assertSame('{"0":1,"1":2}', Json::encode([1, 2], ['forceObject' => true]));
     }
 
     public function testRoundTripPreservesMeaningfulScalarTypes(): void

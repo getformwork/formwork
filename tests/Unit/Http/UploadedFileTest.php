@@ -71,6 +71,14 @@ final class UploadedFileTest extends TestCase
         $this->uploadedFile(UPLOAD_ERR_OK)->move(TESTS_TMP_PATH, str_repeat('a', FileSystem::MAX_NAME_LENGTH + 1));
     }
 
+    public function testMoveRejectsTooLongDestinationPaths(): void
+    {
+        $this->expectException(TranslatedException::class);
+        $this->expectExceptionMessage('Destination path too long');
+
+        $this->uploadedFile(UPLOAD_ERR_OK)->move(str_repeat('a/', (int) (FileSystem::MAX_PATH_LENGTH / 2)), 'file.txt');
+    }
+
     public function testMoveAcceptsFileNamesOfTheMaximumLength(): void
     {
         try {
@@ -80,14 +88,6 @@ final class UploadedFileTest extends TestCase
             // The name is accepted, then PHP refuses to move a file that was not uploaded through HTTP
             $this->assertSame('upload.error.cannotMoveToDestination', $exception->getLanguageString());
         }
-    }
-
-    public function testMoveRejectsTooLongDestinationPaths(): void
-    {
-        $this->expectException(TranslatedException::class);
-        $this->expectExceptionMessage('Destination path too long');
-
-        $this->uploadedFile(UPLOAD_ERR_OK)->move(str_repeat('a/', (int) (FileSystem::MAX_PATH_LENGTH / 2)), 'file.txt');
     }
 
     public function testMoveRefusesToReplaceAnExistingFileUnlessOverwriteIsEnabled(): void

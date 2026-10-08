@@ -70,6 +70,36 @@ final class FileUploaderTest extends TestCase
         $uploader->upload($uploaded, '/outside');
     }
 
+    public function testUploadRejectsTraversalOutOfTheBaseDestinations(): void
+    {
+        $temp = TESTS_TMP_PATH . '/payload.txt';
+        FileSystem::write($temp, 'payload');
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed');
+        $uploader = new FileUploader(
+            $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
+            new FileFactory(new Container(), $this->config(['txt'])),
+        );
+
+        $this->expectException(TranslatedException::class);
+        $this->expectExceptionMessage('Invalid destination path');
+        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/../outside');
+    }
+
+    public function testUploadRejectsDirectoriesSharingOnlyAPrefixWithTheBaseDestination(): void
+    {
+        $temp = TESTS_TMP_PATH . '/payload.txt';
+        FileSystem::write($temp, 'payload');
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed-evil');
+        $uploader = new FileUploader(
+            $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
+            new FileFactory(new Container(), $this->config(['txt'])),
+        );
+
+        $this->expectException(TranslatedException::class);
+        $this->expectExceptionMessage('Invalid destination path');
+        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed-evil');
+    }
+
     public function testUploadNormalizesNameChoosesClientExtensionAndReturnsTheFactoryFile(): void
     {
         $temp = TESTS_TMP_PATH . '/payload.txt';
@@ -102,36 +132,6 @@ final class FileUploaderTest extends TestCase
         $factory = new FileFactory($this->fileFactoryContainer($file), $this->config(['txt'], [TESTS_TMP_PATH]));
 
         $this->assertSame($file, (new FileUploader($this->config(['txt'], [TESTS_TMP_PATH]), $factory))->upload($uploaded, TESTS_TMP_PATH));
-    }
-
-    public function testUploadRejectsTraversalOutOfTheBaseDestinations(): void
-    {
-        $temp = TESTS_TMP_PATH . '/payload.txt';
-        FileSystem::write($temp, 'payload');
-        FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed');
-        $uploader = new FileUploader(
-            $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
-            new FileFactory(new Container(), $this->config(['txt'])),
-        );
-
-        $this->expectException(TranslatedException::class);
-        $this->expectExceptionMessage('Invalid destination path');
-        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/../outside');
-    }
-
-    public function testUploadRejectsDirectoriesSharingOnlyAPrefixWithTheBaseDestination(): void
-    {
-        $temp = TESTS_TMP_PATH . '/payload.txt';
-        FileSystem::write($temp, 'payload');
-        FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed-evil');
-        $uploader = new FileUploader(
-            $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
-            new FileFactory(new Container(), $this->config(['txt'])),
-        );
-
-        $this->expectException(TranslatedException::class);
-        $this->expectExceptionMessage('Invalid destination path');
-        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed-evil');
     }
 
     public function testUploadAcceptsSubdirectoriesOfTheBaseDestinations(): void

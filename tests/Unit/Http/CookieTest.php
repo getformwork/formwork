@@ -24,6 +24,30 @@ final class CookieTest extends TestCase
         self::$server->stop();
     }
 
+    #[DataProvider('invalidNameProvider')]
+    public function testInvalidCookieNamesAreRejected(string $name): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid cookie name');
+        Cookie::send($name, 'value');
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidNameProvider(): iterable
+    {
+        yield 'space' => ['invalid name'];
+        yield 'empty name' => [''];
+        yield 'semicolon' => ['a;b'];
+        yield 'equal sign' => ['a=b'];
+        yield 'comma' => ['a,b'];
+        yield 'slash' => ['a/b'];
+        yield 'brackets' => ['a[b]'];
+        yield 'control character' => ["a\nb"];
+        yield 'non ASCII character' => ['caffè'];
+    }
+
     public function testSendAddsASetCookieHeaderWithTheDefaultAttributes(): void
     {
         $cookies = $this->setCookieHeaders(self::$server->request('action=cookie-defaults')['headers']);
@@ -82,6 +106,12 @@ final class CookieTest extends TestCase
         $this->assertSame([], $this->setCookieHeaders($response['headers']));
     }
 
+    public function testRemoveValidatesTheNameToo(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Cookie::remove('invalid name');
+    }
+
     public function testForcedRemovalExpiresCookiesNotReceivedWithTheRequest(): void
     {
         $response = self::$server->request('action=cookie-remove-forced');
@@ -100,36 +130,6 @@ final class CookieTest extends TestCase
 
         $this->assertSame('true', $response['body']);
         $this->assertSame(['other=value'], $this->namesAndValues($this->setCookieHeaders($response['headers'])));
-    }
-
-    #[DataProvider('invalidNameProvider')]
-    public function testInvalidCookieNamesAreRejected(string $name): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid cookie name');
-        Cookie::send($name, 'value');
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function invalidNameProvider(): iterable
-    {
-        yield 'space' => ['invalid name'];
-        yield 'empty name' => [''];
-        yield 'semicolon' => ['a;b'];
-        yield 'equal sign' => ['a=b'];
-        yield 'comma' => ['a,b'];
-        yield 'slash' => ['a/b'];
-        yield 'brackets' => ['a[b]'];
-        yield 'control character' => ["a\nb"];
-        yield 'non ASCII character' => ['caffè'];
-    }
-
-    public function testRemoveValidatesTheNameToo(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        Cookie::remove('invalid name');
     }
 
     /**

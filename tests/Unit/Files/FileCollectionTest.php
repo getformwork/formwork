@@ -39,17 +39,6 @@ final class FileCollectionTest extends TestCase
         $this->assertSame($second, $collection->last());
     }
 
-    public function testFilesWithTheSameNameInDifferentDirectoriesKeepOnlyTheLastOne(): void
-    {
-        $first = new File('/files/a/report.txt');
-        $second = new File('/files/b/report.txt');
-
-        $collection = new FileCollection([$first, $second]);
-
-        $this->assertSame(['report.txt'], $collection->keys());
-        $this->assertSame($second, $collection->get('report.txt'));
-    }
-
     public function testAssociativeInputUsesItsExplicitKeys(): void
     {
         $file = new File('/files/original.txt');
@@ -77,6 +66,30 @@ final class FileCollectionTest extends TestCase
         new FileCollection(['not a File']);
     }
 
+    public function testFilesWithTheSameNameInDifferentDirectoriesKeepOnlyTheLastOne(): void
+    {
+        $first = new File('/files/a/report.txt');
+        $second = new File('/files/b/report.txt');
+
+        $collection = new FileCollection([$first, $second]);
+
+        $this->assertSame(['report.txt'], $collection->keys());
+        $this->assertSame($second, $collection->get('report.txt'));
+    }
+
+    public function testFilteringReturnsAFileCollectionAndRetainsFileIdentity(): void
+    {
+        $first = new File('/files/first.txt');
+        $second = new File('/files/second.jpg');
+        $collection = new FileCollection([$first, $second]);
+
+        $filtered = $collection->filter(fn(File $file) => $file->extension() === 'jpg');
+
+        $this->assertInstanceOf(FileCollection::class, $filtered);
+        $this->assertSame(['second.jpg' => $second], $filtered->toArray());
+        $this->assertSame(['first.txt' => $first, 'second.jpg' => $second], $collection->toArray());
+    }
+
     /**
      * @param Closure(FileCollection): mixed $operation
      */
@@ -101,18 +114,5 @@ final class FileCollectionTest extends TestCase
         yield 'set' => [static fn(FileCollection $collection) => $collection->set('two.txt', new File('/files/two.txt'))];
         yield 'remove' => [static fn(FileCollection $collection) => $collection->remove('one.txt')];
         yield 'merge' => [static fn(FileCollection $collection) => $collection->merge(new FileCollection([new File('/files/two.txt')]))];
-    }
-
-    public function testFilteringReturnsAFileCollectionAndRetainsFileIdentity(): void
-    {
-        $first = new File('/files/first.txt');
-        $second = new File('/files/second.jpg');
-        $collection = new FileCollection([$first, $second]);
-
-        $filtered = $collection->filter(fn(File $file) => $file->extension() === 'jpg');
-
-        $this->assertInstanceOf(FileCollection::class, $filtered);
-        $this->assertSame(['second.jpg' => $second], $filtered->toArray());
-        $this->assertSame(['first.txt' => $first, 'second.jpg' => $second], $collection->toArray());
     }
 }
