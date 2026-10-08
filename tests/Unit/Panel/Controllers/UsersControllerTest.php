@@ -88,7 +88,6 @@ final class UsersControllerTest extends TestCase
         yield 'administrator' => ['admin'];
         yield 'own role' => ['editor'];
         yield 'missing role' => [null];
-        yield 'unknown role' => ['superuser'];
     }
 
     public function testNonAdministratorsCannotCreateAdministratorsBySubmittingTheRoleOfTheForm(): void
@@ -103,6 +102,15 @@ final class UsersControllerTest extends TestCase
         $response = $this->create('editor', $this->newUser(role: 'editor'), ['panel.users' => false]);
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
+        $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
+    }
+
+    public function testNonAdministratorsCannotSubmitUnknownRoles(): void
+    {
+        $response = $this->create('editor', $this->newUser(role: 'superuser'));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastMessageType());
         $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
     }
 
@@ -133,7 +141,7 @@ final class UsersControllerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastMessageType());
-        $this->assertSame([], FileSystem::listFiles($this->accountsPath) instanceof \Traversable ? iterator_to_array(FileSystem::listFiles($this->accountsPath)) : FileSystem::listFiles($this->accountsPath));
+        $this->assertSame([], iterator_to_array(FileSystem::listFiles($this->accountsPath), false));
     }
 
     /**
@@ -147,7 +155,7 @@ final class UsersControllerTest extends TestCase
         yield 'short password' => [['password' => 'short']];
         yield 'invalid email' => [['email' => 'not an email']];
         yield 'missing full name' => [['fullname' => '']];
-        yield 'unknown language' => [['language' => 'xx']];
+        yield 'unknown language' => [['language' => 'klingon']];
         yield 'array as role' => [['role' => ['admin']]];
     }
 
@@ -168,7 +176,7 @@ final class UsersControllerTest extends TestCase
             'username' => $username,
             'password' => 'a-long-password',
             'email'    => 'new@example.test',
-            'language' => 'en',
+            'language' => 'it',
             'role'     => $role,
         ], static fn(mixed $value): bool => $value !== null);
     }
@@ -212,7 +220,8 @@ final class UsersControllerTest extends TestCase
             UsersController::class,
             $permissions,
             ['users' => ['paths' => ['accounts' => $this->accountsPath]]],
-            $input,
+            // Modal fields are named after the modal, so their values are submitted as `newUser[field]`
+            ['newUser' => $input],
             [
                 \Formwork\Cms\Site::class => $site,
                 Modals::class             => $modals,
@@ -241,7 +250,7 @@ final class UsersControllerTest extends TestCase
             ]),
             'password' => $factory->make('newUser.password', ['type' => 'password', 'required' => true, 'minLength' => 8]),
             'email'    => $factory->make('newUser.email', ['type' => 'email', 'required' => true]),
-            'language' => $factory->make('newUser.language', ['type' => 'select', 'required' => true, 'options' => ['en' => 'English', 'it' => 'Italiano']]),
+            'language' => $factory->make('newUser.language', ['type' => 'select', 'required' => true, 'options' => ['it' => 'Italian', 'de' => 'German']]),
             'role'     => $factory->make('newUser.role', ['type' => 'select', 'default' => 'editor', 'options' => ['admin' => 'Administrator', 'editor' => 'Editor']]),
         ]);
     }

@@ -1,0 +1,1 @@
+<?php $this->insert('_part', ['x' => 'X']) ?>
