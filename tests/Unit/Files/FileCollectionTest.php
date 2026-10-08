@@ -2,68 +2,28 @@
 
 namespace Formwork\Tests\Unit\Files;
 
+use Closure;
 use Formwork\Data\AbstractCollection;
 use Formwork\Files\File;
 use Formwork\Files\FileCollection;
 use Formwork\Tests\TestCase;
-use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use TypeError;
 
 #[CoversClass(FileCollection::class)]
 final class FileCollectionTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testFileCollectionIsTypedAssociativeAndImmutable(): void
     {
-        $path = TESTS_TMP_PATH . '/first.txt';
-        FileSystem::write($path, '1');
-        $collection = new FileCollection([new File($path)]);
+        $collection = new FileCollection([new File('/files/first.txt')]);
 
         $this->assertInstanceOf(AbstractCollection::class, $collection);
         $this->assertTrue($collection->isAssociative());
+        $this->assertTrue($collection->isTyped());
         $this->assertSame(File::class, $collection->dataType());
         $this->assertFalse($collection->isMutable());
-    }
-
-    public function testListInputIsIndexedByFileName(): void
-    {
-        $firstPath = TESTS_TMP_PATH . '/first.txt';
-        $secondPath = TESTS_TMP_PATH . '/second.txt';
-        FileSystem::write($firstPath, '1');
-        FileSystem::write($secondPath, '2');
-        $first = new File($firstPath);
-        $second = new File($secondPath);
-
-        $collection = new FileCollection([$first, $second]);
-
-        $this->assertSame([$first, $second], $collection->values());
-        $this->assertSame(['first.txt', 'second.txt'], $collection->keys());
-    }
-
-    public function testCollectionKeysCorrespondToEachFileName(): void
-    {
-        $firstPath = TESTS_TMP_PATH . '/first.txt';
-        $secondPath = TESTS_TMP_PATH . '/second.txt';
-        FileSystem::write($firstPath, '1');
-        FileSystem::write($secondPath, '2');
-        $collection = new FileCollection([new File($firstPath), new File($secondPath)]);
-
-        $this->assertSame(
-            $collection->keys(),
-            array_map(static fn(File $file): string => $file->name(), $collection->values()),
-        );
     }
 
     public function testListInputIsKeyedByEachFileNameAndPreservesOrder(): void
@@ -72,13 +32,22 @@ final class FileCollectionTest extends TestCase
         $second = new File('/files/second.txt');
         $collection = new FileCollection([$first, $second]);
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertTrue($collection->isTyped());
-        $this->assertSame(File::class, $collection->dataType());
         $this->assertSame(['first.txt', 'second.txt'], $collection->keys());
         $this->assertSame([$first, $second], $collection->values());
+        $this->assertSame($first, $collection->get('first.txt'));
         $this->assertSame($first, $collection->first());
         $this->assertSame($second, $collection->last());
+    }
+
+    public function testFilesWithTheSameNameInDifferentDirectoriesKeepOnlyTheLastOne(): void
+    {
+        $first = new File('/files/a/report.txt');
+        $second = new File('/files/b/report.txt');
+
+        $collection = new FileCollection([$first, $second]);
+
+        $this->assertSame(['report.txt'], $collection->keys());
+        $this->assertSame($second, $collection->get('report.txt'));
     }
 
     public function testAssociativeInputUsesItsExplicitKeys(): void
@@ -88,6 +57,7 @@ final class FileCollectionTest extends TestCase
 
         $this->assertSame($file, $collection->get('alias'));
         $this->assertTrue($collection->has('alias'));
+        $this->assertFalse($collection->has('original.txt'));
         $this->assertSame(['alias'], $collection->keys());
     }
 
@@ -103,16 +73,34 @@ final class FileCollectionTest extends TestCase
 
     public function testCollectionRejectsNonFileItems(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         new FileCollection(['not a File']);
     }
 
-    public function testFilesCannotBeAddedOrRemovedBecauseThisCollectionIsImmutable(): void
+    /**
+     * @param Closure(FileCollection): mixed $operation
+     */
+    #[DataProvider('mutatingOperationProvider')]
+    public function testImmutableCollectionRejectsMutatingOperations(Closure $operation): void
     {
         $collection = new FileCollection([new File('/files/one.txt')]);
 
-        $this->expectException(LogicException::class);
-        $collection->remove('one.txt');
+        try {
+            $operation($collection);
+            $this->fail('The immutable file collection was mutated.');
+        } catch (LogicException) {
+            $this->assertSame(['one.txt'], $collection->keys());
+        }
+    }
+
+    /**
+     * @return iterable<string, array{Closure(FileCollection): mixed}>
+     */
+    public static function mutatingOperationProvider(): iterable
+    {
+        yield 'set' => [static fn(FileCollection $collection) => $collection->set('two.txt', new File('/files/two.txt'))];
+        yield 'remove' => [static fn(FileCollection $collection) => $collection->remove('one.txt')];
+        yield 'merge' => [static fn(FileCollection $collection) => $collection->merge(new FileCollection([new File('/files/two.txt')]))];
     }
 
     public function testFilteringReturnsAFileCollectionAndRetainsFileIdentity(): void

@@ -47,9 +47,12 @@ final class PageTest extends TestCase
         $this->assertSame('about', $page->slug());
         $this->assertSame('/about/', $page->route());
         $this->assertStringEndsWith('/about/', $page->uri('', false));
-        $this->assertNotNull($page->path());
-        $this->assertNotNull($page->relativePath());
-        $this->assertNotNull($page->contentFile());
+        $this->assertStringEndsWith('/about/', (string) $page->path());
+        $this->assertSame('/about/', $page->relativePath());
+        $this->assertSame($page->path(), $page->contentPath());
+        $this->assertSame('page.md', basename((string) $page->contentFile()?->path()));
+        $this->assertNull($page->num());
+        $this->assertSame(1, $page->level());
         $this->assertSame($page->title(), (string) $page);
         $this->assertSame($page, $page->site()->findPage('/about'));
     }
@@ -66,7 +69,30 @@ final class PageTest extends TestCase
         $this->assertSame(200, $defaults['responseStatus']);
         $this->assertSame([], $defaults['metadata']);
         $this->assertSame([], $defaults['taxonomy']);
-        $this->assertIsString($defaults['content']);
+        $this->assertSame('', $defaults['content']);
+        $this->assertSame([], $defaults['headers']);
+        $this->assertNull($defaults['canonicalRoute']);
+        $this->assertNull($defaults['publishDate']);
+        $this->assertNull($defaults['unpublishDate']);
+    }
+
+    public function testPagesWithoutANumberAreNeitherListedNorOrderableByDefault(): void
+    {
+        $defaults = $this->fixturePage('/about')->defaults();
+
+        $this->assertNull($this->fixturePage('/about')->num());
+        $this->assertFalse($defaults['listed']);
+        $this->assertFalse($defaults['orderable']);
+    }
+
+    public function testNumberedPagesAreListedAndOrderableByDefault(): void
+    {
+        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/Fixtures/numbered-site'));
+        $defaults = $page->defaults();
+
+        $this->assertSame(1, $page->num());
+        $this->assertTrue($defaults['listed']);
+        $this->assertTrue($defaults['orderable']);
     }
 
     public function testPageWithoutAPathGetsUnroutableDefaults(): void
@@ -462,7 +488,7 @@ final class PageTest extends TestCase
         $this->assertFalse($page->hasChildren());
         $this->assertFalse($page->hasDescendants());
         $this->assertTrue($page->hasSiblings());
-        $this->assertNotNull($page->lastModifiedTime());
+        $this->assertSame(filemtime((string) $page->contentFile()?->path()), $page->lastModifiedTime());
         $this->assertSame($page->files(), $page->files());
     }
 
@@ -557,18 +583,21 @@ final class PageTest extends TestCase
         $this->assertSame('Fresh', $page->metadata()->get('description')->content());
     }
 
-    public function testReloadAfterExternalPathChangeDoesNotRetainOldLazyProperties(): void
+    public function testReloadDiscardsLazilyCachedStatusAndModificationTime(): void
     {
         $page = $this->temporaryPage('about');
-        $page->route();
-        $page->num();
-        $page->lastModifiedTime();
+        $file = (string) $page->contentFile()?->path();
+        $modifiedBefore = $page->lastModifiedTime();
 
+        $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $page->status());
+        $this->assertIsInt($modifiedBefore);
+
+        FileSystem::write($file, "---\ntitle: About\npublished: false\n---\nContent\n");
+        touch($file, $modifiedBefore + 1000);
         $page->reload();
 
-        $this->assertSame('/about/', $page->route());
-        $this->assertSame('about', $page->slug());
-        $this->assertNotNull($page->lastModifiedTime());
+        $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $page->status());
+        $this->assertSame($modifiedBefore + 1000, $page->lastModifiedTime());
     }
 
     public function testDuplicateDoesNotShareMutableMetadataStateWithTheSource(): void
@@ -587,11 +616,17 @@ final class PageTest extends TestCase
     public function testDuplicateGetsAnIndependentDataSet(): void
     {
         $page = $this->temporaryPage('original');
+        $originalTitle = $page->title();
         $duplicate = $page->duplicate();
 
-        $duplicate->set('title', 'Duplicate');
+        $this->assertSame($originalTitle, $duplicate->title());
 
-        $this->assertNotSame($page->title(), $duplicate->title());
+        $duplicate->set('title', 'Duplicate');
+        $page->set('published', false);
+
+        $this->assertSame($originalTitle, $page->title());
+        $this->assertSame('Duplicate', $duplicate->title());
+        $this->assertTrue($duplicate->get('published', true));
     }
 
     public function testDuplicateFillsTheFirstAvailableCopySlug(): void
@@ -646,7 +681,7 @@ final class PageTest extends TestCase
         try {
             $page->set('language', 'fr');
             $this->fail('The invalid language should have been rejected.');
-        } catch (\Throwable) {
+        } catch (InvalidValueException) {
             // Expected.
         }
 

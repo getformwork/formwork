@@ -10,6 +10,7 @@ use Formwork\Files\FileUriGenerator;
 use Formwork\Http\Request;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileUriGenerator::class)]
 final class FileUriGeneratorTest extends TestCase
@@ -60,6 +61,38 @@ final class FileUriGeneratorTest extends TestCase
         $this->expectException(FileUriGenerationException::class);
         $this->expectExceptionMessage('missing file generator');
         $generator->generate(new File('/outside/file.txt'));
+    }
+
+    #[DataProvider('siblingDirectoryProvider')]
+    public function testDirectoriesSharingOnlyAPrefixWithAConfiguredPathAreNotMatched(string $path): void
+    {
+        $generator = $this->generator($this->config(), $this->createStub(UriGenerator::class));
+
+        $this->expectException(FileUriGenerationException::class);
+        $generator->generate(new File($path));
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function siblingDirectoryProvider(): iterable
+    {
+        yield 'site files' => ['/site/files-private/secret.png'];
+        yield 'processed images' => ['/assets/images-cache/abc/thumb.jpg'];
+        yield 'pages' => ['/site/pages-draft/about/team.txt'];
+        yield 'user images' => ['/site/users/images-private/avatar.png'];
+        yield 'panel assets' => ['/panel/assets-source/icons/menu.svg'];
+    }
+
+    public function testGeneratesPageContentPathsForNestedFilesInPageDirectories(): void
+    {
+        $uri = $this->createMock(UriGenerator::class);
+        $uri->expects($this->once())->method('path')->with('/blog/2024/post/cover.jpg')->willReturn('/blog/2024/post/cover.jpg');
+
+        $this->assertSame(
+            '/blog/2024/post/cover.jpg',
+            $this->generator($this->config(), $uri)->generate(new File('/site/pages/3-blog/1-2024/post/cover.jpg')),
+        );
     }
 
     public function testAbsoluteUriResolvesTheGeneratedUriAgainstTheRequestUri(): void

@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Files;
 
+use Closure;
 use Formwork\Config\Config;
 use Formwork\Files\File;
 use Formwork\Files\FileFactory;
@@ -45,7 +46,7 @@ final class FileFactoryTest extends TestCase
         $this->assertSame('/files/sample.txt', $result->uri());
     }
 
-    public function testMakeUsesTheDefaultFileClassWhenMimeTypeHasNoAssociation(): void
+    public function testMakeBuildsTheDefaultFileClassWhenTheMimeTypeHasNoAssociation(): void
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
@@ -53,25 +54,22 @@ final class FileFactoryTest extends TestCase
         $container = $this->createMock(Container::class);
         $container->expects($this->once())->method('build')->with(File::class, ['path' => $path])->willReturn($file);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
-        $config = new Config(['system' => ['files' => ['metadataExtension' => '.meta.yaml']]], resolved: true);
 
-        $this->assertSame($file, (new FileFactory($container, $config))->make($path));
+        $factory = new FileFactory($container, $this->config(), ['image/png' => AssociatedFile::class]);
+
+        $this->assertSame($file, $factory->make($path));
     }
 
-    public function testMakeBuildsAnAssociatedClass(): void
+    public function testMakeBuildsTheClassAssociatedWithTheDetectedMimeType(): void
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $file = new File($path);
+        $file = new AssociatedFile($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(File::class, ['path' => $path])->willReturn($file);
+        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($file);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
-        $config = new Config([
-            'system' => ['files' => ['metadataExtension' => '.meta.yaml']],
-        ], resolved: true);
 
-        // The association is keyed by the MIME type discovered from the controlled file.
-        $factory = new FileFactory($container, $config, ['text/plain' => File::class]);
+        $factory = new FileFactory($container, $this->config(), ['text/plain' => AssociatedFile::class]);
 
         $this->assertSame($file, $factory->make($path));
     }
@@ -89,28 +87,41 @@ final class FileFactoryTest extends TestCase
         (new FileFactory($container, $config))->make($path);
     }
 
-    public function testMakeUsesAnAssociatedFactoryMethod(): void
+    public function testMakeCallsTheAssociatedFactoryMethodOnTheBuiltObject(): void
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $result = new File($path);
-        $built = new FactoryFile($path);
+        $builder = new AssociatedFile($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(FactoryFile::class, ['path' => $path])->willReturn($built);
-        $container->expects($this->once())->method('call')->willReturn($result);
-        $container->method('get')->with(FileUriGenerator::class)->willReturn($this->createStub(FileUriGenerator::class));
-        $config = new Config(['system' => ['files' => ['metadataExtension' => '.meta.yaml']]], resolved: true);
+        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($builder);
+        $container->expects($this->once())->method('call')
+            ->willReturnCallback(static fn(Closure $factory, array $parameters): mixed => $factory(...$parameters));
+        $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $this->assertSame($result, (new FileFactory($container, $config, [
-            'text/plain' => [FactoryFile::class, 'fromPath'],
-        ]))->make($path));
+        $factory = new FileFactory($container, $this->config(), ['text/plain' => [AssociatedFile::class, 'fromPath']]);
+        $result = $factory->make($path);
+
+        $this->assertNotSame($builder, $result);
+        $this->assertInstanceOf(AssociatedFile::class, $result);
+        $this->assertSame($path, $result->path());
+        $this->assertSame('created', $result->origin);
+    }
+
+    private function config(): Config
+    {
+        return new Config(['system' => ['files' => ['metadataExtension' => '.meta.yaml']]], resolved: true);
     }
 }
 
-final class FactoryFile extends File
+final class AssociatedFile extends File
 {
-    public function fromPath(string $path): File
+    public string $origin = 'constructed';
+
+    public function fromPath(string $path): static
     {
-        return new File($path);
+        $file = new static($path);
+        $file->origin = 'created';
+
+        return $file;
     }
 }

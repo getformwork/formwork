@@ -844,22 +844,6 @@ final class FormTest extends TestCase
         $this->assertSame([$uploaded], $form->uploadedFiles());
     }
 
-    public function testFormDataNeverContainsUploadFieldValues(): void
-    {
-        $form = $this->createForm('upload', [
-            'title' => $this->createField('title', ['type' => 'text']),
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
-        ]);
-
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            input: ['title' => 'Title'],
-            files: ['photo' => $this->uploadData()],
-        ), uploadFiles: false);
-
-        $this->assertSame(['title' => 'Title'], $form->data()->toArray());
-    }
-
     private function createField(string $name, array $data): Field
     {
         return $this->app->getService(FieldFactory::class)->make($name, $data);

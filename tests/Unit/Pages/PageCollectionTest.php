@@ -82,6 +82,24 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$about, $blog], $results->values());
     }
 
+    public function testSearchExcludesPagesWithoutMatches(): void
+    {
+        $about = $this->page('/about');
+        $blog = $this->page('/blog');
+        $about->set('title', 'PHP guide');
+        $blog->set('title', 'Cooking recipes');
+
+        $results = $this->collection($about, $blog)->search('PHP guide', minimumLength: 3, weights: [
+            'title'   => 100,
+            'summary' => 0,
+            'content' => 0,
+            'author'  => 0,
+            'uri'     => 0,
+        ]);
+
+        $this->assertSame([$about], $results->values());
+    }
+
     public function testSearchReturnsAnEmptyCollectionForShortQueries(): void
     {
         $collection = $this->collection($this->page('/about'));
@@ -130,16 +148,19 @@ final class PageCollectionTest extends TestCase
         $this->assertSame($before, $collection->values());
     }
 
-    public function testSortingReturnsANewCollectionAndLeavesOriginalOrderingUntouched(): void
+    public function testSortByReturnsANewSortedPageCollectionAndLeavesTheOriginalUntouched(): void
     {
         $about = $this->page('/about');
         $blog = $this->page('/blog');
-        $collection = $this->collection($about, $blog);
+        $collection = $this->collection($blog, $about);
         $before = $collection->values();
 
-        $sorted = $collection->sortBy('title');
+        $ascending = $collection->sortBy('title');
+        $descending = $collection->sortBy('title', SORT_DESC);
 
-        $this->assertNotSame($collection, $sorted);
+        $this->assertInstanceOf(PageCollection::class, $ascending);
+        $this->assertSame([$about, $blog], $ascending->values());
+        $this->assertSame([$blog, $about], $descending->values());
         $this->assertSame($before, $collection->values());
     }
 

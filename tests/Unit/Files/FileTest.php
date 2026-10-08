@@ -2,6 +2,9 @@
 
 namespace Formwork\Tests\Unit\Files;
 
+use Formwork\Cms\App;
+use Formwork\Fields\FieldCollection;
+use Formwork\Fields\FieldFactory;
 use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Files\File;
 use Formwork\Files\FileUriGenerator;
@@ -12,6 +15,7 @@ use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ZipArchive;
 
 #[CoversClass(File::class)]
 final class FileTest extends TestCase
@@ -59,12 +63,38 @@ final class FileTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $file->hash());
     }
 
-    #[DataProvider('typeProvider')]
-    public function testTypeRecognizesSupportedExtensionsWithTheirMimeTypes(string $extension, string $mime, string $type): void
+    #[DataProvider('contentTypeProvider')]
+    public function testTypeIsDerivedFromTheDetectedMimeType(string $filename, string $content, ?string $expectedType): void
     {
-        $path = TESTS_TMP_PATH . '/sample.' . $extension;
+        $path = TESTS_TMP_PATH . '/' . $filename;
+        FileSystem::write($path, $content);
+
+        $this->assertSame($expectedType, (new File($path))->type());
+    }
+
+    /**
+     * @return iterable<string, array{string, string, ?string}>
+     */
+    public static function contentTypeProvider(): iterable
+    {
+        $png = (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==', true);
+
+        yield 'text' => ['note.txt', 'hello', 'text'];
+        yield 'markdown' => ['note.md', '# Title', 'text'];
+        yield 'image' => ['picture.png', $png, 'image'];
+        yield 'pdf' => ['report.pdf', '%PDF-1.4', 'pdf'];
+        yield 'zip archive' => ['bundle.zip', self::zipContent(), 'archive'];
+        yield 'gzip archive' => ['bundle.gz', (string) gzencode('content'), 'archive'];
+        yield 'content wins over the extension' => ['picture.txt', $png, 'image'];
+        yield 'unknown binary file' => ['blob.bin', "\0\1\2", null];
+    }
+
+    #[DataProvider('mimeTypeProvider')]
+    public function testTypeIsMappedFromTheMimeType(string $mimeType, ?string $expectedType): void
+    {
+        $path = TESTS_TMP_PATH . '/sample.dat';
         FileSystem::write($path, 'placeholder');
-        $file = new class ($path, $mime) extends File {
+        $file = new class ($path, $mimeType) extends File {
             public function __construct(string $path, string $mimeType)
             {
                 parent::__construct($path);
@@ -72,26 +102,50 @@ final class FileTest extends TestCase
             }
         };
 
-        // File::type caches the MIME value in the model; seed it through the public accessor.
-        $this->assertSame($type, $file->type());
+        $this->assertSame($expectedType, $file->type());
     }
 
-    public static function typeProvider(): iterable
+    /**
+     * @return iterable<string, array{string, ?string}>
+     */
+    public static function mimeTypeProvider(): iterable
     {
-        yield 'pdf' => ['pdf', 'application/pdf', 'pdf'];
-        yield 'document' => ['docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document'];
-        yield 'spreadsheet' => ['xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'spreadsheet'];
-        yield 'presentation' => ['pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'presentation'];
-        yield 'archive' => ['zip', 'application/zip', 'archive'];
+        yield 'word document' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document'];
+        yield 'legacy word document' => ['application/msword', 'document'];
+        yield 'open document text' => ['application/vnd.oasis.opendocument.text', 'document'];
+        yield 'presentation' => ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'presentation'];
+        yield 'spreadsheet' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'spreadsheet'];
+        yield '7z archive' => ['application/x-7z-compressed', 'archive'];
+        yield 'rar archive' => ['application/x-rar-compressed', 'archive'];
+        yield 'plain text' => ['text/plain', 'text'];
+        yield 'unmapped image' => ['image/x-unmapped', null];
+        yield 'unmapped application' => ['application/x-unmapped', null];
     }
 
-    public function testUnknownMimeAndExtensionProducesNullType(): void
+    private static function zipContent(): string
     {
-        $path = TESTS_TMP_PATH . '/sample.bin';
-        FileSystem::write($path, "\0\1\2");
+        $path = (string) tempnam(sys_get_temp_dir(), 'zip');
+        $zip = new ZipArchive();
+        $zip->open($path, ZipArchive::OVERWRITE);
+        $zip->addFromString('entry.txt', 'content');
+        $zip->close();
+        $content = (string) file_get_contents($path);
+        unlink($path);
+
+        return $content;
+    }
+
+    public function testTypeIsComputedOnlyOnce(): void
+    {
+        $path = TESTS_TMP_PATH . '/note.txt';
+        FileSystem::write($path, 'hello');
         $file = new File($path);
 
-        $this->assertNull($file->type());
+        $this->assertSame('text', $file->type());
+
+        FileSystem::delete($path);
+
+        $this->assertSame('text', $file->type());
     }
 
     public function testUriRequiresGeneratorAndDelegatesRelativeAndAbsoluteGeneration(): void
@@ -174,24 +228,33 @@ final class FileTest extends TestCase
         );
     }
 
-    public function testStringRepresentationUsesTheFileName(): void
+    public function testSaveStoresOnlyValuesDifferentFromTheSchemeDefaults(): void
     {
-        $path = TESTS_TMP_PATH . '/document.txt';
-        FileSystem::write($path, 'content');
-        $file = new File($path);
+        $path = TESTS_TMP_PATH . '/sample.txt';
+        $meta = $path . '.meta.yaml';
+        FileSystem::write($path, 'hello');
 
-        $this->assertSame('document.txt', (string) $file);
-        $this->assertSame('document.txt', $file->name());
-        $this->assertSame('txt', $file->extension());
+        $fields = new FieldCollection([
+            'caption' => $this->app()->getService(FieldFactory::class)->make('caption', ['type' => 'text', 'default' => 'untitled']),
+        ]);
+        $scheme = $this->createStub(Scheme::class);
+        $scheme->method('fields')->willReturn($fields);
+
+        $file = new File($path);
+        $file->setScheme($scheme);
+        $file->set('caption', 'untitled');
+        $file->save();
+
+        $this->assertFileDoesNotExist($meta);
+
+        $file->set('caption', 'A custom caption');
+        $file->save();
+
+        $this->assertSame(['caption' => 'A custom caption'], Yaml::parseFile($meta));
     }
 
-    public function testTypeClassificationIsConsistentWithTheMimeTypeAndExtension(): void
+    private function app(): App
     {
-        $path = TESTS_TMP_PATH . '/document.pdf';
-        FileSystem::write($path, '%PDF-1.4');
-        $file = new File($path);
-
-        $this->assertSame('pdf', $file->type());
-        $this->assertSame($file->type(), $file->type());
+        return App::instance();
     }
 }
