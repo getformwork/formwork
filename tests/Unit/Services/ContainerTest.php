@@ -26,6 +26,7 @@ use Formwork\Tests\Unit\Services\Fixtures\FailingResolutionAwareLoader;
 use Formwork\Tests\Unit\Services\Fixtures\InvalidReturnLoader;
 use Formwork\Tests\Unit\Services\Fixtures\LoadedService;
 use Formwork\Tests\Unit\Services\Fixtures\NestedDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\OptionalAttributeDependentService;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalDependencyService;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalIntegerService;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalStringService;
@@ -124,6 +125,37 @@ final class ContainerTest extends TestCase
         $service = $container->get(AttributeDependentService::class);
 
         $this->assertSame($selected, $service->service);
+    }
+
+    public function testServiceAttributeFallsBackToTheDefaultWhenTheIdentifierIsNotDefined(): void
+    {
+        $container = new Container();
+        $container->define(OptionalAttributeDependentService::class);
+
+        $this->assertNull($container->get(OptionalAttributeDependentService::class)->service);
+    }
+
+    public function testServiceAttributeTakesPrecedenceOverTheDefaultWhenTheIdentifierIsDefined(): void
+    {
+        $container = new Container();
+        $selected = new SimpleService();
+        $container->define('selected', $selected);
+        $container->define(OptionalAttributeDependentService::class);
+
+        $this->assertSame($selected, $container->get(OptionalAttributeDependentService::class)->service);
+    }
+
+    public function testServiceAttributeWithoutDefaultReportsTheMissingIdentifier(): void
+    {
+        $container = new Container();
+        $container->define(AttributeDependentService::class);
+
+        try {
+            $container->get(AttributeDependentService::class);
+            $this->fail('The undefined service should have been reported.');
+        } catch (ServiceNotFoundException $exception) {
+            $this->assertStringContainsString('"selected"', $exception->getMessage());
+        }
     }
 
     public function testClosuresCanBeUsedAsFactoriesAndAreShared(): void
@@ -307,6 +339,43 @@ final class ContainerTest extends TestCase
         $this->assertInstanceOf(SimpleService::class, $container->get(SimpleService::class));
     }
 
+    public function testParametersSetAfterLazyFalseAreApplied(): void
+    {
+        $container = new Container();
+        $container->define(ArrayOptionsService::class)
+            ->lazy(false)
+            ->parameter('options', ['configured' => true]);
+
+        $this->assertSame(['configured' => true], $container->get(ArrayOptionsService::class)->options);
+    }
+
+    public function testLoaderSetAfterLazyFalseIsApplied(): void
+    {
+        $container = new Container();
+        $container->define(SharedDependency::class, new SharedDependency());
+        $container->define('loaded')
+            ->lazy(false)
+            ->loader(TestServiceLoader::class);
+
+        $this->assertInstanceOf(LoadedService::class, $container->get('loaded'));
+        $this->assertSame(1, TestServiceLoader::$loadCount);
+    }
+
+    public function testLazyFalseServicesAreResolvedOnlyOnce(): void
+    {
+        $container = new Container();
+        $container->define(SharedDependency::class, new SharedDependency());
+        $container->define('loaded')
+            ->loader(TestServiceLoader::class)
+            ->lazy(false);
+
+        $first = $container->get('loaded');
+
+        $this->assertSame($first, $container->get('loaded'));
+        $this->assertSame(1, TestServiceLoader::$loadCount);
+        $this->assertSame(1, TestServiceLoader::$resolvedCount);
+    }
+
     public function testAliasesResolveToTheTargetAndPreserveItsIdentity(): void
     {
         $container = new Container();
@@ -378,6 +447,52 @@ final class ContainerTest extends TestCase
 
         $this->expectException(ContainerException::class);
         $container->alias('same', 'same');
+    }
+
+    public function testAliasCannotShadowADefinedService(): void
+    {
+        $container = new Container();
+        $own = new SimpleService();
+        $container->define('name', $own);
+        $container->define('target', new SimpleService());
+
+        try {
+            $container->alias('name', 'target');
+            $this->fail('The alias would hide the defined service.');
+        } catch (ContainerException $exception) {
+            $this->assertStringContainsString('name', $exception->getMessage());
+        }
+
+        $this->assertSame($own, $container->get('name'));
+    }
+
+    public function testDefinitionAliasCannotShadowADefinedService(): void
+    {
+        $container = new Container();
+        $own = new SimpleService();
+        $container->define('name', $own);
+
+        try {
+            $container->define('target', new SimpleService())->alias('name');
+            $this->fail('The alias would hide the defined service.');
+        } catch (ContainerException) {
+        }
+
+        $this->assertSame($own, $container->get('name'));
+    }
+
+    public function testInterfaceAliasCanBeDefinedBeforeItsTargetAndRepointedLater(): void
+    {
+        $container = new Container();
+        $container->alias(DependencyContract::class, 'first');
+        $container->define('first', new SimpleService());
+        $container->define('second', new SimpleService());
+
+        $this->assertSame($container->get('first'), $container->get(DependencyContract::class));
+
+        $container->alias(DependencyContract::class, 'second');
+
+        $this->assertSame($container->get('second'), $container->get(DependencyContract::class));
     }
 
     public function testDefiningAServiceWithTheNameOfAnAliasMakesTheNewDefinitionReachable(): void
