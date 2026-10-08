@@ -10,12 +10,17 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionClass;
 use RuntimeException;
+use TypeError;
+use UnexpectedValueException;
 
 #[CoversClass(Page::class)]
+#[UsesApplication]
 final class PageTest extends TestCase
 {
     private App $app;
@@ -47,9 +52,12 @@ final class PageTest extends TestCase
         $this->assertSame('about', $page->slug());
         $this->assertSame('/about/', $page->route());
         $this->assertStringEndsWith('/about/', $page->uri('', false));
-        $this->assertNotNull($page->path());
-        $this->assertNotNull($page->relativePath());
-        $this->assertNotNull($page->contentFile());
+        $this->assertStringEndsWith('/about/', (string) $page->path());
+        $this->assertSame('/about/', $page->relativePath());
+        $this->assertSame($page->path(), $page->contentPath());
+        $this->assertSame('page.md', basename((string) $page->contentFile()?->path()));
+        $this->assertNull($page->num());
+        $this->assertSame(1, $page->level());
         $this->assertSame($page->title(), (string) $page);
         $this->assertSame($page, $page->site()->findPage('/about'));
     }
@@ -66,7 +74,11 @@ final class PageTest extends TestCase
         $this->assertSame(200, $defaults['responseStatus']);
         $this->assertSame([], $defaults['metadata']);
         $this->assertSame([], $defaults['taxonomy']);
-        $this->assertIsString($defaults['content']);
+        $this->assertSame('', $defaults['content']);
+        $this->assertSame([], $defaults['headers']);
+        $this->assertNull($defaults['canonicalRoute']);
+        $this->assertNull($defaults['publishDate']);
+        $this->assertNull($defaults['unpublishDate']);
     }
 
     public function testPageWithoutAPathGetsUnroutableDefaults(): void
@@ -81,6 +93,18 @@ final class PageTest extends TestCase
         $this->assertFalse($defaults['listed']);
         $this->assertFalse($defaults['orderable']);
         $this->assertTrue($page->isEmpty());
+    }
+
+    public function testPageLoadedEventIsDispatchedWhenAPageIsLoaded(): void
+    {
+        $loaded = [];
+        $this->app->events()->on('pageLoaded', function (object $event) use (&$loaded): void {
+            $loaded[] = $event->page();
+        });
+
+        $page = $this->temporaryPage('about');
+
+        $this->assertContains($page, $loaded);
     }
 
     public function testGetHasAndSetWorkForFrontmatterAndRuntimeFields(): void
@@ -142,6 +166,23 @@ final class PageTest extends TestCase
         $page->set('language', 'fr');
     }
 
+    public function testInvalidLanguageChangeLeavesTheCurrentLanguageUntouched(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
+        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
+
+        try {
+            $page->set('language', 'fr');
+            $this->fail('The invalid language should have been rejected.');
+        } catch (InvalidValueException) {
+            // Expected.
+        }
+
+        $this->assertSame('it', $page->language()?->code());
+        $this->assertSame('Italiano', $page->title());
+    }
+
     public function testIconIsReadFromTheSchemeAndCanBeOverridden(): void
     {
         $page = $this->temporaryPage('blog');
@@ -171,6 +212,36 @@ final class PageTest extends TestCase
 
         $this->assertSame($expectedStatus, $page->status());
         $this->assertSame($expectedStatus === Page::PAGE_STATUS_PUBLISHED, $page->isPublished());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, string}>
+     */
+    public static function statusProvider(): iterable
+    {
+        yield 'published by default' => [[], Page::PAGE_STATUS_PUBLISHED];
+        yield 'explicitly published' => [['published' => true], Page::PAGE_STATUS_PUBLISHED];
+        yield 'explicitly not published' => [['published' => false], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'publish date in the past' => [['publishDate' => '2000-01-01'], Page::PAGE_STATUS_PUBLISHED];
+        yield 'publish date in the future' => [['publishDate' => '2099-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'unpublish date in the future' => [['unpublishDate' => '2099-01-01'], Page::PAGE_STATUS_PUBLISHED];
+        yield 'unpublish date in the past' => [['unpublishDate' => '2000-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
+        yield 'inside the publication window' => [
+            ['publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_PUBLISHED,
+        ];
+        yield 'window already closed' => [
+            ['publishDate' => '2000-01-01', 'unpublishDate' => '2001-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
+        yield 'window not opened yet' => [
+            ['publishDate' => '2098-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
+        yield 'not published overrides a valid window' => [
+            ['published' => false, 'publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
+            Page::PAGE_STATUS_NOT_PUBLISHED,
+        ];
     }
 
     public function testMetadataTaxonomyAndResponseStatusAreNormalized(): void
@@ -210,14 +281,19 @@ final class PageTest extends TestCase
         }
     }
 
-    #[DataProvider('validSlugProvider')]
-    public function testValidSlugIsAccepted(string $slug): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidSlugProvider(): iterable
     {
-        $page = $this->temporaryPage('about');
-
-        $page->set('slug', $slug);
-
-        $this->assertSame($slug, $page->slug());
+        yield 'empty' => [''];
+        yield 'spaces' => ['not a valid slug'];
+        yield 'underscore' => ['under_score'];
+        yield 'leading hyphen' => ['-slug'];
+        yield 'trailing hyphen' => ['slug-'];
+        yield 'consecutive hyphens' => ['a--b'];
+        yield 'slash' => ['a/b'];
+        yield 'accented character' => ['perché'];
     }
 
     public function testInvalidTemplateIsRejected(): void
@@ -250,6 +326,14 @@ final class PageTest extends TestCase
 
         $this->expectException($exception);
         $page->set('taxonomy', $taxonomy);
+    }
+
+    public static function invalidTaxonomyProvider(): iterable
+    {
+        yield 'scalar' => ['not-an-array', TypeError::class];
+        yield 'non-string taxonomy name' => [[1 => ['term']], InvalidValueException::class];
+        yield 'non-list terms' => [['tags' => 'php'], InvalidValueException::class];
+        yield 'non-string term' => [['tags' => [1]], InvalidValueException::class];
     }
 
     public function testTraversalMethodsExposeThePageTree(): void
@@ -351,8 +435,25 @@ final class PageTest extends TestCase
         $site = $this->temporarySite();
         $page = new Page(['site' => $site], $this->app);
 
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $page->save();
+    }
+
+    public function testSaveReloadRoundTripPreservesThePersistedState(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->setMultiple([
+            'slug'    => 'renamed',
+            'title'   => 'Persisted title',
+            'content' => 'Persisted content',
+        ]);
+        $page->save();
+        $page->reload();
+
+        $this->assertSame('renamed', $page->slug());
+        $this->assertSame('/renamed/', $page->route());
+        $this->assertSame('Persisted title', $page->title());
+        $this->assertSame('Persisted content', $page->contentFile()?->content());
     }
 
     public function testReloadRejectsAnUnloadedPage(): void
@@ -361,12 +462,45 @@ final class PageTest extends TestCase
         $page->reload();
         $this->assertTrue($page->hasLoaded());
 
-        $reflection = new \ReflectionClass($page);
+        $reflection = new ReflectionClass($page);
         $loaded = $reflection->getProperty('loaded');
         $loaded->setValue($page, false);
 
         $this->expectException(RuntimeException::class);
         $page->reload();
+    }
+
+    public function testReloadReconstructsAllDerivedAndCachedStateFromDisk(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->metadata();
+        $path = $page->contentFile()?->path();
+        $this->assertNotNull($path);
+
+        FileSystem::write($path, "---\ntitle: Reloaded\nmetadata:\n  description: Fresh\n---\nFresh content\n");
+
+        $page->reload();
+
+        $this->assertSame('Reloaded', $page->title());
+        $this->assertSame('Fresh content', $page->contentFile()?->content());
+        $this->assertSame('Fresh', $page->metadata()->get('description')->content());
+    }
+
+    public function testReloadDiscardsLazilyCachedStatusAndModificationTime(): void
+    {
+        $page = $this->temporaryPage('about');
+        $file = (string) $page->contentFile()?->path();
+        $modifiedBefore = $page->lastModifiedTime();
+
+        $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $page->status());
+        $this->assertIsInt($modifiedBefore);
+
+        FileSystem::write($file, "---\ntitle: About\npublished: false\n---\nContent\n");
+        touch($file, $modifiedBefore + 1000);
+        $page->reload();
+
+        $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $page->status());
+        $this->assertSame($modifiedBefore + 1000, $page->lastModifiedTime());
     }
 
     public function testDuplicateCreatesAnIndependentCopyAndDeleteRemovesIt(): void
@@ -392,6 +526,48 @@ final class PageTest extends TestCase
         $second = $page->duplicate();
 
         $this->assertSame('original-copy', $first->slug());
+        $this->assertSame('original-copy-2', $second->slug());
+    }
+
+    public function testDuplicateDoesNotShareMutableMetadataStateWithTheSource(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->set('metadata', ['description' => 'Original']);
+        $originalMetadata = $page->metadata();
+
+        $duplicate = $page->duplicate();
+        $duplicate->metadata()->set('description', 'Duplicate');
+
+        $this->assertSame('Original', $originalMetadata->get('description')->content());
+        $this->assertSame('Duplicate', $duplicate->metadata()->get('description')->content());
+    }
+
+    public function testDuplicateGetsAnIndependentDataSet(): void
+    {
+        $page = $this->temporaryPage('original');
+        $originalTitle = $page->title();
+        $duplicate = $page->duplicate();
+
+        $this->assertSame($originalTitle, $duplicate->title());
+
+        $duplicate->set('title', 'Duplicate');
+        $page->set('published', false);
+
+        $this->assertSame($originalTitle, $page->title());
+        $this->assertSame('Duplicate', $duplicate->title());
+        $this->assertTrue($duplicate->get('published', true));
+    }
+
+    public function testDuplicateFillsTheFirstAvailableCopySlug(): void
+    {
+        $page = $this->temporaryPage('original');
+        $first = $page->duplicate();
+        $second = $page->duplicate();
+        $first->delete();
+        $third = $page->duplicate();
+
+        $this->assertSame('original-copy', $third->slug());
+        $this->assertSame($third->contentPath(), $first->contentPath());
         $this->assertSame('original-copy-2', $second->slug());
     }
 
@@ -462,7 +638,7 @@ final class PageTest extends TestCase
         $this->assertFalse($page->hasChildren());
         $this->assertFalse($page->hasDescendants());
         $this->assertTrue($page->hasSiblings());
-        $this->assertNotNull($page->lastModifiedTime());
+        $this->assertSame(filemtime((string) $page->contentFile()?->path()), $page->lastModifiedTime());
         $this->assertSame($page->files(), $page->files());
     }
 
@@ -503,18 +679,6 @@ final class PageTest extends TestCase
         );
     }
 
-    public function testPageLoadedEventIsDispatchedWhenAPageIsLoaded(): void
-    {
-        $loaded = [];
-        $this->app->events()->on('pageLoaded', function (object $event) use (&$loaded): void {
-            $loaded[] = $event->page();
-        });
-
-        $page = $this->temporaryPage('about');
-
-        $this->assertContains($page, $loaded);
-    }
-
     public function testRenderDispatchesPageRenderEventAndReturnsMarkup(): void
     {
         $page = $this->fixturePage('/about');
@@ -530,173 +694,33 @@ final class PageTest extends TestCase
         $this->assertStringContainsString('About', $output);
     }
 
-    public function testChangingSlugKeepsPathIdentityUntilSave(): void
+    public function testPagesWithoutANumberAreNeitherListedNorOrderableByDefault(): void
+    {
+        $defaults = $this->fixturePage('/about')->defaults();
+
+        $this->assertNull($this->fixturePage('/about')->num());
+        $this->assertFalse($defaults['listed']);
+        $this->assertFalse($defaults['orderable']);
+    }
+
+    public function testNumberedPagesAreListedAndOrderableByDefault(): void
+    {
+        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/Fixtures/numbered-site'));
+        $defaults = $page->defaults();
+
+        $this->assertSame(1, $page->num());
+        $this->assertTrue($defaults['listed']);
+        $this->assertTrue($defaults['orderable']);
+    }
+
+    #[DataProvider('validSlugProvider')]
+    public function testValidSlugIsAccepted(string $slug): void
     {
         $page = $this->temporaryPage('about');
-        $path = $page->path();
 
-        $page->set('slug', 'renamed');
+        $page->set('slug', $slug);
 
-        $this->assertSame($path, $page->path());
-        $this->assertSame('renamed', $page->slug());
-    }
-
-    public function testReloadReconstructsAllDerivedAndCachedStateFromDisk(): void
-    {
-        $page = $this->temporaryPage('about');
-        $page->metadata();
-        $path = $page->contentFile()?->path();
-        $this->assertNotNull($path);
-
-        FileSystem::write($path, "---\ntitle: Reloaded\nmetadata:\n  description: Fresh\n---\nFresh content\n");
-
-        $page->reload();
-
-        $this->assertSame('Reloaded', $page->title());
-        $this->assertSame('Fresh content', $page->contentFile()?->content());
-        $this->assertSame('Fresh', $page->metadata()->get('description')->content());
-    }
-
-    public function testReloadAfterExternalPathChangeDoesNotRetainOldLazyProperties(): void
-    {
-        $page = $this->temporaryPage('about');
-        $page->route();
-        $page->num();
-        $page->lastModifiedTime();
-
-        $page->reload();
-
-        $this->assertSame('/about/', $page->route());
-        $this->assertSame('about', $page->slug());
-        $this->assertNotNull($page->lastModifiedTime());
-    }
-
-    public function testDuplicateDoesNotShareMutableMetadataStateWithTheSource(): void
-    {
-        $page = $this->temporaryPage('about');
-        $page->set('metadata', ['description' => 'Original']);
-        $originalMetadata = $page->metadata();
-
-        $duplicate = $page->duplicate();
-        $duplicate->metadata()->set('description', 'Duplicate');
-
-        $this->assertSame('Original', $originalMetadata->get('description')->content());
-        $this->assertSame('Duplicate', $duplicate->metadata()->get('description')->content());
-    }
-
-    public function testDuplicateGetsAnIndependentDataSet(): void
-    {
-        $page = $this->temporaryPage('original');
-        $duplicate = $page->duplicate();
-
-        $duplicate->set('title', 'Duplicate');
-
-        $this->assertNotSame($page->title(), $duplicate->title());
-    }
-
-    public function testDuplicateFillsTheFirstAvailableCopySlug(): void
-    {
-        $page = $this->temporaryPage('original');
-        $first = $page->duplicate();
-        $second = $page->duplicate();
-        $first->delete();
-        $third = $page->duplicate();
-
-        $this->assertSame('original-copy', $third->slug());
-        $this->assertSame($third->contentPath(), $first->contentPath());
-        $this->assertSame('original-copy-2', $second->slug());
-    }
-
-    public function testSaveReloadRoundTripPreservesThePersistedState(): void
-    {
-        $page = $this->temporaryPage('about');
-        $page->setMultiple([
-            'slug'    => 'renamed',
-            'title'   => 'Persisted title',
-            'content' => 'Persisted content',
-        ]);
-        $page->save();
-        $page->reload();
-
-        $this->assertSame('renamed', $page->slug());
-        $this->assertSame('/renamed/', $page->route());
-        $this->assertSame('Persisted title', $page->title());
-        $this->assertSame('Persisted content', $page->contentFile()?->content());
-    }
-
-    public function testChangingLanguageReloadsTheCorrespondingContentVersion(): void
-    {
-        $site = $this->temporarySite();
-        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
-        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
-
-        $this->assertSame('it', $page->language()?->code());
-        $page->set('language', 'en');
-
-        $this->assertSame('en', $page->language()?->code());
-        $this->assertSame('English', $page->title());
-    }
-
-    public function testInvalidLanguageChangeLeavesTheCurrentLanguageUntouched(): void
-    {
-        $site = $this->temporarySite();
-        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
-        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
-
-        try {
-            $page->set('language', 'fr');
-            $this->fail('The invalid language should have been rejected.');
-        } catch (\Throwable) {
-            // Expected.
-        }
-
-        $this->assertSame('it', $page->language()?->code());
-        $this->assertSame('Italiano', $page->title());
-    }
-
-    /**
-     * @return iterable<string, array{array<string, mixed>, string}>
-     */
-    public static function statusProvider(): iterable
-    {
-        yield 'published by default' => [[], Page::PAGE_STATUS_PUBLISHED];
-        yield 'explicitly published' => [['published' => true], Page::PAGE_STATUS_PUBLISHED];
-        yield 'explicitly not published' => [['published' => false], Page::PAGE_STATUS_NOT_PUBLISHED];
-        yield 'publish date in the past' => [['publishDate' => '2000-01-01'], Page::PAGE_STATUS_PUBLISHED];
-        yield 'publish date in the future' => [['publishDate' => '2099-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
-        yield 'unpublish date in the future' => [['unpublishDate' => '2099-01-01'], Page::PAGE_STATUS_PUBLISHED];
-        yield 'unpublish date in the past' => [['unpublishDate' => '2000-01-01'], Page::PAGE_STATUS_NOT_PUBLISHED];
-        yield 'inside the publication window' => [
-            ['publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
-            Page::PAGE_STATUS_PUBLISHED,
-        ];
-        yield 'window already closed' => [
-            ['publishDate' => '2000-01-01', 'unpublishDate' => '2001-01-01'],
-            Page::PAGE_STATUS_NOT_PUBLISHED,
-        ];
-        yield 'window not opened yet' => [
-            ['publishDate' => '2098-01-01', 'unpublishDate' => '2099-01-01'],
-            Page::PAGE_STATUS_NOT_PUBLISHED,
-        ];
-        yield 'not published overrides a valid window' => [
-            ['published' => false, 'publishDate' => '2000-01-01', 'unpublishDate' => '2099-01-01'],
-            Page::PAGE_STATUS_NOT_PUBLISHED,
-        ];
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function invalidSlugProvider(): iterable
-    {
-        yield 'empty' => [''];
-        yield 'spaces' => ['not a valid slug'];
-        yield 'underscore' => ['under_score'];
-        yield 'leading hyphen' => ['-slug'];
-        yield 'trailing hyphen' => ['slug-'];
-        yield 'consecutive hyphens' => ['a--b'];
-        yield 'slash' => ['a/b'];
-        yield 'accented character' => ['perché'];
+        $this->assertSame($slug, $page->slug());
     }
 
     /**
@@ -710,12 +734,28 @@ final class PageTest extends TestCase
         yield 'hyphenated' => ['my-new-page-2'];
     }
 
-    public static function invalidTaxonomyProvider(): iterable
+    public function testChangingSlugKeepsPathIdentityUntilSave(): void
     {
-        yield 'scalar' => ['not-an-array', \TypeError::class];
-        yield 'non-string taxonomy name' => [[1 => ['term']], InvalidValueException::class];
-        yield 'non-list terms' => [['tags' => 'php'], InvalidValueException::class];
-        yield 'non-string term' => [['tags' => [1]], InvalidValueException::class];
+        $page = $this->temporaryPage('about');
+        $path = $page->path();
+
+        $page->set('slug', 'renamed');
+
+        $this->assertSame($path, $page->path());
+        $this->assertSame('renamed', $page->slug());
+    }
+
+    public function testChangingLanguageReloadsTheCorrespondingContentVersion(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
+        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
+
+        $this->assertSame('it', $page->language()?->code());
+        $page->set('language', 'en');
+
+        $this->assertSame('en', $page->language()?->code());
+        $this->assertSame('English', $page->title());
     }
 
     private function fixturePage(string $route): Page

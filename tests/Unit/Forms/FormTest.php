@@ -15,11 +15,14 @@ use Formwork\Http\RequestMethod;
 use Formwork\Http\ResponseStatus;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 #[CoversClass(Form::class)]
+#[UsesApplication]
 final class FormTest extends TestCase
 {
     private App $app;
@@ -215,6 +218,25 @@ final class FormTest extends TestCase
         $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
     }
 
+    public function testInvalidSubmissionDoesNotInvokeTheUploader(): void
+    {
+        $uploader = $this->createMock(FileUploader::class);
+        $uploader->expects($this->never())->method('upload');
+        $form = $this->createForm('upload', [
+            'name'  => $this->createField('name', ['type' => 'text', 'required' => true]),
+            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
+        ], $uploader);
+
+        $form->processRequest($this->createRequest(
+            RequestMethod::POST,
+            files: ['photo' => $this->uploadData()],
+        ));
+
+        $this->assertFalse($form->isValid());
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
+        $this->assertSame([], $form->uploadedFiles());
+    }
+
     public function testFormDataContainsNonUploadFields(): void
     {
         $fields = [
@@ -261,6 +283,27 @@ final class FormTest extends TestCase
         $this->assertSame(['name' => 'Sempronius'], $form->data()->toArray());
     }
 
+    public function testUploadFailureDoesNotFabricateAnUploadedFile(): void
+    {
+        $uploader = $this->createStub(FileUploader::class);
+        $uploader->method('upload')->willThrowException(new RuntimeException('upload failed'));
+        $form = $this->createForm('upload', [
+            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
+        ], $uploader);
+
+        try {
+            $form->processRequest($this->createRequest(
+                RequestMethod::POST,
+                files: ['photo' => $this->uploadData()],
+            ));
+            $this->fail('The upload exception should have propagated.');
+        } catch (RuntimeException) {
+            // Expected.
+        }
+
+        $this->assertSame([], $form->uploadedFiles());
+    }
+
     public function testPreserveEmptyKeepsEmptyFields(): void
     {
         $fields = [
@@ -289,6 +332,23 @@ final class FormTest extends TestCase
         $form->processRequest($this->createRequest(RequestMethod::POST), preserveEmpty: false);
 
         $this->assertSame([], $form->data()->toArray());
+    }
+
+    public function testPreserveEmptyFalseChangesOnlyTheFormDataProjection(): void
+    {
+        $fields = [
+            'name'    => $this->createField('name', ['type' => 'text']),
+            'message' => $this->createField('message', ['type' => 'text']),
+        ];
+        $form = $this->createForm('contact', $fields);
+
+        $form->processRequest($this->createRequest(
+            RequestMethod::POST,
+            input: ['name' => 'Alice'],
+        ), preserveEmpty: false);
+
+        $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
+        $this->assertSame('', $form->fields()->get('message')->value());
     }
 
     public function testSetDefaultUploadsDestinationReturnsTheSameForm(): void
@@ -442,6 +502,24 @@ final class FormTest extends TestCase
         $this->assertSame([$uploadedFile], $form->uploadedFiles());
     }
 
+    public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
+    {
+        $uploaded = new File('/uploads/result.jpg');
+        $uploader = $this->createMock(FileUploader::class);
+        $uploader->expects($this->once())
+            ->method('upload')
+            ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
+            ->willReturn($uploaded);
+
+        $form = $this->createForm('upload', [
+            'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
+        ], $uploader);
+        $form->setDefaultUploadsDestination('/default');
+        $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
+
+        $this->assertSame([$uploaded], $form->uploadedFiles());
+    }
+
     public function testFieldUploadDestinationTakesPrecedenceOverDefaultDestination(): void
     {
         $uploadedFile = new File('/field-uploads/photo.jpg');
@@ -542,6 +620,47 @@ final class FormTest extends TestCase
         ]));
 
         $this->assertSame([$firstResult, $secondResult], $form->uploadedFiles());
+    }
+
+    #[DataProvider('fieldTypesProvider')]
+    public function testFieldTypeValues(
+        string $type,
+        array $config,
+        mixed $submittedValue,
+        mixed $expectedSubmittedValue,
+        mixed $expectedMissingValue,
+    ): void {
+        $fieldName = $type;
+
+        $form = $this->createForm('test', [
+            $fieldName => $this->createField($fieldName, [
+                'type' => $type,
+                ...$config,
+            ]),
+        ]);
+
+        $form->processRequest($this->createRequest(RequestMethod::POST, input: [
+            $fieldName => $submittedValue,
+        ]));
+
+        $this->assertSame(
+            [$fieldName => $expectedSubmittedValue],
+            $form->data()->toArray(),
+        );
+
+        $form = $this->createForm('test', [
+            $fieldName => $this->createField($fieldName, [
+                'type' => $type,
+                ...$config,
+            ]),
+        ]);
+
+        $form->processRequest($this->createRequest(RequestMethod::POST));
+
+        $this->assertSame(
+            [$fieldName => $expectedMissingValue],
+            $form->data()->toArray(),
+        );
     }
 
     public static function fieldTypesProvider(): iterable
@@ -728,136 +847,112 @@ final class FormTest extends TestCase
         ];
     }
 
-    #[DataProvider('fieldTypesProvider')]
-    public function testFieldTypeValues(
-        string $type,
-        array $config,
-        mixed $submittedValue,
-        mixed $expectedSubmittedValue,
-        mixed $expectedMissingValue,
-    ): void {
-        $fieldName = $type;
+    #[DataProvider('validSelectValueProvider')]
+    public function testSelectFieldAcceptsDeclaredOptions(array $options, mixed $submitted, mixed $expected): void
+    {
+        $form = $this->submitSelect($options, $submitted);
 
-        $form = $this->createForm('test', [
-            $fieldName => $this->createField($fieldName, [
-                'type' => $type,
-                ...$config,
-            ]),
-        ]);
-
-        $form->processRequest($this->createRequest(RequestMethod::POST, input: [
-            $fieldName => $submittedValue,
-        ]));
-
-        $this->assertSame(
-            [$fieldName => $expectedSubmittedValue],
-            $form->data()->toArray(),
-        );
-
-        $form = $this->createForm('test', [
-            $fieldName => $this->createField($fieldName, [
-                'type' => $type,
-                ...$config,
-            ]),
-        ]);
-
-        $form->processRequest($this->createRequest(RequestMethod::POST));
-
-        $this->assertSame(
-            [$fieldName => $expectedMissingValue],
-            $form->data()->toArray(),
-        );
+        $this->assertTrue($form->isValid());
+        $this->assertSame(['role' => $expected], $form->data()->toArray());
     }
 
-    public function testPreserveEmptyFalseChangesOnlyTheFormDataProjection(): void
+    /**
+     * @return iterable<string, array{array<int|string, string>, mixed, mixed}>
+     */
+    public static function validSelectValueProvider(): iterable
     {
-        $fields = [
-            'name'    => $this->createField('name', ['type' => 'text']),
-            'message' => $this->createField('message', ['type' => 'text']),
-        ];
-        $form = $this->createForm('contact', $fields);
+        $named = ['admin' => 'Administrator', 'editor' => 'Editor'];
+        $numeric = [1 => 'One', 2 => 'Two'];
 
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            input: ['name' => 'Alice'],
-        ), preserveEmpty: false);
-
-        $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
-        $this->assertSame('', $form->fields()->get('message')->value());
+        yield 'first option' => [$named, 'admin', 'admin'];
+        yield 'last option' => [$named, 'editor', 'editor'];
+        yield 'empty value' => [$named, '', ''];
+        yield 'missing value' => [$named, null, ''];
+        yield 'numeric option' => [$numeric, '1', 1];
+        yield 'other numeric option' => [$numeric, '2', 2];
     }
 
-    public function testInvalidSubmissionDoesNotInvokeTheUploader(): void
+    #[DataProvider('invalidSelectValueProvider')]
+    public function testSelectFieldRejectsValuesOutsideItsOptions(array $options, mixed $submitted): void
     {
-        $uploader = $this->createMock(FileUploader::class);
-        $uploader->expects($this->never())->method('upload');
-        $form = $this->createForm('upload', [
-            'name'  => $this->createField('name', ['type' => 'text', 'required' => true]),
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
-        ], $uploader);
-
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            files: ['photo' => $this->uploadData()],
-        ));
+        $form = $this->submitSelect($options, $submitted);
 
         $this->assertFalse($form->isValid());
         $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
-        $this->assertSame([], $form->uploadedFiles());
     }
 
-    public function testUploadFailureDoesNotFabricateAnUploadedFile(): void
+    /**
+     * @return iterable<string, array{array<int|string, string>, mixed}>
+     */
+    public static function invalidSelectValueProvider(): iterable
     {
-        $uploader = $this->createStub(FileUploader::class);
-        $uploader->method('upload')->willThrowException(new \RuntimeException('upload failed'));
-        $form = $this->createForm('upload', [
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
-        ], $uploader);
+        $named = ['admin' => 'Administrator', 'editor' => 'Editor'];
+        $numeric = [1 => 'One', 2 => 'Two'];
 
-        try {
-            $form->processRequest($this->createRequest(
-                RequestMethod::POST,
-                files: ['photo' => $this->uploadData()],
-            ));
-            $this->fail('The upload exception should have propagated.');
-        } catch (\RuntimeException) {
-            // Expected.
-        }
-
-        $this->assertSame([], $form->uploadedFiles());
+        yield 'unknown option' => [$named, 'nobody'];
+        yield 'different case' => [$named, 'Admin'];
+        yield 'surrounding space' => [$named, ' admin'];
+        yield 'option label' => [$named, 'Administrator'];
+        yield 'number for named options' => [$named, '1'];
+        yield 'zero for named options' => [$named, '0'];
+        yield 'unknown number' => [$numeric, '3'];
+        yield 'zero' => [$numeric, '0'];
+        yield 'leading zero' => [$numeric, '01'];
+        yield 'decimal number' => [$numeric, '1.9'];
+        yield 'exponent' => [$numeric, '1e0'];
+        yield 'text for numeric options' => [$numeric, 'admin'];
     }
 
-    public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
+    /**
+     * Values that PHP would silently convert to an existing array key must not match it
+     */
+    #[DataProvider('jugglingSelectValueProvider')]
+    public function testSelectFieldDoesNotAcceptValuesConvertedToAnOptionKey(mixed $submitted): void
     {
-        $uploaded = new File('/uploads/result.jpg');
-        $uploader = $this->createMock(FileUploader::class);
-        $uploader->expects($this->once())
-            ->method('upload')
-            ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
-            ->willReturn($uploaded);
+        $form = $this->submitSelect([1 => 'One', 2 => 'Two'], $submitted);
 
-        $form = $this->createForm('upload', [
-            'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
-        ], $uploader);
-        $form->setDefaultUploadsDestination('/default');
-        $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
-
-        $this->assertSame([$uploaded], $form->uploadedFiles());
+        $this->assertFalse($form->isValid());
     }
 
-    public function testFormDataNeverContainsUploadFieldValues(): void
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function jugglingSelectValueProvider(): iterable
     {
-        $form = $this->createForm('upload', [
-            'title' => $this->createField('title', ['type' => 'text']),
-            'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
+        yield 'true' => [true];
+        yield 'float with the same integer part' => [1.9];
+        yield 'negative float' => [-1.5];
+    }
+
+    #[DataProvider('nonScalarSelectValueProvider')]
+    public function testSelectFieldRejectsNonScalarValuesWithoutFailing(mixed $submitted): void
+    {
+        $form = $this->submitSelect(['admin' => 'Administrator', 'editor' => 'Editor'], $submitted);
+
+        $this->assertFalse($form->isValid());
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function nonScalarSelectValueProvider(): iterable
+    {
+        yield 'list' => [['admin']];
+        yield 'associative array' => [['admin' => 'admin']];
+        yield 'nested array' => [[['admin']]];
+    }
+
+    /**
+     * @param array<int|string, string> $options
+     */
+    private function submitSelect(array $options, mixed $submitted): Form
+    {
+        $form = $this->createForm('test', [
+            'role' => $this->createField('role', ['type' => 'select', 'options' => $options]),
         ]);
 
-        $form->processRequest($this->createRequest(
-            RequestMethod::POST,
-            input: ['title' => 'Title'],
-            files: ['photo' => $this->uploadData()],
-        ), uploadFiles: false);
-
-        $this->assertSame(['title' => 'Title'], $form->data()->toArray());
+        return $form->processRequest($this->createRequest(RequestMethod::POST, input: ['role' => $submitted]));
     }
 
     private function createField(string $name, array $data): Field
