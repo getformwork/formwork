@@ -844,6 +844,114 @@ final class FormTest extends TestCase
         ];
     }
 
+    #[DataProvider('validSelectValueProvider')]
+    public function testSelectFieldAcceptsDeclaredOptions(array $options, mixed $submitted, mixed $expected): void
+    {
+        $form = $this->submitSelect($options, $submitted);
+
+        $this->assertTrue($form->isValid());
+        $this->assertSame(['role' => $expected], $form->data()->toArray());
+    }
+
+    /**
+     * @return iterable<string, array{array<int|string, string>, mixed, mixed}>
+     */
+    public static function validSelectValueProvider(): iterable
+    {
+        $named = ['admin' => 'Administrator', 'editor' => 'Editor'];
+        $numeric = [1 => 'One', 2 => 'Two'];
+
+        yield 'first option' => [$named, 'admin', 'admin'];
+        yield 'last option' => [$named, 'editor', 'editor'];
+        yield 'empty value' => [$named, '', ''];
+        yield 'missing value' => [$named, null, ''];
+        yield 'numeric option' => [$numeric, '1', 1];
+        yield 'other numeric option' => [$numeric, '2', 2];
+    }
+
+    #[DataProvider('invalidSelectValueProvider')]
+    public function testSelectFieldRejectsValuesOutsideItsOptions(array $options, mixed $submitted): void
+    {
+        $form = $this->submitSelect($options, $submitted);
+
+        $this->assertFalse($form->isValid());
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
+    }
+
+    /**
+     * @return iterable<string, array{array<int|string, string>, mixed}>
+     */
+    public static function invalidSelectValueProvider(): iterable
+    {
+        $named = ['admin' => 'Administrator', 'editor' => 'Editor'];
+        $numeric = [1 => 'One', 2 => 'Two'];
+
+        yield 'unknown option' => [$named, 'nobody'];
+        yield 'different case' => [$named, 'Admin'];
+        yield 'surrounding space' => [$named, ' admin'];
+        yield 'option label' => [$named, 'Administrator'];
+        yield 'number for named options' => [$named, '1'];
+        yield 'zero for named options' => [$named, '0'];
+        yield 'unknown number' => [$numeric, '3'];
+        yield 'zero' => [$numeric, '0'];
+        yield 'leading zero' => [$numeric, '01'];
+        yield 'decimal number' => [$numeric, '1.9'];
+        yield 'exponent' => [$numeric, '1e0'];
+        yield 'text for numeric options' => [$numeric, 'admin'];
+    }
+
+    /**
+     * Values that PHP would silently convert to an existing array key must not match it
+     */
+    #[DataProvider('jugglingSelectValueProvider')]
+    public function testSelectFieldDoesNotAcceptValuesConvertedToAnOptionKey(mixed $submitted): void
+    {
+        $form = $this->submitSelect([1 => 'One', 2 => 'Two'], $submitted);
+
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function jugglingSelectValueProvider(): iterable
+    {
+        yield 'true' => [true];
+        yield 'float with the same integer part' => [1.9];
+        yield 'negative float' => [-1.5];
+    }
+
+    #[DataProvider('nonScalarSelectValueProvider')]
+    public function testSelectFieldRejectsNonScalarValuesWithoutFailing(mixed $submitted): void
+    {
+        $form = $this->submitSelect(['admin' => 'Administrator', 'editor' => 'Editor'], $submitted);
+
+        $this->assertFalse($form->isValid());
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $form->getResponseStatus());
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function nonScalarSelectValueProvider(): iterable
+    {
+        yield 'list' => [['admin']];
+        yield 'associative array' => [['admin' => 'admin']];
+        yield 'nested array' => [[['admin']]];
+    }
+
+    /**
+     * @param array<int|string, string> $options
+     */
+    private function submitSelect(array $options, mixed $submitted): Form
+    {
+        $form = $this->createForm('test', [
+            'role' => $this->createField('role', ['type' => 'select', 'options' => $options]),
+        ]);
+
+        return $form->processRequest($this->createRequest(RequestMethod::POST, input: ['role' => $submitted]));
+    }
+
     private function createField(string $name, array $data): Field
     {
         return $this->app->getService(FieldFactory::class)->make($name, $data);

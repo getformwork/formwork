@@ -76,6 +76,14 @@ final class VisitorTest extends TestCase
         yield 'relative referer' => ['/previous', null];
         yield 'not a URI' => ['not a uri', null];
         yield 'script URI' => ['javascript:alert(1)', null];
+        yield 'markup in the host' => ['https://<script>alert(1)</script>.test/', null];
+        yield 'markup closing an attribute' => ['https://"><script>alert(1)</script>/', null];
+        yield 'markup after a valid host' => ['https://a.test<img src=x onerror=alert(1)>/', null];
+        yield 'attribute injection' => ['https://evil.test"onmouseover="alert(1)/', null];
+        yield 'null byte in the host' => ["https://evil.test\x00.example/", null];
+        yield 'space in the host' => ['https://exa mple.test/', null];
+        yield 'underscore in the host' => ['https://a_b.test/', null];
+        yield 'credentials are not part of the source' => ['https://user:pass@search.example/', 'search.example'];
     }
 
     public function testSourceIsUnknownWhenTheHostOfTheRequestIsInvalid(): void

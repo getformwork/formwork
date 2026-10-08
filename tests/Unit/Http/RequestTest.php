@@ -158,6 +158,89 @@ final class RequestTest extends TestCase
         $invalidRequest->host();
     }
 
+    #[DataProvider('hostileHostProvider')]
+    public function testHostHeaderWithPathOrControlCharactersIsRejected(string $host): void
+    {
+        $request = $this->request(['HTTP_HOST' => $host]);
+
+        $this->expectException(UnexpectedValueException::class);
+        $request->host();
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function hostileHostProvider(): iterable
+    {
+        yield 'parent directory' => ['..'];
+        yield 'current directory' => ['.'];
+        yield 'relative traversal' => ['../../nonexistent/secret'];
+        yield 'traversal inside the name' => ['host/../x'];
+        yield 'backslash traversal' => ['..\\..\\x'];
+        yield 'encoded traversal' => ['%2e%2e%2f%2e%2e%2fetc'];
+        yield 'absolute path' => ['/nonexistent/secret'];
+        yield 'path after the host' => ['example.test/path'];
+        yield 'userinfo' => ['user@example.test'];
+        yield 'query string' => ['ex?ample'];
+        yield 'fragment' => ['a#b'];
+        yield 'multiple ports' => ['exa:mple:80'];
+        yield 'empty port' => ['example.test:'];
+        yield 'non numeric port' => ['example.test:abc'];
+        yield 'leading dot' => ['.example.test'];
+        yield 'leading hyphen' => ['-example.test'];
+        yield 'empty label' => ['a..b'];
+        yield 'underscore' => ['a_b.test'];
+        yield 'whitespace inside' => ['a b'];
+        yield 'null byte' => ["a\0b"];
+        yield 'newline' => ["a\nb"];
+        yield 'comma separated hosts' => ['a.test, b.test'];
+        yield 'wildcard' => ['*'];
+        yield 'empty' => [''];
+        yield 'label longer than 63 characters' => [str_repeat('a', 64) . '.test'];
+        yield 'invalid IPv6' => ['[zz]'];
+        yield 'non ASCII name' => ['пример.рф'];
+    }
+
+    #[DataProvider('validHostProvider')]
+    public function testValidHostHeadersAreNormalized(string $host, string $expected): void
+    {
+        $this->assertSame($expected, $this->request(['HTTP_HOST' => $host])->host());
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function validHostProvider(): iterable
+    {
+        yield 'hostname' => ['example.test', 'example.test'];
+        yield 'uppercase' => ['EXAMPLE.Test', 'example.test'];
+        yield 'surrounding whitespace' => ['  example.test  ', 'example.test'];
+        yield 'port' => ['example.test:8080', 'example.test'];
+        yield 'subdomain' => ['sub.example.test', 'sub.example.test'];
+        yield 'hyphen' => ['my-site.example.test', 'my-site.example.test'];
+        yield 'localhost' => ['localhost', 'localhost'];
+        yield 'IPv4' => ['192.0.2.1', '192.0.2.1'];
+        yield 'IPv4 with a port' => ['192.0.2.1:8080', '192.0.2.1'];
+        yield 'IPv6' => ['[2001:db8::1]', '[2001:db8::1]'];
+        yield 'IPv6 with a port' => ['[2001:db8::1]:8080', '[2001:db8::1]'];
+        yield 'punycode' => ['xn--e1afmkfd.xn--p1ai', 'xn--e1afmkfd.xn--p1ai'];
+    }
+
+    public function testHostHeaderTakesPrecedenceOverServerName(): void
+    {
+        $request = $this->request(['HTTP_HOST' => 'header.test', 'SERVER_NAME' => 'server.test']);
+
+        $this->assertSame('header.test', $request->host());
+    }
+
+    public function testInvalidHostHeaderIsNotReplacedByTheServerName(): void
+    {
+        $request = $this->request(['HTTP_HOST' => '../../etc', 'SERVER_NAME' => 'server.test']);
+
+        $this->expectException(UnexpectedValueException::class);
+        $request->host();
+    }
+
     public function testTrustedForwardedHeadersOverrideConnectionMetadata(): void
     {
         $request = $this->request([

@@ -42,6 +42,38 @@ final class PathTest extends TestCase
         $this->assertFalse(Path::isRelativeTo('D:\foo\bar\baz', 'D:\bar\foo', '\\'));
     }
 
+    #[DataProvider('containmentProvider')]
+    public function testIsRelativeToChecksContainmentOnSegmentBoundaries(string $path, string $base, bool $expected): void
+    {
+        $this->assertSame($expected, Path::isRelativeTo($path, $base));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, bool}>
+     */
+    public static function containmentProvider(): iterable
+    {
+        yield 'file inside' => ['/base/file', '/base', true];
+        yield 'nested file inside' => ['/base/a/b/file', '/base', true];
+        yield 'same path' => ['/base', '/base', true];
+        yield 'base with trailing separator' => ['/base/file', '/base/', true];
+        yield 'path with trailing separator' => ['/base/', '/base', true];
+        yield 'redundant separators' => ['/base//file', '/base', true];
+        yield 'dot segments staying inside' => ['/base/./a/../b', '/base', true];
+        yield 'everything is inside the root' => ['/base/file', '/', true];
+        yield 'root inside root' => ['/', '/', true];
+        yield 'sibling sharing the prefix' => ['/base-evil/file', '/base', false];
+        yield 'sibling sharing the prefix, same path' => ['/basement', '/base', false];
+        yield 'sibling sharing the prefix, base with trailing separator' => ['/baseX/file', '/base/', false];
+        yield 'parent' => ['/foo/bar', '/foo/bar/baz', false];
+        yield 'unrelated' => ['/other/file', '/base', false];
+        yield 'traversal leaving the base' => ['/base/../nonexistent/secret', '/base', false];
+        yield 'traversal to the parent' => ['/base/..', '/base', false];
+        yield 'traversal to a sibling sharing the prefix' => ['/base/../base-evil', '/base', false];
+        yield 'traversal that comes back' => ['/base/a/../../base/x', '/base', true];
+        yield 'different case' => ['/BASE/file', '/base', false];
+    }
+
     public function testIsRelativeToThrowsOnNonAbsolutePath(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -54,6 +86,34 @@ final class PathTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base must be an absolute path');
         Path::isRelativeTo('C:\foo\bar\baz', 'foo\bar', '\\');
+    }
+
+    #[DataProvider('basenameProvider')]
+    public function testBasename(string $path, string $suffix, string $expected): void
+    {
+        $this->assertSame($expected, Path::basename($path, $suffix));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function basenameProvider(): iterable
+    {
+        yield 'POSIX path' => ['/a/b/c.txt', '', 'c.txt'];
+        yield 'file name only' => ['c.txt', '', 'c.txt'];
+        yield 'Windows path' => ['a\\b\\c.txt', '', 'c.txt'];
+        yield 'Windows path with a drive' => ['C:\\dir\\file.php', '', 'file.php'];
+        yield 'mixed separators' => ['a/b\\c.txt', '', 'c.txt'];
+        yield 'trailing POSIX separator' => ['a/b/', '', 'b'];
+        yield 'trailing Windows separator' => ['a\\b\\', '', 'b'];
+        yield 'Windows traversal' => ['..\\..\\secret.txt', '', 'secret.txt'];
+        yield 'POSIX traversal' => ['../../secret.txt', '', 'secret.txt'];
+        yield 'traversal only' => ['..', '', '..'];
+        yield 'empty path' => ['', '', ''];
+        yield 'root' => ['/', '', ''];
+        yield 'suffix is removed' => ['C:\\dir\\file.php', '.php', 'file'];
+        yield 'suffix is not removed when it does not match' => ['/a/file.php', '.txt', 'file.php'];
+        yield 'suffix equal to the whole name is kept' => ['/a/.php', '.php', '.php'];
     }
 
     public function testNormalize(): void

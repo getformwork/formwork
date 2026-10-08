@@ -285,7 +285,7 @@ final class SessionTest extends TestCase
     public static function invalidSessionIdProvider(): iterable
     {
         yield 'too short' => ['abc'];
-        yield 'path traversal' => ['../../etc/passwd-0000000000000'];
+        yield 'path traversal' => ['../../nonexistent/secret-0000000000000'];
         yield 'invalid characters' => ['abcdefghijklmnopqrstuvwxyz!@#$%'];
         yield 'too long' => [str_repeat('a', 257)];
     }
