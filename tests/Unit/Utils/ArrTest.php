@@ -8,6 +8,7 @@ use Formwork\Tests\Unit\Utils\Fixtures\StringableFixture;
 use Formwork\Tests\Unit\Utils\Fixtures\TraversableFixture;
 use Formwork\Utils\Arr;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversClass(Arr::class)]
@@ -1452,5 +1453,98 @@ final class ArrTest extends TestCase
         $this->assertSame(['keep' => true], Arr::exclude($array, [
             'config' => ['a' => 1, 'b' => 2],
         ]));
+    }
+
+    public function testSpliceInsertsWithoutRemovingWhenTheLengthIsZero(): void
+    {
+        $data = ['a' => 1, 'b' => 2];
+
+        $removed = Arr::splice($data, 1, 0, ['z' => 9]);
+
+        $this->assertSame([], $removed);
+        $this->assertSame(['a' => 1, 'z' => 9, 'b' => 2], $data);
+    }
+
+    public function testSpliceWithoutLengthRemovesEverythingFromTheOffset(): void
+    {
+        $data = ['a' => 1, 'b' => 2, 'c' => 3];
+
+        $removed = Arr::splice($data, 1, null, ['z' => 9]);
+
+        $this->assertSame(['b' => 2, 'c' => 3], $removed);
+        $this->assertSame(['a' => 1, 'z' => 9], $data);
+    }
+
+    public function testAtReturnsItemsByPositionFromTheStartOrTheEnd(): void
+    {
+        $data = ['x' => 5, 'y' => 6, 'z' => 7];
+
+        $this->assertSame(5, Arr::at($data, 0));
+        $this->assertSame(6, Arr::at($data, 1));
+        $this->assertSame(7, Arr::at($data, -1));
+        $this->assertSame(5, Arr::at($data, -3));
+    }
+
+    public function testAtReturnsNullOutsideTheArray(): void
+    {
+        $this->assertNull(Arr::at([5, 6, 7], 3));
+        $this->assertNull(Arr::at([5, 6, 7], -4));
+        $this->assertNull(Arr::at([], 0));
+        $this->assertNull(Arr::at([], -1));
+    }
+
+    public function testIndexOfAndKeyOfCompareValuesStrictly(): void
+    {
+        $this->assertNull(Arr::indexOf(['1', 2, 0], 1));
+        $this->assertNull(Arr::indexOf(['a', 0], '0'));
+        $this->assertNull(Arr::keyOf(['x' => '1'], 1));
+        $this->assertNull(Arr::keyOf(['x' => 0], false));
+
+        $this->assertSame(1, Arr::indexOf(['1', 1, 1], 1));
+        $this->assertSame('y', Arr::keyOf(['x' => '1', 'y' => 1, 'z' => 1], 1));
+    }
+
+    public function testIndexOfIgnoresKeysWhileKeyOfReturnsThem(): void
+    {
+        $data = ['a' => 'first', 'b' => 'second'];
+
+        $this->assertSame(1, Arr::indexOf($data, 'second'));
+        $this->assertSame('b', Arr::keyOf($data, 'second'));
+        $this->assertNull(Arr::indexOf($data, 'missing'));
+        $this->assertNull(Arr::keyOf($data, 'missing'));
+    }
+
+    #[DataProvider('flattenDepthProvider')]
+    public function testFlattenStopsAtTheGivenDepth(int $depth, array $expected): void
+    {
+        $this->assertSame($expected, Arr::flatten([1, [2, [3, [4]]]], $depth));
+    }
+
+    /**
+     * @return iterable<string, array{int, array<mixed>}>
+     */
+    public static function flattenDepthProvider(): iterable
+    {
+        yield 'depth zero keeps the array untouched' => [0, [1, [2, [3, [4]]]]];
+        yield 'depth one' => [1, [1, 2, [3, [4]]]];
+        yield 'depth two' => [2, [1, 2, 3, [4]]];
+        yield 'depth three' => [3, [1, 2, 3, 4]];
+        yield 'unlimited depth by default' => [PHP_INT_MAX, [1, 2, 3, 4]];
+    }
+
+    public function testSortIsCaseInsensitiveByDefault(): void
+    {
+        $this->assertSame(['A', 'a', 'b', 'B', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'])));
+    }
+
+    public function testSortCanBeCaseSensitive(): void
+    {
+        $this->assertSame(['A', 'B', 'a', 'b', 'c'], array_values(Arr::sort(['b', 'A', 'c', 'B', 'a'], caseSensitive: true)));
+    }
+
+    public function testSortCanBeDescendingAndPreservesKeysByDefault(): void
+    {
+        $this->assertSame([2 => 'c', 0 => 'b', 1 => 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC));
+        $this->assertSame(['c', 'b', 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC, preserveKeys: false));
     }
 }

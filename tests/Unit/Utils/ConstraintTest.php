@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Utils;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\Constraint;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 #[CoversClass(Constraint::class)]
@@ -174,5 +175,155 @@ final class ConstraintTest extends TestCase
         $this->assertTrue(Constraint::hasKeys($array, ['a', 'b']));
         $this->assertTrue(Constraint::hasKeys($array, []));
         $this->assertFalse(Constraint::hasKeys($array, ['a', 'd']));
+    }
+
+    public function testRangesWithoutALowerBoundAcceptNegativeNumbersAndZero(): void
+    {
+        $this->assertTrue(Constraint::isInRange(-5, end: 10));
+        $this->assertTrue(Constraint::isInRange(0, end: 10));
+        $this->assertTrue(Constraint::isInRange(-1.5, end: 10));
+        $this->assertFalse(Constraint::isInRange(11, end: 10));
+    }
+
+    public function testRangesWithoutAnUpperBoundAcceptEveryNumberAboveTheLowerOne(): void
+    {
+        $this->assertTrue(Constraint::isInRange(1_000_000, start: 10));
+        $this->assertTrue(Constraint::isInRange(10, start: 10));
+        $this->assertFalse(Constraint::isInRange(9, start: 10));
+    }
+
+    public function testRangesWithoutBoundsAcceptEveryNumber(): void
+    {
+        foreach ([-1_000_000, -1.5, 0, 0.5, 42, PHP_INT_MAX] as $value) {
+            $this->assertTrue(Constraint::isInRange($value), (string) $value);
+            $this->assertTrue(Constraint::isInIntegerRange((int) $value), (string) $value);
+        }
+    }
+
+    public function testRangeBoundsAreInclusiveByDefault(): void
+    {
+        $this->assertTrue(Constraint::isInRange(1, 1, 10));
+        $this->assertTrue(Constraint::isInRange(10, 1, 10));
+        $this->assertTrue(Constraint::isInIntegerRange(1, 1, 10));
+        $this->assertTrue(Constraint::isInIntegerRange(10, 1, 10));
+    }
+
+    public function testRangeBoundsCanBeExcluded(): void
+    {
+        $this->assertTrue(Constraint::isInRange(5, 1, 10, includeMin: false, includeMax: false));
+        $this->assertFalse(Constraint::isInRange(1, 1, 10, includeMin: false, includeMax: false));
+        $this->assertFalse(Constraint::isInRange(10, 1, 10, includeMin: false, includeMax: false));
+        $this->assertFalse(Constraint::isInRange(5, 5, 5, includeMin: false));
+        $this->assertTrue(Constraint::isInRange(5, 5, 5));
+    }
+
+    public function testInclusivityFlagsRefersToTheLowerAndUpperBoundsAfterSwappingReversedOnes(): void
+    {
+        $this->assertTrue(Constraint::isInRange(10, 10, 1));
+        $this->assertTrue(Constraint::isInRange(10, 10, 1, includeMin: false));
+        $this->assertFalse(Constraint::isInRange(1, 10, 1, includeMin: false));
+        $this->assertFalse(Constraint::isInRange(10, 10, 1, includeMax: false));
+        $this->assertTrue(Constraint::isInRange(1, 10, 1, includeMax: false));
+    }
+
+    public function testIntegerRangesWithStepCountFromTheLowestBound(): void
+    {
+        $this->assertTrue(Constraint::isInIntegerRange(7, 1, 10, step: 3));
+        $this->assertTrue(Constraint::isInIntegerRange(10, 1, 10, step: 3));
+        $this->assertFalse(Constraint::isInIntegerRange(8, 1, 10, step: 3));
+        $this->assertTrue(Constraint::isInIntegerRange(-3, -9, 9, step: 3));
+        $this->assertFalse(Constraint::isInIntegerRange(-2, -9, 9, step: 3));
+        $this->assertTrue(Constraint::isInIntegerRange(7, 10, 1, step: 3));
+    }
+
+    #[DataProvider('uriProvider')]
+    public function testIsUri(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isUri($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function uriProvider(): iterable
+    {
+        yield 'https with path query and fragment' => ['https://example.com/path?x=1#fragment', true];
+        yield 'http with port' => ['http://localhost:8080/a', true];
+        yield 'ftp' => ['ftp://host/file', true];
+        yield 'mailto' => ['mailto:user@example.com', true];
+        yield 'script scheme' => ['javascript:alert(1)', false];
+        yield 'scheme relative' => ['//example.com', false];
+        yield 'host only' => ['example.com', false];
+        yield 'missing host' => ['http://', false];
+        yield 'space in the host' => ['http://exa mple.com', false];
+        yield 'empty' => ['', false];
+    }
+
+    #[DataProvider('emailProvider')]
+    public function testIsEmail(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isEmail($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function emailProvider(): iterable
+    {
+        yield 'simple address' => ['user@example.com', true];
+        yield 'tag and subdomain' => ['user+tag@sub.example.co', true];
+        yield 'missing domain' => ['user@', false];
+        yield 'missing local part' => ['@example.com', false];
+        yield 'space' => ['user name@example.com', false];
+        yield 'consecutive dots in the domain' => ['user@example..com', false];
+        yield 'no at sign' => ['user.example.com', false];
+        yield 'empty' => ['', false];
+    }
+
+    #[DataProvider('ipProvider')]
+    public function testIpValidators(string $value, bool $ip, bool $ipv4, bool $ipv6): void
+    {
+        $this->assertSame($ip, Constraint::isIp($value));
+        $this->assertSame($ipv4, Constraint::isIpv4($value));
+        $this->assertSame($ipv6, Constraint::isIpv6($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool, bool, bool}>
+     */
+    public static function ipProvider(): iterable
+    {
+        yield 'IPv4' => ['127.0.0.1', true, true, false];
+        yield 'IPv4 unspecified address' => ['0.0.0.0', true, true, false];
+        yield 'IPv6 loopback' => ['::1', true, false, true];
+        yield 'abbreviated IPv6' => ['2001:db8::1', true, false, true];
+        yield 'octet out of range' => ['256.0.0.1', false, false, false];
+        yield 'incomplete IPv4' => ['1.2.3', false, false, false];
+        yield 'leading zeros' => ['192.168.001.001', false, false, false];
+        yield 'two abbreviations in IPv6' => ['1::2::3', false, false, false];
+        yield 'empty' => ['', false, false, false];
+    }
+
+    #[DataProvider('hostnameProvider')]
+    public function testIsHostname(string $value, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::isHostname($value));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function hostnameProvider(): iterable
+    {
+        yield 'domain' => ['example.com', true];
+        yield 'single label' => ['localhost', true];
+        yield 'subdomain with a hyphen' => ['sub-domain.example.com', true];
+        yield 'uppercase' => ['EXAMPLE.COM', true];
+        yield 'leading hyphen' => ['-bad.example.com', false];
+        yield 'trailing hyphen' => ['bad-.example.com', false];
+        yield 'underscore' => ['exa_mple.com', false];
+        yield 'empty label' => ['example..com', false];
+        yield 'label longer than 63 characters' => [str_repeat('a', 64) . '.com', false];
+        yield 'empty' => ['', false];
     }
 }

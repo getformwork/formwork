@@ -8,6 +8,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Parsers\Fixtures\CommonMarkExtensionFixture;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 use UnexpectedValueException;
 
@@ -53,8 +54,27 @@ final class MarkdownTest extends TestCase
             ],
         ];
 
-        $this->expectNotToPerformAssertions();
-        Markdown::parse('', $options);
+        $this->assertSame("<p>An <em class=\"custom\">emphasized</em> word</p>\n", Markdown::parse('An *emphasized* word', $options));
+    }
+
+    public function testExtensionsAreEnabledByDefault(): void
+    {
+        $options = ['commonmarkExtensions' => [CommonMarkExtensionFixture::class => []]];
+
+        $this->assertSame("<p><em class=\"custom\">word</em></p>\n", Markdown::parse('*word*', $options));
+    }
+
+    public function testDisabledCommonMarkExtensionsAreNotRegistered(): void
+    {
+        $options = [
+            'commonmarkExtensions' => [
+                CommonMarkExtensionFixture::class => [
+                    'enabled' => false,
+                ],
+            ],
+        ];
+
+        $this->assertSame("<p><em>word</em></p>\n", Markdown::parse('*word*', $options));
     }
 
     public function testParseWithCommonMarkExtensionsDoesNotAddEnvironmentExtensions(): void
@@ -66,9 +86,76 @@ final class MarkdownTest extends TestCase
                 ],
             ],
         ];
+        $markdown = "# Title\n\nA *simple* [link](https://example.com).";
 
-        $this->expectNotToPerformAssertions();
-        Markdown::parse('', $options);
+        $this->assertSame(Markdown::parse($markdown), Markdown::parse($markdown, $options));
+    }
+
+    public function testRawHtmlIsEscapedByDefault(): void
+    {
+        $html = Markdown::parse('Text <b>bold</b> and <script>alert(1)</script>');
+
+        $this->assertStringContainsString('&lt;b&gt;bold&lt;/b&gt;', $html);
+        $this->assertStringNotContainsString('<script', $html);
+        $this->assertStringNotContainsString('<b>', $html);
+    }
+
+    public function testAllowedRawHtmlIsStillSanitized(): void
+    {
+        $html = Markdown::parse('Text <b>bold</b> <script>alert(1)</script> <img src="x.png" onerror="alert(2)">', ['allowHtml' => true]);
+
+        $this->assertStringContainsString('<b>bold</b>', $html);
+        $this->assertStringNotContainsString('<script', $html);
+        $this->assertStringNotContainsString('alert', $html);
+        $this->assertStringNotContainsString('onerror', $html);
+    }
+
+    #[DataProvider('unsafeLinkProvider')]
+    public function testUnsafeLinkSchemesAreRemoved(string $markdown, array $options): void
+    {
+        $html = Markdown::parse($markdown, $options);
+
+        $this->assertStringNotContainsString('javascript:', $html);
+        $this->assertStringNotContainsString('href', $html);
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, mixed>}>
+     */
+    public static function unsafeLinkProvider(): iterable
+    {
+        yield 'Markdown link' => ['[click](javascript:alert(1))', []];
+        yield 'Markdown link with mixed case' => ['[click](JaVaScRiPt:alert(1))', []];
+        yield 'HTML link' => ['<a href="javascript:alert(1)">click</a>', ['allowHtml' => true]];
+    }
+
+    public function testTablesAreSupported(): void
+    {
+        $html = Markdown::parse("| a | b |\n|---|---|\n| 1 | 2 |");
+
+        $this->assertStringContainsString('<table>', $html);
+        $this->assertStringContainsString('<th>a</th>', $html);
+        $this->assertStringContainsString('<td>2</td>', $html);
+    }
+
+    public function testHeadingsHaveNoIdByDefault(): void
+    {
+        $this->assertSame("<h2>Section</h2>\n", Markdown::parse('## Section'));
+    }
+
+    public function testHeadingIdsAreUniqueWhenTitlesRepeat(): void
+    {
+        $html = Markdown::parse("## Same\n\n## Same", ['addHeadingIds' => true]);
+
+        preg_match_all('/id="([^"]*)"/', $html, $matches);
+
+        $this->assertCount(2, $matches[1]);
+        $this->assertCount(2, array_unique($matches[1]));
+    }
+
+    public function testHeadingsWithoutSlugCharactersDoNotGetAnEmptyId(): void
+    {
+        $this->assertStringNotContainsString('id=""', Markdown::parse('## !!!', ['addHeadingIds' => true]));
     }
 
     public function testParseThrowsUnexpectedValueExceptionOnInvalidCommonMarkExtension(): void

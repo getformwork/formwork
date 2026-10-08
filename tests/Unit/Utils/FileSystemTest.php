@@ -88,20 +88,29 @@ final class FileSystemTest extends TestCase
         $this->assertFalse(FileSystem::exists(TESTS_TMP_PATH . '/nonexistent.txt'));
     }
 
-    public function testAssertExists(): void
+    public function testAssertExistsAcceptsExistingPaths(): void
     {
-        FileSystem::assertExists(TESTS_TMP_PATH . '/sample.txt');
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
 
+        FileSystem::assertExists(TESTS_TMP_PATH . '/sample.txt');
+        FileSystem::assertExists(TESTS_TMP_PATH . '/dir');
+    }
+
+    public function testAssertExistsThrowsOnMissingPaths(): void
+    {
         $this->expectException(FileNotFoundException::class);
         FileSystem::assertExists(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    public function testAssertNotExists(): void
+    public function testAssertNotExistsAcceptsMissingPaths(): void
     {
-        FileSystem::assertExists(TESTS_TMP_PATH . '/nonexistent.txt', false);
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
 
+        FileSystem::assertExists(TESTS_TMP_PATH . '/nonexistent.txt', false);
+    }
+
+    public function testAssertNotExistsThrowsOnExistingPaths(): void
+    {
         $this->expectException(FileSystemException::class);
         FileSystem::assertExists(TESTS_TMP_PATH . '/sample.txt', false);
     }
@@ -162,7 +171,9 @@ final class FileSystemTest extends TestCase
 
     public function testAccessTime(): void
     {
-        $this->assertIsInt(FileSystem::accessTime(TESTS_TMP_PATH . '/sample.txt'));
+        touch(TESTS_TMP_PATH . '/sample.txt', 1_700_000_000, 1_700_000_500);
+
+        $this->assertSame(1_700_000_500, FileSystem::accessTime(TESTS_TMP_PATH . '/sample.txt'));
     }
 
     public function testAccessTimeThrowsOnFileNotFound(): void
@@ -181,7 +192,11 @@ final class FileSystemTest extends TestCase
 
     public function testCreationTime(): void
     {
-        $this->assertIsInt(FileSystem::creationTime(TESTS_TMP_PATH . '/sample.txt'));
+        $before = time();
+        FileSystem::write(TESTS_TMP_PATH . '/created.txt', 'content');
+
+        $this->assertGreaterThanOrEqual($before, FileSystem::creationTime(TESTS_TMP_PATH . '/created.txt'));
+        $this->assertLessThanOrEqual(time(), FileSystem::creationTime(TESTS_TMP_PATH . '/created.txt'));
     }
 
     public function testCreationTimeThrowsOnFileNotFound(): void
@@ -200,7 +215,9 @@ final class FileSystemTest extends TestCase
 
     public function testLastModifiedTime(): void
     {
-        $this->assertIsInt(FileSystem::lastModifiedTime(TESTS_TMP_PATH . '/sample.txt'));
+        touch(TESTS_TMP_PATH . '/sample.txt', 1_700_000_000);
+
+        $this->assertSame(1_700_000_000, FileSystem::lastModifiedTime(TESTS_TMP_PATH . '/sample.txt'));
     }
 
     public function testLastModifiedTimeThrowsOnNotFound(): void
@@ -238,7 +255,11 @@ final class FileSystemTest extends TestCase
 
     public function testTouch(): void
     {
+        touch(TESTS_TMP_PATH . '/sample.txt', 1_700_000_000);
+
         $this->assertTrue(FileSystem::touch(TESTS_TMP_PATH . '/sample.txt'));
+        $this->assertGreaterThan(1_700_000_000, FileSystem::lastModifiedTime(TESTS_TMP_PATH . '/sample.txt'));
+        $this->assertLessThanOrEqual(time(), FileSystem::lastModifiedTime(TESTS_TMP_PATH . '/sample.txt'));
     }
 
     public function testTouchThrowsOnFileNotFound(): void
@@ -257,7 +278,15 @@ final class FileSystemTest extends TestCase
 
     public function testMode(): void
     {
-        $this->assertIsInt(FileSystem::mode(TESTS_TMP_PATH . '/sample.txt'));
+        chmod(TESTS_TMP_PATH . '/sample.txt', 0o640);
+        clearstatcache();
+
+        $this->assertSame(0o640, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
+
+        chmod(TESTS_TMP_PATH . '/sample.txt', 0o600);
+        clearstatcache();
+
+        $this->assertSame(0o600, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
     }
 
     public function testModeThrowsOnFileNotFound(): void
@@ -276,8 +305,8 @@ final class FileSystemTest extends TestCase
 
     public function testSize(): void
     {
-        $this->assertIsInt(FileSystem::size(TESTS_TMP_PATH . '/sample.txt'));
-        $this->assertIsInt(FileSystem::size(TESTS_TMP_PATH . '/dir'));
+        $this->assertSame(49, FileSystem::size(TESTS_TMP_PATH . '/sample.txt'));
+        $this->assertSame(196, FileSystem::size(TESTS_TMP_PATH . '/dir'));
     }
 
     public function testSizeThrowsOnUnsupportedType(): void
@@ -289,7 +318,10 @@ final class FileSystemTest extends TestCase
 
     public function testFileSizeReturnsSize(): void
     {
-        $this->assertIsInt(FileSystem::fileSize(TESTS_TMP_PATH . '/sample.txt'));
+        $this->assertSame(49, FileSystem::fileSize(TESTS_TMP_PATH . '/sample.txt'));
+
+        FileSystem::write(TESTS_TMP_PATH . '/empty.txt', '');
+        $this->assertSame(0, FileSystem::fileSize(TESTS_TMP_PATH . '/empty.txt'));
     }
 
     public function testFileSizeThrowsOnNotFile(): void
@@ -312,9 +344,12 @@ final class FileSystemTest extends TestCase
         FileSystem::fileSize(TESTS_TMP_PATH . '/sample.txt');
     }
 
-    public function testDirectorySizeReturnsSize(): void
+    public function testDirectorySizeReturnsTheSizeOfAllNestedFilesIncludingHiddenOnes(): void
     {
-        $this->assertIsInt(FileSystem::directorySize(TESTS_TMP_PATH . '/dir'));
+        $this->assertSame(196, FileSystem::directorySize(TESTS_TMP_PATH . '/dir'));
+
+        FileSystem::write(TESTS_TMP_PATH . '/dir/subdir/extra.txt', 'twelve bytes');
+        $this->assertSame(208, FileSystem::directorySize(TESTS_TMP_PATH . '/dir'));
     }
 
     public function testDirectorySizeThrowsOnNotDir(): void

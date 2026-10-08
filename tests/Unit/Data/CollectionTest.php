@@ -2,12 +2,14 @@
 
 namespace Formwork\Tests\Unit\Data;
 
+use Closure;
 use Formwork\Data\AbstractCollection;
 use Formwork\Data\Collection;
 use Formwork\Data\CollectionDataProxy;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Collection::class)]
 final class CollectionTest extends TestCase
@@ -1012,26 +1014,73 @@ final class CollectionTest extends TestCase
         $collection1->merge($collection2);
     }
 
-    public function testImmutableCollectionRejectsEveryMutatingOperation(): void
+    /**
+     * @param Closure(Collection): mixed $operation
+     */
+    #[DataProvider('immutableOperationProvider')]
+    public function testImmutableCollectionRejectsEveryMutatingOperation(bool $associative, Closure $operation): void
     {
-        $collection = Collection::from(['a', 'b'], mutable: false);
+        $collection = $associative
+            ? Collection::from(['a' => 'A', 'b' => 'B'], mutable: false)
+            : Collection::from(['A', 'B'], mutable: false);
+        $before = $collection->toArray();
+
+        try {
+            $operation($collection);
+            $this->fail('An immutable collection was mutated.');
+        } catch (LogicException) {
+            // Expected
+        }
+
+        $this->assertSame($before, $collection->toArray());
+    }
+
+    /**
+     * @return iterable<string, array{bool, Closure(Collection): mixed}>
+     */
+    public static function immutableOperationProvider(): iterable
+    {
+        yield 'add' => [false, static fn(Collection $collection) => $collection->add('C')];
+        yield 'pull' => [false, static fn(Collection $collection) => $collection->pull('A')];
+        yield 'move item' => [false, static fn(Collection $collection) => $collection->moveItem(0, 1)];
+        yield 'move item of an associative collection' => [true, static fn(Collection $collection) => $collection->moveItem(0, 1)];
+        yield 'set' => [true, static fn(Collection $collection) => $collection->set('c', 'C')];
+        yield 'remove' => [true, static fn(Collection $collection) => $collection->remove('a')];
+        yield 'merge' => [false, static fn(Collection $collection) => $collection->merge(Collection::from(['C']))];
+    }
+
+    public function testMutableCollectionsRejectOperationsOfTheOtherKind(): void
+    {
+        $list = Collection::from(['A'], mutable: true);
+        $map = Collection::from(['a' => 'A'], mutable: true);
 
         foreach (
             [
-                static fn() => $collection->add('c'),
-                static fn() => $collection->pull('a'),
-                static fn() => $collection->moveItem(0, 1),
+                static fn() => $list->set('b', 'B'),
+                static fn() => $list->remove('a'),
+                static fn() => $map->add('B'),
+                static fn() => $map->pull('A'),
             ] as $operation
         ) {
             try {
                 $operation();
-                $this->fail('An immutable collection was mutated.');
+                $this->fail('An operation of the wrong kind was accepted.');
             } catch (LogicException) {
                 // Expected
             }
         }
 
-        $this->assertSame(['a', 'b'], $collection->values());
+        $this->assertSame(['A'], $list->toArray());
+        $this->assertSame(['a' => 'A'], $map->toArray());
+    }
+
+    public function testMoveItemKeepsTheKeysOfAssociativeCollections(): void
+    {
+        $collection = Collection::from(['a' => 'A', 'b' => 'B', 'c' => 'C'], mutable: true);
+
+        $collection->moveItem(2, 0);
+
+        $this->assertSame(['c' => 'C', 'a' => 'A', 'b' => 'B'], $collection->toArray());
     }
 
     public function testMoveItemPreservesCollectionValuesAndOnlyChangesOrder(): void
@@ -1130,5 +1179,77 @@ final class CollectionTest extends TestCase
 
         $deep->first()->value = 'changed';
         $this->assertSame('original', $item->value);
+    }
+
+    #[DataProvider('phpFunctionNameProvider')]
+    public function testFilterByComparesValuesThatAreNamesOfPhpFunctions(string $word): void
+    {
+        $collection = Collection::from([
+            ['word' => $word],
+            ['word' => 'other'],
+            ['word' => 'something else'],
+        ]);
+
+        $this->assertSame([['word' => $word]], $collection->filterBy('word', $word)->values());
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function phpFunctionNameProvider(): iterable
+    {
+        foreach (['date', 'time', 'count', 'key', 'max', 'current'] as $word) {
+            yield $word => [$word];
+        }
+    }
+
+    public function testFilterByComparesLooselyWithoutAnExplicitComparison(): void
+    {
+        $collection = Collection::from([['n' => 1], ['n' => '1'], ['n' => 2], ['n' => true]]);
+
+        $this->assertSame([['n' => 1], ['n' => '1'], ['n' => true]], $collection->filterBy('n', 1)->values());
+        $this->assertSame([['n' => 1]], $collection->filterBy('n', '===', 1)->values());
+        $this->assertSame([['n' => 1], ['n' => '1'], ['n' => true]], $collection->filterBy('n', '==', '1')->values());
+        $this->assertSame([['n' => '1'], ['n' => 2], ['n' => true]], $collection->filterBy('n', '!==', 1)->values());
+    }
+
+    public function testSortByIsCaseInsensitiveAndPreservesKeysByDefault(): void
+    {
+        $collection = Collection::from(['x' => ['name' => 'b'], 'y' => ['name' => 'A'], 'z' => ['name' => 'C']]);
+
+        $this->assertSame(['y', 'x', 'z'], $collection->sortBy('name')->keys());
+        $this->assertSame([0, 1, 2], $collection->sortBy('name', preserveKeys: false)->keys());
+        $this->assertSame(['y', 'z', 'x'], $collection->sortBy('name', caseSensitive: true)->keys());
+        $this->assertSame(['z', 'x', 'y'], $collection->sortBy('name', SORT_DESC)->keys());
+    }
+
+    public function testUnionTypedCollectionsAcceptEveryListedType(): void
+    {
+        $collection = Collection::of('int|string', [1, 'two'], mutable: true);
+
+        $collection->add(3);
+        $collection->add('four');
+
+        $this->assertSame([1, 'two', 3, 'four'], $collection->values());
+
+        $this->expectException(LogicException::class);
+        $collection->add(5.5);
+    }
+
+    public function testUnionTypedAssociativeCollectionsValidateSetValues(): void
+    {
+        $collection = Collection::of('int|string', ['a' => 1], associative: true, mutable: true);
+
+        $collection->set('b', 'two');
+        $this->assertSame(['a' => 1, 'b' => 'two'], $collection->toArray());
+
+        $this->expectException(LogicException::class);
+        $collection->set('c', null);
+    }
+
+    public function testUnionTypedCollectionsRejectInitialDataOfOtherTypes(): void
+    {
+        $this->expectException(LogicException::class);
+        Collection::of('int|string', [1, 2.5]);
     }
 }

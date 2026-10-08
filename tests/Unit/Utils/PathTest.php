@@ -6,6 +6,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Utils\Path;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Path::class)]
 final class PathTest extends TestCase
@@ -205,5 +206,45 @@ final class PathTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$path and $base must have a compatible drive letter');
         Path::makeRelative('C:\folder\file.txt', 'D:\folder', '\\');
+    }
+
+    #[DataProvider('dirnameProvider')]
+    public function testDirnameWorksRegardlessOfTheSeparatorUsedInThePath(string $path, string $separator, string $expected): void
+    {
+        $this->assertSame($expected, Path::dirname($path, $separator));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function dirnameProvider(): iterable
+    {
+        yield 'absolute path' => ['/a/b/c.txt', '/', '/a/b'];
+        yield 'relative path' => ['a/b/c.txt', '/', 'a/b'];
+        yield 'file in the root' => ['/c.txt', '/', '/'];
+        yield 'file without a directory' => ['c.txt', '/', '.'];
+        yield 'trailing separator' => ['a/b/', '/', 'a'];
+        yield 'root' => ['/', '/', '/'];
+        yield 'backslash path with backslash separator' => ['a\\b\\c.txt', '\\', 'a\\b'];
+        yield 'mixed separators converted to backslashes' => ['a/b\\c.txt', '\\', 'a\\b'];
+        yield 'slash path converted to backslashes' => ['a/b/c.txt', '\\', 'a\\b'];
+        yield 'drive letter' => ['C:\\a\\b.txt', '\\', 'C:\\a'];
+    }
+
+    public function testDirnameThrowsOnInvalidSeparator(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$separator must be a valid directory separator');
+        Path::dirname('some/path', 'invalid_separator');
+    }
+
+    public function testDriveLettersAreAbsolutePaths(): void
+    {
+        $this->assertTrue(Path::isAbsolute('C:'));
+        $this->assertTrue(Path::isAbsolute('c:\\'));
+        $this->assertTrue(Path::isAbsolute('C:/folder'));
+        $this->assertFalse(Path::isAbsolute('1:/folder'));
+        $this->assertFalse(Path::isAbsolute('C'));
+        $this->assertFalse(Path::isAbsolute(''));
     }
 }
