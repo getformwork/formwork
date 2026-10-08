@@ -34,7 +34,7 @@ final class RouteFilterTest extends TestCase
         $this->assertSame('/admin', $filter->getPrefix());
     }
 
-    public function testNamedArgumentsAreRejectedByMethodsAndTypes(): void
+    public function testNamedArgumentsAreRejectedByMethods(): void
     {
         $filter = new RouteFilter('api', 'Filter@handle');
 

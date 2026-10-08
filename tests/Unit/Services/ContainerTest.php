@@ -2,14 +2,38 @@
 
 namespace Formwork\Tests\Unit\Services;
 
-use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
 use Formwork\Services\Exceptions\ContainerException;
 use Formwork\Services\Exceptions\ServiceNotFoundException;
 use Formwork\Services\Exceptions\ServiceResolutionException;
-use Formwork\Services\ResolutionAwareServiceLoaderInterface;
-use Formwork\Services\ServiceLoaderInterface;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Services\Fixtures\AnotherDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\AttributeDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\CircularA;
+use Formwork\Tests\Unit\Services\Fixtures\CircularB;
+use Formwork\Tests\Unit\Services\Fixtures\ContainerAwareLoader;
+use Formwork\Tests\Unit\Services\Fixtures\DependencyContract;
+use Formwork\Tests\Unit\Services\Fixtures\DependencyResolvingLoader;
+use Formwork\Tests\Unit\Services\Fixtures\DependentOnContract;
+use Formwork\Tests\Unit\Services\Fixtures\DependentOnMissingService;
+use Formwork\Tests\Unit\Services\Fixtures\DependentOnSharedDependency;
+use Formwork\Tests\Unit\Services\Fixtures\DependentService;
+use Formwork\Tests\Unit\Services\Fixtures\FactoryProduct;
+use Formwork\Tests\Unit\Services\Fixtures\FailingResolutionAwareLoader;
+use Formwork\Tests\Unit\Services\Fixtures\InvalidReturnLoader;
+use Formwork\Tests\Unit\Services\Fixtures\LoadedService;
+use Formwork\Tests\Unit\Services\Fixtures\NestedDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\OptionalDependencyService;
+use Formwork\Tests\Unit\Services\Fixtures\OptionalIntegerService;
+use Formwork\Tests\Unit\Services\Fixtures\OptionalStringService;
+use Formwork\Tests\Unit\Services\Fixtures\ParameterizedLoader;
+use Formwork\Tests\Unit\Services\Fixtures\RecursiveLoader;
+use Formwork\Tests\Unit\Services\Fixtures\ScalarDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\SharedDependency;
+use Formwork\Tests\Unit\Services\Fixtures\SimpleService;
+use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoader;
+use Formwork\Tests\Unit\Services\Fixtures\ThrowingLoader;
+use Formwork\Tests\Unit\Services\Fixtures\VariadicService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
@@ -198,6 +222,23 @@ final class ContainerTest extends TestCase
 
         $this->expectException(ContainerException::class);
         $container->call(static fn(string ...$values): array => $values, ['values' => 'invalid']);
+    }
+
+    public function testVariadicParametersAreOptional(): void
+    {
+        $container = new Container();
+
+        $this->assertSame([], $container->build(VariadicService::class)->values);
+        $this->assertSame([], $container->call(static fn(string ...$values): array => $values));
+    }
+
+    public function testVariadicArgumentsAreAlwaysPassedByPosition(): void
+    {
+        $container = new Container();
+
+        $built = $container->build(VariadicService::class, ['values' => ['first' => 'a', 'second' => 'b']]);
+
+        $this->assertSame(['a', 'b'], $built->values);
     }
 
     public function testParameterClosuresAreEvaluatedBeforeFactoryResolution(): void
@@ -545,193 +586,4 @@ final class ContainerTest extends TestCase
 
         $this->assertNotSame($first, $second);
     }
-}
-
-interface DependencyContract {}
-
-final class SimpleService {}
-
-final class SharedDependency implements DependencyContract {}
-
-final class DependentService
-{
-    public function __construct(public SharedDependency $dependency, public string $label) {}
-}
-
-final class DependentOnContract
-{
-    public function __construct(public DependencyContract $dependency) {}
-}
-
-final class AttributeDependentService
-{
-    public function __construct(#[Service('selected')] public SimpleService $service) {}
-}
-
-final class FactoryProduct
-{
-    public function __construct(public SharedDependency $dependency, public string $value) {}
-}
-
-final class VariadicService
-{
-    public array $values;
-
-    public function __construct(string ...$values)
-    {
-        $this->values = $values;
-    }
-}
-
-final class NestedDependentService
-{
-    public function __construct(public DependentOnSharedDependency $dependency) {}
-}
-
-final class DependentOnSharedDependency
-{
-    public function __construct(public SharedDependency $dependency) {}
-}
-
-final class AnotherDependentService
-{
-    public function __construct(public SharedDependency $dependency) {}
-}
-
-final class OptionalDependencyService
-{
-    public function __construct(public ?SharedDependency $dependency = null) {}
-}
-
-class LoadedService
-{
-    public function __construct(public string $name = 'loaded') {}
-}
-
-final class ContainerAwareLoader implements ServiceLoaderInterface
-{
-    public function __construct(private Container $container) {}
-
-    public function load(Container $container): LoadedService
-    {
-        return new LoadedService($this->container === $container ? 'container-aware' : 'wrong');
-    }
-}
-
-final class ParameterizedLoader implements ServiceLoaderInterface
-{
-    public function __construct(private string $label) {}
-
-    public function load(Container $container): LoadedService
-    {
-        return new LoadedService($this->label);
-    }
-}
-
-final class DependencyResolvingLoader implements ServiceLoaderInterface
-{
-    public function load(Container $container): LoadedService
-    {
-        return new LoadedServiceWithDependency($container->get(SharedDependency::class));
-    }
-}
-
-final class RecursiveLoader implements ServiceLoaderInterface
-{
-    public function __construct(private string $other) {}
-
-    public function load(Container $container): LoadedService
-    {
-        return $container->get($this->other);
-    }
-}
-
-final class ThrowingLoader implements ServiceLoaderInterface
-{
-    public function load(Container $container): LoadedService
-    {
-        throw new RuntimeException('loader failed');
-    }
-}
-
-final class InvalidReturnLoader implements ServiceLoaderInterface
-{
-    public function load(Container $container): object
-    {
-        return 'invalid';
-    }
-}
-
-final class TestServiceLoader implements ResolutionAwareServiceLoaderInterface
-{
-    public static int $loadCount = 0;
-
-    public static int $resolvedCount = 0;
-
-    public function __construct(private SharedDependency $dependency) {}
-
-    public function load(Container $container): LoadedService
-    {
-        self::$loadCount++;
-        return new LoadedService($this->dependency instanceof SharedDependency ? 'loaded' : 'wrong');
-    }
-
-    public function onResolved(object $service, Container $container): void
-    {
-        self::$resolvedCount++;
-    }
-}
-
-final class FailingResolutionAwareLoader implements ResolutionAwareServiceLoaderInterface
-{
-    public static int $loadCount = 0;
-
-    public function load(Container $container): LoadedService
-    {
-        self::$loadCount++;
-        return new LoadedService();
-    }
-
-    public function onResolved(object $service, Container $container): void
-    {
-        throw new RuntimeException('resolution callback failed');
-    }
-}
-
-final class LoadedServiceWithDependency extends LoadedService
-{
-    public function __construct(public SharedDependency $dependency)
-    {
-        parent::__construct('dependency');
-    }
-}
-
-final class DependentOnMissingService
-{
-    public function __construct(UnknownDependency $dependency) {}
-}
-
-final class ScalarDependentService
-{
-    public function __construct(string $value) {}
-}
-
-final class CircularA
-{
-    public function __construct(CircularB $dependency) {}
-}
-
-final class CircularB
-{
-    public function __construct(CircularA $dependency) {}
-}
-
-final class OptionalStringService
-{
-    public function __construct(public string $value = 'default') {}
-}
-
-final class OptionalIntegerService
-{
-    public function __construct(public int $value = 7) {}
 }

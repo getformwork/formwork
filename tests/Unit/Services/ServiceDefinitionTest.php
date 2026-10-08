@@ -5,6 +5,9 @@ namespace Formwork\Tests\Unit\Services;
 use Formwork\Services\Container;
 use Formwork\Services\ServiceDefinition;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Services\Fixtures\SimpleService;
+use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoader;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(ServiceDefinition::class)]
@@ -43,6 +46,23 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertSame($definition, $definition->loader(TestServiceLoader::class));
         $this->assertSame(TestServiceLoader::class, $definition->getLoader());
         $this->assertTrue($container->has('service.alias'));
+    }
+
+    public function testObjectDefinitionsRejectLoaders(): void
+    {
+        $definition = (new Container())->define('service', new SimpleService());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Instantiated object cannot have loaders');
+        $definition->loader(TestServiceLoader::class);
+    }
+
+    public function testAliasesResolveToTheSameInstanceAsTheDefinition(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->alias('simple');
+
+        $this->assertSame($container->get(SimpleService::class), $container->get('simple'));
     }
 
     public function testNewDefinitionsStartWithoutAObjectOrLoader(): void

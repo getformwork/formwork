@@ -119,6 +119,64 @@ final class RouterTest extends TestCase
         $this->assertSame('route', $router->dispatch()->content());
     }
 
+    #[DataProvider('filterRequirementsProvider')]
+    public function testFiltersApplyOnlyWhenMethodTypeAndPrefixMatch(
+        string $method,
+        ?string $requestedWith,
+        string $prefix,
+        array $filterMethods,
+        array $filterTypes,
+        bool $applies,
+    ): void {
+        $router = $this->router('/admin/page/', $method, $requestedWith);
+        $router->addFilter('filter', static fn(): Response => new Response('filtered'))
+            ->prefix($prefix)
+            ->methods(...$filterMethods)
+            ->types(...$filterTypes);
+        $router->addRoute('page', '/admin/page/')
+            ->action(static fn(): Response => new Response('route'))
+            ->methods('GET', 'POST')
+            ->types('HTTP', 'XHR');
+
+        $this->assertSame($applies ? 'filtered' : 'route', $router->dispatch()->content());
+    }
+
+    /**
+     * @return iterable<string, array{string, ?string, string, list<string>, list<string>, bool}>
+     */
+    public static function filterRequirementsProvider(): iterable
+    {
+        yield 'everything matches' => ['GET', null, '/admin', ['GET'], ['HTTP'], true];
+        yield 'method mismatch' => ['POST', null, '/admin', ['GET'], ['HTTP'], false];
+        yield 'type mismatch' => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP'], false];
+        yield 'prefix mismatch' => ['GET', null, '/other', ['GET'], ['HTTP'], false];
+        yield 'HEAD is handled as GET' => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true];
+        yield 'any of several methods' => ['POST', null, '/admin', ['PUT', 'POST'], ['HTTP'], true];
+        yield 'without prefix' => ['GET', null, '', ['GET'], ['HTTP'], true];
+    }
+
+    public function testFiltersAreRunInRegistrationOrderUntilOneReturnsAResponse(): void
+    {
+        $calls = [];
+        $router = $this->router('/');
+        $router->addFilter('first', static function () use (&$calls): null {
+            $calls[] = 'first';
+            return null;
+        });
+        $router->addFilter('second', static function () use (&$calls): Response {
+            $calls[] = 'second';
+            return new Response('second');
+        });
+        $router->addFilter('third', static function () use (&$calls): Response {
+            $calls[] = 'third';
+            return new Response('third');
+        });
+        $router->addRoute('home', '/')->action(static fn(): Response => new Response('route'));
+
+        $this->assertSame('second', $router->dispatch()->content());
+        $this->assertSame(['first', 'second'], $calls);
+    }
+
     public function testDispatchRejectsInvalidActions(): void
     {
         $router = $this->router('/');
@@ -136,6 +194,35 @@ final class RouterTest extends TestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage('No route matches with "/missing/"');
         $router->dispatch();
+    }
+
+    public function testNoCurrentRouteOrParamsRemainWhenARouteIsRejectedByItsConstraints(): void
+    {
+        $router = $this->router('/users/41/');
+        $router->addRoute('user', '/users/{id}')
+            ->action(static fn(): Response => new Response('matched'))
+            ->where('id', ['42']);
+
+        try {
+            $router->dispatch();
+            $this->fail('The route should have been rejected by its constraint.');
+        } catch (RouteNotFoundException) {
+            // Expected
+        }
+
+        $this->assertNull($router->current());
+        $this->assertSame([], $router->params()->toArray());
+    }
+
+    public function testRouteParamsAreOnlyTheOnesOfTheMatchedRoute(): void
+    {
+        $router = $this->router('/posts/7/');
+        $router->addRoute('rejected', '/posts/{slug:alpha}')->action(static fn(): Response => new Response('no'));
+        $router->addRoute('matched', '/posts/{id:digits}')->action(static fn(): Response => new Response('yes'));
+
+        $router->dispatch();
+
+        $this->assertSame(['id' => '7'], $router->params()->toArray());
     }
 
     public function testDispatchSupportsControllerActionsAndActionParameters(): void
@@ -192,6 +279,24 @@ final class RouterTest extends TestCase
             'comma separator'     => ['/search,{term}', ['term' => 'php'], '/search,php/'],
             'colon separator'     => ['/version:{version}', ['version' => 'v2'], '/version:v2/'],
         ];
+    }
+
+    public function testGenerateIgnoresUnknownParametersAndCastsScalarValues(): void
+    {
+        $router = $this->router('/');
+        $router->addRoute('user', '/users/{id:digits}');
+
+        $this->assertSame('/users/42/', $router->generate('user', ['id' => 42, 'unused' => 'ignored']));
+    }
+
+    public function testGenerateOmitsOptionalParametersAndTheirSeparators(): void
+    {
+        $router = $this->router('/');
+        $router->addRoute('archive', '/archive/{year:digits}?/{month:digits}?');
+
+        $this->assertSame('/archive/', $router->generate('archive', []));
+        $this->assertSame('/archive/2025/', $router->generate('archive', ['year' => '2025']));
+        $this->assertSame('/archive/2025/10/', $router->generate('archive', ['year' => '2025', 'month' => '10']));
     }
 
     public function testGenerateUsesPrefixAndRejectsUnknownRoutes(): void
@@ -275,23 +380,103 @@ final class RouterTest extends TestCase
         $router->dispatch();
     }
 
-    public function testLoadFromFileAppliesRoutesFiltersPrefixesAndActionParameters(): void
+    public function testLoadFromFileKeepsPrefixesDeclaredByEachEntryOverTheGivenOne(): void
     {
-        $router = $this->router('/api/loaded/42/', 'POST');
+        $router = $this->router('/');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php', prefix: '/ignored');
+
+        $this->assertSame('/api', $router->routes()->get('loaded')->getPrefix());
+        $this->assertSame('/api', $router->filters()->get('loaded-filter')->getPrefix());
+    }
+
+    public function testLoadFromFileAppliesTheGivenPrefixToEntriesWithoutOne(): void
+    {
+        $router = $this->router('/');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php', prefix: '/panel');
+
+        $this->assertSame('/panel', $router->routes()->get('unprefixed')->getPrefix());
+        $this->assertSame('/panel', $router->filters()->get('unprefixed-filter')->getPrefix());
+    }
+
+    public function testLoadFromFileLeavesEntriesWithoutPrefixUnprefixedByDefault(): void
+    {
+        $router = $this->router('/');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
+        $this->assertSame('', $router->routes()->get('unprefixed')->getPrefix());
+        $this->assertSame('', $router->filters()->get('unprefixed-filter')->getPrefix());
+    }
+
+    public function testLoadFromFileAppliesPathsMethodsTypesAndConstraints(): void
+    {
+        $router = $this->router('/');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
+        $loaded = $router->routes()->get('loaded');
+        $unprefixed = $router->routes()->get('unprefixed');
+        $filter = $router->filters()->get('unprefixed-filter');
+
+        $this->assertSame('/loaded/{id:digits}', $loaded->getPath());
+        $this->assertSame(['POST'], $loaded->getMethods());
+        $this->assertSame(['HTTP'], $loaded->getTypes());
+        $this->assertSame(['id' => ['42']], $loaded->getConstraints());
+        $this->assertSame(['GET', 'POST'], $unprefixed->getMethods());
+        $this->assertSame(['XHR'], $unprefixed->getTypes());
+        $this->assertSame([], $unprefixed->getConstraints());
+        $this->assertSame(['POST', 'PUT'], $filter->getMethods());
+        $this->assertSame(['XHR'], $filter->getTypes());
+    }
+
+    public function testLoadFromFileMergesActionParametersGivingPriorityToTheOnesOfTheRoute(): void
+    {
+        $router = $this->router('/');
         $router->loadFromFile(
             __DIR__ . '/Fixtures/routes.php',
-            prefix: '/ignored',
-            actionParameters: ['fromGlobal' => 'global'],
+            actionParameters: ['fromGlobal' => 'global', 'shared' => 'global'],
         );
 
-        $route = $router->routes()->get('loaded');
-        $filter = $router->filters()->get('loaded-filter');
+        $this->assertSame(
+            ['fromRouteFile' => 'route', 'shared' => 'route', 'fromGlobal' => 'global'],
+            $router->routes()->get('loaded')->getActionParameters(),
+        );
+        $this->assertSame(
+            ['fromGlobal' => 'global', 'shared' => 'global'],
+            $router->routes()->get('unprefixed')->getActionParameters(),
+        );
+    }
 
-        $this->assertSame('/api', $route->getPrefix());
-        $this->assertSame(['fromRouteFile' => 'route', 'fromGlobal' => 'global'], $route->getActionParameters());
-        $this->assertSame(['POST'], $route->getMethods());
-        $this->assertSame('/api', $filter->getPrefix());
+    public function testLoadedRoutesAreDispatchedHonouringTheirConstraintsAndPrefixes(): void
+    {
+        $router = $this->router('/api/loaded/42/', 'POST');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
         $this->assertSame('route', $router->dispatch()->content());
+        $this->assertSame(['id' => '42'], $router->params()->toArray());
+
+        $router = $this->router('/api/loaded/41/', 'POST');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
+        $this->expectException(RouteNotFoundException::class);
+        $router->dispatch();
+    }
+
+    public function testLoadedXhrRoutesIgnoreRegularHttpRequests(): void
+    {
+        $router = $this->router('/unprefixed/', 'GET');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
+        $this->expectException(RouteNotFoundException::class);
+        $router->dispatch();
+    }
+
+    public function testLoadedXhrRoutesMatchXmlHttpRequests(): void
+    {
+        $router = $this->router('/unprefixed/', 'GET', 'XMLHttpRequest');
+        $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
+
+        $router->dispatch();
+
+        $this->assertSame('unprefixed', $router->current()?->getName());
     }
 
     private function router(

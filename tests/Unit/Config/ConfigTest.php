@@ -25,12 +25,15 @@ final class ConfigTest extends TestCase
         $this->tearDownTempDirectory();
     }
 
-    public function testEmptyConfigIsMutableButUnresolved(): void
+    public function testUnresolvedConfigCanBeModifiedButNotRead(): void
     {
         $config = new Config();
 
         $this->assertFalse($config->has('missing'));
         $this->assertTrue($config->hasMultiple([]));
+
+        $config->set('name', 'Formwork');
+        $this->assertTrue($config->has('name'));
 
         $this->expectException(UnresolvedConfigException::class);
         $config->toArray();
@@ -132,11 +135,23 @@ final class ConfigTest extends TestCase
         $config->set('system.paths.cache', '/cache');
         $config->setMultiple(['system.name' => 'Formwork', 'nullable' => null]);
 
-        $this->assertTrue($config->getBool('system.debug'));
-        $this->assertSame('/cache', $config->getString('system.paths.cache'));
-        $this->assertSame('Formwork', $config->getString('system.name'));
-        $this->assertTrue($config->has('nullable'));
-        $this->assertNull($config->get('nullable'));
+        $this->assertSame([
+            'system' => [
+                'debug' => true,
+                'paths' => ['cache' => '/cache'],
+                'name'  => 'Formwork',
+            ],
+            'nullable' => null,
+        ], $config->toArray());
+    }
+
+    public function testTypedGettersRejectMissingKeysWithoutADefault(): void
+    {
+        $config = new Config(resolved: true);
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Config value for key "missing" is not a string, got null');
+        $config->getString('missing');
     }
 
     public function testToArrayReturnsTheResolvedNestedConfiguration(): void
@@ -195,6 +210,70 @@ final class ConfigTest extends TestCase
         $config->resolve();
     }
 
+    public function testResolveInterpolatesEveryReferenceInAValueAndLeavesOtherValuesUntouched(): void
+    {
+        $config = new Config([
+            'name'   => 'Formwork',
+            'tag'    => 'cms',
+            'title'  => '${name} (${tag})',
+            'count'  => 5,
+            'flag'   => true,
+            'nested' => ['label' => '${name}/${nested.suffix}', 'suffix' => 'docs'],
+            'list'   => ['${name}', 'plain'],
+        ]);
+
+        $config->resolve();
+
+        $this->assertSame([
+            'name'   => 'Formwork',
+            'tag'    => 'cms',
+            'title'  => 'Formwork (cms)',
+            'count'  => 5,
+            'flag'   => true,
+            'nested' => ['label' => 'Formwork/docs', 'suffix' => 'docs'],
+            'list'   => ['Formwork', 'plain'],
+        ], $config->toArray());
+    }
+
+    public function testResolvePrefersConfigKeysOverVariablesWithTheSameName(): void
+    {
+        $config = new Config(['shared' => 'from config', 'value' => '${shared}']);
+
+        $config->resolve(['shared' => 'from variables']);
+
+        $this->assertSame('from config', $config->get('value'));
+    }
+
+    public function testResolveResolvesReferencesRegardlessOfTheirDefinitionOrder(): void
+    {
+        $config = new Config([
+            'url'  => '${base}/index',
+            'base' => '${%ROOT%}/site',
+        ]);
+
+        $config->resolve(['%ROOT%' => '/project']);
+
+        $this->assertSame('/project/site', $config->get('base'));
+        $this->assertSame('/project/site/index', $config->get('url'));
+    }
+
+    public function testResolveRejectsCircularReferences(): void
+    {
+        $config = new Config(['first' => '${second}', 'second' => '${first}']);
+
+        $this->expectException(ConfigResolutionException::class);
+        $config->resolve();
+    }
+
+    public function testResolveDoesNotInterpolateEscapedReferences(): void
+    {
+        $config = new Config(['name' => 'Formwork', 'literal' => '$${name}']);
+
+        $config->resolve();
+
+        $this->assertStringNotContainsString('Formwork', $config->getString('literal'));
+    }
+
     public function testLoadFileLoadsYamlIntoACamelCaseKey(): void
     {
         $path = TESTS_TMP_PATH . '/site-name.yaml';
@@ -247,6 +326,16 @@ final class ConfigTest extends TestCase
 
         $this->assertSame('First', $config->getString('first.name'));
         $this->assertFalse($config->getBool('second.enabled'));
+    }
+
+    public function testLoadFromPathRejectsUnsupportedFiles(): void
+    {
+        FileSystem::write(TESTS_TMP_PATH . '/first.yaml', "name: First\n");
+        FileSystem::write(TESTS_TMP_PATH . '/notes.txt', 'not a config file');
+
+        $this->expectException(ConfigLoadingException::class);
+        $this->expectExceptionMessage('Unsupported config file type "txt"');
+        (new Config(resolved: true))->loadFromPath(TESTS_TMP_PATH);
     }
 
     public function testLoadFileRejectsMissingFiles(): void
