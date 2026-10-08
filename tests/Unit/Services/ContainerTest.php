@@ -7,7 +7,9 @@ use Formwork\Services\Exceptions\ContainerException;
 use Formwork\Services\Exceptions\ServiceNotFoundException;
 use Formwork\Services\Exceptions\ServiceResolutionException;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Services\Fixtures\AbstractService;
 use Formwork\Tests\Unit\Services\Fixtures\AnotherDependentService;
+use Formwork\Tests\Unit\Services\Fixtures\ArrayOptionsService;
 use Formwork\Tests\Unit\Services\Fixtures\AttributeDependentService;
 use Formwork\Tests\Unit\Services\Fixtures\CircularA;
 use Formwork\Tests\Unit\Services\Fixtures\CircularB;
@@ -27,6 +29,7 @@ use Formwork\Tests\Unit\Services\Fixtures\OptionalDependencyService;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalIntegerService;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalStringService;
 use Formwork\Tests\Unit\Services\Fixtures\ParameterizedLoader;
+use Formwork\Tests\Unit\Services\Fixtures\PrivateConstructorService;
 use Formwork\Tests\Unit\Services\Fixtures\RecursiveLoader;
 use Formwork\Tests\Unit\Services\Fixtures\ScalarDependentService;
 use Formwork\Tests\Unit\Services\Fixtures\SharedDependency;
@@ -36,7 +39,9 @@ use Formwork\Tests\Unit\Services\Fixtures\ThrowingLoader;
 use Formwork\Tests\Unit\Services\Fixtures\VariadicService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
+use Throwable;
 
 #[CoversClass(Container::class)]
 final class ContainerTest extends TestCase
@@ -254,6 +259,44 @@ final class ContainerTest extends TestCase
         $this->assertSame('closure', $service->value);
     }
 
+    public function testParameterClosuresInsideNestedParametersAreEvaluated(): void
+    {
+        $container = new Container();
+        $container->define(ArrayOptionsService::class)
+            ->parameter('options.lazy', static fn(): string => 'evaluated')
+            ->parameter('options.plain', 2);
+
+        $this->assertSame(['lazy' => 'evaluated', 'plain' => 2], $container->get(ArrayOptionsService::class)->options);
+    }
+
+    public function testDottedParameterNamesBuildNestedArrays(): void
+    {
+        $container = new Container();
+        $container->define(ArrayOptionsService::class)
+            ->parameter('options.a.b', 1)
+            ->parameter('options.a.c', 2);
+
+        $this->assertSame(['a' => ['b' => 1, 'c' => 2]], $container->get(ArrayOptionsService::class)->options);
+    }
+
+    public function testResolutionStackIsClearedWhenAParameterClosureFails(): void
+    {
+        $container = new Container();
+        $container->define(ArrayOptionsService::class)
+            ->parameter('options', static function (): never {
+                throw new RuntimeException('parameter failed');
+            });
+
+        foreach ([1, 2] as $attempt) {
+            try {
+                $container->get(ArrayOptionsService::class);
+                $this->fail('The parameter closure exception should have propagated.');
+            } catch (RuntimeException $exception) {
+                $this->assertSame('parameter failed', $exception->getMessage(), "Attempt $attempt");
+            }
+        }
+    }
+
     public function testLazyFalseResolvesImmediatelyWhileDefaultDefinitionsRemainUnresolved(): void
     {
         $container = new Container();
@@ -287,6 +330,67 @@ final class ContainerTest extends TestCase
         $container->alias('two', 'one');
     }
 
+    public function testRejectedAliasesLeaveExistingAliasesUntouched(): void
+    {
+        $container = new Container();
+        $container->alias('a', 'b');
+        $container->alias('b', 'c');
+
+        try {
+            $container->alias('c', 'a');
+            $this->fail('The circular alias should have been rejected.');
+        } catch (ContainerException) {
+        }
+
+        $service = new SimpleService();
+        $container->define('c', $service);
+
+        $this->assertSame($service, $container->get('a'));
+        $this->assertFalse($container->has('d'));
+    }
+
+    public function testAliasToAnUndefinedServiceIsNotAvailableUntilTheTargetIsDefined(): void
+    {
+        $container = new Container();
+        $container->alias('alias', 'target');
+
+        $this->assertFalse($container->has('alias'));
+        $this->assertFalse($container->isResolved('alias'));
+
+        try {
+            $container->get('alias');
+            $this->fail('The undefined target should have been reported.');
+        } catch (ServiceNotFoundException $exception) {
+            $this->assertStringContainsString('"target"', $exception->getMessage());
+        }
+
+        $service = new SimpleService();
+        $container->define('target', $service);
+
+        $this->assertTrue($container->has('alias'));
+        $this->assertSame($service, $container->get('alias'));
+    }
+
+    public function testAliasToItselfIsRejected(): void
+    {
+        $container = new Container();
+
+        $this->expectException(ContainerException::class);
+        $container->alias('same', 'same');
+    }
+
+    public function testDefiningAServiceWithTheNameOfAnAliasMakesTheNewDefinitionReachable(): void
+    {
+        $container = new Container();
+        $container->define('target', new SimpleService());
+        $container->alias('name', 'target');
+
+        $own = new SimpleService();
+        $container->define('name', $own);
+
+        $this->assertSame($own, $container->get('name'));
+    }
+
     public function testLoaderIsConstructedWithDependenciesAndCalledOnlyOnce(): void
     {
         $container = new Container();
@@ -299,6 +403,21 @@ final class ContainerTest extends TestCase
 
         $this->assertInstanceOf(LoadedService::class, $first);
         $this->assertSame($first, $second);
+        $this->assertSame(1, TestServiceLoader::$loadCount);
+        $this->assertSame(1, TestServiceLoader::$resolvedCount);
+    }
+
+    public function testResolvingAnAlreadyResolvedServiceKeepsTheSharedInstance(): void
+    {
+        $container = new Container();
+        $container->define('loaded')->loader(TestServiceLoader::class);
+        $container->define(SharedDependency::class, new SharedDependency());
+
+        $first = $container->get('loaded');
+        $second = $container->resolve('loaded');
+
+        $this->assertSame($first, $second);
+        $this->assertSame($first, $container->get('loaded'));
         $this->assertSame(1, TestServiceLoader::$loadCount);
         $this->assertSame(1, TestServiceLoader::$resolvedCount);
     }
@@ -442,6 +561,46 @@ final class ContainerTest extends TestCase
 
         $this->expectException(ServiceResolutionException::class);
         $container->resolve('missing');
+    }
+
+    #[DataProvider('uninstantiableClassProvider')]
+    public function testClassesThatCannotBeInstantiatedAreReportedAsContainerErrors(string $class): void
+    {
+        $container = new Container();
+        $container->define($class);
+
+        try {
+            $container->get($class);
+            $this->fail('The class cannot be instantiated.');
+        } catch (Throwable $throwable) {
+            $this->assertInstanceOf(ContainerExceptionInterface::class, $throwable, $throwable::class . ': ' . $throwable->getMessage());
+        }
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function uninstantiableClassProvider(): iterable
+    {
+        yield 'interface' => [DependencyContract::class];
+        yield 'abstract class' => [AbstractService::class];
+        yield 'private constructor' => [PrivateConstructorService::class];
+        yield 'identifier that is not a class' => ['config'];
+        yield 'missing class' => ['Formwork\\Tests\\Unit\\Services\\Fixtures\\DoesNotExist'];
+    }
+
+    public function testFactoryReturningANonObjectDoesNotMarkTheServiceAsResolved(): void
+    {
+        $container = new Container();
+        $container->define('factory', static fn() => 'not an object');
+
+        try {
+            $container->get('factory');
+            $this->fail('The invalid factory result should have been rejected.');
+        } catch (\TypeError) {
+        }
+
+        $this->assertFalse($container->isResolved('factory'));
     }
 
     public function testMissingClassDependenciesAreReportedAsNotFound(): void
