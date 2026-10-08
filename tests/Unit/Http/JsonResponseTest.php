@@ -10,15 +10,46 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(JsonResponse::class)]
 final class JsonResponseTest extends TestCase
 {
-    public function testSuccessAndErrorFactoriesBuildJsonResponses(): void
+    public function testSuccessFactoryBuildsASuccessPayload(): void
     {
-        $success = JsonResponse::success('Done', ResponseStatus::Created, ['id' => 7]);
-        $error = JsonResponse::error('Invalid', ResponseStatus::UnprocessableEntity, ['field' => 'name']);
+        $response = JsonResponse::success('Done', ResponseStatus::Created, ['id' => 7]);
+        $payload = json_decode($response->content(), true);
 
-        $this->assertStringContainsString('"status":"success"', $success->content());
-        $this->assertStringContainsString('"status":"error"', $error->content());
-        $this->assertSame(ResponseStatus::Created, $success->status());
-        $this->assertSame(ResponseStatus::UnprocessableEntity, $error->status());
-        $this->assertSame('application/json; charset=utf-8', $success->headers()->get('Content-Type'));
+        $this->assertSame('success', $payload['status']);
+        $this->assertSame('Done', $payload['message']);
+        $this->assertSame(201, (int) $payload['code']);
+        $this->assertSame(['id' => 7], $payload['data']);
+        $this->assertSame(ResponseStatus::Created, $response->status());
+        $this->assertSame('application/json; charset=utf-8', $response->headers()->get('Content-Type'));
+    }
+
+    public function testErrorFactoryBuildsAnErrorPayload(): void
+    {
+        $response = JsonResponse::error('Invalid', ResponseStatus::UnprocessableEntity, ['field' => 'name']);
+        $payload = json_decode($response->content(), true);
+
+        $this->assertSame('error', $payload['status']);
+        $this->assertSame('Invalid', $payload['message']);
+        $this->assertSame(422, (int) $payload['code']);
+        $this->assertSame(['field' => 'name'], $payload['data']);
+        $this->assertSame(ResponseStatus::UnprocessableEntity, $response->status());
+    }
+
+    public function testFactoriesUseDefaultStatusesAndEmptyData(): void
+    {
+        $success = json_decode(JsonResponse::success('Done')->content(), true);
+        $error = JsonResponse::error('Failed');
+
+        $this->assertSame(200, (int) $success['code']);
+        $this->assertSame([], $success['data']);
+        $this->assertSame(ResponseStatus::BadRequest, $error->status());
+    }
+
+    public function testCustomHeadersCanOverrideTheContentType(): void
+    {
+        $response = new JsonResponse('{}', headers: ['Content-Type' => 'application/problem+json']);
+
+        $this->assertSame('application/problem+json', $response->headers()->get('Content-Type'));
+        $this->assertSame('{}', $response->content());
     }
 }
