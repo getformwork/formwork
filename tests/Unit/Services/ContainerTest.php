@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Services;
 
+use Closure;
 use Formwork\Services\Container;
 use Formwork\Services\Exceptions\ContainerException;
 use Formwork\Services\Exceptions\ServiceNotFoundException;
@@ -712,37 +713,106 @@ final class ContainerTest extends TestCase
         yield 'integer' => [OptionalIntegerService::class, 7];
     }
 
-    public function testRedefiningAResolvedServiceReplacesTheResolvedInstance(): void
+    /**
+     * @param Closure(Container): void $define
+     */
+    #[DataProvider('resolvedDefinitionProvider')]
+    public function testResolvedServicesCannotBeRedefined(string $name, Closure $define): void
     {
         $container = new Container();
+        $define($container);
+        $original = $container->get($name);
 
-        $first = new SimpleService();
-        $second = new SimpleService();
+        try {
+            $container->define($name, new SimpleService());
+            $this->fail('Redefining a resolved service should have been rejected.');
+        } catch (ContainerException $exception) {
+            $this->assertStringContainsString($name, $exception->getMessage());
+        }
 
-        $container->define('service', $first);
-
-        $this->assertSame($first, $container->get('service'));
-
-        $container->define('service', $second);
-
-        $this->assertSame($second, $container->get('service'));
-        $this->assertNotSame($first, $container->get('service'));
+        $this->assertTrue($container->isResolved($name));
+        $this->assertSame($original, $container->get($name));
     }
 
-    public function testRedefiningAResolvedDefinitionClearsItsPreviousResolution(): void
+    /**
+     * @return iterable<string, array{string, Closure(Container): void}>
+     */
+    public static function resolvedDefinitionProvider(): iterable
+    {
+        yield 'object' => ['service', static function (Container $container): void {
+            $container->define('service', new SimpleService());
+        }];
+        yield 'class' => [SimpleService::class, static function (Container $container): void {
+            $container->define(SimpleService::class);
+        }];
+        yield 'factory' => ['service', static function (Container $container): void {
+            $container->define('service', static fn(): SimpleService => new SimpleService());
+        }];
+        yield 'loader' => ['service', static function (Container $container): void {
+            $container->define(SharedDependency::class, new SharedDependency());
+            $container->define('service')->loader(TestServiceLoader::class);
+        }];
+    }
+
+    public function testRedefiningAResolvedServiceIsRejectedEvenWhenItWasResolvedEagerly(): void
     {
         $container = new Container();
+        $container->define(SimpleService::class)->lazy(false);
 
+        $this->expectException(ContainerException::class);
         $container->define(SimpleService::class);
+    }
 
-        $first = $container->get(SimpleService::class);
+    public function testRejectedRedefinitionKeepsTheExistingDefinitionAndAliases(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->alias('alias');
+        $service = $container->get('alias');
 
-        $container->define(SimpleService::class);
+        try {
+            $container->define(SimpleService::class)->alias('other');
+            $this->fail('Redefining a resolved service should have been rejected.');
+        } catch (ContainerException) {
+        }
 
-        $this->assertFalse($container->isResolved(SimpleService::class));
+        $this->assertSame($service, $container->get(SimpleService::class));
+        $this->assertSame($service, $container->get('alias'));
+        $this->assertFalse($container->has('other'));
+    }
 
-        $second = $container->get(SimpleService::class);
+    public function testRedefiningAnUnresolvedServiceKeepsItsAliasesPointingToTheNewDefinition(): void
+    {
+        $container = new Container();
+        $container->define('service', new SimpleService())->alias('alias');
 
-        $this->assertNotSame($first, $second);
+        $replacement = new SimpleService();
+        $container->define('service', $replacement);
+
+        $this->assertSame($replacement, $container->get('alias'));
+        $this->assertSame($replacement, $container->get('service'));
+    }
+
+    public function testServicesResolvedThroughAnAliasCannotBeRedefined(): void
+    {
+        $container = new Container();
+        $container->define('service', new SimpleService())->alias('alias');
+        $container->get('alias');
+
+        $this->expectException(ContainerException::class);
+        $container->define('service', new SimpleService());
+    }
+
+    public function testDefiningAnAliasNameDoesNotRequireTheAliasedServiceToBeUnresolved(): void
+    {
+        $container = new Container();
+        $container->define('target', new SimpleService());
+        $container->alias('name', 'target');
+        $target = $container->get('target');
+
+        $own = new SimpleService();
+        $container->define('name', $own);
+
+        $this->assertSame($own, $container->get('name'));
+        $this->assertSame($target, $container->get('target'));
     }
 }
