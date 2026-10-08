@@ -18,8 +18,10 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use RuntimeException;
 
 #[CoversClass(PageAfterDeleteEvent::class)]
 #[CoversClass(PageAfterDuplicateEvent::class)]
@@ -30,6 +32,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(PageLoadedEvent::class)]
 #[CoversClass(PageOutputEvent::class)]
 #[CoversClass(PageRenderEvent::class)]
+#[UsesApplication]
 final class PageEventsTest extends TestCase
 {
     private App $app;
@@ -167,7 +170,7 @@ final class PageEventsTest extends TestCase
         $afterCalled = false;
         $this->app->events()->on('pageBeforeSave', function (object $event) use ($page): void {
             if ($event->page() === $page) {
-                throw new \RuntimeException('blocked');
+                throw new RuntimeException('blocked');
             }
         });
         $this->app->events()->on('pageAfterSave', function (object $event) use (&$afterCalled, $page): void {
@@ -179,7 +182,7 @@ final class PageEventsTest extends TestCase
         try {
             $page->save();
             $this->fail('The before-save exception should have propagated.');
-        } catch (\RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             $this->assertSame('blocked', $exception->getMessage());
         }
 
@@ -188,41 +191,20 @@ final class PageEventsTest extends TestCase
         $this->assertFalse($afterCalled);
     }
 
-    public function testAfterSaveFailureDoesNotUndoCompletedPersistence(): void
-    {
-        $page = $this->page('/about');
-        $page->set('title', 'Persisted');
-        $this->app->events()->on('pageAfterSave', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
-                throw new \RuntimeException('after failure');
-            }
-        });
-
-        try {
-            $page->save();
-            $this->fail('The after-save exception should have propagated.');
-        } catch (\RuntimeException $exception) {
-            $this->assertSame('after failure', $exception->getMessage());
-        }
-
-        $page->reload();
-        $this->assertSame('Persisted', $page->title());
-    }
-
     public function testBeforeDeleteFailureLeavesThePageOnDisk(): void
     {
         $page = $this->page('/about');
         $path = $page->contentPath();
         $this->app->events()->on('pageBeforeDelete', function (object $event) use ($page): void {
             if ($event->page() === $page) {
-                throw new \RuntimeException('blocked');
+                throw new RuntimeException('blocked');
             }
         });
 
         try {
             $page->delete();
             $this->fail('The before-delete exception should have propagated.');
-        } catch (\RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             $this->assertSame('blocked', $exception->getMessage());
         }
 
@@ -242,6 +224,27 @@ final class PageEventsTest extends TestCase
         $duplicate = $page->duplicate(['title' => 'Original override']);
 
         $this->assertSame('From listener', $duplicate->title());
+    }
+
+    public function testAfterSaveFailureDoesNotUndoCompletedPersistence(): void
+    {
+        $page = $this->page('/about');
+        $page->set('title', 'Persisted');
+        $this->app->events()->on('pageAfterSave', function (object $event) use ($page): void {
+            if ($event->page() === $page) {
+                throw new RuntimeException('after failure');
+            }
+        });
+
+        try {
+            $page->save();
+            $this->fail('The after-save exception should have propagated.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('after failure', $exception->getMessage());
+        }
+
+        $page->reload();
+        $this->assertSame('Persisted', $page->title());
     }
 
     public function testSaveEventsAreDispatchedBeforeAndAfterThePageIsWritten(): void
