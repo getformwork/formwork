@@ -166,14 +166,13 @@ final class Uri
      */
     public static function make(array $parts, string $uri, bool $forcePort = false): string
     {
-        $givenParts = array_keys($parts);
         $parts = [...self::parse($uri), ...$parts];
         $result = '';
         if (!empty($parts['host'])) {
             $scheme = strtolower($parts['scheme'] ?? 'http');
             $port = $parts['port'] ?? self::getDefaultPort($scheme);
             $result = $scheme . '://' . strtolower($parts['host']);
-            if ($forcePort || (in_array('port', $givenParts, true) && !self::isDefaultPort($port, $scheme))) {
+            if ($forcePort || !self::isDefaultPort($port, $scheme)) {
                 $result .= ":{$port}";
             }
         }
