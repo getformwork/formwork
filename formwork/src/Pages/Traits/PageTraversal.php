@@ -245,7 +245,7 @@ trait PageTraversal
      */
     public function isSiblingOf(Page|Site $page): bool
     {
-        return !$page->siblings()->contains($this);
+        return $page->siblings()->contains($this);
     }
 
     /**
