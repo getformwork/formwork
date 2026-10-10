@@ -46,9 +46,18 @@ class Container implements ContainerInterface
 
     /**
      * Define a new service
+     *
+     * @throws ContainerException If the service is already resolved
      */
     public function define(string $name, ?object $object = null): ServiceDefinition
     {
+        if (isset($this->resolved[$name])) {
+            throw new ContainerException(sprintf('Cannot redefine service "%s": already resolved', $name));
+        }
+
+        // A new definition takes precedence over an alias with the same name
+        unset($this->aliases[$name]);
+
         return $this->defined[$name] = new ServiceDefinition($name, $object, $this);
     }
 
