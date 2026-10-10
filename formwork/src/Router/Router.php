@@ -213,13 +213,11 @@ class Router
                 // Remove entire matches from $matches array
                 array_shift($matches);
 
-                $this->current = $route;
-
-                $this->params = $this->buildParams($compiledRoute->params(), $matches);
+                $params = $this->buildParams($compiledRoute->params(), $matches);
 
                 // Check route constraints
                 foreach ($route->getConstraints() as $param => $constraint) {
-                    $value = $this->params->get($param);
+                    $value = $params->get($param);
                     if ($constraint instanceof Closure) {
                         if (!$this->container->call($constraint, ['value' => $value])) {
                             continue 2;
@@ -228,6 +226,10 @@ class Router
                         continue 2;
                     }
                 }
+
+                $this->current = $route;
+
+                $this->params = $params;
 
                 $this->container->define(RouteParams::class, $this->params);
 
