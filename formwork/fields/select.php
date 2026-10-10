@@ -26,7 +26,8 @@ return function (App $app) {
                     return '';
                 }
 
-                if (!array_key_exists($value, $field->options())) {
+                // Ensure the value is a valid key in the options array
+                if ((!is_string($value) && !is_int($value)) || !array_key_exists($value, $field->options())) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
                 }
 
