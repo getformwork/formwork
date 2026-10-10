@@ -76,7 +76,11 @@ class FileUploader
             ? $clientExtension
             : MimeType::toExtension($mimeType);
 
-        $filename = Str::slug($name ?? pathinfo($uploadedFile->clientName(), PATHINFO_FILENAME)) . ".{$extension}";
+        if (($slug = Str::slug($name ?? pathinfo($uploadedFile->clientName(), PATHINFO_FILENAME))) === '') {
+            throw new TranslatedException('Invalid file name', 'upload.error.fileName');
+        }
+
+        $filename = "{$slug}.{$extension}";
 
         $uploadedFile->move($destinationPath, $filename, $overwrite);
 
