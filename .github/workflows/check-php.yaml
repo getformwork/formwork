@@ -56,3 +56,6 @@ jobs:
 
       - name: Run Rector
         run: composer rector:check
+
+      - name: Run PHPUnit tests
+        run: composer test
