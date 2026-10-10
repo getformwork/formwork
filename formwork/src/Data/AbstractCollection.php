@@ -2,6 +2,7 @@
 
 namespace Formwork\Data;
 
+use Closure;
 use Countable;
 use Formwork\Data\Contracts\Arrayable;
 use Formwork\Data\Traits\DataCountableIterator;
@@ -464,7 +465,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
         $args = func_num_args();
 
-        if (is_callable($value)) {
+        if ($value instanceof Closure) {
             if ($args > 2) {
                 throw new LogicException(sprintf('Unexpected third argument passed to %s()', __METHOD__));
             }
