@@ -34,7 +34,7 @@ class ContentFile extends File
      */
     public function isEmpty(): bool
     {
-        return $this->frontmatter === [];
+        return $this->frontmatter === [] && $this->content === '';
     }
 
     /**
