@@ -51,7 +51,9 @@ class FileResponse extends Response
 
     public function send(): void
     {
-        parent::cleanOutputBuffers();
+        if (PHP_SAPI !== 'cli') {
+            $this->cleanOutputBuffers();
+        }
 
         $this->sendHeaders();
 
