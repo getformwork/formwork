@@ -288,13 +288,20 @@ class Container implements ContainerInterface
                 continue;
             }
 
+            $serviceAttributeName = null;
+
             // Resolve specific service if defined with the #[Service] attribute
             if (($serviceAttributes = $reflectionParameter->getAttributes(Service::class)) !== []) {
                 if (count($serviceAttributes) > 1) {
                     throw new ContainerException(sprintf('Multiple #[Service] attributes found for argument $%s', $name));
                 }
-                $arguments[] = $this->get($serviceAttributes[0]->newInstance()->name);
-                continue;
+
+                $serviceAttributeName = $serviceAttributes[0]->newInstance()->name;
+
+                if ($this->has($serviceAttributeName)) {
+                    $arguments[] = $this->get($serviceAttributeName);
+                    continue;
+                }
             }
 
             // Resolve class/interface if defined in the container
@@ -311,6 +318,11 @@ class Container implements ContainerInterface
             // Skip optional parameters without default value (e.g., variadic parameters)
             if ($reflectionParameter->isOptional()) {
                 continue;
+            }
+
+            // Report the missing service name if specified with the #[Service] attribute
+            if ($serviceAttributeName !== null) {
+                throw new ServiceNotFoundException(sprintf('Cannot instantiate argument $%s: no container definition satisfies the service "%s" and no default value is available', $name, $serviceAttributeName));
             }
 
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
