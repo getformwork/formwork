@@ -2,6 +2,7 @@
 
 namespace Formwork\Parsers;
 
+use Closure;
 use Formwork\Parsers\Extensions\CommonMark\FormworkExtension;
 use Formwork\Parsers\Extensions\CommonMark\ImageRenderer;
 use Formwork\Sanitizer\HtmlSanitizer;
@@ -57,7 +58,7 @@ final class Markdown extends AbstractParser
 
         $htmlSanitizer = new HtmlSanitizer();
 
-        return $htmlSanitizer->sanitize($renderedContent);
+        return $htmlSanitizer->sanitize($renderedContent->getContent());
     }
 
     /**
@@ -86,7 +87,7 @@ final class Markdown extends AbstractParser
 
         if ($options['addHeadingIds']) {
             $defaultAttributes[Heading::class] = [
-                'id' => fn(Heading $heading) => Str::slug(StringContainerHelper::getChildText($heading)),
+                'id' => self::getHeadingIdGenerator(),
             ];
         }
 
@@ -116,5 +117,27 @@ final class Markdown extends AbstractParser
         }
 
         return ['config' => $config, 'extensions' => $extensions];
+    }
+
+    /**
+     * Returns a closure that generates unique heading IDs based on the heading text
+     */
+    private static function getHeadingIdGenerator(): Closure
+    {
+        return static function (Heading $heading): ?string {
+            static $slugs = [];
+
+            if (($slug = Str::slug(StringContainerHelper::getChildText($heading))) !== '') {
+                if (isset($slugs[$slug])) {
+                    $slugs[$slug]++;
+                    $slug .= "-{$slugs[$slug]}";
+                } else {
+                    $slugs[$slug] = 1;
+                }
+                return $slug;
+            }
+
+            return null;
+        };
     }
 }
