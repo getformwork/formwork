@@ -341,6 +341,140 @@ final class ContainerTest extends TestCase
         $this->assertInstanceOf(SimpleService::class, $container->get(SimpleService::class));
     }
 
+    public function testEagerServicesAreResolvedExplicitly(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->lazy(false);
+        $container->define(SharedDependency::class);
+
+        $container->resolveEagerServices();
+
+        $this->assertTrue($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SharedDependency::class));
+    }
+
+    public function testResolvingEagerServicesOnAnEmptyContainerDoesNothing(): void
+    {
+        $container = new Container();
+
+        $container->resolveEagerServices();
+
+        $this->assertFalse($container->has(SimpleService::class));
+    }
+
+    public function testResolvingEagerServicesTwiceKeepsTheSharedInstances(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->lazy(false);
+
+        $container->resolveEagerServices();
+        $first = $container->get(SimpleService::class);
+        $container->resolveEagerServices();
+
+        $this->assertSame($first, $container->get(SimpleService::class));
+    }
+
+    public function testEagerServicesAlreadyResolvedAreNotResolvedAgain(): void
+    {
+        $container = new Container();
+        $container->define(SharedDependency::class, new SharedDependency());
+        $container->define('loaded')->loader(TestServiceLoader::class)->lazy(false);
+        $container->get('loaded');
+
+        $container->resolveEagerServices();
+
+        $this->assertSame(1, TestServiceLoader::$loadCount);
+        $this->assertSame(1, TestServiceLoader::$resolvedCount);
+    }
+
+    public function testEagerServicesUseTheConfigurationDefinedAfterLazyFalse(): void
+    {
+        $container = new Container();
+        $container->define(ArrayOptionsService::class)
+            ->lazy(false)
+            ->parameter('options', ['configured' => true]);
+
+        $container->resolveEagerServices();
+
+        $this->assertTrue($container->isResolved(ArrayOptionsService::class));
+        $this->assertSame(['configured' => true], $container->get(ArrayOptionsService::class)->options);
+    }
+
+    public function testEagerLoaderServicesAreLoadedOnce(): void
+    {
+        $container = new Container();
+        $container->define(SharedDependency::class, new SharedDependency());
+        $container->define('loaded')->loader(TestServiceLoader::class)->lazy(false);
+
+        $container->resolveEagerServices();
+        $container->resolveEagerServices();
+
+        $this->assertInstanceOf(LoadedService::class, $container->get('loaded'));
+        $this->assertSame(1, TestServiceLoader::$loadCount);
+        $this->assertSame(1, TestServiceLoader::$resolvedCount);
+    }
+
+    public function testEagerServicesResolveTheirLazyDependencies(): void
+    {
+        $container = new Container();
+        $container->define(SharedDependency::class);
+        $container->define(DependentOnSharedDependency::class)->lazy(false);
+
+        $container->resolveEagerServices();
+
+        $this->assertTrue($container->isResolved(SharedDependency::class));
+    }
+
+    public function testEagerServicesCanBeReachedThroughTheirAliases(): void
+    {
+        $container = new Container();
+        $container->define(SimpleService::class)->alias('simple')->lazy(false);
+
+        $container->resolveEagerServices();
+
+        $this->assertTrue($container->isResolved('simple'));
+    }
+
+    public function testEagerServicesDefinedWhileResolvingEagerServicesAreResolvedToo(): void
+    {
+        $container = new Container();
+        $container->define('first', static function () use ($container): SimpleService {
+            $container->define('second', static fn(): SharedDependency => new SharedDependency())->lazy(false);
+            return new SimpleService();
+        })->lazy(false);
+
+        $container->resolveEagerServices();
+
+        $this->assertTrue($container->isResolved('second'));
+    }
+
+    public function testFailingEagerServicesPropagateTheirException(): void
+    {
+        $container = new Container();
+        $container->define('failing', static function (): never {
+            throw new RuntimeException('eager failure');
+        })->lazy(false);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('eager failure');
+        $container->resolveEagerServices();
+    }
+
+    public function testFailingEagerServicesAreNotMarkedAsResolved(): void
+    {
+        $container = new Container();
+        $container->define('failing', static function (): never {
+            throw new RuntimeException('eager failure');
+        })->lazy(false);
+
+        try {
+            $container->resolveEagerServices();
+        } catch (RuntimeException) {
+        }
+
+        $this->assertFalse($container->isResolved('failing'));
+    }
+
     public function testParametersSetAfterLazyFalseAreApplied(): void
     {
         $container = new Container();

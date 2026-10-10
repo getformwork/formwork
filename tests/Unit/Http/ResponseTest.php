@@ -120,6 +120,58 @@ final class ResponseTest extends TestCase
         yield 'no validators' => [[], ResponseStatus::OK];
     }
 
+    public function testModificationDateIsIgnoredWhenTheRequestHasETagsButTheResponseHasNone(): void
+    {
+        // If-None-Match takes precedence over If-Modified-Since even when it cannot be evaluated
+        $response = new Response('body', ResponseStatus::OK, ['Last-Modified' => 'Wed, 01 Jan 2025 00:00:00 GMT']);
+
+        $response->prepare($this->request(RequestMethod::GET, [
+            'HTTP_IF_NONE_MATCH'     => '"abc"',
+            'HTTP_IF_MODIFIED_SINCE' => 'Wed, 01 Jan 2025 00:00:00 GMT',
+        ]));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+    }
+
+    #[DataProvider('invalidDateProvider')]
+    public function testUnparseableModificationDatesNeverProduceNotModified(string $lastModified, string $ifModifiedSince): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['Last-Modified' => $lastModified]);
+
+        $response->prepare($this->request(RequestMethod::GET, ['HTTP_IF_MODIFIED_SINCE' => $ifModifiedSince]));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function invalidDateProvider(): iterable
+    {
+        yield 'invalid request date' => ['Wed, 01 Jan 2025 00:00:00 GMT', 'not a date'];
+        yield 'invalid response date' => ['not a date', 'Wed, 01 Jan 2025 00:00:00 GMT'];
+        yield 'both dates invalid' => ['not a date', 'also not a date'];
+        yield 'empty request date' => ['Wed, 01 Jan 2025 00:00:00 GMT', ''];
+    }
+
+    public function testETagsContainingCommasAreMatchedAsAWhole(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"a,b"']);
+
+        $response->prepare($this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => '"a,b"']));
+
+        $this->assertSame(ResponseStatus::NotModified, $response->status());
+    }
+
+    public function testPartsOfAnETagContainingCommasDoNotMatch(): void
+    {
+        $response = new Response('body', ResponseStatus::OK, ['ETag' => '"b"']);
+
+        $response->prepare($this->request(RequestMethod::GET, ['HTTP_IF_NONE_MATCH' => '"a,b"']));
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+    }
+
     public function testConditionalHeadersDoNotAffectRequestsOtherThanGetAndHead(): void
     {
         $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"']);

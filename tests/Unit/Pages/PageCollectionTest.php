@@ -11,6 +11,7 @@ use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PageCollection::class)]
 final class PageCollectionTest extends TestCase
@@ -107,6 +108,52 @@ final class PageCollectionTest extends TestCase
         ]);
 
         $this->assertSame([$about], $results->values());
+    }
+
+    public function testSearchStoresTheScoresOfTheMatchingPages(): void
+    {
+        $about = $this->page('/about');
+        $blog = $this->page('/blog');
+        $other = $this->page('/index');
+        $about->set('title', 'PHP guide');
+        $blog->set('title', 'A PHP handbook for teams');
+        $other->set('title', 'Cooking recipes');
+
+        $results = $this->collection($about, $blog, $other)->search('PHP guide', minimumLength: 3, weights: [
+            'title'   => 100,
+            'summary' => 0,
+            'content' => 0,
+            'author'  => 0,
+            'uri'     => 0,
+        ], scores: $scores);
+
+        $this->assertSame($results->keys(), array_keys($scores));
+        $this->assertCount(2, $scores);
+        $this->assertGreaterThan($scores[$results->keys()[1]], $scores[$results->keys()[0]]);
+        $this->assertContainsOnlyInt($scores);
+    }
+
+    #[DataProvider('searchWithoutResultsProvider')]
+    public function testSearchScoresAreEmptyWhenThereAreNoResults(string $query): void
+    {
+        $about = $this->page('/about');
+        $about->set('title', 'PHP guide');
+
+        $scores = ['stale' => 1];
+        $results = $this->collection($about)->search($query, scores: $scores);
+
+        $this->assertTrue($results->isEmpty());
+        $this->assertSame([], $scores);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function searchWithoutResultsProvider(): iterable
+    {
+        yield 'query shorter than the minimum length' => ['php'];
+        yield 'no keyword reaches the minimum length' => ['a b c d'];
+        yield 'no page matches' => ['unrelated words'];
     }
 
     public function testSearchDoesNotAddTransientScoresToTheSourcePages(): void

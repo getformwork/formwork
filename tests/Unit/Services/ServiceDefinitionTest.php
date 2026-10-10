@@ -84,6 +84,33 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertFalse($container->isResolved(SimpleService::class));
     }
 
+    public function testDefinitionsAreLazyByDefault(): void
+    {
+        $this->assertTrue((new Container())->define(SimpleService::class)->isLazy());
+    }
+
+    public function testLazinessCanBeChangedAndRestored(): void
+    {
+        $definition = (new Container())->define(SimpleService::class);
+
+        $definition->lazy(false);
+        $this->assertFalse($definition->isLazy());
+
+        $definition->lazy(true);
+        $this->assertTrue($definition->isLazy());
+    }
+
+    public function testLazinessIsIndependentFromTheAliasesAndParametersOfTheDefinition(): void
+    {
+        $definition = (new Container())->define(SimpleService::class)
+            ->alias('alias')
+            ->parameter('name', 'value')
+            ->lazy(false);
+
+        $this->assertFalse($definition->isLazy());
+        $this->assertSame(['name' => 'value'], $definition->getParameters());
+    }
+
     public function testCallingLazyFalseAfterResolutionDoesNotReplaceTheInstance(): void
     {
         $container = new Container();

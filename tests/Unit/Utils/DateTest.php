@@ -3,6 +3,8 @@
 namespace Formwork\Tests\Unit\Utils;
 
 use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
 use Formwork\Tests\TestCase;
 use Formwork\Translations\Translation;
 use Formwork\Utils\Date;
@@ -111,6 +113,33 @@ final class DateTest extends TestCase
 
         $this->assertSame('Gio, 29 Mar 2029 15:30:00 +0000', Date::formatDateTime(new DateTime('2029-03-29 15:30:00'), 'r', $translation));
         $this->assertSame('Giovedì 29 Marzo 2029', Date::formatDateTime($dateTime, 'l d F Y', $translation));
+    }
+
+    public function testFormatAcceptsImmutableDateTimesAndKeepsTheirTimeZone(): void
+    {
+        $translation = new Translation('it', $this->translation);
+        $dateTime = new DateTimeImmutable('2029-03-29 15:30:00', new DateTimeZone('Europe/Rome'));
+
+        $this->assertSame('Gio, 29 Mar 2029 15:30:00 +0200', Date::formatDateTime($dateTime, 'r', $translation));
+        $this->assertSame('15:30', Date::formatDateTime($dateTime, 'H:i', $translation));
+    }
+
+    public function testFormatDoesNotModifyTheGivenDateTime(): void
+    {
+        $translation = new Translation('it', $this->translation);
+        $dateTime = new DateTimeImmutable('2029-03-29 15:30:00');
+
+        Date::formatDateTime($dateTime, 'l d F Y', $translation);
+
+        $this->assertSame('2029-03-29 15:30:00', $dateTime->format('Y-m-d H:i:s'));
+    }
+
+    public function testFormatDistanceAcceptsImmutableDateTimes(): void
+    {
+        $translation = new Translation('it', $this->translation);
+
+        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTimeImmutable('@' . (time() - 5 * 86400)), $translation));
+        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTimeImmutable('@' . (time() + 3 * 3600)), $translation));
     }
 
     public function testFormatWithTimestamp(): void
