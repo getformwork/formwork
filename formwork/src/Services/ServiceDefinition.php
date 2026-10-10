@@ -100,15 +100,14 @@ class ServiceDefinition
     public function lazy(bool $lazy): self
     {
         $this->lazy = $lazy;
-
-        if (
-            $this->lazy === false
-            && $this->container->has($this->name)
-            && !$this->container->isResolved($this->name)
-        ) {
-            $this->container->resolve($this->name);
-        }
-
         return $this;
+    }
+
+    /**
+     * Get service laziness
+     */
+    public function isLazy(): bool
+    {
+        return $this->lazy;
     }
 }

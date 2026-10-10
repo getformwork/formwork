@@ -261,6 +261,18 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Resolve all eager (non-lazy) services in the container
+     */
+    public function resolveEagerServices(): void
+    {
+        foreach ($this->defined as $name => $definition) {
+            if (!$definition->isLazy() && !$this->isResolved($name)) {
+                $this->resolve($name);
+            }
+        }
+    }
+
+    /**
      * Build arguments for a function or method
      *
      * @param array<string, mixed> $parameters

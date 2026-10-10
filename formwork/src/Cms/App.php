@@ -246,6 +246,8 @@ final class App
 
         $definitions = require SYSTEM_PATH . '/config/services/services.php';
         $definitions($container);
+
+        $container->resolveEagerServices();
     }
 
     /**
