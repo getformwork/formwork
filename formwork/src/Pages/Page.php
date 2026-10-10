@@ -310,7 +310,13 @@ class Page extends Model implements Stringable
         $counter = 1;
 
         if ($this->parent() !== null) {
-            $slugs = $this->parent()->children()->everyItem()->slug();
+            // Retrieve a fresh collection of sibling pages to ensure the new slug is unique
+            // `$this->parent()->children()` is cached and may not include recently added pages
+            $slugs = $this->site()
+                ->retrievePages((string) $this->parent()->contentPath())
+                ->everyItem()
+                ->slug();
+
             while ($slugs->contains($newSlug)) {
                 $counter++;
                 $newSlug = "{$baseSlug}-copy-{$counter}";
