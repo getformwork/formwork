@@ -84,10 +84,10 @@ final class Header
      */
     public static function parseETags(string $header): array
     {
-        if (($etags = preg_split('/\s*,\s*/', $header, flags: PREG_SPLIT_NO_EMPTY)) === false) {
+        if (preg_match_all('/(?:W\/)?"[^"]*"|[^\s,]+/', $header, $matches) === false) {
             throw new UnexpectedValueException('Cannot parse ETags');
         }
-        return $etags;
+        return $matches[0];
     }
 
     /**
