@@ -183,6 +183,10 @@ class Container implements ContainerInterface
     {
         $name = $this->resolveAlias($name);
 
+        if (isset($this->resolved[$name])) {
+            return $this->resolved[$name];
+        }
+
         /**
          * @var class-string $name
          */
