@@ -69,11 +69,23 @@ class Container implements ContainerInterface
      * @param class-string<T>      $class
      * @param array<string, mixed> $parameters
      *
+     * @throws ContainerException If the class does not exist or cannot be instantiated
+     *
      * @return T
      */
     public function build(string $class, array $parameters = []): object
     {
-        $constructor = (new ReflectionClass($class))->getConstructor();
+        if (!class_exists($class)) {
+            throw new ContainerException(sprintf('Cannot instantiate "%s": class does not exist', $class));
+        }
+
+        $reflectionClass = new ReflectionClass($class);
+
+        if (!$reflectionClass->isInstantiable()) {
+            throw new ContainerException(sprintf('Cannot instantiate "%s": class is not instantiable', $class));
+        }
+
+        $constructor = $reflectionClass->getConstructor();
 
         if ($constructor === null) {
             return new $class();
