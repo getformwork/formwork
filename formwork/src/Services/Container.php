@@ -111,10 +111,15 @@ class Container implements ContainerInterface
     /**
      * Alias a service to another service
      *
+     * @throws ContainerException If the alias name is already defined
      * @throws ContainerException If a circular alias is detected
      */
     public function alias(string $alias, string $target): void
     {
+        if (isset($this->defined[$alias])) {
+            throw new ContainerException(sprintf('Cannot use "%s" as an alias: name already defined', $alias));
+        }
+
         $visited = [$alias => true];
         $current = $target;
 
