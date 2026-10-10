@@ -153,6 +153,8 @@ class PageCollection extends AbstractCollection implements Paginable
         $query = preg_replace(['/\s+/u', '/^\s+|\s+$/u'], [' ', ''], $query)
             ?? throw new RuntimeException(sprintf('Whitespace normalization failed with error: %s', preg_last_error_msg()));
 
+        $scores = [];
+
         $pageCollection = $this->clone();
 
         if (mb_strlen($query) < $minimumLength) {
@@ -184,8 +186,6 @@ class PageCollection extends AbstractCollection implements Paginable
             'author'  => 2,
             'uri'     => 1,
         ];
-
-        $scores = [];
 
         /** @var string $route */
         foreach ($pageCollection->data as $route => $page) {
