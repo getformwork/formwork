@@ -21,21 +21,21 @@ class Container implements ContainerInterface
      *
      * @var array<string, ServiceDefinition>
      */
-    protected array $defined;
+    protected array $defined = [];
 
     /**
      * Resolved services
      *
      * @var array<string, object>
      */
-    protected array $resolved;
+    protected array $resolved = [];
 
     /**
      * Service aliases
      *
      * @var array<string, string>
      */
-    protected array $aliases;
+    protected array $aliases = [];
 
     /**
      * Stack of services being resolved
