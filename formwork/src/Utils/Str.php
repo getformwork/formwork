@@ -252,7 +252,11 @@ final class Str
      */
     public static function slug(string $string): string
     {
-        return preg_replace(['/^-|-$|[^a-z0-9-]/', '/-+/'], ['', '-'], strtr(strtolower($string), self::SLUG_TRANSLATE_MAP))
+        if (!extension_loaded('mbstring')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "mbstring" to be enabled', __METHOD__));
+        }
+
+        return preg_replace(['/^-+|-+$|[^a-z0-9-]/', '/-+/'], ['', '-'], strtr(mb_strtolower($string), self::SLUG_TRANSLATE_MAP))
             ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
     }
 
