@@ -140,10 +140,11 @@ class PageCollection extends AbstractCollection implements Paginable
      * @param int                $minimumLength     Minimum query length
      * @param int                $maxKeywordMatches Maximum number of keyword matches to count per field for scoring purposes
      * @param array<string, int> $weights           Weights for each field to consider in the scoring
+     * @param array<string, int> $scores            Array to store the computed scores for each page
      *
      * @throws RuntimeException If whitespace normalization fails
      */
-    public function search(string $query, int $minimumLength = 4, int $maxKeywordMatches = 3, array $weights = []): static
+    public function search(string $query, int $minimumLength = 4, int $maxKeywordMatches = 3, array $weights = [], ?array &$scores = null): static
     {
         if (!extension_loaded('mbstring')) {
             throw new RuntimeException(sprintf('%s() requires the extension "mbstring" to be enabled', __METHOD__));
@@ -152,8 +153,9 @@ class PageCollection extends AbstractCollection implements Paginable
         $query = preg_replace(['/\s+/u', '/^\s+|\s+$/u'], [' ', ''], $query)
             ?? throw new RuntimeException(sprintf('Whitespace normalization failed with error: %s', preg_last_error_msg()));
 
+        $pageCollection = $this->clone();
+
         if (mb_strlen($query) < $minimumLength) {
-            $pageCollection = clone $this;
             $pageCollection->data = [];
             return $pageCollection;
         }
@@ -163,7 +165,6 @@ class PageCollection extends AbstractCollection implements Paginable
         $keywords = array_filter($keywords, fn(string $item): bool => mb_strlen($item) >= $minimumLength);
 
         if ($keywords === []) {
-            $pageCollection = clone $this;
             $pageCollection->data = [];
             return $pageCollection;
         }
@@ -184,9 +185,10 @@ class PageCollection extends AbstractCollection implements Paginable
             'uri'     => 1,
         ];
 
-        $pageCollection = clone $this;
+        $scores = [];
 
-        foreach ($pageCollection->data as $page) {
+        /** @var string $route */
+        foreach ($pageCollection->data as $route => $page) {
             $score = 0;
 
             foreach ($weights as $key => $weight) {
@@ -205,11 +207,13 @@ class PageCollection extends AbstractCollection implements Paginable
             }
 
             if ($score > 0) {
-                $page->set('score', $score);
+                $scores[$route] = $score;
             }
         }
 
-        return $pageCollection->filterBy('score')->sortBy('score', direction: SORT_DESC);
+        return $pageCollection
+            ->filter(fn($page, $route) => isset($scores[$route]))
+            ->sort(direction: SORT_DESC, sortBy: $scores);
     }
 
     /**
