@@ -36,9 +36,12 @@ final class Visitor
     {
         static $mobileDetect = new MobileDetect(config: ['autoInitOfHttpHeaders' => false]);
         $mobileDetect->setUserAgent($request->userAgent() ?? '');
+
+        // In order to match tablet devices correctly, we need to check for tablets before mobiles
+        // since some tablets might also be detected as mobile devices
         return match (true) {
-            $mobileDetect->isMobile() => DeviceType::Mobile,
             $mobileDetect->isTablet() => DeviceType::Tablet,
+            $mobileDetect->isMobile() => DeviceType::Mobile,
             default                   => DeviceType::Desktop,
         };
     }
