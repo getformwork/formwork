@@ -2,7 +2,8 @@
 
 namespace Formwork\Utils;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Exception;
 use Formwork\Traits\StaticClass;
 use Formwork\Translations\Translation;
@@ -90,13 +91,9 @@ final class Date
     {
         try {
             $dateTime = self::createDateTime($date, (array) $format);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             // Try to parse the date anyway if the format is not given
-            try {
-                $dateTime = new DateTime($date);
-            } catch (Exception $e) {
-                throw new InvalidArgumentException(sprintf('Invalid date "%s": %s', $date, self::getLastDateTimeError()), $e->getCode(), $e->getPrevious());
-            }
+            $dateTime = self::createDateTime($date);
         }
 
         return $dateTime->getTimestamp();
@@ -146,15 +143,15 @@ final class Date
     }
 
     /**
-     * Formats a DateTime object using the current translation for weekdays and months
+     * Formats a `DateTimeInterface` object using the current translation for weekdays and months
      *
-     * @param DateTime    $dateTime    The `DateTime` object to format
-     * @param string      $format      The format string accepted by `date()`
-     * @param Translation $translation The translation object for localized strings
+     * @param DateTimeInterface $dateTime    The `DateTimeInterface` object to format
+     * @param string            $format      The format string accepted by `date()`
+     * @param Translation       $translation The translation object for localized strings
      *
      * @throws RuntimeException If the date formatting fails due to a regex error
      */
-    public static function formatDateTime(DateTime $dateTime, string $format, Translation $translation): string
+    public static function formatDateTime(DateTimeInterface $dateTime, string $format, Translation $translation): string
     {
         return preg_replace_callback(
             self::DATE_FORMAT_REGEX,
@@ -163,7 +160,7 @@ final class Date
                 'F'     => $translation->getStrings('date.months.long')[$dateTime->format('n') - 1],
                 'D'     => $translation->getStrings('date.weekdays.short')[(int) $dateTime->format('w')],
                 'l'     => $translation->getStrings('date.weekdays.long')[(int) $dateTime->format('w')],
-                'r'     => self::formatDateTime($dateTime, DateTime::RFC2822, $translation),
+                'r'     => self::formatDateTime($dateTime, DateTimeInterface::RFC2822, $translation),
                 default => $dateTime->format($matches[1] ?? $matches[0]),
             },
             $format
@@ -171,17 +168,17 @@ final class Date
     }
 
     /**
-     * The same as `formatDateTime()` but takes a timestamp instead of a `DateTime` object
+     * The same as `formatDateTime()` but takes a timestamp instead of a `DateTimeInterface` object
      */
     public static function formatTimestamp(int $timestamp, string $format, Translation $translation): string
     {
-        return self::formatDateTime((new DateTime())->setTimestamp($timestamp), $format, $translation);
+        return self::formatDateTime(new DateTimeImmutable("@{$timestamp}"), $format, $translation);
     }
 
     /**
-     * Formats a `DateTime` object as a time distance from now
+     * Formats a `DateTimeInterface` object as a time distance from now
      */
-    public static function formatDateTimeAsDistance(DateTime $dateTime, Translation $translation): string
+    public static function formatDateTimeAsDistance(DateTimeInterface $dateTime, Translation $translation): string
     {
         $time = $dateTime->getTimestamp();
         $now = time();
@@ -216,43 +213,63 @@ final class Date
     }
 
     /**
-     * The same as `formatDateTimeAsDistance()` but takes a timestamp instead of a `DateTime` object
+     * The same as `formatDateTimeAsDistance()` but takes a timestamp instead of a `DateTimeInterface` object
      */
     public static function formatTimestampAsDistance(int $timestamp, Translation $translation): string
     {
-        return self::formatDateTimeAsDistance((new DateTime())->setTimestamp($timestamp), $translation);
+        return self::formatDateTimeAsDistance(new DateTimeImmutable("@{$timestamp}"), $translation);
     }
 
     /**
-     * Create a `DateTime` object from a date string and a list of formats
+     * Create a `DateTimeImmutable` object from a date string and a list of formats
      *
      * @param array<string> $formats
      *
      * @throws InvalidArgumentException If no formats are provided or if the date cannot be parsed
      */
-    private static function createDateTime(string $date, array $formats): DateTime
+    private static function createDateTime(string $date, ?array $formats = null): DateTimeImmutable
     {
-        if ($formats === []) {
-            throw new InvalidArgumentException(sprintf('At least 1 format must be given to %s()', __METHOD__));
-        }
-        foreach ($formats as $format) {
-            // Always prepend "!" to the format to avoid parsing the date as local time
-            $dateTime = DateTime::createFromFormat(Str::prepend($format, '!'), $date);
-            if ($dateTime !== false) {
-                return $dateTime;
+        $dateTime = false;
+
+        try {
+            if ($formats === null) {
+                $dateTime = new DateTimeImmutable($date);
+            } else {
+                foreach ($formats as $format) {
+                    // Always prepend "!" to the format to avoid parsing the date as local time
+                    $dateTime = DateTimeImmutable::createFromFormat(Str::prepend($format, '!'), $date);
+                    if ($dateTime !== false) {
+                        break;
+                    }
+                }
             }
+        } catch (Exception) {
+            // Ignore exceptions and proceed to throw InvalidArgumentException
         }
-        throw new InvalidArgumentException(sprintf('Date "%s" is not formatted according to the format "%s": %s', $date, $format, self::getLastDateTimeError()));
+
+        if ($dateTime === false || self::getLastDateTimeError() !== '') {
+            if (isset($format)) {
+                throw new InvalidArgumentException(sprintf('Date "%s" is not formatted according to the format "%s": %s', $date, $format, self::getLastDateTimeError()));
+            }
+            throw new InvalidArgumentException(sprintf('Invalid date "%s": %s', $date, self::getLastDateTimeError()));
+        }
+
+        return $dateTime;
     }
 
     /**
-     * Return a human-readable string containing details about last `DateTime` error
+     * Return a human-readable string containing details about last `DateTimeImmutable` error
      */
     private static function getLastDateTimeError(): string
     {
         $result = [];
         $lastError = null;
-        if (($errors = DateTime::getLastErrors()) !== false) {
+        if (($errors = DateTimeImmutable::getLastErrors()) !== false) {
+            foreach ($errors['warnings'] as $position => $warning) {
+                $currentWarning = lcfirst(rtrim($warning, '.'));
+                $result[] = ($currentWarning !== $lastError ? $currentWarning . ' at position ' : '') . $position;
+                $lastError = $currentWarning;
+            }
             foreach ($errors['errors'] as $position => $error) {
                 $currentError = lcfirst(rtrim($error, '.'));
                 $result[] = ($currentError !== $lastError ? $currentError . ' at position ' : '') . $position;
