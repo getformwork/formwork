@@ -7,9 +7,7 @@ use Formwork\Config\Config;
 use Formwork\Files\Exceptions\FileUriGenerationException;
 use Formwork\Http\Request;
 use Formwork\Router\Router;
-use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
-use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
 use RuntimeException;
 
@@ -29,33 +27,33 @@ class FileUriGenerator
     {
         $path = $file->path();
 
-        if (Str::startsWith($path, FileSystem::normalizePath($this->config->get('system.files.paths.site')))) {
+        if (Path::isRelativeTo($path, $this->config->get('system.files.paths.site'))) {
             $name = basename($path);
             $uriPath = $this->router->generate('files', compact('name'));
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
-        if (Str::startsWith($path, FileSystem::normalizePath($this->config->get('system.images.processPath')))) {
+        if (Path::isRelativeTo($path, $this->config->get('system.images.processPath'))) {
             $id = basename(dirname($path));
             $name = basename($path);
             $uriPath = $this->router->generate('assets', ['type' => 'images', 'id' => $id, 'name' => $name]);
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
-        if (Str::startsWith($path, $contentPath = FileSystem::normalizePath($this->config->get('system.pages.path')))) {
-            $uriPath = preg_replace('~[/\\\](\d+-)~', '/', Str::after(dirname($path), $contentPath))
+        if (Path::isRelativeTo($path, $contentPath = $this->config->get('system.pages.path'))) {
+            $uriPath = preg_replace('~[/\\\](\d+-)~', '/', Path::join(['/', Path::makeRelative(dirname($path), $contentPath)]))
                 ?? throw new RuntimeException(sprintf('Replacement failed with error: %s', preg_last_error_msg()));
             return $this->site->uri(Path::join([$uriPath, basename($path)]), includeLanguage: false);
         }
 
-        if (Str::startsWith($path, FileSystem::normalizePath($this->config->get('system.users.paths.images')))) {
+        if (Path::isRelativeTo($path, $this->config->get('system.users.paths.images'))) {
             $image = basename($path);
             $uriPath = $this->router->generate('panel.users.images', compact('image'));
             return $this->site->uri($uriPath, includeLanguage: false);
         }
 
-        if (Str::startsWith($path, $panelAssetsPath = FileSystem::normalizePath($this->config->get('system.panel.paths.assets')))) {
-            $uriPath = Str::after($path, $panelAssetsPath);
+        if (Path::isRelativeTo($path, $panelAssetsPath = $this->config->get('system.panel.paths.assets'))) {
+            $uriPath = Path::makeRelative($path, $panelAssetsPath);
             return $this->site->uri(Path::join(['panel/assets/', $uriPath]), includeLanguage: false);
         }
 
