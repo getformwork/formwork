@@ -239,6 +239,10 @@ class Container implements ContainerInterface
                 $service = $object;
             }
 
+            if (!is_object($service)) {
+                throw new ServiceResolutionException(sprintf('Service "%s" must resolve to an object, %s given', $name, get_debug_type($service)));
+            }
+
             $this->resolved[$name] = $service;
         } finally {
             array_pop($this->resolveStack);
