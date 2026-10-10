@@ -172,27 +172,31 @@ class Response implements ResponseInterface
 
         $requestEtags = HttpHeader::parseETags($request->headers()->get('If-None-Match', ''));
 
-        if ($requestEtags !== [] && ($etag = $this->headers->get('ETag')) !== null) {
-            if (str_starts_with($etag, 'W/')) {
-                $etag = substr($etag, 2);
-            }
-
-            foreach ($requestEtags as $requestEtag) {
-                if (str_starts_with($requestEtag, 'W/')) {
-                    $requestEtag = substr($requestEtag, 2);
+        if ($requestEtags !== []) {
+            // If-None-Match takes precedence over If-Modified-Since
+            if (($etag = $this->headers->get('ETag')) !== null) {
+                if (str_starts_with($etag, 'W/')) {
+                    $etag = substr($etag, 2);
                 }
 
-                if ($requestEtag === '*' || $requestEtag === $etag) {
-                    $notModified = true;
-                    break;
+                foreach ($requestEtags as $requestEtag) {
+                    if (str_starts_with($requestEtag, 'W/')) {
+                        $requestEtag = substr($requestEtag, 2);
+                    }
+
+                    if ($requestEtag === '*' || $requestEtag === $etag) {
+                        $notModified = true;
+                        break;
+                    }
                 }
             }
         } elseif (
-            // Since If-None-Match takes precedence, only check If-Modified-Since if no matching ETag was found
             ($requestModified = $request->headers()->get('If-Modified-Since')) !== null
             && ($modified = $this->headers->get('Last-Modified')) !== null
         ) {
-            $notModified = strtotime($requestModified) >= strtotime($modified);
+            $requestTime = strtotime($requestModified);
+            $modifiedTime = strtotime($modified);
+            $notModified = $requestTime !== false && $modifiedTime !== false && $requestTime >= $modifiedTime;
         }
 
         if ($notModified) {
