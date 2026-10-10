@@ -2,9 +2,12 @@
 
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
+use Formwork\Backup\Backupper;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\BackupController;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
@@ -12,6 +15,8 @@ use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionClass;
+use ReflectionProperty;
 
 #[CoversClass(BackupController::class)]
 final class BackupControllerTest extends TestCase
@@ -100,16 +105,16 @@ final class BackupControllerTest extends TestCase
     public static function escapingNameProvider(): iterable
     {
         yield 'parent directory file' => ['../secret.txt'];
-        yield 'parent directory file with a Windows separator' => ['..\\secret.txt'];
+        yield 'parent directory file with a Windows separator' => ['..\secret.txt'];
         yield 'deep traversal' => ['{deep}'];
         yield 'deep traversal with Windows separators' => ['{deep-windows}'];
         yield 'traversal after a directory' => ['nested/../../secret.txt'];
-        yield 'traversal with Windows separators after a directory' => ['nested\\..\\..\\secret.txt'];
-        yield 'mixed separators' => ['..\\../secret.txt'];
+        yield 'traversal with Windows separators after a directory' => ['nested\..\..\secret.txt'];
+        yield 'mixed separators' => ['..\../secret.txt'];
         yield 'absolute path' => ['{secret}'];
-        yield 'Windows absolute path' => ['C:\\Windows\\win.ini'];
+        yield 'Windows absolute path' => ['C:\Windows\win.ini'];
         yield 'file in a subdirectory' => ['nested/inner.zip'];
-        yield 'file in a subdirectory with a Windows separator' => ['nested\\inner.zip'];
+        yield 'file in a subdirectory with a Windows separator' => ['nested\inner.zip'];
         yield 'backup directory itself' => ['.'];
         yield 'parent directory' => ['..'];
         yield 'empty name' => [''];
@@ -188,7 +193,7 @@ final class BackupControllerTest extends TestCase
     {
         $controller = $this->controller(['panel.backup' => false]);
 
-        $response = $controller->make((new \ReflectionClass(\Formwork\Backup\Backupper::class))->newInstanceWithoutConstructor());
+        $response = $controller->make((new ReflectionClass(Backupper::class))->newInstanceWithoutConstructor());
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
@@ -211,7 +216,7 @@ final class BackupControllerTest extends TestCase
     /**
      * @param array<string, bool> $permissions
      */
-    private function download(string $name, array $permissions): \Formwork\Http\Response
+    private function download(string $name, array $permissions): Response
     {
         return $this->controller($permissions)->download(new RouteParams(['backup' => base64_encode($name)]));
     }
@@ -219,7 +224,7 @@ final class BackupControllerTest extends TestCase
     /**
      * @param array<string, bool> $permissions
      */
-    private function delete(string $name, array $permissions): \Formwork\Http\Response
+    private function delete(string $name, array $permissions): Response
     {
         return $this->controller($permissions)->delete(new RouteParams(['backup' => base64_encode($name)]));
     }
@@ -236,7 +241,7 @@ final class BackupControllerTest extends TestCase
 
     private function lastMessageType(): ?string
     {
-        $reflection = new \ReflectionProperty(\Formwork\Panel\Controllers\AbstractController::class, 'panel');
+        $reflection = new ReflectionProperty(AbstractController::class, 'panel');
         $panel = $reflection->getValue($this->controller);
         $notifications = $panel->notifications();
 
@@ -245,7 +250,7 @@ final class BackupControllerTest extends TestCase
 
     private function responseFile(FileResponse $response): string
     {
-        $property = new \ReflectionProperty(FileResponse::class, 'path');
+        $property = new ReflectionProperty(FileResponse::class, 'path');
 
         return (string) $property->getValue($response);
     }

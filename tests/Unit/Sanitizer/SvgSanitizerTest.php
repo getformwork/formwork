@@ -8,6 +8,7 @@ use Formwork\Tests\TestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Throwable;
 use UnexpectedValueException;
 
 #[CoversClass(SvgSanitizer::class)]
@@ -171,7 +172,7 @@ final class SvgSanitizerTest extends TestCase
     }
 
     /**
-     * @param class-string<\Throwable> $exception
+     * @param class-string<Throwable> $exception
      */
     #[DataProvider('invalidDocumentProvider')]
     public function testInvalidDocumentsAreRejected(string $input, string $exception = UnexpectedValueException::class): void
@@ -181,7 +182,7 @@ final class SvgSanitizerTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{string}|array{string, class-string<\Throwable>}>
+     * @return iterable<string, array{string, class-string<Throwable>}|array{string}>
      */
     public static function invalidDocumentProvider(): iterable
     {

@@ -57,7 +57,7 @@ final class YamlTest extends TestCase
     public function testParseRejectsInvalidYaml(): void
     {
         $this->expectException(ParseException::class);
-        Yaml::parse("title: [unclosed");
+        Yaml::parse('title: [unclosed');
     }
 
     public function testEncode(): void

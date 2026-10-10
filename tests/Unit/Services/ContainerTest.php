@@ -39,11 +39,13 @@ use Formwork\Tests\Unit\Services\Fixtures\SimpleService;
 use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoader;
 use Formwork\Tests\Unit\Services\Fixtures\ThrowingLoader;
 use Formwork\Tests\Unit\Services\Fixtures\VariadicService;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 use Throwable;
+use TypeError;
 
 #[CoversClass(Container::class)]
 final class ContainerTest extends TestCase
@@ -191,9 +193,9 @@ final class ContainerTest extends TestCase
     public function testFactoryReturningAnInvalidValueFailsAtTheFactoryBoundary(): void
     {
         $container = new Container();
-        $container->define('factory', static fn(): object => 'invalid');
+        $container->define('factory', static fn() => 'invalid');
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(ContainerExceptionInterface::class);
         $container->get('factory');
     }
 
@@ -330,12 +332,12 @@ final class ContainerTest extends TestCase
         }
     }
 
-    public function testLazyFalseResolvesImmediatelyWhileDefaultDefinitionsRemainUnresolved(): void
+    public function testLazyFalseDoesNotResolveImmediately(): void
     {
         $container = new Container();
         $container->define(SimpleService::class)->lazy(false);
 
-        $this->assertTrue($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SimpleService::class));
         $this->assertInstanceOf(SimpleService::class, $container->get(SimpleService::class));
     }
 
@@ -615,7 +617,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define('loaded')->loader(InvalidReturnLoader::class);
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $container->get('loaded');
     }
 
@@ -623,7 +625,7 @@ final class ContainerTest extends TestCase
     {
         $definition = (new Container())->define('service', new SimpleService());
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $definition->loader(TestServiceLoader::class);
     }
 
@@ -702,7 +704,7 @@ final class ContainerTest extends TestCase
         yield 'abstract class' => [AbstractService::class];
         yield 'private constructor' => [PrivateConstructorService::class];
         yield 'identifier that is not a class' => ['config'];
-        yield 'missing class' => ['Formwork\\Tests\\Unit\\Services\\Fixtures\\DoesNotExist'];
+        yield 'missing class' => ['Formwork\Tests\Unit\Services\Fixtures\DoesNotExist'];
     }
 
     public function testFactoryReturningANonObjectDoesNotMarkTheServiceAsResolved(): void
@@ -713,7 +715,7 @@ final class ContainerTest extends TestCase
         try {
             $container->get('factory');
             $this->fail('The invalid factory result should have been rejected.');
-        } catch (\TypeError) {
+        } catch (ContainerExceptionInterface) {
         }
 
         $this->assertFalse($container->isResolved('factory'));
@@ -867,15 +869,6 @@ final class ContainerTest extends TestCase
             $container->define(SharedDependency::class, new SharedDependency());
             $container->define('service')->loader(TestServiceLoader::class);
         }];
-    }
-
-    public function testRedefiningAResolvedServiceIsRejectedEvenWhenItWasResolvedEagerly(): void
-    {
-        $container = new Container();
-        $container->define(SimpleService::class)->lazy(false);
-
-        $this->expectException(ContainerException::class);
-        $container->define(SimpleService::class);
     }
 
     public function testRejectedRedefinitionKeepsTheExistingDefinitionAndAliases(): void

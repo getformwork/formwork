@@ -216,17 +216,17 @@ final class RouteTest extends TestCase
     public static function requirementsProvider(): array
     {
         return [
-            'matching method and prefix' => ['GET', null, '/admin', ['GET'], ['HTTP'], true],
-            'HEAD is equivalent to GET'  => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true],
-            'method mismatch'            => ['POST', null, '/admin', ['GET'], ['HTTP'], false],
-            'matching XHR type'          => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true],
-            'type mismatch'              => ['GET', null, '/admin', ['GET'], ['XHR'], false],
-            'prefix mismatch'            => ['GET', null, '/other', ['GET'], ['HTTP'], false],
-            'prefix sharing only a stem' => ['GET', null, '/adm', ['GET'], ['HTTP'], false],
-            'one of several methods'     => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true],
-            'one of several types'       => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true],
-            'no allowed methods'         => ['GET', null, '/admin', [], ['HTTP'], false],
-            'no allowed types'           => ['GET', null, '/admin', ['GET'], [], false],
+            'matching method and prefix'       => ['GET', null, '/admin', ['GET'], ['HTTP'], true],
+            'HEAD is equivalent to GET'        => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true],
+            'method mismatch'                  => ['POST', null, '/admin', ['GET'], ['HTTP'], false],
+            'matching XHR type'                => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true],
+            'type mismatch'                    => ['GET', null, '/admin', ['GET'], ['XHR'], false],
+            'prefix mismatch'                  => ['GET', null, '/other', ['GET'], ['HTTP'], false],
+            'prefix sharing only a stem'       => ['GET', null, '/adm', ['GET'], ['HTTP'], false],
+            'one of several methods'           => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true],
+            'one of several types'             => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true],
+            'no allowed methods'               => ['GET', null, '/admin', [], ['HTTP'], false],
+            'no allowed types'                 => ['GET', null, '/admin', ['GET'], [], false],
             'route without the request prefix' => ['GET', null, '', ['GET'], ['HTTP'], false],
         ];
     }

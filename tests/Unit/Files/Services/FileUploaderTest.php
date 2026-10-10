@@ -177,19 +177,18 @@ final class FileUploaderTest extends TestCase
         $restricted->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH, allowedMimeTypes: ['image/png']);
     }
 
-    public function testUploadedNamesAlwaysProduceAVisibleFileNameWithAnExtension(): void
+    public function testUploadRejectsEmptyFilenames(): void
     {
         $temp = TESTS_TMP_PATH . '/payload.txt';
         FileSystem::write($temp, 'payload');
-        $uploaded = $this->createMock(UploadedFile::class);
+        $uploaded = $this->createStub(UploadedFile::class);
         $uploaded->method('isUploaded')->willReturn(true);
         $uploaded->method('tempPath')->willReturn($temp);
         $uploaded->method('clientName')->willReturn('!!!.txt');
-        $uploaded->expects($this->once())->method('move')
-            ->with(TESTS_TMP_PATH, $this->callback(static fn(string $name): bool => !str_starts_with($name, '.') && str_ends_with($name, '.txt')), false)
-            ->willReturn(true);
         $factory = new FileFactory($this->fileFactoryContainer(new File(TESTS_TMP_PATH . '/payload.txt')), $this->config(['txt']));
 
+        $this->expectException(TranslatedException::class);
+        $this->expectExceptionMessage('Invalid file name');
         (new FileUploader($this->config(['txt']), $factory))->upload($uploaded, TESTS_TMP_PATH);
     }
 

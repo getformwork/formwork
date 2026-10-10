@@ -253,7 +253,7 @@ final class ConfigTest extends TestCase
 
     public function testResolveDoesNotInterpolateEscapedReferences(): void
     {
-        $config = new Config(['name' => 'Formwork', 'literal' => '$${name}']);
+        $config = new Config(['name' => 'Formwork', 'literal' => '\${name}']);
 
         $config->resolve();
 

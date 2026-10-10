@@ -176,7 +176,7 @@ final class RequestTest extends TestCase
         yield 'current directory' => ['.'];
         yield 'relative traversal' => ['../../nonexistent/secret'];
         yield 'traversal inside the name' => ['host/../x'];
-        yield 'backslash traversal' => ['..\\..\\x'];
+        yield 'backslash traversal' => ['..\..\x'];
         yield 'encoded traversal' => ['%2e%2e%2f%2e%2e%2fetc'];
         yield 'absolute path' => ['/nonexistent/secret'];
         yield 'path after the host' => ['example.test/path'];

@@ -127,9 +127,9 @@ final class DateTest extends TestCase
 
         $now = time();
 
-        $this->assertSame('adesso', Date::formatDateTimeAsDistance(new DateTime('@' . $now), $translation, $now));
-        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTime('@' . ($now - 5 * 86400)), $translation, $now));
-        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTime('@' . ($now + 3 * 3600)), $translation, $now));
+        $this->assertSame('adesso', Date::formatDateTimeAsDistance(new DateTime('@' . $now), $translation));
+        $this->assertSame('5 giorni fa', Date::formatDateTimeAsDistance(new DateTime('@' . ($now - 5 * 86400)), $translation));
+        $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTime('@' . ($now + 3 * 3600)), $translation));
     }
 
     public function testFormatDistanceWithTimestamp(): void
@@ -138,8 +138,8 @@ final class DateTest extends TestCase
 
         $now = time();
 
-        $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation, $now));
-        $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation, $now));
-        $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation, $now));
+        $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation));
+        $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation));
+        $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation));
     }
 }

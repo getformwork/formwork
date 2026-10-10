@@ -101,17 +101,17 @@ final class PathTest extends TestCase
     {
         yield 'POSIX path' => ['/a/b/c.txt', '', 'c.txt'];
         yield 'file name only' => ['c.txt', '', 'c.txt'];
-        yield 'Windows path' => ['a\\b\\c.txt', '', 'c.txt'];
-        yield 'Windows path with a drive' => ['C:\\dir\\file.php', '', 'file.php'];
-        yield 'mixed separators' => ['a/b\\c.txt', '', 'c.txt'];
+        yield 'Windows path' => ['a\b\c.txt', '', 'c.txt'];
+        yield 'Windows path with a drive' => ['C:\dir\file.php', '', 'file.php'];
+        yield 'mixed separators' => ['a/b\c.txt', '', 'c.txt'];
         yield 'trailing POSIX separator' => ['a/b/', '', 'b'];
-        yield 'trailing Windows separator' => ['a\\b\\', '', 'b'];
-        yield 'Windows traversal' => ['..\\..\\secret.txt', '', 'secret.txt'];
+        yield 'trailing Windows separator' => ['a\b\\', '', 'b'];
+        yield 'Windows traversal' => ['..\..\secret.txt', '', 'secret.txt'];
         yield 'POSIX traversal' => ['../../secret.txt', '', 'secret.txt'];
         yield 'traversal only' => ['..', '', '..'];
         yield 'empty path' => ['', '', ''];
         yield 'root' => ['/', '', ''];
-        yield 'suffix is removed' => ['C:\\dir\\file.php', '.php', 'file'];
+        yield 'suffix is removed' => ['C:\dir\file.php', '.php', 'file'];
         yield 'suffix is not removed when it does not match' => ['/a/file.php', '.txt', 'file.php'];
         yield 'suffix equal to the whole name is kept' => ['/a/.php', '.php', '.php'];
     }
@@ -285,10 +285,10 @@ final class PathTest extends TestCase
         yield 'file without a directory' => ['c.txt', '/', '.'];
         yield 'trailing separator' => ['a/b/', '/', 'a'];
         yield 'root' => ['/', '/', '/'];
-        yield 'backslash path with backslash separator' => ['a\\b\\c.txt', '\\', 'a\\b'];
-        yield 'mixed separators converted to backslashes' => ['a/b\\c.txt', '\\', 'a\\b'];
-        yield 'slash path converted to backslashes' => ['a/b/c.txt', '\\', 'a\\b'];
-        yield 'drive letter' => ['C:\\a\\b.txt', '\\', 'C:\\a'];
+        yield 'backslash path with backslash separator' => ['a\b\c.txt', '\\', 'a\b'];
+        yield 'mixed separators converted to backslashes' => ['a/b\c.txt', '\\', 'a\b'];
+        yield 'slash path converted to backslashes' => ['a/b/c.txt', '\\', 'a\b'];
+        yield 'drive letter' => ['C:\a\b.txt', '\\', 'C:\a'];
     }
 
     public function testDirnameThrowsOnInvalidSeparator(): void

@@ -104,7 +104,7 @@ class JsonTest extends TestCase
     public function testEncodeKeepsSlashesAndUnicodeUnlessEscapingIsRequested(): void
     {
         $this->assertSame('{"path":"/a/b","name":"è"}', Json::encode(['path' => '/a/b', 'name' => 'è']));
-        $this->assertSame('{"name":"\\u00e8"}', Json::encode(['name' => 'è'], ['escapeUnicode' => true]));
+        $this->assertSame('{"name":"\u00e8"}', Json::encode(['name' => 'è'], ['escapeUnicode' => true]));
     }
 
     public function testEncodePreservesZeroFractions(): void

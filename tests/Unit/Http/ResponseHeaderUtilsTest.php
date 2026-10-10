@@ -47,7 +47,7 @@ final class ResponseHeaderUtilsTest extends TestCase
     }
 
     /**
-     * @param list<string|int> $data
+     * @param list<int|string> $data
      */
     #[DataProvider('makeProvider')]
     public function testMakeJoinsValuesAndParameters(array $data, string $expected): void

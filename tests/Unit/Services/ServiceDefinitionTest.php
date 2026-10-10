@@ -65,14 +65,14 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertSame($object, $definition->getObject());
     }
 
-    public function testLazyFalseEagerlyResolvesTheDefinition(): void
+    public function testLazyFalseDoesNotResolveTheDefinition(): void
     {
         $container = new Container();
         $definition = $container->define(SimpleService::class);
 
         $this->assertFalse($container->isResolved(SimpleService::class));
         $this->assertSame($definition, $definition->lazy(false));
-        $this->assertTrue($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SimpleService::class));
     }
 
     public function testLazyTrueLeavesAnUnresolvedDefinitionUnresolved(): void

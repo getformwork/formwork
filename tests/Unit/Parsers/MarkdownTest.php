@@ -172,4 +172,15 @@ final class MarkdownTest extends TestCase
         $this->assertCount(2, $matches[1]);
         $this->assertCount(2, array_unique($matches[1]));
     }
+
+    public function testHeadingIdsCounterResetsForDifferentParsings(): void
+    {
+        $html1 = Markdown::parse("## Same\n\n## Same", ['addHeadingIds' => true]);
+        $html2 = Markdown::parse("## Same\n\n## Same", ['addHeadingIds' => true]);
+
+        preg_match_all('/id="([^"]*)"/', $html1, $matches1);
+        preg_match_all('/id="([^"]*)"/', $html2, $matches2);
+
+        $this->assertEquals($matches1[1], $matches2[1]);
+    }
 }

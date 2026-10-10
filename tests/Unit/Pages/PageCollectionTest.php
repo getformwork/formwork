@@ -54,6 +54,7 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$about, $blog], $collection->allowingChildren()->values());
         $this->assertSame([$about], $collection->havingTaxonomy(['tags' => ['php']], slug: true)->values());
 
+        /** @var PageCollection */
         $paginated = $collection->paginate(1, 2);
         $this->assertSame([$blog], $paginated->values());
         $this->assertSame(2, $paginated->pagination()->pages());

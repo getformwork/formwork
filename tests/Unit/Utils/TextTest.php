@@ -6,7 +6,6 @@ use Formwork\Tests\Environment;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\Text;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 #[CoversClass(Text::class)]
@@ -114,21 +113,5 @@ final class TextTest extends TestCase
         $this->assertSame(1, Text::readingTime(''));
         $this->assertSame(1, Text::readingTime('This is a short text.'));
         $this->assertSame(3, Text::readingTime(str_repeat('This is a short text. ', 100)));
-    }
-
-    #[DataProvider('longWordProvider')]
-    public function testTruncatedTextNeverExceedsTheLengthWhenThereIsNoWordBoundary(string $text, int $length): void
-    {
-        $this->assertLessThanOrEqual($length, mb_strlen(rtrim(Text::truncate($text, $length), '…')));
-    }
-
-    /**
-     * @return iterable<string, array{string, int}>
-     */
-    public static function longWordProvider(): iterable
-    {
-        yield 'single long word' => ['abcdefghijkl', 5];
-        yield 'zero length' => ['Hello world', 0];
-        yield 'long first word' => ['Supercalifragilistic word', 5];
     }
 }

@@ -80,7 +80,7 @@ final class ConfigServiceLoaderTest extends TestCase
         yield 'relative traversal' => ['../../nonexistent/secret'];
         yield 'deep traversal' => ['../../../../../../../tmp/payload'];
         yield 'traversal inside the name' => ['host/../../x'];
-        yield 'backslash traversal' => ['..\\..\\windows\\win'];
+        yield 'backslash traversal' => ['..\..\windows\win'];
         yield 'encoded traversal' => ['%2e%2e%2f%2e%2e%2fetc'];
         yield 'absolute path' => ['/nonexistent/secret'];
         yield 'subdirectory' => ['a/b'];
@@ -142,7 +142,8 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testStaleCacheFileIsIgnored(): void
     {
-        $this->plantCache('stale.test', 'Pacific/Auckland', time() - 100000);
+        /** @todo use something like `time() - 100000` instead of `1` after the cache paths are not hardcoded anymore in the loader */
+        $this->plantCache('stale.test', 'Pacific/Auckland', 1);
 
         $config = $this->load('stale.test');
 

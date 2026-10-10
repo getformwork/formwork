@@ -21,11 +21,12 @@ final class ContentFileTest extends TestCase
         $this->assertFalse($file->isEmpty());
     }
 
-    public function testEmptyFrontmatterIsReportedAsEmpty(): void
+    public function testEmptyContentFileIsReportedAsEmpty(): void
     {
         $file = new ContentFile(TESTS_PATH . '/Unit/Pages/Fixtures/site/empty/page.md');
 
         $this->assertSame([], $file->frontmatter());
+        $this->assertSame('', $file->content());
         $this->assertTrue($file->isEmpty());
     }
 

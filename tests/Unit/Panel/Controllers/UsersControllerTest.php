@@ -3,17 +3,21 @@
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cms\App;
+use Formwork\Cms\Site;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\UsersController;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
+use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Translations\Translations;
@@ -186,7 +190,7 @@ final class UsersControllerTest extends TestCase
      * @param array<string, bool>  $permissions
      * @param list<string>         $existing
      */
-    private function create(string $currentRole, array $input, array $permissions = ['panel.users' => true], array $existing = []): \Formwork\Http\Response
+    private function create(string $currentRole, array $input, array $permissions = ['panel.users' => true], array $existing = []): Response
     {
         $app = App::instance();
 
@@ -207,7 +211,7 @@ final class UsersControllerTest extends TestCase
         $users->method('roles')->willReturn($roles);
         $users->method('has')->willReturnCallback(static fn(string $username): bool => in_array($username, $existing, true));
 
-        $site = $this->createStub(\Formwork\Cms\Site::class);
+        $site = $this->createStub(Site::class);
         $site->method('users')->willReturn($users);
 
         $fields = $this->fields();
@@ -223,10 +227,10 @@ final class UsersControllerTest extends TestCase
             // Modal fields are named after the modal, so their values are submitted as `newUser[field]`
             ['newUser' => $input],
             [
-                \Formwork\Cms\Site::class => $site,
-                Modals::class             => $modals,
-                FileUploader::class       => $this->createStub(FileUploader::class),
-                FileFactory::class        => $app->getService(FileFactory::class),
+                Site::class         => $site,
+                Modals::class       => $modals,
+                FileUploader::class => $this->createStub(FileUploader::class),
+                FileFactory::class  => $app->getService(FileFactory::class),
             ],
             $current,
             $users,
@@ -255,9 +259,9 @@ final class UsersControllerTest extends TestCase
         ]);
     }
 
-    private function containerOf(UsersController $controller): \Formwork\Services\Container
+    private function containerOf(UsersController $controller): Container
     {
-        $property = new \ReflectionProperty(\Formwork\Panel\Controllers\AbstractController::class, 'container');
+        $property = new \ReflectionProperty(AbstractController::class, 'container');
 
         return $property->getValue($controller);
     }
@@ -272,7 +276,7 @@ final class UsersControllerTest extends TestCase
 
     private function lastMessageType(): ?string
     {
-        $property = new \ReflectionProperty(\Formwork\Panel\Controllers\AbstractController::class, 'panel');
+        $property = new \ReflectionProperty(AbstractController::class, 'panel');
         $notifications = $property->getValue($this->controller)->notifications();
 
         return $notifications === [] ? null : end($notifications)['type'];

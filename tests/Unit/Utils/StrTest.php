@@ -63,7 +63,7 @@ final class StrTest extends TestCase
     {
         $this->assertSame('hello-world', Str::slug('Hello World!'));
         $this->assertSame('hello-world', Str::slug(' Hello  ~  World !'));
-        $this->assertSame('de-etna-erklaerung', Str::slug('De Ætna Erklärung'));
+        $this->assertSame('de-aetna-erklaerung', Str::slug('De Ætna Erklärung'));
     }
 
     #[DataProvider('slugProvider')]
@@ -85,7 +85,7 @@ final class StrTest extends TestCase
         yield 'apostrophes become hyphens' => ["it's", 'it-s'];
         yield 'lowercase accented letters are transliterated' => ['crème brûlée', 'creme-brulee'];
         yield 'German sharp s and umlauts' => ['Straße Erklärung', 'strasse-erklaerung'];
-        yield 'uppercase accented letters are transliterated' => ['Ünïcödé Straße', 'unicoede-strasse'];
+        yield 'uppercase accented letters are transliterated' => ['Ünïcödé Straße', 'uenicoede-strasse'];
         yield 'uppercase accented initial' => ['Über uns', 'ueber-uns'];
         yield 'accented capital at the start of a sentence' => ['È tutto', 'e-tutto'];
         yield 'repeated separators are collapsed' => ['Hello  -  World', 'hello-world'];

@@ -40,10 +40,10 @@ trait BuildsPanelControllers
     }
 
     /**
-     * @param class-string<T>      $class
-     * @param array<string, bool>  $permissions
-     * @param array<string, mixed> $system       Overrides of the `system` configuration
-     * @param array<string, mixed> $input        Request input
+     * @param class-string<T>       $class
+     * @param array<string, bool>   $permissions
+     * @param array<string, mixed>  $system      Overrides of the `system` configuration
+     * @param array<string, mixed>  $input       Request input
      * @param array<string, object> $services    Additional or replacing container services
      *
      * @template T of object

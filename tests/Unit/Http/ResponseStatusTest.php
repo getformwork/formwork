@@ -46,11 +46,11 @@ final class ResponseStatusTest extends TestCase
             $this->assertSame($status, ResponseStatus::fromCode($status->code()), $status->name);
             $this->assertSame(
                 match ((int) ($status->code() / 100)) {
-                    1       => ResponseStatusType::Informational,
-                    2       => ResponseStatusType::Successful,
-                    3       => ResponseStatusType::Redirection,
-                    4       => ResponseStatusType::ClientError,
-                    5       => ResponseStatusType::ServerError,
+                    1 => ResponseStatusType::Informational,
+                    2 => ResponseStatusType::Successful,
+                    3 => ResponseStatusType::Redirection,
+                    4 => ResponseStatusType::ClientError,
+                    5 => ResponseStatusType::ServerError,
                 },
                 $status->type(),
                 $status->name,
