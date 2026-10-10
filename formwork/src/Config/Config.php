@@ -17,7 +17,7 @@ class Config implements ArraySerializable
     /**
      * Regex pattern for config interpolation
      */
-    protected const string INTERPOLATION_REGEX = '/\$(?!\$)\{([%a-z._]+)\}/i';
+    protected const string INTERPOLATION_REGEX = '/(\\\)?\$\{([%a-z._]+)\}/i';
 
     /**
      * @param array<string, mixed> $config
@@ -233,24 +233,52 @@ class Config implements ArraySerializable
      */
     public function resolve(array $vars = []): void
     {
-        $resolver = function (&$array) use ($vars) {
-            array_walk_recursive($array, function (&$value) use ($vars, &$array): void {
-                if (is_string($value)) {
-                    $value = preg_replace_callback(self::INTERPOLATION_REGEX, function ($matches) use ($vars, &$array) {
-                        $key = $matches[1];
+        // References are looked up in the unresolved config and resolved recursively,
+        // so they work regardless of the order in which keys are defined
+        $source = $this->config;
 
-                        if (!Arr::has($array, $key) && !Arr::has($vars, $key)) {
+        $resolver = function (&$array) use (&$resolver, $source, $vars) {
+            static $resolving = [];
+
+            array_walk_recursive($array, function (&$value) use (&$resolver, &$resolving, $source, $vars): void {
+                if (is_string($value)) {
+                    $value = preg_replace_callback(self::INTERPOLATION_REGEX, function ($matches) use (&$resolver, &$resolving, $source, $vars) {
+                        [, $escape, $key] = $matches;
+
+                        if (is_string($escape)) {
+                            return '${' . $key . '}';
+                        }
+
+                        $isConfigKey = Arr::has($source, $key);
+
+                        if (!$isConfigKey && !Arr::has($vars, $key)) {
                             throw new ConfigResolutionException(sprintf('Cannot resolve a config value with undefined key or variable "%s"', $key));
                         }
 
-                        $value = Arr::get($array, $key, Arr::get($vars, $key));
+                        $referenced = $isConfigKey ? Arr::get($source, $key) : Arr::get($vars, $key);
 
-                        if (!is_string($value)) {
+                        if (!is_string($referenced)) {
                             throw new ConfigResolutionException(sprintf('Cannot resolve a config value with non-string "%s"', $key));
                         }
 
-                        return $value;
-                    }, $value);
+                        if (!$isConfigKey) {
+                            return $referenced;
+                        }
+
+                        if (isset($resolving[$key])) {
+                            throw new ConfigResolutionException(sprintf('Cannot resolve a config value with circular reference "%s"', $key));
+                        }
+
+                        $resolving[$key] = true;
+
+                        try {
+                            $wrapper = [$referenced];
+                            $resolver($wrapper);
+                            return $wrapper[0];
+                        } finally {
+                            unset($resolving[$key]);
+                        }
+                    }, $value, flags: PREG_UNMATCHED_AS_NULL);
                 }
             });
         };
