@@ -1282,7 +1282,7 @@ final class MimeType
      */
     public static function fromExtension(string $extension): string
     {
-        $extension = ltrim($extension, '.');
+        $extension = ltrim(strtolower($extension), '.');
         return self::MIME_TYPES[$extension] ?? self::DEFAULT_MIME_TYPE;
     }
 
@@ -1310,7 +1310,7 @@ final class MimeType
 
         $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($file);
 
-        $extension = FileSystem::extension($file);
+        $extension = strtolower(FileSystem::extension($file));
 
         if ($mimeType === 'text/plain' && in_array($extension, self::SAFE_PLAINTEXT_EXTENSIONS, true)) {
             $mimeType = self::fromExtension($extension);
