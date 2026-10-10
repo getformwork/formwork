@@ -78,6 +78,19 @@ final class Header
     }
 
     /**
+     * Parse a header string containing ETags
+     *
+     * @return array<string>
+     */
+    public static function parseETags(string $header): array
+    {
+        if (($etags = preg_split('/\s*,\s*/', $header, flags: PREG_SPLIT_NO_EMPTY)) === false) {
+            throw new UnexpectedValueException('Cannot parse ETags');
+        }
+        return $etags;
+    }
+
+    /**
      * Fix a header name
      */
     public static function fixHeaderName(string $name): string

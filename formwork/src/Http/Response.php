@@ -61,12 +61,8 @@ class Response implements ResponseInterface
      */
     public function prepare(Request $request): static
     {
-        if ($this->headers->has('ETag') && $request->headers()->get('If-None-Match') === $this->headers->get('ETag')) {
-            $this->responseStatus = ResponseStatus::NotModified;
-        }
-
-        if ($this->headers->has('Last-Modified') && $request->headers()->get('If-Modified-Since') === $this->headers->get('Last-Modified')) {
-            $this->responseStatus = ResponseStatus::NotModified;
+        if ($request->method()->isCacheable() && $this->responseStatus->type() === ResponseStatusType::Successful) {
+            $this->processConditionalRequest($request);
         }
 
         if ($request->method() === RequestMethod::HEAD || $this->requiresEmptyContent()) {
@@ -165,6 +161,43 @@ class Response implements ResponseInterface
     protected function requiresEmptyContent(): bool
     {
         return in_array($this->responseStatus, [ResponseStatus::NoContent, ResponseStatus::NotModified], true);
+    }
+
+    /**
+     * Process conditional request headers (If-None-Match and If-Modified-Since)
+     */
+    protected function processConditionalRequest(Request $request): void
+    {
+        $notModified = false;
+
+        $requestEtags = HttpHeader::parseETags($request->headers()->get('If-None-Match', ''));
+
+        if ($requestEtags !== [] && ($etag = $this->headers->get('ETag')) !== null) {
+            if (str_starts_with($etag, 'W/')) {
+                $etag = substr($etag, 2);
+            }
+
+            foreach ($requestEtags as $requestEtag) {
+                if (str_starts_with($requestEtag, 'W/')) {
+                    $requestEtag = substr($requestEtag, 2);
+                }
+
+                if ($requestEtag === '*' || $requestEtag === $etag) {
+                    $notModified = true;
+                    break;
+                }
+            }
+        } elseif (
+            // Since If-None-Match takes precedence, only check If-Modified-Since if no matching ETag was found
+            ($requestModified = $request->headers()->get('If-Modified-Since')) !== null
+            && ($modified = $this->headers->get('Last-Modified')) !== null
+        ) {
+            $notModified = strtotime($requestModified) >= strtotime($modified);
+        }
+
+        if ($notModified) {
+            $this->responseStatus = ResponseStatus::NotModified;
+        }
     }
 
     /**
