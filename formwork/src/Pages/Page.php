@@ -666,7 +666,7 @@ class Page extends Model implements Stringable
      */
     public function isEmpty(): bool
     {
-        return $this->contentFile?->frontmatter() !== [];
+        return  $this->contentFile === null || $this->contentFile->isEmpty();
     }
 
     /**
