@@ -93,6 +93,29 @@ final class RequestTest extends TestCase
         $this->assertSame('http://example.test/formwork/', $request->baseUri());
     }
 
+    public function testBaseUriOfAnInstallationInTheDocumentRootHasNoDoubleSlash(): void
+    {
+        $request = $this->request([
+            'SCRIPT_NAME' => '/index.php',
+            'SERVER_NAME' => 'example.test',
+            'SERVER_PORT' => '80',
+        ]);
+
+        $this->assertSame('http://example.test/', $request->baseUri());
+    }
+
+    public function testAbsoluteUriOfAnInstallationInTheDocumentRootHasNoDoubleSlash(): void
+    {
+        $request = $this->request([
+            'SCRIPT_NAME' => '/index.php',
+            'REQUEST_URI' => '/about/',
+            'SERVER_NAME' => 'example.test',
+            'SERVER_PORT' => '80',
+        ]);
+
+        $this->assertSame('http://example.test/about/', $request->absoluteUri());
+    }
+
     public function testBasicAccessorsExposeMethodServerAndRequestHeaders(): void
     {
         $request = $this->request([
