@@ -105,10 +105,6 @@ class FileResponse extends Response
         }
 
         $this->flush();
-
-        if ($this->deleteAfterSend) {
-            unlink($this->path);
-        }
     }
 
     public function prepare(Request $request): static
@@ -164,6 +160,7 @@ class FileResponse extends Response
 
         if ($request->method() === RequestMethod::HEAD) {
             $this->length = 0;
+            $this->deleteAfterSend = false;
         }
 
         return $this;
@@ -181,5 +178,14 @@ class FileResponse extends Response
         }
         $this->headers->set('Content-Disposition', Header::make(['attachment', 'filename' => $filename]));
         return $this;
+    }
+
+    protected function flush(): void
+    {
+        parent::flush();
+
+        if ($this->deleteAfterSend) {
+            FileSystem::deleteFile($this->path);
+        }
     }
 }
