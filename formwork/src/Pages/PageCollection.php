@@ -49,7 +49,7 @@ class PageCollection extends AbstractCollection implements Paginable
      * @param int $length      Number of items per page
      * @param int $currentPage Current page number
      */
-    public function paginate(int $length, int $currentPage): self
+    public function paginate(int $length, int $currentPage): static
     {
         $pagination = $this->paginationFactory->make($this, $length);
         $pagination->setCurrentPage($currentPage);
