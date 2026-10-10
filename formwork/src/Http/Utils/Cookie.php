@@ -75,6 +75,10 @@ final class Cookie
      */
     private static function validateName(string $name): true
     {
+        if ($name === '') {
+            throw new InvalidArgumentException('Invalid cookie name "", it cannot be empty');
+        }
+
         if (preg_match(self::INVALID_NAME_CHARACTERS, $name, $matches, PREG_OFFSET_CAPTURE)) {
             [$character, $position] = $matches[0];
             throw new InvalidArgumentException(sprintf('Invalid cookie name "%s", unexpected character "%s" at position %d', $name, $character, $position));
