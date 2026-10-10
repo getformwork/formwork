@@ -155,7 +155,7 @@ final class Constraint
         bool $includeMax = true,
     ): bool {
         return self::isInRange($value, $start, $end, $includeMin, $includeMax)
-            && (($value - min($start, $end)) % $step === 0);
+            && (((int) ($value - min($start, $end))) % $step === 0);
     }
 
     /**
