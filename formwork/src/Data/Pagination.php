@@ -2,6 +2,9 @@
 
 namespace Formwork\Data;
 
+use Formwork\Utils\Constraint;
+use InvalidArgumentException;
+
 /**
  * @template T
  */
@@ -30,8 +33,10 @@ class Pagination
         AbstractCollection $collection,
         protected int $length,
     ) {
+        if ($this->length <= 0) {
+            throw new InvalidArgumentException('Pagination length must be greater than 0');
+        }
         $this->count = $collection->count();
-
         $this->pages = $this->count > 0 ? (int) ceil($this->count / $this->length) : 1;
     }
 
@@ -45,6 +50,9 @@ class Pagination
 
     public function setCurrentPage(int $currentPage): void
     {
+        if (!Constraint::isInIntegerRange($currentPage, 1, $this->pages)) {
+            throw new InvalidArgumentException("Current page must be between 1 and {$this->pages}");
+        }
         $this->currentPage = $currentPage;
     }
 
