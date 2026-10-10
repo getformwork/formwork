@@ -32,7 +32,8 @@ class HtmlSanitizer extends DomSanitizer
 
         if (
             $domElement->nodeName === 'meta' && $domAttr->name === 'content'
-            && $domElement->attributes->getNamedItem('http-equiv')?->nodeValue === 'refresh'
+            && ($httpEquiv = $domElement->attributes->getNamedItem('http-equiv'))
+            && strcasecmp((string) $httpEquiv->nodeValue, 'refresh') === 0
             && !$this->isSafeMetaRefresh((string) $domAttr->nodeValue)
         ) {
             $domElement->removeAttribute('content');
@@ -69,6 +70,6 @@ class HtmlSanitizer extends DomSanitizer
             return true;
         }
 
-        return $this->isSafeUri($matches[2]);
+        return $this->isSafeUri(trim($matches[2], '"\''));
     }
 }
