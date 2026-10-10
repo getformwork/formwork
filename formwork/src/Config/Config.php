@@ -200,7 +200,7 @@ class Config implements ArraySerializable
      */
     public function loadFile(string $path, ?string $prefix = null): void
     {
-        if (!FileSystem::isFile($path)) {
+        if (!FileSystem::isFile($path, assertExists: false)) {
             throw new ConfigLoadingException(sprintf('Config file "%s" does not exist', $path));
         }
 
