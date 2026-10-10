@@ -206,11 +206,11 @@ class Container implements ContainerInterface
 
             $parameters = $definition->getParameters();
 
-            foreach ($parameters as &$parameter) {
+            array_walk_recursive($parameters, function (&$parameter) {
                 if ($parameter instanceof Closure) {
                     $parameter = $this->call($parameter);
                 }
-            }
+            });
 
             $object = $definition->getObject();
 
