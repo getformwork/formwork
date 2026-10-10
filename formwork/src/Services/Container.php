@@ -265,11 +265,16 @@ class Container implements ContainerInterface
      */
     public function resolveEagerServices(): void
     {
-        foreach ($this->defined as $name => $definition) {
-            if (!$definition->isLazy() && !$this->isResolved($name)) {
-                $this->resolve($name);
+        // Resolving a service may define new eager services, so repeat until none are left
+        do {
+            $resolved = false;
+            foreach ($this->defined as $name => $definition) {
+                if (!$definition->isLazy() && !$this->isResolved($name)) {
+                    $this->resolve($name);
+                    $resolved = true;
+                }
             }
-        }
+        } while ($resolved);
     }
 
     /**
