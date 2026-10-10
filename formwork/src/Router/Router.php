@@ -368,9 +368,16 @@ class Router
          */
         $params = [];
 
-        $regex = preg_replace_callback(self::PARAMS_REGEX, function (array $matches) use (&$params): string {
-            [, $separator, $param, $pattern, $optional] = $matches;
+        $literals = preg_split(self::PARAMS_REGEX, $path);
 
+        if ($literals === false || preg_match_all(self::PARAMS_REGEX, $path, $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL) === false) {
+            throw new InvalidRouteException(sprintf('Compilation of route "%s" failed with error: %s', $route->getName(), preg_last_error_msg()));
+        }
+
+        // There is always one more literal segment than parameters
+        $regex = preg_quote($literals[0], '~');
+
+        foreach ($matches as $i => [, $separator, $param, $pattern, $optional]) {
             $param = $this->validateParamName($param, $params);
             $separator = $this->validateSeparator($separator, $param);
 
@@ -378,16 +385,13 @@ class Router
 
             $pattern = $this->resolvePatternShortcut($pattern);
 
-            return sprintf($optional !== null ? '(?:%s(%s))?' : '%s(%s)', preg_quote($separator), $pattern);
-        }, $path, -1, $count, PREG_UNMATCHED_AS_NULL);
-
-        if ($regex === null) {
-            throw new InvalidRouteException(sprintf('Compilation of route "%s" failed with error: %s', $route->getName(), preg_last_error_msg()));
+            $regex .= sprintf($optional !== null ? '(?:%s(%s))?' : '%s(%s)', preg_quote($separator, '~'), $pattern);
+            $regex .= preg_quote($literals[$i + 1], '~');
         }
 
-        // Wrap the regex in tilde delimiters, so we don't need to escape slashes, ensure the regex matches the entire string.
+        // Wrap the regex in tilde delimiters and ensure the regex matches the entire string.
         // A non-capturing group is added to avoid issues with alternation
-        $regex = '~^(?:' . trim($regex, '^$') . ')$~';
+        $regex = '~^(?:' . $regex . ')$~';
 
         return new CompiledRoute($path, $regex, $params);
     }
