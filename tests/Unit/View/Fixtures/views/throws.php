@@ -1,0 +1,1 @@
+partial output<?php throw new RuntimeException('boom') ?>
