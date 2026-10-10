@@ -125,7 +125,7 @@ final class Constraint
      */
     public static function isInRange(
         int|float $value,
-        int|float $start = PHP_FLOAT_MIN,
+        int|float $start = -PHP_FLOAT_MAX,
         int|float $end = PHP_FLOAT_MAX,
         bool $includeMin = true,
         bool $includeMax = true,
