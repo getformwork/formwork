@@ -127,6 +127,7 @@ final class PageCollectionTest extends TestCase
             'uri'     => 0,
         ], scores: $scores);
 
+        /** @var array<string, int> $scores */
         $this->assertSame($results->keys(), array_keys($scores));
         $this->assertCount(2, $scores);
         $this->assertGreaterThan($scores[$results->keys()[1]], $scores[$results->keys()[0]]);
