@@ -41,7 +41,7 @@ final class Cookie
 
         self::validateName($name);
 
-        self::removeSetCookieHeader($name);
+        self::removeSetCookieHeaders($name);
 
         return setcookie($name, $value, [
             'expires'  => $options['expires'],
@@ -66,7 +66,7 @@ final class Cookie
             return self::send($name, '', [...self::defaults(), ...$options, 'expires' => time() - 3600]);
         }
 
-        return self::removeSetCookieHeader($name) !== null;
+        return self::removeSetCookieHeaders($name) !== null;
     }
 
     /**
@@ -83,9 +83,9 @@ final class Cookie
     }
 
     /**
-     * Remove a 'Set-Cookie' header from headers list
+     * Remove 'Set-Cookie' headers from headers list
      */
-    private static function removeSetCookieHeader(string $name): ?string
+    private static function removeSetCookieHeaders(string $name): ?string
     {
         $cookies = Arr::filter(headers_list(), function ($header) use ($name, &$result) {
             if (preg_match('/^Set-Cookie: (?<name>[^=]+)=/', $header, $matches, PREG_UNMATCHED_AS_NULL)) {
@@ -101,7 +101,7 @@ final class Cookie
         header_remove('Set-Cookie');
 
         foreach ($cookies as $cookie) {
-            header($cookie);
+            header($cookie, replace: false);
         }
 
         // @phpstan-ignore nullCoalesce.unnecessary
