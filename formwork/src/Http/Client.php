@@ -3,7 +3,8 @@
 namespace Formwork\Http;
 
 use Formwork\Cms\App;
-use Formwork\Http\Exceptions\ConnectionException;
+use Formwork\Http\Transport\HttpTransportInterface;
+use Formwork\Http\Transport\StreamHttpTransport;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
@@ -33,16 +34,10 @@ class Client
     /**
      * @param array<string, mixed> $options
      */
-    public function __construct(array $options = [])
-    {
-        if (!extension_loaded('openssl')) {
-            throw new RuntimeException(sprintf('Class %s requires the extension "openssl" to be enabled', static::class));
-        }
-
-        if (ini_get('allow_url_fopen') !== '1') {
-            throw new RuntimeException(sprintf('Class %s requires "allow_url_fopen" to be enabled in PHP configuration', static::class));
-        }
-
+    public function __construct(
+        array $options = [],
+        protected HttpTransportInterface $transport = new StreamHttpTransport(),
+    ) {
         $this->options = Arr::extend($this->defaults(), $options);
     }
 
@@ -175,44 +170,19 @@ class Client
             $options['headers']['Connection'] = 'close';
         }
 
-        $context = $this->createContext($options);
-
-        $errors = [];
-
-        set_error_handler(static function (int $severity, string $message, string $file, int $line) use (&$errors): bool {
-            $errors[] = compact('severity', 'message', 'file', 'line');
-            return true;
-        });
+        $response = $this->transport->open($uri, $this->createContextOptions($options));
 
         try {
-            if (($handle = @fopen($uri, 'r', false, $context)) === false) {
-                $messages = implode("\n", array_map(
-                    static fn(int $i, array $error): string => sprintf('#%d %s', $i, str_replace("\n", ' ', $error['message'])),
-                    array_keys($errors),
-                    $errors
-                ));
+            $splitResponse = $this->splitHTTPResponseHeader($response['headers']);
 
-                throw new ConnectionException(sprintf("Cannot connect to \"%s\". Error messages:\n%s", $uri, $messages));
+            $currentResponse = end($splitResponse);
+
+            if ($currentResponse === false) {
+                throw new RuntimeException(sprintf('Cannot get current response for "%s"', $uri));
             }
-        } finally {
-            restore_error_handler();
-        }
-
-        // @todo use the function directly when we drop support for PHP < 8.4
-        if (function_exists('http_get_last_response_headers')) {
-            $http_response_header = http_get_last_response_headers();
-        }
-
-        if (!isset($http_response_header) || $http_response_header === []) {
-            throw new RuntimeException(sprintf('Cannot get headers for "%s"', $uri));
-        }
-
-        $splitResponse = $this->splitHTTPResponseHeader($http_response_header);
-
-        $currentResponse = end($splitResponse);
-
-        if ($currentResponse === false) {
-            throw new RuntimeException(sprintf('Cannot get current response for "%s"', $uri));
+        } catch (RuntimeException|UnexpectedValueException $exception) {
+            @fclose($response['handle']);
+            throw $exception;
         }
 
         $length = $currentResponse['headers']['Content-Length'] ?? null;
@@ -225,18 +195,18 @@ class Client
             'status'  => $currentResponse['statusCode'],
             'headers' => $currentResponse['headers'],
             'length'  => $length !== null ? (int) $length : null,
-            'handle'  => $handle,
+            'handle'  => $response['handle'],
         ];
     }
 
     /**
-     * Create stream context
+     * Create stream context options
      *
      * @param array<string, mixed> $options
      *
-     * @return resource
+     * @return array<string, array<string, mixed>>
      */
-    protected function createContext(array $options)
+    protected function createContextOptions(array $options): array
     {
         $contextOptions = [
             'http' => [
@@ -264,7 +234,7 @@ class Client
             $contextOptions['ssl'][$key] = $bundle;
         }
 
-        return stream_context_create($contextOptions);
+        return $contextOptions;
     }
 
     /**
