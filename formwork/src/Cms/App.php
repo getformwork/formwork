@@ -231,7 +231,6 @@ final class App
             return;
         }
 
-        $this->loadErrorHandler();
         $this->loadServices($this->container);
         $this->plugins()->initializeEnabled();
         $this->loadRoutes();
@@ -239,10 +238,23 @@ final class App
     }
 
     /**
+     * Unload Formwork, so that the next load starts from a clean state
+     *
+     * @since 2.4.0
+     */
+    public function unload(): void
+    {
+        $this->container = new Container();
+        $this->loaded = false;
+    }
+
+    /**
      * Run Formwork
      */
     public function run(): Response
     {
+        $this->loadErrorHandler();
+
         try {
             $this->load();
             $response = $this->router()->dispatch();
