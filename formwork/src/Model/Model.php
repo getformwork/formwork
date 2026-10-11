@@ -298,7 +298,7 @@ class Model implements Arrayable
      *
      * @since 2.3.0
      */
-    #[Getter]
+    #[Getter(export: false)]
     protected function app(): App
     {
         return $this->app ?? App::instance();
