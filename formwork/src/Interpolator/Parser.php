@@ -80,7 +80,7 @@ class Parser implements ParserInterface
     protected function parseStringToken(): StringNode
     {
         $token = $this->tokenStream->expect(Token::TYPE_STRING);
-        return new StringNode(stripcslashes(trim((string) $token->value(), '\'"')));
+        return new StringNode(stripcslashes($this->unwrapString((string) $token->value(), '\'"')));
     }
 
     /**
@@ -199,5 +199,19 @@ class Parser implements ParserInterface
         $this->tokenStream->expect(Token::TYPE_PUNCTUATION, ']');
 
         return new ArrayNode($elements, new ArrayKeysNode($keys));
+    }
+
+    /**
+     * Unwrap a quoted string if it starts and ends with one of the specified quotes
+     */
+    protected function unwrapString(string $string, string $delimiters): string
+    {
+        $length = strlen($string);
+        foreach (str_split($delimiters) as $delimiter) {
+            if ($length >= 2 && $string[0] === $delimiter && $string[$length - 1] === $delimiter) {
+                return substr($string, 1, -1);
+            }
+        }
+        return $string;
     }
 }
