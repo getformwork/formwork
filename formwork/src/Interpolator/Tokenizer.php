@@ -14,7 +14,7 @@ class Tokenizer implements TokenizerInterface
     /**
      * Regex matching number tokens
      */
-    protected const string NUMBER_REGEX = '/[+-]?[0-9]+(.[0-9]+)?([Ee][+-]?[0-9]+)?/A';
+    protected const string NUMBER_REGEX = '/[+-]?[0-9]+(\.[0-9]+)?([Ee][+-]?[0-9]+)?/A';
 
     /**
      * Regex matching single quote string tokens
