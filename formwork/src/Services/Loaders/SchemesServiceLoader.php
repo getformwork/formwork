@@ -22,7 +22,12 @@ final class SchemesServiceLoader implements ResolutionAwareServiceLoaderInterfac
 
         $container->define(FieldFactory::class);
 
-        DynamicFieldValue::$varsLoader = fn() => $container->call(require $this->config->getString('system.fields.dynamic.vars.file'));
+        // Vars are cached by the loader, so that a newly loaded application never gets those of a previous one
+        $vars = null;
+
+        DynamicFieldValue::$varsLoader = function () use ($container, &$vars): array {
+            return $vars ??= $container->call(require $this->config->getString('system.fields.dynamic.vars.file'));
+        };
 
         return $container->build(Schemes::class);
     }
