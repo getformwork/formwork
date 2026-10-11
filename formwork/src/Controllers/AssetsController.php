@@ -21,9 +21,10 @@ final class AssetsController extends AbstractController
             return $this->redirect($this->router->rewrite(['type' => 'images']), ResponseStatus::MovedPermanently);
         }
 
-        $path = FileSystem::joinPaths($this->config->get('system.images.processPath'), $routeParams->get('id'), $routeParams->get('name'));
+        $imagesPath = $this->config->get('system.images.processPath');
+        $path = FileSystem::joinPaths($imagesPath, $routeParams->get('id'), $routeParams->get('name'));
 
-        if (FileSystem::isFile($path, assertExists: false)) {
+        if (Path::isRelativeTo($path, $imagesPath) && FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path, headers: ['Cache-Control' => 'private, max-age=31536000, immutable'], autoEtag: true, autoLastModified: true);
         }
 
@@ -35,9 +36,10 @@ final class AssetsController extends AbstractController
      */
     public function template(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.templates.path'), 'assets', Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
+        $templatesPath = $this->config->get('system.templates.path');
+        $path = FileSystem::joinPaths($templatesPath, 'assets', Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
 
-        if (FileSystem::isFile($path, assertExists: false)) {
+        if (Path::isRelativeTo($path, $templatesPath) && FileSystem::isFile($path, assertExists: false)) {
             $headers = $this->request->query()->has('v')
                 ? ['Cache-Control' => 'private, max-age=31536000, immutable']
                 : [];
