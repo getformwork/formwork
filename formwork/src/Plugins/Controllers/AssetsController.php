@@ -29,9 +29,10 @@ final class AssetsController extends AbstractController
      */
     public function asset(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.plugins.path'), $this->plugin->id(), 'assets', $routeParams->get('type'), Path::resolve($routeParams->get('file'), '/', DIRECTORY_SEPARATOR));
+        $assetsPath = FileSystem::joinPaths($this->config->get('system.plugins.path'), $this->plugin->id(), 'assets');
+        $path = FileSystem::joinPaths($assetsPath, $routeParams->get('type'), $routeParams->get('file'));
 
-        if (FileSystem::isFile($path, assertExists: false)) {
+        if (Path::isRelativeTo($path, $assetsPath) && FileSystem::isFile($path, assertExists: false)) {
             $headers = ($this->request->query()->has('v'))
                 ? ['Cache-Control' => 'private, max-age=31536000, immutable']
                 : [];
