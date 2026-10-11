@@ -7,6 +7,7 @@ use Formwork\Router\RouteCollection;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
 
 #[CoversClass(RouteCollection::class)]
 final class RouteCollectionTest extends TestCase
@@ -43,6 +44,6 @@ final class RouteCollectionTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
-        new RouteCollection(['home' => new \stdClass()]);
+        new RouteCollection(['home' => new stdClass()]);
     }
 }

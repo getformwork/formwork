@@ -7,6 +7,7 @@ use Formwork\Router\RouteFilterCollection;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
 
 #[CoversClass(RouteFilterCollection::class)]
 final class RouteFilterCollectionTest extends TestCase
@@ -39,6 +40,6 @@ final class RouteFilterCollectionTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
-        new RouteFilterCollection(['auth' => new \stdClass()]);
+        new RouteFilterCollection(['auth' => new stdClass()]);
     }
 }
