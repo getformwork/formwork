@@ -3,7 +3,6 @@
 namespace Formwork\Log\Formatter;
 
 use DateTimeInterface;
-use Formwork\Parsers\Json;
 
 /**
  * @since 2.3.0
@@ -22,11 +21,30 @@ class TextFormatter extends AbstractFormatter
     public function format(DateTimeInterface $datetime, string $level, string $message, array $context): string
     {
         return sprintf(
-            '[%s] %s: %s%s',
+            '[%s] %s: %s',
             $datetime->format(self::DATE_FORMAT),
             strtoupper($level),
-            $this->interpolate($message, $context, self::DATE_FORMAT),
-            ($this->withContext && $context !== []) ? ' ' . Json::encode($this->normalize($context, self::DATE_FORMAT)) : ''
+            rtrim(implode(' ', [
+                $this->interpolate($message, $context, self::DATE_FORMAT),
+                $this->formatContext($this->withContext ? $context : [], self::DATE_FORMAT),
+            ])),
+        );
+    }
+
+    /**
+     * Format the context array as JSON or empty string if the context is empty
+     *
+     * @param array<mixed> $context
+     */
+    protected function formatContext(array $context, string $dateFormat): string
+    {
+        if ($context === []) {
+            return '';
+        }
+
+        return json_encode(
+            $this->normalize($context, $dateFormat),
+            JSON_THROW_ON_ERROR | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE
         );
     }
 }
