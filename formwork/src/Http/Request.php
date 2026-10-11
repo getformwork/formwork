@@ -151,9 +151,11 @@ class Request
 
         $defaultPort = self::DEFAULT_PORTS[$scheme];
 
+        $path = Str::wrap($this->root(), '/');
+
         return $port !== $defaultPort
-            ? sprintf('%s://%s:%d/%s/', $scheme, $host, $port, trim($this->root(), '/'))
-            : sprintf('%s://%s/%s/', $scheme, $host, trim($this->root(), '/'));
+            ? sprintf('%s://%s:%d%s', $scheme, $host, $port, $path)
+            : sprintf('%s://%s%s', $scheme, $host, $path);
     }
 
     /**
