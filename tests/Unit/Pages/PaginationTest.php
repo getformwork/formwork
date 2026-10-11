@@ -11,11 +11,13 @@ use Formwork\Router\Route;
 use Formwork\Router\RouteCollection;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
 #[CoversClass(Pagination::class)]
+#[UsesApplication]
 final class PaginationTest extends TestCase
 {
     private App $app;

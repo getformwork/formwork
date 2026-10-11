@@ -9,11 +9,13 @@ use Formwork\Pages\PageCollection;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(PageFactory::class)]
 #[CoversClass(PageCollectionFactory::class)]
+#[UsesApplication]
 final class PageFactoryTest extends TestCase
 {
     private App $app;
