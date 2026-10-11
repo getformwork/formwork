@@ -742,6 +742,9 @@ final class FileSystem
         foreach (self::listContents($directory, $flags) as $item) {
             $itemPath = self::joinPaths($directory, $item);
             if (self::isDirectory($itemPath)) {
+                if (($flags & self::LIST_DIRECTORIES)) {
+                    yield $item;
+                }
                 foreach (self::listRecursive($itemPath, $flags) as $childItem) {
                     yield self::joinPaths($item, $childItem);
                 }
