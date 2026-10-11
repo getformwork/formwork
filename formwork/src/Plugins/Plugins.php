@@ -55,6 +55,10 @@ class Plugins extends PluginCollection
             throw new InvalidArgumentException(sprintf('Invalid plugin "%s"', $name));
         }
 
+        if ($plugin->isInitialized()) {
+            return;
+        }
+
         try {
             if ($autoload = $plugin->autoload()) {
                 // Requiring vendor/autoload.php always prepends the autoloader to the stack,
