@@ -9,6 +9,7 @@ use Formwork\Http\Session\Session;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use SensitiveParameter;
+use Throwable;
 
 /**
  * @since 2.3.0
@@ -48,6 +49,9 @@ class Authenticator
             usleep(random_int(500, 1000) * 1000);
 
             throw $e;
+        } catch (Throwable $throwable) {
+            // Wrap any unexpected throwable into an AuthenticationFailedException
+            throw new AuthenticationFailedException(sprintf('Authentication failed for "%s"', $login), $throwable->getCode(), previous: $throwable);
         }
 
         $this->rateLimiter->resetAttempts();
