@@ -10,6 +10,7 @@ use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
+use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\Property\RemoveDefaultValueFromAssignedPropertyRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
@@ -44,6 +45,9 @@ return RectorConfig::configure()
         FlipTypeControlToUseExclusiveTypeRector::class,
         ObjectExplicitBoolCompareRector::class,
         ReadOnlyPropertyRector::class,
+        RemoveAlwaysTrueIfConditionRector::class => [
+            dirname(__DIR__) . '/formwork/src/Users/Utils/Password.php',
+        ],
         RemoveDefaultValueFromAssignedPropertyRector::class,
         RemovePhpVersionIdCheckRector::class,
         RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
