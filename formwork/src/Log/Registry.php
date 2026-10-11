@@ -116,8 +116,8 @@ class Registry
         }
         if (FileSystem::exists($this->filename)) {
             $this->storage = Json::parseFile($this->filename);
-            $this->saved = true;
         }
+        $this->saved = true;
         $this->loaded = true;
     }
 }
