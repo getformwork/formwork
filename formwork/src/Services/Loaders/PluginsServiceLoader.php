@@ -9,7 +9,7 @@ use Formwork\Services\Container;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
-use RuntimeException;
+use Throwable;
 
 /**
  * @since 2.3.0
@@ -47,7 +47,7 @@ final class PluginsServiceLoader implements ResolutionAwareServiceLoaderInterfac
 
             try {
                 $service->load($id, $path);
-            } catch (RuntimeException) {
+            } catch (Throwable) {
                 // Ignore invalid plugins
             }
         }
