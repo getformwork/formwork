@@ -265,7 +265,7 @@ class Model implements Arrayable
 
             $data[$key] = match ($accessor['type']) {
                 'method'   => $this->{$accessor['name']}(),
-                'property' => $this->{$accessor['name']},
+                'property' => $this->{$accessor['name']} ?? null,
             };
         }
 
