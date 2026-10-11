@@ -46,9 +46,14 @@ class Logger extends AbstractLogger implements LoggerInterface
      */
     public function log(mixed $level, string|Stringable $message, array $context = []): void
     {
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_string($level)) {
+            throw new InvalidArgumentException('Invalid log level: not a string');
+        }
+
         // @phpstan-ignore isset.offset
         if (!isset(self::LOG_LEVELS[$level])) {
-            throw new InvalidArgumentException(sprintf('Invalid log level: "%s"', (string) $level));
+            throw new InvalidArgumentException(sprintf('Invalid log level: "%s"', $level));
         }
 
         $datetime = new DateTimeImmutable(sprintf('@%.6F', microtime(true)));
