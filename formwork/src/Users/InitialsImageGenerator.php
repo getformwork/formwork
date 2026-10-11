@@ -22,7 +22,7 @@ class InitialsImageGenerator
     {
         $backgroundColor = self::getBackgroundColor($name);
         $textColor = self::getTextColor($backgroundColor);
-        $uri = 'data:image/svg+xml,' . rawurlencode(self::generateSvg(self::getInitials(Str::escapeAttr($name)), $backgroundColor, $textColor));
+        $uri = 'data:image/svg+xml,' . rawurlencode(self::generateSvg(self::getInitials($name), $backgroundColor, $textColor));
         return self::$cache[$uri] ?? self::$cache[$uri] = $uri;
     }
 
@@ -52,7 +52,7 @@ class InitialsImageGenerator
             '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 512 512"><circle cx="50%%" cy="50%%" r="50%%" fill="%s"/><text fill="%s" x="50%%" y="50%%" text-anchor="middle" style="font-size: 224px; font-family: ui-rounded, system-ui, sans-serif; dominant-baseline: central;">%s</text></svg>',
             $backgroundColor,
             $textColor,
-            $initials
+            Str::escapeAttr($initials)
         );
     }
 }
