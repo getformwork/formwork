@@ -21,8 +21,8 @@ final class LanguagesFactory
     {
         ['available' => $available, 'httpPreferred' => $httpPreferred] = $config;
 
-        if (preg_match('~^/(' . implode('|', $available) . ')/~i', $this->request->uri(), $matches)) {
-            $requested = $current = $matches[1];
+        if (preg_match('~^/(' . implode('|', array_map(preg_quote(...), $available)) . ')/~i', $this->request->uri(), $matches)) {
+            $requested = $current = strtolower($matches[1]);
         }
 
         if ($httpPreferred) {
