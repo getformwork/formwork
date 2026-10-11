@@ -56,7 +56,13 @@ class ArrayCache extends AbstractCache implements CountableCache
             ? $cachedTime + $ttl
             : null;
 
-        $this->items[$key] = new CacheItem($value, $expirationTime, $cachedTime);
+        $cacheItem = new CacheItem($value, $expirationTime, $cachedTime);
+
+        if ($cacheItem->isExpired()) {
+            return $this->delete($key);
+        }
+
+        $this->items[$key] = $cacheItem;
 
         return true;
     }

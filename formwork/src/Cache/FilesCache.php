@@ -70,14 +70,17 @@ class FilesCache extends AbstractCache implements CountableCache
             ? $cachedTime + $ttl
             : null;
 
+        $cacheItem = new CacheItem($value, $expirationTime, $cachedTime);
+
+        if ($cacheItem->isExpired()) {
+            return $this->delete($key);
+        }
+
         if (!FileSystem::exists($this->path)) {
             FileSystem::createDirectory($this->path, recursive: true);
         }
 
-        Php::encodeToFile(
-            new CacheItem($value, $expirationTime, $cachedTime),
-            $this->getFile($key)
-        );
+        Php::encodeToFile($cacheItem, $this->getFile($key));
 
         return true;
     }
