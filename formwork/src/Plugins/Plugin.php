@@ -190,8 +190,8 @@ class Plugin implements Arrayable
     protected function loadConfig(): void
     {
         foreach ($this->manifest()->config() as $key => $value) {
-            if (!$this->app->config()->has("plugins.{$this->id()}.{$key}")) {
-                $this->app->config()->set("plugins.{$this->id()}.{$key}", $value);
+            if (!$this->app->config()->has("plugins.{$this->name()}.{$key}")) {
+                $this->app->config()->set("plugins.{$this->name()}.{$key}", $value);
             }
         }
     }
