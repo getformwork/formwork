@@ -209,6 +209,13 @@ final class Debug
     private static array $refs = [];
 
     /**
+     * References of the arrays being dumped
+     *
+     * @var list<string>
+     */
+    private static array $arrayRefs = [];
+
+    /**
      * Counter for unique IDs
      */
     private static int $counter = 0;
@@ -256,6 +263,9 @@ final class Debug
      */
     public static function dumpToString(mixed $data): string
     {
+        // References are only meaningful within a single dump
+        self::$refs = [];
+
         return sprintf('<pre class="__formwork-dump">%s</pre>', self::outputData($data));
     }
 
@@ -297,12 +307,28 @@ final class Debug
                 $associative = !array_is_list($data);
 
                 foreach ($data as $key => $value) {
-                    $reference = ReflectionReference::fromArrayElement($data, $key) !== null;
+                    // Guard against `$a['self'] = &$a`
+                    $referenceId = ReflectionReference::fromArrayElement($data, $key)?->getId();
+
+                    if ($referenceId !== null && in_array($referenceId, self::$arrayRefs, true)) {
+                        $output = '<span class="__note">*RECURSION*</span>';
+                    } else {
+                        if ($referenceId !== null) {
+                            self::$arrayRefs[] = $referenceId;
+                        }
+                        try {
+                            $output = self::outputData($value, $indent + self::INDENT_SPACES);
+                        } finally {
+                            if ($referenceId !== null) {
+                                array_pop(self::$arrayRefs);
+                            }
+                        }
+                    }
 
                     $parts[] = str_repeat(' ', $indent + self::INDENT_SPACES)
                         . ($associative ? self::outputData($key) . ' => ' : '')
-                        . ($reference ? '<span class="__note" title="Reference">&</span>' : '')
-                        . self::outputData($value, $indent + self::INDENT_SPACES)
+                        . ($referenceId !== null ? '<span class="__note" title="Reference">&</span>' : '')
+                        . $output
                         . ',';
                 }
 
