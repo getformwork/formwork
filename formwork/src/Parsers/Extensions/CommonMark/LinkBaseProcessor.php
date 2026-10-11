@@ -2,6 +2,7 @@
 
 namespace Formwork\Parsers\Extensions\CommonMark;
 
+use Formwork\Cms\Site;
 use Formwork\Utils\Uri;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -21,11 +22,21 @@ class LinkBaseProcessor
                 continue;
             }
 
+            $uri = $node->getUrl();
+
+            if ($uri === '') {
+                continue;
+            }
+
+            /** @var string $baseRoute */
             $baseRoute = $this->configuration->get('formwork/baseRoute');
 
+            /** @var ?Site $site */
             $site = $this->configuration->get('formwork/site');
 
-            $uri = $node->getUrl();
+            if ($site === null) {
+                continue;
+            }
 
             // Process only if scheme is either null, 'http' or 'https'
             if (in_array(Uri::scheme($uri), [null, 'http', 'https'], true) && ((Uri::host($uri) === null || Uri::host($uri) === '') && $uri[0] !== '#')) {

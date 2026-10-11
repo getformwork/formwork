@@ -20,13 +20,19 @@ class ImageAltProcessor
                 continue;
             }
 
+            $uri = $node->getUrl();
+
+            if ($uri === '') {
+                continue;
+            }
+
             /** @var string $baseRoute */
             $baseRoute = $this->configuration->get('formwork/baseRoute');
 
-            /** @var Site $site */
-            $site = $this->configuration->get('formwork/site');
-
-            $uri = $node->getUrl();
+            /** @var ?Site $site */
+            if (($site = $this->configuration->get('formwork/site')) === null) {
+                continue;
+            }
 
             /** @var string $key */
             $key = $this->configuration->get('formwork/imageAltProperty');
