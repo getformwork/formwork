@@ -4,6 +4,7 @@ namespace Formwork\Fields;
 
 use Closure;
 use Formwork\Config\Config;
+use Formwork\Exceptions\RecursionException;
 use Formwork\Services\Container;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Arr;
@@ -33,9 +34,17 @@ final class FieldFactory
 
         $type = $field->type();
 
+        $visited = [];
+
         $extend = $config['extend'] ?? $type;
 
         while ($extend !== $type) {
+            if (isset($visited[$extend])) {
+                throw new RecursionException(sprintf('Recursion in the extension of the field type "%s". Extension chain: "%s"', $type, implode('" > "', [...array_keys($visited), $extend])));
+            }
+
+            $visited[$extend] = true;
+
             $baseConfig = $this->getFieldConfig($extend);
 
             $type = $extend;
