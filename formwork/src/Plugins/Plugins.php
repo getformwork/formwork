@@ -54,6 +54,10 @@ class Plugins extends PluginCollection
 
         $plugin = $this->get($name);
 
+        if ($plugin->isInitialized()) {
+            return;
+        }
+
         $plugin->autoload()?->register();
 
         foreach ($plugin->getEventListeners() as $eventName => $eventListener) {
