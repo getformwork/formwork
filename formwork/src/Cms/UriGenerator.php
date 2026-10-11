@@ -21,7 +21,10 @@ class UriGenerator
      */
     public function path(string $path): string
     {
-        return Uri::make([], Path::join([$this->request->root(), $path]));
+        $root = $this->request->root();
+        $path = Path::join([$root, $path]);
+
+        return Uri::make([], Path::isRelativeTo($path, $root) ? $path : $root);
     }
 
     /**
