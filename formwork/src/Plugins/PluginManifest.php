@@ -3,6 +3,7 @@
 namespace Formwork\Plugins;
 
 use Formwork\Data\Contracts\Arrayable;
+use Throwable;
 use UnexpectedValueException;
 
 /**
@@ -37,7 +38,11 @@ class PluginManifest implements Arrayable
                 throw new UnexpectedValueException(sprintf('Invalid property "%s"', $key));
             }
 
-            $this->{$key} = $value;
+            try {
+                $this->{$key} = $value;
+            } catch (Throwable $e) {
+                throw new UnexpectedValueException(sprintf('Invalid value for property "%s"', $key), $e->getCode(), previous: $e);
+            }
         }
     }
 
