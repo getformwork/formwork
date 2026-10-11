@@ -21,6 +21,7 @@ use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Path;
 use LogicException;
 use SensitiveParameter;
 use UnexpectedValueException;
@@ -385,7 +386,7 @@ class User extends Model
         if ($image instanceof Image) {
             $imagesPath = FileSystem::joinPaths($this->config->getString('system.users.paths.images'));
 
-            if (!str_starts_with($image->path(), $this->config->getString('system.users.paths.images'))) {
+            if (!Path::isRelativeTo($image->path(), $imagesPath)) {
                 throw new LogicException('User image must be located in the user images directory');
             }
 
