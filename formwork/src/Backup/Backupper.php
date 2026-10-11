@@ -42,7 +42,7 @@ final class Backupper
             FileSystem::createDirectory($this->options['path'], recursive: true);
         }
 
-        $name = sprintf('%s-%s-%s.zip', str_replace([' ', '.'], '-', $this->options['hostname'] ?? 'unknown-host'), $this->options['name'], date(self::DATE_FORMAT));
+        $name = sprintf('%s-%s-%s.zip', preg_replace(['/[ .]|:+/', '/\[|\]/'], ['-', ''], $this->options['hostname'] ?? 'unknown-host'), $this->options['name'], date(self::DATE_FORMAT));
 
         $destination = FileSystem::joinPaths($path, $name);
 
