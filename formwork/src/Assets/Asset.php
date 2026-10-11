@@ -43,7 +43,7 @@ class Asset
         $this->path = FileSystem::normalizePath($path);
         $this->uri = Uri::normalize($uri);
 
-        if (!FileSystem::isFile($this->path)) {
+        if (!FileSystem::isFile($this->path, assertExists: false)) {
             throw new AssetNotFoundException(sprintf('Asset file "%s" not found', $this->path));
         }
     }
