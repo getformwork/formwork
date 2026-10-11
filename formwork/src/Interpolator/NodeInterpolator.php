@@ -87,7 +87,7 @@ class NodeInterpolator
                         $value = $parent->{$name}(...$arguments);
                         break;
 
-                    case is_callable([$parent, '__call']) && $identifierNode->arguments() !== null:
+                    case is_callable([$parent, '__call']):
                         $value = $parent->__call($name, $arguments);
                         break;
 
