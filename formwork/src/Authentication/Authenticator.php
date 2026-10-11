@@ -66,7 +66,7 @@ class Authenticator
      */
     public function isLoggedIn(): bool
     {
-        return $this->session->has(self::SESSION_LOGGED_USER_KEY);
+        return $this->getUser() !== null;
     }
 
     /**
