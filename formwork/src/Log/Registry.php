@@ -45,7 +45,7 @@ class Registry
     public function has(string $key): bool
     {
         $this->load();
-        return isset($this->storage[$key]);
+        return array_key_exists($key, $this->storage);
     }
 
     /**
