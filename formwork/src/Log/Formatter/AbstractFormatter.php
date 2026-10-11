@@ -52,7 +52,7 @@ abstract class AbstractFormatter implements FormatterInterface
             }
         }
 
-        return strtr($message, $replacements);
+        return addcslashes(strtr($message, $replacements), "\r\n");
     }
 
     /**
@@ -60,6 +60,10 @@ abstract class AbstractFormatter implements FormatterInterface
      */
     protected function normalize(mixed $data, string $dateFormat = DateTimeInterface::RFC3339, int $depth = 4): mixed
     {
+        if (is_string($data)) {
+            return addcslashes($data, "\r\n");
+        }
+
         if ($data === null || is_scalar($data)) {
             return $data;
         }
@@ -112,15 +116,15 @@ abstract class AbstractFormatter implements FormatterInterface
             }
 
             if ($data instanceof Stringable) {
-                $data = (string) $data;
+                $data = $this->normalize((string) $data, $dateFormat, $depth);
             }
 
             if ($data instanceof JsonSerializable) {
-                $data = $data->jsonSerialize();
+                $data = $this->normalize($data->jsonSerialize(), $dateFormat, $depth);
             }
 
             if ($data instanceof ArraySerializable) {
-                $data = $data->toArray();
+                $data = $this->normalize($data->toArray(), $dateFormat, $depth);
             }
 
             return [$type => $data];
