@@ -216,13 +216,17 @@ final class CodeDumper
         }
 
         self::dumpStyles();
-        self::dumpLine($frame['file'], $frame['line'], $contextLines);
+
+        // Frames of evaluated code have no readable file
+        if (FileSystem::isFile($frame['file'], assertExists: false)) {
+            self::dumpLine($frame['file'], $frame['line'], $contextLines);
+        }
 
         if (!isset($frame['function'])) {
             return;
         }
 
-        $result = sprintf('<pre class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</pre>', $frame['class'] ?? '', $frame['type'] ?? '', $frame['function']);
+        $result = sprintf('<pre class="__formwork-trace-call"><span class="__name">%s</span>%s<span class="__name">%s</span>()</pre>', htmlspecialchars($frame['class'] ?? ''), htmlspecialchars($frame['type'] ?? ''), htmlspecialchars($frame['function']));
 
         $parameterCount = 0;
 
@@ -301,7 +305,7 @@ final class CodeDumper
         $endLine = min($linesCount, $contextLines < 0 ? $linesCount : $line + $contextLines);
 
         $openTags = $closeTags = [];
-        $lineDigits = ceil(log($endLine, 10));
+        $lineDigits = strlen((string) $endLine);
 
         $result = '';
 
