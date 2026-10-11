@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Http\Client;
 use Formwork\Log\Registry;
 use Formwork\Parsers\Json;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use RuntimeException;
@@ -107,16 +108,12 @@ final class Updater
         $isInstallable = $this->isVersionInstallable($this->release['tag']);
         $isSameVersion = $this->release['tag'] === $this->registry->get('currentRelease');
 
-        // Only fetch remote headers when we already know it's the same version
-        $etagUnchanged = $isSameVersion
-            && (
-                // Don't consider ETag if we don't have it stored (fresh install or registry reset)
-                !$this->registry->has('releaseArchiveEtag')
+        $etagChanged = $isSameVersion
+            && ($storedEtag = $this->registry->get('releaseArchiveEtag')) !== null
+            && ($releaseArchiveEtag = $this->getReleaseArchiveEtag()) !== null
+            && $storedEtag !== $releaseArchiveEtag;
 
-                || $this->registry->get('releaseArchiveEtag') === $this->getReleaseArchiveEtag()
-            );
-
-        if (!$isInstallable || $etagUnchanged) {
+        if (!$isInstallable && !$etagChanged) {
             $this->registry->set('upToDate', true);
             $this->registry->save();
             return true;
@@ -224,6 +221,10 @@ final class Updater
             throw new RuntimeException('Cannot fetch latest Formwork release data');
         }
 
+        if (!Constraint::hasKeys($data, ['name', 'tag_name', 'published_at', 'zipball_url'])) {
+            throw new RuntimeException('Cannot fetch latest Formwork release data');
+        }
+
         $releaseDate = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sO', $data['published_at']);
 
         if ($releaseDate === false) {
@@ -260,9 +261,11 @@ final class Updater
     /**
      * Get release archive ETag
      */
-    private function getReleaseArchiveEtag(): string
+    private function getReleaseArchiveEtag(): ?string
     {
-        return trim($this->getReleaseArchiveHeaders()['Etag'], '"');
+        return ($etag = $this->getReleaseArchiveHeaders()['Etag'] ?? null)
+            ? trim($etag, '"')
+            : null;
     }
 
     /**
