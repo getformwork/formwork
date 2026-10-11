@@ -4,6 +4,7 @@ namespace Formwork\Debug;
 
 use Closure;
 use Formwork\Traits\StaticClass;
+use Formwork\Utils\Str;
 use ReflectionFunction;
 use ReflectionReference;
 use UnexpectedValueException;
@@ -277,7 +278,7 @@ final class Debug
                 $binary = !mb_check_encoding($data, 'UTF-8');
                 $multiline = (bool) preg_match('/\n|\r/', $data);
 
-                $data = htmlspecialchars($data);
+                $data = Str::escape($data);
 
                 if ($multiline && ($lines = preg_split('/^|[\r\n]+/', $data))) {
                     return '<span class="__type-string">' . ($binary ? 'b' : '') . '"""' . implode("\n" . str_repeat(' ', $indent + self::INDENT_SPACES), $lines) . "\n" . str_repeat(' ', $indent) . '"""</span>';
@@ -317,8 +318,9 @@ final class Debug
                 $class = $data::class;
                 $parts = [];
 
-                if (in_array($id, self::$refs)) {
-                    return sprintf('<span class="__type-name">%s</span>(<span class="__note">#%d</span>) { <span class="__ref"><a href="#__formwork-dump-ref-%2$d" title="Go to reference">...</a></span> }</span>', $class, $id);
+                // Objects already dumped are referenced instead of being dumped again
+                if (in_array($id, self::$refs, true)) {
+                    return sprintf('<span class="__type-name">%s</span>(<span class="__note">#%d</span>) { <span class="__ref"><a href="#__formwork-dump-ref-%2$d" title="Go to reference">...</a></span> }</span>', Str::escape($class), $id);
                 }
 
                 self::$refs[] = $id;
@@ -384,11 +386,11 @@ final class Debug
 
                 foreach ((array) $data as $property => $value) {
                     if (str_starts_with($property, "\0*\0")) {
-                        $property = '<span class="__visibility __visibility-protected" title="Protected property">protected</span><span class="__type-property">' . substr($property, 3) . '</span>';
+                        $property = '<span class="__visibility __visibility-protected" title="Protected property">protected</span><span class="__type-property">' . Str::escape(substr($property, 3)) . '</span>';
                     } elseif (str_starts_with($property, "\0{$class}\0")) {
-                        $property = '<span class="__visibility __visibility-private" title="Private property">private</span><span class="__type-property">' . substr($property, strlen("\0{$class}\0")) . '</span>';
+                        $property = '<span class="__visibility __visibility-private" title="Private property">private</span><span class="__type-property">' . Str::escape(substr($property, strlen("\0{$class}\0"))) . '</span>';
                     } else {
-                        $property = '<span class="__visibility __visibility-public" title="Public property">public</span><span class="__type-property">' . $property . '</span>';
+                        $property = '<span class="__visibility __visibility-public" title="Public property">public</span><span class="__type-property">' . Str::escape($property) . '</span>';
                     }
 
                     $parts[] = str_repeat(' ', $indent + self::INDENT_SPACES)
@@ -399,7 +401,7 @@ final class Debug
                 if ($parts === []) {
                     return sprintf(
                         "<span class=\"__type-name\">%s</span>(<span class=\"__ref\" id=\"__formwork-dump-ref-%d\">#%2\$d</span>) {\n%s}",
-                        $class,
+                        Str::escape($class),
                         $id,
                         str_repeat(' ', $indent)
                     );
@@ -407,7 +409,7 @@ final class Debug
 
                 return sprintf(
                     "<span class=\"__type-name\">%s</span>(<span class=\"__ref\" id=\"__formwork-dump-ref-%d\">#%2\$d</span>) {<span class=\"__formwork-dump-toggle\" onclick=\"__formwork_dump_toggle(this)\" data-target=\"__formwork-dump-id-%3\$d\">▼</span>\n<div class=\"__formwork-dump-collapsed\" id=\"__formwork-dump-id-%d\">%s</div>%s}",
-                    $class,
+                    Str::escape($class),
                     $id,
                     ++self::$counter,
                     implode("\n", $parts),
