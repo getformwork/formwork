@@ -8,7 +8,7 @@ use Formwork\Cache\Exceptions\InvalidKeyException;
 
 abstract class AbstractCache implements NamespacedCacheInterface
 {
-    public const string NAMESPACE_REGEX = '/^[a-z0-9]+$/';
+    public const string NAMESPACE_REGEX = '/^[a-z0-9]+$/D';
 
     public const string RESERVED_KEY_CHARACTERS = '{}()/\@:';
 
