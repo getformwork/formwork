@@ -29,6 +29,9 @@ class Renderer
     protected static function getClosure(object $instance, ?string $context = null): Closure
     {
         return Closure::bind(function (string $_filename, array $_vars) {
+            // Unset internal variables to avoid hijacking by extracted variables
+            unset($_vars['_filename'], $_vars['_vars']);
+
             extract($_vars);
             return include $_filename;
         }, $instance, $context);
