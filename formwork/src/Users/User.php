@@ -27,6 +27,12 @@ use UnexpectedValueException;
 
 class User extends Model
 {
+    public const int MINIMUM_USERNAME_LENGTH = 3;
+
+    public const int MAXIMUM_USERNAME_LENGTH = 20;
+
+    public const string USERNAME_REGEX = '/^[a-zA-Z][a-zA-Z0-9]*([\-._][a-zA-Z0-9]+)*$/';
+
     public const int MINIMUM_PASSWORD_LENGTH = 8;
 
     protected const string MODEL_IDENTIFIER = 'user';
@@ -293,7 +299,18 @@ class User extends Model
             throw new LogicException('Cannot change username of an existing user');
         }
 
+        $length = strlen($username);
+
+        if ($length < self::MINIMUM_USERNAME_LENGTH || $length > self::MAXIMUM_USERNAME_LENGTH) {
+            throw new InvalidValueException(sprintf('Username must be between %d and %d characters long', self::MINIMUM_USERNAME_LENGTH, self::MAXIMUM_USERNAME_LENGTH));
+        }
+
+        if (!Constraint::matchesRegex($username, self::USERNAME_REGEX)) {
+            throw new InvalidValueException(sprintf('Invalid username "%s"', $username));
+        }
+
         $this->data['username'] = $username;
+        $this->fields()->setValues(['username' => $username]);
     }
 
     /**
@@ -331,15 +348,16 @@ class User extends Model
     #[Setter]
     protected function setEmail(string $email): void
     {
-        if ($email !== $this->email() && $this->users->some(fn(User $user) => $user->email() === $email)) {
-            throw new TranslatedException(sprintf('Cannot change the email of %s, the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
-        }
-
         if (!Constraint::isEmail($email)) {
             throw new InvalidValueException(sprintf('Invalid e-mail address "%s"', $email));
         }
 
+        if ($email !== $this->email() && $this->users->some(fn(User $user) => strcasecmp((string) $user->email(), $email) === 0)) {
+            throw new TranslatedException(sprintf('Cannot change the email of the user "%s", the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
+        }
+
         $this->data['email'] = $email;
+        $this->fields()->setValues(['email' => $email]);
     }
 
     /**
@@ -355,6 +373,7 @@ class User extends Model
         }
 
         $this->data['role'] = $role;
+        $this->fields()->setValues(['role' => $role]);
     }
 
     /**
