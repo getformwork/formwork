@@ -7,6 +7,7 @@ use Formwork\Cache\Exceptions\InvalidKeyException;
 use Formwork\Cache\Exceptions\InvalidNamespaceException;
 use Formwork\Parsers\Php;
 use Formwork\Utils\FileSystem;
+use Throwable;
 use UnexpectedValueException;
 
 class FilesCache extends AbstractCache implements CountableCache
@@ -140,8 +141,15 @@ class FilesCache extends AbstractCache implements CountableCache
             return null;
         }
 
-        if (!($cacheItem = Php::parseFile($file)) instanceof CacheItem) {
-            throw new UnexpectedValueException(sprintf('Cache file "%s" does not contain a valid cache item', $file));
+        try {
+            $throwable = null;
+            $cacheItem = Php::parseFile($file);
+        } catch (Throwable $throwable) {
+            $cacheItem = null;
+        }
+
+        if (!($cacheItem instanceof CacheItem)) {
+            throw new UnexpectedValueException(sprintf('Cache file "%s" does not contain a valid cache item', $file), previous: $throwable);
         }
 
         if ($cacheItem->isExpired()) {
