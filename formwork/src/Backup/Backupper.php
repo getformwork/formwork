@@ -76,16 +76,11 @@ final class Backupper
      */
     public function getBackups(): array
     {
-        $backups = [];
-
         if (!FileSystem::exists($this->options['path'])) {
-            FileSystem::createDirectory($this->options['path']);
+            FileSystem::createDirectory($this->options['path'], true);
         }
 
-        foreach (FileSystem::listFiles($this->options['path']) as $file) {
-            $date = FileSystem::lastModifiedTime(FileSystem::joinPaths($this->options['path'], $file));
-            $backups[$date] = FileSystem::joinPaths($this->options['path'], $file);
-        }
+        $backups = $this->collectBackups();
 
         krsort($backups);
 
@@ -106,16 +101,35 @@ final class Backupper
     }
 
     /**
-     * Delete old backups
+     * Collect backup files indexed by modification time
+     *
+     * @return array<int, string>
      */
-    private function deleteOldBackups(): void
+    private function collectBackups(): array
     {
         $backups = [];
 
         foreach (FileSystem::listFiles($this->options['path']) as $file) {
-            $date = FileSystem::lastModifiedTime(FileSystem::joinPaths($this->options['path'], $file));
-            $backups[$date] = FileSystem::joinPaths($this->options['path'], $file);
+            $path = FileSystem::joinPaths($this->options['path'], $file);
+            $date = FileSystem::lastModifiedTime($path);
+
+            // Files sharing the same modification time get the closest earlier free timestamp
+            while (isset($backups[$date])) {
+                $date--;
+            }
+
+            $backups[$date] = $path;
         }
+
+        return $backups;
+    }
+
+    /**
+     * Delete old backups
+     */
+    private function deleteOldBackups(): void
+    {
+        $backups = $this->collectBackups();
 
         ksort($backups);
 
