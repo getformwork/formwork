@@ -53,7 +53,7 @@ final class Backupper
             $suffix = "-{$date}.zip";
 
             $name = Str::interpolate($name ?? $this->options['name'], [
-                'hostname' => str_replace('.', '-', $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
+                'hostname' => preg_replace(['/\.|:+/', '/\[|\]/'], ['-', ''], $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
                 'site'     => Str::slug(App::instance()->site()->title() ?? 'unknown-site'),
                 'context'  => PHP_SAPI === 'cli' ? 'cli' : 'web',
                 'version'  => App::VERSION,
