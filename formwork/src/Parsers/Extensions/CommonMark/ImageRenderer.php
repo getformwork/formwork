@@ -14,6 +14,7 @@ use League\CommonMark\Util\RegexHelper;
 use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
+use Stringable;
 
 final class ImageRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
 {
@@ -22,7 +23,7 @@ final class ImageRenderer implements NodeRendererInterface, XmlNodeRendererInter
     /**
      * @param Image $node
      */
-    public function render(Node $node, ChildNodeRendererInterface $childNodeRenderer): \Stringable
+    public function render(Node $node, ChildNodeRendererInterface $childNodeRenderer): Stringable
     {
         Image::assertInstanceOf($node);
 
