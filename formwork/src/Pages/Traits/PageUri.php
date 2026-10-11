@@ -33,6 +33,8 @@ trait PageUri
 
         $route = $this->canonicalRoute() ?? $this->route();
 
+        $segments = [(string) $route, $path];
+
         if ($includeLanguage) {
             $language = is_string($includeLanguage) ? $includeLanguage : $this->site()->languages()->current();
 
@@ -40,11 +42,13 @@ trait PageUri
             $preferred = $this->site()->languages()->preferred();
 
             if (($language !== null && $language !== $default) || ($preferred !== null && $preferred !== $default)) {
-                return Path::join([$base, (string) $language, (string) $route, $path]);
+                $segments = [(string) $language, ...$segments];
             }
         }
 
-        return Uri::make([], Path::join([$base, (string) $route, $path]));
+        $path = Path::join([$base, ...$segments]);
+
+        return Uri::make([], Path::isRelativeTo($path, $base) ? $path : $base);
     }
 
     /**
