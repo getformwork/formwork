@@ -739,7 +739,8 @@ final class FileSystem
         if (!self::isDirectory($directory)) {
             throw new InvalidArgumentException(sprintf('%s() accepts only directories as $directory argument', __METHOD__));
         }
-        foreach (self::listContents($directory, $flags) as $item) {
+        // Directories must always be listed in order to recurse into them
+        foreach (self::listContents($directory, $flags | self::LIST_DIRECTORIES) as $item) {
             $itemPath = self::joinPaths($directory, $item);
             if (self::isDirectory($itemPath)) {
                 foreach (self::listRecursive($itemPath, $flags) as $childItem) {
