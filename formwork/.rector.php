@@ -7,6 +7,7 @@ use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\DeadCode\Rector\Property\RemoveDefaultValueFromAssignedPropertyRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
@@ -46,6 +47,9 @@ return RectorConfig::configure()
         FlipTypeControlToUseExclusiveTypeRector::class,
         ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
         ReadOnlyPropertyRector::class,
+        RemoveAlwaysTrueIfConditionRector::class => [
+            dirname(__DIR__) . '/formwork/src/Users/Utils/Password.php',
+        ],
         RemoveDefaultValueFromAssignedPropertyRector::class,
         RemoveNullArgOnNullDefaultParamRector::class,
         RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
