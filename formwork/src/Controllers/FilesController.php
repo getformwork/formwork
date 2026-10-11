@@ -6,6 +6,7 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Path;
 
 final class FilesController extends AbstractController
 {
@@ -14,9 +15,10 @@ final class FilesController extends AbstractController
      */
     public function file(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->get('system.files.paths.site'), $routeParams->get('name'));
+        $filesPath = $this->config->get('system.files.paths.site');
+        $path = FileSystem::joinPaths($filesPath, $routeParams->get('name'));
 
-        if (FileSystem::isFile($path, assertExists: false)) {
+        if (Path::isRelativeTo($path, $filesPath) && FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path);
         }
 
