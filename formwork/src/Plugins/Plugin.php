@@ -194,7 +194,7 @@ class Plugin implements Arrayable
 
         foreach (get_class_methods($this) as $method) {
             $reflection = new ReflectionMethod($this, $method);
-            if ($reflection->isPublic() && str_starts_with($method, 'on')) {
+            if ($reflection->isPublic() && $this->isEventListenerMethod($method)) {
                 $eventName = lcfirst(Str::after($method, 'on'));
                 $handlers[$eventName] = $method;
             }
@@ -307,4 +307,12 @@ class Plugin implements Arrayable
      * @since 2.3.2
      */
     protected function loadServices(Container $container): void {}
+
+    /**
+     * Determine if a name is a valid event listener method
+     */
+    private function isEventListenerMethod(string $name): bool
+    {
+        return str_starts_with($name, 'on') && strlen($name) > 2 && ctype_upper($name[2]);
+    }
 }
