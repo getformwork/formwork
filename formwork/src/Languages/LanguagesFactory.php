@@ -4,6 +4,7 @@ namespace Formwork\Languages;
 
 use Formwork\Http\Request;
 use Formwork\Services\Container;
+use Formwork\Utils\Str;
 
 final class LanguagesFactory
 {
@@ -28,9 +29,14 @@ final class LanguagesFactory
         if ($httpPreferred) {
             $languages = $this->request->languages();
             foreach (array_keys($languages) as $code) {
-                if (in_array($code, $available, true)) {
-                    $preferred = $code;
-                    break;
+                // Try candidates: full code and base language
+                // (e.g., "en-US" => ["en-us", "en"])
+                $code = strtolower($code);
+                foreach ([$code, Str::after($code, '-')] as $candidate) {
+                    if (in_array($candidate, $available, true)) {
+                        $preferred = $candidate;
+                        break 2;
+                    }
                 }
             }
         }
