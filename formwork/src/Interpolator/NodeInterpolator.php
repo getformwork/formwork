@@ -3,6 +3,7 @@
 namespace Formwork\Interpolator;
 
 use Closure;
+use Error;
 use Formwork\Interpolator\Exceptions\InterpolationException;
 use Formwork\Interpolator\Nodes\AbstractNode;
 use Formwork\Interpolator\Nodes\ArrayKeysNode;
@@ -80,32 +81,44 @@ class NodeInterpolator
             }
             $value = $parent[$name];
         } elseif (is_object($parent)) {
-            switch (true) {
-                case method_exists($parent, $name):
-                    $value = $parent->{$name}(...$arguments);
-                    break;
+            try {
+                switch (true) {
+                    case method_exists($parent, $name):
+                        $value = $parent->{$name}(...$arguments);
+                        break;
 
-                case is_callable([$parent, '__call']):
-                    $value = $parent->__call($name, $arguments);
-                    break;
+                    case is_callable([$parent, '__call']) && $identifierNode->arguments() !== null:
+                        $value = $parent->__call($name, $arguments);
+                        break;
 
-                case property_exists($parent, $name) && $identifierNode->arguments() === null:
-                    $value = $parent->{$name};
-                    break;
+                    case property_exists($parent, $name) && $identifierNode->arguments() === null:
+                        $value = $parent->{$name};
+                        break;
 
-                case is_callable([$parent, '__get']) && $identifierNode->arguments() === null:
-                    $value = $parent->__get($name);
-                    break;
+                    case is_callable([$parent, '__get']) && $identifierNode->arguments() === null:
+                        $value = $parent->__get($name);
+                        break;
 
-                case defined($parent::class . '::' . $name) && $identifierNode->arguments() === null:
-                    $value = $parent::{$name};
-                    break;
+                    case defined($parent::class . '::' . $name) && $identifierNode->arguments() === null:
+                        $value = $parent::{$name};
+                        break;
 
-                default:
-                    throw new InterpolationException(sprintf('Undefined class method, property or constant %s::%s', $parent::class, $name));
+                    default:
+                        throw new InterpolationException(sprintf('Undefined class method, property or constant %s::%s', $parent::class, $name));
+                }
+            } catch (Error $error) {
+                throw new InterpolationException(sprintf('Cannot access class method, property or constant %s::%s', $parent::class, $name), $error->getCode(), previous: $error);
             }
         } else {
             throw new InvalidArgumentException(sprintf('%s() accepts only arrays and objects as $parent argument', __METHOD__));
+        }
+
+        if ($value instanceof Closure && $identifierNode->arguments() !== null) {
+            $value = $value(...$arguments);
+        }
+
+        if ($value === null && $traverse !== null) {
+            throw new InterpolationException('Cannot traverse null value');
         }
 
         if ($traverse !== null) {
@@ -133,11 +146,6 @@ class NodeInterpolator
                     is_object($value) ? 'class method, property or constant name' : 'array key'
                 ));
             }
-        }
-
-        // Call closures if arguments (zero or more) are given
-        if ($value instanceof Closure && $identifierNode->arguments() !== null) {
-            return $value(...$arguments);
         }
 
         return $value;
