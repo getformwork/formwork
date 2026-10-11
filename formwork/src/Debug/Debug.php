@@ -415,6 +415,7 @@ final class Debug
                 );
 
             case 'resource':
+            case 'resource (closed)':
                 return sprintf('<span class="__type-name">resource</span>(<span class="__type-name">%s</span> <span class="__note">#%d</span>)', get_resource_type($data), get_resource_id($data));
         }
 
