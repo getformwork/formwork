@@ -22,6 +22,7 @@ use Formwork\Services\Container;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Str;
+use RuntimeException;
 use Throwable;
 
 final class App
@@ -34,6 +35,11 @@ final class App
     public const string VERSION = '2.3.12';
 
     /**
+     * Installation root path
+     */
+    private string $rootPath;
+
+    /**
      * App services container
      */
     private Container $container;
@@ -43,9 +49,18 @@ final class App
      */
     private bool $loaded = false;
 
-    public function __construct()
+    /**
+     * @param ?string $rootPath Installation root path, defaults to the `ROOT_PATH` constant if defined
+     */
+    public function __construct(?string $rootPath = null)
     {
         $this->initializeSingleton();
+
+        if ($rootPath === null && !defined('ROOT_PATH')) {
+            throw new RuntimeException('ROOT_PATH constant is not defined and no root path was provided');
+        }
+
+        $this->rootPath = rtrim($rootPath ?? ROOT_PATH, '/\\');
 
         $this->container = new Container();
     }
@@ -61,6 +76,26 @@ final class App
             return $this->container->get($name);
         }
         throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', self::class, $name));
+    }
+
+    /**
+     * Get the installation root path
+     *
+     * @since 2.4.0
+     */
+    public function rootPath(): string
+    {
+        return $this->rootPath;
+    }
+
+    /**
+     * Get the Formwork system path
+     *
+     * @since 2.4.0
+     */
+    public function systemPath(): string
+    {
+        return defined('SYSTEM_PATH') ? SYSTEM_PATH : dirname(__DIR__, 2);
     }
 
     /**
@@ -244,7 +279,7 @@ final class App
         $container->define(self::class, $this)
             ->lazy(false);
 
-        $definitions = require SYSTEM_PATH . '/config/services/services.php';
+        $definitions = require $this->systemPath() . '/config/services/services.php';
         $definitions($container);
 
         $container->resolveEagerServices();

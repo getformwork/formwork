@@ -4,6 +4,7 @@ namespace Formwork\Services\Loaders;
 
 use Formwork\Authentication\Authenticator;
 use Formwork\Authentication\RateLimiter;
+use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Log\Registry;
 use Formwork\Services\Container;
@@ -24,7 +25,8 @@ class AuthenticationServiceLoader implements ServiceLoaderInterface
         $container->define(RateLimiter::class)
             ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
             ->parameter('limit', $this->config->getInt('system.authentication.limits.maxAttempts'))
-            ->parameter('resetTime', $this->config->getInt('system.authentication.limits.resetTime'));
+            ->parameter('resetTime', $this->config->getInt('system.authentication.limits.resetTime'))
+            ->parameter('rootPath', fn(App $app) => $app->rootPath());
 
         return $container->build(Authenticator::class);
     }

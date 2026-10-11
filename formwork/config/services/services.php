@@ -4,6 +4,7 @@ use Formwork\Assets\Assets;
 use Formwork\Authentication\Authenticator;
 use Formwork\Backup\Backupper;
 use Formwork\Cache\CacheManager;
+use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Cms\UriGenerator;
 use Formwork\Config\Config;
@@ -162,8 +163,10 @@ return function (Container $container) {
         ->alias('plugins');
 
     $container->define(Backupper::class)
-        ->parameter('options', fn(Config $config) => $config->getArray('system.backup'));
+        ->parameter('options', fn(Config $config) => $config->getArray('system.backup'))
+        ->parameter('rootPath', fn(App $app) => $app->rootPath());
 
     $container->define(Updater::class)
-        ->parameter('options', fn(Config $config) => $config->getArray('system.updates'));
+        ->parameter('options', fn(Config $config) => $config->getArray('system.updates'))
+        ->parameter('rootPath', fn(App $app) => $app->rootPath());
 };

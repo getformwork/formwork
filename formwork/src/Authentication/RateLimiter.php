@@ -30,12 +30,13 @@ final class RateLimiter
         private Registry $registry,
         private int $limit,
         private int $resetTime,
+        private string $rootPath,
         Request $request,
     ) {
-        // Hash visitor IP address followed by the ROOT_PATH constant.
+        // Hash visitor IP address followed by the installation root path.
         // Do NOT use any client-controlled values as formerly done with
         // `$request->host()`, as this could be used to bypass the rate limit
-        $this->attemptHash = hash('sha256', "{$request->ip()}@" . ROOT_PATH);
+        $this->attemptHash = hash('sha256', "{$request->ip()}@" . $this->rootPath);
 
         if ($registry->has($this->attemptHash)) {
             [$this->attempts, $this->lastAttemptTime] = $registry->get($this->attemptHash);

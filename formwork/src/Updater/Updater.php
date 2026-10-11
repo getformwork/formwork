@@ -66,6 +66,7 @@ final class Updater
      */
     public function __construct(
         private array $options,
+        private string $rootPath,
         private Client $client = new Client(['headers' => ['Accept' => 'application/vnd.github.v3+json']]),
     ) {
         if (!extension_loaded('zip')) {
@@ -243,7 +244,7 @@ final class Updater
                     throw new RuntimeException('Cannot get filename from zip archive');
                 }
 
-                $root = ROOT_PATH;
+                $root = $this->rootPath;
                 $destination = Path::resolve($filename, $root, DIRECTORY_SEPARATOR);
 
                 if (!Path::isRelativeTo($destination, $root)) {

@@ -119,10 +119,10 @@ final class OptionsController extends AbstractController
     private function getConfigDefaults(): Config
     {
         $config = new Config();
-        $config->loadFromPath(SYSTEM_PATH . '/config/');
+        $config->loadFromPath($this->app->systemPath() . '/config/');
         $config->resolve([
-            '%ROOT_PATH%'   => ROOT_PATH,
-            '%SYSTEM_PATH%' => SYSTEM_PATH,
+            '%ROOT_PATH%'   => $this->app->rootPath(),
+            '%SYSTEM_PATH%' => $this->app->systemPath(),
         ]);
         return $config;
     }
@@ -133,7 +133,7 @@ final class OptionsController extends AbstractController
     private function getConfigOverrides(): Config
     {
         $config = new Config(resolved: true);
-        $config->loadFromPath(ROOT_PATH . '/site/config/');
+        $config->loadFromPath($this->app->rootPath() . '/site/config/');
         return $config;
     }
 
@@ -157,7 +157,7 @@ final class OptionsController extends AbstractController
 
         // Update config file if options differ
         if ($options !== $old) {
-            Yaml::encodeToFile($options, ROOT_PATH . "/site/config/{$type}.yaml");
+            Yaml::encodeToFile($options, $this->app->rootPath() . "/site/config/{$type}.yaml");
             return true;
         }
 
