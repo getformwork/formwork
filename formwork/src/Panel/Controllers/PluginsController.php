@@ -150,11 +150,13 @@ final class PluginsController extends AbstractController
     {
         $options = Arr::override($this->config->getArray("plugins.{$plugin->name()}", []), Arr::undot($options));
 
-        if (!FileSystem::isDirectory(ROOT_PATH . '/site/config/plugins/', assertExists: false)) {
-            FileSystem::createDirectory(ROOT_PATH . '/site/config/plugins/');
+        $configPath = $this->app->rootPath() . '/site/config/plugins';
+
+        if (!FileSystem::isDirectory($configPath . '/', assertExists: false)) {
+            FileSystem::createDirectory($configPath . '/');
         }
 
-        $path = FileSystem::joinPaths(ROOT_PATH . '/site/config/plugins', Path::resolve("{$plugin->id()}.yaml", '/', DIRECTORY_SEPARATOR));
+        $path = FileSystem::joinPaths($configPath, Path::resolve("{$plugin->id()}.yaml", '/', DIRECTORY_SEPARATOR));
         Yaml::encodeToFile($options, $path);
     }
 

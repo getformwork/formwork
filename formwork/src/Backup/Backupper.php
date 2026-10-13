@@ -25,6 +25,8 @@ final class Backupper
     public function __construct(
         private Request $request,
         private array $options,
+        private string $rootPath,
+        private App $app,
     ) {
         if (!extension_loaded('zip')) {
             throw new RuntimeException(sprintf('Class %s requires the extension "zip" to be enabled', self::class));
@@ -41,7 +43,7 @@ final class Backupper
         $previousMaxExecutionTime = ini_set('max_execution_time', $this->options['maxExecutionTime']);
 
         try {
-            $source = ROOT_PATH;
+            $source = $this->rootPath;
 
             $path = $this->options['path'];
             if (!FileSystem::exists($this->options['path'])) {
@@ -54,7 +56,7 @@ final class Backupper
 
             $name = Str::interpolate($name ?? $this->options['name'], [
                 'hostname' => preg_replace(['/\.|:+/', '/\[|\]/'], ['-', ''], $hostname ?? $this->options['hostname'] ?? $this->request->host() ?? 'unknown-host'),
-                'site'     => Str::slug(App::instance()->site()->title() ?? 'unknown-site'),
+                'site'     => Str::slug($this->app->site()->title() ?? 'unknown-site'),
                 'context'  => PHP_SAPI === 'cli' ? 'cli' : 'web',
                 'version'  => App::VERSION,
                 'random'   => FileSystem::randomName(),

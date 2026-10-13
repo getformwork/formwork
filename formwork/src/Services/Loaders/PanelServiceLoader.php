@@ -60,7 +60,8 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
             $container->define(RateLimiter::class)
                 ->parameter('registry', new Registry(FileSystem::joinPaths($this->config->getString('system.authentication.registryPath'), 'accessAttempts.json')))
                 ->parameter('limit', $this->config->getInt('system.panel.loginAttempts', $this->config->getInt('system.authentication.limits.maxAttempts')))
-                ->parameter('resetTime', $this->config->getInt('system.panel.loginResetTime', $this->config->getInt('system.authentication.limits.resetTime')));
+                ->parameter('resetTime', $this->config->getInt('system.panel.loginResetTime', $this->config->getInt('system.authentication.limits.resetTime')))
+                ->parameter('rootPath', fn(App $app) => $app->rootPath());
 
             $container->resolve(RateLimiter::class);
         }

@@ -93,7 +93,7 @@ final class ToolsController extends AbstractController
         $formwork = [
             'Formwork Version' => $this->app::VERSION,
             'PHP Version'      => PHP_VERSION,
-            'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize(ROOT_PATH)),
+            'Disk Usage'       => FileSystem::formatSize(FileSystem::directorySize($this->app->rootPath())),
         ];
 
         $warnings = [];
@@ -124,8 +124,8 @@ final class ToolsController extends AbstractController
                 'File Creation Mask'  => sprintf('0%03o', umask()),
             ],
             'Paths' => [
-                'Root Path'     => ROOT_PATH,
-                'Formwork Path' => SYSTEM_PATH,
+                'Root Path'     => $this->app->rootPath(),
+                'Formwork Path' => $this->app->systemPath(),
             ],
             'PHP' => [
                 'Version'             => PHP_VERSION,
@@ -229,8 +229,8 @@ final class ToolsController extends AbstractController
     private function getDependencies(): array
     {
         $dependencies = [];
-        if (FileSystem::exists(ROOT_PATH . '/composer.lock')) {
-            $composerLock = Json::parseFile(ROOT_PATH . '/composer.lock');
+        if (FileSystem::exists($this->app->rootPath() . '/composer.lock')) {
+            $composerLock = Json::parseFile($this->app->rootPath() . '/composer.lock');
             foreach ($composerLock['packages'] as $package) {
                 /**
                  * @var string
@@ -288,8 +288,8 @@ final class ToolsController extends AbstractController
         if (isset($this->composerJson)) {
             return $this->composerJson;
         }
-        if (FileSystem::exists(ROOT_PATH . '/composer.json')) {
-            return $this->composerJson = Json::parseFile(ROOT_PATH . '/composer.json');
+        if (FileSystem::exists($this->app->rootPath() . '/composer.json')) {
+            return $this->composerJson = Json::parseFile($this->app->rootPath() . '/composer.json');
         }
         return $this->composerJson = [];
     }

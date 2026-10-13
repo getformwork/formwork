@@ -207,7 +207,7 @@ final class CacheCommand implements CommandInterface
      */
     private function configCacheStats(): void
     {
-        $path = ROOT_PATH . '/cache/config/';
+        $path = $this->app->rootPath() . '/cache/config/';
         $items = iterator_to_array(FileSystem::listContents($path));
         $size = FileSystem::directorySize($path);
 
@@ -304,7 +304,7 @@ final class CacheCommand implements CommandInterface
      */
     private function clearConfigCache(): void
     {
-        ConfigServiceLoader::clearCache();
+        ConfigServiceLoader::clearCache($this->app->rootPath());
     }
 
     /**

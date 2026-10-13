@@ -2,6 +2,7 @@
 
 namespace Formwork\Services\Loaders;
 
+use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Http\Request;
 use Formwork\Parsers\Php;
@@ -13,12 +14,13 @@ use UnexpectedValueException;
 final class ConfigServiceLoader implements ServiceLoaderInterface
 {
     /**
-     * Config cache path
+     * Config cache path, relative to the installation root
      */
-    private const string CACHE_PATH = ROOT_PATH . '/cache/config/';
+    private const string CACHE_PATH = '/cache/config/';
 
     public function __construct(
         private Request $request,
+        private App $app,
     ) {}
 
     public function load(Container $container): Config
@@ -30,16 +32,16 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         } else {
             $config = new Config();
 
-            $config->loadFromPath(SYSTEM_PATH . '/config/');
-            $config->loadFromPath(ROOT_PATH . '/site/config/');
+            $config->loadFromPath($this->app->systemPath() . '/config/');
+            $config->loadFromPath($this->app->rootPath() . '/site/config/');
 
-            if (FileSystem::isDirectory($pluginsConfigPath = ROOT_PATH . '/site/config/plugins/', assertExists: false)) {
+            if (FileSystem::isDirectory($pluginsConfigPath = $this->app->rootPath() . '/site/config/plugins/', assertExists: false)) {
                 $config->loadFromPath($pluginsConfigPath, 'plugins');
             }
 
             $config->resolve([
-                '%ROOT_PATH%'   => ROOT_PATH,
-                '%SYSTEM_PATH%' => SYSTEM_PATH,
+                '%ROOT_PATH%'   => $this->app->rootPath(),
+                '%SYSTEM_PATH%' => $this->app->systemPath(),
             ]);
 
             if (PHP_SAPI !== 'cli' && $cacheFile !== null) {
@@ -60,10 +62,12 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
      *
      * @internal
      */
-    public static function clearCache(): void
+    public static function clearCache(string $rootPath): void
     {
-        FileSystem::delete(self::CACHE_PATH, recursive: true);
-        FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
+        $cachePath = $rootPath . self::CACHE_PATH;
+
+        FileSystem::delete($cachePath, recursive: true);
+        FileSystem::createDirectory($cachePath, recursive: true);
     }
 
     private function getConfigCacheFile(): ?string
@@ -74,10 +78,12 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
             return null;
         }
 
-        $cacheFile = FileSystem::joinPaths(self::CACHE_PATH, "config.{$host}.php");
+        $cachePath = $this->app->rootPath() . self::CACHE_PATH;
 
-        if (!FileSystem::isDirectory(self::CACHE_PATH, assertExists: false)) {
-            FileSystem::createDirectory(self::CACHE_PATH, recursive: true);
+        $cacheFile = FileSystem::joinPaths($cachePath, "config.{$host}.php");
+
+        if (!FileSystem::isDirectory($cachePath, assertExists: false)) {
+            FileSystem::createDirectory($cachePath, recursive: true);
         }
 
         return $cacheFile;
@@ -87,7 +93,7 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
     {
         return $cacheFile !== null
             && FileSystem::exists($cacheFile)
-            && !FileSystem::directoryModifiedSince(ROOT_PATH . '/site/config/', FileSystem::lastModifiedTime($cacheFile))
-            && !FileSystem::directoryModifiedSince(SYSTEM_PATH . '/config/', FileSystem::lastModifiedTime($cacheFile));
+            && !FileSystem::directoryModifiedSince($this->app->rootPath() . '/site/config/', FileSystem::lastModifiedTime($cacheFile))
+            && !FileSystem::directoryModifiedSince($this->app->systemPath() . '/config/', FileSystem::lastModifiedTime($cacheFile));
     }
 }

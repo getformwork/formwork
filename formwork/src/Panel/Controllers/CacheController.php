@@ -109,6 +109,6 @@ final class CacheController extends AbstractController
      */
     private function clearConfigCache(): void
     {
-        ConfigServiceLoader::clearCache();
+        ConfigServiceLoader::clearCache($this->app->rootPath());
     }
 }

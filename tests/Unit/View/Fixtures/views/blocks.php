@@ -1,0 +1,1 @@
+<?php $this->layout('with-blocks') ?><?php $this->define('side') ?>Side<?php $this->end() ?>Body

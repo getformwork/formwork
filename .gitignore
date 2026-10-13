@@ -1,5 +1,8 @@
 .DS_Store
 .php-cs-fixer.cache
+.phpunit.cache
+
+phpunit.xml
 
 /assets/*
 /backup/*
@@ -19,5 +22,8 @@
 /site/statistics/*
 /site/users/accounts/*
 /site/users/images/*
+
+/tests/coverage/
+/tests/tmp/
 
 !.gitkeep

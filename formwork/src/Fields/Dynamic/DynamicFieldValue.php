@@ -18,11 +18,6 @@ class DynamicFieldValue
     public static Closure $varsLoader;
 
     /**
-     * @var array<string, mixed>
-     */
-    protected static array $vars = [];
-
-    /**
      * Dynamic value computation status
      */
     protected bool $computed = false;
@@ -67,11 +62,8 @@ class DynamicFieldValue
      */
     public function compute(): void
     {
-        if (static::$vars === []) {
-            if (!isset(static::$varsLoader)) {
-                throw new UnexpectedValueException(sprintf('%s() must be set to a valid Closure before computing dynamic field values', __METHOD__));
-            }
-            static::$vars = (static::$varsLoader)();
+        if (!isset(static::$varsLoader)) {
+            throw new UnexpectedValueException(sprintf('%s() must be set to a valid Closure before computing dynamic field values', __METHOD__));
         }
 
         if ($this->computed) {
@@ -85,7 +77,7 @@ class DynamicFieldValue
         $this->computing = true;
 
         try {
-            $vars = [...self::$vars, 'this' => $this->field];
+            $vars = [...(static::$varsLoader)(), 'this' => $this->field];
 
             if (($model = $this->field->parent()?->model()) !== null) {
                 $vars['model'] = $vars[$model->getModelIdentifier()] = $model;

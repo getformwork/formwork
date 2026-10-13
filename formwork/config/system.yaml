@@ -20,6 +20,7 @@ backup:
         - 'cache/*'
         - 'site/auth/*'
         - 'site/sessions/*'
+        - 'tests/*'
         - 'vendor/*'
         - '*node_modules/*'
 

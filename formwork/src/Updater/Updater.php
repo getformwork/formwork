@@ -48,11 +48,6 @@ final class Updater
     ];
 
     /**
-     * HTTP Client to make requests
-     */
-    private Client $client;
-
-    /**
      * Array containing release information
      *
      * @var array{name: string, tag: string, date: int, archive: string, checksum: ?string}
@@ -71,6 +66,8 @@ final class Updater
      */
     public function __construct(
         private array $options,
+        private string $rootPath,
+        private Client $client = new Client(['headers' => ['Accept' => 'application/vnd.github.v3+json']]),
     ) {
         if (!extension_loaded('zip')) {
             throw new RuntimeException(sprintf('Class %s requires the extension "zip" to be enabled', self::class));
@@ -81,8 +78,6 @@ final class Updater
         if ($this->registry->toArray() === []) {
             $this->initializeRegistry();
         }
-
-        $this->client = new Client(['headers' => ['Accept' => 'application/vnd.github.v3+json']]);
     }
 
     /**
@@ -181,7 +176,7 @@ final class Updater
     }
 
     /**
-     * Download the release archive and extract it into ROOT_PATH, always cleaning up the
+     * Download the release archive and extract it into the installation root, always cleaning up the
      * temporary archive file, even if the download or the extraction fails
      *
      * @return list<string>
@@ -223,7 +218,7 @@ final class Updater
     }
 
     /**
-     * Extract a release archive into ROOT_PATH and return the list of installed files
+     * Extract a release archive into the installation root and return the list of installed files
      *
      * @return list<string>
      */
@@ -249,7 +244,7 @@ final class Updater
                     throw new RuntimeException('Cannot get filename from zip archive');
                 }
 
-                $root = ROOT_PATH;
+                $root = $this->rootPath;
                 $destination = Path::resolve($filename, $root, DIRECTORY_SEPARATOR);
 
                 if (!Path::isRelativeTo($destination, $root)) {
