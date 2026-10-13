@@ -199,7 +199,7 @@ final class ServeCommand implements CommandInterface
                 case str_contains($line, 'Accepted'):
                     $acceptedTime = microtime(true);
 
-                    [, $requestPort, $requestInfo] = $this->splitMessage($message);
+                    [, $requestPort] = $this->splitMessage($message);
                     $requestPort ??= '';
 
                     $this->requestData[$requestPort] = ['time' => $acceptedTime];
@@ -209,7 +209,7 @@ final class ServeCommand implements CommandInterface
                 case str_contains($line, 'Closing'):
                     $closingTime = microtime(true);
 
-                    [, $requestPort, $requestInfo] = $this->splitMessage($message);
+                    [, $requestPort] = $this->splitMessage($message);
                     $requestPort ??= '';
 
                     if (!preg_match(

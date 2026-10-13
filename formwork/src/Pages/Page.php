@@ -846,7 +846,7 @@ class Page extends Model implements Stringable
             /**
              * @var string
              */
-            $key = isset($currentLanguage, $contentFiles[$currentLanguage->code()])
+            $key = isset($currentLanguage, $contentFiles[$currentLanguage?->code()])
                 ? $currentLanguage->code()
                 : array_keys($contentFiles)[0];
 

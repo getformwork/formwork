@@ -405,8 +405,6 @@ final class Debug
                         ? sprintf('<span class="__type-name">Closure</span>(%s): %s', implode(', ', $parameters), $typeFormatter((string) $returnType))
                         : sprintf('<span class="__type-name">Closure</span>(%s)', implode(', ', $parameters));
 
-                    $parts = [];
-
                     $meta = [
                         'file'  => $reflectionFunction->getFileName(),
                         'line'  => $reflectionFunction->getStartLine(),

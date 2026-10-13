@@ -149,7 +149,6 @@ final class WebpHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'ICCP') {
                 $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $chunk['position'] = $chunk['offset'];
                 $this->updateRIFFHeader();
             }
 
@@ -208,7 +207,6 @@ final class WebpHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'EXIF') {
                 $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $chunk['position'] = $chunk['offset'];
                 $this->updateRIFFHeader();
             }
 

@@ -124,7 +124,6 @@ final class JpegHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
                 $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
-                $segment['position'] = $segment['offset'];
             }
         }
     }
@@ -177,7 +176,6 @@ final class JpegHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
                 $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
-                $segment['position'] = $segment['offset'];
             }
         }
     }

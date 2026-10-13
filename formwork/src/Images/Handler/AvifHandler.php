@@ -702,7 +702,6 @@ final class AvifHandler extends AbstractHandler
                                             break;
                                         }
                                         $type = substr($metaContent, $offset + 4, 4);
-                                        $contentOffset = $offset + 8;
                                         if ($type === 'iloc') {
                                             $ilocOffset = $metaContentStart + $offset;
                                             $ilocContentOffset = $ilocOffset + 8;
@@ -794,11 +793,7 @@ final class AvifHandler extends AbstractHandler
         }
         $newItemId = $this->getNextItemId(substr($this->data, $metaOffset + 12, $this->findBox($this->data, 0, strlen($this->data), 'meta')[1] - 12));
         $this->addInfeToIinfBox((int) $iinfOffset, (int) $iinfSize, $this->createInfeBox($newItemId, 'Exif'));
-        [$mdatOffset, $mdatSize] = $this->findBox($this->data, 0, strlen($this->data), 'mdat');
 
-        if ($mdatOffset === 0) {
-            [$mdatOffset, $mdatSize] = $this->createMdatBox();
-        }
         $this->finalizeIlocBoxOffsets($metaOffset, $originalMetaSize);
         [$mdatOffset, $mdatSize] = $this->findBox($this->data, 0, strlen($this->data), 'mdat');
         $mdatContentEnd = $mdatOffset + $mdatSize;
@@ -1008,7 +1003,6 @@ final class AvifHandler extends AbstractHandler
                 $ilocContentOffset += 4;
                 $offsetSize = (ord($this->data[$ilocContentOffset]) >> 4) & 0x0F;
                 $lengthSize = ord($this->data[$ilocContentOffset]) & 0x0F;
-                $baseOffsetSize = (ord($this->data[$ilocContentOffset + 1]) >> 4) & 0x0F;
                 $ilocContentOffset += 2;
                 $itemCountOffset = $ilocContentOffset;
                 $itemCount = $version < 2
@@ -1140,24 +1134,6 @@ final class AvifHandler extends AbstractHandler
         $this->data = substr_replace($this->data, pack('N', $metaSize + strlen($iinfBox)), $metaOffset, 4);
 
         return [$insertPosition, 14];
-    }
-
-    /**
-     * @return array<int, int>
-     */
-    private function createMdatBox(): array
-    {
-        $insertPosition = strlen($this->data);
-
-        foreach ($this->decoder->decode($this->data) as $box) {
-            if ($box['type'] === 'meta') {
-                $insertPosition = $box['offset'] + $box['size'];
-                break;
-            }
-        }
-        $this->data = substr($this->data, 0, $insertPosition) . pack('N', 8) . 'mdat' . substr($this->data, $insertPosition);
-
-        return [$insertPosition, 8];
     }
 
     private function createIlocBox(int $metaOffset): void

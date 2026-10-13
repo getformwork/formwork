@@ -42,9 +42,9 @@ class TextFormatter extends AbstractFormatter
             return '';
         }
 
-        return json_encode(
+        return (string) json_encode(
             $this->normalize($context, $dateFormat),
-            JSON_THROW_ON_ERROR | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE
+            JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE
         );
     }
 }

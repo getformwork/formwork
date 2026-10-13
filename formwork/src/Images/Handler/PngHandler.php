@@ -102,7 +102,6 @@ final class PngHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'iCCP') {
                 $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $chunk['position'] = $chunk['offset'];
                 break;
             }
         }
@@ -151,7 +150,6 @@ final class PngHandler extends AbstractHandler
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'eXIf') {
                 $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $chunk['position'] = $chunk['offset'];
                 break;
             }
         }

@@ -319,7 +319,7 @@ final class FilesController extends AbstractController
                     $files[0],
                     dirname($file->path()),
                     FileSystem::name($filename),
-                    [$model->files()->get($filename)->mimeType()],
+                    [$model->files()->get($filename)->mimeType()], // @phpstan-ignore method.nonObject
                     overwrite: true,
                 );
             } catch (TranslatedException $e) {

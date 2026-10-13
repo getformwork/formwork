@@ -1294,8 +1294,6 @@ final class MimeType
      */
     public static function fromFile(string $file): string
     {
-        $mimeType = null;
-
         if ($file === '' || (!FileSystem::isFile($file, assertExists: false) || !FileSystem::isReadable($file, assertExists: false))) {
             throw new RuntimeException(sprintf('The file "%s" does not exist or is not readable', $file));
         }

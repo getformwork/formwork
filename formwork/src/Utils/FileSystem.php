@@ -227,7 +227,7 @@ final class FileSystem
         if (!self::isDirectory($path, $assertExists)) {
             return false;
         }
-        foreach (self::listContents($path, self::LIST_ALL) as $item) {
+        foreach (self::listContents($path, self::LIST_ALL) as $_) {
             return false;
         }
         return true;

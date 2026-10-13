@@ -63,7 +63,6 @@ final class Cookie
         self::validateName($name);
 
         if ($forceSend || isset($_COOKIE[$name])) {
-            // @phpstan-ignore array.duplicateKey
             return self::send($name, '', [...self::defaults(), ...$options, 'expires' => time() - 3600]);
         }
 

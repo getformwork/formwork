@@ -41,7 +41,6 @@ final class GifDecoder implements DecoderInterface
                 case $offset === 13 && ($desc['gctflag'] ?? 0) === 1:
                     $type = 'GCT';
                     $size = $this->getColorTableSize($desc['gctsize']);
-                    $value = substr($data, $offset, $size);
                     $position += $size;
                     break;
 
