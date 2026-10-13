@@ -33,9 +33,6 @@ trait Translations
         if (is_array($value)) {
             if (isset($value[$language])) {
                 $value = $value[$language];
-            } elseif (count($value) === 1) {
-                // Return the only value available as fallback
-                $value = reset($value);
             }
         } elseif (!is_string($value)) {
             return $value;
