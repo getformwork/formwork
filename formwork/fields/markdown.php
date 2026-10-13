@@ -8,7 +8,8 @@ use Formwork\Utils\Str;
 
 return function (App $app, Site $site) {
     return [
-        'extend'  => 'textarea',
+        'extend' => 'textarea',
+
         'methods' => [
             /**
              * Return the rows displayed by default in the textarea

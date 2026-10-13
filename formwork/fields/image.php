@@ -11,6 +11,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description'],
+
         'methods' => [
             'return' => function (Field $field): ?Image {
                 return $field->value() !== null

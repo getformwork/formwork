@@ -9,6 +9,8 @@ return function (App $app) {
     return [
         'default' => false,
 
+        'translate' => ['label', 'description'],
+
         'methods' => [
             /**
              * Validate the field value

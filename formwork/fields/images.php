@@ -13,6 +13,8 @@ return function (App $app) {
     return [
         'default' => [],
 
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             /**
              * Get the collection of images associated with the field

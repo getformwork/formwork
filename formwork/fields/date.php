@@ -9,6 +9,8 @@ use Formwork\Utils\Str;
 
 return function (App $app): array {
     return [
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             /**
              * Return the field value formatted as a date string

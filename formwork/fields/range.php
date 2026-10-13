@@ -5,7 +5,8 @@ use Formwork\Fields\Field;
 
 return function (App $app) {
     return [
-        'extend'  => 'number',
+        'extend' => 'number',
+
         'methods' => [
             /**
              * Return whether the field should display ticks

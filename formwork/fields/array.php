@@ -14,6 +14,8 @@ return function (App $app, FieldFactory $fieldFactory): array {
     return [
         'default' => [],
 
+        'translate' => ['label', 'description', 'placeholderKey', 'placeholderValue'],
+
         'methods' => [
             /**
              * Return whether the field is associative

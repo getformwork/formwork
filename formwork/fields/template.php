@@ -6,6 +6,8 @@ use Formwork\Utils\Constraint;
 
 return function (Site $site) {
     return [
+        'translate' => ['label', 'description'],
+
         'methods' => [
             'return' => function (Field $field) use ($site) {
                 return $site->templates()->get($field->value());

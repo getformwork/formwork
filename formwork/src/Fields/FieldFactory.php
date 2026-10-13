@@ -60,6 +60,11 @@ final class FieldFactory
             $field->set('default', $config['default']);
         }
 
+        // Set translatable keys if defined in the config and not already set in the field data
+        if (!$field->has('translate') && array_key_exists('translate', $config)) {
+            $field->set('translate', $config['translate']);
+        }
+
         $field->setMethods($config['methods'] ?? []);
 
         return $field;

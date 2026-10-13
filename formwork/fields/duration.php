@@ -7,6 +7,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description'],
+
         'methods' => [
             /**
              * Return the unit of the duration field

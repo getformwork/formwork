@@ -7,6 +7,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             /**
              * Return the minimum allowed value for the field

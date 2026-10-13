@@ -11,6 +11,8 @@ return function (App $app) {
     return [
         'default' => [],
 
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             'toString' => function ($field) {
                 return implode(', ', $field->value() ?? []);

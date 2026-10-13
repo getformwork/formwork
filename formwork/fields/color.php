@@ -7,6 +7,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             /**
              * Validate the field value

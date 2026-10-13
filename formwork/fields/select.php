@@ -10,6 +10,8 @@ return function (App $app) {
     return [
         'default' => '',
 
+        'translate' => ['label', 'description', 'options'],
+
         'methods' => [
             /**
              * Get the field dropdown options

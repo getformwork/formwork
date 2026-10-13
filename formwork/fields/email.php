@@ -7,7 +7,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'extend'  => 'text',
+        'extend' => 'text',
+
         'methods' => [
             /**
              * Validate the field value

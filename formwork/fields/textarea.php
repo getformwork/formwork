@@ -9,6 +9,8 @@ return function (App $app) {
     return [
         'default' => '',
 
+        'translate' => ['label', 'description', 'placeholder'],
+
         'methods' => [
             /**
              * Return the minimum allowed length for the field

@@ -6,6 +6,8 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description', 'options'],
+
         'methods' => [
             /**
              * Return the field options

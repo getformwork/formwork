@@ -9,6 +9,8 @@ use Formwork\Utils\Constraint;
 
 return function (Site $site) {
     return [
+        'translate' => ['label', 'description'],
+
         'methods' => [
             'return' => function (Field $field) use ($site) {
                 if ($field->value() === '.' && $field->get('allowSite', false)) {

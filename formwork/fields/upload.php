@@ -11,6 +11,8 @@ use Formwork\Utils\MimeType;
 
 return function (App $app) {
     return [
+        'translate' => ['label', 'description'],
+
         'methods' => [
             /**
              * Return the accepted MIME types for the field
