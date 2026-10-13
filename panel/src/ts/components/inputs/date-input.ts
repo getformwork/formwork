@@ -1,10 +1,9 @@
+import { app } from "../../app";
+import { getOuterHeight, getOuterWidth } from "../../utils/dimensions";
+import { longClick, throttle } from "../../utils/events";
+import { mod } from "../../utils/math";
 import { $, $$ } from "../../utils/selectors";
 import { calendarClock, chevronDown, chevronLeft, chevronRight, chevronUp } from "../icons";
-import { getOuterHeight, getOuterWidth } from "../../utils/dimensions";
-import { app } from "../../app";
-import { longClick } from "../../utils/events";
-import { mod } from "../../utils/math";
-import { throttle } from "../../utils/events";
 
 interface DateInputOptions {
     weekStarts: number;

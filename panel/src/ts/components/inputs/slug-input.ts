@@ -1,5 +1,5 @@
-import { makeSlug, validateSlug } from "../../utils/validation";
 import { $ } from "../../utils/selectors";
+import { makeSlug, validateSlug } from "../../utils/validation";
 
 export class SlugInput {
     readonly element: HTMLInputElement;

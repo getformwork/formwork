@@ -1,6 +1,6 @@
-import { $ } from "../../utils/selectors";
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
+import { $ } from "../../utils/selectors";
 import { escapeRegExp } from "../../utils/validation";
 import { markdown } from "../icons";
 

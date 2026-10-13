@@ -1,8 +1,8 @@
-import * as icons from "../../../icons";
-import type { EditorView, ViewUpdate } from "@codemirror/view";
 import { redo, redoDepth, undo, undoDepth } from "@codemirror/commands";
-import { app } from "../../../../app";
+import type { EditorView, ViewUpdate } from "@codemirror/view";
 import { ViewPlugin } from "@codemirror/view";
+import { app } from "../../../../app";
+import * as icons from "../../../icons";
 
 function createButton(icon: keyof typeof icons, title: string) {
     const btn = document.createElement("button");

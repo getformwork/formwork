@@ -1,13 +1,15 @@
-import type { Command, EditorState } from "prosemirror-state";
 import type { Mark, MarkType, Node, NodeType } from "prosemirror-model";
+import type { Command, EditorState } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
+
 export { lift, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
 export { sinkListItem, wrapInList } from "prosemirror-schema-list";
+
 import { redo as historyRedo, undo as historyUndo, redoDepth, undoDepth } from "prosemirror-history";
-import { $ } from "../../../../utils/selectors";
-import { app } from "../../../../app";
-import type { ImagePicker } from "../../image-picker";
 import { schema } from "prosemirror-markdown";
+import { app } from "../../../../app";
+import { $ } from "../../../../utils/selectors";
+import type { ImagePicker } from "../../image-picker";
 
 export const insertLink: Command = (state, dispatch, view) => {
     if (!dispatch) {

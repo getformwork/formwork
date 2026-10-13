@@ -1,8 +1,8 @@
-import { check, exclamation, info } from "../icons";
-import { $ } from "../../utils/selectors";
 import { app } from "../../app";
-import { Notification } from "../notification";
 import { Request } from "../../utils/request";
+import { $ } from "../../utils/selectors";
+import { check, exclamation, info } from "../icons";
+import { Notification } from "../notification";
 
 export class Updates {
     constructor() {

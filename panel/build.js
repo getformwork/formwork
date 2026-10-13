@@ -1,6 +1,6 @@
+import fs from "node:fs/promises";
+import process from "node:process";
 import * as esbuild from "esbuild";
-import process from "process";
-import fs from "fs/promises";
 
 const watch = process.argv.includes("--watch");
 

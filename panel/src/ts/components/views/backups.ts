@@ -1,9 +1,9 @@
+import { app } from "../../app";
+import { triggerDownload } from "../../utils/forms";
+import { Request } from "../../utils/request";
 import { $, $$ } from "../../utils/selectors";
 import { check, exclamation } from "../icons";
-import { app } from "../../app";
 import { Notification } from "../notification";
-import { Request } from "../../utils/request";
-import { triggerDownload } from "../../utils/forms";
 
 export class Backups {
     constructor() {

@@ -1,6 +1,6 @@
-import { $, $$ } from "../utils/selectors";
 import { getOuterHeight, getOuterWidth } from "../utils/dimensions";
 import { throttle } from "../utils/events";
+import { $, $$ } from "../utils/selectors";
 
 export class Dropdowns {
     constructor() {

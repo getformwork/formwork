@@ -1,5 +1,6 @@
 import { $, $$ } from "../utils/selectors";
 import { Form } from "./form";
+
 interface ModalShowOptions {
     action?: string;
     triggerElement?: HTMLElement;

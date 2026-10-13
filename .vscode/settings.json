@@ -1,11 +1,11 @@
 {
-    "eslint.workingDirectories": ["./panel"],
-    "prettier.tabWidth": 4,
-    "prettier.useEditorConfig": true,
-    "prettier.embeddedLanguageFormatting": "off",
+    "biome.configurationPath": "./panel/biome.json",
     "stylelint.configBasedir": "./panel",
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "intelephense.diagnostics.undefinedVariables": "local"
+    "intelephense.diagnostics.undefinedVariables": "local",
+    "[javascript][typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports.biome": "explicit",
+            "source.fixAll.biome": "explicit"
+        }
+    }
 }

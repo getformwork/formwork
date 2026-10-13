@@ -1,5 +1,5 @@
-import { $, $$ } from "../utils/selectors";
 import { debounce } from "../utils/events";
+import { $, $$ } from "../utils/selectors";
 import { Tooltip } from "./tooltip";
 
 export class Tooltips {

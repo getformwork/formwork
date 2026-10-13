@@ -1,12 +1,12 @@
+import { schema } from "prosemirror-markdown";
+import type { MarkType, NodeType } from "prosemirror-model";
+import type { Command } from "prosemirror-state";
+import { NodeSelection, Plugin } from "prosemirror-state";
+import type { EditorView } from "prosemirror-view";
+import { app } from "../../../../app";
+import { $$ } from "../../../../utils/selectors";
 import * as icons from "../../../icons";
 import { insertImage, insertLink, isMarkActive, lift, redo, setBlockType, sinkListItem, toggleMark, undo, wrapIn, wrapInList } from "./commands";
-import type { MarkType, NodeType } from "prosemirror-model";
-import { NodeSelection, Plugin } from "prosemirror-state";
-import { $$ } from "../../../../utils/selectors";
-import { app } from "../../../../app";
-import type { Command } from "prosemirror-state";
-import type { EditorView } from "prosemirror-view";
-import { schema } from "prosemirror-markdown";
 
 interface MenuItem {
     command: Command;

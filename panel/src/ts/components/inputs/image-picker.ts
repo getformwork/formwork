@@ -1,6 +1,6 @@
-import { $, $$ } from "../../utils/selectors";
 import { app } from "../../app";
 import { Request } from "../../utils/request";
+import { $, $$ } from "../../utils/selectors";
 
 export class ImagePicker {
     readonly element: HTMLInputElement;

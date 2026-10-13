@@ -1,6 +1,6 @@
-import { $ } from "../../utils/selectors";
 import { app } from "../../app";
 import { getSafeInteger } from "../../utils/numbers";
+import { $ } from "../../utils/selectors";
 
 const TIME_INTERVALS = {
     years: 60 * 60 * 24 * 365,

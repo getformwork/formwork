@@ -1,9 +1,9 @@
 import { chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
-import { liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
 import { redo, undo } from "prosemirror-history";
-import type { Command } from "prosemirror-state";
-import type { Schema } from "prosemirror-model";
 import { undoInputRule } from "prosemirror-inputrules";
+import type { Schema } from "prosemirror-model";
+import { liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
+import type { Command } from "prosemirror-state";
 
 const mac = typeof navigator !== "undefined" ? /Mac|iP(hone|[oa]d)/.test(navigator.platform) : false;
 

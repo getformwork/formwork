@@ -1,13 +1,13 @@
-import { debounce, throttle } from "../../../../utils/events";
-import { getMarkRange, insertLink, removeLink } from "./commands";
-import { link as linkIcon, pencil, trash } from "../../../icons";
-import { $ } from "../../../../utils/selectors";
-import { app } from "../../../../app";
-import type { EditorView } from "prosemirror-view";
+import { schema } from "prosemirror-markdown";
 import type { Mark } from "prosemirror-model";
 import { Plugin } from "prosemirror-state";
-import { schema } from "prosemirror-markdown";
+import type { EditorView } from "prosemirror-view";
+import { app } from "../../../../app";
+import { debounce, throttle } from "../../../../utils/events";
+import { $ } from "../../../../utils/selectors";
+import { link as linkIcon, pencil, trash } from "../../../icons";
 import { Tooltip } from "../../../tooltip";
+import { getMarkRange, insertLink, removeLink } from "./commands";
 
 function addBaseUri(text: string, baseUri: string) {
     return text.replace(/^\/?(?!https?:\/\/)(.+)/, `${baseUri}$1`);

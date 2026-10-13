@@ -1,8 +1,8 @@
-import * as icons from "../icons";
-import { $, $$ } from "../../utils/selectors";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
 import { app } from "../../app";
+import { $, $$ } from "../../utils/selectors";
 import { toCamelCase } from "../../utils/strings";
+import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import * as icons from "../icons";
 
 type SelectInputListItem = {
     label: string;

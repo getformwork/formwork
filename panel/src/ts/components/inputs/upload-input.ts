@@ -1,14 +1,14 @@
-import * as icons from "../icons";
-import { $ } from "../../utils/selectors";
 import { app } from "../../app";
+import { Request } from "../../utils/request";
+import { $ } from "../../utils/selectors";
+import { toCamelCase } from "../../utils/strings";
 import { escapeHtml } from "../../utils/validation";
 import { FilesList } from "../fileslist";
 import type { Form } from "../form";
+import * as icons from "../icons";
 import { Notification } from "../notification";
-import { Request } from "../../utils/request";
 import { SelectInput } from "./select-input";
 import { TagsInput } from "./tags-input";
-import { toCamelCase } from "../../utils/strings";
 
 export class UploadInput {
     readonly element: HTMLInputElement;

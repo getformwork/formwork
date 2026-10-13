@@ -1,5 +1,5 @@
-import { $ } from "../utils/selectors";
 import { app } from "../app";
+import { $ } from "../utils/selectors";
 import { FilesList } from "./fileslist";
 
 export class Files {

@@ -1,5 +1,5 @@
-import * as icons from "./icons";
 import { $ } from "../utils/selectors";
+import * as icons from "./icons";
 
 type NotificationType = "info" | "success" | "warning" | "error";
 

@@ -1,6 +1,7 @@
 import "../polyfills/request-submit";
-import { $, $$ } from "../utils/selectors";
 import { app } from "../app";
+import { serializeForm } from "../utils/forms";
+import { $, $$ } from "../utils/selectors";
 import { ArrayInput } from "./inputs/array-input";
 import { ColorInput } from "./inputs/color-input";
 import { DateInput } from "./inputs/date-input";
@@ -10,7 +11,6 @@ import { ImagePicker } from "./inputs/image-picker";
 import { Input } from "./inputs/input";
 import { RangeInput } from "./inputs/range-input";
 import { SelectInput } from "./inputs/select-input";
-import { serializeForm } from "../utils/forms";
 import { SlugInput } from "./inputs/slug-input";
 import { TagsInput } from "./inputs/tags-input";
 import { TogglegroupInput } from "./inputs/togglegroup-input";

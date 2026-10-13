@@ -1,7 +1,7 @@
-import { $ } from "../../utils/selectors";
 import { app } from "../../app";
-import { Notification } from "../notification";
 import { Request } from "../../utils/request";
+import { $ } from "../../utils/selectors";
+import { Notification } from "../notification";
 import { StatisticsChart } from "../statistics-chart";
 
 export class Dashboard {

@@ -1,10 +1,10 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { EditorView, keymap, placeholder } from "@codemirror/view";
+import { markdown } from "@codemirror/lang-markdown";
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { Compartment } from "@codemirror/state";
-import { markdown } from "@codemirror/lang-markdown";
-import { MenuPlugin } from "./menu";
+import { EditorView, keymap, placeholder } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
+import { MenuPlugin } from "./menu";
 
 interface CodeViewOptions {
     editable?: boolean;

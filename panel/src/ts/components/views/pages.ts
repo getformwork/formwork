@@ -1,12 +1,12 @@
-import { $, $$ } from "../../utils/selectors";
-import { escapeHtml, escapeRegExp, makeDiacriticsRegExp, makeSlug } from "../../utils/validation";
 import type { MoveEvent, SortableEvent } from "sortablejs";
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
-import type { Form } from "../form";
-import { Notification } from "../notification";
 import { Request } from "../../utils/request";
+import { $, $$ } from "../../utils/selectors";
+import { escapeHtml, escapeRegExp, makeDiacriticsRegExp, makeSlug } from "../../utils/validation";
+import type { Form } from "../form";
 import type { SelectInput } from "../inputs/select-input";
+import { Notification } from "../notification";
 
 export class Pages {
     constructor() {

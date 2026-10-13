@@ -1,9 +1,9 @@
-import { $$ } from "../../utils/selectors";
 import { app } from "../../app";
-import { Notification } from "../notification";
-import { Request } from "../../utils/request";
 import { throttle } from "../../utils/events";
+import { Request } from "../../utils/request";
+import { $$ } from "../../utils/selectors";
 import { TogglegroupInput } from "../inputs/togglegroup-input";
+import { Notification } from "../notification";
 
 export class Plugins {
     constructor() {

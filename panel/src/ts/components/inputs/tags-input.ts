@@ -1,10 +1,10 @@
-import * as icons from "../icons";
-import { $, $$ } from "../../utils/selectors";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import type { SortableEvent } from "sortablejs";
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
-import type { SortableEvent } from "sortablejs";
+import { $, $$ } from "../../utils/selectors";
 import { toCamelCase } from "../../utils/strings";
+import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
+import * as icons from "../icons";
 
 interface TagsInputOptions {
     labels: { [key: string]: string };

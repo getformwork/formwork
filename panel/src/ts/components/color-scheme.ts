@@ -1,5 +1,5 @@
-import { getCookies, setCookie } from "../utils/cookies";
 import { app } from "../app";
+import { getCookies, setCookie } from "../utils/cookies";
 
 type ColorSchemeName = "light" | "dark";
 type ColorSchemePreference = ColorSchemeName | "light dark";
