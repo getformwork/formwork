@@ -4,22 +4,28 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
+use Formwork\Config\Config;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
+use Formwork\Forms\FormData;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
+use Formwork\Model\Model;
 use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\UsersController;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Parsers\Yaml;
+use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
+use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
@@ -31,6 +37,7 @@ use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionMethod;
 use ReflectionProperty;
 
 #[CoversClass(UsersController::class)]
@@ -38,6 +45,7 @@ use ReflectionProperty;
 final class UsersControllerTest extends TestCase
 {
     use BuildsPanelControllers;
+    use ProvidesFormSaveCases;
 
     private string $accountsPath;
 
@@ -171,6 +179,77 @@ final class UsersControllerTest extends TestCase
         $this->create('admin', $this->newUser(role: 'editor', username: '../escape'));
 
         $this->assertFileDoesNotExist(FileSystem::joinPaths(TESTS_TMP_PATH, 'escape.yaml'));
+    }
+
+    /**
+     * Documents the current behavior of user saving: arrays are replaced (as in the other controllers),
+     * but, unlike pages, files and options, defaults are NOT excluded from the saved account file.
+     *
+     * @param array<string, mixed> $existing
+     * @param array<string, mixed> $submitted
+     * @param array<string, mixed> $expected  Expected subset of the saved data
+     */
+    #[DataProvider('userSaveProvider')]
+    public function testUpdatingUsersReplacesArraysButSavesDefaultsToo(array $existing, array $submitted, array $expected): void
+    {
+        $app = App::instance();
+        $config = new Config(['system' => ['users' => ['paths' => ['accounts' => $this->accountsPath, 'images' => $this->accountsPath]]]], resolved: true);
+
+        $user = new User(
+            ['username' => 'subject', 'fullname' => 'Subject', ...$existing],
+            $config,
+            new Request([], [], [], [], ['REQUEST_METHOD' => 'POST']),
+            $app->getService(FileFactory::class),
+            $this->createStub(Users::class),
+        );
+        $scheme = new Scheme(
+            'users.test',
+            ['fields' => self::formSaveFields()],
+            $app->getService(Translations::class),
+            $app->getService(Schemes::class),
+            $app->getService(FieldFactory::class),
+        );
+        (new ReflectionProperty(Model::class, 'scheme'))->setValue($user, $scheme);
+        $user->save();
+
+        $current = $this->createStub(User::class);
+        $current->method('permissions')->willReturn(new Permissions([]));
+        $current->method('canChangePasswordOf')->willReturn(true);
+        $current->method('canChangeRoleOf')->willReturn(true);
+
+        $this->controller = $this->makeController(UsersController::class, [], user: $current);
+
+        $fields = $user->fields();
+        $fields->setValues(['title' => 'untitled', ...$submitted], null);
+        $this->assertTrue($fields->isValid());
+
+        (new ReflectionMethod($this->controller, 'updateUser'))->invoke($this->controller, $user, new FormData($fields->extract('value')));
+
+        $saved = $this->savedUser('subject');
+
+        $this->assertSame($expected, array_intersect_key($saved, $expected));
+        // Defaults are persisted, unlike in pages, files and options
+        $this->assertSame('en', $saved['language']);
+        $this->assertSame('auto', $saved['colorScheme']);
+        $this->assertArrayHasKey('title', $saved);
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>, array<string, mixed>}>
+     */
+    public static function userSaveProvider(): iterable
+    {
+        yield 'scalar equal to the field default is still saved' => [[], [], ['title' => 'untitled']];
+        yield 'scalar' => [[], ['title' => 'Hello'], ['title' => 'Hello']];
+        yield 'keyed array key removed' => [['metadata' => ['en' => 'a', 'de' => 'b']], ['metadata' => ['en' => 'a']], ['metadata' => ['en' => 'a']]];
+        yield 'list replaced' => [['tags' => ['a', 'b']], ['tags' => ['a']], ['tags' => ['a']]];
+        yield 'nested array replaced' => [['nested' => ['a' => ['x' => 1, 'y' => 2]]], ['nested' => ['a' => ['x' => 1]]], ['nested' => ['a' => ['x' => 1]]]];
+        yield 'dotted keyed array replaced' => [
+            ['appearance' => ['metadata' => ['en' => 'a', 'de' => 'b'], 'mode' => 'dark']],
+            ['appearance.metadata' => ['en' => 'a'], 'appearance.mode' => 'dark'],
+            ['appearance' => ['metadata' => ['en' => 'a'], 'mode' => 'dark']],
+        ];
+        yield 'empty array is saved' => [['tags' => ['a']], ['tags' => []], ['tags' => []]];
     }
 
     /**
