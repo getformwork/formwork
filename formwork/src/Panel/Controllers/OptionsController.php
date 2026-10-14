@@ -149,11 +149,13 @@ final class OptionsController extends AbstractController
     {
         $old = $options;
 
-        // Update options with new values
-        $options = Arr::exclude(
-            Arr::override($options, Arr::undot($formData)),
-            $defaults
-        );
+        // Replace with form data so removed array keys are not retained
+        foreach ($formData as $key => $value) {
+            Arr::set($options, $key, $value);
+        }
+
+        // Keep only the overrides
+        $options = Arr::exclude($options, $defaults);
 
         // Update config file if options differ
         if ($options !== $old) {

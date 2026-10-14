@@ -144,11 +144,19 @@ final class PluginsController extends AbstractController
     /**
      * Update plugin options in its config file
      *
-     * @param array<string, mixed> $options
+     * @param array<string, mixed> $data
      */
-    private function updatePluginsOptions(Plugin $plugin, array $options): void
+    private function updatePluginsOptions(Plugin $plugin, array $data): void
     {
-        $options = Arr::override($this->config->get("plugins.{$plugin->name()}", []), Arr::undot($options));
+        $options = $this->config->get("plugins.{$plugin->name()}", []);
+
+        // Replace with form data so removed array keys are not retained
+        foreach ($data as $key => $value) {
+            Arr::set($options, $key, $value);
+        }
+
+        // Keep only the overrides of the plugin manifest defaults
+        $options = Arr::exclude($options, Arr::undot($plugin->manifest()->config()));
 
         if (!FileSystem::isDirectory(ROOT_PATH . '/site/config/plugins/', assertExists: false)) {
             FileSystem::createDirectory(ROOT_PATH . '/site/config/plugins/');
