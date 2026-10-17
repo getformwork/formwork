@@ -172,7 +172,7 @@ final class Date
      */
     public static function formatTimestamp(int $timestamp, string $format, Translation $translation): string
     {
-        return self::formatDateTime(new DateTimeImmutable("@{$timestamp}"), $format, $translation);
+        return self::formatDateTime((new DateTimeImmutable())->setTimestamp($timestamp), $format, $translation);
     }
 
     /**
@@ -217,7 +217,7 @@ final class Date
      */
     public static function formatTimestampAsDistance(int $timestamp, Translation $translation): string
     {
-        return self::formatDateTimeAsDistance(new DateTimeImmutable("@{$timestamp}"), $translation);
+        return self::formatDateTimeAsDistance((new DateTimeImmutable())->setTimestamp($timestamp), $translation);
     }
 
     /**
