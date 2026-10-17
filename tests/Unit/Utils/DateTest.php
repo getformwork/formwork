@@ -150,6 +150,20 @@ final class DateTest extends TestCase
         $this->assertSame('Giovedì 29 Marzo 2029', Date::formatTimestamp(1869473400, 'l d F Y', $translation));
     }
 
+    public function testFormatWithTimestampUsesDefaultTimeZone(): void
+    {
+        $translation = new Translation('it', $this->translation);
+
+        $previous = date_default_timezone_get();
+        date_default_timezone_set('Europe/Rome');
+
+        try {
+            $this->assertSame('Gio, 29 Mar 2029 12:10:00 +0200', Date::formatTimestamp(1869473400, 'r', $translation));
+        } finally {
+            date_default_timezone_set($previous);
+        }
+    }
+
     public function testFormatDistance(): void
     {
         $translation = new Translation('it', $this->translation);
