@@ -46,8 +46,8 @@ class PageCollection extends AbstractCollection implements Paginable
      */
     public function paginate(int $length, int $currentPage): self
     {
-        $pagination = $this->paginationFactory->make($this, $length);
-        $pagination->setCurrentPage($currentPage);
+        $pagination = $this->paginationFactory->make($this, max(0, $length));
+        $pagination->setCurrentPage(max(1, min($currentPage, $pagination->pages())));
 
         $pageCollection = $this->slice($pagination->offset(), $pagination->length());
         $pageCollection->pagination = $pagination;
