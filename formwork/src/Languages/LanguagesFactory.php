@@ -32,7 +32,7 @@ final class LanguagesFactory
                 // Try candidates: full code and base language
                 // (e.g., "en-US" => ["en-us", "en"])
                 $code = strtolower($code);
-                foreach ([$code, Str::after($code, '-')] as $candidate) {
+                foreach ([$code, Str::before($code, '-')] as $candidate) {
                     if (in_array($candidate, $available, true)) {
                         $preferred = $candidate;
                         break 2;

@@ -119,6 +119,32 @@ final class LanguagesFactoryTest extends TestCase
         $this->assertSame('it', $languages->preferred()?->code());
     }
 
+    #[DataProvider('regionalAcceptLanguageProvider')]
+    public function testRegionalAcceptLanguageFallsBackToTheBaseLanguage(string $header, string $expected): void
+    {
+        $languages = $this->make('/', $header, ['available' => ['en', 'it', 'pt'], 'default' => 'it', 'httpPreferred' => true]);
+
+        $this->assertSame($expected, $languages->preferred()?->code());
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function regionalAcceptLanguageProvider(): iterable
+    {
+        yield 'en-US' => ['en-US', 'en'];
+        yield 'pt-BR' => ['pt-BR', 'pt'];
+        yield 'it-IT' => ['it-IT', 'it'];
+        yield 'lowercase region' => ['en-us', 'en'];
+    }
+
+    public function testFullRegionalCodeTakesPrecedenceOverTheBaseLanguage(): void
+    {
+        $languages = $this->make('/', 'en-GB', ['available' => ['en', 'en-gb'], 'default' => 'en', 'httpPreferred' => true]);
+
+        $this->assertSame('en-gb', $languages->preferred()?->code());
+    }
+
     public function testRequestedLanguageDoesNotDependOnThePreferredOne(): void
     {
         $languages = $this->make('/de/page', 'it', ['available' => ['en', 'it', 'de'], 'default' => 'en', 'httpPreferred' => true]);
