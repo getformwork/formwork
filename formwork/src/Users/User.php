@@ -19,6 +19,7 @@ use Formwork\Users\Utils\Password;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
+use InvalidArgumentException;
 use LogicException;
 use SensitiveParameter;
 use UnexpectedValueException;
@@ -415,7 +416,13 @@ class User extends Model
         if (strlen($password) < self::MINIMUM_PASSWORD_LENGTH) {
             throw new InvalidValueException(sprintf('Password must be at least %d characters long', self::MINIMUM_PASSWORD_LENGTH));
         }
-        Arr::set($this->data, 'hash', Password::hash($password));
+        try {
+            $hash = Password::hash($password);
+        } catch (InvalidArgumentException $e) {
+            throw new InvalidValueException($e->getMessage(), 'invalidFields');
+        }
+
+        Arr::set($this->data, 'hash', $hash);
     }
 
     /**
