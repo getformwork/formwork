@@ -1,5 +1,85 @@
 # Changelog
 
+# [2.3.17](https://github.com/getformwork/formwork/releases/tag/2.3.17)
+
+**Security**
+
+- Fix `AssetsController`, plugins `AssetsController` and `FilesController` potentially serving files outside their base path
+- Fix log formatters failing to escape newlines, preventing log injection
+- Fix `Renderer` not preventing filename and variables hijacking from extracted variables
+- Fix `InitialsImageGenerator` not properly escaping initials
+- Enforce escaping in `Debug`
+- Fix `Page::uri()` generating URIs that traverse above the page route
+- Fix `User::setImage()` to correctly ensure user images are located in the configured directory
+- Fix `Authenticator::isLoggedIn()` only checking session data presence
+- Wrap unexpected throwables in `AuthenticationFailedException` in `Authenticator::login()`
+- Fix `Password::hash()` not rejecting passwords longer than bcrypt maximum supported length and add error handling for password hashing
+- Fix false route matches caused by unquoted route literals
+- Handle `http-equiv="refresh"` case-insensitively and strip quotes from its URL
+- Prevent provided `Location` headers from overwriting specified URI in `RedirectResponse`
+- Fix plugin namespace validation for values containing line endings
+- Fix `SemVer` validation for values containing new lines
+- Fix IPv6 hostnames resulting in invalid characters for backup names
+- Throw an exception when the sanitized name is empty during upload
+- Ensure select field values are valid keys in the options array
+
+**Enhancements**
+
+- Throw `UnexpectedValueException` for invalid plugin manifest values
+- Throw a `ContainerException` if a class does not exist or cannot be instantiated in `Container::build()`
+- Avoid failing when logging JSON data if partial output is possible
+- Handle `gzdecode()` built-in warnings with proper exception
+- Consider pages empty if both frontmatter and content are
+- Always initialize services arrays
+
+**Bug fixes**
+
+- Fix `OptionsController` and `PluginsController` merging instead of replacing form data
+- Fix `Debug::dump()` failing to detect recursion when dumping arrays
+- Fix `Debug::dump()` throwing instead of dumping a placeholder for closed resources
+- Fix `UsersServiceLoader` attempting to load non-YAML files
+- Fix `Plugin::initialize()` reinitializing already initialized plugins
+- Fix `Plugin::getEventListeners()` incorrectly determining event listener methods
+- Fix `Plugin::loadConfig()` using plugin IDs instead of names
+- Fix `PluginsServiceLoader` failing to ignore invalid plugins that throw non-`RuntimeException` throwables
+- Fix Formwork's CommonMark extension failing when no `Site` is available
+- Fix metadata prefixes treated case-sensitively
+- Fix edge cases when manipulating relative paths in `FileUriGenerator`
+- Fix language fallback logic in `LanguagesFactory` and regex escaping of available languages
+- Fix `Str::slug()` preserving leading and trailing dashes and mishandling multibyte characters
+- Fix `Date` silently rolling over invalid dates instead of throwing `InvalidArgumentException`
+- Fix `Markdown` parser generating empty or duplicate heading IDs
+- Fix `PageTraversal::isSiblingOf()` returning negated results
+- Fix `AbstractCollection::filterBy()` trying to execute callable strings
+- Fix pagination logic in `PageCollection` to ensure valid length and current page values
+- Fix `FileSystem::listContents()` not recursing without the `LIST_DIRECTORIES` flag
+- Fix `Updater` support for ETags and ensure API returns all needed keys
+- Restore `NodeInterpolator` precedence logic
+- Fix `NodeInterpolator` not properly handling errors when accessing class methods, properties, or constants
+- Fix interpolator `parseStringToken()` to consistently unwrap quoted strings
+- Fix regex in the interpolator `Tokenizer` for number tokens to correctly escape the decimal point
+- Fix constructor in `ImplicitArrayKeyNode` to initialize value as `null`
+- Fix `Registry` saving empty registries on destruction
+- Fix `Registry::has()` returning `false` for existing `null` values
+- Ensure `Logger::log()` accepts only strings as log level
+- Fix `Request::baseUri()` returning double slashes for empty roots
+- Fix `DynamicFieldValue::compute()` to ensure computing status is reset in case of exceptions
+- Fix `FieldFactory` not detecting recursion in field extension
+- Fix `CodeDumper` trying to dump frames of evaluated code
+- Fix `Backupper` not properly collecting backups with the same timestamp
+- Fix `Assets` constructor throwing `FileSystemNotFound` instead of `AssetsNotFoundException`
+- Fix `Container::resolve()` processing an already resolved service
+- Fix `Uri::make()` dropping non-default ports if not given in the `$parts` array
+- Fix `MimeType` handling extensions case-sensitively
+- Fix implicit float-to-int deprecation warnings in `Constraint::isInIntegerRange()`
+- Fix `Constraint::isInRange()` minimum default value
+- Fix `Router::dispatch()` mutating instance state before validating route constraints
+- Retrieve a fresh collection of sibling pages to ensure the new slug is unique
+- Fix tablet devices detected as mobile
+- Fix empty cookie names considered valid
+- Correctly support sending multiple cookies
+- Fix `Config::loadFile()` throwing `FileNotFoundException` instead of `ConfigLoadingException` with non-existent files
+
 # [2.3.16](https://github.com/getformwork/formwork/releases/tag/2.3.16)
 
 **Security**
