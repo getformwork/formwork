@@ -124,6 +124,21 @@ final class UserTest extends TestCase
         $user->set('password', 'short');
     }
 
+    public function testTooLongPasswordsAreRejectedAsInvalidValues(): void
+    {
+        $user = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('original-password')]);
+
+        try {
+            $user->set('password', str_repeat('a', 73));
+            $this->fail('Expected InvalidValueException was not thrown');
+        } catch (InvalidValueException $e) {
+            $this->assertSame('Password exceeds the maximum supported length', $e->getMessage());
+            $this->assertSame('Password exceeds the maximum supported length', $e->getIdentifier());
+        }
+
+        $this->assertTrue($user->verifyPassword('original-password'));
+    }
+
     public function testPasswordsWithTheMinimumLengthAreAccepted(): void
     {
         $user = $this->makeUser(['username' => 'alice']);
