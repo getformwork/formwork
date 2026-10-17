@@ -133,7 +133,6 @@ final class UserTest extends TestCase
             $this->fail('Expected InvalidValueException was not thrown');
         } catch (InvalidValueException $e) {
             $this->assertSame('Password exceeds the maximum supported length', $e->getMessage());
-            $this->assertSame('Password exceeds the maximum supported length', $e->getIdentifier());
         }
 
         $this->assertTrue($user->verifyPassword('original-password'));

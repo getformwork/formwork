@@ -341,7 +341,7 @@ class User extends Model
         try {
             $hash = Password::hash($password);
         } catch (InvalidArgumentException $e) {
-            throw new InvalidValueException($e->getMessage(), $e->getMessage());
+            throw new InvalidValueException($e->getMessage(), 'invalidFields');
         }
 
         Arr::set($this->data, 'hash', $hash);
