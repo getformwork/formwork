@@ -255,7 +255,9 @@ panel.pages.page.actions: Actions
 panel.pages.page.cannotChangeNum: Cannot change page number
 panel.pages.page.cannotCreate: Cannot create page
 panel.pages.page.cannotCreate.alreadyExists: Cannot create page, a page with the same uri already exists
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Cannot create page with the slug of index and error pages
 panel.pages.page.cannotCreate.invalidFields: Cannot create page, some fields are invalid
+panel.pages.page.cannotCreate.invalidLanguage: Cannot create page, invalid language
 panel.pages.page.cannotCreate.invalidParent: Cannot create page, invalid parent page
 panel.pages.page.cannotCreate.invalidSlug: Cannot create page, page slug must contain only letters and numbers separated by dashes
 panel.pages.page.cannotCreate.invalidTemplate: Cannot create page, invalid template
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Cannot change the role of %s. The action is n
 panel.users.user.cannotCreate.alreadyExists: Cannot create user, a user with the same name already exists
 panel.users.user.cannotCreate.emailAlreadyUsed: Cannot create user, the email address is already associated with an account
 panel.users.user.cannotCreate.invalidFields: Cannot create user, some fields are invalid
+panel.users.user.cannotCreate.invalidRole: Cannot create user, invalid role
 panel.users.user.cannotCreate.varMissing: Cannot create user, missing a variable
 panel.users.user.cannotDelete: Cannot delete user. You must be an administrator and the user must not be logged in.
 panel.users.user.cannotEdit: Cannot edit user %s. The action is not allowed.

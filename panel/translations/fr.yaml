@@ -255,7 +255,9 @@ panel.pages.page.actions: Actions
 panel.pages.page.cannotChangeNum: Impossible de changer le numéro de page
 panel.pages.page.cannotCreate: Impossible de créer une page
 panel.pages.page.cannotCreate.alreadyExists: Impossible de créer une page, une page avec le même uri existe déjà
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Impossible de créer une page avec l’identifiant de la page d’accueil ou de la page d’erreur
 panel.pages.page.cannotCreate.invalidFields: Impossible de créer la page, certains champs sont invalides
+panel.pages.page.cannotCreate.invalidLanguage: Impossible de créer la page, langue non valide
 panel.pages.page.cannotCreate.invalidParent: Impossible de créer une page, page parente non valide
 panel.pages.page.cannotCreate.invalidSlug: Impossible de créer une page, l’identifiant de la page ne doit contenir que des lettres et des chiffres séparés par des tirets
 panel.pages.page.cannotCreate.invalidTemplate: Impossible de créer une page, modèle non valide
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Impossible de changer le rôle de %s. L’act
 panel.users.user.cannotCreate.alreadyExists: Impossible de créer l’utilisateur, un utilisateur portant le même nom existe déjà
 panel.users.user.cannotCreate.emailAlreadyUsed: Impossible de créer l’utilisateur, l’adresse e-mail est déjà associée à un compte
 panel.users.user.cannotCreate.invalidFields: Impossible de créer l’utilisateur, certains champs sont invalides
+panel.users.user.cannotCreate.invalidRole: Impossible de créer l’utilisateur, rôle non valide
 panel.users.user.cannotCreate.varMissing: Impossible de créer l’utilisateur, il manque une variable
 panel.users.user.cannotDelete: Impossible de supprimer l’utilisateur. Vous devez être un administrateur et l’utilisateur ne doit pas être connecté.
 panel.users.user.cannotEdit: Impossible de modifier l’utilisateur %s. L’action n’est pas autorisée.

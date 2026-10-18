@@ -255,7 +255,9 @@ panel.pages.page.actions: Acciones
 panel.pages.page.cannotChangeNum: No se puede cambiar el número de página
 panel.pages.page.cannotCreate: No se puede crear la página
 panel.pages.page.cannotCreate.alreadyExists: No se puede crear la página, ya existe una página con la misma URI
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: No se puede crear una página con el slug de la página de índice o de error
 panel.pages.page.cannotCreate.invalidFields: No se puede crear la página, algunos campos no son válidos
+panel.pages.page.cannotCreate.invalidLanguage: No se puede crear la página, idioma no válido
 panel.pages.page.cannotCreate.invalidParent: No se puede crear la página, página principal no válida
 panel.pages.page.cannotCreate.invalidSlug: No se puede crear la página, el slug de la página solo puede contener letras y números separados por guiones
 panel.pages.page.cannotCreate.invalidTemplate: No se puede crear la página, plantilla no válida
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: No se puede cambiar el rol de %s. La acción 
 panel.users.user.cannotCreate.alreadyExists: No se puede crear el usuario, ya existe un usuario con el mismo nombre
 panel.users.user.cannotCreate.emailAlreadyUsed: No se puede crear el usuario, la dirección de correo ya está asociada a una cuenta
 panel.users.user.cannotCreate.invalidFields: No se puede crear el usuario, algunos campos no son válidos
+panel.users.user.cannotCreate.invalidRole: No se puede crear el usuario, rol no válido
 panel.users.user.cannotCreate.varMissing: No se puede crear el usuario, falta una variable
 panel.users.user.cannotDelete: No se puede borrar el usuario. Debes ser un administrador y el usuario no debe estar conectado.
 panel.users.user.cannotEdit: No se puede editar el usuario %s. La acción no está permitida.

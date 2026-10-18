@@ -255,7 +255,9 @@ panel.pages.page.actions: Műveletek
 panel.pages.page.cannotChangeNum: Nem lehet megváltoztatni az oldalszámot
 panel.pages.page.cannotCreate: Nem lehet oldalt létrehozni
 panel.pages.page.cannotCreate.alreadyExists: Nem lehet oldalt létrehozni, az URI már létezik
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Nem lehet oldalt létrehozni az index- vagy hibaoldal slugjával
 panel.pages.page.cannotCreate.invalidFields: Nem lehet oldalt létrehozni, egyes mezők érvénytelenek
+panel.pages.page.cannotCreate.invalidLanguage: Nem lehet oldalt létrehozni, érvénytelen nyelv
 panel.pages.page.cannotCreate.invalidParent: Nem lehet oldalt létrehozni, érvénytelen szülő oldal
 panel.pages.page.cannotCreate.invalidSlug: Nem lehet oldalt létrehozni, a slug csak betűket és számokat tartalmazhat kötőjelekkel elválasztva
 panel.pages.page.cannotCreate.invalidTemplate: Nem lehet oldalt létrehozni, érvénytelen sablon
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Nem lehet módosítani %s szerepkörét
 panel.users.user.cannotCreate.alreadyExists: Nem lehet létrehozni a felhasználót, már létezik ilyen nevű
 panel.users.user.cannotCreate.emailAlreadyUsed: Nem lehet létrehozni a felhasználót, az e-mail cím már használatban van
 panel.users.user.cannotCreate.invalidFields: Nem lehet létrehozni a felhasználót, egyes mezők érvénytelenek
+panel.users.user.cannotCreate.invalidRole: Nem lehet létrehozni a felhasználót, érvénytelen szerepkör
 panel.users.user.cannotCreate.varMissing: Nem lehet létrehozni a felhasználót, hiányzik egy változó
 panel.users.user.cannotDelete: Nem lehet törölni a felhasználót. Adminisztrátor jogosultság szükséges, és a felhasználó nem lehet bejelentkezve.
 panel.users.user.cannotEdit: 'Nem lehet szerkeszteni a felhasználót: %s'

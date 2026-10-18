@@ -255,7 +255,9 @@ panel.pages.page.actions: İşlemler
 panel.pages.page.cannotChangeNum: Sayfa numarası değiştirilemiyor
 panel.pages.page.cannotCreate: Sayfa oluşturulamıyor
 panel.pages.page.cannotCreate.alreadyExists: Sayfa oluşturulamıyor, aynı URI’ye sahip bir sayfa zaten mevcut
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Ana veya hata sayfasının slug’ı ile sayfa oluşturulamaz
 panel.pages.page.cannotCreate.invalidFields: Sayfa oluşturulamıyor, bazı alanlar geçersiz
+panel.pages.page.cannotCreate.invalidLanguage: Sayfa oluşturulamıyor, geçersiz dil
 panel.pages.page.cannotCreate.invalidParent: Sayfa oluşturulamıyor, geçersiz üst sayfa
 panel.pages.page.cannotCreate.invalidSlug: Sayfa slug’ı yalnızca harf, rakam ve tire içermelidir
 panel.pages.page.cannotCreate.invalidTemplate: Sayfa oluşturulamıyor, geçersiz şablon
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: '%s rolü değiştirilemiyor. Bu işlem izin 
 panel.users.user.cannotCreate.alreadyExists: Kullanıcı oluşturulamıyor, aynı isimde bir kullanıcı zaten mevcut
 panel.users.user.cannotCreate.emailAlreadyUsed: Kullanıcı oluşturulamıyor, e-posta zaten mevcut
 panel.users.user.cannotCreate.invalidFields: Kullanıcı oluşturulamıyor, bazı alanlar geçersiz
+panel.users.user.cannotCreate.invalidRole: Kullanıcı oluşturulamıyor, geçersiz rol
 panel.users.user.cannotCreate.varMissing: Kullanıcı oluşturulamıyor, eksik bir değişken var
 panel.users.user.cannotDelete: Kullanıcı silinemiyor. Yönetici olmanız ve kullanıcının giriş yapmamış olması gerekir.
 panel.users.user.cannotEdit: '%s kullanıcısı düzenlenemiyor. Bu işlem izin verilmemektedir.'

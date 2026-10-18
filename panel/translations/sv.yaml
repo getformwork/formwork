@@ -255,7 +255,9 @@ panel.pages.page.actions: Åtgärder
 panel.pages.page.cannotChangeNum: Kan inte ändra sidnummer
 panel.pages.page.cannotCreate: Kan inte skapa sida
 panel.pages.page.cannotCreate.alreadyExists: Kan inte skapa sida, en sida med samma URI finns redan
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Kan inte skapa sida med sidslug för index- eller felsida
 panel.pages.page.cannotCreate.invalidFields: Kan inte skapa sida, vissa fält är ogiltiga
+panel.pages.page.cannotCreate.invalidLanguage: Kan inte skapa sida, ogiltigt språk
 panel.pages.page.cannotCreate.invalidParent: Kan inte skapa sida, ogiltig överordnad sida
 panel.pages.page.cannotCreate.invalidSlug: Kan inte skapa sida, sidslug måste innehålla endast bokstäver och siffror separerade med bindestreck
 panel.pages.page.cannotCreate.invalidTemplate: Kan inte skapa sida, ogiltig mall
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Kan inte ändra rollen för %s. Åtgärden ä
 panel.users.user.cannotCreate.alreadyExists: Kan inte skapa användare, en användare med samma namn finns redan
 panel.users.user.cannotCreate.emailAlreadyUsed: Kan inte skapa användare, e-postadressen är redan associerad med ett konto
 panel.users.user.cannotCreate.invalidFields: Kan inte skapa användare, vissa fält är ogiltiga
+panel.users.user.cannotCreate.invalidRole: Kan inte skapa användare, ogiltig roll
 panel.users.user.cannotCreate.varMissing: Kan inte skapa användare, variabel saknas
 panel.users.user.cannotDelete: Kan inte ta bort användare. Du måste vara administratör och användaren får inte vara inloggad.
 panel.users.user.cannotEdit: Kan inte redigera användare %s. Åtgärden är inte tillåten.

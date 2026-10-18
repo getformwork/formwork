@@ -255,7 +255,9 @@ panel.pages.page.actions: Действия
 panel.pages.page.cannotChangeNum: Невозможно изменить номер страницы
 panel.pages.page.cannotCreate: Не удается создать страницу
 panel.pages.page.cannotCreate.alreadyExists: Невозможно создать страницу, страницу с тем же URI уже существует
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Невозможно создать страницу со слагом главной страницы или страницы ошибки
 panel.pages.page.cannotCreate.invalidFields: Невозможно создать страницу, некоторые поля недействительны
+panel.pages.page.cannotCreate.invalidLanguage: Не удается создать страницу, недопустимый язык
 panel.pages.page.cannotCreate.invalidParent: Не удается создать страницу, недействительны родительской страницы
 panel.pages.page.cannotCreate.invalidSlug: Невозможно создать страницу, страницу пробкового должны содержать только буквы и цифры, разделенные тире
 panel.pages.page.cannotCreate.invalidTemplate: Не удается создать страницу, недопустимый шаблон
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Невозможно изменить рол�
 panel.users.user.cannotCreate.alreadyExists: Невозможно создать пользователь, пользователь с таким именем уже существует
 panel.users.user.cannotCreate.emailAlreadyUsed: Невозможно создать пользователя, адрес электронной почты уже связан с другим аккаунтом
 panel.users.user.cannotCreate.invalidFields: Невозможно создать пользователя, некоторые поля недействительны
+panel.users.user.cannotCreate.invalidRole: Невозможно создать пользователя, недопустимая роль
 panel.users.user.cannotCreate.varMissing: Невозможно создать пользователя, пропуская переменную
 panel.users.user.cannotDelete: Невозможно удалить пользователь. Вы должны быть администратором, и пользователь не должен быть авторизован.
 panel.users.user.cannotEdit: Невозможно изменить пользователя %s. Действие не допускается.

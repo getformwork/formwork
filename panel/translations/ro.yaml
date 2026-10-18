@@ -255,7 +255,9 @@ panel.pages.page.actions: Acțiuni
 panel.pages.page.cannotChangeNum: Nu se poate schimba numărul paginii
 panel.pages.page.cannotCreate: Nu se poate crea pagina
 panel.pages.page.cannotCreate.alreadyExists: Nu se poate crea pagina, o pagină cu aceeași URI există deja
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Nu se poate crea o pagină cu slug-ul paginii index sau al paginii de eroare
 panel.pages.page.cannotCreate.invalidFields: Nu se poate crea pagina, unele câmpuri sunt nevalide
+panel.pages.page.cannotCreate.invalidLanguage: Nu se poate crea pagina, limbă invalidă
 panel.pages.page.cannotCreate.invalidParent: Nu se poate crea pagina, pagină părinte invalidă
 panel.pages.page.cannotCreate.invalidSlug: Nu se poate crea pagina, slug-ul paginii trebuie să conțină doar litere și cifre separate prin cratime
 panel.pages.page.cannotCreate.invalidTemplate: Nu se poate crea pagina, șablon invalid
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Nu se poate schimba rolul lui %s. Această ac
 panel.users.user.cannotCreate.alreadyExists: Nu se poate crea utilizatorul, un utilizator cu același nume există deja
 panel.users.user.cannotCreate.emailAlreadyUsed: Nu se poate crea utilizatorul, adresa de e-mail este deja asociată unui cont
 panel.users.user.cannotCreate.invalidFields: Nu se poate crea utilizatorul, unele câmpuri sunt nevalide
+panel.users.user.cannotCreate.invalidRole: Nu se poate crea utilizatorul, rol invalid
 panel.users.user.cannotCreate.varMissing: Nu se poate crea utilizatorul, lipsește o variabilă
 panel.users.user.cannotDelete: Nu se poate șterge utilizatorul. Trebuie să fii administrator și utilizatorul nu trebuie să fie autentificat.
 panel.users.user.cannotEdit: Nu se poate edita utilizatorul %s. Această acțiune nu este permisă.

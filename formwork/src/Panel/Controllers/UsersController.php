@@ -103,7 +103,7 @@ final class UsersController extends AbstractController
             if (!$this->panel->user()->canDeleteUser($user)) {
                 throw new TranslatedException(
                     sprintf('Cannot delete user "%s", you must be an administrator and the user must not be logged in', $user->username()),
-                    'users.user.cannotDelete'
+                    'panel.users.user.cannotDelete'
                 );
             }
 

@@ -255,7 +255,9 @@ panel.pages.page.actions: Aktionen
 panel.pages.page.cannotChangeNum: Seitennummer kann nicht geändert werden
 panel.pages.page.cannotCreate: Seite kann nicht erstellt werden
 panel.pages.page.cannotCreate.alreadyExists: Seite kann nicht erstellt werden, eine Seite mit demselben URI existiert bereits
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Seite kann nicht mit dem Slug von Index- und Fehlerseiten erstellt werden
 panel.pages.page.cannotCreate.invalidFields: Seite kann nicht erstellt werden, einige Felder sind ungültig
+panel.pages.page.cannotCreate.invalidLanguage: Seite kann nicht erstellt werden, ungültige Sprache
 panel.pages.page.cannotCreate.invalidParent: Seite kann nicht erstellt werden, ungültige übergeordnete Seite
 panel.pages.page.cannotCreate.invalidSlug: Seite kann nicht erstellt werden, der Seiten-Slug darf nur Buchstaben und Zahlen enthalten, getrennt durch Bindestriche
 panel.pages.page.cannotCreate.invalidTemplate: Seite kann nicht erstellt werden, ungültige Vorlage
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Die Rolle von %s kann nicht geändert werden.
 panel.users.user.cannotCreate.alreadyExists: Benutzer kann nicht erstellt werden, ein Benutzer mit demselben Namen existiert bereits
 panel.users.user.cannotCreate.emailAlreadyUsed: Benutzer kann nicht erstellt werden, die E-Mail-Adresse ist bereits mit einem Konto verknüpft
 panel.users.user.cannotCreate.invalidFields: Benutzer kann nicht erstellt werden, einige Felder sind ungültig
+panel.users.user.cannotCreate.invalidRole: Benutzer kann nicht erstellt werden, ungültige Rolle
 panel.users.user.cannotCreate.varMissing: Benutzer kann nicht erstellt werden, eine Variable fehlt
 panel.users.user.cannotDelete: Benutzer kann nicht gelöscht werden. Sie müssen ein Administrator sein und der Benutzer darf nicht angemeldet sein.
 panel.users.user.cannotEdit: '%s Benutzer kann nicht bearbeitet werden. Die Aktion ist nicht erlaubt.'

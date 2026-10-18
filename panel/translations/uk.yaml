@@ -255,7 +255,9 @@ panel.pages.page.actions: Дії
 panel.pages.page.cannotChangeNum: Немає можливості змінити номер сторінки
 panel.pages.page.cannotCreate: Неможливо створити сторінку
 panel.pages.page.cannotCreate.alreadyExists: Неможливо створити сторінку, сторінка з таким URI вже існує
+panel.pages.page.cannotCreate.indexOrErrorPageSlug: Неможливо створити сторінку зі slug сторінки індексу або помилки
 panel.pages.page.cannotCreate.invalidFields: Неможливо створити сторінку, деякі поля недійсні
+panel.pages.page.cannotCreate.invalidLanguage: Неможливо створити сторінку, недійсна мова
 panel.pages.page.cannotCreate.invalidParent: Неможливо створити сторінку, недійсна батьківська сторінка
 panel.pages.page.cannotCreate.invalidSlug: Неможливо створити сторінку, slug сторінки повинен містити лише літери та цифри, розділені дефісами
 panel.pages.page.cannotCreate.invalidTemplate: Неможливо створити сторінку, недійсна шаблон
@@ -387,6 +389,7 @@ panel.users.user.cannotChangeRole: Неможливо змінити роль %s
 panel.users.user.cannotCreate.alreadyExists: Неможливо створити користувача, користувач з таким ім'ям вже існує
 panel.users.user.cannotCreate.emailAlreadyUsed: Неможливо створити користувача, електронна адреса вже прив’язана до облікового запису
 panel.users.user.cannotCreate.invalidFields: Неможливо створити користувача, деякі поля недійсні
+panel.users.user.cannotCreate.invalidRole: Неможливо створити користувача, недійсна роль
 panel.users.user.cannotCreate.varMissing: Неможливо створити користувача, відсутня змінна
 panel.users.user.cannotDelete: Неможливо видалити користувача. Ви повинні бути адміністратором, і користувач не повинен бути в системі.
 panel.users.user.cannotEdit: Неможливо редагувати користувача %s. Ця дія заборонена.
