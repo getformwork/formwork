@@ -4,6 +4,7 @@ namespace Formwork\Http;
 
 use Formwork\Http\Utils\Header;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Str;
 use LogicException;
 use RuntimeException;
 
@@ -110,7 +111,7 @@ class FileResponse extends Response
     public function prepare(Request $request): static
     {
         if ($this->autoEtag && !$this->headers->has('ETag')) {
-            $this->headers->set('ETag', hash('sha256', $this->path . ':' . FileSystem::lastModifiedTime($this->path)));
+            $this->headers->set('ETag', 'W/' . Str::wrap(hash('sha256', $this->path . ':' . FileSystem::lastModifiedTime($this->path)), '"'));
         }
 
         if ($this->autoLastModified && !$this->headers->has('Last-Modified')) {

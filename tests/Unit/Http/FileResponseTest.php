@@ -36,7 +36,7 @@ final class FileResponseTest extends TestCase
         $this->assertSame(ResponseStatus::PartialContent, $response->status());
         $this->assertSame('bytes 0-4/' . FileSystem::fileSize($path), $response->headers()->get('Content-Range'));
         $this->assertSame('5', $response->headers()->get('Content-Length'));
-        $this->assertTrue($response->headers()->has('ETag'));
+        $this->assertMatchesRegularExpression('/^W\/"[0-9a-f]{64}"$/', (string) $response->headers()->get('ETag'));
         $this->assertTrue($response->headers()->has('Last-Modified'));
         $this->assertSame($response, $response->setFilename('download.txt'));
         $this->assertSame('attachment; filename=download.txt', $response->headers()->get('Content-Disposition'));

@@ -272,7 +272,7 @@ final class PageControllerTest extends TestCase
     {
         $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertNotNull($response->headers()->get('ETag'));
+        $this->assertMatchesRegularExpression('/^"[0-9a-f]{64}"$/', (string) $response->headers()->get('ETag'));
         $this->assertNotNull($response->headers()->get('Last-Modified'));
     }
 
