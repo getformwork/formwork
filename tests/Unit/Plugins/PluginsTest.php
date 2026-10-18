@@ -15,11 +15,13 @@ use Formwork\Plugins\Plugins;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
 #[CoversClass(Plugins::class)]
+#[UsesTempDirectory]
 final class PluginsTest extends TestCase
 {
     use BuildsPlugins;
@@ -42,12 +44,6 @@ final class PluginsTest extends TestCase
         $this->config = new Config(['plugins' => []], resolved: true);
         $this->dispatcher = new EventDispatcher(new ListenerProvider());
         $this->plugins = new Plugins($this->config, new PluginFactory($container), $this->dispatcher);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     public function testPluginsAreLoadedByName(): void

@@ -9,6 +9,7 @@ use Formwork\Log\Handler\AbstractHandler;
 use Formwork\Log\Handler\FileHandler;
 use Formwork\Log\Handler\StderrHandler;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,6 +19,7 @@ use Throwable;
 
 #[CoversClass(FileHandler::class)]
 #[CoversClass(StderrHandler::class)]
+#[UsesTempDirectory]
 final class FileHandlerTest extends TestCase
 {
     private string $file;
@@ -25,14 +27,7 @@ final class FileHandlerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->file = FileSystem::joinPaths(TESTS_TMP_PATH, 'logs', 'app.log');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testHandlerIsAnAbstractHandler(): void

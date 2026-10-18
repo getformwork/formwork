@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Translations;
 
 use Formwork\Config\Config;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Exceptions\FileNotFoundException;
@@ -13,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Throwable;
 
 #[CoversClass(Translations::class)]
+#[UsesTempDirectory]
 final class TranslationsTest extends TestCase
 {
     private string $path;
@@ -20,17 +22,10 @@ final class TranslationsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'translations');
         FileSystem::createDirectory($this->path);
         $this->write('en', "hello: Hello\ngreeting: 'Hi %s'\nonly.english: English only\nplural: [one, many]\n");
         $this->write('it', "hello: Ciao\ngreeting: 'Ciao %s'\n");
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testNothingIsAvailableBeforeLoading(): void

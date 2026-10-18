@@ -6,6 +6,7 @@ use Formwork\Authentication\Authenticator;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\RoleCollection;
 use Formwork\Users\User;
 use Formwork\Users\UserCollection;
@@ -17,6 +18,7 @@ use Throwable;
 #[CoversClass(Users::class)]
 #[CoversClass(RoleCollection::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class UserCollectionTest extends TestCase
 {
     use BuildsUsers;
@@ -25,12 +27,6 @@ final class UserCollectionTest extends TestCase
     {
         parent::setUp();
         $this->setUpUsers();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testRolesAreExposed(): void

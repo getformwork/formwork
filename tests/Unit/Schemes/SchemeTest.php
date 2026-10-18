@@ -6,10 +6,12 @@ use Formwork\Exceptions\RecursionException;
 use Formwork\Schemes\Scheme;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Scheme::class)]
+#[UsesTempDirectory]
 final class SchemeTest extends TestCase
 {
     use BuildsSchemes;
@@ -18,12 +20,6 @@ final class SchemeTest extends TestCase
     {
         parent::setUp();
         $this->setUpSchemes();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownSchemes();
-        parent::tearDown();
     }
 
     // Identity, title, options

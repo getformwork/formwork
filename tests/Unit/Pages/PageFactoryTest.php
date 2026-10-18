@@ -10,12 +10,14 @@ use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(PageFactory::class)]
 #[CoversClass(PageCollectionFactory::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageFactoryTest extends TestCase
 {
     private App $app;
@@ -25,7 +27,6 @@ final class PageFactoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-factory-site');
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
@@ -35,12 +36,6 @@ final class PageFactoryTest extends TestCase
             $this->app->getService(PageFactory::class),
             $this->app->getService(PageCollectionFactory::class),
         );
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFactoriesBuildTheExpectedPageObjects(): void

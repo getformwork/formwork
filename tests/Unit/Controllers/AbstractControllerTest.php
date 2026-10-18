@@ -12,6 +12,7 @@ use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\Unit\Controllers\Fixtures\ExposedController;
 use Formwork\Tests\Unit\Controllers\Fixtures\ForwardTarget;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use InvalidArgumentException;
@@ -21,6 +22,7 @@ use stdClass;
 
 #[CoversClass(AbstractController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AbstractControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -28,15 +30,8 @@ final class AbstractControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/views');
         FileSystem::write(TESTS_TMP_PATH . '/views/greeting.php', 'Hello <?= $this->escape($name) ?>');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testNameIsDerivedFromTheClassName(): void

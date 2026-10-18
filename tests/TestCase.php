@@ -3,6 +3,7 @@
 namespace Formwork\Tests;
 
 use Formwork\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use ReflectionClass;
@@ -12,15 +13,30 @@ class TestCase extends BaseTestCase
     #[Before]
     protected function bootApplication(): void
     {
-        if ((new ReflectionClass($this))->getAttributes(UsesApplication::class) !== []) {
+        if ($this->uses(UsesApplication::class)) {
             TestApplication::boot();
         }
     }
 
-    protected function setUpTempDirectory(): void
+    /**
+     * Run before `setUp()`, so that it can already write into the temporary directory
+     */
+    #[Before(priority: 1)]
+    protected function createTempDirectory(): void
     {
-        if (!FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
+        if ($this->uses(UsesTempDirectory::class) && !FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
             FileSystem::createDirectory(TESTS_TMP_PATH);
+        }
+    }
+
+    /**
+     * Run after `tearDown()`, so that it can still read the temporary directory
+     */
+    #[After(priority: -1)]
+    protected function deleteTempDirectory(): void
+    {
+        if ($this->uses(UsesTempDirectory::class) && FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
+            FileSystem::deleteDirectory(TESTS_TMP_PATH, recursive: true);
         }
     }
 
@@ -49,10 +65,18 @@ class TestCase extends BaseTestCase
         return $messages;
     }
 
-    protected function tearDownTempDirectory(): void
+    /**
+     * Whether the test class, or one of its parents, is marked with the given attribute
+     *
+     * @param class-string $attribute
+     */
+    private function uses(string $attribute): bool
     {
-        if (FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
-            FileSystem::deleteDirectory(TESTS_TMP_PATH, recursive: true);
+        for ($class = new ReflectionClass($this); $class !== false; $class = $class->getParentClass()) {
+            if ($class->getAttributes($attribute) !== []) {
+                return true;
+            }
         }
+        return false;
     }
 }

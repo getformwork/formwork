@@ -12,6 +12,7 @@ use Formwork\Pages\PageFactory;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -23,6 +24,7 @@ use UnexpectedValueException;
 
 #[CoversClass(Page::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageTest extends TestCase
 {
     private App $app;
@@ -34,15 +36,8 @@ final class PageTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
         $this->fixtureSite = $this->temporarySite();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testLoadsFixturePageAndExposesCoreProperties(): void

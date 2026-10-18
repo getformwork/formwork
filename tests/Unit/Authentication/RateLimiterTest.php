@@ -7,11 +7,13 @@ use Formwork\Authentication\RateLimiter;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(RateLimiter::class)]
+#[UsesTempDirectory]
 final class RateLimiterTest extends TestCase
 {
     private string $registryFile;
@@ -24,7 +26,6 @@ final class RateLimiterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->registryFile = FileSystem::joinPaths(TESTS_TMP_PATH, 'rate-limiter', 'attempts.json');
     }
 
@@ -32,7 +33,6 @@ final class RateLimiterTest extends TestCase
     {
         // Registries save themselves when destroyed, so they must go before the directory does
         $this->registries = [];
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

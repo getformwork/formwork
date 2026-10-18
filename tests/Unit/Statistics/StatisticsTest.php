@@ -7,12 +7,14 @@ use Formwork\Http\Utils\IpAnonymizer;
 use Formwork\Log\Registry;
 use Formwork\Statistics\Statistics;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Statistics::class)]
+#[UsesTempDirectory]
 final class StatisticsTest extends TestCase
 {
     private const string DESKTOP = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36';
@@ -24,14 +26,7 @@ final class StatisticsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'statistics');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testMissingDirectoryIsCreated(): void

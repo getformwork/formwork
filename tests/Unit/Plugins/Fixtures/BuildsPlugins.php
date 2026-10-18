@@ -21,14 +21,8 @@ trait BuildsPlugins
 
     protected function setUpPlugins(): void
     {
-        $this->setUpTempDirectory();
         $this->pluginsPath = TESTS_TMP_PATH . '/plugins-sandbox';
         FileSystem::createDirectory($this->pluginsPath, recursive: true);
-    }
-
-    protected function tearDownPlugins(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     /**

@@ -6,11 +6,13 @@ use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Schemes::class)]
+#[UsesTempDirectory]
 final class SchemesTest extends TestCase
 {
     use BuildsSchemes;
@@ -19,12 +21,6 @@ final class SchemesTest extends TestCase
     {
         parent::setUp();
         $this->setUpSchemes();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownSchemes();
-        parent::tearDown();
     }
 
     public function testNothingIsAvailableBeforeLoading(): void

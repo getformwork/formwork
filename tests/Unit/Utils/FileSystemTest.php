@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Utils;
 
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Utils\Fixtures\FileSystemFixture;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\Exceptions\FileSystemException;
 use Formwork\Utils\FileSystem;
@@ -12,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(FileSystem::class)]
+#[UsesTempDirectory]
 final class FileSystemTest extends TestCase
 {
     protected function setUp(): void
@@ -24,7 +26,6 @@ final class FileSystemTest extends TestCase
     protected function tearDown(): void
     {
         FileSystemFixture::enableAll();
-        $this->tearDownTempDirectory();
     }
 
     public function testNormalize(): void

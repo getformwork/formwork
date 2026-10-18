@@ -12,6 +12,7 @@ use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\View\View;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -22,6 +23,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversNothing]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class SiteTemplatesTest extends TestCase
 {
     private App $app;
@@ -29,14 +31,7 @@ final class SiteTemplatesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     #[DataProvider('hostileTitleProvider')]

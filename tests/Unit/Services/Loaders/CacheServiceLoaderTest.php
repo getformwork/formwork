@@ -10,22 +10,17 @@ use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\CacheServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(CacheServiceLoader::class)]
+#[UsesTempDirectory]
 final class CacheServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFilesCacheIsTheDefaultHandler(): void

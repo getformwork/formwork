@@ -10,6 +10,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -17,6 +18,7 @@ use ReflectionProperty;
 
 #[CoversClass(FilesController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FilesControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -26,7 +28,6 @@ final class FilesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->filesPath = $this->createDirectory(TESTS_TMP_PATH . '/site/files');
         FileSystem::write($this->filesPath . '/document.pdf', '%PDF-1.4 content');
@@ -34,12 +35,6 @@ final class FilesControllerTest extends TestCase
         FileSystem::write($this->filesPath . '/nested/inner.txt', 'inner');
         FileSystem::write(TESTS_TMP_PATH . '/site/config.yaml', 'secret: configuration');
         FileSystem::write(TESTS_TMP_PATH . '/site/secret.txt', 'outside of the files directory');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFilesAreServed(): void

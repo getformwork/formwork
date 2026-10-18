@@ -7,23 +7,18 @@ use Formwork\Log\Logger;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(LoggerServiceLoader::class)]
+#[UsesTempDirectory]
 final class LoggerServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testLoggerWithoutHandlersIsCreated(): void

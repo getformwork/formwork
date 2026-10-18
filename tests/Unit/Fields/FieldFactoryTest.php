@@ -8,12 +8,14 @@ use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(FieldFactory::class)]
+#[UsesTempDirectory]
 final class FieldFactoryTest extends TestCase
 {
     use BuildsSchemes;
@@ -22,12 +24,6 @@ final class FieldFactoryTest extends TestCase
     {
         parent::setUp();
         $this->setUpSchemes();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownSchemes();
-        parent::tearDown();
     }
 
     public function testFieldIsCreatedWithNameAndData(): void

@@ -9,6 +9,7 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,6 +17,7 @@ use UnexpectedValueException;
 
 #[CoversClass(Plugin::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PluginTest extends TestCase
 {
     use BuildsPlugins;
@@ -24,12 +26,6 @@ final class PluginTest extends TestCase
     {
         parent::setUp();
         $this->setUpPlugins();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     // Identity

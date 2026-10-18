@@ -13,21 +13,17 @@ use Formwork\Http\Files\UploadedFile;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(FileUploader::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FileUploaderTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testAllowedMimeTypesAreDerivedFromConfiguredExtensions(): void

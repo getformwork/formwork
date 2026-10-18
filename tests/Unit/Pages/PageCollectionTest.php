@@ -10,12 +10,14 @@ use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PageCollection::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageCollectionTest extends TestCase
 {
     private App $app;
@@ -27,15 +29,8 @@ final class PageCollectionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
         $this->fixtureSite = $this->temporarySite();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFiltersExtractAndPaginationPreservePageCollectionType(): void

@@ -19,6 +19,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\User;
@@ -30,21 +31,15 @@ use ReflectionProperty;
 
 #[CoversClass(PagesController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PagesControllerTest extends TestCase
 {
     use BuildsPanelControllers;
     use ProvidesFormSaveCases;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
     protected function tearDown(): void
     {
         $this->closePanelSession();
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

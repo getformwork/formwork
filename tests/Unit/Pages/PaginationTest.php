@@ -12,12 +12,14 @@ use Formwork\Router\RouteCollection;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
 #[CoversClass(Pagination::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PaginationTest extends TestCase
 {
     private App $app;
@@ -27,7 +29,6 @@ final class PaginationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pagination-site');
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
@@ -37,12 +38,6 @@ final class PaginationTest extends TestCase
             $this->app->getService(PageFactory::class),
             $this->app->getService(PageCollectionFactory::class),
         );
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPaginationRoutesAndUrisAreGeneratedForAllNavigationLinks(): void

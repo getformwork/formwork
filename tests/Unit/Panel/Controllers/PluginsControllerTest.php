@@ -12,6 +12,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use ReflectionMethod;
 
 #[CoversClass(PluginsController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PluginsControllerTest extends TestCase
 {
     use BuildsPanelControllers;
@@ -33,8 +35,6 @@ final class PluginsControllerTest extends TestCase
     public function testUpdatingPluginOptionsSavesOnlyOverridesAndReplacesArrays(array $existingOptions, array $formData, array $expected): void
     {
         $pluginDefaults = self::formSaveDefaults();
-
-        $this->setUpTempDirectory();
 
         $app = App::instance();
         $pluginId = 'panel-options-data-provider';

@@ -8,22 +8,19 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Parsers\Fixtures\EnumFixture;
 use Formwork\Tests\Unit\Parsers\Fixtures\SerializableFixture;
 use Formwork\Tests\Unit\Parsers\Fixtures\SetStateImplementingClassFixture;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
 #[CoversClass(Php::class)]
+#[UsesTempDirectory]
 final class PhpTest extends TestCase
 {
     protected function setUp(): void
     {
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/php', TESTS_TMP_PATH, overwrite: true);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testParseAlwaysThrowsException(): void

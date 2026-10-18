@@ -5,11 +5,13 @@ namespace Formwork\Tests\Unit\Http;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\Files\UploadedFile;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(UploadedFile::class)]
+#[UsesTempDirectory]
 final class UploadedFileTest extends TestCase
 {
     public function testUploadedFileExposesClientAndUploadMetadata(): void
@@ -92,31 +94,25 @@ final class UploadedFileTest extends TestCase
 
     public function testMoveRefusesToReplaceAnExistingFileUnlessOverwriteIsEnabled(): void
     {
-        $this->setUpTempDirectory();
+        FileSystem::write(TESTS_TMP_PATH . '/existing.txt', 'existing');
+        $file = $this->uploadedFile(UPLOAD_ERR_OK);
 
         try {
-            FileSystem::write(TESTS_TMP_PATH . '/existing.txt', 'existing');
-            $file = $this->uploadedFile(UPLOAD_ERR_OK);
-
-            try {
-                $file->move(TESTS_TMP_PATH, 'existing.txt');
-                $this->fail('An existing file was replaced without overwrite.');
-            } catch (TranslatedException $exception) {
-                $this->assertSame('upload.error.alreadyExists', $exception->getLanguageString());
-            }
-
-            // Not an HTTP upload, so PHP refuses the move after the checks above have passed
-            try {
-                $file->move(TESTS_TMP_PATH, 'existing.txt', overwrite: true);
-                $this->fail('A file that was not uploaded through HTTP was moved.');
-            } catch (TranslatedException $exception) {
-                $this->assertSame('upload.error.cannotMoveToDestination', $exception->getLanguageString());
-            }
-
-            $this->assertSame('existing', FileSystem::read(TESTS_TMP_PATH . '/existing.txt'));
-        } finally {
-            $this->tearDownTempDirectory();
+            $file->move(TESTS_TMP_PATH, 'existing.txt');
+            $this->fail('An existing file was replaced without overwrite.');
+        } catch (TranslatedException $exception) {
+            $this->assertSame('upload.error.alreadyExists', $exception->getLanguageString());
         }
+
+        // Not an HTTP upload, so PHP refuses the move after the checks above have passed
+        try {
+            $file->move(TESTS_TMP_PATH, 'existing.txt', overwrite: true);
+            $this->fail('A file that was not uploaded through HTTP was moved.');
+        } catch (TranslatedException $exception) {
+            $this->assertSame('upload.error.cannotMoveToDestination', $exception->getLanguageString());
+        }
+
+        $this->assertSame('existing', FileSystem::read(TESTS_TMP_PATH . '/existing.txt'));
     }
 
     private function uploadedFile(int $error): UploadedFile

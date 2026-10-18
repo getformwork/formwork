@@ -32,8 +32,6 @@ trait BuildsSchemes
 
     protected function setUpSchemes(string $currentLanguage = 'en'): void
     {
-        $this->setUpTempDirectory();
-
         $base = FileSystem::joinPaths(TESTS_TMP_PATH, 'schemes-sandbox');
         $this->schemesPath = $base . '/schemes';
         $this->fieldsPath = $base . '/fields';
@@ -76,11 +74,6 @@ trait BuildsSchemes
 
         $this->schemes = $this->container->get(Schemes::class);
         $this->fieldFactory = $this->container->get(FieldFactory::class);
-    }
-
-    protected function tearDownSchemes(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     protected function writeScheme(string $id, string $yaml): void

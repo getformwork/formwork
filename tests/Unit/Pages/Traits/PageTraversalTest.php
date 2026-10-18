@@ -8,10 +8,12 @@ use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(PageTraversal::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageTraversalTest extends TestCase
 {
     use BuildsPageSites;
@@ -21,7 +23,6 @@ final class PageTraversalTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->site = $this->siteFromFiles([
             '1-first/page.md'                 => "---\ntitle: First\n---\n",
             '2-second/page.md'                => "---\ntitle: Second\n---\n",
@@ -30,12 +31,6 @@ final class PageTraversalTest extends TestCase
             '2-second/2-child-b/deep/page.md' => "---\ntitle: Deep\n---\n",
             '3-third/page.md'                 => "---\ntitle: Third\n---\n",
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testParentOfTopLevelPagesIsTheSite(): void

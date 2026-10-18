@@ -19,6 +19,7 @@ use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
@@ -33,6 +34,7 @@ use RuntimeException;
 #[CoversClass(PageOutputEvent::class)]
 #[CoversClass(PageRenderEvent::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageEventsTest extends TestCase
 {
     private App $app;
@@ -42,14 +44,7 @@ final class PageEventsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPageAfterDeleteEvent(): void

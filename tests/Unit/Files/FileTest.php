@@ -12,6 +12,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Scheme;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,16 +21,11 @@ use ZipArchive;
 
 #[CoversClass(File::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FileTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testPathNameExtensionAndStringConversionUseTheGivenPath(): void

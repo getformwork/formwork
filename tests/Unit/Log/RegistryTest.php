@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Log;
 
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,6 +12,7 @@ use Throwable;
 use UnexpectedValueException;
 
 #[CoversClass(Registry::class)]
+#[UsesTempDirectory]
 final class RegistryTest extends TestCase
 {
     private string $file;
@@ -18,14 +20,7 @@ final class RegistryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->file = FileSystem::joinPaths(TESTS_TMP_PATH, 'registry', 'data.json');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testNewRegistriesAreEmpty(): void

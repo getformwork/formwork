@@ -14,6 +14,7 @@ use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySession;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Users;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\FileSystem;
@@ -21,6 +22,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Authenticator::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AuthenticatorTest extends TestCase
 {
     use BuildsUsers;
@@ -59,7 +61,6 @@ final class AuthenticatorTest extends TestCase
     protected function tearDown(): void
     {
         $this->registries = [];
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

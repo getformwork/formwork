@@ -13,6 +13,7 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,6 +24,7 @@ use Throwable;
 
 #[CoversClass(ErrorsController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class ErrorsControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -36,7 +38,6 @@ final class ErrorsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->outputBufferLevel = ob_get_level();
 
@@ -52,7 +53,6 @@ final class ErrorsControllerTest extends TestCase
         while (ob_get_level() < $this->outputBufferLevel) {
             ob_start();
         }
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

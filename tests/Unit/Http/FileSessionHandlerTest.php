@@ -4,22 +4,17 @@ namespace Formwork\Tests\Unit\Http;
 
 use Formwork\Http\Session\Handler\FileSessionHandler;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(FileSessionHandler::class)]
+#[UsesTempDirectory]
 final class FileSessionHandlerTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testHandlerReadsWritesValidatesAndDestroysSessions(): void

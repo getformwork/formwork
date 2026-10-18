@@ -7,24 +7,19 @@ use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileResponse::class)]
+#[UsesTempDirectory]
 final class FileResponseTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFileResponsePreparesRangesAndDownloadNames(): void

@@ -12,6 +12,7 @@ use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use ReflectionProperty;
 
 #[CoversClass(AssetsController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AssetsControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -30,7 +32,6 @@ final class AssetsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->processPath = $this->createDirectory(TESTS_TMP_PATH . '/images');
         $this->templatesPath = $this->createDirectory(TESTS_TMP_PATH . '/templates');
@@ -43,12 +44,6 @@ final class AssetsControllerTest extends TestCase
         FileSystem::write($this->templatesPath . '/assets/css/site.css', 'body {}');
         FileSystem::write($this->templatesPath . '/secret.php', '<?php // template source');
         FileSystem::write(TESTS_TMP_PATH . '/outside.txt', 'outside of the templates directory');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     // asset()

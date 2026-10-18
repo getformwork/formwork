@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Http\Request;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -14,6 +15,7 @@ use ZipArchive;
 
 #[CoversClass(Backupper::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class BackupperInstallationTest extends TestCase
 {
     private string $root;
@@ -21,7 +23,6 @@ final class BackupperInstallationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->root = TESTS_TMP_PATH . '/installation';
         FileSystem::createDirectory($this->root . '/site/pages', recursive: true);
@@ -29,12 +30,6 @@ final class BackupperInstallationTest extends TestCase
         FileSystem::write($this->root . '/index.php', '<?php // index');
         FileSystem::write($this->root . '/site/pages/page.md', 'content');
         FileSystem::write($this->root . '/cache/data.php', 'cached');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testTheWholeInstallationIsArchivedExceptIgnoredFiles(): void

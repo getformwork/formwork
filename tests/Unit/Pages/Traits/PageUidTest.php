@@ -7,10 +7,12 @@ use Formwork\Pages\Traits\PageUid;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(PageUid::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageUidTest extends TestCase
 {
     use BuildsPageSites;
@@ -20,18 +22,11 @@ final class PageUidTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->site = $this->siteFromFiles([
             'one/page.md'        => "---\ntitle: One\n---\n",
             'two/page.md'        => "---\ntitle: Two\n---\n",
             'two/nested/page.md' => "---\ntitle: Nested\n---\n",
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testUidHasTheExpectedShape(): void

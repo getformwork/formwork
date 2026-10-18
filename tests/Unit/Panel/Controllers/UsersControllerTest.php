@@ -27,6 +27,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\Role;
@@ -42,6 +43,7 @@ use ReflectionProperty;
 
 #[CoversClass(UsersController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class UsersControllerTest extends TestCase
 {
     use BuildsPanelControllers;
@@ -54,7 +56,6 @@ final class UsersControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->accountsPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'accounts');
         FileSystem::createDirectory($this->accountsPath);
 
@@ -65,7 +66,6 @@ final class UsersControllerTest extends TestCase
     protected function tearDown(): void
     {
         $this->closePanelSession();
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

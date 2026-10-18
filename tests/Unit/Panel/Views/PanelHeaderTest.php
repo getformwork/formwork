@@ -7,6 +7,7 @@ use DOMXPath;
 use Formwork\Cms\App;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Permissions;
 use Formwork\Utils\FileSystem;
 use Formwork\View\View;
@@ -17,18 +18,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
  * Renders the header of the panel layout with a hostile site title
  */
 #[CoversNothing]
+#[UsesTempDirectory]
 final class PanelHeaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     #[DataProvider('permissionProvider')]

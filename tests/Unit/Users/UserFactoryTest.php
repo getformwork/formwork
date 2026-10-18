@@ -10,6 +10,7 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(UserFactory::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class UserFactoryTest extends TestCase
 {
     use BuildsUsers;
@@ -25,12 +27,6 @@ final class UserFactoryTest extends TestCase
     {
         parent::setUp();
         $this->setUpUsers();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testFactoryBuildsUsersWithTheGivenData(): void

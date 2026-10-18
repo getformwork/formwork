@@ -5,10 +5,12 @@ namespace Formwork\Tests\Unit\Assets;
 use Formwork\Assets\Asset;
 use Formwork\Assets\Exceptions\AssetNotFoundException;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Asset::class)]
+#[UsesTempDirectory]
 final class AssetTest extends TestCase
 {
     private string $path;
@@ -16,17 +18,10 @@ final class AssetTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = TESTS_TMP_PATH . '/assets/style.css';
         FileSystem::createDirectory(dirname($this->path), recursive: true);
         FileSystem::write($this->path, "body { color: red; }\n");
         touch($this->path, 1_700_000_000);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testMissingFilesAreRejected(): void

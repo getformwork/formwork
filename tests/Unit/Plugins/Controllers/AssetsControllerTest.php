@@ -12,6 +12,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use ReflectionProperty;
 
 #[CoversClass(AssetsController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AssetsControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -38,12 +40,6 @@ final class AssetsControllerTest extends TestCase
             'assets/private.txt'   => 'file in the assets root',
         ]);
         FileSystem::write(TESTS_TMP_PATH . '/plugins-sandbox/secret.txt', 'secret of another plugin directory');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     public function testAssetsOfThePluginAreServed(): void

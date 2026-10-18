@@ -9,6 +9,7 @@ use Formwork\Http\ResponseHeaders;
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Updater\SemVer;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
@@ -16,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use ZipArchive;
 
 #[CoversClass(Updater::class)]
+#[UsesTempDirectory]
 final class UpdaterInstallationTest extends TestCase
 {
     private string $root;
@@ -25,7 +27,6 @@ final class UpdaterInstallationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->root = TESTS_TMP_PATH . '/installation';
         FileSystem::createDirectory($this->root . '/formwork/src', recursive: true);
@@ -42,12 +43,6 @@ final class UpdaterInstallationTest extends TestCase
             'formwork/src/Added.php' => 'added file',
             'site/pages/page.md'     => 'content shipped with the release',
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testReleaseIsInstalledInTheGivenRoot(): void

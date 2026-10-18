@@ -7,22 +7,18 @@ use Formwork\Config\Exceptions\ConfigLoadingException;
 use Formwork\Config\Exceptions\ConfigResolutionException;
 use Formwork\Config\Exceptions\UnresolvedConfigException;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversClass(Config::class)]
+#[UsesTempDirectory]
 final class ConfigTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testHasAndHasMultipleDistinguishPresentNullFromMissingKeys(): void

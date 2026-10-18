@@ -9,6 +9,7 @@ use Formwork\Http\ResponseHeaders;
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Updater\SemVer;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
@@ -25,6 +26,7 @@ use ZipArchive;
  * every scenario either stops before extraction or only feeds the extractor archives that must be refused
  */
 #[CoversClass(Updater::class)]
+#[UsesTempDirectory]
 final class UpdaterTest extends TestCase
 {
     private string $registryFile;
@@ -39,7 +41,6 @@ final class UpdaterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/updater');
         $this->registryFile = TESTS_TMP_PATH . '/updater/updates.json';
         $this->tempFile = TESTS_TMP_PATH . '/updater/update.zip';
@@ -52,7 +53,6 @@ final class UpdaterTest extends TestCase
                 unlink($marker);
             }
         }
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

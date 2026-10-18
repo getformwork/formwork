@@ -4,11 +4,13 @@ namespace Formwork\Tests\Unit\Pages;
 
 use Formwork\Pages\ContentFile;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
 #[CoversClass(ContentFile::class)]
+#[UsesTempDirectory]
 final class ContentFileTest extends TestCase
 {
     public function testParsesFrontmatterAndNormalizesContentLineEndings(): void
@@ -33,14 +35,9 @@ final class ContentFileTest extends TestCase
     public function testInvalidPageFormatIsRejected(): void
     {
         $path = TESTS_TMP_PATH . '/invalid-page.md';
-        $this->setUpTempDirectory();
         FileSystem::write($path, 'not a page');
 
-        try {
-            $this->expectException(UnexpectedValueException::class);
-            new ContentFile($path);
-        } finally {
-            $this->tearDownTempDirectory();
-        }
+        $this->expectException(UnexpectedValueException::class);
+        new ContentFile($path);
     }
 }

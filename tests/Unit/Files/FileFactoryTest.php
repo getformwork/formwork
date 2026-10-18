@@ -10,6 +10,7 @@ use Formwork\Files\FileUriGenerator;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
@@ -17,16 +18,11 @@ use stdClass;
 
 #[CoversClass(FileFactory::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FileFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testMakeBuildsAFileLoadsMetadataAndInjectsTheUriGenerator(): void

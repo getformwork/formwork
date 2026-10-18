@@ -12,24 +12,19 @@ use Formwork\Log\Registry;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AuthenticationServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\RoleCollection;
 use Formwork\Users\Users;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionProperty;
 
 #[CoversClass(AuthenticationServiceLoader::class)]
+#[UsesTempDirectory]
 final class AuthenticationServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testAuthenticatorIsBuiltWithTheConfiguredRateLimiter(): void

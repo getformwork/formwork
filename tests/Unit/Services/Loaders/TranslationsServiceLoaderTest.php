@@ -6,11 +6,13 @@ use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\TranslationsServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(TranslationsServiceLoader::class)]
+#[UsesTempDirectory]
 final class TranslationsServiceLoaderTest extends TestCase
 {
     private string $systemPath;
@@ -20,18 +22,11 @@ final class TranslationsServiceLoaderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->systemPath = TESTS_TMP_PATH . '/translations/system';
         $this->sitePath = TESTS_TMP_PATH . '/translations/site';
         FileSystem::createDirectory($this->systemPath, recursive: true);
         FileSystem::write($this->systemPath . '/en.yaml', "greeting: Hello\nsystem.only: System\n");
         FileSystem::write($this->systemPath . '/it.yaml', "greeting: Ciao\n");
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testSystemTranslationsAreLoaded(): void

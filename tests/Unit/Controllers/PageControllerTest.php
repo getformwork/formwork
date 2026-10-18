@@ -21,6 +21,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
@@ -30,6 +31,7 @@ use ReflectionProperty;
 
 #[CoversClass(PageController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -55,7 +57,6 @@ final class PageControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->site = $this->siteFromFiles([
             'index/index.md'    => "---\ntitle: Home\n---\nHome content\n",
@@ -82,12 +83,6 @@ final class PageControllerTest extends TestCase
         $this->dispatcher->on('pageOutput', function (PageOutputEvent $event): void {
             ++$this->renderedPages;
         });
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPublishedPagesAreRendered(): void

@@ -10,6 +10,7 @@ use Formwork\Http\Transport\HttpTransportInterface;
 use Formwork\Http\Transport\StreamHttpTransport;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Http\Fixtures\FakeHttpTransport;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,19 +18,14 @@ use RuntimeException;
 use UnexpectedValueException;
 
 #[CoversClass(Client::class)]
+#[UsesTempDirectory]
 final class ClientTest extends TestCase
 {
     private FakeHttpTransport $transport;
 
     protected function setUp(): void
     {
-        $this->setUpTempDirectory();
         $this->transport = new FakeHttpTransport();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testDefaultsCanBeOverriddenAndMergedRecursively(): void

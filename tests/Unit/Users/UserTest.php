@@ -12,6 +12,7 @@ use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\ColorScheme;
 use Formwork\Users\Exceptions\UserImageNotFoundException;
 use Formwork\Users\Permissions;
@@ -28,6 +29,7 @@ use ValueError;
 
 #[CoversClass(User::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class UserTest extends TestCase
 {
     use BuildsUsers;
@@ -36,12 +38,6 @@ final class UserTest extends TestCase
     {
         parent::setUp();
         $this->setUpUsers();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testDefaultsAreApplied(): void

@@ -12,6 +12,7 @@ use Formwork\Templates\TemplateFactory;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use InvalidArgumentException;
@@ -19,24 +20,18 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(TemplatesServiceLoader::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class TemplatesServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/templates/assets', recursive: true);
         FileSystem::createDirectory(TESTS_TMP_PATH . '/templates/partials', recursive: true);
         FileSystem::write(TESTS_TMP_PATH . '/templates/page.php', 'page');
         FileSystem::write(TESTS_TMP_PATH . '/templates/post.php', 'post');
         FileSystem::write(TESTS_TMP_PATH . '/templates/readme.txt', 'not a template');
         FileSystem::write(TESTS_TMP_PATH . '/templates/partials/header.php', 'partial');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testEveryPhpFileOfTheTemplatesDirectoryIsATemplate(): void

@@ -8,6 +8,7 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Cache\CacheItem;
 use Formwork\Cache\FilesCache;
 use Formwork\Parsers\Php;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,6 +17,7 @@ use UnexpectedValueException;
 
 #[CoversClass(FilesCache::class)]
 #[CoversClass(AbstractCache::class)]
+#[UsesTempDirectory]
 final class FilesCacheTest extends CacheTestCase
 {
     private string $path;
@@ -23,14 +25,7 @@ final class FilesCacheTest extends CacheTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'cache');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPathIncludesTheNamespace(): void

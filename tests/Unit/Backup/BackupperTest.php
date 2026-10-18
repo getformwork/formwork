@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Http\Request;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,6 +16,7 @@ use ZipArchive;
 
 #[CoversClass(Backupper::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class BackupperTest extends TestCase
 {
     private string $backupPath;
@@ -24,19 +26,12 @@ final class BackupperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->backupPath = TESTS_TMP_PATH . '/backups';
         $this->projectPath = TESTS_TMP_PATH . '/project';
         FileSystem::createDirectory($this->projectPath . '/sub', recursive: true);
         FileSystem::write($this->projectPath . '/composer.json', '{}');
         FileSystem::write($this->projectPath . '/ignored.txt', 'ignored');
         FileSystem::write($this->projectPath . '/sub/file.txt', 'nested');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testBackupArchiveIsCreatedInTheConfiguredPath(): void

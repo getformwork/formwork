@@ -24,7 +24,6 @@ trait BuildsUsers
 
     protected function setUpUsers(): void
     {
-        $this->setUpTempDirectory();
         $this->accountsPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'users', 'sandbox', 'accounts');
         $this->imagesPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'users', 'sandbox', 'images');
         FileSystem::createDirectory($this->accountsPath, recursive: true);
