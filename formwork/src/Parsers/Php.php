@@ -53,11 +53,13 @@ final class Php extends AbstractEncoder
      */
     public static function encodeToFile(mixed $data, string $file, array $options = []): bool
     {
+        $result = FileSystem::write($file, sprintf("<?php\n\nreturn %s;\n", self::encodeData($data)));
         if (function_exists('opcache_invalidate') && ($options['invalidateOPcache'] ?? true)) {
-            // Invalidate OPcache when a file is encoded again
+            // Invalidate OPcache after the file is written, otherwise a concurrent request
+            // could cache it again with the previous contents before it is replaced
             opcache_invalidate($file, true);
         }
-        return FileSystem::write($file, sprintf("<?php\n\nreturn %s;\n", self::encodeData($data)));
+        return $result;
     }
 
     /**
