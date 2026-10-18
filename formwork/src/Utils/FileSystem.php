@@ -862,14 +862,22 @@ final class FileSystem
         if (self::exists($file) && !self::isWritable($file)) {
             throw new FileSystemException(sprintf('Cannot write "%s": file exists but is not writable', $file));
         }
-        $temporaryFile = self::createTemporaryFile(dirname($file));
-        if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
-            throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, self::getLastErrorMessage()));
+        // The temporary file is hidden, so that it is not listed with the other files of the directory while being written
+        $temporaryFile = self::createTemporaryFile(dirname($file), '.');
+        try {
+            if (@file_put_contents($temporaryFile, $content, LOCK_EX) === false) {
+                throw new FileSystemException(sprintf('Cannot write "%s": %s', $file, self::getLastErrorMessage()));
+            }
+            if (self::exists($file) && ($perms = @fileperms($file))) {
+                @chmod($temporaryFile, $perms);
+            }
+            return self::moveFile($temporaryFile, $file, true);
+        } finally {
+            // Remove the temporary file if it could not be moved to its destination
+            if (self::exists($temporaryFile)) {
+                @unlink($temporaryFile);
+            }
         }
-        if (self::exists($file) && ($perms = @fileperms($file))) {
-            @chmod($temporaryFile, $perms);
-        }
-        return self::moveFile($temporaryFile, $file, true);
     }
 
     /**

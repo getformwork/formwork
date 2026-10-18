@@ -944,6 +944,33 @@ final class FileSystemTest extends TestCase
         FileSystem::write(TESTS_TMP_PATH . '/newfile.txt', 'Hello, World!');
     }
 
+    public function testWriteDoesNotLeaveTemporaryFiles(): void
+    {
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/write');
+        FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!');
+
+        $this->assertSame(['newfile.txt'], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
+    }
+
+    #[RunInSeparateProcess]
+    public function testFailedWritesRemoveTheTemporaryFile(): void
+    {
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/write');
+
+        foreach (['file_put_contents', 'rename'] as $function) {
+            FileSystemFixture::disable($function);
+
+            try {
+                FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!');
+                $this->fail('Expected the write to fail');
+            } catch (FileSystemException) {
+                $this->assertSame([], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
+            }
+
+            FileSystemFixture::enable($function);
+        }
+    }
+
     public function testCreateDirectory(): void
     {
         $this->assertTrue(FileSystem::createDirectory(TESTS_TMP_PATH . '/newdir'));
