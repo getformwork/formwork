@@ -9,12 +9,14 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
+use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
+use ReflectionProperty;
 use RuntimeException;
 use TypeError;
 use UnexpectedValueException;
@@ -154,6 +156,37 @@ final class PageTest extends TestCase
         $this->assertSame('Questa pagina spiega come è organizzato il sito e dove trovare le sezioni principali.', trim(strip_tags($page->content())));
         $this->assertTrue($page->languages()->available()->has('en'));
         $this->assertTrue($page->languages()->available()->has('it'));
+    }
+
+    public function testTemplateNamesWithDashesAreResolvedFromLanguageContentFiles(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'dashed') . '/';
+        FileSystem::createDirectory($path);
+        FileSystem::write($path . 'blog-post.en.md', "---\ntitle: Dashed\n---\n");
+
+        $template = clone $site->templates()->get('page');
+        $templates = new Templates([...$site->templates()->toArray(), 'blog-post' => $template]);
+        (new ReflectionProperty(Site::class, 'templates'))->setValue($site, $templates);
+
+        $page = new Page(['site' => $site, 'path' => $path], $this->app);
+
+        $this->assertSame($template, $page->template());
+        $this->assertSame('en', $page->language()?->code());
+        $this->assertSame('blog-post.en.md', basename((string) $page->contentFile()?->path()));
+    }
+
+    public function testRegionalLanguagesAreResolvedFromContentFiles(): void
+    {
+        $site = $this->temporarySite();
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'regional') . '/';
+        FileSystem::createDirectory($path);
+        FileSystem::write($path . 'page.en-us.md', "---\ntitle: Regional\n---\n");
+
+        $page = new Page(['site' => $site, 'path' => $path], $this->app);
+
+        $this->assertSame('page', $page->template()->name());
+        $this->assertSame('en-us', $page->language()?->code());
     }
 
     public function testInvalidLanguageIsRejectedAfterLoading(): void

@@ -810,7 +810,7 @@ class Page extends Model implements Stringable
                 if ($extension === $config->getString('system.pages.content.extension')) {
                     $language = '';
 
-                    if (preg_match('/([a-z0-9]+)\.([a-z]+)/', $name, $matches)) {
+                    if (preg_match('/^(.+)\.([a-z]+(?:-[a-z]+)?)$/', $name, $matches)) {
                         // Parse double extension
                         [, $name, $language] = $matches;
                     }
