@@ -62,6 +62,9 @@ final class PageControllerTest extends TestCase
             'about/page.md'     => "---\ntitle: About us\n---\nAbout content\n",
             'about/diagram.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
             'draft/page.md'     => "---\ntitle: Draft\npublished: false\n---\nDraft content\n",
+            'draft/secret.svg'  => '<svg xmlns="http://www.w3.org/2000/svg"/>',
+            'hidden/page.md'    => "---\ntitle: Hidden\nroutable: false\n---\nHidden content\n",
+            'hidden/secret.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
             'canonical/page.md' => "---\ntitle: Canonical\ncanonicalRoute: /about/\n---\nCanonical content\n",
             'blog/blog.md'      => "---\ntitle: Blog\n---\nBlog content\n",
             'error/error.md'    => "---\ntitle: Not found\n---\nThis page does not exist\n",
@@ -132,6 +135,22 @@ final class PageControllerTest extends TestCase
 
         $this->assertInstanceOf(FileResponse::class, $response);
         $this->assertSame($this->site->contentPath() . 'about/diagram.svg', $this->fileOf($response));
+    }
+
+    public function testFilesOfUnpublishedPagesAreNotServed(): void
+    {
+        $response = $this->load('/draft/secret.svg');
+
+        $this->assertNotInstanceOf(FileResponse::class, $response);
+        $this->assertSame(ResponseStatus::NotFound, $response->status());
+    }
+
+    public function testFilesOfNonRoutablePagesAreNotServed(): void
+    {
+        $response = $this->load('/hidden/secret.svg');
+
+        $this->assertNotInstanceOf(FileResponse::class, $response);
+        $this->assertSame(ResponseStatus::NotFound, $response->status());
     }
 
     /**
