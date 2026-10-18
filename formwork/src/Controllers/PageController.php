@@ -94,7 +94,13 @@ final class PageController extends AbstractController
                 $upperLevel = $this->config->get('system.pages.index');
             }
 
-            if ((($parent = $this->site->findPage($upperLevel)) !== null) && $parent->files()->has($filename)) {
+            // Serve files only if their page is published and routable
+            if (
+                (($parent = $this->site->findPage($upperLevel)) !== null)
+                && $parent->isPublished()
+                && $parent->routable()
+                && $parent->files()->has($filename)
+            ) {
                 $file = $parent->files()->get($filename);
                 return new FileResponse($file->path(), autoEtag: true, autoLastModified: true);
             }
