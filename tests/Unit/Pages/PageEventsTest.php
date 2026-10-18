@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Pages;
 
 use Formwork\Cms\App;
-use Formwork\Cms\Site;
 use Formwork\Pages\ContentFile;
 use Formwork\Pages\Events\PageAfterDeleteEvent;
 use Formwork\Pages\Events\PageAfterDuplicateEvent;
@@ -15,9 +14,8 @@ use Formwork\Pages\Events\PageLoadedEvent;
 use Formwork\Pages\Events\PageOutputEvent;
 use Formwork\Pages\Events\PageRenderEvent;
 use Formwork\Pages\Page;
-use Formwork\Pages\PageCollectionFactory;
-use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -37,9 +35,9 @@ use RuntimeException;
 #[UsesTempDirectory]
 final class PageEventsTest extends TestCase
 {
-    private App $app;
+    use BuildsPageSites;
 
-    private int $temporarySiteCounter = 0;
+    private App $app;
 
     protected function setUp(): void
     {
@@ -260,22 +258,9 @@ final class PageEventsTest extends TestCase
 
     private function page(string $route): Page
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), trim($route, '/')) . '/';
 
         return new Page(['site' => $site, 'path' => $path], $this->app);
-    }
-
-    private function temporarySite(): Site
-    {
-        $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-events-' . ++$this->temporarySiteCounter);
-        FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
-
-        return new Site(
-            ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
-            $this->app->config(),
-            $this->app->getService(PageFactory::class),
-            $this->app->getService(PageCollectionFactory::class),
-        );
     }
 }

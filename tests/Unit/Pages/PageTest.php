@@ -7,10 +7,9 @@ use Formwork\Cms\Site;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Http\ResponseStatus;
 use Formwork\Pages\Page;
-use Formwork\Pages\PageCollectionFactory;
-use Formwork\Pages\PageFactory;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -27,17 +26,17 @@ use UnexpectedValueException;
 #[UsesTempDirectory]
 final class PageTest extends TestCase
 {
+    use BuildsPageSites;
+
     private App $app;
 
     private Site $fixtureSite;
-
-    private int $temporarySiteCounter = 0;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->app = App::instance();
-        $this->fixtureSite = $this->temporarySite();
+        $this->fixtureSite = $this->siteFromFixture();
     }
 
     public function testLoadsFixturePageAndExposesCoreProperties(): void
@@ -80,7 +79,7 @@ final class PageTest extends TestCase
 
     public function testPageWithoutAPathGetsUnroutableDefaults(): void
     {
-        $page = new Page(['site' => $this->temporarySite()], $this->app);
+        $page = new Page(['site' => $this->siteFromFixture()], $this->app);
         $defaults = $page->defaults();
 
         $this->assertNull($page->path());
@@ -121,7 +120,7 @@ final class PageTest extends TestCase
 
     public function testNumberPrefixAndSlugAreSeparated(): void
     {
-        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/Fixtures/numbered-site'));
+        $page = $this->temporaryPage('1-numbered', $this->siteFromFixture(__DIR__ . '/Fixtures/numbered-site'));
 
         $this->assertSame(1, $page->num());
         $this->assertSame('numbered', $page->slug());
@@ -140,7 +139,7 @@ final class PageTest extends TestCase
 
     public function testMultilingualContentSelectsTheRequestedLanguageAndTracksAvailableVersions(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
 
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
@@ -155,7 +154,7 @@ final class PageTest extends TestCase
 
     public function testTemplateNamesWithDashesAreResolvedFromLanguageContentFiles(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'dashed') . '/';
         FileSystem::createDirectory($path);
         FileSystem::write($path . 'blog-post.en.md', "---\ntitle: Dashed\n---\n");
@@ -173,7 +172,7 @@ final class PageTest extends TestCase
 
     public function testRegionalLanguagesAreResolvedFromContentFiles(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'regional') . '/';
         FileSystem::createDirectory($path);
         FileSystem::write($path . 'page.en-us.md', "---\ntitle: Regional\n---\n");
@@ -186,7 +185,7 @@ final class PageTest extends TestCase
 
     public function testInvalidLanguageIsRejectedAfterLoading(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
@@ -196,7 +195,7 @@ final class PageTest extends TestCase
 
     public function testInvalidLanguageChangeLeavesTheCurrentLanguageUntouched(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
@@ -213,7 +212,7 @@ final class PageTest extends TestCase
         $this->assertSame('page-listing', $page->icon());
         $this->assertSame('page', $this->temporaryPage('about')->icon());
 
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'about') . '/';
         FileSystem::write($path . 'page.md', "---\ntitle: About\nicon: custom-icon\n---\n\nContent\n");
         $custom = new Page(['site' => $site, 'path' => $path], $this->app);
@@ -325,7 +324,7 @@ final class PageTest extends TestCase
 
     public function testParentCanBeResolvedByRouteAndInvalidParentIsRejected(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $parent = $this->temporaryPage('parent', site: $site);
         $child = $this->temporaryPage('about', site: $site);
 
@@ -451,7 +450,7 @@ final class PageTest extends TestCase
 
     public function testSaveRejectsAPageWithoutAParent(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $page = new Page(['site' => $site], $this->app);
 
         $this->expectException(UnexpectedValueException::class);
@@ -592,7 +591,7 @@ final class PageTest extends TestCase
 
     public function testDeleteCanRemoveOnlyTheCurrentLanguageOrAllLanguages(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
@@ -606,7 +605,7 @@ final class PageTest extends TestCase
 
     public function testPageWithChildrenCannotBeDuplicatedOrDeleted(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $parent = $this->temporaryPage('parent', site: $site);
         $this->temporaryPage('parent/child', site: $site);
 
@@ -724,7 +723,7 @@ final class PageTest extends TestCase
 
     public function testNumberedPagesAreListedAndOrderableByDefault(): void
     {
-        $page = $this->temporaryPage('1-numbered', $this->temporarySite(__DIR__ . '/Fixtures/numbered-site'));
+        $page = $this->temporaryPage('1-numbered', $this->siteFromFixture(__DIR__ . '/Fixtures/numbered-site'));
         $defaults = $page->defaults();
 
         $this->assertSame(1, $page->num());
@@ -766,7 +765,7 @@ final class PageTest extends TestCase
 
     public function testChangingLanguageReloadsTheCorrespondingContentVersion(): void
     {
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
@@ -786,23 +785,10 @@ final class PageTest extends TestCase
 
     private function temporaryPage(string $relativePath, ?Site $site = null): Page
     {
-        $site ??= $this->temporarySite();
+        $site ??= $this->siteFromFixture();
         $path = FileSystem::joinPaths((string) $site->contentPath(), trim($relativePath, '/')) . '/';
         FileSystem::assertExists($path);
 
         return new Page(['site' => $site, 'path' => $path], $this->app);
-    }
-
-    private function temporarySite(string $fixturePath = __DIR__ . '/Fixtures/site'): Site
-    {
-        $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pages-' . ++$this->temporarySiteCounter);
-        FileSystem::copyDirectory($fixturePath, $path);
-
-        return new Site(
-            ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
-            $this->app->config(),
-            $this->app->getService(PageFactory::class),
-            $this->app->getService(PageCollectionFactory::class),
-        );
     }
 }

@@ -4,7 +4,6 @@ namespace Formwork\Tests\Unit\Controllers;
 
 use Formwork\Controllers\FilesController;
 use Formwork\Http\FileResponse;
-use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
@@ -14,7 +13,6 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionProperty;
 
 #[CoversClass(FilesController::class)]
 #[UsesApplication]
@@ -84,10 +82,5 @@ final class FilesControllerTest extends TestCase
     private function controller(): FilesController
     {
         return $this->makeController(FilesController::class, ['files' => ['paths' => ['site' => $this->filesPath]]]);
-    }
-
-    private function fileOf(Response $response): string
-    {
-        return (string) (new ReflectionProperty($response, 'path'))->getValue($response);
     }
 }

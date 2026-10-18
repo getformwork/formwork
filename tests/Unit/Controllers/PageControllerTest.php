@@ -27,7 +27,6 @@ use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionProperty;
 
 #[CoversClass(PageController::class)]
 #[UsesApplication]
@@ -381,10 +380,5 @@ final class PageControllerTest extends TestCase
             $router,
             $site,
         );
-    }
-
-    private function fileOf(Response $response): string
-    {
-        return (string) (new ReflectionProperty($response, 'path'))->getValue($response);
     }
 }

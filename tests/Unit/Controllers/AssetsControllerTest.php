@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Controllers;
 use Formwork\Controllers\AssetsController;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
-use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
@@ -16,7 +15,6 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionProperty;
 
 #[CoversClass(AssetsController::class)]
 #[UsesApplication]
@@ -166,10 +164,5 @@ final class AssetsControllerTest extends TestCase
             'images'    => ['processPath' => $this->processPath],
             'templates' => ['path' => $this->templatesPath],
         ], $query, router: $router);
-    }
-
-    private function fileOf(Response $response): string
-    {
-        return (string) (new ReflectionProperty($response, 'path'))->getValue($response);
     }
 }

@@ -7,11 +7,10 @@ use Formwork\Cms\Site;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\PageCollectionFactory;
-use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
-use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -20,17 +19,17 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[UsesTempDirectory]
 final class PageCollectionTest extends TestCase
 {
+    use BuildsPageSites;
+
     private App $app;
 
     private Site $fixtureSite;
-
-    private int $temporarySiteCounter = 0;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->app = App::instance();
-        $this->fixtureSite = $this->temporarySite();
+        $this->fixtureSite = $this->siteFromFixture();
     }
 
     public function testFiltersExtractAndPaginationPreservePageCollectionType(): void
@@ -254,18 +253,5 @@ final class PageCollectionTest extends TestCase
         }
 
         return $this->app->getService(PageCollectionFactory::class)->make($data);
-    }
-
-    private function temporarySite(): Site
-    {
-        $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'page-collection-' . ++$this->temporarySiteCounter);
-        FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
-
-        return new Site(
-            ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
-            $this->app->config(),
-            $this->app->getService(PageFactory::class),
-            $this->app->getService(PageCollectionFactory::class),
-        );
     }
 }
