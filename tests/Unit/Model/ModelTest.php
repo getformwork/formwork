@@ -263,12 +263,8 @@ final class ModelTest extends TestCase
         $model = $this->model();
 
         $this->modelDeprecations(function () use ($model): void {
-            try {
-                $model->set('locked', 'changed');
-                $this->fail('A readonly model property cannot be set.');
-            } catch (BadMethodCallException $exception) {
-                $this->assertStringContainsString('$locked', $exception->getMessage());
-            }
+            $exception = $this->captureException(BadMethodCallException::class, static fn() => $model->set('locked', 'changed'));
+            $this->assertStringContainsString('$locked', $exception->getMessage());
         });
 
         $this->assertSame('locked-value', $model->locked);

@@ -308,12 +308,8 @@ final class SchemeTest extends TestCase
         $this->writeScheme('b', "extend: a\n");
 
         for ($i = 0; $i < 2; ++$i) {
-            try {
-                $this->schemes->get('a');
-                $this->fail('Circular extension should be rejected.');
-            } catch (RecursionException) {
-                $this->addToAssertionCount(1);
-            }
+            $this->captureException(RecursionException::class, fn() => $this->schemes->get('a'));
+            $this->addToAssertionCount(1);
         }
 
         $this->writeScheme('x', "title: X\n");
@@ -323,12 +319,8 @@ final class SchemeTest extends TestCase
 
     public function testFailedExtensionByUnknownIdDoesNotPoisonLaterAttempts(): void
     {
-        try {
-            $this->makeScheme('child', ['extend' => 'ghost']);
-            $this->fail('Unknown scheme should be rejected.');
-        } catch (InvalidArgumentException) {
-            $this->addToAssertionCount(1);
-        }
+        $this->captureException(InvalidArgumentException::class, fn() => $this->makeScheme('child', ['extend' => 'ghost']));
+        $this->addToAssertionCount(1);
 
         $this->writeScheme('ghost', "title: Ghost\n");
 

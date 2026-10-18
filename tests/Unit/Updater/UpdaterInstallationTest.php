@@ -99,12 +99,8 @@ final class UpdaterInstallationTest extends TestCase
     {
         $this->buildArchive(['../outside.txt' => 'payload']);
 
-        try {
-            $this->updater()->update(force: true);
-            $this->fail('The archive must be refused.');
-        } catch (\RuntimeException $exception) {
-            $this->assertStringContainsString('invalid destination', $exception->getMessage());
-        }
+        $exception = $this->captureException(\RuntimeException::class, fn() => $this->updater()->update(force: true));
+        $this->assertStringContainsString('invalid destination', $exception->getMessage());
 
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/outside.txt');
         $this->assertFileDoesNotExist(dirname(TestInstallation::rootPath()) . '/outside.txt');

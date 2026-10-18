@@ -267,11 +267,7 @@ final class UpdaterTest extends TestCase
         );
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->checkUpdates(force: true);
-        } catch (RuntimeException) {
-            // First attempt fails
-        }
+        $this->captureException(RuntimeException::class, static fn() => $updater->checkUpdates(force: true));
 
         $this->assertFalse($updater->checkUpdates(), 'The failed check must not be cached as a success');
     }
@@ -316,12 +312,8 @@ final class UpdaterTest extends TestCase
         });
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A checksum mismatch must abort the update.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('checksum', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('checksum', $exception->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile, 'The downloaded archive must be removed');
         $this->assertFileDoesNotExist($this->tempFile . '.lock', 'The lock must be released');
@@ -334,12 +326,8 @@ final class UpdaterTest extends TestCase
         $client->method('download')->willReturnCallback(static function (): void {});
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A missing archive must abort the update.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('Cannot download update archive', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('Cannot download update archive', $exception->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile . '.lock');
     }
@@ -350,12 +338,8 @@ final class UpdaterTest extends TestCase
         $client->method('download')->willThrowException(new RuntimeException('network down'));
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('The download failure should propagate.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('network down', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertSame('network down', $exception->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile . '.lock');
     }
@@ -367,12 +351,8 @@ final class UpdaterTest extends TestCase
         $client->expects($this->never())->method('download');
         $updater = $this->updater(['lockTimeout' => 300], $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A fresh lock must block concurrent updates.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('already in progress', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('already in progress', $exception->getMessage());
 
         $this->assertFileExists($this->tempFile . '.lock', 'The lock of the running update must be left alone');
     }
@@ -418,12 +398,8 @@ final class UpdaterTest extends TestCase
             $this->assertFileDoesNotExist($marker);
         }
 
-        try {
-            $this->call($this->updater(), 'extractRelease', $archive);
-            $this->fail(sprintf('The entry "%s" must be refused.', $entry));
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('invalid destination', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, fn() => $this->call($this->updater(), 'extractRelease', $archive));
+        $this->assertStringContainsString('invalid destination', $exception->getMessage());
 
         foreach ($this->markers as $marker) {
             $this->assertFileDoesNotExist($marker, 'Nothing may be written outside of the installation root');
@@ -434,12 +410,8 @@ final class UpdaterTest extends TestCase
     {
         FileSystem::write(TESTS_TMP_PATH . '/updater/fake.zip', 'definitely not a zip');
 
-        try {
-            $this->call($this->updater(), 'extractRelease', TESTS_TMP_PATH . '/updater/fake.zip');
-            $this->fail('Invalid archives must be refused.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('Cannot open update archive', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, fn() => $this->call($this->updater(), 'extractRelease', TESTS_TMP_PATH . '/updater/fake.zip'));
+        $this->assertStringContainsString('Cannot open update archive', $exception->getMessage());
     }
 
     // Helpers exercised through reflection

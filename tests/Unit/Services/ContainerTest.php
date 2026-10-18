@@ -152,12 +152,8 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define(AttributeDependentService::class);
 
-        try {
-            $container->get(AttributeDependentService::class);
-            $this->fail('The undefined service should have been reported.');
-        } catch (ServiceNotFoundException $exception) {
-            $this->assertStringContainsString('"selected"', $exception->getMessage());
-        }
+        $exception = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get(AttributeDependentService::class));
+        $this->assertStringContainsString('"selected"', $exception->getMessage());
     }
 
     public function testClosuresCanBeUsedAsFactoriesAndAreShared(): void
@@ -323,12 +319,8 @@ final class ContainerTest extends TestCase
             });
 
         foreach ([1, 2] as $attempt) {
-            try {
-                $container->get(ArrayOptionsService::class);
-                $this->fail('The parameter closure exception should have propagated.');
-            } catch (RuntimeException $exception) {
-                $this->assertSame('parameter failed', $exception->getMessage(), "Attempt $attempt");
-            }
+            $exception = $this->captureException(RuntimeException::class, static fn() => $container->get(ArrayOptionsService::class));
+            $this->assertSame('parameter failed', $exception->getMessage(), "Attempt $attempt");
         }
     }
 
@@ -467,10 +459,7 @@ final class ContainerTest extends TestCase
             throw new RuntimeException('eager failure');
         })->lazy(false);
 
-        try {
-            $container->resolveEagerServices();
-        } catch (RuntimeException) {
-        }
+        $this->captureException(RuntimeException::class, static fn() => $container->resolveEagerServices());
 
         $this->assertFalse($container->isResolved('failing'));
     }
@@ -542,11 +531,7 @@ final class ContainerTest extends TestCase
         $container->alias('a', 'b');
         $container->alias('b', 'c');
 
-        try {
-            $container->alias('c', 'a');
-            $this->fail('The circular alias should have been rejected.');
-        } catch (ContainerException) {
-        }
+        $this->captureException(ContainerException::class, static fn() => $container->alias('c', 'a'));
 
         $service = new SimpleService();
         $container->define('c', $service);
@@ -563,12 +548,8 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->has('alias'));
         $this->assertFalse($container->isResolved('alias'));
 
-        try {
-            $container->get('alias');
-            $this->fail('The undefined target should have been reported.');
-        } catch (ServiceNotFoundException $exception) {
-            $this->assertStringContainsString('"target"', $exception->getMessage());
-        }
+        $exception = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get('alias'));
+        $this->assertStringContainsString('"target"', $exception->getMessage());
 
         $service = new SimpleService();
         $container->define('target', $service);
@@ -592,12 +573,8 @@ final class ContainerTest extends TestCase
         $container->define('name', $own);
         $container->define('target', new SimpleService());
 
-        try {
-            $container->alias('name', 'target');
-            $this->fail('The alias would hide the defined service.');
-        } catch (ContainerException $exception) {
-            $this->assertStringContainsString('name', $exception->getMessage());
-        }
+        $exception = $this->captureException(ContainerException::class, static fn() => $container->alias('name', 'target'));
+        $this->assertStringContainsString('name', $exception->getMessage());
 
         $this->assertSame($own, $container->get('name'));
     }
@@ -608,11 +585,7 @@ final class ContainerTest extends TestCase
         $own = new SimpleService();
         $container->define('name', $own);
 
-        try {
-            $container->define('target', new SimpleService())->alias('name');
-            $this->fail('The alias would hide the defined service.');
-        } catch (ContainerException) {
-        }
+        $this->captureException(ContainerException::class, static fn() => $container->define('target', new SimpleService())->alias('name'));
 
         $this->assertSame($own, $container->get('name'));
     }
@@ -735,12 +708,8 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define('loaded')->loader(ThrowingLoader::class);
 
-        try {
-            $container->get('loaded');
-            $this->fail('The loader should have thrown.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('loader failed', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $container->get('loaded'));
+        $this->assertSame('loader failed', $exception->getMessage());
 
         $this->assertTrue($container->has('loaded'));
         $this->assertFalse($container->isResolved('loaded'));
@@ -789,10 +758,7 @@ final class ContainerTest extends TestCase
         $container->define('loaded')->loader(FailingResolutionAwareLoader::class);
         $container->define(FailingResolutionAwareLoader::class);
 
-        try {
-            $container->get('loaded');
-        } catch (RuntimeException) {
-        }
+        $this->captureException(RuntimeException::class, static fn() => $container->get('loaded'));
 
         $this->assertFalse($container->isResolved('loaded'));
         $this->assertSame(1, FailingResolutionAwareLoader::$loadCount);
@@ -846,11 +812,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define('factory', static fn() => 'not an object');
 
-        try {
-            $container->get('factory');
-            $this->fail('The invalid factory result should have been rejected.');
-        } catch (ContainerExceptionInterface) {
-        }
+        $this->captureException(ContainerExceptionInterface::class, static fn() => $container->get('factory'));
 
         $this->assertFalse($container->isResolved('factory'));
     }
@@ -891,11 +853,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define(DependentOnMissingService::class);
 
-        try {
-            $container->get(DependentOnMissingService::class);
-            $this->fail('The dependency should have been missing.');
-        } catch (ServiceNotFoundException) {
-        }
+        $this->captureException(ServiceNotFoundException::class, static fn() => $container->get(DependentOnMissingService::class));
 
         $this->assertTrue($container->has(DependentOnMissingService::class));
         $this->assertFalse($container->isResolved(DependentOnMissingService::class));
@@ -974,12 +932,8 @@ final class ContainerTest extends TestCase
         $define($container);
         $original = $container->get($name);
 
-        try {
-            $container->define($name, new SimpleService());
-            $this->fail('Redefining a resolved service should have been rejected.');
-        } catch (ContainerException $exception) {
-            $this->assertStringContainsString($name, $exception->getMessage());
-        }
+        $exception = $this->captureException(ContainerException::class, static fn() => $container->define($name, new SimpleService()));
+        $this->assertStringContainsString($name, $exception->getMessage());
 
         $this->assertTrue($container->isResolved($name));
         $this->assertSame($original, $container->get($name));
@@ -1011,11 +965,7 @@ final class ContainerTest extends TestCase
         $container->define(SimpleService::class)->alias('alias');
         $service = $container->get('alias');
 
-        try {
-            $container->define(SimpleService::class)->alias('other');
-            $this->fail('Redefining a resolved service should have been rejected.');
-        } catch (ContainerException) {
-        }
+        $this->captureException(ContainerException::class, static fn() => $container->define(SimpleService::class)->alias('other'));
 
         $this->assertSame($service, $container->get(SimpleService::class));
         $this->assertSame($service, $container->get('alias'));

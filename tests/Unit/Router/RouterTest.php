@@ -434,12 +434,7 @@ final class RouterTest extends TestCase
             ->action(static fn(): Response => new Response('matched'))
             ->where('id', ['42']);
 
-        try {
-            $router->dispatch();
-            $this->fail('The route should have been rejected by its constraint.');
-        } catch (RouteNotFoundException) {
-            // Expected
-        }
+        $this->captureException(RouteNotFoundException::class, static fn() => $router->dispatch());
 
         $this->assertNull($router->current());
         $this->assertSame([], $router->params()->toArray());

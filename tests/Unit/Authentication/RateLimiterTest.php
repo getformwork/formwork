@@ -67,12 +67,8 @@ final class RateLimiterTest extends TestCase
             $limiter->assertAllowed();
         }
 
-        try {
-            $limiter->assertAllowed();
-            $this->fail('The attempt exceeding the limit should have been rejected.');
-        } catch (RateLimitExceededException $exception) {
-            $this->assertSame(90, $exception->getResetTime());
-        }
+        $exception = $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
+        $this->assertSame(90, $exception->getResetTime());
 
         $this->assertTrue($limiter->hasReachedLimit());
     }
@@ -119,11 +115,7 @@ final class RateLimiterTest extends TestCase
         $first = $this->limiter(1, ip: '203.0.113.1');
         $first->assertAllowed();
 
-        try {
-            $first->assertAllowed();
-            $this->fail('The first address should be limited.');
-        } catch (RateLimitExceededException) {
-        }
+        $this->captureException(RateLimitExceededException::class, static fn() => $first->assertAllowed());
 
         $this->limiter(1, ip: '203.0.113.2')->assertAllowed();
         $this->assertTrue($this->limiter(1, ip: '203.0.113.1')->hasReachedLimit());
@@ -251,10 +243,7 @@ final class RateLimiterTest extends TestCase
         $limiter = $this->limiter(1);
         $limiter->assertAllowed();
 
-        try {
-            $limiter->assertAllowed();
-        } catch (RateLimitExceededException) {
-        }
+        $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
 
         $this->assertTrue($limiter->hasReachedLimit());
 

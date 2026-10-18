@@ -141,13 +141,9 @@ final class PluginsTest extends TestCase
                 }
             PHP));
 
-        try {
-            $this->plugins->initialize('badAutoload');
-            $this->fail('Autoload failure should be reported.');
-        } catch (PluginInitializationException $exception) {
-            $this->assertStringContainsString('Failed autoload for plugin "badAutoload"', $exception->getMessage());
-            $this->assertSame('cannot autoload', $exception->getPrevious()?->getMessage());
-        }
+        $exception = $this->captureException(PluginInitializationException::class, fn() => $this->plugins->initialize('badAutoload'));
+        $this->assertStringContainsString('Failed autoload for plugin "badAutoload"', $exception->getMessage());
+        $this->assertSame('cannot autoload', $exception->getPrevious()?->getMessage());
     }
 
     public function testOnlyEnabledPluginsAreInitialized(): void

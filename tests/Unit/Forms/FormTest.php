@@ -291,15 +291,10 @@ final class FormTest extends TestCase
             'photo' => $this->createField('photo', ['type' => 'upload', 'destination' => '/uploads']),
         ], $uploader);
 
-        try {
-            $form->processRequest($this->createRequest(
-                RequestMethod::POST,
-                files: ['photo' => $this->uploadData()],
-            ));
-            $this->fail('The upload exception should have propagated.');
-        } catch (RuntimeException) {
-            // Expected.
-        }
+        $this->captureException(RuntimeException::class, fn() => $form->processRequest($this->createRequest(
+            RequestMethod::POST,
+            files: ['photo' => $this->uploadData()],
+        )));
 
         $this->assertSame([], $form->uploadedFiles());
     }

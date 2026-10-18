@@ -232,12 +232,8 @@ final class ViewTest extends TestCase
     {
         $level = ob_get_level();
 
-        try {
-            $this->view('throws')->render();
-            $this->fail('The exception thrown by the view should have propagated.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('boom', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, fn() => $this->view('throws')->render());
+        $this->assertSame('boom', $exception->getMessage());
 
         $this->assertSame($level, ob_get_level());
     }

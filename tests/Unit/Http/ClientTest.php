@@ -213,12 +213,8 @@ final class ClientTest extends TestCase
 
     public function testInvalidUrisAreRejectedBeforeTouchingTheTransport(): void
     {
-        try {
-            $this->client()->fetch('not a uri');
-            $this->fail('An invalid URI was accepted.');
-        } catch (InvalidArgumentException $exception) {
-            $this->assertStringContainsString('invalid URI', $exception->getMessage());
-        }
+        $exception = $this->captureException(InvalidArgumentException::class, fn() => $this->client()->fetch('not a uri'));
+        $this->assertStringContainsString('invalid URI', $exception->getMessage());
 
         $this->assertSame([], $this->transport->requests);
     }
@@ -359,13 +355,9 @@ final class ClientTest extends TestCase
         $destination = TESTS_TMP_PATH . '/truncated.txt';
         $this->transport->respond($this->ok(['Content-Length: 10']), 'short');
 
-        try {
-            $this->client()->download('http://example.test/truncated', $destination);
-            $this->fail('An incomplete download was accepted.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('Incomplete download', $exception->getMessage());
-            $this->assertStringContainsString('expected 10 bytes, got 5', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, fn() => $this->client()->download('http://example.test/truncated', $destination));
+        $this->assertStringContainsString('Incomplete download', $exception->getMessage());
+        $this->assertStringContainsString('expected 10 bytes, got 5', $exception->getMessage());
 
         $this->assertSame([], iterator_to_array(FileSystem::listFiles(TESTS_TMP_PATH), false));
     }
@@ -376,11 +368,7 @@ final class ClientTest extends TestCase
         FileSystem::write($destination, 'previous');
         $this->transport->respond($this->ok(['Content-Length: 10']), 'short');
 
-        try {
-            $this->client()->download('http://example.test/truncated', $destination);
-        } catch (RuntimeException) {
-            // Expected
-        }
+        $this->captureException(RuntimeException::class, fn() => $this->client()->download('http://example.test/truncated', $destination));
 
         $this->assertSame('previous', FileSystem::read($destination));
         $this->assertSame(['existing.txt'], iterator_to_array(FileSystem::listFiles(TESTS_TMP_PATH), false));

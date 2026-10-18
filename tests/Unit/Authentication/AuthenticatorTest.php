@@ -106,10 +106,7 @@ final class AuthenticatorTest extends TestCase
     {
         $authenticator = $this->authenticator();
 
-        try {
-            $authenticator->login('alice', 'wrong');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
 
         $this->assertSame(1, $this->attempts());
 
@@ -127,10 +124,7 @@ final class AuthenticatorTest extends TestCase
 
     public function testFailedLoginsDoNotStartASession(): void
     {
-        try {
-            $this->authenticator()->login('alice', 'wrong-password');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
 
         $this->assertFalse($this->session->has(Authenticator::SESSION_LOGGED_USER_KEY));
         $this->assertSame(0, $this->session->regenerations);
@@ -153,10 +147,7 @@ final class AuthenticatorTest extends TestCase
     {
         $start = microtime(true);
 
-        try {
-            $this->authenticator()->login('alice', 'wrong-password');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
 
         $this->assertGreaterThanOrEqual(0.45, microtime(true) - $start);
     }
@@ -173,10 +164,7 @@ final class AuthenticatorTest extends TestCase
     {
         $authenticator = $this->authenticator(limit: 1);
 
-        try {
-            $authenticator->login('alice', 'wrong');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
 
         $this->expectException(RateLimitExceededException::class);
         $authenticator->login('alice', 'correct-password');

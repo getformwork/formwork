@@ -92,10 +92,7 @@ final class TokenStreamTest extends TestCase
     {
         $stream = $this->stream();
 
-        try {
-            $stream->expect(Token::TYPE_NUMBER);
-        } catch (SyntaxError) {
-        }
+        $this->captureException(SyntaxError::class, static fn() => $stream->expect(Token::TYPE_NUMBER));
 
         $this->assertSame('a', $stream->current()->value());
     }

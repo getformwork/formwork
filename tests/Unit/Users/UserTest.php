@@ -124,12 +124,8 @@ final class UserTest extends TestCase
     {
         $user = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('original-password')]);
 
-        try {
-            $user->set('password', str_repeat('a', 73));
-            $this->fail('Expected InvalidValueException was not thrown');
-        } catch (InvalidValueException $e) {
-            $this->assertSame('Password exceeds the maximum supported length', $e->getMessage());
-        }
+        $e = $this->captureException(InvalidValueException::class, static fn() => $user->set('password', str_repeat('a', 73)));
+        $this->assertSame('Password exceeds the maximum supported length', $e->getMessage());
 
         $this->assertTrue($user->verifyPassword('original-password'));
     }
@@ -147,10 +143,7 @@ final class UserTest extends TestCase
     {
         $user = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('original-password')]);
 
-        try {
-            $user->set('password', 'short');
-        } catch (InvalidValueException) {
-        }
+        $this->captureException(InvalidValueException::class, static fn() => $user->set('password', 'short'));
 
         $this->assertTrue($user->verifyPassword('original-password'));
     }
@@ -334,12 +327,8 @@ final class UserTest extends TestCase
         $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test'], $users);
         $bob = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
 
-        try {
-            $bob->set('email', 'alice@example.test');
-            $this->fail('The address is already used.');
-        } catch (TranslatedException $exception) {
-            $this->assertSame('panel.users.user.cannotChangeEmail.alreadyUsed', $exception->getLanguageString());
-        }
+        $exception = $this->captureException(TranslatedException::class, static fn() => $bob->set('email', 'alice@example.test'));
+        $this->assertSame('panel.users.user.cannotChangeEmail.alreadyUsed', $exception->getLanguageString());
 
         $this->assertSame('bob@example.test', $bob->data()['email']);
     }
@@ -378,10 +367,7 @@ final class UserTest extends TestCase
     {
         $user = $this->makeUser(['username' => 'alice', 'role' => 'editor']);
 
-        try {
-            $user->set('role', 'superuser');
-        } catch (InvalidValueException) {
-        }
+        $this->captureException(InvalidValueException::class, static fn() => $user->set('role', 'superuser'));
 
         $this->assertSame('editor', $user->role()->id());
     }

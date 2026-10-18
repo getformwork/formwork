@@ -140,12 +140,8 @@ final class BackupperTest extends TestCase
     #[DataProvider('invalidNames')]
     public function testInvalidNamesAreRejectedBeforeAnythingIsWritten(string $name): void
     {
-        try {
-            $this->backupper()->backup($name, 'example.com');
-            $this->fail('The backup name should have been rejected.');
-        } catch (UnexpectedValueException $exception) {
-            $this->assertStringContainsString('invalid characters', $exception->getMessage());
-        }
+        $exception = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
+        $this->assertStringContainsString('invalid characters', $exception->getMessage());
 
         $this->assertSame([], $this->archives());
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/escape-' . date('Ymd') . '.zip');
@@ -191,11 +187,7 @@ final class BackupperTest extends TestCase
     {
         $before = ini_get('max_execution_time');
 
-        try {
-            $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com');
-        } catch (UnexpectedValueException) {
-            // Expected
-        }
+        $this->captureException(UnexpectedValueException::class, fn() => $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com'));
 
         $this->assertSame($before, ini_get('max_execution_time'));
     }

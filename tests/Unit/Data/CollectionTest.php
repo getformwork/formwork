@@ -1200,12 +1200,7 @@ final class CollectionTest extends TestCase
         $collection = Collection::of('string', ['first'], mutable: true);
         $before = $collection->toArray();
 
-        try {
-            $collection->add(123);
-            $this->fail('The invalid value should have been rejected.');
-        } catch (LogicException) {
-            // Expected
-        }
+        $this->captureException(LogicException::class, static fn() => $collection->add(123));
 
         $this->assertSame($before, $collection->toArray());
     }

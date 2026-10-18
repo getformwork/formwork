@@ -162,12 +162,8 @@ final class EventDispatcherTest extends TestCase
             $laterCalled = true;
         });
 
-        try {
-            $dispatcher->dispatch(new Event('event', []));
-            $this->fail('The exception thrown by the listener should have propagated.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('listener failed', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $dispatcher->dispatch(new Event('event', [])));
+        $this->assertSame('listener failed', $exception->getMessage());
 
         $this->assertFalse($laterCalled);
     }

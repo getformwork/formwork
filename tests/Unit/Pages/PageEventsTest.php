@@ -174,12 +174,8 @@ final class PageEventsTest extends TestCase
             }
         });
 
-        try {
-            $page->save();
-            $this->fail('The before-save exception should have propagated.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('blocked', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $page->save());
+        $this->assertSame('blocked', $exception->getMessage());
 
         $page->reload();
         $this->assertSame('About', $page->title());
@@ -196,12 +192,8 @@ final class PageEventsTest extends TestCase
             }
         });
 
-        try {
-            $page->delete();
-            $this->fail('The before-delete exception should have propagated.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('blocked', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $page->delete());
+        $this->assertSame('blocked', $exception->getMessage());
 
         $this->assertDirectoryExists((string) $path);
     }
@@ -231,12 +223,8 @@ final class PageEventsTest extends TestCase
             }
         });
 
-        try {
-            $page->save();
-            $this->fail('The after-save exception should have propagated.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('after failure', $exception->getMessage());
-        }
+        $exception = $this->captureException(RuntimeException::class, static fn() => $page->save());
+        $this->assertSame('after failure', $exception->getMessage());
 
         $page->reload();
         $this->assertSame('Persisted', $page->title());

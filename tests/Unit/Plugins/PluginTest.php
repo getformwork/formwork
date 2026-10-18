@@ -234,13 +234,9 @@ final class PluginTest extends TestCase
     {
         $plugin = $this->makePlugin('init-broken', '', ['plugin.yaml' => "unknown: yes\n"]);
 
-        try {
-            $plugin->initialize();
-            $this->fail('Initialization should have failed.');
-        } catch (PluginInitializationException $exception) {
-            $this->assertStringContainsString('initBroken', $exception->getMessage());
-            $this->assertInstanceOf(UnexpectedValueException::class, $exception->getPrevious());
-        }
+        $exception = $this->captureException(PluginInitializationException::class, static fn() => $plugin->initialize());
+        $this->assertStringContainsString('initBroken', $exception->getMessage());
+        $this->assertInstanceOf(UnexpectedValueException::class, $exception->getPrevious());
 
         $this->assertFalse($plugin->isInitialized());
     }

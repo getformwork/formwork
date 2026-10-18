@@ -86,13 +86,9 @@ abstract class CacheTestCase extends TestCase
 
     public function testInvalidNamespaceExceptionsArePsrExceptions(): void
     {
-        try {
-            $this->createCache('Invalid');
-            $this->fail('The namespace should have been rejected.');
-        } catch (InvalidNamespaceException $exception) {
-            $this->assertInstanceOf(PsrInvalidArgumentException::class, $exception);
-            $this->assertStringContainsString('"Invalid"', $exception->getMessage());
-        }
+        $exception = $this->captureException(InvalidNamespaceException::class, fn() => $this->createCache('Invalid'));
+        $this->assertInstanceOf(PsrInvalidArgumentException::class, $exception);
+        $this->assertStringContainsString('"Invalid"', $exception->getMessage());
     }
 
     public function testMissingItemsReturnTheDefault(): void
@@ -261,10 +257,7 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->createCache();
         $cache->set('valid', 'value');
 
-        try {
-            $cache->set('in/valid', 'other');
-        } catch (InvalidKeyException) {
-        }
+        $this->captureException(InvalidKeyException::class, static fn() => $cache->set('in/valid', 'other'));
 
         $this->assertSame(['valid' => 'value'], $cache->getMultiple(['valid']));
         $this->assertSame(1, $cache->count());

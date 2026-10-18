@@ -200,12 +200,7 @@ final class PageTest extends TestCase
         $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
-        try {
-            $page->set('language', 'fr');
-            $this->fail('The invalid language should have been rejected.');
-        } catch (InvalidValueException) {
-            // Expected.
-        }
+        $this->captureException(InvalidValueException::class, static fn() => $page->set('language', 'fr'));
 
         $this->assertSame('it', $page->language()?->code());
         $this->assertSame('Italiano', $page->title());
@@ -301,12 +296,8 @@ final class PageTest extends TestCase
     {
         $page = $this->temporaryPage('about');
 
-        try {
-            $page->set('slug', $slug);
-            $this->fail(sprintf('Slug "%s" should have been rejected', $slug));
-        } catch (InvalidValueException) {
-            $this->assertSame('about', $page->slug());
-        }
+        $this->captureException(InvalidValueException::class, static fn() => $page->set('slug', $slug));
+        $this->assertSame('about', $page->slug());
     }
 
     /**

@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use ReflectionClass;
+use Throwable;
 
 class TestCase extends BaseTestCase
 {
@@ -38,6 +39,29 @@ class TestCase extends BaseTestCase
         if ($this->uses(UsesTempDirectory::class) && FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
             FileSystem::deleteDirectory(TESTS_TMP_PATH, recursive: true);
         }
+    }
+
+    /**
+     * Run a callback that must throw an exception of the given class and return it
+     *
+     * @template T of Throwable
+     *
+     * @param class-string<T> $class
+     *
+     * @return T
+     */
+    protected function captureException(string $class, callable $callback): Throwable
+    {
+        try {
+            $callback();
+        } catch (Throwable $exception) {
+            if (!$exception instanceof $class) {
+                throw $exception;
+            }
+            return $exception;
+        }
+
+        $this->fail(sprintf('Failed asserting that exception of type "%s" is thrown.', $class));
     }
 
     /**

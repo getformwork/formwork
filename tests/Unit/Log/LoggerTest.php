@@ -134,11 +134,7 @@ final class LoggerTest extends TestCase
         $handler = new RecordingHandler();
         $logger->addHandler($handler);
 
-        try {
-            $logger->log($level, 'message');
-            $this->fail('The level should have been rejected.');
-        } catch (InvalidArgumentException) {
-        }
+        $this->captureException(InvalidArgumentException::class, static fn() => $logger->log($level, 'message'));
 
         $this->assertSame([], $handler->records);
     }

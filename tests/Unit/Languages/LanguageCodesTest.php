@@ -44,12 +44,8 @@ final class LanguageCodesTest extends TestCase
     {
         $this->assertFalse(LanguageCodes::hasCode($code));
 
-        try {
-            LanguageCodes::codeToName($code);
-            $this->fail('codeToName() should reject the code.');
-        } catch (InvalidArgumentException $exception) {
-            $this->assertStringContainsString(sprintf('Invalid language code "%s"', $code), $exception->getMessage());
-        }
+        $exception = $this->captureException(InvalidArgumentException::class, static fn() => LanguageCodes::codeToName($code));
+        $this->assertStringContainsString(sprintf('Invalid language code "%s"', $code), $exception->getMessage());
 
         $this->expectException(InvalidArgumentException::class);
         LanguageCodes::codeToNativeName($code);

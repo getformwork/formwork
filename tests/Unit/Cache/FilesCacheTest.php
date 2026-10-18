@@ -142,11 +142,7 @@ final class FilesCacheTest extends CacheTestCase
     {
         $cache = $this->createCache();
 
-        try {
-            $cache->set('closure', static fn() => null);
-            $this->fail('Closures cannot be cached.');
-        } catch (UnexpectedValueException) {
-        }
+        $this->captureException(UnexpectedValueException::class, static fn() => $cache->set('closure', static fn() => null));
 
         $this->assertFalse($cache->has('closure'));
         $this->assertSame(0, $cache->count());
@@ -157,10 +153,7 @@ final class FilesCacheTest extends CacheTestCase
         $cache = $this->createCache();
         $cache->set('key', 'previous');
 
-        try {
-            $cache->set('key', static fn() => null);
-        } catch (UnexpectedValueException) {
-        }
+        $this->captureException(UnexpectedValueException::class, static fn() => $cache->set('key', static fn() => null));
 
         $this->assertSame('previous', $cache->get('key'));
     }

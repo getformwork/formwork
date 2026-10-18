@@ -961,12 +961,8 @@ final class FileSystemTest extends TestCase
         foreach (['file_put_contents', 'rename'] as $function) {
             FileSystemFixture::disable($function);
 
-            try {
-                FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!');
-                $this->fail('Expected the write to fail');
-            } catch (FileSystemException) {
-                $this->assertSame([], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
-            }
+            $this->captureException(FileSystemException::class, static fn() => FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!'));
+            $this->assertSame([], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
 
             FileSystemFixture::enable($function);
         }
