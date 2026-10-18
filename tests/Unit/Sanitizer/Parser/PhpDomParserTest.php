@@ -122,6 +122,33 @@ final class PhpDomParserTest extends TestCase
         $this->assertIsString((new PhpDomParser())->serialize());
     }
 
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function markupWithProlog(): iterable
+    {
+        yield 'xml declaration' => ['<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg"/>'];
+        yield 'xml declaration and newline' => ["<?xml version=\"1.0\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\"/>"];
+        yield 'byte order mark' => ["\xEF\xBB\xBF<?xml version=\"1.0\"?><svg xmlns=\"http://www.w3.org/2000/svg\"/>"];
+        yield 'public doctype' => ['<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"/>'];
+        yield 'comments and processing instructions' => ['<?xml version="1.0"?><!-- Generator: Editor --><?xml-stylesheet href="style.css"?><svg xmlns="http://www.w3.org/2000/svg"/>'];
+    }
+
+    #[DataProvider('markupWithProlog')]
+    public function testTheDocumentPrologIsRemoved(string $markup): void
+    {
+        $parser = new PhpDomParser();
+        $fragment = $parser->parse($markup);
+
+        $this->assertNotNull($fragment);
+        $this->assertSame('<svg xmlns="http://www.w3.org/2000/svg"/>', $parser->serialize($fragment));
+    }
+
+    public function testEntitiesDefinedInTheRemovedDoctypeMakeTheMarkupInvalid(): void
+    {
+        $this->assertNull((new PhpDomParser())->parse('<!DOCTYPE svg [<!ENTITY x "y">]><svg xmlns="http://www.w3.org/2000/svg">&x;</svg>'));
+    }
+
     public function testSpecialCharactersAreEscapedWhenSerializing(): void
     {
         $parser = new PhpDomParser();
