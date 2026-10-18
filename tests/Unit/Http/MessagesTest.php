@@ -74,7 +74,7 @@ final class MessagesTest extends TestCase
         $this->assertSame([], $data);
     }
 
-    public function testRemoveAndRemoveAllDiscardMessages(): void
+    public function testRemoveDiscardsMessagesOfAType(): void
     {
         $data = [];
         $messages = new Messages($data);
@@ -83,6 +83,14 @@ final class MessagesTest extends TestCase
 
         $messages->remove(MessageType::Info);
         $this->assertSame(['error' => ['bad']], $data);
+    }
+
+    public function testRemoveAllDiscardsEveryMessage(): void
+    {
+        $data = [];
+        $messages = new Messages($data);
+        $messages->add(MessageType::Info, 'hello');
+        $messages->add(MessageType::Error, 'bad');
 
         $messages->removeAll();
         $this->assertSame([], $data);

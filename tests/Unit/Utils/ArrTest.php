@@ -16,6 +16,7 @@ final class ArrTest extends TestCase
 {
     public function testGet(): void
     {
+        /** @var array<string, mixed> $data */
         $data = [
             'user' => [
                 'name'    => 'Sempronius',
@@ -122,9 +123,14 @@ final class ArrTest extends TestCase
             'app.cache.duration' => 3600,
         ];
 
-        $this->assertSame($expected, Arr::dot($data));
+        /** @var array<string, mixed> $actual */
+        $actual = Arr::dot($data);
+        $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @param list<int|list<int|list<int|list<int>>>> $expected
+     */
     #[DataProvider('flattenDepthProvider')]
     public function testFlattenStopsAtTheGivenDepth(int $depth, array $expected): void
     {
@@ -132,7 +138,7 @@ final class ArrTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{int, array<mixed>}>
+     * @return iterable<string, array{int, list<int|list<int|list<int|list<int>>>>}>
      */
     public static function flattenDepthProvider(): iterable
     {
@@ -167,7 +173,9 @@ final class ArrTest extends TestCase
             'app.cache.duration' => 3600,
         ];
 
-        $this->assertSame($data, Arr::undot($dot));
+        /** @var array<array-key, mixed> $actual */
+        $actual = Arr::undot($dot);
+        $this->assertSame($data, $actual);
     }
 
     public function testPull(): void
@@ -1394,21 +1402,23 @@ final class ArrTest extends TestCase
             'dark',
         ];
 
-        $this->assertSame($expected, Arr::sort($data, sortBy: ['roles' => 0, 'permissions' => 1, 'cache' => 2, 'notifications' => 3, 'theme' => 4], preserveKeys: false));
+        /** @var array<array-key, mixed> $actual */
+        $actual = Arr::sort($data, sortBy: ['roles' => 0, 'permissions' => 1, 'cache' => 2, 'notifications' => 3, 'theme' => 4], preserveKeys: false);
+        $this->assertSame($expected, $actual);
     }
 
     public function testSortThrowsOnInvalidDirection(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('only accepts SORT_ASC and SORT_DESC as "direction" option');
-        Arr::sort([], direction: 123);
+        Arr::sort([], direction: $this->unchecked(123));
     }
 
     public function testSortThrowsOnInvalidType(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('only accepts SORT_REGULAR, SORT_NUMERIC, SORT_STRING and SORT_NATURAL as "type" option');
-        Arr::sort([], type: 123);
+        Arr::sort([], type: $this->unchecked(123));
     }
 
     public function testSortThrowsOnInvalidSortByCount(): void
@@ -1511,6 +1521,7 @@ final class ArrTest extends TestCase
 
     public function testLiteralDottedKeysTakePrecedenceOverNestedPaths(): void
     {
+        /** @var array<string, mixed> $array */
         $array = [
             'user.name' => 'literal',
             'user'      => ['name' => 'nested'],

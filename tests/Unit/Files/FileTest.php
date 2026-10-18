@@ -24,9 +24,7 @@ use ZipArchive;
 #[UsesTempDirectory]
 final class FileTest extends TestCase
 {
-    protected function setUp(): void
-    {
-    }
+    protected function setUp(): void {}
 
     public function testPathNameExtensionAndStringConversionUseTheGivenPath(): void
     {
@@ -219,11 +217,11 @@ final class FileTest extends TestCase
         $meta = $path . '.meta.yaml';
         FileSystem::write($path, 'hello');
 
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'caption' => $this->app()->getService(FieldFactory::class)->make('caption', ['type' => 'text', 'default' => 'untitled']),
         ]);
         $scheme = $this->createStub(Scheme::class);
-        $scheme->method('fields')->willReturn($fields);
+        $scheme->method('fields')->willReturn($fieldCollection);
 
         $file = new File($path);
         $file->setScheme($scheme);
@@ -241,10 +239,10 @@ final class FileTest extends TestCase
     private static function zipContent(): string
     {
         $path = (string) tempnam(sys_get_temp_dir(), 'zip');
-        $zip = new ZipArchive();
-        $zip->open($path, ZipArchive::OVERWRITE);
-        $zip->addFromString('entry.txt', 'content');
-        $zip->close();
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($path, ZipArchive::OVERWRITE);
+        $zipArchive->addFromString('entry.txt', 'content');
+        $zipArchive->close();
         $content = (string) file_get_contents($path);
         unlink($path);
 

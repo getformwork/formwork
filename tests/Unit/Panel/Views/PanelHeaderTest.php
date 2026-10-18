@@ -21,23 +21,18 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[UsesTempDirectory]
 final class PanelHeaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     #[DataProvider('permissionProvider')]
     public function testSiteTitleIsEscapedInThePanelHeader(bool $canEditSite): void
     {
         $title = '</span><script>alert(1)</script><img src=x onerror=alert(2)>';
 
         $document = $this->document($this->renderHeader($title, $canEditSite));
-        $xpath = new DOMXPath($document);
+        $domxPath = new DOMXPath($document);
 
-        $this->assertSame(0, $xpath->query('//script')->length, 'Script injected');
-        $this->assertSame(0, $xpath->query('//img')->length, 'Image injected');
-        $this->assertSame(0, $xpath->query('//@*[starts-with(name(), "on")]')->length, 'Event handler injected');
-        $this->assertStringContainsString($title, (string) $document->textContent);
+        $this->assertSame(0.0, $domxPath->evaluate('count(//script)'), 'Script injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//img)'), 'Image injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), 'Event handler injected');
+        $this->assertStringContainsString($title, $document->textContent);
     }
 
     /**
@@ -53,16 +48,16 @@ final class PanelHeaderTest extends TestCase
     {
         $document = $this->document($this->renderHeader('Tom & "Jerry"', true));
 
-        $this->assertStringContainsString('Tom & "Jerry"', (string) $document->textContent);
+        $this->assertStringContainsString('Tom & "Jerry"', $document->textContent);
     }
 
     public function testOptionsLinkIsOnlyRenderedWithThePermission(): void
     {
-        $with = $this->document($this->renderHeader('Site', true));
+        $domDocument = $this->document($this->renderHeader('Site', true));
         $without = $this->document($this->renderHeader('Site', false));
 
-        $this->assertSame(1, (new DOMXPath($with))->query('//a[@href="/panel/options/site/"]')->length);
-        $this->assertSame(0, (new DOMXPath($without))->query('//a[@href="/panel/options/site/"]')->length);
+        $this->assertSame(1.0, (new DOMXPath($domDocument))->evaluate('count(//a[@href="/panel/options/site/"])'));
+        $this->assertSame(0.0, (new DOMXPath($without))->evaluate('count(//a[@href="/panel/options/site/"])'));
     }
 
     private function renderHeader(string $siteTitle, bool $canEditSite): string
@@ -127,9 +122,9 @@ final class PanelHeaderTest extends TestCase
 
     private function document(string $html): DOMDocument
     {
-        $document = new DOMDocument();
-        $document->loadHTML('<!DOCTYPE html><html><body>' . $html . '</body></html>', LIBXML_NOERROR);
+        $domDocument = new DOMDocument();
+        $domDocument->loadHTML('<!DOCTYPE html><html><body>' . $html . '</body></html>', LIBXML_NOERROR);
 
-        return $document;
+        return $domDocument;
     }
 }

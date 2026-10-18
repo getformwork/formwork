@@ -19,21 +19,21 @@ final class CompiledRouteTest extends TestCase
 {
     public function testAccessorsExposeCompiledRouteData(): void
     {
-        $compiled = new CompiledRoute('/users/{id}', '~^/users/([^/]+)$~', ['id']);
+        $compiledRoute = new CompiledRoute('/users/{id}', '~^/users/([^/]+)$~', ['id']);
 
-        $this->assertSame('/users/{id}', $compiled->path());
-        $this->assertSame('~^/users/([^/]+)$~', $compiled->regex());
-        $this->assertSame(['id'], $compiled->params());
+        $this->assertSame('/users/{id}', $compiledRoute->path());
+        $this->assertSame('~^/users/([^/]+)$~', $compiledRoute->regex());
+        $this->assertSame(['id'], $compiledRoute->params());
     }
 
     public function testCompilationNormalizesThePathAndListsParametersInOrder(): void
     {
         $route = (new Route('user', 'users/{id:digits}/{tab}?'))->prefix('admin');
 
-        $compiled = $this->compile($route);
+        $compiledRoute = $this->compile($route);
 
-        $this->assertSame('/admin/users/{id:digits}/{tab}?/', $compiled->path());
-        $this->assertSame(['id', 'tab'], $compiled->params());
+        $this->assertSame('/admin/users/{id:digits}/{tab}?/', $compiledRoute->path());
+        $this->assertSame(['id', 'tab'], $compiledRoute->params());
     }
 
     public function testCompilationRejectsParametersWithoutSeparator(): void
@@ -56,9 +56,9 @@ final class CompiledRouteTest extends TestCase
     #[DataProvider('compiledRegexProvider')]
     public function testCompiledRegexMatchesTheWholePathOnly(string $path, string $subject, bool $matches, array $expectedGroups = []): void
     {
-        $compiled = $this->compile(new Route('test', $path));
+        $compiledRoute = $this->compile(new Route('test', $path));
 
-        $this->assertSame($matches, (bool) preg_match($compiled->regex(), $subject, $groups, PREG_UNMATCHED_AS_NULL));
+        $this->assertSame($matches, (bool) preg_match($compiledRoute->regex(), $subject, $groups, PREG_UNMATCHED_AS_NULL));
 
         if ($matches) {
             $this->assertSame($expectedGroups, array_slice($groups, 1));

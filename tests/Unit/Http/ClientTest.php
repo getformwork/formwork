@@ -30,9 +30,9 @@ final class ClientTest extends TestCase
 
     public function testDefaultsCanBeOverriddenAndMergedRecursively(): void
     {
-        $client = new TestClient(['timeout' => 3, 'headers' => ['X-Test' => 'value'], 'redirects' => ['limit' => 2]]);
+        $testClient = new TestClient(['timeout' => 3, 'headers' => ['X-Test' => 'value'], 'redirects' => ['limit' => 2]]);
 
-        $options = $client->options();
+        $options = $testClient->options();
 
         $this->assertSame(3, $options['timeout']);
         $this->assertSame('value', $options['headers']['X-Test']);
@@ -40,7 +40,7 @@ final class ClientTest extends TestCase
         $this->assertSame('gzip', $options['headers']['Accept-Encoding']);
         $this->assertSame(['follow' => true, 'limit' => 2], $options['redirects']);
         $this->assertSame(['verify' => true, 'cabundle' => null], $options['ssl']);
-        $this->assertSame(-1, $client->defaults()['timeout']);
+        $this->assertSame(-1, $testClient->defaults()['timeout']);
     }
 
     public function testResponseHeaderParserHandlesRedirectChains(): void
@@ -73,11 +73,11 @@ final class ClientTest extends TestCase
     {
         $this->transport->respond($this->ok(['X-Custom: value', 'Content-Length: 5']), 'hello');
 
-        $headers = $this->client()->fetchHeaders('http://example.test/ok');
+        $responseHeaders = $this->client()->fetchHeaders('http://example.test/ok');
 
-        $this->assertInstanceOf(ResponseHeaders::class, $headers);
-        $this->assertSame('value', $headers->get('X-Custom'));
-        $this->assertSame('5', $headers->get('Content-Length'));
+        $this->assertInstanceOf(ResponseHeaders::class, $responseHeaders);
+        $this->assertSame('value', $responseHeaders->get('X-Custom'));
+        $this->assertSame('5', $responseHeaders->get('Content-Length'));
         $this->assertSame('HEAD', $this->transport->lastHttpOptions()['method']);
     }
 
@@ -213,8 +213,8 @@ final class ClientTest extends TestCase
 
     public function testInvalidUrisAreRejectedBeforeTouchingTheTransport(): void
     {
-        $exception = $this->captureException(InvalidArgumentException::class, fn() => $this->client()->fetch('not a uri'));
-        $this->assertStringContainsString('invalid URI', $exception->getMessage());
+        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => $this->client()->fetch('not a uri'));
+        $this->assertStringContainsString('invalid URI', $invalidArgumentException->getMessage());
 
         $this->assertSame([], $this->transport->requests);
     }
@@ -264,10 +264,10 @@ final class ClientTest extends TestCase
 
     public function testHeaderNamesAreNormalizedAndCompactedForTheRequest(): void
     {
-        $client = new TestClient();
+        $testClient = new TestClient();
 
-        $this->assertSame(['X-Test' => 'value', 'Content-Type' => 'text/plain'], $client->normalize(['x-test' => 'value', 'CONTENT-TYPE' => 'text/plain']));
-        $this->assertSame(['X-Test: one', 'X-Test: two', 'Accept: text/html'], $client->compact(['X-Test' => ['one', 'two'], ' Accept ' => ' text/html ']));
+        $this->assertSame(['X-Test' => 'value', 'Content-Type' => 'text/plain'], $testClient->normalize(['x-test' => 'value', 'CONTENT-TYPE' => 'text/plain']));
+        $this->assertSame(['X-Test: one', 'X-Test: two', 'Accept: text/html'], $testClient->compact(['X-Test' => ['one', 'two'], ' Accept ' => ' text/html ']));
     }
 
     public function testContextOptionsReflectTheRequestOptions(): void
@@ -301,10 +301,10 @@ final class ClientTest extends TestCase
     {
         FileSystem::write(TESTS_TMP_PATH . '/bundle.pem', 'bundle');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/certificates');
-        $client = new TestClient();
+        $testClient = new TestClient();
 
-        $file = $client->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/bundle.pem'));
-        $directory = $client->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/certificates'));
+        $file = $testClient->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/bundle.pem'));
+        $directory = $testClient->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/certificates'));
 
         $this->assertSame(TESTS_TMP_PATH . '/bundle.pem', $file['ssl']['cafile']);
         $this->assertArrayNotHasKey('capath', $file['ssl']);
@@ -355,9 +355,9 @@ final class ClientTest extends TestCase
         $destination = TESTS_TMP_PATH . '/truncated.txt';
         $this->transport->respond($this->ok(['Content-Length: 10']), 'short');
 
-        $exception = $this->captureException(RuntimeException::class, fn() => $this->client()->download('http://example.test/truncated', $destination));
-        $this->assertStringContainsString('Incomplete download', $exception->getMessage());
-        $this->assertStringContainsString('expected 10 bytes, got 5', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, fn() => $this->client()->download('http://example.test/truncated', $destination));
+        $this->assertStringContainsString('Incomplete download', $runtimeException->getMessage());
+        $this->assertStringContainsString('expected 10 bytes, got 5', $runtimeException->getMessage());
 
         $this->assertSame([], iterator_to_array(FileSystem::listFiles(TESTS_TMP_PATH), false));
     }
@@ -376,9 +376,9 @@ final class ClientTest extends TestCase
 
     public function testTheDefaultTransportUsesPhpStreams(): void
     {
-        $client = new TestClient();
+        $testClient = new TestClient();
 
-        $this->assertInstanceOf(StreamHttpTransport::class, $client->transport());
+        $this->assertInstanceOf(StreamHttpTransport::class, $testClient->transport());
     }
 
     /**
@@ -399,6 +399,9 @@ final class ClientTest extends TestCase
         return new Client($options, $this->transport);
     }
 
+    /**
+     * @return array{version: float, method: string, headers: list<string>, content: string, redirects: array{follow: bool, limit: int}, timeout: int, ssl: array{verify: bool, cabundle: string}}
+     */
     private function requestOptions(string $cabundle): array
     {
         return [

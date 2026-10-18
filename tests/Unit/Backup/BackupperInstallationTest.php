@@ -81,14 +81,14 @@ final class BackupperInstallationTest extends TestCase
      */
     private function entries(string $archive): array
     {
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($archive));
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($archive));
 
         $entries = [];
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $entries[] = (string) $zip->getNameIndex($i);
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $entries[] = (string) $zipArchive->getNameIndex($i);
         }
-        $zip->close();
+        $zipArchive->close();
 
         return $entries;
     }

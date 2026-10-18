@@ -88,7 +88,7 @@ final class PluginsServiceLoaderTest extends TestCase
     {
         $this->makePluginDirectory('loader-lazy');
 
-        $this->assertFalse($this->resolve()->get('loaderLazy')->isInitialized());
+        $this->assertFalse($this->resolve()->get('loaderLazy')?->isInitialized());
     }
 
     private function resolve(bool $enabled = true, ?string $path = null): Plugins

@@ -13,7 +13,7 @@ final class DataArrayableTest extends TestCase
     public function testToArray(): void
     {
         $data = ['key1' => 'value1', 'key2' => 'value2'];
-        $fixture = new DataArrayableFixture($data);
-        $this->assertSame($data, $fixture->toArray());
+        $dataArrayableFixture = new DataArrayableFixture($data);
+        $this->assertSame($data, $dataArrayableFixture->toArray());
     }
 }

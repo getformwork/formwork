@@ -34,9 +34,9 @@ final class ModelTest extends TestCase
     {
         $scheme = $this->createMock(Scheme::class);
         $scheme->expects($this->once())->method('fields')->willReturn(new FieldCollection());
-        $model = new ModelFixture([], $scheme);
+        $modelFixture = new ModelFixture([], $scheme);
 
-        $this->assertSame($model->fields(), $model->fields());
+        $this->assertSame($modelFixture->fields(), $modelFixture->fields());
     }
 
     public function testFieldsKnowTheirModelAndReceiveTheData(): void
@@ -44,7 +44,7 @@ final class ModelTest extends TestCase
         $model = $this->model(['title' => 'Hello']);
 
         $this->assertSame($model, $model->fields()->model());
-        $this->assertSame('Hello', $model->fields()->get('title')->value());
+        $this->assertSame('Hello', $model->fields()->get('title')?->value());
     }
 
     public function testDataIsReturned(): void
@@ -122,17 +122,17 @@ final class ModelTest extends TestCase
 
     public function testUninitializedPropertyGetterReturnsTheDefault(): void
     {
-        $model = new UninitializedModelFixture([], $this->scheme());
+        $uninitializedModelFixture = new UninitializedModelFixture([], $this->scheme());
 
-        $this->assertTrue($model->has('uninitialized'));
-        $this->assertSame('fallback', $model->get('uninitialized', 'fallback'));
+        $this->assertTrue($uninitializedModelFixture->has('uninitialized'));
+        $this->assertSame('fallback', $uninitializedModelFixture->get('uninitialized', 'fallback'));
     }
 
     public function testToArraySurvivesUninitializedPropertyGetters(): void
     {
-        $model = new UninitializedModelFixture(['title' => 'Hello'], $this->scheme());
+        $uninitializedModelFixture = new UninitializedModelFixture(['title' => 'Hello'], $this->scheme());
 
-        $array = $this->exportedWithoutDeprecations($model);
+        $array = $this->exportedWithoutDeprecations($uninitializedModelFixture);
 
         $this->assertSame('Hello', $array['title']);
     }
@@ -263,8 +263,8 @@ final class ModelTest extends TestCase
         $model = $this->model();
 
         $this->modelDeprecations(function () use ($model): void {
-            $exception = $this->captureException(BadMethodCallException::class, static fn() => $model->set('locked', 'changed'));
-            $this->assertStringContainsString('$locked', $exception->getMessage());
+            $badMethodCallException = $this->captureException(BadMethodCallException::class, static fn() => $model->set('locked', 'changed'));
+            $this->assertStringContainsString('$locked', $badMethodCallException->getMessage());
         });
 
         $this->assertSame('locked-value', $model->locked);
@@ -319,18 +319,18 @@ final class ModelTest extends TestCase
         $model->set('title', 'New');
 
         $this->assertSame('New', $model->get('title'));
-        $this->assertSame('New', $model->fields()->get('title')->value());
+        $this->assertSame('New', $model->fields()->get('title')?->value());
         $this->assertSame('New', $model->data()['title']);
     }
 
     public function testSetStoresTheValueNormalizedByFieldValidation(): void
     {
-        $model = $this->trimmingModel();
-        $model->fields();
+        $modelFixture = $this->trimmingModel();
+        $modelFixture->fields();
 
-        $model->set('title', '  padded  ');
+        $modelFixture->set('title', '  padded  ');
 
-        $this->assertSame('padded', $model->data()['title']);
+        $this->assertSame('padded', $modelFixture->data()['title']);
     }
 
     // public function testSetNormalizesValuesEvenIfFieldsWereNeverLoaded(): void

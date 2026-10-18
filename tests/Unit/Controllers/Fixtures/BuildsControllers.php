@@ -10,13 +10,14 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\Request;
 use Formwork\Router\Router;
 use Formwork\Services\Container;
+use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 use ReflectionProperty;
 
 /**
  * Builds site controllers on top of lightweight collaborators
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsControllers
 {

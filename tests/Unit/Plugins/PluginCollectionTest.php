@@ -16,24 +16,24 @@ final class PluginCollectionTest extends TestCase
     {
         $plugin = $this->createStub(Plugin::class);
 
-        $collection = new PluginCollection(['demo' => $plugin]);
+        $pluginCollection = new PluginCollection(['demo' => $plugin]);
 
-        $this->assertSame(['demo'], $collection->keys());
-        $this->assertSame($plugin, $collection->get('demo'));
+        $this->assertSame(['demo'], $pluginCollection->keys());
+        $this->assertSame($plugin, $pluginCollection->get('demo'));
     }
 
     public function testCollectionIsAssociativeAndTyped(): void
     {
-        $collection = new PluginCollection([]);
+        $pluginCollection = new PluginCollection([]);
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertSame(Plugin::class, $collection->dataType());
+        $this->assertTrue($pluginCollection->isAssociative());
+        $this->assertSame(Plugin::class, $pluginCollection->dataType());
     }
 
     public function testOnlyPluginsAreAccepted(): void
     {
-        $this->expectException(LogicException::class);
+        $logicException = $this->captureException(LogicException::class, fn() => new PluginCollection($this->unchecked(['demo' => new stdClass()])));
 
-        new PluginCollection(['demo' => new stdClass()]);
+        $this->assertInstanceOf(LogicException::class, $logicException);
     }
 }

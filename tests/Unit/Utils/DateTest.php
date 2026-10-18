@@ -15,6 +15,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Date::class)]
 final class DateTest extends TestCase
 {
+    /**
+     * @var array<string, list<string>|string>
+     */
     private array $translation = [
         'date.distance.ago'     => '%s fa',
         'date.distance.in'      => 'tra %s',

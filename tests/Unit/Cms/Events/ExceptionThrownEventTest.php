@@ -16,41 +16,41 @@ final class ExceptionThrownEventTest extends TestCase
 {
     public function testEventExposesTheThrowableAndTheRequest(): void
     {
-        $throwable = new RuntimeException('failure');
+        $runtimeException = new RuntimeException('failure');
         $request = $this->request();
 
-        $event = new ExceptionThrownEvent($throwable, $request);
+        $exceptionThrownEvent = new ExceptionThrownEvent($runtimeException, $request);
 
-        $this->assertInstanceOf(Event::class, $event);
-        $this->assertSame('exceptionThrown', $event->name());
-        $this->assertSame($throwable, $event->throwable());
-        $this->assertSame($request, $event->request());
+        $this->assertInstanceOf(Event::class, $exceptionThrownEvent);
+        $this->assertSame('exceptionThrown', $exceptionThrownEvent->name());
+        $this->assertSame($runtimeException, $exceptionThrownEvent->throwable());
+        $this->assertSame($request, $exceptionThrownEvent->request());
     }
 
     public function testErrorsAreAcceptedAsThrowables(): void
     {
-        $error = new TypeError('wrong type');
+        $typeError = new TypeError('wrong type');
 
-        $this->assertSame($error, (new ExceptionThrownEvent($error, $this->request()))->throwable());
+        $this->assertSame($typeError, (new ExceptionThrownEvent($typeError, $this->request()))->throwable());
     }
 
     public function testDataContainsTheThrowableAndTheRequest(): void
     {
-        $throwable = new Exception('failure');
+        $exception = new Exception('failure');
         $request = $this->request();
 
-        $data = (new ExceptionThrownEvent($throwable, $request))->data();
+        $data = (new ExceptionThrownEvent($exception, $request))->data();
 
-        $this->assertSame(['throwable' => $throwable, 'request' => $request], $data);
+        $this->assertSame(['throwable' => $exception, 'request' => $request], $data);
     }
 
     public function testPropagationCanBeStopped(): void
     {
-        $event = new ExceptionThrownEvent(new Exception(), $this->request());
+        $exceptionThrownEvent = new ExceptionThrownEvent(new Exception(), $this->request());
 
-        $event->stopPropagation();
+        $exceptionThrownEvent->stopPropagation();
 
-        $this->assertTrue($event->isPropagationStopped());
+        $this->assertTrue($exceptionThrownEvent->isPropagationStopped());
     }
 
     private function request(): Request

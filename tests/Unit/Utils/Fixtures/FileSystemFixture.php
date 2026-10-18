@@ -4,6 +4,9 @@ namespace Formwork\Tests\Unit\Utils\Fixtures;
 
 final class FileSystemFixture
 {
+    /**
+     * @var array<string, bool>
+     */
     private static array $enabledFunctions = [
         'cwd'               => true,
         'fileatime'         => true,

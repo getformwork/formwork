@@ -13,7 +13,7 @@ final class DataCountableTest extends TestCase
     public function testCount(): void
     {
         $data = ['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3'];
-        $fixture = new DataCountableFixture($data);
-        $this->assertCount(3, $fixture);
+        $dataCountableFixture = new DataCountableFixture($data);
+        $this->assertCount(3, $dataCountableFixture);
     }
 }

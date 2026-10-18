@@ -79,7 +79,7 @@ final class PageControllerTest extends TestCase
 
         $this->renderedPages = 0;
         $this->dispatcher = new EventDispatcher();
-        $this->dispatcher->on('pageOutput', function (PageOutputEvent $event): void {
+        $this->dispatcher->on('pageOutput', function (PageOutputEvent $pageOutputEvent): void {
             ++$this->renderedPages;
         });
     }
@@ -246,10 +246,10 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesAreNotRenderedAgain(): void
     {
-        $first = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
         $second = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertSame($first->content(), $second->content());
+        $this->assertSame($response->content(), $second->content());
         $this->assertSame(1, $this->renderedPages);
     }
 
@@ -296,10 +296,10 @@ final class PageControllerTest extends TestCase
 
     public function testDifferentRoutesUseDifferentCacheEntries(): void
     {
-        $about = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
         $home = $this->load('/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertNotSame($about->content(), $home->content());
+        $this->assertNotSame($response->content(), $home->content());
         $this->assertSame(2, $this->cache->count());
     }
 
@@ -330,10 +330,11 @@ final class PageControllerTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $system
-     * @param array<string, mixed> $site
-     * @param array<string, mixed> $query
-     * @param array<string, mixed> $server
+     * @param array<int|string, mixed> $parameters
+     * @param array<string, mixed>     $system
+     * @param array<string, mixed>     $site
+     * @param array<string, mixed>     $query
+     * @param array<string, mixed>     $server
      */
     private function load(?string $route, array $parameters = [], array $system = [], array $site = [], array $query = [], array $server = []): Response
     {
@@ -343,7 +344,7 @@ final class PageControllerTest extends TestCase
 
         $routeParameters = $route === null ? $parameters : ['page' => $route] + $parameters;
 
-        return $this->controller($route ?? '/', $system, $site, $query, $server)->load(new RouteParams($routeParameters), $this->statistics);
+        return $this->controller($route ?? '/', $system, $site, $query, $server)->load(new RouteParams($this->unchecked($routeParameters)), $this->statistics);
     }
 
     /**

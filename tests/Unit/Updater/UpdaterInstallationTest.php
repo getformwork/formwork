@@ -99,8 +99,8 @@ final class UpdaterInstallationTest extends TestCase
     {
         $this->buildArchive(['../outside.txt' => 'payload']);
 
-        $exception = $this->captureException(\RuntimeException::class, fn() => $this->updater()->update(force: true));
-        $this->assertStringContainsString('invalid destination', $exception->getMessage());
+        $runtimeException = $this->captureException(\RuntimeException::class, fn() => $this->updater()->update(force: true));
+        $this->assertStringContainsString('invalid destination', $runtimeException->getMessage());
 
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/outside.txt');
         $this->assertFileDoesNotExist(dirname(TestInstallation::rootPath()) . '/outside.txt');
@@ -145,9 +145,9 @@ final class UpdaterInstallationTest extends TestCase
 
     private function nextMinor(): string
     {
-        $version = SemVer::fromString(App::VERSION);
+        $semVer = SemVer::fromString(App::VERSION);
 
-        return sprintf('%d.%d.0', $version->major(), $version->minor() + 1);
+        return sprintf('%d.%d.0', $semVer->major(), $semVer->minor() + 1);
     }
 
     /**
@@ -159,16 +159,16 @@ final class UpdaterInstallationTest extends TestCase
             unlink($this->archive);
         }
 
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($this->archive, ZipArchive::CREATE));
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($this->archive, ZipArchive::CREATE));
         foreach ($files as $name => $content) {
             // Release archives contain an entry for every directory
             $directory = dirname($name);
             if ($directory !== '.' && !str_starts_with($directory, '..')) {
-                $zip->addEmptyDir($directory);
+                $zipArchive->addEmptyDir($directory);
             }
-            $zip->addFromString($name, $content);
+            $zipArchive->addFromString($name, $content);
         }
-        $zip->close();
+        $zipArchive->close();
     }
 }

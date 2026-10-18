@@ -84,11 +84,11 @@ final class FileUriGeneratorTest extends TestCase
             'HTTPS'       => 'on',
         ]);
         $uri = $this->createStub(UriGenerator::class);
-        $generator = new FileUriGenerator($this->config(), $request, $uri);
+        $fileUriGenerator = new FileUriGenerator($this->config(), $request, $uri);
         $file = new File('/site/files/logo.png');
         $uri->method('route')->willReturn('/files/logo.png');
 
-        $this->assertSame('https://example.test/files/logo.png', $generator->generateAbsolute($file));
+        $this->assertSame('https://example.test/files/logo.png', $fileUriGenerator->generateAbsolute($file));
     }
 
     #[DataProvider('siblingDirectoryProvider')]

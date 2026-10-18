@@ -149,6 +149,9 @@ final class UsersControllerTest extends TestCase
         $this->assertSame('admin', $this->savedUser('existing')['role']);
     }
 
+    /**
+     * @param array<string, list<string>|string> $overrides
+     */
     #[DataProvider('invalidUserProvider')]
     public function testInvalidUsersAreNotSaved(array $overrides): void
     {
@@ -160,7 +163,7 @@ final class UsersControllerTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{array<string, mixed>}>
+     * @return iterable<string, array{array<string, list<string>|string>}>
      */
     public static function invalidUserProvider(): iterable
     {
@@ -277,7 +280,7 @@ final class UsersControllerTest extends TestCase
         $app = App::instance();
 
         $translations = new Translations($app->config());
-        $roles = new RoleCollection([
+        $roleCollection = new RoleCollection([
             'admin'  => new Role('admin', 'Administrator', new Permissions(['panel.users' => true]), $translations),
             'editor' => new Role('editor', 'Editor', new Permissions(['panel.users' => true]), $translations),
         ]);
@@ -286,11 +289,11 @@ final class UsersControllerTest extends TestCase
         $current->method('permissions')->willReturn(new Permissions($permissions));
         $current->method('isLoggedIn')->willReturn(true);
         $current->method('isAdmin')->willReturn($currentRole === 'admin');
-        $current->method('role')->willReturn($roles->get($currentRole));
+        $current->method('role')->willReturn($roleCollection->get($currentRole));
 
         $users = $this->createStub(Users::class);
         $users->method('loggedIn')->willReturn($current);
-        $users->method('roles')->willReturn($roles);
+        $users->method('roles')->willReturn($roleCollection);
         $users->method('has')->willReturnCallback(static fn(string $username): bool => in_array($username, $existing, true));
 
         $site = $this->createStub(Site::class);
@@ -323,29 +326,29 @@ final class UsersControllerTest extends TestCase
 
     private function fields(): FieldCollection
     {
-        $factory = App::instance()->getService(FieldFactory::class);
+        $fieldFactory = App::instance()->getService(FieldFactory::class);
 
         return new FieldCollection([
-            'fullname' => $factory->make('newUser.fullname', ['type' => 'text', 'required' => true]),
-            'username' => $factory->make('newUser.username', [
+            'fullname' => $fieldFactory->make('newUser.fullname', ['type' => 'text', 'required' => true]),
+            'username' => $fieldFactory->make('newUser.username', [
                 'type'      => 'text',
                 'required'  => true,
                 'pattern'   => '[a-zA-Z][a-zA-Z0-9]*([\-._][a-zA-Z0-9]+)*',
                 'minLength' => 3,
                 'maxLength' => 20,
             ]),
-            'password' => $factory->make('newUser.password', ['type' => 'password', 'required' => true, 'minLength' => 8]),
-            'email'    => $factory->make('newUser.email', ['type' => 'email', 'required' => true]),
-            'language' => $factory->make('newUser.language', ['type' => 'select', 'required' => true, 'options' => ['it' => 'Italian', 'de' => 'German']]),
-            'role'     => $factory->make('newUser.role', ['type' => 'select', 'default' => 'editor', 'options' => ['admin' => 'Administrator', 'editor' => 'Editor']]),
+            'password' => $fieldFactory->make('newUser.password', ['type' => 'password', 'required' => true, 'minLength' => 8]),
+            'email'    => $fieldFactory->make('newUser.email', ['type' => 'email', 'required' => true]),
+            'language' => $fieldFactory->make('newUser.language', ['type' => 'select', 'required' => true, 'options' => ['it' => 'Italian', 'de' => 'German']]),
+            'role'     => $fieldFactory->make('newUser.role', ['type' => 'select', 'default' => 'editor', 'options' => ['admin' => 'Administrator', 'editor' => 'Editor']]),
         ]);
     }
 
-    private function containerOf(UsersController $controller): Container
+    private function containerOf(UsersController $usersController): Container
     {
-        $property = new ReflectionProperty(AbstractController::class, 'container');
+        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'container');
 
-        return $property->getValue($controller);
+        return $reflectionProperty->getValue($usersController);
     }
 
     /**
@@ -358,8 +361,8 @@ final class UsersControllerTest extends TestCase
 
     private function lastMessageType(): ?string
     {
-        $property = new ReflectionProperty(AbstractController::class, 'panel');
-        $notifications = $property->getValue($this->controller)->notifications();
+        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'panel');
+        $notifications = $reflectionProperty->getValue($this->controller)->notifications();
 
         return $notifications === [] ? null : end($notifications)['type'];
     }

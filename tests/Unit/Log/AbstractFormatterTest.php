@@ -19,6 +19,9 @@ use Stringable;
 #[CoversClass(AbstractFormatter::class)]
 final class AbstractFormatterTest extends TestCase
 {
+    /**
+     * @param array<int|string, mixed> $context
+     */
     #[DataProvider('interpolationProvider')]
     public function testInterpolation(string $message, array $context, string $expected): void
     {
@@ -26,7 +29,7 @@ final class AbstractFormatterTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{string, array<mixed>, string}>
+     * @return iterable<string, array{string, array<int|string, mixed>, string}>
      */
     public static function interpolationProvider(): iterable
     {
@@ -65,10 +68,10 @@ final class AbstractFormatterTest extends TestCase
 
     public function testDateFormatIsConfigurable(): void
     {
-        $formatter = new ExposedFormatter();
+        $exposedFormatter = new ExposedFormatter();
         $date = new DateTimeImmutable('2025-01-02 03:04:05 UTC');
 
-        $this->assertSame('2025-01-02', $formatter->interpolateMessage('{when}', ['when' => $date], 'Y-m-d'));
+        $this->assertSame('2025-01-02', $exposedFormatter->interpolateMessage('{when}', ['when' => $date], 'Y-m-d'));
     }
 
     public function testPlainEnumsAreInterpolatedByName(): void
@@ -159,6 +162,9 @@ final class AbstractFormatterTest extends TestCase
     public function testJsonSerializableObjectsUseTheirSerialization(): void
     {
         $object = new class implements JsonSerializable {
+            /**
+             * @return array{serialized: bool}
+             */
             public function jsonSerialize(): array
             {
                 return ['serialized' => true];
@@ -177,7 +183,7 @@ final class AbstractFormatterTest extends TestCase
 
     public function testThrowablesAreNormalizedWithoutLeakingArguments(): void
     {
-        $result = (new ExposedFormatter())->normalizeData($this->failure('secret-argument'));
+        $result = (new ExposedFormatter())->normalizeData($this->failure());
 
         $this->assertSame(RuntimeException::class, $result['class']);
         $this->assertSame('failure', $result['message']);
@@ -189,9 +195,9 @@ final class AbstractFormatterTest extends TestCase
 
     public function testPreviousThrowablesAreNormalized(): void
     {
-        $exception = new RuntimeException('outer', 1, new LogicException('inner', 2));
+        $runtimeException = new RuntimeException('outer', 1, new LogicException('inner', 2));
 
-        $result = (new ExposedFormatter())->normalizeData($exception);
+        $result = (new ExposedFormatter())->normalizeData($runtimeException);
 
         $this->assertSame(LogicException::class, $result['previous']['class']);
         $this->assertSame('inner', $result['previous']['message']);
@@ -206,12 +212,13 @@ final class AbstractFormatterTest extends TestCase
     public function testClosedResourcesAreSummarized(): void
     {
         $resource = fopen('php://memory', 'r');
+        $this->assertIsResource($resource);
         fclose($resource);
 
         $this->assertSame('[unknown resource (closed)]', (new ExposedFormatter())->normalizeData($resource));
     }
 
-    private function failure(string $secret): RuntimeException
+    private function failure(): RuntimeException
     {
         return new RuntimeException('failure', 7);
     }

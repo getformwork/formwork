@@ -15,7 +15,7 @@ final class ServiceDefinitionTest extends TestCase
 {
     public function testParametersCanBeAddedAndRead(): void
     {
-        $definition = (new Container())->define('service')
+        $serviceDefinition = (new Container())->define('service')
             ->parameter('options.enabled', true)
             ->parameter('options.name', 'example');
 
@@ -24,63 +24,63 @@ final class ServiceDefinitionTest extends TestCase
                 'enabled' => true,
                 'name'    => 'example',
             ],
-        ], $definition->getParameters());
+        ], $serviceDefinition->getParameters());
     }
 
     public function testParameterReplacementUsesTheLatestValue(): void
     {
-        $definition = (new Container())->define('service')
+        $serviceDefinition = (new Container())->define('service')
             ->parameter('option', 'first')
             ->parameter('option', 'second');
 
-        $this->assertSame(['option' => 'second'], $definition->getParameters());
+        $this->assertSame(['option' => 'second'], $serviceDefinition->getParameters());
     }
 
     public function testLoaderAndAliasConfigurationAreFluent(): void
     {
         $container = new Container();
-        $definition = $container->define('service')
+        $serviceDefinition = $container->define('service')
             ->loader(TestServiceLoader::class)
             ->alias('service.alias');
 
-        $this->assertSame($definition, $definition->loader(TestServiceLoader::class));
-        $this->assertSame(TestServiceLoader::class, $definition->getLoader());
+        $this->assertSame($serviceDefinition, $serviceDefinition->loader(TestServiceLoader::class));
+        $this->assertSame(TestServiceLoader::class, $serviceDefinition->getLoader());
         $this->assertTrue($container->has('service.alias'));
     }
 
     public function testNewDefinitionsStartWithoutAObjectOrLoader(): void
     {
-        $definition = (new Container())->define('service');
+        $serviceDefinition = (new Container())->define('service');
 
-        $this->assertNull($definition->getObject());
-        $this->assertNull($definition->getLoader());
-        $this->assertSame([], $definition->getParameters());
+        $this->assertNull($serviceDefinition->getObject());
+        $this->assertNull($serviceDefinition->getLoader());
+        $this->assertSame([], $serviceDefinition->getParameters());
     }
 
     public function testDirectObjectDefinitionsExposeTheirObject(): void
     {
-        $object = new SimpleService();
-        $definition = (new Container())->define('service', $object);
+        $simpleService = new SimpleService();
+        $serviceDefinition = (new Container())->define('service', $simpleService);
 
-        $this->assertSame($object, $definition->getObject());
+        $this->assertSame($simpleService, $serviceDefinition->getObject());
     }
 
     public function testLazyFalseDoesNotResolveTheDefinition(): void
     {
         $container = new Container();
-        $definition = $container->define(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleService::class);
 
         $this->assertFalse($container->isResolved(SimpleService::class));
-        $this->assertSame($definition, $definition->lazy(false));
+        $this->assertSame($serviceDefinition, $serviceDefinition->lazy(false));
         $this->assertFalse($container->isResolved(SimpleService::class));
     }
 
     public function testLazyTrueLeavesAnUnresolvedDefinitionUnresolved(): void
     {
         $container = new Container();
-        $definition = $container->define(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleService::class);
 
-        $this->assertSame($definition, $definition->lazy(true));
+        $this->assertSame($serviceDefinition, $serviceDefinition->lazy(true));
         $this->assertFalse($container->isResolved(SimpleService::class));
     }
 
@@ -91,44 +91,44 @@ final class ServiceDefinitionTest extends TestCase
 
     public function testLazinessCanBeChangedAndRestored(): void
     {
-        $definition = (new Container())->define(SimpleService::class);
+        $serviceDefinition = (new Container())->define(SimpleService::class);
 
-        $definition->lazy(false);
-        $this->assertFalse($definition->isLazy());
+        $serviceDefinition->lazy(false);
+        $this->assertFalse($serviceDefinition->isLazy());
 
-        $definition->lazy(true);
-        $this->assertTrue($definition->isLazy());
+        $serviceDefinition->lazy(true);
+        $this->assertTrue($serviceDefinition->isLazy());
     }
 
     public function testLazinessIsIndependentFromTheAliasesAndParametersOfTheDefinition(): void
     {
-        $definition = (new Container())->define(SimpleService::class)
+        $serviceDefinition = (new Container())->define(SimpleService::class)
             ->alias('alias')
             ->parameter('name', 'value')
             ->lazy(false);
 
-        $this->assertFalse($definition->isLazy());
-        $this->assertSame(['name' => 'value'], $definition->getParameters());
+        $this->assertFalse($serviceDefinition->isLazy());
+        $this->assertSame(['name' => 'value'], $serviceDefinition->getParameters());
     }
 
     public function testCallingLazyFalseAfterResolutionDoesNotReplaceTheInstance(): void
     {
         $container = new Container();
-        $definition = $container->define(SimpleService::class);
-        $resolved = $container->get(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleService::class);
+        $simpleService = $container->get(SimpleService::class);
 
-        $definition->lazy(false);
+        $serviceDefinition->lazy(false);
 
-        $this->assertSame($resolved, $container->get(SimpleService::class));
+        $this->assertSame($simpleService, $container->get(SimpleService::class));
     }
 
     public function testObjectDefinitionsRejectLoaders(): void
     {
-        $definition = (new Container())->define('service', new SimpleService());
+        $serviceDefinition = (new Container())->define('service', new SimpleService());
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Instantiated object cannot have loaders');
-        $definition->loader(TestServiceLoader::class);
+        $serviceDefinition->loader(TestServiceLoader::class);
     }
 
     public function testAliasesResolveToTheSameInstanceAsTheDefinition(): void

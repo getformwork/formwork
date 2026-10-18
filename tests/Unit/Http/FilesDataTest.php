@@ -18,59 +18,59 @@ final class FilesDataTest extends TestCase
 
     public function testFilesWithoutAnUploadAreEmpty(): void
     {
-        $files = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_NO_FILE)]);
+        $filesData = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_NO_FILE)]);
 
-        $this->assertTrue($files->isEmpty());
+        $this->assertTrue($filesData->isEmpty());
     }
 
     public function testUploadedFilesAreNotEmpty(): void
     {
-        $files = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_OK)]);
+        $filesData = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_OK)]);
 
-        $this->assertFalse($files->isEmpty());
+        $this->assertFalse($filesData->isEmpty());
     }
 
     public function testFailedUploadsAreNotConsideredEmpty(): void
     {
-        $files = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_INI_SIZE)]);
+        $filesData = new FilesData(['avatar' => $this->file('avatar', UPLOAD_ERR_INI_SIZE)]);
 
-        $this->assertFalse($files->isEmpty(), 'Oversized uploads must still be reported to the user');
+        $this->assertFalse($filesData->isEmpty(), 'Oversized uploads must still be reported to the user');
     }
 
     public function testASingleUploadedFileAmongEmptyOnesMakesTheDataNotEmpty(): void
     {
-        $files = new FilesData([
+        $filesData = new FilesData([
             'first'  => $this->file('first', UPLOAD_ERR_NO_FILE),
             'second' => $this->file('second', UPLOAD_ERR_OK),
         ]);
 
-        $this->assertFalse($files->isEmpty());
+        $this->assertFalse($filesData->isEmpty());
     }
 
     public function testNestedFilesAreFlattened(): void
     {
-        $first = $this->file('gallery', UPLOAD_ERR_OK);
+        $uploadedFile = $this->file('gallery', UPLOAD_ERR_OK);
         $second = $this->file('gallery', UPLOAD_ERR_NO_FILE);
         $third = $this->file('other', UPLOAD_ERR_OK);
-        $files = new FilesData(['gallery' => [$first, $second], 'other' => $third]);
+        $filesData = new FilesData(['gallery' => [$uploadedFile, $second], 'other' => $third]);
 
-        $this->assertSame([$first, $second, $third], $files->getAll());
+        $this->assertSame([$uploadedFile, $second, $third], $filesData->getAll());
     }
 
     public function testNestedEmptyFilesAreEmpty(): void
     {
-        $files = new FilesData(['gallery' => [$this->file('gallery', UPLOAD_ERR_NO_FILE), $this->file('gallery', UPLOAD_ERR_NO_FILE)]]);
+        $filesData = new FilesData(['gallery' => [$this->file('gallery', UPLOAD_ERR_NO_FILE), $this->file('gallery', UPLOAD_ERR_NO_FILE)]]);
 
-        $this->assertTrue($files->isEmpty());
+        $this->assertTrue($filesData->isEmpty());
     }
 
     public function testDeeplyNestedUploadsAreFound(): void
     {
-        $uploaded = $this->file('deep', UPLOAD_ERR_OK);
-        $files = new FilesData(['a' => ['b' => ['c' => $uploaded]]]);
+        $uploadedFile = $this->file('deep', UPLOAD_ERR_OK);
+        $filesData = new FilesData(['a' => ['b' => ['c' => $uploadedFile]]]);
 
-        $this->assertFalse($files->isEmpty());
-        $this->assertSame([$uploaded], $files->getAll());
+        $this->assertFalse($filesData->isEmpty());
+        $this->assertSame([$uploadedFile], $filesData->getAll());
     }
 
     private function file(string $field, int $error): UploadedFile

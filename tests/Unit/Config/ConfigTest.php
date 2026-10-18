@@ -17,9 +17,7 @@ use UnexpectedValueException;
 #[UsesTempDirectory]
 final class ConfigTest extends TestCase
 {
-    protected function setUp(): void
-    {
-    }
+    protected function setUp(): void {}
 
     public function testHasAndHasMultipleDistinguishPresentNullFromMissingKeys(): void
     {

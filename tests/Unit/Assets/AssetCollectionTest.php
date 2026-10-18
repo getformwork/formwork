@@ -25,7 +25,7 @@ final class AssetCollectionTest extends TestCase
         $this->collection->set('style', $this->asset('style.css', 'body {}'));
         $this->collection->set('app', $this->asset('app.js', 'console.log(1);'));
         $this->collection->set('logo', $this->asset('logo.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>'));
-        $this->collection->set('photo', $this->asset('photo.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', true)));
+        $this->collection->set('photo', $this->asset('photo.png', (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', true)));
         $this->collection->set('notes', $this->asset('notes.txt', 'plain'));
     }
 
@@ -54,18 +54,18 @@ final class AssetCollectionTest extends TestCase
 
     public function testEmptyCollectionYieldsEmptyFilters(): void
     {
-        $empty = new AssetCollection();
+        $assetCollection = new AssetCollection();
 
-        $this->assertCount(0, $empty->stylesheets());
-        $this->assertCount(0, $empty->scripts());
-        $this->assertCount(0, $empty->images());
+        $this->assertCount(0, $assetCollection->stylesheets());
+        $this->assertCount(0, $assetCollection->scripts());
+        $this->assertCount(0, $assetCollection->images());
     }
 
     public function testOnlyAssetsCanBeAdded(): void
     {
         $this->expectException(LogicException::class);
 
-        $this->collection->set('invalid', 'not an asset');
+        $this->collection->set('invalid', $this->unchecked('not an asset'));
     }
 
     private function asset(string $name, string $content): Asset

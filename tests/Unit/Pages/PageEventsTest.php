@@ -47,78 +47,78 @@ final class PageEventsTest extends TestCase
 
     public function testPageAfterDeleteEvent(): void
     {
-        $event = new PageAfterDeleteEvent($page = $this->page('/about'));
+        $pageAfterDeleteEvent = new PageAfterDeleteEvent($page = $this->page('/about'));
 
-        $this->assertSame('pageAfterDelete', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageAfterDelete', $pageAfterDeleteEvent->name());
+        $this->assertSame($page, $pageAfterDeleteEvent->page());
     }
 
     public function testPageAfterDuplicateEvent(): void
     {
-        $event = new PageAfterDuplicateEvent(
+        $pageAfterDuplicateEvent = new PageAfterDuplicateEvent(
             $page = $this->page('/about'),
             $duplicate = $this->page('/blog'),
         );
 
-        $this->assertSame('pageAfterDuplicate', $event->name());
-        $this->assertSame($page, $event->page());
-        $this->assertSame($duplicate, $event->duplicatePage());
+        $this->assertSame('pageAfterDuplicate', $pageAfterDuplicateEvent->name());
+        $this->assertSame($page, $pageAfterDuplicateEvent->page());
+        $this->assertSame($duplicate, $pageAfterDuplicateEvent->duplicatePage());
     }
 
     public function testPageAfterSaveEvent(): void
     {
-        $event = new PageAfterSaveEvent($page = $this->page('/about'));
+        $pageAfterSaveEvent = new PageAfterSaveEvent($page = $this->page('/about'));
 
-        $this->assertSame('pageAfterSave', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageAfterSave', $pageAfterSaveEvent->name());
+        $this->assertSame($page, $pageAfterSaveEvent->page());
     }
 
     public function testPageBeforeDeleteEvent(): void
     {
-        $event = new PageBeforeDeleteEvent($page = $this->page('/about'));
+        $pageBeforeDeleteEvent = new PageBeforeDeleteEvent($page = $this->page('/about'));
 
-        $this->assertSame('pageBeforeDelete', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageBeforeDelete', $pageBeforeDeleteEvent->name());
+        $this->assertSame($page, $pageBeforeDeleteEvent->page());
     }
 
     public function testPageBeforeDuplicateEvent(): void
     {
         $with = ['title' => 'Copy'];
-        $event = new PageBeforeDuplicateEvent($page = $this->page('/about'), $with);
+        $pageBeforeDuplicateEvent = new PageBeforeDuplicateEvent($page = $this->page('/about'), $with);
 
-        $this->assertSame('pageBeforeDuplicate', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageBeforeDuplicate', $pageBeforeDuplicateEvent->name());
+        $this->assertSame($page, $pageBeforeDuplicateEvent->page());
 
-        $eventWith = &$event->with();
+        $eventWith = &$pageBeforeDuplicateEvent->with();
         $eventWith['title'] = 'Changed';
         $this->assertSame('Changed', $with['title']);
     }
 
     public function testPageBeforeSaveEvent(): void
     {
-        $event = new PageBeforeSaveEvent($page = $this->page('/about'));
+        $pageBeforeSaveEvent = new PageBeforeSaveEvent($page = $this->page('/about'));
 
-        $this->assertSame('pageBeforeSave', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageBeforeSave', $pageBeforeSaveEvent->name());
+        $this->assertSame($page, $pageBeforeSaveEvent->page());
     }
 
     public function testPageLoadedEvent(): void
     {
-        $event = new PageLoadedEvent($page = $this->page('/about'));
+        $pageLoadedEvent = new PageLoadedEvent($page = $this->page('/about'));
 
-        $this->assertSame('pageLoaded', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageLoaded', $pageLoadedEvent->name());
+        $this->assertSame($page, $pageLoadedEvent->page());
     }
 
     public function testPageOutputEvent(): void
     {
         $output = '<p>Before</p>';
-        $event = new PageOutputEvent($page = $this->page('/about'), $output);
+        $pageOutputEvent = new PageOutputEvent($page = $this->page('/about'), $output);
 
-        $this->assertSame('pageOutput', $event->name());
-        $this->assertSame($page, $event->page());
+        $this->assertSame('pageOutput', $pageOutputEvent->name());
+        $this->assertSame($page, $pageOutputEvent->page());
 
-        $eventOutput = &$event->output();
+        $eventOutput = &$pageOutputEvent->output();
         $eventOutput .= ' after';
         $this->assertSame('<p>Before</p> after', $output);
     }
@@ -126,12 +126,12 @@ final class PageEventsTest extends TestCase
     public function testPageRenderEvent(): void
     {
         $vars = ['page' => $this->page('/about')];
-        $event = new PageRenderEvent($vars['page'], $vars);
+        $pageRenderEvent = new PageRenderEvent($vars['page'], $vars);
 
-        $this->assertSame('pageRender', $event->name());
-        $this->assertSame($vars['page'], $event->page());
+        $this->assertSame('pageRender', $pageRenderEvent->name());
+        $this->assertSame($vars['page'], $pageRenderEvent->page());
 
-        $eventVars = &$event->vars();
+        $eventVars = &$pageRenderEvent->vars();
         $eventVars['extra'] = true;
         $this->assertTrue($vars['extra']);
     }
@@ -140,13 +140,13 @@ final class PageEventsTest extends TestCase
     {
         $page = $this->page('/about');
         $events = [];
-        $this->app->events()->on('pageBeforeSave', function (object $event) use (&$events, $page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageBeforeSave', function (PageBeforeSaveEvent $pageBeforeSaveEvent) use (&$events, $page): void {
+            if ($pageBeforeSaveEvent->page() === $page) {
                 $events[] = 'before';
             }
         });
-        $this->app->events()->on('pageAfterSave', function (object $event) use (&$events, $page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $pageAfterSaveEvent) use (&$events, $page): void {
+            if ($pageAfterSaveEvent->page() === $page) {
                 $events[] = 'after';
             }
         });
@@ -161,19 +161,19 @@ final class PageEventsTest extends TestCase
         $page = $this->page('/about');
         $page->set('title', 'Not persisted');
         $afterCalled = false;
-        $this->app->events()->on('pageBeforeSave', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageBeforeSave', function (PageBeforeSaveEvent $pageBeforeSaveEvent) use ($page): void {
+            if ($pageBeforeSaveEvent->page() === $page) {
                 throw new RuntimeException('blocked');
             }
         });
-        $this->app->events()->on('pageAfterSave', function (object $event) use (&$afterCalled, $page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $pageAfterSaveEvent) use (&$afterCalled, $page): void {
+            if ($pageAfterSaveEvent->page() === $page) {
                 $afterCalled = true;
             }
         });
 
-        $exception = $this->captureException(RuntimeException::class, static fn() => $page->save());
-        $this->assertSame('blocked', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $page->save());
+        $this->assertSame('blocked', $runtimeException->getMessage());
 
         $page->reload();
         $this->assertSame('About', $page->title());
@@ -184,14 +184,14 @@ final class PageEventsTest extends TestCase
     {
         $page = $this->page('/about');
         $path = $page->contentPath();
-        $this->app->events()->on('pageBeforeDelete', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageBeforeDelete', function (PageBeforeDeleteEvent $pageBeforeDeleteEvent) use ($page): void {
+            if ($pageBeforeDeleteEvent->page() === $page) {
                 throw new RuntimeException('blocked');
             }
         });
 
-        $exception = $this->captureException(RuntimeException::class, static fn() => $page->delete());
-        $this->assertSame('blocked', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $page->delete());
+        $this->assertSame('blocked', $runtimeException->getMessage());
 
         $this->assertDirectoryExists((string) $path);
     }
@@ -199,9 +199,9 @@ final class PageEventsTest extends TestCase
     public function testBeforeDuplicateReceivesTheOverrideDataByReference(): void
     {
         $page = $this->page('/about');
-        $this->app->events()->on('pageBeforeDuplicate', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
-                $with = &$event->with();
+        $this->app->events()->on('pageBeforeDuplicate', function (PageBeforeDuplicateEvent $pageBeforeDuplicateEvent) use ($page): void {
+            if ($pageBeforeDuplicateEvent->page() === $page) {
+                $with = &$pageBeforeDuplicateEvent->with();
                 $with['title'] = 'From listener';
             }
         });
@@ -215,14 +215,14 @@ final class PageEventsTest extends TestCase
     {
         $page = $this->page('/about');
         $page->set('title', 'Persisted');
-        $this->app->events()->on('pageAfterSave', function (object $event) use ($page): void {
-            if ($event->page() === $page) {
+        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $pageAfterSaveEvent) use ($page): void {
+            if ($pageAfterSaveEvent->page() === $page) {
                 throw new RuntimeException('after failure');
             }
         });
 
-        $exception = $this->captureException(RuntimeException::class, static fn() => $page->save());
-        $this->assertSame('after failure', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $page->save());
+        $this->assertSame('after failure', $runtimeException->getMessage());
 
         $page->reload();
         $this->assertSame('Persisted', $page->title());
@@ -232,26 +232,22 @@ final class PageEventsTest extends TestCase
     {
         $page = $this->page('/about');
         $file = (string) $page->contentFile()?->path();
-        $active = true;
         $titles = [];
 
-        $this->app->events()->on('pageBeforeSave', function (PageBeforeSaveEvent $event) use (&$active, &$titles, $page, $file): void {
-            if ($active && $event->page() === $page) {
+        $this->app->events()->on('pageBeforeSave', function (PageBeforeSaveEvent $pageBeforeSaveEvent) use (&$titles, $page, $file): void {
+            if ($pageBeforeSaveEvent->page() === $page) {
                 $titles['before'] = (new ContentFile($file))->frontmatter()['title'];
                 $page->set('title', 'Changed by listener');
             }
         });
-        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $event) use (&$active, &$titles, $page, $file): void {
-            if ($active && $event->page() === $page) {
+
+        $this->app->events()->on('pageAfterSave', function (PageAfterSaveEvent $pageAfterSaveEvent) use (&$titles, $page, $file): void {
+            if ($pageAfterSaveEvent->page() === $page) {
                 $titles['after'] = (new ContentFile($file))->frontmatter()['title'];
             }
         });
 
-        try {
-            $page->save();
-        } finally {
-            $active = false;
-        }
+        $page->save();
 
         $this->assertSame(['before' => 'About', 'after' => 'Changed by listener'], $titles);
     }

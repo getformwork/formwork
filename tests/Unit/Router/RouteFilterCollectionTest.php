@@ -14,32 +14,32 @@ final class RouteFilterCollectionTest extends TestCase
 {
     public function testCollectionIsTypedAssociativeAndMutable(): void
     {
-        $collection = new RouteFilterCollection();
+        $routeFilterCollection = new RouteFilterCollection();
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertTrue($collection->isTyped());
-        $this->assertTrue($collection->isMutable());
-        $this->assertSame(RouteFilter::class, $collection->dataType());
+        $this->assertTrue($routeFilterCollection->isAssociative());
+        $this->assertTrue($routeFilterCollection->isTyped());
+        $this->assertTrue($routeFilterCollection->isMutable());
+        $this->assertSame(RouteFilter::class, $routeFilterCollection->dataType());
     }
 
     public function testAddIndexesFiltersByName(): void
     {
         $authentication = new RouteFilter('auth', 'Auth@handle');
         $logging = new RouteFilter('logging', 'Log@handle');
-        $collection = new RouteFilterCollection();
+        $routeFilterCollection = new RouteFilterCollection();
 
-        $collection->add($authentication);
-        $collection->add($logging);
+        $routeFilterCollection->add($authentication);
+        $routeFilterCollection->add($logging);
 
-        $this->assertCount(2, $collection);
-        $this->assertSame($authentication, $collection->get('auth'));
-        $this->assertSame($logging, $collection->get('logging'));
+        $this->assertCount(2, $routeFilterCollection);
+        $this->assertSame($authentication, $routeFilterCollection->get('auth'));
+        $this->assertSame($logging, $routeFilterCollection->get('logging'));
     }
 
     public function testConstructorRejectsNonFilterItems(): void
     {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
-        new RouteFilterCollection(['auth' => new stdClass()]);
+        $logicException = $this->captureException(LogicException::class, fn() => new RouteFilterCollection($this->unchecked(['auth' => new stdClass()])));
+
+        $this->assertSame('Typed collections cannot be created from data of different types', $logicException->getMessage());
     }
 }

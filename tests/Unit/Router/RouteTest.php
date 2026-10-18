@@ -112,7 +112,7 @@ final class RouteTest extends TestCase
     {
         $router = $this->router('/value/' . $value . '/');
         $router->addRoute('value', '/value/{param:' . $pattern . '}')
-            ->action(static fn(RouteParams $params): Response => new Response($params->get('param')));
+            ->action(static fn(RouteParams $routeParams): Response => new Response($routeParams->get('param')));
 
         if (!$matches) {
             $this->expectException(RouteNotFoundException::class);
@@ -151,6 +151,9 @@ final class RouteTest extends TestCase
         yield 'custom regex mismatch' => ['[a-c]+', 'abd', false];
     }
 
+    /**
+     * @param array<string, string> $expectedParams
+     */
     #[DataProvider('matchingProvider')]
     public function testRouteMatchingExposesStaticAndExtractedParameters(
         string $routePath,
@@ -159,7 +162,7 @@ final class RouteTest extends TestCase
     ): void {
         $router = $this->router($requestPath);
         $route = $router->addRoute('test', $routePath)->action(
-            static fn(RouteParams $params): Response => new Response((string) json_encode($params->toArray()))
+            static fn(RouteParams $routeParams): Response => new Response((string) json_encode($routeParams->toArray()))
         );
 
         $response = $router->dispatch();
@@ -183,6 +186,10 @@ final class RouteTest extends TestCase
         ];
     }
 
+    /**
+     * @param list<string> $routeMethods
+     * @param list<string> $routeTypes
+     */
     #[DataProvider('requirementsProvider')]
     public function testRouteMethodTypeAndPrefixRequirementsParticipateInMatching(
         string $method,
@@ -279,11 +286,11 @@ final class RouteTest extends TestCase
         $router->addRoute('restricted', '/users/{id}')
             ->action(static fn(): Response => new Response('restricted'))
             ->where('id', static fn(string $value): bool => $value === '42');
-        $fallback = $router->addRoute('fallback', '/users/{id}')
+        $route = $router->addRoute('fallback', '/users/{id}')
             ->action(static fn(): Response => new Response('fallback'));
 
         $this->assertSame('fallback', $router->dispatch()->content());
-        $this->assertSame($fallback, $router->current());
+        $this->assertSame($route, $router->current());
     }
 
     private function router(string $path, string $method = 'GET', ?string $requestedWith = null): Router

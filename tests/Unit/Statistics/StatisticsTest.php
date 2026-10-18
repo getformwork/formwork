@@ -301,10 +301,11 @@ final class StatisticsTest extends TestCase
         $statistics = $this->statistics();
 
         foreach ([1, 3, 7, 30] as $limit) {
+            /** @var array<int|string, int> $visits */
             $visits = $statistics->getVisits($limit);
 
             // Numeric day keys are cast to integers by PHP
-            $this->assertSame($this->lastDays($limit), array_map('strval', array_keys($visits)), "Limit $limit");
+            $this->assertSame($this->lastDays($limit), array_map(strval(...), array_keys($visits)), "Limit $limit");
             $this->assertSame((int) date('Ymd'), array_key_last($visits));
         }
     }
@@ -470,7 +471,7 @@ final class StatisticsTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<int|string, int|string> $data
      */
     private function writeRegistry(string $filename, array $data): void
     {

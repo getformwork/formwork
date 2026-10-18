@@ -60,10 +60,10 @@ final class ContainerTest extends TestCase
     public function testDefineExposesAServiceDefinitionWithoutResolvingIt(): void
     {
         $container = new Container();
-        $definition = $container->define(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleService::class);
 
-        $this->assertSame(SimpleService::class, $definition->getName());
-        $this->assertNull($definition->getObject());
+        $this->assertSame(SimpleService::class, $serviceDefinition->getName());
+        $this->assertNull($serviceDefinition->getObject());
         $this->assertFalse($container->isResolved(SimpleService::class));
         $this->assertTrue($container->has(SimpleService::class));
     }
@@ -73,36 +73,36 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define(SimpleService::class);
 
-        $first = $container->get(SimpleService::class);
+        $simpleService = $container->get(SimpleService::class);
         $second = $container->get(SimpleService::class);
 
-        $this->assertInstanceOf(SimpleService::class, $first);
-        $this->assertSame($first, $second);
+        $this->assertInstanceOf(SimpleService::class, $simpleService);
+        $this->assertSame($simpleService, $second);
         $this->assertTrue($container->isResolved(SimpleService::class));
     }
 
     public function testDirectObjectsAreReturnedAndShared(): void
     {
         $container = new Container();
-        $service = new SimpleService();
-        $container->define('configured', $service);
+        $simpleService = new SimpleService();
+        $container->define('configured', $simpleService);
 
-        $this->assertSame($service, $container->get('configured'));
-        $this->assertSame($service, $container->get('configured'));
+        $this->assertSame($simpleService, $container->get('configured'));
+        $this->assertSame($simpleService, $container->get('configured'));
     }
 
     public function testBuildInjectsRegisteredDependenciesAndStaticParameters(): void
     {
         $container = new Container();
-        $dependency = new SharedDependency();
-        $container->define(SharedDependency::class, $dependency);
+        $sharedDependency = new SharedDependency();
+        $container->define(SharedDependency::class, $sharedDependency);
         $container->define(DependentService::class)
             ->parameter('label', 'configured');
 
-        $service = $container->get(DependentService::class);
+        $dependentService = $container->get(DependentService::class);
 
-        $this->assertSame($dependency, $service->dependency);
-        $this->assertSame('configured', $service->label);
+        $this->assertSame($sharedDependency, $dependentService->dependency);
+        $this->assertSame('configured', $dependentService->label);
     }
 
     public function testDependenciesCanBeResolvedThroughAnInterfaceAlias(): void
@@ -111,22 +111,22 @@ final class ContainerTest extends TestCase
         $container->define(SharedDependency::class)->alias(DependencyContract::class);
         $container->define(DependentOnContract::class);
 
-        $service = $container->get(DependentOnContract::class);
+        $dependentOnContract = $container->get(DependentOnContract::class);
 
-        $this->assertInstanceOf(SharedDependency::class, $service->dependency);
-        $this->assertSame($container->get(DependencyContract::class), $service->dependency);
+        $this->assertInstanceOf(SharedDependency::class, $dependentOnContract->dependency);
+        $this->assertSame($container->get(DependencyContract::class), $dependentOnContract->dependency);
     }
 
     public function testServiceAttributeSelectsAConfiguredIdentifier(): void
     {
         $container = new Container();
-        $selected = new SimpleService();
-        $container->define('selected', $selected);
+        $simpleService = new SimpleService();
+        $container->define('selected', $simpleService);
         $container->define(AttributeDependentService::class);
 
-        $service = $container->get(AttributeDependentService::class);
+        $attributeDependentService = $container->get(AttributeDependentService::class);
 
-        $this->assertSame($selected, $service->service);
+        $this->assertSame($simpleService, $attributeDependentService->service);
     }
 
     public function testServiceAttributeFallsBackToTheDefaultWhenTheIdentifierIsNotDefined(): void
@@ -140,11 +140,11 @@ final class ContainerTest extends TestCase
     public function testServiceAttributeTakesPrecedenceOverTheDefaultWhenTheIdentifierIsDefined(): void
     {
         $container = new Container();
-        $selected = new SimpleService();
-        $container->define('selected', $selected);
+        $simpleService = new SimpleService();
+        $container->define('selected', $simpleService);
         $container->define(OptionalAttributeDependentService::class);
 
-        $this->assertSame($selected, $container->get(OptionalAttributeDependentService::class)->service);
+        $this->assertSame($simpleService, $container->get(OptionalAttributeDependentService::class)->service);
     }
 
     public function testServiceAttributeWithoutDefaultReportsTheMissingIdentifier(): void
@@ -152,24 +152,24 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define(AttributeDependentService::class);
 
-        $exception = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get(AttributeDependentService::class));
-        $this->assertStringContainsString('"selected"', $exception->getMessage());
+        $serviceNotFoundException = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get(AttributeDependentService::class));
+        $this->assertStringContainsString('"selected"', $serviceNotFoundException->getMessage());
     }
 
     public function testClosuresCanBeUsedAsFactoriesAndAreShared(): void
     {
         $container = new Container();
-        $dependency = new SharedDependency();
-        $container->define(SharedDependency::class, $dependency);
-        $container->define('factory', static function (SharedDependency $dependency, string $value): FactoryProduct {
-            return new FactoryProduct($dependency, $value);
+        $sharedDependency = new SharedDependency();
+        $container->define(SharedDependency::class, $sharedDependency);
+        $container->define('factory', static function (SharedDependency $sharedDependency, string $value): FactoryProduct {
+            return new FactoryProduct($sharedDependency, $value);
         })->parameter('value', 'factory-value');
 
         $first = $container->get('factory');
         $second = $container->get('factory');
 
         $this->assertInstanceOf(FactoryProduct::class, $first);
-        $this->assertSame($dependency, $first->dependency);
+        $this->assertSame($sharedDependency, $first->dependency);
         $this->assertSame('factory-value', $first->value);
         $this->assertSame($first, $second);
     }
@@ -198,15 +198,15 @@ final class ContainerTest extends TestCase
     public function testBuildAndCallResolveArgumentsAndHonorExplicitParameters(): void
     {
         $container = new Container();
-        $dependency = new SharedDependency();
-        $container->define(SharedDependency::class, $dependency);
+        $sharedDependency = new SharedDependency();
+        $container->define(SharedDependency::class, $sharedDependency);
 
-        $built = $container->build(DependentService::class, ['label' => 'built']);
-        $called = $container->call(static fn(SharedDependency $dependency, string $label): FactoryProduct => new FactoryProduct($dependency, $label), ['label' => 'called']);
+        $dependentService = $container->build(DependentService::class, ['label' => 'built']);
+        $called = $container->call(static fn(SharedDependency $sharedDependency, string $label): FactoryProduct => new FactoryProduct($sharedDependency, $label), ['label' => 'called']);
 
-        $this->assertSame($dependency, $built->dependency);
-        $this->assertSame('built', $built->label);
-        $this->assertSame($dependency, $called->dependency);
+        $this->assertSame($sharedDependency, $dependentService->dependency);
+        $this->assertSame('built', $dependentService->label);
+        $this->assertSame($sharedDependency, $called->dependency);
         $this->assertSame('called', $called->value);
     }
 
@@ -217,13 +217,13 @@ final class ContainerTest extends TestCase
         $explicit = new SharedDependency();
         $container->define(SharedDependency::class, $registered);
 
-        $service = $container->build(DependentService::class, [
+        $dependentService = $container->build(DependentService::class, [
             'dependency' => $explicit,
             'label'      => 'explicit',
         ]);
 
-        $this->assertSame($explicit, $service->dependency);
-        $this->assertNotSame($registered, $service->dependency);
+        $this->assertSame($explicit, $dependentService->dependency);
+        $this->assertNotSame($registered, $dependentService->dependency);
     }
 
     public function testCallExplicitArgumentsOverrideRegisteredDependencies(): void
@@ -234,8 +234,8 @@ final class ContainerTest extends TestCase
         $container->define(SharedDependency::class, $registered);
 
         $result = $container->call(
-            static fn(SharedDependency $dependency): SharedDependency => $dependency,
-            ['dependency' => $explicit],
+            static fn(SharedDependency $sharedDependency): SharedDependency => $sharedDependency,
+            ['sharedDependency' => $explicit],
         );
 
         $this->assertSame($explicit, $result);
@@ -245,10 +245,10 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $built = $container->build(VariadicService::class, ['values' => ['a', 'b']]);
+        $variadicService = $container->build(VariadicService::class, ['values' => ['a', 'b']]);
         $called = $container->call(static fn(string ...$values): array => $values, ['values' => ['x', 'y']]);
 
-        $this->assertSame(['a', 'b'], $built->values);
+        $this->assertSame(['a', 'b'], $variadicService->values);
         $this->assertSame(['x', 'y'], $called);
     }
 
@@ -264,9 +264,9 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $built = $container->build(VariadicService::class, ['values' => ['first' => 'a', 'second' => 'b']]);
+        $variadicService = $container->build(VariadicService::class, ['values' => ['first' => 'a', 'second' => 'b']]);
 
-        $this->assertSame(['a', 'b'], $built->values);
+        $this->assertSame(['a', 'b'], $variadicService->values);
     }
 
     public function testVariadicParametersAreOptional(): void
@@ -280,13 +280,14 @@ final class ContainerTest extends TestCase
     public function testParameterClosuresAreEvaluatedBeforeFactoryResolution(): void
     {
         $container = new Container();
-        $dependency = new SharedDependency();
-        $container->define('factory', static fn(SharedDependency $dependency): FactoryProduct => new FactoryProduct($dependency, 'closure'))
-            ->parameter('dependency', static fn(): SharedDependency => $dependency);
+        $sharedDependency = new SharedDependency();
+        $container->define('factory', static fn(SharedDependency $sharedDependency): FactoryProduct => new FactoryProduct($sharedDependency, 'closure'))
+            ->parameter('sharedDependency', static fn(): SharedDependency => $sharedDependency);
 
         $service = $container->get('factory');
+        $this->assertInstanceOf(FactoryProduct::class, $service);
 
-        $this->assertSame($dependency, $service->dependency);
+        $this->assertSame($sharedDependency, $service->dependency);
         $this->assertSame('closure', $service->value);
     }
 
@@ -360,10 +361,10 @@ final class ContainerTest extends TestCase
         $container->define(SimpleService::class)->lazy(false);
 
         $container->resolveEagerServices();
-        $first = $container->get(SimpleService::class);
+        $simpleService = $container->get(SimpleService::class);
         $container->resolveEagerServices();
 
-        $this->assertSame($first, $container->get(SimpleService::class));
+        $this->assertSame($simpleService, $container->get(SimpleService::class));
     }
 
     public function testEagerServicesAlreadyResolvedAreNotResolvedAgain(): void
@@ -533,10 +534,10 @@ final class ContainerTest extends TestCase
 
         $this->captureException(ContainerException::class, static fn() => $container->alias('c', 'a'));
 
-        $service = new SimpleService();
-        $container->define('c', $service);
+        $simpleService = new SimpleService();
+        $container->define('c', $simpleService);
 
-        $this->assertSame($service, $container->get('a'));
+        $this->assertSame($simpleService, $container->get('a'));
         $this->assertFalse($container->has('d'));
     }
 
@@ -548,14 +549,14 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->has('alias'));
         $this->assertFalse($container->isResolved('alias'));
 
-        $exception = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get('alias'));
-        $this->assertStringContainsString('"target"', $exception->getMessage());
+        $serviceNotFoundException = $this->captureException(ServiceNotFoundException::class, static fn() => $container->get('alias'));
+        $this->assertStringContainsString('"target"', $serviceNotFoundException->getMessage());
 
-        $service = new SimpleService();
-        $container->define('target', $service);
+        $simpleService = new SimpleService();
+        $container->define('target', $simpleService);
 
         $this->assertTrue($container->has('alias'));
-        $this->assertSame($service, $container->get('alias'));
+        $this->assertSame($simpleService, $container->get('alias'));
     }
 
     public function testAliasToItselfIsRejected(): void
@@ -569,25 +570,25 @@ final class ContainerTest extends TestCase
     public function testAliasCannotShadowADefinedService(): void
     {
         $container = new Container();
-        $own = new SimpleService();
-        $container->define('name', $own);
+        $simpleService = new SimpleService();
+        $container->define('name', $simpleService);
         $container->define('target', new SimpleService());
 
-        $exception = $this->captureException(ContainerException::class, static fn() => $container->alias('name', 'target'));
-        $this->assertStringContainsString('name', $exception->getMessage());
+        $containerException = $this->captureException(ContainerException::class, static fn() => $container->alias('name', 'target'));
+        $this->assertStringContainsString('name', $containerException->getMessage());
 
-        $this->assertSame($own, $container->get('name'));
+        $this->assertSame($simpleService, $container->get('name'));
     }
 
     public function testDefinitionAliasCannotShadowADefinedService(): void
     {
         $container = new Container();
-        $own = new SimpleService();
-        $container->define('name', $own);
+        $simpleService = new SimpleService();
+        $container->define('name', $simpleService);
 
         $this->captureException(ContainerException::class, static fn() => $container->define('target', new SimpleService())->alias('name'));
 
-        $this->assertSame($own, $container->get('name'));
+        $this->assertSame($simpleService, $container->get('name'));
     }
 
     public function testInterfaceAliasCanBeDefinedBeforeItsTargetAndRepointedLater(): void
@@ -610,10 +611,10 @@ final class ContainerTest extends TestCase
         $container->define('target', new SimpleService());
         $container->alias('name', 'target');
 
-        $own = new SimpleService();
-        $container->define('name', $own);
+        $simpleService = new SimpleService();
+        $container->define('name', $simpleService);
 
-        $this->assertSame($own, $container->get('name'));
+        $this->assertSame($simpleService, $container->get('name'));
     }
 
     public function testLoaderIsConstructedWithDependenciesAndCalledOnlyOnce(): void
@@ -666,6 +667,7 @@ final class ContainerTest extends TestCase
         $container->define(ContainerAwareLoader::class);
 
         $service = $container->get('loaded');
+        $this->assertInstanceOf(LoadedService::class, $service);
 
         $this->assertSame('container-aware', $service->name);
     }
@@ -676,6 +678,7 @@ final class ContainerTest extends TestCase
         $container->define('loaded')->loader(ParameterizedLoader::class)->parameter('label', 'configured');
 
         $service = $container->get('loaded');
+        $this->assertInstanceOf(LoadedService::class, $service);
 
         $this->assertSame('configured', $service->name);
     }
@@ -683,14 +686,14 @@ final class ContainerTest extends TestCase
     public function testLoaderCanResolveAnotherRegisteredService(): void
     {
         $container = new Container();
-        $dependency = new SharedDependency();
-        $container->define(SharedDependency::class, $dependency);
+        $sharedDependency = new SharedDependency();
+        $container->define(SharedDependency::class, $sharedDependency);
         $container->define('loaded')->loader(DependencyResolvingLoader::class);
         $container->define(DependencyResolvingLoader::class);
 
         $service = $container->get('loaded');
 
-        $this->assertSame($dependency, $service->dependency);
+        $this->assertSame($sharedDependency, get_object_vars($service)['dependency']);
     }
 
     public function testRecursiveLoaderResolutionIsRejected(): void
@@ -708,8 +711,8 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define('loaded')->loader(ThrowingLoader::class);
 
-        $exception = $this->captureException(RuntimeException::class, static fn() => $container->get('loaded'));
-        $this->assertSame('loader failed', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $container->get('loaded'));
+        $this->assertSame('loader failed', $runtimeException->getMessage());
 
         $this->assertTrue($container->has('loaded'));
         $this->assertFalse($container->isResolved('loaded'));
@@ -726,10 +729,10 @@ final class ContainerTest extends TestCase
 
     public function testObjectDefinitionsCannotAlsoHaveLoaders(): void
     {
-        $definition = (new Container())->define('service', new SimpleService());
+        $serviceDefinition = (new Container())->define('service', new SimpleService());
 
         $this->expectException(LogicException::class);
-        $definition->loader(TestServiceLoader::class);
+        $serviceDefinition->loader(TestServiceLoader::class);
     }
 
     public function testInvalidLoaderIsRejectedDuringResolution(): void
@@ -834,10 +837,10 @@ final class ContainerTest extends TestCase
         $container->define(NestedDependentService::class);
         $container->define(AnotherDependentService::class);
 
-        $nested = $container->get(NestedDependentService::class);
-        $another = $container->get(AnotherDependentService::class);
+        $nestedDependentService = $container->get(NestedDependentService::class);
+        $anotherDependentService = $container->get(AnotherDependentService::class);
 
-        $this->assertSame($nested->dependency->dependency, $another->dependency);
+        $this->assertSame($nestedDependentService->dependency->dependency, $anotherDependentService->dependency);
     }
 
     public function testOptionalMissingDependenciesUseTheirDefault(): void
@@ -913,7 +916,7 @@ final class ContainerTest extends TestCase
 
         $service = $container->get($class);
 
-        $this->assertSame($expected, $service->value);
+        $this->assertSame($expected, get_object_vars($service)['value']);
     }
 
     public static function defaultParameterProvider(): iterable
@@ -932,8 +935,8 @@ final class ContainerTest extends TestCase
         $define($container);
         $original = $container->get($name);
 
-        $exception = $this->captureException(ContainerException::class, static fn() => $container->define($name, new SimpleService()));
-        $this->assertStringContainsString($name, $exception->getMessage());
+        $containerException = $this->captureException(ContainerException::class, static fn() => $container->define($name, new SimpleService()));
+        $this->assertStringContainsString($name, $containerException->getMessage());
 
         $this->assertTrue($container->isResolved($name));
         $this->assertSame($original, $container->get($name));
@@ -977,11 +980,11 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define('service', new SimpleService())->alias('alias');
 
-        $replacement = new SimpleService();
-        $container->define('service', $replacement);
+        $simpleService = new SimpleService();
+        $container->define('service', $simpleService);
 
-        $this->assertSame($replacement, $container->get('alias'));
-        $this->assertSame($replacement, $container->get('service'));
+        $this->assertSame($simpleService, $container->get('alias'));
+        $this->assertSame($simpleService, $container->get('service'));
     }
 
     public function testServicesResolvedThroughAnAliasCannotBeRedefined(): void
@@ -1001,10 +1004,10 @@ final class ContainerTest extends TestCase
         $container->alias('name', 'target');
         $target = $container->get('target');
 
-        $own = new SimpleService();
-        $container->define('name', $own);
+        $simpleService = new SimpleService();
+        $container->define('name', $simpleService);
 
-        $this->assertSame($own, $container->get('name'));
+        $this->assertSame($simpleService, $container->get('name'));
         $this->assertSame($target, $container->get('target'));
     }
 }

@@ -15,9 +15,9 @@ final class DomSanitizerTest extends TestCase
 {
     public function testNothingIsAllowedByDefault(): void
     {
-        $sanitizer = new DomSanitizer();
+        $domSanitizer = new DomSanitizer();
 
-        $this->assertSame('', $sanitizer->sanitize('<p class="a">Text</p>'));
+        $this->assertSame('', $domSanitizer->sanitize('<p class="a">Text</p>'));
     }
 
     public function testPlainTextIsKept(): void
@@ -32,69 +32,69 @@ final class DomSanitizerTest extends TestCase
 
     public function testConfigurationMethodsAreFluent(): void
     {
-        $sanitizer = new DomSanitizer();
+        $domSanitizer = new DomSanitizer();
 
-        $this->assertSame($sanitizer, $sanitizer->allowedElements(['p']));
-        $this->assertSame($sanitizer, $sanitizer->allowedAttributes(['title']));
-        $this->assertSame($sanitizer, $sanitizer->allowedUriSchemes(['https']));
-        $this->assertSame($sanitizer, $sanitizer->disallowExternalUris());
-        $this->assertSame($sanitizer, $sanitizer->sanitizeElementsMethod(SanitizeElementsMethod::Escape));
+        $this->assertSame($domSanitizer, $domSanitizer->allowedElements(['p']));
+        $this->assertSame($domSanitizer, $domSanitizer->allowedAttributes(['title']));
+        $this->assertSame($domSanitizer, $domSanitizer->allowedUriSchemes(['https']));
+        $this->assertSame($domSanitizer, $domSanitizer->disallowExternalUris());
+        $this->assertSame($domSanitizer, $domSanitizer->sanitizeElementsMethod(SanitizeElementsMethod::Escape));
     }
 
     public function testOnlyAllowedElementsAndAttributesAreKept(): void
     {
-        $sanitizer = (new DomSanitizer())
+        $domSanitizer = (new DomSanitizer())
             ->allowedElements(['p', 'b'])
             ->allowedAttributes(['title']);
 
-        $html = $sanitizer->sanitize('<p title="Title" class="a" onclick="x()">Hello <b id="x">world</b><i>removed</i></p>');
+        $html = $domSanitizer->sanitize('<p title="Title" class="a" onclick="x()">Hello <b id="x">world</b><i>removed</i></p>');
 
         $this->assertSame('<p title="Title">Hello <b>world</b></p>', $html);
     }
 
     public function testAllowedListsAreReplacedAndNotMerged(): void
     {
-        $sanitizer = (new DomSanitizer())->allowedElements(['p'])->allowedElements(['div']);
+        $domSanitizer = (new DomSanitizer())->allowedElements(['p'])->allowedElements(['div']);
 
-        $this->assertSame('<div>kept</div>', $sanitizer->sanitize('<p>removed</p><div>kept</div>'));
+        $this->assertSame('<div>kept</div>', $domSanitizer->sanitize('<p>removed</p><div>kept</div>'));
     }
 
     public function testDisallowedElementsAreRemovedWithTheirContent(): void
     {
-        $sanitizer = (new DomSanitizer())->allowedElements(['p']);
+        $domSanitizer = (new DomSanitizer())->allowedElements(['p']);
 
-        $this->assertSame('<p>kept</p>', $sanitizer->sanitize('<p>kept</p><script>alert(1)</script><div><p>nested</p></div>'));
+        $this->assertSame('<p>kept</p>', $domSanitizer->sanitize('<p>kept</p><script>alert(1)</script><div><p>nested</p></div>'));
     }
 
     public function testDisallowedElementsCanBeEscapedInsteadOfRemoved(): void
     {
-        $sanitizer = (new DomSanitizer())
+        $domSanitizer = (new DomSanitizer())
             ->allowedElements(['p'])
             ->sanitizeElementsMethod(SanitizeElementsMethod::Escape);
 
-        $html = $sanitizer->sanitize('<p>kept</p><script>alert(1)</script>');
+        $html = $domSanitizer->sanitize('<p>kept</p><script>alert(1)</script>');
 
         $this->assertSame('<p>kept</p>&lt;script&gt;alert(1)&lt;/script&gt;', $html);
     }
 
     public function testChildrenOfAllowedElementsAreSanitizedRecursively(): void
     {
-        $sanitizer = (new DomSanitizer())
+        $domSanitizer = (new DomSanitizer())
             ->allowedElements(['div', 'p', 'span'])
             ->allowedAttributes(['title']);
 
-        $html = $sanitizer->sanitize('<div onclick="x()"><p><span title="t" style="x"><script>alert(1)</script>ok</span></p></div>');
+        $html = $domSanitizer->sanitize('<div onclick="x()"><p><span title="t" style="x"><script>alert(1)</script>ok</span></p></div>');
 
         $this->assertSame('<div><p><span title="t">ok</span></p></div>', $html);
     }
 
     public function testAttributesOfEscapedElementsAreNotRenderedAsMarkup(): void
     {
-        $sanitizer = (new DomSanitizer())
+        $domSanitizer = (new DomSanitizer())
             ->allowedElements(['p'])
             ->sanitizeElementsMethod(SanitizeElementsMethod::Escape);
 
-        $html = $sanitizer->sanitize('<p><img src=x onerror=alert(1)></p>');
+        $html = $domSanitizer->sanitize('<p><img src=x onerror=alert(1)></p>');
 
         $this->assertStringNotContainsString('<img', $html);
         $this->assertStringContainsString('&lt;img', $html);
@@ -108,9 +108,9 @@ final class DomSanitizerTest extends TestCase
 
     public function testUriAttributesAreNotCheckedUnlessDeclared(): void
     {
-        $sanitizer = (new DomSanitizer())->allowedElements(['a'])->allowedAttributes(['href']);
+        $domSanitizer = (new DomSanitizer())->allowedElements(['a'])->allowedAttributes(['href']);
 
-        $this->assertSame('<a href="javascript:alert(1)">x</a>', $sanitizer->sanitize('<a href="javascript:alert(1)">x</a>'));
+        $this->assertSame('<a href="javascript:alert(1)">x</a>', $domSanitizer->sanitize('<a href="javascript:alert(1)">x</a>'));
     }
 
     #[DataProvider('safeUriProvider')]
@@ -173,31 +173,31 @@ final class DomSanitizerTest extends TestCase
 
     public function testExternalUrisCanBeDisallowed(): void
     {
-        $sanitizer = $this->uriSanitizer()->disallowExternalUris();
+        $uriAttributeSanitizer = $this->uriSanitizer()->disallowExternalUris();
 
         $this->assertSame(
             '<a>external</a><a href="/local">local</a>',
-            $sanitizer->sanitize('<a href="https://example.com">external</a><a href="/local">local</a>')
+            $uriAttributeSanitizer->sanitize('<a href="https://example.com">external</a><a href="/local">local</a>')
         );
     }
 
     public function testAllowedUriSchemesCanBeCustomized(): void
     {
-        $sanitizer = $this->uriSanitizer()->allowedUriSchemes(['ftp']);
+        $uriAttributeSanitizer = $this->uriSanitizer()->allowedUriSchemes(['ftp']);
 
         $this->assertSame(
             '<a href="ftp://example.com/file">ftp</a><a>https</a>',
-            $sanitizer->sanitize('<a href="ftp://example.com/file">ftp</a><a href="https://example.com">https</a>')
+            $uriAttributeSanitizer->sanitize('<a href="ftp://example.com/file">ftp</a><a href="https://example.com">https</a>')
         );
     }
 
     public function testEveryDeclaredUriAttributeIsChecked(): void
     {
-        $sanitizer = (new UriAttributeSanitizer())
+        $uriAttributeSanitizer = (new UriAttributeSanitizer())
             ->allowedElements(['a', 'img'])
             ->allowedAttributes(['href', 'src', 'title']);
 
-        $html = $sanitizer->sanitize('<a href="javascript:alert(1)" title="t">x</a><img src="javascript:alert(2)" title="i">');
+        $html = $uriAttributeSanitizer->sanitize('<a href="javascript:alert(1)" title="t">x</a><img src="javascript:alert(2)" title="i">');
 
         $this->assertSame('<a title="t">x</a><img title="i">', $html);
     }

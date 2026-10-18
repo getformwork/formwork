@@ -57,13 +57,13 @@ final class PluginsControllerTest extends TestCase
                 ['panel.plugins' => true],
                 services: [Config::class => $config],
             );
-            $updateOptions = new ReflectionMethod($controller, 'updatePluginsOptions');
-            $updateOptions->invoke($controller, $plugin, $formData);
+            $reflectionMethod = new ReflectionMethod($controller, 'updatePluginsOptions');
+            $reflectionMethod->invoke($controller, $plugin, $formData);
 
             $this->assertSame($expected, Yaml::parseFile($outputPath));
         } finally {
             if ($originalOutput === null) {
-                if (FileSystem::isFile($outputPath, assertExists: false)) {
+                if (is_file($outputPath)) {
                     FileSystem::delete($outputPath);
                 }
             } else {

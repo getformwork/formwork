@@ -11,21 +11,21 @@ final class SchemeOptionsTest extends TestCase
 {
     public function testOptionsAreReadableByKey(): void
     {
-        $options = new SchemeOptions(['num' => 3, 'flag' => true, 'nested' => ['key' => 'value']]);
+        $schemeOptions = new SchemeOptions(['num' => 3, 'flag' => true, 'nested' => ['key' => 'value']]);
 
-        $this->assertSame(3, $options->get('num'));
-        $this->assertTrue($options->get('flag'));
-        $this->assertSame('value', $options->get('nested.key'));
-        $this->assertTrue($options->has('num'));
+        $this->assertSame(3, $schemeOptions->get('num'));
+        $this->assertTrue($schemeOptions->get('flag'));
+        $this->assertSame('value', $schemeOptions->get('nested.key'));
+        $this->assertTrue($schemeOptions->has('num'));
     }
 
     public function testMissingOptionsFallBackToTheDefault(): void
     {
-        $options = new SchemeOptions([]);
+        $schemeOptions = new SchemeOptions([]);
 
-        $this->assertFalse($options->has('missing'));
-        $this->assertNull($options->get('missing'));
-        $this->assertSame('fallback', $options->get('missing', 'fallback'));
+        $this->assertFalse($schemeOptions->has('missing'));
+        $this->assertNull($schemeOptions->get('missing'));
+        $this->assertSame('fallback', $schemeOptions->get('missing', 'fallback'));
     }
 
     public function testToArrayReturnsTheOptions(): void

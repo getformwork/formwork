@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Events;
 
+use ArrayObject;
 use Formwork\Events\Event;
 use Formwork\Events\EventDispatcher;
 use Formwork\Events\ListenerProvider;
@@ -32,52 +33,52 @@ final class EventDispatcherTest extends TestCase
 
     public function testListenersAreCalledInRegistrationOrder(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $calls = [];
 
-        $dispatcher->on('event', function () use (&$calls): void {
+        $eventDispatcher->on('event', function () use (&$calls): void {
             $calls[] = 'first';
         });
-        $dispatcher->on('event', function () use (&$calls): void {
+        $eventDispatcher->on('event', function () use (&$calls): void {
             $calls[] = 'second';
         });
-        $dispatcher->on('event', function () use (&$calls): void {
+        $eventDispatcher->on('event', function () use (&$calls): void {
             $calls[] = 'third';
         });
 
-        $dispatcher->dispatch(new Event('event', []));
+        $eventDispatcher->dispatch(new Event('event', []));
 
         $this->assertSame(['first', 'second', 'third'], $calls);
     }
 
     public function testListenersReceiveTheEvent(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $received = [];
         $event = new Event('event', []);
 
-        $dispatcher->on('event', function (Event $received1) use (&$received): void {
-            $received[] = $received1;
+        $eventDispatcher->on('event', function (Event $event) use (&$received): void {
+            $received[] = $event;
         });
 
-        $dispatcher->dispatch($event);
+        $eventDispatcher->dispatch($event);
 
         $this->assertSame([$event], $received);
     }
 
     public function testListenersCanModifyTheEventForTheFollowingListeners(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $seen = null;
 
-        $dispatcher->on('event', static function (Event $event): void {
+        $eventDispatcher->on('event', static function (Event $event): void {
             $event->set('value', 'changed');
         });
-        $dispatcher->on('event', function (Event $event) use (&$seen): void {
+        $eventDispatcher->on('event', function (Event $event) use (&$seen): void {
             $seen = $event->get('value');
         });
 
-        $result = $dispatcher->dispatch(new Event('event', ['value' => 'original']));
+        $result = $eventDispatcher->dispatch(new Event('event', ['value' => 'original']));
 
         $this->assertSame('changed', $seen);
         $this->assertSame('changed', $result->get('value'));
@@ -85,35 +86,35 @@ final class EventDispatcherTest extends TestCase
 
     public function testOnlyListenersOfTheDispatchedEventAreCalled(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $calls = [];
 
-        $dispatcher->on('one', function () use (&$calls): void {
+        $eventDispatcher->on('one', function () use (&$calls): void {
             $calls[] = 'one';
         });
-        $dispatcher->on('two', function () use (&$calls): void {
+        $eventDispatcher->on('two', function () use (&$calls): void {
             $calls[] = 'two';
         });
 
-        $dispatcher->dispatch(new Event('two', []));
+        $eventDispatcher->dispatch(new Event('two', []));
 
         $this->assertSame(['two'], $calls);
     }
 
     public function testStoppingPropagationSkipsTheRemainingListeners(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $calls = [];
 
-        $dispatcher->on('event', function (Event $event) use (&$calls): void {
+        $eventDispatcher->on('event', function (Event $event) use (&$calls): void {
             $calls[] = 'first';
             $event->stopPropagation();
         });
-        $dispatcher->on('event', function () use (&$calls): void {
+        $eventDispatcher->on('event', function () use (&$calls): void {
             $calls[] = 'second';
         });
 
-        $event = $dispatcher->dispatch(new Event('event', []));
+        $event = $eventDispatcher->dispatch(new Event('event', []));
 
         $this->assertSame(['first'], $calls);
         $this->assertTrue($event->isPropagationStopped());
@@ -121,105 +122,105 @@ final class EventDispatcherTest extends TestCase
 
     public function testAlreadyStoppedEventsAreNotDispatched(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $called = false;
-        $dispatcher->on('event', function () use (&$called): void {
+        $eventDispatcher->on('event', function () use (&$called): void {
             $called = true;
         });
 
         $event = new Event('event', []);
         $event->stopPropagation();
-        $dispatcher->dispatch($event);
+        $eventDispatcher->dispatch($event);
 
         $this->assertFalse($called);
     }
 
     public function testNonStoppableObjectsAreDispatchedByClassName(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $calls = 0;
-        $dispatcher->on(stdClass::class, function () use (&$calls): void {
+        $eventDispatcher->on(stdClass::class, function () use (&$calls): void {
             $calls++;
         });
-        $dispatcher->on(stdClass::class, function () use (&$calls): void {
+        $eventDispatcher->on(stdClass::class, function () use (&$calls): void {
             $calls++;
         });
 
         $object = new stdClass();
 
-        $this->assertSame($object, $dispatcher->dispatch($object));
+        $this->assertSame($object, $eventDispatcher->dispatch($object));
         $this->assertSame(2, $calls);
     }
 
     public function testExceptionsThrownByListenersPropagateAndStopTheDispatch(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $laterCalled = false;
-        $dispatcher->on('event', static function (): void {
+        $eventDispatcher->on('event', static function (): void {
             throw new RuntimeException('listener failed');
         });
-        $dispatcher->on('event', function () use (&$laterCalled): void {
+        $eventDispatcher->on('event', function () use (&$laterCalled): void {
             $laterCalled = true;
         });
 
-        $exception = $this->captureException(RuntimeException::class, static fn() => $dispatcher->dispatch(new Event('event', [])));
-        $this->assertSame('listener failed', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $eventDispatcher->dispatch(new Event('event', [])));
+        $this->assertSame('listener failed', $runtimeException->getMessage());
 
         $this->assertFalse($laterCalled);
     }
 
     public function testTheSameEventCanBeDispatchedMoreThanOnce(): void
     {
-        $dispatcher = new EventDispatcher();
+        $eventDispatcher = new EventDispatcher();
         $calls = 0;
-        $dispatcher->on('event', function () use (&$calls): void {
+        $eventDispatcher->on('event', function () use (&$calls): void {
             $calls++;
         });
         $event = new Event('event', []);
 
-        $dispatcher->dispatch($event);
-        $dispatcher->dispatch($event);
+        $eventDispatcher->dispatch($event);
+        $eventDispatcher->dispatch($event);
 
         $this->assertSame(2, $calls);
     }
 
     public function testListenersRegisteredWhileDispatchingAreNotCalledForTheCurrentDispatch(): void
     {
-        $dispatcher = new EventDispatcher();
-        $calls = [];
+        $eventDispatcher = new EventDispatcher();
+        $arrayObject = new ArrayObject();
 
-        $dispatcher->on('event', function () use ($dispatcher, &$calls): void {
-            $calls[] = 'first';
-            $dispatcher->on('event', function () use (&$calls): void {
-                $calls[] = 'late';
+        $eventDispatcher->on('event', function () use ($eventDispatcher, $arrayObject): void {
+            $arrayObject[] = 'first';
+            $eventDispatcher->on('event', function () use ($arrayObject): void {
+                $arrayObject[] = 'late';
             });
         });
 
-        $dispatcher->dispatch(new Event('event', []));
-        $this->assertSame(['first'], $calls);
+        $eventDispatcher->dispatch(new Event('event', []));
+        $this->assertSame(['first'], $arrayObject->getArrayCopy());
 
-        $dispatcher->dispatch(new Event('event', []));
-        $this->assertSame(['first', 'first', 'late'], $calls);
+        $eventDispatcher->dispatch(new Event('event', []));
+        $this->assertSame(['first', 'first', 'late'], $arrayObject->getArrayCopy());
     }
 
     public function testCustomListenerProvidersAreUsed(): void
     {
-        $provider = new ListenerProvider();
+        $listenerProvider = new ListenerProvider();
         $called = false;
-        $provider->addListener('event', function () use (&$called): void {
+        $listenerProvider->addListener('event', function () use (&$called): void {
             $called = true;
         });
 
-        (new EventDispatcher($provider))->dispatch(new Event('event', []));
+        (new EventDispatcher($listenerProvider))->dispatch(new Event('event', []));
 
         $this->assertTrue($called);
     }
 
     public function testDispatchersSharingAProviderShareTheirListeners(): void
     {
-        $provider = new ListenerProvider();
-        $first = new EventDispatcher($provider);
-        $second = new EventDispatcher($provider);
+        $listenerProvider = new ListenerProvider();
+        $first = new EventDispatcher($listenerProvider);
+        $second = new EventDispatcher($listenerProvider);
         $calls = 0;
 
         $first->on('event', function () use (&$calls): void {

@@ -133,10 +133,10 @@ final class TranslationsTest extends TestCase
         $translations->load($this->path . '/en.yaml');
         $translations->load($extra . '/en.yaml');
 
-        $english = $translations->get('en');
-        $this->assertSame('Overridden', $english->translate('hello'), 'Later files override earlier ones');
-        $this->assertSame('From plugin', $english->translate('plugin.key'));
-        $this->assertSame('English only', $english->translate('only.english'));
+        $translation = $translations->get('en');
+        $this->assertSame('Overridden', $translation->translate('hello'), 'Later files override earlier ones');
+        $this->assertSame('From plugin', $translation->translate('plugin.key'));
+        $this->assertSame('English only', $translation->translate('only.english'));
     }
 
     public function testLoadingAFileResetsTheCachedTranslation(): void
@@ -145,11 +145,11 @@ final class TranslationsTest extends TestCase
         FileSystem::createDirectory($extra);
         FileSystem::write($extra . '/en.yaml', "plugin.key: From plugin\n");
         $translations = $this->translations();
-        $before = $translations->get('en');
+        $translation = $translations->get('en');
 
         $translations->load($extra . '/en.yaml');
 
-        $this->assertNotSame($before, $translations->get('en'));
+        $this->assertNotSame($translation, $translations->get('en'));
         $this->assertSame('From plugin', $translations->get('en')->translate('plugin.key'));
     }
 
@@ -159,14 +159,14 @@ final class TranslationsTest extends TestCase
         FileSystem::createDirectory($extra);
         FileSystem::write($extra . '/en.yaml', "plugin.key: From plugin\n");
         $translations = $this->translations();
-        $italian = $translations->get('it');
+        $translation = $translations->get('it');
 
         $translations->load($extra . '/en.yaml');
 
-        $italian->setFallback($translations->get('en'));
+        $translation->setFallback($translations->get('en'));
 
         $this->assertSame('From plugin', $translations->get('it')->translate('plugin.key'));
-        $this->assertSame('From plugin', $italian->translate('plugin.key'));
+        $this->assertSame('From plugin', $translation->translate('plugin.key'));
     }
 
     public function testMultipleTranslationsCanBeRetrieved(): void

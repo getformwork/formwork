@@ -46,7 +46,6 @@ final class PhpDomParserTest extends TestCase
     public function testMalformedMarkupDoesNotEmitWarnings(): void
     {
         $this->assertNull((new PhpDomParser())->parse('<svg><unclosed></svg>'));
-        $this->addToAssertionCount(1);
     }
 
     public function testEmptyInputIsNotValidMarkup(): void
@@ -69,9 +68,9 @@ final class PhpDomParserTest extends TestCase
         file_put_contents($secret, 'TOP-SECRET');
 
         try {
-            $parser = new PhpDomParser();
-            $fragment = $parser->parse('<!DOCTYPE r [<!ENTITY x SYSTEM "file://' . $secret . '">]><r>&x;</r>');
-            $output = $fragment === null ? '' : $parser->serialize($fragment);
+            $phpDomParser = new PhpDomParser();
+            $fragment = $phpDomParser->parse('<!DOCTYPE r [<!ENTITY x SYSTEM "file://' . $secret . '">]><r>&x;</r>');
+            $output = $fragment === null ? '' : $phpDomParser->serialize($fragment);
         } finally {
             unlink($secret);
         }
@@ -82,39 +81,39 @@ final class PhpDomParserTest extends TestCase
     public function testEntityExpansionBombsAreNotExpanded(): void
     {
         $bomb = '<!DOCTYPE b [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;"><!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;">]><r>&c;</r>';
-        $parser = new PhpDomParser();
+        $phpDomParser = new PhpDomParser();
 
-        $fragment = $parser->parse($bomb);
-        $output = $fragment === null ? '' : $parser->serialize($fragment);
+        $fragment = $phpDomParser->parse($bomb);
+        $output = $fragment === null ? '' : $phpDomParser->serialize($fragment);
 
         $this->assertLessThan(500, strlen($output));
     }
 
     public function testSerializingAFragmentReturnsItsMarkup(): void
     {
-        $parser = new PhpDomParser();
-        $fragment = $parser->parse('<p class="a">text</p><p>more</p>');
+        $phpDomParser = new PhpDomParser();
+        $fragment = $phpDomParser->parse('<p class="a">text</p><p>more</p>');
 
-        $this->assertSame('<p class="a">text</p><p>more</p>', $parser->serialize($fragment));
+        $this->assertSame('<p class="a">text</p><p>more</p>', $phpDomParser->serialize($fragment));
     }
 
     public function testSerializingAnElementReturnsOnlyThatElement(): void
     {
-        $parser = new PhpDomParser();
-        $fragment = $parser->parse('<p>one</p><p>two</p>');
+        $phpDomParser = new PhpDomParser();
+        $fragment = $phpDomParser->parse('<p>one</p><p>two</p>');
 
         $this->assertNotNull($fragment);
-        $this->assertSame('<p>two</p>', $parser->serialize($fragment->lastChild));
+        $this->assertSame('<p>two</p>', $phpDomParser->serialize($fragment->lastChild));
     }
 
     public function testSerializingADocumentReturnsItsRootElement(): void
     {
-        $parser = new PhpDomParser();
-        $document = (new ReflectionProperty($parser, 'dom'))->getValue($parser);
+        $phpDomParser = new PhpDomParser();
+        $document = (new ReflectionProperty($phpDomParser, 'dom'))->getValue($phpDomParser);
         $this->assertInstanceOf(DOMDocument::class, $document);
         $document->loadXML('<root><child/></root>');
 
-        $this->assertSame('<root><child/></root>', $parser->serialize($document));
+        $this->assertSame('<root><child/></root>', $phpDomParser->serialize($document));
     }
 
     public function testSerializingNothingReturnsAString(): void
@@ -137,11 +136,11 @@ final class PhpDomParserTest extends TestCase
     #[DataProvider('markupWithProlog')]
     public function testTheDocumentPrologIsRemoved(string $markup): void
     {
-        $parser = new PhpDomParser();
-        $fragment = $parser->parse($markup);
+        $phpDomParser = new PhpDomParser();
+        $fragment = $phpDomParser->parse($markup);
 
         $this->assertNotNull($fragment);
-        $this->assertSame('<svg xmlns="http://www.w3.org/2000/svg"/>', $parser->serialize($fragment));
+        $this->assertSame('<svg xmlns="http://www.w3.org/2000/svg"/>', $phpDomParser->serialize($fragment));
     }
 
     public function testEntitiesDefinedInTheRemovedDoctypeMakeTheMarkupInvalid(): void
@@ -151,9 +150,9 @@ final class PhpDomParserTest extends TestCase
 
     public function testSpecialCharactersAreEscapedWhenSerializing(): void
     {
-        $parser = new PhpDomParser();
-        $fragment = $parser->parse('<p title="&quot;&lt;">&lt;&amp;&gt;</p>');
+        $phpDomParser = new PhpDomParser();
+        $fragment = $phpDomParser->parse('<p title="&quot;&lt;">&lt;&amp;&gt;</p>');
 
-        $this->assertSame('<p title="&quot;&lt;">&lt;&amp;&gt;</p>', $parser->serialize($fragment));
+        $this->assertSame('<p title="&quot;&lt;">&lt;&amp;&gt;</p>', $phpDomParser->serialize($fragment));
     }
 }

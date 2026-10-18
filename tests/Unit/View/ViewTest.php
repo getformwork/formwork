@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\View;
 
+use Closure;
 use Formwork\Tests\TestCase;
 use Formwork\Utils\Str;
 use Formwork\View\Exceptions\RenderingException;
@@ -95,6 +96,8 @@ final class ViewTest extends TestCase
         $view = $this->view('plain', ['name' => 'x'], ['escape' => Str::escape(...)]);
 
         $this->expectException(RenderingException::class);
+
+        // @phpstan-ignore method.notFound
         $view->escape('x');
     }
 
@@ -192,6 +195,9 @@ final class ViewTest extends TestCase
         $this->view('unmatched-end')->render();
     }
 
+    /**
+     * @param list<string> $arguments
+     */
     #[DataProvider('renderingOnlyMethodProvider')]
     public function testBlockAndInsertMethodsRequireTheRenderingContext(string $method, array $arguments): void
     {
@@ -232,8 +238,8 @@ final class ViewTest extends TestCase
     {
         $level = ob_get_level();
 
-        $exception = $this->captureException(RuntimeException::class, fn() => $this->view('throws')->render());
-        $this->assertSame('boom', $exception->getMessage());
+        $runtimeException = $this->captureException(RuntimeException::class, fn() => $this->view('throws')->render());
+        $this->assertSame('boom', $runtimeException->getMessage());
 
         $this->assertSame($level, ob_get_level());
     }
@@ -241,8 +247,8 @@ final class ViewTest extends TestCase
     public function testRenderingIsNotAllowedWhileRendering(): void
     {
         $view = $this->view('empty', methods: []);
-        $property = new ReflectionProperty(View::class, 'rendering');
-        $property->setValue($view, true);
+        $reflectionProperty = new ReflectionProperty(View::class, 'rendering');
+        $reflectionProperty->setValue($view, true);
 
         $this->expectException(RenderingException::class);
         $view->render();

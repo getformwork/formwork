@@ -49,7 +49,7 @@ final class SiteTemplatesTest extends TestCase
         $document = $this->document($this->render(siteTitle: $title));
 
         $this->assertSame('Page | ' . $title, $document->getElementsByTagName('title')->item(0)?->textContent);
-        $this->assertSame($title, trim((string) (new DOMXPath($document))->query('//a[contains(@class, "menu-header")]')->item(0)?->textContent));
+        $this->assertSame($title, trim((new DOMXPath($document))->evaluate('string(//a[contains(@class, "menu-header")])')));
         $this->assertNoInjectedMarkup($document);
     }
 
@@ -113,22 +113,21 @@ final class SiteTemplatesTest extends TestCase
 
     private function document(string $html): DOMDocument
     {
-        $document = new DOMDocument();
-        $document->loadHTML($html, LIBXML_NOERROR);
+        $this->assertNotSame('', $html);
 
-        return $document;
+        $domDocument = new DOMDocument();
+        $domDocument->loadHTML($html, LIBXML_NOERROR);
+
+        return $domDocument;
     }
 
-    private function assertNoInjectedMarkup(DOMDocument $document): void
+    private function assertNoInjectedMarkup(DOMDocument $domDocument): void
     {
-        $xpath = new DOMXPath($document);
+        $domxPath = new DOMXPath($domDocument);
 
-        foreach ($xpath->query('//script') as $script) {
-            $this->assertSame('', trim($script->textContent), 'Inline script injected');
-        }
-
-        $this->assertSame(0, $xpath->query('//img')->length, 'Image injected');
-        $this->assertSame(0, $xpath->query('//@*[starts-with(name(), "on")]')->length, 'Event handler injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//script[normalize-space() != ""])'), 'Inline script injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//img)'), 'Image injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), 'Event handler injected');
     }
 
     /**

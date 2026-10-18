@@ -37,7 +37,7 @@ final class TextFormatterTest extends TestCase
     #[DataProvider('levelProvider')]
     public function testLevelsAreUppercased(string $level): void
     {
-        $line = (new TextFormatter())->format($this->date, $level, 'message', []);
+        $line = (new TextFormatter())->format($this->date, $this->unchecked($level), 'message', []);
 
         $this->assertStringContainsString(': message', $line);
         $this->assertStringContainsString('] ' . strtoupper($level) . ':', $line);
@@ -105,6 +105,9 @@ final class TextFormatterTest extends TestCase
         $this->assertStringStartsWith('[2025-01-02 03:04:05.000000]', $line);
     }
 
+    /**
+     * @param array<string, string> $context
+     */
     #[DataProvider('multilineProvider')]
     public function testEntriesAreAlwaysASingleLine(string $message, array $context): void
     {
@@ -114,7 +117,7 @@ final class TextFormatterTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{string, array<mixed>}>
+     * @return iterable<string, array{string, array<string, string>}>
      */
     public static function multilineProvider(): iterable
     {

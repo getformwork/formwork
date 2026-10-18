@@ -46,10 +46,10 @@ final class PaginationTest extends TestCase
         $router = $this->createStub(Router::class);
         $base = new Route('page', '/{page:all}/');
         $pagination = new Route('page.pagination', '/{page:all}/page/{paginationPage:number}/');
-        $routes = new RouteCollection([$base->getName() => $base, $pagination->getName() => $pagination]);
+        $routeCollection = new RouteCollection([$base->getName() => $base, $pagination->getName() => $pagination]);
 
         $router->method('current')->willReturn($pagination);
-        $router->method('routes')->willReturn($routes);
+        $router->method('routes')->willReturn($routeCollection);
         $router->method('generateWith')->willReturnCallback(static function (string $name, array $parameters): string {
             return $name === 'page' ? '/about/' : '/about/page/' . $parameters['paginationPage'] . '/';
         });

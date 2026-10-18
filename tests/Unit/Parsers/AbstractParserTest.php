@@ -17,11 +17,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[UsesTempDirectory]
 final class AbstractParserTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testParseFileReadsTheFileAndForwardsOptions(): void
     {
         FileSystem::write(TESTS_TMP_PATH . '/input.txt', 'content');

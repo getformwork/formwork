@@ -34,8 +34,8 @@ final class LayoutTest extends TestCase
 
         $this->assertSame(['main', 'sidebar'], $layout->sections()->keys());
         $this->assertContainsOnlyInstancesOf(Section::class, $layout->sections());
-        $this->assertSame('main', $layout->sections()->get('main')->name());
-        $this->assertSame(['b'], $layout->sections()->get('sidebar')->get('fields'));
+        $this->assertSame('main', $layout->sections()->get('main')?->name());
+        $this->assertSame(['b'], $layout->sections()->get('sidebar')?->get('fields'));
     }
 
     public function testSectionsAreSortedByOrderAndKeepDefinitionOrderOtherwise(): void
@@ -54,7 +54,7 @@ final class LayoutTest extends TestCase
     {
         $layout = $this->layout(['sections' => ['main' => ['label' => '{{greeting}}']]]);
 
-        $this->assertSame('Hello', $layout->sections()->get('main')->label());
+        $this->assertSame('Hello', $layout->sections()->get('main')?->label());
     }
 
     public function testSectionsAreBuiltOnce(): void
@@ -73,15 +73,15 @@ final class LayoutTest extends TestCase
 
         $this->assertSame(['content', 'seo'], $layout->tabs()->keys());
         $this->assertContainsOnlyInstancesOf(Tab::class, $layout->tabs());
-        $this->assertSame('SEO', $layout->tabs()->get('seo')->label());
-        $this->assertSame('content', $layout->tabs()->get('content')->label());
+        $this->assertSame('SEO', $layout->tabs()->get('seo')?->label());
+        $this->assertSame('content', $layout->tabs()->get('content')?->label());
     }
 
     public function testTabsAreTranslatedAndBuiltOnce(): void
     {
         $layout = $this->layout(['tabs' => ['a' => ['label' => '{{greeting}}']]]);
 
-        $this->assertSame('Hello', $layout->tabs()->get('a')->label());
+        $this->assertSame('Hello', $layout->tabs()->get('a')?->label());
         $this->assertSame($layout->tabs(), $layout->tabs());
     }
 

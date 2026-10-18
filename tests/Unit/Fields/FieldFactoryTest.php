@@ -39,9 +39,9 @@ final class FieldFactoryTest extends TestCase
 
     public function testParentCollectionIsPassedToTheField(): void
     {
-        $collection = new FieldCollection();
+        $fieldCollection = new FieldCollection();
 
-        $this->assertSame($collection, $this->fieldFactory->make('title', ['type' => 'text'], $collection)->parent());
+        $this->assertSame($fieldCollection, $this->fieldFactory->make('title', ['type' => 'text'], $fieldCollection)->parent());
         $this->assertNull($this->fieldFactory->make('title', ['type' => 'text'])->parent());
     }
 
@@ -120,10 +120,10 @@ final class FieldFactoryTest extends TestCase
 
     public function testFieldsCreatedByTheSameFactoryAreIndependent(): void
     {
-        $first = $this->fieldFactory->make('a', ['type' => 'text', 'value' => 'one']);
+        $field = $this->fieldFactory->make('a', ['type' => 'text', 'value' => 'one']);
         $second = $this->fieldFactory->make('b', ['type' => 'text']);
 
-        $first->set('value', 'changed');
+        $field->set('value', 'changed');
 
         $this->assertSame('', $second->value());
     }

@@ -379,9 +379,7 @@ final class AppTest extends TestCase
      */
     private function errorHandler(): callable
     {
-        if (self::$errorHandler === null) {
-            self::$errorHandler = $this->loadApplicationWithErrorHandler();
-        }
+        self::$errorHandler ??= $this->loadApplicationWithErrorHandler();
 
         return self::$errorHandler;
     }

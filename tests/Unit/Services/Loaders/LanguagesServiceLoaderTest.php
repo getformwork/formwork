@@ -85,8 +85,8 @@ final class LanguagesServiceLoaderTest extends TestCase
         $container = new Container();
         $container->define(Container::class, $container);
         $container->define(Request::class, $request);
-        $factory = new LanguagesFactory($container, $request);
+        $languagesFactory = new LanguagesFactory($container, $request);
 
-        return (new LanguagesServiceLoader($config, $this->translations, $factory))->load($container);
+        return (new LanguagesServiceLoader($config, $this->translations, $languagesFactory))->load($container);
     }
 }

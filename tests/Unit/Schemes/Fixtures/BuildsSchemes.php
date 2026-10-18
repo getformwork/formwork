@@ -8,13 +8,14 @@ use Formwork\Schemes\Scheme;
 use Formwork\Schemes\SchemeFactory;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
+use Formwork\Tests\TestCase;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 
 /**
  * Builds a real Schemes/FieldFactory/Translations stack over files in the temporary directory
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsSchemes
 {

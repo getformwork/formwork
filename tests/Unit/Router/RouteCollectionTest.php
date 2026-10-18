@@ -14,13 +14,13 @@ final class RouteCollectionTest extends TestCase
 {
     public function testCollectionIsTypedAssociativeAndMutable(): void
     {
-        $collection = new RouteCollection();
+        $routeCollection = new RouteCollection();
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertTrue($collection->isTyped());
-        $this->assertTrue($collection->isMutable());
-        $this->assertSame(Route::class, $collection->dataType());
-        $this->assertTrue($collection->isEmpty());
+        $this->assertTrue($routeCollection->isAssociative());
+        $this->assertTrue($routeCollection->isTyped());
+        $this->assertTrue($routeCollection->isMutable());
+        $this->assertSame(Route::class, $routeCollection->dataType());
+        $this->assertTrue($routeCollection->isEmpty());
     }
 
     public function testAddIndexesRoutesByNameAndReplacesExistingNames(): void
@@ -28,22 +28,22 @@ final class RouteCollectionTest extends TestCase
         $first = new Route('home', '/');
         $replacement = new Route('home', '/start');
         $other = new Route('about', '/about');
-        $collection = new RouteCollection();
+        $routeCollection = new RouteCollection();
 
-        $collection->add($first);
-        $collection->add($other);
-        $collection->add($replacement);
+        $routeCollection->add($first);
+        $routeCollection->add($other);
+        $routeCollection->add($replacement);
 
-        $this->assertCount(2, $collection);
-        $this->assertSame($replacement, $collection->get('home'));
-        $this->assertSame($other, $collection->get('about'));
-        $this->assertSame(['home', 'about'], $collection->keys());
+        $this->assertCount(2, $routeCollection);
+        $this->assertSame($replacement, $routeCollection->get('home'));
+        $this->assertSame($other, $routeCollection->get('about'));
+        $this->assertSame(['home', 'about'], $routeCollection->keys());
     }
 
     public function testConstructorRejectsNonRouteItems(): void
     {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
-        new RouteCollection(['home' => new stdClass()]);
+        $logicException = $this->captureException(LogicException::class, fn() => new RouteCollection($this->unchecked(['home' => new stdClass()])));
+
+        $this->assertSame('Typed collections cannot be created from data of different types', $logicException->getMessage());
     }
 }

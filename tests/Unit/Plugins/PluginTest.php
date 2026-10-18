@@ -13,6 +13,7 @@ use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
 use UnexpectedValueException;
 
 #[CoversClass(Plugin::class)]
@@ -198,7 +199,7 @@ final class PluginTest extends TestCase
         $plugin->initialize();
         $plugin->initialize();
 
-        $this->assertSame(1, $plugin->services);
+        $this->assertSame(1, (new ReflectionProperty($plugin, 'services'))->getValue($plugin));
     }
 
     public function testManifestConfigIsLoadedAsDefaults(): void
@@ -234,9 +235,9 @@ final class PluginTest extends TestCase
     {
         $plugin = $this->makePlugin('init-broken', '', ['plugin.yaml' => "unknown: yes\n"]);
 
-        $exception = $this->captureException(PluginInitializationException::class, static fn() => $plugin->initialize());
-        $this->assertStringContainsString('initBroken', $exception->getMessage());
-        $this->assertInstanceOf(UnexpectedValueException::class, $exception->getPrevious());
+        $pluginInitializationException = $this->captureException(PluginInitializationException::class, static fn() => $plugin->initialize());
+        $this->assertStringContainsString('initBroken', $pluginInitializationException->getMessage());
+        $this->assertInstanceOf(UnexpectedValueException::class, $pluginInitializationException->getPrevious());
 
         $this->assertFalse($plugin->isInitialized());
     }

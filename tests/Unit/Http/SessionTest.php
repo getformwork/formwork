@@ -119,7 +119,7 @@ final class SessionTest extends TestCase
         $session->regenerate();
         $id = session_id();
 
-        $this->assertTrue($session->exists($id));
+        $this->assertTrue($session->exists((string) $id));
         $this->assertSame(42, $session->get('value'));
         $session->save();
     }

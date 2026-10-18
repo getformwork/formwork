@@ -22,7 +22,7 @@ class TestCase extends BaseTestCase
     /**
      * Run before `setUp()`, so that it can already write into the temporary directory
      */
-    #[Before(priority: 1)]
+    #[Before(1)]
     protected function createTempDirectory(): void
     {
         if ($this->uses(UsesTempDirectory::class) && !FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
@@ -33,12 +33,20 @@ class TestCase extends BaseTestCase
     /**
      * Run after `tearDown()`, so that it can still read the temporary directory
      */
-    #[After(priority: -1)]
+    #[After(-1)]
     protected function deleteTempDirectory(): void
     {
         if ($this->uses(UsesTempDirectory::class) && FileSystem::isDirectory(TESTS_TMP_PATH, assertExists: false)) {
             FileSystem::deleteDirectory(TESTS_TMP_PATH, recursive: true);
         }
+    }
+
+    /**
+     * Return the given value typed as `mixed`, to deliberately pass invalid arguments
+     */
+    protected function unchecked(mixed $value): mixed
+    {
+        return $value;
     }
 
     /**

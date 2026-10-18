@@ -15,9 +15,7 @@ use RuntimeException;
 #[UsesTempDirectory]
 final class MimeTypeTest extends TestCase
 {
-    protected function setUp(): void
-    {
-    }
+    protected function setUp(): void {}
 
     protected function tearDown(): void
     {

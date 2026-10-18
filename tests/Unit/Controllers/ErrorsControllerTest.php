@@ -2,7 +2,6 @@
 
 namespace Formwork\Tests\Unit\Controllers;
 
-use Error;
 use ErrorException;
 use Exception;
 use Formwork\Cms\App;
@@ -88,9 +87,9 @@ final class ErrorsControllerTest extends TestCase
 
     public function testErrorDetailsAreNotRevealedToRemoteVisitors(): void
     {
-        $exception = new RuntimeException('database password is hunter2');
+        $runtimeException = new RuntimeException('database password is hunter2');
 
-        $response = $this->controller(debug: false)->internalServerError($exception);
+        $response = $this->controller(debug: false)->internalServerError($runtimeException);
 
         $this->assertStringNotContainsString('hunter2', $response->content());
         $this->assertStringNotContainsString(__FILE__, $response->content());
@@ -189,21 +188,21 @@ final class ErrorsControllerTest extends TestCase
 
     public function testErrorsWhoseFirstFrameIsTheOriginAreNotDuplicated(): void
     {
-        $error = new ErrorException('warning', 0, E_WARNING, 'origin.php', 10);
+        $errorException = new ErrorException('warning', 0, E_WARNING, 'origin.php', 10);
         $frame = ['file' => 'origin.php', 'line' => 10, 'function' => 'strlen'];
 
-        $trace = $this->trace($this->exceptionWithTrace($error, [$frame, ['file' => 'caller.php', 'line' => 3, 'function' => 'run']]));
+        $trace = $this->trace($this->exceptionWithTrace($errorException, [$frame, ['file' => 'caller.php', 'line' => 3, 'function' => 'run']]));
 
         $this->assertSame([$frame, ['file' => 'caller.php', 'line' => 3, 'function' => 'run']], $trace);
     }
 
     public function testApplicationErrorHandlerFrameIsDropped(): void
     {
-        $error = new ErrorException('warning', 0, E_WARNING, 'origin.php', 10);
+        $errorException = new ErrorException('warning', 0, E_WARNING, 'origin.php', 10);
         $handler = ['class' => App::class, 'function' => 'App->{closure}', 'type' => '->'];
         $frame = ['file' => 'origin.php', 'line' => 10, 'function' => 'strlen'];
 
-        $trace = $this->trace($this->exceptionWithTrace($error, [$handler, $frame]));
+        $trace = $this->trace($this->exceptionWithTrace($errorException, [$handler, $frame]));
 
         $this->assertSame([$frame], $trace);
     }
@@ -211,10 +210,10 @@ final class ErrorsControllerTest extends TestCase
     /**
      * @param list<array<string, mixed>> $frames
      */
-    private function exceptionWithTrace(ErrorException $exception, array $frames): ErrorException
+    private function exceptionWithTrace(ErrorException $errorException, array $frames): ErrorException
     {
-        (new ReflectionProperty(Exception::class, 'trace'))->setValue($exception, $frames);
-        return $exception;
+        (new ReflectionProperty(Exception::class, 'trace'))->setValue($errorException, $frames);
+        return $errorException;
     }
 
     /**

@@ -17,20 +17,20 @@ final class ResponseBeforeSendEventTest extends TestCase
         $response = new Response('content');
         $request = $this->request();
 
-        $event = new ResponseBeforeSendEvent($response, $request);
+        $responseBeforeSendEvent = new ResponseBeforeSendEvent($response, $request);
 
-        $this->assertInstanceOf(Event::class, $event);
-        $this->assertSame('responseBeforeSend', $event->name());
-        $this->assertSame($response, $event->response());
-        $this->assertSame($request, $event->request());
+        $this->assertInstanceOf(Event::class, $responseBeforeSendEvent);
+        $this->assertSame('responseBeforeSend', $responseBeforeSendEvent->name());
+        $this->assertSame($response, $responseBeforeSendEvent->response());
+        $this->assertSame($request, $responseBeforeSendEvent->request());
     }
 
     public function testListenersCanModifyTheResponse(): void
     {
         $response = new Response('original');
-        $event = new ResponseBeforeSendEvent($response, $this->request());
+        $responseBeforeSendEvent = new ResponseBeforeSendEvent($response, $this->request());
 
-        $event->response()->headers()->set('X-Listener', 'yes');
+        $responseBeforeSendEvent->response()->headers()->set('X-Listener', 'yes');
 
         $this->assertSame('yes', $response->headers()->get('X-Listener'));
     }

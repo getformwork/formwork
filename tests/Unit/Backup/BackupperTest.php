@@ -47,13 +47,13 @@ final class BackupperTest extends TestCase
     {
         $destination = $this->backupper()->backup('contents', 'example.com');
 
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($destination));
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($destination));
         $entries = [];
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $entries[] = $zip->getNameIndex($i);
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $entries[] = $zipArchive->getNameIndex($i);
         }
-        $zip->close();
+        $zipArchive->close();
 
         $this->assertSame(['composer.json'], $entries);
     }
@@ -140,8 +140,8 @@ final class BackupperTest extends TestCase
     #[DataProvider('invalidNames')]
     public function testInvalidNamesAreRejectedBeforeAnythingIsWritten(string $name): void
     {
-        $exception = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
-        $this->assertStringContainsString('invalid characters', $exception->getMessage());
+        $unexpectedValueException = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
+        $this->assertStringContainsString('invalid characters', $unexpectedValueException->getMessage());
 
         $this->assertSame([], $this->archives());
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/escape-' . date('Ymd') . '.zip');
@@ -203,7 +203,7 @@ final class BackupperTest extends TestCase
 
         $this->backupper(['maxFiles' => 2])->backup('newest', 'example.com');
 
-        $remaining = array_map('basename', $this->archives());
+        $remaining = array_map(basename(...), $this->archives());
         sort($remaining);
         $this->assertCount(2, $remaining);
         $this->assertContains('old.zip', $remaining);

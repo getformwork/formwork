@@ -15,11 +15,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[UsesTempDirectory]
 final class RoleTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testIdAndPermissionsAreExposed(): void
     {
         $permissions = new Permissions(['panel' => true]);

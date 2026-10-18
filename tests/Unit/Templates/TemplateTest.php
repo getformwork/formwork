@@ -63,8 +63,7 @@ final class TemplateTest extends TestCase
     public function testControllerVariablesOverrideEverythingElse(): void
     {
         $template = $this->template('post', ['fromVars' => 'template-var']);
-        $page = $this->page();
-        $page->title = 'Page title';
+        $page = $this->page(title: 'Page title');
 
         $html = $template->render(['page' => $page, 'title' => 'given']);
 
@@ -118,18 +117,16 @@ final class TemplateTest extends TestCase
             [],
             $scheme ?? $this->createStub(Scheme::class),
             $site ?? $this->createStub(Site::class),
-            new ViewFactory(['escape' => static fn(string $text): string => htmlspecialchars($text)], [], App::instance()),
+            new ViewFactory(['escape' => htmlspecialchars(...)], [], App::instance()),
         );
     }
 
-    private function page(bool $current = false): Page
+    private function page(bool $current = false, string $title = ''): Page
     {
-        return new class ($current) extends Page {
-            public string $title = '';
-
+        return new class ($current, $title) extends Page {
             private int $calls = 0;
 
-            public function __construct(private bool $current) {}
+            public function __construct(private bool $current, public string $title) {}
 
             public function isCurrent(): bool
             {

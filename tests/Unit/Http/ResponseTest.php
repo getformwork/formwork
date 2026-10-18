@@ -18,7 +18,7 @@ final class ResponseTest extends TestCase
     {
         $response = new Response('body', ResponseStatus::Created, ['X-Test' => 'yes']);
         $restored = Response::fromArray($response->toArray());
-        $setState = Response::__set_state($response->toArray());
+        $setState = Response::__set_state($this->unchecked($response->toArray()));
 
         $this->assertSame('body', $restored->content());
         $this->assertSame(ResponseStatus::Created, $restored->status());
@@ -78,15 +78,18 @@ final class ResponseTest extends TestCase
         $this->assertFalse($response->headers()->has('Content-Length'));
     }
 
+    /**
+     * @param array<string, string> $requestHeaders
+     */
     #[DataProvider('validatorProvider')]
-    public function testConditionalGetRequestsAreAnsweredWithNotModifiedOnlyWhenValidatorsMatch(array $requestHeaders, ResponseStatus $expected): void
+    public function testConditionalGetRequestsAreAnsweredWithNotModifiedOnlyWhenValidatorsMatch(array $requestHeaders, ResponseStatus $responseStatus): void
     {
         $response = new Response('body', ResponseStatus::OK, ['ETag' => '"abc"', 'Last-Modified' => 'Wed, 01 Jan 2025 00:00:00 GMT']);
         $request = $this->request(RequestMethod::GET, $requestHeaders);
 
         $response->prepare($request);
 
-        $this->assertSame($expected, $response->status());
+        $this->assertSame($responseStatus, $response->status());
     }
 
     /**
@@ -279,10 +282,10 @@ final class ResponseTest extends TestCase
     /**
      * @param array<string, string> $server
      */
-    private function request(RequestMethod $method = RequestMethod::GET, array $server = []): Request
+    private function request(RequestMethod $requestMethod = RequestMethod::GET, array $server = []): Request
     {
         return new Request([], [], [], [], $server + [
-            'REQUEST_METHOD' => $method->value,
+            'REQUEST_METHOD' => $requestMethod->value,
             'SERVER_NAME'    => 'example.test',
             'SERVER_PORT'    => '80',
         ]);

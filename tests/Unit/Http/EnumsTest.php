@@ -28,14 +28,14 @@ final class EnumsTest extends TestCase
 
     public function testDeviceTypes(): void
     {
-        $this->assertSame(['mobile', 'tablet', 'desktop'], array_map(static fn(DeviceType $type): string => $type->value, DeviceType::cases()));
+        $this->assertSame(['mobile', 'tablet', 'desktop'], array_map(static fn(DeviceType $deviceType): string => $deviceType->value, DeviceType::cases()));
         $this->assertSame(DeviceType::Tablet, DeviceType::from('tablet'));
         $this->assertNull(DeviceType::tryFrom('watch'));
     }
 
     public function testMessageTypes(): void
     {
-        $this->assertSame(['info', 'success', 'warning', 'error'], array_map(static fn(MessageType $type): string => $type->value, MessageType::cases()));
+        $this->assertSame(['info', 'success', 'warning', 'error'], array_map(static fn(MessageType $messageType): string => $messageType->value, MessageType::cases()));
         $this->assertSame(MessageType::Error, MessageType::from('error'));
     }
 
@@ -50,7 +50,7 @@ final class EnumsTest extends TestCase
     {
         $this->assertSame(
             ['Informational', 'Successful', 'Redirection', 'ClientError', 'ServerError'],
-            array_map(static fn(ResponseStatusType $type): string => $type->name, ResponseStatusType::cases())
+            array_map(static fn(ResponseStatusType $responseStatusType): string => $responseStatusType->name, ResponseStatusType::cases())
         );
     }
 

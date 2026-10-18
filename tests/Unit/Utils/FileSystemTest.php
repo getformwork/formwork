@@ -122,7 +122,7 @@ final class FileSystemTest extends TestCase
 
         $this->assertTrue(FileSystem::isReadable(TESTS_TMP_PATH . '/sample.txt'));
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o444);
 
         $this->assertFalse(FileSystem::isReadable(TESTS_TMP_PATH . '/sample.txt'));
@@ -136,7 +136,7 @@ final class FileSystemTest extends TestCase
 
         $this->assertTrue(FileSystem::isWritable(TESTS_TMP_PATH . '/sample.txt'));
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o222);
 
         $this->assertFalse(FileSystem::isWritable(TESTS_TMP_PATH . '/sample.txt'));
@@ -282,12 +282,14 @@ final class FileSystemTest extends TestCase
         chmod(TESTS_TMP_PATH . '/sample.txt', 0o640);
         clearstatcache();
 
-        $this->assertSame(0o640, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
+        $mode = FileSystem::mode(TESTS_TMP_PATH . '/sample.txt');
+        $this->assertSame(0o640, $mode & 0o777);
 
         chmod(TESTS_TMP_PATH . '/sample.txt', 0o600);
         clearstatcache();
 
-        $this->assertSame(0o600, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
+        $mode = FileSystem::mode(TESTS_TMP_PATH . '/sample.txt');
+        $this->assertSame(0o600, $mode & 0o777);
     }
 
     public function testModeThrowsOnFileNotFound(): void
@@ -731,7 +733,7 @@ final class FileSystemTest extends TestCase
     {
         $this->skipIfFilePermissionsAreNotEnforced();
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o444);
 
         $this->expectException(FileSystemException::class);
@@ -928,7 +930,7 @@ final class FileSystemTest extends TestCase
     {
         $this->skipIfFilePermissionsAreNotEnforced();
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o222);
 
         $this->expectException(FileSystemException::class);

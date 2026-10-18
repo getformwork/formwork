@@ -22,50 +22,48 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[UsesTempDirectory]
 final class FileUploaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-    }
+    protected function setUp(): void {}
 
     public function testAllowedMimeTypesAreDerivedFromConfiguredExtensions(): void
     {
-        $uploader = new FileUploader($this->config(['txt', 'jpg']), new FileFactory(new Container(), $this->config(['txt', 'jpg'])));
+        $fileUploader = new FileUploader($this->config(['txt', 'jpg']), new FileFactory(new Container(), $this->config(['txt', 'jpg'])));
 
-        $this->assertSame(['text/plain', 'image/jpeg'], $uploader->allowedMimeTypes());
+        $this->assertSame(['text/plain', 'image/jpeg'], $fileUploader->allowedMimeTypes());
     }
 
     public function testUploadRejectsAFileThatWasNotUploaded(): void
     {
-        $uploaded = $this->uploadedFile(UPLOAD_ERR_NO_FILE, 'missing.txt');
-        $uploader = new FileUploader($this->config(['txt']), new FileFactory(new Container(), $this->config(['txt'])));
+        $uploadedFile = $this->uploadedFile(UPLOAD_ERR_NO_FILE, 'missing.txt');
+        $fileUploader = new FileUploader($this->config(['txt']), new FileFactory(new Container(), $this->config(['txt'])));
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('No file uploaded');
         $this->expectExceptionCode(0);
-        $uploader->upload($uploaded, TESTS_TMP_PATH);
+        $fileUploader->upload($uploadedFile, TESTS_TMP_PATH);
     }
 
     public function testUploadRejectsAMIMETypeOutsideTheAllowedList(): void
     {
         $temp = TESTS_TMP_PATH . '/payload.bin';
         FileSystem::write($temp, 'binary payload');
-        $uploaded = $this->uploadedFile(UPLOAD_ERR_OK, 'payload.bin', $temp);
-        $uploader = new FileUploader($this->config(['jpg']), new FileFactory(new Container(), $this->config(['jpg'])));
+        $uploadedFile = $this->uploadedFile(UPLOAD_ERR_OK, 'payload.bin', $temp);
+        $fileUploader = new FileUploader($this->config(['jpg']), new FileFactory(new Container(), $this->config(['jpg'])));
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid mime type text/plain');
-        $uploader->upload($uploaded, TESTS_TMP_PATH);
+        $fileUploader->upload($uploadedFile, TESTS_TMP_PATH);
     }
 
     public function testUploadRejectsDestinationsOutsideConfiguredBaseDirectories(): void
     {
         $temp = TESTS_TMP_PATH . '/payload.txt';
         FileSystem::write($temp, 'payload');
-        $uploaded = $this->uploadedFile(UPLOAD_ERR_OK, 'payload.txt', $temp);
-        $uploader = new FileUploader($this->config(['txt'], ['/allowed']), new FileFactory(new Container(), $this->config(['txt'], ['/allowed'])));
+        $uploadedFile = $this->uploadedFile(UPLOAD_ERR_OK, 'payload.txt', $temp);
+        $fileUploader = new FileUploader($this->config(['txt'], ['/allowed']), new FileFactory(new Container(), $this->config(['txt'], ['/allowed'])));
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid destination path');
-        $uploader->upload($uploaded, '/outside');
+        $fileUploader->upload($uploadedFile, '/outside');
     }
 
     public function testUploadRejectsTraversalOutOfTheBaseDestinations(): void
@@ -73,14 +71,14 @@ final class FileUploaderTest extends TestCase
         $temp = TESTS_TMP_PATH . '/payload.txt';
         FileSystem::write($temp, 'payload');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed');
-        $uploader = new FileUploader(
+        $fileUploader = new FileUploader(
             $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
             new FileFactory(new Container(), $this->config(['txt'])),
         );
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid destination path');
-        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/../outside');
+        $fileUploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/../outside');
     }
 
     public function testUploadRejectsDirectoriesSharingOnlyAPrefixWithTheBaseDestination(): void
@@ -88,14 +86,14 @@ final class FileUploaderTest extends TestCase
         $temp = TESTS_TMP_PATH . '/payload.txt';
         FileSystem::write($temp, 'payload');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed-evil');
-        $uploader = new FileUploader(
+        $fileUploader = new FileUploader(
             $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
             new FileFactory(new Container(), $this->config(['txt'])),
         );
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid destination path');
-        $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed-evil');
+        $fileUploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed-evil');
     }
 
     public function testUploadNormalizesNameChoosesClientExtensionAndReturnsTheFactoryFile(): void
@@ -107,13 +105,13 @@ final class FileUploaderTest extends TestCase
         $uploaded->method('tempPath')->willReturn($temp);
         $uploaded->method('clientName')->willReturn('My Unsafe Name.TXT');
         $uploaded->expects($this->once())->method('move')->with(TESTS_TMP_PATH, 'renamed-file.txt', true)
-            ->willReturnCallback(fn(string $destination, string $name) => (bool) FileSystem::write($destination . '/' . $name, 'payload'));
+            ->willReturnCallback(fn(string $destination, string $name) => FileSystem::write($destination . '/' . $name, 'payload'));
         $file = new File(TESTS_TMP_PATH . '/renamed-file.txt');
         $container = $this->fileFactoryContainer($file);
-        $factory = new FileFactory($container, $this->config(['txt'], [TESTS_TMP_PATH]));
-        $uploader = new FileUploader($this->config(['txt'], [TESTS_TMP_PATH]), $factory);
+        $fileFactory = new FileFactory($container, $this->config(['txt'], [TESTS_TMP_PATH]));
+        $fileUploader = new FileUploader($this->config(['txt'], [TESTS_TMP_PATH]), $fileFactory);
 
-        $this->assertSame($file, $uploader->upload($uploaded, TESTS_TMP_PATH, 'Renamed File', overwrite: true));
+        $this->assertSame($file, $fileUploader->upload($uploaded, TESTS_TMP_PATH, 'Renamed File', overwrite: true));
     }
 
     public function testUploadUsesTheMimetypeExtensionWhenTheClientExtensionIsNotAssociated(): void
@@ -125,11 +123,11 @@ final class FileUploaderTest extends TestCase
         $uploaded->method('tempPath')->willReturn($temp);
         $uploaded->method('clientName')->willReturn('photo.exe');
         $uploaded->expects($this->once())->method('move')->with(TESTS_TMP_PATH, 'photo.txt', false)
-            ->willReturnCallback(fn(string $destination, string $name) => (bool) FileSystem::write($destination . '/' . $name, 'payload'));
+            ->willReturnCallback(fn(string $destination, string $name) => FileSystem::write($destination . '/' . $name, 'payload'));
         $file = new File(TESTS_TMP_PATH . '/photo.txt');
-        $factory = new FileFactory($this->fileFactoryContainer($file), $this->config(['txt'], [TESTS_TMP_PATH]));
+        $fileFactory = new FileFactory($this->fileFactoryContainer($file), $this->config(['txt'], [TESTS_TMP_PATH]));
 
-        $this->assertSame($file, (new FileUploader($this->config(['txt'], [TESTS_TMP_PATH]), $factory))->upload($uploaded, TESTS_TMP_PATH));
+        $this->assertSame($file, (new FileUploader($this->config(['txt'], [TESTS_TMP_PATH]), $fileFactory))->upload($uploaded, TESTS_TMP_PATH));
     }
 
     public function testUploadAcceptsSubdirectoriesOfTheBaseDestinations(): void
@@ -138,12 +136,12 @@ final class FileUploaderTest extends TestCase
         FileSystem::write($temp, 'payload');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/allowed/nested', recursive: true);
         $file = new File(TESTS_TMP_PATH . '/allowed/nested/payload.txt');
-        $uploader = new FileUploader(
+        $fileUploader = new FileUploader(
             $this->config(['txt'], [TESTS_TMP_PATH . '/allowed']),
             new FileFactory($this->fileFactoryContainer($file), $this->config(['txt'])),
         );
 
-        $this->assertSame($file, $uploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/nested'));
+        $this->assertSame($file, $fileUploader->upload($this->movableUpload($temp, 'payload.txt'), TESTS_TMP_PATH . '/allowed/nested'));
         $this->assertFileExists(TESTS_TMP_PATH . '/allowed/nested/payload.txt');
     }
 
@@ -151,12 +149,12 @@ final class FileUploaderTest extends TestCase
     {
         $temp = TESTS_TMP_PATH . '/image.jpg';
         FileSystem::write($temp, 'this is plain text, not an image');
-        $uploaded = $this->movableUpload($temp, 'image.jpg');
-        $uploader = new FileUploader($this->config(['jpg']), new FileFactory(new Container(), $this->config(['jpg'])));
+        $uploadedFile = $this->movableUpload($temp, 'image.jpg');
+        $fileUploader = new FileUploader($this->config(['jpg']), new FileFactory(new Container(), $this->config(['jpg'])));
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid mime type text/plain');
-        $uploader->upload($uploaded, TESTS_TMP_PATH);
+        $fileUploader->upload($uploadedFile, TESTS_TMP_PATH);
     }
 
     public function testExplicitAllowedMimeTypesReplaceTheConfiguredOnes(): void
@@ -183,11 +181,11 @@ final class FileUploaderTest extends TestCase
         $uploaded->method('isUploaded')->willReturn(true);
         $uploaded->method('tempPath')->willReturn($temp);
         $uploaded->method('clientName')->willReturn('!!!.txt');
-        $factory = new FileFactory($this->fileFactoryContainer(new File(TESTS_TMP_PATH . '/payload.txt')), $this->config(['txt']));
+        $fileFactory = new FileFactory($this->fileFactoryContainer(new File(TESTS_TMP_PATH . '/payload.txt')), $this->config(['txt']));
 
         $this->expectException(TranslatedException::class);
         $this->expectExceptionMessage('Invalid file name');
-        (new FileUploader($this->config(['txt']), $factory))->upload($uploaded, TESTS_TMP_PATH);
+        (new FileUploader($this->config(['txt']), $fileFactory))->upload($uploaded, TESTS_TMP_PATH);
     }
 
     public function testUploadedSvgImagesAreSanitized(): void
@@ -196,9 +194,9 @@ final class FileUploaderTest extends TestCase
         FileSystem::write($temp, '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><script>alert(1)</script><path d="M0 0h16v16H0z" onload="alert(2)"/></svg>');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/uploads');
         $config = $this->config(['svg'], [TESTS_TMP_PATH]);
-        $uploader = new FileUploader($config, App::instance()->getService(FileFactory::class));
+        $fileUploader = new FileUploader($config, App::instance()->getService(FileFactory::class));
 
-        $file = $uploader->upload($this->movableUpload($temp, 'icon.svg'), TESTS_TMP_PATH . '/uploads');
+        $file = $fileUploader->upload($this->movableUpload($temp, 'icon.svg'), TESTS_TMP_PATH . '/uploads');
 
         $this->assertSame(TESTS_TMP_PATH . '/uploads/icon.svg', $file->path());
         $content = FileSystem::read($file->path());
@@ -214,12 +212,16 @@ final class FileUploaderTest extends TestCase
         $uploaded->method('tempPath')->willReturn($temp);
         $uploaded->method('clientName')->willReturn($clientName);
         $uploaded->method('move')->willReturnCallback(
-            static fn(string $destination, string $name): bool => (bool) FileSystem::write(FileSystem::joinPaths($destination, $name), FileSystem::read($temp)),
+            static fn(string $destination, string $name): bool => FileSystem::write(FileSystem::joinPaths($destination, $name), FileSystem::read($temp)),
         );
 
         return $uploaded;
     }
 
+    /**
+     * @param list<string> $destinations
+     * @param list<string> $extensions
+     */
     private function config(array $extensions, array $destinations = [TESTS_TMP_PATH]): Config
     {
         return new Config(['system' => [

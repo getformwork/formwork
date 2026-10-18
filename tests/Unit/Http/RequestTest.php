@@ -320,16 +320,16 @@ final class RequestTest extends TestCase
 
     public function testSecurityLocalhostAndRequestTypeAreDetected(): void
     {
-        $secure = $this->request([
+        $request = $this->request([
             'REMOTE_ADDR'           => '127.0.0.1',
             'HTTPS'                 => 'on',
             'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
         ]);
 
-        $this->assertTrue($secure->isSecure());
-        $this->assertTrue($secure->isLocalhost());
-        $this->assertTrue($secure->isXmlHttpRequest());
-        $this->assertSame(RequestType::XmlHttpRequest, $secure->type());
+        $this->assertTrue($request->isSecure());
+        $this->assertTrue($request->isLocalhost());
+        $this->assertTrue($request->isXmlHttpRequest());
+        $this->assertSame(RequestType::XmlHttpRequest, $request->type());
 
         $regular = $this->request(['REMOTE_ADDR' => '192.0.2.10', 'HTTPS' => 'off']);
 

@@ -42,9 +42,9 @@ final class TemplateFactoryTest extends TestCase
             }))
             ->willReturn($template);
 
-        $factory = new TemplateFactory($container, App::instance(), $this->config('/templates/path'), $schemes);
+        $templateFactory = new TemplateFactory($container, App::instance(), $this->config('/templates/path'), $schemes);
 
-        $this->assertSame($template, $factory->make('post'));
+        $this->assertSame($template, $templateFactory->make('post'));
     }
 
     public function testUnknownSchemesAreReported(): void
@@ -52,11 +52,11 @@ final class TemplateFactoryTest extends TestCase
         $schemes = $this->createStub(Schemes::class);
         $schemes->method('get')->willThrowException(new InvalidArgumentException('Invalid scheme "pages.ghost"'));
 
-        $factory = new TemplateFactory($this->createStub(Container::class), App::instance(), $this->config('/templates/path'), $schemes);
+        $templateFactory = new TemplateFactory($this->createStub(Container::class), App::instance(), $this->config('/templates/path'), $schemes);
 
         $this->expectException(InvalidArgumentException::class);
 
-        $factory->make('ghost');
+        $templateFactory->make('ghost');
     }
 
     private function config(string $templatesPath): Config

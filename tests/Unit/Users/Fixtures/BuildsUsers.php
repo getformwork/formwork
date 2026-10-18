@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
+use Formwork\Tests\TestCase;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\Role;
@@ -14,7 +15,7 @@ use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 
 /**
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsUsers
 {

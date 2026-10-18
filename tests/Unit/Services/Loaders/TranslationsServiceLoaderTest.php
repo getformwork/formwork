@@ -53,10 +53,10 @@ final class TranslationsServiceLoaderTest extends TestCase
 
         $translations = $this->resolve();
 
-        $english = $translations->get('en');
-        $this->assertSame('Welcome', $english->translate('greeting'));
-        $this->assertSame('System', $english->translate('system.only'));
-        $this->assertSame('Site', $english->translate('site.only'));
+        $translation = $translations->get('en');
+        $this->assertSame('Welcome', $translation->translate('greeting'));
+        $this->assertSame('System', $translation->translate('system.only'));
+        $this->assertSame('Site', $translation->translate('site.only'));
         $this->assertTrue($translations->has('fr'));
     }
 

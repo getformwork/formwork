@@ -36,6 +36,9 @@ final class FieldViewsTest extends TestCase
         $this->app->getService(Schemes::class);
     }
 
+    /**
+     * @param array{options?: array<int|string, string>, translate?: list<string>} $config
+     */
     #[DataProvider('fieldTypeProvider')]
     public function testHostileValuesCannotInjectMarkup(string $type, array $config): void
     {
@@ -46,14 +49,11 @@ final class FieldViewsTest extends TestCase
             ...$config,
         ], self::HOSTILE));
 
-        $xpath = new DOMXPath($document);
+        $domxPath = new DOMXPath($document);
 
-        foreach ($xpath->query('//script') as $script) {
-            $this->assertSame('', trim($script->textContent), 'Inline script injected');
-        }
-
-        $this->assertSame(0, $xpath->query('//img')->length, 'Image injected');
-        $this->assertSame(0, $xpath->query('//@*[starts-with(name(), "on")]')->length, 'Event handler injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//script[normalize-space() != ""])'), 'Inline script injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//img)'), 'Image injected');
+        $this->assertSame(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), 'Event handler injected');
     }
 
     /**
@@ -75,55 +75,47 @@ final class FieldViewsTest extends TestCase
     {
         $document = $this->document($this->render('text', [], self::HOSTILE));
 
-        $input = (new DOMXPath($document))->query('//input')->item(0);
-
-        $this->assertSame(self::HOSTILE, $input?->getAttribute('value'));
+        $this->assertSame(self::HOSTILE, (new DOMXPath($document))->evaluate('string(//input/@value)'));
     }
 
     public function testTagsAreRenderedAsACommaSeparatedValue(): void
     {
         $document = $this->document($this->render('tags', [], ['first', self::HOSTILE]));
 
-        $input = (new DOMXPath($document))->query('//input')->item(0);
-
-        $this->assertSame('first, ' . self::HOSTILE, $input?->getAttribute('value'));
+        $this->assertSame('first, ' . self::HOSTILE, (new DOMXPath($document))->evaluate('string(//input/@value)'));
     }
 
     public function testTagOptionsAreRenderedAsEscapedJson(): void
     {
         $document = $this->document($this->render('tags', ['options' => ['plain', self::HOSTILE]], []));
 
-        $input = (new DOMXPath($document))->query('//input')->item(0);
+        $options = (new DOMXPath($document))->evaluate('string(//input/@data-options)');
 
-        $this->assertSame(['plain', self::HOSTILE], json_decode((string) $input?->getAttribute('data-options'), true));
+        $this->assertSame(['plain', self::HOSTILE], json_decode((string) $options, true));
     }
 
     public function testTextareaValueIsRenderedAsText(): void
     {
         $document = $this->document($this->render('textarea', [], self::HOSTILE));
 
-        $textarea = (new DOMXPath($document))->query('//textarea')->item(0);
-
-        $this->assertSame(self::HOSTILE, $textarea?->textContent);
+        $this->assertSame(self::HOSTILE, (new DOMXPath($document))->evaluate('string(//textarea)'));
     }
 
     public function testLabelIsRenderedAsText(): void
     {
         $document = $this->document($this->render('text', ['label' => self::HOSTILE], ''));
 
-        $label = (new DOMXPath($document))->query('//label')->item(0);
-
-        $this->assertSame(self::HOSTILE . ':', $label?->textContent);
+        $this->assertSame(self::HOSTILE . ':', (new DOMXPath($document))->evaluate('string(//label)'));
     }
 
     public function testSelectOptionLabelsAreRenderedAsText(): void
     {
         $document = $this->document($this->render('select', ['options' => ['a' => self::HOSTILE], 'translate' => []], 'a'));
 
-        $option = (new DOMXPath($document))->query('//option')->item(0);
+        $domxPath = new DOMXPath($document);
 
-        $this->assertSame(self::HOSTILE, $option?->textContent);
-        $this->assertSame('a', $option?->getAttribute('value'));
+        $this->assertSame(self::HOSTILE, $domxPath->evaluate('string(//option)'));
+        $this->assertSame('a', $domxPath->evaluate('string(//option/@value)'));
     }
 
     /**
@@ -155,9 +147,9 @@ final class FieldViewsTest extends TestCase
 
     private function document(string $html): DOMDocument
     {
-        $document = new DOMDocument();
-        $document->loadHTML('<!DOCTYPE html><html><body>' . $html . '</body></html>', LIBXML_NOERROR);
+        $domDocument = new DOMDocument();
+        $domDocument->loadHTML('<!DOCTYPE html><html><body>' . $html . '</body></html>', LIBXML_NOERROR);
 
-        return $document;
+        return $domDocument;
     }
 }

@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Plugins\Fixtures;
 use Formwork\Cms\App;
 use Formwork\Plugins\Plugin;
 use Formwork\Services\Container;
+use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 
@@ -13,7 +14,7 @@ use Formwork\Utils\Str;
  *
  * Plugin classes are declared in the global scope of the process, so every test must use its own plugin ids
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsPlugins
 {

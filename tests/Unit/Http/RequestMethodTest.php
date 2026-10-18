@@ -22,15 +22,15 @@ final class RequestMethodTest extends TestCase
     {
         $this->assertSame(
             ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-            array_map(static fn(RequestMethod $method): string => $method->value, RequestMethod::cases()),
+            array_map(static fn(RequestMethod $requestMethod): string => $requestMethod->value, RequestMethod::cases()),
         );
     }
 
     #[DataProvider('methodNameProvider')]
-    public function testMethodsAreCreatedFromTheirName(string $name, RequestMethod $expected): void
+    public function testMethodsAreCreatedFromTheirName(string $name, RequestMethod $requestMethod): void
     {
-        $this->assertSame($expected, RequestMethod::from($name));
-        $this->assertSame($expected, RequestMethod::tryFrom($name));
+        $this->assertSame($requestMethod, RequestMethod::from($name));
+        $this->assertSame($requestMethod, RequestMethod::tryFrom($name));
     }
 
     /**
@@ -67,11 +67,11 @@ final class RequestMethodTest extends TestCase
     }
 
     #[DataProvider('semanticsProvider')]
-    public function testMethodSemantics(RequestMethod $method, bool $safe, bool $idempotent, bool $cacheable): void
+    public function testMethodSemantics(RequestMethod $requestMethod, bool $safe, bool $idempotent, bool $cacheable): void
     {
-        $this->assertSame($safe, $method->isSafe(), "{$method->value} safe");
-        $this->assertSame($idempotent, $method->isIdempotent(), "{$method->value} idempotent");
-        $this->assertSame($cacheable, $method->isCacheable(), "{$method->value} cacheable");
+        $this->assertSame($safe, $requestMethod->isSafe(), "{$requestMethod->value} safe");
+        $this->assertSame($idempotent, $requestMethod->isIdempotent(), "{$requestMethod->value} idempotent");
+        $this->assertSame($cacheable, $requestMethod->isCacheable(), "{$requestMethod->value} cacheable");
     }
 
     /**

@@ -98,7 +98,9 @@ final class FormTest extends TestCase
         $this->assertFalse($form->isSubmitted());
         $this->assertFalse($form->isValid());
         $this->assertSame(ResponseStatus::OK, $form->getResponseStatus());
-        $this->assertSame(['name' => 'original'], (new FieldCollection($fields))->extract('value'));
+        /** @var array<string, mixed> $values */
+        $values = (new FieldCollection($fields))->extract('value');
+        $this->assertSame(['name' => 'original'], $values);
     }
 
     public function testPostRequestSubmitsTheForm(): void
@@ -343,7 +345,7 @@ final class FormTest extends TestCase
         ), preserveEmpty: false);
 
         $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
-        $this->assertSame('', $form->fields()->get('message')->value());
+        $this->assertSame('', $form->fields()->get('message')?->value());
     }
 
     public function testSetDefaultUploadsDestinationReturnsTheSameForm(): void
@@ -499,12 +501,12 @@ final class FormTest extends TestCase
 
     public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
     {
-        $uploaded = new File('/uploads/result.jpg');
+        $file = new File('/uploads/result.jpg');
         $uploader = $this->createMock(FileUploader::class);
         $uploader->expects($this->once())
             ->method('upload')
             ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
-            ->willReturn($uploaded);
+            ->willReturn($file);
 
         $form = $this->createForm('upload', [
             'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
@@ -512,7 +514,7 @@ final class FormTest extends TestCase
         $form->setDefaultUploadsDestination('/default');
         $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
 
-        $this->assertSame([$uploaded], $form->uploadedFiles());
+        $this->assertSame([$file], $form->uploadedFiles());
     }
 
     public function testFieldUploadDestinationTakesPrecedenceOverDefaultDestination(): void
@@ -586,7 +588,7 @@ final class FormTest extends TestCase
                 ['image/jpeg'],
                 false,
             )
-            ->willReturnCallback(static fn(UploadedFile $file): File => match ($file->clientName()) {
+            ->willReturnCallback(static fn(UploadedFile $uploadedFile): File => match ($uploadedFile->clientName()) {
                 'first.jpg'  => $firstResult,
                 'second.jpg' => $secondResult,
                 default      => throw new LogicException('Unexpected uploaded file.'),
@@ -617,6 +619,9 @@ final class FormTest extends TestCase
         $this->assertSame([$firstResult, $secondResult], $form->uploadedFiles());
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     #[DataProvider('fieldTypesProvider')]
     public function testFieldTypeValues(
         string $type,
@@ -842,6 +847,9 @@ final class FormTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<int|string, string> $options
+     */
     #[DataProvider('validSelectValueProvider')]
     public function testSelectFieldAcceptsDeclaredOptions(array $options, mixed $submitted, mixed $expected): void
     {
@@ -867,6 +875,9 @@ final class FormTest extends TestCase
         yield 'other numeric option' => [$numeric, '2', 2];
     }
 
+    /**
+     * @param array<int|string, string> $options
+     */
     #[DataProvider('invalidSelectValueProvider')]
     public function testSelectFieldRejectsValuesOutsideItsOptions(array $options, mixed $submitted): void
     {
@@ -950,23 +961,34 @@ final class FormTest extends TestCase
         return $form->processRequest($this->createRequest(RequestMethod::POST, input: ['role' => $submitted]));
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function createField(string $name, array $data): Field
     {
         return $this->app->getService(FieldFactory::class)->make($name, $data);
     }
 
-    private function createForm(string $name, array $fields = [], ?FileUploader $uploader = null): Form
+    /**
+     * @param array<string, Field> $fields
+     */
+    private function createForm(string $name, array $fields = [], ?FileUploader $fileUploader = null): Form
     {
-        return new Form($name, new FieldCollection($fields), $uploader ?? $this->createStub(FileUploader::class));
-    }
-
-    private function createRequest(RequestMethod $method, array $input = [], array $query = [], array $files = []): Request
-    {
-        return new Request($input, $query, [], $files, ['REQUEST_METHOD' => $method->value]);
+        return new Form($name, new FieldCollection($fields), $fileUploader ?? $this->createStub(FileUploader::class));
     }
 
     /**
-     * @return array<string, mixed>
+     * @param array<string, array<string, mixed>> $files
+     * @param array<string, string>               $input
+     * @param array<string, string>               $query
+     */
+    private function createRequest(RequestMethod $requestMethod, array $input = [], array $query = [], array $files = []): Request
+    {
+        return new Request($input, $query, [], $files, ['REQUEST_METHOD' => $requestMethod->value]);
+    }
+
+    /**
+     * @return array<string, int|string>
      */
     private function uploadData(string $name = 'photo.jpg', int $error = UPLOAD_ERR_OK): array
     {

@@ -15,11 +15,11 @@ final class PluginsInitializedEventTest extends TestCase
     {
         $plugins = $this->createStub(Plugins::class);
 
-        $event = new PluginsInitializedEvent($plugins);
+        $pluginsInitializedEvent = new PluginsInitializedEvent($plugins);
 
-        $this->assertInstanceOf(Event::class, $event);
-        $this->assertSame('pluginsInitialized', $event->name());
-        $this->assertSame($plugins, $event->plugins());
-        $this->assertSame(['plugins' => $plugins], $event->data());
+        $this->assertInstanceOf(Event::class, $pluginsInitializedEvent);
+        $this->assertSame('pluginsInitialized', $pluginsInitializedEvent->name());
+        $this->assertSame($plugins, $pluginsInitializedEvent->plugins());
+        $this->assertSame(['plugins' => $plugins], $pluginsInitializedEvent->data());
     }
 }

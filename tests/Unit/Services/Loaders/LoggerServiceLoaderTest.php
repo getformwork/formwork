@@ -16,18 +16,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[UsesTempDirectory]
 final class LoggerServiceLoaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testLoggerWithoutHandlersIsCreated(): void
     {
         $logger = $this->load([]);
 
         $this->assertInstanceOf(Logger::class, $logger);
         $logger->error('nothing handles this');
-        $this->addToAssertionCount(1);
     }
 
     public function testFileHandlersWriteToTheConfiguredPath(): void

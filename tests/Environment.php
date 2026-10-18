@@ -4,6 +4,9 @@ namespace Formwork\Tests;
 
 class Environment
 {
+    /**
+     * @var array<string, bool>
+     */
     private static array $extensions = [
         'dom'      => true,
         'fileinfo' => true,

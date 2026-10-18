@@ -44,10 +44,10 @@ final class RendererTest extends TestCase
 
     public function testVariablesAreIsolatedBetweenCalls(): void
     {
-        $target = new RendererTarget();
+        $rendererTarget = new RendererTarget();
 
-        Renderer::load(self::DIR . '/returns-vars.php', ['name' => 'First'], $target);
-        $second = Renderer::load(self::DIR . '/returns-vars.php', ['name' => 'Second'], $target);
+        Renderer::load(self::DIR . '/returns-vars.php', ['name' => 'First'], $rendererTarget);
+        $second = Renderer::load(self::DIR . '/returns-vars.php', ['name' => 'Second'], $rendererTarget);
 
         $this->assertSame('Second', $second['name']);
     }
@@ -71,7 +71,7 @@ final class RendererTest extends TestCase
         try {
             $result = Renderer::load(self::DIR . '/returns-vars.php', ['name' => 'x', 'this' => 'other'], new RendererTarget());
         } catch (Error) {
-            $this->addToAssertionCount(1);
+            $this->expectNotToPerformAssertions();
             return;
         }
 

@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Users;
 use Formwork\Authentication\Authenticator;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
+use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\RoleCollection;
@@ -49,11 +50,11 @@ final class UserCollectionTest extends TestCase
     public function testUsersAreKeyedByUsername(): void
     {
         $users = $this->users();
-        $alice = $this->makeUser(['username' => 'alice'], $users);
+        $testableUser = $this->makeUser(['username' => 'alice'], $users);
         $bob = $this->makeUser(['username' => 'bob'], $users);
 
         $this->assertCount(2, $users);
-        $this->assertSame($alice, $users->get('alice'));
+        $this->assertSame($testableUser, $users->get('alice'));
         $this->assertSame($bob, $users->get('bob'));
         $this->assertNull($users->get('carol'));
     }
@@ -63,7 +64,7 @@ final class UserCollectionTest extends TestCase
         $users = $this->users();
 
         $this->expectException(Throwable::class);
-        $users->set('alice', 'not a user');
+        $users->set('alice', $this->unchecked('not a user'));
     }
 
     public function testLoggedInUserIsNullWhenNobodyIsLoggedIn(): void
@@ -74,6 +75,7 @@ final class UserCollectionTest extends TestCase
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn(null);
         foreach ($users as $user) {
+            $this->assertInstanceOf(TestableUser::class, $user);
             $user->authenticator = $authenticator;
         }
 
@@ -83,12 +85,12 @@ final class UserCollectionTest extends TestCase
     public function testLoggedInUserIsTheOneKnownToTheAuthenticator(): void
     {
         $users = $this->users();
-        $alice = $this->makeUser(['username' => 'alice'], $users);
+        $testableUser = $this->makeUser(['username' => 'alice'], $users);
         $bob = $this->makeUser(['username' => 'bob'], $users);
 
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn($bob);
-        $alice->authenticator = $authenticator;
+        $testableUser->authenticator = $authenticator;
         $bob->authenticator = $authenticator;
 
         $this->assertSame($bob, $users->loggedIn());
@@ -98,9 +100,9 @@ final class UserCollectionTest extends TestCase
     {
         $users = $this->users();
         $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test'], $users);
-        $bob = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
+        $testableUser = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
 
-        $this->assertSame($bob, $users->find(fn(User $user): bool => $user->email() === 'bob@example.test'));
+        $this->assertSame($testableUser, $users->find(fn(User $user): bool => $user->email() === 'bob@example.test'));
         $this->assertNull($users->find(fn(User $user): bool => $user->email() === 'carol@example.test'));
     }
 }

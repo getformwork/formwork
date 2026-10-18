@@ -11,10 +11,10 @@ final class HeadersDataTest extends TestCase
 {
     public function testHeadersAreNormalizedAndSorted(): void
     {
-        $headers = new HeadersData(['x_custom_header' => 'value', 'content-type' => 'text/plain']);
+        $headersData = new HeadersData(['x_custom_header' => 'value', 'content-type' => 'text/plain']);
 
-        $this->assertSame('value', $headers->get('X-Custom-Header'));
-        $this->assertNull($headers->get('x_custom_header'));
-        $this->assertSame(['Content-Type' => 'text/plain', 'X-Custom-Header' => 'value'], $headers->toArray());
+        $this->assertSame('value', $headersData->get('X-Custom-Header'));
+        $this->assertNull($headersData->get('x_custom_header'));
+        $this->assertSame(['Content-Type' => 'text/plain', 'X-Custom-Header' => 'value'], $headersData->toArray());
     }
 }

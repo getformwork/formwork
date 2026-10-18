@@ -18,10 +18,10 @@ final class PaginationFactoryTest extends TestCase
 {
     public function testPaginationIsBuiltForTheCollectionAndLength(): void
     {
-        $collection = App::instance()->getService(PageCollectionFactory::class)->make([]);
-        $factory = new PaginationFactory(App::instance(), $this->createStub(Router::class));
+        $pageCollection = App::instance()->getService(PageCollectionFactory::class)->make([]);
+        $paginationFactory = new PaginationFactory(App::instance(), $this->createStub(Router::class));
 
-        $pagination = $factory->make($collection, 5);
+        $pagination = $paginationFactory->make($pageCollection, 5);
 
         $this->assertInstanceOf(Pagination::class, $pagination);
         $this->assertSame(5, $pagination->length());
@@ -31,8 +31,8 @@ final class PaginationFactoryTest extends TestCase
     public function testEachCallBuildsAnIndependentPagination(): void
     {
         $collection = $this->createStub(PageCollection::class);
-        $factory = new PaginationFactory(App::instance(), $this->createStub(Router::class));
+        $paginationFactory = new PaginationFactory(App::instance(), $this->createStub(Router::class));
 
-        $this->assertNotSame($factory->make($collection, 3), $factory->make($collection, 3));
+        $this->assertNotSame($paginationFactory->make($collection, 3), $paginationFactory->make($collection, 3));
     }
 }

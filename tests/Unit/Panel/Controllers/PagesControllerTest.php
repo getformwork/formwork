@@ -78,10 +78,10 @@ final class PagesControllerTest extends TestCase
         $user->method('permissions')->willReturn(new Permissions([]));
         $user->method('__call')->willReturn('editor');
 
-        $controller = $this->makeController(PagesController::class, [], user: $user);
+        $pagesController = $this->makeController(PagesController::class, [], user: $user);
 
-        $method = new ReflectionMethod($controller, 'updatePage');
-        $method->invoke($controller, $page, $formData, new RequestData(['slug' => 'about', 'language' => null]));
+        $reflectionMethod = new ReflectionMethod($pagesController, 'updatePage');
+        $reflectionMethod->invoke($pagesController, $page, $formData, new RequestData(['slug' => 'about', 'language' => null]));
 
         $frontmatter = (new ContentFile($contentPath))->frontmatter();
 

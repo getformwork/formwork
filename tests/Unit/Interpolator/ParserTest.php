@@ -35,72 +35,75 @@ final class ParserTest extends TestCase
 
     public function testSingleIdentifier(): void
     {
-        $node = $this->parse('name');
+        $identifierNode = $this->parse('name');
 
-        $this->assertInstanceOf(IdentifierNode::class, $node);
-        $this->assertSame('name', $node->value());
-        $this->assertNull($node->arguments());
-        $this->assertNull($node->traverse());
+        $this->assertInstanceOf(IdentifierNode::class, $identifierNode);
+        $this->assertSame('name', $identifierNode->value());
+        $this->assertNull($identifierNode->arguments());
+        $this->assertNull($identifierNode->traverse());
     }
 
     public function testDotNotationBuildsANestedIdentifierChain(): void
     {
-        $node = $this->parse('a.b.c');
+        $identifierNode = $this->parse('a.b.c');
 
-        $this->assertSame('a', $node->value());
-        $this->assertSame('b', $node->traverse()->value());
-        $this->assertSame('c', $node->traverse()->traverse()->value());
-        $this->assertNull($node->traverse()->traverse()->traverse());
+        $this->assertSame('a', $identifierNode->value());
+        $second = $this->identifier($identifierNode->traverse());
+        $third = $this->identifier($second->traverse());
+        $this->assertSame('b', $second->value());
+        $this->assertSame('c', $third->value());
+        $this->assertNull($third->traverse());
     }
 
     public function testBracketsNotationWithNumbers(): void
     {
-        $node = $this->parse('a[3]');
+        $identifierNode = $this->parse('a[3]');
 
-        $this->assertInstanceOf(NumberNode::class, $node->traverse());
-        $this->assertSame(3, $node->traverse()->value());
+        $this->assertInstanceOf(NumberNode::class, $identifierNode->traverse());
+        $this->assertSame(3, $identifierNode->traverse()->value());
     }
 
     public function testBracketsNotationWithStrings(): void
     {
-        $node = $this->parse('a["key"]');
+        $identifierNode = $this->parse('a["key"]');
 
-        $this->assertInstanceOf(StringNode::class, $node->traverse());
-        $this->assertSame('key', $node->traverse()->value());
+        $this->assertInstanceOf(StringNode::class, $identifierNode->traverse());
+        $this->assertSame('key', $identifierNode->traverse()->value());
     }
 
     public function testCallWithoutArguments(): void
     {
-        $node = $this->parse('f()');
+        $identifierNode = $this->parse('f()');
 
-        $this->assertInstanceOf(ArgumentsNode::class, $node->arguments());
-        $this->assertSame([], $node->arguments()->value());
+        $this->assertInstanceOf(ArgumentsNode::class, $identifierNode->arguments());
+        $this->assertSame([], $identifierNode->arguments()->value());
     }
 
     public function testCallWithArgumentsOfEveryKind(): void
     {
-        $node = $this->parse('f(1, "two", three, [4], g(5))');
+        $identifierNode = $this->parse('f(1, "two", three, [4], g(5))');
 
-        $types = array_map(static fn(AbstractNode $argument): string => $argument->type(), $node->arguments()->value());
+        $types = array_map(static fn(AbstractNode $node): string => $node->type(), $identifierNode->arguments()?->value());
 
         $this->assertSame(['number', 'string', 'identifier', 'array', 'identifier'], $types);
     }
 
     public function testCallFollowedByTraversal(): void
     {
-        $node = $this->parse('f(1).g(2)');
+        $identifierNode = $this->parse('f(1).g(2)');
 
-        $this->assertSame('f', $node->value());
-        $this->assertCount(1, $node->arguments()->value());
-        $this->assertSame('g', $node->traverse()->value());
-        $this->assertCount(1, $node->traverse()->arguments()->value());
+        $this->assertSame('f', $identifierNode->value());
+        $this->assertCount(1, $identifierNode->arguments()?->value());
+        $next = $this->identifier($identifierNode->traverse());
+        $this->assertSame('g', $next->value());
+        $this->assertCount(1, $next->arguments()?->value());
     }
 
     public function testNumbersAreConvertedToIntegersOrFloats(): void
     {
         $values = array_map(
-            static fn(AbstractNode $argument): mixed => $argument->value(),
-            $this->parse('f(1, 1.5, -2, 1e2, +3)')->arguments()->value(),
+            static fn(AbstractNode $node): mixed => $node->value(),
+            $this->parse('f(1, 1.5, -2, 1e2, +3)')->arguments()?->value(),
         );
 
         $this->assertSame([1, 1.5, -2, 100.0, 3], $values);
@@ -109,7 +112,7 @@ final class ParserTest extends TestCase
     #[DataProvider('stringProvider')]
     public function testStringsAreUnquotedAndUnescaped(string $expression, string $expected): void
     {
-        $this->assertSame($expected, $this->parse($expression)->arguments()->value()[0]->value());
+        $this->assertSame($expected, $this->parse($expression)->arguments()?->value()[0]->value());
     }
 
     /**
@@ -135,7 +138,7 @@ final class ParserTest extends TestCase
     #[DataProvider('quotedContentProvider')]
     public function testQuotesInsideStringsAreKept(string $expression, string $expected): void
     {
-        $this->assertSame($expected, $this->parse($expression)->arguments()->value()[0]->value());
+        $this->assertSame($expected, $this->parse($expression)->arguments()?->value()[0]->value());
     }
 
     /**
@@ -154,8 +157,8 @@ final class ParserTest extends TestCase
     public function testNumbersSeparatedByCommasWithoutSpacesAreParsedAsSeparateArguments(): void
     {
         $values = array_map(
-            static fn(AbstractNode $argument): mixed => $argument->value(),
-            $this->parse('f(1,2,3)')->arguments()->value(),
+            static fn(AbstractNode $node): mixed => $node->value(),
+            $this->parse('f(1,2,3)')->arguments()?->value(),
         );
 
         $this->assertSame([1, 2, 3], $values);
@@ -163,7 +166,7 @@ final class ParserTest extends TestCase
 
     public function testEmptyArray(): void
     {
-        $node = $this->parse('f([])')->arguments()->value()[0];
+        $node = $this->parse('f([])')->arguments()?->value()[0];
 
         $this->assertInstanceOf(ArrayNode::class, $node);
         $this->assertSame([], $node->value());
@@ -172,7 +175,7 @@ final class ParserTest extends TestCase
 
     public function testArrayWithImplicitKeys(): void
     {
-        $node = $this->parse('f([1, 2])')->arguments()->value()[0];
+        $node = $this->parse('f([1, 2])')->arguments()?->value()[0];
 
         $this->assertCount(2, $node->value());
         $this->assertContainsOnlyInstancesOf(ImplicitArrayKeyNode::class, $node->keys()->value());
@@ -180,7 +183,7 @@ final class ParserTest extends TestCase
 
     public function testArrayWithExplicitKeys(): void
     {
-        $node = $this->parse('f(["a" => 1, b => 2, 3 => "c"])')->arguments()->value()[0];
+        $node = $this->parse('f(["a" => 1, b => 2, 3 => "c"])')->arguments()?->value()[0];
 
         $keys = $node->keys()->value();
 
@@ -191,16 +194,16 @@ final class ParserTest extends TestCase
 
     public function testArrayMixingImplicitAndExplicitKeys(): void
     {
-        $node = $this->parse('f([1, "k" => 2, 3])')->arguments()->value()[0];
+        $node = $this->parse('f([1, "k" => 2, 3])')->arguments()?->value()[0];
 
-        $types = array_map(static fn(AbstractNode $key): string => $key->type(), $node->keys()->value());
+        $types = array_map(static fn(AbstractNode $node): string => $node->type(), $node->keys()->value());
 
         $this->assertSame(['implicit array key', 'string', 'implicit array key'], $types);
     }
 
     public function testNestedArrays(): void
     {
-        $node = $this->parse('f([[1], ["a" => [2]]])')->arguments()->value()[0];
+        $node = $this->parse('f([[1], ["a" => [2]]])')->arguments()?->value()[0];
 
         $this->assertSame('array', $node->value()[0]->type());
         $this->assertSame('array', $node->value()[1]->type());
@@ -250,8 +253,18 @@ final class ParserTest extends TestCase
         yield 'punctuation as argument' => ['f(.)', 'Unexpected token "." of type punctuation at position 2'];
     }
 
-    private function parse(string $expression): AbstractNode
+    private function identifier(?AbstractNode $node): IdentifierNode
     {
-        return Parser::parseTokenStream(Tokenizer::tokenizeString($expression));
+        $this->assertInstanceOf(IdentifierNode::class, $node);
+
+        return $node;
+    }
+
+    private function parse(string $expression): IdentifierNode
+    {
+        $node = Parser::parseTokenStream(Tokenizer::tokenizeString($expression));
+        $this->assertInstanceOf(IdentifierNode::class, $node);
+
+        return $node;
     }
 }

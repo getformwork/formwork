@@ -231,19 +231,19 @@ final class HtmlSanitizerTest extends TestCase
 
     public function testExternalUrisCanBeDisallowed(): void
     {
-        $sanitizer = (new HtmlSanitizer())->disallowExternalUris();
+        $htmlSanitizer = (new HtmlSanitizer())->disallowExternalUris();
 
         $this->assertSame(
             '<a>external</a><a href="/local">local</a><img>',
-            $sanitizer->sanitize('<a href="https://example.com">external</a><a href="/local">local</a><img src="https://example.com/x.png">')
+            $htmlSanitizer->sanitize('<a href="https://example.com">external</a><a href="/local">local</a><img src="https://example.com/x.png">')
         );
     }
 
     public function testDisallowedElementsCanBeEscaped(): void
     {
-        $sanitizer = (new HtmlSanitizer())->sanitizeElementsMethod(SanitizeElementsMethod::Escape);
+        $htmlSanitizer = (new HtmlSanitizer())->sanitizeElementsMethod(SanitizeElementsMethod::Escape);
 
-        $html = $sanitizer->sanitize('<p>a</p><script>alert(1)</script>');
+        $html = $htmlSanitizer->sanitize('<p>a</p><script>alert(1)</script>');
 
         $this->assertSame('<p>a</p>&lt;script&gt;alert(1)&lt;/script&gt;', $html);
     }

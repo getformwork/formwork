@@ -18,11 +18,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[UsesTempDirectory]
 final class CacheServiceLoaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testFilesCacheIsTheDefaultHandler(): void
     {
         $cache = $this->loader('pages')->load($this->container());
@@ -76,17 +71,17 @@ final class CacheServiceLoaderTest extends TestCase
 
     public function testTimeToLiveParameterWinsOverTheConfiguration(): void
     {
-        $cache = $this->loader('pages', handler: 'array', defaultTtl: 5)->load($this->container());
+        $cache = $this->loader('pages', defaultTtl: 5, handler: 'array')->load($this->container());
 
         $this->assertSame(5, $cache->defaultTtl());
     }
 
     public function testCachePathComesFromTheConfigurationOrTheParameter(): void
     {
-        $fromConfig = $this->loader('pages', config: ['cache' => ['path' => TESTS_TMP_PATH . '/from-config']])->load($this->container());
+        $cache = $this->loader('pages', config: ['cache' => ['path' => TESTS_TMP_PATH . '/from-config']])->load($this->container());
         $fromParameter = $this->loader('pages', path: TESTS_TMP_PATH . '/from-parameter')->load($this->container());
 
-        $fromConfig->set('key', 'value');
+        $cache->set('key', 'value');
         $fromParameter->set('key', 'value');
 
         $this->assertDirectoryExists(TESTS_TMP_PATH . '/from-config');
@@ -95,11 +90,11 @@ final class CacheServiceLoaderTest extends TestCase
 
     public function testLoadedCachesAreRegisteredInTheManager(): void
     {
-        $manager = new CacheManager();
-        $cache = $this->loader('pages', handler: 'array', manager: $manager)->load($this->container());
+        $cacheManager = new CacheManager();
+        $cache = $this->loader('pages', handler: 'array', cacheManager: $cacheManager)->load($this->container());
 
-        $this->assertTrue($manager->has('pages'));
-        $this->assertSame($cache, $manager->get('pages'));
+        $this->assertTrue($cacheManager->has('pages'));
+        $this->assertSame($cache, $cacheManager->get('pages'));
     }
 
     public function testInvalidNamespacesAreRejected(): void
@@ -120,10 +115,10 @@ final class CacheServiceLoaderTest extends TestCase
      * @param non-empty-string     $namespace
      * @param array<string, mixed> $config
      */
-    private function loader(string $namespace, ?string $path = null, ?int $defaultTtl = null, ?string $handler = null, array $config = [], ?CacheManager $manager = null): CacheServiceLoader
+    private function loader(string $namespace, ?string $path = null, ?int $defaultTtl = null, ?string $handler = null, array $config = [], ?CacheManager $cacheManager = null): CacheServiceLoader
     {
         $config = array_replace_recursive(['cache' => ['path' => TESTS_TMP_PATH . '/cache', 'time' => 900]], $config);
 
-        return new CacheServiceLoader(new Config(['system' => $config], resolved: true), $manager ?? new CacheManager(), $namespace, $path, $defaultTtl, $handler);
+        return new CacheServiceLoader(new Config(['system' => $config], resolved: true), $cacheManager ?? new CacheManager(), $namespace, $path, $defaultTtl, $handler);
     }
 }

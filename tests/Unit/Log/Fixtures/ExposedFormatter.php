@@ -13,7 +13,7 @@ final class ExposedFormatter extends AbstractFormatter
     }
 
     /**
-     * @param array<mixed> $context
+     * @param array<int|string, mixed> $context
      */
     public function interpolateMessage(string $message, array $context, string $dateFormat = DateTimeInterface::RFC3339): string
     {

@@ -72,11 +72,11 @@ final class LanguagesTest extends TestCase
 
     public function testLanguageObjectsCanBeGivenInsteadOfCodes(): void
     {
-        $italian = new Language('it');
+        $language = new Language('it');
 
-        $languages = new Languages(['available' => ['en', 'it'], 'default' => 'en', 'current' => $italian]);
+        $languages = new Languages(['available' => ['en', 'it'], 'default' => 'en', 'current' => $language]);
 
-        $this->assertSame($italian, $languages->current());
+        $this->assertSame($language, $languages->current());
     }
 
     public function testUnavailableLanguagesAreNotResolved(): void

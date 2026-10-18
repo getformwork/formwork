@@ -22,9 +22,9 @@ final class Html5ParserTest extends TestCase
 
     public function testUnclosedScriptContentIsKeptAsText(): void
     {
-        $parser = new Html5Parser();
+        $html5Parser = new Html5Parser();
 
-        $fragment = $parser->parse('<script>alert(1)');
+        $fragment = $html5Parser->parse('<script>alert(1)');
 
         $this->assertNotNull($fragment);
         $this->assertSame('script', $fragment->firstChild?->nodeName);
@@ -41,18 +41,18 @@ final class Html5ParserTest extends TestCase
 
     public function testSerializationRoundTrip(): void
     {
-        $parser = new Html5Parser();
+        $html5Parser = new Html5Parser();
         $html = '<div class="a b" data-x="1"><img src="x.png" alt="x"><br>text &amp; more</div>';
 
-        $this->assertSame($html, $parser->serialize($parser->parse($html)));
+        $this->assertSame($html, $html5Parser->serialize($html5Parser->parse($html)));
     }
 
     public function testAttributeValuesAreEscaped(): void
     {
-        $parser = new Html5Parser();
-        $fragment = $parser->parse('<a title="&quot;&lt;&amp;&gt;" href="/x?a=1&amp;b=2">link</a>');
+        $html5Parser = new Html5Parser();
+        $fragment = $html5Parser->parse('<a title="&quot;&lt;&amp;&gt;" href="/x?a=1&amp;b=2">link</a>');
 
-        $serialized = $parser->serialize($fragment);
+        $serialized = $html5Parser->serialize($fragment);
 
         $this->assertStringContainsString('title="&quot;<&amp;>"', $serialized);
         $this->assertStringContainsString('href="/x?a=1&amp;b=2"', $serialized);
@@ -60,18 +60,18 @@ final class Html5ParserTest extends TestCase
 
     public function testSerializingAnElementReturnsOnlyThatElement(): void
     {
-        $parser = new Html5Parser();
-        $fragment = $parser->parse('<p>one</p><p>two</p>');
+        $html5Parser = new Html5Parser();
+        $fragment = $html5Parser->parse('<p>one</p><p>two</p>');
 
         $this->assertNotNull($fragment);
-        $this->assertSame('<p>one</p>', $parser->serialize($fragment->firstChild));
+        $this->assertSame('<p>one</p>', $html5Parser->serialize($fragment->firstChild));
     }
 
     public function testNestingIsDeepEnoughToNotCrashTheParser(): void
     {
-        $parser = new Html5Parser();
+        $html5Parser = new Html5Parser();
 
-        $fragment = $parser->parse(str_repeat('<div>', 2000) . 'deep' . str_repeat('</div>', 2000));
+        $fragment = $html5Parser->parse(str_repeat('<div>', 2000) . 'deep' . str_repeat('</div>', 2000));
 
         $this->assertNotNull($fragment);
         $this->assertSame('deep', $fragment->textContent);

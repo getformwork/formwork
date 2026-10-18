@@ -16,35 +16,35 @@ final class UploadedFileTest extends TestCase
 {
     public function testUploadedFileExposesClientAndUploadMetadata(): void
     {
-        $file = new UploadedFile('avatar', [
+        $uploadedFile = new UploadedFile('avatar', [
             'name'     => 'avatar.png', 'full_path' => 'pictures/avatar.png', 'type' => 'image/png',
             'tmp_name' => '/tmp/php-avatar', 'error' => (string) UPLOAD_ERR_OK, 'size' => '12',
         ]);
 
-        $this->assertSame('avatar', $file->fieldName());
-        $this->assertSame('avatar.png', $file->clientName());
-        $this->assertSame('pictures/avatar.png', $file->clientFullPath());
-        $this->assertSame('image/png', $file->clientMimeType());
-        $this->assertSame('/tmp/php-avatar', $file->tempPath());
-        $this->assertSame(UPLOAD_ERR_OK, $file->error());
-        $this->assertSame(12, $file->size());
-        $this->assertTrue($file->isUploaded());
-        $this->assertFalse($file->isEmpty());
+        $this->assertSame('avatar', $uploadedFile->fieldName());
+        $this->assertSame('avatar.png', $uploadedFile->clientName());
+        $this->assertSame('pictures/avatar.png', $uploadedFile->clientFullPath());
+        $this->assertSame('image/png', $uploadedFile->clientMimeType());
+        $this->assertSame('/tmp/php-avatar', $uploadedFile->tempPath());
+        $this->assertSame(UPLOAD_ERR_OK, $uploadedFile->error());
+        $this->assertSame(12, $uploadedFile->size());
+        $this->assertTrue($uploadedFile->isUploaded());
+        $this->assertFalse($uploadedFile->isEmpty());
     }
 
     #[DataProvider('uploadErrorProvider')]
     public function testEveryUploadErrorHasAMessageATranslationAndBlocksTheMove(int $error, string $message, string $translation): void
     {
-        $file = $this->uploadedFile($error);
+        $uploadedFile = $this->uploadedFile($error);
 
-        $this->assertSame($message, $file->getErrorMessage());
-        $this->assertSame($translation, $file->getErrorTranslationString());
-        $this->assertFalse($file->isUploaded());
-        $this->assertSame($error === UPLOAD_ERR_NO_FILE, $file->isEmpty());
+        $this->assertSame($message, $uploadedFile->getErrorMessage());
+        $this->assertSame($translation, $uploadedFile->getErrorTranslationString());
+        $this->assertFalse($uploadedFile->isUploaded());
+        $this->assertSame($error === UPLOAD_ERR_NO_FILE, $uploadedFile->isEmpty());
 
-        $exception = $this->captureException(TranslatedException::class, static fn() => $file->move(TESTS_TMP_PATH, 'file.txt'));
-        $this->assertSame($translation, $exception->getLanguageString());
-        $this->assertStringContainsString($message, $exception->getMessage());
+        $translatedException = $this->captureException(TranslatedException::class, static fn() => $uploadedFile->move(TESTS_TMP_PATH, 'file.txt'));
+        $this->assertSame($translation, $translatedException->getLanguageString());
+        $this->assertStringContainsString($message, $translatedException->getMessage());
     }
 
     /**
@@ -79,21 +79,21 @@ final class UploadedFileTest extends TestCase
 
     public function testMoveAcceptsFileNamesOfTheMaximumLength(): void
     {
-        $exception = $this->captureException(TranslatedException::class, fn() => $this->uploadedFile(UPLOAD_ERR_OK)->move(TESTS_TMP_PATH, str_repeat('a', FileSystem::MAX_NAME_LENGTH)));
+        $translatedException = $this->captureException(TranslatedException::class, fn() => $this->uploadedFile(UPLOAD_ERR_OK)->move(TESTS_TMP_PATH, str_repeat('a', FileSystem::MAX_NAME_LENGTH)));
         // The name is accepted, then PHP refuses to move a file that was not uploaded through HTTP
-        $this->assertSame('upload.error.cannotMoveToDestination', $exception->getLanguageString());
+        $this->assertSame('upload.error.cannotMoveToDestination', $translatedException->getLanguageString());
     }
 
     public function testMoveRefusesToReplaceAnExistingFileUnlessOverwriteIsEnabled(): void
     {
         FileSystem::write(TESTS_TMP_PATH . '/existing.txt', 'existing');
-        $file = $this->uploadedFile(UPLOAD_ERR_OK);
+        $uploadedFile = $this->uploadedFile(UPLOAD_ERR_OK);
 
-        $exception = $this->captureException(TranslatedException::class, static fn() => $file->move(TESTS_TMP_PATH, 'existing.txt'));
+        $exception = $this->captureException(TranslatedException::class, static fn() => $uploadedFile->move(TESTS_TMP_PATH, 'existing.txt'));
         $this->assertSame('upload.error.alreadyExists', $exception->getLanguageString());
 
         // Not an HTTP upload, so PHP refuses the move after the checks above have passed
-        $exception = $this->captureException(TranslatedException::class, static fn() => $file->move(TESTS_TMP_PATH, 'existing.txt', overwrite: true));
+        $exception = $this->captureException(TranslatedException::class, static fn() => $uploadedFile->move(TESTS_TMP_PATH, 'existing.txt', overwrite: true));
         $this->assertSame('upload.error.cannotMoveToDestination', $exception->getLanguageString());
 
         $this->assertSame('existing', FileSystem::read(TESTS_TMP_PATH . '/existing.txt'));

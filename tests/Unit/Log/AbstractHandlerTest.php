@@ -24,10 +24,10 @@ final class AbstractHandlerTest extends TestCase
 
     public function testDebugIsTheDefaultLevelAndAcceptsEverything(): void
     {
-        $handler = new ExposedHandler(new JsonFormatter());
+        $exposedHandler = new ExposedHandler(new JsonFormatter());
 
         foreach (array_keys(Logger::LOG_LEVELS) as $level) {
-            $this->assertTrue($handler->accepts($level), $level);
+            $this->assertTrue($exposedHandler->accepts($level), $level);
         }
     }
 
@@ -37,11 +37,11 @@ final class AbstractHandlerTest extends TestCase
     #[DataProvider('thresholdProvider')]
     public function testOnlyRecordsAtLeastAsSevereAsTheThresholdAreAccepted(string $threshold, array $accepted): void
     {
-        $handler = new ExposedHandler(new JsonFormatter(), $threshold);
+        $exposedHandler = new ExposedHandler(new JsonFormatter(), $this->unchecked($threshold));
 
         $actual = array_values(array_filter(
             array_keys(Logger::LOG_LEVELS),
-            static fn(string $level): bool => $handler->accepts($level),
+            $exposedHandler->accepts(...),
         ));
 
         $this->assertSame($accepted, $actual);
@@ -64,28 +64,28 @@ final class AbstractHandlerTest extends TestCase
 
     public function testInvalidThresholdsAreRejected(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid log level: "verbose"');
-        new ExposedHandler(new JsonFormatter(), 'verbose');
+        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new ExposedHandler(new JsonFormatter(), $this->unchecked('verbose')));
+
+        $this->assertSame('Invalid log level: "verbose"', $invalidArgumentException->getMessage());
     }
 
     public function testInvalidRecordLevelsAreRejected(): void
     {
-        $handler = new ExposedHandler(new JsonFormatter());
+        $exposedHandler = new ExposedHandler(new JsonFormatter());
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid log level: "verbose"');
-        $handler->accepts('verbose');
+        $exposedHandler->accepts('verbose');
     }
 
     public function testHandleUsesTheThreshold(): void
     {
-        $handler = new ExposedHandler(new JsonFormatter(), LogLevel::ERROR);
+        $exposedHandler = new ExposedHandler(new JsonFormatter(), LogLevel::ERROR);
 
-        $handler->handle(new DateTimeImmutable(), 'debug', 'ignored', []);
-        $handler->handle(new DateTimeImmutable(), 'error', 'kept', []);
-        $handler->handle(new DateTimeImmutable(), 'alert', 'kept', []);
+        $exposedHandler->handle(new DateTimeImmutable(), 'debug', 'ignored', []);
+        $exposedHandler->handle(new DateTimeImmutable(), 'error', 'kept', []);
+        $exposedHandler->handle(new DateTimeImmutable(), 'alert', 'kept', []);
 
-        $this->assertSame(['error', 'alert'], $handler->handled);
+        $this->assertSame(['error', 'alert'], $exposedHandler->handled);
     }
 }

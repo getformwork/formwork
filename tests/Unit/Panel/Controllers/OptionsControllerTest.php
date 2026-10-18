@@ -33,9 +33,9 @@ final class OptionsControllerTest extends TestCase
 
         try {
             $controller = $this->makeController(OptionsController::class, []);
-            $updateOptions = new ReflectionMethod($controller, 'updateOptions');
+            $reflectionMethod = new ReflectionMethod($controller, 'updateOptions');
 
-            $updateOptions->invoke($controller, 'site', $submitted, $existing, self::formSaveDefaults());
+            $reflectionMethod->invoke($controller, 'site', $submitted, $existing, self::formSaveDefaults());
 
             $this->assertSame($expected, Yaml::parseFile($path));
         } finally {

@@ -146,7 +146,7 @@ final class DebugTest extends TestCase
         preg_match('/id="__formwork-dump-id-(\d+)"/', $this->body([1]), $first);
         preg_match('/id="__formwork-dump-id-(\d+)"/', $this->body([1]), $second);
 
-        $this->assertGreaterThan((int) $first[1], (int) $second[1]);
+        $this->assertGreaterThan((int) ($first[1] ?? 0), (int) ($second[1] ?? 0));
     }
 
     #[RunInSeparateProcess]
@@ -165,11 +165,11 @@ final class DebugTest extends TestCase
 
     public function testObjectsShowTheirClassIdAndProperties(): void
     {
-        $object = new DumpTarget();
-        $output = $this->body($object);
+        $dumpTarget = new DumpTarget();
+        $output = $this->body($dumpTarget);
 
         $this->assertStringContainsString(DumpTarget::class, $output);
-        $this->assertStringContainsString('#' . spl_object_id($object), $output);
+        $this->assertStringContainsString('#' . spl_object_id($dumpTarget), $output);
         $this->assertStringContainsString('"public value"', $output);
         $this->assertStringContainsString('"promoted value"', $output);
         $this->assertStringContainsString('<span class="__type-number">42</span>', $output);
@@ -211,10 +211,10 @@ final class DebugTest extends TestCase
 
     public function testDumpingTheSameObjectTwiceDoesNotReportAReference(): void
     {
-        $object = new DumpTarget();
+        $dumpTarget = new DumpTarget();
 
-        $first = $this->body($object);
-        $second = $this->body($object);
+        $first = $this->body($dumpTarget);
+        $second = $this->body($dumpTarget);
 
         $this->assertStringNotContainsString('Go to reference', $second, 'The second dump is not a circular reference');
         $this->assertSame(
@@ -225,9 +225,9 @@ final class DebugTest extends TestCase
 
     public function testTheSameObjectUsedTwiceInOneStructureIsDumpedOnceAndReferenced(): void
     {
-        $shared = new DumpTarget('shared');
+        $dumpTarget = new DumpTarget('shared');
 
-        $output = $this->body([$shared, $shared]);
+        $output = $this->body([$dumpTarget, $dumpTarget]);
 
         $this->assertSame(1, substr_count($output, '"shared"'));
         $this->assertSame(1, substr_count($output, 'Go to reference'));
@@ -247,11 +247,11 @@ final class DebugTest extends TestCase
     {
         $payload = json_decode('{"<script>alert(1)</script>": {"<b>nested</b>": 1}}');
 
-        $document = new DOMDocument();
-        @$document->loadHTML('<body>' . $this->body($payload));
+        $domDocument = new DOMDocument();
+        @$domDocument->loadHTML('<body>' . $this->body($payload));
 
-        $this->assertSame(0, $document->getElementsByTagName('script')->length);
-        $this->assertSame(0, $document->getElementsByTagName('b')->length);
+        $this->assertSame(0, $domDocument->getElementsByTagName('script')->length);
+        $this->assertSame(0, $domDocument->getElementsByTagName('b')->length);
     }
 
     public function testClosuresShowTheirSignature(): void
@@ -368,7 +368,7 @@ final class DebugTest extends TestCase
         Debug::dump('value');
         $output = '';
         while (ob_get_level() > $level) {
-            $output = (string) ob_get_clean() . $output;
+            $output = ob_get_clean() . $output;
         }
 
         $this->assertSame($expected, str_contains($output, '<pre class="__formwork-dump">'));
@@ -383,7 +383,7 @@ final class DebugTest extends TestCase
         Debug::dump('first', 2);
         $output = '';
         while (ob_get_level() > $level) {
-            $output = (string) ob_get_clean() . $output;
+            $output = ob_get_clean() . $output;
         }
 
         $this->assertStringContainsString(basename(__FILE__), $output);

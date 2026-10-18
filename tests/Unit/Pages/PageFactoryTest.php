@@ -41,14 +41,14 @@ final class PageFactoryTest extends TestCase
     public function testFactoriesBuildTheExpectedPageObjects(): void
     {
         $pageFactory = $this->app->getService(PageFactory::class);
-        $collectionFactory = $this->app->getService(PageCollectionFactory::class);
+        $pageCollectionFactory = $this->app->getService(PageCollectionFactory::class);
 
         $page = $pageFactory->make(['site' => $this->fixtureSite]);
-        $collection = $collectionFactory->make([]);
+        $pageCollection = $pageCollectionFactory->make([]);
 
         $this->assertInstanceOf(Page::class, $page);
         $this->assertTrue($page->isEmpty());
-        $this->assertInstanceOf(PageCollection::class, $collection);
-        $this->assertTrue($collection->isEmpty());
+        $this->assertInstanceOf(PageCollection::class, $pageCollection);
+        $this->assertTrue($pageCollection->isEmpty());
     }
 }

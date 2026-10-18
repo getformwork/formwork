@@ -18,6 +18,7 @@ use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionProperty;
 use RuntimeException;
 
 #[CoversClass(Plugins::class)]
@@ -101,8 +102,8 @@ final class PluginsTest extends TestCase
         $this->dispatcher->dispatch(new Event('customEvent', []));
 
         $plugin = $this->plugins->get('listenA');
-        $this->assertTrue($plugin->isInitialized());
-        $this->assertSame(['customEvent'], $plugin::$received);
+        $this->assertTrue($plugin?->isInitialized());
+        $this->assertSame(['customEvent'], (new ReflectionProperty($plugin, 'received'))->getValue());
     }
 
     public function testInitializingAPluginTwiceDoesNotRegisterItsListenersTwice(): void
@@ -120,7 +121,9 @@ final class PluginsTest extends TestCase
         $this->plugins->initialize('listenB');
         $this->dispatcher->dispatch(new Event('customEvent', []));
 
-        $this->assertSame(1, $this->plugins->get('listenB')::$calls);
+        $plugin = $this->plugins->get('listenB');
+        $this->assertNotNull($plugin);
+        $this->assertSame(1, (new ReflectionProperty($plugin, 'calls'))->getValue());
     }
 
     public function testPluginInitializationErrorsPropagate(): void
@@ -141,9 +144,9 @@ final class PluginsTest extends TestCase
                 }
             PHP));
 
-        $exception = $this->captureException(PluginInitializationException::class, fn() => $this->plugins->initialize('badAutoload'));
-        $this->assertStringContainsString('Failed autoload for plugin "badAutoload"', $exception->getMessage());
-        $this->assertSame('cannot autoload', $exception->getPrevious()?->getMessage());
+        $pluginInitializationException = $this->captureException(PluginInitializationException::class, fn() => $this->plugins->initialize('badAutoload'));
+        $this->assertStringContainsString('Failed autoload for plugin "badAutoload"', $pluginInitializationException->getMessage());
+        $this->assertSame('cannot autoload', $pluginInitializationException->getPrevious()?->getMessage());
     }
 
     public function testOnlyEnabledPluginsAreInitialized(): void
@@ -156,16 +159,16 @@ final class PluginsTest extends TestCase
 
         $this->plugins->initializeEnabled();
 
-        $this->assertTrue($this->plugins->get('enabledOne')->isInitialized());
-        $this->assertFalse($this->plugins->get('disabledOne')->isInitialized());
-        $this->assertFalse($this->plugins->get('implicitOne')->isInitialized());
+        $this->assertTrue($this->plugins->get('enabledOne')?->isInitialized());
+        $this->assertFalse($this->plugins->get('disabledOne')?->isInitialized());
+        $this->assertFalse($this->plugins->get('implicitOne')?->isInitialized());
     }
 
     public function testInitializedEventIsAlwaysDispatched(): void
     {
         $received = null;
-        $this->dispatcher->on('pluginsInitialized', function (PluginsInitializedEvent $event) use (&$received): void {
-            $received = $event->plugins();
+        $this->dispatcher->on('pluginsInitialized', function (PluginsInitializedEvent $pluginsInitializedEvent) use (&$received): void {
+            $received = $pluginsInitializedEvent->plugins();
         });
 
         $this->plugins->initializeEnabled();

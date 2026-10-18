@@ -12,11 +12,11 @@ class DataMultipleSetterTest extends TestCase
 {
     public function testSetMultiple(): void
     {
-        $fixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2']);
+        $dataMultipleSetterFixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2']);
 
-        $fixture->setMultiple(['key1' => 'newValue1', 'key3' => 'value3']);
+        $dataMultipleSetterFixture->setMultiple(['key1' => 'newValue1', 'key3' => 'value3']);
 
-        $data = $fixture->data();
+        $data = $dataMultipleSetterFixture->data();
 
         $this->assertSame('newValue1', $data['key1']);
         $this->assertSame('value2', $data['key2']);
@@ -25,11 +25,11 @@ class DataMultipleSetterTest extends TestCase
 
     public function testRemoveMultiple(): void
     {
-        $fixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3']);
+        $dataMultipleSetterFixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3']);
 
-        $fixture->removeMultiple(['key1', 'key3']);
+        $dataMultipleSetterFixture->removeMultiple(['key1', 'key3']);
 
-        $data = $fixture->data();
+        $data = $dataMultipleSetterFixture->data();
 
         $this->assertArrayNotHasKey('key1', $data);
         $this->assertSame('value2', $data['key2']);

@@ -67,8 +67,8 @@ final class RateLimiterTest extends TestCase
             $limiter->assertAllowed();
         }
 
-        $exception = $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
-        $this->assertSame(90, $exception->getResetTime());
+        $rateLimitExceededException = $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
+        $this->assertSame(90, $rateLimitExceededException->getResetTime());
 
         $this->assertTrue($limiter->hasReachedLimit());
     }
@@ -112,10 +112,10 @@ final class RateLimiterTest extends TestCase
 
     public function testDifferentAddressesHaveIndependentCounters(): void
     {
-        $first = $this->limiter(1, ip: '203.0.113.1');
-        $first->assertAllowed();
+        $rateLimiter = $this->limiter(1, ip: '203.0.113.1');
+        $rateLimiter->assertAllowed();
 
-        $this->captureException(RateLimitExceededException::class, static fn() => $first->assertAllowed());
+        $this->captureException(RateLimitExceededException::class, static fn() => $rateLimiter->assertAllowed());
 
         $this->limiter(1, ip: '203.0.113.2')->assertAllowed();
         $this->assertTrue($this->limiter(1, ip: '203.0.113.1')->hasReachedLimit());
@@ -256,8 +256,8 @@ final class RateLimiterTest extends TestCase
 
     public function testResetAttemptsDoesNotAffectOtherAddresses(): void
     {
-        $other = $this->limiter(1, ip: '203.0.113.2');
-        $other->assertAllowed();
+        $rateLimiter = $this->limiter(1, ip: '203.0.113.2');
+        $rateLimiter->assertAllowed();
 
         $limiter = $this->limiter(1, ip: '203.0.113.1');
         $limiter->assertAllowed();

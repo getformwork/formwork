@@ -53,8 +53,8 @@ final class PhpTest extends TestCase
 
         $setStateImplementingClass = SetStateImplementingClassFixture::class;
 
-        $serializable = new SerializableFixture('value');
-        $serialized = addcslashes(serialize($serializable), '\\');
+        $serializableFixture = new SerializableFixture('value');
+        $serialized = addcslashes(serialize($serializableFixture), '\\');
 
         $data = [
             'string'               => 'Test',
@@ -67,7 +67,7 @@ final class PhpTest extends TestCase
             'enum'                 => EnumFixture::Alpha,
             'arraySerializable'    => $arraySerializable,
             'setStateImplementing' => new SetStateImplementingClassFixture('value'),
-            'serializable'         => $serializable,
+            'serializable'         => $serializableFixture,
         ];
 
         $expected = <<<PHP
@@ -116,6 +116,7 @@ final class PhpTest extends TestCase
     public function testEncodeThrowsExceptionWithResources(): void
     {
         $stream = fopen('php://temp', 'r');
+        $this->assertIsResource($stream);
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Data of type "resource" cannot be encoded');

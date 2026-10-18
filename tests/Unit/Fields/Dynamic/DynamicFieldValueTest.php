@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Fields\Dynamic;
 
+use ArrayObject;
 use Closure;
 use Formwork\Data\Attributes\Getter;
 use Formwork\Exceptions\RecursionException;
@@ -38,28 +39,28 @@ final class DynamicFieldValueTest extends TestCase
 
     public function testValueIsComputedLazily(): void
     {
-        $calls = 0;
-        DynamicFieldValue::$varsLoader = function () use (&$calls): array {
-            ++$calls;
+        $arrayObject = new ArrayObject();
+        DynamicFieldValue::$varsLoader = function () use ($arrayObject): array {
+            $arrayObject[] = true;
             return ['answer' => 42];
         };
-        $dynamic = new DynamicFieldValue('value', 'answer', new Field('f', []));
+        $dynamicFieldValue = new DynamicFieldValue('value', 'answer', new Field('f', []));
 
-        $this->assertFalse($dynamic->isComputed());
-        $this->assertSame(0, $calls);
+        $this->assertFalse($dynamicFieldValue->isComputed());
+        $this->assertCount(0, $arrayObject);
 
-        $this->assertSame(42, $dynamic->value());
-        $this->assertTrue($dynamic->isComputed());
-        $this->assertSame(1, $calls);
+        $this->assertSame(42, $dynamicFieldValue->value());
+        $this->assertTrue($dynamicFieldValue->isComputed());
+        $this->assertCount(1, $arrayObject);
     }
 
     public function testKeyAndFieldAreExposed(): void
     {
         $field = new Field('f', []);
-        $dynamic = new DynamicFieldValue('label', 'x', $field);
+        $dynamicFieldValue = new DynamicFieldValue('label', 'x', $field);
 
-        $this->assertSame('label', $dynamic->key());
-        $this->assertSame($field, $dynamic->field());
+        $this->assertSame('label', $dynamicFieldValue->key());
+        $this->assertSame($field, $dynamicFieldValue->field());
     }
 
     public function testComputedValueIsCachedAcrossCalls(): void
@@ -73,12 +74,12 @@ final class DynamicFieldValueTest extends TestCase
             }
         };
         $this->useVars(['counter' => $counter]);
-        $dynamic = new DynamicFieldValue('value', 'counter.next()', new Field('f', []));
+        $dynamicFieldValue = new DynamicFieldValue('value', 'counter.next()', new Field('f', []));
 
-        $this->assertSame(1, $dynamic->value());
-        $this->assertSame(1, $dynamic->value());
-        $dynamic->compute();
-        $this->assertSame(1, $dynamic->value());
+        $this->assertSame(1, $dynamicFieldValue->value());
+        $this->assertSame(1, $dynamicFieldValue->value());
+        $dynamicFieldValue->compute();
+        $this->assertSame(1, $dynamicFieldValue->value());
         $this->assertSame(1, $counter->reads);
     }
 
@@ -124,9 +125,9 @@ final class DynamicFieldValueTest extends TestCase
                 return 'From model';
             }
         };
-        $collection = new FieldCollection();
-        $collection->setModel($model);
-        $field = new Field('f', [], $collection);
+        $fieldCollection = new FieldCollection();
+        $fieldCollection->setModel($model);
+        $field = new Field('f', [], $fieldCollection);
 
         $this->assertSame('From model', (new DynamicFieldValue('value', 'widget.title', $field))->value());
         $this->assertSame('From model', (new DynamicFieldValue('value', 'model.title', $field))->value());
@@ -146,23 +147,23 @@ final class DynamicFieldValueTest extends TestCase
     {
         $this->useVars(['x' => 1]);
         $field = new Field('f', []);
-        $dynamic = new DynamicFieldValue('label', 'this.label', $field);
-        $field->set('label', $dynamic);
+        $dynamicFieldValue = new DynamicFieldValue('label', 'this.label', $field);
+        $field->set('label', $dynamicFieldValue);
 
         $this->expectException(RecursionException::class);
 
-        $dynamic->value();
+        $dynamicFieldValue->value();
     }
 
     public function testFailedComputationCanBeReportedAgainInTheSameWay(): void
     {
         $this->useVars(['x' => 1]);
-        $dynamic = new DynamicFieldValue('value', 'x.unknownMethod()', new Field('f', []));
+        $dynamicFieldValue = new DynamicFieldValue('value', 'x.unknownMethod()', new Field('f', []));
 
         $exceptions = [];
         for ($i = 0; $i < 2; ++$i) {
             try {
-                $dynamic->value();
+                $dynamicFieldValue->value();
                 $this->fail('Computing an invalid expression should fail.');
             } catch (Throwable $exception) {
                 $exceptions[] = $exception::class;
@@ -177,16 +178,16 @@ final class DynamicFieldValueTest extends TestCase
     {
         $this->useVars(['x' => 'original']);
         $field = new Field('f', []);
-        $dynamic = new DynamicFieldValue('value', 'x', $field);
+        $dynamicFieldValue = new DynamicFieldValue('value', 'x', $field);
 
-        $copy = DynamicFieldValue::withComputed('forced', $dynamic);
+        $copy = DynamicFieldValue::withComputed('forced', $dynamicFieldValue);
 
-        $this->assertNotSame($dynamic, $copy);
+        $this->assertNotSame($dynamicFieldValue, $copy);
         $this->assertTrue($copy->isComputed());
         $this->assertSame('forced', $copy->value());
-        $this->assertFalse($dynamic->isComputed());
-        $this->assertSame('original', $dynamic->value());
-        $this->assertSame($dynamic->key(), $copy->key());
+        $this->assertFalse($dynamicFieldValue->isComputed());
+        $this->assertSame('original', $dynamicFieldValue->value());
+        $this->assertSame($dynamicFieldValue->key(), $copy->key());
         $this->assertSame($field, $copy->field());
     }
 
@@ -197,12 +198,12 @@ final class DynamicFieldValueTest extends TestCase
             $this->markTestSkipped('The application already registered a vars loader.');
         }
 
-        $dynamic = new DynamicFieldValue('value', 'x', new Field('f', []));
+        $dynamicFieldValue = new DynamicFieldValue('value', 'x', new Field('f', []));
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('must be set to a valid Closure');
 
-        $dynamic->value();
+        $dynamicFieldValue->value();
     }
 
     /**

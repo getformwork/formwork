@@ -98,6 +98,7 @@ final class TabTest extends TestCase
         /** @todo */
         $this->markTestSkipped('This fallback behavior is not yet implemented since it is a breaking change.');
 
+        // @phpstan-ignore deadCode.unreachable
         $tab = new Tab(['name' => 'main', 'label' => ['it' => 'Principale']]);
         $tab->setTranslation($this->translation('en'));
 

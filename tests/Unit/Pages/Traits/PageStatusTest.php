@@ -19,11 +19,6 @@ final class PageStatusTest extends TestCase
 {
     use BuildsPageSites;
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     /**
      * @return iterable<string, array{string, string}>
      */

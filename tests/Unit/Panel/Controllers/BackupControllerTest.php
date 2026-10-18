@@ -243,17 +243,17 @@ final class BackupControllerTest extends TestCase
 
     private function lastMessageType(): ?string
     {
-        $reflection = new ReflectionProperty(AbstractController::class, 'panel');
-        $panel = $reflection->getValue($this->controller);
+        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'panel');
+        $panel = $reflectionProperty->getValue($this->controller);
         $notifications = $panel->notifications();
 
         return $notifications === [] ? null : end($notifications)['type'];
     }
 
-    private function responseFile(FileResponse $response): string
+    private function responseFile(FileResponse $fileResponse): string
     {
-        $property = new ReflectionProperty(FileResponse::class, 'path');
+        $reflectionProperty = new ReflectionProperty(FileResponse::class, 'path');
 
-        return (string) $property->getValue($response);
+        return (string) $reflectionProperty->getValue($fileResponse);
     }
 }

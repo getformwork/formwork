@@ -19,9 +19,9 @@ final class PathTest extends TestCase
         $this->assertFalse(Path::isAbsolute('../foo/bar'));
 
         // Windows-style
-        $this->assertTrue(Path::isAbsolute('C:\foo\bar', '\\'));
-        $this->assertFalse(Path::isAbsolute('.\foo\bar', '\\'));
-        $this->assertFalse(Path::isAbsolute('..\foo\bar', '\\'));
+        $this->assertTrue(Path::isAbsolute('C:\foo\bar'));
+        $this->assertFalse(Path::isAbsolute('.\foo\bar'));
+        $this->assertFalse(Path::isAbsolute('..\foo\bar'));
     }
 
     public function testHasSeparators(): void
@@ -38,8 +38,8 @@ final class PathTest extends TestCase
         $this->assertFalse(Path::isRelativeTo('/foo/bar/baz', '/bar/foo'));
 
         // Windows-style
-        $this->assertTrue(Path::isRelativeTo('C:\foo\bar\baz', 'C:\foo\bar', '\\'));
-        $this->assertFalse(Path::isRelativeTo('D:\foo\bar\baz', 'D:\bar\foo', '\\'));
+        $this->assertTrue(Path::isRelativeTo('C:\foo\bar\baz', 'C:\foo\bar'));
+        $this->assertFalse(Path::isRelativeTo('D:\foo\bar\baz', 'D:\bar\foo'));
     }
 
     #[DataProvider('containmentProvider')]
@@ -85,7 +85,7 @@ final class PathTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base must be an absolute path');
-        Path::isRelativeTo('C:\foo\bar\baz', 'foo\bar', '\\');
+        Path::isRelativeTo('C:\foo\bar\baz', 'foo\bar');
     }
 
     #[DataProvider('basenameProvider')]
@@ -179,8 +179,8 @@ final class PathTest extends TestCase
         $this->assertSame(['home', 'user', 'documents', 'file.txt'], Path::split('home/user/documents/file.txt'));
 
         // Windows-style
-        $this->assertSame(['C:', 'Program Files', 'App', 'app.exe'], Path::split('C:\Program Files\App\app.exe', '\\'));
-        $this->assertSame(['D:', 'Data', 'Projects', 'project.docx'], Path::split('D:\Data\Projects\project.docx', '\\'));
+        $this->assertSame(['C:', 'Program Files', 'App', 'app.exe'], Path::split('C:\Program Files\App\app.exe'));
+        $this->assertSame(['D:', 'Data', 'Projects', 'project.docx'], Path::split('D:\Data\Projects\project.docx'));
     }
 
     public function testJoin(): void

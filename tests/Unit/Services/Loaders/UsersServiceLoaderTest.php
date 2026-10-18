@@ -43,8 +43,8 @@ final class UsersServiceLoaderTest extends TestCase
         $users = $this->resolve();
 
         $this->assertEqualsCanonicalizing(['admin', 'editor'], $users->roles()->keys());
-        $this->assertTrue($users->roles()->get('admin')->permissions()->has('panel.users'));
-        $this->assertSame('Editor', $users->roles()->get('editor')->title());
+        $this->assertTrue($users->roles()->get('admin')?->permissions()->has('panel.users'));
+        $this->assertSame('Editor', $users->roles()->get('editor')?->title());
     }
 
     public function testRolesWithoutPermissionsHaveNone(): void
@@ -53,7 +53,7 @@ final class UsersServiceLoaderTest extends TestCase
 
         $role = $this->resolve()->roles()->get('guest');
 
-        $this->assertFalse($role->permissions()->has('panel'));
+        $this->assertFalse($role?->permissions()->has('panel'));
     }
 
     public function testAccountsAreLoadedByUsername(): void
@@ -64,7 +64,7 @@ final class UsersServiceLoaderTest extends TestCase
         $users = $this->resolve();
 
         $this->assertEqualsCanonicalizing(['alice', 'bob'], $users->keys());
-        $this->assertSame('alice@example.com', $users->get('alice')->email());
+        $this->assertSame('alice@example.com', $users->get('alice')?->email());
     }
 
     public function testAccountsAreIndexedByTheUsernameStoredInsideTheFile(): void

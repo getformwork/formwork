@@ -155,9 +155,9 @@ final class FieldTest extends TestCase
 
     public function testParentCollectionIsExposed(): void
     {
-        $parent = new FieldCollection();
+        $fieldCollection = new FieldCollection();
 
-        $this->assertSame($parent, (new Field('name', ['type' => 'text'], $parent))->parent());
+        $this->assertSame($fieldCollection, (new Field('name', ['type' => 'text'], $fieldCollection))->parent());
         $this->assertNull((new Field('name', ['type' => 'text']))->parent());
     }
 

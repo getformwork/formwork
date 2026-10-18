@@ -6,6 +6,14 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Http\ResponseStatus;
+use Formwork\Pages\Events\PageAfterDeleteEvent;
+use Formwork\Pages\Events\PageAfterDuplicateEvent;
+use Formwork\Pages\Events\PageAfterSaveEvent;
+use Formwork\Pages\Events\PageBeforeDeleteEvent;
+use Formwork\Pages\Events\PageBeforeDuplicateEvent;
+use Formwork\Pages\Events\PageBeforeSaveEvent;
+use Formwork\Pages\Events\PageLoadedEvent;
+use Formwork\Pages\Events\PageRenderEvent;
 use Formwork\Pages\Page;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
@@ -18,6 +26,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use ReflectionProperty;
 use RuntimeException;
+use Throwable;
 use TypeError;
 use UnexpectedValueException;
 
@@ -94,8 +103,8 @@ final class PageTest extends TestCase
     public function testPageLoadedEventIsDispatchedWhenAPageIsLoaded(): void
     {
         $loaded = [];
-        $this->app->events()->on('pageLoaded', function (object $event) use (&$loaded): void {
-            $loaded[] = $event->page();
+        $this->app->events()->on('pageLoaded', function (PageLoadedEvent $pageLoadedEvent) use (&$loaded): void {
+            $loaded[] = $pageLoadedEvent->page();
         });
 
         $page = $this->temporaryPage('about');
@@ -159,7 +168,9 @@ final class PageTest extends TestCase
         FileSystem::createDirectory($path);
         FileSystem::write($path . 'blog-post.en.md', "---\ntitle: Dashed\n---\n");
 
-        $template = clone $site->templates()->get('page');
+        $pageTemplate = $site->templates()->get('page');
+        $this->assertNotNull($pageTemplate);
+        $template = clone $pageTemplate;
         $templates = new Templates([...$site->templates()->toArray(), 'blog-post' => $template]);
         (new ReflectionProperty(Site::class, 'templates'))->setValue($site, $templates);
 
@@ -274,7 +285,7 @@ final class PageTest extends TestCase
         $page->set('taxonomy', ['tags' => ['php', 'cms']]);
         $page->set('responseStatus', 404);
 
-        $this->assertSame('A description', $page->metadata()->get('description')->content());
+        $this->assertSame('A description', $page->metadata()->get('description')?->content());
         $this->assertSame(['tags' => ['php', 'cms']], $page->taxonomy());
         $this->assertSame(ResponseStatus::fromCode(404), $page->responseStatus());
     }
@@ -325,18 +336,21 @@ final class PageTest extends TestCase
     public function testParentCanBeResolvedByRouteAndInvalidParentIsRejected(): void
     {
         $site = $this->siteFromFixture();
-        $parent = $this->temporaryPage('parent', site: $site);
+        $page = $this->temporaryPage('parent', site: $site);
         $child = $this->temporaryPage('about', site: $site);
 
         $child->set('parent', '.');
         $this->assertSame($site, $child->parent());
-        $child->set('parent', $parent);
-        $this->assertSame($parent, $child->parent());
+        $child->set('parent', $page);
+        $this->assertSame($page, $child->parent());
 
         $this->expectException(InvalidValueException::class);
         $child->set('parent', '/missing-parent');
     }
 
+    /**
+     * @param class-string<Throwable> $exception
+     */
     #[DataProvider('invalidTaxonomyProvider')]
     public function testRejectsInvalidTaxonomy(mixed $taxonomy, string $exception): void
     {
@@ -356,42 +370,42 @@ final class PageTest extends TestCase
 
     public function testTraversalMethodsExposeThePageTree(): void
     {
-        $about = $this->fixturePage('/about');
+        $page = $this->fixturePage('/about');
         $blog = $this->fixturePage('/blog');
         $index = $this->fixturePage('/');
 
-        $this->assertSame($this->fixtureSite, $about->parent());
-        $this->assertTrue($about->isChildOf($this->fixtureSite));
-        $this->assertTrue($about->isSiblingOf($blog));
-        $this->assertTrue($about->isSiblingOf($index));
-        $this->assertTrue($about->hasAncestors());
-        $this->assertFalse($about->isAncestorOf($this->fixtureSite));
-        $this->assertSame(0, $about->index());
-        $this->assertSame(1, $about->level());
-        $this->assertSame($blog, $about->nextSibling());
-        $this->assertSame($about, $blog->previousSibling());
-        $this->assertTrue($about->siblings()->contains($blog));
-        $this->assertTrue($about->inclusiveSiblings()->contains($about));
+        $this->assertSame($this->fixtureSite, $page->parent());
+        $this->assertTrue($page->isChildOf($this->fixtureSite));
+        $this->assertTrue($page->isSiblingOf($blog));
+        $this->assertTrue($page->isSiblingOf($index));
+        $this->assertTrue($page->hasAncestors());
+        $this->assertFalse($page->isAncestorOf($this->fixtureSite));
+        $this->assertSame(0, $page->index());
+        $this->assertSame(1, $page->level());
+        $this->assertSame($blog, $page->nextSibling());
+        $this->assertSame($page, $blog->previousSibling());
+        $this->assertTrue($page->siblings()->contains($blog));
+        $this->assertTrue($page->inclusiveSiblings()->contains($page));
     }
 
     public function testSiblingPredicateIsSymmetric(): void
     {
-        $about = $this->fixturePage('/about');
+        $page = $this->fixturePage('/about');
         $blog = $this->fixturePage('/blog');
 
-        $this->assertTrue($about->isSiblingOf($blog));
-        $this->assertTrue($blog->isSiblingOf($about));
-        $this->assertTrue($about->isSiblingOf($this->fixturePage('/')));
-        $this->assertFalse($about->isSiblingOf($this->fixturePage('/blog/hello-world')));
+        $this->assertTrue($page->isSiblingOf($blog));
+        $this->assertTrue($blog->isSiblingOf($page));
+        $this->assertTrue($page->isSiblingOf($this->fixturePage('/')));
+        $this->assertFalse($page->isSiblingOf($this->fixturePage('/blog/hello-world')));
     }
 
     public function testIsEmptyIsTrueOnlyWhenThereIsNoFrontmatter(): void
     {
-        $empty = $this->temporaryPage('empty');
+        $page = $this->temporaryPage('empty');
         $nonEmpty = $this->temporaryPage('about');
         $withoutContentFile = $this->temporaryPage('directory-only');
 
-        $this->assertTrue($empty->isEmpty());
+        $this->assertTrue($page->isEmpty());
         $this->assertFalse($nonEmpty->isEmpty());
         $this->assertTrue($withoutContentFile->isEmpty());
     }
@@ -425,7 +439,7 @@ final class PageTest extends TestCase
 
         $this->assertSame('renamed', $page->slug());
         $this->assertSame('After', $page->title());
-        $this->assertSame('After content', trim($page->contentFile()?->content()));
+        $this->assertSame('After content', trim((string) $page->contentFile()?->content()));
         $this->assertDirectoryExists((string) $page->contentPath());
         $this->assertFileExists((string) $page->contentFile()?->path());
     }
@@ -480,9 +494,9 @@ final class PageTest extends TestCase
         $page->reload();
         $this->assertTrue($page->hasLoaded());
 
-        $reflection = new ReflectionClass($page);
-        $loaded = $reflection->getProperty('loaded');
-        $loaded->setValue($page, false);
+        $reflectionClass = new ReflectionClass($page);
+        $reflectionProperty = $reflectionClass->getProperty('loaded');
+        $reflectionProperty->setValue($page, false);
 
         $this->expectException(RuntimeException::class);
         $page->reload();
@@ -501,7 +515,7 @@ final class PageTest extends TestCase
 
         $this->assertSame('Reloaded', $page->title());
         $this->assertSame('Fresh content', $page->contentFile()?->content());
-        $this->assertSame('Fresh', $page->metadata()->get('description')->content());
+        $this->assertSame('Fresh', $page->metadata()->get('description')?->content());
     }
 
     public function testReloadDiscardsLazilyCachedStatusAndModificationTime(): void
@@ -551,13 +565,13 @@ final class PageTest extends TestCase
     {
         $page = $this->temporaryPage('about');
         $page->set('metadata', ['description' => 'Original']);
-        $originalMetadata = $page->metadata();
+        $metadataCollection = $page->metadata();
 
         $duplicate = $page->duplicate();
         $duplicate->metadata()->set('description', 'Duplicate');
 
-        $this->assertSame('Original', $originalMetadata->get('description')->content());
-        $this->assertSame('Duplicate', $duplicate->metadata()->get('description')->content());
+        $this->assertSame('Original', $metadataCollection->get('description')?->content());
+        $this->assertSame('Duplicate', $duplicate->metadata()->get('description')?->content());
     }
 
     public function testDuplicateGetsAnIndependentDataSet(): void
@@ -606,13 +620,13 @@ final class PageTest extends TestCase
     public function testPageWithChildrenCannotBeDuplicatedOrDeleted(): void
     {
         $site = $this->siteFromFixture();
-        $parent = $this->temporaryPage('parent', site: $site);
+        $page = $this->temporaryPage('parent', site: $site);
         $this->temporaryPage('parent/child', site: $site);
 
-        $this->assertFalse($parent->isDuplicable());
-        $this->assertFalse($parent->isDeletable());
+        $this->assertFalse($page->isDuplicable());
+        $this->assertFalse($page->isDeletable());
         $this->expectException(RuntimeException::class);
-        $parent->delete();
+        $page->delete();
     }
 
     public function testFilesAndMediaCollectionsAreConsistent(): void
@@ -636,13 +650,13 @@ final class PageTest extends TestCase
 
     public function testIndexAndErrorPagesAreProtected(): void
     {
-        $index = $this->fixturePage('/');
+        $page = $this->fixturePage('/');
         $error = $this->fixturePage('/error');
 
-        $this->assertTrue($index->isIndexPage());
+        $this->assertTrue($page->isIndexPage());
         $this->assertTrue($error->isErrorPage());
-        $this->assertTrue($index->isIndexOrErrorPage());
-        $this->assertFalse($index->isDeletable());
+        $this->assertTrue($page->isIndexOrErrorPage());
+        $this->assertFalse($page->isDeletable());
         $this->assertFalse($error->isDeletable());
     }
 
@@ -676,7 +690,7 @@ final class PageTest extends TestCase
                 'pageAfterDelete',
             ] as $name
         ) {
-            $this->app->events()->on($name, function (object $event) use (&$events): void {
+            $this->app->events()->on($name, function (PageBeforeSaveEvent|PageAfterSaveEvent|PageBeforeDuplicateEvent|PageAfterDuplicateEvent|PageBeforeDeleteEvent|PageAfterDeleteEvent $event) use (&$events): void {
                 $events[] = [$event->name(), $event->page()];
             });
         }
@@ -701,8 +715,8 @@ final class PageTest extends TestCase
     {
         $page = $this->fixturePage('/about');
         $renderedPage = null;
-        $this->app->events()->on('pageRender', function (object $event) use (&$renderedPage): void {
-            $renderedPage = $event->page();
+        $this->app->events()->on('pageRender', function (PageRenderEvent $pageRenderEvent) use (&$renderedPage): void {
+            $renderedPage = $pageRenderEvent->page();
         });
 
         $output = $page->render();

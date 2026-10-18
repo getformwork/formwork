@@ -18,9 +18,9 @@ final class StreamHttpTransportTest extends TestCase
         $port = substr((string) strrchr((string) stream_socket_get_name($server, false), ':'), 1);
         fclose($server);
 
-        $exception = $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:' . $port, ['http' => ['timeout' => 1, 'ignore_errors' => true]]));
-        $this->assertStringContainsString(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port), $exception->getMessage());
-        $this->assertStringContainsString('#0 ', $exception->getMessage());
+        $connectionException = $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:' . $port, ['http' => ['timeout' => 1, 'ignore_errors' => true]]));
+        $this->assertStringContainsString(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port), $connectionException->getMessage());
+        $this->assertStringContainsString('#0 ', $connectionException->getMessage());
     }
 
     public function testTheErrorHandlerIsRestoredAfterAFailedConnection(): void

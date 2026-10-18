@@ -168,7 +168,7 @@ final class AssetsTest extends TestCase
         try {
             $asset = $this->assets->get($key);
         } catch (Throwable) {
-            $this->addToAssertionCount(1);
+            $this->expectNotToPerformAssertions();
             return;
         }
 

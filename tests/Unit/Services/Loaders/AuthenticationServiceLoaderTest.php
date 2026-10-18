@@ -22,11 +22,6 @@ use ReflectionProperty;
 #[UsesTempDirectory]
 final class AuthenticationServiceLoaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testAuthenticatorIsBuiltWithTheConfiguredRateLimiter(): void
     {
         $container = $this->container(maxAttempts: 7, resetTime: 321);
@@ -53,9 +48,9 @@ final class AuthenticationServiceLoaderTest extends TestCase
     public function testEachLoadUsesTheSameRateLimiterOfTheContainer(): void
     {
         $container = $this->container(maxAttempts: 3, resetTime: 60);
-        $loader = new AuthenticationServiceLoader($container->get(Config::class));
+        $authenticationServiceLoader = new AuthenticationServiceLoader($container->get(Config::class));
 
-        $loader->load($container);
+        $authenticationServiceLoader->load($container);
 
         $this->assertSame($container->get(RateLimiter::class), $container->get(RateLimiter::class));
     }

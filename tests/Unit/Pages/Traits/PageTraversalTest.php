@@ -52,14 +52,14 @@ final class PageTraversalTest extends TestCase
 
     public function testIsParentOfAndIsChildOf(): void
     {
-        $second = $this->page('/second');
+        $page = $this->page('/second');
         $child = $this->page('/second/child-a');
 
-        $this->assertTrue($second->isParentOf($child));
-        $this->assertTrue($child->isChildOf($second));
-        $this->assertFalse($child->isParentOf($second));
-        $this->assertFalse($second->isChildOf($child));
-        $this->assertTrue($this->site->isParentOf($second));
+        $this->assertTrue($page->isParentOf($child));
+        $this->assertTrue($child->isChildOf($page));
+        $this->assertFalse($child->isParentOf($page));
+        $this->assertFalse($page->isChildOf($child));
+        $this->assertTrue($this->site->isParentOf($page));
         $this->assertFalse($this->site->isParentOf($child), 'Only direct parents count');
     }
 
@@ -72,9 +72,9 @@ final class PageTraversalTest extends TestCase
 
     public function testChildrenAreCached(): void
     {
-        $second = $this->page('/second');
+        $page = $this->page('/second');
 
-        $this->assertSame($second->children(), $second->children());
+        $this->assertSame($page->children(), $page->children());
     }
 
     public function testDescendantsIncludeEveryLevel(): void
@@ -88,14 +88,14 @@ final class PageTraversalTest extends TestCase
 
     public function testIsDescendantOfFollowsTheWholeChain(): void
     {
-        $deep = $this->page('/second/child-b/deep');
+        $page = $this->page('/second/child-b/deep');
 
-        $this->assertTrue($deep->isDescendantOf($this->page('/second/child-b')));
-        $this->assertTrue($deep->isDescendantOf($this->page('/second')));
-        $this->assertTrue($deep->isDescendantOf($this->site));
-        $this->assertFalse($deep->isDescendantOf($this->page('/first')));
-        $this->assertFalse($deep->isDescendantOf($deep));
-        $this->assertFalse($this->page('/second')->isDescendantOf($deep));
+        $this->assertTrue($page->isDescendantOf($this->page('/second/child-b')));
+        $this->assertTrue($page->isDescendantOf($this->page('/second')));
+        $this->assertTrue($page->isDescendantOf($this->site));
+        $this->assertFalse($page->isDescendantOf($this->page('/first')));
+        $this->assertFalse($page->isDescendantOf($page));
+        $this->assertFalse($this->page('/second')->isDescendantOf($page));
     }
 
     public function testAncestorsAreOrderedFromTheClosestToTheSite(): void
@@ -110,13 +110,13 @@ final class PageTraversalTest extends TestCase
 
     public function testIsAncestorOf(): void
     {
-        $second = $this->page('/second');
+        $page = $this->page('/second');
         $deep = $this->page('/second/child-b/deep');
 
-        $this->assertTrue($second->isAncestorOf($deep));
+        $this->assertTrue($page->isAncestorOf($deep));
         $this->assertTrue($this->site->isAncestorOf($deep));
-        $this->assertFalse($deep->isAncestorOf($second));
-        $this->assertFalse($second->isAncestorOf($second));
+        $this->assertFalse($deep->isAncestorOf($page));
+        $this->assertFalse($page->isAncestorOf($page));
         $this->assertFalse($this->page('/first')->isAncestorOf($deep));
     }
 
@@ -146,10 +146,10 @@ final class PageTraversalTest extends TestCase
     {
         $site = $this->siteFromFiles(['only/page.md' => "---\ntitle: Only\n---\n"]);
 
-        $only = $this->pageAt($site, '/only');
-        $this->assertFalse($only->hasSiblings());
-        $this->assertNull($only->previousSibling());
-        $this->assertNull($only->nextSibling());
+        $page = $this->pageAt($site, '/only');
+        $this->assertFalse($page->hasSiblings());
+        $this->assertNull($page->previousSibling());
+        $this->assertNull($page->nextSibling());
     }
 
     public function testSiblingsAreRelatedOnlyWithinTheSameParent(): void
@@ -169,10 +169,10 @@ final class PageTraversalTest extends TestCase
 
     public function testNeighbouringSiblings(): void
     {
-        $second = $this->page('/second');
+        $page = $this->page('/second');
 
-        $this->assertSame($this->page('/first'), $second->previousSibling());
-        $this->assertSame($this->page('/third'), $second->nextSibling());
+        $this->assertSame($this->page('/first'), $page->previousSibling());
+        $this->assertSame($this->page('/third'), $page->nextSibling());
     }
 
     public function testTheFirstPageHasNoPreviousSibling(): void

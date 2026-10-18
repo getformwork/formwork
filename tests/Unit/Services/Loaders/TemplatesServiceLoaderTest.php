@@ -47,7 +47,7 @@ final class TemplatesServiceLoaderTest extends TestCase
     {
         $templates = $this->load();
 
-        $this->assertSame('post', $templates->get('post')->name());
+        $this->assertSame('post', $templates->get('post')?->name());
         $this->assertSame('pages.post', $templates->get('post')->scheme()->id());
     }
 
@@ -75,8 +75,8 @@ final class TemplatesServiceLoaderTest extends TestCase
         $container->define(Site::class, App::instance()->site());
         $container->define(ViewFactory::class, App::instance()->getService(ViewFactory::class));
 
-        $factory = new TemplateFactory($container, App::instance(), $config, App::instance()->schemes());
+        $templateFactory = new TemplateFactory($container, App::instance(), $config, App::instance()->schemes());
 
-        return (new TemplatesServiceLoader($config, $factory))->load($container);
+        return (new TemplatesServiceLoader($config, $templateFactory))->load($container);
     }
 }

@@ -13,40 +13,40 @@ final class SectionCollectionTest extends TestCase
 {
     public function testSectionsAreKeyedAndNamedByTheirKey(): void
     {
-        $collection = new SectionCollection(['main' => ['fields' => ['a']], 'side' => []]);
+        $sectionCollection = new SectionCollection(['main' => ['fields' => ['a']], 'side' => []]);
 
-        $this->assertSame(['main', 'side'], $collection->keys());
-        $this->assertInstanceOf(Section::class, $collection->get('main'));
-        $this->assertSame('side', $collection->get('side')->name());
+        $this->assertSame(['main', 'side'], $sectionCollection->keys());
+        $this->assertInstanceOf(Section::class, $sectionCollection->get('main'));
+        $this->assertSame('side', $sectionCollection->get('side')?->name());
     }
 
     public function testCollectionIsAssociativeAndTyped(): void
     {
-        $collection = new SectionCollection([]);
+        $sectionCollection = new SectionCollection([]);
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertSame(Section::class, $collection->dataType());
+        $this->assertTrue($sectionCollection->isAssociative());
+        $this->assertSame(Section::class, $sectionCollection->dataType());
     }
 
     public function testExplicitNameInTheDefinitionWinsOverTheKey(): void
     {
-        $collection = new SectionCollection(['main' => ['name' => 'other']]);
+        $sectionCollection = new SectionCollection(['main' => ['name' => 'other']]);
 
-        $this->assertSame('other', $collection->get('main')->name());
+        $this->assertSame('other', $sectionCollection->get('main')?->name());
     }
 
     public function testListShapedDefinitionsAreRejected(): void
     {
-        $this->expectException(LogicException::class);
+        $logicException = $this->captureException(LogicException::class, fn() => new SectionCollection($this->unchecked([['label' => 'Zero']])));
 
-        new SectionCollection([['label' => 'Zero']]);
+        $this->assertInstanceOf(LogicException::class, $logicException);
     }
 
     public function testOrderIsReadFromTheDefinition(): void
     {
-        $collection = new SectionCollection(['a' => ['order' => 5], 'b' => []]);
+        $sectionCollection = new SectionCollection(['a' => ['order' => 5], 'b' => []]);
 
-        $this->assertSame(5, $collection->get('a')->order());
-        $this->assertSame(PHP_INT_MAX, $collection->get('b')->order());
+        $this->assertSame(5, $sectionCollection->get('a')?->order());
+        $this->assertSame(PHP_INT_MAX, $sectionCollection->get('b')?->order());
     }
 }
