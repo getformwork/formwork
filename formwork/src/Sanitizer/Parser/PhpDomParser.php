@@ -24,7 +24,7 @@ class PhpDomParser implements DomParserInterface
     {
         $domDocumentFragment = $this->dom->createDocumentFragment();
 
-        if (!@$domDocumentFragment->appendXML($string)) {
+        if (!@$domDocumentFragment->appendXML($this->removeProlog($string))) {
             return null;
         }
 
@@ -37,5 +37,17 @@ class PhpDomParser implements DomParserInterface
             $domNode = $domNode->firstElementChild;
         }
         return (string) $this->dom->saveXML($domNode);
+    }
+
+    /**
+     * Remove the document prolog (byte order mark, XML declaration, processing instructions,
+     * document type declaration and comments before the root element)
+     *
+     * Document fragments cannot contain a prolog, so it would make the whole markup invalid.
+     * The document type declaration is discarded with any entity it defines.
+     */
+    protected function removeProlog(string $string): string
+    {
+        return preg_replace('/^(?:\xEF\xBB\xBF|\s+|<\?.*?\?>|<!DOCTYPE\b[^\[>]*(?:\[.*?\])?\s*>|<!--.*?-->)+/s', '', $string) ?? $string;
     }
 }
