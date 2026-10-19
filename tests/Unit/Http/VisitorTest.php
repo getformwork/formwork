@@ -13,16 +13,16 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class VisitorTest extends TestCase
 {
     #[DataProvider('userAgentProvider')]
-    public function testVisitorIsClassifiedByUserAgent(?string $userAgent, bool $bot, DeviceType $device): void
+    public function testVisitorIsClassifiedByUserAgent(?string $userAgent, bool $bot, DeviceType $deviceType): void
     {
         $request = $this->request($userAgent);
 
         $this->assertSame($bot, Visitor::isBot($request));
         $this->assertSame(!$bot, Visitor::isBrowser($request));
-        $this->assertSame($device, Visitor::getDeviceType($request));
-        $this->assertSame($device === DeviceType::Mobile, Visitor::isMobile($request));
-        $this->assertSame($device === DeviceType::Tablet, Visitor::isTablet($request));
-        $this->assertSame($device === DeviceType::Desktop, Visitor::isDesktop($request));
+        $this->assertSame($deviceType, Visitor::getDeviceType($request));
+        $this->assertSame($deviceType === DeviceType::Mobile, Visitor::isMobile($request));
+        $this->assertSame($deviceType === DeviceType::Tablet, Visitor::isTablet($request));
+        $this->assertSame($deviceType === DeviceType::Desktop, Visitor::isDesktop($request));
     }
 
     /**
@@ -44,12 +44,12 @@ final class VisitorTest extends TestCase
 
     public function testDeviceTypeDoesNotDependOnThePreviousRequest(): void
     {
-        $phone = $this->request('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148');
+        $request = $this->request('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148');
         $desktop = $this->request('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36');
 
-        $this->assertSame(DeviceType::Mobile, Visitor::getDeviceType($phone));
+        $this->assertSame(DeviceType::Mobile, Visitor::getDeviceType($request));
         $this->assertSame(DeviceType::Desktop, Visitor::getDeviceType($desktop));
-        $this->assertSame(DeviceType::Mobile, Visitor::getDeviceType($phone));
+        $this->assertSame(DeviceType::Mobile, Visitor::getDeviceType($request));
     }
 
     #[DataProvider('refererProvider')]

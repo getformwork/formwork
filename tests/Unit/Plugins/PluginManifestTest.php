@@ -12,20 +12,20 @@ final class PluginManifestTest extends TestCase
 {
     public function testEmptyManifestHasNoMetadata(): void
     {
-        $manifest = new PluginManifest([]);
+        $pluginManifest = new PluginManifest([]);
 
-        $this->assertNull($manifest->title());
-        $this->assertNull($manifest->description());
-        $this->assertNull($manifest->author());
-        $this->assertNull($manifest->homepage());
-        $this->assertNull($manifest->license());
-        $this->assertNull($manifest->version());
-        $this->assertSame([], $manifest->config());
+        $this->assertNull($pluginManifest->title());
+        $this->assertNull($pluginManifest->description());
+        $this->assertNull($pluginManifest->author());
+        $this->assertNull($pluginManifest->homepage());
+        $this->assertNull($pluginManifest->license());
+        $this->assertNull($pluginManifest->version());
+        $this->assertSame([], $pluginManifest->config());
     }
 
     public function testMetadataIsExposed(): void
     {
-        $manifest = new PluginManifest([
+        $pluginManifest = new PluginManifest([
             'title'       => 'Demo',
             'description' => 'A demo plugin',
             'author'      => 'Jane',
@@ -35,13 +35,13 @@ final class PluginManifestTest extends TestCase
             'config'      => ['greeting' => 'hi', 'nested' => ['a' => 1]],
         ]);
 
-        $this->assertSame('Demo', $manifest->title());
-        $this->assertSame('A demo plugin', $manifest->description());
-        $this->assertSame('Jane', $manifest->author());
-        $this->assertSame('https://example.com', $manifest->homepage());
-        $this->assertSame('MIT', $manifest->license());
-        $this->assertSame('1.2.3', $manifest->version());
-        $this->assertSame(['greeting' => 'hi', 'nested' => ['a' => 1]], $manifest->config());
+        $this->assertSame('Demo', $pluginManifest->title());
+        $this->assertSame('A demo plugin', $pluginManifest->description());
+        $this->assertSame('Jane', $pluginManifest->author());
+        $this->assertSame('https://example.com', $pluginManifest->homepage());
+        $this->assertSame('MIT', $pluginManifest->license());
+        $this->assertSame('1.2.3', $pluginManifest->version());
+        $this->assertSame(['greeting' => 'hi', 'nested' => ['a' => 1]], $pluginManifest->config());
     }
 
     public function testToArrayExportsEveryField(): void

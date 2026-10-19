@@ -9,6 +9,7 @@ use Formwork\Http\ResponseHeaders;
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Updater\SemVer;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
@@ -16,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use ZipArchive;
 
 #[CoversClass(Updater::class)]
+#[UsesTempDirectory]
 final class UpdaterInstallationTest extends TestCase
 {
     private string $root;
@@ -25,7 +27,6 @@ final class UpdaterInstallationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->root = TESTS_TMP_PATH . '/installation';
         FileSystem::createDirectory($this->root . '/formwork/src', recursive: true);
@@ -42,12 +43,6 @@ final class UpdaterInstallationTest extends TestCase
             'formwork/src/Added.php' => 'added file',
             'site/pages/page.md'     => 'content shipped with the release',
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testReleaseIsInstalledInTheGivenRoot(): void
@@ -104,12 +99,8 @@ final class UpdaterInstallationTest extends TestCase
     {
         $this->buildArchive(['../outside.txt' => 'payload']);
 
-        try {
-            $this->updater()->update(force: true);
-            $this->fail('The archive must be refused.');
-        } catch (\RuntimeException $exception) {
-            $this->assertStringContainsString('invalid destination', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(\RuntimeException::class, fn() => $this->updater()->update(force: true));
+        $this->assertStringContainsString('invalid destination', $runtimeException->getMessage());
 
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/outside.txt');
         $this->assertFileDoesNotExist(dirname(TestInstallation::rootPath()) . '/outside.txt');
@@ -154,9 +145,9 @@ final class UpdaterInstallationTest extends TestCase
 
     private function nextMinor(): string
     {
-        $version = SemVer::fromString(App::VERSION);
+        $semVer = SemVer::fromString(App::VERSION);
 
-        return sprintf('%d.%d.0', $version->major(), $version->minor() + 1);
+        return sprintf('%d.%d.0', $semVer->major(), $semVer->minor() + 1);
     }
 
     /**
@@ -168,16 +159,16 @@ final class UpdaterInstallationTest extends TestCase
             unlink($this->archive);
         }
 
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($this->archive, ZipArchive::CREATE));
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($this->archive, ZipArchive::CREATE));
         foreach ($files as $name => $content) {
             // Release archives contain an entry for every directory
             $directory = dirname($name);
             if ($directory !== '.' && !str_starts_with($directory, '..')) {
-                $zip->addEmptyDir($directory);
+                $zipArchive->addEmptyDir($directory);
             }
-            $zip->addFromString($name, $content);
+            $zipArchive->addFromString($name, $content);
         }
-        $zip->close();
+        $zipArchive->close();
     }
 }

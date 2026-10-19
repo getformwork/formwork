@@ -7,12 +7,13 @@ use Formwork\Cms\Site;
 use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
+use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
 
 /**
  * Builds sites over copies of directory trees in the temporary path
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsPageSites
 {

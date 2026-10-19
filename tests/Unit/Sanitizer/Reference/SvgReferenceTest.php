@@ -28,7 +28,7 @@ final class SvgReferenceTest extends TestCase
 
     public function testNoElementAbleToRunCodeIsAllowed(): void
     {
-        $allowed = array_map('strtolower', SvgReference::ALLOWED_ELEMENTS);
+        $allowed = array_map(strtolower(...), SvgReference::ALLOWED_ELEMENTS);
 
         $this->assertSame([], array_values(array_intersect(self::FORBIDDEN_ELEMENTS, $allowed)));
     }

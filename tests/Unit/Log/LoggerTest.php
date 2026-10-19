@@ -28,21 +28,21 @@ final class LoggerTest extends TestCase
 
     public function testLoggingWithoutHandlersDoesNothing(): void
     {
-        (new Logger())->info('message');
+        $this->expectNotToPerformAssertions();
 
-        $this->addToAssertionCount(1);
+        (new Logger())->info('message');
     }
 
     public function testRecordsAreForwardedToTheHandlers(): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
 
         $logger->log(LogLevel::WARNING, 'Something happened', ['key' => 'value']);
 
-        $this->assertCount(1, $handler->records);
-        [$datetime, $level, $message, $context] = $handler->records[0];
+        $this->assertCount(1, $recordingHandler->records);
+        [$datetime, $level, $message, $context] = $recordingHandler->records[0];
         $this->assertSame('warning', $level);
         $this->assertSame('Something happened', $message);
         $this->assertSame(['key' => 'value'], $context);
@@ -68,14 +68,14 @@ final class LoggerTest extends TestCase
     public function testConvenienceMethodsUseTheMatchingLevel(string $method, string $level): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
 
         $logger->{$method}('message', ['a' => 1]);
 
-        $this->assertSame($level, $handler->records[0][1]);
-        $this->assertSame('message', $handler->records[0][2]);
-        $this->assertSame(['a' => 1], $handler->records[0][3]);
+        $this->assertSame($level, $recordingHandler->records[0][1]);
+        $this->assertSame('message', $recordingHandler->records[0][2]);
+        $this->assertSame(['a' => 1], $recordingHandler->records[0][3]);
     }
 
     /**
@@ -100,8 +100,8 @@ final class LoggerTest extends TestCase
     public function testStringableMessagesAreConvertedToStrings(): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
 
         $logger->info(new class implements Stringable {
             public function __toString(): string
@@ -110,19 +110,19 @@ final class LoggerTest extends TestCase
             }
         });
 
-        $this->assertSame('from object', $handler->records[0][2]);
+        $this->assertSame('from object', $recordingHandler->records[0][2]);
     }
 
     public function testTimestampsHaveMicrosecondPrecisionAndAreCurrent(): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
         $before = microtime(true);
 
         $logger->info('message');
 
-        $timestamp = (float) $handler->records[0][0]->format('U.u');
+        $timestamp = (float) $recordingHandler->records[0][0]->format('U.u');
         $this->assertGreaterThanOrEqual(floor($before), $timestamp);
         $this->assertLessThanOrEqual(microtime(true) + 1, $timestamp);
     }
@@ -131,16 +131,12 @@ final class LoggerTest extends TestCase
     public function testInvalidLevelsAreRejected(mixed $level): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
 
-        try {
-            $logger->log($level, 'message');
-            $this->fail('The level should have been rejected.');
-        } catch (InvalidArgumentException) {
-        }
+        $this->captureException(InvalidArgumentException::class, static fn() => $logger->log($level, 'message'));
 
-        $this->assertSame([], $handler->records);
+        $this->assertSame([], $recordingHandler->records);
     }
 
     /**
@@ -159,13 +155,13 @@ final class LoggerTest extends TestCase
     public function testContextIsPassedUntouched(): void
     {
         $logger = new Logger();
-        $handler = new RecordingHandler();
-        $logger->addHandler($handler);
-        $exception = new RuntimeException('failure');
+        $recordingHandler = new RecordingHandler();
+        $logger->addHandler($recordingHandler);
+        $runtimeException = new RuntimeException('failure');
 
-        $logger->error('message', ['exception' => $exception, 'nested' => ['a' => [1, 2]]]);
+        $logger->error('message', ['exception' => $runtimeException, 'nested' => ['a' => [1, 2]]]);
 
-        $this->assertSame($exception, $handler->records[0][3]['exception']);
-        $this->assertSame(['a' => [1, 2]], $handler->records[0][3]['nested']);
+        $this->assertSame($runtimeException, $recordingHandler->records[0][3]['exception']);
+        $this->assertSame(['a' => [1, 2]], $recordingHandler->records[0][3]['nested']);
     }
 }

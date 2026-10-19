@@ -26,6 +26,9 @@ final class PermissionsTest extends TestCase
         $this->assertFalse($permissions->has('panel.pages.delete'));
     }
 
+    /**
+     * @param array<string, bool> $map
+     */
     #[DataProvider('inheritanceProvider')]
     public function testPermissionsAreInheritedFromTheUpperLevel(array $map, string $permission, bool $expected): void
     {
@@ -82,7 +85,7 @@ final class PermissionsTest extends TestCase
     public function testNonBooleanValuesDoNotGrantPermissionsByAccident(): void
     {
         // Permissions loaded from configuration files may contain strings
-        $permissions = new Permissions(['panel.pages' => '', 'panel.files' => '0', 'panel.users' => 0]);
+        $permissions = new Permissions($this->unchecked(['panel.pages' => '', 'panel.files' => '0', 'panel.users' => 0]));
 
         $this->assertFalse($permissions->has('panel.pages'));
         $this->assertFalse($permissions->has('panel.files'));

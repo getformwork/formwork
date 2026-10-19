@@ -13,41 +13,41 @@ final class LanguageCollectionTest extends TestCase
 {
     public function testCollectionIsBuiltFromLanguageCodes(): void
     {
-        $collection = new LanguageCollection(['en', 'it']);
+        $languageCollection = new LanguageCollection(['en' => 'en', 'it' => 'it']);
 
-        $this->assertCount(2, $collection);
-        $this->assertInstanceOf(Language::class, $collection->get('en'));
-        $this->assertSame('it', $collection->get('it')->code());
+        $this->assertCount(2, $languageCollection);
+        $this->assertInstanceOf(Language::class, $languageCollection->get('en'));
+        $this->assertSame('it', $languageCollection->get('it')?->code());
     }
 
     public function testLanguagesAreKeyedByCode(): void
     {
-        $collection = new LanguageCollection(['en', 'it', 'de']);
+        $languageCollection = new LanguageCollection(['en' => 'en', 'it' => 'it', 'de' => 'de']);
 
-        $this->assertSame(['en', 'it', 'de'], $collection->keys());
-        $this->assertTrue($collection->has('de'));
-        $this->assertFalse($collection->has('fr'));
+        $this->assertSame(['en', 'it', 'de'], $languageCollection->keys());
+        $this->assertTrue($languageCollection->has('de'));
+        $this->assertFalse($languageCollection->has('fr'));
     }
 
     public function testEmptyCollection(): void
     {
-        $collection = new LanguageCollection([]);
+        $languageCollection = new LanguageCollection([]);
 
-        $this->assertCount(0, $collection);
-        $this->assertNull($collection->get('en'));
+        $this->assertCount(0, $languageCollection);
+        $this->assertNull($languageCollection->get('en'));
     }
 
     public function testDuplicatedCodesAreMerged(): void
     {
-        $collection = new LanguageCollection(['en', 'en', 'it']);
+        $languageCollection = new LanguageCollection(['first' => 'en', 'second' => 'en', 'third' => 'it']);
 
-        $this->assertSame(['en', 'it'], $collection->keys());
+        $this->assertSame(['en', 'it'], $languageCollection->keys());
     }
 
     public function testLanguagesCanBeIterated(): void
     {
         $codes = [];
-        foreach (new LanguageCollection(['en', 'it']) as $code => $language) {
+        foreach (new LanguageCollection(['en' => 'en', 'it' => 'it']) as $code => $language) {
             $codes[$code] = (string) $language;
         }
 
@@ -56,9 +56,9 @@ final class LanguageCollectionTest extends TestCase
 
     public function testOnlyLanguagesCanBeAdded(): void
     {
-        $collection = new LanguageCollection(['en']);
+        $languageCollection = new LanguageCollection(['en' => 'en']);
 
         $this->expectException(Throwable::class);
-        $collection->set('it', 'not a language');
+        $languageCollection->set('it', $this->unchecked('not a language'));
     }
 }

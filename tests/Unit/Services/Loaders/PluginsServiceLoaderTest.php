@@ -10,10 +10,12 @@ use Formwork\Services\Container;
 use Formwork\Services\Loaders\PluginsServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(PluginsServiceLoader::class)]
+#[UsesTempDirectory]
 final class PluginsServiceLoaderTest extends TestCase
 {
     use BuildsPlugins;
@@ -22,12 +24,6 @@ final class PluginsServiceLoaderTest extends TestCase
     {
         parent::setUp();
         $this->setUpPlugins();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     public function testPluginsOfThePluginsDirectoryAreLoadedByCamelCasedName(): void
@@ -92,7 +88,7 @@ final class PluginsServiceLoaderTest extends TestCase
     {
         $this->makePluginDirectory('loader-lazy');
 
-        $this->assertFalse($this->resolve()->get('loaderLazy')->isInitialized());
+        $this->assertFalse($this->resolve()->get('loaderLazy')?->isInitialized());
     }
 
     private function resolve(bool $enabled = true, ?string $path = null): Plugins

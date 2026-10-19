@@ -19,11 +19,12 @@ use Formwork\Users\Permissions;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Builds panel controllers on top of lightweight collaborators
  *
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin TestCase
  */
 trait BuildsPanelControllers
 {

@@ -19,6 +19,9 @@ final class ExposedController extends AbstractController
         return $this->name;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function render(string $name, array $data = []): string
     {
         return $this->view($name, $data);
@@ -29,21 +32,33 @@ final class ExposedController extends AbstractController
         return $this->form($name, $fields);
     }
 
+    /**
+     * @param array<string, string> $headers
+     */
     public function redirectTo(string $route, ResponseStatus $status = ResponseStatus::Found, array $headers = []): RedirectResponse
     {
         return $this->redirect($route, $status, $headers);
     }
 
+    /**
+     * @param array<string, string> $headers
+     */
     public function redirectBack(ResponseStatus $status = ResponseStatus::Found, array $headers = [], string $default = '/', string $base = '/'): RedirectResponse
     {
         return $this->redirectToReferer($status, $headers, $default, $base);
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function forwardTo(string $controller, string $action, array $parameters = []): Response
     {
         return $this->forward($controller, $action, $parameters);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function route(string $name, array $params = []): string
     {
         return $this->generateRoute($name, $params);

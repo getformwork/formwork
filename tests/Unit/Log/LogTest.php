@@ -5,11 +5,13 @@ namespace Formwork\Tests\Unit\Log;
 use Formwork\Log\Log;
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(Log::class)]
+#[UsesTempDirectory]
 final class LogTest extends TestCase
 {
     private string $file;
@@ -17,14 +19,7 @@ final class LogTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->file = FileSystem::joinPaths(TESTS_TMP_PATH, 'log.json');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     #[RunInSeparateProcess]

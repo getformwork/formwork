@@ -14,22 +14,22 @@ final class RouteActionResolvedEventTest extends TestCase
     {
         $route = new Route('home', '/');
         $action = static fn(): null => null;
-        $event = new RouteActionResolvedEvent($route, $action);
+        $routeActionResolvedEvent = new RouteActionResolvedEvent($route, $action);
 
-        $this->assertSame('routeActionResolved', $event->name());
-        $this->assertSame($route, $event->route());
-        $this->assertSame($action, $event->action());
-        $this->assertSame(['route' => $route, 'action' => $action], $event->data());
+        $this->assertSame('routeActionResolved', $routeActionResolvedEvent->name());
+        $this->assertSame($route, $routeActionResolvedEvent->route());
+        $this->assertSame($action, $routeActionResolvedEvent->action());
+        $this->assertSame(['route' => $route, 'action' => $action], $routeActionResolvedEvent->data());
     }
 
     public function testActionCanBeReplaced(): void
     {
         $first = static fn(): null => null;
         $second = static fn(): null => null;
-        $event = new RouteActionResolvedEvent(new Route('home', '/'), $first);
+        $routeActionResolvedEvent = new RouteActionResolvedEvent(new Route('home', '/'), $first);
 
-        $event->setAction($second);
+        $routeActionResolvedEvent->setAction($second);
 
-        $this->assertSame($second, $event->action());
+        $this->assertSame($second, $routeActionResolvedEvent->action());
     }
 }

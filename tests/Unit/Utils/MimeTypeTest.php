@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Utils;
 
 use Formwork\Tests\Environment;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -11,17 +12,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 #[CoversClass(MimeType::class)]
+#[UsesTempDirectory]
 final class MimeTypeTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->setUpTempDirectory();
-    }
+    protected function setUp(): void {}
 
     protected function tearDown(): void
     {
         Environment::enableExtension('fileinfo');
-        $this->tearDownTempDirectory();
     }
 
     public function testFromExtension(): void

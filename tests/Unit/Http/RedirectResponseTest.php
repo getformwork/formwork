@@ -12,25 +12,25 @@ final class RedirectResponseTest extends TestCase
 {
     public function testRedirectResponseSetsLocationAndCustomHeaders(): void
     {
-        $response = new RedirectResponse('/next', ResponseStatus::SeeOther, ['X-Redirect' => 'yes']);
+        $redirectResponse = new RedirectResponse('/next', ResponseStatus::SeeOther, ['X-Redirect' => 'yes']);
 
-        $this->assertSame('/next', $response->headers()->get('Location'));
-        $this->assertSame('yes', $response->headers()->get('X-Redirect'));
-        $this->assertSame(ResponseStatus::SeeOther, $response->status());
+        $this->assertSame('/next', $redirectResponse->headers()->get('Location'));
+        $this->assertSame('yes', $redirectResponse->headers()->get('X-Redirect'));
+        $this->assertSame(ResponseStatus::SeeOther, $redirectResponse->status());
     }
 
     public function testRedirectUsesFoundStatusAndAnEmptyBodyByDefault(): void
     {
-        $response = new RedirectResponse('/next');
+        $redirectResponse = new RedirectResponse('/next');
 
-        $this->assertSame(ResponseStatus::Found, $response->status());
-        $this->assertSame('', $response->content());
+        $this->assertSame(ResponseStatus::Found, $redirectResponse->status());
+        $this->assertSame('', $redirectResponse->content());
     }
 
     public function testTheGivenUriIsNotOverriddenByAnExtraLocationHeader(): void
     {
-        $response = new RedirectResponse('/next', headers: ['Location' => '/elsewhere']);
+        $redirectResponse = new RedirectResponse('/next', headers: ['Location' => '/elsewhere']);
 
-        $this->assertSame('/next', $response->headers()->get('Location'));
+        $this->assertSame('/next', $redirectResponse->headers()->get('Location'));
     }
 }

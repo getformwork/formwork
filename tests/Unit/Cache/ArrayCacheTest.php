@@ -26,14 +26,17 @@ final class ArrayCacheTest extends CacheTestCase
 
     public function testItemsAreKeptInMemoryAsTheyAre(): void
     {
-        $cache = new ArrayCache('test');
+        $arrayCache = new ArrayCache('test');
         $object = new stdClass();
 
-        $cache->set('object', $object);
+        $arrayCache->set('object', $object);
 
-        $this->assertSame($object, $cache->get('object'));
+        $this->assertSame($object, $arrayCache->get('object'));
     }
 
+    /**
+     * @param non-empty-string $namespace
+     */
     protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): AbstractCache
     {
         return new ArrayCache($namespace, $defaultTtl);
@@ -41,10 +44,10 @@ final class ArrayCacheTest extends CacheTestCase
 
     protected function expire(AbstractCache $cache, string $key): void
     {
-        $property = new ReflectionProperty(ArrayCache::class, 'items');
-        $items = $property->getValue($cache);
+        $reflectionProperty = new ReflectionProperty(ArrayCache::class, 'items');
+        $items = $reflectionProperty->getValue($cache);
         $item = $items[$key];
         $items[$key] = new CacheItem($item->value(), time() - 10, $item->cachedTime() - 100);
-        $property->setValue($cache, $items);
+        $reflectionProperty->setValue($cache, $items);
     }
 }

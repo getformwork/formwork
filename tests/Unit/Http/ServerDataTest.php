@@ -11,13 +11,13 @@ final class ServerDataTest extends TestCase
 {
     public function testServerDataExtractsHttpHeaders(): void
     {
-        $server = new ServerData([
+        $serverData = new ServerData([
             'HTTP_HOST'      => 'example.test',
             'CONTENT_TYPE'   => 'application/json',
             'CONTENT_LENGTH' => '12',
             'REQUEST_METHOD' => 'POST',
         ]);
 
-        $this->assertSame(['HOST' => 'example.test', 'CONTENT_TYPE' => 'application/json', 'CONTENT_LENGTH' => '12'], $server->getHeaders());
+        $this->assertSame(['HOST' => 'example.test', 'CONTENT_TYPE' => 'application/json', 'CONTENT_LENGTH' => '12'], $serverData->getHeaders());
     }
 }

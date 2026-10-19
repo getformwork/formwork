@@ -8,7 +8,7 @@ use Formwork\Log\Handler\HandlerInterface;
 final class RecordingHandler implements HandlerInterface
 {
     /**
-     * @var list<array{DateTimeInterface, string, string, array<mixed>}>
+     * @var list<array{DateTimeInterface, string, string, array<string, mixed>}>
      */
     public array $records = [];
 

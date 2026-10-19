@@ -6,10 +6,12 @@ use Formwork\Exceptions\RecursionException;
 use Formwork\Schemes\Scheme;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Scheme::class)]
+#[UsesTempDirectory]
 final class SchemeTest extends TestCase
 {
     use BuildsSchemes;
@@ -18,12 +20,6 @@ final class SchemeTest extends TestCase
     {
         parent::setUp();
         $this->setUpSchemes();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownSchemes();
-        parent::tearDown();
     }
 
     // Identity, title, options
@@ -123,28 +119,28 @@ final class SchemeTest extends TestCase
         $fields = $scheme->fields();
 
         $this->assertSame(['title', 'summary'], $fields->keys());
-        $this->assertSame('Title', $fields->get('title')->label());
-        $this->assertSame('summary', $fields->get('summary')->label());
+        $this->assertSame('Title', $fields->get('title')?->label());
+        $this->assertSame('summary', $fields->get('summary')?->label());
     }
 
     public function testFieldsAreNewInstancesOnEveryCall(): void
     {
         $scheme = $this->makeScheme('post', ['fields' => ['title' => ['type' => 'text']]]);
 
-        $first = $scheme->fields();
-        $first->get('title')->set('value', 'changed');
+        $fieldCollection = $scheme->fields();
+        $fieldCollection->get('title')?->set('value', 'changed');
         $second = $scheme->fields();
 
-        $this->assertNotSame($first, $second);
-        $this->assertNotSame($first->get('title'), $second->get('title'));
-        $this->assertSame('', $second->get('title')->value());
+        $this->assertNotSame($fieldCollection, $second);
+        $this->assertNotSame($fieldCollection->get('title'), $second->get('title'));
+        $this->assertSame('', $second->get('title')?->value());
     }
 
     public function testFieldsBelongToTheReturnedCollection(): void
     {
         $fields = $this->makeScheme('post', ['fields' => ['title' => ['type' => 'text']]])->fields();
 
-        $this->assertSame($fields, $fields->get('title')->parent());
+        $this->assertSame($fields, $fields->get('title')?->parent());
     }
 
     public function testFieldDefaultsComeFromTheFieldTypeConfiguration(): void
@@ -154,8 +150,8 @@ final class SchemeTest extends TestCase
             'explicit' => ['type' => 'title', 'default' => 'Mine'],
         ]])->fields();
 
-        $this->assertSame('Untitled', $fields->get('headline')->value());
-        $this->assertSame('Mine', $fields->get('explicit')->value());
+        $this->assertSame('Untitled', $fields->get('headline')?->value());
+        $this->assertSame('Mine', $fields->get('explicit')?->value());
     }
 
     public function testDefaultLayoutHasASingleSectionWithAllTheFields(): void
@@ -168,7 +164,7 @@ final class SchemeTest extends TestCase
         $sections = $fields->layout()->sections();
 
         $this->assertSame(['default'], $sections->keys());
-        $this->assertSame('Post', $sections->get('default')->label());
+        $this->assertSame('Post', $sections->get('default')?->label());
         $this->assertSame(['a', 'b'], $sections->get('default')->get('fields'));
     }
 
@@ -176,7 +172,7 @@ final class SchemeTest extends TestCase
     {
         $fields = $this->makeScheme('post', ['fields' => ['a' => ['type' => 'text']]])->fields();
 
-        $this->assertSame('default', $fields->layout()->sections()->get('default')->label());
+        $this->assertSame('default', $fields->layout()->sections()->get('default')?->label());
     }
 
     public function testCustomLayoutIsUsed(): void
@@ -189,7 +185,7 @@ final class SchemeTest extends TestCase
         ])->fields();
 
         $this->assertSame(['main'], $fields->layout()->sections()->keys());
-        $this->assertSame('Main section', $fields->layout()->sections()->get('main')->label());
+        $this->assertSame('Main section', $fields->layout()->sections()->get('main')?->label());
     }
 
     public function testLayoutIsTranslatedToTheCurrentLanguage(): void
@@ -200,7 +196,7 @@ final class SchemeTest extends TestCase
             'layout' => ['sections' => ['main' => ['label' => '{{section.main}}']]],
         ])->fields();
 
-        $this->assertSame('Sezione principale', $fields->layout()->sections()->get('main')->label());
+        $this->assertSame('Sezione principale', $fields->layout()->sections()->get('main')?->label());
     }
 
     public function testSchemeWithoutFieldsProducesAnEmptyCollection(): void
@@ -217,13 +213,13 @@ final class SchemeTest extends TestCase
         $this->writeScheme('base', "title: Base\noptions:\n  inherited: true\n  overridden: base\nfields:\n  title:\n    type: text\n    label: Base title\n");
         $this->writeScheme('child', "extend: base\ntitle: Child\noptions:\n  overridden: child\nfields:\n  extra:\n    type: text\n");
 
-        $child = $this->schemes->get('child');
+        $scheme = $this->schemes->get('child');
 
-        $this->assertSame('Child', $child->title());
-        $this->assertTrue($child->options()->get('inherited'));
-        $this->assertSame('child', $child->options()->get('overridden'));
-        $this->assertSame(['title', 'extra'], $child->fields()->keys());
-        $this->assertSame('Base title', $child->fields()->get('title')->label());
+        $this->assertSame('Child', $scheme->title());
+        $this->assertTrue($scheme->options()->get('inherited'));
+        $this->assertSame('child', $scheme->options()->get('overridden'));
+        $this->assertSame(['title', 'extra'], $scheme->fields()->keys());
+        $this->assertSame('Base title', $scheme->fields()->get('title')?->label());
     }
 
     public function testChildFieldDefinitionsOverrideTheBaseOnesKey_by_Key(): void
@@ -233,7 +229,7 @@ final class SchemeTest extends TestCase
 
         $field = $this->schemes->get('child')->fields()->get('title');
 
-        $this->assertSame('Child title', $field->label());
+        $this->assertSame('Child title', $field?->label());
         $this->assertTrue($field->isRequired(), 'Properties not redefined by the child are kept.');
         $this->assertSame('text', $field->type());
     }
@@ -312,12 +308,7 @@ final class SchemeTest extends TestCase
         $this->writeScheme('b', "extend: a\n");
 
         for ($i = 0; $i < 2; ++$i) {
-            try {
-                $this->schemes->get('a');
-                $this->fail('Circular extension should be rejected.');
-            } catch (RecursionException) {
-                $this->addToAssertionCount(1);
-            }
+            $this->assertInstanceOf(RecursionException::class, $this->captureException(RecursionException::class, fn() => $this->schemes->get('a')));
         }
 
         $this->writeScheme('x', "title: X\n");
@@ -327,12 +318,7 @@ final class SchemeTest extends TestCase
 
     public function testFailedExtensionByUnknownIdDoesNotPoisonLaterAttempts(): void
     {
-        try {
-            $this->makeScheme('child', ['extend' => 'ghost']);
-            $this->fail('Unknown scheme should be rejected.');
-        } catch (InvalidArgumentException) {
-            $this->addToAssertionCount(1);
-        }
+        $this->assertInstanceOf(InvalidArgumentException::class, $this->captureException(InvalidArgumentException::class, fn() => $this->makeScheme('child', ['extend' => 'ghost'])));
 
         $this->writeScheme('ghost', "title: Ghost\n");
 
@@ -341,10 +327,10 @@ final class SchemeTest extends TestCase
 
     public function testExtendWithAnInstanceMergesItsData(): void
     {
-        $base = $this->makeScheme('base', ['options' => ['inherited' => true]]);
+        $scheme = $this->makeScheme('base', ['options' => ['inherited' => true]]);
         $child = $this->makeScheme('child', ['options' => ['own' => true]]);
 
-        $child->extend($base);
+        $child->extend($scheme);
 
         $this->assertTrue($child->toArray()['options']['inherited']);
         $this->assertTrue($child->toArray()['options']['own']);
@@ -386,13 +372,13 @@ final class SchemeTest extends TestCase
         $this->writeScheme('c', "extend: b\n");
         $this->writeScheme('unrelated', "title: U\n");
 
-        $c = $this->schemes->get('c');
+        $scheme = $this->schemes->get('c');
 
-        $this->assertTrue($c->extendsScheme('b'));
-        $this->assertTrue($c->extendsScheme('a'));
-        $this->assertTrue($c->extendsScheme($this->schemes->get('a')));
-        $this->assertFalse($c->extendsScheme('unrelated'));
-        $this->assertFalse($c->extendsScheme('c'), 'A scheme does not extend itself.');
+        $this->assertTrue($scheme->extendsScheme('b'));
+        $this->assertTrue($scheme->extendsScheme('a'));
+        $this->assertTrue($scheme->extendsScheme($this->schemes->get('a')));
+        $this->assertFalse($scheme->extendsScheme('unrelated'));
+        $this->assertFalse($scheme->extendsScheme('c'), 'A scheme does not extend itself.');
         $this->assertFalse($this->schemes->get('a')->extendsScheme('c'));
     }
 

@@ -21,11 +21,11 @@ final class InitialsImageGeneratorTest extends TestCase
 
     public function testImagesAreValidXml(): void
     {
-        $document = new DOMDocument();
+        $domDocument = new DOMDocument();
 
-        $this->assertTrue($document->loadXML($this->svg('Alice Smith')));
-        $this->assertSame('svg', $document->documentElement?->nodeName);
-        $this->assertSame('http://www.w3.org/2000/svg', $document->documentElement?->namespaceURI);
+        $this->assertTrue($domDocument->loadXML($this->svg('Alice Smith')));
+        $this->assertSame('svg', $domDocument->documentElement?->nodeName);
+        $this->assertSame('http://www.w3.org/2000/svg', $domDocument->documentElement->namespaceURI);
     }
 
     #[DataProvider('initialsProvider')]
@@ -76,11 +76,11 @@ final class InitialsImageGeneratorTest extends TestCase
     {
         $svg = $this->svg($name);
 
-        $document = new DOMDocument();
-        $this->assertTrue($document->loadXML($svg), 'The SVG must stay well formed: ' . $svg);
+        $domDocument = new DOMDocument();
+        $this->assertTrue($domDocument->loadXML($svg), 'The SVG must stay well formed: ' . $svg);
 
         $elements = [];
-        foreach ($document->getElementsByTagName('*') as $element) {
+        foreach ($domDocument->getElementsByTagName('*') as $element) {
             $elements[] = $element->nodeName;
         }
 
@@ -122,10 +122,10 @@ final class InitialsImageGeneratorTest extends TestCase
         $svg = $this->svg($name);
         preg_match('/<circle[^>]*fill="(#[0-9a-f]{6})"/', $svg, $background);
         preg_match('/<text fill="(#[0-9a-f]{6})"/', $svg, $text);
-        [$r, $g, $b] = sscanf($background[1], '#%2x%2x%2x');
+        [$r, $g, $b] = sscanf($background[1] ?? '', '#%2x%2x%2x') ?: [0, 0, 0];
         $luminance = 0.299 * $r + 0.587 * $g + 0.114 * $b;
 
-        $this->assertSame($luminance > 149 ? '#000000' : '#ffffff', $text[1]);
+        $this->assertSame($luminance > 149 ? '#000000' : '#ffffff', $text[1] ?? null);
     }
 
     /**
@@ -148,9 +148,15 @@ final class InitialsImageGeneratorTest extends TestCase
         $this->assertGreaterThan(1, count(array_unique($colors)));
     }
 
+    /**
+     * @return non-empty-string
+     */
     private function svg(string $name): string
     {
-        return rawurldecode(substr(InitialsImageGenerator::generate($name), strlen('data:image/svg+xml,')));
+        $svg = rawurldecode(substr(InitialsImageGenerator::generate($name), strlen('data:image/svg+xml,')));
+        $this->assertNotSame('', $svg);
+
+        return $svg;
     }
 
     private function initials(string $name): string
@@ -164,6 +170,6 @@ final class InitialsImageGeneratorTest extends TestCase
     {
         preg_match('/<circle[^>]*fill="(#[0-9a-f]{6})"/', $this->svg($name), $matches);
 
-        return $matches[1];
+        return $matches[1] ?? '';
     }
 }

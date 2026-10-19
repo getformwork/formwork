@@ -62,10 +62,12 @@ final class ImageAltProcessorTest extends TestCase
     {
         $html = Markdown::parse('![](photo.jpg)', ['site' => $this->site('/', ['photo.jpg' => '"><script>alert(1)</script>'])]);
 
-        $document = new DOMDocument();
-        @$document->loadHTML($html);
-        $this->assertSame(0, $document->getElementsByTagName('script')->length);
-        $this->assertSame('"><script>alert(1)</script>', $document->getElementsByTagName('img')->item(0)?->getAttribute('alt'));
+        $this->assertNotSame('', $html);
+
+        $domDocument = new DOMDocument();
+        @$domDocument->loadHTML($html);
+        $this->assertSame(0, $domDocument->getElementsByTagName('script')->length);
+        $this->assertSame('"><script>alert(1)</script>', $domDocument->getElementsByTagName('img')->item(0)?->getAttribute('alt'));
     }
 
     public function testExternalImagesDoNotConsultTheFiles(): void

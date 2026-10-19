@@ -66,34 +66,34 @@ final class ImageRendererTest extends TestCase
     {
         $html = $this->parse($markdown);
 
-        $document = new DOMDocument();
-        @$document->loadHTML('<body>' . $html);
+        $domDocument = new DOMDocument();
+        @$domDocument->loadHTML('<body>' . $html);
 
-        $this->assertSame(0, $document->getElementsByTagName('script')->length);
-        $image = $document->getElementsByTagName('img')->item(0);
+        $this->assertSame(0, $domDocument->getElementsByTagName('script')->length);
+        $image = $domDocument->getElementsByTagName('img')->item(0);
         $this->assertNotNull($image);
         $this->assertFalse($image->hasAttribute('onerror'));
     }
 
     public function testUnsafeDestinationsAreEmptiedWhenTheyAreForbidden(): void
     {
-        $renderer = new ImageRenderer();
-        $renderer->setConfiguration($this->configuration(allowUnsafeLinks: false));
+        $imageRenderer = new ImageRenderer();
+        $imageRenderer->setConfiguration($this->configuration(allowUnsafeLinks: false));
 
         $image = new Image('javascript:alert(1)', 'label');
         $image->appendChild(new Text('label'));
 
-        $this->assertStringContainsString('src=""', (string) $renderer->render($image, $this->childRenderer()));
+        $this->assertStringContainsString('src=""', (string) $imageRenderer->render($image, $this->childRenderer()));
     }
 
     public function testUnsafeDestinationsAreKeptWhenAllowed(): void
     {
-        $renderer = new ImageRenderer();
-        $renderer->setConfiguration($this->configuration(allowUnsafeLinks: true));
+        $imageRenderer = new ImageRenderer();
+        $imageRenderer->setConfiguration($this->configuration(allowUnsafeLinks: true));
 
         $image = new Image('data:image/png;base64,AAAA', 'label');
 
-        $this->assertStringContainsString('src="data:image/png;base64,AAAA"', (string) $renderer->render($image, $this->childRenderer()));
+        $this->assertStringContainsString('src="data:image/png;base64,AAAA"', (string) $imageRenderer->render($image, $this->childRenderer()));
     }
 
     public function testJavascriptImagesNeverReachTheFinalHtml(): void
@@ -103,12 +103,12 @@ final class ImageRendererTest extends TestCase
 
     public function testExistingAttributesAreMergedIntoTheElement(): void
     {
-        $renderer = new ImageRenderer();
-        $renderer->setConfiguration($this->configuration(allowUnsafeLinks: false));
+        $imageRenderer = new ImageRenderer();
+        $imageRenderer->setConfiguration($this->configuration(allowUnsafeLinks: false));
         $image = new Image('cat.png', 'label');
         $image->data->set('attributes', ['class' => 'wide', 'src' => 'ignored']);
 
-        $html = (string) $renderer->render($image, $this->childRenderer());
+        $html = (string) $imageRenderer->render($image, $this->childRenderer());
 
         $this->assertStringContainsString('class="wide"', $html);
         $this->assertStringContainsString('src="cat.png"', $html);
@@ -116,12 +116,12 @@ final class ImageRendererTest extends TestCase
 
     public function testXmlRepresentation(): void
     {
-        $renderer = new ImageRenderer();
+        $imageRenderer = new ImageRenderer();
         $image = new Image('cat.png', 'label', 'Tom');
 
-        $this->assertSame('image', $renderer->getXmlTagName($image));
-        $this->assertSame(['destination' => 'cat.png', 'title' => 'Tom'], $renderer->getXmlAttributes($image));
-        $this->assertSame(['destination' => 'cat.png', 'title' => ''], $renderer->getXmlAttributes(new Image('cat.png', 'label')));
+        $this->assertSame('image', $imageRenderer->getXmlTagName($image));
+        $this->assertSame(['destination' => 'cat.png', 'title' => 'Tom'], $imageRenderer->getXmlAttributes($image));
+        $this->assertSame(['destination' => 'cat.png', 'title' => ''], $imageRenderer->getXmlAttributes(new Image('cat.png', 'label')));
     }
 
     private function parse(string $markdown): string

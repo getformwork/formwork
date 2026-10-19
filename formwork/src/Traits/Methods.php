@@ -48,7 +48,7 @@ trait Methods
      *
      * @param list<mixed> $arguments
      */
-    protected function callMethod(string $method, array $arguments)
+    protected function callMethod(string $method, array $arguments): mixed
     {
         return $this->methods[$method](...$arguments);
     }

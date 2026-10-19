@@ -8,24 +8,19 @@ use Formwork\Config\Config;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AssetsServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(AssetsServiceLoader::class)]
+#[UsesTempDirectory]
 final class AssetsServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/templates/assets/css', recursive: true);
         FileSystem::write(TESTS_TMP_PATH . '/templates/assets/css/style.css', 'body {}');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testTemplateAssetsAreResolvedFromTheTemplatesDirectory(): void

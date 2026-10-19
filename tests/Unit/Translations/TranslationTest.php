@@ -154,7 +154,7 @@ final class TranslationTest extends TestCase
 
     public function testNonStringValuesCannotBeTranslated(): void
     {
-        $translation = new Translation('en', ['list' => ['a', 'b'], 'number' => 5]);
+        $translation = new Translation('en', $this->unchecked(['list' => ['a', 'b'], 'number' => 5]));
 
         $this->expectException(InvalidArgumentException::class);
         $translation->translate('list');
@@ -162,7 +162,7 @@ final class TranslationTest extends TestCase
 
     public function testNumericValuesCannotBeTranslated(): void
     {
-        $translation = new Translation('en', ['number' => 5]);
+        $translation = new Translation('en', $this->unchecked(['number' => 5]));
 
         $this->expectException(InvalidArgumentException::class);
         $translation->translate('number');
@@ -214,7 +214,7 @@ final class TranslationTest extends TestCase
 
     public function testNullValuesAreTreatedAsMissing(): void
     {
-        $translation = new Translation('it', ['key' => null]);
+        $translation = new Translation('it', $this->unchecked(['key' => null]));
         $translation->setFallback(new Translation('en', ['key' => 'fallback']));
 
         $this->assertFalse($translation->has('key'));

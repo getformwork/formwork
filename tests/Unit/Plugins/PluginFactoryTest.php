@@ -8,12 +8,14 @@ use Formwork\Plugins\PluginFactory;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
 #[CoversClass(PluginFactory::class)]
+#[UsesTempDirectory]
 final class PluginFactoryTest extends TestCase
 {
     use BuildsPlugins;
@@ -29,12 +31,6 @@ final class PluginFactoryTest extends TestCase
         $container->define(Container::class, $container);
         $container->define(App::class, App::instance());
         $this->factory = new PluginFactory($container);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     public function testPluginIsBuiltFromItsDirectory(): void

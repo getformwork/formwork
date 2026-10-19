@@ -11,12 +11,14 @@ use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\SchemesServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionProperty;
 
 #[CoversClass(SchemesServiceLoader::class)]
+#[UsesTempDirectory]
 final class SchemesServiceLoaderTest extends TestCase
 {
     private ?Closure $originalLoader = null;
@@ -24,7 +26,6 @@ final class SchemesServiceLoaderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->originalLoader = (new ReflectionProperty(DynamicFieldValue::class, 'varsLoader'))->isInitialized() ? DynamicFieldValue::$varsLoader : null;
 
         FileSystem::createDirectory(TESTS_TMP_PATH . '/schemes/system/pages', recursive: true);
@@ -39,7 +40,6 @@ final class SchemesServiceLoaderTest extends TestCase
         if ($this->originalLoader !== null) {
             DynamicFieldValue::$varsLoader = $this->originalLoader;
         }
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 

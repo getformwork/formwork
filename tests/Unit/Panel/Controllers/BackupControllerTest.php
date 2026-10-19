@@ -13,6 +13,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -21,6 +22,7 @@ use ReflectionProperty;
 
 #[CoversClass(BackupController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class BackupControllerTest extends TestCase
 {
     use BuildsPanelControllers;
@@ -34,7 +36,6 @@ final class BackupControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->backupPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'backups');
         FileSystem::createDirectory($this->backupPath);
@@ -50,7 +51,6 @@ final class BackupControllerTest extends TestCase
     protected function tearDown(): void
     {
         $this->closePanelSession();
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -243,17 +243,17 @@ final class BackupControllerTest extends TestCase
 
     private function lastMessageType(): ?string
     {
-        $reflection = new ReflectionProperty(AbstractController::class, 'panel');
-        $panel = $reflection->getValue($this->controller);
+        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'panel');
+        $panel = $reflectionProperty->getValue($this->controller);
         $notifications = $panel->notifications();
 
         return $notifications === [] ? null : end($notifications)['type'];
     }
 
-    private function responseFile(FileResponse $response): string
+    private function responseFile(FileResponse $fileResponse): string
     {
-        $property = new ReflectionProperty(FileResponse::class, 'path');
+        $reflectionProperty = new ReflectionProperty(FileResponse::class, 'path');
 
-        return (string) $property->getValue($response);
+        return (string) $reflectionProperty->getValue($fileResponse);
     }
 }

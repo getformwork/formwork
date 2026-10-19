@@ -25,7 +25,7 @@ final class ResponseHeaderUtilsTest extends TestCase
     #[DataProvider('makeProvider')]
     public function testMakeJoinsValuesAndParameters(array $data, string $expected): void
     {
-        $this->assertSame($expected, Header::make($data));
+        $this->assertSame($expected, Header::make($this->unchecked($data)));
     }
 
     /**

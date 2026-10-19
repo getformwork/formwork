@@ -9,6 +9,9 @@ class DataCountableFixture implements Countable
 {
     use DataCountable;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data = [])
     {
         $this->data = $data;

@@ -10,6 +10,7 @@ use Formwork\Files\FileUriGenerator;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
@@ -17,17 +18,10 @@ use stdClass;
 
 #[CoversClass(FileFactory::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FileFactoryTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-    }
+    protected function setUp(): void {}
 
     public function testMakeBuildsAFileLoadsMetadataAndInjectsTheUriGenerator(): void
     {
@@ -58,23 +52,23 @@ final class FileFactoryTest extends TestCase
         $container->expects($this->once())->method('build')->with(File::class, ['path' => $path])->willReturn($file);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $factory = new FileFactory($container, $this->config(), ['image/png' => AssociatedFile::class]);
+        $fileFactory = new FileFactory($container, $this->config(), ['image/png' => AssociatedFile::class]);
 
-        $this->assertSame($file, $factory->make($path));
+        $this->assertSame($file, $fileFactory->make($path));
     }
 
     public function testMakeBuildsTheClassAssociatedWithTheDetectedMimeType(): void
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $file = new AssociatedFile($path);
+        $associatedFile = new AssociatedFile($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($file);
+        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($associatedFile);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $factory = new FileFactory($container, $this->config(), ['text/plain' => AssociatedFile::class]);
+        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => AssociatedFile::class]);
 
-        $this->assertSame($file, $factory->make($path));
+        $this->assertSame($associatedFile, $fileFactory->make($path));
     }
 
     public function testMakeRejectsAContainerResultThatIsNotAFile(): void
@@ -94,20 +88,20 @@ final class FileFactoryTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $builder = new AssociatedFile($path);
+        $associatedFile = new AssociatedFile($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($builder);
+        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($associatedFile);
         $container->expects($this->once())->method('call')
             ->willReturnCallback(static fn(Closure $factory, array $parameters): mixed => $factory(...$parameters));
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $factory = new FileFactory($container, $this->config(), ['text/plain' => [AssociatedFile::class, 'fromPath']]);
-        $result = $factory->make($path);
+        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => [AssociatedFile::class, 'fromPath']]);
+        $file = $fileFactory->make($path);
 
-        $this->assertNotSame($builder, $result);
-        $this->assertInstanceOf(AssociatedFile::class, $result);
-        $this->assertSame($path, $result->path());
-        $this->assertSame('created', $result->origin);
+        $this->assertNotSame($associatedFile, $file);
+        $this->assertInstanceOf(AssociatedFile::class, $file);
+        $this->assertSame($path, $file->path());
+        $this->assertSame('created', $file->origin);
     }
 
     private function config(): Config
@@ -122,7 +116,7 @@ final class AssociatedFile extends File
 
     public function fromPath(string $path): static
     {
-        $file = new static($path);
+        $file = new self($path);
         $file->origin = 'created';
 
         return $file;

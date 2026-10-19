@@ -66,48 +66,50 @@ final class NodesTest extends TestCase
 
     public function testIdentifierNodeExposesArgumentsAndTraversal(): void
     {
-        $arguments = new ArgumentsNode([new StringNode('x')]);
+        $argumentsNode = new ArgumentsNode([new StringNode('x')]);
         $traverse = new IdentifierNode('child', null, null);
 
-        $node = new IdentifierNode('parent', $arguments, $traverse);
+        $node = new IdentifierNode('parent', $argumentsNode, $traverse);
 
-        $this->assertSame($arguments, $node->arguments());
+        $this->assertSame($argumentsNode, $node->arguments());
         $this->assertSame($traverse, $node->traverse());
     }
 
     public function testIdentifierNodeWithoutArgumentsOrTraversal(): void
     {
-        $node = new IdentifierNode('name', null, null);
+        $identifierNode = new IdentifierNode('name', null, null);
 
-        $this->assertNull($node->arguments());
-        $this->assertNull($node->traverse());
+        $this->assertNull($identifierNode->arguments());
+        $this->assertNull($identifierNode->traverse());
     }
 
     public function testArrayNodeExposesItsKeys(): void
     {
-        $keys = new ArrayKeysNode([new StringNode('key')]);
+        $arrayKeysNode = new ArrayKeysNode([new StringNode('key')]);
 
-        $this->assertSame($keys, (new ArrayNode([new NumberNode(1)], $keys))->keys());
+        $this->assertSame($arrayKeysNode, (new ArrayNode([new NumberNode(1)], $arrayKeysNode))->keys());
     }
 
     public function testImplicitArrayKeyNodeHasTheItsTypeAndNoValue(): void
     {
-        $node = new ImplicitArrayKeyNode();
+        $implicitArrayKeyNode = new ImplicitArrayKeyNode();
 
-        $this->assertSame('implicit array key', $node->type());
-        $this->assertSame('node of type implicit array key', (string) $node);
-        $this->assertNull($node->value());
+        $this->assertSame('implicit array key', $implicitArrayKeyNode->type());
+        $this->assertSame('node of type implicit array key', (string) $implicitArrayKeyNode);
+        $this->assertNull($implicitArrayKeyNode->value());
     }
 
     public function testNumberNodesRejectNonNumericValues(): void
     {
-        $this->expectException(TypeError::class);
-        new NumberNode('not a number');
+        $typeError = $this->captureException(TypeError::class, fn() => new NumberNode($this->unchecked('not a number')));
+
+        $this->assertInstanceOf(TypeError::class, $typeError);
     }
 
     public function testStringNodesRejectArrays(): void
     {
-        $this->expectException(TypeError::class);
-        new StringNode([]);
+        $typeError = $this->captureException(TypeError::class, fn() => new StringNode($this->unchecked([])));
+
+        $this->assertInstanceOf(TypeError::class, $typeError);
     }
 }

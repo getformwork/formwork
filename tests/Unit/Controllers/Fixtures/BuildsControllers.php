@@ -6,15 +6,18 @@ use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Controllers\PageController;
 use Formwork\Events\EventDispatcher;
+use Formwork\Http\FileResponse;
 use Formwork\Http\Request;
 use Formwork\Router\Router;
 use Formwork\Services\Container;
+use Formwork\Tests\TestCase;
 use Formwork\Utils\FileSystem;
+use ReflectionProperty;
 
 /**
  * Builds site controllers on top of lightweight collaborators
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsControllers
 {
@@ -77,5 +80,13 @@ trait BuildsControllers
             FileSystem::createDirectory($path, recursive: true);
         }
         return $path;
+    }
+
+    /**
+     * Path of the file served by a file response, which keeps it private
+     */
+    protected function fileOf(FileResponse $response): string
+    {
+        return (string) (new ReflectionProperty($response, 'path'))->getValue($response);
     }
 }

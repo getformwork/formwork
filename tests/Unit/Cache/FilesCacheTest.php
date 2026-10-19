@@ -8,6 +8,7 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Cache\CacheItem;
 use Formwork\Cache\FilesCache;
 use Formwork\Parsers\Php;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,6 +17,7 @@ use UnexpectedValueException;
 
 #[CoversClass(FilesCache::class)]
 #[CoversClass(AbstractCache::class)]
+#[UsesTempDirectory]
 final class FilesCacheTest extends CacheTestCase
 {
     private string $path;
@@ -23,14 +25,7 @@ final class FilesCacheTest extends CacheTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'cache');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPathIncludesTheNamespace(): void
@@ -40,24 +35,24 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testDirectoryIsNotCreatedUntilSomethingIsStored(): void
     {
-        $cache = $this->createCache();
+        $filesCache = $this->createCache();
 
-        $cache->get('key');
-        $cache->has('key');
-        $cache->delete('key');
-        $cache->clear();
+        $filesCache->get('key');
+        $filesCache->has('key');
+        $filesCache->delete('key');
+        $filesCache->clear();
 
-        $this->assertDirectoryDoesNotExist($cache->path());
-        $this->assertSame(0, $cache->count());
+        $this->assertDirectoryDoesNotExist($filesCache->path());
+        $this->assertSame(0, $filesCache->count());
     }
 
     public function testDirectoryIsCreatedRecursivelyOnTheFirstSet(): void
     {
-        $cache = new FilesCache(FileSystem::joinPaths($this->path, 'deeply', 'nested'), 'test');
+        $filesCache = new FilesCache(FileSystem::joinPaths($this->path, 'deeply', 'nested'), 'test');
 
-        $cache->set('key', 'value');
+        $filesCache->set('key', 'value');
 
-        $this->assertDirectoryExists($cache->path());
+        $this->assertDirectoryExists($filesCache->path());
     }
 
     public function testItemsArePersistedAcrossInstances(): void
@@ -70,48 +65,48 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testNamespacesAreStoredInSeparateDirectories(): void
     {
-        $first = $this->createCache('first');
+        $filesCache = $this->createCache('first');
         $second = $this->createCache('second');
 
-        $first->set('key', 1);
+        $filesCache->set('key', 1);
         $second->set('key', 2);
 
-        $this->assertNotSame($first->path(), $second->path());
-        $this->assertDirectoryExists($first->path());
+        $this->assertNotSame($filesCache->path(), $second->path());
+        $this->assertDirectoryExists($filesCache->path());
         $this->assertDirectoryExists($second->path());
     }
 
     public function testClearOnlyRemovesTheItemsOfTheNamespace(): void
     {
-        $first = $this->createCache('first');
+        $filesCache = $this->createCache('first');
         $second = $this->createCache('second');
-        $first->set('key', 1);
+        $filesCache->set('key', 1);
         $second->set('key', 2);
 
-        $first->clear();
+        $filesCache->clear();
 
-        $this->assertDirectoryExists($first->path());
+        $this->assertDirectoryExists($filesCache->path());
         $this->assertSame(2, $second->get('key'));
     }
 
     public function testFilesAreNamedAfterTheHashOfTheKey(): void
     {
-        $cache = $this->createCache();
+        $filesCache = $this->createCache();
 
-        $cache->set('some key', 'value');
+        $filesCache->set('some key', 'value');
 
-        $this->assertSame([hash('sha256', 'some key')], iterator_to_array(FileSystem::listFiles($cache->path()), false));
+        $this->assertSame([hash('sha256', 'some key')], iterator_to_array(FileSystem::listFiles($filesCache->path()), false));
     }
 
     public function testKeysCannotInfluenceTheFilePath(): void
     {
-        $cache = $this->createCache();
+        $filesCache = $this->createCache();
 
         // Keys containing path separators are rejected, others are hashed
-        $cache->set('..', 'dots');
-        $cache->set('.hidden', 'hidden');
+        $filesCache->set('..', 'dots');
+        $filesCache->set('.hidden', 'hidden');
 
-        $files = iterator_to_array(FileSystem::listFiles($cache->path()), false);
+        $files = iterator_to_array(FileSystem::listFiles($filesCache->path()), false);
 
         $this->assertCount(2, $files);
         foreach ($files as $file) {
@@ -122,21 +117,21 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testStoredFilesAreWrittenAtomically(): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', 'old');
+        $filesCache = $this->createCache();
+        $filesCache->set('key', 'old');
 
-        $cache->set('key', 'new');
+        $filesCache->set('key', 'new');
 
         // Only the cache item remains, without temporary files
-        $this->assertCount(1, iterator_to_array(FileSystem::listFiles($cache->path()), false));
+        $this->assertCount(1, iterator_to_array(FileSystem::listFiles($filesCache->path()), false));
     }
 
     public function testFilesContainTheCacheItem(): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', 'value', 60);
+        $filesCache = $this->createCache();
+        $filesCache->set('key', 'value', 60);
 
-        $item = Php::parseFile(FileSystem::joinPaths($cache->path(), hash('sha256', 'key')));
+        $item = Php::parseFile(FileSystem::joinPaths($filesCache->path(), hash('sha256', 'key')));
 
         $this->assertInstanceOf(CacheItem::class, $item);
         $this->assertSame('value', $item->value());
@@ -145,40 +140,33 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testValuesThatCannotBeEncodedAreRejectedWithoutStoringAnything(): void
     {
-        $cache = $this->createCache();
+        $filesCache = $this->createCache();
 
-        try {
-            $cache->set('closure', static fn() => null);
-            $this->fail('Closures cannot be cached.');
-        } catch (UnexpectedValueException) {
-        }
+        $this->captureException(UnexpectedValueException::class, static fn() => $filesCache->set('closure', static fn() => null));
 
-        $this->assertFalse($cache->has('closure'));
-        $this->assertSame(0, $cache->count());
+        $this->assertFalse($filesCache->has('closure'));
+        $this->assertSame(0, $filesCache->count());
     }
 
     public function testFailedSetKeepsThePreviousValue(): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', 'previous');
+        $filesCache = $this->createCache();
+        $filesCache->set('key', 'previous');
 
-        try {
-            $cache->set('key', static fn() => null);
-        } catch (UnexpectedValueException) {
-        }
+        $this->captureException(UnexpectedValueException::class, static fn() => $filesCache->set('key', static fn() => null));
 
-        $this->assertSame('previous', $cache->get('key'));
+        $this->assertSame('previous', $filesCache->get('key'));
     }
 
     #[DataProvider('invalidFileContentProvider')]
     public function testFilesWithoutAValidCacheItemAreReportedAsUnexpectedValues(string $content): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', 'value');
-        FileSystem::write($this->fileOf($cache, 'key'), $content);
+        $filesCache = $this->createCache();
+        $filesCache->set('key', 'value');
+        FileSystem::write($this->fileOf($filesCache, 'key'), $content);
 
         $this->expectException(UnexpectedValueException::class);
-        $cache->get('key');
+        $filesCache->get('key');
     }
 
     /**
@@ -194,24 +182,28 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testExpiredFilesAreDeletedWhenAccessed(): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', 'value', 100);
-        $this->expire($cache, 'key');
+        $filesCache = $this->createCache();
+        $filesCache->set('key', 'value', 100);
+        $this->expire($filesCache, 'key');
 
-        $this->assertNull($cache->get('key'));
+        $this->assertNull($filesCache->get('key'));
 
-        $this->assertFileDoesNotExist($this->fileOf($cache, 'key'));
+        $this->assertFileDoesNotExist($this->fileOf($filesCache, 'key'));
     }
 
+    /**
+     * @param non-empty-string $first
+     * @param non-empty-string $second
+     */
     #[DataProvider('hashCollisionLikeKeyProvider')]
     public function testSimilarKeysUseDifferentFiles(string $first, string $second): void
     {
-        $cache = $this->createCache();
-        $cache->set($first, 'first');
-        $cache->set($second, 'second');
+        $filesCache = $this->createCache();
+        $filesCache->set($first, 'first');
+        $filesCache->set($second, 'second');
 
-        $this->assertSame('first', $cache->get($first));
-        $this->assertSame('second', $cache->get($second));
+        $this->assertSame('first', $filesCache->get($first));
+        $this->assertSame('second', $filesCache->get($second));
     }
 
     /**
@@ -228,39 +220,45 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testValuesWithObjectsOfOtherClassesRoundTrip(): void
     {
-        $cache = $this->createCache();
+        $filesCache = $this->createCache();
         $value = ['object' => (object) ['nested' => [1, 2, 3]], 'date' => new DateTimeImmutable('2025-01-02 03:04:05')];
 
-        $cache->set('key', $value);
+        $filesCache->set('key', $value);
 
-        $this->assertEquals($value, $cache->get('key'));
+        $this->assertEquals($value, $filesCache->get('key'));
     }
 
     public function testCountIgnoresNothingInTheDirectory(): void
     {
-        $cache = $this->createCache();
-        $cache->setMultiple(['a' => 1, 'b' => 2]);
+        $filesCache = $this->createCache();
+        $filesCache->setMultiple(['a' => 1, 'b' => 2]);
 
-        $this->assertSame(2, $cache->count());
+        $this->assertSame(2, $filesCache->count());
 
-        $cache->delete('a');
+        $filesCache->delete('a');
 
-        $this->assertSame(1, $cache->count());
+        $this->assertSame(1, $filesCache->count());
     }
 
     public function testStdClassValuesRoundTrip(): void
     {
-        $cache = $this->createCache();
-        $cache->set('key', new stdClass());
+        $filesCache = $this->createCache();
+        $filesCache->set('key', new stdClass());
 
-        $this->assertInstanceOf(stdClass::class, $cache->get('key'));
+        $this->assertInstanceOf(stdClass::class, $filesCache->get('key'));
     }
 
+    /**
+     * @param non-empty-string $namespace
+     */
     protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): FilesCache
     {
         return new FilesCache($this->path, $namespace, $defaultTtl);
     }
 
+    /**
+     * @param non-empty-string $key
+     */
     protected function expire(AbstractCache $cache, string $key): void
     {
         $item = $cache->getItem($key);
@@ -273,6 +271,8 @@ final class FilesCacheTest extends CacheTestCase
 
     private function fileOf(AbstractCache $cache, string $key): string
     {
+        $this->assertInstanceOf(FilesCache::class, $cache);
+
         return FileSystem::joinPaths($cache->path(), hash('sha256', $key));
     }
 }

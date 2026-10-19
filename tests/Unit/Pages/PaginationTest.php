@@ -12,12 +12,14 @@ use Formwork\Router\RouteCollection;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
 #[CoversClass(Pagination::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PaginationTest extends TestCase
 {
     private App $app;
@@ -27,7 +29,6 @@ final class PaginationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->app = App::instance();
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pagination-site');
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
@@ -39,22 +40,16 @@ final class PaginationTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testPaginationRoutesAndUrisAreGeneratedForAllNavigationLinks(): void
     {
         $pages = $this->fixtureSite->pages();
         $router = $this->createStub(Router::class);
         $base = new Route('page', '/{page:all}/');
         $pagination = new Route('page.pagination', '/{page:all}/page/{paginationPage:number}/');
-        $routes = new RouteCollection([$base->getName() => $base, $pagination->getName() => $pagination]);
+        $routeCollection = new RouteCollection([$base->getName() => $base, $pagination->getName() => $pagination]);
 
         $router->method('current')->willReturn($pagination);
-        $router->method('routes')->willReturn($routes);
+        $router->method('routes')->willReturn($routeCollection);
         $router->method('generateWith')->willReturnCallback(static function (string $name, array $parameters): string {
             return $name === 'page' ? '/about/' : '/about/page/' . $parameters['paginationPage'] . '/';
         });

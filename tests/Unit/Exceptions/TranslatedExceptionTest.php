@@ -17,28 +17,28 @@ final class TranslatedExceptionTest extends TestCase
 {
     public function testMessageAndLanguageStringAreExposed(): void
     {
-        $exception = new TranslatedException('Cannot save the page', 'panel.pages.error.cannotSave');
+        $translatedException = new TranslatedException('Cannot save the page', 'panel.pages.error.cannotSave');
 
-        $this->assertSame('Cannot save the page', $exception->getMessage());
-        $this->assertSame('panel.pages.error.cannotSave', $exception->getLanguageString());
+        $this->assertSame('Cannot save the page', $translatedException->getMessage());
+        $this->assertSame('panel.pages.error.cannotSave', $translatedException->getLanguageString());
     }
 
     public function testCodeAndPreviousExceptionAreOptional(): void
     {
-        $exception = new TranslatedException('message', 'language.string');
+        $translatedException = new TranslatedException('message', 'language.string');
 
-        $this->assertSame(0, $exception->getCode());
-        $this->assertNull($exception->getPrevious());
+        $this->assertSame(0, $translatedException->getCode());
+        $this->assertNull($translatedException->getPrevious());
     }
 
     public function testCodeAndPreviousExceptionAreKept(): void
     {
-        $previous = new InvalidArgumentException('cause');
+        $invalidArgumentException = new InvalidArgumentException('cause');
 
-        $exception = new TranslatedException('message', 'language.string', 42, $previous);
+        $translatedException = new TranslatedException('message', 'language.string', 42, $invalidArgumentException);
 
-        $this->assertSame(42, $exception->getCode());
-        $this->assertSame($previous, $exception->getPrevious());
+        $this->assertSame(42, $translatedException->getCode());
+        $this->assertSame($invalidArgumentException, $translatedException->getPrevious());
     }
 
     public function testExceptionCanBeCaughtAsAGenericException(): void
@@ -52,10 +52,10 @@ final class TranslatedExceptionTest extends TestCase
 
     public function testLanguageStringIsNotPartOfTheMessage(): void
     {
-        $exception = new TranslatedException('English message', 'language.string');
+        $translatedException = new TranslatedException('English message', 'language.string');
 
-        $this->assertStringNotContainsString('language.string', $exception->getMessage());
-        $this->assertStringNotContainsString('language.string', (string) $exception->getTraceAsString());
+        $this->assertStringNotContainsString('language.string', $translatedException->getMessage());
+        $this->assertStringNotContainsString('language.string', $translatedException->getTraceAsString());
     }
 
     public function testEmptyLanguageStringsAreAllowed(): void
@@ -66,18 +66,18 @@ final class TranslatedExceptionTest extends TestCase
     public function testErrorsCanBeWrappedAsThePreviousThrowable(): void
     {
         // Any throwable is a valid previous exception, including errors such as `TypeError`
-        $previous = new TypeError('wrong type');
+        $typeError = new TypeError('wrong type');
 
-        $exception = new TranslatedException('message', 'language.string', previous: $previous);
+        $translatedException = new TranslatedException('message', 'language.string', previous: $typeError);
 
-        $this->assertSame($previous, $exception->getPrevious());
+        $this->assertSame($typeError, $translatedException->getPrevious());
     }
 
     public function testRecursionExceptionIsARuntimeException(): void
     {
-        $exception = new RecursionException('Recursion detected');
+        $recursionException = new RecursionException('Recursion detected');
 
-        $this->assertInstanceOf(RuntimeException::class, $exception);
-        $this->assertSame('Recursion detected', $exception->getMessage());
+        $this->assertInstanceOf(RuntimeException::class, $recursionException);
+        $this->assertSame('Recursion detected', $recursionException->getMessage());
     }
 }

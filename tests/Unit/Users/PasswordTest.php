@@ -77,7 +77,7 @@ final class PasswordTest extends TestCase
         $this->expectExceptionMessage('Password exceeds the maximum supported length');
 
         // bcrypt only accepts up to 72 bytes
-        $hash = Password::hash(str_repeat('a', 80) . 'one');
+        Password::hash(str_repeat('a', 80) . 'one');
     }
 
     #[DataProvider('invalidHashProvider')]

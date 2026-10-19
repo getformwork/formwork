@@ -9,12 +9,14 @@ use Formwork\Http\ResponseHeaders;
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Updater\SemVer;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
@@ -25,6 +27,7 @@ use ZipArchive;
  * every scenario either stops before extraction or only feeds the extractor archives that must be refused
  */
 #[CoversClass(Updater::class)]
+#[UsesTempDirectory]
 final class UpdaterTest extends TestCase
 {
     private string $registryFile;
@@ -39,7 +42,6 @@ final class UpdaterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/updater');
         $this->registryFile = TESTS_TMP_PATH . '/updater/updates.json';
         $this->tempFile = TESTS_TMP_PATH . '/updater/update.zip';
@@ -52,7 +54,6 @@ final class UpdaterTest extends TestCase
                 unlink($marker);
             }
         }
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -110,10 +111,10 @@ final class UpdaterTest extends TestCase
 
     public function testOlderReleasesAreNotInstalled(): void
     {
-        $version = SemVer::fromString(App::VERSION);
-        $older = $version->patch() > 0
-            ? sprintf('%d.%d.%d', $version->major(), $version->minor(), $version->patch() - 1)
-            : sprintf('%d.%d.%d', $version->major(), max($version->minor() - 1, 0), 0);
+        $semVer = SemVer::fromString(App::VERSION);
+        $older = $semVer->patch() > 0
+            ? sprintf('%d.%d.%d', $semVer->major(), $semVer->minor(), $semVer->patch() - 1)
+            : sprintf('%d.%d.%d', $semVer->major(), max($semVer->minor() - 1, 0), 0);
 
         $this->assertTrue($this->updater(client: $this->clientWithRelease($older))->checkUpdates(force: true));
     }
@@ -267,11 +268,7 @@ final class UpdaterTest extends TestCase
         );
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->checkUpdates(force: true);
-        } catch (RuntimeException) {
-            // First attempt fails
-        }
+        $this->captureException(RuntimeException::class, static fn() => $updater->checkUpdates(force: true));
 
         $this->assertFalse($updater->checkUpdates(), 'The failed check must not be cached as a success');
     }
@@ -299,6 +296,7 @@ final class UpdaterTest extends TestCase
     public function testUpdateDoesNothingWhenAlreadyUpToDate(): void
     {
         $client = $this->clientWithRelease(App::VERSION, mock: true);
+        $this->assertInstanceOf(MockObject::class, $client);
         $client->expects($this->never())->method('download');
         $updater = $this->updater(client: $client);
 
@@ -316,12 +314,8 @@ final class UpdaterTest extends TestCase
         });
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A checksum mismatch must abort the update.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('checksum', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('checksum', $runtimeException->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile, 'The downloaded archive must be removed');
         $this->assertFileDoesNotExist($this->tempFile . '.lock', 'The lock must be released');
@@ -334,12 +328,8 @@ final class UpdaterTest extends TestCase
         $client->method('download')->willReturnCallback(static function (): void {});
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A missing archive must abort the update.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('Cannot download update archive', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('Cannot download update archive', $runtimeException->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile . '.lock');
     }
@@ -350,12 +340,8 @@ final class UpdaterTest extends TestCase
         $client->method('download')->willThrowException(new RuntimeException('network down'));
         $updater = $this->updater(client: $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('The download failure should propagate.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('network down', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertSame('network down', $runtimeException->getMessage());
 
         $this->assertFileDoesNotExist($this->tempFile . '.lock');
     }
@@ -364,15 +350,12 @@ final class UpdaterTest extends TestCase
     {
         FileSystem::write($this->tempFile . '.lock', (string) time());
         $client = $this->clientWithRelease($this->tag(minor: 1), mock: true);
+        $this->assertInstanceOf(MockObject::class, $client);
         $client->expects($this->never())->method('download');
         $updater = $this->updater(['lockTimeout' => 300], $client);
 
-        try {
-            $updater->update(force: true);
-            $this->fail('A fresh lock must block concurrent updates.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('already in progress', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, static fn() => $updater->update(force: true));
+        $this->assertStringContainsString('already in progress', $runtimeException->getMessage());
 
         $this->assertFileExists($this->tempFile . '.lock', 'The lock of the running update must be left alone');
     }
@@ -382,6 +365,7 @@ final class UpdaterTest extends TestCase
         FileSystem::write($this->tempFile . '.lock', '1');
         touch($this->tempFile . '.lock', time() - 3600);
         $client = $this->clientWithRelease($this->tag(minor: 1), mock: true);
+        $this->assertInstanceOf(MockObject::class, $client);
         $client->expects($this->once())->method('download')->willThrowException(new RuntimeException('stop here'));
         $updater = $this->updater(['lockTimeout' => 300], $client);
 
@@ -408,22 +392,18 @@ final class UpdaterTest extends TestCase
     public function testArchivesEscapingTheInstallationRootAreRefused(string $entry): void
     {
         $archive = TESTS_TMP_PATH . '/updater/malicious.zip';
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($archive, ZipArchive::CREATE));
-        $zip->addFromString($entry, 'malicious payload');
-        $zip->close();
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($archive, ZipArchive::CREATE));
+        $zipArchive->addFromString($entry, 'malicious payload');
+        $zipArchive->close();
 
         foreach ([dirname(TestInstallation::rootPath()) . '/formwork-zipslip-parent.txt', '/tmp/formwork-zipslip-deep.txt', dirname(TestInstallation::rootPath()) . '/formwork-zipslip-nested.txt', '/tmp/formwork-zipslip-absolute.txt', dirname(TestInstallation::rootPath()) . '/formwork-sibling/zipslip.txt'] as $marker) {
             $this->markers[] = $marker;
             $this->assertFileDoesNotExist($marker);
         }
 
-        try {
-            $this->call($this->updater(), 'extractRelease', $archive);
-            $this->fail(sprintf('The entry "%s" must be refused.', $entry));
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('invalid destination', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, fn() => $this->call($this->updater(), 'extractRelease', $archive));
+        $this->assertStringContainsString('invalid destination', $runtimeException->getMessage());
 
         foreach ($this->markers as $marker) {
             $this->assertFileDoesNotExist($marker, 'Nothing may be written outside of the installation root');
@@ -434,12 +414,8 @@ final class UpdaterTest extends TestCase
     {
         FileSystem::write(TESTS_TMP_PATH . '/updater/fake.zip', 'definitely not a zip');
 
-        try {
-            $this->call($this->updater(), 'extractRelease', TESTS_TMP_PATH . '/updater/fake.zip');
-            $this->fail('Invalid archives must be refused.');
-        } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('Cannot open update archive', $exception->getMessage());
-        }
+        $runtimeException = $this->captureException(RuntimeException::class, fn() => $this->call($this->updater(), 'extractRelease', TESTS_TMP_PATH . '/updater/fake.zip'));
+        $this->assertStringContainsString('Cannot open update archive', $runtimeException->getMessage());
     }
 
     // Helpers exercised through reflection
@@ -449,9 +425,9 @@ final class UpdaterTest extends TestCase
         FileSystem::write($this->tempFile, 'archive');
         $updater = $this->updaterWithRelease(['checksum' => hash('sha256', 'archive')]);
 
-        $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
+        $this->expectNotToPerformAssertions();
 
-        $this->addToAssertionCount(1);
+        $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
     }
 
     public function testChecksumVerificationRejectsADifferentHash(): void
@@ -469,9 +445,9 @@ final class UpdaterTest extends TestCase
         FileSystem::write($this->tempFile, 'archive');
         $updater = $this->updaterWithRelease(['checksum' => null]);
 
-        $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
+        $this->expectNotToPerformAssertions();
 
-        $this->addToAssertionCount(1);
+        $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
     }
 
     public function testChecksumVerificationRejectsEmptyChecksums(): void
@@ -588,15 +564,15 @@ final class UpdaterTest extends TestCase
 
     private function tag(int $major = 0, int $minor = 0): string
     {
-        $version = SemVer::fromString(App::VERSION);
+        $semVer = SemVer::fromString(App::VERSION);
 
-        return sprintf('%d.%d.0', $version->major() + $major, $major > 0 ? 0 : $version->minor() + $minor);
+        return sprintf('%d.%d.0', $semVer->major() + $major, $major > 0 ? 0 : $semVer->minor() + $minor);
     }
 
     /**
      * @param list<array<string, string>> $assets
      *
-     * @return Client&MockObject
+     * @return Client&Stub
      */
     private function clientWithRelease(string $tag, array $assets = [], string $publishedAt = '2024-05-01T10:00:00Z', ?int $expectedFetches = null, bool $mock = false): Client
     {
@@ -604,7 +580,7 @@ final class UpdaterTest extends TestCase
     }
 
     /**
-     * @return Client&MockObject
+     * @return Client&Stub
      */
     private function clientReturning(string $json, ?int $expectedFetches = null, bool $mock = false): Client
     {

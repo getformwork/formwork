@@ -7,11 +7,13 @@ use Formwork\Authentication\RateLimiter;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(RateLimiter::class)]
+#[UsesTempDirectory]
 final class RateLimiterTest extends TestCase
 {
     private string $registryFile;
@@ -24,7 +26,6 @@ final class RateLimiterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->registryFile = FileSystem::joinPaths(TESTS_TMP_PATH, 'rate-limiter', 'attempts.json');
     }
 
@@ -32,7 +33,6 @@ final class RateLimiterTest extends TestCase
     {
         // Registries save themselves when destroyed, so they must go before the directory does
         $this->registries = [];
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -67,12 +67,8 @@ final class RateLimiterTest extends TestCase
             $limiter->assertAllowed();
         }
 
-        try {
-            $limiter->assertAllowed();
-            $this->fail('The attempt exceeding the limit should have been rejected.');
-        } catch (RateLimitExceededException $exception) {
-            $this->assertSame(90, $exception->getResetTime());
-        }
+        $rateLimitExceededException = $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
+        $this->assertSame(90, $rateLimitExceededException->getResetTime());
 
         $this->assertTrue($limiter->hasReachedLimit());
     }
@@ -116,14 +112,10 @@ final class RateLimiterTest extends TestCase
 
     public function testDifferentAddressesHaveIndependentCounters(): void
     {
-        $first = $this->limiter(1, ip: '203.0.113.1');
-        $first->assertAllowed();
+        $rateLimiter = $this->limiter(1, ip: '203.0.113.1');
+        $rateLimiter->assertAllowed();
 
-        try {
-            $first->assertAllowed();
-            $this->fail('The first address should be limited.');
-        } catch (RateLimitExceededException) {
-        }
+        $this->captureException(RateLimitExceededException::class, static fn() => $rateLimiter->assertAllowed());
 
         $this->limiter(1, ip: '203.0.113.2')->assertAllowed();
         $this->assertTrue($this->limiter(1, ip: '203.0.113.1')->hasReachedLimit());
@@ -251,10 +243,7 @@ final class RateLimiterTest extends TestCase
         $limiter = $this->limiter(1);
         $limiter->assertAllowed();
 
-        try {
-            $limiter->assertAllowed();
-        } catch (RateLimitExceededException) {
-        }
+        $this->captureException(RateLimitExceededException::class, static fn() => $limiter->assertAllowed());
 
         $this->assertTrue($limiter->hasReachedLimit());
 
@@ -267,8 +256,8 @@ final class RateLimiterTest extends TestCase
 
     public function testResetAttemptsDoesNotAffectOtherAddresses(): void
     {
-        $other = $this->limiter(1, ip: '203.0.113.2');
-        $other->assertAllowed();
+        $rateLimiter = $this->limiter(1, ip: '203.0.113.2');
+        $rateLimiter->assertAllowed();
 
         $limiter = $this->limiter(1, ip: '203.0.113.1');
         $limiter->assertAllowed();

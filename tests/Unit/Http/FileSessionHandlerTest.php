@@ -4,38 +4,28 @@ namespace Formwork\Tests\Unit\Http;
 
 use Formwork\Http\Session\Handler\FileSessionHandler;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(FileSessionHandler::class)]
+#[UsesTempDirectory]
 final class FileSessionHandlerTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testHandlerReadsWritesValidatesAndDestroysSessions(): void
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'sessions');
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/sessions', $path);
-        $handler = new FileSessionHandler($path);
+        $fileSessionHandler = new FileSessionHandler($path);
 
-        $this->assertTrue($handler->open('', 'formwork'));
-        $this->assertTrue($handler->validateId('existing'));
-        $this->assertSame("user|s:8:\"Giuseppe\";\n", $handler->read('existing'));
-        $this->assertTrue($handler->write('created', 'user|s:3:"Bob";'));
-        $this->assertSame('user|s:3:"Bob";', $handler->read('created'));
-        $this->assertTrue($handler->updateTimestamp('created', 'ignored'));
-        $this->assertTrue($handler->destroy('created'));
-        $this->assertFalse($handler->validateId('created'));
-        $this->assertTrue($handler->close());
+        $this->assertTrue($fileSessionHandler->open('', 'formwork'));
+        $this->assertTrue($fileSessionHandler->validateId('existing'));
+        $this->assertSame("user|s:8:\"Giuseppe\";\n", $fileSessionHandler->read('existing'));
+        $this->assertTrue($fileSessionHandler->write('created', 'user|s:3:"Bob";'));
+        $this->assertSame('user|s:3:"Bob";', $fileSessionHandler->read('created'));
+        $this->assertTrue($fileSessionHandler->updateTimestamp('created', 'ignored'));
+        $this->assertTrue($fileSessionHandler->destroy('created'));
+        $this->assertFalse($fileSessionHandler->validateId('created'));
+        $this->assertTrue($fileSessionHandler->close());
     }
 }

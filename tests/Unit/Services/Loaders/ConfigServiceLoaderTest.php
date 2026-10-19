@@ -35,9 +35,9 @@ final class ConfigServiceLoaderTest extends TestCase
 
     protected function tearDown(): void
     {
-        foreach ($this->plantedFiles as $file) {
-            if (FileSystem::exists($file)) {
-                FileSystem::delete($file);
+        foreach ($this->plantedFiles as $plantedFile) {
+            if (FileSystem::exists($plantedFile)) {
+                FileSystem::delete($plantedFile);
             }
         }
         date_default_timezone_set($this->timezone);
@@ -49,7 +49,7 @@ final class ConfigServiceLoaderTest extends TestCase
     {
         $cacheFile = $this->cacheFile($host);
 
-        $this->assertSame(self::cachePath() . $expectedName, $cacheFile);
+        $this->assertSame($this->cachePath() . $expectedName, $cacheFile);
     }
 
     /**
@@ -98,19 +98,21 @@ final class ConfigServiceLoaderTest extends TestCase
     {
         $cacheFile = $this->cacheFile($host);
 
-        if ($cacheFile !== null) {
-            $this->assertTrue(Path::isRelativeTo($cacheFile, self::cachePath()));
-            $this->assertSame(Path::normalize(self::cachePath()), Path::dirname($cacheFile) . '/');
+        if ($cacheFile === null) {
+            $this->expectNotToPerformAssertions();
+
+            return;
         }
 
-        $this->addToAssertionCount(1);
+        $this->assertTrue(Path::isRelativeTo($cacheFile, $this->cachePath()));
+        $this->assertSame(Path::normalize($this->cachePath()), Path::dirname($cacheFile) . '/');
     }
 
     public function testCacheDirectoryIsCreatedWhenMissing(): void
     {
         $this->cacheFile('example.test');
 
-        $this->assertDirectoryExists(self::cachePath());
+        $this->assertDirectoryExists($this->cachePath());
     }
 
     public function testConfigIsLoadedFromFilesWhenNoCacheFileExists(): void
@@ -124,7 +126,7 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testConfigIsNotCachedWhenRunningFromTheCommandLine(): void
     {
-        $file = self::cachePath() . 'config.uncached.test.php';
+        $file = $this->cachePath() . 'config.uncached.test.php';
         $this->plantedFiles[] = $file;
 
         $this->load('uncached.test');
@@ -172,14 +174,14 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testClearCacheRemovesCachedFilesAndRecreatesTheDirectory(): void
     {
-        $this->plantedFiles[] = $file = self::cachePath() . 'config.to-clear.test.php';
+        $this->plantedFiles[] = $file = $this->cachePath() . 'config.to-clear.test.php';
         $this->ensureCacheDirectory();
         FileSystem::write($file, '<?php return [];');
 
         ConfigServiceLoader::clearCache(App::instance()->rootPath());
 
         $this->assertFileDoesNotExist($file);
-        $this->assertDirectoryExists(self::cachePath());
+        $this->assertDirectoryExists($this->cachePath());
     }
 
     private function request(string $host): Request
@@ -194,9 +196,9 @@ final class ConfigServiceLoaderTest extends TestCase
 
     private function cacheFile(string $host): ?string
     {
-        $method = new ReflectionMethod(ConfigServiceLoader::class, 'getConfigCacheFile');
+        $reflectionMethod = new ReflectionMethod(ConfigServiceLoader::class, 'getConfigCacheFile');
 
-        return $method->invoke(new ConfigServiceLoader($this->request($host), App::instance()));
+        return $reflectionMethod->invoke(new ConfigServiceLoader($this->request($host), App::instance()));
     }
 
     private function load(string $host): Config
@@ -207,15 +209,15 @@ final class ConfigServiceLoaderTest extends TestCase
     private function sessionDuration(Request $request): int
     {
         $session = $request->session();
-        $property = new ReflectionProperty($session, 'duration');
+        $reflectionProperty = new ReflectionProperty($session, 'duration');
 
-        return (int) $property->getValue($session);
+        return (int) $reflectionProperty->getValue($session);
     }
 
     private function ensureCacheDirectory(): void
     {
-        if (!FileSystem::isDirectory(self::cachePath(), assertExists: false)) {
-            FileSystem::createDirectory(self::cachePath(), recursive: true);
+        if (!FileSystem::isDirectory($this->cachePath(), assertExists: false)) {
+            FileSystem::createDirectory($this->cachePath(), recursive: true);
         }
     }
 
@@ -223,7 +225,7 @@ final class ConfigServiceLoaderTest extends TestCase
     {
         $this->ensureCacheDirectory();
 
-        $file = self::cachePath() . "config.{$host}.php";
+        $file = $this->cachePath() . "config.{$host}.php";
         $this->plantedFiles[] = $file;
 
         $config = new Config();
@@ -239,7 +241,7 @@ final class ConfigServiceLoaderTest extends TestCase
         touch($file, $modifiedTime);
     }
 
-    private static function cachePath(): string
+    private function cachePath(): string
     {
         return App::instance()->rootPath() . '/cache/config/';
     }

@@ -29,6 +29,9 @@ final class TokenizerTest extends TestCase
         $this->assertSame([['end', null, 5]], $this->tokens(" \t\n \r"));
     }
 
+    /**
+     * @param list<array{string, ?string, int}> $expected
+     */
     #[DataProvider('tokenProvider')]
     public function testTokenization(string $input, array $expected): void
     {
@@ -137,11 +140,11 @@ final class TokenizerTest extends TestCase
 
     public function testTokenStreamCanBeConsumedAfterTokenization(): void
     {
-        $stream = Tokenizer::tokenizeString('a');
+        $tokenStream = Tokenizer::tokenizeString('a');
 
-        $this->assertInstanceOf(TokenStream::class, $stream);
-        $this->assertSame('a', $stream->consume()->value());
-        $this->assertTrue($stream->current()->test(Token::TYPE_END));
+        $this->assertInstanceOf(TokenStream::class, $tokenStream);
+        $this->assertSame('a', $tokenStream->consume()->value());
+        $this->assertTrue($tokenStream->current()->test(Token::TYPE_END));
     }
 
     /**
@@ -149,16 +152,16 @@ final class TokenizerTest extends TestCase
      */
     private function tokens(string $input): array
     {
-        $stream = Tokenizer::tokenizeString($input);
+        $tokenStream = Tokenizer::tokenizeString($input);
 
         $tokens = [];
         do {
-            $token = $stream->current();
+            $token = $tokenStream->current();
             $tokens[] = [$token->type(), $token->value(), $token->position()];
             if ($token->test(Token::TYPE_END)) {
                 break;
             }
-            $stream->consume();
+            $tokenStream->consume();
         } while (true);
 
         return $tokens;

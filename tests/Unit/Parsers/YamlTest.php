@@ -4,21 +4,18 @@ namespace Formwork\Tests\Unit\Parsers;
 
 use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 #[CoversClass(Yaml::class)]
+#[UsesTempDirectory]
 final class YamlTest extends TestCase
 {
     protected function setUp(): void
     {
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/yaml', TESTS_TMP_PATH, overwrite: true);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testParse(): void

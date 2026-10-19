@@ -10,6 +10,7 @@ use Formwork\Services\Container;
 use Formwork\Services\Loaders\UsersServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
@@ -18,6 +19,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(UsersServiceLoader::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class UsersServiceLoaderTest extends TestCase
 {
     private string $rolesPath;
@@ -27,17 +29,10 @@ final class UsersServiceLoaderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->rolesPath = TESTS_TMP_PATH . '/users/roles';
         $this->accountsPath = TESTS_TMP_PATH . '/users/accounts';
         FileSystem::createDirectory($this->rolesPath, recursive: true);
         FileSystem::createDirectory($this->accountsPath, recursive: true);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testRolesAreLoadedWithTheirPermissions(): void
@@ -48,8 +43,8 @@ final class UsersServiceLoaderTest extends TestCase
         $users = $this->resolve();
 
         $this->assertEqualsCanonicalizing(['admin', 'editor'], $users->roles()->keys());
-        $this->assertTrue($users->roles()->get('admin')->permissions()->has('panel.users'));
-        $this->assertSame('Editor', $users->roles()->get('editor')->title());
+        $this->assertTrue($users->roles()->get('admin')?->permissions()->has('panel.users'));
+        $this->assertSame('Editor', $users->roles()->get('editor')?->title());
     }
 
     public function testRolesWithoutPermissionsHaveNone(): void
@@ -58,7 +53,7 @@ final class UsersServiceLoaderTest extends TestCase
 
         $role = $this->resolve()->roles()->get('guest');
 
-        $this->assertFalse($role->permissions()->has('panel'));
+        $this->assertFalse($role?->permissions()->has('panel'));
     }
 
     public function testAccountsAreLoadedByUsername(): void
@@ -69,7 +64,7 @@ final class UsersServiceLoaderTest extends TestCase
         $users = $this->resolve();
 
         $this->assertEqualsCanonicalizing(['alice', 'bob'], $users->keys());
-        $this->assertSame('alice@example.com', $users->get('alice')->email());
+        $this->assertSame('alice@example.com', $users->get('alice')?->email());
     }
 
     public function testAccountsAreIndexedByTheUsernameStoredInsideTheFile(): void

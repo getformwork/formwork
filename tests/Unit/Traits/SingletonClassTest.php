@@ -19,11 +19,11 @@ final class SingletonClassTest extends TestCase
     #[RunInSeparateProcess]
     public function testInstanceIsCreatedOnFirstUseAndShared(): void
     {
-        $first = LazySingleton::instance();
-        $first->counter = 5;
+        $lazySingleton = LazySingleton::instance();
+        $lazySingleton->counter = 5;
 
-        $this->assertInstanceOf(LazySingleton::class, $first);
-        $this->assertSame($first, LazySingleton::instance());
+        $this->assertInstanceOf(LazySingleton::class, $lazySingleton);
+        $this->assertSame($lazySingleton, LazySingleton::instance());
         $this->assertSame(5, LazySingleton::instance()->counter);
     }
 
@@ -32,17 +32,17 @@ final class SingletonClassTest extends TestCase
     {
         $instance = LazySingleton::instance();
 
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Cannot clone ' . LazySingleton::class . ', the class is a singleton');
-        clone $instance;
+        $logicException = $this->captureException(LogicException::class, fn() => clone $instance);
+
+        $this->assertSame('Cannot clone ' . LazySingleton::class . ', the class is a singleton', $logicException->getMessage());
     }
 
     #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorBecomeTheInstance(): void
     {
-        $created = new EagerSingleton();
+        $eagerSingleton = new EagerSingleton();
 
-        $this->assertSame($created, EagerSingleton::instance());
+        $this->assertSame($eagerSingleton, EagerSingleton::instance());
     }
 
     #[RunInSeparateProcess]
@@ -74,20 +74,20 @@ final class SingletonClassTest extends TestCase
     #[RunInSeparateProcess]
     public function testSubclassesGetTheirOwnInstance(): void
     {
-        $derived = DerivedSingleton::instance();
-        $base = BaseSingleton::instance();
+        $derivedSingleton = DerivedSingleton::instance();
+        $baseSingleton = BaseSingleton::instance();
 
-        $this->assertInstanceOf(DerivedSingleton::class, $derived);
-        $this->assertNotInstanceOf(DerivedSingleton::class, $base, 'The base class instance must not be an instance of its subclass');
-        $this->assertSame(BaseSingleton::class, $base::class);
+        $this->assertInstanceOf(DerivedSingleton::class, $derivedSingleton);
+        $this->assertNotInstanceOf(DerivedSingleton::class, $baseSingleton, 'The base class instance must not be an instance of its subclass');
+        $this->assertSame(BaseSingleton::class, $baseSingleton::class);
     }
 
     #[RunInSeparateProcess]
     public function testBaseInstanceIsNotReturnedForSubclasses(): void
     {
-        $base = BaseSingleton::instance();
+        $baseSingleton = BaseSingleton::instance();
 
         $this->assertSame(DerivedSingleton::class, DerivedSingleton::instance()::class);
-        $this->assertSame(BaseSingleton::class, $base::class);
+        $this->assertSame(BaseSingleton::class, $baseSingleton::class);
     }
 }

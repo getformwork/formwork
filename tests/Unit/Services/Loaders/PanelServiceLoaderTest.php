@@ -129,11 +129,11 @@ final class PanelServiceLoaderTest extends TestCase
 
         $route = (new Route($name, $path))->prefix($prefix);
         $original = static fn(): string => 'original action';
-        $event = new RouteActionResolvedEvent($route, $original);
+        $routeActionResolvedEvent = new RouteActionResolvedEvent($route, $original);
 
-        (new ReflectionMethod($loader, 'onRouteActionResolved'))->invoke($loader, $event);
+        (new ReflectionMethod($loader, 'onRouteActionResolved'))->invoke($loader, $routeActionResolvedEvent);
 
-        $action = $event->action();
+        $action = $routeActionResolvedEvent->action();
         if ($action === $original) {
             return null;
         }
@@ -173,15 +173,15 @@ final class PanelServiceLoaderTest extends TestCase
         );
     }
 
-    private function location(RedirectResponse $response): ?string
+    private function location(RedirectResponse $redirectResponse): ?string
     {
-        $location = $response->headers()->get('Location');
+        $location = $redirectResponse->headers()->get('Location');
 
         return is_string($location) ? $location : null;
     }
 
-    private function path(RedirectResponse $response): string
+    private function path(RedirectResponse $redirectResponse): string
     {
-        return (string) parse_url((string) $this->location($response), PHP_URL_PATH);
+        return (string) parse_url((string) $this->location($redirectResponse), PHP_URL_PATH);
     }
 }

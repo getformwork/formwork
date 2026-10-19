@@ -18,34 +18,34 @@ class FieldCollectionTest extends TestCase
 {
     public function testSetLayoutAndGetLayout(): void
     {
-        $fields = new FieldCollection();
+        $fieldCollection = new FieldCollection();
         $layout = $this->createStub(Layout::class);
 
-        $fields->setLayout($layout);
+        $fieldCollection->setLayout($layout);
 
-        $this->assertSame($layout, $fields->layout());
+        $this->assertSame($layout, $fieldCollection->layout());
     }
 
     public function testSetModelAndGetModel(): void
     {
-        $fields = new FieldCollection();
+        $fieldCollection = new FieldCollection();
         $model = $this->createStub(Model::class);
 
-        $fields->setModel($model);
+        $fieldCollection->setModel($model);
 
-        $this->assertSame($model, $fields->model());
+        $this->assertSame($model, $fieldCollection->model());
     }
 
     public function testModelIsNullByDefault(): void
     {
-        $fields = new FieldCollection();
+        $fieldCollection = new FieldCollection();
 
-        $this->assertNull($fields->model());
+        $this->assertNull($fieldCollection->model());
     }
 
     public function testExtractReturnsFieldValuesWithKeys(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
                 'value' => 'Sempronius',
@@ -61,13 +61,13 @@ class FieldCollectionTest extends TestCase
                 'name'  => 'Sempronius',
                 'email' => 'sempronius@example.com',
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
     public function testExtractUsesDefaultForMissingKeys(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name'  => $this->createField('name', ['type' => 'text']),
             'email' => $this->createField('email', ['type' => 'email']),
         ]);
@@ -77,27 +77,27 @@ class FieldCollectionTest extends TestCase
                 'name'  => 'fallback',
                 'email' => 'fallback',
             ],
-            $fields->extract('missing', 'fallback'),
+            $this->values($fieldCollection, 'missing', 'fallback'),
         );
     }
 
     public function testSetValuesReturnsSameCollection(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', ['type' => 'text']),
         ]);
 
-        $this->assertSame($fields, $fields->setValues(['name' => 'Sempronius']));
+        $this->assertSame($fieldCollection, $fieldCollection->setValues(['name' => 'Sempronius']));
     }
 
     public function testSetValuesSetsValuesForFieldsPresentInData(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name'  => $this->createField('name', ['type' => 'text']),
             'email' => $this->createField('email', ['type' => 'email']),
         ]);
 
-        $fields->setValues([
+        $fieldCollection->setValues([
             'name'  => 'Sempronius',
             'email' => 'sempronius@example.com',
         ]);
@@ -107,13 +107,13 @@ class FieldCollectionTest extends TestCase
                 'name'  => 'Sempronius',
                 'email' => 'sempronius@example.com',
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
     public function testSetValuesDoesNotChangeFieldsMissingFromData(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
                 'value' => 'Existing name',
@@ -124,20 +124,20 @@ class FieldCollectionTest extends TestCase
             ]),
         ]);
 
-        $fields->setValues(['name' => 'Sempronius']);
+        $fieldCollection->setValues(['name' => 'Sempronius']);
 
         $this->assertSame(
             [
                 'name'  => 'Sempronius',
                 'email' => 'existing@example.com',
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
     public function testSetValuesUsesExplicitDefaultForMissingFields(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
                 'value' => 'Existing name',
@@ -148,37 +148,37 @@ class FieldCollectionTest extends TestCase
             ]),
         ]);
 
-        $fields->setValues(['name' => 'Sempronius'], null);
+        $fieldCollection->setValues(['name' => 'Sempronius'], null);
 
         $this->assertSame(
             [
                 'name'  => 'Sempronius',
                 'email' => null,
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
-    #[TestWith(['enabled', false], name: "'enabled' => false")]
-    #[TestWith(['nullable', null], name: "'nullable' => null")]
-    #[TestWith(['empty', ''], name: "'empty' => ''")]
+    #[TestWith(['enabled', false], "'enabled' => false")]
+    #[TestWith(['nullable', null], "'nullable' => null")]
+    #[TestWith(['empty', ''], "'empty' => ''")]
     public function testSetValuesPreservesValuesThatArePresent(string $name, mixed $value): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             $name => $this->createField($name, [
                 'type'  => 'text',
                 'value' => 'original',
             ]),
         ]);
 
-        $fields->setValues([$name => $value]);
+        $fieldCollection->setValues([$name => $value]);
 
-        $this->assertSame([$name => $value], $fields->extract('value'));
+        $this->assertSame([$name => $value], $this->values($fieldCollection));
     }
 
     public function testSetValuesFromRequestSetsRequestValues(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name'  => $this->createField('name', ['type' => 'text']),
             'email' => $this->createField('email', ['type' => 'email']),
         ]);
@@ -188,20 +188,20 @@ class FieldCollectionTest extends TestCase
             'email' => 'sempronius@example.com',
         ]);
 
-        $this->assertSame($fields, $fields->setValuesFromRequest($request));
+        $this->assertSame($fieldCollection, $fieldCollection->setValuesFromRequest($request));
 
         $this->assertSame(
             [
                 'name'  => 'Sempronius',
                 'email' => 'sempronius@example.com',
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
     public function testSetValuesFromRequestMergesQueryAndInputWithInputTakingPrecedence(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name'  => $this->createField('name', ['type' => 'text']),
             'email' => $this->createField('email', ['type' => 'email']),
         ]);
@@ -217,29 +217,29 @@ class FieldCollectionTest extends TestCase
             ]
         );
 
-        $fields->setValuesFromRequest($request);
+        $fieldCollection->setValuesFromRequest($request);
 
         $this->assertSame(
             [
                 'name'  => 'input',
                 'email' => 'query@example.com',
             ],
-            $fields->extract('value'),
+            $this->values($fieldCollection),
         );
     }
 
     public function testValidateReturnsSameCollection(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
                 'value' => 'Sempronius',
             ]),
         ]);
 
-        $this->assertSame($fields, $fields->validate());
+        $this->assertSame($fieldCollection, $fieldCollection->validate());
 
-        $this->assertTrue($fields->isValidated());
+        $this->assertTrue($fieldCollection->isValidated());
     }
 
     public function testValidateValidatesAllFields(): void
@@ -271,20 +271,20 @@ class FieldCollectionTest extends TestCase
             },
         ]);
 
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'first'  => $first,
             'second' => $second,
         ]);
 
-        $fields->validate();
+        $fieldCollection->validate();
 
         $this->assertSame(['first', 'second'], $validated);
-        $this->assertTrue($fields->isValidated());
+        $this->assertTrue($fieldCollection->isValidated());
     }
 
     public function testIsValidReturnsTrueWhenAllFieldsAreValid(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
                 'value' => 'Sempronius',
@@ -295,18 +295,18 @@ class FieldCollectionTest extends TestCase
             ]),
         ]);
 
-        $this->assertTrue($fields->isValid());
-        $this->assertTrue($fields->isValidated());
+        $this->assertTrue($fieldCollection->isValid());
+        $this->assertTrue($fieldCollection->isValidated());
     }
 
     public function testIsValidReturnsFalseWhenOneFieldIsInvalid(): void
     {
-        $invalid = $this->createField('invalid', [
+        $field = $this->createField('invalid', [
             'type'  => 'text',
             'value' => '',
         ]);
 
-        $invalid->setMethods([
+        $field->setMethods([
             'validate' => static function (): never {
                 throw new ValidationException('Invalid value');
             },
@@ -317,13 +317,13 @@ class FieldCollectionTest extends TestCase
             'value' => 'valid',
         ]);
 
-        $fields = new FieldCollection([
-            'invalid' => $invalid,
+        $fieldCollection = new FieldCollection([
+            'invalid' => $field,
             'valid'   => $valid,
         ]);
 
-        $this->assertFalse($fields->isValid());
-        $this->assertTrue($invalid->isValidated());
+        $this->assertFalse($fieldCollection->isValid());
+        $this->assertTrue($field->isValidated());
         $this->assertTrue($valid->isValidated());
     }
 
@@ -357,18 +357,18 @@ class FieldCollectionTest extends TestCase
             },
         ]);
 
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'invalid' => $invalid,
             'valid'   => $valid,
         ]);
 
-        $this->assertFalse($fields->isValid());
+        $this->assertFalse($fieldCollection->isValid());
         $this->assertSame(['invalid', 'valid'], $validated);
     }
 
     public function testIsValidatedReturnsFalseUntilAllFieldsHaveBeenValidated(): void
     {
-        $fields = new FieldCollection([
+        $fieldCollection = new FieldCollection([
             'first' => $this->createField('first', [
                 'type'  => 'text',
                 'value' => 'first',
@@ -379,24 +379,43 @@ class FieldCollectionTest extends TestCase
             ]),
         ]);
 
-        $this->assertFalse($fields->isValidated());
+        $this->assertFalse($fieldCollection->isValidated());
 
-        $fields->first()->validate();
+        $fieldCollection->first()?->validate();
 
-        $this->assertFalse($fields->isValidated());
+        $this->assertFalse($fieldCollection->isValidated());
 
-        $fields->last()->validate();
+        $fieldCollection->last()?->validate();
 
-        $this->assertTrue($fields->isValidated());
+        $this->assertTrue($fieldCollection->isValidated());
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function createField(string $name, array $data): Field
     {
         return new Field($name, $data);
     }
 
-    private function createRequest(RequestMethod $method, array $input = [], array $query = [], array $files = []): Request
+    /**
+     * @param array<string, array<string, mixed>> $files
+     * @param array<string, string>               $input
+     * @param array<string, string>               $query
+     */
+    private function createRequest(RequestMethod $requestMethod, array $input = [], array $query = [], array $files = []): Request
     {
-        return new Request($input, $query, [], $files, ['REQUEST_METHOD' => $method->value]);
+        return new Request($input, $query, [], $files, ['REQUEST_METHOD' => $requestMethod->value]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function values(FieldCollection $fieldCollection, string $key = 'value', mixed $default = null): array
+    {
+        /** @var array<string, mixed> $values */
+        $values = $fieldCollection->extract($key, $default);
+
+        return $values;
     }
 }

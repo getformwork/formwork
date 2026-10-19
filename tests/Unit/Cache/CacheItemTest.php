@@ -13,21 +13,21 @@ final class CacheItemTest extends TestCase
 {
     public function testItemExposesItsData(): void
     {
-        $item = new CacheItem(['value'], 2000000000, 1900000000);
+        $cacheItem = new CacheItem(['value'], 2000000000, 1900000000);
 
-        $this->assertInstanceOf(CacheItemInterface::class, $item);
-        $this->assertInstanceOf(ArraySerializable::class, $item);
-        $this->assertSame(['value'], $item->value());
-        $this->assertSame(2000000000, $item->expirationTime());
-        $this->assertSame(1900000000, $item->cachedTime());
+        $this->assertInstanceOf(CacheItemInterface::class, $cacheItem);
+        $this->assertInstanceOf(ArraySerializable::class, $cacheItem);
+        $this->assertSame(['value'], $cacheItem->value());
+        $this->assertSame(2000000000, $cacheItem->expirationTime());
+        $this->assertSame(1900000000, $cacheItem->cachedTime());
     }
 
     public function testItemsWithoutExpirationTimeNeverExpire(): void
     {
-        $item = new CacheItem('value', null, 0);
+        $cacheItem = new CacheItem('value', null, 0);
 
-        $this->assertNull($item->expirationTime());
-        $this->assertFalse($item->isExpired());
+        $this->assertNull($cacheItem->expirationTime());
+        $this->assertFalse($cacheItem->isExpired());
     }
 
     public function testItemsWithAFutureExpirationTimeAreNotExpired(): void
@@ -52,32 +52,32 @@ final class CacheItemTest extends TestCase
 
     public function testItemsAreSerializedToArrays(): void
     {
-        $item = new CacheItem('value', 10, 5);
+        $cacheItem = new CacheItem('value', 10, 5);
 
-        $this->assertSame(['value' => 'value', 'expirationTime' => 10, 'cachedTime' => 5], $item->toArray());
+        $this->assertSame(['value' => 'value', 'expirationTime' => 10, 'cachedTime' => 5], $cacheItem->toArray());
     }
 
     public function testItemsAreRestoredFromArrays(): void
     {
-        $item = CacheItem::fromArray(['value' => ['a' => 1], 'expirationTime' => 10, 'cachedTime' => 5]);
+        $cacheItem = CacheItem::fromArray(['value' => ['a' => 1], 'expirationTime' => 10, 'cachedTime' => 5]);
 
-        $this->assertEquals(new CacheItem(['a' => 1], 10, 5), $item);
+        $this->assertEquals(new CacheItem(['a' => 1], 10, 5), $cacheItem);
     }
 
     public function testItemsWithoutExpirationTimeAreRestoredFromArrays(): void
     {
-        $original = new CacheItem('value', null, 5);
+        $cacheItem = new CacheItem('value', null, 5);
 
-        $restored = CacheItem::fromArray($original->toArray());
+        $restored = CacheItem::fromArray($this->unchecked($cacheItem->toArray()));
 
         $this->assertNull($restored->expirationTime());
-        $this->assertEquals($original, $restored);
+        $this->assertEquals($cacheItem, $restored);
     }
 
     public function testFalseyValuesSurviveTheRoundTrip(): void
     {
         foreach ([0, '', false, null, []] as $value) {
-            $this->assertSame($value, CacheItem::fromArray((new CacheItem($value, null, 1))->toArray())->value());
+            $this->assertSame($value, CacheItem::fromArray($this->unchecked((new CacheItem($value, null, 1))->toArray()))->value());
         }
     }
 }

@@ -125,6 +125,9 @@ final class MarkdownTest extends TestCase
         $this->assertStringNotContainsString('onerror', $html);
     }
 
+    /**
+     * @param array<string, bool> $options
+     */
     #[DataProvider('unsafeLinkProvider')]
     public function testUnsafeLinkSchemesAreRemoved(string $markdown, array $options): void
     {
@@ -135,7 +138,7 @@ final class MarkdownTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{string, array<string, mixed>}>
+     * @return iterable<string, array{string, array<string, bool>}>
      */
     public static function unsafeLinkProvider(): iterable
     {

@@ -13,40 +13,40 @@ final class TabCollectionTest extends TestCase
 {
     public function testTabsAreKeyedAndNamedByTheirKey(): void
     {
-        $collection = new TabCollection(['main' => ['fields' => ['a']], 'side' => []]);
+        $tabCollection = new TabCollection(['main' => ['fields' => ['a']], 'side' => []]);
 
-        $this->assertSame(['main', 'side'], $collection->keys());
-        $this->assertInstanceOf(Tab::class, $collection->get('main'));
-        $this->assertSame('side', $collection->get('side')->name());
+        $this->assertSame(['main', 'side'], $tabCollection->keys());
+        $this->assertInstanceOf(Tab::class, $tabCollection->get('main'));
+        $this->assertSame('side', $tabCollection->get('side')?->name());
     }
 
     public function testCollectionIsAssociativeAndTyped(): void
     {
-        $collection = new TabCollection([]);
+        $tabCollection = new TabCollection([]);
 
-        $this->assertTrue($collection->isAssociative());
-        $this->assertSame(Tab::class, $collection->dataType());
+        $this->assertTrue($tabCollection->isAssociative());
+        $this->assertSame(Tab::class, $tabCollection->dataType());
     }
 
     public function testExplicitNameInTheDefinitionWinsOverTheKey(): void
     {
-        $collection = new TabCollection(['main' => ['name' => 'other']]);
+        $tabCollection = new TabCollection(['main' => ['name' => 'other']]);
 
-        $this->assertSame('other', $collection->get('main')->name());
+        $this->assertSame('other', $tabCollection->get('main')?->name());
     }
 
     public function testListShapedDefinitionsAreRejected(): void
     {
-        $this->expectException(LogicException::class);
+        $logicException = $this->captureException(LogicException::class, fn() => new TabCollection($this->unchecked([['label' => 'Zero']])));
 
-        new TabCollection([['label' => 'Zero']]);
+        $this->assertInstanceOf(LogicException::class, $logicException);
     }
 
     public function testOrderIsReadFromTheDefinition(): void
     {
-        $collection = new TabCollection(['a' => ['order' => 5], 'b' => []]);
+        $tabCollection = new TabCollection(['a' => ['order' => 5], 'b' => []]);
 
-        $this->assertSame(5, $collection->get('a')->order());
-        $this->assertSame(PHP_INT_MAX, $collection->get('b')->order());
+        $this->assertSame(5, $tabCollection->get('a')?->order());
+        $this->assertSame(PHP_INT_MAX, $tabCollection->get('b')?->order());
     }
 }

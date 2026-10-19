@@ -10,12 +10,14 @@ use Formwork\Pages\Page;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Site::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class SiteTest extends TestCase
 {
     use BuildsPageSites;
@@ -25,7 +27,6 @@ final class SiteTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->site = $this->siteFromFiles([
             'index/index.md'           => "---\ntitle: Home\n---\nHome\n",
             'error/error.md'           => "---\ntitle: Error\n---\nNot found\n",
@@ -36,12 +37,6 @@ final class SiteTest extends TestCase
             'no-content/readme.txt'    => 'a directory without a content file',
             'empty-directory/.gitkeep' => '',
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     // Identity

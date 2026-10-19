@@ -8,11 +8,13 @@ use Formwork\Pages\Traits\PageUri;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversTrait(PageUri::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageUriTest extends TestCase
 {
     use BuildsPageSites;
@@ -22,18 +24,11 @@ final class PageUriTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->site = $this->siteFromFiles([
             'blog/page.md'      => "---\ntitle: Blog\n---\n",
             'blog/post/page.md' => "---\ntitle: Post\n---\n",
             'aliased/page.md'   => "---\ntitle: Aliased\ncanonicalRoute: /canonical-route/\n---\n",
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testUriIsTheRouteUnderTheRequestRoot(): void

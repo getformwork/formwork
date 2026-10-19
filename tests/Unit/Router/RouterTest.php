@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Router;
 use Formwork\Events\EventDispatcher;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
+use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Router\Exceptions\InvalidRouteException;
 use Formwork\Router\Exceptions\RouteNotFoundException;
 use Formwork\Router\RouteParams;
@@ -57,10 +58,10 @@ final class RouterTest extends TestCase
     {
         $router = $this->router('/');
         $route = $router->addRoute('home', '/')->action(static fn(): Response => new Response('home'));
-        $filter = $router->addFilter('auth', static fn(): null => null);
+        $routeFilter = $router->addFilter('auth', static fn(): null => null);
 
         $this->assertSame($route, $router->routes()->get('home'));
-        $this->assertSame($filter, $router->filters()->get('auth'));
+        $this->assertSame($routeFilter, $router->filters()->get('auth'));
         $this->assertCount(1, $router->routes());
         $this->assertCount(1, $router->filters());
     }
@@ -69,7 +70,7 @@ final class RouterTest extends TestCase
     {
         $router = $this->router('/users/42/');
         $route = $router->addRoute('user', '/users/{id:digits}')
-            ->action(static fn(RouteParams $params): Response => new Response($params->get('id')));
+            ->action(static fn(RouteParams $routeParams): Response => new Response($routeParams->get('id')));
 
         $response = $router->dispatch();
 
@@ -82,12 +83,12 @@ final class RouterTest extends TestCase
     {
         $router = $this->router('/posts/42/');
         $router->addRoute('wrong', '/users/{id}')->action(static fn(): Response => new Response('wrong'));
-        $matching = $router->addRoute('post', '/posts/{id}')
+        $route = $router->addRoute('post', '/posts/{id}')
             ->action(static fn(): Response => new Response('post'));
         $router->addRoute('unreached', '/posts/{id}')->action(static fn(): Response => new Response('unreached'));
 
         $this->assertSame('post', $router->dispatch()->content());
-        $this->assertSame($matching, $router->current());
+        $this->assertSame($route, $router->current());
     }
 
     public function testDispatchesFilterResponseBeforeRoutes(): void
@@ -150,11 +151,11 @@ final class RouterTest extends TestCase
 
     public function testRouteActionResolvedEventCanReplaceTheAction(): void
     {
-        $events = new EventDispatcher();
-        $router = $this->router('/', events: $events);
+        $eventDispatcher = new EventDispatcher();
+        $router = $this->router('/', eventDispatcher: $eventDispatcher);
         $router->addRoute('home', '/')->action(static fn(): Response => new Response('original'));
-        $events->on('routeActionResolved', static function ($event): void {
-            $event->setAction(static fn(): Response => new Response('replaced'));
+        $eventDispatcher->on('routeActionResolved', static function (RouteActionResolvedEvent $routeActionResolvedEvent): void {
+            $routeActionResolvedEvent->setAction(static fn(): Response => new Response('replaced'));
         });
 
         $this->assertSame('replaced', $router->dispatch()->content());
@@ -171,6 +172,9 @@ final class RouterTest extends TestCase
         $this->assertSame(['id' => '7'], $router->params()->toArray());
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     #[DataProvider('generateProvider')]
     public function testGenerateBuildsPathsForSupportedParameterPatterns(
         string $path,
@@ -241,7 +245,7 @@ final class RouterTest extends TestCase
     {
         $router = $this->router('/users/42/overview/');
         $router->addRoute('user', '/users/{id}/{tab}?')->action(
-            static fn(RouteParams $params): Response => new Response($params->get('id'))
+            static fn(RouteParams $routeParams): Response => new Response($routeParams->get('id'))
         );
         $router->dispatch();
 
@@ -309,8 +313,8 @@ final class RouterTest extends TestCase
         $router = $this->router('/');
         $router->loadFromFile(__DIR__ . '/Fixtures/routes.php', prefix: '/panel');
 
-        $this->assertSame('/panel', $router->routes()->get('unprefixed')->getPrefix());
-        $this->assertSame('/panel', $router->filters()->get('unprefixed-filter')->getPrefix());
+        $this->assertSame('/panel', $router->routes()->get('unprefixed')?->getPrefix());
+        $this->assertSame('/panel', $router->filters()->get('unprefixed-filter')?->getPrefix());
     }
 
     public function testLoadFromFileAppliesPathsMethodsTypesAndConstraints(): void
@@ -322,14 +326,14 @@ final class RouterTest extends TestCase
         $unprefixed = $router->routes()->get('unprefixed');
         $filter = $router->filters()->get('unprefixed-filter');
 
-        $this->assertSame('/loaded/{id:digits}', $loaded->getPath());
+        $this->assertSame('/loaded/{id:digits}', $loaded?->getPath());
         $this->assertSame(['POST'], $loaded->getMethods());
         $this->assertSame(['HTTP'], $loaded->getTypes());
         $this->assertSame(['id' => ['42']], $loaded->getConstraints());
-        $this->assertSame(['GET', 'POST'], $unprefixed->getMethods());
+        $this->assertSame(['GET', 'POST'], $unprefixed?->getMethods());
         $this->assertSame(['XHR'], $unprefixed->getTypes());
         $this->assertSame([], $unprefixed->getConstraints());
-        $this->assertSame(['POST', 'PUT'], $filter->getMethods());
+        $this->assertSame(['POST', 'PUT'], $filter?->getMethods());
         $this->assertSame(['XHR'], $filter->getTypes());
     }
 
@@ -338,8 +342,8 @@ final class RouterTest extends TestCase
         $router = $this->router('/');
         $router->loadFromFile(__DIR__ . '/Fixtures/routes.php', prefix: '/ignored');
 
-        $this->assertSame('/api', $router->routes()->get('loaded')->getPrefix());
-        $this->assertSame('/api', $router->filters()->get('loaded-filter')->getPrefix());
+        $this->assertSame('/api', $router->routes()->get('loaded')?->getPrefix());
+        $this->assertSame('/api', $router->filters()->get('loaded-filter')?->getPrefix());
     }
 
     public function testLoadFromFileLeavesEntriesWithoutPrefixUnprefixedByDefault(): void
@@ -347,8 +351,8 @@ final class RouterTest extends TestCase
         $router = $this->router('/');
         $router->loadFromFile(__DIR__ . '/Fixtures/routes.php');
 
-        $this->assertSame('', $router->routes()->get('unprefixed')->getPrefix());
-        $this->assertSame('', $router->filters()->get('unprefixed-filter')->getPrefix());
+        $this->assertSame('', $router->routes()->get('unprefixed')?->getPrefix());
+        $this->assertSame('', $router->filters()->get('unprefixed-filter')?->getPrefix());
     }
 
     public function testLoadFromFileMergesActionParametersGivingPriorityToTheOnesOfTheRoute(): void
@@ -361,14 +365,18 @@ final class RouterTest extends TestCase
 
         $this->assertSame(
             ['fromRouteFile' => 'route', 'shared' => 'route', 'fromGlobal' => 'global'],
-            $router->routes()->get('loaded')->getActionParameters(),
+            $router->routes()->get('loaded')?->getActionParameters(),
         );
         $this->assertSame(
             ['fromGlobal' => 'global', 'shared' => 'global'],
-            $router->routes()->get('unprefixed')->getActionParameters(),
+            $router->routes()->get('unprefixed')?->getActionParameters(),
         );
     }
 
+    /**
+     * @param list<string> $filterMethods
+     * @param list<string> $filterTypes
+     */
     #[DataProvider('filterRequirementsProvider')]
     public function testFiltersApplyOnlyWhenMethodTypeAndPrefixMatch(
         string $method,
@@ -434,12 +442,7 @@ final class RouterTest extends TestCase
             ->action(static fn(): Response => new Response('matched'))
             ->where('id', ['42']);
 
-        try {
-            $router->dispatch();
-            $this->fail('The route should have been rejected by its constraint.');
-        } catch (RouteNotFoundException) {
-            // Expected
-        }
+        $this->captureException(RouteNotFoundException::class, static fn() => $router->dispatch());
 
         $this->assertNull($router->current());
         $this->assertSame([], $router->params()->toArray());
@@ -483,7 +486,7 @@ final class RouterTest extends TestCase
         string $path,
         string $method = 'GET',
         ?string $requestedWith = null,
-        ?EventDispatcher $events = null,
+        ?EventDispatcher $eventDispatcher = null,
     ): Router {
         $server = [
             'REQUEST_METHOD' => $method,
@@ -498,7 +501,7 @@ final class RouterTest extends TestCase
         return new Router(
             new Container(),
             new Request([], [], [], [], $server),
-            $events ?? new EventDispatcher(),
+            $eventDispatcher ?? new EventDispatcher(),
         );
     }
 }

@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
+use Formwork\Tests\TestCase;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\Role;
@@ -14,7 +15,7 @@ use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 
 /**
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsUsers
 {
@@ -24,7 +25,6 @@ trait BuildsUsers
 
     protected function setUpUsers(): void
     {
-        $this->setUpTempDirectory();
         $this->accountsPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'users', 'sandbox', 'accounts');
         $this->imagesPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'users', 'sandbox', 'images');
         FileSystem::createDirectory($this->accountsPath, recursive: true);

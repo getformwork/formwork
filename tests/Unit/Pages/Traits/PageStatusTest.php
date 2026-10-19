@@ -7,27 +7,17 @@ use Formwork\Pages\Traits\PageStatus;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversTrait(PageStatus::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageStatusTest extends TestCase
 {
     use BuildsPageSites;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
 
     /**
      * @return iterable<string, array{string, string}>

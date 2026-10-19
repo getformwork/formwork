@@ -6,10 +6,12 @@ use Formwork\Backup\Utils\ZipErrors;
 use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ZipArchive;
 
 #[CoversClass(ZipErrors::class)]
+#[UsesTempDirectory]
 final class ZipErrorsTest extends TestCase
 {
     public function testEveryErrorHasBothAMessageAndALanguageString(): void
@@ -47,14 +49,9 @@ final class ZipErrorsTest extends TestCase
 
     public function testOpeningAFileThatIsNotAZipProducesACoveredCode(): void
     {
-        $this->setUpTempDirectory();
         file_put_contents(TESTS_TMP_PATH . '/not-a-zip.zip', 'plain text');
 
-        try {
-            $status = (new ZipArchive())->open(TESTS_TMP_PATH . '/not-a-zip.zip', ZipArchive::RDONLY);
-        } finally {
-            $this->tearDownTempDirectory();
-        }
+        $status = (new ZipArchive())->open(TESTS_TMP_PATH . '/not-a-zip.zip', ZipArchive::RDONLY);
 
         $this->assertNotTrue($status);
         $this->assertArrayHasKey($status, ZipErrors::ERROR_MESSAGES);

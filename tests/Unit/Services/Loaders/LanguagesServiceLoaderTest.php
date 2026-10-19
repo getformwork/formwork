@@ -9,11 +9,13 @@ use Formwork\Languages\LanguagesFactory;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\LanguagesServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(LanguagesServiceLoader::class)]
+#[UsesTempDirectory]
 final class LanguagesServiceLoaderTest extends TestCase
 {
     private Translations $translations;
@@ -21,17 +23,10 @@ final class LanguagesServiceLoaderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/translations');
         foreach (['en' => 'Hello', 'it' => 'Ciao', 'fr' => 'Bonjour'] as $code => $greeting) {
             FileSystem::write(TESTS_TMP_PATH . "/translations/{$code}.yaml", "greeting: {$greeting}\n");
         }
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testDefaultLanguageBecomesTheCurrentTranslation(): void
@@ -90,8 +85,8 @@ final class LanguagesServiceLoaderTest extends TestCase
         $container = new Container();
         $container->define(Container::class, $container);
         $container->define(Request::class, $request);
-        $factory = new LanguagesFactory($container, $request);
+        $languagesFactory = new LanguagesFactory($container, $request);
 
-        return (new LanguagesServiceLoader($config, $this->translations, $factory))->load($container);
+        return (new LanguagesServiceLoader($config, $this->translations, $languagesFactory))->load($container);
     }
 }

@@ -98,6 +98,7 @@ final class SectionTest extends TestCase
         /** @todo */
         $this->markTestSkipped('This fallback behavior is not yet implemented since it is a breaking change.');
 
+        // @phpstan-ignore deadCode.unreachable
         $section = new Section(['name' => 'main', 'label' => ['it' => 'Principale']]);
         $section->setTranslation($this->translation('en'));
 

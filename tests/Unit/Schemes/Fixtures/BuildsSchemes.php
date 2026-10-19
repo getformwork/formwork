@@ -8,13 +8,14 @@ use Formwork\Schemes\Scheme;
 use Formwork\Schemes\SchemeFactory;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
+use Formwork\Tests\TestCase;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 
 /**
  * Builds a real Schemes/FieldFactory/Translations stack over files in the temporary directory
  *
- * @mixin \Formwork\Tests\TestCase
+ * @mixin TestCase
  */
 trait BuildsSchemes
 {
@@ -32,8 +33,6 @@ trait BuildsSchemes
 
     protected function setUpSchemes(string $currentLanguage = 'en'): void
     {
-        $this->setUpTempDirectory();
-
         $base = FileSystem::joinPaths(TESTS_TMP_PATH, 'schemes-sandbox');
         $this->schemesPath = $base . '/schemes';
         $this->fieldsPath = $base . '/fields';
@@ -76,11 +75,6 @@ trait BuildsSchemes
 
         $this->schemes = $this->container->get(Schemes::class);
         $this->fieldFactory = $this->container->get(FieldFactory::class);
-    }
-
-    protected function tearDownSchemes(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     protected function writeScheme(string $id, string $yaml): void

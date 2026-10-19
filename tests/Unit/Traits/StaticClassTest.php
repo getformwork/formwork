@@ -26,9 +26,9 @@ final class StaticClassTest extends TestCase
 
     public function testTheConstructorCannotBeOverridden(): void
     {
-        $constructor = new ReflectionMethod(StaticUtility::class, '__construct');
+        $reflectionMethod = new ReflectionMethod(StaticUtility::class, '__construct');
 
-        $this->assertTrue($constructor->isFinal());
-        $this->assertTrue($constructor->isPublic());
+        $this->assertTrue($reflectionMethod->isFinal());
+        $this->assertTrue($reflectionMethod->isPublic());
     }
 }

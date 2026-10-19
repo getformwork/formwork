@@ -4,21 +4,18 @@ namespace Formwork\Tests\Unit\Parsers;
 
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use JsonException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Json::class)]
+#[UsesTempDirectory]
 class JsonTest extends TestCase
 {
     protected function setUp(): void
     {
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/json', TESTS_TMP_PATH, overwrite: true);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
     }
 
     public function testParse(): void

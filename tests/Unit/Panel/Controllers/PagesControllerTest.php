@@ -3,22 +3,21 @@
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cms\App;
-use Formwork\Cms\Site;
 use Formwork\Fields\FieldFactory;
 use Formwork\Http\RequestData;
 use Formwork\Model\Model;
 use Formwork\Pages\ContentFile;
 use Formwork\Pages\Page;
-use Formwork\Pages\PageCollectionFactory;
-use Formwork\Pages\PageFactory;
 use Formwork\Panel\Controllers\PagesController;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\User;
@@ -30,21 +29,16 @@ use ReflectionProperty;
 
 #[CoversClass(PagesController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PagesControllerTest extends TestCase
 {
     use BuildsPanelControllers;
     use ProvidesFormSaveCases;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
+    use BuildsPageSites;
 
     protected function tearDown(): void
     {
         $this->closePanelSession();
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -58,7 +52,7 @@ final class PagesControllerTest extends TestCase
     {
         $app = App::instance();
 
-        $site = $this->temporarySite();
+        $site = $this->siteFromFixture();
         $pagePath = FileSystem::joinPaths((string) $site->contentPath(), 'about') . '/';
         $contentPath = $pagePath . 'page.md';
         FileSystem::write($contentPath, "---\n" . Yaml::encode(['title' => 'About', ...$existing]) . "---\nContent\n");
@@ -84,29 +78,15 @@ final class PagesControllerTest extends TestCase
         $user->method('permissions')->willReturn(new Permissions([]));
         $user->method('__call')->willReturn('editor');
 
-        $controller = $this->makeController(PagesController::class, [], user: $user);
+        $pagesController = $this->makeController(PagesController::class, [], user: $user);
 
-        $method = new ReflectionMethod($controller, 'updatePage');
-        $method->invoke($controller, $page, $formData, new RequestData(['slug' => 'about', 'language' => null]));
+        $reflectionMethod = new ReflectionMethod($pagesController, 'updatePage');
+        $reflectionMethod->invoke($pagesController, $page, $formData, new RequestData(['slug' => 'about', 'language' => null]));
 
         $frontmatter = (new ContentFile($contentPath))->frontmatter();
 
         $saved = array_intersect_key($frontmatter, array_flip([...array_keys($existing), ...array_map(static fn(string $name): string => explode('.', $name)[0], array_keys(self::formSaveFields()))]));
 
         $this->assertSame($expected, $saved);
-    }
-
-    private function temporarySite(): Site
-    {
-        $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pages');
-        FileSystem::copyDirectory(dirname(__DIR__, 2) . '/Pages/Fixtures/site', $path);
-        $app = App::instance();
-
-        return new Site(
-            ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
-            $app->config(),
-            $app->getService(PageFactory::class),
-            $app->getService(PageCollectionFactory::class),
-        );
     }
 }

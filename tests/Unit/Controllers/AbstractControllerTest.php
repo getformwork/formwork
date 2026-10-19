@@ -12,6 +12,7 @@ use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\Unit\Controllers\Fixtures\ExposedController;
 use Formwork\Tests\Unit\Controllers\Fixtures\ForwardTarget;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use InvalidArgumentException;
@@ -21,6 +22,7 @@ use stdClass;
 
 #[CoversClass(AbstractController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AbstractControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -28,15 +30,8 @@ final class AbstractControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/views');
         FileSystem::write(TESTS_TMP_PATH . '/views/greeting.php', 'Hello <?= $this->escape($name) ?>');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testNameIsDerivedFromTheClassName(): void
@@ -46,9 +41,9 @@ final class AbstractControllerTest extends TestCase
 
     public function testViewsAreRenderedThroughTheViewFactory(): void
     {
-        $factory = new ViewFactory(['escape' => static fn(string $text): string => htmlspecialchars($text)], ['test' => TESTS_TMP_PATH . '/views'], App::instance());
+        $viewFactory = new ViewFactory(['escape' => htmlspecialchars(...)], ['test' => TESTS_TMP_PATH . '/views'], App::instance());
 
-        $controller = $this->controller(services: [ViewFactory::class => $factory]);
+        $controller = $this->controller(services: [ViewFactory::class => $viewFactory]);
 
         $this->assertSame('Hello &lt;World&gt;', $controller->render('@test.greeting', ['name' => '<World>']));
     }
@@ -57,39 +52,39 @@ final class AbstractControllerTest extends TestCase
 
     public function testRedirectsGoThroughTheApplicationUri(): void
     {
-        $response = $this->controller()->redirectTo('/panel/login/');
+        $redirectResponse = $this->controller()->redirectTo('/panel/login/');
 
-        $this->assertSame(ResponseStatus::Found, $response->status());
-        $this->assertSame(App::instance()->uri()->path('/panel/login/'), $response->headers()->get('Location'));
+        $this->assertSame(ResponseStatus::Found, $redirectResponse->status());
+        $this->assertSame(App::instance()->uri()->path('/panel/login/'), $redirectResponse->headers()->get('Location'));
     }
 
     public function testRedirectStatusAndHeadersCanBeChosen(): void
     {
-        $response = $this->controller()->redirectTo('/moved/', ResponseStatus::MovedPermanently, ['X-Custom' => 'value']);
+        $redirectResponse = $this->controller()->redirectTo('/moved/', ResponseStatus::MovedPermanently, ['X-Custom' => 'value']);
 
-        $this->assertSame(ResponseStatus::MovedPermanently, $response->status());
-        $this->assertSame('value', $response->headers()->get('X-Custom'));
+        $this->assertSame(ResponseStatus::MovedPermanently, $redirectResponse->status());
+        $this->assertSame('value', $redirectResponse->headers()->get('X-Custom'));
     }
 
     public function testRedirectToRefererReturnsToTheSameSitePage(): void
     {
-        $response = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/previous/'])->redirectBack();
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/previous/'])->redirectBack();
 
-        $this->assertSame('http://localhost/previous/', $response->headers()->get('Location'));
+        $this->assertSame('http://localhost/previous/', $redirectResponse->headers()->get('Location'));
     }
 
     public function testRedirectToRefererFallsBackToTheDefaultWithoutReferer(): void
     {
-        $response = $this->controller(server: ['REQUEST_URI' => '/current/'])->redirectBack(default: '/home/');
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/'])->redirectBack(default: '/home/');
 
-        $this->assertSame(App::instance()->uri()->path('/home/'), $response->headers()->get('Location'));
+        $this->assertSame(App::instance()->uri()->path('/home/'), $redirectResponse->headers()->get('Location'));
     }
 
     public function testRedirectToRefererDoesNotLoopOnTheCurrentPage(): void
     {
-        $response = $this->controller(server: ['SCRIPT_NAME' => '/site/index.php', 'REQUEST_URI' => '/site/current/', 'HTTP_REFERER' => 'http://localhost/site/current/'])->redirectBack(default: '/home/');
+        $redirectResponse = $this->controller(server: ['SCRIPT_NAME' => '/site/index.php', 'REQUEST_URI' => '/site/current/', 'HTTP_REFERER' => 'http://localhost/site/current/'])->redirectBack(default: '/home/');
 
-        $this->assertSame(App::instance()->uri()->path('/home/'), $response->headers()->get('Location'));
+        $this->assertSame(App::instance()->uri()->path('/home/'), $redirectResponse->headers()->get('Location'));
     }
 
     /**
@@ -112,34 +107,34 @@ final class AbstractControllerTest extends TestCase
     #[DataProvider('foreignReferers')]
     public function testRedirectToRefererNeverLeavesTheSite(string $referer): void
     {
-        $response = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => $referer])->redirectBack(default: '/home/');
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => $referer])->redirectBack(default: '/home/');
 
-        $location = (string) $response->headers()->get('Location');
+        $location = (string) $redirectResponse->headers()->get('Location');
         $this->assertSame(App::instance()->uri()->path('/home/'), $location, sprintf('Referer "%s" was trusted', $referer));
     }
 
     public function testRedirectToRefererHonoursTheBasePath(): void
     {
-        $inside = $this->controller(server: ['REQUEST_URI' => '/panel/current/', 'HTTP_REFERER' => 'http://localhost/panel/previous/'])->redirectBack(default: '/home/', base: '/panel/');
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/panel/current/', 'HTTP_REFERER' => 'http://localhost/panel/previous/'])->redirectBack(default: '/home/', base: '/panel/');
         $outside = $this->controller(server: ['REQUEST_URI' => '/panel/current/', 'HTTP_REFERER' => 'http://localhost/other/'])->redirectBack(default: '/home/', base: '/panel/');
 
-        $this->assertSame('http://localhost/panel/previous/', $inside->headers()->get('Location'));
+        $this->assertSame('http://localhost/panel/previous/', $redirectResponse->headers()->get('Location'));
         $this->assertSame(App::instance()->uri()->path('/home/'), $outside->headers()->get('Location'));
     }
 
     public function testRedirectToRefererKeepsStatusAndHeaders(): void
     {
-        $response = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/previous/'])->redirectBack(ResponseStatus::SeeOther, ['X-Custom' => 'value']);
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/previous/'])->redirectBack(ResponseStatus::SeeOther, ['X-Custom' => 'value']);
 
-        $this->assertSame(ResponseStatus::SeeOther, $response->status());
-        $this->assertSame('value', $response->headers()->get('X-Custom'));
+        $this->assertSame(ResponseStatus::SeeOther, $redirectResponse->status());
+        $this->assertSame('value', $redirectResponse->headers()->get('X-Custom'));
     }
 
     public function testRedirectToRefererDoesNotLoopOnTheCurrentPageOfASiteInTheDocumentRoot(): void
     {
-        $response = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/current/'])->redirectBack(default: '/home/');
+        $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/current/'])->redirectBack(default: '/home/');
 
-        $this->assertSame(App::instance()->uri()->path('/home/'), $response->headers()->get('Location'));
+        $this->assertSame(App::instance()->uri()->path('/home/'), $redirectResponse->headers()->get('Location'));
     }
 
     // Forwarding

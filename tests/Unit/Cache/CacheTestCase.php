@@ -32,12 +32,12 @@ abstract class CacheTestCase extends TestCase
 
     public function testNamespaceAndDefaultTtlAreExposed(): void
     {
-        $interval = new DateInterval('PT5M');
+        $dateInterval = new DateInterval('PT5M');
 
         $this->assertSame('test', $this->createCache()->namespace());
         $this->assertNull($this->createCache()->defaultTtl());
         $this->assertSame(60, $this->createCache('test', 60)->defaultTtl());
-        $this->assertSame($interval, $this->createCache('test', $interval)->defaultTtl());
+        $this->assertSame($dateInterval, $this->createCache('test', $dateInterval)->defaultTtl());
     }
 
     #[DataProvider('validNamespaceProvider')]
@@ -86,13 +86,9 @@ abstract class CacheTestCase extends TestCase
 
     public function testInvalidNamespaceExceptionsArePsrExceptions(): void
     {
-        try {
-            $this->createCache('Invalid');
-            $this->fail('The namespace should have been rejected.');
-        } catch (InvalidNamespaceException $exception) {
-            $this->assertInstanceOf(PsrInvalidArgumentException::class, $exception);
-            $this->assertStringContainsString('"Invalid"', $exception->getMessage());
-        }
+        $invalidNamespaceException = $this->captureException(InvalidNamespaceException::class, fn() => $this->createCache('Invalid'));
+        $this->assertInstanceOf(PsrInvalidArgumentException::class, $invalidNamespaceException);
+        $this->assertStringContainsString('"Invalid"', $invalidNamespaceException->getMessage());
     }
 
     public function testMissingItemsReturnTheDefault(): void
@@ -181,6 +177,9 @@ abstract class CacheTestCase extends TestCase
         $this->assertSame(3, $cache->count());
     }
 
+    /**
+     * @param non-empty-string $key
+     */
     #[DataProvider('validKeyProvider')]
     public function testValidKeys(string $key): void
     {
@@ -215,21 +214,22 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->createCache();
 
+        /** @var array<string, list<string>> $operations */
         $operations = [
-            'get'        => static fn() => $cache->get($key),
-            'set'        => static fn() => $cache->set($key, 'value'),
-            'has'        => static fn() => $cache->has($key),
-            'delete'     => static fn() => $cache->delete($key),
-            'cachedTime' => static fn() => $cache->cachedTime($key),
-            'getItem'    => static fn() => $cache->getItem($key),
+            'get'        => [],
+            'set'        => ['value'],
+            'has'        => [],
+            'delete'     => [],
+            'cachedTime' => [],
+            'getItem'    => [],
         ];
 
-        foreach ($operations as $name => $operation) {
+        foreach ($operations as $method => $arguments) {
             try {
-                $operation();
-                $this->fail("{$name}() should reject the key.");
+                $cache->{$method}($key, ...$arguments);
+                $this->fail("{$method}() should reject the key.");
             } catch (InvalidKeyException $exception) {
-                $this->assertInstanceOf(PsrInvalidArgumentException::class, $exception, $name);
+                $this->assertInstanceOf(PsrInvalidArgumentException::class, $exception, $method);
             }
         }
 
@@ -261,10 +261,7 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->createCache();
         $cache->set('valid', 'value');
 
-        try {
-            $cache->set('in/valid', 'other');
-        } catch (InvalidKeyException) {
-        }
+        $this->captureException(InvalidKeyException::class, static fn() => $cache->set('in/valid', 'other'));
 
         $this->assertSame(['valid' => 'value'], $cache->getMultiple(['valid']));
         $this->assertSame(1, $cache->count());
@@ -694,9 +691,9 @@ abstract class CacheTestCase extends TestCase
 
     private static function negativeInterval(): DateInterval
     {
-        $interval = new DateInterval('PT1H');
-        $interval->invert = 1;
+        $dateInterval = new DateInterval('PT1H');
+        $dateInterval->invert = 1;
 
-        return $interval;
+        return $dateInterval;
     }
 }

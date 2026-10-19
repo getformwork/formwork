@@ -18,13 +18,9 @@ final class StreamHttpTransportTest extends TestCase
         $port = substr((string) strrchr((string) stream_socket_get_name($server, false), ':'), 1);
         fclose($server);
 
-        try {
-            (new StreamHttpTransport())->open('http://127.0.0.1:' . $port, ['http' => ['timeout' => 1, 'ignore_errors' => true]]);
-            $this->fail('The connection was not refused.');
-        } catch (ConnectionException $exception) {
-            $this->assertStringContainsString(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port), $exception->getMessage());
-            $this->assertStringContainsString('#0 ', $exception->getMessage());
-        }
+        $connectionException = $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:' . $port, ['http' => ['timeout' => 1, 'ignore_errors' => true]]));
+        $this->assertStringContainsString(sprintf('Cannot connect to "http://127.0.0.1:%s"', $port), $connectionException->getMessage());
+        $this->assertStringContainsString('#0 ', $connectionException->getMessage());
     }
 
     public function testTheErrorHandlerIsRestoredAfterAFailedConnection(): void
@@ -32,11 +28,7 @@ final class StreamHttpTransportTest extends TestCase
         $handler = static fn(): bool => true;
         set_error_handler($handler);
 
-        try {
-            (new StreamHttpTransport())->open('http://127.0.0.1:1', ['http' => ['timeout' => 1]]);
-        } catch (ConnectionException) {
-            // Expected
-        }
+        $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:1', ['http' => ['timeout' => 1]]));
 
         $current = set_error_handler(static fn(): bool => true);
         restore_error_handler();

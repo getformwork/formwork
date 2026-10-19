@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Users;
 
 use Formwork\Config\Config;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Users\Permissions;
 use Formwork\Users\Role;
@@ -11,20 +12,9 @@ use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Role::class)]
+#[UsesTempDirectory]
 final class RoleTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testIdAndPermissionsAreExposed(): void
     {
         $permissions = new Permissions(['panel' => true]);

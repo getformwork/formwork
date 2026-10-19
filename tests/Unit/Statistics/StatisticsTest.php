@@ -7,12 +7,14 @@ use Formwork\Http\Utils\IpAnonymizer;
 use Formwork\Log\Registry;
 use Formwork\Statistics\Statistics;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Statistics::class)]
+#[UsesTempDirectory]
 final class StatisticsTest extends TestCase
 {
     private const string DESKTOP = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36';
@@ -24,14 +26,7 @@ final class StatisticsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'statistics');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testMissingDirectoryIsCreated(): void
@@ -306,10 +301,11 @@ final class StatisticsTest extends TestCase
         $statistics = $this->statistics();
 
         foreach ([1, 3, 7, 30] as $limit) {
+            /** @var array<int|string, int> $visits */
             $visits = $statistics->getVisits($limit);
 
             // Numeric day keys are cast to integers by PHP
-            $this->assertSame($this->lastDays($limit), array_map('strval', array_keys($visits)), "Limit $limit");
+            $this->assertSame($this->lastDays($limit), array_map(strval(...), array_keys($visits)), "Limit $limit");
             $this->assertSame((int) date('Ymd'), array_key_last($visits));
         }
     }
@@ -475,7 +471,7 @@ final class StatisticsTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<int|string, int|string> $data
      */
     private function writeRegistry(string $filename, array $data): void
     {

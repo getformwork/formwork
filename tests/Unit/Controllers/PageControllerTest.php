@@ -21,15 +21,16 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Utils\FileSystem;
 use Formwork\View\ViewFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionProperty;
 
 #[CoversClass(PageController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PageControllerTest extends TestCase
 {
     use BuildsControllers;
@@ -55,7 +56,6 @@ final class PageControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->site = $this->siteFromFiles([
             'index/index.md'    => "---\ntitle: Home\n---\nHome content\n",
@@ -79,15 +79,9 @@ final class PageControllerTest extends TestCase
 
         $this->renderedPages = 0;
         $this->dispatcher = new EventDispatcher();
-        $this->dispatcher->on('pageOutput', function (PageOutputEvent $event): void {
+        $this->dispatcher->on('pageOutput', function (PageOutputEvent $pageOutputEvent): void {
             ++$this->renderedPages;
         });
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testPublishedPagesAreRendered(): void
@@ -252,10 +246,10 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesAreNotRenderedAgain(): void
     {
-        $first = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
         $second = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertSame($first->content(), $second->content());
+        $this->assertSame($response->content(), $second->content());
         $this->assertSame(1, $this->renderedPages);
     }
 
@@ -302,10 +296,10 @@ final class PageControllerTest extends TestCase
 
     public function testDifferentRoutesUseDifferentCacheEntries(): void
     {
-        $about = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
         $home = $this->load('/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertNotSame($about->content(), $home->content());
+        $this->assertNotSame($response->content(), $home->content());
         $this->assertSame(2, $this->cache->count());
     }
 
@@ -336,10 +330,11 @@ final class PageControllerTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $system
-     * @param array<string, mixed> $site
-     * @param array<string, mixed> $query
-     * @param array<string, mixed> $server
+     * @param array<int|string, mixed> $parameters
+     * @param array<string, mixed>     $system
+     * @param array<string, mixed>     $site
+     * @param array<string, mixed>     $query
+     * @param array<string, mixed>     $server
      */
     private function load(?string $route, array $parameters = [], array $system = [], array $site = [], array $query = [], array $server = []): Response
     {
@@ -349,7 +344,7 @@ final class PageControllerTest extends TestCase
 
         $routeParameters = $route === null ? $parameters : ['page' => $route] + $parameters;
 
-        return $this->controller($route ?? '/', $system, $site, $query, $server)->load(new RouteParams($routeParameters), $this->statistics);
+        return $this->controller($route ?? '/', $system, $site, $query, $server)->load(new RouteParams($this->unchecked($routeParameters)), $this->statistics);
     }
 
     /**
@@ -386,10 +381,5 @@ final class PageControllerTest extends TestCase
             $router,
             $site,
         );
-    }
-
-    private function fileOf(Response $response): string
-    {
-        return (string) (new ReflectionProperty($response, 'path'))->getValue($response);
     }
 }

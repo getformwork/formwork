@@ -14,8 +14,8 @@ final class ConstraintTest extends TestCase
     public function testIsTruthy(): void
     {
         $truthyValues = [true, 1, 'true', '1', 'on', 'yes'];
-        foreach ($truthyValues as $value) {
-            $this->assertTrue(Constraint::isTruthy($value));
+        foreach ($truthyValues as $truthyValue) {
+            $this->assertTrue(Constraint::isTruthy($truthyValue));
         }
 
         $nonTruthyValues = [false, 0, 'false', '0', 'off', 'no', null, '', [], 2, 'random'];
@@ -27,8 +27,8 @@ final class ConstraintTest extends TestCase
     public function testIsFalsy(): void
     {
         $falsyValues = [false, 0, 'false', '0', 'off', 'no'];
-        foreach ($falsyValues as $value) {
-            $this->assertTrue(Constraint::isFalsy($value));
+        foreach ($falsyValues as $falsyValue) {
+            $this->assertTrue(Constraint::isFalsy($falsyValue));
         }
 
         $nonFalsyValues = [true, 1, 'true', '1', 'on', 'yes', null, '', [], 2, 'random'];
@@ -40,8 +40,8 @@ final class ConstraintTest extends TestCase
     public function testIsEmpty(): void
     {
         $emptyValues = [null, '', []];
-        foreach ($emptyValues as $value) {
-            $this->assertTrue(Constraint::isEmpty($value));
+        foreach ($emptyValues as $emptyValue) {
+            $this->assertTrue(Constraint::isEmpty($emptyValue));
         }
 
         $nonEmptyValues = [false, 0, 'false', '0', 'off', 'no', true, 1, 'true', '1', 'on', 'yes', 2, 'random'];

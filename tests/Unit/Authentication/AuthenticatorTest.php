@@ -14,6 +14,7 @@ use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySession;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Users;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\FileSystem;
@@ -21,6 +22,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Authenticator::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class AuthenticatorTest extends TestCase
 {
     use BuildsUsers;
@@ -59,7 +61,6 @@ final class AuthenticatorTest extends TestCase
     protected function tearDown(): void
     {
         $this->registries = [];
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -105,10 +106,7 @@ final class AuthenticatorTest extends TestCase
     {
         $authenticator = $this->authenticator();
 
-        try {
-            $authenticator->login('alice', 'wrong');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
 
         $this->assertSame(1, $this->attempts());
 
@@ -126,10 +124,7 @@ final class AuthenticatorTest extends TestCase
 
     public function testFailedLoginsDoNotStartASession(): void
     {
-        try {
-            $this->authenticator()->login('alice', 'wrong-password');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
 
         $this->assertFalse($this->session->has(Authenticator::SESSION_LOGGED_USER_KEY));
         $this->assertSame(0, $this->session->regenerations);
@@ -152,10 +147,7 @@ final class AuthenticatorTest extends TestCase
     {
         $start = microtime(true);
 
-        try {
-            $this->authenticator()->login('alice', 'wrong-password');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
 
         $this->assertGreaterThanOrEqual(0.45, microtime(true) - $start);
     }
@@ -172,10 +164,7 @@ final class AuthenticatorTest extends TestCase
     {
         $authenticator = $this->authenticator(limit: 1);
 
-        try {
-            $authenticator->login('alice', 'wrong');
-        } catch (AuthenticationFailedException) {
-        }
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
 
         $this->expectException(RateLimitExceededException::class);
         $authenticator->login('alice', 'correct-password');

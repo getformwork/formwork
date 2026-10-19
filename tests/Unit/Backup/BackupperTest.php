@@ -7,6 +7,7 @@ use Formwork\Cms\App;
 use Formwork\Http\Request;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,6 +16,7 @@ use ZipArchive;
 
 #[CoversClass(Backupper::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class BackupperTest extends TestCase
 {
     private string $backupPath;
@@ -24,19 +26,12 @@ final class BackupperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->backupPath = TESTS_TMP_PATH . '/backups';
         $this->projectPath = TESTS_TMP_PATH . '/project';
         FileSystem::createDirectory($this->projectPath . '/sub', recursive: true);
         FileSystem::write($this->projectPath . '/composer.json', '{}');
         FileSystem::write($this->projectPath . '/ignored.txt', 'ignored');
         FileSystem::write($this->projectPath . '/sub/file.txt', 'nested');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testBackupArchiveIsCreatedInTheConfiguredPath(): void
@@ -52,13 +47,13 @@ final class BackupperTest extends TestCase
     {
         $destination = $this->backupper()->backup('contents', 'example.com');
 
-        $zip = new ZipArchive();
-        $this->assertTrue($zip->open($destination));
+        $zipArchive = new ZipArchive();
+        $this->assertTrue($zipArchive->open($destination));
         $entries = [];
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $entries[] = $zip->getNameIndex($i);
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $entries[] = $zipArchive->getNameIndex($i);
         }
-        $zip->close();
+        $zipArchive->close();
 
         $this->assertSame(['composer.json'], $entries);
     }
@@ -145,12 +140,8 @@ final class BackupperTest extends TestCase
     #[DataProvider('invalidNames')]
     public function testInvalidNamesAreRejectedBeforeAnythingIsWritten(string $name): void
     {
-        try {
-            $this->backupper()->backup($name, 'example.com');
-            $this->fail('The backup name should have been rejected.');
-        } catch (UnexpectedValueException $exception) {
-            $this->assertStringContainsString('invalid characters', $exception->getMessage());
-        }
+        $unexpectedValueException = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
+        $this->assertStringContainsString('invalid characters', $unexpectedValueException->getMessage());
 
         $this->assertSame([], $this->archives());
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/escape-' . date('Ymd') . '.zip');
@@ -196,11 +187,7 @@ final class BackupperTest extends TestCase
     {
         $before = ini_get('max_execution_time');
 
-        try {
-            $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com');
-        } catch (UnexpectedValueException) {
-            // Expected
-        }
+        $this->captureException(UnexpectedValueException::class, fn() => $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com'));
 
         $this->assertSame($before, ini_get('max_execution_time'));
     }
@@ -216,7 +203,7 @@ final class BackupperTest extends TestCase
 
         $this->backupper(['maxFiles' => 2])->backup('newest', 'example.com');
 
-        $remaining = array_map('basename', $this->archives());
+        $remaining = array_map(basename(...), $this->archives());
         sort($remaining);
         $this->assertCount(2, $remaining);
         $this->assertContains('old.zip', $remaining);

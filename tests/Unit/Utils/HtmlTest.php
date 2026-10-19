@@ -34,7 +34,7 @@ final class HtmlTest extends TestCase
             'data-list'  => ['item1', 'item2', 'item3'],
             'hidden'     => false,
         ];
-        $this->assertSame('disabled data-value="123" data-list="item1 item2 item3"', Html::attributes($attributes));
+        $this->assertSame('disabled data-value="123" data-list="item1 item2 item3"', Html::attributes($this->unchecked($attributes)));
     }
 
     public function testTag(): void

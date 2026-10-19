@@ -12,11 +12,11 @@ use ValueError;
 final class ColorSchemeTest extends TestCase
 {
     #[DataProvider('schemeProvider')]
-    public function testSchemes(string $value, ColorScheme $scheme, string $compatible): void
+    public function testSchemes(string $value, ColorScheme $colorScheme, string $compatible): void
     {
-        $this->assertSame($scheme, ColorScheme::from($value));
-        $this->assertSame($value, $scheme->value);
-        $this->assertSame($compatible, $scheme->getCompatibleSchemes());
+        $this->assertSame($colorScheme, ColorScheme::from($value));
+        $this->assertSame($value, $colorScheme->value);
+        $this->assertSame($compatible, $colorScheme->getCompatibleSchemes());
     }
 
     /**

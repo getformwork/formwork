@@ -11,22 +11,22 @@ final class RouteParamsTest extends TestCase
 {
     public function testRouteParamsExposeTheirDataThroughTheArrayableAndGetterContracts(): void
     {
-        $params = new RouteParams(['id' => '42', 'filters' => ['published' => true]]);
+        $routeParams = new RouteParams(['id' => '42', 'filters' => ['published' => true]]);
 
-        $this->assertTrue($params->has('id'));
-        $this->assertFalse($params->has('missing'));
-        $this->assertSame('42', $params->get('id'));
-        $this->assertSame('fallback', $params->get('missing', 'fallback'));
-        $this->assertSame(['published' => true], $params->get('filters'));
-        $this->assertSame(['id' => '42', 'filters' => ['published' => true]], $params->toArray());
+        $this->assertTrue($routeParams->has('id'));
+        $this->assertFalse($routeParams->has('missing'));
+        $this->assertSame('42', $routeParams->get('id'));
+        $this->assertSame('fallback', $routeParams->get('missing', 'fallback'));
+        $this->assertSame(['published' => true], $routeParams->get('filters'));
+        $this->assertSame(['id' => '42', 'filters' => ['published' => true]], $routeParams->toArray());
     }
 
     public function testEmptyRouteParamsHaveNoValues(): void
     {
-        $params = new RouteParams([]);
+        $routeParams = new RouteParams([]);
 
-        $this->assertFalse($params->has('id'));
-        $this->assertNull($params->get('id'));
-        $this->assertSame([], $params->toArray());
+        $this->assertFalse($routeParams->has('id'));
+        $this->assertNull($routeParams->get('id'));
+        $this->assertSame([], $routeParams->toArray());
     }
 }

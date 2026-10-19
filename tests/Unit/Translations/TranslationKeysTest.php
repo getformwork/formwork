@@ -60,7 +60,7 @@ final class TranslationKeysTest extends TestCase
     #[DataProvider('referencedKeys')]
     public function testReferencedKeysAreDefined(string $key): void
     {
-        $this->assertArrayHasKey($key, self::definedKeys());
+        $this->assertArrayHasKey($key, $this->definedKeys());
     }
 
     /**
@@ -83,13 +83,13 @@ final class TranslationKeysTest extends TestCase
     #[DataProvider('pageErrorKeys')]
     public function testPageErrorKeysAreDefined(string $key): void
     {
-        $this->assertArrayHasKey($key, self::definedKeys());
+        $this->assertArrayHasKey($key, $this->definedKeys());
     }
 
     /**
      * @return array<string, mixed>
      */
-    private static function definedKeys(): array
+    private function definedKeys(): array
     {
         static $keys;
 

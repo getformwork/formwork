@@ -6,6 +6,7 @@ use Formwork\Assets\Asset;
 use Formwork\Assets\Assets;
 use Formwork\Assets\Exceptions\AssetResolutionException;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,6 +14,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Throwable;
 
 #[CoversClass(Assets::class)]
+#[UsesTempDirectory]
 final class AssetsTest extends TestCase
 {
     private string $base;
@@ -22,7 +24,6 @@ final class AssetsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
 
         $this->base = TESTS_TMP_PATH . '/assets-sandbox';
         FileSystem::createDirectory($this->base . '/template/css', recursive: true);
@@ -38,12 +39,6 @@ final class AssetsTest extends TestCase
             'template' => ['path' => $this->base . '/template', 'uri' => '/site/assets'],
             'panel'    => ['path' => $this->base . '/panel', 'uri' => '/panel/assets/'],
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testKeysWithoutNamespaceUseTheTemplateNamespace(): void
@@ -173,7 +168,7 @@ final class AssetsTest extends TestCase
         try {
             $asset = $this->assets->get($key);
         } catch (Throwable) {
-            $this->addToAssertionCount(1);
+            $this->expectNotToPerformAssertions();
             return;
         }
 

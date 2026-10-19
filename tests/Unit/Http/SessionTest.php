@@ -7,6 +7,7 @@ use Formwork\Http\Request;
 use Formwork\Http\Session\MessageType;
 use Formwork\Http\Session\Session;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 #[CoversClass(Session::class)]
+#[UsesTempDirectory]
 final class SessionTest extends TestCase
 {
     /**
@@ -24,7 +26,6 @@ final class SessionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->originalCookies = $_COOKIE;
     }
 
@@ -32,7 +33,6 @@ final class SessionTest extends TestCase
     {
         $this->endRequest();
         $_COOKIE = $this->originalCookies;
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -119,7 +119,7 @@ final class SessionTest extends TestCase
         $session->regenerate();
         $id = session_id();
 
-        $this->assertTrue($session->exists($id));
+        $this->assertTrue($session->exists((string) $id));
         $this->assertSame(42, $session->get('value'));
         $session->save();
     }

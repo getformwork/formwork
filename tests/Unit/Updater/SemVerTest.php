@@ -20,14 +20,14 @@ final class SemVerTest extends TestCase
 
     public function testComponentsAreExposed(): void
     {
-        $version = new SemVer(1, 2, 3, 'beta.2', 'build.5');
+        $semVer = new SemVer(1, 2, 3, 'beta.2', 'build.5');
 
-        $this->assertSame(1, $version->major());
-        $this->assertSame(2, $version->minor());
-        $this->assertSame(3, $version->patch());
-        $this->assertSame('beta.2', $version->prerelease());
-        $this->assertSame('build.5', $version->buildMetadata());
-        $this->assertSame('1.2.3-beta.2+build.5', (string) $version);
+        $this->assertSame(1, $semVer->major());
+        $this->assertSame(2, $semVer->minor());
+        $this->assertSame(3, $semVer->patch());
+        $this->assertSame('beta.2', $semVer->prerelease());
+        $this->assertSame('build.5', $semVer->buildMetadata());
+        $this->assertSame('1.2.3-beta.2+build.5', (string) $semVer);
     }
 
     /**
@@ -144,18 +144,18 @@ final class SemVerTest extends TestCase
 
     public function testWithoutPrerelease(): void
     {
-        $version = SemVer::fromString('1.2.3-beta.1+build')->withoutPrerelease();
+        $semVer = SemVer::fromString('1.2.3-beta.1+build')->withoutPrerelease();
 
-        $this->assertSame('1.2.3+build', (string) $version);
-        $this->assertFalse($version->isPrerelease());
+        $this->assertSame('1.2.3+build', (string) $semVer);
+        $this->assertFalse($semVer->isPrerelease());
     }
 
     public function testWithoutBuildMetadata(): void
     {
-        $version = SemVer::fromString('1.2.3-beta.1+build')->withoutBuildMetadata();
+        $semVer = SemVer::fromString('1.2.3-beta.1+build')->withoutBuildMetadata();
 
-        $this->assertSame('1.2.3-beta.1', (string) $version);
-        $this->assertFalse($version->hasBuildMetadata());
+        $this->assertSame('1.2.3-beta.1', (string) $semVer);
+        $this->assertFalse($semVer->hasBuildMetadata());
     }
 
     public function testPrereleaseAndMetadataPredicates(): void
@@ -168,22 +168,22 @@ final class SemVerTest extends TestCase
 
     public function testNextVersionsResetLowerComponentsAndDropLabels(): void
     {
-        $version = SemVer::fromString('1.2.3-beta.1+build');
+        $semVer = SemVer::fromString('1.2.3-beta.1+build');
 
-        $this->assertSame('2.0.0', (string) $version->nextMajor());
-        $this->assertSame('1.3.0', (string) $version->nextMinor());
-        $this->assertSame('1.2.4', (string) $version->nextPatch());
+        $this->assertSame('2.0.0', (string) $semVer->nextMajor());
+        $this->assertSame('1.3.0', (string) $semVer->nextMinor());
+        $this->assertSame('1.2.4', (string) $semVer->nextPatch());
     }
 
     public function testVersionsAreImmutable(): void
     {
-        $version = SemVer::fromString('1.2.3-beta.1');
+        $semVer = SemVer::fromString('1.2.3-beta.1');
 
-        $version->nextMajor();
-        $version->withoutPrerelease();
-        $version->versionCore();
+        $semVer->nextMajor();
+        $semVer->withoutPrerelease();
+        $semVer->versionCore();
 
-        $this->assertSame('1.2.3-beta.1', (string) $version);
+        $this->assertSame('1.2.3-beta.1', (string) $semVer);
     }
 
     public function testComparableStringHasNoBuildMetadata(): void
@@ -290,8 +290,8 @@ final class SemVerTest extends TestCase
 
     public function testHugeNumbersDoNotWrapAround(): void
     {
-        $version = SemVer::fromString('1.2.99999999999999999999');
+        $semVer = SemVer::fromString('1.2.99999999999999999999');
 
-        $this->assertTrue($version->compareWithString('1.2.3', '>'));
+        $this->assertTrue($semVer->compareWithString('1.2.3', '>'));
     }
 }

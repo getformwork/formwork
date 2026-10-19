@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Translations;
 
 use Formwork\Config\Config;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Exceptions\FileNotFoundException;
@@ -13,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Throwable;
 
 #[CoversClass(Translations::class)]
+#[UsesTempDirectory]
 final class TranslationsTest extends TestCase
 {
     private string $path;
@@ -20,17 +22,10 @@ final class TranslationsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'translations');
         FileSystem::createDirectory($this->path);
         $this->write('en', "hello: Hello\ngreeting: 'Hi %s'\nonly.english: English only\nplural: [one, many]\n");
         $this->write('it', "hello: Ciao\ngreeting: 'Ciao %s'\n");
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testNothingIsAvailableBeforeLoading(): void
@@ -138,10 +133,10 @@ final class TranslationsTest extends TestCase
         $translations->load($this->path . '/en.yaml');
         $translations->load($extra . '/en.yaml');
 
-        $english = $translations->get('en');
-        $this->assertSame('Overridden', $english->translate('hello'), 'Later files override earlier ones');
-        $this->assertSame('From plugin', $english->translate('plugin.key'));
-        $this->assertSame('English only', $english->translate('only.english'));
+        $translation = $translations->get('en');
+        $this->assertSame('Overridden', $translation->translate('hello'), 'Later files override earlier ones');
+        $this->assertSame('From plugin', $translation->translate('plugin.key'));
+        $this->assertSame('English only', $translation->translate('only.english'));
     }
 
     public function testLoadingAFileResetsTheCachedTranslation(): void
@@ -150,11 +145,11 @@ final class TranslationsTest extends TestCase
         FileSystem::createDirectory($extra);
         FileSystem::write($extra . '/en.yaml', "plugin.key: From plugin\n");
         $translations = $this->translations();
-        $before = $translations->get('en');
+        $translation = $translations->get('en');
 
         $translations->load($extra . '/en.yaml');
 
-        $this->assertNotSame($before, $translations->get('en'));
+        $this->assertNotSame($translation, $translations->get('en'));
         $this->assertSame('From plugin', $translations->get('en')->translate('plugin.key'));
     }
 
@@ -164,14 +159,14 @@ final class TranslationsTest extends TestCase
         FileSystem::createDirectory($extra);
         FileSystem::write($extra . '/en.yaml', "plugin.key: From plugin\n");
         $translations = $this->translations();
-        $italian = $translations->get('it');
+        $translation = $translations->get('it');
 
         $translations->load($extra . '/en.yaml');
 
-        $italian->setFallback($translations->get('en'));
+        $translation->setFallback($translations->get('en'));
 
         $this->assertSame('From plugin', $translations->get('it')->translate('plugin.key'));
-        $this->assertSame('From plugin', $italian->translate('plugin.key'));
+        $this->assertSame('From plugin', $translation->translate('plugin.key'));
     }
 
     public function testMultipleTranslationsCanBeRetrieved(): void

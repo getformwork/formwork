@@ -440,10 +440,7 @@ final class CollectionTest extends TestCase
         $collectedItems = [];
         $collection->each(function ($item) use (&$collectedItems) {
             $collectedItems[] = $item;
-            if ($item >= 3) {
-                return false;
-            }
-            return true;
+            return $item < 3;
         });
 
         $this->assertSame([1, 2, 3], $collectedItems);
@@ -797,9 +794,9 @@ final class CollectionTest extends TestCase
     {
         $collection = Collection::from(['itemA', 'itemB', 'itemC']);
 
-        $dataProxy = $collection->everyItem();
+        $collectionDataProxy = $collection->everyItem();
 
-        $this->assertInstanceOf(CollectionDataProxy::class, $dataProxy);
+        $this->assertInstanceOf(CollectionDataProxy::class, $collectionDataProxy);
     }
 
     public function testUnion(): void
@@ -1134,7 +1131,7 @@ final class CollectionTest extends TestCase
     }
 
     /**
-     * @param Closure(Collection): mixed $operation
+     * @param Closure(Collection<mixed>): mixed $operation
      */
     #[DataProvider('immutableOperationProvider')]
     public function testImmutableCollectionRejectsEveryMutatingOperation(bool $associative, Closure $operation): void
@@ -1172,13 +1169,13 @@ final class CollectionTest extends TestCase
 
     public function testMutableCollectionsRejectOperationsOfTheOtherKind(): void
     {
-        $list = Collection::from(['A'], mutable: true);
+        $collection = Collection::from(['A'], mutable: true);
         $map = Collection::from(['a' => 'A'], mutable: true);
 
         foreach (
             [
-                static fn() => $list->set('b', 'B'),
-                static fn() => $list->remove('a'),
+                static fn() => $collection->set('b', 'B'),
+                static fn() => $collection->remove('a'),
                 static fn() => $map->add('B'),
                 static fn() => $map->pull('A'),
             ] as $operation
@@ -1191,7 +1188,7 @@ final class CollectionTest extends TestCase
             }
         }
 
-        $this->assertSame(['A'], $list->toArray());
+        $this->assertSame(['A'], $collection->toArray());
         $this->assertSame(['a' => 'A'], $map->toArray());
     }
 
@@ -1200,52 +1197,47 @@ final class CollectionTest extends TestCase
         $collection = Collection::of('string', ['first'], mutable: true);
         $before = $collection->toArray();
 
-        try {
-            $collection->add(123);
-            $this->fail('The invalid value should have been rejected.');
-        } catch (LogicException) {
-            // Expected
-        }
+        $this->captureException(LogicException::class, static fn() => $collection->add(123));
 
         $this->assertSame($before, $collection->toArray());
     }
 
     public function testNonMutatingTransformationsDoNotChangeTheSource(): void
     {
-        $source = Collection::from([3, 1, 2]);
-        $original = $source->toArray();
+        $collection = Collection::from([3, 1, 2]);
+        $original = $collection->toArray();
 
-        $source->reverse();
-        $source->shuffle();
-        $source->unique();
-        $source->duplicates();
-        $source->slice(1);
-        $source->limit(2);
-        $source->map(fn(int $value): int => $value * 2);
-        $source->filter(fn(int $value): bool => $value > 1);
-        $source->reject(fn(int $value): bool => $value > 1);
-        $source->sort();
-        $source->flatten();
-        $source->with(4);
-        $source->without(1);
+        $collection->reverse();
+        $collection->shuffle();
+        $collection->unique();
+        $collection->duplicates();
+        $collection->slice(1);
+        $collection->limit(2);
+        $collection->map(fn(int $value): int => $value * 2);
+        $collection->filter(fn(int $value): bool => $value > 1);
+        $collection->reject(fn(int $value): bool => $value > 1);
+        $collection->sort();
+        $collection->flatten();
+        $collection->with(4);
+        $collection->without(1);
 
-        $this->assertSame($original, $source->toArray());
+        $this->assertSame($original, $collection->toArray());
     }
 
     public function testMutabilityConversionsPreserveDataAndDoNotAliasCollections(): void
     {
-        $immutable = Collection::from(['a', 'b']);
-        $mutable = $immutable->toMutable();
+        $collection = Collection::from(['a', 'b']);
+        $mutable = $collection->toMutable();
         $roundTrip = $mutable->toImmutable();
 
-        $this->assertFalse($immutable->isMutable());
+        $this->assertFalse($collection->isMutable());
         $this->assertTrue($mutable->isMutable());
         $this->assertFalse($roundTrip->isMutable());
-        $this->assertSame($immutable->toArray(), $mutable->toArray());
-        $this->assertSame($immutable->toArray(), $roundTrip->toArray());
+        $this->assertSame($collection->toArray(), $mutable->toArray());
+        $this->assertSame($collection->toArray(), $roundTrip->toArray());
 
         $mutable->add('c');
-        $this->assertSame(['a', 'b'], $immutable->toArray());
+        $this->assertSame(['a', 'b'], $collection->toArray());
         $this->assertSame(['a', 'b'], $roundTrip->toArray());
     }
 

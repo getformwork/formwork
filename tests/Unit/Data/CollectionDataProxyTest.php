@@ -27,10 +27,15 @@ final class CollectionDataProxyTest extends TestCase
             'item2' => (object) ['key' => 'value2'],
         ]);
 
-        $this->assertSame([
-            'item1' => 'value1',
-            'item2' => 'value2',
-        ], $collection->everyItem()->key->toArray());
+        $this->assertSame(
+            [
+                'item1' => 'value1',
+                'item2' => 'value2',
+            ],
+
+            // @phpstan-ignore property.notFound
+            $collection->everyItem()->key->toArray()
+        );
     }
 
     public function testPropertySet(): void
@@ -40,12 +45,18 @@ final class CollectionDataProxyTest extends TestCase
             'item2' => (object) ['key' => 'value2'],
         ]);
 
+        // @phpstan-ignore property.notFound
         $collection->everyItem()->key = 'newValue';
 
-        $this->assertSame([
-            'item1' => 'newValue',
-            'item2' => 'newValue',
-        ], $collection->everyItem()->key->toArray());
+        $this->assertSame(
+            [
+                'item1' => 'newValue',
+                'item2' => 'newValue',
+            ],
+
+            // @phpstan-ignore method.nonObject
+            $collection->everyItem()->key->toArray()
+        );
     }
 
     public function testMethodCall(): void
@@ -65,9 +76,12 @@ final class CollectionDataProxyTest extends TestCase
             },
         ], typed: false);
 
-        $this->assertSame([
-            'item1' => 'Hello from item1',
-            'item2' => 'Hello from item2',
-        ], $collection->everyItem()->greet()->toArray());
+        $this->assertSame(
+            [
+                'item1' => 'Hello from item1',
+                'item2' => 'Hello from item2',
+            ],
+            $collection->everyItem()->greet()->toArray()
+        );
     }
 }

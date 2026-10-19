@@ -11,25 +11,20 @@ use Formwork\Services\Container;
 use Formwork\Services\Loaders\SiteServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(SiteServiceLoader::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class SiteServiceLoaderTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         FileSystem::createDirectory(TESTS_TMP_PATH . '/content/about', recursive: true);
         FileSystem::write(TESTS_TMP_PATH . '/content/about/page.md', "---\ntitle: About\n---\nAbout content\n");
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testSiteIsBuiltFromTheSiteConfigurationAndTheContentPath(): void

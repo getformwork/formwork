@@ -50,7 +50,7 @@ final class FakeHttpTransport implements HttpTransportInterface
             throw $response;
         }
 
-        $handle = fopen('php://memory', 'w+');
+        $handle = fopen('php://memory', 'w+') ?: throw new LogicException('Unable to open memory stream');
         fwrite($handle, $response['body']);
         rewind($handle);
 
@@ -62,6 +62,6 @@ final class FakeHttpTransport implements HttpTransportInterface
      */
     public function lastHttpOptions(): array
     {
-        return $this->requests[array_key_last($this->requests)]['options']['http'];
+        return $this->requests[array_key_last($this->requests) ?? 0]['options']['http'];
     }
 }

@@ -11,12 +11,12 @@ final class RequestDataTest extends TestCase
 {
     public function testRequestDataExposesItsValuesAndIterator(): void
     {
-        $data = new RequestData(['first' => 'one', 'second' => 'two']);
+        $requestData = new RequestData(['first' => 'one', 'second' => 'two']);
 
-        $this->assertFalse($data->isEmpty());
-        $this->assertCount(2, $data);
-        $this->assertSame('one', $data->get('first'));
-        $this->assertSame('fallback', $data->get('missing', 'fallback'));
-        $this->assertSame(['first' => 'one', 'second' => 'two'], $data->toArray());
+        $this->assertFalse($requestData->isEmpty());
+        $this->assertCount(2, $requestData);
+        $this->assertSame('one', $requestData->get('first'));
+        $this->assertSame('fallback', $requestData->get($this->unchecked('missing'), 'fallback'));
+        $this->assertSame(['first' => 'one', 'second' => 'two'], $requestData->toArray());
     }
 }

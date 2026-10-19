@@ -37,9 +37,9 @@ final class TemplateCollectionTest extends TestCase
 
     public function testOnlyTemplatesAreAccepted(): void
     {
-        $this->expectException(LogicException::class);
+        $logicException = $this->captureException(LogicException::class, fn() => new Templates($this->unchecked(['page' => 'not a template'])));
 
-        new Templates(['page' => 'not a template']);
+        $this->assertInstanceOf(LogicException::class, $logicException);
     }
 
     public function testListsOfTemplatesAreRejected(): void

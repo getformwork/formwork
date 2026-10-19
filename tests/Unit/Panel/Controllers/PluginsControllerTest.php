@@ -12,6 +12,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use ReflectionMethod;
 
 #[CoversClass(PluginsController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PluginsControllerTest extends TestCase
 {
     use BuildsPanelControllers;
@@ -33,8 +35,6 @@ final class PluginsControllerTest extends TestCase
     public function testUpdatingPluginOptionsSavesOnlyOverridesAndReplacesArrays(array $existingOptions, array $formData, array $expected): void
     {
         $pluginDefaults = self::formSaveDefaults();
-
-        $this->setUpTempDirectory();
 
         $app = App::instance();
         $pluginId = 'panel-options-data-provider';
@@ -57,13 +57,13 @@ final class PluginsControllerTest extends TestCase
                 ['panel.plugins' => true],
                 services: [Config::class => $config],
             );
-            $updateOptions = new ReflectionMethod($controller, 'updatePluginsOptions');
-            $updateOptions->invoke($controller, $plugin, $formData);
+            $reflectionMethod = new ReflectionMethod($controller, 'updatePluginsOptions');
+            $reflectionMethod->invoke($controller, $plugin, $formData);
 
             $this->assertSame($expected, Yaml::parseFile($outputPath));
         } finally {
             if ($originalOutput === null) {
-                if (FileSystem::isFile($outputPath, assertExists: false)) {
+                if (is_file($outputPath)) {
                     FileSystem::delete($outputPath);
                 }
             } else {

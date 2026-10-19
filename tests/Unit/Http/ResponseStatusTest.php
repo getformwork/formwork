@@ -13,12 +13,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class ResponseStatusTest extends TestCase
 {
     #[DataProvider('statusProvider')]
-    public function testStatusExposesCodeMessageAndType(ResponseStatus $status, int $code, ResponseStatusType $type): void
+    public function testStatusExposesCodeMessageAndType(ResponseStatus $responseStatus, int $code, ResponseStatusType $responseStatusType): void
     {
-        $this->assertSame($code, $status->code());
-        $this->assertSame(explode(' ', $status->value, 2)[1], $status->message());
-        $this->assertSame($type, $status->type());
-        $this->assertSame($status, ResponseStatus::fromCode($code));
+        $this->assertSame($code, $responseStatus->code());
+        $this->assertSame(explode(' ', $responseStatus->value, 2)[1], $responseStatus->message());
+        $this->assertSame($responseStatusType, $responseStatus->type());
+        $this->assertSame($responseStatus, ResponseStatus::fromCode($code));
     }
 
     public static function statusProvider(): array
@@ -34,7 +34,7 @@ final class ResponseStatusTest extends TestCase
 
     public function testStatusCodesAreUnique(): void
     {
-        $codes = array_map(static fn(ResponseStatus $status): int => $status->code(), ResponseStatus::cases());
+        $codes = array_map(static fn(ResponseStatus $responseStatus): int => $responseStatus->code(), ResponseStatus::cases());
 
         $this->assertSame($codes, array_values(array_unique($codes)));
     }
@@ -46,11 +46,12 @@ final class ResponseStatusTest extends TestCase
             $this->assertSame($status, ResponseStatus::fromCode($status->code()), $status->name);
             $this->assertSame(
                 match ((int) ($status->code() / 100)) {
-                    1 => ResponseStatusType::Informational,
-                    2 => ResponseStatusType::Successful,
-                    3 => ResponseStatusType::Redirection,
-                    4 => ResponseStatusType::ClientError,
-                    5 => ResponseStatusType::ServerError,
+                    1       => ResponseStatusType::Informational,
+                    2       => ResponseStatusType::Successful,
+                    3       => ResponseStatusType::Redirection,
+                    4       => ResponseStatusType::ClientError,
+                    5       => ResponseStatusType::ServerError,
+                    default => throw new InvalidArgumentException("Unexpected status code {$status->code()}"),
                 },
                 $status->type(),
                 $status->name,

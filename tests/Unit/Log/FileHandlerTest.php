@@ -9,6 +9,7 @@ use Formwork\Log\Handler\AbstractHandler;
 use Formwork\Log\Handler\FileHandler;
 use Formwork\Log\Handler\StderrHandler;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,6 +19,7 @@ use Throwable;
 
 #[CoversClass(FileHandler::class)]
 #[CoversClass(StderrHandler::class)]
+#[UsesTempDirectory]
 final class FileHandlerTest extends TestCase
 {
     private string $file;
@@ -25,14 +27,7 @@ final class FileHandlerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->file = FileSystem::joinPaths(TESTS_TMP_PATH, 'logs', 'app.log');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
     }
 
     public function testHandlerIsAnAbstractHandler(): void
@@ -42,7 +37,7 @@ final class FileHandlerTest extends TestCase
 
     public function testFileIsNotCreatedUntilSomethingIsLogged(): void
     {
-        new FileHandler($this->file);
+        $this->assertInstanceOf(FileHandler::class, new FileHandler($this->file));
 
         $this->assertFileDoesNotExist($this->file);
         $this->assertDirectoryDoesNotExist(dirname($this->file));
@@ -50,10 +45,10 @@ final class FileHandlerTest extends TestCase
 
     public function testRecordsAreAppendedOneForLine(): void
     {
-        $handler = new FileHandler($this->file, new TextFormatter());
+        $fileHandler = new FileHandler($this->file, new TextFormatter());
 
-        $handler->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'first', []);
-        $handler->handle(new DateTimeImmutable('2025-01-02 03:04:06.000000 UTC'), 'error', 'second', []);
+        $fileHandler->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'first', []);
+        $fileHandler->handle(new DateTimeImmutable('2025-01-02 03:04:06.000000 UTC'), 'error', 'second', []);
 
         $this->assertSame(
             "[2025-01-02 03:04:05.000000] INFO: first\n[2025-01-02 03:04:06.000000] ERROR: second\n",
@@ -99,23 +94,24 @@ final class FileHandlerTest extends TestCase
 
     public function testRecordsBelowTheThresholdAreNotWritten(): void
     {
-        $handler = new FileHandler($this->file, new JsonFormatter(), LogLevel::WARNING);
+        $fileHandler = new FileHandler($this->file, new JsonFormatter(), LogLevel::WARNING);
 
-        $handler->handle(new DateTimeImmutable(), 'info', 'ignored', []);
-        $handler->handle(new DateTimeImmutable(), 'debug', 'ignored', []);
+        $fileHandler->handle(new DateTimeImmutable(), 'info', 'ignored', []);
+        $fileHandler->handle(new DateTimeImmutable(), 'debug', 'ignored', []);
 
         $this->assertFileDoesNotExist($this->file);
 
-        $handler->handle(new DateTimeImmutable(), 'warning', 'kept', []);
+        $fileHandler->handle(new DateTimeImmutable(), 'warning', 'kept', []);
 
         $this->assertFileExists($this->file);
-        $this->assertCount(1, file($this->file));
+        $this->assertCount(1, file($this->file) ?: []);
     }
 
     public function testInvalidThresholdsAreRejected(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        new FileHandler($this->file, new JsonFormatter(), 'verbose');
+        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new FileHandler($this->file, new JsonFormatter(), $this->unchecked('verbose')));
+
+        $this->assertInstanceOf(InvalidArgumentException::class, $invalidArgumentException);
     }
 
     public function testSeveralHandlersCanWriteToTheSameFile(): void
@@ -128,15 +124,15 @@ final class FileHandlerTest extends TestCase
         $second->handle($date, 'info', 'two', []);
         $first->handle($date, 'info', 'three', []);
 
-        $this->assertCount(3, file($this->file));
+        $this->assertCount(3, file($this->file) ?: []);
     }
 
     public function testRecordsAreFlushedWhenTheHandlerIsDestroyed(): void
     {
-        $handler = new FileHandler($this->file, new TextFormatter(false));
-        $handler->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'message', []);
+        $fileHandler = new FileHandler($this->file, new TextFormatter(false));
+        $fileHandler->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'message', []);
 
-        unset($handler);
+        unset($fileHandler);
 
         $this->assertStringContainsString('message', FileSystem::read($this->file));
     }
@@ -155,38 +151,39 @@ final class FileHandlerTest extends TestCase
         // The parent of the log file is a regular file
         FileSystem::createDirectory(TESTS_TMP_PATH . '/blocked');
         FileSystem::write(TESTS_TMP_PATH . '/blocked/file', 'content');
-        $handler = new FileHandler(TESTS_TMP_PATH . '/blocked/file/app.log');
+        $fileHandler = new FileHandler(TESTS_TMP_PATH . '/blocked/file/app.log');
 
         $this->expectException(Throwable::class);
-        $handler->handle(new DateTimeImmutable(), 'info', 'message', []);
+        $fileHandler->handle(new DateTimeImmutable(), 'info', 'message', []);
     }
 
     public function testStderrHandlerWritesToStderrWithTheTextFormatter(): void
     {
-        $handler = new StderrHandler();
+        $stderrHandler = new StderrHandler();
 
         $path = new ReflectionProperty(FileHandler::class, 'path');
         $formatter = new ReflectionProperty(AbstractHandler::class, 'formatter');
 
-        $this->assertInstanceOf(FileHandler::class, $handler);
-        $this->assertSame('php://stderr', $path->getValue($handler));
-        $this->assertInstanceOf(TextFormatter::class, $formatter->getValue($handler));
+        $this->assertInstanceOf(FileHandler::class, $stderrHandler);
+        $this->assertSame('php://stderr', $path->getValue($stderrHandler));
+        $this->assertInstanceOf(TextFormatter::class, $formatter->getValue($stderrHandler));
     }
 
     public function testStderrHandlerAcceptsAFormatterAndALevel(): void
     {
-        $handler = new StderrHandler(new JsonFormatter(), LogLevel::ERROR);
+        $stderrHandler = new StderrHandler(new JsonFormatter(), LogLevel::ERROR);
 
         $formatter = new ReflectionProperty(AbstractHandler::class, 'formatter');
         $level = new ReflectionProperty(AbstractHandler::class, 'level');
 
-        $this->assertInstanceOf(JsonFormatter::class, $formatter->getValue($handler));
-        $this->assertSame('error', $level->getValue($handler));
+        $this->assertInstanceOf(JsonFormatter::class, $formatter->getValue($stderrHandler));
+        $this->assertSame('error', $level->getValue($stderrHandler));
     }
 
     public function testStderrHandlerRejectsInvalidLevels(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        new StderrHandler(new TextFormatter(), 'verbose');
+        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new StderrHandler(new TextFormatter(), $this->unchecked('verbose')));
+
+        $this->assertInstanceOf(InvalidArgumentException::class, $invalidArgumentException);
     }
 }

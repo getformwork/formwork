@@ -65,12 +65,7 @@ final class FieldTest extends TestCase
     {
         $field = new Field('name', ['type' => 'text', 'required' => true]);
 
-        try {
-            $field->validate();
-            $this->fail('The required field should have failed validation.');
-        } catch (ValidationException) {
-            // Expected.
-        }
+        $this->captureException(ValidationException::class, static fn() => $field->validate());
 
         $this->assertTrue($field->isValidated());
         $this->assertFalse($field->isValid());
@@ -160,9 +155,9 @@ final class FieldTest extends TestCase
 
     public function testParentCollectionIsExposed(): void
     {
-        $parent = new FieldCollection();
+        $fieldCollection = new FieldCollection();
 
-        $this->assertSame($parent, (new Field('name', ['type' => 'text'], $parent))->parent());
+        $this->assertSame($fieldCollection, (new Field('name', ['type' => 'text'], $fieldCollection))->parent());
         $this->assertNull((new Field('name', ['type' => 'text']))->parent());
     }
 

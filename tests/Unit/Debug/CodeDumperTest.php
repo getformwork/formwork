@@ -47,6 +47,7 @@ final class CodeDumperTest extends TestCase
     {
         $lines = $this->lineNumbers($this->dumpLine(self::SAMPLE, 83, 5));
 
+        $this->assertNotEmpty($lines);
         $this->assertSame(84, max($lines));
         $this->assertSame(78, min($lines));
     }
@@ -67,7 +68,7 @@ final class CodeDumperTest extends TestCase
 
         preg_match_all('/<span class="__line">(\s*\d+ )<\/span>/', $html, $matches);
 
-        $widths = array_values(array_unique(array_map('strlen', $matches[1])));
+        $widths = array_values(array_unique(array_map(strlen(...), $matches[1])));
         $this->assertCount(1, $widths, 'All line labels must have the same width: ' . json_encode($matches[1]));
     }
 
@@ -241,7 +242,7 @@ final class CodeDumperTest extends TestCase
     {
         preg_match_all('/<span class="__line">\s*(\d+) <\/span>/', $html, $matches);
 
-        return array_map('intval', $matches[1]);
+        return array_map(intval(...), $matches[1]);
     }
 
     private function dumpLine(string $file, int $line, int $context): string
@@ -262,7 +263,7 @@ final class CodeDumperTest extends TestCase
     {
         ob_start();
         try {
-            CodeDumper::dumpBacktraceFrame($frame);
+            CodeDumper::dumpBacktraceFrame($this->unchecked($frame));
             return (string) ob_get_contents();
         } finally {
             ob_end_clean();

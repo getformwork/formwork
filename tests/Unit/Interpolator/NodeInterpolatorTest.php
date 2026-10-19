@@ -144,6 +144,7 @@ final class NodeInterpolatorTest extends TestCase
     public function testResourcesCannotBeTraversed(): void
     {
         $resource = fopen('php://memory', 'r');
+        $this->assertIsResource($resource);
 
         try {
             $this->expectException(InterpolationException::class);
@@ -364,7 +365,7 @@ final class NodeInterpolatorTest extends TestCase
 
     public function testNodesCanBeInterpolatedWithoutParsing(): void
     {
-        $node = new IdentifierNode(
+        $identifierNode = new IdentifierNode(
             'join',
             new ArgumentsNode([
                 new ArrayNode([new StringNode('a'), new NumberNode(2)], new ArrayKeysNode([new ImplicitArrayKeyNode(), new ImplicitArrayKeyNode()])),
@@ -372,28 +373,28 @@ final class NodeInterpolatorTest extends TestCase
             null,
         );
 
-        $result = (new NodeInterpolator($node, ['join' => static fn(array $parts): string => implode('-', $parts)]))->interpolate();
+        $result = (new NodeInterpolator($identifierNode, ['join' => static fn(array $parts): string => implode('-', $parts)]))->interpolate();
 
         $this->assertSame('a-2', $result);
     }
 
     public function testUnknownKeyNodeTypesAreRejected(): void
     {
-        $node = new ArrayNode([new NumberNode(1)], new ArrayKeysNode([new ArgumentsNode([])]));
-        $identifier = new IdentifierNode('identity', new ArgumentsNode([$node]), null);
+        $arrayNode = new ArrayNode([new NumberNode(1)], new ArrayKeysNode([new ArgumentsNode([])]));
+        $identifierNode = new IdentifierNode('identity', new ArgumentsNode([$arrayNode]), null);
 
         $this->expectException(InterpolationException::class);
         $this->expectExceptionMessage('Invalid array key type "arguments"');
-        (new NodeInterpolator($identifier, ['identity' => static fn(mixed $value): mixed => $value]))->interpolate();
+        (new NodeInterpolator($identifierNode, ['identity' => static fn(mixed $value): mixed => $value]))->interpolate();
     }
 
     public function testTraversingWithAnInvalidNodeIsRejected(): void
     {
-        $node = new IdentifierNode('data', null, new ArgumentsNode([]));
+        $identifierNode = new IdentifierNode('data', null, new ArgumentsNode([]));
 
         $this->expectException(InterpolationException::class);
         $this->expectExceptionMessage('Invalid array key');
-        (new NodeInterpolator($node, ['data' => [1]]))->interpolate();
+        (new NodeInterpolator($identifierNode, ['data' => [1]]))->interpolate();
     }
 
     /**

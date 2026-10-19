@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Utils;
 
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Utils\Fixtures\FileSystemFixture;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\Exceptions\FileSystemException;
 use Formwork\Utils\FileSystem;
@@ -12,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(FileSystem::class)]
+#[UsesTempDirectory]
 final class FileSystemTest extends TestCase
 {
     protected function setUp(): void
@@ -24,7 +26,6 @@ final class FileSystemTest extends TestCase
     protected function tearDown(): void
     {
         FileSystemFixture::enableAll();
-        $this->tearDownTempDirectory();
     }
 
     public function testNormalize(): void
@@ -121,7 +122,7 @@ final class FileSystemTest extends TestCase
 
         $this->assertTrue(FileSystem::isReadable(TESTS_TMP_PATH . '/sample.txt'));
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o444);
 
         $this->assertFalse(FileSystem::isReadable(TESTS_TMP_PATH . '/sample.txt'));
@@ -135,7 +136,7 @@ final class FileSystemTest extends TestCase
 
         $this->assertTrue(FileSystem::isWritable(TESTS_TMP_PATH . '/sample.txt'));
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o222);
 
         $this->assertFalse(FileSystem::isWritable(TESTS_TMP_PATH . '/sample.txt'));
@@ -281,12 +282,14 @@ final class FileSystemTest extends TestCase
         chmod(TESTS_TMP_PATH . '/sample.txt', 0o640);
         clearstatcache();
 
-        $this->assertSame(0o640, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
+        $mode = FileSystem::mode(TESTS_TMP_PATH . '/sample.txt');
+        $this->assertSame(0o640, $mode & 0o777);
 
         chmod(TESTS_TMP_PATH . '/sample.txt', 0o600);
         clearstatcache();
 
-        $this->assertSame(0o600, FileSystem::mode(TESTS_TMP_PATH . '/sample.txt') & 0o777);
+        $mode = FileSystem::mode(TESTS_TMP_PATH . '/sample.txt');
+        $this->assertSame(0o600, $mode & 0o777);
     }
 
     public function testModeThrowsOnFileNotFound(): void
@@ -730,7 +733,7 @@ final class FileSystemTest extends TestCase
     {
         $this->skipIfFilePermissionsAreNotEnforced();
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o444);
 
         $this->expectException(FileSystemException::class);
@@ -927,7 +930,7 @@ final class FileSystemTest extends TestCase
     {
         $this->skipIfFilePermissionsAreNotEnforced();
 
-        $mode = fileperms(TESTS_TMP_PATH . '/sample.txt');
+        $mode = (int) fileperms(TESTS_TMP_PATH . '/sample.txt');
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode & ~0o222);
 
         $this->expectException(FileSystemException::class);
@@ -960,12 +963,8 @@ final class FileSystemTest extends TestCase
         foreach (['file_put_contents', 'rename'] as $function) {
             FileSystemFixture::disable($function);
 
-            try {
-                FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!');
-                $this->fail('Expected the write to fail');
-            } catch (FileSystemException) {
-                $this->assertSame([], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
-            }
+            $this->captureException(FileSystemException::class, static fn() => FileSystem::write(TESTS_TMP_PATH . '/write/newfile.txt', 'Hello, World!'));
+            $this->assertSame([], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
 
             FileSystemFixture::enable($function);
         }

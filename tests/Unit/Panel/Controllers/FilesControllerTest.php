@@ -20,6 +20,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -27,6 +28,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FilesController::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class FilesControllerTest extends TestCase
 {
     use BuildsPanelControllers;
@@ -39,7 +41,6 @@ final class FilesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpTempDirectory();
         $this->filePath = TESTS_TMP_PATH . '/sample.txt';
         $this->metadataPath = $this->filePath . '.meta.yaml';
         FileSystem::write($this->filePath, 'hello');
@@ -48,7 +49,6 @@ final class FilesControllerTest extends TestCase
     protected function tearDown(): void
     {
         $this->closePanelSession();
-        $this->tearDownTempDirectory();
         parent::tearDown();
     }
 
@@ -82,14 +82,14 @@ final class FilesControllerTest extends TestCase
         $site = $this->createStub(Site::class);
         $site->method('findPage')->willReturn($page);
 
-        $controller = $this->makeController(
+        $filesController = $this->makeController(
             FilesController::class,
             ['panel.files.edit' => true],
             input: ['title' => 'untitled', ...$submitted],
             services: [Site::class => $site, FileUploader::class => $this->createStub(FileUploader::class), FileFactory::class => $app->getService(FileFactory::class)],
         );
 
-        $response = $controller->edit(new RouteParams(['model' => 'page', 'id' => '/about/', 'filename' => 'sample.txt']));
+        $response = $filesController->edit(new RouteParams(['model' => 'page', 'id' => '/about/', 'filename' => 'sample.txt']));
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($expected, $this->savedMetadata());

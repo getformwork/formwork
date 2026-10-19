@@ -7,26 +7,16 @@ use Formwork\Parsers\AbstractParser;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Parsers\Fixtures\EchoEncoder;
 use Formwork\Tests\Unit\Parsers\Fixtures\EchoParser;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(AbstractParser::class)]
 #[CoversClass(AbstractEncoder::class)]
+#[UsesTempDirectory]
 final class AbstractParserTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testParseFileReadsTheFileAndForwardsOptions(): void
     {
         FileSystem::write(TESTS_TMP_PATH . '/input.txt', 'content');

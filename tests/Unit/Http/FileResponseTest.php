@@ -7,39 +7,29 @@ use Formwork\Http\Request;
 use Formwork\Http\RequestMethod;
 use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileResponse::class)]
+#[UsesTempDirectory]
 final class FileResponseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testFileResponsePreparesRangesAndDownloadNames(): void
     {
         $path = $this->fixturePath();
-        $response = new FileResponse($path, download: true, autoEtag: true, autoLastModified: true);
-        $response->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=0-4']));
+        $fileResponse = new FileResponse($path, download: true, autoEtag: true, autoLastModified: true);
+        $fileResponse->prepare($this->request(server: ['HTTP_RANGE' => 'bytes=0-4']));
 
-        $this->assertSame(ResponseStatus::PartialContent, $response->status());
-        $this->assertSame('bytes 0-4/' . FileSystem::fileSize($path), $response->headers()->get('Content-Range'));
-        $this->assertSame('5', $response->headers()->get('Content-Length'));
-        $this->assertMatchesRegularExpression('/^W\/"[0-9a-f]{64}"$/', (string) $response->headers()->get('ETag'));
-        $this->assertTrue($response->headers()->has('Last-Modified'));
-        $this->assertSame($response, $response->setFilename('download.txt'));
-        $this->assertSame('attachment; filename=download.txt', $response->headers()->get('Content-Disposition'));
+        $this->assertSame(ResponseStatus::PartialContent, $fileResponse->status());
+        $this->assertSame('bytes 0-4/' . FileSystem::fileSize($path), $fileResponse->headers()->get('Content-Range'));
+        $this->assertSame('5', $fileResponse->headers()->get('Content-Length'));
+        $this->assertMatchesRegularExpression('/^W\/"[0-9a-f]{64}"$/', (string) $fileResponse->headers()->get('ETag'));
+        $this->assertTrue($fileResponse->headers()->has('Last-Modified'));
+        $this->assertSame($fileResponse, $fileResponse->setFilename('download.txt'));
+        $this->assertSame('attachment; filename=download.txt', $fileResponse->headers()->get('Content-Disposition'));
     }
 
     public function testFileResponseAddsAcceptRangesForHeadAndSkipsRangesForEmptyResponses(): void
@@ -59,12 +49,12 @@ final class FileResponseTest extends TestCase
     {
         $path = $this->fixturePath();
         $size = FileSystem::fileSize($path);
-        $response = new FileResponse($path);
-        $response->prepare($this->request(server: ['HTTP_RANGE' => $range]));
+        $fileResponse = new FileResponse($path);
+        $fileResponse->prepare($this->request(server: ['HTTP_RANGE' => $range]));
 
-        $this->assertSame(ResponseStatus::PartialContent, $response->status());
-        $this->assertSame(sprintf('bytes %d-%d/%d', $start, $end, $size), $response->headers()->get('Content-Range'));
-        $this->assertSame((string) ($end - $start + 1), $response->headers()->get('Content-Length'));
+        $this->assertSame(ResponseStatus::PartialContent, $fileResponse->status());
+        $this->assertSame(sprintf('bytes %d-%d/%d', $start, $end, $size), $fileResponse->headers()->get('Content-Range'));
+        $this->assertSame((string) ($end - $start + 1), $fileResponse->headers()->get('Content-Length'));
     }
 
     /**
@@ -112,8 +102,8 @@ final class FileResponseTest extends TestCase
 
     public function testFileResponseAnswersConditionalRequestsWithNotModified(): void
     {
-        $response = new FileResponse($this->fixturePath(), autoEtag: true);
-        $etag = $response->prepare($this->request())->headers()->get('ETag');
+        $fileResponse = new FileResponse($this->fixturePath(), autoEtag: true);
+        $etag = $fileResponse->prepare($this->request())->headers()->get('ETag');
 
         $conditional = (new FileResponse($this->fixturePath(), autoEtag: true))->prepare($this->request(server: ['HTTP_IF_NONE_MATCH' => (string) $etag]));
 
@@ -125,32 +115,32 @@ final class FileResponseTest extends TestCase
     {
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'head.txt');
         FileSystem::copyFile($this->fixturePath(), $path);
-        $response = new FileResponse($path, deleteAfterSend: true);
-        $response->prepare($this->request(RequestMethod::HEAD));
+        $fileResponse = new FileResponse($path, deleteAfterSend: true);
+        $fileResponse->prepare($this->request(RequestMethod::HEAD));
         ob_start();
-        $response->send();
+        $fileResponse->send();
         $output = ob_get_clean();
 
         $this->assertSame('', $output);
-        $this->assertSame('', $response->content());
+        $this->assertSame('', $fileResponse->content());
         $this->assertTrue(FileSystem::exists($path));
     }
 
     public function testInlineFileResponseRejectsDownloadFilenameChanges(): void
     {
-        $response = new FileResponse($this->fixturePath());
+        $fileResponse = new FileResponse($this->fixturePath());
 
         $this->expectException(LogicException::class);
-        $response->setFilename('download.txt');
+        $fileResponse->setFilename('download.txt');
     }
 
     public function testValidatorsAreNotAddedUnlessRequested(): void
     {
-        $response = new FileResponse($this->fixturePath());
-        $response->prepare($this->request());
+        $fileResponse = new FileResponse($this->fixturePath());
+        $fileResponse->prepare($this->request());
 
-        $this->assertFalse($response->headers()->has('ETag'));
-        $this->assertFalse($response->headers()->has('Last-Modified'));
+        $this->assertFalse($fileResponse->headers()->has('ETag'));
+        $this->assertFalse($fileResponse->headers()->has('Last-Modified'));
     }
 
     public function testRequestedValidatorsDependOnTheFile(): void
@@ -161,32 +151,32 @@ final class FileResponseTest extends TestCase
         FileSystem::write($second, 'second');
         touch($first, 1_700_000_000);
 
-        $firstResponse = (new FileResponse($first, autoEtag: true, autoLastModified: true))->prepare($this->request());
+        $fileResponse = (new FileResponse($first, autoEtag: true, autoLastModified: true))->prepare($this->request());
         $secondResponse = (new FileResponse($second, autoEtag: true, autoLastModified: true))->prepare($this->request());
 
-        $this->assertSame('Tue, 14 Nov 2023 22:13:20 GMT', $firstResponse->headers()->get('Last-Modified'));
-        $this->assertNotSame($firstResponse->headers()->get('ETag'), $secondResponse->headers()->get('ETag'));
+        $this->assertSame('Tue, 14 Nov 2023 22:13:20 GMT', $fileResponse->headers()->get('Last-Modified'));
+        $this->assertNotSame($fileResponse->headers()->get('ETag'), $secondResponse->headers()->get('ETag'));
     }
 
     /**
      * @param array<string, string> $server
      */
     #[DataProvider('sentContentProvider')]
-    public function testSentBodyMatchesTheAnnouncedStatusAndHeaders(array $server, ResponseStatus $status, string $expectedBody, ?string $expectedRange): void
+    public function testSentBodyMatchesTheAnnouncedStatusAndHeaders(array $server, ResponseStatus $responseStatus, string $expectedBody, ?string $expectedRange): void
     {
         $path = TESTS_TMP_PATH . '/range.txt';
         FileSystem::write($path, '0123456789');
-        $response = new FileResponse($path);
-        $response->prepare($this->request(RequestMethod::GET, $server));
+        $fileResponse = new FileResponse($path);
+        $fileResponse->prepare($this->request(RequestMethod::GET, $server));
 
         ob_start();
-        $response->send();
+        $fileResponse->send();
         $output = ob_get_clean();
 
-        $this->assertSame($status, $response->status());
+        $this->assertSame($responseStatus, $fileResponse->status());
         $this->assertSame($expectedBody, $output);
-        $this->assertSame((string) strlen($expectedBody), $response->headers()->get('Content-Length'));
-        $this->assertSame($expectedRange, $response->headers()->get('Content-Range'));
+        $this->assertSame((string) strlen($expectedBody), $fileResponse->headers()->get('Content-Length'));
+        $this->assertSame($expectedRange, $fileResponse->headers()->get('Content-Range'));
     }
 
     /**
@@ -207,10 +197,10 @@ final class FileResponseTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/empty.txt';
         FileSystem::write($path, '');
-        $response = new FileResponse($path, deleteAfterSend: true);
-        $response->prepare($this->request(RequestMethod::GET));
+        $fileResponse = new FileResponse($path, deleteAfterSend: true);
+        $fileResponse->prepare($this->request(RequestMethod::GET));
 
-        $response->send();
+        $fileResponse->send();
 
         $this->assertFileDoesNotExist($path);
     }
@@ -219,16 +209,16 @@ final class FileResponseTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/validators.txt';
         FileSystem::write($path, 'body');
-        $response = new FileResponse($path, autoEtag: true, autoLastModified: true);
+        $fileResponse = new FileResponse($path, autoEtag: true, autoLastModified: true);
         $request = $this->request(RequestMethod::GET);
 
-        $response->prepare($request);
-        $etag = $response->headers()->get('ETag');
-        $modified = $response->headers()->get('Last-Modified');
-        $response->prepare($request);
+        $fileResponse->prepare($request);
+        $etag = $fileResponse->headers()->get('ETag');
+        $modified = $fileResponse->headers()->get('Last-Modified');
+        $fileResponse->prepare($request);
 
-        $this->assertSame($etag, $response->headers()->get('ETag'));
-        $this->assertSame($modified, $response->headers()->get('Last-Modified'));
+        $this->assertSame($etag, $fileResponse->headers()->get('ETag'));
+        $this->assertSame($modified, $fileResponse->headers()->get('Last-Modified'));
     }
 
     private function fixturePath(): string
@@ -239,10 +229,10 @@ final class FileResponseTest extends TestCase
     /**
      * @param array<string, string> $server
      */
-    private function request(RequestMethod $method = RequestMethod::GET, array $server = []): Request
+    private function request(RequestMethod $requestMethod = RequestMethod::GET, array $server = []): Request
     {
         return new Request([], [], [], [], $server + [
-            'REQUEST_METHOD' => $method->value,
+            'REQUEST_METHOD' => $requestMethod->value,
             'SERVER_NAME'    => 'example.test',
             'SERVER_PORT'    => '80',
         ]);

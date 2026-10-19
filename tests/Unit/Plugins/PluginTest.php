@@ -9,13 +9,16 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesApplication;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
 use UnexpectedValueException;
 
 #[CoversClass(Plugin::class)]
 #[UsesApplication]
+#[UsesTempDirectory]
 final class PluginTest extends TestCase
 {
     use BuildsPlugins;
@@ -24,12 +27,6 @@ final class PluginTest extends TestCase
     {
         parent::setUp();
         $this->setUpPlugins();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownPlugins();
-        parent::tearDown();
     }
 
     // Identity
@@ -202,7 +199,7 @@ final class PluginTest extends TestCase
         $plugin->initialize();
         $plugin->initialize();
 
-        $this->assertSame(1, $plugin->services);
+        $this->assertSame(1, (new ReflectionProperty($plugin, 'services'))->getValue($plugin));
     }
 
     public function testManifestConfigIsLoadedAsDefaults(): void
@@ -238,13 +235,9 @@ final class PluginTest extends TestCase
     {
         $plugin = $this->makePlugin('init-broken', '', ['plugin.yaml' => "unknown: yes\n"]);
 
-        try {
-            $plugin->initialize();
-            $this->fail('Initialization should have failed.');
-        } catch (PluginInitializationException $exception) {
-            $this->assertStringContainsString('initBroken', $exception->getMessage());
-            $this->assertInstanceOf(UnexpectedValueException::class, $exception->getPrevious());
-        }
+        $pluginInitializationException = $this->captureException(PluginInitializationException::class, static fn() => $plugin->initialize());
+        $this->assertStringContainsString('initBroken', $pluginInitializationException->getMessage());
+        $this->assertInstanceOf(UnexpectedValueException::class, $pluginInitializationException->getPrevious());
 
         $this->assertFalse($plugin->isInitialized());
     }

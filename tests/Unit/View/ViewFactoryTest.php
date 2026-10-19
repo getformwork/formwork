@@ -46,7 +46,7 @@ final class ViewFactoryTest extends TestCase
 
     public function testMethodsPassedToMakeOverrideFactoryMethods(): void
     {
-        $view = $this->factory()->make('plain', ['name' => '<b>'], methods: ['escape' => static fn(string $text): string => strtoupper($text)]);
+        $view = $this->factory()->make('plain', ['name' => '<b>'], methods: ['escape' => strtoupper(...)]);
 
         $this->assertSame('Hello <B>', $view->render());
     }
@@ -91,8 +91,8 @@ final class ViewFactoryTest extends TestCase
 
     private function factoryVars(View $view): mixed
     {
-        $property = new ReflectionProperty(View::class, 'vars');
+        $reflectionProperty = new ReflectionProperty(View::class, 'vars');
 
-        return $property->getValue($view)['app'];
+        return $reflectionProperty->getValue($view)['app'];
     }
 }

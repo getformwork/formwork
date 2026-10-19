@@ -12,26 +12,16 @@ use Formwork\Log\Registry;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\AuthenticationServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\RoleCollection;
 use Formwork\Users\Users;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionProperty;
 
 #[CoversClass(AuthenticationServiceLoader::class)]
+#[UsesTempDirectory]
 final class AuthenticationServiceLoaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpTempDirectory();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownTempDirectory();
-        parent::tearDown();
-    }
-
     public function testAuthenticatorIsBuiltWithTheConfiguredRateLimiter(): void
     {
         $container = $this->container(maxAttempts: 7, resetTime: 321);
@@ -58,9 +48,9 @@ final class AuthenticationServiceLoaderTest extends TestCase
     public function testEachLoadUsesTheSameRateLimiterOfTheContainer(): void
     {
         $container = $this->container(maxAttempts: 3, resetTime: 60);
-        $loader = new AuthenticationServiceLoader($container->get(Config::class));
+        $authenticationServiceLoader = new AuthenticationServiceLoader($container->get(Config::class));
 
-        $loader->load($container);
+        $authenticationServiceLoader->load($container);
 
         $this->assertSame($container->get(RateLimiter::class), $container->get(RateLimiter::class));
     }
