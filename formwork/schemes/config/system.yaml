@@ -11,7 +11,7 @@ layout:
         content:
             collapsible: true
             label: '{{panel.options.system.content}}'
-            fields: [pages.index, pages.error, pages.content.allowHtml, pages.content.addHeadingIds, metadata.setGenerator]
+            fields: [pages.index, pages.error, pages.content.allowHtml, pages.content.addHeadingIds, metadata.setGenerator, cache.pages.enabled, cache.pages.ttl]
 
         files:
             collapsible: true
@@ -22,11 +22,6 @@ layout:
             collapsible: true
             label: '{{panel.options.system.images}}'
             fields: [images.jpegQuality, images.pngCompression, images.webpQuality, images.avifQuality, images.jpegProgressive, uploads.processImages, images.clearCacheByDefault, images.preserveColorProfile, images.preserveExifData]
-
-        cache:
-            collapsible: true
-            label: '{{panel.options.system.cache}}'
-            fields: [cache.enabled, cache.time]
 
         security:
             collapsible: true
@@ -116,6 +111,21 @@ fields:
             1: '{{panel.options.system.metadata.setGenerator.enabled}}'
             0: '{{panel.options.system.metadata.setGenerator.disabled}}'
 
+    cache.pages.enabled:
+        type: togglegroup
+        label: '{{panel.options.system.cache}}'
+        options:
+            1: '{{panel.options.system.cache.enabled}}'
+            0: '{{panel.options.system.cache.disabled}}'
+
+    cache.pages.ttl:
+        type: duration
+        label: '{{panel.options.system.cache.time}}'
+        min: 900
+        step: 900
+        intervals: [weeks, days, hours, minutes]
+        translate: [label]
+
     files.allowedExtensions:
         type: tags
         label: '{{panel.options.system.files.allowedExtensions}}'
@@ -190,20 +200,6 @@ fields:
             1: '{{panel.options.system.uploads.processImages.enabled}}'
             0: '{{panel.options.system.uploads.processImages.disabled}}'
 
-    cache.enabled:
-        type: togglegroup
-        label: '{{panel.options.system.cache}}'
-        options:
-            1: '{{panel.options.system.cache.enabled}}'
-            0: '{{panel.options.system.cache.disabled}}'
-
-    cache.time:
-        type: duration
-        label: '{{panel.options.system.cache.time}}'
-        min: 900
-        step: 900
-        intervals: [weeks, days, hours, minutes]
-        translate: [label]
 
     authentication.limits.maxAttempts:
         type: number

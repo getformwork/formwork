@@ -28,9 +28,9 @@ final class FilesCacheTest extends CacheTestCase
         $this->path = FileSystem::joinPaths(TESTS_TMP_PATH, 'cache');
     }
 
-    public function testPathIncludesTheNamespace(): void
+    public function testPathIsUsedAsIs(): void
     {
-        $this->assertSame(FileSystem::joinPaths($this->path, 'pages'), $this->createCache('pages')->path());
+        $this->assertSame($this->path, $this->createCache()->path());
     }
 
     public function testDirectoryIsNotCreatedUntilSomethingIsStored(): void
@@ -48,7 +48,7 @@ final class FilesCacheTest extends CacheTestCase
 
     public function testDirectoryIsCreatedRecursivelyOnTheFirstSet(): void
     {
-        $filesCache = new FilesCache(FileSystem::joinPaths($this->path, 'deeply', 'nested'), 'test');
+        $filesCache = new FilesCache(FileSystem::joinPaths($this->path, 'deeply', 'nested'));
 
         $filesCache->set('key', 'value');
 
@@ -63,29 +63,16 @@ final class FilesCacheTest extends CacheTestCase
         $this->assertSame(1, $this->createCache()->count());
     }
 
-    public function testNamespacesAreStoredInSeparateDirectories(): void
+    public function testCachesWithDifferentPathsDoNotShareItems(): void
     {
-        $filesCache = $this->createCache('first');
-        $second = $this->createCache('second');
-
-        $filesCache->set('key', 1);
+        $first = new FilesCache(FileSystem::joinPaths($this->path, 'first'));
+        $second = new FilesCache(FileSystem::joinPaths($this->path, 'second'));
+        $first->set('key', 1);
         $second->set('key', 2);
 
-        $this->assertNotSame($filesCache->path(), $second->path());
-        $this->assertDirectoryExists($filesCache->path());
-        $this->assertDirectoryExists($second->path());
-    }
+        $first->clear();
 
-    public function testClearOnlyRemovesTheItemsOfTheNamespace(): void
-    {
-        $filesCache = $this->createCache('first');
-        $second = $this->createCache('second');
-        $filesCache->set('key', 1);
-        $second->set('key', 2);
-
-        $filesCache->clear();
-
-        $this->assertDirectoryExists($filesCache->path());
+        $this->assertFalse($first->has('key'));
         $this->assertSame(2, $second->get('key'));
     }
 
@@ -248,12 +235,9 @@ final class FilesCacheTest extends CacheTestCase
         $this->assertInstanceOf(stdClass::class, $filesCache->get('key'));
     }
 
-    /**
-     * @param non-empty-string $namespace
-     */
-    protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): FilesCache
+    protected function createCache(int|DateInterval|null $defaultTtl = null): FilesCache
     {
-        return new FilesCache($this->path, $namespace, $defaultTtl);
+        return new FilesCache($this->path, $defaultTtl);
     }
 
     /**

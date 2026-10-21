@@ -121,11 +121,10 @@ return function (Container $container) {
         ->alias('statistics');
 
     $container->define(CacheManager::class)
+        ->loader(CacheServiceLoader::class)
         ->alias('cache');
 
-    $container->define('cache.pages')
-        ->parameter('namespace', 'pages')
-        ->loader(CacheServiceLoader::class);
+    $container->define('cache.pages', fn(CacheManager $cacheManager) => $cacheManager->get('pages'));
 
     $container->define(UserFactory::class);
 

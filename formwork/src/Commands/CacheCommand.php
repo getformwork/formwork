@@ -2,12 +2,11 @@
 
 namespace Formwork\Commands;
 
-use Formwork\Cache\AbstractCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cache\CountableCache;
 use Formwork\Cache\FilesCache;
 use Formwork\Cms\App;
 use Formwork\Services\Loaders\ConfigServiceLoader;
-use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -52,7 +51,7 @@ final class CacheCommand implements CommandInterface
                 'required'    => true,
             ],
             'type' => [
-                'description'  => 'Type of cache to act on (all, config, images, pages)',
+                'description'  => 'Type of cache to act on (all, config, images, or the name of a cache like pages)',
                 'required'     => true,
                 'defaultValue' => 'all',
             ],
@@ -114,23 +113,23 @@ final class CacheCommand implements CommandInterface
     {
         switch ($type) {
             case 'all':
-                $this->clearCaches(['pages' => true, 'images' => true, 'config' => true]);
+                $this->clearCaches([...array_keys($this->cacheManager()->getAll()), 'images', 'config']);
                 $this->climate->green('All caches cleared.');
                 break;
             case 'config':
-                $this->clearCaches(['config' => true]);
+                $this->clearCaches(['config']);
                 $this->climate->green('Config cache cleared.');
                 break;
-            case 'pages':
-                $this->clearCaches(['pages' => true]);
-                $this->climate->green('Pages cache cleared.');
-                break;
             case 'images':
-                $this->clearCaches(['images' => true]);
+                $this->clearCaches(['images']);
                 $this->climate->green('Images cache cleared.');
                 break;
             default:
-                throw new InvalidArgumentException('Invalid cache type for clearing.');
+                if ($type === '' || !$this->cacheManager()->has($type)) {
+                    throw new InvalidArgumentException('Invalid cache type for clearing.');
+                }
+                $this->clearCaches([$type]);
+                $this->climate->green(sprintf('%s cache cleared.', ucfirst($type)));
         }
     }
 
@@ -170,8 +169,10 @@ final class CacheCommand implements CommandInterface
                 $this->climate->br();
                 $this->imagesCacheStats();
                 $this->climate->br();
-                $this->pagesCacheStats();
-                $this->climate->br();
+                foreach (array_keys($this->cacheManager()->getAll()) as $name) {
+                    $this->managedCacheStats((string) $name);
+                    $this->climate->br();
+                }
                 break;
             case 'config':
                 $this->configCacheStats();
@@ -179,11 +180,11 @@ final class CacheCommand implements CommandInterface
             case 'images':
                 $this->imagesCacheStats();
                 break;
-            case 'pages':
-                $this->pagesCacheStats();
-                break;
             default:
-                throw new InvalidArgumentException('Invalid cache type for stats.');
+                if ($type === '' || !$this->cacheManager()->has($type)) {
+                    throw new InvalidArgumentException('Invalid cache type for stats.');
+                }
+                $this->managedCacheStats($type);
         }
     }
 
@@ -231,14 +232,15 @@ final class CacheCommand implements CommandInterface
     }
 
     /**
-     * Output pages cache stats
+     * Output stats of a cache of the cache manager
+     *
+     * @param non-empty-string $name
      */
-    private function pagesCacheStats(): void
+    private function managedCacheStats(string $name): void
     {
-        /** @var AbstractCache $cache */
-        $cache = $this->app->getService('cache.pages');
+        $cache = $this->cacheManager()->get($name);
 
-        $this->climate->out('<green>Pages Cache</green>');
+        $this->climate->out(sprintf('<green>%s Cache</green>', ucfirst($name)));
         $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', $cache instanceof CountableCache ? count($cache) : 0));
 
         if ($cache instanceof FilesCache) {
@@ -250,27 +252,27 @@ final class CacheCommand implements CommandInterface
     /**
      * Clear specified caches
      *
-     * @param array<string, bool> $types
+     * @param array<non-empty-string> $types
      */
     private function clearCaches(array $types): void
     {
-        $types = Arr::filter($types, fn($clear) => $clear);
-
-        foreach (array_keys($types) as $type) {
+        foreach ($types as $type) {
             switch ($type) {
-                case 'pages':
-                    $this->clearPagesCache();
-                    break;
                 case 'images':
                     $this->clearImagesCache();
                     break;
                 case 'config':
                     $this->clearConfigCache();
                     break;
+                default:
+                    if ($this->cacheManager()->has($type)) {
+                        $this->clearManagedCache($type);
+                    }
+                    break;
             }
         }
 
-        $this->logger?->notice('Cache cleared ({types}) from CLI', ['types' => implode(', ', array_keys($types))]);
+        $this->logger?->notice('Cache cleared ({types}) from CLI', ['types' => implode(', ', $types)]);
     }
 
     /**
@@ -284,19 +286,29 @@ final class CacheCommand implements CommandInterface
     }
 
     /**
-     * Clear pages cache
+     * Clear a cache of the cache manager
+     *
+     * @param non-empty-string $name
      */
-    private function clearPagesCache(): void
+    private function clearManagedCache(string $name): void
     {
-        /** @var AbstractCache $cache */
-        $cache = $this->app->getService('cache.pages');
+        $this->cacheManager()->get($name)->clear();
 
-        $cache->clear();
-
-        $site = $this->app->site();
-        if ($site->contentPath() !== null) {
-            FileSystem::touch($site->contentPath());
+        if ($name === 'pages') {
+            $site = $this->app->site();
+            if ($site->contentPath() !== null) {
+                FileSystem::touch($site->contentPath());
+            }
         }
+    }
+
+    /**
+     * Get the cache manager
+     */
+    private function cacheManager(): CacheManager
+    {
+        /** @var CacheManager */
+        return $this->app->getService(CacheManager::class);
     }
 
     /**

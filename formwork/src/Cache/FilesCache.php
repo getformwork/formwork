@@ -4,7 +4,6 @@ namespace Formwork\Cache;
 
 use DateInterval;
 use Formwork\Cache\Exceptions\InvalidKeyException;
-use Formwork\Cache\Exceptions\InvalidNamespaceException;
 use Formwork\Parsers\Php;
 use Formwork\Utils\FileSystem;
 use Throwable;
@@ -13,27 +12,13 @@ use UnexpectedValueException;
 class FilesCache extends AbstractCache implements CountableCache
 {
     /**
-     * Cache path
-     */
-    protected string $path;
-
-    /**
      * @param string                $path       Cache path
-     * @param non-empty-string      $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
-     *
-     * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
-        string $path,
-        protected string $namespace,
+        protected string $path,
         protected int|DateInterval|null $defaultTtl = null,
-    ) {
-        if (!$this->isValidNamespace($this->namespace)) {
-            throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
-        }
-        $this->path = FileSystem::joinPaths($path, $this->namespace);
-    }
+    ) {}
 
     /**
      * Return the cache path
@@ -41,11 +26,6 @@ class FilesCache extends AbstractCache implements CountableCache
     public function path(): string
     {
         return $this->path;
-    }
-
-    public function namespace(): string
-    {
-        return $this->namespace;
     }
 
     public function defaultTtl(): int|DateInterval|null

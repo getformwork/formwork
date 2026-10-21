@@ -16,8 +16,8 @@ final class ArrayCacheTest extends CacheTestCase
 {
     public function testItemsAreNotSharedBetweenInstances(): void
     {
-        $first = new ArrayCache('test');
-        $second = new ArrayCache('test');
+        $first = new ArrayCache();
+        $second = new ArrayCache();
 
         $first->set('key', 'value');
 
@@ -26,7 +26,7 @@ final class ArrayCacheTest extends CacheTestCase
 
     public function testItemsAreKeptInMemoryAsTheyAre(): void
     {
-        $arrayCache = new ArrayCache('test');
+        $arrayCache = new ArrayCache();
         $object = new stdClass();
 
         $arrayCache->set('object', $object);
@@ -34,12 +34,9 @@ final class ArrayCacheTest extends CacheTestCase
         $this->assertSame($object, $arrayCache->get('object'));
     }
 
-    /**
-     * @param non-empty-string $namespace
-     */
-    protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): AbstractCache
+    protected function createCache(int|DateInterval|null $defaultTtl = null): AbstractCache
     {
-        return new ArrayCache($namespace, $defaultTtl);
+        return new ArrayCache($defaultTtl);
     }
 
     protected function expire(AbstractCache $cache, string $key): void
