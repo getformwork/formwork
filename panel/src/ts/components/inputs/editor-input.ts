@@ -1,6 +1,7 @@
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
+import { initToolbar } from "../../utils/toolbar";
 import { escapeRegExp } from "../../utils/validation";
 import { markdown } from "../icons";
 
@@ -131,10 +132,16 @@ export class EditorInput {
 
         const label = $(`label[for="${textarea.id}"]`);
 
+        const toolbar = $<HTMLElement>(".editor-toolbar", this.container);
+
         if (label) {
             label.addEventListener("click", () => {
                 this.editorPromise.then(() => this.editor?.view.focus());
             });
+        }
+
+        if (toolbar) {
+            initToolbar(toolbar, label?.id);
         }
     }
 
