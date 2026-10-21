@@ -6,6 +6,7 @@
                     'class'            => $this->classes(['form-input', 'form-input-slug', 'is-invalid' => ($field->isValidated() && !$field->isValid()), $field->get('class')]),
                     'type'             => 'text',
                     'id'               => $field->name(),
+                    'aria-describedby' => $field->has('description') ? "{$field->name()}-description" : null,
                     'name'             => $field->formName(),
                     'value'            => $field->value(),
                     'placeholder'      => $field->placeholder(),

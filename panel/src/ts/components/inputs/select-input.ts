@@ -102,6 +102,12 @@ export class SelectInput {
         this.labelInput.classList.add("form-select");
         this.labelInput.id = selectId;
 
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            this.labelInput.setAttribute("aria-describedby", describedBy);
+        }
+
         // The text input acts as the combobox, its dropdown is the listbox
         this.labelInput.setAttribute("role", "combobox");
         this.labelInput.setAttribute("aria-autocomplete", "list");

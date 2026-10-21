@@ -197,6 +197,12 @@ export class EditorInput {
             attributes["aria-label"] = this.element.ariaLabel;
         }
 
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            attributes["aria-describedby"] = describedBy;
+        }
+
         if (this.element.required) {
             attributes["aria-required"] = "true";
         }

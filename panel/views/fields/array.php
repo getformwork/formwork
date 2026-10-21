@@ -1,9 +1,10 @@
 <?php $this->layout('@panel.fields.field') ?>
 <fieldset <?= $this->attr([
-                'class'  => $this->classes(['form-input-array', 'form-input-array-associative' => $field->isAssociative()]),
-                'id'     => $field->name(),
-                'name'   => $field->formName(),
-                'hidden' => $field->isHidden(),
+                'class'            => $this->classes(['form-input-array', 'form-input-array-associative' => $field->isAssociative()]),
+                'id'               => $field->name(),
+                'aria-describedby' => $field->has('description') ? "{$field->name()}-description" : null,
+                'name'             => $field->formName(),
+                'hidden'           => $field->isHidden(),
             ]) ?>>
     <?php foreach ($field->items(default: $field->isAssociative() ? ['' => ''] : ['']) as $key => $items) : ?>
         <div class="form-input-array-row">

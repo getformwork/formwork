@@ -95,6 +95,12 @@ export class TagsInput {
         this.innerInput.id = this.element.id;
         this.innerInput.placeholder = this.element.placeholder;
 
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            this.innerInput.setAttribute("aria-describedby", describedBy);
+        }
+
         this.element.classList.remove("form-input");
         this.element.removeAttribute("id");
         this.element.removeAttribute("placeholder");
