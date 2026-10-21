@@ -120,6 +120,44 @@ final class CacheServiceLoaderTest extends TestCase
         $this->assertNull($second->defaultTtl());
     }
 
+    public function testDeprecatedCachePathIsUsedAsPathOfThePagesCache(): void
+    {
+        $deprecations = $this->captureDeprecations(function () use (&$cacheManager): void {
+            $cacheManager = $this->manager(
+                ['pages' => $this->filesOptions(TESTS_TMP_PATH . '/new'), 'other' => $this->filesOptions(TESTS_TMP_PATH . '/other')],
+                ['path' => TESTS_TMP_PATH . '/old'],
+            );
+        });
+
+        $this->assertSame(['The "system.cache.path" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.path" instead.'], $deprecations);
+        $this->assertInstanceOf(CacheManager::class, $cacheManager);
+        $pages = $cacheManager->get('pages');
+        $other = $cacheManager->get('other');
+        $this->assertInstanceOf(FilesCache::class, $pages);
+        $this->assertInstanceOf(FilesCache::class, $other);
+        $this->assertSame(TESTS_TMP_PATH . '/old', $pages->path());
+        $this->assertSame(TESTS_TMP_PATH . '/other', $other->path());
+    }
+
+    public function testDeprecatedCacheTimeIsUsedAsTimeToLiveOfThePagesCache(): void
+    {
+        $deprecations = $this->captureDeprecations(function () use (&$cacheManager): void {
+            $cacheManager = $this->manager(
+                ['pages' => $this->arrayOptions(['ttl' => 60]), 'other' => $this->arrayOptions(['ttl' => 30])],
+                ['time' => 120],
+            );
+        });
+
+        $this->assertSame(['The "system.cache.time" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.ttl" instead.'], $deprecations);
+        $this->assertInstanceOf(CacheManager::class, $cacheManager);
+        $pages = $cacheManager->get('pages');
+        $other = $cacheManager->get('other');
+        $this->assertInstanceOf(ArrayCache::class, $pages);
+        $this->assertInstanceOf(ArrayCache::class, $other);
+        $this->assertSame(120, $pages->defaultTtl());
+        $this->assertSame(30, $other->defaultTtl());
+    }
+
     public function testNonIntegerTimeToLiveIsRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
@@ -144,13 +182,14 @@ final class CacheServiceLoaderTest extends TestCase
 
     /**
      * @param array<string, mixed> $cache
+     * @param array<string, mixed> $options Additional options of the cache config
      */
-    private function manager(array $cache): CacheManager
+    private function manager(array $cache, array $options = []): CacheManager
     {
         $container = new Container();
         $container->define(Container::class, $container);
 
-        $config = new Config(['system' => ['cache' => ['stores' => $cache]]], resolved: true);
+        $config = new Config(['system' => ['cache' => [...['stores' => $cache], ...$options]]], resolved: true);
 
         return (new CacheServiceLoader($config))->load($container);
     }

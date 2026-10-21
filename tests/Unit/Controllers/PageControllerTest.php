@@ -330,6 +330,17 @@ final class PageControllerTest extends TestCase
         $this->assertSame(60, $item->expirationTime() - $item->cachedTime());
     }
 
+    public function testDeprecatedCacheEnabledOptionIsStillUsed(): void
+    {
+        $deprecations = $this->captureDeprecations(function (): void {
+            $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+            $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        });
+
+        $this->assertContains('The "system.cache.enabled" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.enabled" instead.', $deprecations);
+        $this->assertSame(1, $this->renderedPages);
+    }
+
     public function testDeprecatedPageCacheTimeIsStillUsed(): void
     {
         FileSystem::createDirectory($this->site->contentPath() . 'timed');

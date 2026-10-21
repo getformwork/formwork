@@ -190,6 +190,14 @@ final class PageController extends AbstractController
      */
     private function isCacheEnabled(): bool
     {
+        // The deprecated option takes precedence, as the new one always has a default value
+        if ($this->config->has('system.cache.enabled')) {
+            /** @todo Remove in Formwork 3.0 */
+            trigger_error('The "system.cache.enabled" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.enabled" instead.', E_USER_DEPRECATED);
+
+            return $this->config->getBool('system.cache.enabled');
+        }
+
         return $this->config->getBool('system.cache.stores.pages.enabled');
     }
 

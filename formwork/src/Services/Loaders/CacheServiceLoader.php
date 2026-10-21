@@ -39,12 +39,10 @@ final class CacheServiceLoader implements ServiceLoaderInterface
 
         $class = $this->getHandlerClass($this->config->getString("{$key}.handler"));
 
-        $parameters = [
-            'defaultTtl' => $this->config->get("{$key}.ttl") === null ? null : $this->config->getInt("{$key}.ttl"),
-        ];
+        $parameters = ['defaultTtl' => $this->getTtl($name)];
 
         if ($class === FilesCache::class) {
-            $path = $this->config->getString("{$key}.path");
+            $path = $this->getPath($name);
 
             if ($path === '') {
                 throw new InvalidArgumentException(sprintf('Invalid "path" option for cache "%s": expected non-empty string', $name));
@@ -54,6 +52,40 @@ final class CacheServiceLoader implements ServiceLoaderInterface
         }
 
         return $container->build($class, $parameters);
+    }
+
+    /**
+     * Get the path of the cache with the given name
+     */
+    private function getPath(string $name): string
+    {
+        // The deprecated option takes precedence, as the new one always has a default value
+        if ($name === 'pages' && $this->config->has('system.cache.path')) {
+            /** @todo Remove in Formwork 3.0 */
+            trigger_error('The "system.cache.path" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.path" instead.', E_USER_DEPRECATED);
+
+            return $this->config->getString('system.cache.path');
+        }
+
+        return $this->config->getString("system.cache.stores.{$name}.path");
+    }
+
+    /**
+     * Get the default time-to-live of the cache with the given name
+     */
+    private function getTtl(string $name): ?int
+    {
+        // The deprecated option takes precedence, as the new one always has a default value
+        if ($name === 'pages' && $this->config->has('system.cache.time')) {
+            /** @todo Remove in Formwork 3.0 */
+            trigger_error('The "system.cache.time" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.stores.pages.ttl" instead.', E_USER_DEPRECATED);
+
+            return $this->config->getInt('system.cache.time');
+        }
+
+        $key = "system.cache.stores.{$name}.ttl";
+
+        return $this->config->get($key) === null ? null : $this->config->getInt($key);
     }
 
     /**
