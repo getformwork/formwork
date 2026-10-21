@@ -129,9 +129,13 @@ export class EditorInput {
             });
         });
 
-        $(`label[for="${textarea.id}"]`)?.addEventListener("click", () => {
-            this.editorPromise.then(() => this.editor?.view.focus());
-        });
+        const label = $(`label[for="${textarea.id}"]`);
+
+        if (label) {
+            label.addEventListener("click", () => {
+                this.editorPromise.then(() => this.editor?.view.focus());
+            });
+        }
     }
 
     async switchToMarkdown() {
@@ -147,6 +151,7 @@ export class EditorInput {
             placeholder: this.element.placeholder,
             attributes: {
                 spellcheck: this.options.spellcheck ? "true" : "false",
+                ...this.accessibilityAttributes(),
             },
         });
         this.element.style.display = "none";
@@ -169,6 +174,31 @@ export class EditorInput {
         this.element.style.display = "none";
         this.element.classList.remove("is-loading");
         this.editor.view.dom.style.height = `${this.options.height}px`;
+    }
+
+    private accessibilityAttributes(): Record<string, string> {
+        const attributes: Record<string, string> = {
+            role: "textbox",
+            "aria-multiline": "true",
+        };
+
+        const labelId = $(`label[for="${this.id}"]`)?.id;
+
+        if (labelId) {
+            attributes["aria-labelledby"] = labelId;
+        } else if (this.element.ariaLabel) {
+            attributes["aria-label"] = this.element.ariaLabel;
+        }
+
+        if (this.element.required) {
+            attributes["aria-required"] = "true";
+        }
+
+        if (this.element.readOnly) {
+            attributes["aria-readonly"] = "true";
+        }
+
+        return attributes;
     }
 
     get name() {
