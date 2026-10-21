@@ -1,14 +1,14 @@
-<div class="files-item" data-filename="<?= $file->name() ?>">
+<div class="files-item" role="row" data-filename="<?= $file->name() ?>">
     <?php if ($file->type() === 'image') : ?>
-        <img class="file-thumbnail" data-src="<?= $file->square(300, 'contain')->uri() ?>" loading="lazy">
+        <img class="file-thumbnail" data-src="<?= $file->square(300, 'contain')->uri() ?>" loading="lazy" alt="">
     <?php endif ?>
     <?php if ($file->type() === 'video') : ?>
-        <video class="file-thumbnail" data-src="<?= $file->uri() ?>" preload="metadata"></video>
+        <video class="file-thumbnail" data-src="<?= $file->uri() ?>" preload="metadata" aria-hidden="true"></video>
     <?php endif ?>
-    <div class="files-item-cell file-icon"><?= $this->icon(is_null($file->type()) ? 'file' : "file-{$file->type()}") ?></div>
-    <div class="files-item-cell file-name truncate"><a href="<?= $this->uri($app->router()->generate('panel.files.edit', ['model' => $model->getModelIdentifier(), 'id' => $model->route(), 'filename' => $file->name()])) ?>"><?= $this->escape($file->name()) ?></a></div>
+    <div class="files-item-cell file-icon" role="cell"><?= $this->icon(is_null($file->type()) ? 'file' : "file-{$file->type()}") ?></div>
+    <div class="files-item-cell file-name truncate" role="cell"><a href="<?= $this->uri($app->router()->generate('panel.files.edit', ['model' => $model->getModelIdentifier(), 'id' => $model->route(), 'filename' => $file->name()])) ?>"><?= $this->escape($file->name()) ?></a></div>
     <?php if (in_array('parent', $columns, true)) : ?>
-        <div class="files-item-cell file-parent truncate show-from-lg">
+        <div class="files-item-cell file-parent truncate show-from-lg" role="cell">
             <?php if ($model->getModelIdentifier() === 'page'): ?>
                 <a class="link-secondary" href="<?= $panel->uri('/pages/' . trim($model->route(), '/') . '/edit/') ?>"><span class="mr-2"><?= $this->icon($model->icon()) ?></span><span class="file-parent-title"><?= $this->escape($model->title()) ?></span></a>
             <?php endif ?>
@@ -18,12 +18,12 @@
         </div>
     <?php endif ?>
     <?php if (in_array('date', $columns, true)) : ?>
-        <div class="files-item-cell file-date truncate show-from-lg"><?= $this->datetime($file->lastModifiedTime()) ?></div>
+        <div class="files-item-cell file-date truncate show-from-lg" role="cell"><?= $this->datetime($file->lastModifiedTime()) ?></div>
     <?php endif ?>
     <?php if (in_array('size', $columns, true)) : ?>
-        <div class="files-item-cell file-size truncate show-from-lg"><?= $file->size() ?></div>
+        <div class="files-item-cell file-size truncate show-from-lg" role="cell"><?= $file->size() ?></div>
     <?php endif ?>
-    <div class="files-item-cell file-actions">
+    <div class="files-item-cell file-actions" role="cell">
         <div class="dropdown">
             <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" aria-label="<?= $this->translate('panel.files.actions') ?>" data-dropdown="dropdown-<?= $file->hash() ?>"><?= $this->icon('ellipsis-v') ?></button>
             <div class="dropdown-menu" id="dropdown-<?= $file->hash() ?>">

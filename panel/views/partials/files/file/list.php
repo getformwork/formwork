@@ -19,42 +19,44 @@
         </fieldset>
     </div>
 
-    <div class="files-list-headers">
-        <div class="files-headers-cell file-name truncate"><?= $this->translate('panel.files.info.name') ?></div>
-        <?php if (in_array('parent', $columns, true)) : ?>
-            <div class="files-headers-cell file-parent truncate show-from-lg"><?= $this->translate('panel.files.parent') ?></div>
-        <?php endif ?>
-        <?php if (in_array('date', $columns, true)) : ?>
-            <div class="files-headers-cell file-date truncate show-from-lg"><?= $this->translate('panel.files.info.lastModifiedTime') ?></div>
-        <?php endif ?>
-        <?php if (in_array('size', $columns, true)) : ?>
-            <div class="files-headers-cell file-size truncate show-from-lg"><?= $this->translate('panel.files.info.size') ?></div>
-        <?php endif ?>
-        <div class="files-headers-cell file-actions"><span class="show-from-xs mr-6"><?= $this->translate('panel.files.actions') ?></span></div>
-    </div>
+    <div class="files-table" role="table" aria-label="<?= $this->translate('panel.files.files') ?>">
+        <div class="files-list-headers" role="row">
+            <div class="files-headers-cell file-name truncate" role="columnheader"><?= $this->translate('panel.files.info.name') ?></div>
+            <?php if (in_array('parent', $columns, true)) : ?>
+                <div class="files-headers-cell file-parent truncate show-from-lg" role="columnheader"><?= $this->translate('panel.files.parent') ?></div>
+            <?php endif ?>
+            <?php if (in_array('date', $columns, true)) : ?>
+                <div class="files-headers-cell file-date truncate show-from-lg" role="columnheader"><?= $this->translate('panel.files.info.lastModifiedTime') ?></div>
+            <?php endif ?>
+            <?php if (in_array('size', $columns, true)) : ?>
+                <div class="files-headers-cell file-size truncate show-from-lg" role="columnheader"><?= $this->translate('panel.files.info.size') ?></div>
+            <?php endif ?>
+            <div class="files-headers-cell file-actions" role="columnheader"><span class="show-from-xs mr-6"><?= $this->translate('panel.files.actions') ?></span></div>
+        </div>
 
-    <div class="files-items">
-        <?php foreach ($files as [$file, $model]) : ?>
-            <?php $this->insert('@panel._files.file.item', ['file' => $file, 'model' => $model, 'columns' => $columns]) ?>
-        <?php endforeach ?>
+        <div class="files-items" role="rowgroup">
+            <?php foreach ($files as [$file, $model]) : ?>
+                <?php $this->insert('@panel._files.file.item', ['file' => $file, 'model' => $model, 'columns' => $columns]) ?>
+            <?php endforeach ?>
+        </div>
     </div>
 </div>
 
 <template id="files-item">
-    <div class="files-item" data-filename="">
-        <div class="file-thumbnail"></div>
-        <div class="files-item-cell file-icon"></div>
-        <div class="files-item-cell file-name truncate"><a></a></div>
+    <div class="files-item" role="row" data-filename="">
+        <div class="file-thumbnail" aria-hidden="true"></div>
+        <div class="files-item-cell file-icon" role="cell"></div>
+        <div class="files-item-cell file-name truncate" role="cell"><a></a></div>
         <?php if (in_array('parent', $columns, true)) : ?>
-            <div class="files-item-cell file-parent truncate show-from-lg"></div>
+            <div class="files-item-cell file-parent truncate show-from-lg" role="cell"></div>
         <?php endif ?>
         <?php if (in_array('date', $columns, true)) : ?>
-            <div class="files-item-cell file-date truncate show-from-lg"></div>
+            <div class="files-item-cell file-date truncate show-from-lg" role="cell"></div>
         <?php endif ?>
         <?php if (in_array('size', $columns, true)) : ?>
-            <div class="files-item-cell file-size truncate show-from-lg"></div>
+            <div class="files-item-cell file-size truncate show-from-lg" role="cell"></div>
         <?php endif ?>
-        <div class="files-item-cell file-actions">
+        <div class="files-item-cell file-actions" role="cell">
             <div class="dropdown">
                 <button type="button" class="button button-link dropdown-button" title="<?= $this->translate('panel.files.actions') ?>" aria-label="<?= $this->translate('panel.files.actions') ?>" data-dropdown=""><?= $this->icon('ellipsis-v') ?></button>
                 <div class="dropdown-menu" id="">
