@@ -14,6 +14,19 @@ type NotificationOptions = {
 };
 
 export class Notification {
+    static getContainer(): HTMLElement {
+        let container = $(".notification-container");
+
+        if (!container) {
+            // Layouts render this container with its live region attributes, this is only a fallback
+            container = document.createElement("div");
+            container.className = "notification-container";
+            document.body.appendChild(container);
+        }
+
+        return container;
+    }
+
     text: string;
     type: NotificationType;
     options: NotificationOptions;
@@ -46,19 +59,21 @@ export class Notification {
 
         this.options = Object.assign({}, defaults, options);
 
-        this.containerElement = $(".notification-container");
+        this.containerElement = null;
     }
 
     show() {
         const create = (text: string, type: NotificationType, interval: number) => {
-            if (!this.containerElement) {
-                this.containerElement = document.createElement("div");
-                this.containerElement.className = "notification-container";
-                document.body.appendChild(this.containerElement);
-            }
+            this.containerElement = Notification.getContainer();
 
             const notification = document.createElement("div");
             notification.className = `notification notification-${this.options.typeClass[type]}`;
+            notification.tabIndex = 0;
+
+            if (type === "error" || type === "warning") {
+                notification.setAttribute("role", "alert");
+            }
+
             notification.innerHTML = text;
 
             if (this.options.newestOnTop && this.containerElement.childNodes.length > 0) {
@@ -69,11 +84,31 @@ export class Notification {
 
             let timer = window.setTimeout(() => this.remove(), interval);
 
+            const pause = () => window.clearTimeout(timer);
+
+            const resume = () => {
+                window.clearTimeout(timer);
+                timer = window.setTimeout(() => this.remove(), this.options.mouseleaveDelay);
+            };
+
             notification.addEventListener("click", () => this.remove());
 
-            notification.addEventListener("mouseenter", () => clearTimeout(timer));
+            // Pause the countdown while the pointer or keyboard focus is on the notification
+            notification.addEventListener("mouseenter", pause);
+            notification.addEventListener("mouseleave", () => {
+                if (!notification.matches(":focus-within")) {
+                    resume();
+                }
+            });
+            notification.addEventListener("focusin", pause);
+            notification.addEventListener("focusout", resume);
 
-            notification.addEventListener("mouseleave", () => ((timer = window.setTimeout(() => this.remove())), this.options.mouseleaveDelay));
+            notification.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    this.remove();
+                }
+            });
 
             return notification;
         };
@@ -96,12 +131,6 @@ export class Notification {
         window.setTimeout(() => {
             if (this.containerElement && this.notificationElement && this.notificationElement.parentNode) {
                 this.containerElement.removeChild(this.notificationElement);
-            }
-            if (this.containerElement && this.containerElement.childNodes.length < 1) {
-                if (this.containerElement.parentNode) {
-                    document.body.removeChild(this.containerElement);
-                }
-                this.containerElement = null;
             }
         }, this.options.fadeOutDelay);
     }

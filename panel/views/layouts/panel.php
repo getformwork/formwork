@@ -34,6 +34,7 @@
     <?php foreach ($this->modals() as $modal) : ?>
         <?php $this->insert('@panel.modals.modal', ['modal' => $modal]) ?>
     <?php endforeach ?>
+    <div class="notification-container" role="status" aria-live="polite" aria-atomic="false"></div>
     <?php $this->assets()->add('@panel/js/app.min.js', ['module' => true]) ?>
     <?php $this->insert('@panel._scripts') ?>
 </body>
