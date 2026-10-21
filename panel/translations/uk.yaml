@@ -25,6 +25,7 @@ panel.dashboard.statistics.uniqueVisitors: Унікальні відвідува
 panel.dashboard.statistics.visits: Візити
 panel.dashboard.welcome: Ласкаво просимо
 panel.dragToReorder: Перетягніть, щоб змінити порядок
+panel.dropdown.moreOptions: Інші параметри
 panel.editor.bold: Жирний
 panel.editor.bulletList: Список з маркерами
 panel.editor.code: Код

@@ -22,7 +22,7 @@
                     <div class="dropdown mb-4">
                         <div class="button-group">
                             <button type="button" class="button button-secondary" data-command="clear-cache"><?= $this->icon('cache-clear') ?> <?= $this->translate('panel.cache.clear') ?></button>
-                            <button type="button" class="button button-secondary dropdown-button caret" data-dropdown="dropdown-cache-options"></button>
+                            <button type="button" class="button button-secondary dropdown-button caret" title="<?= $this->translate('panel.dropdown.moreOptions') ?>" aria-label="<?= $this->translate('panel.dropdown.moreOptions') ?>" data-dropdown="dropdown-cache-options"></button>
                         </div>
                         <div class="dropdown-menu" id="dropdown-cache-options">
                             <button type="button" class="dropdown-item" data-command="clear-pages-cache"><?= $this->translate('panel.cache.clear.pages') ?></button>

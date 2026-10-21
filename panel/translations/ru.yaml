@@ -25,6 +25,7 @@ panel.dashboard.statistics.uniqueVisitors: Уникальные посетите
 panel.dashboard.statistics.visits: Просмотров
 panel.dashboard.welcome: Добро пожаловать
 panel.dragToReorder: Перетащите для изменения порядка
+panel.dropdown.moreOptions: Другие параметры
 panel.editor.bold: Жирный
 panel.editor.bulletList: Маркированный список
 panel.editor.code: Код
