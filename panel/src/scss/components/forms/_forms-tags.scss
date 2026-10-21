@@ -92,9 +92,14 @@
 .tag-remove {
     display: inline-block;
     padding: 0 0.125rem;
+    border: 0;
     margin-left: 0.25rem;
+    background: transparent;
     color: var(--color-base-100);
+    cursor: pointer;
+    font: inherit;
     font-style: normal;
+    line-height: inherit;
     transition: color var(--transition-time-sm);
 
     &:hover {

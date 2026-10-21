@@ -139,6 +139,8 @@ export class TagsInput {
             Sortable.create(this.list, {
                 forceFallback: true,
                 animation: 150,
+                filter: ".tag-remove",
+                preventOnFilter: false,
 
                 onChoose: () => {
                     if (this.dropdown) {
@@ -419,15 +421,16 @@ export class TagsInput {
 
     private insertTag(value: string, parent: HTMLElement) {
         const tag = document.createElement("span");
-        const tagRemove = document.createElement("i");
+        const tagRemove = document.createElement("button");
         tag.className = "tag";
         tag.innerText = value;
         tag.style.marginRight = ".25rem";
         parent.appendChild(tag);
 
+        tagRemove.type = "button";
         tagRemove.className = "tag-remove";
         tagRemove.title = this.options.labels.remove;
-        tagRemove.role = "button";
+        tagRemove.ariaLabel = `${this.options.labels.remove}: ${value}`;
 
         let mousedownCaptured = false;
 
@@ -442,6 +445,13 @@ export class TagsInput {
             if (mousedownCaptured || keyboardActivation) {
                 this.removeTag(value);
                 parent.removeChild(tag);
+
+                $$(".tooltip").forEach((tooltip) => tooltip.remove());
+
+                if (keyboardActivation) {
+                    // The focused button has been removed, keep keyboard focus in the field
+                    this.innerInput.focus();
+                }
             }
             mousedownCaptured = false;
             event.preventDefault();
