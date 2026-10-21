@@ -3,67 +3,108 @@
 namespace Formwork\Cache;
 
 use InvalidArgumentException;
+use Psr\SimpleCache\CacheInterface;
 
 class CacheManager
 {
     /**
-     * @param array<non-empty-string, NamespacedCacheInterface> $caches
+     * Regex matching valid cache names
+     *
+     * @since 2.4.0
      */
-    public function __construct(protected array $caches = []) {}
+    public const string NAME_REGEX = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/D';
 
     /**
-     * Get a cache instance by its namespace
+     * Names reserved for the cache types handled by the panel and the command line
      *
-     * @param non-empty-string $namespace
-     *
-     * @throws InvalidArgumentException
+     * @since 2.4.0
      */
-    public function get(string $namespace): NamespacedCacheInterface
+    public const array RESERVED_NAMES = ['all', 'config', 'default', 'images'];
+
+    /**
+     * Cache instances by name
+     *
+     * @var array<non-empty-string, CacheInterface>
+     */
+    protected array $caches = [];
+
+    /**
+     * @param array<non-empty-string, CacheInterface> $caches Cache instances by name
+     *
+     * @throws InvalidArgumentException If a name is not valid or is reserved
+     */
+    public function __construct(array $caches = [])
     {
-        return $this->caches[$namespace] ?? throw new InvalidArgumentException(sprintf('Cache "%s" does not exist', $namespace));
+        foreach ($caches as $name => $cache) {
+            $this->add((string) $name, $cache);
+        }
     }
 
     /**
-     * Return whether a cache instance exists for the given namespace
+     * Get a cache instance by its name
      *
-     * @param non-empty-string $namespace
+     * @param non-empty-string $name
+     *
+     * @throws InvalidArgumentException If the cache does not exist
      */
-    public function has(string $namespace): bool
+    public function get(string $name): CacheInterface
     {
-        return isset($this->caches[$namespace]);
+        return $this->caches[$name] ?? throw new InvalidArgumentException(sprintf('Cache "%s" does not exist', $name));
     }
 
     /**
-     * Add a cache instance to the manager
+     * Return whether a cache instance exists with the given name
+     *
+     * @param non-empty-string $name
      */
-    public function add(NamespacedCacheInterface $namespacedCache): void
+    public function has(string $name): bool
     {
-        $this->caches[$namespacedCache->namespace()] = $namespacedCache;
+        return isset($this->caches[$name]);
     }
 
     /**
-     * Get multiple cache instances by their namespaces
+     * Add a cache instance to the manager with the given name
      *
-     * @param list<non-empty-string> $namespaces
-     *
-     * @return array<non-empty-string, NamespacedCacheInterface>
+     * @throws InvalidArgumentException If the name is not valid or is reserved
      */
-    public function getMultiple(array $namespaces): array
+    public function add(string $name, CacheInterface $cache): void
+    {
+        if (!preg_match(self::NAME_REGEX, $name)) {
+            throw new InvalidArgumentException(sprintf('Cache name "%s" is not valid', $name));
+        }
+
+        if (in_array($name, self::RESERVED_NAMES, true)) {
+            throw new InvalidArgumentException(sprintf('Cache name "%s" is reserved', $name));
+        }
+
+        $this->caches[$name] = $cache;
+    }
+
+    /**
+     * Get multiple cache instances by their names
+     *
+     * @param list<non-empty-string> $names
+     *
+     * @throws InvalidArgumentException If any of the caches does not exist
+     *
+     * @return array<non-empty-string, CacheInterface>
+     */
+    public function getMultiple(array $names): array
     {
         $caches = [];
-        foreach ($namespaces as $namespace) {
-            $caches[$namespace] = $this->get($namespace);
+        foreach ($names as $name) {
+            $caches[$name] = $this->get($name);
         }
         return $caches;
     }
 
     /**
-     * Get all cache instances
+     * Get all cache instances by name
      *
-     * @return array<non-empty-string, NamespacedCacheInterface>
+     * @return array<non-empty-string, CacheInterface>
      */
     public function getAll(): array
     {
-        return $this->getMultiple(array_keys($this->caches));
+        return $this->caches;
     }
 }

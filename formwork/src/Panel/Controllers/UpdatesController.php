@@ -3,12 +3,11 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Backup\Backupper;
-use Formwork\Cache\AbstractCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
-use Formwork\Services\Attributes\Service;
 use Formwork\Updater\Updater;
 use Formwork\Users\Attributes\Permission;
 use RuntimeException;
@@ -45,8 +44,7 @@ final class UpdatesController extends AbstractController
     #[Permission('panel.updates.update')]
     public function update(
         Updater $updater,
-        #[Service('cache.pages')]
-        AbstractCache $cache,
+        CacheManager $cacheManager,
         Backupper $backupper,
     ): JsonResponse|Response {
         if ($this->config->getBool('system.updates.backupBefore')) {
@@ -65,9 +63,12 @@ final class UpdatesController extends AbstractController
                 'status' => $this->translate('panel.updates.status.cannotInstall'),
             ]);
         }
-        if ($this->config->getBool('system.cache.enabled')) {
+
+        // Clear all caches, as their data may depend on the previous version
+        foreach ($cacheManager->getAll() as $cache) {
             $cache->clear();
         }
+
         return JsonResponse::success($this->translate('panel.updates.installed'), data: [
             'status' => $this->translate('panel.updates.status.upToDate'),
         ]);

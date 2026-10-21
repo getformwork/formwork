@@ -13,31 +13,47 @@ use InvalidArgumentException;
 
 final class CacheServiceLoader implements ServiceLoaderInterface
 {
-    /**
-     * @param non-empty-string $namespace
-     */
     public function __construct(
         private Config $config,
-        private CacheManager $cacheManager,
-        private string $namespace,
-        private ?string $path = null,
-        private ?int $defaultTtl = null,
-        private ?string $handler = null,
     ) {}
 
-    public function load(Container $container): AbstractCache
+    public function load(Container $container): CacheManager
     {
-        $this->handler ??= $this->config->getString("system.cache.namespaces.{$this->namespace}.handler", 'files');
-        $cache = $container->build(
-            $this->getHandlerClass($this->handler),
-            [
-                'path'       => $this->path ?? $this->config->getString('system.cache.path'),
-                'namespace'  => $this->namespace,
-                'defaultTtl' => $this->defaultTtl ?? $this->config->getInt('system.cache.time'),
-            ]
-        );
-        $this->cacheManager->add($cache);
-        return $cache;
+        $cacheManager = new CacheManager();
+
+        foreach (array_keys($this->config->getArray('system.cache.stores', [])) as $name) {
+            $name = (string) $name;
+
+            $cacheManager->add($name, $this->createCache($container, $name));
+        }
+
+        return $cacheManager;
+    }
+
+    /**
+     * Create a cache instance from the config of the cache with the given name
+     */
+    private function createCache(Container $container, string $name): AbstractCache
+    {
+        $key = "system.cache.stores.{$name}";
+
+        $class = $this->getHandlerClass($this->config->getString("{$key}.handler"));
+
+        $parameters = [
+            'defaultTtl' => $this->config->get("{$key}.ttl") === null ? null : $this->config->getInt("{$key}.ttl"),
+        ];
+
+        if ($class === FilesCache::class) {
+            $path = $this->config->getString("{$key}.path");
+
+            if ($path === '') {
+                throw new InvalidArgumentException(sprintf('Invalid "path" option for cache "%s": expected non-empty string', $name));
+            }
+
+            $parameters['path'] = $path;
+        }
+
+        return $container->build($class, $parameters);
     }
 
     /**
