@@ -10,7 +10,7 @@ return function (App $app) {
     return [
         'default' => '',
 
-        'translate' => ['label', 'description', 'options'],
+        'translate' => ['label', 'description', 'suggestion', 'options'],
 
         'methods' => [
             /**

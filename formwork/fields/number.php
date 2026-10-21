@@ -7,7 +7,7 @@ use Formwork\Utils\Constraint;
 
 return function (App $app) {
     return [
-        'translate' => ['label', 'description', 'placeholder'],
+        'translate' => ['label', 'description', 'suggestion', 'placeholder'],
 
         'methods' => [
             /**

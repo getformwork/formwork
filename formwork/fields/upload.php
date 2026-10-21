@@ -11,7 +11,7 @@ use Formwork\Utils\MimeType;
 
 return function (App $app) {
     return [
-        'translate' => ['label', 'description'],
+        'translate' => ['label', 'description', 'suggestion'],
 
         'methods' => [
             /**

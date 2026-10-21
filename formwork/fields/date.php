@@ -9,7 +9,7 @@ use Formwork\Utils\Str;
 
 return function (App $app): array {
     return [
-        'translate' => ['label', 'description', 'placeholder'],
+        'translate' => ['label', 'description', 'suggestion', 'placeholder'],
 
         'methods' => [
             /**

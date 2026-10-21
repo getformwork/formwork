@@ -9,7 +9,7 @@ use Formwork\Utils\Constraint;
 
 return function (Site $site) {
     return [
-        'translate' => ['label', 'description'],
+        'translate' => ['label', 'description', 'suggestion'],
 
         'methods' => [
             'return' => function (Field $field) use ($site) {

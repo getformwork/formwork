@@ -14,7 +14,7 @@ return function (App $app, FieldFactory $fieldFactory): array {
     return [
         'default' => [],
 
-        'translate' => ['label', 'description', 'placeholderKey', 'placeholderValue'],
+        'translate' => ['label', 'description', 'suggestion', 'placeholderKey', 'placeholderValue'],
 
         'methods' => [
             /**
