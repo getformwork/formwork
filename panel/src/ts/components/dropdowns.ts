@@ -75,6 +75,9 @@ function initButton(button: HTMLElement) {
 }
 
 function open(button: HTMLElement, dropdown: HTMLElement) {
+    // A tooltip of the button would cover the first items of the menu
+    $$(".tooltip").forEach((tooltip) => tooltip.remove());
+
     const resizeHandler = throttle(() => setDropdownPosition(dropdown), 100);
 
     dropdown.style.display = "block";

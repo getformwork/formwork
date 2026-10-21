@@ -17,12 +17,23 @@ export class Tooltips {
             debounce((event: MouseEvent) => {
                 const target = event.target as HTMLElement;
 
+                // The event is debounced, its target may have been removed in the meantime
+                if (!target.isConnected) {
+                    return;
+                }
+
                 const element = target.closest("[data-tooltip]") as HTMLElement;
 
                 const position = { x: event.pageX, y: event.pageY };
                 const offset = { x: 0, y: 16 };
 
                 if (element) {
+                    // Do not cover an open menu with the tooltip of the button that opened it
+                    if (element.getAttribute("aria-expanded") === "true") {
+                        this.tooltip?.remove();
+                        return;
+                    }
+
                     if (this.element === element && !this.tooltip?.removed) {
                         return;
                     }
@@ -76,7 +87,7 @@ export class Tooltips {
             const element = target.closest("[data-tooltip]") as HTMLElement;
 
             if (element && (element.tagName.toLowerCase() === "button" || element.classList.contains("button"))) {
-                if (this.element === element) {
+                if (this.element === element || element.getAttribute("aria-expanded") === "true") {
                     return;
                 }
 
