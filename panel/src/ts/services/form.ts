@@ -1,4 +1,3 @@
-import "../polyfills/request-submit";
 import { signal } from "@preact/signals-core";
 import { ArrayInput } from "../components/inputs/array-input";
 import { ColorInput } from "../components/inputs/color-input";
